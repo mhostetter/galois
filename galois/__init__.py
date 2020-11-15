@@ -1,3 +1,6 @@
+"""
+A Python 3 package for Galois field arithmetic.
+"""
 from .version import __version__
 
-print("This is the galois package")
+from .example import example_function
