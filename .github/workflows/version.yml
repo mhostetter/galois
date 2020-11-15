@@ -1,0 +1,36 @@
+name: Update version
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, opened, edited, reopened, synchronize, ready_for_review]
+
+jobs:
+  update-version:
+    name: Update package version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate PR label and metadata
+        id: validate
+        uses: jefflinse/pr-semver-bump@v1
+        with:
+          mode: validate
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          major-label: major release
+          minor-label: minor release
+          patch-label: patch release
+          require-release-notes: false
+          with-v: true
+      - name: Update version.txt and commit to repo
+        run: echo Bumping version ${{ steps.validate.outputs.old-version }} to ${{ steps.validate.outputs.version }}
+        # run: echo Bumping version ${{ steps.validate.outputs.}}
+      - name: Tag commit with version
+        uses: jefflinse/pr-semver-bump@v1
+        with:
+          mode: bump
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          major-label: major release
+          minor-label: minor release
+          patch-label: patch release
+          require-release-notes: false
+          with-v: true
