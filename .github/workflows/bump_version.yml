@@ -1,0 +1,22 @@
+name: Bump version
+
+on:
+  push:
+    branches:
+      master
+
+jobs:
+  bump-version:
+    name: Update package version and tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jefflinse/pr-semver-bump@v1
+        with:
+          mode: validate
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          major-label: major release
+          minor-label: minor release
+          patch-label: patch release
+          require-release-notes: false
+          with-v: false
