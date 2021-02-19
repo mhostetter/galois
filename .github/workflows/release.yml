@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    branches:
+      master
+    inputs:
+      release_type:
+        description: "Release type (major,minor,patch)"
+        required: true
+        default: "patch"
+
+jobs:
+  release:
+    name: Create new release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all commits and tags
+        ref: ${{ github.REF }}
+    # - name: Wait on other workflows
+    #   uses: lewagon/wait-on-check-action@v0.2
+    #   with:
+    #     ref: ${{ github.REF }}
+    #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+    #     wait-interval: 5
+    - name: Get previous version
+      id: previous_version
+      run: |  # Get last version tag and remove the "v"
+        version=$(git describe --tags --abbrev=0 | cut -c 2-)
+        echo "::set-output name=version::${version}"
+    - name: Validate next version
+      uses: zwaldowski/semver-release-action@v2
+      id: next_version
+      with:
+        dry_run: true
+        bump: ${{ github.event.inputs.release_type }}
+        prefix: "v"
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Update version file
+      run: |
+        echo "${{ steps.next_version.outputs.version }}" > galois/version.txt
+        cat galois/version.txt
+    - name: Commit and tag version
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        file_pattern: galois/version.txt
+        commit_message: "Version bump to ${{ steps.next_version.outputs.version }}"
+        repository: .
+        branch: master
+        tagging_message: "v${{ steps.next_version.outputs.version }}"
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all commits and tags
+        ref: ${{ github.REF }}
+    - name: Construct release notes
+      run: |
+        prev=v${{ steps.previous_version.outputs.version }}
+        next=v${{ steps.next_version.outputs.version }}
+        git log --oneline ${prev}..${next} > release_notes.txt
+    - name: Create GitHub release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.next_version.outputs.version }}
+        release_name: Galois v${{ steps.next_version.outputs.version }}
+        body_path: release_notes.txt
+        draft: false
+    - name: Build python package
+      run: |
+        python -m pip install --upgrade setuptools wheel twine
+        python setup.py sdist bdist_wheel
+        python -m twine check dist/*
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@v1.4.2
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        # password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        # repository_url: https://test.pypi.org/legacy/
+        verbose: true
