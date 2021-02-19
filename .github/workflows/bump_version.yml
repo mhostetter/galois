@@ -1,0 +1,22 @@
+name: Bump version
+
+on:
+  pull_request:
+    types: [closed]
+  branches:
+    master
+
+jobs:
+  bump-version:
+    name: Bump version and add tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jefflinse/pr-semver-bump@v1
+        with:
+          mode: validate
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          major-label: major release
+          minor-label: minor release
+          patch-label: patch release
+      - run: echo "I did it at the right time"

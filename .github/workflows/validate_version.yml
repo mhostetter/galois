@@ -1,0 +1,17 @@
+name: Validate version bump
+
+on: pull_request
+
+jobs:
+  validate-version:
+    name: Validate pull request label and metadata
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jefflinse/pr-semver-bump@v1
+        with:
+          mode: validate
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          major-label: major release
+          minor-label: minor release
+          patch-label: patch release
