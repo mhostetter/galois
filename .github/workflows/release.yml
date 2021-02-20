@@ -44,12 +44,12 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Update version file
       run: |
-        echo -n "${{ steps.next_version.outputs.version }}" > galois/version.txt
-        cat galois/version.txt
+        echo -n "${{ steps.next_version.outputs.version }}" > version.txt
+        cat version.txt
     - name: Commit and tag version
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        file_pattern: galois/version.txt
+        file_pattern: version.txt
         commit_message: "Version bump to ${{ steps.next_version.outputs.version }}"
         repository: .
         branch: master
@@ -71,22 +71,15 @@ jobs:
         tag_name: v${{ steps.next_version.outputs.version }}
         release_name: Galois v${{ steps.next_version.outputs.version }}
         body_path: release_notes.txt
-        draft: true
+        draft: false
     - name: Build python package
       run: |
         python3 -m pip install --upgrade setuptools wheel twine
         python3 setup.py sdist bdist_wheel
         python3 -m twine check dist/*
-    - name: Publish to Test PyPI
+    - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@v1.4.2
       with:
         user: __token__
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
+        password: ${{ secrets.PYPI_API_TOKEN }}
         verbose: true
-    # - name: Publish to PyPI
-    #   uses: pypa/gh-action-pypi-publish@v1.4.2
-    #   with:
-    #     user: __token__
-    #     password: ${{ secrets.PYPI_API_TOKEN }}
-    #     verbose: true
