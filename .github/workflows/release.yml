@@ -15,6 +15,10 @@ jobs:
     name: Create new release
     runs-on: ubuntu-latest
     steps:
+    - name: Set up Python 3
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0  # Fetch all commits and tags
@@ -67,17 +71,22 @@ jobs:
         tag_name: v${{ steps.next_version.outputs.version }}
         release_name: Galois v${{ steps.next_version.outputs.version }}
         body_path: release_notes.txt
-        draft: false
+        draft: true
     - name: Build python package
       run: |
-        python -m pip install --upgrade setuptools wheel twine
-        python setup.py sdist bdist_wheel
-        python -m twine check dist/*
-    - name: Publish to PyPI
+        python3 -m pip install --upgrade setuptools wheel twine
+        python3 setup.py sdist bdist_wheel
+        python3 -m twine check dist/*
+    - name: Publish to Test PyPI
       uses: pypa/gh-action-pypi-publish@v1.4.2
       with:
         user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
-        # password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        # repository_url: https://test.pypi.org/legacy/
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
         verbose: true
+    # - name: Publish to PyPI
+    #   uses: pypa/gh-action-pypi-publish@v1.4.2
+    #   with:
+    #     user: __token__
+    #     password: ${{ secrets.PYPI_API_TOKEN }}
+    #     verbose: true
