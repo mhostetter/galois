@@ -69,7 +69,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: v${{ steps.next_version.outputs.version }}
-        release_name: Galois v${{ steps.next_version.outputs.version }}
+        release_name: galois v${{ steps.next_version.outputs.version }}
         body_path: release_notes.txt
         draft: false
     - name: Build python package
