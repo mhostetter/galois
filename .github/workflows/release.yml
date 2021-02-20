@@ -40,7 +40,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Update version file
       run: |
-        echo "${{ steps.next_version.outputs.version }}" > galois/version.txt
+        echo -n "${{ steps.next_version.outputs.version }}" > galois/version.txt
         cat galois/version.txt
     - name: Commit and tag version
       uses: stefanzweifel/git-auto-commit-action@v4
