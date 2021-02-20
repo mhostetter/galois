@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def example_function(value):
     """
     This is an example function to test the auto-generated documentation
@@ -12,4 +15,4 @@ def example_function(value):
     float
         The same value as was inputted.
     """
-    return value
+    return np.array(value)
