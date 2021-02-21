@@ -9,13 +9,13 @@ API
 
     galois
 
-Examples
---------
+Usage Examples
+--------------
 
 .. toctree::
    :maxdepth: 1
 
-    example_1
+   example
 
 Indices and tables
 ------------------
