@@ -113,6 +113,8 @@ class TestArithmetic:
         a = np.log(LUT.X)
         assert np.all(a == LUT.LOG)
 
+
+class TestArithmeticTypes:
     def test_scalar_int_return_type(self):
         shape = ()
         ndim = 0
@@ -239,6 +241,70 @@ class TestArithmetic:
             c = a + b
         with pytest.raises(AssertionError):
             c = b + a
+
+    def test_ladd_scalar(self):
+        a = galois.GF2([0,1,0,1])
+        a[0] += 1
+        assert a[0] == 1
+        a[0] += 1
+        assert a[0] == 0
+        a[0] += 1
+        assert a[0] == 1
+        a[0] += 1
+        assert a[0] == 0
+
+    def test_ladd_vector(self):
+        a = galois.GF2([0,1,0,1])
+        b = galois.GF2([1,1])
+        a[0:2] += b
+        assert np.all(a[0:2] == galois.GF2([1,0]))
+        a[0:2] += b
+        assert np.all(a[0:2] == galois.GF2([0,1]))
+        a[0:2] += b
+        assert np.all(a[0:2] == galois.GF2([1,0]))
+        a[0:2] += b
+        assert np.all(a[0:2] == galois.GF2([0,1]))
+
+
+class TestView:
+    def test_array_uint8(self):
+        v = np.array([0,1,0,1], dtype=np.uint8)
+        a = v.view(galois.GF2)
+
+    def test_array_int64(self):
+        v = np.array([0,1,0,1])
+        with pytest.raises(AssertionError):
+            a = v.view(galois.GF2)
+
+    def test_array_float32(self):
+        v = np.array([0.1, 1.2, 0.1, 1.2])
+        with pytest.raises(AssertionError):
+            a = v.view(galois.GF2)
+
+    def test_array_uint8_out_of_range(self):
+        v = np.array([0,1,0,2], dtype=np.uint8)
+        with pytest.raises(AssertionError):
+            a = v.view(galois.GF2)
+
+
+class TestAssignment:
+    def test_index(self):
+        a = galois.GF2([0,1,0,1])
+        a[0] = 1
+
+    def test_slice(self):
+        a = galois.GF2([0,1,0,1])
+        a[0:2] = 1
+
+    def test_index_out_of_range(self):
+        a = galois.GF2([0,1,0,1])
+        with pytest.raises(AssertionError):
+            a[0] = 2
+
+    def test_slice_out_of_range(self):
+        a = galois.GF2([0,1,0,1])
+        with pytest.raises(AssertionError):
+            a[0:2] = 2
 
 
 def check_array(array):

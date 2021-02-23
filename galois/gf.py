@@ -69,9 +69,6 @@ class _GF(np.ndarray):
     def Random(cls, shape=()):
         return cls(np.random.randint(0, cls.order, shape, dtype=cls._dtype))
 
-    # def __array_finalize__(self, obj):
-    #     pass
-
     @classmethod
     def _verify_and_convert(cls, array):
         # Convert the array-like object to a numpy array without specifying the desired dtype. This allows
@@ -88,7 +85,26 @@ class _GF(np.ndarray):
 
         return array
 
-    def _pre_ufunc(self, ufunc, method, inputs, kwargs):  # pylint: disable=unused-argument
+    def __array_finalize__(self, obj):
+        if obj is not None and not isinstance(obj, _GF):
+            # Invoked during view casting
+            assert obj.dtype == self._dtype, "Can only view cast to Galois field arrays if the input array has the same dtype of {}".format(self._dtype)
+            assert np.all(obj >= 0) and np.all(obj < self.order), "Galois field arrays must have elements with values less than the field order of {}".format(self.order)
+
+    def __getitem__(self, key):
+        item = super().__getitem__(key)
+        if np.isscalar(item):
+            # Return scalar array elements are 0-dim Galois field arrays. This enables Galois field arithmetic
+            # on scalars, which would otherwise be implemented using standard integer arithmetic.
+            item = self.__class__(item)
+        return item
+
+    def __setitem__(self, key, value):
+        # Verify the values to be written to the Galois field array are within the field
+        self._verify_and_convert(value)
+        super().__setitem__(key, value)
+
+    def _view_ufunc_gf_as_ndarray(self, inputs, kwargs):
         # View all input arrays as np.ndarray to avoid infinite recursion
         v_inputs = []
         for input_ in inputs:
@@ -111,13 +127,24 @@ class _GF(np.ndarray):
 
         return v_inputs, kwargs
 
-    def _verify_ufunc_inputs(self, ufunc, inputs):
+    def _verify_ufunc_input_range(self, ufunc, inputs):
         if ufunc not in IN_FIELD_UFUNCS:
             return
         for input_ in inputs:
             self._verify_and_convert(input_)
 
-    def _post_ufunc(self, ufunc, method, v_outputs):  # pylint: disable=unused-argument
+    def _view_ufunc_int_as_ndarray(self, inputs):
+        v_inputs = []
+        for input_ in inputs:
+            if isinstance(input_, int):
+                i = np.array(input_, dtype=self._dtype)
+            else:
+                i = input_
+            v_inputs.append(i)
+
+        return v_inputs
+
+    def _view_ufunc_ndarray_as_gf(self, ufunc, v_outputs):
         if v_outputs is NotImplemented:
             return v_outputs
         if ufunc.nout == 1:

@@ -35,12 +35,14 @@ class GF2(_GF):
     _dtype = np.uint8
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
-        inputs, kwargs = self._pre_ufunc(ufunc, method, inputs, kwargs)
+        inputs, kwargs = self._view_ufunc_gf_as_ndarray(inputs, kwargs)
 
         if ufunc not in OVERRIDDEN_UFUNCS:
             return super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
 
-        self._verify_ufunc_inputs(ufunc, inputs)
+        self._verify_ufunc_input_range(ufunc, inputs)
+
+        inputs = self._view_ufunc_int_as_ndarray(inputs)
 
         # Intercept various numpy ufuncs (triggered by operators like `+` , `-`, etc). Then determine
         # which operations will result in the correct answer in the given Galois field. Wherever
@@ -83,6 +85,6 @@ class GF2(_GF):
         else:
             outputs = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
 
-        outputs = self._post_ufunc(ufunc, method, outputs)
+        outputs = self._view_ufunc_ndarray_as_gf(ufunc, outputs)
 
         return outputs
