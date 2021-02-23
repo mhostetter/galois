@@ -10,30 +10,41 @@ from .data import gf2_lut as LUT
 
 
 class TestInstantiation:
-    def test_list_valid_elements(self):
+    def test_list_int(self):
         v = [0,1,0,1]
         a = galois.GF2(v)
         check_array(a)
 
-    def test_list_invalid_elements(self):
+    def test_list_int_out_of_range(self):
         v = [0,1,0,2]
         with pytest.raises(AssertionError):
             a = galois.GF2(v)
+        v = [0,1,0,-1]
+        with pytest.raises(AssertionError):
+            a = galois.GF2(v)
 
-    def test_array_valid_elements(self):
+    def test_list_float(self):
+        v = [0.1, 1.2, 0.1, 1.2]
+        with pytest.raises(AssertionError):
+            a = galois.GF2(v)
+
+    def test_array_int(self):
         v = np.array([0,1,0,1])
         a = galois.GF2(v)
         check_array(a)
 
-    def test_array_invalid_elements(self):
+    def test_array_int_out_of_range(self):
         v = np.array([0,1,0,2])
         with pytest.raises(AssertionError):
             a = galois.GF2(v)
+        v = np.array([0,1,0,-1])
+        with pytest.raises(AssertionError):
+            a = galois.GF2(v)
 
-    def test_array_diff_dtype(self):
-        v = np.array([0,1,0,1], int)
-        a = galois.GF2(v)
-        check_array(a)
+    def test_array_float(self):
+        v = np.array([0.1, 1.2, 0.1, 1.2])
+        with pytest.raises(AssertionError):
+            a = galois.GF2(v)
 
     def test_zeros(self):
         a = galois.GF2.Zeros(10)
@@ -47,7 +58,7 @@ class TestInstantiation:
 
     def test_random(self):
         a = galois.GF2.Random(10)
-        assert np.all(0 <= a) and np.all(a < galois.GF2.order)
+        assert np.all(a >= 0) and np.all(a < galois.GF2.order)
         check_array(a)
 
     def test_random_element(self):
@@ -106,11 +117,12 @@ class TestArithmetic:
         shape = ()
         ndim = 0
         a = galois.GF2.Random(shape)
-        c = a + 1
+        b = 1
+        c = a + b
         assert type(c) is galois.GF2
         assert c.ndim == ndim
         assert c.shape == shape
-        c = 1 + a
+        c = b + a
         assert type(c) is galois.GF2
         assert c.ndim == ndim
         assert c.shape == shape
@@ -119,11 +131,12 @@ class TestArithmetic:
         shape = (10,)
         ndim = 1
         a = galois.GF2.Random(shape)
-        c = a + 1
+        b = 1
+        c = a + b
         assert type(c) is galois.GF2
         assert c.ndim == ndim
         assert c.shape == shape
-        c = 1 + a
+        c = b + a
         assert type(c) is galois.GF2
         assert c.ndim == ndim
         assert c.shape == shape
@@ -132,11 +145,12 @@ class TestArithmetic:
         shape = (10,10)
         ndim = 2
         a = galois.GF2.Random(shape)
-        c = a + 1
+        b = 1
+        c = a + b
         assert type(c) is galois.GF2
         assert c.ndim == ndim
         assert c.shape == shape
-        c = 1 + a
+        c = b + a
         assert type(c) is galois.GF2
         assert c.ndim == ndim
         assert c.shape == shape
@@ -170,6 +184,61 @@ class TestArithmetic:
         assert type(c) is galois.GF2
         assert c.ndim == ndim
         assert c.shape == shape
+
+    def test_scalar_int_out_of_range(self):
+        shape = ()
+        a = galois.GF2.Random(shape)
+        b = 2
+        with pytest.raises(AssertionError):
+            c = a + b
+        with pytest.raises(AssertionError):
+            c = b + a
+
+    def test_vector_int_out_of_range(self):
+        shape = (10,)
+        a = galois.GF2.Random(shape)
+        b = 2
+        with pytest.raises(AssertionError):
+            c = a + b
+        with pytest.raises(AssertionError):
+            c = b + a
+
+    def test_matrix_int_out_of_range(self):
+        shape = (10,10)
+        a = galois.GF2.Random(shape)
+        b = 2
+        with pytest.raises(AssertionError):
+            c = a + b
+        with pytest.raises(AssertionError):
+            c = b + a
+
+    def test_scalar_scalar_out_of_range(self):
+        shape = ()
+        a = galois.GF2.Random(shape)
+        b = 2*np.ones(shape, dtype=int)
+        with pytest.raises(AssertionError):
+            c = a + b
+        # TODO: Can't figure out how to make this fail
+        # with pytest.raises(AssertionError):
+        #     c = b + a
+
+    def test_vector_vector_out_of_range(self):
+        shape = (10,)
+        a = galois.GF2.Random(shape)
+        b = 2*np.ones(shape, dtype=int)
+        with pytest.raises(AssertionError):
+            c = a + b
+        with pytest.raises(AssertionError):
+            c = b + a
+
+    def test_matrix_matrix_out_of_range(self):
+        shape = (10,10)
+        a = galois.GF2.Random(shape)
+        b = 2*np.ones(shape, dtype=int)
+        with pytest.raises(AssertionError):
+            c = a + b
+        with pytest.raises(AssertionError):
+            c = b + a
 
 
 def check_array(array):

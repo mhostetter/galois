@@ -2,7 +2,7 @@ import warnings
 import numba
 import numpy as np
 
-from .gf import _GF
+from .gf import _GF, OVERRIDDEN_UFUNCS
 
 
 @numba.vectorize("uint8(uint8, uint8)", nopython=True)
@@ -32,9 +32,15 @@ class GF2(_GF):
     power = 1
     order = 2
     prim_poly = None
+    _dtype = np.uint8
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         inputs, kwargs = self._pre_ufunc(ufunc, method, inputs, kwargs)
+
+        if ufunc not in OVERRIDDEN_UFUNCS:
+            return super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
+
+        self._verify_ufunc_inputs(ufunc, inputs)
 
         # Intercept various numpy ufuncs (triggered by operators like `+` , `-`, etc). Then determine
         # which operations will result in the correct answer in the given Galois field. Wherever

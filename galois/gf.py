@@ -1,6 +1,26 @@
 import numpy as np
 
 
+# List of numpy ufuncs that Galois field arrays will override. All other ufuncs should
+# be handled by numpy normally.
+OVERRIDDEN_UFUNCS = [np.add, np.subtract, np.multiply, np.true_divide, np.floor_divide, np.negative, np.square, np.power, np.log]
+
+# List of numpy ufuncs that Galois field arrays will use to perform field arithmetic. This
+# list is needed so we perform "valid field element" checks only on these ufuncs.
+IN_FIELD_UFUNCS = [np.add, np.subtract, np.multiply, np.true_divide, np.floor_divide]
+
+
+def _determine_dtype(order):
+    # Determine the minimum unsigned int dtype to store the field elements
+    bits = int(np.ceil(np.log2(order)))
+    assert 1 <= bits <= 16, "Currently only field orders of 2 to 65536 are supported, submit a GitHub issue (https://github.com/mhostetter/galois/issues) if larger fields are desired"
+    if bits <= 8:
+        dtype = np.uint8
+    else:
+        dtype = np.uint16
+    return dtype
+
+
 class _GF(np.ndarray):
     """
     asdf
@@ -30,40 +50,43 @@ class _GF(np.ndarray):
     in `GF(p)`.
     """
 
+    _dtype = None
+
     def __new__(cls, array):
         assert cls is not _GF, "_GF is an abstract base class that should not be directly instantiated"
-
-        # Determine the minimum unsigned int dtype to store the field elements
-        bits = int(np.ceil(np.log2(cls.order)))
-        assert 1 <= bits <= 16
-        if bits <= 8:
-            dtype = np.uint8
-        else:
-            dtype = np.uint16
-
-        # Use copy=True to prevent newly created array from sharing memory with input array
-        array = np.array(array, dtype=dtype, copy=True)
-        assert np.all(array < cls.order), "Elements of Galois field arrays must have elements with values less than the field order of {}".format(cls.order)
-
-        return array.view(cls)
+        array = cls._verify_and_convert(array)
+        return array
 
     @classmethod
     def Zeros(cls, shape):
-        return cls(np.zeros(shape))
+        return cls(np.zeros(shape, dtype=cls._dtype))
 
     @classmethod
     def Ones(cls, shape):
-        return cls(np.ones(shape))
+        return cls(np.ones(shape, dtype=cls._dtype))
 
     @classmethod
     def Random(cls, shape=()):
-        return cls(np.random.randint(0, cls.order, shape))
-
-    # def __str__(self):
-    #     return "Galois Field"
+        return cls(np.random.randint(0, cls.order, shape, dtype=cls._dtype))
 
     # def __array_finalize__(self, obj):
     #     pass
+
+    @classmethod
+    def _verify_and_convert(cls, array):
+        # Convert the array-like object to a numpy array without specifying the desired dtype. This allows
+        # numpy to determine the data type of the input array or list. This allows for detection of floating-point
+        # inputs. We will convert to the desired dtype after checking that the input array are integers and
+        # within the field. Use copy=True to prevent newly created array from sharing memory with input array.
+        array = np.array(array, copy=True)
+        assert np.issubdtype(array.dtype, np.integer), "Galois field elements must be integers not {}".format(array.dtype)
+        assert np.all(array >= 0) and np.all(array < cls.order), "Galois field arrays must have elements with values less than the field order of {}".format(cls.order)
+
+        # Convert array (already determined to be integers) to the Galois field's unsigned int dtype
+        array = array.astype(cls._dtype)
+        array =  array.view(cls)
+
+        return array
 
     def _pre_ufunc(self, ufunc, method, inputs, kwargs):  # pylint: disable=unused-argument
         # View all input arrays as np.ndarray to avoid infinite recursion
@@ -87,6 +110,12 @@ class _GF(np.ndarray):
             kwargs["out"] = tuple(v_outputs)
 
         return v_inputs, kwargs
+
+    def _verify_ufunc_inputs(self, ufunc, inputs):
+        if ufunc not in IN_FIELD_UFUNCS:
+            return
+        for input_ in inputs:
+            self._verify_and_convert(input_)
 
     def _post_ufunc(self, ufunc, method, v_outputs):  # pylint: disable=unused-argument
         if v_outputs is NotImplemented:
