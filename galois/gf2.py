@@ -26,6 +26,39 @@ def _ufunc_log_alpha(a):
 class GF2(_GF):
     """
     asdf
+
+    Examples
+    --------
+
+    GF2 class properties
+
+    .. ipython:: python
+
+        print(galois.GF2)
+        galois.GF2.characteristic
+        galois.GF2.power
+        galois.GF2.order
+        galois.GF2.prim_poly
+
+    Construct arrays in GF2
+
+    .. ipython:: python
+
+        a = galois.GF2([1,0,1,1]); a
+        b = galois.GF2([1,1,1,1]); b
+
+    Arithmetic with GF2 arrays
+
+    .. ipython:: python
+
+        # Element-wise addition
+        a + b
+        # Element-wise subtraction
+        a - b
+        # Element-wise multiplication
+        a * b
+        # Element-wise division
+        a / b
     """
 
     characteristic = 2

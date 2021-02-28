@@ -37,7 +37,9 @@ extensions = [
     'sphinx.ext.mathjax',
     'recommonmark',
     'sphinx_rtd_theme',
-    'nbsphinx'
+    'nbsphinx',
+    'IPython.sphinxext.ipython_console_highlighting',
+    'IPython.sphinxext.ipython_directive'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -93,3 +95,5 @@ autodoc_default_options = {
 
 autosummary_generate = True
 autosummary_imported_members = True
+
+ipython_execlines = ['import galois']

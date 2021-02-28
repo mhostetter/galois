@@ -24,6 +24,12 @@ def _determine_dtype(order):
 class _GF(np.ndarray):
     """
     asdf
+
+    .. code-block:: python
+
+        import galois
+        print(galois.GF2)
+        print(galois.GF2.Elements())
     """
 
     # NOTE: These class attributes will be set in the subclasses of _GF
