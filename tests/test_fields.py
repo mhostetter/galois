@@ -571,7 +571,7 @@ class TestProperties:
         p = field.characteristic
         for a in field.Elements():
             poly = poly * galois.Poly([1, -a], field=field)
-        assert poly == galois.Poly.Powers([1, -1], [p, 1], field=field)
+        assert poly == galois.Poly.NonZero([1, -1], [p, 1], field=field)
 
 
 def check_array(array, GF):

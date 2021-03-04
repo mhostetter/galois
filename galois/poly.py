@@ -1,7 +1,16 @@
+from functools import partial
 import numpy as np
 
 from .gf import _GF
 from .gf2 import GF2
+
+
+@partial(np.vectorize, excluded=[0])
+def _evaluate(coeffs, x0):
+    result = coeffs[0]
+    for i in range(1, coeffs.size):
+        result = coeffs[i] + result*x0
+    return result
 
 
 class Poly:
@@ -11,21 +20,38 @@ class Poly:
     Examples
     --------
 
-    Create polynomials over GF2
+    Create polynomials over GF(2)
 
     .. ipython:: python
 
-        # Construct polynomials over GF2
-        a = galois.Poly([1,0,1,1])
-        b = galois.Poly([1,0,1])
-        print(a)
-        print(b)
+        # Construct a polynominal over GF(2)
+        a = galois.Poly([1,0,1,1]); a
 
-    Polynomial arithmetic in GF2
+        # Construct the same polynomial by only specifying its non-zero coefficients
+        b = galois.Poly.NonZero([1,1,1], [3,1,0]); b
+
+    Create polynomials over GF(7)
 
     .. ipython:: python
+
+        # Construct the GF(7) field
+        GF = galois.GF_factory(7, 1)
+
+        # Construct a polynominal over GF(7)
+        a = galois.Poly([4,0,3,0,0,2], field=GF); a
+
+        # Construct the same polynomial by only specifying its non-zero coefficients
+        b = galois.Poly.NonZero([4,3,2], [5,3,0], field=GF); b
+
+    Polynomial arithmetic
+
+    .. ipython:: python
+
+        a = galois.Poly([1,0,6,3], field=GF); a
+        b = galois.Poly([2,0,2], field=GF); b
 
         a + b
+        a - b
         # Compute the quotient of the polynomial division
         a / b
         # True division and floor division are equivalent
@@ -36,7 +62,7 @@ class Poly:
 
     def __init__(self, coeffs, field=GF2):
         assert issubclass(field, _GF)
-        if isinstance(coeffs, field):
+        if isinstance(coeffs, _GF):
             self.coeffs = coeffs
         else:
             # Convert list or np.ndarray of integers into the specified `field`. Apply negation
@@ -49,11 +75,12 @@ class Poly:
             assert np.all(np.abs(c) < field.order)
             neg_idxs = np.where(c < 0)
             c = np.abs(c)
-            self.coeffs = field(c)
+            c = field(c)
             c[neg_idxs] *= -1
+            self.coeffs = c
 
     @classmethod
-    def Powers(cls, coeffs, powers, field=GF2):
+    def NonZero(cls, coeffs, degrees, field=GF2):
         """
         Examples
         --------
@@ -61,13 +88,14 @@ class Poly:
         .. ipython:: python
 
             # Construct a polynomial over GF2 only specifying the non-zero terms
-            a = galois.Poly.Powers([1,1,1], [3,1,0]); a
+            a = galois.Poly.NonZero([1,1,1], [3,1,0]); a
         """
-        powers = np.array(powers)
-        assert np.issubdtype(powers.dtype, np.integer) and np.all(powers >= 0)
-        degree = np.max(powers)
+        assert len(coeffs) == len(degrees)
+        degrees = np.array(degrees)
+        assert np.issubdtype(degrees.dtype, np.integer) and np.all(degrees >= 0)
+        degree = np.max(degrees)  # The degree of the polynomial
         all_coeffs = np.zeros(degree + 1, dtype=int)
-        all_coeffs[degree - powers] = coeffs
+        all_coeffs[degree - degrees] = coeffs
         return cls(all_coeffs, field=field)
 
     def __repr__(self):
@@ -126,12 +154,8 @@ class Poly:
         return quotient, remainder
 
     def __call__(self, x0):
-        assert isinstance(x0, int) or (isinstance(x0, _GF) and x0.ndim == 0)
-        x0 = self.field(x0)
-        value = self.coeffs[0]
-        for i in range(1, self.coeffs.size):
-            value = self.coeffs[i] + value*x0
-        return value
+        x0 = self.field._verify_and_convert(x0)
+        return _evaluate(self.coeffs, x0)
 
     def __add__(self, other):
         # c(x) = a(x) + b(x)
@@ -210,10 +234,16 @@ class Poly:
 
     @property
     def degree(self):
+        """
+        int: The degree of the polynomial, i.e. the highest degree with non-zero coefficient.
+        """
         return self.coeffs.size - 1
 
     @property
     def field(self):
+        """
+        galois._GF: The finite field to which the coefficients belong.
+        """
         return self.coeffs.__class__
 
     @property
