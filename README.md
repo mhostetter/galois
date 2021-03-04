@@ -13,5 +13,5 @@ A Python 3 package for Galois field arithmetic.
 ### Install with `pip`
 
 ```bash
-$ pip3 install galois
+pip3 install galois
 ```
