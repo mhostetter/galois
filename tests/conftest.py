@@ -13,18 +13,18 @@ FIELDS = [
         (galois.GF2, os.path.join(PATH, "gf2")),
         marks=[pytest.mark.GF2]
     ),
-    # pytest.param(
-    #     (galois.GF_factory(5, 1), os.path.join(PATH, "gf5")),
-    #     marks=[pytest.mark.GFp, pytest.mark.GF5]
-    # ),
-    # pytest.param((
-    #     galois.GF_factory(7, 1), os.path.join(PATH, "gf7")),
-    #     marks=[pytest.mark.GFp, pytest.mark.GF7]
-    # ),
-    # pytest.param((
-    #     galois.GF_factory(31, 1), os.path.join(PATH, "gf31")),
-    #     marks=[pytest.mark.GFp, pytest.mark.GF31]
-    # ),
+    pytest.param(
+        (galois.GF_factory(5, 1), os.path.join(PATH, "gf5")),
+        marks=[pytest.mark.GFp, pytest.mark.GF5]
+    ),
+    pytest.param((
+        galois.GF_factory(7, 1), os.path.join(PATH, "gf7")),
+        marks=[pytest.mark.GFp, pytest.mark.GF7]
+    ),
+    pytest.param((
+        galois.GF_factory(31, 1), os.path.join(PATH, "gf31")),
+        marks=[pytest.mark.GFp, pytest.mark.GF31]
+    ),
 ]
 
 

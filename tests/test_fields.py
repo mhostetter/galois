@@ -554,11 +554,11 @@ class TestProperties:
         q = field.order
         assert np.all(a**q == a)
 
-    # def test_prim_poly(self, field):
-    #     prim_poly = field.prim_poly  # Polynomial in GF(p)
-    #     alpha = field.alpha
-    #     poly = galois.Poly(prim_poly.coeffs, field=field)  # Polynomial in GF(p^m)
-    #     assert poly(alpha) == 0
+    def test_prim_poly(self, field):
+        prim_poly = field.prim_poly  # Polynomial in GF(p)
+        alpha = field.alpha
+        poly = galois.Poly(prim_poly.coeffs, field=field)  # Polynomial in GF(p^m)
+        assert poly(alpha) == 0
 
     def test_freshmans_dream(self, field):
         a = field.Random(10)
