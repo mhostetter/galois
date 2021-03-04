@@ -218,9 +218,14 @@ class Poly:
 
     @property
     def str(self):
-        coeffs = self.coeffs
-        degree = coeffs.size - 1
-        idxs = np.nonzero(coeffs)[0]  # Indices with non-zeros coefficients
-        x = ["{}x^{}".format(coeffs[i] if coeffs[i] != 1 else "", degree - i) for i in idxs]
+        c = self.coeffs
+        x = []
+        if self.degree >= 0 and c[-1] != 0:
+            x = ["{}".format(c[-1])] + x
+        if self.degree >= 1 and c[-2] != 0:
+            x = ["{}x".format(c[-2] if c[-2] != 1 else "")] + x
+        if self.degree >= 2:
+            idxs = np.nonzero(c[0:-2])[0]  # Indices with non-zeros coefficients
+            x = ["{}x^{}".format(c[i] if c[i] != 1 else "", self.degree - i) for i in idxs] + x
         poly_str = " + ".join(x) if x else "0"
         return poly_str
