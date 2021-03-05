@@ -4,7 +4,7 @@ A performant numpy extension for Galois fields.
 from .version import __version__
 
 from .algorithm import prev_prime, next_prime, factors, prime_factors, is_prime, euclidean_algorithm, extended_euclidean_algorithm, \
-                       chinese_remainder_theorem, euler_totient, carmichael, modular_exp, primitive_roots, \
+                       chinese_remainder_theorem, euler_totient, carmichael, modular_exp, primitive_roots, primitive_root, \
                        min_poly
 from .gf2 import GF2
 from .gfp import GFp, GFp_factory

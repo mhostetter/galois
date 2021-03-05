@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from .algorithm import is_prime, extended_euclidean_algorithm, primitive_roots, modular_exp, min_poly
+from .algorithm import is_prime, extended_euclidean_algorithm, primitive_root, modular_exp, min_poly
 from .gf import _GF
 
 
@@ -135,7 +135,7 @@ def GFp_factory(p, rebuild=False):
     name = "GF{}".format(order)
 
     # Use the smallest primitive root as the multiplicative generator for the field
-    alpha = primitive_roots(p)[0]
+    alpha = primitive_root(p)
 
     # If the requested field has already been constructed, return it instead of rebuilding
     if not rebuild and p in GFp_factory.classes:
@@ -163,13 +163,13 @@ def GFp_factory(p, rebuild=False):
     })
 
     # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-    cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], nopython=True)(_add)
-    cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], nopython=True)(_subtract)
-    cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], nopython=True)(_multiply)
-    cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], nopython=True)(_divide)
-    cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], nopython=True)(_negative)
-    cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], nopython=True)(_power)
-    cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], nopython=True)(_log)
+    cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_add)
+    cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_subtract)
+    cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_multiply)
+    cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_divide)
+    cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], nopython=True, target="cpu")(_negative)
+    cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_power)
+    cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], nopython=True, target="cpu")(_log)
 
     cls.prim_poly = min_poly(cls.alpha, cls, 1)
 

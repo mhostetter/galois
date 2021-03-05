@@ -361,6 +361,45 @@ def modular_exp(base, exponent, modulus):
     return result
 
 
+def primitive_root(n):
+    """
+    Finds the first, smallest primitive n-th root of unity that satisfy `x^k = 1 (mod n)`.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer `n > 1`.
+
+    Returns
+    -------
+    int
+        The first, smallest primitive root of unity modulo `n`.
+    """
+    assert n > 0
+    if n == 1:
+        return [0]
+    if n == 2:
+        return [1]
+
+    phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
+    # lambda_ = carmichael(n)  # The smallest m such that a^m = 1 (mod n) for all a coprime to n
+    elements = np.arange(1, n)  # Non-zero integers less than n
+
+    # According to Euler's theorem, a**phi(n) = 1 (mod n) for every a coprime to n
+    congruenes = elements[np.where(modular_exp(elements, phi, n) == 1)]
+    assert len(congruenes) == phi, "The number of congruences ({} found) is phi(n) = {}".format(len(congruenes), phi)
+
+    root = None
+    degrees = np.arange(1, phi+1)
+    for m in congruenes:
+        y = modular_exp(m, degrees, n)
+        if set(y) == set(congruenes):
+            root = m
+            break
+
+    return root
+
+
 def primitive_roots(n):
     """
     Finds all primitive n-th roots of unity that satisfy `x^k = 1 (mod n)`.
