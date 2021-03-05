@@ -1,7 +1,7 @@
 import numpy as np
 
 
-UFUNC_MAP = {
+OVERRIDDEN_UFUNCS = {
     np.add: "_add",
     np.subtract: "_subtract",
     np.multiply: "_multiply",
@@ -61,6 +61,14 @@ class _GF(np.ndarray, metaclass=_GFMeta):
 
     _dtype = None
 
+    _numba_ufunc_add = None
+    _numba_ufunc_subtract = None
+    _numba_ufunc_multiply = None
+    _numba_ufunc_divide = None
+    _numba_ufunc_negative = None
+    _numba_ufunc_power = None
+    _numba_ufunc_log = None
+
     def __new__(cls, array):
         assert cls is not _GF, "_GF is an abstract base class that should not be directly instantiated"
         array = cls._verify_and_convert(array)
@@ -84,6 +92,9 @@ class _GF(np.ndarray, metaclass=_GFMeta):
     @classmethod
     def Elements(cls):
         return cls(np.arange(0, cls.order, dtype=cls._dtype))
+
+    def __str__(self):
+        return self.__repr__()
 
     # def to_int_repr():
 
@@ -133,17 +144,8 @@ class _GF(np.ndarray, metaclass=_GFMeta):
         self._verify_and_convert(value)
         super().__setitem__(key, value)
 
-    def _ufunc_verify_input_in_field(self, ufunc, array):
-        assert np.issubdtype(array.dtype, np.integer) and np.all(array >= 0) and np.all(array < self.order), "Operation \"{}\" in Galois field must be performed with elements in the field [0, {})".format(ufunc.__name__, self.order)
-
-    def _ufunc_verify_input_in_positive_integers(self, ufunc, array):  # pylint: disable=no-self-use
-        assert np.issubdtype(array.dtype, np.integer) and np.all(array >= 0), "Operation \"{}\" in Galois field must be performed with elements in N, the natural numbers".format(ufunc.__name__)
-
-    def _ufunc_verify_input_in_integers(self, ufunc, array):  # pylint: disable=no-self-use
-        assert np.issubdtype(array.dtype, np.integer), "Operation \"{}\" in Galois field must be performed with elements in Z, the integers".format(ufunc.__name__)
-
-    def _ufunc_view_input_gf_as_ndarray(self, inputs, kwargs):
-        meta = {"types": [], "gf_inputs": []}
+    def _uview_input_gf_as_ndarray(self, inputs, kwargs):
+        meta = {"types": [], "gf_inputs": [], "non_gf_inputs": []}
 
         # View all input arrays as np.ndarray to avoid infinite recursion
         v_inputs = []
@@ -153,6 +155,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
                 meta["gf_inputs"].append(i)
                 v_inputs.append(inputs[i].view(np.ndarray))
             else:
+                meta["non_gf_inputs"].append(i)
                 v_inputs.append(inputs[i])
 
         # View all output arrays as np.ndarray to avoid infinite recursion
@@ -169,7 +172,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
 
         return v_inputs, kwargs, meta
 
-    def _ufunc_view_input_int_as_ndarray(self, inputs):  # pylint: disable=no-self-use
+    def _uview_input_int_as_ndarray(self, inputs):  # pylint: disable=no-self-use
         v_inputs = []
         for input_ in inputs:
             if isinstance(input_, int):
@@ -181,7 +184,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
 
         return v_inputs
 
-    def _ufunc_view_output_ndarray_as_gf(self, ufunc, v_outputs):
+    def _uview_output_ndarray_as_gf(self, ufunc, v_outputs):
         if v_outputs is NotImplemented:
             return v_outputs
         if ufunc.nout == 1:
@@ -194,6 +197,20 @@ class _GF(np.ndarray, metaclass=_GFMeta):
 
         return outputs[0] if len(outputs) == 1 else outputs
 
+    def _verify_inputs(self, ufunc, inputs, meta):
+        for i in meta["non_gf_inputs"]:
+            if ufunc in [np.add, np.subtract, np.true_divide, np.floor_divide]:
+                assert np.issubdtype(inputs[i].dtype, np.integer) and np.all(inputs[i] >= 0) and np.all(inputs[i] < self.order), "Operation \"{}\" in Galois field must be performed with elements in the field [0, {})".format(ufunc.__name__, self.order)
+            elif ufunc in [np.multiply, np.power, np.square]:
+                assert np.issubdtype(inputs[i].dtype, np.integer), "Operation \"{}\" in Galois field must be performed with elements in Z, the integers".format(ufunc.__name__)
+
+        if ufunc in [np.true_divide, np.floor_divide]:
+            assert np.count_nonzero(inputs[1]) == inputs[1].size, "Divide by 0"
+        elif ufunc is np.power:
+            assert not np.any(np.logical_and(inputs[0] == 0, inputs[1] < 0)), "Divide by 0"
+        elif ufunc is np.log:
+            assert np.count_nonzero(inputs[0]) == inputs[0].size, "Log(0) error"
+
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         """
         Intercept various numpy ufuncs (triggered by operators like `+` , `-`, etc). Then determine
@@ -201,43 +218,41 @@ class _GF(np.ndarray, metaclass=_GFMeta):
         appropriate, use native numpy ufuncs for their efficiency and generality in supporting various array
         shapes, etc.
         """
-        # print(ufunc, method, inputs)
-        inputs, kwargs, meta = self._ufunc_view_input_gf_as_ndarray(inputs, kwargs)
+        # View Galois field array inputs as np.ndarray so subsequent numpy ufunc calls go to numpy and don't
+        # result in infinite recursion
+        inputs, kwargs, meta = self._uview_input_gf_as_ndarray(inputs, kwargs)
 
-        if ufunc not in UFUNC_MAP.keys():
+        # For ufuncs we are not overriding, call the parent implementation
+        if ufunc not in OVERRIDDEN_UFUNCS.keys():
             return super().__array_ufunc__(ufunc, method, *inputs)  # pylint: disable=no-member
 
-        inputs = self._ufunc_view_input_int_as_ndarray(inputs)
+        inputs = self._uview_input_int_as_ndarray(inputs)
+
+        self._verify_inputs(ufunc, inputs, meta)
 
         # Call appropriate ufunc method (implemented in subclasses)
-        outputs = getattr(self, UFUNC_MAP[ufunc])(ufunc, method, inputs, kwargs, meta)
+        if ufunc is np.add:
+            outputs = getattr(self._numba_ufunc_add, method)(*inputs, **kwargs)
+        elif ufunc is np.subtract:
+            outputs = getattr(self._numba_ufunc_subtract, method)(*inputs, **kwargs)
+        elif ufunc is np.multiply:
+            outputs = getattr(self._numba_ufunc_multiply, method)(*inputs, **kwargs)
+        elif ufunc in [np.true_divide, np.floor_divide]:
+            outputs = getattr(self._numba_ufunc_divide, method)(*inputs, **kwargs)
+        elif ufunc is np.negative:
+            outputs = getattr(self._numba_ufunc_negative, method)(*inputs, **kwargs)
+        elif ufunc is np.power:
+            outputs = getattr(self._numba_ufunc_power, method)(*inputs, **kwargs)
+        elif ufunc is np.square:
+            inputs.append(np.array([2], dtype=self._dtype))
+            outputs = getattr(self._numba_ufunc_power, method)(*inputs, **kwargs)
+        elif ufunc is np.log:
+            outputs = getattr(self._numba_ufunc_log, method)(*inputs, **kwargs)
 
-        if ufunc is np.log:
+        if outputs is None:
+            return outputs
+        elif ufunc is np.log:
             return outputs
         else:
-            outputs = self._ufunc_view_output_ndarray_as_gf(ufunc, outputs)
+            outputs = self._uview_output_ndarray_as_gf(ufunc, outputs)
             return outputs
-
-    def _add(self, ufunc, method, inputs, kwargs, meta):
-        raise NotImplementedError
-
-    def _subtract(self, ufunc, method, inputs, kwargs, meta):
-        raise NotImplementedError
-
-    def _multiply(self, ufunc, method, inputs, kwargs, meta):
-        raise NotImplementedError
-
-    def _divide(self, ufunc, method, inputs, kwargs, meta):
-        raise NotImplementedError
-
-    def _negative(self, ufunc, method, inputs, kwargs, meta):
-        raise NotImplementedError
-
-    def _power(self, ufunc, method, inputs, kwargs, meta):
-        raise NotImplementedError
-
-    def _square(self, ufunc, method, inputs, kwargs, meta):
-        raise NotImplementedError
-
-    def _log(self, ufunc, method, inputs, kwargs, meta):
-        raise NotImplementedError

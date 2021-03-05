@@ -11,100 +11,57 @@ class GFp(_GF):
     """
 
     _MUL_INV = []
-    _numba_ufunc_power = None
-    _numba_ufunc_log = None
 
     def __new__(cls, *args, **kwargs):
         assert cls is not GFp, "GFp is an abstract base class, it cannot be instantiated directly; use GFp_factory() to generate a GF(p) class"
         return super().__new__(cls, *args, **kwargs)
 
-    def _add(self, ufunc, method, inputs, kwargs, meta):
-        """
-        In GF(p), addition can be computed using addition in the integer field Z and the
-        integer field result is taken `mod p` to get the result in GF(p).
-        """
-        self._ufunc_verify_input_in_field(ufunc, inputs[0])
-        self._ufunc_verify_input_in_field(ufunc, inputs[1])
-        output = getattr(np.add, method)(*inputs, **kwargs)
-        output = getattr(np.mod, method)(output, self.order, **kwargs)
-        return output
 
-    def _subtract(self, ufunc, method, inputs, kwargs, meta):
-        """
-        In GF(p), subtraction can be computed using subtraction in the integer field Z and the
-        integer field result is taken `mod p` to get the result in GF(p).
-        """
-        self._ufunc_verify_input_in_field(ufunc, inputs[0])
-        self._ufunc_verify_input_in_field(ufunc, inputs[1])
-        output = getattr(np.subtract, method)(*inputs, **kwargs)
-        output = getattr(np.mod, method)(output, self.order, **kwargs)
-        return output
-
-    def _multiply(self, ufunc, method, inputs, kwargs, meta):
-        """
-        In GF(p), multiplication can be computed using multiplication in the integer field Z and the
-        integer field result is taken `mod p` to get the result in GF(p).
-        """
-        for i in [0,1]:
-            if i in meta["gf_inputs"]:
-                self._ufunc_verify_input_in_field(ufunc, inputs[i])
-            else:
-                self._ufunc_verify_input_in_integers(ufunc, inputs[i])
-        output = getattr(np.multiply, method)(*inputs, **kwargs)
-        output = getattr(np.mod, method)(output, self.order, **kwargs)
-        return output
-
-    def _divide(self, ufunc, method, inputs, kwargs, meta):
-        assert np.count_nonzero(inputs[1]) == inputs[1].size, "Cannont divide by 0 in a Galois field"
-        self._ufunc_verify_input_in_field(ufunc, inputs[0])
-        self._ufunc_verify_input_in_field(ufunc, inputs[1])
-        # if np.count_nonzero(inputs[1]) != inputs[1].size:
-        #     warnings.warn("divide by zero encountered in \"{}\", 0 is outputted where 'Inf' would otherwise".format(ufunc), RuntimeWarning)
-        dividend = inputs[0]
-        divisor = inputs[1]
-        inv_divisor = self._MUL_INV[divisor]  # Lookup the multiplicative inverse of the divisor
-        return self._multiply(ufunc, method, (dividend, inv_divisor), kwargs, meta)
-        # outputs = getattr(np.bitwise_and, method)(*inputs, **kwargs)
-        # return outputs
-
-    def _negative(self, ufunc, method, inputs, kwargs, meta):
-        output = getattr(np.multiply, method)(inputs[0], -1, **kwargs)
-        output = getattr(np.mod, method)(output, self.order, **kwargs)
-        return output
-
-    def _power(self, ufunc, method, inputs, kwargs, meta):
-        assert not np.any(np.logical_and(inputs[0] == 0, inputs[1] < 0)), "Cannot exponentiate 0 to a negative power in a Galois field"
-        self._ufunc_verify_input_in_integers(ufunc, inputs[1])
-        outputs = getattr(self._numba_ufunc_power, method)(*inputs, **kwargs)
-        return outputs
-
-    def _square(self, ufunc, method, inputs, kwargs, meta):
-        inputs.append(np.array(2, dtype=int))
-        return self._power(ufunc, method, inputs, kwargs, meta)
-
-    def _log(self, ufunc, method, inputs, kwargs, meta):
-        """
-        Log base alpha of elements in GF(p).
-        """
-        assert np.count_nonzero(inputs[0]) == inputs[0].size, "Cannont compute log(0) in a Galois field"
-        outputs = getattr(self._numba_ufunc_log, method)(*inputs, **kwargs)
-        return outputs
+def _add(a, b):
+    # Calculate a + b
+    result = (a + b) % ORDER
+    return result
 
 
-def _ufunc_power(a, b):
+def _subtract(a, b):
+    # Calculate a - b
+    result = (a - b) % ORDER
+    return result
+
+
+def _multiply(a, b):
+    # Calculate a * b
+    result = (a * b) % ORDER
+    return result
+
+
+def _divide(a, b):
+    # Calculate a / b
+    result = (a * MUL_INV[b]) % ORDER
+    return result
+
+
+def _negative(a):
+    # Calculate -a
+    result = (-a) % ORDER
+    return result
+
+
+def _power(a, b):
     # Calculate a**b
+    result = 1
     if b < 0:
         a = MUL_INV[a]
         b = abs(b)
-    result = 1
     for _ in range(0, b):
         result = (result * a) % ORDER
     return result
 
 
-def _ufunc_log(a):
+def _log(a):
     # Calculate np.log(a)
-    return LOG[a]
+    result = LOG[a]
+    return result
 
 
 def _build_luts(p, alpha, dtype):
@@ -205,10 +162,16 @@ def GFp_factory(p, rebuild=False):
         "_MUL_INV": MUL_INV
     })
 
-    cls.prim_poly = min_poly(cls.alpha, cls, 1)
+    # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
+    cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], nopython=True)(_add)
+    cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], nopython=True)(_subtract)
+    cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], nopython=True)(_multiply)
+    cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], nopython=True)(_divide)
+    cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], nopython=True)(_negative)
+    cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], nopython=True)(_power)
+    cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], nopython=True)(_log)
 
-    cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], nopython=True)(_ufunc_power)
-    cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], nopython=True)(_ufunc_log)
+    cls.prim_poly = min_poly(cls.alpha, cls, 1)
 
     # Add class to dictionary of flyweights
     GFp_factory.classes[p] = cls
