@@ -1,5 +1,5 @@
 """
-A Python 3 numpy extension for Galois fields.
+A performant numpy extension for Galois fields.
 """
 from .version import __version__
 

@@ -98,6 +98,6 @@ autosummary_generate = True
 autosummary_generate_overwrite = True
 autosummary_imported_members = True
 
-nbsphinx_execute = 'always'
+nbsphinx_execute = 'auto'
 
 ipython_execlines = ['import galois']

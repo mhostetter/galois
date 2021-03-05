@@ -1,5 +1,5 @@
-Galois: A numpy extension for Galois fields
-===========================================
+Galois: A performant numpy extension for Galois fields
+======================================================
 
 Installation
 ------------
@@ -22,7 +22,6 @@ API v\ |version|
 
 .. autosummary::
    :template: module.rst
-   :toctree: build/_autosummary
 
     galois
 
@@ -32,7 +31,8 @@ Usage Examples with Jupyter Notebooks
 .. toctree::
    :maxdepth: 1
 
-   example
+   notebooks/example
+   notebooks/performance
 
 Indices and tables
 ------------------
