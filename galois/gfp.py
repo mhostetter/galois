@@ -6,6 +6,9 @@ from .gf import _GF
 
 
 class GFp(_GF):
+    """
+    asdf
+    """
 
     _MUL_INV = []
     _numba_ufunc_power = None

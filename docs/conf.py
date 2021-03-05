@@ -15,13 +15,14 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
+from galois import __version__
 
 # -- Project information -----------------------------------------------------
 
 project = 'galois'
 copyright = '2020, Matt Hostetter'
 author = 'Matt Hostetter'
-
+version = __version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -94,6 +95,9 @@ autodoc_default_options = {
 }
 
 autosummary_generate = True
+autosummary_generate_overwrite = True
 autosummary_imported_members = True
+
+nbsphinx_execute = 'always'
 
 ipython_execlines = ['import galois']

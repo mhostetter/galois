@@ -1,16 +1,33 @@
-Welcome to galois's documentation!
-==================================
+Galois: A numpy extension for Galois fields
+===========================================
 
-API
----
+Installation
+------------
+
+The latest version of `galois` can be installed from PyPI via `pip`.
+
+.. code-block::
+
+   pip3 install galois
+
+The the lastest code from `master` can be checked out and installed locally in an "editable" fashion.
+
+.. code-block::
+
+   git clone https://github.com/mhostetter/galois.git
+   pip3 install -e galois
+
+API v\ |version|
+----------------
 
 .. autosummary::
-   :toctree: _autosummary
+   :template: module.rst
+   :toctree: build/_autosummary
 
     galois
 
-Usage Examples
---------------
+Usage Examples with Jupyter Notebooks
+-------------------------------------
 
 .. toctree::
    :maxdepth: 1

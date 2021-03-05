@@ -242,7 +242,7 @@ class Poly:
     @property
     def field(self):
         """
-        galois._GF: The finite field to which the coefficients belong.
+        galois.GF2 or galois.GFp: The finite field to which the coefficients belong.
         """
         return self.coeffs.__class__
 

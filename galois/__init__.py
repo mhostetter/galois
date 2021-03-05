@@ -1,5 +1,5 @@
 """
-A Python 3 package for Galois field arithmetic.
+A Python 3 numpy extension for Galois fields.
 """
 from .version import __version__
 
@@ -38,7 +38,7 @@ def GF_factory(p, m, prim_poly=None, rebuild=False):  # pylint: disable=redefine
 
     Returns
     -------
-    galois._GF
+    galois.GF2 or galois.GFp
         A new Galois field class that is a sublcass of `galois._GF`.
     """
     assert m >= 1
