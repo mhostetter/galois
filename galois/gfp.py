@@ -5,11 +5,15 @@ from .algorithm import is_prime, extended_euclidean_algorithm, primitive_roots, 
 from .gf import _GF
 
 
-class _GFp(_GF):
+class GFp(_GF):
 
     _MUL_INV = []
     _numba_ufunc_power = None
     _numba_ufunc_log = None
+
+    def __new__(cls, *args, **kwargs):
+        assert cls is not GFp, "GFp is an abstract base class, it cannot be instantiated directly; use GFp_factory() to generate a GF(p) class"
+        return super().__new__(cls, *args, **kwargs)
 
     def _add(self, ufunc, method, inputs, kwargs, meta):
         """
@@ -161,8 +165,8 @@ def GFp_factory(p, rebuild=False):
 
     Returns
     -------
-    galois._GF
-        A new Galois field class that is a sublcass of `galois._GF`.
+    galois.GFp
+        A new Galois field class that is a sublcass of `galois.GFp`.
     """
     # pylint: disable=global-variable-undefined,protected-access
     assert is_prime(p)
@@ -189,7 +193,7 @@ def GFp_factory(p, rebuild=False):
     ORDER = order
 
     # Create new class type
-    cls = type(name, (_GFp,), {
+    cls = type(name, (GFp,), {
         "characteristic": p,
         "power": 1,
         "order": p,
