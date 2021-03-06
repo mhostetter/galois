@@ -13,15 +13,25 @@ import shutil
 import numpy as np
 from sage.all import *
 
+SPARSE_SIZE = 20
 
-def io_1d(x_low, x_high):
-    X = np.arange(x_low, x_high, dtype=int)
+
+def arange(x_low, x_high, sparse=False):
+    if sparse:
+        X = np.random.randint(x_low, x_high, SPARSE_SIZE, dtype=int)
+    else:
+        X = np.arange(x_low, x_high, dtype=int)
+    return X
+
+
+def io_1d(x_low, x_high, sparse=False):
+    X = arange(x_low, x_high, sparse=sparse)
     Z = np.zeros(X.shape, dtype=int)
     return X, Z
 
 
-def io_2d(x_low, x_high, y_low, y_high):
-    X, Y = np.meshgrid(np.arange(x_low, x_high, dtype=int), np.arange(y_low, y_high, dtype=int), indexing="ij")
+def io_2d(x_low, x_high, y_low, y_high, sparse=False):
+    X, Y = np.meshgrid(arange(x_low, x_high, sparse=sparse), arange(y_low, y_high, sparse=sparse), indexing="ij")
     Z = np.zeros(X.shape, dtype=int)
     return X, Y, Z
 
@@ -42,7 +52,7 @@ def save_json(d, folder, name, indent=False):
         json.dump(d, f, indent=indent)
 
 
-def make_luts(field, folder):
+def make_luts(field, folder, sparse=False):
     print(f"Making LUTs for {field}")
     if os.path.exists(folder):
         shutil.rmtree(folder)
@@ -60,54 +70,54 @@ def make_luts(field, folder):
     }
     save_json(d, folder, "properties.json", indent=True)
 
-    X, Y, Z = io_2d(0, order, 0, order)
+    X, Y, Z = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) +  field(Y[i,j])
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "add.pkl")
 
-    X, Y, Z = io_2d(0, order, 0, order)
+    X, Y, Z = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) -  field(Y[i,j])
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "subtract.pkl")
 
-    X, Y, Z = io_2d(0, order, -order-2, order+3)
+    X, Y, Z = io_2d(0, order, -order-2, order+3, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) * Y[i,j]
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "multiply.pkl")
 
-    X, Y, Z = io_2d(0, order, 1, order)
+    X, Y, Z = io_2d(0, order, 1, order, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) /  field(Y[i,j])
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "divison.pkl")
 
-    X, Z = io_1d(0, order)
+    X, Z = io_1d(0, order, sparse=sparse)
     for i in range(X.shape[0]):
         Z[i] = -field(X[i])
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "additive_inverse.pkl")
 
-    X, Z = io_1d(1, order)
+    X, Z = io_1d(1, order, sparse=sparse)
     for i in range(X.shape[0]):
         Z[i] = 1 / field(X[i])
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "multiplicative_inverse.pkl")
 
-    X, Y, Z = io_2d(1, order, -order-2, order+3)
+    X, Y, Z = io_2d(1, order, -order-2, order+3, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) **  Y[i,j]
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "power.pkl")
 
-    X, Z = io_1d(1, order)
+    X, Z = io_1d(1, order, sparse=sparse)
     for i in range(Z.shape[0]):
         Z[i] = log(field(X[i]))
     d = {"X": X, "Z": Z}
@@ -191,7 +201,7 @@ def make_luts(field, folder):
     save_pickle(d, folder, "poly_power.pkl")
 
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
-    Y = np.arange(0, order, dtype=int)
+    Y = arange(0, order, sparse=sparse)
     Z = np.zeros((len(X),len(Y)), dtype=int)
     for i in range(len(X)):
         for j in range(len(Y)):
@@ -224,3 +234,7 @@ if __name__ == "__main__":
     field = GF(31, modulus="primitive", repr="int")
     folder = os.path.join(path, "gf31")
     make_luts(field, folder)
+
+    field = GF(3191, modulus="primitive", repr="int")
+    folder = os.path.join(path, "gf3191")
+    make_luts(field, folder, sparse=True)

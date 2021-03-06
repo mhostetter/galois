@@ -25,6 +25,10 @@ FIELDS = [
         galois.GF_factory(31, 1), os.path.join(PATH, "gf31")),
         marks=[pytest.mark.GFp, pytest.mark.GF31]
     ),
+    pytest.param((
+        galois.GF_factory(3191, 1), os.path.join(PATH, "gf3191")),
+        marks=[pytest.mark.GFp, pytest.mark.GF31]
+    ),
 ]
 
 

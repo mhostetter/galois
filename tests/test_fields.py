@@ -169,11 +169,13 @@ class TestArithmetic:
         check_array(z, power["GF"])
 
     def test_square(self, power):
-        j = np.where(power["Y"] == 2)[1][0]  # Index of Y where y=2
-        x = power["X"][:,j]
-        z = x ** 2
-        assert np.all(z == power["Z"][:,j])
-        check_array(z, power["GF"])
+        # Not guaranteed to have y=2 for "sparse" LUTs
+        if np.where(power["Y"] == 2)[1].size > 0:
+            j = np.where(power["Y"] == 2)[1][0]  # Index of Y where y=2
+            x = power["X"][:,j]
+            z = x ** 2
+            assert np.all(z == power["Z"][:,j])
+            check_array(z, power["GF"])
 
     def test_log(self, log):
         x = log["X"]
