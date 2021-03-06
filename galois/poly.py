@@ -1,16 +1,7 @@
-from functools import partial
 import numpy as np
 
 from .gf import _GF
 from .gf2 import GF2
-
-
-@partial(np.vectorize, excluded=[0])
-def _evaluate(coeffs, x0):
-    result = coeffs[0]
-    for i in range(1, coeffs.size):
-        result = coeffs[i] + result*x0
-    return result
 
 
 class Poly:
@@ -153,9 +144,15 @@ class Poly:
 
         return quotient, remainder
 
-    def __call__(self, x0):
-        x0 = self.field._verify_and_convert(x0)
-        return _evaluate(self.coeffs, x0)
+    def __call__(self, x):
+        # y[:] = p(x[:])
+        x = self.field._verify_and_convert(x)
+        scalar = x.shape == ()
+        x = np.atleast_1d(x)
+        y = self.field.Zeros(x.shape)
+        y = self.field._numba_ufunc_poly_eval(self.coeffs, x, y)
+        y = self.field(y)
+        return y if not scalar else y[0]
 
     def __add__(self, other):
         # c(x) = a(x) + b(x)

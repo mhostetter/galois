@@ -68,6 +68,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
     _numba_ufunc_negative = None
     _numba_ufunc_power = None
     _numba_ufunc_log = None
+    _numba_ufunc_poly_eval = None
 
     def __new__(cls, array):
         assert cls is not _GF, "_GF is an abstract base class that should not be directly instantiated"

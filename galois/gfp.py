@@ -19,32 +19,27 @@ class GFp(_GF):
 
 def _add(a, b):
     # Calculate a + b
-    result = (a + b) % ORDER
-    return result
+    return (a + b) % ORDER
 
 
 def _subtract(a, b):
     # Calculate a - b
-    result = (a - b) % ORDER
-    return result
+    return (a - b) % ORDER
 
 
 def _multiply(a, b):
     # Calculate a * b
-    result = (a * b) % ORDER
-    return result
+    return (a * b) % ORDER
 
 
 def _divide(a, b):
     # Calculate a / b
-    result = (a * MUL_INV[b]) % ORDER
-    return result
+    return (a * MUL_INV[b]) % ORDER
 
 
 def _negative(a):
     # Calculate -a
-    result = (-a) % ORDER
-    return result
+    return (-a) % ORDER
 
 
 def _power(a, b):
@@ -60,8 +55,21 @@ def _power(a, b):
 
 def _log(a):
     # Calculate np.log(a)
-    result = LOG[a]
-    return result
+    return LOG[a]
+
+
+def _poly_eval(coeffs, values, results):
+    # Calculate p(a)
+    def _add(a, b):
+        return (a + b) % ORDER
+
+    def _multiply(a, b):
+        return (a * b) % ORDER
+
+    for i in range(values.size):
+        results[i] = coeffs[0]
+        for j in range(1, coeffs.size):
+            results[i] = _add(coeffs[j], _multiply(results[i], values[i]))
 
 
 def _build_luts(p, alpha, dtype):
@@ -163,13 +171,14 @@ def GFp_factory(p, rebuild=False):
     })
 
     # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-    cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_add)
-    cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_subtract)
-    cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_multiply)
-    cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_divide)
-    cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], nopython=True, target="cpu")(_negative)
-    cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], nopython=True, target="cpu")(_power)
-    cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], nopython=True, target="cpu")(_log)
+    cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], nopython=True)(_add)
+    cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], nopython=True)(_subtract)
+    cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], nopython=True)(_multiply)
+    cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], nopython=True)(_divide)
+    cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], nopython=True)(_negative)
+    cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], nopython=True)(_power)
+    cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], nopython=True)(_log)
+    cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", nopython=True)(_poly_eval)
 
     cls.prim_poly = min_poly(cls.alpha, cls, 1)
 

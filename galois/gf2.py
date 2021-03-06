@@ -64,32 +64,27 @@ class GF2(_GF):
 
 def _add(a, b):
     # Calculate a + b
-    result = a ^ b
-    return result
+    return a ^ b
 
 
 def _subtract(a, b):
     # Calculate a - b
-    result = a ^ b
-    return result
+    return a ^ b
 
 
 def _multiply(a, b):
     # Calculate a * b
-    result = a & b
-    return result
+    return a & b
 
 
 def _divide(a, b):
     # Calculate a / b
-    result = a & b
-    return result
+    return a & b
 
 
 def _negative(a):
     # Calculate -a
-    result = a
-    return result
+    return a
 
 
 def _power(a, b):
@@ -105,8 +100,21 @@ def _power(a, b):
 
 def _log(a):  # pylint: disable=unused-argument
     # Calculate np.log(a)
-    result = 0
-    return result
+    return 0
+
+
+def _poly_eval(coeffs, values, results):
+    # Calculate p(a)
+    def _add(a, b):
+        return a ^ b
+
+    def _multiply(a, b):
+        return a & b
+
+    for i in range(values.size):
+        results[i] = coeffs[0]
+        for j in range(1, coeffs.size):
+            results[i] = _add(coeffs[j], _multiply(results[i], values[i]))
 
 
 # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
@@ -118,3 +126,4 @@ GF2._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], nopython=True
 GF2._numba_ufunc_negative = numba.vectorize(["int64(int64)"], nopython=True)(_negative)
 GF2._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], nopython=True)(_power)
 GF2._numba_ufunc_log = numba.vectorize(["int64(int64)"], nopython=True)(_log)
+GF2._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", nopython=True)(_poly_eval)
