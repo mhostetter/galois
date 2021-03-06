@@ -1,3 +1,4 @@
+import numba
 import numpy as np
 
 
@@ -14,7 +15,7 @@ OVERRIDDEN_UFUNCS = {
 }
 
 
-class _GFMeta(type):
+class GFBaseMeta(type):
     """
     Defines a metaclass to give all GF classes a __str__() special method, not just their instances.
     """
@@ -23,12 +24,15 @@ class _GFMeta(type):
         return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.power, cls.prim_poly.str, None)
 
 
-class _GF(np.ndarray, metaclass=_GFMeta):
+class GFBase(np.ndarray, metaclass=GFBaseMeta):
     """
     asdf
+
+    .. note::
+        This is an abstract base class for all Galois fields. It cannot be instantiated directly.
     """
 
-    # NOTE: These class attributes will be set in the subclasses of _GF
+    # NOTE: These class attributes will be set in the subclasses of GFBase
 
     characteristic = None
     """
@@ -60,6 +64,9 @@ class _GF(np.ndarray, metaclass=_GFMeta):
     """
 
     _dtype = None
+    _EXP = None
+    _LOG = None
+    _MUL_INV = None
 
     _numba_ufunc_add = None
     _numba_ufunc_subtract = None
@@ -71,7 +78,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
     _numba_ufunc_poly_eval = None
 
     def __new__(cls, array):
-        assert cls is not _GF, "_GF is an abstract base class that should not be directly instantiated"
+        assert cls is not GFBase, "GFBase is an abstract base class that should not be directly instantiated"
         array = cls._verify_and_convert(array)
         return array
 
@@ -104,6 +111,39 @@ class _GF(np.ndarray, metaclass=_GFMeta):
     # def to_log_repr():
 
     @classmethod
+    def _export_globals(cls):
+        pass
+
+    @classmethod
+    def target(cls, target):
+        """
+        Retarget the just-in-time compiled numba ufuncs.
+
+        Parameters
+        ----------
+        target : str
+            Either "cpu", "parallel", or "cuda".
+        """
+        if target not in ["cpu", "parallel", "cuda"]:
+            raise ValueError(f"Valid numba compilation targets are [\"cpu\", \"parallel\", \"cuda\"], not {target}")
+
+        cls._export_globals()
+
+        kwargs = {"nopython": True, "target": target}
+        if target == "cuda":
+            kwargs.pop("nopython")
+
+        # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
+        cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(cls._add)
+        cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(cls._subtract)
+        cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(cls._multiply)
+        cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(cls._divide)
+        cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(cls._negative)
+        cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(cls._power)
+        cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(cls._log)
+        cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(cls._poly_eval)
+
+    @classmethod
     def _verify_and_convert(cls, array):
         """
         Convert the input array into a Galois field array and check the input for data type and data range.
@@ -127,7 +167,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
         A numpy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
         that view casting to a Galois field array has the appropriate dtype.
         """
-        if obj is not None and not isinstance(obj, _GF):
+        if obj is not None and not isinstance(obj, GFBase):
             # Invoked during view casting
             assert obj.dtype == self._dtype, "Can only view cast to Galois field arrays if the input array has the field's dtype of {}".format(self._dtype)
             assert np.all(obj >= 0) and np.all(obj < self.order), "Galois field arrays must have elements with values less than the field order of {}".format(self.order)
@@ -145,7 +185,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
         self._verify_and_convert(value)
         super().__setitem__(key, value)
 
-    def _uview_input_gf_as_ndarray(self, inputs, kwargs):
+    def _view_input_gf_as_ndarray(self, inputs, kwargs):
         meta = {"types": [], "gf_inputs": [], "non_gf_inputs": []}
 
         # View all input arrays as np.ndarray to avoid infinite recursion
@@ -173,7 +213,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
 
         return v_inputs, kwargs, meta
 
-    def _uview_input_int_as_ndarray(self, inputs):  # pylint: disable=no-self-use
+    def _view_input_int_as_ndarray(self, inputs):  # pylint: disable=no-self-use
         v_inputs = []
         for input_ in inputs:
             if isinstance(input_, int):
@@ -185,7 +225,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
 
         return v_inputs
 
-    def _uview_output_ndarray_as_gf(self, ufunc, v_outputs):
+    def _view_output_ndarray_as_gf(self, ufunc, v_outputs):
         if v_outputs is NotImplemented:
             return v_outputs
         if ufunc.nout == 1:
@@ -233,13 +273,13 @@ class _GF(np.ndarray, metaclass=_GFMeta):
         """
         # View Galois field array inputs as np.ndarray so subsequent numpy ufunc calls go to numpy and don't
         # result in infinite recursion
-        inputs, kwargs, meta = self._uview_input_gf_as_ndarray(inputs, kwargs)
+        inputs, kwargs, meta = self._view_input_gf_as_ndarray(inputs, kwargs)
 
         # For ufuncs we are not overriding, call the parent implementation
         if ufunc not in OVERRIDDEN_UFUNCS.keys():
             return super().__array_ufunc__(ufunc, method, *inputs)  # pylint: disable=no-member
 
-        inputs = self._uview_input_int_as_ndarray(inputs)
+        inputs = self._view_input_int_as_ndarray(inputs)
 
         self._verify_inputs(ufunc, method, inputs, meta)
 
@@ -267,5 +307,37 @@ class _GF(np.ndarray, metaclass=_GFMeta):
         elif ufunc is np.log:
             return outputs
         else:
-            outputs = self._uview_output_ndarray_as_gf(ufunc, outputs)
+            outputs = self._view_output_ndarray_as_gf(ufunc, outputs)
             return outputs
+
+    @staticmethod
+    def _add(a, b):
+        raise NotImplementedError
+
+    @staticmethod
+    def _subtract(a, b):
+        raise NotImplementedError
+
+    @staticmethod
+    def _multiply(a, b):
+        raise NotImplementedError
+
+    @staticmethod
+    def _divide(a, b):
+        raise NotImplementedError
+
+    @staticmethod
+    def _negative(a):
+        raise NotImplementedError
+
+    @staticmethod
+    def _power(a, b):
+        raise NotImplementedError
+
+    @staticmethod
+    def _log(a):
+        raise NotImplementedError
+
+    @staticmethod
+    def _poly_eval(coeffs, values, results):
+        raise NotImplementedError

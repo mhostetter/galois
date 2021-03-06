@@ -1,6 +1,6 @@
 import numpy as np
 
-from .gf import _GF
+from .gf import GFBase
 from .gf2 import GF2
 
 
@@ -52,8 +52,8 @@ class Poly:
     """
 
     def __init__(self, coeffs, field=GF2):
-        assert issubclass(field, _GF)
-        if isinstance(coeffs, _GF):
+        assert issubclass(field, GFBase)
+        if isinstance(coeffs, GFBase):
             self.coeffs = coeffs
         else:
             # Convert list or np.ndarray of integers into the specified `field`. Apply negation
@@ -217,7 +217,7 @@ class Poly:
 
     @coeffs.setter
     def coeffs(self, coeffs):
-        assert isinstance(coeffs, _GF), "Galois field polynomials must have coefficients belonging to a valid Galois field class (i.e. subclasses of _GF)"
+        assert isinstance(coeffs, GFBase), "Galois field polynomials must have coefficients belonging to a valid Galois field class (i.e. subclasses of GFBase)"
         assert coeffs.ndim == 1, "Polynomial coefficients must be arrays of 1 dimension"
         idxs = np.nonzero(coeffs)[0]  # Non-zero indices
         if idxs.size > 0:
@@ -239,7 +239,7 @@ class Poly:
     @property
     def field(self):
         """
-        galois.GF2 or galois.GFp: The finite field to which the coefficients belong.
+        galois.GF2Base or galois.GFpBase: The finite field to which the coefficients belong.
         """
         return self.coeffs.__class__
 

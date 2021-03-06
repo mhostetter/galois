@@ -468,7 +468,7 @@ def min_poly(a, field, n):
     ----------
     a : int
         Field element in the extension field GF(q^n).
-    field : galois.gf._GF
+    field : galois.gf.GFBase
         The base field GF(q).
     n : int
         The degree of the extension field.

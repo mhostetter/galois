@@ -6,11 +6,11 @@ import pytest
 import galois
 
 
-def test_cant_instantiate_GF():
+def test_cant_instantiateGFBase():
     with pytest.raises(AssertionError):
-        a = galois.gf._GF([1,2,3])
+        a = galois.gf.GFBase([1,2,3])
 
 
-def test_cant_instantiate_GFp():
+def test_cant_instantiateGFBasep():
     with pytest.raises(AssertionError):
-        a = galois.GFp([1,2,3])
+        a = galois.GFpBase([1,2,3])
