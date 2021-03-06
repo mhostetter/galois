@@ -198,8 +198,13 @@ class _GF(np.ndarray, metaclass=_GFMeta):
 
         return outputs[0] if len(outputs) == 1 else outputs
 
-    def _verify_inputs(self, ufunc, inputs, meta):
+    def _verify_inputs(self, ufunc, method, inputs, meta):  # pylint: disable=too-many-branches
+        if method == "reduceat":
+            return
+
         for i in meta["non_gf_inputs"]:
+            if method == "at" and i == 1:
+                continue
             if ufunc in [np.add, np.subtract, np.true_divide, np.floor_divide]:
                 if not np.issubdtype(inputs[i].dtype, np.integer):
                     raise TypeError(f"Operation \"{ufunc.__name__}\" in Galois field must be performed on integers not {inputs[i].dtype}")
@@ -209,10 +214,13 @@ class _GF(np.ndarray, metaclass=_GFMeta):
                 if not np.issubdtype(inputs[i].dtype, np.integer):
                     raise TypeError(f"Operation \"{ufunc.__name__}\" in Galois field must be performed with elements in Z, the integers")
 
-        if ufunc in [np.true_divide, np.floor_divide] and np.count_nonzero(inputs[1]) != inputs[1].size:
+        if ufunc in [np.true_divide, np.floor_divide] and np.count_nonzero(inputs[-1]) != inputs[-1].size:
             raise ZeroDivisionError("Divide by 0")
-        if ufunc is np.power and np.any(np.logical_and(inputs[0] == 0, inputs[1] < 0)):
-            raise ZeroDivisionError("Divide by 0")
+        if ufunc is np.power:
+            if method == "outer" and (np.any(inputs[0] == 0) and np.any(inputs[1] < 0)):
+                raise ZeroDivisionError("Divide by 0")
+            if method == "__call__" and np.any(np.logical_and(inputs[0] == 0, inputs[1] < 0)):
+                raise ZeroDivisionError("Divide by 0")
         if ufunc is np.log and np.count_nonzero(inputs[0]) != inputs[0].size:
             raise ArithmeticError("Log(0) error")
 
@@ -233,7 +241,7 @@ class _GF(np.ndarray, metaclass=_GFMeta):
 
         inputs = self._uview_input_int_as_ndarray(inputs)
 
-        self._verify_inputs(ufunc, inputs, meta)
+        self._verify_inputs(ufunc, method, inputs, meta)
 
         # Call appropriate ufunc method (implemented in subclasses)
         if ufunc is np.add:
