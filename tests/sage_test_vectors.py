@@ -72,40 +72,40 @@ def make_luts(field, folder):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) -  field(Y[i,j])
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "sub.pkl")
+    save_pickle(d, folder, "subtract.pkl")
 
     X, Y, Z = io_2d(0, order, -order-2, order+3)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) * Y[i,j]
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "mul.pkl")
+    save_pickle(d, folder, "multiply.pkl")
 
     X, Y, Z = io_2d(0, order, 1, order)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) /  field(Y[i,j])
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "div.pkl")
+    save_pickle(d, folder, "divison.pkl")
 
     X, Z = io_1d(0, order)
     for i in range(X.shape[0]):
         Z[i] = -field(X[i])
     d = {"X": X, "Z": Z}
-    save_pickle(d, folder, "add_inv.pkl")
+    save_pickle(d, folder, "additive_inverse.pkl")
 
     X, Z = io_1d(1, order)
     for i in range(X.shape[0]):
         Z[i] = 1 / field(X[i])
     d = {"X": X, "Z": Z}
-    save_pickle(d, folder, "mul_inv.pkl")
+    save_pickle(d, folder, "multiplicative_inverse.pkl")
 
     X, Y, Z = io_2d(1, order, -order-2, order+3)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) **  Y[i,j]
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "exp.pkl")
+    save_pickle(d, folder, "power.pkl")
 
     X, Z = io_1d(1, order)
     for i in range(Z.shape[0]):
@@ -140,7 +140,7 @@ def make_luts(field, folder):
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "poly_sub.pkl")
+    save_pickle(d, folder, "poly_subtract.pkl")
 
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
@@ -153,7 +153,7 @@ def make_luts(field, folder):
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "poly_mul.pkl")
+    save_pickle(d, folder, "poly_multiply.pkl")
 
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
@@ -188,7 +188,7 @@ def make_luts(field, folder):
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "poly_exp.pkl")
+    save_pickle(d, folder, "poly_power.pkl")
 
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = np.arange(0, order, dtype=int)
@@ -200,7 +200,7 @@ def make_luts(field, folder):
             z = x(y)
             Z[i,j] = z
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "poly_eval.pkl")
+    save_pickle(d, folder, "poly_evaluate.pkl")
 
 
 if __name__ == "__main__":

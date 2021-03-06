@@ -200,16 +200,20 @@ class _GF(np.ndarray, metaclass=_GFMeta):
     def _verify_inputs(self, ufunc, inputs, meta):
         for i in meta["non_gf_inputs"]:
             if ufunc in [np.add, np.subtract, np.true_divide, np.floor_divide]:
-                assert np.issubdtype(inputs[i].dtype, np.integer) and np.all(inputs[i] >= 0) and np.all(inputs[i] < self.order), "Operation \"{}\" in Galois field must be performed with elements in the field [0, {})".format(ufunc.__name__, self.order)
+                if not np.issubdtype(inputs[i].dtype, np.integer):
+                    raise TypeError(f"Operation \"{ufunc.__name__}\" in Galois field must be performed on integers not {inputs[i].dtype}")
+                if np.any(inputs[i] < 0) or np.all(inputs[i] >= self.order):
+                    raise ValueError(f"Operation \"{ufunc.__name__}\" in Galois field must be performed with elements in the field [0, {self.order})")
             elif ufunc in [np.multiply, np.power, np.square]:
-                assert np.issubdtype(inputs[i].dtype, np.integer), "Operation \"{}\" in Galois field must be performed with elements in Z, the integers".format(ufunc.__name__)
+                if not np.issubdtype(inputs[i].dtype, np.integer):
+                    raise TypeError(f"Operation \"{ufunc.__name__}\" in Galois field must be performed with elements in Z, the integers")
 
-        if ufunc in [np.true_divide, np.floor_divide]:
-            assert np.count_nonzero(inputs[1]) == inputs[1].size, "Divide by 0"
-        elif ufunc is np.power:
-            assert not np.any(np.logical_and(inputs[0] == 0, inputs[1] < 0)), "Divide by 0"
-        elif ufunc is np.log:
-            assert np.count_nonzero(inputs[0]) == inputs[0].size, "Log(0) error"
+        if ufunc in [np.true_divide, np.floor_divide] and np.count_nonzero(inputs[1]) != inputs[1].size:
+            raise ZeroDivisionError("Divide by 0")
+        if ufunc is np.power and np.any(np.logical_and(inputs[0] == 0, inputs[1] < 0)):
+            raise ZeroDivisionError("Divide by 0")
+        if ufunc is np.log and np.count_nonzero(inputs[0]) != inputs[0].size:
+            raise ArithmeticError("Log(0) error")
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         """

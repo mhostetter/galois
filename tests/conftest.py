@@ -68,10 +68,10 @@ def add(request):
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def sub(request):
+def subtract(request):
     GF = request.param[0]
     folder = request.param[1]
-    with open(os.path.join(folder, "sub.pkl"), "rb") as f:
+    with open(os.path.join(folder, "subtract.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
@@ -82,10 +82,10 @@ def sub(request):
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def mul(request):
+def multiply(request):
     GF = request.param[0]
     folder = request.param[1]
-    with open(os.path.join(folder, "mul.pkl"), "rb") as f:
+    with open(os.path.join(folder, "multiply.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
@@ -96,10 +96,10 @@ def mul(request):
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def div(request):
+def divison(request):
     GF = request.param[0]
     folder = request.param[1]
-    with open(os.path.join(folder, "div.pkl"), "rb") as f:
+    with open(os.path.join(folder, "divison.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
@@ -110,10 +110,10 @@ def div(request):
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def add_inv(request):
+def additive_inverse(request):
     GF = request.param[0]
     folder = request.param[1]
-    with open(os.path.join(folder, "add_inv.pkl"), "rb") as f:
+    with open(os.path.join(folder, "additive_inverse.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
@@ -123,10 +123,10 @@ def add_inv(request):
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def mul_inv(request):
+def multiplicative_inverse(request):
     GF = request.param[0]
     folder = request.param[1]
-    with open(os.path.join(folder, "mul_inv.pkl"), "rb") as f:
+    with open(os.path.join(folder, "multiplicative_inverse.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
@@ -136,10 +136,10 @@ def mul_inv(request):
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def exp(request):
+def power(request):
     GF = request.param[0]
     folder = request.param[1]
-    with open(os.path.join(folder, "exp.pkl"), "rb") as f:
+    with open(os.path.join(folder, "power.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
@@ -183,13 +183,13 @@ def poly_add(request):
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def poly_sub(request):
-    return load_poly_luts("poly_sub.pkl", request.param[0], request.param[1])
+def poly_subtract(request):
+    return load_poly_luts("poly_subtract.pkl", request.param[0], request.param[1])
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def poly_mul(request):
-    return load_poly_luts("poly_mul.pkl", request.param[0], request.param[1])
+def poly_multiply(request):
+    return load_poly_luts("poly_multiply.pkl", request.param[0], request.param[1])
 
 
 @pytest.fixture(scope="session", params=FIELDS)
@@ -208,15 +208,10 @@ def poly_divmod(request):
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def poly_mod(request):
-    return load_poly_luts("poly_mod.pkl", request.param[0], request.param[1])
-
-
-@pytest.fixture(scope="session", params=FIELDS)
-def poly_exp(request):
+def poly_power(request):
     GF = request.param[0]
     folder = request.param[1]
-    with open(os.path.join(folder, "poly_exp.pkl"), "rb") as f:
+    with open(os.path.join(folder, "poly_power.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
@@ -227,10 +222,10 @@ def poly_exp(request):
 
 
 @pytest.fixture(scope="session", params=FIELDS)
-def poly_eval(request):
+def poly_evaluate(request):
     GF = request.param[0]
     folder = request.param[1]
-    with open(os.path.join(folder, "poly_eval.pkl"), "rb") as f:
+    with open(os.path.join(folder, "poly_evaluate.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF

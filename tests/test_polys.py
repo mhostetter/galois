@@ -91,21 +91,21 @@ class TestArithmetic:
             assert z == poly_add["Z"][i]
             check_poly(z, poly_add["GF"])
 
-    def test_sub(self, poly_sub):
-        for i in range(len(poly_sub["X"])):
-            x = poly_sub["X"][i]
-            y = poly_sub["Y"][i]
+    def test_subtract(self, poly_subtract):
+        for i in range(len(poly_subtract["X"])):
+            x = poly_subtract["X"][i]
+            y = poly_subtract["Y"][i]
             z = x - y
-            assert z == poly_sub["Z"][i]
-            check_poly(z, poly_sub["GF"])
+            assert z == poly_subtract["Z"][i]
+            check_poly(z, poly_subtract["GF"])
 
-    def test_mul(self, poly_mul):
-        for i in range(len(poly_mul["X"])):
-            x = poly_mul["X"][i]
-            y = poly_mul["Y"][i]
+    def test_multiply(self, poly_multiply):
+        for i in range(len(poly_multiply["X"])):
+            x = poly_multiply["X"][i]
+            y = poly_multiply["Y"][i]
             z = x * y
-            assert z == poly_mul["Z"][i]
-            check_poly(z, poly_mul["GF"])
+            assert z == poly_multiply["Z"][i]
+            check_poly(z, poly_multiply["GF"])
 
     def test_divmod(self, poly_divmod):
         for i in range(len(poly_divmod["X"])):
@@ -118,41 +118,41 @@ class TestArithmetic:
             check_poly(q, poly_divmod["GF"])
             check_poly(r, poly_divmod["GF"])
 
-    def test_exp(self, poly_exp):
-        x = poly_exp["X"]  # Single polynomial
-        for i in range(len(poly_exp["Y"])):
-            y = poly_exp["Y"][i]
+    def test_power(self, poly_power):
+        x = poly_power["X"]  # Single polynomial
+        for i in range(len(poly_power["Y"])):
+            y = poly_power["Y"][i]
             z = x ** y
-            assert z == poly_exp["Z"][i]
-            check_poly(z, poly_exp["GF"])
+            assert z == poly_power["Z"][i]
+            check_poly(z, poly_power["GF"])
 
-    def test_eval_constant(self, poly_eval):
-        for i in range(len(poly_eval["X"])):
-            for j in range(poly_eval["Y"].size):
-                x = poly_eval["X"][i]  # Polynomial
-                y = poly_eval["Y"][j]  # GF element
+    def test_evaluate_constant(self, poly_evaluate):
+        for i in range(len(poly_evaluate["X"])):
+            for j in range(poly_evaluate["Y"].size):
+                x = poly_evaluate["X"][i]  # Polynomial
+                y = poly_evaluate["Y"][j]  # GF element
                 z = x(y)  # GF element
-                assert z == poly_eval["Z"][i,j]
+                assert z == poly_evaluate["Z"][i,j]
 
-    def test_eval_vector(self, poly_eval):
-        for i in range(len(poly_eval["X"])):
-            x = poly_eval["X"][i]  # Polynomial
-            y = poly_eval["Y"]  # GF array
+    def test_evaluate_vector(self, poly_evaluate):
+        for i in range(len(poly_evaluate["X"])):
+            x = poly_evaluate["X"][i]  # Polynomial
+            y = poly_evaluate["Y"]  # GF array
             z = x(y)  # GF array
-            assert np.all(z == poly_eval["Z"][i,:])
+            assert np.all(z == poly_evaluate["Z"][i,:])
 
 
 class TestArithmeticTypes:
-    def test_eval_int_scalar(self, poly_eval):
+    def test_evaluate_int_scalar(self, poly_evaluate):
         pass
 
-    def test_eval_int_arrary(self, poly_eval):
+    def test_evaluate_int_arrary(self, poly_evaluate):
         pass
 
-    def test_eval_field_scalar(self, poly_eval):
+    def test_evaluate_field_scalar(self, poly_evaluate):
         pass
 
-    def test_eval_field_array(self, poly_eval):
+    def test_evaluate_field_array(self, poly_evaluate):
         pass
 
 
