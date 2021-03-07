@@ -1,5 +1,6 @@
 from itertools import combinations
 import math
+import numba
 import numpy as np
 
 from .poly import Poly
@@ -13,7 +14,7 @@ def _prev_prime_index(x):
 
 def prev_prime(x):
     """
-    Returns the closest prime `p <= x`.
+    Returns the nearest prime `p <= x`.
 
     Parameters
     ----------
@@ -23,7 +24,7 @@ def prev_prime(x):
     Returns
     -------
     int
-        The closest prime `p <= x`.
+        The nearest prime `p <= x`.
     """
     prev_idx = _prev_prime_index(x)
     return PRIMES[prev_idx]
@@ -31,7 +32,7 @@ def prev_prime(x):
 
 def next_prime(x):
     """
-    Returns the closest prime `p > x`.
+    Returns the nearest prime `p > x`.
 
     Parameters
     ----------
@@ -41,10 +42,20 @@ def next_prime(x):
     Returns
     -------
     int
-        The closest prime `p > x`.
+        The nearest prime `p > x`.
     """
     prev_idx = _prev_prime_index(x)
     return PRIMES[prev_idx + 1]
+
+
+@numba.jit(nopython=True)
+def _numba_factors(x):
+    f = []  # Positive factors
+    for i in range(1, int(np.ceil(np.sqrt(x))) + 1):
+        if x % i == 0:
+            q = x // i
+            f.extend([i, q])
+    return f
 
 
 def factors(x):
@@ -61,13 +72,34 @@ def factors(x):
     np.ndarray:
         Sorted array of factors of `x`.
     """
-    f = []  # Positive factors
-    for i in range(1, int(np.ceil(np.sqrt(x))) + 1):
-        if x % i == 0:
-            q = x // i
-            f.extend([i, q])
+    f = _numba_factors(x)
     f = sorted(list(set(f)))  # Use set() to emove duplicates
     return np.array(f, dtype=int)
+
+
+@numba.jit(nopython=True)
+def _numba_prime_factors(x):
+    max_factor = int(np.ceil(np.sqrt(x)))
+    max_prime_idx = np.where(PRIMES - max_factor <= 0)[0][-1]
+
+    p = []
+    k = []
+    for prime in PRIMES[0:max_prime_idx+1]:
+        degree = 0
+        while x % prime == 0:
+            degree += 1
+            x = x // prime
+        if degree > 0:
+            p.append(prime)
+            k.append(degree)
+        if x == 1:
+            break
+
+    if x > 2:
+        p.append(x)
+        k.append(1)
+
+    return p, k
 
 
 def prime_factors(x):
@@ -89,26 +121,7 @@ def prime_factors(x):
         array of corresponding prime powers :math:`k = [k_1, k_2, ..., k_{n-1}]`.
     """
     assert isinstance(x, (int, np.integer)) and x > 1
-    max_factor = int(np.ceil(np.sqrt(x)))
-    max_prime_idx = _prev_prime_index(max_factor)
-
-    p = []
-    k = []
-    for prime in PRIMES[0:max_prime_idx+1]:
-        degree = 0
-        while x % prime == 0:
-            degree += 1
-            x = x // prime
-        if degree > 0:
-            p.append(prime)
-            k.append(degree)
-        if x == 1:
-            break
-
-    if x > 2:
-        p.append(x)
-        k.append(1)
-
+    p, k = _numba_prime_factors(x)
     return np.array(p, dtype=int), np.array(k, dtype=int)
 
 
