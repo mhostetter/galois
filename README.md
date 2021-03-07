@@ -25,8 +25,8 @@ The project goals are for `galois` to be:
 
 - _**General:**_ Support all Galois field types: `GF(2)`, `GF(2^m)`, `GF(p)`, `GF(p^m)`
 - _**Accurate:**_ Guarantee arithmetic accuracy -- tests against industry-standard mathematics software
-- _**Seamless:**_ Effortlessly integrate with `numpy` arrays -- arithmetic operators (`x + y`), broadcasting, view casting, type casting, ufuncs, methods
-- _**Performant:**_ Execute with `numpy` or C speed -- avoids the speed sinkhole of Python `for` loops
+- _**Compatible:**_ Seamlessley integrate with `numpy` arrays -- arithmetic operators (`x + y`), broadcasting, view casting, type casting, ufuncs, methods
+- _**Performant:**_ Run as fast as `numpy` or C -- avoids the speed sinkhole of Python `for` loops
 - _**Reconfigurable:**_ Dynamically optimize performance based on data size and processor (single-core CPU, multi-core CPU, or GPU)
 
 ## Installation
@@ -65,19 +65,19 @@ Construct Galois field array classes using the `GF_factory()` class factory func
 Poly(x + 28 , GF31)
 ```
 
-Create arrays from existing numpy arrays.
+Create arrays from existing `numpy` arrays.
 
 ```python
 # Represents an existing numpy array
->>> array = np.random.randint(0, GF.order, 10, dtype=int); array
+>>> np_x = np.random.randint(0, GF.order, 10, dtype=int); np_x
 array([ 6, 28,  2, 23, 17,  6,  3,  0, 10,  4])
 
 # Explicit Galois field construction
->>> GF(array)
+>>> GF(np_x)
 GF31([ 6, 28,  2, 23, 17,  6,  3,  0, 10,  4])
 
-# Numpy view casting to a Galois field
->>> array.view(GF)
+# Numpy view casting to a Galois field, supported for integer dtypes
+>>> np_x.view(GF)
 GF31([ 6, 28,  2, 23, 17,  6,  3,  0, 10,  4])
 ```
 
@@ -94,7 +94,7 @@ GF31([28, 22, 22,  6,  7,  3,  3, 13, 29, 30])
 
 ### Galois field array arithmetic
 
-Galois field arrays support traditional numpy array operations
+Galois field arrays support traditional `numpy` array operations
 
 ```python
 >>> x + y
@@ -111,7 +111,7 @@ GF31([ 2,  6, 12,  2, 12, 19,  6, 18, 29,  9])
 GF31([10, 24, 24, 26,  9, 21, 21, 12, 15, 30])
 
 # Exponentiate a Galois field array with any integer
->>> y ** -2  # NOTE: 87 is outside the field
+>>> y ** -2  # NOTE: -2 is outside the field
 GF31([ 7, 18, 18, 25, 19,  7,  7, 20,  8,  1])
 
 # Log base alpha (the field's primitive element)
@@ -119,7 +119,7 @@ GF31([ 7, 18, 18, 25, 19,  7,  7, 20,  8,  1])
 array([16, 17, 17, 25, 28,  1,  1, 11,  9, 15])
 ```
 
-Galois field arrays support numpy array broadcasting.
+Galois field arrays support `numpy` array broadcasting.
 
 ```python
 >>> a = GF.Random((2,5)); a
@@ -134,12 +134,12 @@ GF31([[23,  0,  0, 23, 20],
       [ 6, 12, 16, 14, 18]])
 ```
 
-Galois field arrays also support numpy ufunc methods.
+Galois field arrays also support `numpy` ufunc methods.
 
 ```python
 # Valid ufunc methods include "reduce", "accumulate", "reduceat", "outer", "at"
->>> np.multiply.reduce(a, axis=0)
-GF31([ 0, 27, 26,  0, 30])
+>>> np.add.reduce(a, axis=0)
+GF31([14, 29, 22, 22,  0])
 
 >>> np.multiply.outer(x, y)
 GF31([[ 2,  6,  6, 27, 16, 29, 29, 12, 22, 11],
@@ -170,7 +170,7 @@ Poly(4x^2 + 14 , GF31)
 
 ### Galois field polynomial arithmetic
 
-Galois field polynomial arithmetic is similar to numpy array operations.
+Galois field polynomial arithmetic is similar to `numpy` array operations.
 
 ```python
 >>> p + q
@@ -186,10 +186,10 @@ Poly(x^8 + 13x^7 + 19x^6 + 3x^5 + 23x^4 + 15x^3 + 10x^2 + 13x + 5 , GF31)
 Galois field polynomials can also be evaluated at constants or arrays.
 
 ```python
-p(1)
+>>> p(1)
 GF31(3)
 
-p(a)
+>>> p(a)
 GF31([[ 1, 18, 17, 16,  5],
       [ 8, 21, 17, 23, 18]])
 ```
