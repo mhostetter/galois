@@ -2,6 +2,7 @@
 A pytest module to test Galois field array classes.
 """
 import pytest
+import random
 import numpy as np
 
 import galois
@@ -12,6 +13,12 @@ class TestInstantiation:
         v = [0,1,0,1]
         a = field(v)
         check_array(a, field)
+
+    def test_list_int_with_dtype(self, field):
+        v = [0,1,0,1]
+        dtype = random.choice(field.dtypes)
+        a = field(v, dtype=dtype)
+        assert a.dtype == dtype
 
     def test_list_int_out_of_range(self, field):
         v = [0,1,0,field.order]
@@ -49,15 +56,33 @@ class TestInstantiation:
         assert np.all(a == 0)
         check_array(a, field)
 
+    def test_zeros_with_dtype(self, field):
+        dtype = random.choice(field.dtypes)
+        a = field.Zeros(10, dtype=dtype)
+        assert np.all(a == 0)
+        assert a.dtype == dtype
+
     def test_ones(self, field):
         a = field.Ones(10)
         assert np.all(a == 1)
         check_array(a, field)
 
+    def test_ones_with_dtype(self, field):
+        dtype = random.choice(field.dtypes)
+        a = field.Ones(10, dtype=dtype)
+        assert np.all(a == 1)
+        assert a.dtype == dtype
+
     def test_random(self, field):
         a = field.Random(10)
         assert np.all(a >= 0) and np.all(a < field.order)
         check_array(a, field)
+
+    def test_random_with_dtype(self, field):
+        dtype = random.choice(field.dtypes)
+        a = field.Random(10, dtype=dtype)
+        assert np.all(a >= 0) and np.all(a < field.order)
+        assert a.dtype == dtype
 
     def test_random_element(self, field):
         a = field.Random()
@@ -65,21 +90,43 @@ class TestInstantiation:
         assert a.ndim == 0
         check_array(a, field)
 
+    def test_random_element_with_dtype(self, field):
+        dtype = random.choice(field.dtypes)
+        a = field.Random(dtype=dtype)
+        assert 0 <= a < field.order
+        assert a.ndim == 0
+        check_array(a, field)
+        assert a.dtype == dtype
+
 
 class TestView:
-    def test_array_correct_dtype(self, field):
-        v = np.array([0,1,0,1], dtype=field._dtype)
-        a = v.view(field)
+    def test_array_valid_dtypes(self, field):
+        for dtype in field.dtypes:
+            v = np.array([0,1,0,1], dtype=dtype)
+            a = v.view(field)
 
-    def test_array_incorrect_dtype(self, field):
+    def test_array_too_small_integer_dtype(self):
+        GF = galois.GF_factory(3191, 1)
+        v = np.array([0,1,0,1], dtype=np.int8)
+        with pytest.raises(TypeError):
+            a = v.view(GF)
+
+    def test_array_non_valid_dtype(self, field):
         v = np.array([0,1,0,1], dtype=float)
-        with pytest.raises(AssertionError):
+        with pytest.raises(TypeError):
             a = v.view(field)
 
-    def test_array_out_of_range(self, field):
-        v = np.array([0,1,0,field.order], dtype=field._dtype)
-        with pytest.raises(AssertionError):
+    def test_array_out_of_range_values(self, field):
+        dtype = random.choice(field.dtypes)  # Random dtype that's compatible with this field
+        v = np.array([0,1,0,field.order], dtype=dtype)
+        with pytest.raises(ValueError):
             a = v.view(field)
+
+    # def test_1(self, field, dtype):
+    #     a = np.random.randint(0, field.order, 10, dtype=np.int16)
+    #     ga = a.view(field)
+    #     assert np.all(a == ga)
+    #     assert ga.dtype is a.dtype
 
 
 class TestAssignment:
@@ -121,66 +168,119 @@ class TestAssignment:
 
 
 class TestArithmetic:
-    def test_add(self, add):
-        x = add["X"]
-        y = add["Y"]
-        z = x + y
-        assert np.all(z == add["Z"])
-        check_array(z, add["GF"])
+    def test_add(self, add, dtype):
+        GF = add["GF"]
+        if dtype not in GF.dtypes:
+            with pytest.raises(TypeError):
+                x = add["X"].astype(dtype)
+                y = add["Y"].astype(dtype)
+        else:
+            x = add["X"].astype(dtype)
+            y = add["Y"].astype(dtype)
+            z = x + y
+            assert np.all(z == add["Z"])
+            check_array(z, GF)
 
-    def test_subtract(self, subtract):
-        x = subtract["X"]
-        y = subtract["Y"]
-        z = x - y
-        assert np.all(z == subtract["Z"])
-        check_array(z, subtract["GF"])
+    def test_subtract(self, subtract, dtype):
+        GF = subtract["GF"]
+        if dtype not in GF.dtypes:
+            with pytest.raises(TypeError):
+                x = subtract["X"].astype(dtype)
+                y = subtract["Y"].astype(dtype)
+        else:
+            x = subtract["X"].astype(dtype)
+            y = subtract["Y"].astype(dtype)
+            z = x - y
+            assert np.all(z == subtract["Z"])
+            check_array(z, GF)
 
-    def test_multiply(self, multiply):
-        x = multiply["X"]
-        y = multiply["Y"]
-        z = x * y
-        assert np.all(z == multiply["Z"])
-        check_array(z, multiply["GF"])
+    def test_multiply(self, multiply, dtype):
+        GF = multiply["GF"]
+        if dtype not in GF.dtypes:
+            with pytest.raises(TypeError):
+                x = multiply["X"].astype(dtype)
+                y = multiply["Y"]
+        else:
+            x = multiply["X"].astype(dtype)
+            y = multiply["Y"]  # Don't convert this, it's not a field element
+            z = x * y
+            assert np.all(z == multiply["Z"])
+            check_array(z, GF)
 
-    def test_divison(self, divison):
-        x = divison["X"]
-        y = divison["Y"]
-        z = x / y
-        assert np.all(z == divison["Z"])
-        check_array(z, divison["GF"])
+    def test_divison(self, divison, dtype):
+        GF = divison["GF"]
+        if dtype not in GF.dtypes:
+            with pytest.raises(TypeError):
+                x = divison["X"].astype(dtype)
+                y = divison["Y"].astype(dtype)
+        else:
+            x = divison["X"].astype(dtype)
+            y = divison["Y"].astype(dtype)
+            z = x / y
+            assert np.all(z == divison["Z"])
+            check_array(z, GF)
 
-    def test_additive_inverse(self, additive_inverse):
-        x = additive_inverse["X"]
-        z = -x
-        assert np.all(z == additive_inverse["Z"])
-        check_array(z, additive_inverse["GF"])
+    def test_additive_inverse(self, additive_inverse, dtype):
+        GF = additive_inverse["GF"]
+        if dtype not in GF.dtypes:
+            with pytest.raises(TypeError):
+                x = additive_inverse["X"].astype(dtype)
+        else:
+            x = additive_inverse["X"].astype(dtype)
+            z = -x
+            assert np.all(z == additive_inverse["Z"])
+            check_array(z, GF)
 
-    def test_multiplicative_inverse(self, multiplicative_inverse):
-        x = multiplicative_inverse["X"]
-        z = 1 / x
-        assert np.all(z == multiplicative_inverse["Z"])
-        check_array(z, multiplicative_inverse["GF"])
+    def test_multiplicative_inverse(self, multiplicative_inverse, dtype):
+        GF = multiplicative_inverse["GF"]
+        if dtype not in GF.dtypes:
+            with pytest.raises(TypeError):
+                x = multiplicative_inverse["X"].astype(dtype)
+        else:
+            x = multiplicative_inverse["X"].astype(dtype)
+            z = 1 / x
+            assert np.all(z == multiplicative_inverse["Z"])
+            check_array(z, GF)
 
-    def test_power(self, power):
-        x = power["X"]
-        y = power["Y"]
-        z = x ** y
-        assert np.all(z == power["Z"])
-        check_array(z, power["GF"])
+    def test_power(self, power, dtype):
+        GF = power["GF"]
+        if dtype not in GF.dtypes:
+            with pytest.raises(TypeError):
+                x = power["X"].astype(dtype)
+                y = power["Y"]
+        else:
+            x = power["X"].astype(dtype)
+            y = power["Y"]  # Don't convert this, it's not a field element
+            z = x ** y
+            assert np.all(z == power["Z"])
+            check_array(z, GF)
 
-    def test_square(self, power):
-        # Not guaranteed to have y=2 for "sparse" LUTs
-        if np.where(power["Y"] == 2)[1].size > 0:
-            j = np.where(power["Y"] == 2)[1][0]  # Index of Y where y=2
-            x = power["X"][:,j]
-            z = x ** 2
-            assert np.all(z == power["Z"][:,j])
-            check_array(z, power["GF"])
+    def test_square(self, power, dtype):
+        GF = power["GF"]
+        if dtype not in GF.dtypes:
+            with pytest.raises(TypeError):
+                x = power["X"].astype(dtype)
+                y = power["Y"]
+        else:
+            x = power["X"].astype(dtype)
+            y = power["Y"]  # Don't convert this, it's not a field element
+            # Not guaranteed to have y=2 for "sparse" LUTs
+            if np.where(power["Y"] == 2)[1].size > 0:
+                j = np.where(y == 2)[1][0]  # Index of Y where y=2
+                x = x[:,j]
+                z = x ** 2
+                assert np.all(z == power["Z"][:,j])
+                check_array(z, GF)
 
-    def test_log(self, log):
-        x = log["X"]
-        z = np.log(x)
-        assert np.all(z == log["Z"])
+    def test_log(self, log, dtype):
+        GF = log["GF"]
+        if dtype not in GF.dtypes:
+            with pytest.raises(TypeError):
+                x = log["X"].astype(dtype)
+        else:
+            x = log["X"].astype(dtype)
+            z = np.log(x)
+            assert np.all(z == log["Z"])
 
 
 class TestArithmeticNonField:
@@ -898,4 +998,4 @@ class TestProperties:
 
 def check_array(array, GF):
     assert type(array) is GF
-    assert array.dtype == GF._dtype
+    # assert array.dtype == GF._dtype

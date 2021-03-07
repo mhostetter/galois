@@ -1,6 +1,4 @@
-import numpy as np
-
-from .gf import GFBase
+from .gf import GFBase, DTYPES
 
 
 class GF2(GFBase):
@@ -44,10 +42,9 @@ class GF2(GFBase):
     characteristic = 2
     power = 1
     order = 2
-    prim_poly = None
+    prim_poly = None  # Will set this in __init__.py
     alpha = 1
-
-    _dtype = np.int64
+    dtypes = DTYPES
 
     @staticmethod
     def _add(a, b):

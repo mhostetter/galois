@@ -17,14 +17,13 @@ class GFpBase(GFBase):
         This is an abstract base class for all GF(p) fields. It cannot be instantiated directly.
     """
 
-    _MUL_INV = []
-
     def __new__(cls, *args, **kwargs):
-        assert cls is not GFpBase, "GFpBase is an abstract base class, it cannot be instantiated directly; use GFp_factory() to generate a GF(p) class"
+        if cls is GFpBase:
+            raise NotImplementedError("GFpBase is an abstract base class that should not be directly instantiated")
         return super().__new__(cls, *args, **kwargs)
 
     @classmethod
-    def _build_luts(cls, dtype):
+    def _build_luts(cls):
         """
         Constructs the multiplicative inverse lookup table.
 
@@ -44,6 +43,8 @@ class GFpBase(GFBase):
         """
         alpha = cls.alpha
         order = cls.order
+        dtype = np.int64
+        assert order <= np.iinfo(dtype).max
 
         # exp = (alpha ** np.arange(0, order, dtype=dtype)) % order
         exp = modular_exp(alpha, np.arange(0, order, dtype=dtype), order)

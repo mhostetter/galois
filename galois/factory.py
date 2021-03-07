@@ -2,6 +2,7 @@ import numpy as np
 
 from . import gfp
 from .algorithm import is_prime, primitive_root, min_poly
+from .gf import DTYPES
 from .gf2 import GF2
 from .poly import Poly
 
@@ -85,7 +86,7 @@ def GFp_factory(p, rebuild=False):
 
     order = p
     name = "GF{}".format(order)
-    dtype = np.int64
+    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order]
 
     # Use the smallest primitive root as the multiplicative generator for the field
     alpha = primitive_root(p)
@@ -96,11 +97,11 @@ def GFp_factory(p, rebuild=False):
         "power": 1,
         "order": p,
         "alpha": alpha,
-        "_dtype": dtype
+        "dtypes": dtypes
     })
 
     # Construct the field-specific  lookup tables
-    cls._build_luts(dtype)  # pylint: disable=protected-access
+    cls._build_luts()  # pylint: disable=protected-access
 
     # JIT compile the numba ufuncs
     cls.target("cpu")

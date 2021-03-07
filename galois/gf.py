@@ -14,6 +14,8 @@ OVERRIDDEN_UFUNCS = {
     np.log: "_log"
 }
 
+DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
+
 
 class GFBaseMeta(type):
     """
@@ -63,7 +65,11 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
     ..., alpha^(p^m - 2)}`.
     """
 
-    _dtype = None
+    dtypes = []
+    """
+    list: List of valid integer numpy dtypes that are compatible with this Galois field array class.
+    """
+
     _EXP = None
     _LOG = None
     _MUL_INV = None
@@ -77,29 +83,42 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
     _numba_ufunc_log = None
     _numba_ufunc_poly_eval = None
 
-    def __new__(cls, array):
-        assert cls is not GFBase, "GFBase is an abstract base class that should not be directly instantiated"
-        array = cls._verify_and_convert(array)
+    def __new__(cls, array, dtype=np.int64):
+        if cls is GFBase:
+            raise NotImplementedError("GFBase is an abstract base class that should not be directly instantiated")
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+
+        array = cls._verify_and_convert(array, dtype=dtype)
+
         return array
 
     @classmethod
-    def Zeros(cls, shape):
-        return cls(np.zeros(shape, dtype=cls._dtype))
+    def Zeros(cls, shape, dtype=np.int64):
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        return cls(np.zeros(shape, dtype=dtype), dtype=dtype)
 
     @classmethod
-    def Ones(cls, shape):
-        return cls(np.ones(shape, dtype=cls._dtype))
+    def Ones(cls, shape, dtype=np.int64):
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        return cls(np.ones(shape, dtype=dtype), dtype=dtype)
 
     @classmethod
-    def Random(cls, shape=(), low=0, high=None):
+    def Random(cls, shape=(), low=0, high=None, dtype=np.int64):
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         if high is None:
             high = cls.order
         assert 0 <= low < cls.order and low < high <= cls.order
-        return cls(np.random.randint(low, high, shape, dtype=cls._dtype))
+        return cls(np.random.randint(low, high, shape, dtype=dtype), dtype=dtype)
 
     @classmethod
-    def Elements(cls):
-        return cls(np.arange(0, cls.order, dtype=cls._dtype))
+    def Elements(cls, dtype=np.int64):
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        return cls(np.arange(0, cls.order, dtype=dtype), dtype=dtype)
 
     def __str__(self):
         return self.__repr__()
@@ -144,10 +163,12 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
         cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(cls._poly_eval)
 
     @classmethod
-    def _verify_and_convert(cls, array):
+    def _verify_and_convert(cls, array, dtype=np.int64):
         """
         Convert the input array into a Galois field array and check the input for data type and data range.
         """
+        assert dtype in cls.dtypes
+
         # Convert the array-like object to a numpy array without specifying the desired dtype. This allows
         # numpy to determine the data type of the input array or list. This allows for detection of floating-point
         # inputs. We will convert to the desired dtype after checking that the input array are integers and
@@ -157,10 +178,15 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
         assert np.all(array >= 0) and np.all(array < cls.order), "Galois field arrays must have elements with values less than the field order of {}".format(cls.order)
 
         # Convert array (already determined to be integers) to the Galois field's unsigned int dtype
-        array = array.astype(cls._dtype)
+        array = array.astype(dtype)
         array =  array.view(cls)
 
         return array
+
+    def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
+        if dtype not in self.dtypes:
+            raise TypeError(f"Galois field arrays can only be cast as integer dtypes {self.dtypes}, not {dtype}")
+        return super().astype(dtype, **kwargs)
 
     def __array_finalize__(self, obj):
         """
@@ -168,9 +194,10 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
         that view casting to a Galois field array has the appropriate dtype.
         """
         if obj is not None and not isinstance(obj, GFBase):
-            # Invoked during view casting
-            assert obj.dtype == self._dtype, "Can only view cast to Galois field arrays if the input array has the field's dtype of {}".format(self._dtype)
-            assert np.all(obj >= 0) and np.all(obj < self.order), "Galois field arrays must have elements with values less than the field order of {}".format(self.order)
+            if obj.dtype not in self.dtypes:
+                raise TypeError(f"Galois field arrays can only have integer dtypes {self.dtypes}, not {obj.dtype}")
+            if np.any(obj < 0) or np.any(obj >= self.order):
+                raise ValueError(f"GF({self.order}) arrays must have values in [0, {self.order})")
 
     def __getitem__(self, key):
         item = super().__getitem__(key)
@@ -283,6 +310,10 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
 
         self._verify_inputs(ufunc, method, inputs, meta)
 
+        # if method == "__call__":
+        if method not in ["reduce", "accumulate", "at", "reduceat"]:
+            kwargs["casting"] = "unsafe"
+
         # Call appropriate ufunc method (implemented in subclasses)
         if ufunc is np.add:
             outputs = getattr(self._numba_ufunc_add, method)(*inputs, **kwargs)
@@ -297,14 +328,12 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
         elif ufunc is np.power:
             outputs = getattr(self._numba_ufunc_power, method)(*inputs, **kwargs)
         elif ufunc is np.square:
-            inputs.append(np.array([2], dtype=self._dtype))
+            inputs.append(np.array([2], dtype=self.dtype))
             outputs = getattr(self._numba_ufunc_power, method)(*inputs, **kwargs)
         elif ufunc is np.log:
             outputs = getattr(self._numba_ufunc_log, method)(*inputs, **kwargs)
 
-        if outputs is None:
-            return outputs
-        elif ufunc is np.log:
+        if outputs is None or ufunc is np.log:
             return outputs
         else:
             outputs = self._view_output_ndarray_as_gf(ufunc, outputs)
