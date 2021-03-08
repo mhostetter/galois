@@ -174,8 +174,10 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
         # inputs. We will convert to the desired dtype after checking that the input array are integers and
         # within the field. Use copy=True to prevent newly created array from sharing memory with input array.
         array = np.array(array, copy=True)
-        assert np.issubdtype(array.dtype, np.integer), "Galois field elements must be integers not {}".format(array.dtype)
-        assert np.all(array >= 0) and np.all(array < cls.order), "Galois field arrays must have elements with values less than the field order of {}".format(cls.order)
+        if not np.issubdtype(array.dtype, np.integer):
+            raise TypeError(f"Galois field elements must have integer dtypes, not {array.dtype}")
+        if np.any(array < 0) or np.any(array >= cls.order):
+            raise ValueError(f"Galois field arrays must have elements in [0, {cls.order})")
 
         # Convert array (already determined to be integers) to the Galois field's unsigned int dtype
         array = array.astype(dtype)
@@ -244,15 +246,14 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
         v_inputs = []
         for input_ in inputs:
             if isinstance(input_, int):
-                # i = np.array(input_, dtype=self._dtype)
-                i = np.array(input_)
+                i = np.array(input_, dtype=np.int64)
             else:
                 i = input_
             v_inputs.append(i)
 
         return v_inputs
 
-    def _view_output_ndarray_as_gf(self, ufunc, v_outputs):
+    def _view_output_ndarray_as_gf(self, ufunc, v_outputs):  # pylint: disable=no-self-use
         if v_outputs is NotImplemented:
             return v_outputs
         if ufunc.nout == 1:
@@ -260,7 +261,7 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
 
         outputs = []
         for v_output in v_outputs:
-            o = self.__class__(v_output)
+            o = self.__class__(v_output, dtype=self.dtype)
             outputs.append(o)
 
         return outputs[0] if len(outputs) == 1 else outputs

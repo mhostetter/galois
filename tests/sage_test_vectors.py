@@ -96,7 +96,7 @@ def make_luts(field, folder, sparse=False):
         for j in range(Z.shape[1]):
             Z[i,j] = field(X[i,j]) /  field(Y[i,j])
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "divison.pkl")
+    save_pickle(d, folder, "divide.pkl")
 
     X, Z = io_1d(0, order, sparse=sparse)
     for i in range(X.shape[0]):

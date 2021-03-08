@@ -125,9 +125,9 @@ def multiply(field_folder):
 
 
 @pytest.fixture(scope="session")
-def divison(field_folder):
+def divide(field_folder):
     GF, folder = field_folder
-    with open(os.path.join(folder, "divison.pkl"), "rb") as f:
+    with open(os.path.join(folder, "divide.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF

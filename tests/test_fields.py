@@ -12,7 +12,7 @@ class TestInstantiation:
     def test_list_int(self, field):
         v = [0,1,0,1]
         a = field(v)
-        check_array(a, field)
+        assert type(a) is field
 
     def test_list_int_with_dtype(self, field):
         v = [0,1,0,1]
@@ -22,39 +22,39 @@ class TestInstantiation:
 
     def test_list_int_out_of_range(self, field):
         v = [0,1,0,field.order]
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             a = field(v)
         v = [0,1,0,-1]
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             a = field(v)
 
     def test_list_float(self, field):
         v = [0.1, field.order-0.8, 0.1, field.order-0.8]
-        with pytest.raises(AssertionError):
+        with pytest.raises(TypeError):
             a = field(v)
 
     def test_array_int(self, field):
         v = np.array([0,1,0,1])
         a = field(v)
-        check_array(a, field)
+        assert type(a) is field
 
     def test_array_int_out_of_range(self, field):
         v = np.array([0,1,0,field.order])
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             a = field(v)
         v = np.array([0,1,0,-1])
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             a = field(v)
 
     def test_array_float(self, field):
-        v = np.array([0.1, field.order-0.8, 0.1, field.order-0.8])
-        with pytest.raises(AssertionError):
+        v = np.array([0.1, field.order-0.8, 0.1, field.order-0.8], dtype=float)
+        with pytest.raises(TypeError):
             a = field(v)
 
     def test_zeros(self, field):
         a = field.Zeros(10)
         assert np.all(a == 0)
-        check_array(a, field)
+        assert type(a) is field
 
     def test_zeros_with_dtype(self, field):
         dtype = random.choice(field.dtypes)
@@ -65,7 +65,7 @@ class TestInstantiation:
     def test_ones(self, field):
         a = field.Ones(10)
         assert np.all(a == 1)
-        check_array(a, field)
+        assert type(a) is field
 
     def test_ones_with_dtype(self, field):
         dtype = random.choice(field.dtypes)
@@ -76,7 +76,7 @@ class TestInstantiation:
     def test_random(self, field):
         a = field.Random(10)
         assert np.all(a >= 0) and np.all(a < field.order)
-        check_array(a, field)
+        assert type(a) is field
 
     def test_random_with_dtype(self, field):
         dtype = random.choice(field.dtypes)
@@ -88,14 +88,14 @@ class TestInstantiation:
         a = field.Random()
         assert 0 <= a < field.order
         assert a.ndim == 0
-        check_array(a, field)
+        assert type(a) is field
 
     def test_random_element_with_dtype(self, field):
         dtype = random.choice(field.dtypes)
         a = field.Random(dtype=dtype)
         assert 0 <= a < field.order
         assert a.ndim == 0
-        check_array(a, field)
+        assert type(a) is field
         assert a.dtype == dtype
 
 
@@ -148,249 +148,273 @@ class TestAssignment:
 
     def test_index_constant_out_of_range(self, field):
         a = field([0,1,0,1])
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             a[0] = field.order
 
     def test_slice_constant_out_of_range(self, field):
         a = field([0,1,0,1])
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             a[0:2] = field.order
 
     def test_slice_list_out_of_range(self, field):
         a = field([0,1,0,1])
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             a[0:2] = [field.order, field.order]
 
     def test_slice_array_out_of_range(self, field):
         a = field([0,1,0,1])
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             a[0:2] = np.array([field.order, field.order])
 
 
 class TestArithmetic:
     def test_add(self, add, dtype):
-        GF = add["GF"]
-        if dtype not in GF.dtypes:
-            with pytest.raises(TypeError):
-                x = add["X"].astype(dtype)
-                y = add["Y"].astype(dtype)
-        else:
-            x = add["X"].astype(dtype)
-            y = add["Y"].astype(dtype)
+        GF, X, Y, Z = add["GF"], add["X"], add["Y"], add["Z"]
+        if dtype in GF.dtypes:
+            x = X.astype(dtype)
+            y = Y.astype(dtype)
             z = x + y
-            assert np.all(z == add["Z"])
-            check_array(z, GF)
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
 
     def test_subtract(self, subtract, dtype):
-        GF = subtract["GF"]
-        if dtype not in GF.dtypes:
-            with pytest.raises(TypeError):
-                x = subtract["X"].astype(dtype)
-                y = subtract["Y"].astype(dtype)
-        else:
-            x = subtract["X"].astype(dtype)
-            y = subtract["Y"].astype(dtype)
+        GF, X, Y, Z = subtract["GF"], subtract["X"], subtract["Y"], subtract["Z"]
+        if dtype in GF.dtypes:
+            x = X.astype(dtype)
+            y = Y.astype(dtype)
             z = x - y
-            assert np.all(z == subtract["Z"])
-            check_array(z, GF)
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
 
     def test_multiply(self, multiply, dtype):
-        GF = multiply["GF"]
-        if dtype not in GF.dtypes:
-            with pytest.raises(TypeError):
-                x = multiply["X"].astype(dtype)
-                y = multiply["Y"]
-        else:
-            x = multiply["X"].astype(dtype)
-            y = multiply["Y"]  # Don't convert this, it's not a field element
+        GF, X, Y, Z = multiply["GF"], multiply["X"], multiply["Y"], multiply["Z"]
+        if dtype in GF.dtypes:
+            x = X.astype(dtype)
+            y = Y  # Don't convert this, it's not a field element
             z = x * y
-            assert np.all(z == multiply["Z"])
-            check_array(z, GF)
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
 
-    def test_divison(self, divison, dtype):
-        GF = divison["GF"]
-        if dtype not in GF.dtypes:
-            with pytest.raises(TypeError):
-                x = divison["X"].astype(dtype)
-                y = divison["Y"].astype(dtype)
-        else:
-            x = divison["X"].astype(dtype)
-            y = divison["Y"].astype(dtype)
+    def test_divide(self, divide, dtype):
+        GF, X, Y, Z = divide["GF"], divide["X"], divide["Y"], divide["Z"]
+        if dtype in GF.dtypes:
+            x = X.astype(dtype)
+            y = Y.astype(dtype)
+
             z = x / y
-            assert np.all(z == divison["Z"])
-            check_array(z, GF)
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
+
+            z = x // y
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
 
     def test_additive_inverse(self, additive_inverse, dtype):
-        GF = additive_inverse["GF"]
-        if dtype not in GF.dtypes:
-            with pytest.raises(TypeError):
-                x = additive_inverse["X"].astype(dtype)
-        else:
-            x = additive_inverse["X"].astype(dtype)
+        GF, X, Z = additive_inverse["GF"], additive_inverse["X"], additive_inverse["Z"]
+        if dtype in GF.dtypes:
+            x = X.astype(dtype)
             z = -x
-            assert np.all(z == additive_inverse["Z"])
-            check_array(z, GF)
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
 
     def test_multiplicative_inverse(self, multiplicative_inverse, dtype):
-        GF = multiplicative_inverse["GF"]
-        if dtype not in GF.dtypes:
-            with pytest.raises(TypeError):
-                x = multiplicative_inverse["X"].astype(dtype)
-        else:
-            x = multiplicative_inverse["X"].astype(dtype)
+        GF, X, Z = multiplicative_inverse["GF"], multiplicative_inverse["X"], multiplicative_inverse["Z"]
+        if dtype in GF.dtypes:
+            x = X.astype(dtype)
+
             z = 1 / x
-            assert np.all(z == multiplicative_inverse["Z"])
-            check_array(z, GF)
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
+
+            z = 1 // x
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
+
+            z = x ** -1
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
 
     def test_power(self, power, dtype):
-        GF = power["GF"]
-        if dtype not in GF.dtypes:
-            with pytest.raises(TypeError):
-                x = power["X"].astype(dtype)
-                y = power["Y"]
-        else:
-            x = power["X"].astype(dtype)
-            y = power["Y"]  # Don't convert this, it's not a field element
+        GF, X, Y, Z = power["GF"], power["X"], power["Y"], power["Z"]
+        if dtype in GF.dtypes:
+            x = X.astype(dtype)
+            y = Y  # Don't convert this, it's not a field element
             z = x ** y
-            assert np.all(z == power["Z"])
-            check_array(z, GF)
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
+
+    def test_power_zero_to_zero(self, field, dtype):
+        if dtype in field.dtypes:
+            x = field.Zeros(10, dtype=dtype)
+            y = np.zeros(10, dtype=int)
+            z = x ** y
+            Z = np.ones(10, dtype=int)
+            assert np.all(z == Z)
+            assert type(z) is field
+            assert z.dtype == dtype
+
+    def test_power_zero_to_positive_integer(self, field, dtype):
+        if dtype in field.dtypes:
+            x = field.Zeros(10, dtype=dtype)
+            y = np.random.randint(1, 2*field.order, 10, dtype=int)
+            z = x ** y
+            Z = np.zeros(10, dtype=int)
+            assert np.all(z == Z)
+            assert type(z) is field
+            assert z.dtype == dtype
 
     def test_square(self, power, dtype):
-        GF = power["GF"]
-        if dtype not in GF.dtypes:
-            with pytest.raises(TypeError):
-                x = power["X"].astype(dtype)
-                y = power["Y"]
-        else:
-            x = power["X"].astype(dtype)
-            y = power["Y"]  # Don't convert this, it's not a field element
+        GF, X, Y, Z = power["GF"], power["X"], power["Y"], power["Z"]
+        if dtype in GF.dtypes:
+            x = X.astype(dtype)
+            y = Y  # Don't convert this, it's not a field element
             # Not guaranteed to have y=2 for "sparse" LUTs
-            if np.where(power["Y"] == 2)[1].size > 0:
+            if np.where(Y == 2)[1].size > 0:
                 j = np.where(y == 2)[1][0]  # Index of Y where y=2
                 x = x[:,j]
                 z = x ** 2
-                assert np.all(z == power["Z"][:,j])
-                check_array(z, GF)
+                assert np.all(z == Z[:,j])
+                assert type(z) is GF
+                assert z.dtype == dtype
 
     def test_log(self, log, dtype):
-        GF = log["GF"]
-        if dtype not in GF.dtypes:
-            with pytest.raises(TypeError):
-                x = log["X"].astype(dtype)
-        else:
-            x = log["X"].astype(dtype)
+        GF, X, Z = log["GF"], log["X"], log["Z"]
+        if dtype in GF.dtypes:
+            x = X.astype(dtype)
             z = np.log(x)
-            assert np.all(z == log["Z"])
+            assert np.all(z == Z)
 
 
 class TestArithmeticNonField:
     def test_add_int_scalar(self, add):
+        X, Y, Z = add["X"], add["Y"], add["Z"]
         shape = (10)
-        i = np.random.randint(0, add["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, add["Z"].shape[1])  # Random y index
-        x = add["X"][i,0]
-        y = int(add["Y"][0,j])
-        assert np.all(x + y == add["Z"][i,j])
-        assert np.all(y + x == add["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = X[i,0]
+        y = int(Y[0,j])
+        assert np.all(x + y == Z[i,j])
+        assert np.all(y + x == Z[i,j])
 
     def test_add_int_array(self, add):
+        X, Y, Z = add["X"], add["Y"], add["Z"]
         shape = (10)
-        i = np.random.randint(0, add["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, add["Z"].shape[1])  # Random y index
-        x = add["X"][i,0]
-        y = np.array(add["Y"][0,j], dtype=int)
-        assert np.all(x + y == add["Z"][i,j])
-        assert np.all(y + x == add["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = X[i,0]
+        y = np.array(Y[0,j], dtype=int)
+        assert np.all(x + y == Z[i,j])
+        assert np.all(y + x == Z[i,j])
 
     def test_subtract_int_scalar(self, subtract):
+        X, Y, Z = subtract["X"], subtract["Y"], subtract["Z"]
         shape = (10)
 
-        i = np.random.randint(0, subtract["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, subtract["Z"].shape[1])  # Random y index
-        x = subtract["X"][i,0]
-        y = int(subtract["Y"][0,j])
-        assert np.all(x - y == subtract["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = X[i,0]
+        y = int(Y[0,j])
+        assert np.all(x - y == Z[i,j])
 
-        i = np.random.randint(0, subtract["Z"].shape[0])  # Random x indices
-        j = np.random.randint(0, subtract["Z"].shape[1], shape)  # Random y index
-        x = int(subtract["X"][i,0])
-        y = subtract["Y"][0,j]
-        assert np.all(x - y == subtract["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0])  # Random x indices
+        j = np.random.randint(0, Z.shape[1], shape)  # Random y index
+        x = int(X[i,0])
+        y = Y[0,j]
+        assert np.all(x - y == Z[i,j])
 
     def test_subtract_int_array(self, subtract):
+        X, Y, Z = subtract["X"], subtract["Y"], subtract["Z"]
         shape = (10)
 
-        i = np.random.randint(0, subtract["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, subtract["Z"].shape[1], shape)  # Random y indices
-        x = subtract["X"][i,0]
-        y = np.array(subtract["Y"][0,j], dtype=int)
-        assert np.all(x - y == subtract["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1], shape)  # Random y indices
+        x = X[i,0]
+        y = np.array(Y[0,j], dtype=int)
+        assert np.all(x - y == Z[i,j])
 
-        i = np.random.randint(0, subtract["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, subtract["Z"].shape[1], shape)  # Random y indices
-        x = np.array(subtract["X"][i,0], dtype=int)
-        y = subtract["Y"][0,j]
-        assert np.all(x - y == subtract["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1], shape)  # Random y indices
+        x = np.array(X[i,0], dtype=int)
+        y = Y[0,j]
+        assert np.all(x - y == Z[i,j])
 
     def test_multiply_int_scalar(self, multiply):
+        X, Y, Z = multiply["X"], multiply["Y"], multiply["Z"]
         shape = (10)
-        i = np.random.randint(0, multiply["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, multiply["Z"].shape[1])  # Random y index
-        x = multiply["X"][i,0]
-        y = int(multiply["Y"][0,j])
-        assert np.all(x * y == multiply["Z"][i,j])
-        assert np.all(y * x == multiply["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = X[i,0]
+        y = int(Y[0,j])
+        assert np.all(x * y == Z[i,j])
+        assert np.all(y * x == Z[i,j])
 
     def test_multiply_int_array(self, multiply):
+        X, Y, Z = multiply["X"], multiply["Y"], multiply["Z"]
         shape = (10)
-        i = np.random.randint(0, multiply["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, multiply["Z"].shape[1])  # Random y index
-        x = multiply["X"][i,0]
-        y = np.array(multiply["Y"][0,j], dtype=int)
-        assert np.all(x * y == multiply["Z"][i,j])
-        assert np.all(y * x == multiply["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = X[i,0]
+        y = np.array(Y[0,j], dtype=int)
+        assert np.all(x * y == Z[i,j])
+        assert np.all(y * x == Z[i,j])
 
-    def test_divison_int_scalar(self, divison):
-        shape = (10)
-
-        i = np.random.randint(0, divison["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, divison["Z"].shape[1])  # Random y index
-        x = divison["X"][i,0]
-        y = int(divison["Y"][0,j])
-        assert np.all(x / y == divison["Z"][i,j])
-
-        i = np.random.randint(0, divison["Z"].shape[0])  # Random x index
-        j = np.random.randint(0, divison["Z"].shape[1], shape)  # Random y indices
-        x = int(divison["X"][i,0])
-        y = divison["Y"][0,j]
-        assert np.all(x / y == divison["Z"][i,j])
-
-    def test_divison_int_array(self, divison):
+    def test_divide_int_scalar(self, divide):
+        X, Y, Z = divide["X"], divide["Y"], divide["Z"]
         shape = (10)
 
-        i = np.random.randint(0, divison["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, divison["Z"].shape[1], shape)  # Random y indices
-        x = divison["X"][i,0]
-        y = np.array(divison["Y"][0,j], dtype=int)
-        assert np.all(x / y == divison["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = X[i,0]
+        y = int(Y[0,j])
+        assert np.all(x / y == Z[i,j])
+        assert np.all(x // y == Z[i,j])
 
-        i = np.random.randint(0, divison["Z"].shape[0], shape)  # Random x indices
-        j = np.random.randint(0, divison["Z"].shape[1], shape)  # Random y indices
-        x = np.array(divison["X"][i,0], dtype=int)
-        y = divison["Y"][0,j]
-        assert np.all(x / y == divison["Z"][i,j])
+        i = np.random.randint(0, Z.shape[0])  # Random x index
+        j = np.random.randint(0, Z.shape[1], shape)  # Random y indices
+        x = int(X[i,0])
+        y = Y[0,j]
+        assert np.all(x / y == Z[i,j])
+        assert np.all(x // y == Z[i,j])
+
+    def test_divide_int_array(self, divide):
+        X, Y, Z = divide["X"], divide["Y"], divide["Z"]
+        shape = (10)
+
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1], shape)  # Random y indices
+        x = X[i,0]
+        y = np.array(Y[0,j], dtype=int)
+        assert np.all(x / y == Z[i,j])
+        assert np.all(x // y == Z[i,j])
+
+        i = np.random.randint(0, Z.shape[0], shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1], shape)  # Random y indices
+        x = np.array(X[i,0], dtype=int)
+        y = Y[0,j]
+        assert np.all(x / y == Z[i,j])
+        assert np.all(x // y == Z[i,j])
 
     def test_radd_scalar(self, add):
-        GF = add["GF"]
-        i = np.random.randint(0, add["Z"].shape[0])  # Random x index
-        j = np.random.randint(0, add["Z"].shape[1])  # Random y index
-        x = GF(add["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = add["Y"][i,j]
+        GF, X, Y, Z = add["GF"], add["X"], add["Y"], add["Z"]
+        i = np.random.randint(0, Z.shape[0])  # Random x index
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[i,j]
         x[i,j] += y
-        assert x[i,j] == add["Z"][i,j]
+        assert x[i,j] == Z[i,j]
 
     def test_radd_vector(self, add):
-        GF = add["GF"]
+        GF, X, Y, Z = add["GF"], add["X"], add["Y"], add["Z"]
         i = np.random.randint(0, add["Z"].shape[0])  # Random x index
         x = GF(add["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
         y = add["Y"][i,:]
@@ -398,83 +422,83 @@ class TestArithmeticNonField:
         assert np.all(x[i,:] == add["Z"][i,:])
 
     def test_radd_matrix(self, add):
-        GF = add["GF"]
-        x = GF(add["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = add["Y"][:,:]
+        GF, X, Y, Z = add["GF"], add["X"], add["Y"], add["Z"]
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[:,:]
         x[:,:] += y
-        assert np.all(x[:,:] == add["Z"][:,:])
+        assert np.all(x[:,:] == Z[:,:])
 
     def test_rsub_scalar(self, subtract):
-        GF = subtract["GF"]
-        i = np.random.randint(0, subtract["Z"].shape[0])  # Random x index
-        j = np.random.randint(0, subtract["Z"].shape[1])  # Random y index
-        x = GF(subtract["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = subtract["Y"][i,j]
+        GF, X, Y, Z = subtract["GF"], subtract["X"], subtract["Y"], subtract["Z"]
+        i = np.random.randint(0, Z.shape[0])  # Random x index
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[i,j]
         x[i,j] -= y
-        assert x[i,j] == subtract["Z"][i,j]
+        assert x[i,j] == Z[i,j]
 
     def test_rsub_vector(self, subtract):
-        GF = subtract["GF"]
-        i = np.random.randint(0, subtract["Z"].shape[0])  # Random x index
-        x = GF(subtract["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = subtract["Y"][i,:]
+        GF, X, Y, Z = subtract["GF"], subtract["X"], subtract["Y"], subtract["Z"]
+        i = np.random.randint(0, Z.shape[0])  # Random x index
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[i,:]
         x[i,:] -= y
-        assert np.all(x[i,:] == subtract["Z"][i,:])
+        assert np.all(x[i,:] == Z[i,:])
 
     def test_rsub_matrix(self, subtract):
-        GF = subtract["GF"]
+        GF, X, Y, Z = subtract["GF"], subtract["X"], subtract["Y"], subtract["Z"]
         x = GF(subtract["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
         y = subtract["Y"][:,:]
         x[:,:] -= y
         assert np.all(x[:,:] == subtract["Z"][:,:])
 
     def test_rmul_scalar(self, multiply):
-        GF = multiply["GF"]
-        i = np.random.randint(0, multiply["Z"].shape[0])  # Random x index
-        j = np.random.randint(0, multiply["Z"].shape[1])  # Random y index
-        x = GF(multiply["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = multiply["Y"][i,j]
+        GF, X, Y, Z = multiply["GF"], multiply["X"], multiply["Y"], multiply["Z"]
+        i = np.random.randint(0, Z.shape[0])  # Random x index
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[i,j]
         x[i,j] *= y
-        assert x[i,j] == multiply["Z"][i,j]
+        assert x[i,j] == Z[i,j]
 
     def test_rmul_vector(self, multiply):
-        GF = multiply["GF"]
-        i = np.random.randint(0, multiply["Z"].shape[0])  # Random x index
-        x = GF(multiply["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = multiply["Y"][i,:]
+        GF, X, Y, Z = multiply["GF"], multiply["X"], multiply["Y"], multiply["Z"]
+        i = np.random.randint(0, Z.shape[0])  # Random x index
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[i,:]
         x[i,:] *= y
-        assert np.all(x[i,:] == multiply["Z"][i,:])
+        assert np.all(x[i,:] == Z[i,:])
 
     def test_rmul_matrix(self, multiply):
-        GF = multiply["GF"]
-        x = GF(multiply["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = multiply["Y"][:,:]
+        GF, X, Y, Z = multiply["GF"], multiply["X"], multiply["Y"], multiply["Z"]
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[:,:]
         x[:,:] *= y
-        assert np.all(x[:,:] == multiply["Z"][:,:])
+        assert np.all(x[:,:] == Z[:,:])
 
-    def test_rdiv_scalar(self, divison):
-        GF = divison["GF"]
-        i = np.random.randint(0, divison["Z"].shape[0])  # Random x index
-        j = np.random.randint(0, divison["Z"].shape[1])  # Random y index
-        x = GF(divison["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = divison["Y"][i,j]
+    def test_rdiv_scalar(self, divide):
+        GF, X, Y, Z = divide["GF"], divide["X"], divide["Y"], divide["Z"]
+        i = np.random.randint(0, Z.shape[0])  # Random x index
+        j = np.random.randint(0, Z.shape[1])  # Random y index
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[i,j]
         x[i,j] /= y
-        assert x[i,j] == divison["Z"][i,j]
+        assert x[i,j] == Z[i,j]
 
-    def test_rdiv_vector(self, divison):
-        GF = divison["GF"]
-        i = np.random.randint(0, divison["Z"].shape[0])  # Random x index
-        x = GF(divison["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = divison["Y"][i,:]
+    def test_rdiv_vector(self, divide):
+        GF, X, Y, Z = divide["GF"], divide["X"], divide["Y"], divide["Z"]
+        i = np.random.randint(0, Z.shape[0])  # Random x index
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[i,:]
         x[i,:] /= y
-        assert np.all(x[i,:] == divison["Z"][i,:])
+        assert np.all(x[i,:] == Z[i,:])
 
-    def test_rdiv_matrix(self, divison):
-        GF = divison["GF"]
-        x = GF(divison["X"])  # Ensure this is a copy operation to avoid rewriting the LUT!
-        y = divison["Y"][:,:]
+    def test_rdiv_matrix(self, divide):
+        GF, X, Y, Z = divide["GF"], divide["X"], divide["Y"], divide["Z"]
+        x = GF(X)  # Ensure this is a copy operation to avoid rewriting the LUT!
+        y = Y[:,:]
         x[:,:] /= y
-        assert np.all(x[:,:] == divison["Z"][:,:])
+        assert np.all(x[:,:] == Z[:,:])
 
 
 class TestArithmeticExceptions:
@@ -493,6 +517,8 @@ class TestArithmeticExceptions:
     def test_multiplicative_inverse_of_zero(self, field):
         x = field.Elements()
         with pytest.raises(ZeroDivisionError):
+            z = 1 / x
+        with pytest.raises(ZeroDivisionError):
             z = x ** -1
 
     def test_zero_to_negative_power(self, field):
@@ -505,11 +531,12 @@ class TestArithmeticExceptions:
             z = x ** y
 
     def test_log_of_zero(self, field):
-        x = field.Elements()
         with pytest.raises(ArithmeticError):
+            x = field(0)
             z = np.log(x)
         with pytest.raises(ArithmeticError):
-            z = np.log(field(0))
+            x = field.Elements()
+            z = np.log(x)
 
 
 class TestArithmeticTypes:
@@ -677,7 +704,7 @@ class TestUfuncMethods:
             b_truth = b_truth * ai
         assert b == b_truth
 
-    def test_reduce_divison(self, field):
+    def test_reduce_divide(self, field):
         a = field.Random(10, low=1)
         b = np.true_divide.reduce(a)
         b_truth = a[0]
@@ -994,8 +1021,3 @@ class TestProperties:
         for a in field.Elements():
             poly = poly * galois.Poly([1, -a], field=field)
         assert poly == galois.Poly.NonZero([1, -1], [p, 1], field=field)
-
-
-def check_array(array, GF):
-    assert type(array) is GF
-    # assert array.dtype == GF._dtype
