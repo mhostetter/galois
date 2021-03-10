@@ -180,6 +180,7 @@ def euclidean_algorithm(a, b):
     return r[-2]
 
 
+@numba.jit("int64[:](int64, int64)", nopython=True)
 def extended_euclidean_algorithm(a, b):
     """
     Implements the Extended Euclidean Algorithm to find the integer multiplicands of `a` and `b`,
@@ -206,8 +207,6 @@ def extended_euclidean_algorithm(a, b):
     * T. Moon, "Error Correction Coding", Section 5.2.2: The Euclidean Algorithm and Euclidean Domains, p. 181
     * https://en.wikipedia.org/wiki/Euclidean_algorithm#Extended_Euclidean_algorithm
     """
-    assert isinstance(a, (int, np.integer))
-    assert isinstance(b, (int, np.integer))
     r = [a, b]
     s = [1, 0]
     t = [0, 1]
@@ -221,7 +220,7 @@ def extended_euclidean_algorithm(a, b):
         if ri == 0:
             break
 
-    return s[-2], t[-2], r[-2]
+    return np.array([s[-2], t[-2], r[-2]])
 
 
 def chinese_remainder_theorem(a, m):
@@ -268,7 +267,7 @@ def chinese_remainder_theorem(a, m):
 
         # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = 1,
         # where 1 is the GCD(m1, m2) because m1 and m2 are pairwise relatively coprime
-        b1, b2, _ = extended_euclidean_algorithm(m1, m2)
+        b1, b2 = extended_euclidean_algorithm(m1, m2)[0:2]
 
         # Compute x through explicit construction
         x = a1*b2*m2 + a2*b1*m1
@@ -493,13 +492,13 @@ def min_poly(a, field, n):
         `x` in GF(q^n) is a root. p(x) over GF(q) and p(a) = 0 in GF(q^n).
     """
     if n == 1:
-        return Poly([1, -a], field=field)
-
-    # Loop over all degree-n polynomials
-    # for poly_dec in range(2**1, 2**(cls.power + 1)):
-    #     # Polynomial over GF(2^m) with coefficients in GF2
-    #     poly = Poly.Decimal(poly_dec, field=cls)
-    #     if poly(x) == 0:
-    #         return Poly.Decimal(poly_dec, field=GF2)
-
-    return None
+        poly = Poly([1, -a], field=field)
+    else:
+        poly = None
+        # Loop over all degree-n polynomials
+        for poly_dec in range(field.order**1, field.order**(n + 1)):
+            # Polynomial over GF(2^m) with coefficients in GF2
+            poly = Poly.Decimal(poly_dec, field=field)
+            if poly(a) == 0:
+                break
+    return poly

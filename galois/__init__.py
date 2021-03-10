@@ -15,6 +15,8 @@ from .poly import Poly
 # Create the default GF2 class and target the numba ufuncs for "cpu" (lowest overhead)
 GF2.target("cpu")
 
+GF2.alpha = GF2(1)
+
 # Define the GF2 primitve polynomial here, not in gf2.py, to avoid a circular dependency.
 # The primitive polynomial is p(x) = x - alpha, where alpha=1. Over GF2, this is equivalent
 # to p(x) = x + 1

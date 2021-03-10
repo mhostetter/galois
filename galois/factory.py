@@ -1,9 +1,9 @@
 import numpy as np
 
-from . import gfp
 from .algorithm import is_prime, primitive_root, min_poly
 from .gf import DTYPES
 from .gf2 import GF2
+from .gfp import GFpBase
 from .poly import Poly
 
 
@@ -57,7 +57,7 @@ def GF_factory(p, m, prim_poly=None, rebuild=False):  # pylint: disable=redefine
     return cls
 
 
-def GFp_factory(p, rebuild=False):
+def GFp_factory(p, mode="auto", rebuild=False):
     """
     Factory function to construct Galois field array classes of type GF(p).
 
@@ -74,15 +74,17 @@ def GFp_factory(p, rebuild=False):
     galois.GFpBase
         A new Galois field class that is a sublcass of `galois.GFpBase`.
     """
-    # If the requested field has already been constructed, return it instead of rebuilding
-    key = (p,)
-    if not rebuild and key in GFp_factory.classes:
-        return GFp_factory.classes[key]
-
+    if not isinstance(p, (int, np.integer)):
+        raise TypeError(f"GF(p) prime characteristic `p` must be an integer, not {type(p)}")
     if not is_prime(p):
         return ValueError(f"GF(p) fields must have a prime characteristic `p`, not {p}")
     if not 2 <= p <= 2**16:
         return ValueError(f"GF(p) classes are only supported for 2 <= p <= 2**16, not {p}")
+
+    # If the requested field has already been constructed, return it instead of rebuilding
+    key = (p,)
+    if not rebuild and key in GFp_factory.classes:
+        return GFp_factory.classes[key]
 
     order = p
     name = "GF{}".format(order)
@@ -92,7 +94,7 @@ def GFp_factory(p, rebuild=False):
     alpha = primitive_root(p)
 
     # Create new class type
-    cls = type(name, (gfp.GFpBase,), {
+    cls = type(name, (GFpBase,), {
         "characteristic": p,
         "power": 1,
         "order": p,
@@ -100,17 +102,16 @@ def GFp_factory(p, rebuild=False):
         "dtypes": dtypes
     })
 
-    # Construct the field-specific  lookup tables
-    cls._build_luts()  # pylint: disable=protected-access
-
     # JIT compile the numba ufuncs
-    cls.target("cpu")
+    cls.target("cpu", mode=mode, rebuild=rebuild)
+
+    cls.alpha = cls(alpha)
 
     # Assign the primitive polynomial with coefficients in the field
     cls.prim_poly = min_poly(cls.alpha, cls, 1)
 
     # Add class to dictionary of flyweights
-    GFp_factory.classes[p] = cls
+    GFp_factory.classes[key] = cls
 
     return cls
 

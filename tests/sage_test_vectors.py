@@ -13,7 +13,24 @@ import shutil
 import numpy as np
 from sage.all import *
 
+FIELD = None
 SPARSE_SIZE = 20
+
+
+def I(element):
+    """Convert from various finite field elements to an integer"""
+    try:
+        return int(element)
+    except TypeError:
+        return element.integer_representation()
+
+
+def F(integer):
+    """Convert from an integer to various finite field elements"""
+    try:
+        return FIELD.fetch_int(integer)
+    except:
+        return FIELD(integer)
 
 
 def arange(x_low, x_high, sparse=False):
@@ -53,10 +70,14 @@ def save_json(d, folder, name, indent=False):
 
 
 def make_luts(field, folder, sparse=False):
+    global FIELD
+
     print(f"Making LUTs for {field}")
     if os.path.exists(folder):
         shutil.rmtree(folder)
     os.mkdir(folder)
+
+    FIELD = field
     order = field.order()
     ring = PolynomialRing(field, names="x")
     assert field.gen() == field.multiplicative_generator()
@@ -65,7 +86,7 @@ def make_luts(field, folder, sparse=False):
         "characteristic": int(field.characteristic()),
         "degree": int(field.degree()),
         "order": int(field.order()),
-        "alpha": int(field.primitive_element()),
+        "alpha": I(field.primitive_element()),
         "prim_poly": np.flip(np.array(field.modulus().list(), dtype=int)).tolist()
     }
     save_json(d, folder, "properties.json", indent=True)
@@ -73,53 +94,64 @@ def make_luts(field, folder, sparse=False):
     X, Y, Z = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
-            Z[i,j] = field(X[i,j]) +  field(Y[i,j])
+            Z[i,j] = I(F(X[i,j]) + F(Y[i,j]))
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "add.pkl")
 
     X, Y, Z = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
-            Z[i,j] = field(X[i,j]) -  field(Y[i,j])
+            Z[i,j] = I(F(X[i,j]) -  F(Y[i,j]))
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "subtract.pkl")
+
+    X, Y, Z = io_2d(0, order, 0, order, sparse=sparse)
+    for i in range(Z.shape[0]):
+        for j in range(Z.shape[1]):
+            Z[i,j] = I(F(X[i,j]) * F(Y[i,j]))
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "multiply.pkl")
 
     X, Y, Z = io_2d(0, order, -order-2, order+3, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
-            Z[i,j] = field(X[i,j]) * Y[i,j]
+            Z[i,j] = I(F(X[i,j]) * Y[i,j])
     d = {"X": X, "Y": Y, "Z": Z}
-    save_pickle(d, folder, "multiply.pkl")
+    save_pickle(d, folder, "multiple_add.pkl")
 
     X, Y, Z = io_2d(0, order, 1, order, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
-            Z[i,j] = field(X[i,j]) /  field(Y[i,j])
+            Z[i,j] = I(F(X[i,j]) /  F(Y[i,j]))
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "divide.pkl")
 
     X, Z = io_1d(0, order, sparse=sparse)
     for i in range(X.shape[0]):
-        Z[i] = -field(X[i])
+        Z[i] = I(-F(X[i]))
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "additive_inverse.pkl")
 
     X, Z = io_1d(1, order, sparse=sparse)
     for i in range(X.shape[0]):
-        Z[i] = 1 / field(X[i])
+        Z[i] = I(1 / F(X[i]))
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "multiplicative_inverse.pkl")
 
     X, Y, Z = io_2d(1, order, -order-2, order+3, sparse=sparse)
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
-            Z[i,j] = field(X[i,j]) **  Y[i,j]
+            Z[i,j] = I(F(X[i,j]) **  Y[i,j])
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "power.pkl")
 
     X, Z = io_1d(1, order, sparse=sparse)
     for i in range(Z.shape[0]):
-        Z[i] = log(field(X[i]))
+        try:
+            # TODO: Figure out why we need to mod by (order - 1)
+            Z[i] = field.int_to_log(X[i]) % (order - 1)
+        except:
+            Z[i] = I(log(F(X[i])))
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "log.pkl")
 
@@ -130,10 +162,10 @@ def make_luts(field, folder, sparse=False):
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Z = []
     for i in range(len(X)):
-        x = ring(X[i][::-1])
-        y = ring(Y[i][::-1])
+        x = ring([F(e) for e in X[i][::-1]])
+        y = ring([F(e) for e in Y[i][::-1]])
         z = x + y
-        z = np.array(z.list()[::-1], dtype=int).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=int).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -143,10 +175,10 @@ def make_luts(field, folder, sparse=False):
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Z = []
     for i in range(len(X)):
-        x = ring(X[i][::-1])
-        y = ring(Y[i][::-1])
+        x = ring([F(e) for e in X[i][::-1]])
+        y = ring([F(e) for e in Y[i][::-1]])
         z = x - y
-        z = np.array(z.list()[::-1], dtype=int).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=int).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -156,10 +188,10 @@ def make_luts(field, folder, sparse=False):
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Z = []
     for i in range(len(X)):
-        x = ring(X[i][::-1])
-        y = ring(Y[i][::-1])
+        x = ring([F(e) for e in X[i][::-1]])
+        y = ring([F(e) for e in Y[i][::-1]])
         z = x * y
-        z = np.array(z.list()[::-1], dtype=int).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=int).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -174,14 +206,14 @@ def make_luts(field, folder, sparse=False):
     Q = []
     R = []
     for i in range(len(X)):
-        x = ring(X[i][::-1])
-        y = ring(Y[i][::-1])
+        x = ring([F(e) for e in X[i][::-1]])
+        y = ring([F(e) for e in Y[i][::-1]])
         q = x // y
         r = x % y
-        q = np.array(q.list()[::-1], dtype=int).tolist()
+        q = np.array([I(e) for e in q.list()[::-1]], dtype=int).tolist()
         q = q if q != [] else [0]
         Q.append(q)
-        r = np.array(r.list()[::-1], dtype=int).tolist()
+        r = np.array([I(e) for e in r.list()[::-1]], dtype=int).tolist()
         r = r if r != [] else [0]
         R.append(r)
     d = {"X": X, "Y": Y, "Q": Q, "R": R}
@@ -190,11 +222,11 @@ def make_luts(field, folder, sparse=False):
     X = random_coeffs(0, order, 1, 6)
     Y = np.arange(0, 5+1, dtype=int)
     Z = []
-    x = ring(X[::-1])
+    x = ring([F(e) for e in X[::-1]])
     for j in range(len(Y)):
         y = Y[j]
         z = x ** y
-        z = np.array(z.list()[::-1], dtype=int).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=int).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -205,10 +237,10 @@ def make_luts(field, folder, sparse=False):
     Z = np.zeros((len(X),len(Y)), dtype=int)
     for i in range(len(X)):
         for j in range(len(Y)):
-            x = ring(X[i][::-1])
-            y = field(Y[j])
+            x = ring([F(e) for e in X[i][::-1]])
+            y = F(Y[j])
             z = x(y)
-            Z[i,j] = z
+            Z[i,j] = I(z)
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "poly_evaluate.pkl")
 

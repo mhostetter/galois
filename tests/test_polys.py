@@ -40,6 +40,28 @@ class TestInstantiation:
         assert np.all(p.coeffs == c[1:])
         check_poly(p, field)
 
+    def test_field_coeffs_asc_order(self, field):
+        c1 = field.Random(6)
+        c1[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
+        p1 = galois.Poly(c1)
+        assert np.all(p1.coeffs == c1)
+        check_poly(p1, field)
+
+        c2 = np.flip(c1)
+        p2 = galois.Poly(c2, order="asc")
+        assert np.all(p2.coeffs == c2)
+        check_poly(p2, field)
+
+        assert p1 == p2
+
+    # def test_list_coeffs(self, field):
+    #     c = field.Random(6)
+    #     c[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
+    #     l = c.tolist()
+    #     p = galois.Poly(l, field=field)
+    #     assert np.all(p.coeffs == c)
+    #     check_poly(p, field)
+
     def test_negative_coeffs(self, field):
         a = field.Random()
         l = [1, -int(a)]
@@ -71,7 +93,7 @@ class TestInstantiation:
         c2 = field.Random(3)
         c2[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
         l2 = c2.tolist()
-        with pytest.raises(AssertionError):
+        with pytest.raises(TypeError):
             p.coeffs = l2
 
     def test_equal(self, field):
@@ -84,62 +106,69 @@ class TestInstantiation:
 
 class TestArithmetic:
     def test_add(self, poly_add):
-        for i in range(len(poly_add["X"])):
-            x = poly_add["X"][i]
-            y = poly_add["Y"][i]
+        GF, X, Y, Z = poly_add["GF"], poly_add["X"], poly_add["Y"], poly_add["Z"]
+        for i in range(len(X)):
+            x = X[i]
+            y = Y[i]
             z = x + y
-            assert z == poly_add["Z"][i]
-            check_poly(z, poly_add["GF"])
+            assert z == Z[i]
+            check_poly(z, GF)
 
     def test_subtract(self, poly_subtract):
-        for i in range(len(poly_subtract["X"])):
-            x = poly_subtract["X"][i]
-            y = poly_subtract["Y"][i]
+        GF, X, Y, Z = poly_subtract["GF"], poly_subtract["X"], poly_subtract["Y"], poly_subtract["Z"]
+        for i in range(len(X)):
+            x = X[i]
+            y = Y[i]
             z = x - y
-            assert z == poly_subtract["Z"][i]
-            check_poly(z, poly_subtract["GF"])
+            assert z == Z[i]
+            check_poly(z, GF)
 
     def test_multiply(self, poly_multiply):
-        for i in range(len(poly_multiply["X"])):
-            x = poly_multiply["X"][i]
-            y = poly_multiply["Y"][i]
+        GF, X, Y, Z = poly_multiply["GF"], poly_multiply["X"], poly_multiply["Y"], poly_multiply["Z"]
+        for i in range(len(X)):
+            x = X[i]
+            y = Y[i]
             z = x * y
-            assert z == poly_multiply["Z"][i]
-            check_poly(z, poly_multiply["GF"])
+            assert z == Z[i]
+            check_poly(z, GF)
 
     def test_divmod(self, poly_divmod):
-        for i in range(len(poly_divmod["X"])):
-            x = poly_divmod["X"][i]
-            y = poly_divmod["Y"][i]
+        GF, X, Y, Q, R = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["Q"], poly_divmod["R"]
+        for i in range(len(X)):
+            x = X[i]
+            y = Y[i]
             q = x // y
             r = x % y
-            assert q == poly_divmod["Q"][i]
-            assert r == poly_divmod["R"][i]
-            check_poly(q, poly_divmod["GF"])
-            check_poly(r, poly_divmod["GF"])
+            assert q == Q[i]
+            assert r == R[i]
+            check_poly(q, GF)
+            check_poly(r, GF)
 
     def test_power(self, poly_power):
-        x = poly_power["X"]  # Single polynomial
-        for i in range(len(poly_power["Y"])):
-            y = poly_power["Y"][i]
+        GF, X, Y, Z = poly_power["GF"], poly_power["X"], poly_power["Y"], poly_power["Z"]
+        x = X  # Single polynomial
+        for i in range(len(Y)):
+            y = Y[i]
             z = x ** y
-            assert z == poly_power["Z"][i]
-            check_poly(z, poly_power["GF"])
+            assert z == Z[i]
+            check_poly(z, GF)
 
     def test_evaluate_constant(self, poly_evaluate):
-        for i in range(len(poly_evaluate["X"])):
-            for j in range(poly_evaluate["Y"].size):
-                x = poly_evaluate["X"][i]  # Polynomial
-                y = poly_evaluate["Y"][j]  # GF element
+        GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
+        for i in range(len(X)):
+            for j in range(Y.size):
+                x = X[i]  # Polynomial
+                y = Y[j]  # GF element
                 z = x(y)  # GF element
-                assert z == poly_evaluate["Z"][i,j]
+                assert z == Z[i,j]
 
     def test_evaluate_vector(self, poly_evaluate):
-        for i in range(len(poly_evaluate["X"])):
-            x = poly_evaluate["X"][i]  # Polynomial
-            y = poly_evaluate["Y"]  # GF array
+        GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
+        for i in range(len(X)):
+            x = X[i]  # Polynomial
+            y = Y  # GF array
             z = x(y)  # GF array
-            assert np.all(z == poly_evaluate["Z"][i,:])
+            assert np.all(z == Z[i,:])
 
 
 class TestArithmeticTypes:

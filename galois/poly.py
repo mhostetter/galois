@@ -6,7 +6,21 @@ from .gf2 import GF2
 
 class Poly:
     """
-    asdf
+    A polynomial class with coefficients in any Galois field.
+
+    Parameters
+    ----------
+    coeffs : array_like
+        List of polynomial coefficients of type Galois field array, `np.ndarray`, list, or tuple. The first
+        element is the highest-degree element if `order="desc"` or the first element is the 0-th degree element
+        if `order="asc"`.
+    field : galois.GFBase, optional
+        Optionally specify the field to which the coefficients belong. The default field is `galois.GF2`. If
+        `coeffs` is a Galois field array, then that field is used and the `field` parameter is ignored.
+    order : str, optional
+        The interpretation of the coefficient degrees, either `"desc"` (default) or `"asc"`. For `"desc"`,
+        the first element of `coeffs` is the highest degree coefficient (`x^(N-1)`) and the last element is
+        the 0-th degree element (`x^0`).
 
     Examples
     --------
@@ -51,11 +65,16 @@ class Poly:
         a % b
     """
 
-    def __init__(self, coeffs, field=GF2):
-        assert issubclass(field, GFBase)
-        if isinstance(coeffs, GFBase):
+    def __init__(self, coeffs, field=None, order="desc"):
+        if not (field is None or issubclass(field, GFBase)):
+            raise TypeError(f"The Galois field `field` must be a subclass of GFBase, not {field}")
+        self.order = order
+
+        if isinstance(coeffs, GFBase) and field is None:
             self.coeffs = coeffs
         else:
+            field = GF2 if field is None else field
+
             # Convert list or np.ndarray of integers into the specified `field`. Apply negation
             # operator to any negative integers. For instance, `coeffs=[1, -1]` represents
             # `x - 1` in GF2. However, the `-1` element does not exist in GF2, but the operation
@@ -89,8 +108,26 @@ class Poly:
         all_coeffs[degree - degrees] = coeffs
         return cls(all_coeffs, field=field)
 
+    @classmethod
+    def Decimal(cls, decimal, field=GF2, order="desc"):
+        if not isinstance(decimal, (int, np.integer)):
+            raise TypeError(f"Polynomial creation must have `decimal` be an integer, not {type(decimal)}")
+
+        # NOTE: log_b(n) = log(n) / log(b)
+        degree = int(np.floor(np.log(decimal) / np.log(field.order)))
+
+        c = []  # Coefficients in descending order
+        for d in range(degree, -1, -1):
+            c += [decimal // field.order**d]
+            decimal = decimal % field.order**d
+
+        if order == "asc":
+            c = np.flip(c)
+
+        return cls(c, field=field, order=order)
+
     def __repr__(self):
-        return "Poly({} , {})".format(self.str, type(self.coeffs).__name__)
+        return "Poly({}, {})".format(self.str, self.field.__name__)
 
     def __str__(self):
         return self.__repr__()
@@ -108,7 +145,7 @@ class Poly:
             assert 0 <= input2 < input1.field.order
             b = input1.field(input2)
         else:
-            AssertionError("Can only perform polynomial arithmetic with Poly, GF, or int classes")
+            raise AssertionError("Can only perform polynomial arithmetic with Poly, GF, or int classes")
         assert type(a) is type(b), "Can only perform polynomial arthimetic between two polynomials with coefficients in the same field"
 
         return a, b
@@ -146,7 +183,7 @@ class Poly:
 
     def __call__(self, x):
         # y[:] = p(x[:])
-        x = self.field._verify_and_convert(x)
+        x = self.field(x)
         scalar = x.shape == ()
         x = np.atleast_1d(x)
         y = self.field.Zeros(x.shape)
@@ -206,28 +243,66 @@ class Poly:
             return c
 
     def __eq__(self, other):
-        return isinstance(other, Poly) and (self.field is other.field) and (self.coeffs.shape == other.coeffs.shape) and np.all(self.coeffs == other.coeffs)
+        return isinstance(other, Poly) and (self.field is other.field) and (self.coeffs.shape == other.coeffs.shape) and np.all(self.coeffs_asc == other.coeffs_asc)
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     @property
+    def order(self):
+        """
+        str: The interpretation of the ordering of the polynomial coefficients. `coeffs` are in exponent-descending order
+        if `order="desc"` and in exponent-ascending order if `order="asc"`.
+        """
+        return self._order
+
+    @order.setter
+    def order(self, order):
+        if order not in ["desc", "asc"]:
+            raise ValueError(f"The coefficient degree ordering `order` must be either 'desc' or 'asc', not {order}")
+        self._order = order
+
+    @property
     def coeffs(self):
+        """
+        GFBase: The polynomial coefficients as a Galois field array, in descending order if `order="desc"` or ascending
+        order if `order="asc"`.
+        """
         return self._coeffs
 
     @coeffs.setter
     def coeffs(self, coeffs):
-        assert isinstance(coeffs, GFBase), "Galois field polynomials must have coefficients belonging to a valid Galois field class (i.e. subclasses of GFBase)"
-        assert coeffs.ndim == 1, "Polynomial coefficients must be arrays of 1 dimension"
+        if not isinstance(coeffs, GFBase):
+            raise TypeError(f"Galois field polynomials must have coefficients in a valid Galois field class (i.e. subclasses of GFBase), not {type(coeffs)}")
+        if coeffs.ndim != 1:
+            raise ValueError(f"Galois field polynomial coefficients must be arrays with dimension 1, not {coeffs.ndim}")
         idxs = np.nonzero(coeffs)[0]  # Non-zero indices
+
         if idxs.size > 0:
             # Trim leading non-zero powers
-            coeffs = coeffs[idxs[0]:]
+            coeffs = coeffs[:idxs[-1]+1] if self.order == "asc" else coeffs[idxs[0]:]
         else:
             # All coefficients are zero, only return the x^0 place
             field = coeffs.__class__
             coeffs = field([0])
+
         self._coeffs = coeffs
+
+    @property
+    def coeffs_asc(self):
+        """
+        GFBase: The polynomial coefficients as a Galois field array in exponent-ascending order, i.e. the first
+        element corresponds to `x^0` and the last element corresponds to `x^N-1`.
+        """
+        return self.coeffs if self.order == "asc" else np.flip(self.coeffs)
+
+    @property
+    def coeffs_desc(self):
+        """
+        GFBase: The polynomial coefficients as a Galois field array in exponent-descending order, i.e. the first
+        element corresponds to `x^N-1` and the last element corresponds to `x^0`.
+        """
+        return self.coeffs if self.order == "desc" else np.flip(self.coeffs)
 
     @property
     def degree(self):
@@ -244,15 +319,24 @@ class Poly:
         return self.coeffs.__class__
 
     @property
+    def decimal(self):
+        c = self.coeffs_asc
+        c = c.view(np.ndarray)  # We want to do integer math, not Galois field math
+        return np.add.reduce(c * self.field.order**np.arange(0, c.size))
+
+    @property
     def str(self):
-        c = self.coeffs
+        c = self.coeffs_asc
+
         x = []
-        if self.degree >= 0 and c[-1] != 0:
-            x = ["{}".format(c[-1])] + x
-        if self.degree >= 1 and c[-2] != 0:
-            x = ["{}x".format(c[-2] if c[-2] != 1 else "")] + x
+        if self.degree >= 0 and c[0] != 0:
+            x += ["{}".format(c[0])]
+        if self.degree >= 1 and c[1] != 0:
+            x += ["{}x".format(c[1] if c[1] != 1 else "")]
         if self.degree >= 2:
-            idxs = np.nonzero(c[0:-2])[0]  # Indices with non-zeros coefficients
-            x = ["{}x^{}".format(c[i] if c[i] != 1 else "", self.degree - i) for i in idxs] + x
-        poly_str = " + ".join(x) if x else "0"
+            idxs = np.nonzero(c[2:])[0]  # Indices with non-zeros coefficients
+            x += ["{}x^{}".format(c[2+i] if c[2+i] != 1 else "", 2+i) for i in idxs]
+
+        poly_str = " + ".join(x[::-1]) if x else "0"
+
         return poly_str

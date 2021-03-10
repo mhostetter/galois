@@ -119,7 +119,7 @@ def multiply(field_folder):
         d = pickle.load(f)
     d["GF"] = GF
     d["X"] = GF(d["X"])
-    d["Y"] = np.array(d["Y"], dtype=int)
+    d["Y"] = GF(d["Y"])
     d["Z"] = GF(d["Z"])
     return d
 
@@ -157,6 +157,18 @@ def multiplicative_inverse(field_folder):
         d = pickle.load(f)
     d["GF"] = GF
     d["X"] = GF(d["X"])
+    d["Z"] = GF(d["Z"])
+    return d
+
+@pytest.fixture(scope="session")
+def multiple_add(field_folder):
+    GF, folder = field_folder
+    with open(os.path.join(folder, "multiple_add.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = GF(d["X"])
+    d["Y"] = d["Y"]
     d["Z"] = GF(d["Z"])
     return d
 
