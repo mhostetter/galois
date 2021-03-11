@@ -49,13 +49,29 @@ def next_prime(x):
 
 
 @numba.jit(nopython=True)
-def _numba_factors(x):
-    f = []  # Positive factors
-    for i in range(1, int(np.ceil(np.sqrt(x))) + 1):
-        if x % i == 0:
-            q = x // i
-            f.extend([i, q])
-    return f
+def trace(x: int) -> list:
+    """
+    sample:
+    trace(120) -> [2, 3, 5]
+    """
+    res = []
+    for p in 2, 3, 5, 7, 11:
+        if not x % p:
+            res.append(p)
+            while not x % p:
+                x //= p
+    while p * p < x:
+        for q in (2, 4, 2, 4, 6, 2, 6, 4, 2, 4, 6, 6, 2, 6, 4, 2,
+                  6, 4, 6, 8, 4, 2, 4, 2, 4, 8, 6, 4, 6, 2, 4, 6,
+                  2, 6, 6, 4, 2, 4, 6, 2, 6, 4, 2, 4, 2, 10, 2, 10):
+            p += q
+            if not x % p:
+                res.append(p)
+                while not x % p:
+                    x //= p
+    if x != 1:
+        res.append(x)
+    return res
 
 
 def factors(x):
@@ -72,34 +88,14 @@ def factors(x):
     np.ndarray:
         Sorted array of factors of `x`.
     """
-    f = _numba_factors(x)
-    f = sorted(list(set(f)))  # Use set() to emove duplicates
-    return np.array(f, dtype=int)
-
-
-@numba.jit(nopython=True)
-def _numba_prime_factors(x):
-    max_factor = int(np.ceil(np.sqrt(x)))
-    max_prime_idx = np.where(PRIMES - max_factor <= 0)[0][-1]
-
-    p = []
-    k = []
-    for prime in PRIMES[0:max_prime_idx+1]:
-        degree = 0
-        while x % prime == 0:
-            degree += 1
-            x = x // prime
-        if degree > 0:
-            p.append(prime)
-            k.append(degree)
-        if x == 1:
-            break
-
-    if x > 2:
-        p.append(x)
-        k.append(1)
-
-    return p, k
+    res = [1]
+    for p in trace(x):
+        t = -len(res)
+        while not x % p:
+            x //= p
+            for _ in range(t, 0):
+                res.append(res[t] * p)
+    return np.array(sorted(res), dtype=int)
 
 
 def prime_factors(x):
@@ -121,8 +117,14 @@ def prime_factors(x):
         array of corresponding prime powers :math:`k = [k_1, k_2, ..., k_{n-1}]`.
     """
     assert isinstance(x, (int, np.integer)) and x > 1
-    p, k = _numba_prime_factors(x)
-    return np.array(p, dtype=int), np.array(k, dtype=int)
+    pp, kk = trace(x), []
+    for p in pp:
+        k = 0
+        while not x % p:
+            x //= p
+            k += 1
+        kk.append(k)
+    return np.array(pp, dtype=int), np.array(kk, dtype=int)
 
 
 def is_prime(x):
@@ -140,9 +142,7 @@ def is_prime(x):
         `True` if the integer `x` is prime. `False` if it isn't.
     """
     assert isinstance(x, (int, np.integer)) and x > 1
-    # x is prime if and only if its prime factorization has one prime, occurring once
-    _, k = prime_factors(x)
-    return k.size == 1 and k[0] == 1
+    return trace(x)[-1] == x
 
 
 
@@ -297,11 +297,9 @@ def euler_totient(n):
         The number of totatives that are relatively prime to `n`.
     """
     assert n > 0
-    if n == 1:
-        return 1
-    p, k = prime_factors(n)
-    phi = np.multiply.reduce(p**(k - 1) * (p - 1))
-    return phi
+    for p in trace(n):
+        n = n // p * (p - 1)
+    return n
 
 
 def _carmichael_prime_power(p, k):
