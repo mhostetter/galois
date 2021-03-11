@@ -1,11 +1,11 @@
 """
 A python module that contains a LUT of pre-computed prime numbers.
+
+https://primes.utm.edu/lists/small/10000.txt
 """
 import numpy as np
 
 # List of primes less than 2^16
-# https://primes.utm.edu/lists/small/10000.txt
-
 PRIMES = np.array([
         2,     3,     5,     7,    11,    13,    17,    19,    23,    29,
        31,    37,    41,    43,    47,    53,    59,    61,    67,    71,

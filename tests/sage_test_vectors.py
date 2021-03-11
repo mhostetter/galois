@@ -270,3 +270,15 @@ if __name__ == "__main__":
     field = GF(3191, modulus="primitive", repr="int")
     folder = os.path.join(path, "gf3191")
     make_luts(field, folder, sparse=True)
+
+    field = GF(2**2, "x", modulus="primitive", repr="int")
+    folder = os.path.join(path, "gf4")
+    make_luts(field, folder)
+
+    field = GF(2**3, "x", modulus="primitive", repr="int")
+    folder = os.path.join(path, "gf8")
+    make_luts(field, folder)
+
+    field = GF(2**8, "x", modulus="primitive", repr="int")
+    folder = os.path.join(path, "gf256")
+    make_luts(field, folder)

@@ -10,10 +10,15 @@ PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 FIELDS = [
     pytest.param("gf2", marks=[pytest.mark.GF2]),
+
     pytest.param("gf5", marks=[pytest.mark.GFp, pytest.mark.GF5]),
     pytest.param("gf7", marks=[pytest.mark.GFp, pytest.mark.GF7]),
     pytest.param("gf31", marks=[pytest.mark.GFp, pytest.mark.GF31]),
     pytest.param("gf3191", marks=[pytest.mark.GFp, pytest.mark.GF31]),
+
+    pytest.param("gf4", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
+    pytest.param("gf8", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
+    pytest.param("gf256", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
 ]
 
 # DTYPES = [np.int64,]
@@ -39,6 +44,7 @@ DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
 def construct_field(folder):
     if folder == "gf2":
         GF = galois.GF2
+
     elif folder == "gf5":
         GF = galois.GF_factory(5, 1)
     elif folder == "gf7":
@@ -47,6 +53,14 @@ def construct_field(folder):
         GF = galois.GF_factory(31, 1)
     elif folder == "gf3191":
         GF = galois.GF_factory(3191, 1)
+
+    elif folder == "gf4":
+        GF = galois.GF_factory(2, 2)
+    elif folder == "gf8":
+        GF = galois.GF_factory(2, 3)
+    elif folder == "gf256":
+        GF = galois.GF_factory(2, 8)
+
     return GF
 
 

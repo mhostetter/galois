@@ -1,12 +1,75 @@
 import numba
 import numpy as np
 
-from .algorithm import extended_euclidean_algorithm
-from .gf import GFBase
+from .algorithm import extended_euclidean_algorithm, is_prime, primitive_root
+from .gf import GFBase, DTYPES
+from .poly import Poly
 
 ORDER = None
 EXP = []
 LOG = []
+
+
+def GFp_factory(p, mode="auto", rebuild=False):
+    """
+    Factory function to construct Galois field array classes of type GF(p).
+
+    Parameters
+    ----------
+    p : int
+        The prime characteristic of the field GF(p).
+    rebuild : bool, optional
+        A flag to force a rebuild of the class and its lookup tables. Default is `False` which will return the cached,
+        previously-built class if it exists.
+
+    Returns
+    -------
+    galois.GFpBase
+        A new Galois field class that is a sublcass of `galois.GFpBase`.
+    """
+    if not isinstance(p, (int, np.integer)):
+        raise TypeError(f"GF(p) prime characteristic `p` must be an integer, not {type(p)}")
+    if not is_prime(p):
+        return ValueError(f"GF(p) fields must have a prime characteristic `p`, not {p}")
+    if not 2 <= p <= 2**16:
+        return ValueError(f"GF(p) classes are only supported for 2 <= p <= 2**16, not {p}")
+
+    # If the requested field has already been constructed, return it instead of rebuilding
+    key = (p,)
+    if not rebuild and key in GFp_factory.classes:
+        return GFp_factory.classes[key]
+
+    characteristic = p
+    power = 1
+    order = characteristic**power
+    name = "GF{}".format(order)
+    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order]
+
+    # Use the smallest primitive root as the multiplicative generator for the field
+    alpha = primitive_root(p)
+
+    # Create new class type
+    cls = type(name, (GFpBase,), {
+        "characteristic": characteristic,
+        "power": power,
+        "order": order,
+        "dtypes": dtypes
+    })
+
+    # Define the primitive element as a 0-dim array in the newly created Galois field array class
+    cls.alpha = cls(alpha)
+
+    # JIT compile the numba ufuncs
+    cls.target("cpu", mode=mode, rebuild=rebuild)
+
+    cls.prim_poly = Poly([1, -alpha], field=cls)  # pylint: disable=invalid-unary-operand-type
+
+    # Add class to dictionary of flyweights
+    GFp_factory.classes[key] = cls
+
+    return cls
+
+GFp_factory.classes = {}
 
 
 class GFpBase(GFBase):
@@ -66,7 +129,6 @@ class GFpBase(GFBase):
         assert len(set(cls._LOG[1:cls.order])) == cls.order - 1, "The log lookup table is not unique"
 
         # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
-        # cls._EXP[cls.order:2*cls.order] = cls._EXP[cls.order - (cls.order-1):2*cls.order - (cls.order-1)]
         cls._EXP[cls.order:2*cls.order] = cls._EXP[1:1 + cls.order]
 
     @classmethod

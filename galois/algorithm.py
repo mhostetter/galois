@@ -3,8 +3,8 @@ import math
 import numba
 import numpy as np
 
+from ._prime import PRIMES
 from .poly import Poly
-from .prime import PRIMES
 
 
 def _prev_prime_index(x):
