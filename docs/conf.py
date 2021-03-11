@@ -100,4 +100,4 @@ autosummary_imported_members = True
 
 nbsphinx_execute = 'auto'
 
-ipython_execlines = ['import galois']
+ipython_execlines = ['import numpy as np', 'import galois']

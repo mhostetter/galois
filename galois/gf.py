@@ -22,7 +22,7 @@ class GFBaseMeta(type):
     """
 
     def __str__(cls):
-        return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.power, cls.prim_poly.str, None)
+        return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.power, cls.prim_poly.str, cls.prim_poly.decimal)
 
 
 class GFBase(np.ndarray, metaclass=GFBaseMeta):
@@ -265,8 +265,6 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
         appropriate, use native numpy ufuncs for their efficiency and generality in supporting various array
         shapes, etc.
         """
-        print(ufunc, method, inputs, kwargs)
-
         meta = {}
         meta["types"] = [type(inputs[i]) for i in range(len(inputs))]
         meta["operands"] = list(range(0, len(inputs)))

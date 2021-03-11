@@ -26,6 +26,15 @@ API v\ |version|
 
    galois
 
+Tutorials
+---------
+
+.. toctree::
+   :maxdepth: 2
+
+   tutorials/constructing_fields.rst
+   tutorials/field_arithmetic.rst
+
 Basic Usage
 -----------
 
@@ -71,10 +80,12 @@ Galois field arrays support traditional numpy array operations
 
    -x
 
-   # Multiply a Galois field array with any integer
-   x * -3  # NOTE: -3 is outside the field
+   x * y
 
-   1 / y
+   x / y
+
+   # Multiple addition of a Galois field array with any integer
+   x * -3  # NOTE: -3 is outside the field
 
    # Exponentiate a Galois field array with any integer
    y ** -2  # NOTE: 87 is outside the field
@@ -124,15 +135,6 @@ Galois field polynomials can also be evaluated at constants or arrays.
 
    p(1)
    p(a)
-
-Usage Examples with Jupyter Notebooks
--------------------------------------
-
-.. toctree::
-   :maxdepth: 1
-
-   notebooks/example
-   notebooks/performance
 
 Indices and tables
 ------------------
