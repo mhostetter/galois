@@ -3,7 +3,35 @@ name: Test
 on: [push, pull_request]
 
 jobs:
-  test:
+  test-min:
+    name: Minimum Dependencies
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: [3.6, 3.7, 3.8]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install testing dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install pytest
+        pip3 install pytest-cov
+    - name: Install minimum package dependencies
+      run: pip3 install -r requirements-min.txt
+    - name: Install python package
+      run: pip3 install .
+    - name: Test with pytest
+      run: pytest --cov=galois/ --cov-report=xml tests/
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v1
+
+  test-latest:
+    name: Latest Dependencies
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
