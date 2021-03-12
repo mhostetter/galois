@@ -95,7 +95,7 @@ def properties(field_folder):
     with open(os.path.join(folder, "properties.json"), "rb") as f:
         d = json.load(f)
     d["GF"] = GF
-    d["prim_poly"] = galois.Poly(d["prim_poly"])
+    d["prim_poly"] = d["prim_poly"]
     return d
 
 
