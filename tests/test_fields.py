@@ -966,6 +966,14 @@ class TestUfuncMethods:
 
 
 class TestProperties:
+    def test_properties(self, properties):
+        GF = properties["GF"]
+        assert GF.characteristic == properties["characteristic"]
+        assert GF.power == properties["degree"]
+        assert GF.order == properties["order"]
+        assert GF.alpha == properties["alpha"]
+        assert all(GF.prim_poly.coeffs == properties["prim_poly"])
+
     def test_characteristic(self, field):
         a = field.Elements()
         p = field.characteristic

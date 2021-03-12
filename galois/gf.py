@@ -1,3 +1,4 @@
+import numba
 import numpy as np
 
 
@@ -14,6 +15,15 @@ OVERRIDDEN_UFUNCS = {
 }
 
 DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
+
+# Globals that will be set in `_compile_lookup_ufuncs` and referenced in the numba JIT-compiled
+# functions below
+CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
+ORDER = None  # The field's order `p^m`
+EXP = []  # EXP[i] = alpha^i
+LOG = []  # LOG[i] = x, such that alpha^x = i
+ZECH_LOG = []  # ZECH_LOG[i] = log(1 + alpha^i)
+ZECH_E = None  # alpha^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
 
 
 class GFBaseMeta(type):
@@ -73,6 +83,7 @@ class GFBase(metaclass=GFBaseMeta):
 
     _EXP = None
     _LOG = None
+    _ZECH_LOG = None
 
     @classmethod
     def Zeros(cls, shape, dtype=np.int64):
@@ -146,14 +157,36 @@ class GFBase(metaclass=GFBaseMeta):
             raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         return np.arange(0, cls.order, dtype=dtype).view(cls)
 
+    @classmethod
+    def _compile_lookup_ufuncs(cls, target):
+        # Export lookup tables to global variables so JIT compiling can cache the tables in the binaries
+        global CHARACTERISTIC, ORDER, EXP, LOG, ZECH_LOG, ZECH_E  # pylint: disable=global-statement
+        CHARACTERISTIC = cls.characteristic
+        ORDER = cls.order
+        EXP = cls._EXP
+        LOG = cls._LOG
+        ZECH_LOG = cls._ZECH_LOG
+        if cls.characteristic == 2:
+            ZECH_E = 0  # alpha^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
+        else:
+            ZECH_E = (cls.order - 1) // 2  # alpha^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
+
+        kwargs = {"nopython": True, "target": target}
+        if target == "cuda":
+            kwargs.pop("nopython")
+
+        # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
+        cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_lookup)
+        cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(subtract_lookup)
+        cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiply_lookup)
+        cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(divide_lookup)
+        cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(negative_lookup)
+        cls._numba_ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiple_add_lookup)
+        cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(power_lookup)
+        cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(log_lookup)
+
     def __str__(self):
         return self.__repr__()
-
-    # def to_int_repr():
-
-    # def to_poly_repr():
-
-    # def to_log_repr():
 
 
 class GFArray(np.ndarray):
@@ -375,3 +408,165 @@ class GFArray(np.ndarray):
         else:
             outputs = self._view_output_ndarray_as_gf(ufunc, outputs)
             return outputs
+
+
+###############################################################################
+# Galois field arithmetic using EXP, LOG, and ZECH_LOG lookup tables
+###############################################################################
+
+def add_lookup(a, b):
+    """
+    a + b = alpha^m + alpha^n
+          = alpha^m * (1 + alpha^(n - m))  # If n is larger, factor out alpha^m
+          = alpha^m * alpha^ZECH_LOG(n - m)
+          = alpha^(m + ZECH_LOG(n - m))
+    """
+    m = LOG[a]
+    n = LOG[b]
+
+    # LOG[0] = -Inf, so catch these conditions
+    if a == 0:
+        return b
+    if b == 0:
+        return a
+
+    if m > n:
+        # We want to factor out alpha^m, where m is smaller than n, such that `n - m` is always positive. IF
+        # m is larger than n, switch a and b in the addition.
+        m, n = n, m
+
+    if n - m == ZECH_E:
+        # ZECH_LOG[ZECH_E] = -Inf and alpha^(-Inf) = 0
+        return 0
+
+    return EXP[m + ZECH_LOG[n - m]]
+
+
+def subtract_lookup(a, b):
+    """
+    a - b = alpha^m - alpha^n
+          = alpha^m + (-alpha^n)
+          = alpha^m + (-1 * alpha^n)
+          = alpha^m + (alpha^e * alpha^n)
+          = alpha^m + alpha^(e + n)
+    """
+    # Same as addition if n = LOG[b] + e
+    m = LOG[a]
+    n = LOG[b] + ZECH_E
+
+    # LOG[0] = -Inf, so catch these conditions
+    if b == 0:
+        return a
+    if a == 0:
+        return EXP[n]
+
+    if m > n:
+        # We want to factor out alpha^m, where m is smaller than n, such that `n - m` is always positive. IF
+        # m is larger than n, switch a and b in the addition.
+        m, n = n, m
+
+    z = n - m
+    if z == ZECH_E:
+        # ZECH_LOG[ZECH_E] = -Inf and alpha^(-Inf) = 0
+        return 0
+    if z >= ORDER - 1:
+        # Reduce index of ZECH_LOG by the multiplicative order of the field, i.e. `order - 1`
+        z -= ORDER - 1
+
+    return EXP[m + ZECH_LOG[z]]
+
+
+def multiply_lookup(a, b):
+    """
+    a * b = alpha^m * alpha^n
+          = alpha^(m + n)
+    """
+    m = LOG[a]
+    n = LOG[b]
+
+    # LOG[0] = -Inf, so catch these conditions
+    if a == 0 or b == 0:
+        return 0
+
+    return EXP[m + n]
+
+
+def divide_lookup(a, b):
+    """
+    a / b = alpha^m / alpha^n
+          = alpha^(m - n)
+          = 1 * alpha^(m - n)
+          = alpha^(ORDER - 1) * alpha^(m - n)
+          = alpha^(ORDER - 1 + m - n)
+    """
+    m = LOG[a]
+    n = LOG[b]
+
+    # LOG[0] = -Inf, so catch these conditions
+    if a == 0 or b == 0:
+        # NOTE: The b == 0 condition will be caught outside of ufunc and raise ZeroDivisonError
+        return 0
+
+    # We add `ORDER - 1` to guarantee the index is non-negative
+    return EXP[(ORDER - 1) + m - n]
+
+
+def negative_lookup(a):
+    """
+    -a = -alpha^n
+       = -1 * alpha^n
+       = alpha^e * alpha^n
+       = alpha^(e + n)
+    """
+    n = LOG[a]
+
+    # LOG[0] = -Inf, so catch these conditions
+    if a == 0:
+        return 0
+
+    return EXP[ZECH_E + n]
+
+
+def multiple_add_lookup(a, b_int):
+    """
+    a is a field element
+    b_int is any integer, not a field element
+    b is a field element
+
+    a . b_int = a + a + ... + a = b_int additions of a
+    a . p_int = 0, where p_int is the prime characteristic of the field
+
+    a . b_int = a * ((b_int // p_int)*p_int + b_int % p_int)
+              = a * ((b_int // p_int)*p_int) + a * (b_int % p_int)
+              = 0 + a * (b_int % p_int)
+              = a * (b_int % p_int)
+              = a * b, field multiplication
+
+    b = b_int % p_int
+    """
+    b = b_int % CHARACTERISTIC
+    m = LOG[a]
+    n = LOG[b]
+
+    # LOG[0] = -Inf, so catch these conditions
+    if a == 0 or b == 0:
+        return 0
+
+    return EXP[m + n]
+
+
+def power_lookup(a, b_int):
+    m = LOG[a]
+
+    if b_int == 0:
+        return 1
+
+    # LOG[0] = -Inf, so catch these conditions
+    if a == 0:
+        return 0
+
+    return EXP[(m * b_int) % (ORDER - 1)]
+
+
+def log_lookup(a):
+    return LOG[a]
