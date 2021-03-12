@@ -25,9 +25,9 @@ class GFBaseMeta(type):
         return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.power, cls.prim_poly.str, cls.prim_poly.decimal)
 
 
-class GFBase(np.ndarray, metaclass=GFBaseMeta):
+class GFBase(metaclass=GFBaseMeta):
     """
-    asdf
+    An abstract base class for all Galois field array classes.
 
     .. note::
         This is an abstract base class for all Galois fields. It cannot be instantiated directly.
@@ -37,40 +37,136 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
 
     characteristic = None
     """
-    int: The characteristic `p`, which must be prime, of the Galois field `GF(p^m)`. Adding `p` copies of any
-    element will always result in 0.
+    int: The characteristic :math:`p`, which must be prime, of the Galois field :math:`\\mathrm{GF}(p^m)`. Adding
+    :math:`p` copies of any element will always result in :math:`0`.
     """
 
     power = None
     """
-    int: The power `m`, which must be non-negative, of the Galois field `GF(p^m)`.
+    int: The power :math:`m`, which is a positive integer, of the Galois field :math:`\\mathrm{GF}(p^m)`.
     """
 
     order = None
     """
-    int: The order `p^m` of the Galois field `GF(p^m)`. The order of the field is also equal to the field's size.
+    int: The order :math:`p^m` of the Galois field :math:`\\mathrm{GF}(p^m)`. The order of the field is also equal to
+    the field's size.
     """
 
     prim_poly = None
     """
-    galois.Poly: The primitive polynomial of the Galois field `GF(p^m)`. The primitve polynomial must have coefficients
-    in `GF(p)`.
+    Poly: The primitive polynomial of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive polynomial is of degree
+    :math:`m` in :math:`\\mathrm{GF}(p)[x]`.
     """
 
     alpha = None
     """
-    int: The primitive element of the Galois field `GF(p^m)`. The primitive element is a root of the primitive polynomial,
-    such that `prim_poly(alpha) = 0`. The primitive element also generates the field `GF(p^m) = {0, 1, alpha^1, alpha*2,
-    ..., alpha^(p^m - 2)}`.
+    int: The primitive element of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive element is a root of the
+    primitive polynomial :math:`p(x)`, such that :math:`p(\\alpha) = 0`. The primitive element also generates the field
+    :math:`\\mathrm{GF}(p^m) = [0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}]`.
     """
 
     dtypes = []
     """
-    list: List of valid integer numpy dtypes that are compatible with this Galois field array class.
+    list: List of valid integer numpy dtypes that are compatible with this Galois field array class. Valid data types
+    are signed and unsinged integers that can represent values in :math:`[0, order)`.
     """
 
     _EXP = None
     _LOG = None
+
+    @classmethod
+    def Zeros(cls, shape, dtype=np.int64):
+        """
+        Create a Galois field array with all zeros.
+
+        Parameters
+        ----------
+        shape : tuple
+            A numpy-compliant `shape` tuple. A single integer represents the size of a 1-dim array. An n-tuple
+            represents an n-dim array with each element indicating the size in each dimension.
+        dtype : np.dtype, optional
+            The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+        """
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        return np.zeros(shape, dtype=dtype).view(cls)
+
+    @classmethod
+    def Ones(cls, shape, dtype=np.int64):
+        """
+        Create a Galois field array with all ones.
+
+        Parameters
+        ----------
+        shape : tuple
+            A numpy-compliant `shape` tuple. A single integer represents the size of a 1-dim array. An n-tuple
+            represents an n-dim array with each element indicating the size in each dimension.
+        dtype : np.dtype, optional
+            The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+        """
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        return np.ones(shape, dtype=dtype).view(cls)
+
+    @classmethod
+    def Random(cls, shape=(), low=0, high=None, dtype=np.int64):
+        """
+        Create a Galois field array with random field elements in :math:`[0, p^m)`.
+
+        Parameters
+        ----------
+        shape : tuple
+            A numpy-compliant `shape` tuple. A single integer represents the size of a 1-dim array. An n-tuple
+            represents an n-dim array with each element indicating the size in each dimension.
+        low : int, optional
+            The lowest random element (inclusive). The default is 0.
+        high : int, optional
+            The highest random element (exclusive). The default is `None` which represents the field's order.
+        dtype : np.dtype, optional
+            The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+        """
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        if high is None:
+            high = cls.order
+        assert 0 <= low < cls.order and low < high <= cls.order
+        return np.random.randint(low, high, shape, dtype=dtype).view(cls)
+
+    @classmethod
+    def Elements(cls, dtype=np.int64):
+        """
+        Create a Galois field array of the field's elements :math:`[0, \\dots, p^m-1]`.
+
+        Parameters
+        ----------
+        dtype : np.dtype, optional
+            The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+        """
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        return np.arange(0, cls.order, dtype=dtype).view(cls)
+
+    def __str__(self):
+        return self.__repr__()
+
+    # def to_int_repr():
+
+    # def to_poly_repr():
+
+    # def to_log_repr():
+
+
+class GFArray(np.ndarray):
+    """
+    asdf
+    """
+
+    characteristic = None
+    power = None
+    order = None
+    prim_poly = None
+    alpha = None
+    dtypes = []
 
     _numba_ufunc_add = None
     _numba_ufunc_subtract = None
@@ -83,8 +179,8 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
     _numba_ufunc_poly_eval = None
 
     def __new__(cls, array, dtype=np.int64):
-        if cls is GFBase:
-            raise NotImplementedError("GFBase is an abstract base class that cannot be directly instantiated")
+        if cls is GFArray:
+            raise NotImplementedError("GFArray is an abstract base class that cannot be directly instantiated")
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
 
@@ -103,54 +199,6 @@ class GFBase(np.ndarray, metaclass=GFBaseMeta):
         array =  array.view(cls)
 
         return array
-
-    @classmethod
-    def Zeros(cls, shape, dtype=np.int64):
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
-        return np.zeros(shape, dtype=dtype).view(cls)
-
-    @classmethod
-    def Ones(cls, shape, dtype=np.int64):
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
-        return np.ones(shape, dtype=dtype).view(cls)
-
-    @classmethod
-    def Random(cls, shape=(), low=0, high=None, dtype=np.int64):
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
-        if high is None:
-            high = cls.order
-        assert 0 <= low < cls.order and low < high <= cls.order
-        return np.random.randint(low, high, shape, dtype=dtype).view(cls)
-
-    @classmethod
-    def Elements(cls, dtype=np.int64):
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
-        return np.arange(0, cls.order, dtype=dtype).view(cls)
-
-    def __str__(self):
-        return self.__repr__()
-
-    # def to_int_repr():
-
-    # def to_poly_repr():
-
-    # def to_log_repr():
-
-    @classmethod
-    def target(cls, target):
-        """
-        Retarget the just-in-time compiled numba ufuncs.
-
-        Parameters
-        ----------
-        target : str
-            Either "cpu", "parallel", or "cuda".
-        """
-        raise NotImplementedError
 
     def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
         if dtype not in self.dtypes:

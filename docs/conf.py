@@ -88,7 +88,6 @@ todo_include_todos = True
 autodoc_default_options = {
     'imported-members': True,
     'members': True,
-    'inherited_members': True,
     'undoc-members': True,
     'member-order': 'groupwise',
     'show-inheritance': True,

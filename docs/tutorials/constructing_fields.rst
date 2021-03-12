@@ -93,8 +93,8 @@ creation is the same for all Galois fields, but :math:`GF(7)` is used as an exam
 
       x_np
 
-      # Flip the LSB in the first element of x_np
-      x_np[0] ^= 1; x_np
+      # Add 1 (mod 7) to the first element of x_np
+      x_np[0] = (x_np[0] + 1) % 7; x_np
 
       # Notice x is unchanged due to the copy during the explicit construction
       x

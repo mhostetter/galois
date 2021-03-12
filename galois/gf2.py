@@ -1,13 +1,21 @@
 import numba
 
-from .gf import GFBase, DTYPES
+from .gf import GFBase, GFArray, DTYPES
 
 CHARACTERISTIC = None
 
 
-class GF2(GFBase):
+class GF2(GFBase, GFArray):
     """
-    asdf
+    Galois field array class for :math:`\\mathrm{GF}(2)` fields.
+
+    Parameters
+    ----------
+    array : array_like
+        The input array to be converted to a Galois field array. The input array is copied, so the original array
+        is unmodified by the Galois field array. Valid input array types are `np.ndarray`, `list`, `tuple`, or `int`.
+    dtype : np.dtype, optional
+        The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
 
     Examples
     --------
@@ -57,8 +65,8 @@ class GF2(GFBase):
 
         Parameters
         ----------
-        target : str
-            Either "cpu", "parallel", or "cuda".
+        target : str, optional
+            The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
         """
         if target not in ["cpu", "parallel", "cuda"]:
             raise ValueError(f"Valid numba compilation targets are ['cpu', 'parallel', 'cuda'], not {target}")

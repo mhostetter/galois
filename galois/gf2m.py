@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 from .conway import conway_polynomial
-from .gf import GFBase, DTYPES
+from .gf import GFBase, GFArray, DTYPES
 
 CHARACTERISTIC = None
 ORDER = None
@@ -10,22 +10,29 @@ EXP = []
 LOG = []
 
 
-def GF2m_factory(m, mode="auto", rebuild=False):
+def GF2m_factory(m, target="cpu", mode="auto", rebuild=False):
     """
-    Factory function to construct Galois field array classes of type GF(2^m).
+    Factory function to construct Galois field array classes of type :math:`\\mathrm{GF}(2^m)`.
 
     Parameters
     ----------
-    p : int
-        The prime characteristic of the field GF(2^m).
+    m : int
+        The prime characteristic degree :math:`m` of the field :math:`\\mathrm{GF}(2^m)`.
+    target : str, optional
+        The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
+    mode : str, optional
+        The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`.
+        The "lookup" mode will use Zech log, log, and anti-log lookup table for speed. The `"calculate"` mode will
+        not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
+        than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
+        on field order.
     rebuild : bool, optional
-        A flag to force a rebuild of the class and its lookup tables. Default is `False` which will return the cached,
-        previously-built class if it exists.
+        Indicates whether to force a rebuild of the lookup tables. The default is `False`.
 
     Returns
     -------
-    galois.GF2mBase
-        A new Galois field class that is a sublcass of `galois.GF2mBase`.
+    GF2m
+        A new Galois field class that is a sublcass of `galois.GF2m`.
     """
     if not isinstance(m, (int, np.integer)):
         raise TypeError(f"GF(2^m) characteristic degree `m` must be an integer, not {type(m)}")
@@ -48,7 +55,7 @@ def GF2m_factory(m, mode="auto", rebuild=False):
     prim_poly = conway_polynomial(characteristic, power)
 
     # Create new class type
-    cls = type(name, (GF2mBase,), {
+    cls = type(name, (GF2m,), {
         "characteristic": characteristic,
         "power": power,
         "order": order,
@@ -60,7 +67,7 @@ def GF2m_factory(m, mode="auto", rebuild=False):
     cls.alpha = cls(alpha)
 
     # JIT compile the numba ufuncs
-    cls.target("cpu", mode=mode, rebuild=rebuild)
+    cls.target(target, mode=mode, rebuild=rebuild)
 
     # Add class to dictionary of flyweights
     GF2m_factory.classes[key] = cls
@@ -70,38 +77,31 @@ def GF2m_factory(m, mode="auto", rebuild=False):
 GF2m_factory.classes = {}
 
 
-class GF2mBase(GFBase):
+class GF2m(GFBase, GFArray):
     """
-    asdf
+    An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
 
     .. note::
-        This is an abstract base class for all GF(2^m) fields. It cannot be instantiated directly.
+        This is an abstract base class for all :math:`\\mathrm{GF}(2^m)` fields. It cannot be instantiated directly.
+
+        :math:`\\mathrm{GF}(2^m)` field classes are created using `galois.GF_factory(2, m)` or `galois.GF2m_factory(m)`.
+
+    Parameters
+    ----------
+    array : array_like
+        The input array to be converted to a Galois field array. The input array is copied, so the original array
+        is unmodified by the Galois field array. Valid input array types are `np.ndarray`, `list`, `tuple`, or `int`.
+    dtype : np.dtype, optional
+        The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
     """
 
     def __new__(cls, *args, **kwargs):
-        if cls is GF2mBase:
-            raise NotImplementedError("GF2mBase is an abstract base class that cannot be directly instantiated")
+        if cls is GF2m:
+            raise NotImplementedError("GF2m is an abstract base class that cannot be directly instantiated")
         return super().__new__(cls, *args, **kwargs)
 
     @classmethod
     def _build_luts(cls):
-        """
-        Constructs the multiplicative inverse lookup table.
-
-        Parameters
-        ----------
-        dtype : np.dtype
-            Numpy data type for lookup tables.
-
-        Returns
-        -------
-        np.ndarray
-            The anti-log lookup table for the field. `EXP[i] = alpha^i`.
-        np.ndarray
-            The log lookup table for the field. `LOG[i] = log_alpha(i)`.
-        np.ndarray
-            The multiplicative inverse lookup table for the field. `MUL_INV[i] = 1/i`.
-        """
         prim_poly_dec = cls.prim_poly.decimal
         dtype = np.int64
         if cls.order > np.iinfo(dtype).max:
@@ -135,7 +135,23 @@ class GF2mBase(GFBase):
         cls._EXP[cls.order:2*cls.order] = cls._EXP[1:1 + cls.order]
 
     @classmethod
-    def target(cls, target, mode="lookup", rebuild=False):  # pylint: disable=arguments-differ
+    def target(cls, target, mode="auto", rebuild=False):
+        """
+        Retarget the just-in-time compiled numba ufuncs.
+
+        Parameters
+        ----------
+        target : str, optional
+            The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
+        mode : str, optional
+            The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`.
+            The "lookup" mode will use Zech log, log, and anti-log lookup table for speed. The `"calculate"` mode will
+            not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
+            than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
+            on field order.
+        rebuild : bool, optional
+            Indicates whether to force a rebuild of the lookup tables. The default is `False`.
+        """
         if target not in ["cpu", "parallel", "cuda"]:
             raise ValueError(f"Valid numba compilation targets are ['cpu', 'parallel', 'cuda'], not {target}")
         if mode not in ["auto", "lookup", "calculate"]:

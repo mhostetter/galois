@@ -265,8 +265,8 @@ class Poly:
     @property
     def coeffs(self):
         """
-        GFBase: The polynomial coefficients as a Galois field array, in descending order if `order="desc"` or ascending
-        order if `order="asc"`.
+        GF2, GF2m, GFp, GFpm: The polynomial coefficients as a Galois field array. Coefficients are :math:`[a_{N-1}, \\dots, a_1, a_0]` if `order="desc"` or
+        :math:`[a_0, a_1, \\dots, a_{N-1}]` if `order="asc"`, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
         """
         return self._coeffs
 
@@ -291,16 +291,16 @@ class Poly:
     @property
     def coeffs_asc(self):
         """
-        GFBase: The polynomial coefficients as a Galois field array in exponent-ascending order, i.e. the first
-        element corresponds to `x^0` and the last element corresponds to `x^N-1`.
+        GF2, GF2m, GFp, GFpm: The polynomial coefficients :math:`[a_0, a_1, \\dots, a_{N-1}]` as a Galois field array
+        in exponent-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
         """
         return self.coeffs if self.order == "asc" else np.flip(self.coeffs)
 
     @property
     def coeffs_desc(self):
         """
-        GFBase: The polynomial coefficients as a Galois field array in exponent-descending order, i.e. the first
-        element corresponds to `x^N-1` and the last element corresponds to `x^0`.
+        GF2, GF2m, GFp, GFpm: The polynomial coefficients :math:`[a_{N-1}, \\dots, a_1, a_0]` as a Galois field array
+        in exponent-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
         """
         return self.coeffs if self.order == "desc" else np.flip(self.coeffs)
 
@@ -314,18 +314,26 @@ class Poly:
     @property
     def field(self):
         """
-        galois.GF2Base or galois.GFpBase: The finite field to which the coefficients belong.
+        galois.GF2Base or galois.GFp: The finite field to which the coefficients belong.
         """
         return self.coeffs.__class__
 
     @property
     def decimal(self):
+        """
+        int: The integer representation of the polynomial. For :math:`p(x) =  a_{N-1}x^{N-1} + \\dots + a_1x + a_0`
+        with elements in :math:`\\mathrm{GF}(q)`, the decimal representation is :math:`d = a_{N-1} q^{N-1} + \\dots + a_1 q + a_0`
+        (using integer arithmetic, not field arithmetic) where :math:`q` is the field order.
+        """
         c = self.coeffs_asc
         c = c.view(np.ndarray)  # We want to do integer math, not Galois field math
         return np.add.reduce(c * self.field.order**np.arange(0, c.size))
 
     @property
     def str(self):
+        """
+        str: The string representation of the polynomial.
+        """
         c = self.coeffs_asc
 
         x = []

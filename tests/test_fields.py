@@ -9,6 +9,14 @@ import galois
 
 
 class TestInstantiation:
+    def test_cant_instantiate_GFp(self):
+        with pytest.raises(NotImplementedError):
+            a = galois.GFp([1,2,3])
+
+    def test_cant_instantiate_GF2m(self):
+        with pytest.raises(NotImplementedError):
+            a = galois.GF2m([1,2,3])
+
     def test_list_int(self, field):
         v = [0,1,0,1]
         a = field(v)

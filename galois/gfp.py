@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 from .algorithm import extended_euclidean_algorithm, is_prime, primitive_root
-from .gf import GFBase, DTYPES
+from .gf import GFBase, GFArray, DTYPES
 from .poly import Poly
 
 ORDER = None
@@ -10,22 +10,29 @@ EXP = []
 LOG = []
 
 
-def GFp_factory(p, mode="auto", rebuild=False):
+def GFp_factory(p, target="cpu", mode="auto", rebuild=False):
     """
-    Factory function to construct Galois field array classes of type GF(p).
+    Factory function to construct Galois field array classes of type :math:`\\mathrm{GF}(p)`.
 
     Parameters
     ----------
     p : int
-        The prime characteristic of the field GF(p).
+        The prime characteristic of the field :math:`\\mathrm{GF}(p)`.
+    target : str, optional
+        The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
+    mode : str, optional
+        The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`.
+        The "lookup" mode will use Zech log, log, and anti-log lookup table for speed. The `"calculate"` mode will
+        not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
+        than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
+        on field order.
     rebuild : bool, optional
-        A flag to force a rebuild of the class and its lookup tables. Default is `False` which will return the cached,
-        previously-built class if it exists.
+        Indicates whether to force a rebuild of the lookup tables. The default is `False`.
 
     Returns
     -------
-    galois.GFpBase
-        A new Galois field class that is a sublcass of `galois.GFpBase`.
+    GFp
+        A new Galois field class that is a sublcass of `galois.GFp`.
     """
     if not isinstance(p, (int, np.integer)):
         raise TypeError(f"GF(p) prime characteristic `p` must be an integer, not {type(p)}")
@@ -49,7 +56,7 @@ def GFp_factory(p, mode="auto", rebuild=False):
     alpha = primitive_root(p)
 
     # Create new class type
-    cls = type(name, (GFpBase,), {
+    cls = type(name, (GFp,), {
         "characteristic": characteristic,
         "power": power,
         "order": order,
@@ -60,7 +67,7 @@ def GFp_factory(p, mode="auto", rebuild=False):
     cls.alpha = cls(alpha)
 
     # JIT compile the numba ufuncs
-    cls.target("cpu", mode=mode, rebuild=rebuild)
+    cls.target(target, mode=mode, rebuild=rebuild)
 
     cls.prim_poly = Poly([1, -alpha], field=cls)  # pylint: disable=invalid-unary-operand-type
 
@@ -72,17 +79,27 @@ def GFp_factory(p, mode="auto", rebuild=False):
 GFp_factory.classes = {}
 
 
-class GFpBase(GFBase):
+class GFp(GFBase, GFArray):
     """
-    asdf
+    An abstract base class for all :math:`\\mathrm{GF}(p)` field array classes.
 
     .. note::
-        This is an abstract base class for all GF(p) fields. It cannot be instantiated directly.
+        This is an abstract base class for all :math:`\\mathrm{GF}(p)` fields. It cannot be instantiated directly.
+
+        :math:`\\mathrm{GF}(p)` field classes are created using `galois.GF_factory(p, 1)` or `galois.GFp_factory(p)`.
+
+    Parameters
+    ----------
+    array : array_like
+        The input array to be converted to a Galois field array. The input array is copied, so the original array
+        is unmodified by the Galois field array. Valid input array types are `np.ndarray`, `list`, `tuple`, or `int`.
+    dtype : np.dtype, optional
+        The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
     """
 
     def __new__(cls, *args, **kwargs):
-        if cls is GFpBase:
-            raise NotImplementedError("GFpBase is an abstract base class that cannot be directly instantiated")
+        if cls is GFp:
+            raise NotImplementedError("GFp is an abstract base class that cannot be directly instantiated")
         return super().__new__(cls, *args, **kwargs)
 
     @classmethod
@@ -132,7 +149,7 @@ class GFpBase(GFBase):
         cls._EXP[cls.order:2*cls.order] = cls._EXP[1:1 + cls.order]
 
     @classmethod
-    def target(cls, target, mode="lookup", rebuild=False):  # pylint: disable=arguments-differ
+    def target(cls, target, mode="lookup", rebuild=False):
         """
         Retarget the just-in-time compiled numba ufuncs.
 
