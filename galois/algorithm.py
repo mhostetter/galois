@@ -1,10 +1,27 @@
-from itertools import combinations
-import math
-import numba
 import numpy as np
+from itertools import combinations, islice
+from bisect import bisect_left
+from math import sqrt
+import numba  # TODO force it to work with globals
+from typing import List
 
-from ._prime import PRIMES
 from .poly import Poly
+
+
+def primes(limit: int) -> List[int]:
+    """ TODO docstring  """
+    chanks = (limit + 29) // 30
+    lim, sieve = chanks * 15 - 1, bytearray(b'\0\0\1\0\1\1\0\1\1\0\1\0\0\1\1') * chanks
+    for b, p in zip(sieve, range(3, int(sqrt(chanks * 30 + 1)) + 1, 2)):
+        if b:
+            pp = (p * p - 3) // 2
+            sieve[pp::p] = b'\0' * ((lim - pp) // p + 1)
+    return [2, 3, 5, *(p for b, p in zip(sieve, range(3, limit, 2)) if b)]
+
+
+PRIMES = primes(10_000_000)  # TODO kick out magic number
+TOP_PRIME = PRIMES[-1]
+TOP_PRIME_SQUARE = TOP_PRIME ** 2
 
 
 def _prev_prime_index(x):
@@ -14,7 +31,7 @@ def _prev_prime_index(x):
 
 def prev_prime(x):
     """
-    Returns the nearest prime :math:`p \\le x`.
+    Returns the nearest prime `p <= x`.
 
     Parameters
     ----------
@@ -24,7 +41,7 @@ def prev_prime(x):
     Returns
     -------
     int
-        The nearest prime :math:`p \\le x`.
+        The nearest prime `p <= x`.
     """
     prev_idx = _prev_prime_index(x)
     return PRIMES[prev_idx]
@@ -32,7 +49,7 @@ def prev_prime(x):
 
 def next_prime(x):
     """
-    Returns the nearest prime :math:`p > x`.
+    Returns the nearest prime `p > x`.
 
     Parameters
     ----------
@@ -42,108 +59,103 @@ def next_prime(x):
     Returns
     -------
     int
-        The nearest prime :math:`p > x`.
+        The nearest prime `p > x`.
     """
     prev_idx = _prev_prime_index(x)
     return PRIMES[prev_idx + 1]
 
 
-@numba.jit(nopython=True)
-def _numba_factors(x):
-    f = []  # Positive factors
-    for i in range(1, int(np.ceil(np.sqrt(x))) + 1):
-        if x % i == 0:
-            q = x // i
-            f.extend([i, q])
-    return f
-
-
-def factors(x):
+def trace(n: int) -> List[int]:  # TODO numba acceleration?
     """
-    Computes the positive factors of the integer :math:`x`.
+    sample:
+    trace(360) -> [2, 3, 5] #  all prime divisors of 360
+    """
+    res, lo, step = [], 0, 100  # TODO kick out magic number
+    for hi in range(step, len(PRIMES), step):
+        for p in islice(PRIMES, lo, hi):
+            if not n % p:
+                res.append(p)
+                while not n % p:
+                    n //= p
+        if n < p * p:
+            if n != 1:
+                res.append(n)
+            return res
+        lo = hi
+    assert n < TOP_PRIME_SQUARE  # TODO more information when out of range
+
+
+def factors(n):
+    """
+    Computes the positive factors of the integer `n`.
 
     Parameters
     ----------
-    x : int
+    n : int
         An integer to be factored.
 
     Returns
     -------
-    np.ndarray:
-        Sorted array of factors of :math:`x`.
+    list res:
+        Sorted list of factors of `n`.
     """
-    f = _numba_factors(x)
-    f = sorted(list(set(f)))  # Use set() to emove duplicates
-    return np.array(f, dtype=int)
+    res = [1]
+    for p in trace(n):
+        shift = -len(res)
+        while not n % p:
+            n //= p
+            for _ in range(shift, 0):
+                res.append(res[shift] * p)
+    return sorted(res)
 
 
-@numba.jit(nopython=True)
-def _numba_prime_factors(x):
-    max_factor = int(np.ceil(np.sqrt(x)))
-    max_prime_idx = np.where(PRIMES - max_factor <= 0)[0][-1]
-
-    p = []
-    k = []
-    for prime in PRIMES[0:max_prime_idx+1]:
-        degree = 0
-        while x % prime == 0:
-            degree += 1
-            x = x // prime
-        if degree > 0:
-            p.append(prime)
-            k.append(degree)
-        if x == 1:
-            break
-
-    if x > 2:
-        p.append(x)
-        k.append(1)
-
-    return p, k
-
-
-def prime_factors(x):
+def prime_factors(n):
     """
-    Computes the prime factors of the positive integer :math:`x`.
+    Computes the prime factors of the positive integer `n`.
 
-    The integer :math:`x` can be factored into :math:`x = p_1^{k_1} p_2^{k_2} \\dots p_{n-1}^{k_{n-1}}`.
+    The integer :math:`n` can be factored into :math:`x = p_1^{k_1} p_2^{k_2} ... p_{n-1}^{k_{n-1}}`.
 
     Parameters
     ----------
-    x : int
-        The positive integer to be factored (:math:`x > 1`).
+    n : int
+        The positive integer to be factored (`n > 1`).
 
     Returns
     -------
-    np.ndarray:
-        Sorted array of prime factors :math:`p = [p_1, p_2, \\dots, p_{n-1}]` with :math:`p_1 < p_2 < \\dots < p_{n-1}`.
-    np.ndarray:
-        Array of corresponding prime powers :math:`k = [k_1, k_2, \\dots, k_{n-1}]`.
+    list primez:
+        Sorted list of prime factors :math:`p = [p_1, p_2, ..., p_{n-1}]`.
+    list cnt:
+        list of corresponding prime powers :math:`k = [k_1, k_2, ..., k_{n-1}]`.
     """
-    assert isinstance(x, (int, np.integer)) and x > 1
-    p, k = _numba_prime_factors(x)
-    return np.array(p, dtype=int), np.array(k, dtype=int)
+    assert isinstance(n, int) and n > 1
+    primez, cnt = trace(n), []  # TODO more elegant var names
+    for p in primez:
+        c = 0
+        while not n % p:
+            n //= p
+            c += 1
+        cnt.append(c)
+    return primez, cnt
 
 
-def is_prime(x):
+def is_prime(n):
     """
-    Determines if :math:`x` is prime.
+    Determines if `n` is prime.
 
     Parameters
     ----------
-    x : int
-        A positive integer (:math:`x > 1`).
+    n : int
+        A positive integer (`n > 1`).
 
     Returns
     -------
     bool:
-        `True` if the integer :math:`x` is prime.
+        `True` if the integer `n` is prime. `False` if it isn't.
     """
-    assert isinstance(x, (int, np.integer)) and x > 1
-    # x is prime if and only if its prime factorization has one prime, occurring once
-    _, k = prime_factors(x)
-    return k.size == 1 and k[0] == 1
-
+    assert isinstance(n, int) and 1 < n <= TOP_PRIME_SQUARE
+    if n <= TOP_PRIME:
+        return PRIMES[bisect_left(PRIMES, n)] == n
+    return trace(n)[-1] == n
 
 
 def euclidean_algorithm(a, b):
@@ -160,7 +172,7 @@ def euclidean_algorithm(a, b):
     Returns
     -------
     int
-        Greatest common divisor of :math:`a` and :math:`b`, i.e. :math:`gcd(a,b)`.
+        Greatest common divisor of `a` and `b`, i.e. `gcd(a,b)`.
 
     References
     ----------
@@ -183,8 +195,8 @@ def euclidean_algorithm(a, b):
 @numba.jit("int64[:](int64, int64)", nopython=True)
 def extended_euclidean_algorithm(a, b):
     """
-    Implements the Extended Euclidean Algorithm to find the integer multiplicands of :math:`a` and :math:`b`,
-    such that :math:`a x + b y = gcd(a,b)`.
+    Implements the Extended Euclidean Algorithm to find the integer multiplicands of `a` and `b`,
+    such that `a*x + b*y = gcd(a,b)`.
 
     Parameters
     ----------
@@ -196,11 +208,11 @@ def extended_euclidean_algorithm(a, b):
     Returns
     -------
     int
-        Integer :math:`x`, such that :math:`a x + b y = gcd(a, b)`.
+        Integer `x`, such that `a*x + b*y = gcd(a, b)`.
     int
-        Integer :math:`y`, such that :math:`a x + b y = gcd(a, b)`.
+        Integer `y`, such that `a*x + b*y = gcd(a, b)`.
     int
-        Greatest common divisor of :math:`a` and :math:`b`.
+        Greatest common divisor of `a` and `b`.
 
     References
     ----------
@@ -215,8 +227,8 @@ def extended_euclidean_algorithm(a, b):
         qi = r[-2] // r[-1]
         ri = r[-2] % r[-1]
         r.append(ri)
-        s.append(s[-2] - qi*s[-1])
-        t.append(t[-2] - qi*t[-1])
+        s.append(s[-2] - qi * s[-1])
+        t.append(t[-2] - qi * t[-1])
         if ri == 0:
             break
 
@@ -270,7 +282,7 @@ def chinese_remainder_theorem(a, m):
         b1, b2 = extended_euclidean_algorithm(m1, m2)[0:2]
 
         # Compute x through explicit construction
-        x = a1*b2*m2 + a2*b1*m1
+        x = a1 * b2 * m2 + a2 * b1 * m1
 
         m1 = m1 * m2  # The new modulus
         a1 = x % m1  # The new equivalent remainder
@@ -283,8 +295,8 @@ def chinese_remainder_theorem(a, m):
 
 def euler_totient(n):
     """
-    Implements the Euler Totient function to count the positive integers (totatives) in :math:`1 \\le k < n` that
-    are relatively prime to :math:`n`, i.e. :math:`gcd(n, k) = 1`.
+    Implements the Euler Totient function to count the positive integers (totatives) in `1 <= k < n` that
+    are relatively prime to `n`, i.e. `gcd(n, k) = 1`.
 
     Parameters
     ----------
@@ -294,26 +306,25 @@ def euler_totient(n):
     Returns
     -------
     int
-        The number of totatives that are relatively prime to :math:`n`.
+        The number of totatives that are relatively prime to `n`.
     """
     assert n > 0
-    if n == 1:
-        return 1
-    p, k = prime_factors(n)
-    phi = np.multiply.reduce(p**(k - 1) * (p - 1))
-    return phi
+    for p in trace(n):
+        n = n // p * (p - 1)
+    return n
 
 
 def _carmichael_prime_power(p, k):
     if p == 2 and k > 2:
-        return 1/2 * euler_totient(p**k)
+        return 1 / 2 * euler_totient(p ** k)
     else:
-        return euler_totient(p**k)
+        return euler_totient(p ** k)
+
 
 def carmichael(n):
     """
-    Implements the Carmichael function to find the smallest positive integer :math:`m` such that
-    :math:`a^m = 1 (\\textrm{mod}\\ n)` for :math:`1 \\le a < n`.
+    Implements the Carmichael function to find the smallest positive integer `m` such that `a^m = 1 (mod n)`
+    for `1 <= a < n`.
 
     Parameters
     ----------
@@ -323,7 +334,7 @@ def carmichael(n):
     Returns
     -------
     int
-        The smallest positive integer :math:`m` such that :math:`a^m = 1 (\\textrm{mod}\\ n)` for :math:`1 \\le a < n`.
+        The smallest positive integer `m` such that `a^m = 1 (mod n)` for `1 <= a < n`.
     """
     assert n > 0
     if n == 1:
@@ -343,7 +354,7 @@ def carmichael(n):
 @np.vectorize
 def modular_exp(base, exponent, modulus):
     """
-    Compute the modular exponentiation :math:`base^exponent \\textrm{mod}\\ modulus`.
+    Compute the modular exponentiation `base**exponent % modulus`.
 
     Parameters
     ----------
@@ -357,7 +368,7 @@ def modular_exp(base, exponent, modulus):
     Returns
     -------
     array_like
-        The results of :math:`base^exponent \\textrm{mod}\\ modulus`.
+        The results of `base**exponent % modulus`.
     """
     if modulus == 1:
         return 0
@@ -375,17 +386,17 @@ def modular_exp(base, exponent, modulus):
 
 def primitive_root(n):
     """
-    Finds the first, smallest primitive n-th root of unity that satisfy :math:`x^k = 1 (\\textrm{mod}\\ n)`.
+    Finds the first, smallest primitive n-th root of unity that satisfy `x^k = 1 (mod n)`.
 
     Parameters
     ----------
     n : int
-        A positive integer :math:`n > 1`.
+        A positive integer `n > 1`.
 
     Returns
     -------
     int
-        The first, smallest primitive root of unity modulo :math:`n`.
+        The first, smallest primitive root of unity modulo `n`.
     """
     assert n > 0
     if n == 1:
@@ -402,7 +413,7 @@ def primitive_root(n):
     assert len(congruenes) == phi, "The number of congruences ({} found) is phi(n) = {}".format(len(congruenes), phi)
 
     root = None
-    degrees = np.arange(1, phi+1)
+    degrees = np.arange(1, phi + 1)
     for m in congruenes:
         y = modular_exp(m, degrees, n)
         if set(y) == set(congruenes):
@@ -414,17 +425,17 @@ def primitive_root(n):
 
 def primitive_roots(n):
     """
-    Finds all primitive n-th roots of unity that satisfy :math:`x^k = 1 (\\textrm{mod}\\ n)`.
+    Finds all primitive n-th roots of unity that satisfy `x^k = 1 (mod n)`.
 
     Parameters
     ----------
     n : int
-        A positive integer :math:`n > 1`.
+        A positive integer `n > 1`.
 
     Returns
     -------
     np.ndarray
-        An array of integer roots of unity modulo :math:`n`.
+        An array of integer roots of unity modulo `n`.
     """
     assert n > 0
     if n == 1:
@@ -460,7 +471,7 @@ def primitive_roots(n):
     assert len(congruenes) == phi, "The number of congruences ({} found) is phi(n) = {}".format(len(congruenes), phi)
 
     roots = []
-    degrees = np.arange(1, phi+1)
+    degrees = np.arange(1, phi + 1)
     for m in congruenes:
         y = modular_exp(m, degrees, n)
         if set(y) == set(congruenes):
@@ -474,29 +485,29 @@ def primitive_roots(n):
 
 def min_poly(a, field, n):
     """
-    Finds the minimal polynomial of :math:`a` over the specified Galois field.
+    Finds the minimal polynomial of `a` over the specified Galois field.
 
     Parameters
     ----------
     a : int
-        Field element in the extension field :math:`\\mathrm{GF}(q^n)`.
+        Field element in the extension field GF(q^n).
     field : galois.gf.GFBase
-        The base field :math:`\\mathrm{GF}(q)`.
+        The base field GF(q).
     n : int
-        The degree :math:`n` of the extension field.
+        The degree of the extension field.
 
     Returns
     -------
     galois.Poly
-        The minimal polynomial :math:`p(x)` of n-th degree with coefficients in `field`, i.e. :math:`p(x) \\in \\mathrm{GF}(q)[x]`,
-        where :math:`a \\in \\mathrm{GF}(q^n)` is a root, i.e. :math:`p(a) = 0` in :math:`\\mathrm{GF}(q^n)`.
+        The minimal polynomial of n-th degree with coefficients in `field`, i.e. GF(q), for which
+        `x` in GF(q^n) is a root. p(x) over GF(q) and p(a) = 0 in GF(q^n).
     """
     if n == 1:
         poly = Poly([1, -a], field=field)
     else:
         poly = None
         # Loop over all degree-n polynomials
-        for poly_dec in range(field.order**1, field.order**(n + 1)):
+        for poly_dec in range(field.order ** 1, field.order ** (n + 1)):
             # Polynomial over GF(2^m) with coefficients in GF2
             poly = Poly.Decimal(poly_dec, field=field)
             if poly(a) == 0:
