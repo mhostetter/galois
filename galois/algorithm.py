@@ -1,9 +1,9 @@
-import numpy as np
 from itertools import combinations, islice
-from bisect import bisect_left
-from math import sqrt
+from bisect import bisect_left, bisect_right
+from math import gcd, sqrt
 import numba  # TODO force it to work with globals
-from typing import List
+from typing import List, Tuple
+import numpy as np
 
 from .poly import Poly
 
@@ -24,45 +24,21 @@ TOP_PRIME = PRIMES[-1]
 TOP_PRIME_SQUARE = TOP_PRIME ** 2
 
 
-def _prev_prime_index(x):
-    assert PRIMES[0] <= x < PRIMES[-1]
-    return np.where(PRIMES - x <= 0)[0][-1]
-
-
-def prev_prime(x):
+def prev_prime(n: int) -> int:
     """
-    Returns the nearest prime `p <= x`.
-
-    Parameters
-    ----------
-    x : int
-        A positive integer.
-
-    Returns
-    -------
-    int
-        The nearest prime `p <= x`.
+    Returns the nearest prime `p <= n`.
     """
-    prev_idx = _prev_prime_index(x)
-    return PRIMES[prev_idx]
+    assert 2 < n <= TOP_PRIME
+    i = bisect_left(PRIMES, n)
+    return PRIMES[i - (n < PRIMES[i])]
 
 
-def next_prime(x):
+def next_prime(n: int) -> int:
     """
-    Returns the nearest prime `p > x`.
-
-    Parameters
-    ----------
-    x : int
-        A positive integer.
-
-    Returns
-    -------
-    int
-        The nearest prime `p > x`.
+    Returns the nearest prime `p > n`.
     """
-    prev_idx = _prev_prime_index(x)
-    return PRIMES[prev_idx + 1]
+    assert 1 < n < TOP_PRIME
+    return PRIMES[bisect_right(PRIMES, n)]
 
 
 def trace(n: int) -> List[int]:  # TODO numba acceleration?
@@ -109,7 +85,7 @@ def factors(n):
     return sorted(res)
 
 
-def prime_factors(n):
+def prime_factors(n: int) -> List[Tuple[int, int]]:
     """
     Computes the prime factors of the positive integer `n`.
 
@@ -122,20 +98,17 @@ def prime_factors(n):
 
     Returns
     -------
-    list primez:
-        Sorted list of prime factors :math:`p = [p_1, p_2, ..., p_{n-1}]`.
-    list cnt:
-        list of corresponding prime powers :math:`k = [k_1, k_2, ..., k_{n-1}]`.
+    list of pairs (prime: int, power: int)
     """
-    assert isinstance(n, int) and n > 1
-    primez, cnt = trace(n), []  # TODO more elegant var names
-    for p in primez:
-        c = 0
-        while not n % p:
-            n //= p
-            c += 1
-        cnt.append(c)
-    return primez, cnt
+    assert isinstance(n, int)
+    res = []
+    for prime in trace(n):
+        power = 0
+        while not n % prime:
+            n //= prime
+            power += 1
+        res.append((prime, power))
+    return res
 
 
 def is_prime(n):
@@ -267,7 +240,7 @@ def chinese_remainder_theorem(a, m):
 
     # Check that modulii are pairwise relatively coprime
     for pair in combinations(m, 2):
-        assert math.gcd(pair[0], pair[1]) == 1, "{} and {} are not pairwise relatively coprime".format(pair[0], pair[1])
+        assert gcd(pair[0], pair[1]) == 1, "{} and {} are not pairwise relatively coprime".format(pair[0], pair[1])
 
     # Iterate through the system of congruences reducing a pair of congruences into a
     # single one. The answer to the final congruence solves all the congruences.
@@ -293,7 +266,7 @@ def chinese_remainder_theorem(a, m):
     return x
 
 
-def euler_totient(n):
+def euler_totient(n: int) -> int:
     """
     Implements the Euler Totient function to count the positive integers (totatives) in `1 <= k < n` that
     are relatively prime to `n`, i.e. `gcd(n, k) = 1`.
@@ -314,14 +287,7 @@ def euler_totient(n):
     return n
 
 
-def _carmichael_prime_power(p, k):
-    if p == 2 and k > 2:
-        return 1 / 2 * euler_totient(p ** k)
-    else:
-        return euler_totient(p ** k)
-
-
-def carmichael(n):
+def carmichael(n: int) -> int:
     """
     Implements the Carmichael function to find the smallest positive integer `m` such that `a^m = 1 (mod n)`
     for `1 <= a < n`.
@@ -337,18 +303,11 @@ def carmichael(n):
         The smallest positive integer `m` such that `a^m = 1 (mod n)` for `1 <= a < n`.
     """
     assert n > 0
-    if n == 1:
-        return 1
-
-    p, k = prime_factors(n)
-
-    lambdas = np.zeros(p.size, dtype=int)
-    for i in range(p.size):
-        lambdas[i] = _carmichael_prime_power(p[i], k[i])
-
-    lambda_ = np.lcm.reduce(lambdas)
-
-    return lambda_
+    res = 1
+    for prime, power in prime_factors(n if n & 7 else n // 2):
+        res //= gcd(res, prime - 1)
+        res *= prime ** (power - 1) * (prime - 1)
+    return res
 
 
 @np.vectorize
