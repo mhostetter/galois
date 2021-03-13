@@ -1,8 +1,8 @@
 from itertools import combinations, islice
 from bisect import bisect_left, bisect_right
 from math import gcd, sqrt
-import numba  # TODO force it to work with globals
 from typing import List, Tuple
+import numba  # TODO force it to work with globals
 import numpy as np
 
 from .poly import Poly
@@ -61,7 +61,7 @@ def trace(n: int) -> List[int]:  # TODO numba acceleration?
     assert n < TOP_PRIME_SQUARE  # TODO more information when out of range
 
 
-def factors(n):
+def factors(n: int) -> List[int]:
     """
     Computes the positive factors of the integer `n`.
 
@@ -111,7 +111,7 @@ def prime_factors(n: int) -> List[Tuple[int, int]]:
     return res
 
 
-def is_prime(n):
+def is_prime(n: int) -> bool:
     """
     Determines if `n` is prime.
 
