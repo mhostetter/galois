@@ -2,7 +2,10 @@ import numba
 
 from .gf import GFBase, GFArray, DTYPES
 
-CHARACTERISTIC = None
+# Globals that will be set in target() and referenced in numba JIT-compiled functions
+CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
+ADD_JIT = lambda x, y: x + y  # Placeholder function to replaced by JIT-compiled function
+MULTIPLY_JIT = lambda x, y: x * y  # Placeholder function to replaced by JIT-compiled function
 
 
 class GF2(GFBase, GFArray):
@@ -26,7 +29,7 @@ class GF2(GFBase, GFArray):
 
         print(galois.GF2)
         galois.GF2.characteristic
-        galois.GF2.power
+        galois.GF2.degree
         galois.GF2.order
         galois.GF2.prim_poly
 
@@ -52,7 +55,7 @@ class GF2(GFBase, GFArray):
     """
 
     characteristic = 2
-    power = 1
+    degree = 1
     order = 2
     prim_poly = None  # Will set this in __init__.py
     alpha = 1
@@ -68,55 +71,67 @@ class GF2(GFBase, GFArray):
         target : str, optional
             The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
         """
+        global CHARACTERISTIC, ADD_JIT, MULTIPLY_JIT  # pylint: disable=global-statement
+        CHARACTERISTIC = cls.characteristic
+
         if target not in ["cpu", "parallel", "cuda"]:
             raise ValueError(f"Valid numba compilation targets are ['cpu', 'parallel', 'cuda'], not {target}")
-
-        global CHARACTERISTIC  # pylint: disable=global-statement
-        CHARACTERISTIC = cls.characteristic
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
             kwargs.pop("nopython")
 
+        cls.ufunc_mode = "calculate"
+        cls.ufunc_target = target
+
+        # JIT-compile add and multiply routines for reference in polynomial evaluation routine
+        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
+        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
+
         # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-        cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add)
-        cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract)
-        cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply)
-        cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide)
-        cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_negative)
-        cls._numba_ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add)
-        cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power)
-        cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log)
-        cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval)
+        cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
+        cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+        cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+        cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+        cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
+        cls._numba_ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_calculate)
+        cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+        cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
 
-def _add(a, b):
+def _add_calculate(a, b):
     return a ^ b
 
 
-def _subtract(a, b):
+def _subtract_calculate(a, b):
     return a ^ b
 
 
-def _multiply(a, b):
+def _multiply_calculate(a, b):
     return a & b
 
 
-def _divide(a, b):
-    return a & b
+def _divide_calculate(a, b):
+    if b == 0:
+        # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
+        return 0
+    else:
+        return a
 
 
-def _negative(a):
+def _negative_calculate(a):
     return a
 
 
-def _multiple_add(a, b):
-    b = b % CHARACTERISTIC
-    return a & b
+def _multiple_add_calculate(a, multiple):
+    multiple = multiple % CHARACTERISTIC
+    return MULTIPLY_JIT(a, multiple)
 
 
-def _power(a, b):
-    if b == 0:
+def _power_calculate(a, power):
+    # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
+    if power == 0:
         return 1
     elif a == 0:
         return 0
@@ -124,18 +139,13 @@ def _power(a, b):
         return a
 
 
-def _log(a):  # pylint: disable=unused-argument
+def _log_calculate(a):  # pylint: disable=unused-argument
+    # NOTE: The a == 0 condition will be caught outside of the ufunc and raise ArithmeticError
     return 0
 
 
-def _poly_eval(coeffs, values, results):
-    def _add(a, b):
-        return a ^ b
-
-    def _multiply(a, b):
-        return a & b
-
+def _poly_eval_calculate(coeffs, values, results):
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
-            results[i] = _add(coeffs[j], _multiply(results[i], values[i]))
+            results[i] = ADD_JIT(coeffs[j], MULTIPLY_JIT(results[i], values[i]))

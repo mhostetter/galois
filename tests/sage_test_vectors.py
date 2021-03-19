@@ -28,7 +28,7 @@ def I(element):
 def F(integer):
     """Convert from an integer to various finite field elements"""
     try:
-        return FIELD.fetch_int(integer)
+        return FIELD.fetch_int(int(integer))
     except:
         return FIELD(integer)
 
@@ -79,6 +79,7 @@ def make_luts(field, folder, sparse=False):
 
     FIELD = field
     order = field.order()
+    alpha = field.primitive_element()
     ring = PolynomialRing(field, names="x")
     assert field.gen() == field.multiplicative_generator()
 
@@ -151,7 +152,7 @@ def make_luts(field, folder, sparse=False):
             # TODO: Figure out why we need to mod by (order - 1)
             Z[i] = field.int_to_log(X[i]) % (order - 1)
         except:
-            Z[i] = I(log(F(X[i])))
+            Z[i] = I(log(F(X[i]), alpha))
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "log.pkl")
 
@@ -272,13 +273,17 @@ if __name__ == "__main__":
     make_luts(field, folder, sparse=True)
 
     field = GF(2**2, "x", modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf4")
+    folder = os.path.join(path, "gf2^2")
     make_luts(field, folder)
 
     field = GF(2**3, "x", modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf8")
+    folder = os.path.join(path, "gf2^3")
     make_luts(field, folder)
 
     field = GF(2**8, "x", modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf256")
+    folder = os.path.join(path, "gf2^8")
     make_luts(field, folder)
+
+    field = GF(2**32, "x", modulus="primitive", repr="int")
+    folder = os.path.join(path, "gf2^32")
+    make_luts(field, folder, sparse=True)

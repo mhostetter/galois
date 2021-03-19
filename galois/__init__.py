@@ -22,24 +22,27 @@ GF2.alpha = GF2(1)
 GF2.prim_poly = min_poly(GF2.alpha, GF2, 1)
 
 
-def GF_factory(p, m, prim_poly=None, target="cpu", rebuild=False):  # pylint: disable=redefined-outer-name
+def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=redefined-outer-name
     """
     Factory function to construct Galois field array classes of type :math:`\\mathrm{GF}(p^m)`.
 
-    If :math:`p = 2` and :math:`m = 1`, this function will return `galois.GF2`. If :math:`p = 2` and :math:`m > 1`, this function will
-    invoke `galois.GF2m_factory()`. If :math:`p` is prime and :math:`m = 1`, this function will invoke `galois.GFp_factory()`.
-    If :math:`p` is prime and :math:`m > 1`, this function will invoke `galois.GFpm_factory()`.
-
     Parameters
     ----------
-    p : int
-        The prime characteristic of the field :math:`\\mathrm{GF}(p^m)`.
-    m : int
-        The degree of the prime characteristic of the field :math:`\\mathrm{GF}(p^m)`.
+    characteristic : int
+        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p^m)`.
+    degree : int
+        The degree :math:`m` of the prime characteristic of the field :math:`\\mathrm{GF}(p^m)`.
     prim_poly : Poly, optional
         The primitive polynomial of the field. Default is `None` which will use the Conway polynomial `galois.conway_polynomial(p, m)`.
     target : str, optional
         The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
+    mode : str, optional
+        The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`. GF(2) fields
+        only support `"auto"` and `"calculate"` modes. This is because it's more efficient to just compute the arithmetic than store
+        lookup tables. The "lookup" mode will use Zech log, log, and anti-log lookup table for speed. The `"calculate"` mode will
+        not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
+        than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
+        on field order.
     rebuild : bool, optional
         Indicates whether to force a rebuild of the lookup tables. The default is `False`.
 
@@ -48,33 +51,43 @@ def GF_factory(p, m, prim_poly=None, target="cpu", rebuild=False):  # pylint: di
     GF2, GF2m, GFp, GFpm
         A new Galois field class that is a sublcass of `galois.GFBase`.
     """
-    if not isinstance(p, int):
-        raise TypeError(f"Galois field prime characteristic `p` must be an integer, not {type(p)}")
-    if not isinstance(m, int):
-        raise TypeError(f"Galois field characteristic degree `m` must be an integer, not {type(m)}")
+    if not isinstance(characteristic, int):
+        raise TypeError(f"Galois field GF(p^m) prime characteristic `p` must be an integer, not {type(characteristic)}")
+    if not isinstance(degree, int):
+        raise TypeError(f"Galois field GF(p^m) characteristic degree `m` must be an integer, not {type(degree)}")
     if not (prim_poly is None or isinstance(prim_poly, Poly)):
         raise TypeError(f"Primitive polynomial `prim_poly` must be either None or galois.Poly, not {type(prim_poly)}")
     if not isinstance(rebuild, bool):
-        raise TypeError(f"Rebuild Galois field class flag `rebuild` must be a bool, not {type(rebuild)}")
-    if not is_prime(p):
-        raise ValueError(f"Galois field prime characteristic `p` must be prime, not {p}")
-    if not m >= 1:
-        raise ValueError(f"Galois field characteristic degree `m` must be >= 1, not {m}")
+        raise TypeError(f"Rebuild Galois field GF(p^m) class flag `rebuild` must be a bool, not {type(rebuild)}")
+    if not is_prime(characteristic):
+        raise ValueError(f"Galois field GF(p^m) prime characteristic `p` must be prime, not {characteristic}")
+    if not degree >= 1:
+        raise ValueError(f"Galois field GF(p^m) characteristic degree `m` must be >= 1, not {degree}")
 
-    if p == 2 and m == 1:
+    # If the requested field has already been constructed, return it instead of rebuilding
+    key = (characteristic, degree, mode)
+    if not rebuild and key in GF_factory.classes:
+        return GF_factory.classes[key]
+
+    if characteristic == 2 and degree == 1:
         if not (prim_poly is None or prim_poly is GF2.prim_poly):
             raise ValueError(f"In GF(2), the primitive polynomial `prim_poly` must be either None or {GF2.prim_poly}, not {prim_poly}")
         GF2.target(target)
         cls = GF2
-    elif p == 2:
-        cls = GF2m_factory(m, prim_poly=prim_poly, target=target, rebuild=rebuild)
+    elif characteristic == 2:
+        cls = _GF2m_factory(degree, prim_poly=prim_poly, target=target, mode=mode)
     else:
-        cls = GFp_factory(p, prim_poly=prim_poly, target=target, rebuild=rebuild)
+        cls = _GFp_factory(characteristic, prim_poly=prim_poly, target=target, mode=mode)
+
+    # Add class to dictionary of flyweights
+    GF_factory.classes[key] = cls
 
     return cls
 
+GF_factory.classes = {}
 
-def GF2m_factory(m, prim_poly=None, target="cpu", mode="auto", rebuild=False):
+
+def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
     """
     Factory function to construct Galois field array classes of type :math:`\\mathrm{GF}(2^m)`.
 
@@ -92,8 +105,6 @@ def GF2m_factory(m, prim_poly=None, target="cpu", mode="auto", rebuild=False):
         not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
         than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
         on field order.
-    rebuild : bool, optional
-        Indicates whether to force a rebuild of the lookup tables. The default is `False`.
 
     Returns
     -------
@@ -111,26 +122,22 @@ def GF2m_factory(m, prim_poly=None, target="cpu", mode="auto", rebuild=False):
     if not (prim_poly is None or isinstance(prim_poly, Poly)):
         raise TypeError(f"Primitive polynomial `prim_poly` must be either None or galois.Poly, not {type(prim_poly)}")
 
-    # If the requested field has already been constructed, return it instead of rebuilding
-    key = (m,)
-    if not rebuild and key in GF2m_factory.classes:
-        return GF2m_factory.classes[key]
-
     characteristic = 2
-    power = m
-    order = characteristic**power
-    name = "GF{}".format(order)
+    degree = m
+    order = characteristic**degree
+    # name = "GF{}".format(order)
+    name = f"GF{characteristic}^{degree}"
     dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order]
 
     # Use the smallest primitive root as the multiplicative generator for the field
     alpha = 2
     if prim_poly is None:
-        prim_poly = conway_polynomial(characteristic, power)
+        prim_poly = conway_polynomial(characteristic, degree)
 
     # Create new class type
     cls = type(name, (GF2m,), {
         "characteristic": characteristic,
-        "power": power,
+        "degree": degree,
         "order": order,
         "prim_poly": prim_poly,
         "dtypes": dtypes
@@ -140,17 +147,12 @@ def GF2m_factory(m, prim_poly=None, target="cpu", mode="auto", rebuild=False):
     cls.alpha = cls(alpha)
 
     # JIT compile the numba ufuncs
-    cls.target(target, mode=mode, rebuild=rebuild)
-
-    # Add class to dictionary of flyweights
-    GF2m_factory.classes[key] = cls
+    cls.target(target, mode=mode)
 
     return cls
 
-GF2m_factory.classes = {}
 
-
-def GFp_factory(p, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=unused-argument
+def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disable=unused-argument
     """
     Factory function to construct Galois field array classes of type :math:`\\mathrm{GF}(p)`.
 
@@ -166,8 +168,6 @@ def GFp_factory(p, prim_poly=None, target="cpu", mode="auto", rebuild=False):  #
         not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
         than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
         on field order.
-    rebuild : bool, optional
-        Indicates whether to force a rebuild of the lookup tables. The default is `False`.
 
     Returns
     -------
@@ -181,18 +181,17 @@ def GFp_factory(p, prim_poly=None, target="cpu", mode="auto", rebuild=False):  #
     if not isinstance(p, (int, np.integer)):
         raise TypeError(f"GF(p) prime characteristic `p` must be an integer, not {type(p)}")
     if not is_prime(p):
-        return ValueError(f"GF(p) fields must have a prime characteristic `p`, not {p}")
-    if not 2 <= p <= 2**16:
-        return ValueError(f"GF(p) classes are only supported for 2 <= p <= 2**16, not {p}")
-
-    # If the requested field has already been constructed, return it instead of rebuilding
-    key = (p,)
-    if not rebuild and key in GFp_factory.classes:
-        return GFp_factory.classes[key]
+        raise ValueError(f"GF(p) fields must have a prime characteristic `p`, not {p}")
+    # if not 2 <= p <= 2**16:
+    #     raise ValueError(f"GF(p) classes are only supported for 2 <= p <= 2**16, not {p}")
 
     characteristic = p
-    power = 1
-    order = characteristic**power
+    degree = 1
+    order = characteristic**degree
+
+    if mode == "auto":
+        mode = "lookup" if order <= 2**16 else "calculate"
+
     name = "GF{}".format(order)
     dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order]
 
@@ -202,7 +201,7 @@ def GFp_factory(p, prim_poly=None, target="cpu", mode="auto", rebuild=False):  #
     # Create new class type
     cls = type(name, (GFp,), {
         "characteristic": characteristic,
-        "power": power,
+        "degree": degree,
         "order": order,
         "dtypes": dtypes
     })
@@ -211,16 +210,11 @@ def GFp_factory(p, prim_poly=None, target="cpu", mode="auto", rebuild=False):  #
     cls.alpha = cls(alpha)
 
     # JIT compile the numba ufuncs
-    cls.target(target, mode=mode, rebuild=rebuild)
+    cls.target(target, mode)
 
     cls.prim_poly = Poly([1, -alpha], field=cls)  # pylint: disable=invalid-unary-operand-type
 
-    # Add class to dictionary of flyweights
-    GFp_factory.classes[key] = cls
-
     return cls
-
-GFp_factory.classes = {}
 
 
 def conway_polynomial(p, n):
@@ -230,7 +224,7 @@ def conway_polynomial(p, n):
     if (p,n) not in CONWAY_POLYS.keys():
         raise ValueError(f"Frank Luebek's Conway polynomial lookup table does not contain an entry for {(p,n)}\n\nSee: http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html")
 
-    field = GF2 if p == 2 else GFp_factory(p)
+    field = GF2 if p == 2 else _GFp_factory(p)
     poly = Poly(CONWAY_POLYS[(p,n)][::-1], field=field)
 
     return poly

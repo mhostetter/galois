@@ -24,6 +24,8 @@ EXP = []  # EXP[i] = alpha^i
 LOG = []  # LOG[i] = x, such that alpha^x = i
 ZECH_LOG = []  # ZECH_LOG[i] = log(1 + alpha^i)
 ZECH_E = None  # alpha^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
+ADD_JIT = lambda x, y: x + y  # Placeholder function to replaced by JIT-compiled function
+MULTIPLY_JIT = lambda x, y: x * y  # Placeholder function to replaced by JIT-compiled function
 
 
 class GFBaseMeta(type):
@@ -32,7 +34,7 @@ class GFBaseMeta(type):
     """
 
     def __str__(cls):
-        return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.power, cls.prim_poly.str, cls.prim_poly.decimal)
+        return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.degree, cls.prim_poly.str, cls.prim_poly.decimal)
 
 
 class GFBase(metaclass=GFBaseMeta):
@@ -51,9 +53,9 @@ class GFBase(metaclass=GFBaseMeta):
     :math:`p` copies of any element will always result in :math:`0`.
     """
 
-    power = None
+    degree = None
     """
-    int: The power :math:`m`, which is a positive integer, of the Galois field :math:`\\mathrm{GF}(p^m)`.
+    int: The degree :math:`m`, which is a positive integer, of the Galois field :math:`\\mathrm{GF}(p^m)`.
     """
 
     order = None
@@ -81,6 +83,16 @@ class GFBase(metaclass=GFBaseMeta):
     are signed and unsinged integers that can represent values in :math:`[0, order)`.
     """
 
+    ufunc_mode = None
+    """
+    str: The mode for ufunc compilation, either `"lookup"` or `"calculate"`.
+    """
+
+    ufunc_target = None
+    """
+    str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, or `"cuda"`.
+    """
+
     _EXP = None
     _LOG = None
     _ZECH_LOG = None
@@ -99,7 +111,7 @@ class GFBase(metaclass=GFBaseMeta):
             The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
         """
         if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         return np.zeros(shape, dtype=dtype).view(cls)
 
     @classmethod
@@ -116,7 +128,7 @@ class GFBase(metaclass=GFBaseMeta):
             The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
         """
         if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         return np.ones(shape, dtype=dtype).view(cls)
 
     @classmethod
@@ -137,7 +149,7 @@ class GFBase(metaclass=GFBaseMeta):
             The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
         """
         if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         if high is None:
             high = cls.order
         assert 0 <= low < cls.order and low < high <= cls.order
@@ -154,13 +166,13 @@ class GFBase(metaclass=GFBaseMeta):
             The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
         """
         if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         return np.arange(0, cls.order, dtype=dtype).view(cls)
 
     @classmethod
     def _compile_lookup_ufuncs(cls, target):
         # Export lookup tables to global variables so JIT compiling can cache the tables in the binaries
-        global CHARACTERISTIC, ORDER, EXP, LOG, ZECH_LOG, ZECH_E  # pylint: disable=global-statement
+        global CHARACTERISTIC, ORDER, EXP, LOG, ZECH_LOG, ZECH_E, ADD_JIT, MULTIPLY_JIT  # pylint: disable=global-statement
         CHARACTERISTIC = cls.characteristic
         ORDER = cls.order
         EXP = cls._EXP
@@ -175,15 +187,20 @@ class GFBase(metaclass=GFBaseMeta):
         if target == "cuda":
             kwargs.pop("nopython")
 
+        # JIT-compile add and multiply routines for reference in other routines
+        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_lookup)
+        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_lookup)
+
         # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-        cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_lookup)
-        cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(subtract_lookup)
-        cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiply_lookup)
-        cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(divide_lookup)
-        cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(negative_lookup)
-        cls._numba_ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiple_add_lookup)
-        cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(power_lookup)
-        cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(log_lookup)
+        cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
+        cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
+        cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
+        cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
+        cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
+        cls._numba_ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_lookup)
+        cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
+        cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
+        cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
 
     def __str__(self):
         return self.__repr__()
@@ -195,7 +212,7 @@ class GFArray(np.ndarray):
     """
 
     characteristic = None
-    power = None
+    degree = None
     order = None
     prim_poly = None
     alpha = None
@@ -215,7 +232,7 @@ class GFArray(np.ndarray):
         if cls is GFArray:
             raise NotImplementedError("GFArray is an abstract base class that cannot be directly instantiated")
         if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.power}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
 
         # Convert the array-like object to a numpy array without specifying the desired dtype. This allows
         # numpy to determine the data type of the input array, list, tuple, etc. This allows for detection of
@@ -414,8 +431,12 @@ class GFArray(np.ndarray):
 # Galois field arithmetic using EXP, LOG, and ZECH_LOG lookup tables
 ###############################################################################
 
-def add_lookup(a, b):
+def _add_lookup(a, b):
     """
+    a in GF(p^m)
+    b in GF(p^m)
+    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+
     a + b = alpha^m + alpha^n
           = alpha^m * (1 + alpha^(n - m))  # If n is larger, factor out alpha^m
           = alpha^m * alpha^ZECH_LOG(n - m)
@@ -442,8 +463,12 @@ def add_lookup(a, b):
     return EXP[m + ZECH_LOG[n - m]]
 
 
-def subtract_lookup(a, b):
+def _subtract_lookup(a, b):
     """
+    a in GF(p^m)
+    b in GF(p^m)
+    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+
     a - b = alpha^m - alpha^n
           = alpha^m + (-alpha^n)
           = alpha^m + (-1 * alpha^n)
@@ -476,8 +501,12 @@ def subtract_lookup(a, b):
     return EXP[m + ZECH_LOG[z]]
 
 
-def multiply_lookup(a, b):
+def _multiply_lookup(a, b):
     """
+    a in GF(p^m)
+    b in GF(p^m)
+    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+
     a * b = alpha^m * alpha^n
           = alpha^(m + n)
     """
@@ -491,8 +520,12 @@ def multiply_lookup(a, b):
     return EXP[m + n]
 
 
-def divide_lookup(a, b):
+def _divide_lookup(a, b):
     """
+    a in GF(p^m)
+    b in GF(p^m)
+    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+
     a / b = alpha^m / alpha^n
           = alpha^(m - n)
           = 1 * alpha^(m - n)
@@ -504,15 +537,18 @@ def divide_lookup(a, b):
 
     # LOG[0] = -Inf, so catch these conditions
     if a == 0 or b == 0:
-        # NOTE: The b == 0 condition will be caught outside of ufunc and raise ZeroDivisonError
+        # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
         return 0
 
     # We add `ORDER - 1` to guarantee the index is non-negative
     return EXP[(ORDER - 1) + m - n]
 
 
-def negative_lookup(a):
+def _additive_inverse_lookup(a):
     """
+    a in GF(p^m)
+    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+
     -a = -alpha^n
        = -1 * alpha^n
        = alpha^e * alpha^n
@@ -527,11 +563,33 @@ def negative_lookup(a):
     return EXP[ZECH_E + n]
 
 
-def multiple_add_lookup(a, b_int):
+def _multiplicative_inverse_lookup(a):
     """
-    a is a field element
-    b_int is any integer, not a field element
-    b is a field element
+    a in GF(p^m)
+    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+
+    1 / a = 1 / alpha^m
+          = alpha^(-m)
+          = 1 * alpha^(-m)
+          = alpha^(ORDER - 1) * alpha^(-m)
+          = alpha^(ORDER - 1 - m)
+    """
+    m = LOG[a]
+
+    # LOG[0] = -Inf, so catch these conditions
+    if a == 0:
+        # NOTE: The a == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
+        return 0
+
+    return EXP[(ORDER - 1) - m]
+
+
+def _multiple_add_lookup(a, b_int):
+    """
+    a in GF(p^m)
+    b_int in Z
+    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    b in GF(p^m)
 
     a . b_int = a + a + ... + a = b_int additions of a
     a . p_int = 0, where p_int is the prime characteristic of the field
@@ -555,7 +613,19 @@ def multiple_add_lookup(a, b_int):
     return EXP[m + n]
 
 
-def power_lookup(a, b_int):
+def _power_lookup(a, b_int):
+    """
+    a in GF(p^m)
+    b_int in Z
+    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+
+    a ** b_int = alpha^m ** b_int
+               = alpha^(m * b_int)
+               = alpha^(m * ((b_int // (ORDER - 1))*(ORDER - 1) + b_int % (ORDER - 1)))
+               = alpha^(m * ((b_int // (ORDER - 1))*(ORDER - 1)) * alpha^(m * (b_int % (ORDER - 1)))
+               = 1 * alpha^(m * (b_int % (ORDER - 1)))
+               = alpha^(m * (b_int % (ORDER - 1)))
+    """
     m = LOG[a]
 
     if b_int == 0:
@@ -568,5 +638,19 @@ def power_lookup(a, b_int):
     return EXP[(m * b_int) % (ORDER - 1)]
 
 
-def log_lookup(a):
+def _log_lookup(a):
+    """
+    a in GF(p^m)
+    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+
+    log_alpha(a) = log_alpha(alpha^m)
+                 = m
+    """
     return LOG[a]
+
+
+def _poly_eval_lookup(coeffs, values, results):
+    for i in range(values.size):
+        results[i] = coeffs[0]
+        for j in range(1, coeffs.size):
+            results[i] = ADD_JIT(coeffs[j], MULTIPLY_JIT(results[i], values[i]))
