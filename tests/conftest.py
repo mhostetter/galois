@@ -16,9 +16,31 @@ FIELDS = [
     pytest.param("gf31", marks=[pytest.mark.GFp, pytest.mark.GF31]),
     pytest.param("gf3191", marks=[pytest.mark.GFp, pytest.mark.GF31]),
 
-    pytest.param("gf4", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
-    pytest.param("gf8", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
-    pytest.param("gf256", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("gf2^2", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
+    pytest.param("gf2^3", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
+    pytest.param("gf2^8", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("gf2^32", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
+]
+
+FIELDS_DIFF_MODES = [
+    pytest.param("gf2", marks=[pytest.mark.GF2]),
+
+    pytest.param("gf5-lookup", marks=[pytest.mark.GFp, pytest.mark.GF5]),
+    pytest.param("gf7-lookup", marks=[pytest.mark.GFp, pytest.mark.GF7]),
+    pytest.param("gf31-lookup", marks=[pytest.mark.GFp, pytest.mark.GF31]),
+    pytest.param("gf3191-lookup", marks=[pytest.mark.GFp, pytest.mark.GF31]),
+    pytest.param("gf5-calculate", marks=[pytest.mark.GFp, pytest.mark.GF5]),
+    pytest.param("gf7-calculate", marks=[pytest.mark.GFp, pytest.mark.GF7]),
+    pytest.param("gf31-calculate", marks=[pytest.mark.GFp, pytest.mark.GF31]),
+    pytest.param("gf3191-calculate", marks=[pytest.mark.GFp, pytest.mark.GF31]),
+
+    pytest.param("gf2^2-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
+    pytest.param("gf2^3-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
+    pytest.param("gf2^8-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("gf2^2-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
+    pytest.param("gf2^3-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
+    pytest.param("gf2^8-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("gf2^32-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
 ]
 
 # DTYPES = [np.int64,]
@@ -42,26 +64,36 @@ DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
 
 
 def construct_field(folder):
+    if len(folder.split("-")) >= 2:
+        folder, mode = folder.split("-")[0:2]
+    else:
+        mode = "auto"
+
     if folder == "gf2":
         GF = galois.GF2
 
     elif folder == "gf5":
-        GF = galois.GF_factory(5, 1)
+        GF = galois.GF_factory(5, 1, mode=mode)
     elif folder == "gf7":
-        GF = galois.GF_factory(7, 1)
+        GF = galois.GF_factory(7, 1, mode=mode)
     elif folder == "gf31":
-        GF = galois.GF_factory(31, 1)
+        GF = galois.GF_factory(31, 1, mode=mode)
     elif folder == "gf3191":
-        GF = galois.GF_factory(3191, 1)
+        GF = galois.GF_factory(3191, 1, mode=mode)
 
-    elif folder == "gf4":
-        GF = galois.GF_factory(2, 2)
-    elif folder == "gf8":
-        GF = galois.GF_factory(2, 3)
-    elif folder == "gf256":
-        GF = galois.GF_factory(2, 8)
+    elif folder == "gf2^2":
+        GF = galois.GF_factory(2, 2, mode=mode)
+    elif folder == "gf2^3":
+        GF = galois.GF_factory(2, 3, mode=mode)
+    elif folder == "gf2^8":
+        GF = galois.GF_factory(2, 8, mode=mode)
+    elif folder == "gf2^32":
+        GF = galois.GF_factory(2, 32, mode=mode)
 
-    return GF
+    else:
+        raise AssertionError(f"Test data folder {folder} not found")
+
+    return GF, mode, os.path.join(PATH, folder)
 
 
 ###############################################################################
@@ -71,13 +103,25 @@ def construct_field(folder):
 @pytest.fixture(scope="session", params=FIELDS)
 def field(request):
     folder = request.param
-    return construct_field(folder)
+    return construct_field(folder)[0]
 
 
-@pytest.fixture(scope="session", params=FIELDS)
+@pytest.fixture(scope="session", params=FIELDS_DIFF_MODES)
 def field_folder(request):
     folder = request.param
-    return construct_field(folder), os.path.join(PATH, folder)
+    l = construct_field(folder)
+    return l[0], l[2]
+
+
+@pytest.fixture(scope="session", params=FIELDS_DIFF_MODES)
+def field_classes(request):
+    folder = request.param
+    l = construct_field(folder)
+    d = {
+        "GF": l[0],
+        "mode": l[1]
+    }
+    return d
 
 
 @pytest.fixture(scope="session", params=DTYPES)
@@ -208,7 +252,7 @@ def log(field_folder):
         d = pickle.load(f)
     d["GF"] = GF
     d["X"] = GF(d["X"])
-    d["Z"] = GF(d["Z"])
+    d["Z"] = d["Z"]
     return d
 
 

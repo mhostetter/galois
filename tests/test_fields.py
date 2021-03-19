@@ -8,6 +8,21 @@ import numpy as np
 import galois
 
 
+class TestFieldClasses:
+    def test_ufunc_attributes(self, field_classes):
+        GF, mode = field_classes["GF"], field_classes["mode"]
+        if mode == "auto":
+            if GF.order == 2:
+                mode = "calculate"
+            elif GF.order <= 2**16:
+                mode = "lookup"
+            else:
+                mode = "calcualte"
+
+        assert GF.ufunc_target == "cpu"
+        assert GF.ufunc_mode == mode
+
+
 class TestInstantiation:
     def test_cant_instantiate_GFp(self):
         with pytest.raises(NotImplementedError):
@@ -483,23 +498,26 @@ class TestArithmeticNonField:
 
 class TestArithmeticExceptions:
     def test_divide_by_zero(self, field):
-        x = field.Random(field.order)
+        x = field.Random(10)
         with pytest.raises(ZeroDivisionError):
             y = field(0)
             z = x / y
         with pytest.raises(ZeroDivisionError):
-            y = field.Elements()
+            y = field.Random(10)
+            y[0] = 0  # Ensure one value is zero
             z = x / y
 
     def test_multiplicative_inverse_of_zero(self, field):
-        x = field.Elements()
+        x = field.Random(10)
+        x[0] = 0  # Ensure one value is zero
         with pytest.raises(ZeroDivisionError):
             z = field(1) / x
         with pytest.raises(ZeroDivisionError):
             z = x ** -1
 
     def test_zero_to_negative_power(self, field):
-        x = field.Elements()
+        x = field.Random(10)
+        x[0] = 0  # Ensure one value is zero
         with pytest.raises(ZeroDivisionError):
             y = -3
             z = x ** y
@@ -512,7 +530,8 @@ class TestArithmeticExceptions:
             x = field(0)
             z = np.log(x)
         with pytest.raises(ArithmeticError):
-            x = field.Elements()
+            x = field.Random(10)
+            x[0] = 0  # Ensure one value is zero
             z = np.log(x)
 
 
@@ -969,19 +988,27 @@ class TestProperties:
     def test_properties(self, properties):
         GF = properties["GF"]
         assert GF.characteristic == properties["characteristic"]
-        assert GF.power == properties["degree"]
+        assert GF.degree == properties["degree"]
         assert GF.order == properties["order"]
         assert GF.alpha == properties["alpha"]
         assert all(GF.prim_poly.coeffs == properties["prim_poly"])
 
     def test_characteristic(self, field):
-        a = field.Elements()
+        if field.order < 2**16:
+            a = field.Elements()
+        else:
+            # Only select some, not all, elements for very large fields
+            a = field.Random(2**16)
         p = field.characteristic
         b = a * p
         assert np.all(b == 0)
 
     def test_property_2(self, field):
-        a = field.Elements()[1:]
+        if field.order < 2**16:
+            a = field.Elements()[1:]
+        else:
+            # Only select some, not all, elements for very large fields
+            a = field.Random(2**16, low=1)
         q = field.order
         assert np.all(a**q == a)
 
