@@ -127,7 +127,7 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
     order = characteristic**degree
     # name = "GF{}".format(order)
     name = f"GF{characteristic}^{degree}"
-    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order]
+    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order - 1]
 
     # Use the smallest primitive root as the multiplicative generator for the field
     alpha = 2
@@ -193,7 +193,7 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
         mode = "lookup" if order <= 2**16 else "calculate"
 
     name = "GF{}".format(order)
-    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order]
+    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order - 1]
 
     # Use the smallest primitive root as the multiplicative generator for the field
     alpha = primitive_root(p)
