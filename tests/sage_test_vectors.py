@@ -48,9 +48,11 @@ def io_1d(x_low, x_high, sparse=False):
 
 
 def io_2d(x_low, x_high, y_low, y_high, sparse=False):
-    X, Y = np.meshgrid(arange(x_low, x_high, sparse=sparse), arange(y_low, y_high, sparse=sparse), indexing="ij")
-    Z = np.zeros(X.shape, dtype=int)
-    return X, Y, Z
+    X = arange(x_low, x_high, sparse=sparse)
+    Y = arange(y_low, y_high, sparse=sparse)
+    XX, YY = np.meshgrid(X, Y, indexing="ij")
+    ZZ = np.zeros(XX.shape, dtype=int)
+    return X, Y, XX, YY, ZZ
 
 
 def random_coeffs(low, high, size_low, size_high):
@@ -92,39 +94,39 @@ def make_luts(field, folder, sparse=False):
     }
     save_json(d, folder, "properties.json", indent=True)
 
-    X, Y, Z = io_2d(0, order, 0, order, sparse=sparse)
-    for i in range(Z.shape[0]):
-        for j in range(Z.shape[1]):
-            Z[i,j] = I(F(X[i,j]) + F(Y[i,j]))
-    d = {"X": X, "Y": Y, "Z": Z}
+    X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
+    for i in range(ZZ.shape[0]):
+        for j in range(ZZ.shape[1]):
+            ZZ[i,j] = I(F(XX[i,j]) + F(YY[i,j]))
+    d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "add.pkl")
 
-    X, Y, Z = io_2d(0, order, 0, order, sparse=sparse)
-    for i in range(Z.shape[0]):
-        for j in range(Z.shape[1]):
-            Z[i,j] = I(F(X[i,j]) -  F(Y[i,j]))
-    d = {"X": X, "Y": Y, "Z": Z}
+    X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
+    for i in range(ZZ.shape[0]):
+        for j in range(ZZ.shape[1]):
+            ZZ[i,j] = I(F(XX[i,j]) -  F(YY[i,j]))
+    d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "subtract.pkl")
 
-    X, Y, Z = io_2d(0, order, 0, order, sparse=sparse)
-    for i in range(Z.shape[0]):
-        for j in range(Z.shape[1]):
-            Z[i,j] = I(F(X[i,j]) * F(Y[i,j]))
-    d = {"X": X, "Y": Y, "Z": Z}
+    X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
+    for i in range(ZZ.shape[0]):
+        for j in range(ZZ.shape[1]):
+            ZZ[i,j] = I(F(XX[i,j]) * F(YY[i,j]))
+    d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "multiply.pkl")
 
-    X, Y, Z = io_2d(0, order, -order-2, order+3, sparse=sparse)
-    for i in range(Z.shape[0]):
-        for j in range(Z.shape[1]):
-            Z[i,j] = I(F(X[i,j]) * Y[i,j])
-    d = {"X": X, "Y": Y, "Z": Z}
+    X, Y, XX, YY, ZZ = io_2d(0, order, -order-2, order+3, sparse=sparse)
+    for i in range(ZZ.shape[0]):
+        for j in range(ZZ.shape[1]):
+            ZZ[i,j] = I(F(XX[i,j]) * YY[i,j])
+    d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "multiple_add.pkl")
 
-    X, Y, Z = io_2d(0, order, 1, order, sparse=sparse)
-    for i in range(Z.shape[0]):
-        for j in range(Z.shape[1]):
-            Z[i,j] = I(F(X[i,j]) /  F(Y[i,j]))
-    d = {"X": X, "Y": Y, "Z": Z}
+    X, Y, XX, YY, ZZ = io_2d(0, order, 1, order, sparse=sparse)
+    for i in range(ZZ.shape[0]):
+        for j in range(ZZ.shape[1]):
+            ZZ[i,j] = I(F(XX[i,j]) /  F(YY[i,j]))
+    d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "divide.pkl")
 
     X, Z = io_1d(0, order, sparse=sparse)
@@ -139,11 +141,11 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "multiplicative_inverse.pkl")
 
-    X, Y, Z = io_2d(1, order, -order-2, order+3, sparse=sparse)
-    for i in range(Z.shape[0]):
-        for j in range(Z.shape[1]):
-            Z[i,j] = I(F(X[i,j]) **  Y[i,j])
-    d = {"X": X, "Y": Y, "Z": Z}
+    X, Y, XX, YY, ZZ = io_2d(1, order, -order-2, order+3, sparse=sparse)
+    for i in range(ZZ.shape[0]):
+        for j in range(ZZ.shape[1]):
+            ZZ[i,j] = I(F(XX[i,j]) **  YY[i,j])
+    d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "power.pkl")
 
     X, Z = io_1d(1, order, sparse=sparse)
