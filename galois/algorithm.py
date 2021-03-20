@@ -74,7 +74,7 @@ def factors(x):
     """
     f = _numba_factors(x)
     f = sorted(list(set(f)))  # Use set() to emove duplicates
-    return np.array(f, dtype=int)
+    return np.array(f, dtype=np.int64)
 
 
 @numba.jit(nopython=True)
@@ -122,7 +122,7 @@ def prime_factors(x):
     """
     assert isinstance(x, (int, np.integer)) and x > 1
     p, k = _numba_prime_factors(x)
-    return np.array(p, dtype=int), np.array(k, dtype=int)
+    return np.array(p, dtype=np.int64), np.array(k, dtype=np.int64)
 
 
 def is_prime(x):
@@ -143,7 +143,6 @@ def is_prime(x):
     # x is prime if and only if its prime factorization has one prime, occurring once
     _, k = prime_factors(x)
     return k.size == 1 and k[0] == 1
-
 
 
 def euclidean_algorithm(a, b):
@@ -249,8 +248,8 @@ def chinese_remainder_theorem(a, m):
     int
         The simultaneous solution :math:`x` to the system of congruences.
     """
-    a = np.array(a, dtype=int)
-    m = np.array(m, dtype=int)
+    a = np.array(a, dtype=np.int64)
+    m = np.array(m, dtype=np.int64)
     assert m.size == a.size
 
     # Check that modulii are pairwise relatively coprime
@@ -310,6 +309,7 @@ def _carmichael_prime_power(p, k):
     else:
         return euler_totient(p**k)
 
+
 def carmichael(n):
     """
     Implements the Carmichael function to find the smallest positive integer :math:`m` such that
@@ -331,7 +331,7 @@ def carmichael(n):
 
     p, k = prime_factors(n)
 
-    lambdas = np.zeros(p.size, dtype=int)
+    lambdas = np.zeros(p.size, dtype=np.int64)
     for i in range(p.size):
         lambdas[i] = _carmichael_prime_power(p[i], k[i])
 

@@ -140,8 +140,7 @@ class TestView:
             a = v.view(field)
 
     def test_array_out_of_range_values(self, field):
-        dtype = random.choice(field.dtypes)  # Random dtype that's compatible with this field
-        v = np.array([0,1,0,field.order], dtype=dtype)
+        v = np.array([0,1,0,field.order], dtype=np.int64)
         with pytest.raises(ValueError):
             a = v.view(field)
 
@@ -289,9 +288,9 @@ class TestArithmetic:
     def test_power_zero_to_zero(self, field, dtype):
         if dtype in field.dtypes:
             x = field.Zeros(10, dtype=dtype)
-            y = np.zeros(10, dtype=int)
+            y = np.zeros(10, dtype=np.int64)
             z = x ** y
-            Z = np.ones(10, dtype=int)
+            Z = np.ones(10, dtype=np.int64)
             assert np.all(z == Z)
             assert type(z) is field
             assert z.dtype == dtype
@@ -299,9 +298,9 @@ class TestArithmetic:
     def test_power_zero_to_positive_integer(self, field, dtype):
         if dtype in field.dtypes:
             x = field.Zeros(10, dtype=dtype)
-            y = np.random.randint(1, 2*field.order, 10, dtype=int)
+            y = np.random.randint(1, 2*field.order, 10, dtype=np.int64)
             z = x ** y
-            Z = np.zeros(10, dtype=int)
+            Z = np.zeros(10, dtype=np.int64)
             assert np.all(z == Z)
             assert type(z) is field
             assert z.dtype == dtype
@@ -333,7 +332,7 @@ class TestArithmeticNonField:
 
     def test_add_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(0, field.order, 1, dtype=int))
+        y = int(np.random.randint(0, field.order, 1, dtype=np.int64))
         with pytest.raises(TypeError):
             z = x + y
         with pytest.raises(TypeError):
@@ -341,7 +340,7 @@ class TestArithmeticNonField:
 
     def test_add_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(0, field.order, self.shape, dtype=int)
+        y = np.random.randint(0, field.order, self.shape, dtype=np.int64)
         with pytest.raises(TypeError):
             z = x + y
         with pytest.raises(TypeError):
@@ -349,7 +348,7 @@ class TestArithmeticNonField:
 
     def test_subtract_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(0, field.order, 1, dtype=int))
+        y = int(np.random.randint(0, field.order, 1, dtype=np.int64))
         with pytest.raises(TypeError):
             z = x - y
         with pytest.raises(TypeError):
@@ -357,7 +356,7 @@ class TestArithmeticNonField:
 
     def test_subtract_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(0, field.order, self.shape, dtype=int)
+        y = np.random.randint(0, field.order, self.shape, dtype=np.int64)
         with pytest.raises(TypeError):
             z = x - y
         with pytest.raises(TypeError):
@@ -365,8 +364,8 @@ class TestArithmeticNonField:
 
     def test_multiple_add_int_scalar(self, multiple_add):
         X, Y, Z = multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
-        i = np.random.randint(0, Z.shape[0], self.shape)  # Random x indices
-        j = np.random.randint(0, Z.shape[1])  # Random y index
+        i = np.random.randint(0, Z.shape[0], self.shape, dtype=np.int64)  # Random x indices
+        j = np.random.randint(0, Z.shape[1], dtype=np.int64)  # Random y index
         x = X[i,0]
         y = Y[0,j]
         assert np.all(x * y == Z[i,j])
@@ -374,8 +373,8 @@ class TestArithmeticNonField:
 
     def test_multiple_add_int_array(self, multiple_add):
         X, Y, Z = multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
-        i = np.random.randint(0, Z.shape[0], self.shape)  # Random x indices
-        j = np.random.randint(0, Z.shape[1])  # Random y index
+        i = np.random.randint(0, Z.shape[0], self.shape, dtype=np.int64)  # Random x indices
+        j = np.random.randint(0, Z.shape[1], dtype=np.int64)  # Random y index
         x = X[i,0]
         y = Y[0,j]
         assert np.all(x * y == Z[i,j])
@@ -383,7 +382,7 @@ class TestArithmeticNonField:
 
     def test_divide_int_scalar(self, field):
         x = field.Random(self.shape, low=1)
-        y = int(np.random.randint(1, field.order, 1, dtype=int))
+        y = int(np.random.randint(1, field.order, 1, dtype=np.int64))
         with pytest.raises(TypeError):
             z = x / y
         with pytest.raises(TypeError):
@@ -395,7 +394,7 @@ class TestArithmeticNonField:
 
     def test_divide_int_array(self, field):
         x = field.Random(self.shape, low=1)
-        y = np.random.randint(1, field.order, self.shape, dtype=int)
+        y = np.random.randint(1, field.order, self.shape, dtype=np.int64)
         with pytest.raises(TypeError):
             z = x / y
         with pytest.raises(TypeError):
@@ -407,7 +406,7 @@ class TestArithmeticNonField:
 
     def test_radd_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(0, field.order, 1, dtype=int))
+        y = int(np.random.randint(0, field.order, 1, dtype=np.int64))
         with pytest.raises(TypeError):
             x += y
         with pytest.raises(TypeError):
@@ -415,7 +414,7 @@ class TestArithmeticNonField:
 
     def test_radd_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(0, field.order, self.shape, dtype=int)
+        y = np.random.randint(0, field.order, self.shape, dtype=np.int64)
         with pytest.raises(TypeError):
             x += y
         with pytest.raises(TypeError):
@@ -423,7 +422,7 @@ class TestArithmeticNonField:
 
     def test_rsub_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(0, field.order, 1, dtype=int))
+        y = int(np.random.randint(0, field.order, 1, dtype=np.int64))
         with pytest.raises(TypeError):
             x -= y
         with pytest.raises(TypeError):
@@ -431,7 +430,7 @@ class TestArithmeticNonField:
 
     def test_rsub_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(0, field.order, self.shape, dtype=int)
+        y = np.random.randint(0, field.order, self.shape, dtype=np.int64)
         with pytest.raises(TypeError):
             x -= y
         with pytest.raises(TypeError):
@@ -439,8 +438,8 @@ class TestArithmeticNonField:
 
     def test_rmul_int_scalar(self, multiple_add):
         GF, X, Y, Z = multiple_add["GF"], multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
-        i = np.random.randint(0, Z.shape[0])  # Random x index
-        j = np.random.randint(0, Z.shape[1])  # Random y index
+        i = np.random.randint(0, Z.shape[0], dtype=np.int64)  # Random x index
+        j = np.random.randint(0, Z.shape[1], dtype=np.int64)  # Random y index
 
         x = X.copy()
         y = Y[i,j]  # Integer, non-field element
@@ -457,7 +456,7 @@ class TestArithmeticNonField:
 
     def test_rmul_int_array(self, multiple_add):
         GF, X, Y, Z = multiple_add["GF"], multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
-        i = np.random.randint(0, Z.shape[0])  # Random x index
+        i = np.random.randint(0, Z.shape[0], dtype=np.int64)  # Random x index
 
         x = X.copy()
         y = Y[i,:]
@@ -473,7 +472,7 @@ class TestArithmeticNonField:
 
     def test_rdiv_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(1, field.order, 1, dtype=int))
+        y = int(np.random.randint(1, field.order, 1, dtype=np.int64))
         with pytest.raises(TypeError):
             x /= y
         with pytest.raises(TypeError):
@@ -485,7 +484,7 @@ class TestArithmeticNonField:
 
     def test_rdiv_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(1, field.order, self.shape, dtype=int)
+        y = np.random.randint(1, field.order, self.shape, dtype=np.int64)
         with pytest.raises(TypeError):
             x /= y
         with pytest.raises(TypeError):
@@ -522,7 +521,7 @@ class TestArithmeticExceptions:
             y = -3
             z = x ** y
         with pytest.raises(ZeroDivisionError):
-            y = -3*np.ones(x.size, dtype=int)
+            y = -3*np.ones(x.size, dtype=np.int64)
             z = x ** y
 
     def test_log_of_zero(self, field):
@@ -638,7 +637,7 @@ class TestArithmeticExceptions:
 #     def test_scalar_scalar_out_of_range(self, field):
 #         shape = ()
 #         a = field.Random(shape)
-#         b = field.order*np.ones(shape, dtype=int)
+#         b = field.order*np.ones(shape, dtype=np.int64)
 #         with pytest.raises(ValueError):
 #             c = a + b
 #         # TODO: Can't figure out how to make this fail
@@ -648,7 +647,7 @@ class TestArithmeticExceptions:
 #     def test_vector_vector_out_of_range(self, field):
 #         shape = (10,)
 #         a = field.Random(shape)
-#         b = field.order*np.ones(shape, dtype=int)
+#         b = field.order*np.ones(shape, dtype=np.int64)
 #         with pytest.raises(ValueError):
 #             c = a + b
 #         with pytest.raises(ValueError):
@@ -657,7 +656,7 @@ class TestArithmeticExceptions:
 #     def test_matrix_matrix_out_of_range(self, field):
 #         shape = (10,10)
 #         a = field.Random(shape)
-#         b = field.order*np.ones(shape, dtype=int)
+#         b = field.order*np.ones(shape, dtype=np.int64)
 #         with pytest.raises(ValueError):
 #             c = a + b
 #         with pytest.raises(ValueError):
@@ -869,7 +868,7 @@ class TestUfuncMethods:
 
     def test_outer_multiply(self, field):
         a = field.Random(10)
-        b = np.random.randint(0, field.order, 12, dtype=int)
+        b = np.random.randint(0, field.order, 12, dtype=np.int64)
         c = np.multiply.outer(a, b)
         c_truth = field.Zeros((a.size, b.size))
         for i in range(a.size):
@@ -898,7 +897,7 @@ class TestUfuncMethods:
 
     def test_outer_power(self, field):
         a = field.Random(10)
-        b = np.random.randint(1, field.order, 12)
+        b = np.random.randint(1, field.order, 12, dtype=np.int64)
         c = np.power.outer(a, b)
         c_truth = field.Zeros((a.size, b.size))
         for i in range(a.size):
@@ -966,7 +965,7 @@ class TestUfuncMethods:
 
     def test_at_power(self, field):
         a = field.Random(10)
-        b = np.random.randint(1, field.order, 1)
+        b = np.random.randint(1, field.order, 1, dtype=np.int64)
         idxs = [0,1,1,4,8]
         a_truth = field(a)  # Ensure a copy happens
         np.power.at(a, idxs, b)
