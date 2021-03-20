@@ -327,7 +327,10 @@ class Poly:
         """
         c = self.coeffs_asc
         c = c.view(np.ndarray)  # We want to do integer math, not Galois field math
-        return np.add.reduce(c * self.field.order**np.arange(0, c.size))
+        decimal = 0
+        for i in range(c.size):
+            decimal += c[i] * self.field.order**i
+        return decimal
 
     @property
     def str(self):
