@@ -386,8 +386,8 @@ class GFArray(np.ndarray):
 
         # Set all ufuncs with "casting" keyword argument to "unsafe" so we can cast unsigned integers
         # to integers. We know this is safe because we already verified the inputs.
-        if method not in ["reduce", "accumulate", "at", "reduceat"]:
-            kwargs["casting"] = "unsafe"
+        # if method not in ["reduce", "accumulate", "at", "reduceat"]:
+        #     kwargs["casting"] = "unsafe"
 
         # Call appropriate ufunc method (implemented in subclasses)
         if ufunc is np.add:
