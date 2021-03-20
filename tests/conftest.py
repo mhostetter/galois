@@ -150,8 +150,9 @@ def add(field_folder):
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
-    d["X"] = GF(d["X"])
-    d["Y"] = GF(d["Y"])
+    X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
+    d["X"] = GF(X)
+    d["Y"] = GF(Y)
     d["Z"] = GF(d["Z"])
     return d
 
@@ -163,8 +164,9 @@ def subtract(field_folder):
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
-    d["X"] = GF(d["X"])
-    d["Y"] = GF(d["Y"])
+    X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
+    d["X"] = GF(X)
+    d["Y"] = GF(Y)
     d["Z"] = GF(d["Z"])
     return d
 
@@ -176,8 +178,9 @@ def multiply(field_folder):
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
-    d["X"] = GF(d["X"])
-    d["Y"] = GF(d["Y"])
+    X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
+    d["X"] = GF(X)
+    d["Y"] = GF(Y)
     d["Z"] = GF(d["Z"])
     return d
 
@@ -189,8 +192,9 @@ def divide(field_folder):
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
-    d["X"] = GF(d["X"])
-    d["Y"] = GF(d["Y"])
+    X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
+    d["X"] = GF(X)
+    d["Y"] = GF(Y)
     d["Z"] = GF(d["Z"])
     return d
 
@@ -225,8 +229,9 @@ def multiple_add(field_folder):
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
-    d["X"] = GF(d["X"])
-    d["Y"] = d["Y"]
+    X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
+    d["X"] = GF(X)
+    d["Y"] = Y
     d["Z"] = GF(d["Z"])
     return d
 
@@ -238,8 +243,9 @@ def power(field_folder):
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
-    d["X"] = GF(d["X"])
-    d["Y"] = d["Y"]
+    X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
+    d["X"] = GF(X)
+    d["Y"] = Y
     d["Z"] = GF(d["Z"])
     return d
 
