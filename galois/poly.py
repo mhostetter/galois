@@ -104,7 +104,7 @@ class Poly:
         degrees = np.array(degrees)
         assert np.issubdtype(degrees.dtype, np.integer) and np.all(degrees >= 0)
         degree = np.max(degrees)  # The degree of the polynomial
-        all_coeffs = np.zeros(degree + 1, dtype=int)
+        all_coeffs = np.zeros(degree + 1, dtype=np.int64)
         all_coeffs[degree - degrees] = coeffs
         return cls(all_coeffs, field=field)
 

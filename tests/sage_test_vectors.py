@@ -35,15 +35,15 @@ def F(integer):
 
 def arange(x_low, x_high, sparse=False):
     if sparse:
-        X = np.random.randint(x_low, x_high, SPARSE_SIZE, dtype=int)
+        X = np.random.randint(x_low, x_high, SPARSE_SIZE, dtype=np.int64)
     else:
-        X = np.arange(x_low, x_high, dtype=int)
+        X = np.arange(x_low, x_high, dtype=np.int64)
     return X
 
 
 def io_1d(x_low, x_high, sparse=False):
     X = arange(x_low, x_high, sparse=sparse)
-    Z = np.zeros(X.shape, dtype=int)
+    Z = np.zeros(X.shape, dtype=np.int64)
     return X, Z
 
 
@@ -51,7 +51,7 @@ def io_2d(x_low, x_high, y_low, y_high, sparse=False):
     X = arange(x_low, x_high, sparse=sparse)
     Y = arange(y_low, y_high, sparse=sparse)
     XX, YY = np.meshgrid(X, Y, indexing="ij")
-    ZZ = np.zeros(XX.shape, dtype=int)
+    ZZ = np.zeros(XX.shape, dtype=np.int64)
     return X, Y, XX, YY, ZZ
 
 
@@ -90,7 +90,7 @@ def make_luts(field, folder, sparse=False):
         "degree": int(field.degree()),
         "order": int(field.order()),
         "alpha": I(field.primitive_element()),
-        "prim_poly": np.flip(np.array(field.modulus().list(), dtype=int)).tolist()
+        "prim_poly": np.flip(np.array(field.modulus().list(), dtype=np.int64)).tolist()
     }
     save_json(d, folder, "properties.json", indent=True)
 
@@ -168,7 +168,7 @@ def make_luts(field, folder, sparse=False):
         x = ring([F(e) for e in X[i][::-1]])
         y = ring([F(e) for e in Y[i][::-1]])
         z = x + y
-        z = np.array([I(e) for e in z.list()[::-1]], dtype=int).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=np.int64).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -181,7 +181,7 @@ def make_luts(field, folder, sparse=False):
         x = ring([F(e) for e in X[i][::-1]])
         y = ring([F(e) for e in Y[i][::-1]])
         z = x - y
-        z = np.array([I(e) for e in z.list()[::-1]], dtype=int).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=np.int64).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -194,7 +194,7 @@ def make_luts(field, folder, sparse=False):
         x = ring([F(e) for e in X[i][::-1]])
         y = ring([F(e) for e in Y[i][::-1]])
         z = x * y
-        z = np.array([I(e) for e in z.list()[::-1]], dtype=int).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=np.int64).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -213,23 +213,23 @@ def make_luts(field, folder, sparse=False):
         y = ring([F(e) for e in Y[i][::-1]])
         q = x // y
         r = x % y
-        q = np.array([I(e) for e in q.list()[::-1]], dtype=int).tolist()
+        q = np.array([I(e) for e in q.list()[::-1]], dtype=np.int64).tolist()
         q = q if q != [] else [0]
         Q.append(q)
-        r = np.array([I(e) for e in r.list()[::-1]], dtype=int).tolist()
+        r = np.array([I(e) for e in r.list()[::-1]], dtype=np.int64).tolist()
         r = r if r != [] else [0]
         R.append(r)
     d = {"X": X, "Y": Y, "Q": Q, "R": R}
     save_pickle(d, folder, "poly_divmod.pkl")
 
     X = random_coeffs(0, order, 1, 6)
-    Y = np.arange(0, 5+1, dtype=int)
+    Y = np.arange(0, 5+1, dtype=np.int64)
     Z = []
     x = ring([F(e) for e in X[::-1]])
     for j in range(len(Y)):
         y = Y[j]
         z = x ** y
-        z = np.array([I(e) for e in z.list()[::-1]], dtype=int).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=np.int64).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -237,7 +237,7 @@ def make_luts(field, folder, sparse=False):
 
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = arange(0, order, sparse=sparse)
-    Z = np.zeros((len(X),len(Y)), dtype=int)
+    Z = np.zeros((len(X),len(Y)), dtype=np.int64)
     for i in range(len(X)):
         for j in range(len(Y)):
             x = ring([F(e) for e in X[i][::-1]])
