@@ -415,7 +415,7 @@ class GFArray(np.ndarray):
         elif ufunc is np.power:
             outputs = getattr(self._numba_ufunc_power, method)(*inputs, **kwargs)
         elif ufunc is np.square:
-            inputs.append(np.array([2], dtype=self.dtype))
+            inputs.append(np.array(2, dtype=self.dtype))
             outputs = getattr(self._numba_ufunc_power, method)(*inputs, **kwargs)
         elif ufunc is np.log:
             outputs = getattr(self._numba_ufunc_log, method)(*inputs, **kwargs)
