@@ -79,6 +79,8 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+# Sets the default role of `content` to :samp:`content`, which mimics inline literals ``content```
+default_role = 'samp'
 
 # -- Extension configuration -------------------------------------------------
 
