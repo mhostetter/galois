@@ -667,11 +667,84 @@ class TestBroadcasting:
 
     # NOTE: We don't need to verify the arithmetic is correct here, that was done in TestArithmetic
 
-    def test_matrix_and_constant(self, field):
-        A = field.Random((4,4))
-        b = field.Random()
-        B = b * field.Ones((4,4))
-        assert np.all(A + b == A + B)
+    def test_scalar_scalar(self, field):
+        shape1 = ()
+        shape2 = ()
+        shape_result = ()
+        self.check_results(field, shape1, shape2, shape_result)
+
+    def test_array_scalar(self, field):
+        shape1 = (2,2)
+        shape2 = ()
+        shape_result = (2,2)
+        self.check_results(field, shape1, shape2, shape_result)
+
+    def test_scalar_array(self, field):
+        shape1 = ()
+        shape2 = (2,2)
+        shape_result = (2,2)
+        self.check_results(field, shape1, shape2, shape_result)
+
+    def test_array_array(self, field):
+        shape1 = (2,4)
+        shape2 = (4,)
+        shape_result = (2,4)
+        self.check_results(field, shape1, shape2, shape_result)
+
+    def check_results(self, field, shape1, shape2, shape_result):
+        a = field.Random(shape1)
+        b = field.Random(shape2, low=1)
+        c = np.random.randint(0, field.order, shape2, dtype=np.int64)
+        d = 2*np.ones(shape2, dtype=np.int64)
+
+        # Test np.add ufunc
+        z = a + b
+        assert isinstance(z, field)
+        assert z.shape == shape_result
+
+        # Test np.subtract ufunc
+        z = a - b
+        assert isinstance(z, field)
+        assert z.shape == shape_result
+
+        # Test np.multiply ufunc
+        z = a * b
+        assert isinstance(z, field)
+        assert z.shape == shape_result
+
+        # Test np.true_divide ufunc
+        z = a / b
+        assert isinstance(z, field)
+        assert z.shape == shape_result
+
+        # Test np.floor_divide ufunc
+        z = a // b
+        assert isinstance(z, field)
+        assert z.shape == shape_result
+
+        # Test np.multiply ufunc (multiple addition)
+        z = a * c
+        assert isinstance(z, field)
+        assert z.shape == shape_result
+
+        # Test np.power ufunc
+        z = a ** c
+        assert isinstance(z, field)
+        assert z.shape == shape_result
+
+        # Test np.square ufunc
+        z = a ** d
+        assert isinstance(z, field)
+        assert z.shape == shape_result
+
+        # Test np.negative ufunc
+        z = -a
+        assert isinstance(z, field)
+        assert z.shape == a.shape
+
+        # Test np.log ufunc
+        z = np.log(b)
+        assert z.shape == b.shape
 
 
 class TestUfuncMethods:
