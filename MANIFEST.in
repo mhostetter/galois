@@ -1,2 +1,3 @@
 include README.md
 include version.txt
+include databases/conway_polys.db
