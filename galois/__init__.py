@@ -159,7 +159,7 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     Parameters
     ----------
     p : int
-        The prime characteristic of the field :math:`\\mathrm{GF}(p)`.
+        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)`.
     target : str, optional
         The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
     mode : str, optional
@@ -217,14 +217,51 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     return cls
 
 
-def conway_polynomial(p, n):
+def conway_polynomial(characteristic, degree):
+    """
+    Returns the Conway polynomial for :math:`\\mathrm{GF}(p^m)`.
+
+    This function uses Frank Luebeck's Conway polynomial database. See: http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html.
+
+    Parameters
+    ----------
+    characteristic : int
+        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p^m)`.
+    degree : int
+        The prime characteristic's degree :math:`m` of the field :math:`\\mathrm{GF}(p^m)`.
+
+    Returns
+    -------
+    Poly
+        The :math:`m`-degree polynomial in :math:`\\mathrm{GF}(p)[x]`.
+
+    Note
+    ----
+        If the :math:`\\mathrm{GF}(p)` field hasn't already been created, it will be created in this function
+        since it's needed in the return polynomial.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.conway_polynomial(2, 100)
+        galois.conway_polynomial(7, 13)
+    """
     # pylint: disable=import-outside-toplevel
-    from ._conway import CONWAY_POLYS
+    import numpy as np
+    from .conway import ConwayDatabase
 
-    if (p,n) not in CONWAY_POLYS.keys():
-        raise ValueError(f"Frank Luebek's Conway polynomial lookup table does not contain an entry for {(p,n)}\n\nSee: http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html")
+    if not isinstance(characteristic, (int, np.integer)):
+        raise TypeError(f"GF(p^m) prime characteristic `p` must be an integer, not {type(characteristic)}")
+    if not isinstance(degree, (int, np.integer)):
+        raise TypeError(f"GF(p^m) characteristic degree `m` must be an integer, not {type(degree)}")
 
-    field = GF2 if p == 2 else _GFp_factory(p)
-    poly = Poly(CONWAY_POLYS[(p,n)][::-1], field=field)
+    db = ConwayDatabase()
+    coeffs = db.fetch(characteristic, degree)
+    if coeffs is None:
+        raise ValueError(f"Frank Luebeck's database of Conway polynomials doesn't contain an entry for GF({characteristic}^{degree})")
 
-    return poly
+    coeffs = list(map(int, coeffs[1:-1].split(",")))  # List of degree-ascending coefficients
+    field = GF2 if characteristic == 2 else _GFp_factory(characteristic)
+
+    return Poly(coeffs[::-1], field=field)

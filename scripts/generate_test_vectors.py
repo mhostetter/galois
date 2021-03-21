@@ -1,7 +1,7 @@
 """
-Script to generate unit test vectors for the galois package using Sage.
+Script to generate unit test vectors for the galois package using SageMath.
 
-Install Sage with:
+Install SageMath with:
 ```
 sudo apt install sagemath
 ```
@@ -252,7 +252,7 @@ if __name__ == "__main__":
     # Seed the RNG so the outputs are the same for subsequent runs
     np.random.seed(123456789)
 
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "data")
 
     field = GF(2, modulus="primitive", repr="int")
     folder = os.path.join(path, "gf2")
