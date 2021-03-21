@@ -3,9 +3,9 @@ import numpy as np
 
 from .gf import GFBase, GFArray
 
-# Globals that will be set in target() and referenced in numba JIT-compiled functions
+# Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
-DEGREE = None
+DEGREE = None  # The prime power `m` of the Galois field
 ORDER = None  # The field's order `p^m`
 ALPHA = None  # The field's primitive element
 PRIM_POLY_DEC = None  # The field's primitive polynomial in decimal form
@@ -13,16 +13,12 @@ PRIM_POLY_DEC = None  # The field's primitive polynomial in decimal form
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
-MULT_INV_JIT = lambda x: 1 / x
+MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
 
 class GF2m(GFBase, GFArray):
     """
     An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
-
-    .. note::
-        This is an abstract base class for all :math:`\\mathrm{GF}(2^m)` fields. It cannot be instantiated directly.
-        :math:`\\mathrm{GF}(2^m)` field classes are created using `galois.GF_factory(2, m)`.
 
     Parameters
     ----------
@@ -31,6 +27,16 @@ class GF2m(GFBase, GFArray):
         is unmodified by the Galois field array. Valid input array types are `np.ndarray`, `list`, `tuple`, or `int`.
     dtype : np.dtype, optional
         The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+
+    Returns
+    -------
+    GF2m
+        The copied input array as a :math:`\\mathrm{GF}(2^m)` field array.
+
+    Note
+    ----
+        This is an abstract base class for all :math:`\\mathrm{GF}(2^m)` fields. It cannot be instantiated directly.
+        :math:`\\mathrm{GF}(2^m)` field classes are created using `galois.GF_factory(2, m)`, see :meth:`galois.GF_factory`.
     """
 
     def __new__(cls, *args, **kwargs):
@@ -96,7 +102,7 @@ class GF2m(GFBase, GFArray):
         rebuild : bool, optional
             Indicates whether to force a rebuild of the lookup tables. The default is `False`.
         """
-        global CHARACTERISTIC, DEGREE, ORDER, ALPHA, PRIM_POLY_DEC, ADD_JIT, MULTIPLY_JIT, MULT_INV_JIT  # pylint: disable=global-statement
+        global CHARACTERISTIC, DEGREE, ORDER, ALPHA, PRIM_POLY_DEC, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT  # pylint: disable=global-statement
         CHARACTERISTIC = cls.characteristic
         DEGREE = cls.degree
         ORDER = cls.order
@@ -136,7 +142,7 @@ class GF2m(GFBase, GFArray):
             # JIT-compile add,  multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
             ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(add_calculate)
             MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(multiply_calculate)
-            MULT_INV_JIT = numba.jit("int64(int64)", nopython=True)(multiplicative_inverse_calculate)
+            MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(multiplicative_inverse_calculate)
 
             # Create numba JIT-compiled ufuncs
             cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_calculate)
@@ -151,7 +157,7 @@ class GF2m(GFBase, GFArray):
 
 
 ###############################################################################
-# Galois field arithmetic using explicit calculation
+# Galois field arithmetic, explicitly calculated wihtout lookup tables
 ###############################################################################
 
 def add_calculate(a, b):
@@ -184,13 +190,14 @@ def multiply_calculate(a, b):
     """
     result = 0
     while a != 0 and b != 0:
-        if b & 0b1:
+        if b & 0b1 != 0:
             result ^= a
 
-        a <<= 1  # Multiply by characteristic 2
+        a *= ALPHA
+        b //= ALPHA
+
         if a >= ORDER:
             a ^= PRIM_POLY_DEC
-        b >>= 1  # Divide by characteristic 2
 
     return result
 
@@ -199,7 +206,7 @@ def divide_calculate(a, b):
     if a == 0 or b == 0:
         # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
         return 0
-    b_inv = MULT_INV_JIT(b)
+    b_inv = MULTIPLICATIVE_INVERSE_JIT(b)
     return MULTIPLY_JIT(a, b_inv)
 
 
@@ -259,7 +266,7 @@ def power_calculate(a, power):
     if power == 0:
         return 1
     elif power < 0:
-        a = MULT_INV_JIT(a)
+        a = MULTIPLICATIVE_INVERSE_JIT(a)
         power = abs(power)
 
     result_s = a  # The "squaring" part

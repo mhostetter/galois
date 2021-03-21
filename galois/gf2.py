@@ -2,10 +2,12 @@ import numba
 
 from .gf import GFBase, GFArray, DTYPES
 
-# Globals that will be set in target() and referenced in numba JIT-compiled functions
+# Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
-ADD_JIT = lambda x, y: x + y  # Placeholder function to replaced by JIT-compiled function
-MULTIPLY_JIT = lambda x, y: x * y  # Placeholder function to replaced by JIT-compiled function
+
+# Placeholder functions to be replaced by JIT-compiled function
+ADD_JIT = lambda x, y: x + y
+MULTIPLY_JIT = lambda x, y: x * y
 
 
 class GF2(GFBase, GFArray):
@@ -19,6 +21,11 @@ class GF2(GFBase, GFArray):
         is unmodified by the Galois field array. Valid input array types are `np.ndarray`, `list`, `tuple`, or `int`.
     dtype : np.dtype, optional
         The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+
+    Returns
+    -------
+    GF2
+        The copied input array as a :math:`\\mathrm{GF}(2)` field array.
 
     Examples
     --------
@@ -99,6 +106,10 @@ class GF2(GFBase, GFArray):
         cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
         cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
+
+###############################################################################
+# Galois field arithmetic, explicitly calculated wihtout lookup tables
+###############################################################################
 
 def _add_calculate(a, b):
     return a ^ b

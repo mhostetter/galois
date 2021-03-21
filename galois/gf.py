@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-
+# Dictionary mapping numpy ufuncs to our implementation method
 OVERRIDDEN_UFUNCS = {
     np.add: "_add",
     np.subtract: "_subtract",
@@ -16,16 +16,19 @@ OVERRIDDEN_UFUNCS = {
 
 DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
 
-# Globals that will be set in `_compile_lookup_ufuncs` and referenced in the numba JIT-compiled
-# functions below
+# Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 ORDER = None  # The field's order `p^m`
+
+# Lookup table globals
 EXP = []  # EXP[i] = alpha^i
 LOG = []  # LOG[i] = x, such that alpha^x = i
 ZECH_LOG = []  # ZECH_LOG[i] = log(1 + alpha^i)
 ZECH_E = None  # alpha^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
-ADD_JIT = lambda x, y: x + y  # Placeholder function to replaced by JIT-compiled function
-MULTIPLY_JIT = lambda x, y: x * y  # Placeholder function to replaced by JIT-compiled function
+
+# Placeholder functions to be replaced by JIT-compiled function
+ADD_JIT = lambda x, y: x + y
+MULTIPLY_JIT = lambda x, y: x * y
 
 
 class GFBaseMeta(type):
@@ -41,7 +44,8 @@ class GFBase(metaclass=GFBaseMeta):
     """
     An abstract base class for all Galois field array classes.
 
-    .. note::
+    Note
+    ----
         This is an abstract base class for all Galois fields. It cannot be instantiated directly.
     """
 
@@ -66,7 +70,7 @@ class GFBase(metaclass=GFBaseMeta):
 
     prim_poly = None
     """
-    Poly: The primitive polynomial of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive polynomial is of degree
+    galois.Poly: The primitive polynomial of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive polynomial is of degree
     :math:`m` in :math:`\\mathrm{GF}(p)[x]`.
     """
 
@@ -179,9 +183,9 @@ class GFBase(metaclass=GFBaseMeta):
         LOG = cls._LOG
         ZECH_LOG = cls._ZECH_LOG
         if cls.characteristic == 2:
-            ZECH_E = 0  # alpha^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
+            ZECH_E = 0
         else:
-            ZECH_E = (cls.order - 1) // 2  # alpha^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
+            ZECH_E = (cls.order - 1) // 2
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
@@ -452,7 +456,7 @@ def _add_lookup(a, b):
         return a
 
     if m > n:
-        # We want to factor out alpha^m, where m is smaller than n, such that `n - m` is always positive. IF
+        # We want to factor out alpha^m, where m is smaller than n, such that `n - m` is always positive. If
         # m is larger than n, switch a and b in the addition.
         m, n = n, m
 
@@ -486,7 +490,7 @@ def _subtract_lookup(a, b):
         return EXP[n]
 
     if m > n:
-        # We want to factor out alpha^m, where m is smaller than n, such that `n - m` is always positive. IF
+        # We want to factor out alpha^m, where m is smaller than n, such that `n - m` is always positive. If
         # m is larger than n, switch a and b in the addition.
         m, n = n, m
 

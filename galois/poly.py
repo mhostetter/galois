@@ -43,10 +43,10 @@ class Poly:
         GF = galois.GF_factory(7, 1)
 
         # Construct a polynominal over GF(7)
-        a = galois.Poly([4,0,3,0,0,2], field=GF); a
+        galois.Poly([4,0,3,0,0,2], field=GF)
 
         # Construct the same polynomial by only specifying its non-zero coefficients
-        b = galois.Poly.NonZero([4,3,2], [5,3,0], field=GF); b
+        galois.Poly.NonZero([4,3,2], [5,3,0], field=GF)
 
     Polynomial arithmetic
 
@@ -314,7 +314,7 @@ class Poly:
     @property
     def field(self):
         """
-        galois.GF2Base or galois.GFp: The finite field to which the coefficients belong.
+        GF2, GF2m, GFp, GFpm: The finite field to which the coefficients belong.
         """
         return self.coeffs.__class__
 

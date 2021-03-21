@@ -4,7 +4,6 @@ import numba
 import numpy as np
 
 from ._prime import PRIMES
-from .poly import Poly
 
 
 def _prev_prime_index(x):
@@ -25,6 +24,13 @@ def prev_prime(x):
     -------
     int
         The nearest prime :math:`p \\le x`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.prev_prime(13)
+        galois.prev_prime(15)
     """
     prev_idx = _prev_prime_index(x)
     return PRIMES[prev_idx]
@@ -43,6 +49,13 @@ def next_prime(x):
     -------
     int
         The nearest prime :math:`p > x`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.next_prime(13)
+        galois.next_prime(15)
     """
     prev_idx = _prev_prime_index(x)
     return PRIMES[prev_idx + 1]
@@ -71,6 +84,12 @@ def factors(x):
     -------
     np.ndarray:
         Sorted array of factors of :math:`x`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.factors(120)
     """
     f = _numba_factors(x)
     f = sorted(list(set(f)))  # Use set() to emove duplicates
@@ -119,6 +138,16 @@ def prime_factors(x):
         Sorted array of prime factors :math:`p = [p_1, p_2, \\dots, p_{n-1}]` with :math:`p_1 < p_2 < \\dots < p_{n-1}`.
     np.ndarray:
         Array of corresponding prime powers :math:`k = [k_1, k_2, \\dots, k_{n-1}]`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        p, k = galois.prime_factors(120)
+        p, k
+
+        # The product of the prime powers is the factored integer
+        np.multiply.reduce(p ** k)
     """
     assert isinstance(x, (int, np.integer)) and x > 1
     p, k = _numba_prime_factors(x)
@@ -138,6 +167,13 @@ def is_prime(x):
     -------
     bool:
         `True` if the integer :math:`x` is prime.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.is_prime(13)
+        galois.is_prime(15)
     """
     assert isinstance(x, (int, np.integer)) and x > 1
     # x is prime if and only if its prime factorization has one prime, occurring once
@@ -165,6 +201,13 @@ def euclidean_algorithm(a, b):
     ----------
     * T. Moon, "Error Correction Coding", Section 5.2.2: The Euclidean Algorithm and Euclidean Domains, p. 181
     * https://en.wikipedia.org/wiki/Euclidean_algorithm
+
+    Examples
+    --------
+    .. ipython:: python
+
+        a, b = 2, 13
+        galois.euclidean_algorithm(a, b)
     """
     assert isinstance(a, (int, np.integer))
     assert isinstance(b, (int, np.integer))
@@ -205,6 +248,15 @@ def extended_euclidean_algorithm(a, b):
     ----------
     * T. Moon, "Error Correction Coding", Section 5.2.2: The Euclidean Algorithm and Euclidean Domains, p. 181
     * https://en.wikipedia.org/wiki/Euclidean_algorithm#Extended_Euclidean_algorithm
+
+    Examples
+    --------
+    .. ipython:: python
+
+        a, b = 2, 13
+        x, y, gcd = galois.extended_euclidean_algorithm(a, b)
+        x, y, gcd
+        a*x + b*y == gcd
     """
     r = [a, b]
     s = [1, 0]
@@ -247,6 +299,18 @@ def chinese_remainder_theorem(a, m):
     -------
     int
         The simultaneous solution :math:`x` to the system of congruences.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        a = [0, 3, 4]
+        m = [3, 4, 5]
+        x = galois.chinese_remainder_theorem(a, m); x
+
+        for i in range(len(a)):
+            ai = x % m[i]
+            print(f"{x} % {m[i]} = {ai}, Valid congruence: {ai == a[i]}")
     """
     a = np.array(a, dtype=np.int64)
     m = np.array(m, dtype=np.int64)
@@ -282,8 +346,10 @@ def chinese_remainder_theorem(a, m):
 
 def euler_totient(n):
     """
-    Implements the Euler Totient function to count the positive integers (totatives) in :math:`1 \\le k < n` that
-    are relatively prime to :math:`n`, i.e. :math:`gcd(n, k) = 1`.
+    Counts the positive integers (totatives) in :math:`1 \\le k < n` that are relatively prime to
+    :math:`n`, i.e. :math:`gcd(n, k) = 1`.
+
+    Implements the Euler Totient function :math:`\\phi(n)`.
 
     Parameters
     ----------
@@ -294,6 +360,27 @@ def euler_totient(n):
     -------
     int
         The number of totatives that are relatively prime to :math:`n`.
+
+    References
+    ----------
+    * https://en.wikipedia.org/wiki/Euler%27s_totient_function
+    * https://oeis.org/A000010
+
+    Examples
+    --------
+    .. ipython:: python
+
+        n = 20
+        phi = galois.euler_totient(n); phi
+
+        # Find the totatives that are relatively coprime with n
+        totatives = [i for i in range(n) if galois.euclidean_algorithm(i, n) == 1]; totatives
+
+        # The number of totatives is phi
+        len(totatives) == phi
+
+        # For prime n, phi is always n-1
+        galois.euler_totient(13)
     """
     assert n > 0
     if n == 1:
@@ -312,8 +399,10 @@ def _carmichael_prime_power(p, k):
 
 def carmichael(n):
     """
-    Implements the Carmichael function to find the smallest positive integer :math:`m` such that
-    :math:`a^m = 1 (\\textrm{mod}\\ n)` for :math:`1 \\le a < n`.
+    Finds the smallest positive integer :math:`m` such that :math:`a^m \\equiv 1 (\\textrm{mod}\\ n)` for
+    every integer :math:`a` in :math:`1 \\le a < n` that is coprime to :math:`n`.
+
+    Implements the Carmichael function :math:`\\lambda(n)`.
 
     Parameters
     ----------
@@ -323,7 +412,30 @@ def carmichael(n):
     Returns
     -------
     int
-        The smallest positive integer :math:`m` such that :math:`a^m = 1 (\\textrm{mod}\\ n)` for :math:`1 \\le a < n`.
+        The smallest positive integer :math:`m` such that :math:`a^m \\equiv 1 (\\textrm{mod}\\ n)` for
+        every :math:`a` in :math:`1 \\le a < n` that is coprime to :math:`n`.
+
+    References
+    ----------
+    * https://en.wikipedia.org/wiki/Carmichael_function
+    * https://oeis.org/A002322/list
+
+    Examples
+    --------
+    .. ipython:: python
+
+        n = 20
+        lambda_ = galois.carmichael(n); lambda_
+
+        # Find the totatives that are relatively coprime with n
+        totatives = [i for i in range(n) if galois.euclidean_algorithm(i, n) == 1]; totatives
+
+        for a in totatives:
+            result = galois.modular_exp(a, lambda_, n)
+            print("{:2d}^{} = {} (mod {})".format(a, lambda_, result, n))
+
+        # For prime n, phi and lambda are always n-1
+        galois.euler_totient(13), galois.carmichael(13)
     """
     assert n > 0
     if n == 1:
@@ -375,7 +487,7 @@ def modular_exp(base, exponent, modulus):
 
 def primitive_root(n):
     """
-    Finds the first, smallest primitive n-th root of unity that satisfy :math:`x^k = 1 (\\textrm{mod}\\ n)`.
+    Finds the first, smallest primitive n-th root of unity :math:`x` that satisfies :math:`x^n \\equiv 1 (\\textrm{mod}\\ n)`.
 
     Parameters
     ----------
@@ -386,6 +498,23 @@ def primitive_root(n):
     -------
     int
         The first, smallest primitive root of unity modulo :math:`n`.
+
+    References
+    ----------
+    * https://en.wikipedia.org/wiki/Finite_field#Roots_of_unity
+    * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
+
+    Examples
+    --------
+    .. ipython:: python
+
+        n = 7
+        root = galois.primitive_root(n); root
+
+        # Test that the primitive root is a multiplicative generator of GF(n)
+        for i in range(1, n):
+            result = galois.modular_exp(root, i, n)
+            print(f"{root}^{i} = {result} (mod {n})")
     """
     assert n > 0
     if n == 1:
@@ -414,7 +543,7 @@ def primitive_root(n):
 
 def primitive_roots(n):
     """
-    Finds all primitive n-th roots of unity that satisfy :math:`x^k = 1 (\\textrm{mod}\\ n)`.
+    Finds all primitive n-th roots of unity :math:`x` that satisfy :math:`x^n \\equiv 1 (\\textrm{mod}\\ n)`.
 
     Parameters
     ----------
@@ -423,8 +552,27 @@ def primitive_roots(n):
 
     Returns
     -------
-    np.ndarray
-        An array of integer roots of unity modulo :math:`n`.
+    list
+        A list of integer roots of unity modulo :math:`n`.
+
+    References
+    ----------
+    * https://en.wikipedia.org/wiki/Finite_field#Roots_of_unity
+    * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
+
+    Examples
+    --------
+    .. ipython:: python
+
+        n = 7
+        roots = galois.primitive_roots(n); roots
+
+        # Test that each primitive root is a multiplicative generator of GF(n)
+        for root in roots:
+            print(f"\\nPrimitive root: {root}")
+            for i in range(1, n):
+                result = galois.modular_exp(root, i, n)
+                print(f"{root}^{i} = {result} (mod {n})")
     """
     assert n > 0
     if n == 1:
@@ -470,35 +618,3 @@ def primitive_roots(n):
         assert len(roots) == euler_totient(phi), "The number of primitive roots, if there are any, is phi(phi(n))"
 
     return roots
-
-
-def min_poly(a, field, n):
-    """
-    Finds the minimal polynomial of :math:`a` over the specified Galois field.
-
-    Parameters
-    ----------
-    a : int
-        Field element in the extension field :math:`\\mathrm{GF}(q^n)`.
-    field : galois.gf.GFBase
-        The base field :math:`\\mathrm{GF}(q)`.
-    n : int
-        The degree :math:`n` of the extension field.
-
-    Returns
-    -------
-    galois.Poly
-        The minimal polynomial :math:`p(x)` of n-th degree with coefficients in `field`, i.e. :math:`p(x) \\in \\mathrm{GF}(q)[x]`,
-        where :math:`a \\in \\mathrm{GF}(q^n)` is a root, i.e. :math:`p(a) = 0` in :math:`\\mathrm{GF}(q^n)`.
-    """
-    if n == 1:
-        poly = Poly([1, -a], field=field)
-    else:
-        poly = None
-        # Loop over all degree-n polynomials
-        for poly_dec in range(field.order**1, field.order**(n + 1)):
-            # Polynomial over GF(2^m) with coefficients in GF2
-            poly = Poly.Decimal(poly_dec, field=field)
-            if poly(a) == 0:
-                break
-    return poly
