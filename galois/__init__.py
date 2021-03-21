@@ -4,22 +4,11 @@ A performant numpy extension for Galois fields.
 from .version import __version__
 
 from .algorithm import prev_prime, next_prime, factors, prime_factors, is_prime, euclidean_algorithm, extended_euclidean_algorithm, \
-                       chinese_remainder_theorem, euler_totient, carmichael, modular_exp, primitive_roots, primitive_root, \
-                       min_poly
+                       chinese_remainder_theorem, euler_totient, carmichael, modular_exp, primitive_roots, primitive_root
 from .gf2 import GF2
 from .gf2m import GF2m
 from .gfp import GFp
 from .poly import Poly
-
-# Create the default GF2 class and target the numba ufuncs for "cpu" (lowest overhead)
-GF2.target("cpu")
-
-GF2.alpha = GF2(1)
-
-# Define the GF2 primitve polynomial here, not in gf2.py, to avoid a circular dependency.
-# The primitive polynomial is p(x) = x - alpha, where alpha=1. Over GF2, this is equivalent
-# to p(x) = x + 1
-GF2.prim_poly = min_poly(GF2.alpha, GF2, 1)
 
 
 def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=redefined-outer-name
@@ -31,9 +20,9 @@ def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto"
     characteristic : int
         The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p^m)`.
     degree : int
-        The degree :math:`m` of the prime characteristic of the field :math:`\\mathrm{GF}(p^m)`.
-    prim_poly : Poly, optional
-        The primitive polynomial of the field. Default is `None` which will use the Conway polynomial `galois.conway_polynomial(p, m)`.
+        The prime characteristic's degree :math:`m` of the field :math:`\\mathrm{GF}(p^m)`.
+    prim_poly : galois.Poly, optional
+        The primitive polynomial of the field. Default is `None` which will use the Conway polynomial `galois.conway_poly(p, m)`, see :meth:`galois.conway_poly`.
     target : str, optional
         The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
     mode : str, optional
@@ -95,8 +84,8 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
     ----------
     m : int
         The prime characteristic degree :math:`m` of the field :math:`\\mathrm{GF}(2^m)`.
-    prim_poly : Poly, optional
-        The primitive polynomial of the field. Default is `None` which will use the Conway polynomial `galois.conway_polynomial(2, m)`.
+    prim_poly : galois.Poly, optional
+        The primitive polynomial of the field. Default is `None` which will use the Conway polynomial `galois.conway_poly(2, m)`, see :meth:`galois.conway_poly`.
     target : str, optional
         The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
     mode : str, optional
@@ -132,7 +121,7 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
     # Use the smallest primitive root as the multiplicative generator for the field
     alpha = 2
     if prim_poly is None:
-        prim_poly = conway_polynomial(characteristic, degree)
+        prim_poly = conway_poly(characteristic, degree)
 
     # Create new class type
     cls = type(name, (GF2m,), {
@@ -217,7 +206,7 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     return cls
 
 
-def conway_polynomial(characteristic, degree):
+def conway_poly(characteristic, degree):
     """
     Returns the Conway polynomial for :math:`\\mathrm{GF}(p^m)`.
 
@@ -232,8 +221,8 @@ def conway_polynomial(characteristic, degree):
 
     Returns
     -------
-    Poly
-        The :math:`m`-degree polynomial in :math:`\\mathrm{GF}(p)[x]`.
+    galois.Poly
+        The degree-:math:`m` polynomial in :math:`\\mathrm{GF}(p)[x]`.
 
     Note
     ----
@@ -244,8 +233,8 @@ def conway_polynomial(characteristic, degree):
     --------
     .. ipython:: python
 
-        galois.conway_polynomial(2, 100)
-        galois.conway_polynomial(7, 13)
+        galois.conway_poly(2, 100)
+        galois.conway_poly(7, 13)
     """
     # pylint: disable=import-outside-toplevel
     import numpy as np
@@ -265,3 +254,14 @@ def conway_polynomial(characteristic, degree):
     field = GF2 if characteristic == 2 else _GFp_factory(characteristic)
 
     return Poly(coeffs[::-1], field=field)
+
+
+# Create the default GF2 class and target the numba ufuncs for "cpu" (lowest overhead)
+GF2.target("cpu")
+
+GF2.alpha = GF2(1)
+
+# Define the GF2 primitve polynomial here, not in gf2.py, to avoid a circular dependency.
+# The primitive polynomial is p(x) = x - alpha, where alpha=1. Over GF2, this is equivalent
+# to p(x) = x + 1
+GF2.prim_poly = conway_poly(2, 1)

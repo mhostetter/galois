@@ -4,7 +4,7 @@ import numpy as np
 from .algorithm import extended_euclidean_algorithm
 from .gf import GFBase, GFArray
 
-# Globals that will be set in target() and referenced in numba JIT-compiled functions
+# Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 ORDER = None  # The field's order `p^m`
 ALPHA = None  # The field's primitive element
@@ -12,16 +12,12 @@ ALPHA = None  # The field's primitive element
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
-MULT_INV_JIT = lambda x: 1 / x
+MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
 
 class GFp(GFBase, GFArray):
     """
     An abstract base class for all :math:`\\mathrm{GF}(p)` field array classes.
-
-    .. note::
-        This is an abstract base class for all :math:`\\mathrm{GF}(p)` fields. It cannot be instantiated directly.
-        :math:`\\mathrm{GF}(p)` field classes are created using `galois.GF_factory(p, 1)`.
 
     Parameters
     ----------
@@ -30,6 +26,16 @@ class GFp(GFBase, GFArray):
         is unmodified by the Galois field array. Valid input array types are `np.ndarray`, `list`, `tuple`, or `int`.
     dtype : np.dtype, optional
         The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+
+    Returns
+    -------
+    GFp
+        The copied input array as a :math:`\\mathrm{GF}(p)` field array.
+
+    Note
+    ----
+        This is an abstract base class for all :math:`\\mathrm{GF}(p)` fields. It cannot be instantiated directly.
+        :math:`\\mathrm{GF}(p)` field classes are created using `galois.GF_factory(p, 1)`, see :meth:`galois.GF_factory`.
     """
 
     def __new__(cls, *args, **kwargs):
@@ -85,7 +91,7 @@ class GFp(GFBase, GFArray):
         target : str
             The numba JIT `target` processor, either "cpu", "parallel", or "cuda".
         """
-        global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULT_INV_JIT  # pylint: disable=global-statement
+        global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT  # pylint: disable=global-statement
         CHARACTERISTIC = cls.characteristic
         ORDER = cls.order
         ALPHA = int(cls.alpha)  # Convert from field element to integer
@@ -115,7 +121,7 @@ class GFp(GFBase, GFArray):
             # JIT-compile add and multiply routines for reference in polynomial evaluation routine
             ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(add_calculate)
             MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(multiply_calculate)
-            MULT_INV_JIT = numba.jit("int64(int64)", nopython=True)(multiplicative_inverse_calculate)
+            MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(multiplicative_inverse_calculate)
 
             # Create numba JIT-compiled ufuncs
             cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_calculate)
@@ -130,7 +136,7 @@ class GFp(GFBase, GFArray):
 
 
 ###############################################################################
-# Galois field arithmetic using explicit calculation
+# Galois field arithmetic, explicitly calculated wihtout lookup tables
 ###############################################################################
 
 def add_calculate(a, b):
@@ -149,7 +155,7 @@ def divide_calculate(a, b):
     if a == 0 or b == 0:
         # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
         return 0
-    b_inv = MULT_INV_JIT(b)
+    b_inv = MULTIPLICATIVE_INVERSE_JIT(b)
     return MULTIPLY_JIT(a, b_inv)
 
 
@@ -182,7 +188,7 @@ def power_calculate(a, power):
     if power == 0:
         return 1
     elif power < 0:
-        a = MULT_INV_JIT(a)
+        a = MULTIPLICATIVE_INVERSE_JIT(a)
         power = abs(power)
 
     result_s = a  # The "squaring" part
