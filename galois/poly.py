@@ -1,5 +1,6 @@
 import numpy as np
 
+from .conversion import decimal_to_poly, poly_to_decimal, poly_to_str
 from .gf import GFBase
 from .gf2 import GF2
 
@@ -112,22 +113,13 @@ class Poly:
     def Decimal(cls, decimal, field=GF2, order="desc"):
         if not isinstance(decimal, (int, np.integer)):
             raise TypeError(f"Polynomial creation must have `decimal` be an integer, not {type(decimal)}")
-
-        # NOTE: log_b(n) = log(n) / log(b)
-        degree = int(np.floor(np.log(decimal) / np.log(field.order)))
-
-        c = []  # Coefficients in descending order
-        for d in range(degree, -1, -1):
-            c += [decimal // field.order**d]
-            decimal = decimal % field.order**d
-
-        if order == "asc":
+        c = decimal_to_poly(decimal, field.order)
+        if order == "desc":
             c = np.flip(c)
-
         return cls(c, field=field, order=order)
 
     def __repr__(self):
-        return "Poly({}, {})".format(self.str, self.field.__name__)
+        return "Poly({}, {})".format(poly_to_str(self.coeffs_asc), self.field.__name__)
 
     def __str__(self):
         return self.__repr__()
@@ -327,27 +319,5 @@ class Poly:
         """
         c = self.coeffs_asc
         c = c.view(np.ndarray)  # We want to do integer math, not Galois field math
-        decimal = 0
-        for i in range(c.size):
-            decimal += c[i] * self.field.order**i
+        decimal = poly_to_decimal(c, self.field.order)
         return decimal
-
-    @property
-    def str(self):
-        """
-        str: The string representation of the polynomial.
-        """
-        c = self.coeffs_asc
-
-        x = []
-        if self.degree >= 0 and c[0] != 0:
-            x += ["{}".format(c[0])]
-        if self.degree >= 1 and c[1] != 0:
-            x += ["{}x".format(c[1] if c[1] != 1 else "")]
-        if self.degree >= 2:
-            idxs = np.nonzero(c[2:])[0]  # Indices with non-zeros coefficients
-            x += ["{}x^{}".format(c[2+i] if c[2+i] != 1 else "", 2+i) for i in idxs]
-
-        poly_str = " + ".join(x[::-1]) if x else "0"
-
-        return poly_str
