@@ -1,7 +1,7 @@
 import numpy as np
 
 from .conversion import decimal_to_poly, poly_to_decimal, poly_to_str
-from .gf import GFBase
+from .gf import GF
 from .gf2 import GF2
 
 
@@ -15,7 +15,7 @@ class Poly:
         List of polynomial coefficients of type Galois field array, `np.ndarray`, list, or tuple. The first
         element is the highest-degree element if `order="desc"` or the first element is the 0-th degree element
         if `order="asc"`.
-    field : galois.GFBase, optional
+    field : galois.GF, optional
         Optionally specify the field to which the coefficients belong. The default field is `galois.GF2`. If
         `coeffs` is a Galois field array, then that field is used and the `field` parameter is ignored.
     order : str, optional
@@ -67,11 +67,11 @@ class Poly:
     """
 
     def __init__(self, coeffs, field=None, order="desc"):
-        if not (field is None or issubclass(field, GFBase)):
-            raise TypeError(f"The Galois field `field` must be a subclass of GFBase, not {field}")
+        if not (field is None or issubclass(field, GF)):
+            raise TypeError(f"The Galois field `field` must be a subclass of GF, not {field}")
         self.order = order
 
-        if isinstance(coeffs, GFBase) and field is None:
+        if isinstance(coeffs, GF) and field is None:
             self.coeffs = coeffs
         else:
             field = GF2 if field is None else field
@@ -264,8 +264,8 @@ class Poly:
 
     @coeffs.setter
     def coeffs(self, coeffs):
-        if not isinstance(coeffs, GFBase):
-            raise TypeError(f"Galois field polynomials must have coefficients in a valid Galois field class (i.e. subclasses of GFBase), not {type(coeffs)}")
+        if not isinstance(coeffs, GF):
+            raise TypeError(f"Galois field polynomials must have coefficients in a valid Galois field class (i.e. subclasses of GF), not {type(coeffs)}")
         if coeffs.ndim != 1:
             raise ValueError(f"Galois field polynomial coefficients must be arrays with dimension 1, not {coeffs.ndim}")
         idxs = np.nonzero(coeffs)[0]  # Non-zero indices

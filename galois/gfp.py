@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 from .algorithm import extended_euclidean_algorithm
-from .gf import GFBase, GFArray
+from .gf import GF, GFArray
 
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -15,7 +15,7 @@ MULTIPLY_JIT = lambda x, y: x * y
 MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
 
-class GFp(GFBase, GFArray):
+class GFp(GF, GFArray):
     """
     An abstract base class for all :math:`\\mathrm{GF}(p)` field array classes.
 
