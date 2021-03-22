@@ -5,6 +5,7 @@ from .version import __version__
 
 from .algorithm import prev_prime, next_prime, factors, prime_factors, is_prime, euclidean_algorithm, extended_euclidean_algorithm, \
                        chinese_remainder_theorem, euler_totient, carmichael, modular_exp, primitive_roots, primitive_root
+from .gf import GF
 from .gf2 import GF2
 from .gf2m import GF2m
 from .gfp import GFp
@@ -39,7 +40,7 @@ def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto"
     Returns
     -------
     galois.GF2, galois.GF2m, galois.GFp, galois.GFpm
-        A new Galois field class that is a sublcass of `galois.GFBase`.
+        A new Galois field class that is a sublcass of `galois.GF`.
     """
     if not isinstance(characteristic, int):
         raise TypeError(f"Galois field GF(p^m) prime characteristic `p` must be an integer, not {type(characteristic)}")

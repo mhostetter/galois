@@ -34,7 +34,7 @@ ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 
 
-class GFBaseMeta(type):
+class GFMeta(type):
     """
     Defines a metaclass to give all GF classes a `__str__()` special method, not just their instances.
     """
@@ -43,7 +43,7 @@ class GFBaseMeta(type):
         return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.degree, poly_to_str(cls.prim_poly.coeffs_asc), cls.prim_poly.decimal)
 
 
-class GFBase(metaclass=GFBaseMeta):
+class GF(metaclass=GFMeta):
     """
     An abstract base class for all Galois field array classes.
 
@@ -53,7 +53,7 @@ class GFBase(metaclass=GFBaseMeta):
         Galois field array classes are created using :obj:`galois.GF_factory`.
     """
 
-    # NOTE: These class attributes will be set in the subclasses of GFBase
+    # NOTE: These class attributes will be set in the subclasses of GF
 
     characteristic = None
     """
@@ -319,7 +319,7 @@ class GFArray(np.ndarray):
         A numpy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
         that view casting to a Galois field array has the appropriate dtype and that the values are in the field.
         """
-        if obj is not None and not isinstance(obj, GFBase):
+        if obj is not None and not isinstance(obj, GF):
             if obj.dtype not in self.dtypes:
                 raise TypeError(f"Galois field arrays can only have integer dtypes {self.dtypes}, not {obj.dtype}")
             if np.any(obj < 0) or np.any(obj >= self.order):

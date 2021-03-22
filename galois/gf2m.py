@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from .gf import GFBase, GFArray
+from .gf import GF, GFArray
 
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -16,7 +16,7 @@ MULTIPLY_JIT = lambda x, y: x * y
 MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
 
-class GF2m(GFBase, GFArray):
+class GF2m(GF, GFArray):
     """
     An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
 

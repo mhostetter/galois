@@ -1,6 +1,6 @@
 import numba
 
-from .gf import GFBase, GFArray, DTYPES
+from .gf import GF, GFArray, DTYPES
 
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -10,7 +10,7 @@ ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 
 
-class GF2(GFBase, GFArray):
+class GF2(GF, GFArray):
     """
     Galois field array class for :math:`\\mathrm{GF}(2)` fields.
 
