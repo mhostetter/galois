@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
+    'sphinx.ext.intersphinx',
     'recommonmark',
     'sphinx_rtd_theme',
     'nbsphinx',
@@ -83,6 +84,13 @@ html_static_path = ['_static']
 default_role = 'samp'
 
 # -- Extension configuration -------------------------------------------------
+
+# Create hyperlinks to other documentation
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'numba': ('https://numba.pydata.org/numba-doc/latest/', None)
+}
 
 # If True, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True

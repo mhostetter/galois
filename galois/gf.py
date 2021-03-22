@@ -33,7 +33,7 @@ MULTIPLY_JIT = lambda x, y: x * y
 
 class GFBaseMeta(type):
     """
-    Defines a metaclass to give all GF classes a __str__() special method, not just their instances.
+    Defines a metaclass to give all GF classes a `__str__()` special method, not just their instances.
     """
 
     def __str__(cls):
@@ -47,19 +47,21 @@ class GFBase(metaclass=GFBaseMeta):
     Note
     ----
         This is an abstract base class for all Galois fields. It cannot be instantiated directly.
+        Galois field array classes are created using :obj:`galois.GF_factory`.
     """
 
     # NOTE: These class attributes will be set in the subclasses of GFBase
 
     characteristic = None
     """
-    int: The characteristic :math:`p`, which must be prime, of the Galois field :math:`\\mathrm{GF}(p^m)`. Adding
+    int: The prime characteristic :math:`p` of the Galois field :math:`\\mathrm{GF}(p^m)`. Adding
     :math:`p` copies of any element will always result in :math:`0`.
     """
 
     degree = None
     """
-    int: The degree :math:`m`, which is a positive integer, of the Galois field :math:`\\mathrm{GF}(p^m)`.
+    int: The prime characteristic's degree :math:`m` of the Galois field :math:`\\mathrm{GF}(p^m)`. The degree
+    is a positive integer.
     """
 
     order = None
@@ -70,21 +72,21 @@ class GFBase(metaclass=GFBaseMeta):
 
     prim_poly = None
     """
-    galois.Poly: The primitive polynomial of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive polynomial is of degree
-    :math:`m` in :math:`\\mathrm{GF}(p)[x]`.
+    galois.Poly: The primitive polynomial :math:`p(x)` of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive
+    polynomial is of degree :math:`m` in :math:`\\mathrm{GF}(p)[x]`.
     """
 
     alpha = None
     """
     int: The primitive element of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive element is a root of the
-    primitive polynomial :math:`p(x)`, such that :math:`p(\\alpha) = 0`. The primitive element also generates the field
-    :math:`\\mathrm{GF}(p^m) = [0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}]`.
+    primitive polynomial :math:`p(x)`, such that :math:`p(\\alpha) = 0`. The primitive element is also a multiplicative
+    generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
     """
 
     dtypes = []
     """
-    list: List of valid integer numpy dtypes that are compatible with this Galois field array class. Valid data types
-    are signed and unsinged integers that can represent values in :math:`[0, order)`.
+    list: List of valid integer :obj:`numpy.dtype` objects that are compatible with this Galois field array class. Valid data
+    types are signed and unsinged integers that can represent decimal values in :math:`[0, p^m)`.
     """
 
     ufunc_mode = None
@@ -109,10 +111,11 @@ class GFBase(metaclass=GFBaseMeta):
         Parameters
         ----------
         shape : tuple
-            A numpy-compliant `shape` tuple. A single integer represents the size of a 1-dim array. An n-tuple
-            represents an n-dim array with each element indicating the size in each dimension.
-        dtype : np.dtype, optional
-            The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+            A numpy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+            A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-dim array. An n-tuple, e.g.
+            `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
         """
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
@@ -126,10 +129,11 @@ class GFBase(metaclass=GFBaseMeta):
         Parameters
         ----------
         shape : tuple
-            A numpy-compliant `shape` tuple. A single integer represents the size of a 1-dim array. An n-tuple
-            represents an n-dim array with each element indicating the size in each dimension.
-        dtype : np.dtype, optional
-            The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+            A numpy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+            A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-dim array. An n-tuple, e.g.
+            `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
         """
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
@@ -138,19 +142,21 @@ class GFBase(metaclass=GFBaseMeta):
     @classmethod
     def Random(cls, shape=(), low=0, high=None, dtype=np.int64):
         """
-        Create a Galois field array with random field elements in :math:`[0, p^m)`.
+        Create a Galois field array with random field elements.
 
         Parameters
         ----------
         shape : tuple
-            A numpy-compliant `shape` tuple. A single integer represents the size of a 1-dim array. An n-tuple
-            represents an n-dim array with each element indicating the size in each dimension.
+            A numpy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+            A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-dim array. An n-tuple, e.g.
+            `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
         low : int, optional
-            The lowest random element (inclusive). The default is 0.
+            The lowest value (inclusive) of a random field element. The default is 0.
         high : int, optional
-            The highest random element (exclusive). The default is `None` which represents the field's order.
-        dtype : np.dtype, optional
-            The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+            The highest value (exclusive) of a random field element. The default is `None` which represents the
+            field's order :math:`p^m`.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
         """
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
@@ -162,12 +168,12 @@ class GFBase(metaclass=GFBaseMeta):
     @classmethod
     def Elements(cls, dtype=np.int64):
         """
-        Create a Galois field array of the field's elements :math:`[0, \\dots, p^m-1]`.
+        Create a Galois field array of the field's elements :math:`\\{0, \\dots, p^m-1\\}`.
 
         Parameters
         ----------
-        dtype : np.dtype, optional
-            The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
         """
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")

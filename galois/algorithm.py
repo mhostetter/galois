@@ -82,7 +82,7 @@ def factors(x):
 
     Returns
     -------
-    np.ndarray:
+    numpy.ndarray:
         Sorted array of factors of :math:`x`.
 
     Examples
@@ -130,13 +130,13 @@ def prime_factors(x):
     Parameters
     ----------
     x : int
-        The positive integer to be factored (:math:`x > 1`).
+        The positive integer to be factored.
 
     Returns
     -------
-    np.ndarray:
+    numpy.ndarray
         Sorted array of prime factors :math:`p = [p_1, p_2, \\dots, p_{n-1}]` with :math:`p_1 < p_2 < \\dots < p_{n-1}`.
-    np.ndarray:
+    numpy.ndarray
         Array of corresponding prime powers :math:`k = [k_1, k_2, \\dots, k_{n-1}]`.
 
     Examples
@@ -161,7 +161,7 @@ def is_prime(x):
     Parameters
     ----------
     x : int
-        A positive integer (:math:`x > 1`).
+        A positive integer.
 
     Returns
     -------
@@ -183,7 +183,7 @@ def is_prime(x):
 
 def euclidean_algorithm(a, b):
     """
-    Implements the Euclidean Algorithm to find the greatest common divisor of two integers.
+    Finds the greatest common divisor of two integers.
 
     Parameters
     ----------
@@ -225,8 +225,7 @@ def euclidean_algorithm(a, b):
 @numba.jit("int64[:](int64, int64)", nopython=True)
 def extended_euclidean_algorithm(a, b):
     """
-    Implements the Extended Euclidean Algorithm to find the integer multiplicands of :math:`a` and :math:`b`,
-    such that :math:`a x + b y = gcd(a,b)`.
+    Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = gcd(a,b)`.
 
     Parameters
     ----------
@@ -276,8 +275,7 @@ def extended_euclidean_algorithm(a, b):
 
 def chinese_remainder_theorem(a, m):
     """
-    Implements the Chinese Remainder Theorem (CRT). The CRT is a method for finding the simultaneous
-    solution to a system of congruences.
+    Solves the simultaneous system of congruences for :math:`x`.
 
     .. math::
         x &\\equiv a_1\\ (\\textrm{mod}\\ m_1)

@@ -22,22 +22,23 @@ def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto"
     degree : int
         The prime characteristic's degree :math:`m` of the field :math:`\\mathrm{GF}(p^m)`.
     prim_poly : galois.Poly, optional
-        The primitive polynomial of the field. Default is `None` which will use the Conway polynomial `galois.conway_poly(p, m)`, see :meth:`galois.conway_poly`.
-    target : str, optional
-        The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
+        The primitive polynomial of the field. Default is `None` which will use the Conway polynomial
+        obtained from :obj:`galois.conway_poly`.
+    target : str
+        The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`.
     mode : str, optional
-        The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`. GF(2) fields
-        only support `"auto"` and `"calculate"` modes. This is because it's more efficient to just compute the arithmetic than store
-        lookup tables. The "lookup" mode will use Zech log, log, and anti-log lookup table for speed. The `"calculate"` mode will
-        not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
-        than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
-        on field order.
+        The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`.
+        The "lookup" mode will use Zech log, log, and anti-log lookup tables for speed. The "calculate" mode will
+        not store any lookup tables, but perform field arithmetic on the fly. The "calculate" mode is designed
+        for large fields that cannot store lookup tables in RAM. Generally, "calculate" will be slower than "lookup".
+        The "auto" mode will determine whether to use "lookup" or "calculate" based on the field size. For "auto",
+        field's with `order <= 2**16` will use the "lookup" mode.
     rebuild : bool, optional
         Indicates whether to force a rebuild of the lookup tables. The default is `False`.
 
     Returns
     -------
-    GF2, GF2m, GFp, GFpm
+    galois.GF2, galois.GF2m, galois.GFp, galois.GFpm
         A new Galois field class that is a sublcass of `galois.GFBase`.
     """
     if not isinstance(characteristic, int):
@@ -47,7 +48,7 @@ def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto"
     if not (prim_poly is None or isinstance(prim_poly, Poly)):
         raise TypeError(f"Primitive polynomial `prim_poly` must be either None or galois.Poly, not {type(prim_poly)}")
     if not isinstance(rebuild, bool):
-        raise TypeError(f"Rebuild Galois field GF(p^m) class flag `rebuild` must be a bool, not {type(rebuild)}")
+        raise TypeError(f"The 'rebuild' argument must be a bool, not {type(rebuild)}")
     if not is_prime(characteristic):
         raise ValueError(f"Galois field GF(p^m) prime characteristic `p` must be prime, not {characteristic}")
     if not degree >= 1:
@@ -77,29 +78,6 @@ GF_factory.classes = {}
 
 
 def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
-    """
-    Factory function to construct Galois field array classes of type :math:`\\mathrm{GF}(2^m)`.
-
-    Parameters
-    ----------
-    m : int
-        The prime characteristic degree :math:`m` of the field :math:`\\mathrm{GF}(2^m)`.
-    prim_poly : galois.Poly, optional
-        The primitive polynomial of the field. Default is `None` which will use the Conway polynomial `galois.conway_poly(2, m)`, see :meth:`galois.conway_poly`.
-    target : str, optional
-        The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
-    mode : str, optional
-        The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`.
-        The "lookup" mode will use Zech log, log, and anti-log lookup table for speed. The `"calculate"` mode will
-        not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
-        than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
-        on field order.
-
-    Returns
-    -------
-    GF2m
-        A new Galois field class that is a sublcass of `galois.GF2m`.
-    """
     # pylint: disable=import-outside-toplevel
     import numpy as np
     from .gf import DTYPES
@@ -136,33 +114,14 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
     cls.alpha = cls(alpha)
 
     # JIT compile the numba ufuncs
-    cls.target(target, mode=mode)
+    if mode == "auto":
+        mode = "lookup" if cls.order <= 2**16 else "calculate"
+    cls.target(target, mode)
 
     return cls
 
 
 def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disable=unused-argument
-    """
-    Factory function to construct Galois field array classes of type :math:`\\mathrm{GF}(p)`.
-
-    Parameters
-    ----------
-    p : int
-        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)`.
-    target : str, optional
-        The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
-    mode : str, optional
-        The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`.
-        The "lookup" mode will use Zech log, log, and anti-log lookup table for speed. The `"calculate"` mode will
-        not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
-        than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
-        on field order.
-
-    Returns
-    -------
-    GFp
-        A new Galois field class that is a sublcass of `galois.GFp`.
-    """
     # pylint: disable=import-outside-toplevel
     import numpy as np
     from .gf import DTYPES
@@ -177,9 +136,6 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     characteristic = p
     degree = 1
     order = characteristic**degree
-
-    if mode == "auto":
-        mode = "lookup" if order <= 2**16 else "calculate"
 
     name = "GF{}".format(order)
     dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order - 1]
@@ -199,6 +155,8 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     cls.alpha = cls(alpha)
 
     # JIT compile the numba ufuncs
+    if mode == "auto":
+        mode = "lookup" if cls.order <= 2**16 else "calculate"
     cls.target(target, mode)
 
     cls.prim_poly = Poly([1, -alpha], field=cls)  # pylint: disable=invalid-unary-operand-type
