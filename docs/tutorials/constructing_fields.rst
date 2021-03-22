@@ -67,7 +67,7 @@ factory :obj:`galois.GF_factory`.
    prim_poly(GF8.alpha)
 
 
-Array creation, explicit and view casting
+Array creation: explicit and view casting
 -----------------------------------------
 
 Galois field arrays can be constructed either explicitly or through `numpy` view casting. The method of array
@@ -119,3 +119,28 @@ in :math:`[0, p^m)`.
 
    # Explicitly create a Galois field array with a specific dtype
    b = GF.Random(10, dtype=np.uint8); b
+
+
+Field element display modes
+---------------------------
+
+The default representation of a finite field element is the integer representation. That is, for :math:`\mathrm{GF}(2^3)`
+the 8 field elements are represented as :math:`\{0, 1, 2, 3, 4, 5, 6, 7\}`. Alternatively, the field elements can be represented
+as degree-3 polynomials in :math:`\mathrm{GF}(2)[x]`, i.e. :math:`\{0, 1, x, x+1, x^2, x^2+1, x^2+x, x^2+x+1\}`.
+
+.. ipython:: python
+
+   GF = galois.GF_factory(2, 3)
+   a = GF.Random(10)
+
+   # The default mode represents the field elements as integers
+   a
+
+   # The display mode can be set to "poly" mode
+   GF.display("poly"); a
+
+   # The polynomial variable can also be set
+   GF.display("poly", "r"); a
+
+   # Reset the display mode to the default
+   GF.display(); a
