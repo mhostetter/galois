@@ -1,6 +1,9 @@
 import numba
 import numpy as np
 
+from .conversion import decimal_to_poly, poly_to_str
+
+
 # Dictionary mapping numpy ufuncs to our implementation method
 OVERRIDDEN_UFUNCS = {
     np.add: "_add",
@@ -37,7 +40,7 @@ class GFBaseMeta(type):
     """
 
     def __str__(cls):
-        return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.degree, cls.prim_poly.str, cls.prim_poly.decimal)
+        return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.degree, poly_to_str(cls.prim_poly.coeffs_asc), cls.prim_poly.decimal)
 
 
 class GFBase(metaclass=GFBaseMeta):
@@ -98,6 +101,9 @@ class GFBase(metaclass=GFBaseMeta):
     """
     str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, or `"cuda"`.
     """
+
+    _display_mode = "int"
+    _display_poly_var = "x"
 
     _EXP = None
     _LOG = None
@@ -211,6 +217,49 @@ class GFBase(metaclass=GFBaseMeta):
         cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
         cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
         cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
+
+    @classmethod
+    def display(cls, mode="int", poly_var="x"):
+        """
+        Sets the printing mode for arrays.
+
+        Parameters
+        ----------
+        mode : str, optional
+            The field element display mode, either `"int"` (default) or `"poly"`.
+        poly_var : str, optional
+            The polynomial representation's variable. The default is `"x"`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF_factory(2, 3)
+            a = GF.Random(4); a
+            GF.display("poly"); a
+            GF.display("poly", "r"); a
+
+            # Reset the print mode
+            GF.display(); a
+        """
+        if mode not in ["int", "poly"]:
+            raise ValueError(f"Valid Galois field print modes are ['int', 'poly'], not {mode}")
+        if not isinstance(poly_var, str):
+            raise TypeError(f"Polynomial varialbes must be a str, not {type(poly_var)}")
+        cls._display_mode = mode
+        cls._display_poly_var = poly_var
+
+    @classmethod
+    def _print_poly(cls, decimal):
+        poly = decimal_to_poly(decimal, cls.characteristic)
+        return poly_to_str(poly, poly_var=cls._display_poly_var)
+
+    def __repr__(self):
+        if self._display_mode == "int":
+            return super().__repr__()
+        else:
+            with np.printoptions(formatter={"int": self._print_poly}):
+                return super().__repr__()
 
     def __str__(self):
         return self.__repr__()
