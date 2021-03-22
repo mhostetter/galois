@@ -5,7 +5,7 @@ Constructing finite field arrays
 GF(2) field class
 -----------------
 
-The :math:`GF(2)` field is already constructed in `galois`. It can be accessed by `galois.GF2`.
+The :math:`\mathrm{GF}(2)` field is already constructed in `galois`. It can be accessed by :obj:`galois.GF2`.
 
 .. ipython:: python
 
@@ -25,8 +25,8 @@ The :math:`GF(2)` field is already constructed in `galois`. It can be accessed b
 GF(p) field classes
 -------------------
 
-:math:`GF(p)` fields, where :math:`p` is prime, can be constructed using the class factory
-`galois.GF_factory(p, 1)`.
+:math:`\mathrm{GF}(p)` fields, where :math:`p` is prime, can be constructed using the class factory
+:obj:`galois.GF_factory`.
 
 .. ipython:: python
 
@@ -46,8 +46,8 @@ GF(p) field classes
 GF(2^m) field classes
 ---------------------
 
-:math:`GF(2^m)` fields, where :math:`m` is a positive integer, can be constructed using the class
-factory `galois.GF_factory(2, m)`.
+:math:`\mathrm{GF}(2^m)` fields, where :math:`m` is a positive integer, can be constructed using the class
+factory :obj:`galois.GF_factory`.
 
 .. ipython:: python
 
@@ -71,7 +71,7 @@ Array creation, explicit and view casting
 -----------------------------------------
 
 Galois field arrays can be constructed either explicitly or through `numpy` view casting. The method of array
-creation is the same for all Galois fields, but :math:`GF(7)` is used as an example here.
+creation is the same for all Galois fields, but :math:`\mathrm{GF}(7)` is used as an example here.
 
 .. ipython:: python
 
@@ -86,7 +86,7 @@ creation is the same for all Galois fields, but :math:`GF(7)` is used as an exam
 
 .. warning::
 
-   View casting creates a pointer to the original data and simply interprets it as a new `np.ndarray` subclass,
+   View casting creates a pointer to the original data and simply interprets it as a new :obj:`numpy.ndarray` subclass,
    namely the Galois field classes. So, if the original array is modified so will the Galois field array.
 
    .. ipython:: python
@@ -106,4 +106,16 @@ creation is the same for all Galois fields, but :math:`GF(7)` is used as an exam
 Galois field array dtypes
 -------------------------
 
-Galois field arrays support all integer dtypes, presuming the data type.
+Galois field arrays support all signed and unsigned integer dtypes, presuming the data type can store values
+in :math:`[0, p^m)`.
+
+.. ipython:: python
+
+   GF = galois.GF_factory(7, 1)
+   a = GF.Random(10); a
+
+   # Type cast an existing Galois field array to a different dtype
+   a.astype(np.uint8)
+
+   # Explicitly create a Galois field array with a specific dtype
+   b = GF.Random(10, dtype=np.uint8); b
