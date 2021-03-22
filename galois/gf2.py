@@ -18,13 +18,14 @@ class GF2(GFBase, GFArray):
     ----------
     array : array_like
         The input array to be converted to a Galois field array. The input array is copied, so the original array
-        is unmodified by the Galois field array. Valid input array types are `np.ndarray`, `list`, `tuple`, or `int`.
-    dtype : np.dtype, optional
-        The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+        is unmodified by changes to the Galois field array. Valid input array types are :obj:`numpy.ndarray`,
+        :obj:`list`, :obj:`tuple`, or :obj:`int`.
+    dtype : numpy.dtype, optional
+        The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
 
     Returns
     -------
-    GF2
+    galois.GF2
         The copied input array as a :math:`\\mathrm{GF}(2)` field array.
 
     Examples
@@ -71,12 +72,12 @@ class GF2(GFBase, GFArray):
     @classmethod
     def target(cls, target):
         """
-        Retarget the just-in-time compiled numba ufuncs.
+        Retarget the just-in-time compiled `numba` ufuncs.
 
         Parameters
         ----------
-        target : str, optional
-            The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
+        target : str
+            The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`.
         """
         global CHARACTERISTIC, ADD_JIT, MULTIPLY_JIT  # pylint: disable=global-statement
         CHARACTERISTIC = cls.characteristic

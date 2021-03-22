@@ -24,19 +24,20 @@ class GF2m(GFBase, GFArray):
     ----------
     array : array_like
         The input array to be converted to a Galois field array. The input array is copied, so the original array
-        is unmodified by the Galois field array. Valid input array types are `np.ndarray`, `list`, `tuple`, or `int`.
-    dtype : np.dtype, optional
-        The numpy `dtype` of the array elements. The default is `np.int64`. See: https://numpy.org/doc/stable/user/basics.types.html.
+        is unmodified by changes to the Galois field array. Valid input array types are :obj:`numpy.ndarray`,
+        :obj:`list`, :obj:`tuple`, or :obj:`int`.
+    dtype : numpy.dtype, optional
+        The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
 
     Returns
     -------
-    GF2m
+    galois.GF2m
         The copied input array as a :math:`\\mathrm{GF}(2^m)` field array.
 
     Note
     ----
         This is an abstract base class for all :math:`\\mathrm{GF}(2^m)` fields. It cannot be instantiated directly.
-        :math:`\\mathrm{GF}(2^m)` field classes are created using `galois.GF_factory(2, m)`, see :meth:`galois.GF_factory`.
+        :math:`\\mathrm{GF}(2^m)` field classes are created using :obj:`galois.GF_factory`.
     """
 
     def __new__(cls, *args, **kwargs):
@@ -85,20 +86,19 @@ class GF2m(GFBase, GFArray):
         cls._EXP[cls.order:2*cls.order] = cls._EXP[1:1 + cls.order]
 
     @classmethod
-    def target(cls, target, mode="auto", rebuild=False):
+    def target(cls, target, mode, rebuild=False):
         """
         Retarget the just-in-time compiled numba ufuncs.
 
         Parameters
         ----------
-        target : str, optional
-            The `target` from `numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. See: https://numba.readthedocs.io/en/stable/user/vectorize.html.
-        mode : str, optional
-            The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`.
-            The "lookup" mode will use Zech log, log, and anti-log lookup table for speed. The `"calculate"` mode will
-            not store any lookup tables, but calculate the field arithmetic on the fly. The `"calculate"` mode is slower
-            than `"lookup"` but uses less RAM. The "auto" mode will determine whether to use `"lookup"` or `"calculate"` based
-            on field order.
+        target : str
+            The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`.
+        mode : str
+            The type of field computation, either `"lookup"` or `"calculate"`. The "lookup" mode will use Zech log, log,
+            and anti-log lookup tables for speed. The "calculate" mode will not store any lookup tables, but perform field
+            arithmetic on the fly. The "calculate" mode is designed for large fields that cannot store lookup tables in RAM.
+            Generally, "calculate" will be slower than "lookup".
         rebuild : bool, optional
             Indicates whether to force a rebuild of the lookup tables. The default is `False`.
         """
@@ -111,13 +111,10 @@ class GF2m(GFBase, GFArray):
 
         if target not in ["cpu", "parallel", "cuda"]:
             raise ValueError(f"Valid numba compilation targets are ['cpu', 'parallel', 'cuda'], not {target}")
-        if mode not in ["auto", "lookup", "calculate"]:
-            raise ValueError(f"Valid GF(2^m) field calculation modes are ['auto', 'lookup' or 'calculate'], not {mode}")
+        if mode not in ["lookup", "calculate"]:
+            raise ValueError(f"Valid GF(2^m) field calculation modes are ['lookup', 'calculate'], not {mode}")
         if not isinstance(rebuild, bool):
-            raise ValueError(f"The 'rebuild' must be a bool, not {type(rebuild)}")
-
-        if mode == "auto":
-            mode = "lookup" if cls.order <= 2**16 else "calculate"
+            raise TypeError(f"The 'rebuild' argument must be a bool, not {type(rebuild)}")
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
