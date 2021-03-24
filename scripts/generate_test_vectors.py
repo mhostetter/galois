@@ -9,9 +9,11 @@ sudo apt install sagemath
 import json
 import os
 import pickle
+import random
 import shutil
+
 import numpy as np
-from sage.all import *
+from sage.all import GF, PolynomialRing, log
 
 FIELD = None
 SPARSE_SIZE = 20
@@ -33,31 +35,59 @@ def F(integer):
         return FIELD(integer)
 
 
-def arange(x_low, x_high, sparse=False):
+def arange(low, high, sparse=False):
     if sparse:
-        X = np.random.randint(x_low, x_high, SPARSE_SIZE, dtype=np.int64)
+        if high <= np.iinfo(np.int64).max:
+            X = np.random.randint(low, high, SPARSE_SIZE, dtype=np.int64)
+        else:
+            X = np.empty(SPARSE_SIZE, dtype=object)
+            iterator = np.nditer(X, flags=["multi_index", "refs_ok"])
+            for i in iterator:
+                X[iterator.multi_index] = random.randint(low, high - 1)
     else:
-        X = np.arange(x_low, x_high, dtype=np.int64)
+        X = np.arange(low, high, dtype=np.int64)
+
+    if sparse:
+        # Set a random element to the max (needed for testing for overflows)
+        idx = random.randint(0, X.size - 2)
+        X[idx] = high - 1
+
     return X
 
 
-def io_1d(x_low, x_high, sparse=False):
-    X = arange(x_low, x_high, sparse=sparse)
-    Z = np.zeros(X.shape, dtype=np.int64)
+def io_1d(low, high, sparse=False):
+    X = arange(low, high, sparse=sparse)
+
+    if high <= np.iinfo(np.int64).max:
+        Z = np.zeros(X.shape, dtype=np.int64)
+    else:
+        Z = np.array(np.zeros(X.shape), dtype=object)
+
     return X, Z
 
 
 def io_2d(x_low, x_high, y_low, y_high, sparse=False):
     X = arange(x_low, x_high, sparse=sparse)
     Y = arange(y_low, y_high, sparse=sparse)
+
+    if sparse:
+        # Set both random elements to the max (needed for testing for overflows)
+        X[-1] = x_high - 1
+        Y[-1] = y_high - 1
+
     XX, YY = np.meshgrid(X, Y, indexing="ij")
-    ZZ = np.zeros(XX.shape, dtype=np.int64)
+
+    if x_high <= np.iinfo(np.int64).max and y_high <= np.iinfo(np.int64).max:
+        ZZ = np.zeros(XX.shape, dtype=np.int64)
+    else:
+        ZZ = np.array(np.zeros(XX.shape), dtype=object)
+
     return X, Y, XX, YY, ZZ
 
 
 def random_coeffs(low, high, size_low, size_high):
-    size = np.random.randint(size_low, size_high)
-    return [np.random.randint(low, high) for i in range(size)]
+    size = random.randint(size_low, size_high - 1)
+    return [random.randint(low, high - 1) for i in range(size)]
 
 
 def save_pickle(d, folder, name):
@@ -80,7 +110,8 @@ def make_luts(field, folder, sparse=False):
     os.mkdir(folder)
 
     FIELD = field
-    order = field.order()
+    order = int(field.order())
+    dtype = np.int64 if order <= np.iinfo(np.int64).max else object
     alpha = field.primitive_element()
     ring = PolynomialRing(field, names="x")
     assert field.gen() == field.multiplicative_generator()
@@ -90,7 +121,7 @@ def make_luts(field, folder, sparse=False):
         "degree": int(field.degree()),
         "order": int(field.order()),
         "alpha": I(field.primitive_element()),
-        "prim_poly": np.flip(np.array(field.modulus().list(), dtype=np.int64)).tolist()
+        "prim_poly": [int(c) for c in field.modulus().list()[::-1]]
     }
     save_json(d, folder, "properties.json", indent=True)
 
@@ -168,7 +199,7 @@ def make_luts(field, folder, sparse=False):
         x = ring([F(e) for e in X[i][::-1]])
         y = ring([F(e) for e in Y[i][::-1]])
         z = x + y
-        z = np.array([I(e) for e in z.list()[::-1]], dtype=np.int64).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=dtype).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -181,7 +212,7 @@ def make_luts(field, folder, sparse=False):
         x = ring([F(e) for e in X[i][::-1]])
         y = ring([F(e) for e in Y[i][::-1]])
         z = x - y
-        z = np.array([I(e) for e in z.list()[::-1]], dtype=np.int64).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=dtype).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -194,7 +225,7 @@ def make_luts(field, folder, sparse=False):
         x = ring([F(e) for e in X[i][::-1]])
         y = ring([F(e) for e in Y[i][::-1]])
         z = x * y
-        z = np.array([I(e) for e in z.list()[::-1]], dtype=np.int64).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=dtype).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -213,10 +244,10 @@ def make_luts(field, folder, sparse=False):
         y = ring([F(e) for e in Y[i][::-1]])
         q = x // y
         r = x % y
-        q = np.array([I(e) for e in q.list()[::-1]], dtype=np.int64).tolist()
+        q = np.array([I(e) for e in q.list()[::-1]], dtype=dtype).tolist()
         q = q if q != [] else [0]
         Q.append(q)
-        r = np.array([I(e) for e in r.list()[::-1]], dtype=np.int64).tolist()
+        r = np.array([I(e) for e in r.list()[::-1]], dtype=dtype).tolist()
         r = r if r != [] else [0]
         R.append(r)
     d = {"X": X, "Y": Y, "Q": Q, "R": R}
@@ -229,7 +260,7 @@ def make_luts(field, folder, sparse=False):
     for j in range(len(Y)):
         y = Y[j]
         z = x ** y
-        z = np.array([I(e) for e in z.list()[::-1]], dtype=np.int64).tolist()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=dtype).tolist()
         z = z if z != [] else [0]
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
@@ -237,7 +268,7 @@ def make_luts(field, folder, sparse=False):
 
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = arange(0, order, sparse=sparse)
-    Z = np.zeros((len(X),len(Y)), dtype=np.int64)
+    Z = np.array(np.zeros((len(X),len(Y))), dtype=dtype)
     for i in range(len(X)):
         for j in range(len(Y)):
             x = ring([F(e) for e in X[i][::-1]])
@@ -255,37 +286,51 @@ if __name__ == "__main__":
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "data")
 
     field = GF(2, modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf2")
+    folder = os.path.join(path, "GF(2)")
     make_luts(field, folder)
 
     field = GF(5, modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf5")
+    folder = os.path.join(path, "GF(5)")
     make_luts(field, folder)
 
     field = GF(7, modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf7")
+    folder = os.path.join(path, "GF(7)")
     make_luts(field, folder)
 
     field = GF(31, modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf31")
+    folder = os.path.join(path, "GF(31)")
     make_luts(field, folder)
 
     field = GF(3191, modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf3191")
+    folder = os.path.join(path, "GF(3191)")
+    make_luts(field, folder, sparse=True)
+
+    # prime = 2**31 - 1, small enough to fit in np.int64
+    field = GF(2147483647, modulus="primitive", repr="int")
+    folder = os.path.join(path, "GF(2147483647)")
+    make_luts(field, folder, sparse=True)
+
+    # prime = 2**65 - 49, large enough to not fit in np.int64 and require np.object_
+    field = GF(36893488147419103183, modulus="primitive", repr="int")
+    folder = os.path.join(path, "GF(36893488147419103183)")
     make_luts(field, folder, sparse=True)
 
     field = GF(2**2, "x", modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf2^2")
+    folder = os.path.join(path, "GF(2^2)")
     make_luts(field, folder)
 
     field = GF(2**3, "x", modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf2^3")
+    folder = os.path.join(path, "GF(2^3)")
     make_luts(field, folder)
 
     field = GF(2**8, "x", modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf2^8")
+    folder = os.path.join(path, "GF(2^8)")
     make_luts(field, folder)
 
     field = GF(2**32, "x", modulus="primitive", repr="int")
-    folder = os.path.join(path, "gf2^32")
+    folder = os.path.join(path, "GF(2^32)")
+    make_luts(field, folder, sparse=True)
+
+    field = GF(2**100, "x", modulus="primitive", repr="int")
+    folder = os.path.join(path, "GF(2^100)")
     make_luts(field, folder, sparse=True)

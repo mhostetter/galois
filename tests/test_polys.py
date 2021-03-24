@@ -185,6 +185,15 @@ class TestArithmeticTypes:
         pass
 
 
+class TestProperties:
+    def test_decimal(self):
+        poly = galois.Poly([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,1])
+        assert poly.decimal == 4295000729
+
+        poly = galois.Poly.NonZero([1,1,1,1,1,1,1], [32,15,9,7,4,3,0])
+        assert poly.decimal == 4295000729
+
+
 def check_poly(poly, GF):
     assert isinstance(poly, galois.Poly)
     assert poly.field is GF

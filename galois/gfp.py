@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from .algorithm import extended_euclidean_algorithm
+from .algorithm import extended_euclidean_algorithm, extended_euclidean_algorithm_jit
 from .gf import GF, GFArray
 
 # Field attribute globals
@@ -100,9 +100,6 @@ class GFp(GF, GFArray):
             Indicates whether to force a rebuild of the lookup tables. The default is `False`.
         """
         global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT  # pylint: disable=global-statement
-        CHARACTERISTIC = cls.characteristic
-        ORDER = cls.order
-        ALPHA = int(cls.alpha)  # Convert from field element to integer
 
         if target not in ["cpu", "parallel", "cuda"]:
             raise ValueError(f"Valid numba compilation targets are ['cpu', 'parallel', 'cuda'], not {target}")
@@ -118,29 +115,64 @@ class GFp(GF, GFArray):
         cls.ufunc_mode = mode
         cls.ufunc_target = target
 
-        if mode == "lookup":
+        object_mode = cls.dtypes[-1] == np.object_
+
+        if object_mode:
+            cls._link_python_calculate_ufuncs()
+
+        elif mode == "lookup":
             # Build the lookup tables if they don't exist or a rebuild is requested
             if cls._EXP is None or rebuild:
                 cls._build_luts()
 
             # Compile ufuncs using standard EXP, LOG, and ZECH_LOG implementation
-            cls._compile_lookup_ufuncs(target)
+            cls._jit_compile_lookup_ufuncs(target)
+
         else:
+            CHARACTERISTIC = cls.characteristic
+            ORDER = cls.order
+            ALPHA = int(cls.alpha)  # Convert from field element to integer
+
             # JIT-compile add and multiply routines for reference in polynomial evaluation routine
             ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(add_calculate)
             MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(multiply_calculate)
             MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(multiplicative_inverse_calculate)
 
             # Create numba JIT-compiled ufuncs
-            cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_calculate)
-            cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(subtract_calculate)
-            cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiply_calculate)
-            cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(divide_calculate)
-            cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(additive_inverse_calculate)
-            cls._numba_ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiple_add_calculate)
-            cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(power_calculate)
-            cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(log_calculate)
-            cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(poly_eval_calculate)
+            cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_calculate)
+            cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(subtract_calculate)
+            cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiply_calculate)
+            cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(divide_calculate)
+            cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(additive_inverse_calculate)
+            cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiple_add_calculate)
+            cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(power_calculate)
+            cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(log_calculate)
+            cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(poly_eval_calculate)
+
+    ###############################################################################
+    # Galois field explicit arithmetic in pure python for extremely large fields
+    ###############################################################################
+
+    @classmethod
+    def _add_calculate(cls, a, b):
+        return (a + b) % cls.order
+
+    @classmethod
+    def _subtract_calculate(cls, a, b):
+        return (a - b) % cls.order
+
+    @classmethod
+    def _multiply_calculate(cls, a, b):
+        return (a * b) % cls.order
+
+    @classmethod
+    def _additive_inverse_calculate(cls, a):
+        return (-a) % cls.order
+
+    @classmethod
+    def _multiplicative_inverse_calculate(cls, a):
+        a_inv = extended_euclidean_algorithm(a, cls.order)[0]
+        return a_inv % cls.order
 
 
 ###############################################################################
@@ -172,7 +204,7 @@ def additive_inverse_calculate(a):
 
 
 def multiplicative_inverse_calculate(a):
-    a_inv = extended_euclidean_algorithm(a, ORDER)[0]
+    a_inv = extended_euclidean_algorithm_jit(a, ORDER)[0]
     return a_inv % ORDER
 
 

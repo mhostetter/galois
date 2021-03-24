@@ -80,7 +80,7 @@ class Poly:
             # operator to any negative integers. For instance, `coeffs=[1, -1]` represents
             # `x - 1` in GF2. However, the `-1` element does not exist in GF2, but the operation
             # `-1` (the additive inverse of the `1` element) does exist.
-            c = np.array(coeffs)
+            c = np.array(coeffs, dtype=field.dtypes[-1])
             c = np.atleast_1d(c)
             assert c.ndim == 1, "Polynomials must only have one dimension"
             assert np.all(np.abs(c) < field.order)
@@ -174,14 +174,7 @@ class Poly:
         return quotient, remainder
 
     def __call__(self, x):
-        # y[:] = p(x[:])
-        x = self.field(x)
-        scalar = x.shape == ()
-        x = np.atleast_1d(x)
-        y = self.field.Zeros(x.shape)
-        y = self.field._numba_ufunc_poly_eval(self.coeffs, x, y)
-        y = self.field(y)
-        return y if not scalar else y[0]
+        return self.field._poly_eval(self.coeffs, x)
 
     def __add__(self, other):
         # c(x) = a(x) + b(x)

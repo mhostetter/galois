@@ -1,8 +1,9 @@
+import random
+
 import numba
 import numpy as np
 
 from .conversion import decimal_to_poly, poly_to_str
-
 
 # Dictionary mapping numpy ufuncs to our implementation method
 OVERRIDDEN_UFUNCS = {
@@ -105,12 +106,8 @@ class GF(metaclass=GFMeta):
     _display_mode = "int"
     _display_poly_var = "x"
 
-    _EXP = None
-    _LOG = None
-    _ZECH_LOG = None
-
     @classmethod
-    def Zeros(cls, shape, dtype=np.int64):
+    def Zeros(cls, shape, dtype=None):
         """
         Create a Galois field array with all zeros.
 
@@ -121,14 +118,16 @@ class GF(metaclass=GFMeta):
             A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-dim array. An n-tuple, e.g.
             `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
         dtype : numpy.dtype, optional
-            The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this field class, i.e. `cls.dtypes[0]`.
         """
+        dtype = cls.dtypes[0] if dtype is None else dtype
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         return np.zeros(shape, dtype=dtype).view(cls)
 
     @classmethod
-    def Ones(cls, shape, dtype=np.int64):
+    def Ones(cls, shape, dtype=None):
         """
         Create a Galois field array with all ones.
 
@@ -139,14 +138,16 @@ class GF(metaclass=GFMeta):
             A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-dim array. An n-tuple, e.g.
             `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
         dtype : numpy.dtype, optional
-            The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this field class, i.e. `cls.dtypes[0]`.
         """
+        dtype = cls.dtypes[0] if dtype is None else dtype
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         return np.ones(shape, dtype=dtype).view(cls)
 
     @classmethod
-    def Random(cls, shape=(), low=0, high=None, dtype=np.int64):
+    def Random(cls, shape=(), low=0, high=None, dtype=None):
         """
         Create a Galois field array with random field elements.
 
@@ -162,61 +163,42 @@ class GF(metaclass=GFMeta):
             The highest value (exclusive) of a random field element. The default is `None` which represents the
             field's order :math:`p^m`.
         dtype : numpy.dtype, optional
-            The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this field class, i.e. `cls.dtypes[0]`.
         """
+        dtype = cls.dtypes[0] if dtype is None else dtype
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         if high is None:
             high = cls.order
         assert 0 <= low < cls.order and low < high <= cls.order
-        return np.random.randint(low, high, shape, dtype=dtype).view(cls)
+
+        if dtype is not np.object_:
+            array = np.random.randint(low, high, shape, dtype=dtype).view(cls)
+        else:
+            array = np.empty(shape, dtype=dtype)
+            iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+            for _ in iterator:
+                array[iterator.multi_index] = random.randint(low, high - 1)
+            array = array.view(cls)
+
+        return array
 
     @classmethod
-    def Elements(cls, dtype=np.int64):
+    def Elements(cls, dtype=None):
         """
         Create a Galois field array of the field's elements :math:`\\{0, \\dots, p^m-1\\}`.
 
         Parameters
         ----------
         dtype : numpy.dtype, optional
-            The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this field class, i.e. `cls.dtypes[0]`.
         """
+        dtype = cls.dtypes[0] if dtype is None else dtype
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
         return np.arange(0, cls.order, dtype=dtype).view(cls)
-
-    @classmethod
-    def _compile_lookup_ufuncs(cls, target):
-        # Export lookup tables to global variables so JIT compiling can cache the tables in the binaries
-        global CHARACTERISTIC, ORDER, EXP, LOG, ZECH_LOG, ZECH_E, ADD_JIT, MULTIPLY_JIT  # pylint: disable=global-statement
-        CHARACTERISTIC = cls.characteristic
-        ORDER = cls.order
-        EXP = cls._EXP
-        LOG = cls._LOG
-        ZECH_LOG = cls._ZECH_LOG
-        if cls.characteristic == 2:
-            ZECH_E = 0
-        else:
-            ZECH_E = (cls.order - 1) // 2
-
-        kwargs = {"nopython": True, "target": target}
-        if target == "cuda":
-            kwargs.pop("nopython")
-
-        # JIT-compile add and multiply routines for reference in other routines
-        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_lookup)
-        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_lookup)
-
-        # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-        cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
-        cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
-        cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
-        cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
-        cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
-        cls._numba_ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_lookup)
-        cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
-        cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
-        cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
 
     @classmethod
     def display(cls, mode="int", poly_var="x"):
@@ -249,21 +231,6 @@ class GF(metaclass=GFMeta):
         cls._display_mode = mode
         cls._display_poly_var = poly_var
 
-    @classmethod
-    def _print_poly(cls, decimal):
-        poly = decimal_to_poly(decimal, cls.characteristic)
-        return poly_to_str(poly, poly_var=cls._display_poly_var)
-
-    def __repr__(self):
-        if self._display_mode == "int":
-            return super().__repr__()
-        else:
-            with np.printoptions(formatter={"int": self._print_poly}):
-                return super().__repr__()
-
-    def __str__(self):
-        return self.__repr__()
-
 
 class GFArray(np.ndarray):
     """
@@ -277,37 +244,199 @@ class GFArray(np.ndarray):
     alpha = None
     dtypes = []
 
-    _numba_ufunc_add = None
-    _numba_ufunc_subtract = None
-    _numba_ufunc_multiply = None
-    _numba_ufunc_divide = None
-    _numba_ufunc_negative = None
-    _numba_ufunc_multiple_add = None
-    _numba_ufunc_power = None
-    _numba_ufunc_log = None
-    _numba_ufunc_poly_eval = None
+    _display_mode = "int"
+    _display_poly_var = "x"
 
-    def __new__(cls, array, dtype=np.int64):
+    _alpha_dec = None
+    _prim_poly_dec = None
+
+    _EXP = None
+    _LOG = None
+    _ZECH_LOG = None
+
+    _ufunc_add = None
+    _ufunc_subtract = None
+    _ufunc_multiply = None
+    _ufunc_divide = None
+    _ufunc_negative = None
+    _ufunc_multiple_add = None
+    _ufunc_power = None
+    _ufunc_log = None
+    _ufunc_poly_eval = None
+
+    def __new__(cls, array, dtype=None):
         if cls is GFArray:
             raise NotImplementedError("GFArray is an abstract base class that cannot be directly instantiated")
+        dtype = cls.dtypes[0] if dtype is None else dtype
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
 
-        # Convert the array-like object to a numpy array without specifying the desired dtype. This allows
-        # numpy to determine the data type of the input array, list, tuple, etc. This allows for detection of
-        # floating-point inputs. We will convert to the desired dtype after checking that the input array are integers
-        # and within the field. We use `copy=True` to prevent newly created array from sharing memory with input array.
-        array = np.array(array, copy=True)
-        if not np.issubdtype(array.dtype, np.integer):
-            raise TypeError(f"Galois field array elements must have integer dtypes, not {array.dtype}")
-        if np.any(array < 0) or np.any(array >= cls.order):
-            raise ValueError(f"Galois field arrays must have elements in [0, {cls.order}), not {array}")
+        array = cls._check_values(array)
+
+        # # Convert the array-like object to a numpy array without specifying the desired dtype. This allows
+        # # numpy to determine the data type of the input array, list, tuple, etc. This allows for detection of
+        # # floating-point inputs. We will convert to the desired dtype after checking that the input array are integers
+        # # and within the field. We use `copy=True` to prevent newly created array from sharing memory with input array.
+        # array = np.array(array, copy=True, dtype=cls.dtypes[-1])
+
+        # # TODO: Better way to check if input "array" is integer, i.e. not float. With dtype=np.object_
+        # # any type of object will pass.
+
+        # if not (np.issubdtype(array.dtype, np.integer) or array.dtype == np.object_):
+        #     raise TypeError(f"Galois field array elements must have integer dtypes, not {array.dtype}")
+        # if np.any(array < 0) or np.any(array >= cls.order):
+        #     raise ValueError(f"Galois field arrays must have elements in [0, {cls.order}), not {array}")
 
         # Convert array (already determined to be integers) to the Galois field's unsigned int dtype
         array = array.astype(dtype)
         array =  array.view(cls)
 
         return array
+
+    @classmethod
+    def _check_values(cls, array):
+        if cls.dtypes[-1] == np.object_:
+            # TODO: Clean this up
+            array = np.array(array, dtype=np.object_)
+            if array.size == 0:
+                return array
+            valid_type = np.empty(array.shape, dtype=bool)
+            iterator = np.nditer(valid_type, flags=["multi_index", "refs_ok"])
+            for _ in iterator:
+                valid_type[iterator.multi_index] = isinstance(array[iterator.multi_index], int)
+            if not np.all(valid_type):
+                raise TypeError(f"Galois field array elements must be integers, not {array[valid_type is False]}")
+            array = np.array(array, dtype=cls.dtypes[-1])
+        else:
+            array = np.array(array)
+            if array.size == 0:
+                return array
+            if not np.issubdtype(array.dtype, np.integer):
+                raise TypeError(f"Galois field array elements must be integers, not {array.dtype}")
+
+        if np.any(array < 0) or np.any(array >= cls.order):
+            idxs = np.logical_or(array < 0, array >= cls.order)
+            raise ValueError(f"Galois field arrays must have elements in [0, {cls.order}), not {array[idxs]} at indices {idxs}")
+
+        if array.dtype not in cls.dtypes:
+            # If the assignment array has a smaller integer dtype, we need to upconvert to a large
+            # dtype that can hold all the field elements
+            array = array.astype(cls.dtypes[0])
+
+        return array
+
+    @classmethod
+    def _link_python_calculate_ufuncs(cls):
+        cls._ufunc_add = np.frompyfunc(cls._add_calculate, 2, 1)
+        cls._ufunc_subtract = np.frompyfunc(cls._subtract_calculate, 2, 1)
+        cls._ufunc_multiply = np.frompyfunc(cls._multiply_calculate, 2, 1)
+        cls._ufunc_divide = np.frompyfunc(cls._divide_calculate, 2, 1)
+        cls._ufunc_negative = np.frompyfunc(cls._additive_inverse_calculate, 1, 1)
+        cls._ufunc_multiple_add = np.frompyfunc(cls._multiple_add_calculate, 2, 1)
+        cls._ufunc_power = np.frompyfunc(cls._power_calculate, 2, 1)
+        cls._ufunc_log = np.frompyfunc(cls._log_calculate, 1, 1)
+        cls._ufunc_poly_eval = np.vectorize(cls._poly_eval_calculate, excluded=["coeffs"], otypes=[np.object_])
+
+    @classmethod
+    def _jit_compile_lookup_ufuncs(cls, target):
+        # Export lookup tables to global variables so JIT compiling can cache the tables in the binaries
+        global CHARACTERISTIC, ORDER, EXP, LOG, ZECH_LOG, ZECH_E, ADD_JIT, MULTIPLY_JIT  # pylint: disable=global-statement
+        CHARACTERISTIC = cls.characteristic
+        ORDER = cls.order
+        EXP = cls._EXP
+        LOG = cls._LOG
+        ZECH_LOG = cls._ZECH_LOG
+        if cls.characteristic == 2:
+            ZECH_E = 0
+        else:
+            ZECH_E = (cls.order - 1) // 2
+
+        kwargs = {"nopython": True, "target": target}
+        if target == "cuda":
+            kwargs.pop("nopython")
+
+        # JIT-compile add and multiply routines for reference in other routines
+        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_lookup)
+        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_lookup)
+
+        # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
+        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
+        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
+        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
+        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
+        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
+        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_lookup)
+        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
+        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
+        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
+
+    @classmethod
+    def _poly_eval(cls, coeffs, x):
+        coeffs = cls(coeffs)  # Convert coefficient into the field
+        coeffs = coeffs.view(np.ndarray)  # View cast to normal integers so ufunc_poly_eval call uses normal arithmetic
+        coeffs = np.atleast_1d(coeffs)
+        if coeffs.size == 1:
+            # TODO: Why must coeffs have atleast 2 elements otherwise it will be converted to a scalar, not 1d array?
+            coeffs = np.insert(coeffs, 0, 0)
+
+        x = cls(x)  # Convert evaluation values into the field (checks that values are in the field)
+        x = x.view(np.ndarray)  # View cast to normal integers so ufunc_poly_eval call uses normal arithmetic
+        x = np.atleast_1d(x)
+
+        if cls.dtypes[-1] == np.object_:
+            # For object dtypes, call the vectorized classmethod
+            y = cls._ufunc_poly_eval(coeffs=coeffs, values=x)  # pylint: disable=not-callable
+        else:
+            # For integer dtypes, call the JIT-compiled gufunc
+            y = np.copy(x)
+            cls._ufunc_poly_eval(coeffs, x, y, casting="unsafe")  # pylint: disable=not-callable
+
+        y = cls(y)
+        if y.size == 1:
+            y = y[0]
+
+        return y
+
+    @classmethod
+    def _print_int(cls, decimal):
+        return "{:d}".format(int(decimal))
+
+    @classmethod
+    def _print_poly(cls, decimal):
+        poly = decimal_to_poly(decimal, cls.characteristic)
+        return poly_to_str(poly, poly_var=cls._display_poly_var)
+
+    def __repr__(self):
+        formatter = {}
+        if self._display_mode == "poly":
+            formatter["int"] = self._print_poly
+            formatter["object"] = self._print_poly
+        elif self.dtype == np.object_:
+            formatter["object"] = self._print_int
+
+        cls = self.__class__
+        class_name = cls.__name__
+        with np.printoptions(formatter=formatter):
+            cls.__name__ = "GF"  # Rename the class so very large fields don't create large indenting
+            string = super().__repr__()
+        cls.__name__ = class_name
+
+        if cls.degree == 1:
+            order = "{}".format(cls.order)
+        else:
+            order = "{}^{}".format(cls.characteristic, cls.degree)
+
+        # Remove the dtype from the repr and add the Galois field order
+        dtype_idx = string.find("dtype")
+        if dtype_idx == -1:
+            string = string[:-1] + f", order={order})"
+        else:
+            string = string[:dtype_idx] + f"order={order})"
+
+        return string
+
+    def __str__(self):
+        return self.__repr__()
 
     def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
         if dtype not in self.dtypes:
@@ -335,11 +464,8 @@ class GFArray(np.ndarray):
 
     def __setitem__(self, key, value):
         # Verify the values to be written to the Galois field array are in the field
-        array = np.asarray(value)
-        if not np.issubdtype(array.dtype, np.integer):
-            raise TypeError(f"Galois field array elements must have integer dtypes, not {array.dtype}")
-        if np.any(array < 0) or np.any(array >= self.order):
-            raise ValueError(f"Galois field arrays must have elements in [0, {self.order}), not {array}")
+        value = self._check_values(value)
+        value = value.view(self.__class__)
         super().__setitem__(key, value)
 
     def _view_input_gf_as_ndarray(self, inputs, kwargs, meta):
@@ -368,10 +494,10 @@ class GFArray(np.ndarray):
         v_inputs = list(inputs)
         for i in meta["operands"]:
             if isinstance(inputs[i], int):
-                v_inputs[i] = np.array(inputs[i], dtype=np.int64)
+                # Use the largest valid dtype for this field
+                v_inputs[i] = np.array(inputs[i], dtype=self.dtypes[-1])
 
         return v_inputs
-        # return inputs, meta
 
     def _view_output_ndarray_as_gf(self, ufunc, v_outputs):
         if v_outputs is NotImplemented:
@@ -398,7 +524,7 @@ class GFArray(np.ndarray):
             if not all(t is self.__class__ for t in types):
                 raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the same field {repr(self.__class__)}, not {types}")
         if ufunc in [np.multiply, np.power, np.square]:
-            if not all(np.issubdtype(o.dtype, np.integer) for o in operands):
+            if not all(np.issubdtype(o.dtype, np.integer) or o.dtype == np.object_ for o in operands):
                 raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the field {repr(self.__class__)} or integers, not {types}")
         if ufunc in [np.power, np.square]:
             if not types[0] is self.__class__:
@@ -445,18 +571,23 @@ class GFArray(np.ndarray):
 
         # Set all ufuncs with "casting" keyword argument to "unsafe" so we can cast unsigned integers
         # to integers. We know this is safe because we already verified the inputs.
-        # if method not in ["reduce", "accumulate", "at", "reduceat"]:
-        #     kwargs["casting"] = "unsafe"
+        if method not in ["reduce", "accumulate", "at", "reduceat"]:
+            kwargs["casting"] = "unsafe"
+
+        # Need to set the intermediate dtype for reduction operations or an error will be thrown. We
+        # use the largest valid dtype for this field.
+        if method in ["reduce"]:
+            kwargs["dtype"] = self.dtypes[-1]
 
         # Call appropriate ufunc method (implemented in subclasses)
         if ufunc is np.add:
-            outputs = getattr(self._numba_ufunc_add, method)(*inputs, **kwargs)
+            outputs = getattr(self._ufunc_add, method)(*inputs, **kwargs)
         elif ufunc is np.subtract:
-            outputs = getattr(self._numba_ufunc_subtract, method)(*inputs, **kwargs)
+            outputs = getattr(self._ufunc_subtract, method)(*inputs, **kwargs)
         elif ufunc is np.multiply:
             if meta["gf_operands"] == meta["operands"]:
                 # In-field multiplication
-                outputs = getattr(self._numba_ufunc_multiply, method)(*inputs, **kwargs)
+                outputs = getattr(self._ufunc_multiply, method)(*inputs, **kwargs)
             else:
                 # In-field "multiple addition" by an integer, i.e. GF(x) * 3 = GF(x) + GF(x) + GF(x)
                 if 0 not in meta["gf_operands"]:
@@ -466,24 +597,122 @@ class GFArray(np.ndarray):
                     i = meta["gf_operands"][0]
                     j = meta["non_gf_operands"][0]
                     inputs[j], inputs[i] = inputs[i], inputs[j]
-                outputs = getattr(self._numba_ufunc_multiple_add, method)(*inputs, **kwargs)
+                outputs = getattr(self._ufunc_multiple_add, method)(*inputs, **kwargs)
         elif ufunc in [np.true_divide, np.floor_divide]:
-            outputs = getattr(self._numba_ufunc_divide, method)(*inputs, **kwargs)
+            outputs = getattr(self._ufunc_divide, method)(*inputs, **kwargs)
         elif ufunc is np.negative:
-            outputs = getattr(self._numba_ufunc_negative, method)(*inputs, **kwargs)
+            outputs = getattr(self._ufunc_negative, method)(*inputs, **kwargs)
         elif ufunc is np.power:
-            outputs = getattr(self._numba_ufunc_power, method)(*inputs, **kwargs)
+            outputs = getattr(self._ufunc_power, method)(*inputs, **kwargs)
         elif ufunc is np.square:
             inputs.append(np.array(2, dtype=self.dtype))
-            outputs = getattr(self._numba_ufunc_power, method)(*inputs, **kwargs)
+            outputs = getattr(self._ufunc_power, method)(*inputs, **kwargs)
         elif ufunc is np.log:
-            outputs = getattr(self._numba_ufunc_log, method)(*inputs, **kwargs)
+            outputs = getattr(self._ufunc_log, method)(*inputs, **kwargs)
 
         if outputs is None or ufunc is np.log:
             return outputs
         else:
             outputs = self._view_output_ndarray_as_gf(ufunc, outputs)
             return outputs
+
+    ###############################################################################
+    # Galois field explicit arithmetic in pure python for extremely large fields
+    ###############################################################################
+
+    @classmethod
+    def _add_calculate(cls, a, b):
+        raise NotImplementedError
+
+    @classmethod
+    def _subtract_calculate(cls, a, b):
+        raise NotImplementedError
+
+    @classmethod
+    def _multiply_calculate(cls, a, b):
+        raise NotImplementedError
+
+    @classmethod
+    def _divide_calculate(cls, a, b):
+        if a == 0 or b == 0:
+            # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
+            return 0
+        b_inv = cls._multiplicative_inverse_calculate(b)
+        return cls._multiply_calculate(a, b_inv)
+
+    @classmethod
+    def _additive_inverse_calculate(cls, a):
+        raise NotImplementedError
+
+    @classmethod
+    def _multiplicative_inverse_calculate(cls, a):
+        raise NotImplementedError
+
+    @classmethod
+    def _multiple_add_calculate(cls, a, multiple):
+        b = multiple % cls.characteristic
+        return cls._multiply_calculate(a, b)
+
+    @classmethod
+    def _power_calculate(cls, a, power):
+        """
+        Square and Multiply Algorithm
+
+        a^13 = (1) * (a)^13
+            = (a) * (a)^12
+            = (a) * (a^2)^6
+            = (a) * (a^4)^3
+            = (a * a^4) * (a^4)^2
+            = (a * a^4) * (a^8)
+            = result_m * result_s
+        """
+        # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
+        if power == 0:
+            return 1
+        elif power < 0:
+            a = cls._multiplicative_inverse_calculate(a)
+            power = abs(power)
+
+        result_s = a  # The "squaring" part
+        result_m = 1  # The "multiplicative" part
+
+        while power > 1:
+            if power % 2 == 0:
+                result_s = cls._multiply_calculate(result_s, result_s)
+                power //= 2
+            else:
+                result_m = cls._multiply_calculate(result_m, result_s)
+                power -= 1
+
+        result = cls._multiply_calculate(result_m, result_s)
+
+        return result
+
+    @classmethod
+    def _log_calculate(cls, beta):
+        """
+        TODO: Replace this with more efficient algorithm
+
+        alpha in GF(p^m) and generates field
+        beta in GF(p^m)
+
+        gamma = log_alpha(beta), such that: alpha^gamma = beta
+        """
+        # Naive algorithm
+        result = 1
+        for i in range(0, cls.order - 1):
+            if result == beta:
+                break
+            result = cls._multiply_calculate(result, cls.alpha)
+        return i
+
+    @classmethod
+    def _poly_eval_calculate(cls, coeffs, values):
+        result = coeffs[0]
+        for j in range(1, coeffs.size):
+            p = cls._multiply_calculate(result, values)
+            result = cls._add_calculate(coeffs[j], p)
+        return result
 
 
 ###############################################################################

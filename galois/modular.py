@@ -1,7 +1,8 @@
+from functools import partial
+
 import numpy as np
 
 
-@np.vectorize
 def modular_exp(base, exponent, modulus):
     """
     Compute the modular exponentiation :math:`base^exponent \\textrm{mod}\\ modulus`.
@@ -20,6 +21,19 @@ def modular_exp(base, exponent, modulus):
     array_like
         The results of :math:`base^exponent \\textrm{mod}\\ modulus`.
     """
+    result = _modular_exp(base, exponent, modulus)
+
+    # Try to convert dtype=object back to a numpy integer if it is in bounds
+    try:
+        result = result.astype(np.int64)
+    except OverflowError:
+        pass
+
+    return result
+
+
+@partial(np.vectorize, otypes=[np.object_])
+def _modular_exp(base, exponent, modulus):
     assert exponent >= 0
     if exponent == 0:
         return 1
