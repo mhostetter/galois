@@ -228,7 +228,7 @@ class Poly:
             return c
 
     def __eq__(self, other):
-        return isinstance(other, Poly) and (self.field is other.field) and (self.coeffs.shape == other.coeffs.shape) and np.all(self.coeffs_asc == other.coeffs_asc)
+        return isinstance(other, Poly) and (self.field is other.field) and np.array_equal(self.coeffs_asc, other.coeffs_asc)
 
     def __ne__(self, other):
         return not self.__eq__(other)

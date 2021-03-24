@@ -1,5 +1,5 @@
 """
-A pytest module to test the algorithms in galois/algorithm.py.
+A pytest module to test the various algorithms in the galois package.
 """
 import random
 
