@@ -312,7 +312,7 @@ def carmichael(n):
     return lambda_
 
 
-def primitive_root(n):
+def primitive_root(n, start=1):
     """
     Finds the first, smallest primitive n-th root of unity :math:`x` that satisfies :math:`x^n \\equiv 1 (\\textrm{mod}\\ n)`.
 
@@ -320,6 +320,8 @@ def primitive_root(n):
     ----------
     n : int
         A positive integer :math:`n > 1`.
+    start : int, optional
+        Initial primitive root hypothesis. The resulting primitive root will be `root >= start`. The default is 1.
 
     Returns
     -------
@@ -330,6 +332,9 @@ def primitive_root(n):
     ----------
     * https://en.wikipedia.org/wiki/Finite_field#Roots_of_unity
     * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
+    * https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
+    * https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf
+    * http://www.numbertheory.org/courses/MP313/lectures/lecture7/page1.html
 
     Examples
     --------
@@ -342,106 +347,115 @@ def primitive_root(n):
         for i in range(1, n):
             result = galois.modular_exp(root, i, n)
             print(f"{root}^{i} = {result} (mod {n})")
+
+        # The algorithm is also efficient for very large prime n
+        galois.primitive_root(1000000000000000035000061)
     """
-    assert n > 0
     if n == 1:
-        return [0]
+        return 0
     if n == 2:
-        return [1]
+        return 1
 
-    phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
-    # lambda_ = carmichael(n)  # The smallest m such that a^m = 1 (mod n) for all a coprime to n
-    elements = np.arange(1, n)  # Non-zero integers less than n
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"`n` must be an integer, not {type(n)}")
+    if not n >= 1:
+        raise ValueError(f"`n` must be a postive integer, not {n}")
+    if not is_prime(n):
+        raise ValueError(f"This algorithm is optimized for prime n, not {n}")
+    if not 1 <= start < n:
+        raise ValueError(f"The starting hypothesis must be in [1, {n}), not {start}")
 
-    # According to Euler's theorem, a**phi(n) = 1 (mod n) for every a coprime to n
-    congruenes = elements[np.where(modular_exp(elements, phi, n) == 1)]
-    assert len(congruenes) == phi, "The number of congruences ({} found) is phi(n) = {}".format(len(congruenes), phi)
+    p, _ = prime_factors(n - 1)
 
-    root = None
-    degrees = np.arange(1, phi+1)
-    for m in congruenes:
-        y = modular_exp(m, degrees, n)
-        if set(y) == set(congruenes):
-            root = m
-            break
+    a = start  # Initial field element
+    while a < n:
+        tests = []  # Tests of primitivity
+        tests.append(modular_exp(a, n-1, n) == 1)
+        for prime_factor in p:
+            tests.append(modular_exp(a, (n - 1)//prime_factor, n) != 1)
 
-    return root
+        if all(tests):
+            return a
+        else:
+            a += 1
+
+    return None
 
 
-def primitive_roots(n):
-    """
-    Finds all primitive n-th roots of unity :math:`x` that satisfy :math:`x^n \\equiv 1 (\\textrm{mod}\\ n)`.
+# def primitive_roots(n):
+#     """
+#     Finds all primitive n-th roots of unity :math:`x` that satisfy :math:`x^n \\equiv 1 (\\textrm{mod}\\ n)`.
 
-    Parameters
-    ----------
-    n : int
-        A positive integer :math:`n > 1`.
+#     Parameters
+#     ----------
+#     n : int
+#         A positive integer :math:`n > 1`.
 
-    Returns
-    -------
-    list
-        A list of integer roots of unity modulo :math:`n`.
+#     Returns
+#     -------
+#     list
+#         A list of integer roots of unity modulo :math:`n`.
 
-    References
-    ----------
-    * https://en.wikipedia.org/wiki/Finite_field#Roots_of_unity
-    * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
+#     References
+#     ----------
+#     * https://en.wikipedia.org/wiki/Finite_field#Roots_of_unity
+#     * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
 
-    Examples
-    --------
-    .. ipython:: python
+#     Examples
+#     --------
+#     .. ipython:: python
 
-        n = 7
-        roots = galois.primitive_roots(n); roots
+#         n = 7
+#         roots = galois.primitive_roots(n); roots
 
-        # Test that each primitive root is a multiplicative generator of GF(n)
-        for root in roots:
-            print(f"\\nPrimitive root: {root}")
-            for i in range(1, n):
-                result = galois.modular_exp(root, i, n)
-                print(f"{root}^{i} = {result} (mod {n})")
-    """
-    assert n > 0
-    if n == 1:
-        return [0]
-    if n == 2:
-        return [1]
-    # phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
-    # p, k = prime_factors(phi)  # Prime factorization of phi(n)
-    # print("prime_factors", p, k)
+#         # Test that each primitive root is a multiplicative generator of GF(n)
+#         for root in roots:
+#             print(f"\\nPrimitive root: {root}")
+#             for i in range(1, n):
+#                 result = galois.modular_exp(root, i, n)
+#                 print(f"{root}^{i} = {result} (mod {n})")
+#     """
+#     assert n > 0
+#     if n == 1:
+#         return [0]
+#     if n == 2:
+#         return [1]
+#     # phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
+#     # p, k = prime_factors(phi)  # Prime factorization of phi(n)
+#     # print("prime_factors", p, k)
 
-    # roots = []
-    # for m in range(1, n):
-    #     y = np.array([modular_exp(m, phi // pi, n) for pi in p])
-    #     print(m, y)
-    #     if np.all(y != 1):
-    #         roots.append(m)
+#     # roots = []
+#     # for m in range(1, n):
+#     #     y = np.array([modular_exp(m, phi // pi, n) for pi in p])
+#     #     print(m, y)
+#     #     if np.all(y != 1):
+#     #         roots.append(m)
 
-    # print(roots)
+#     # print(roots)
 
-    # if len(roots) > 0:
-    #     N_roots = euler_totient(phi)
-    #     assert len(roots) == N_roots, "The number of primitive roots ({} found), if there are any, is phi(phi(n)) = {}".format(len(roots), N_roots)
+#     # if len(roots) > 0:
+#     #     N_roots = euler_totient(phi)
+#     #     assert len(roots) == N_roots, "The number of primitive roots ({} found), if there are any, is phi(phi(n)) = {}".format(len(roots), N_roots)
 
-    # return roots
+#     # return roots
 
-    phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
-    # lambda_ = carmichael(n)  # The smallest m such that a^m = 1 (mod n) for all a coprime to n
+#     phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
+#     # lambda_ = carmichael(n)  # The smallest m such that a^m = 1 (mod n) for all a coprime to n
 
-    elements = np.arange(1, n)  # Non-zero integers less than n
+#     elements = np.arange(1, n)  # Non-zero integers less than n
 
-    # According to Euler's theorem, a**phi(n) = 1 (mod n) for every a coprime to n
-    congruenes = elements[np.where(modular_exp(elements, phi, n) == 1)]
-    assert len(congruenes) == phi, "The number of congruences ({} found) is phi(n) = {}".format(len(congruenes), phi)
+#     # According to Euler's theorem, a**phi(n) = 1 (mod n) for every a coprime to n
+#     congruenes = elements[np.where(modular_exp(elements, phi, n) == 1)]
+#     assert len(congruenes) == phi, "The number of congruences ({} found) is phi(n) = {}".format(len(congruenes), phi)
 
-    roots = []
-    degrees = np.arange(1, phi+1)
-    for m in congruenes:
-        y = modular_exp(m, degrees, n)
-        if set(y) == set(congruenes):
-            roots.append(m)
+#     roots = []
+#     degrees = np.arange(1, phi+1)
+#     for m in congruenes:
+#         y = modular_exp(m, degrees, n)
+#         if set(y) == set(congruenes):
+#             roots.append(m)
 
-    if len(roots) > 0:
-        assert len(roots) == euler_totient(phi), "The number of primitive roots, if there are any, is phi(phi(n))"
+#     if len(roots) > 0:
+#         assert len(roots) == euler_totient(phi), "The number of primitive roots, if there are any, is phi(phi(n))"
 
-    return roots
+#     return roots
