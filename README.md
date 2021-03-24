@@ -52,44 +52,67 @@ Construct Galois field array classes using the `GF_factory()` class factory func
 
 ```python
 >>> import numpy as np
+
 >>> import galois
 
->>> GF = galois.GF_factory(31, 1)
->>> print(GF)
-<Galois Field: GF(31^1), prim_poly = x + 28 (None decimal)>
+>>> GF31 = galois.GF_factory(31, 1)
 
->>> print(GF.alpha)
-3
+>>> print(GF31)
+<Galois Field: GF(31^1), prim_poly = x + 28 (59 decimal)>
 
->>> print(GF.prim_poly)
-Poly(x + 28 , GF31)
+>>> GF31.alpha
+GF(3, order=31)
+
+>>> GF31.prim_poly
+Poly(x + 28, GF31)
+```
+
+Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even arbitrarily-large fields!
+
+```python
+# Field used in AES
+>>> GF256 = galois.GF_factory(2, 8); print(GF256)
+<Galois Field: GF(2^8), prim_poly = x^8 + x^4 + x^3 + x^2 + 1 (285 decimal)>
+
+# Large prime field
+>>> prime = 36893488147419103183
+
+>>> galois.is_prime(prime)
+True
+
+>>> GFp = galois.GF_factory(prime, 1); print(GFp)
+<Galois Field: GF(36893488147419103183^1), prim_poly = x + 36893488147419103180 (73786976294838206363 decimal)>
+
+# Large characteristic-2 field
+>>> GF2_100 = galois.GF_factory(2, 100); print(GF2_100)
+<Galois Field: GF(2^100), prim_poly = x^100 + x^57 + x^56 + x^55 + x^52 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^41 + x^37 + x^36 + x^35 + x^34 + x^31 + x^30 + x^27 + x^25 + x^24 + x^22 + x^20 + x^19 + x^16 + x^15 + x^11 + x^9 + x^8 + x^6 + x^5 + x^3 + 1 (1267650600228486663289456659305 decimal)>
 ```
 
 Create arrays from existing `numpy` arrays.
 
 ```python
 # Represents an existing numpy array
->>> np_x = np.random.randint(0, GF.order, 10, dtype=int); np_x
-array([ 6, 28,  2, 23, 17,  6,  3,  0, 10,  4])
+>>> array = np.random.randint(0, GF256.order, 10, dtype=int); array
+array([ 71, 240, 210,  27, 124, 254,  13, 170, 221, 166])
 
 # Explicit Galois field construction
->>> GF(np_x)
-GF31([ 6, 28,  2, 23, 17,  6,  3,  0, 10,  4])
+>>> GF256(array)
+GF([ 71, 240, 210,  27, 124, 254,  13, 170, 221, 166], order=2^8)
 
-# Numpy view casting to a Galois field, supported for integer dtypes
->>> np_x.view(GF)
-GF31([ 6, 28,  2, 23, 17,  6,  3,  0, 10,  4])
+# Numpy view casting to a Galois field
+>>> array.view(GF256)
+GF([ 71, 240, 210,  27, 124, 254,  13, 170, 221, 166], order=2^8)
 ```
 
 Or, create Galois field arrays using alternate constructors.
 
 ```python
->>> x = GF.Random(10); x
-GF31([20, 29, 27, 20, 27,  4, 29, 25, 11, 28])
+>>> x = GF256.Random(10); x
+GF([118,  49, 122, 166, 136, 118,  53,  19, 233, 119], order=2^8)
 
-# Construct a random array without zeros to prevent ZeroDivisonError later on
->>> y = GF.Random(10, low=1); y
-GF31([28, 22, 22,  6,  7,  3,  3, 13, 29, 30])
+# Construct a random array without zeros to prevent ZeroDivisonError
+>>> y = GF256.Random(10, low=1); y
+GF([239,  63,  81, 225, 150,  12,  56,  24,  98, 245], order=2^8)
 ```
 
 ### Galois field array arithmetic
@@ -98,60 +121,115 @@ Galois field arrays support traditional `numpy` array operations
 
 ```python
 >>> x + y
-GF31([17, 20, 18, 26,  3,  7,  1,  7,  9, 27])
+GF([153,  14,  43,  71,  30, 122,  13,  11, 139, 130], order=2^8)
 
 >>> -x
-GF31([11,  2,  4, 11,  4, 27,  2,  6, 20,  3])
+GF([118,  49, 122, 166, 136, 118,  53,  19, 233, 119], order=2^8)
 
-# Multiply a Galois field array with any integer
+>>> x * y
+GF([231,  91,  98, 212,  24,  82,  44, 181, 123,  90], order=2^8)
+
+>>> x / y
+GF([209,  38, 117, 199, 171, 113, 182,  88, 161, 194], order=2^8)
+
+# Multiple addition of a Galois field array with any integer
 >>> x * -3  # NOTE: -3 is outside the field
-GF31([ 2,  6, 12,  2, 12, 19,  6, 18, 29,  9])
-
->>> 1 / y
-GF31([10, 24, 24, 26,  9, 21, 21, 12, 15, 30])
+GF([118,  49, 122, 166, 136, 118,  53,  19, 233, 119], order=2^8)
 
 # Exponentiate a Galois field array with any integer
 >>> y ** -2  # NOTE: -2 is outside the field
-GF31([ 7, 18, 18, 25, 19,  7,  7, 20,  8,  1])
+GF([253, 171, 113,  60,  85,  56, 208,  14, 154,  70], order=2^8)
 
 # Log base alpha (the field's primitive element)
 >>> np.log(y)
-array([16, 17, 17, 25, 28,  1,  1, 11,  9, 15])
+array([215, 166, 208,  89, 180,  27, 201,  28, 182, 231])
+```
+
+Even field arithmetic on extremely large fields!
+
+```python
+>>> m = GFp.Random(3)
+
+>>> n = GFp.Random(3)
+
+>>> m + n
+GF([13628406805756046913, 32523641596143053984, 6779710980842128868],
+   order=36893488147419103183)
+
+>>> m ** 123456
+GF([25998377155280209892, 5155207233739881631, 35111337553358290170],
+   order=36893488147419103183)
+
+>>> r = GF2_100.Random(3); r
+GF([1208438098225504529643982094397, 1043242720211594207819544907628,
+    908206781068122096007332904544], order=2^100)
+
+# With characteristic 2, this will always be zero
+>>> r + r
+GF([0, 0, 0], order=2^100)
+
+# This is equivalent
+>>> r * 2
+GF([0, 0, 0], order=2^100)
+
+# But this will result in `r`
+>>> r * 3
+GF([1208438098225504529643982094397, 1043242720211594207819544907628,
+    908206781068122096007332904544], order=2^100)
 ```
 
 Galois field arrays support `numpy` array broadcasting.
 
 ```python
->>> a = GF.Random((2,5)); a
-GF31([[ 0, 24,  3,  0,  1],
-      [14,  5, 19, 22, 30]])
+>>> a = GF31.Random((2,5)); a
+GF([[28, 30, 17, 21, 22],
+    [23, 29, 23, 27, 17]], order=31)
 
->>> b = GF.Random(5); b
-GF31([23,  7, 28, 23, 19])
+>>> b = GF31.Random(5); b
+Out[33]: GF([ 7, 10, 12, 20, 24], order=31)
 
 >>> a + b
-GF31([[23,  0,  0, 23, 20],
-      [ 6, 12, 16, 14, 18]])
+GF([[ 4,  9, 29, 10, 15],
+    [30,  8,  4, 16, 10]], order=31)
 ```
 
 Galois field arrays also support `numpy` ufunc methods.
 
 ```python
 # Valid ufunc methods include "reduce", "accumulate", "reduceat", "outer", "at"
->>> np.add.reduce(a, axis=0)
-GF31([14, 29, 22, 22,  0])
+>>> np.multiply.reduce(a, axis=0)
+GF([24,  2, 19,  9,  2], order=31)
 
 >>> np.multiply.outer(x, y)
-GF31([[ 2,  6,  6, 27, 16, 29, 29, 12, 22, 11],
-      [ 6, 18, 18, 19, 17, 25, 25,  5,  4,  2],
-      [12,  5,  5,  7,  3, 19, 19, 10,  8,  4],
-      [ 2,  6,  6, 27, 16, 29, 29, 12, 22, 11],
-      [12,  5,  5,  7,  3, 19, 19, 10,  8,  4],
-      [19, 26, 26, 24, 28, 12, 12, 21, 23, 27],
-      [ 6, 18, 18, 19, 17, 25, 25,  5,  4,  2],
-      [18, 23, 23, 26, 20, 13, 13, 15, 12,  6],
-      [29, 25, 25,  4, 15,  2,  2, 19,  9, 20],
-      [ 9, 27, 27, 13, 10, 22, 22, 23,  6,  3]])
+GF([[231, 157, 137,  89, 159,  82, 194, 164,  70, 175],
+    [ 21,  91, 218,  38,  52,  81, 204, 162, 208, 213],
+    [ 87, 132,  98, 161,  57,   2, 255,   4, 228, 167],
+    [126, 199, 230, 212, 184, 251, 146, 235, 218, 196],
+    [161,  19,  93, 130,  24,  46, 140,  92,  96, 240],
+    [231, 157, 137,  89, 159,  82, 194, 164,  70, 175],
+    [142, 167, 131, 133,  86,  97,  44, 194,  69,  38],
+    [122, 150, 138, 136,  50, 212, 239, 181, 200, 233],
+    [167, 228,   7, 240, 215, 152,  65,  45, 123,  69],
+    [  8, 162, 216, 184,   9,  94, 250, 188,  36,  90]], order=2^8)
+```
+
+Display field elements as integers or polynomials.
+
+```python
+>>> x
+GF([118,  49, 122, 166, 136, 118,  53,  19, 233, 119], order=2^8)
+
+# Set the display mode to represent GF(p^m) field elements as polynomials over GF(p)[x].
+>>> GF256.display("poly")
+
+>>> x
+GF([x^6 + x^5 + x^4 + x^2 + x, x^5 + x^4 + 1, x^6 + x^5 + x^4 + x^3 + x,
+    x^7 + x^5 + x^2 + x, x^7 + x^3, x^6 + x^5 + x^4 + x^2 + x,
+    x^5 + x^4 + x^2 + 1, x^4 + x + 1, x^7 + x^6 + x^5 + x^3 + 1,
+    x^6 + x^5 + x^4 + x^2 + x + 1], order=2^8)
+
+# Reset the display settings to the default of "int"
+GF256.display()
 ```
 
 ### Galois field polynomial construction
@@ -160,12 +238,12 @@ Construct Galois field polynomials.
 
 ```python
 # Construct a polynomial by specifying all the coefficients in descending-degree order
->>> p = galois.Poly([1, 22, 0, 17, 25], field=GF); p
-Poly(x^4 + 22x^3 + 17x + 25 , GF31)
+>>> p = galois.Poly([1, 22, 0, 17, 25], field=GF31); p
+Poly(x^4 + 22x^3 + 17x + 25, GF31)
 
 # Construct a polynomial by specifying only the non-zero coefficients
->>> q = galois.Poly.NonZero([4, 14],  [2, 0], field=GF); q
-Poly(4x^2 + 14 , GF31)
+>>> q = galois.Poly.NonZero([4, 14],  [2, 0], field=GF31); q
+Poly(4x^2 + 14, GF31)
 ```
 
 ### Galois field polynomial arithmetic
@@ -174,24 +252,33 @@ Galois field polynomial arithmetic is similar to `numpy` array operations.
 
 ```python
 >>> p + q
-Poly(x^4 + 22x^3 + 4x^2 + 17x + 8 , GF31)
+Poly(x^4 + 22x^3 + 4x^2 + 17x + 8, GF31)
 
 >>> p // q, p % q
-(Poly(8x^2 + 21x + 3 , GF31), Poly(2x + 14 , GF31))
+(Poly(8x^2 + 21x + 3, GF31), Poly(2x + 14, GF31))
 
 >>> p ** 2
-Poly(x^8 + 13x^7 + 19x^6 + 3x^5 + 23x^4 + 15x^3 + 10x^2 + 13x + 5 , GF31)
+Poly(x^8 + 13x^7 + 19x^6 + 3x^5 + 23x^4 + 15x^3 + 10x^2 + 13x + 5, GF31)
 ```
 
 Galois field polynomials can also be evaluated at constants or arrays.
 
 ```python
->>> p(1)
-GF31(3)
+>>> p
+Poly(x^4 + 22x^3 + 17x + 25, GF31)
 
+>>> a
+GF([[28, 30, 17, 21, 22],
+    [23, 29, 23, 27, 17]], order=31)
+
+# Evaluate a polynomial at a single value
+>>> p(1)
+GF(3, order=31)
+
+# Evaluate a polynomial at an array of values
 >>> p(a)
-GF31([[ 1, 18, 17, 16,  5],
-      [ 8, 21, 17, 23, 18]])
+GF([[19, 18,  0,  7,  5],
+    [ 6, 17,  6, 14,  0]], order=31)
 ```
 
 ## Performance
