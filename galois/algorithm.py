@@ -1,64 +1,11 @@
 from itertools import combinations
 import math
+
 import numba
 import numpy as np
 
-from ._prime import PRIMES
-
-
-def _prev_prime_index(x):
-    assert PRIMES[0] <= x < PRIMES[-1]
-    return np.where(PRIMES - x <= 0)[0][-1]
-
-
-def prev_prime(x):
-    """
-    Returns the nearest prime :math:`p \\le x`.
-
-    Parameters
-    ----------
-    x : int
-        A positive integer.
-
-    Returns
-    -------
-    int
-        The nearest prime :math:`p \\le x`.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        galois.prev_prime(13)
-        galois.prev_prime(15)
-    """
-    prev_idx = _prev_prime_index(x)
-    return PRIMES[prev_idx]
-
-
-def next_prime(x):
-    """
-    Returns the nearest prime :math:`p > x`.
-
-    Parameters
-    ----------
-    x : int
-        A positive integer.
-
-    Returns
-    -------
-    int
-        The nearest prime :math:`p > x`.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        galois.next_prime(13)
-        galois.next_prime(15)
-    """
-    prev_idx = _prev_prime_index(x)
-    return PRIMES[prev_idx + 1]
+from .modular import modular_exp
+from .prime import prime_factors, is_prime
 
 
 @numba.jit(nopython=True)
@@ -93,92 +40,7 @@ def factors(x):
     """
     f = _numba_factors(x)
     f = sorted(list(set(f)))  # Use set() to emove duplicates
-    return np.array(f, dtype=np.int64)
-
-
-@numba.jit(nopython=True)
-def _numba_prime_factors(x):
-    max_factor = int(np.ceil(np.sqrt(x)))
-    max_prime_idx = np.where(PRIMES - max_factor <= 0)[0][-1]
-
-    p = []
-    k = []
-    for prime in PRIMES[0:max_prime_idx+1]:
-        degree = 0
-        while x % prime == 0:
-            degree += 1
-            x = x // prime
-        if degree > 0:
-            p.append(prime)
-            k.append(degree)
-        if x == 1:
-            break
-
-    if x > 2:
-        p.append(x)
-        k.append(1)
-
-    return p, k
-
-
-def prime_factors(x):
-    """
-    Computes the prime factors of the positive integer :math:`x`.
-
-    The integer :math:`x` can be factored into :math:`x = p_1^{k_1} p_2^{k_2} \\dots p_{n-1}^{k_{n-1}}`.
-
-    Parameters
-    ----------
-    x : int
-        The positive integer to be factored.
-
-    Returns
-    -------
-    numpy.ndarray
-        Sorted array of prime factors :math:`p = [p_1, p_2, \\dots, p_{n-1}]` with :math:`p_1 < p_2 < \\dots < p_{n-1}`.
-    numpy.ndarray
-        Array of corresponding prime powers :math:`k = [k_1, k_2, \\dots, k_{n-1}]`.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        p, k = galois.prime_factors(120)
-        p, k
-
-        # The product of the prime powers is the factored integer
-        np.multiply.reduce(p ** k)
-    """
-    assert isinstance(x, (int, np.integer)) and x > 1
-    p, k = _numba_prime_factors(x)
-    return np.array(p, dtype=np.int64), np.array(k, dtype=np.int64)
-
-
-def is_prime(x):
-    """
-    Determines if :math:`x` is prime.
-
-    Parameters
-    ----------
-    x : int
-        A positive integer.
-
-    Returns
-    -------
-    bool:
-        `True` if the integer :math:`x` is prime.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        galois.is_prime(13)
-        galois.is_prime(15)
-    """
-    assert isinstance(x, (int, np.integer)) and x > 1
-    # x is prime if and only if its prime factorization has one prime, occurring once
-    _, k = prime_factors(x)
-    return k.size == 1 and k[0] == 1
+    return np.array(f)
 
 
 def euclidean_algorithm(a, b):
@@ -448,39 +310,6 @@ def carmichael(n):
     lambda_ = np.lcm.reduce(lambdas)
 
     return lambda_
-
-
-@np.vectorize
-def modular_exp(base, exponent, modulus):
-    """
-    Compute the modular exponentiation :math:`base^exponent \\textrm{mod}\\ modulus`.
-
-    Parameters
-    ----------
-    base : array_like
-        The base of exponential, an int or an array (follows numpy broadcasting rules).
-    exponent : array_like
-        The exponent, an int or an array (follows numpy broadcasting rules).
-    modulus : array_like
-        The modulus of the computation, an int or an array (follows numpy broadcasting rules).
-
-    Returns
-    -------
-    array_like
-        The results of :math:`base^exponent \\textrm{mod}\\ modulus`.
-    """
-    if modulus == 1:
-        return 0
-    result = 1
-    # base = base % modulus
-    # while exponent > 0:
-    #     if exponent % 2 == 0:
-    #         result = (result * base) % modulus
-    #     exponent //= 2
-    #     base = (base * base) % modulus
-    for _ in range(0, exponent):
-        result = (result * base) % modulus
-    return result
 
 
 def primitive_root(n):
