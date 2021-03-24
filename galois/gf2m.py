@@ -182,7 +182,6 @@ class GF2m(GF, GFArray):
             = c(x)
             = c
         """
-        print(a, type(a), b, type(b))
         result = 0
         while a != 0 and b != 0:
             if b & 0b1 != 0:
