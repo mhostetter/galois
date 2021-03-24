@@ -12,22 +12,31 @@ PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 FIELDS = [
     pytest.param("GF(2)", marks=[pytest.mark.GF2]),
 
+    pytest.param("GF(2^2)", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
+    pytest.param("GF(2^3)", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
+    pytest.param("GF(2^8)", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("GF(2^32)", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
+    pytest.param("GF(2^100)", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
+
     pytest.param("GF(5)", marks=[pytest.mark.GFp, pytest.mark.GF5]),
     pytest.param("GF(7)", marks=[pytest.mark.GFp, pytest.mark.GF7]),
     pytest.param("GF(31)", marks=[pytest.mark.GFp, pytest.mark.GF31]),
     pytest.param("GF(3191)", marks=[pytest.mark.GFp, pytest.mark.GF31]),
     pytest.param("GF(2147483647)", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
     pytest.param("GF(36893488147419103183)", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
-
-    pytest.param("GF(2^2)", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
-    pytest.param("GF(2^3)", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
-    pytest.param("GF(2^8)", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^32)", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
-    pytest.param("GF(2^100)", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
 ]
 
 FIELDS_DIFF_MODES = [
     pytest.param("GF(2)", marks=[pytest.mark.GF2]),
+
+    pytest.param("GF(2^2)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
+    pytest.param("GF(2^2)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
+    pytest.param("GF(2^3)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
+    pytest.param("GF(2^3)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
+    pytest.param("GF(2^8)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("GF(2^8)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("GF(2^32)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
+    pytest.param("GF(2^100)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
 
     pytest.param("GF(5)-lookup", marks=[pytest.mark.GFp, pytest.mark.GF5]),
     pytest.param("GF(5)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF5]),
@@ -39,34 +48,7 @@ FIELDS_DIFF_MODES = [
     pytest.param("GF(3191)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF3191]),
     pytest.param("GF(2147483647)", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
     pytest.param("GF(36893488147419103183)", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
-
-    pytest.param("GF(2^2)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
-    pytest.param("GF(2^2)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
-    pytest.param("GF(2^3)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
-    pytest.param("GF(2^3)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
-    pytest.param("GF(2^8)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^8)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^32)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
-    pytest.param("GF(2^100)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
 ]
-
-DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64, np.object_]
-
-
-# def pytest_addoption(parser):
-#     parser.addoption(
-#         "--one-dtype", action="store_true", default=False, help="Only loop arithmetic tests against one dtype, not all"
-#     )
-
-
-# def pytest_collection_modifyitems(config, items):
-#     global DTYPES
-#     if config.getoption("--one-dtype"):
-#         DTYPES = [np.int64,]
-#     else:
-#         DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
-
-# print(DTYPES)
 
 
 def construct_field(folder):
@@ -134,11 +116,6 @@ def field_classes(request):
         "mode": mode
     }
     return d
-
-
-@pytest.fixture(scope="session", params=DTYPES)
-def dtype(request):
-    return request.param
 
 
 ###############################################################################
