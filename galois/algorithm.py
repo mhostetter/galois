@@ -84,7 +84,6 @@ def euclidean_algorithm(a, b):
     return r[-2]
 
 
-@numba.jit("int64[:](int64, int64)", nopython=True)
 def extended_euclidean_algorithm(a, b):
     """
     Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = gcd(a,b)`.
@@ -132,7 +131,25 @@ def extended_euclidean_algorithm(a, b):
         if ri == 0:
             break
 
-    return np.array([s[-2], t[-2], r[-2]])
+    return s[-2], t[-2], r[-2]
+
+
+@numba.jit("int64[:](int64, int64)", nopython=True)
+def extended_euclidean_algorithm_jit(a, b):
+    r = [a, b]
+    s = [1, 0]
+    t = [0, 1]
+
+    while True:
+        qi = r[-2] // r[-1]
+        ri = r[-2] % r[-1]
+        r.append(ri)
+        s.append(s[-2] - qi*s[-1])
+        t.append(t[-2] - qi*t[-1])
+        if ri == 0:
+            break
+
+    return np.array([s[-2], t[-2], r[-2]], dtype=np.int64)
 
 
 def chinese_remainder_theorem(a, m):
@@ -172,8 +189,8 @@ def chinese_remainder_theorem(a, m):
             ai = x % m[i]
             print(f"{x} % {m[i]} = {ai}, Valid congruence: {ai == a[i]}")
     """
-    a = np.array(a, dtype=np.int64)
-    m = np.array(m, dtype=np.int64)
+    a = np.array(a)
+    m = np.array(m)
     assert m.size == a.size
 
     # Check that modulii are pairwise relatively coprime
@@ -233,8 +250,8 @@ def euler_totient(n):
         n = 20
         phi = galois.euler_totient(n); phi
 
-        # Find the totatives that are relatively coprime with n
-        totatives = [i for i in range(n) if galois.euclidean_algorithm(i, n) == 1]; totatives
+        # Find the totatives that are coprime with n
+        totatives = [k for k in range(n) if galois.euclidean_algorithm(k, n) == 1]; totatives
 
         # The number of totatives is phi
         len(totatives) == phi
@@ -278,7 +295,7 @@ def carmichael(n):
     References
     ----------
     * https://en.wikipedia.org/wiki/Carmichael_function
-    * https://oeis.org/A002322/list
+    * https://oeis.org/A002322
 
     Examples
     --------

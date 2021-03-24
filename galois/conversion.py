@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 
@@ -18,10 +20,8 @@ def decimal_to_poly(decimal, order):
         List of polynomial coefficients in ascending order.
     """
     decimal = int(decimal)
-
-    # NOTE: log_b(n) = log(n) / log(b)
     if decimal > 0:
-        degree = int(np.floor(np.log(decimal) / np.log(order)))
+        degree = int(math.ceil(math.log(decimal, order)))
     else:
         degree = 0
 

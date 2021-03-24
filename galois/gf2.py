@@ -61,6 +61,10 @@ class GF2(GF, GFArray):
         # Element-wise division
         a / b
     """
+    # pylint: disable=abstract-method
+
+    # NOTE: Ignore pylint errors for not overridding _add_calculate(), etc. We don't need to override them
+    # because GF2 doesn't support object mode.
 
     characteristic = 2
     degree = 1
@@ -97,15 +101,15 @@ class GF2(GF, GFArray):
         MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
 
         # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-        cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
-        cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
-        cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
-        cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
-        cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
-        cls._numba_ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_calculate)
-        cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
-        cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
-        cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
+        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
+        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
+        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_calculate)
+        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
 
 ###############################################################################

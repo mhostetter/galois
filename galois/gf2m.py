@@ -123,18 +123,24 @@ class GF2m(GF, GFArray):
         cls.ufunc_mode = mode
         cls.ufunc_target = target
 
-        if mode == "lookup":
+        object_mode = cls.dtypes[-1] == np.object_
+
+        if object_mode:
+            cls._link_python_calculate_ufuncs()
+
+        elif mode == "lookup":
             # Build the lookup tables if they don't exist or a rebuild is requested
             if cls._EXP is None or rebuild:
                 cls._build_luts()
 
             # Compile ufuncs using standard EXP, LOG, and ZECH_LOG implementation
-            cls._compile_lookup_ufuncs(target)
+            cls._jit_compile_lookup_ufuncs(target)
 
             # Overwrite some ufuncs for a more efficient implementation with characteristic 2
-            cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_calculate)
-            cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(subtract_calculate)
-            cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(additive_inverse_calculate)
+            cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_calculate)
+            cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(subtract_calculate)
+            cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(additive_inverse_calculate)
+
         else:
             # JIT-compile add,  multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
             ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(add_calculate)
@@ -142,15 +148,85 @@ class GF2m(GF, GFArray):
             MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(multiplicative_inverse_calculate)
 
             # Create numba JIT-compiled ufuncs
-            cls._numba_ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_calculate)
-            cls._numba_ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(subtract_calculate)
-            cls._numba_ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiply_calculate)
-            cls._numba_ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(divide_calculate)
-            cls._numba_ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(additive_inverse_calculate)
-            cls._numba_ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiple_add_calculate)
-            cls._numba_ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(power_calculate)
-            cls._numba_ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(log_calculate)
-            cls._numba_ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(poly_eval_calculate)
+            cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(add_calculate)
+            cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(subtract_calculate)
+            cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiply_calculate)
+            cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(divide_calculate)
+            cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(additive_inverse_calculate)
+            cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(multiple_add_calculate)
+            cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(power_calculate)
+            cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(log_calculate)
+            cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(poly_eval_calculate)
+
+    ###############################################################################
+    # Galois field explicit arithmetic in pure python for extremely large fields
+    ###############################################################################
+
+    @classmethod
+    def _add_calculate(cls, a, b):
+        return a ^ b
+
+    @classmethod
+    def _subtract_calculate(cls, a, b):
+        return a ^ b
+
+    @classmethod
+    def _multiply_calculate(cls, a, b):
+        """
+        a in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
+        b in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
+        p(x) in GF(2)[x] with degree m is the primitive polynomial of GF(2^m)
+
+        a * b = c
+            = (a(x) * b(x)) % p(x), in GF(2)
+            = c(x)
+            = c
+        """
+        print(a, type(a), b, type(b))
+        result = 0
+        while a != 0 and b != 0:
+            if b & 0b1 != 0:
+                result ^= a
+
+            a *= cls._alpha_dec
+            b //= cls._alpha_dec
+
+            if a >= cls.order:
+                a ^= cls._prim_poly_dec
+
+        return result
+
+    @classmethod
+    def _additive_inverse_calculate(cls, a):
+        return a
+
+    @classmethod
+    def _multiplicative_inverse_calculate(cls, a):
+        """
+        TODO: Replace this with more efficient algorithm
+
+        From Fermat's Little Theorem:
+        a^(p^m - 1) = 1 (mod p^m), for a in GF(p^m)
+
+        a * a^-1 = 1
+        a * a^-1 = a^(p^m - 1)
+            a^-1 = a^(p^m - 2)
+        """
+        power = cls.order - 2
+        result_s = a  # The "squaring" part
+        result_m = 1  # The "multiplicative" part
+
+        while power > 1:
+            if power % 2 == 0:
+                result_s = cls._multiply_calculate(result_s, result_s)
+                power //= 2
+            else:
+                result_m = cls._multiply_calculate(result_m, result_s)
+                power -= 1
+
+        result = cls._multiply_calculate(result_m, result_s)
+
+        return result
 
 
 ###############################################################################

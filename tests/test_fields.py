@@ -1,11 +1,24 @@
 """
 A pytest module to test Galois field array classes.
 """
-import pytest
 import random
+
 import numpy as np
+import pytest
 
 import galois
+
+
+def randint(low, high, shape, dtype):
+    if np.issubdtype(dtype, np.integer):
+        array = np.random.randint(low, high, shape, dtype=np.int64)
+    else:
+        # For dtype=object
+        array = np.empty(shape, dtype=dtype)
+        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+        for i in iterator:
+            array[iterator.multi_index] = random.randint(low, high - 1)
+    return array
 
 
 class TestFieldClasses:
@@ -17,7 +30,7 @@ class TestFieldClasses:
             elif GF.order <= 2**16:
                 mode = "lookup"
             else:
-                mode = "calcualte"
+                mode = "calculate"
 
         assert GF.ufunc_target == "cpu"
         assert GF.ufunc_mode == mode
@@ -140,12 +153,12 @@ class TestView:
             a = v.view(field)
 
     def test_array_out_of_range_values(self, field):
-        v = np.array([0,1,0,field.order], dtype=np.int64)
+        v = np.array([0,1,0,field.order], field.dtypes[-1])
         with pytest.raises(ValueError):
             a = v.view(field)
 
     # def test_1(self, field, dtype):
-    #     a = np.random.randint(0, field.order, 10, dtype=np.int16)
+    #     a = randint(0, field.order, 10, dtype=np.int16)
     #     ga = a.view(field)
     #     assert np.all(a == ga)
     #     assert ga.dtype is a.dtype
@@ -153,40 +166,116 @@ class TestView:
 
 class TestAssignment:
     def test_index_constant(self, field):
-        a = field([0,1,0,1])
+        GF = field
+        a = GF.Random(10)
         a[0] = 1
 
-    def test_slice_constant(self, field):
-        a = field([0,1,0,1])
-        a[0:2] = 1
-
-    def test_slice_list(self, field):
-        a = field([0,1,0,1])
-        a[0:2] = [1,1]
-
-    def test_slice_array(self, field):
-        a = field([0,1,0,1])
-        a[0:2] = np.array([1,1])
+    def test_index_constant_invalid_type(self, field):
+        GF = field
+        a = GF.Random(10)
+        with pytest.raises(TypeError):
+            a[0] = 1.0
 
     def test_index_constant_out_of_range(self, field):
-        a = field([0,1,0,1])
+        GF = field
+        a = GF.Random(10)
         with pytest.raises(ValueError):
-            a[0] = field.order
+            a[0] = GF.order
+
+    def test_slice_constant(self, field):
+        GF = field
+        a = GF.Random(10)
+        a[0:2] = 1
+
+    def test_slice_constant_invalid_type(self, field):
+        GF = field
+        a = GF.Random(10)
+        with pytest.raises(TypeError):
+            a[0:2] = 1.0
 
     def test_slice_constant_out_of_range(self, field):
-        a = field([0,1,0,1])
+        GF = field
+        a = GF.Random(10)
         with pytest.raises(ValueError):
-            a[0:2] = field.order
+            a[0:2] = GF.order
+
+    def test_slice_list(self, field):
+        GF = field
+        a = GF.Random(10)
+        a[0:2] = [1, 1]
+
+    def test_slice_list_invalid_type(self, field):
+        GF = field
+        a = GF.Random(10)
+        with pytest.raises(TypeError):
+            a[0:2] = [1.0, 1]
 
     def test_slice_list_out_of_range(self, field):
-        a = field([0,1,0,1])
+        GF = field
+        a = GF.Random(10)
         with pytest.raises(ValueError):
-            a[0:2] = [field.order, field.order]
+            a[0:2] = [GF.order, 1]
+
+    def test_slice_array(self, field):
+        GF = field
+        a = GF.Random(10)
+        a[0:2] = np.array([1, 1])
+
+    def test_slice_array_small_dtype(self, field):
+        GF = field
+        a = GF.Random(10)
+        a[0:2] = np.array([1, 1], dtype=np.int8)
+
+    def test_slice_array_invalid_type(self, field):
+        GF = field
+        a = GF.Random(10)
+        with pytest.raises(TypeError):
+            a[0:2] = np.array([1.0, 1])
 
     def test_slice_array_out_of_range(self, field):
-        a = field([0,1,0,1])
+        GF = field
+        a = GF.Random(10)
         with pytest.raises(ValueError):
-            a[0:2] = np.array([field.order, field.order])
+            a[0:2] = np.array([GF.order, 1])
+
+    def test_2d_slice_list(self, field):
+        GF = field
+        a = GF.Random((10,10))
+        a[0:2, 0:2] = [[1, 1], [1, 1]]
+
+    def test_2d_slice_list_invalid_type(self, field):
+        GF = field
+        a = GF.Random((10,10))
+        with pytest.raises(TypeError):
+            a[0:2, 0:2] = [[1.0, 1], [1, 1]]
+
+    def test_2d_slice_list_out_of_range(self, field):
+        GF = field
+        a = GF.Random((10,10))
+        with pytest.raises(ValueError):
+            a[0:2, 0:2] = [[GF.order, 1], [1, 1]]
+
+    def test_2d_slice_array(self, field):
+        GF = field
+        a = GF.Random((10,10))
+        a[0:2, 0:2] = np.array([[1, 1], [1, 1]])
+
+    def test_2d_slice_array_small_dtype(self, field):
+        GF = field
+        a = GF.Random((10,10))
+        a[0:2, 0:2] = np.array([[1, 1], [1, 1]], dtype=np.int8)
+
+    def test_2d_slice_array_invalid_type(self, field):
+        GF = field
+        a = GF.Random((10,10))
+        with pytest.raises(TypeError):
+            a[0:2, 0:2] = np.array([[1.0, 1], [1, 1]])
+
+    def test_2d_slice_array_out_of_range(self, field):
+        GF = field
+        a = GF.Random((10,10))
+        with pytest.raises(ValueError):
+            a[0:2, 0:2] = np.array([[GF.order, 1], [1, 1]])
 
 
 class TestArithmetic:
@@ -250,15 +339,15 @@ class TestArithmetic:
         if dtype in GF.dtypes:
             x = X.astype(dtype)
 
-            z = GF(1) / x
+            z = GF(1, dtype=dtype) / x  # Need dtype of "1" to be as large as x for `z.dtype == dtype`
             assert np.all(z == Z)
             assert type(z) is GF
-            assert z.dtype == np.int64  # TODO: Re-investigate this
+            assert z.dtype == dtype
 
-            z = GF(1) // x
+            z = GF(1, dtype=dtype) // x  # Need dtype of "1" to be as large as x for `z.dtype == dtype`
             assert np.all(z == Z)
             assert type(z) is GF
-            assert z.dtype == np.int64  # TODO: Re-investigate this
+            assert z.dtype == dtype
 
             z = x ** -1
             assert np.all(z == Z)
@@ -285,25 +374,25 @@ class TestArithmetic:
             assert type(z) is GF
             assert z.dtype == dtype
 
-    def test_power_zero_to_zero(self, field, dtype):
-        if dtype in field.dtypes:
-            x = field.Zeros(10, dtype=dtype)
-            y = np.zeros(10, dtype=np.int64)
-            z = x ** y
-            Z = np.ones(10, dtype=np.int64)
-            assert np.all(z == Z)
-            assert type(z) is field
-            assert z.dtype == dtype
+    # def test_power_zero_to_zero(self, field, dtype):
+    #     if dtype in field.dtypes:
+    #         x = field.Zeros(10, dtype=dtype)
+    #         y = np.zeros(10, field.dtypes[-1])
+    #         z = x ** y
+    #         Z = np.ones(10, field.dtypes[-1])
+    #         assert np.all(z == Z)
+    #         assert type(z) is field
+    #         assert z.dtype == dtype
 
-    def test_power_zero_to_positive_integer(self, field, dtype):
-        if dtype in field.dtypes:
-            x = field.Zeros(10, dtype=dtype)
-            y = np.random.randint(1, 2*field.order, 10, dtype=np.int64)
-            z = x ** y
-            Z = np.zeros(10, dtype=np.int64)
-            assert np.all(z == Z)
-            assert type(z) is field
-            assert z.dtype == dtype
+    # def test_power_zero_to_positive_integer(self, field, dtype):
+    #     if dtype in field.dtypes:
+    #         x = field.Zeros(10, dtype=dtype)
+    #         y = randint(1, 2*field.order, 10, field.dtypes[-1])
+    #         z = x ** y
+    #         Z = np.zeros(10, field.dtypes[-1])
+    #         assert np.all(z == Z)
+    #         assert type(z) is field
+    #         assert z.dtype == dtype
 
     def test_square(self, power, dtype):
         GF, X, Y, Z = power["GF"], power["X"], power["Y"], power["Z"]
@@ -321,6 +410,8 @@ class TestArithmetic:
 
     def test_log(self, log, dtype):
         GF, X, Z = log["GF"], log["X"], log["Z"]
+        if GF.order > 2**16:  # TODO: Skip slow log() for very large fields
+            return
         if dtype in GF.dtypes:
             x = X.astype(dtype)
             z = np.log(x)
@@ -332,7 +423,7 @@ class TestArithmeticNonField:
 
     def test_add_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(0, field.order, 1, dtype=np.int64))
+        y = int(randint(0, field.order, 1, field.dtypes[-1]))
         with pytest.raises(TypeError):
             z = x + y
         with pytest.raises(TypeError):
@@ -340,7 +431,7 @@ class TestArithmeticNonField:
 
     def test_add_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(0, field.order, self.shape, dtype=np.int64)
+        y = randint(0, field.order, self.shape, field.dtypes[-1])
         with pytest.raises(TypeError):
             z = x + y
         with pytest.raises(TypeError):
@@ -348,7 +439,7 @@ class TestArithmeticNonField:
 
     def test_subtract_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(0, field.order, 1, dtype=np.int64))
+        y = int(randint(0, field.order, 1, field.dtypes[-1]))
         with pytest.raises(TypeError):
             z = x - y
         with pytest.raises(TypeError):
@@ -356,7 +447,7 @@ class TestArithmeticNonField:
 
     def test_subtract_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(0, field.order, self.shape, dtype=np.int64)
+        y = randint(0, field.order, self.shape, field.dtypes[-1])
         with pytest.raises(TypeError):
             z = x - y
         with pytest.raises(TypeError):
@@ -364,8 +455,8 @@ class TestArithmeticNonField:
 
     def test_multiple_add_int_scalar(self, multiple_add):
         X, Y, Z = multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
-        i = np.random.randint(0, Z.shape[0], self.shape, dtype=np.int64)  # Random x indices
-        j = np.random.randint(0, Z.shape[1], dtype=np.int64)  # Random y index
+        i = np.random.randint(0, Z.shape[0], self.shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1])  # Random y index
         x = X[i,0]
         y = Y[0,j]
         assert np.all(x * y == Z[i,j])
@@ -373,8 +464,8 @@ class TestArithmeticNonField:
 
     def test_multiple_add_int_array(self, multiple_add):
         X, Y, Z = multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
-        i = np.random.randint(0, Z.shape[0], self.shape, dtype=np.int64)  # Random x indices
-        j = np.random.randint(0, Z.shape[1], dtype=np.int64)  # Random y index
+        i = np.random.randint(0, Z.shape[0], self.shape)  # Random x indices
+        j = np.random.randint(0, Z.shape[1])  # Random y index
         x = X[i,0]
         y = Y[0,j]
         assert np.all(x * y == Z[i,j])
@@ -382,7 +473,7 @@ class TestArithmeticNonField:
 
     def test_divide_int_scalar(self, field):
         x = field.Random(self.shape, low=1)
-        y = int(np.random.randint(1, field.order, 1, dtype=np.int64))
+        y = int(randint(1, field.order, 1, field.dtypes[-1]))
         with pytest.raises(TypeError):
             z = x / y
         with pytest.raises(TypeError):
@@ -394,7 +485,7 @@ class TestArithmeticNonField:
 
     def test_divide_int_array(self, field):
         x = field.Random(self.shape, low=1)
-        y = np.random.randint(1, field.order, self.shape, dtype=np.int64)
+        y = randint(1, field.order, self.shape, field.dtypes[-1])
         with pytest.raises(TypeError):
             z = x / y
         with pytest.raises(TypeError):
@@ -406,7 +497,7 @@ class TestArithmeticNonField:
 
     def test_radd_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(0, field.order, 1, dtype=np.int64))
+        y = int(randint(0, field.order, 1, field.dtypes[-1]))
         with pytest.raises(TypeError):
             x += y
         with pytest.raises(TypeError):
@@ -414,7 +505,7 @@ class TestArithmeticNonField:
 
     def test_radd_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(0, field.order, self.shape, dtype=np.int64)
+        y = randint(0, field.order, self.shape, field.dtypes[-1])
         with pytest.raises(TypeError):
             x += y
         with pytest.raises(TypeError):
@@ -422,7 +513,7 @@ class TestArithmeticNonField:
 
     def test_rsub_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(0, field.order, 1, dtype=np.int64))
+        y = int(randint(0, field.order, 1, field.dtypes[-1]))
         with pytest.raises(TypeError):
             x -= y
         with pytest.raises(TypeError):
@@ -430,7 +521,7 @@ class TestArithmeticNonField:
 
     def test_rsub_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(0, field.order, self.shape, dtype=np.int64)
+        y = randint(0, field.order, self.shape, field.dtypes[-1])
         with pytest.raises(TypeError):
             x -= y
         with pytest.raises(TypeError):
@@ -438,8 +529,8 @@ class TestArithmeticNonField:
 
     def test_rmul_int_scalar(self, multiple_add):
         GF, X, Y, Z = multiple_add["GF"], multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
-        i = np.random.randint(0, Z.shape[0], dtype=np.int64)  # Random x index
-        j = np.random.randint(0, Z.shape[1], dtype=np.int64)  # Random y index
+        i = np.random.randint(0, Z.shape[0])  # Random x index
+        j = np.random.randint(0, Z.shape[1])  # Random y index
 
         x = X.copy()
         y = Y[i,j]  # Integer, non-field element
@@ -456,7 +547,7 @@ class TestArithmeticNonField:
 
     def test_rmul_int_array(self, multiple_add):
         GF, X, Y, Z = multiple_add["GF"], multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
-        i = np.random.randint(0, Z.shape[0], dtype=np.int64)  # Random x index
+        i = np.random.randint(0, Z.shape[0])  # Random x index
 
         x = X.copy()
         y = Y[i,:]
@@ -472,7 +563,7 @@ class TestArithmeticNonField:
 
     def test_rdiv_int_scalar(self, field):
         x = field.Random(self.shape)
-        y = int(np.random.randint(1, field.order, 1, dtype=np.int64))
+        y = int(randint(1, field.order, 1, field.dtypes[-1]))
         with pytest.raises(TypeError):
             x /= y
         with pytest.raises(TypeError):
@@ -484,7 +575,7 @@ class TestArithmeticNonField:
 
     def test_rdiv_int_array(self, field):
         x = field.Random(self.shape)
-        y = np.random.randint(1, field.order, self.shape, dtype=np.int64)
+        y = randint(1, field.order, self.shape, field.dtypes[-1])
         with pytest.raises(TypeError):
             x /= y
         with pytest.raises(TypeError):
@@ -521,7 +612,7 @@ class TestArithmeticExceptions:
             y = -3
             z = x ** y
         with pytest.raises(ZeroDivisionError):
-            y = -3*np.ones(x.size, dtype=np.int64)
+            y = -3*np.ones(x.size, field.dtypes[-1])
             z = x ** y
 
     def test_log_of_zero(self, field):
@@ -637,7 +728,7 @@ class TestArithmeticExceptions:
 #     def test_scalar_scalar_out_of_range(self, field):
 #         shape = ()
 #         a = field.Random(shape)
-#         b = field.order*np.ones(shape, dtype=np.int64)
+#         b = field.order*np.ones(shape, field.dtypes[-1])
 #         with pytest.raises(ValueError):
 #             c = a + b
 #         # TODO: Can't figure out how to make this fail
@@ -647,7 +738,7 @@ class TestArithmeticExceptions:
 #     def test_vector_vector_out_of_range(self, field):
 #         shape = (10,)
 #         a = field.Random(shape)
-#         b = field.order*np.ones(shape, dtype=np.int64)
+#         b = field.order*np.ones(shape, field.dtypes[-1])
 #         with pytest.raises(ValueError):
 #             c = a + b
 #         with pytest.raises(ValueError):
@@ -656,7 +747,7 @@ class TestArithmeticExceptions:
 #     def test_matrix_matrix_out_of_range(self, field):
 #         shape = (10,10)
 #         a = field.Random(shape)
-#         b = field.order*np.ones(shape, dtype=np.int64)
+#         b = field.order*np.ones(shape, field.dtypes[-1])
 #         with pytest.raises(ValueError):
 #             c = a + b
 #         with pytest.raises(ValueError):
@@ -694,8 +785,8 @@ class TestBroadcasting:
     def check_results(self, field, shape1, shape2, shape_result):
         a = field.Random(shape1)
         b = field.Random(shape2, low=1)
-        c = np.random.randint(0, field.order, shape2, dtype=np.int64)
-        d = 2*np.ones(shape2, dtype=np.int64)
+        c = randint(0, field.order, shape2, field.dtypes[-1])
+        d = 2*np.ones(shape2, field.dtypes[-1])
 
         # Test np.add ufunc
         z = a + b
@@ -743,8 +834,9 @@ class TestBroadcasting:
         assert z.shape == a.shape
 
         # Test np.log ufunc
-        z = np.log(b)
-        assert z.shape == b.shape
+        if field.order <= 2**16:  # TODO: Skip slow log() for very large fields
+            z = np.log(b)
+            assert z.shape == b.shape
 
 
 class TestUfuncMethods:
@@ -941,7 +1033,7 @@ class TestUfuncMethods:
 
     def test_outer_multiply(self, field):
         a = field.Random(10)
-        b = np.random.randint(0, field.order, 12, dtype=np.int64)
+        b = randint(0, field.order, 12, field.dtypes[-1])
         c = np.multiply.outer(a, b)
         c_truth = field.Zeros((a.size, b.size))
         for i in range(a.size):
@@ -970,7 +1062,7 @@ class TestUfuncMethods:
 
     def test_outer_power(self, field):
         a = field.Random(10)
-        b = np.random.randint(1, field.order, 12, dtype=np.int64)
+        b = randint(1, field.order, 12, field.dtypes[-1])
         c = np.power.outer(a, b)
         c_truth = field.Zeros((a.size, b.size))
         for i in range(a.size):
@@ -1038,7 +1130,7 @@ class TestUfuncMethods:
 
     def test_at_power(self, field):
         a = field.Random(10)
-        b = np.random.randint(1, field.order, 1, dtype=np.int64)
+        b = randint(1, field.order, 1, field.dtypes[-1])
         idxs = [0,1,1,4,8]
         a_truth = field(a)  # Ensure a copy happens
         np.power.at(a, idxs, b)
@@ -1047,6 +1139,8 @@ class TestUfuncMethods:
         assert np.all(a == a_truth)
 
     def test_at_log(self, field):
+        if field.order > 2**16:  # TODO: Skip slow log() for very large fields
+            return
         a = field.Random(10, low=1)
         idxs = [0,1,4,8]  # Dont test index=1 twice like other tests because in GF(2) log(1)=0 and then log(0)=error
         a_truth = field(a)  # Ensure a copy happens
@@ -1076,6 +1170,8 @@ class TestProperties:
         assert np.all(b == 0)
 
     def test_property_2(self, field):
+        if field.order > 1e6:  # TODO: Skip for extremely large fields
+            return
         if field.order < 2**16:
             a = field.Elements()[1:]
         else:
@@ -1107,6 +1203,8 @@ class TestProperties:
         assert poly == galois.Poly.NonZero([1, -1], [field.order, 1], field=field)
 
     def test_exp_log_duality(self, field):
+        if field.order > 2**16:  # TODO: Skip slow log() for very large fields
+            return
         alpha = field.alpha
         x = field.Random(10, low=1)
         e = np.log(x)

@@ -43,16 +43,20 @@ def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto"
     galois.GF2, galois.GF2m, galois.GFp, galois.GFpm
         A new Galois field class that is a sublcass of `galois.GF`.
     """
-    if not isinstance(characteristic, int):
-        raise TypeError(f"Galois field GF(p^m) prime characteristic `p` must be an integer, not {type(characteristic)}")
+    # pylint: disable=import-outside-toplevel
+    import numpy as np
+
+    if not isinstance(characteristic, (int, np.integer)):
+        raise TypeError(f"Galois field GF(p^m) prime characteristic `p` must be an int, not {type(characteristic)}")
     if not isinstance(degree, int):
-        raise TypeError(f"Galois field GF(p^m) characteristic degree `m` must be an integer, not {type(degree)}")
+        raise TypeError(f"Galois field GF(p^m) characteristic degree `m` must be an int, not {type(degree)}")
     if not (prim_poly is None or isinstance(prim_poly, Poly)):
         raise TypeError(f"Primitive polynomial `prim_poly` must be either None or galois.Poly, not {type(prim_poly)}")
     if not isinstance(rebuild, bool):
         raise TypeError(f"The 'rebuild' argument must be a bool, not {type(rebuild)}")
+
     if not is_prime(characteristic):
-        raise ValueError(f"Galois field GF(p^m) prime characteristic `p` must be prime, not {characteristic}")
+        raise ValueError(f"Galois field GF(p^m) characteristic `p` must be prime, not {characteristic}")
     if not degree >= 1:
         raise ValueError(f"Galois field GF(p^m) characteristic degree `m` must be >= 1, not {degree}")
 
@@ -84,19 +88,17 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
     import numpy as np
     from .gf import DTYPES
 
-    if not isinstance(m, (int, np.integer)):
-        raise TypeError(f"GF(2^m) characteristic degree `m` must be an integer, not {type(m)}")
-    if not 1 <= m <= 32:
-        return ValueError(f"GF(2^m) classes are only supported for 2 <= m <= 2**32, not {m}")
-    if not (prim_poly is None or isinstance(prim_poly, Poly)):
-        raise TypeError(f"Primitive polynomial `prim_poly` must be either None or galois.Poly, not {type(prim_poly)}")
-
     characteristic = 2
     degree = m
     order = characteristic**degree
     # name = "GF{}".format(order)
     name = f"GF{characteristic}^{degree}"
-    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order - 1]
+
+    if order - 1 > 2**62:
+        # TODO: Double check these conditions
+        dtypes = [np.object_]
+    else:
+        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order - 1]
 
     # Use the smallest primitive root as the multiplicative generator for the field
     alpha = 2
@@ -120,6 +122,10 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
         mode = "lookup" if cls.order <= 2**16 else "calculate"
     cls.target(target, mode)
 
+    # Add helper variables for python ufuncs. This prevents the ufuncs from having to repeatedly calculate them.
+    cls._alpha_dec = int(cls.alpha)  # pylint: disable=protected-access
+    cls._prim_poly_dec = cls.prim_poly.decimal  # pylint: disable=protected-access
+
     return cls
 
 
@@ -128,19 +134,20 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     import numpy as np
     from .gf import DTYPES
 
-    if not isinstance(p, (int, np.integer)):
-        raise TypeError(f"GF(p) prime characteristic `p` must be an integer, not {type(p)}")
-    if not is_prime(p):
-        raise ValueError(f"GF(p) fields must have a prime characteristic `p`, not {p}")
-    # if not 2 <= p <= 2**16:
-    #     raise ValueError(f"GF(p) classes are only supported for 2 <= p <= 2**16, not {p}")
-
     characteristic = p
     degree = 1
     order = characteristic**degree
 
     name = "GF{}".format(order)
-    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order - 1]
+
+    if order - 1 > 2**31:
+        # Orders of 2^31 or less can be stored as uint32 or int64. This is because we need to sometimes calculate
+        # `(a * b) % prime` in a field and we need (2^31) * (2^31) = 2^62 < 2^63 to fit in an int64. Values larger
+        # than 2^31 need to be stored as dtype=np.object_.
+        # TODO: Double check these conditions
+        dtypes = [np.object_]
+    else:
+        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= order - 1]
 
     # Use the smallest primitive root as the multiplicative generator for the field
     alpha = primitive_root(p)
@@ -162,6 +169,10 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     cls.target(target, mode)
 
     cls.prim_poly = Poly([1, -alpha], field=cls)  # pylint: disable=invalid-unary-operand-type
+
+    # Add helper variables for python ufuncs. This prevents the ufuncs from having to repeatedly calculate them.
+    cls._alpha_dec = int(cls.alpha)  # pylint: disable=protected-access
+    cls._prim_poly_dec = cls.prim_poly.decimal  # pylint: disable=protected-access
 
     return cls
 
