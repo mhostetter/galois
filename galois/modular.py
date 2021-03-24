@@ -29,14 +29,19 @@ def modular_exp(base, exponent, modulus):
     result_s = base  # The "squaring" part
     result_m = 1  # The "multiplicative" part
 
-    while exponent > 1:
-        if exponent % 2 == 0:
-            result_s = (result_s * result_s) % modulus
-            exponent //= 2
-        else:
-            result_m = (result_m * result_s) % modulus
-            exponent -= 1
+    with np.testing.suppress_warnings() as sup:
+        # For large integers they will overflow int64s, but numpy/python will still compute the correct
+        # answer. Therefore, we hide this warning from the user to not alarm them.
+        sup.filter(RuntimeWarning, "overflow encountered in long_scalars")
 
-    result = (result_m * result_s) % modulus
+        while exponent > 1:
+            if exponent % 2 == 0:
+                result_s = (result_s * result_s) % modulus
+                exponent //= 2
+            else:
+                result_m = (result_m * result_s) % modulus
+                exponent -= 1
+
+        result = (result_m * result_s) % modulus
 
     return result

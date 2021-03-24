@@ -117,6 +117,13 @@ def test_modular_exp():
     galois.modular_exp(31, 397, 29) == 26
 
 
+def test_modular_exp_large_integers():
+    base = 123456789123456789
+    exponent = 1234
+    modulus = 98765431
+    assert galois.modular_exp(base, exponent, modulus) == base**exponent % modulus
+
+
 def test_primitive_root():
     # https://oeis.org/A001918
     primes = galois._prime.PRIMES
