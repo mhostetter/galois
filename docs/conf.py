@@ -92,6 +92,8 @@ intersphinx_mapping = {
     'numba': ('https://numba.pydata.org/numba-doc/latest/', None)
 }
 
+pygments_style = 'colorful'
+
 # If True, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
