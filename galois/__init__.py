@@ -3,13 +3,14 @@ A performant numpy extension for Galois fields.
 """
 from .version import __version__
 
-from .algorithm import prev_prime, next_prime, factors, prime_factors, is_prime, euclidean_algorithm, extended_euclidean_algorithm, \
-                       chinese_remainder_theorem, euler_totient, carmichael, modular_exp, primitive_roots, primitive_root
+from .algorithm import factors, euclidean_algorithm, extended_euclidean_algorithm, chinese_remainder_theorem, euler_totient, carmichael, primitive_roots, primitive_root
 from .gf import GF
 from .gf2 import GF2
 from .gf2m import GF2m
 from .gfp import GFp
+from .modular import modular_exp
 from .poly import Poly
+from .prime import prev_prime, next_prime, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
 
 
 def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=redefined-outer-name
