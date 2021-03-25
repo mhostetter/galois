@@ -6,7 +6,7 @@ import pytest
 
 import galois
 
-from .helper import randint
+from ..helper import randint
 
 
 class TestBroadcasting:

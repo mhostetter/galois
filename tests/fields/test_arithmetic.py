@@ -6,7 +6,7 @@ import pytest
 
 import galois
 
-from .helper import ALL_DTYPES, randint
+from ..helper import ALL_DTYPES, randint
 
 
 # TODO: Add scalar arithmetic and array/scalar and radd, etc

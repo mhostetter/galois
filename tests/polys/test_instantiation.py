@@ -19,7 +19,6 @@ class TestField:
         assert p.field is field
         assert type(p.coeffs) is field
 
-
     def test_zero_leading_coeff(self, field):
         c = field.Random(6)
         c[0] = 0  # Ensure leading coefficient is zero
