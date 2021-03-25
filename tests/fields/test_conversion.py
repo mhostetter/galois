@@ -6,7 +6,7 @@ import pytest
 
 import galois
 
-from .helper import ALL_DTYPES
+from ..helper import ALL_DTYPES
 
 
 class TestView:
