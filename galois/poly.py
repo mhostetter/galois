@@ -259,18 +259,13 @@ class Poly:
     def coeffs(self, coeffs):
         if not isinstance(coeffs, GF):
             raise TypeError(f"Galois field polynomials must have coefficients in a valid Galois field class (i.e. subclasses of GF), not {type(coeffs)}")
-        if coeffs.ndim != 1:
-            raise ValueError(f"Galois field polynomial coefficients must be arrays with dimension 1, not {coeffs.ndim}")
-        idxs = np.nonzero(coeffs)[0]  # Non-zero indices
+        if not coeffs.ndim <= 1:
+            raise ValueError(f"Galois field polynomial coefficients must be arrays with dimension <= 1, not {coeffs.ndim}")
 
-        if idxs.size > 0:
-            # Trim leading non-zero powers
-            coeffs = coeffs[:idxs[-1]+1] if self.order == "asc" else coeffs[idxs[0]:]
-        else:
-            # All coefficients are zero, only return the x^0 place
-            field = coeffs.__class__
-            coeffs = field([0])
-
+        coeffs = np.atleast_1d(coeffs)
+        coeffs = np.trim_zeros(coeffs, trim=("f" if self.order == "desc" else "b"))
+        if coeffs.size == 0:
+            coeffs = np.insert(coeffs, 0, 0)
         self._coeffs = coeffs
 
     @property

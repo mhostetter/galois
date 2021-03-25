@@ -203,7 +203,7 @@ class GF(metaclass=GFMeta):
             iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
             for _ in iterator:
                 array[iterator.multi_index] = random.randint(low, high - 1)
-            array = array.view(cls)
+        array = array.view(cls)
 
         return array
 
@@ -344,7 +344,7 @@ class GFArray(np.ndarray):
 
         if np.any(array < 0) or np.any(array >= cls.order):
             idxs = np.logical_or(array < 0, array >= cls.order)
-            raise ValueError(f"Galois field arrays must have elements in [0, {cls.order}), not {array[idxs]} at indices {idxs}")
+            raise ValueError(f"Galois field arrays must have elements in [0, {cls.order}), not {array[idxs]}")
 
         if array.dtype not in cls.dtypes:
             # If the assignment array has a smaller integer dtype, we need to upconvert to a large
@@ -471,17 +471,6 @@ class GFArray(np.ndarray):
             raise TypeError(f"Galois field arrays can only be cast as integer dtypes {self.dtypes}, not {dtype}")
         return super().astype(dtype, **kwargs)
 
-    def __array_finalize__(self, obj):
-        """
-        A numpy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
-        that view casting to a Galois field array has the appropriate dtype and that the values are in the field.
-        """
-        if obj is not None and not isinstance(obj, GF):
-            if obj.dtype not in self.dtypes:
-                raise TypeError(f"Galois field arrays can only have integer dtypes {self.dtypes}, not {obj.dtype}")
-            if np.any(obj < 0) or np.any(obj >= self.order):
-                raise ValueError(f"GF({self.order}) arrays must have values in [0, {self.order})")
-
     def __getitem__(self, key):
         item = super().__getitem__(key)
         if np.isscalar(item):
@@ -495,6 +484,28 @@ class GFArray(np.ndarray):
         value = self._check_values(value)
         value = value.view(self.__class__)
         super().__setitem__(key, value)
+
+    def __array_function__(self, func, types, args, kwargs):
+        if func is np.insert:
+            self._check_values(args[2])
+
+        output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
+
+        if func in [np.copy, np.concatenate, np.broadcast_to]:
+            output = output.view(self.__class__)
+
+        return output
+
+    def __array_finalize__(self, obj):
+        """
+        A numpy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
+        that view casting to a Galois field array has the appropriate dtype and that the values are in the field.
+        """
+        if obj is not None and not isinstance(obj, GF):
+            if obj.dtype not in self.dtypes:
+                raise TypeError(f"Galois field arrays can only have integer dtypes {self.dtypes}, not {obj.dtype}")
+            if np.any(obj < 0) or np.any(obj >= self.order):
+                raise ValueError(f"GF({self.order}) arrays must have values in [0, {self.order})")
 
     def _view_input_gf_as_ndarray(self, inputs, kwargs, meta):
         # View all input operands as np.ndarray to avoid infinite recursion
