@@ -121,9 +121,7 @@ class GF(metaclass=GFMeta):
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this field class, i.e. `cls.dtypes[0]`.
         """
-        dtype = cls.dtypes[0] if dtype is None else dtype
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        dtype = cls._get_dtype(dtype)
         return np.zeros(shape, dtype=dtype).view(cls)
 
     @classmethod
@@ -141,10 +139,37 @@ class GF(metaclass=GFMeta):
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this field class, i.e. `cls.dtypes[0]`.
         """
-        dtype = cls.dtypes[0] if dtype is None else dtype
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        dtype = cls._get_dtype(dtype)
         return np.ones(shape, dtype=dtype).view(cls)
+
+    @classmethod
+    def Range(cls, start, stop, step=1, dtype=None):
+        """
+        Create a Galois field array with a range of field elements.
+
+        Parameters
+        ----------
+        start : int
+            The starting value (inclusive).
+        stop : int
+            The stopping value (exclusive).
+        step : int, optional
+            The space between values. The default is 1.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this field class, i.e. `cls.dtypes[0]`.
+        """
+        dtype = cls._get_dtype(dtype)
+        if not stop <= cls.order:
+            raise ValueError(f"The stopping value must be less than the field order of {cls.order}, not {stop}")
+
+        if dtype is not np.object_:
+            array = np.arange(start, stop, step=step, dtype=dtype)
+        else:
+            array = np.array(range(start, stop, step), dtype=dtype)
+        array = array.view(cls)
+
+        return array
 
     @classmethod
     def Random(cls, shape=(), low=0, high=None, dtype=None):
@@ -166,15 +191,13 @@ class GF(metaclass=GFMeta):
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this field class, i.e. `cls.dtypes[0]`.
         """
-        dtype = cls.dtypes[0] if dtype is None else dtype
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+        dtype = cls._get_dtype(dtype)
         if high is None:
             high = cls.order
         assert 0 <= low < cls.order and low < high <= cls.order
 
         if dtype is not np.object_:
-            array = np.random.randint(low, high, shape, dtype=dtype).view(cls)
+            array = np.random.randint(low, high, shape, dtype=dtype)
         else:
             array = np.empty(shape, dtype=dtype)
             iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
@@ -195,10 +218,15 @@ class GF(metaclass=GFMeta):
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this field class, i.e. `cls.dtypes[0]`.
         """
-        dtype = cls.dtypes[0] if dtype is None else dtype
+        return cls.Range(0, cls.order, step=1, dtype=dtype)
+
+    @classmethod
+    def _get_dtype(cls, dtype):
+        if dtype is None:
+            dtype = cls.dtypes[0]
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
-        return np.arange(0, cls.order, dtype=dtype).view(cls)
+        return dtype
 
     @classmethod
     def display(cls, mode="int", poly_var="x"):
