@@ -94,6 +94,8 @@ intersphinx_mapping = {
 
 pygments_style = 'colorful'
 
+napoleon_use_admonition_for_examples = True
+
 # If True, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
