@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from .gf import GF, GFArray
+from .gf import GF
 
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -16,28 +16,9 @@ MULTIPLY_JIT = lambda x, y: x * y
 MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
 
-class GF2m(GF, GFArray):
+class GF2m(GF):
     """
     An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
-
-    Parameters
-    ----------
-    array : array_like
-        The input array to be converted to a Galois field array. The input array is copied, so the original array
-        is unmodified by changes to the Galois field array. Valid input array types are :obj:`numpy.ndarray`,
-        :obj:`list`, :obj:`tuple`, or :obj:`int`.
-    dtype : numpy.dtype, optional
-        The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
-
-    Returns
-    -------
-    galois.GF2m
-        The copied input array as a :math:`\\mathrm{GF}(2^m)` field array.
-
-    Note
-    ----
-        This is an abstract base class for all :math:`\\mathrm{GF}(2^m)` fields. It cannot be instantiated directly.
-        :math:`\\mathrm{GF}(2^m)` field classes are created using :obj:`galois.GF_factory`.
     """
 
     def __new__(cls, *args, **kwargs):

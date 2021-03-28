@@ -10,15 +10,10 @@ from ..helper import ALL_DTYPES
 
 
 class TestAbstractClasses:
-    def test_cant_instantiate_GF2m(self):
+    def test_cant_instantiate_GF(self):
         v = [0, 1, 0, 1]
         with pytest.raises(NotImplementedError):
-            a = galois.GF2m(v)
-
-    def test_cant_instantiate_GFp(self):
-        v = [0, 1, 0, 1]
-        with pytest.raises(NotImplementedError):
-            a = galois.GFp(v)
+            a = galois.GF(v)
 
 
 class TestList:

@@ -460,7 +460,7 @@ class Poly:
     @property
     def coeffs(self):
         """
-        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` if `order="desc"` or
+        galois.GF: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` if `order="desc"` or
         :math:`\\{a_0, a_1, \\dots, a_{N-1}\\}` if `order="asc"`, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
         """
         return self._coeffs
@@ -486,7 +486,7 @@ class Poly:
     @property
     def coeffs_asc(self):
         """
-        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{N-1}\\}` as a Galois field array
+        galois.GF: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{N-1}\\}` as a Galois field array
         in degree-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
         """
         return self.coeffs if self.order == "asc" else np.flip(self.coeffs)
@@ -494,7 +494,7 @@ class Poly:
     @property
     def coeffs_desc(self):
         """
-        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The polynomial coefficients :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` as a Galois field array
+        galois.GF: The polynomial coefficients :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` as a Galois field array
         in degree-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
         """
         return self.coeffs if self.order == "desc" else np.flip(self.coeffs)
