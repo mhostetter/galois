@@ -58,6 +58,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         .. ipython:: python
 
             GF7 = galois.GF_factory(7, 1)
+            print(GF7)
 
         This subclass can then be used to instantiate arrays over :math:`\\mathrm{GF}(7)`.
 
@@ -79,6 +80,76 @@ class GF(np.ndarray, metaclass=GFMeta):
     -------
     galois.GF
         The copied input array as a :math:`\\mathrm{GF}(p^m)` field array.
+
+    Examples
+    --------
+
+    Construct various kinds of Galois fields using :obj:`galois.GF_factory`.
+
+    .. ipython:: python
+
+        # Construct a GF(2^m) class
+        GF256 = galois.GF_factory(2, 8); print(GF256)
+
+        # Construct a GF(p) class
+        GF571 = galois.GF_factory(571, 1); print(GF571)
+
+        # Construct a very large GF(2^m) class
+        GF2m = galois.GF_factory(2, 100); print(GF2m)
+
+        # Construct a very large GF(p) class
+        GFp = galois.GF_factory(36893488147419103183, 1); print(GFp)
+
+    Depending on the field's order (size), only certain `dtype` values will be supported.
+
+    .. ipython:: python
+
+        GF256.dtypes
+        GF571.dtypes
+
+    Very large fields, which can't be represented using `np.int64`, can only be represented as `dtype=np.object_`.
+
+    .. ipython:: python
+
+        GF2m.dtypes
+        GFp.dtypes
+
+    Newly-created arrays will use the smallest, valid dtype.
+
+    .. ipython:: python
+
+        a = GF256.Random(10); a
+        a.dtype
+
+    This can be explicitly set by specifying the `dtype` keyword argument.
+
+    .. ipython:: python
+
+        a = GF256.Random(10, dtype=np.uint32); a
+        a.dtype
+
+    Arrays can be created explicitly by converting an "array-like" object.
+
+    .. ipython:: python
+
+        # Construct a Galois field array from a list
+        l = [142, 27, 92, 253, 103]; l
+        GF256(l)
+
+        # Construct a Galois field array from an existing numpy array
+        x_np = np.array(l, dtype=np.int64); x_np
+        GF256(l)
+
+    Arrays can also be created by "view casting" from an existing numpy array in memory. This avoids
+    a copy operation, which is especially useful for large data already brought into memory.
+
+    .. ipython:: python
+
+        a = x_np.view(GF256); a
+
+        # Changing `x_np` will change `a`
+        x_np[0] = 0; x_np
+        a
     """
 
     # NOTE: These class attributes will be set in the subclasses of GF
@@ -177,6 +248,18 @@ class GF(np.ndarray, metaclass=GFMeta):
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this field class, i.e. `cls.dtypes[0]`.
+
+        Returns
+        -------
+        galois.GF
+            A Galois field array of zeros.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF_factory(31, 1)
+            GF.Zeros((2,5))
         """
         dtype = cls._get_dtype(dtype)
         return np.zeros(shape, dtype=dtype).view(cls)
@@ -195,6 +278,18 @@ class GF(np.ndarray, metaclass=GFMeta):
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this field class, i.e. `cls.dtypes[0]`.
+
+        Returns
+        -------
+        galois.GF
+            A Galois field array of ones.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF_factory(31, 1)
+            GF.Ones((2,5))
         """
         dtype = cls._get_dtype(dtype)
         return np.ones(shape, dtype=dtype).view(cls)
@@ -215,6 +310,18 @@ class GF(np.ndarray, metaclass=GFMeta):
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this field class, i.e. `cls.dtypes[0]`.
+
+        Returns
+        -------
+        galois.GF
+            A Galois field array of a range of field elements.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF_factory(31, 1)
+            GF.Range(10,20)
         """
         dtype = cls._get_dtype(dtype)
         if not stop <= cls.order:
@@ -246,6 +353,18 @@ class GF(np.ndarray, metaclass=GFMeta):
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this field class, i.e. `cls.dtypes[0]`.
+
+        Returns
+        -------
+        galois.GF
+            A Galois field array of random field elements.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF_factory(31, 1)
+            GF.Random((2,5))
         """
         dtype = cls._get_dtype(dtype)
         if high is None:
@@ -272,6 +391,18 @@ class GF(np.ndarray, metaclass=GFMeta):
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this field class, i.e. `cls.dtypes[0]`.
+
+        Returns
+        -------
+        galois.GF
+            A Galois field array of all the field's elements.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF_factory(31, 1)
+            GF.Elements()
         """
         return cls.Range(0, cls.order, step=1, dtype=dtype)
 

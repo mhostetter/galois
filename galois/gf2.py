@@ -14,6 +14,20 @@ class GF2(GF):
     """
     Create an array over :math:`\\mathrm{GF}(2)`.
 
+    Note
+    ----
+        This Galois field class is a pre-made subclass of :obj:`galois.GF`. It is included in the package
+        because of the ubiquity of :math:`\\mathrm{GF}(2)` fields.
+
+        .. ipython:: python
+
+            # The pre-made GF(2) class
+            print(galois.GF2)
+
+            # The GF class factory for `(2,1)` returns `galois.GF2`
+            GF2 = galois.GF_factory(2, 1); print(GF2)
+            GF2 is galois.GF2
+
     Parameters
     ----------
     array : array_like
@@ -31,7 +45,7 @@ class GF2(GF):
     Examples
     --------
 
-    GF2 class properties
+    Various Galois field properties are accessible as class attributes.
 
     .. ipython:: python
 
@@ -41,23 +55,26 @@ class GF2(GF):
         galois.GF2.order
         galois.GF2.prim_poly
 
-    Construct arrays in GF2
+    Construct arrays over :math:`\\mathrm{GF}(2)`.
 
     .. ipython:: python
 
         a = galois.GF2([1,0,1,1]); a
         b = galois.GF2([1,1,1,1]); b
 
-    Arithmetic with GF2 arrays
+    Perform array arithmetic over :math:`\\mathrm{GF}(2)`.
 
     .. ipython:: python
 
         # Element-wise addition
         a + b
+
         # Element-wise subtraction
         a - b
+
         # Element-wise multiplication
         a * b
+
         # Element-wise division
         a / b
     """
