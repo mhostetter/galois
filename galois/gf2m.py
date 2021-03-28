@@ -232,7 +232,7 @@ class GF2m(GF, GFArray):
 # Galois field arithmetic, explicitly calculated wihtout lookup tables
 ###############################################################################
 
-def add_calculate(a, b):
+def add_calculate(a, b):  # pragma: no cover
     """
     a in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
     b in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
@@ -245,11 +245,11 @@ def add_calculate(a, b):
     return a ^ b
 
 
-def subtract_calculate(a, b):
+def subtract_calculate(a, b):  # pragma: no cover
     return a ^ b
 
 
-def multiply_calculate(a, b):
+def multiply_calculate(a, b):  # pragma: no cover
     """
     a in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
     b in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
@@ -274,7 +274,7 @@ def multiply_calculate(a, b):
     return result
 
 
-def divide_calculate(a, b):
+def divide_calculate(a, b):  # pragma: no cover
     if a == 0 or b == 0:
         # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
         return 0
@@ -282,11 +282,11 @@ def divide_calculate(a, b):
     return MULTIPLY_JIT(a, b_inv)
 
 
-def additive_inverse_calculate(a):
+def additive_inverse_calculate(a):  # pragma: no cover
     return a
 
 
-def multiplicative_inverse_calculate(a):
+def multiplicative_inverse_calculate(a):  # pragma: no cover
     """
     TODO: Replace this with more efficient algorithm
 
@@ -314,7 +314,7 @@ def multiplicative_inverse_calculate(a):
     return result
 
 
-def multiple_add_calculate(a, multiple):
+def multiple_add_calculate(a, multiple):  # pragma: no cover
     multiple = multiple % CHARACTERISTIC
     if multiple == 0:
         return 0
@@ -322,7 +322,7 @@ def multiple_add_calculate(a, multiple):
         return a
 
 
-def power_calculate(a, power):
+def power_calculate(a, power):  # pragma: no cover
     """
     Square and Multiply Algorithm
 
@@ -357,7 +357,7 @@ def power_calculate(a, power):
     return result
 
 
-def log_calculate(beta):
+def log_calculate(beta):  # pragma: no cover
     """
     TODO: Replace this with more efficient algorithm
 
@@ -375,7 +375,7 @@ def log_calculate(beta):
     return i
 
 
-def poly_eval_calculate(coeffs, values, results):
+def poly_eval_calculate(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):

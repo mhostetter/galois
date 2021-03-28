@@ -745,7 +745,7 @@ class GFArray(np.ndarray):
 # Galois field arithmetic using EXP, LOG, and ZECH_LOG lookup tables
 ###############################################################################
 
-def _add_lookup(a, b):
+def _add_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -777,7 +777,7 @@ def _add_lookup(a, b):
     return EXP[m + ZECH_LOG[n - m]]
 
 
-def _subtract_lookup(a, b):
+def _subtract_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -815,7 +815,7 @@ def _subtract_lookup(a, b):
     return EXP[m + ZECH_LOG[z]]
 
 
-def _multiply_lookup(a, b):
+def _multiply_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -834,7 +834,7 @@ def _multiply_lookup(a, b):
     return EXP[m + n]
 
 
-def _divide_lookup(a, b):
+def _divide_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -858,7 +858,7 @@ def _divide_lookup(a, b):
     return EXP[(ORDER - 1) + m - n]
 
 
-def _additive_inverse_lookup(a):
+def _additive_inverse_lookup(a):  # pragma: no cover
     """
     a in GF(p^m)
     alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
@@ -877,7 +877,7 @@ def _additive_inverse_lookup(a):
     return EXP[ZECH_E + n]
 
 
-def _multiplicative_inverse_lookup(a):
+def _multiplicative_inverse_lookup(a):  # pragma: no cover
     """
     a in GF(p^m)
     alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
@@ -898,7 +898,7 @@ def _multiplicative_inverse_lookup(a):
     return EXP[(ORDER - 1) - m]
 
 
-def _multiple_add_lookup(a, b_int):
+def _multiple_add_lookup(a, b_int):  # pragma: no cover
     """
     a in GF(p^m)
     b_int in Z
@@ -927,7 +927,7 @@ def _multiple_add_lookup(a, b_int):
     return EXP[m + n]
 
 
-def _power_lookup(a, b_int):
+def _power_lookup(a, b_int):  # pragma: no cover
     """
     a in GF(p^m)
     b_int in Z
@@ -952,7 +952,7 @@ def _power_lookup(a, b_int):
     return EXP[(m * b_int) % (ORDER - 1)]
 
 
-def _log_lookup(a):
+def _log_lookup(a):  # pragma: no cover
     """
     a in GF(p^m)
     alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
@@ -963,7 +963,7 @@ def _log_lookup(a):
     return LOG[a]
 
 
-def _poly_eval_lookup(coeffs, values, results):
+def _poly_eval_lookup(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
