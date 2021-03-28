@@ -7,12 +7,15 @@ from .gf2 import GF2
 
 class Poly:
     """
-    Create a polynomial over a Galois field, :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0 \\in \\mathrm{GF}(q)`.
+    Create a polynomial over a Galois field, :math:`p(x) \\in \\mathrm{GF}(q)[x]`.
+
+    The polynomial :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0` has coefficients :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}`
+    in :math:`\\mathrm{GF}(q)`.
 
     Parameters
     ----------
     coeffs : array_like
-        List of polynomial coefficients :math:`[a_{N-1}, \\dots, a_1, a_0]` with type :obj:`galois.GF`, :obj:`numpy.ndarray`,
+        List of polynomial coefficients :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.GF`, :obj:`numpy.ndarray`,
         :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
         the 0-th degree element if `order="asc"`.
     field : galois.GF, optional
@@ -31,35 +34,27 @@ class Poly:
     Examples
     --------
 
-    Create polynomials over :math:`\\mathrm{GF}(2)[x]`.
+    Create a polynomial over :math:`\\mathrm{GF}(2)[x]`.
 
     .. ipython:: python
 
-        # Construct a polynominal over GF(2)
-        a = galois.Poly([1,0,1,1]); a
+        galois.Poly([1,0,1,1])
+        galois.Poly.Degrees([3,1,0])
 
-        # Construct the same polynomial by only specifying its non-zero coefficients
-        b = galois.Poly.NonZero([1,1,1], [3,1,0]); b
-
-    Create polynomials over :math:`\\mathrm{GF}(7)[x]`.
+    Create a polynomial over :math:`\\mathrm{GF}(7)[x]`.
 
     .. ipython:: python
 
-        # Construct the GF(7) field
-        GF = galois.GF_factory(7, 1)
-
-        # Construct a polynominal over GF(7)
-        galois.Poly([4,0,3,0,0,2], field=GF)
-
-        # Construct the same polynomial by only specifying its non-zero coefficients
-        galois.Poly.NonZero([4,3,2], [5,3,0], field=GF)
+        GF7 = galois.GF_factory(7, 1)
+        galois.Poly([4,0,3,0,0,2], field=GF7)
+        galois.Poly.Degrees([5,3,0], coeffs=[4,3,2], field=GF7)
 
     Polynomial arithmetic using binary operators.
 
     .. ipython:: python
 
-        a = galois.Poly([1,0,6,3], field=GF); a
-        b = galois.Poly([2,0,2], field=GF); b
+        a = galois.Poly([1,0,6,3], field=GF7); a
+        b = galois.Poly([2,0,2], field=GF7); b
 
         a + b
         a - b
@@ -116,7 +111,6 @@ class Poly:
 
         .. ipython:: python
 
-            # Construct the zero polynomial over GF(2)
             galois.Poly.Zero()
 
         Construct the zero polynomial over :math:`\\mathrm{GF}(7)[x]`.
@@ -181,7 +175,6 @@ class Poly:
 
         .. ipython:: python
 
-            # Construct the identity polynomial over GF(2)
             galois.Poly.Identity()
 
         Construct the identity polynomial over :math:`\\mathrm{GF}(7)[x]`.
@@ -196,7 +189,7 @@ class Poly:
     @classmethod
     def Integer(cls, integer, field=GF2, order="desc"):
         """
-        Create a polynomial over :math:`\\mathrm{GF}(q)` from its integer representation.
+        Create a polynomial over :math:`\\mathrm{GF}(q)[x]` from its integer representation.
 
         The integer value :math:`d` represents polynomial :math:`p(x) =  a_{N-1}x^{N-1} + \\dots + a_1x + a_0`
         over field :math:`\\mathrm{GF}(q)` if :math:`d = a_{N-1} q^{N-1} + \\dots + a_1 q + a_0` using integer arithmetic,
@@ -220,7 +213,6 @@ class Poly:
 
         .. ipython:: python
 
-            # Construct a polynomial over GF(2) from its integer representation
             galois.Poly.Integer(5)
 
         Construct a polynomial over :math:`\\mathrm{GF}(7)[x]` from its integer representation.
@@ -238,16 +230,44 @@ class Poly:
         return cls(c, field=field, order=order)
 
     @classmethod
-    def NonZero(cls, coeffs, degrees, field=GF2):
+    def Degrees(cls, degrees, coeffs=None, field=GF2):
         """
+        Create a polynomial over :math:`\\mathrm{GF}(q)[x]` from its non-zero degrees.
+
+        Parameters
+        ----------
+        degrees : list
+            The polynomial degrees with non-zero coefficients.
+        coeffs : array_like, optional
+            List of corresponding non-zero coefficients. The default is `None` which corresponds to all one
+            coefficients, i.e. `[1,]*len(degrees)`.
+        roots : array_like
+            List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
+        field : galois.GF, optional
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`p(x)`.
+
         Examples
         --------
+        Construct a polynomial over :math:`\\mathrm{GF}(2)[x]` by specifying the degrees with non-zero coefficients.
 
         .. ipython:: python
 
-            # Construct a polynomial over GF2 only specifying the non-zero terms
-            a = galois.Poly.NonZero([1,1,1], [3,1,0]); a
+            galois.Poly.Degrees([3,1,0])
+
+        Construct a polynomial over :math:`\\mathrm{GF}(7)[x]` by specifying the degrees with non-zero coefficients.
+
+        .. ipython:: python
+
+            GF7 = galois.GF_factory(7, 1)
+            galois.Poly.Degrees([3,1,0], coeffs=[5,2,1], field=GF7)
         """
+        if coeffs is None:
+            coeffs = [1,]*len(degrees)
         assert len(coeffs) == len(degrees)
         degrees = np.array(degrees)
         assert np.issubdtype(degrees.dtype, np.integer) and np.all(degrees >= 0)
@@ -259,7 +279,7 @@ class Poly:
     @classmethod
     def Roots(cls, roots, field=GF2):
         """
-        Create a monic polynomial in :math:`\\mathrm{GF}(q)]x]` from its roots.
+        Create a monic polynomial in :math:`\\mathrm{GF}(q)[x]` from its roots.
 
         The polynomial :math:`p(x)` with roots :math:`\\{r_0, r_1, \\dots, r_{N-1}\\}` is:
 
@@ -426,8 +446,8 @@ class Poly:
     @property
     def order(self):
         """
-        str: The interpretation of the ordering of the polynomial coefficients. `coeffs` are in exponent-descending order
-        if `order="desc"` and in exponent-ascending order if `order="asc"`.
+        str: The interpretation of the ordering of the polynomial coefficients. `coeffs` are in degree-descending order
+        if `order="desc"` and in degree-ascending order if `order="asc"`.
         """
         return self._order
 
@@ -440,8 +460,8 @@ class Poly:
     @property
     def coeffs(self):
         """
-        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The polynomial coefficients as a Galois field array. Coefficients are :math:`[a_{N-1}, \\dots, a_1, a_0]` if `order="desc"` or
-        :math:`[a_0, a_1, \\dots, a_{N-1}]` if `order="asc"`, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
+        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` if `order="desc"` or
+        :math:`\\{a_0, a_1, \\dots, a_{N-1}\\}` if `order="asc"`, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
         """
         return self._coeffs
 
@@ -466,16 +486,16 @@ class Poly:
     @property
     def coeffs_asc(self):
         """
-        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The polynomial coefficients :math:`[a_0, a_1, \\dots, a_{N-1}]` as a Galois field array
-        in exponent-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
+        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{N-1}\\}` as a Galois field array
+        in degree-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
         """
         return self.coeffs if self.order == "asc" else np.flip(self.coeffs)
 
     @property
     def coeffs_desc(self):
         """
-        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The polynomial coefficients :math:`[a_{N-1}, \\dots, a_1, a_0]` as a Galois field array
-        in exponent-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
+        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The polynomial coefficients :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` as a Galois field array
+        in degree-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
         """
         return self.coeffs if self.order == "desc" else np.flip(self.coeffs)
 
@@ -489,7 +509,7 @@ class Poly:
     @property
     def field(self):
         """
-        galois.GF2, galois.GF2m, galois.GFp, galois.GFpm: The finite field to which the coefficients belong.
+        galois.GF: The finite field to which the coefficients belong.
         """
         return self.coeffs.__class__
 

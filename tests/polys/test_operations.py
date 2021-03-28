@@ -9,12 +9,12 @@ import pytest
 import galois
 
 
-def test_decimal():
+def test_integer():
     poly = galois.Poly([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,1])
-    assert poly.decimal == 4295000729
+    assert poly.integer == 4295000729
 
-    poly = galois.Poly.NonZero([1,1,1,1,1,1,1], [32,15,9,7,4,3,0])
-    assert poly.decimal == 4295000729
+    poly = galois.Poly.Degrees([32,15,9,7,4,3,0])
+    assert poly.integer == 4295000729
 
 
 def test_update_coeffs_field(field):
