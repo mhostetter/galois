@@ -3,7 +3,7 @@ import random
 import numba
 import numpy as np
 
-from .conversion import decimal_to_poly, poly_to_str
+from .conversion import integer_to_poly, poly_to_str
 
 # Dictionary mapping numpy ufuncs to our implementation method
 OVERRIDDEN_UFUNCS = {
@@ -41,7 +41,7 @@ class GFMeta(type):
     """
 
     def __str__(cls):
-        return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.degree, poly_to_str(cls.prim_poly.coeffs_asc), cls.prim_poly.decimal)
+        return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.degree, poly_to_str(cls.prim_poly.coeffs_asc), cls.prim_poly.integer)
 
 
 class GF(metaclass=GFMeta):
@@ -89,7 +89,7 @@ class GF(metaclass=GFMeta):
 
     dtypes = []
     """
-    list: List of valid integer :obj:`numpy.dtype` objects that are compatible with this Galois field array class. Valid data
+    list: List of valid integer :obj:`numpy.dtype` objects that are compatible with this Galois field. Valid data
     types are signed and unsinged integers that can represent decimal values in :math:`[0, p^m)`.
     """
 
@@ -429,7 +429,7 @@ class GFArray(np.ndarray):
 
     @classmethod
     def _print_poly(cls, decimal):
-        poly = decimal_to_poly(decimal, cls.characteristic)
+        poly = integer_to_poly(decimal, cls.characteristic)
         return poly_to_str(poly, poly_var=cls._display_poly_var)
 
     def __repr__(self):

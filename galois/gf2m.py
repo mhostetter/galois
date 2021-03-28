@@ -47,7 +47,7 @@ class GF2m(GF, GFArray):
 
     @classmethod
     def _build_luts(cls):
-        prim_poly_dec = cls.prim_poly.decimal
+        prim_poly_dec = cls.prim_poly.integer
         dtype = np.int64
         if cls.order > np.iinfo(dtype).max:
             raise ValueError(f"Cannot build lookup tables for GF(2^m) class with order {cls.order} since the elements cannot be represented with dtype {dtype}")
@@ -107,7 +107,7 @@ class GF2m(GF, GFArray):
         DEGREE = cls.degree
         ORDER = cls.order
         ALPHA = int(cls.alpha)
-        PRIM_POLY_DEC = cls.prim_poly.decimal
+        PRIM_POLY_DEC = cls.prim_poly.integer
 
         if target not in ["cpu", "parallel", "cuda"]:
             raise ValueError(f"Valid numba compilation targets are ['cpu', 'parallel', 'cuda'], not {target}")

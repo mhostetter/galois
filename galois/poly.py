@@ -1,6 +1,6 @@
 import numpy as np
 
-from .conversion import decimal_to_poly, poly_to_decimal, poly_to_str
+from .conversion import integer_to_poly, poly_to_integer, poly_to_str
 from .gf import GF
 from .gf2 import GF2
 
@@ -194,18 +194,18 @@ class Poly:
         return cls([1, 0], field=field)
 
     @classmethod
-    def Decimal(cls, decimal, field=GF2, order="desc"):
+    def Integer(cls, integer, field=GF2, order="desc"):
         """
-        Create a polynomial from its decimal representation.
+        Create a polynomial over :math:`\\mathrm{GF}(q)` from its integer representation.
 
-        The decimal value :math:`d` represents polynomial :math:`p(x) =  a_{N-1}x^{N-1} + \\dots + a_1x + a_0`
+        The integer value :math:`d` represents polynomial :math:`p(x) =  a_{N-1}x^{N-1} + \\dots + a_1x + a_0`
         over field :math:`\\mathrm{GF}(q)` if :math:`d = a_{N-1} q^{N-1} + \\dots + a_1 q + a_0` using integer arithmetic,
         not field arithmetic.
 
         Parameters
         ----------
-        decimal : int
-            The decimal representation of the polynomial :math:`p(x)`.
+        integer : int
+            The integer representation of the polynomial :math:`p(x)`.
         field : galois.GF, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
 
@@ -216,23 +216,23 @@ class Poly:
 
         Examples
         --------
-        Construct a polynomial over :math:`\\mathrm{GF}(2)[x]` from its decimal representation.
+        Construct a polynomial over :math:`\\mathrm{GF}(2)[x]` from its integer representation.
 
         .. ipython:: python
 
-            # Construct a polynomial over GF(2) from its decimal representation
-            galois.Poly.Decimal(5)
+            # Construct a polynomial over GF(2) from its integer representation
+            galois.Poly.Integer(5)
 
-        Construct a polynomial over :math:`\\mathrm{GF}(7)[x]` from its decimal representation.
+        Construct a polynomial over :math:`\\mathrm{GF}(7)[x]` from its integer representation.
 
         .. ipython:: python
 
             GF7 = galois.GF_factory(7, 1)
-            galois.Poly.Decimal(9, field=GF7)
+            galois.Poly.Integer(9, field=GF7)
         """
-        if not isinstance(decimal, (int, np.integer)):
-            raise TypeError(f"Polynomial creation must have `decimal` be an integer, not {type(decimal)}")
-        c = decimal_to_poly(decimal, field.order)
+        if not isinstance(integer, (int, np.integer)):
+            raise TypeError(f"Polynomial creation must have `integer` be an integer, not {type(integer)}")
+        c = integer_to_poly(integer, field.order)
         if order == "desc":
             c = np.flip(c)
         return cls(c, field=field, order=order)
@@ -494,13 +494,12 @@ class Poly:
         return self.coeffs.__class__
 
     @property
-    def decimal(self):
+    def integer(self):
         """
         int: The integer representation of the polynomial. For :math:`p(x) =  a_{N-1}x^{N-1} + \\dots + a_1x + a_0`
-        with elements in :math:`\\mathrm{GF}(q)`, the decimal representation is :math:`d = a_{N-1} q^{N-1} + \\dots + a_1 q + a_0`
+        with elements in :math:`\\mathrm{GF}(q)`, the integer representation is :math:`d = a_{N-1} q^{N-1} + \\dots + a_1 q + a_0`
         (using integer arithmetic, not field arithmetic) where :math:`q` is the field order.
         """
         c = self.coeffs_asc
         c = c.view(np.ndarray)  # We want to do integer math, not Galois field math
-        decimal = poly_to_decimal(c, self.field.order)
-        return decimal
+        return poly_to_integer(c, self.field.order)
