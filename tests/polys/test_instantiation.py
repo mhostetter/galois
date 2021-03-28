@@ -83,3 +83,44 @@ class TestList:
         assert isinstance(p, galois.Poly)
         assert p.field is field
         assert type(p.coeffs) is field
+
+
+class TestConstructors:
+    def test_zero(self, field):
+        p = galois.Poly.Zero(field=field)
+        coeffs = field([0])
+        assert np.array_equal(p.coeffs, coeffs)
+        assert type(p) is galois.Poly
+        assert p.field is field
+
+    def test_one(self, field):
+        p = galois.Poly.One(field=field)
+        coeffs = field([1])
+        assert np.array_equal(p.coeffs, coeffs)
+        assert type(p) is galois.Poly
+        assert p.field is field
+
+    def test_identity(self, field):
+        p = galois.Poly.Identity(field=field)
+        coeffs = field([1, 0])
+        assert np.array_equal(p.coeffs, coeffs)
+        assert type(p) is galois.Poly
+        assert p.field is field
+
+    def test_roots_field(self, field):
+        roots = field.Random(4)
+        p = galois.Poly.Roots(roots, field=field)
+        assert type(p) is galois.Poly
+        assert p.field is field
+
+        z = p(roots)
+        assert np.all(z == 0)
+
+    def test_roots_list(self, field):
+        roots = field.Random(4).tolist()
+        p = galois.Poly.Roots(roots, field=field)
+        assert type(p) is galois.Poly
+        assert p.field is field
+
+        z = p(roots)
+        assert np.all(z == 0)
