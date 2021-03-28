@@ -7,26 +7,31 @@ from .gf2 import GF2
 
 class Poly:
     """
-    A polynomial class with coefficients in any Galois field.
+    Create a polynomial over a Galois field, :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0 \\in \\mathrm{GF}(q)`.
 
     Parameters
     ----------
     coeffs : array_like
-        List of polynomial coefficients of type Galois field array, `np.ndarray`, list, or tuple. The first
-        element is the highest-degree element if `order="desc"` or the first element is the 0-th degree element
-        if `order="asc"`.
+        List of polynomial coefficients :math:`[a_{N-1}, \\dots, a_1, a_0]` with type :obj:`galois.GF`, :obj:`numpy.ndarray`,
+        :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
+        the 0-th degree element if `order="asc"`.
     field : galois.GF, optional
-        Optionally specify the field to which the coefficients belong. The default field is `galois.GF2`. If
-        `coeffs` is a Galois field array, then that field is used and the `field` parameter is ignored.
+        The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`. If `coeffs`
+        is a Galois field array, then that field is used and the `field` argument is ignored.
     order : str, optional
         The interpretation of the coefficient degrees, either `"desc"` (default) or `"asc"`. For `"desc"`,
-        the first element of `coeffs` is the highest degree coefficient (`x^(N-1)`) and the last element is
-        the 0-th degree element (`x^0`).
+        the first element of `coeffs` is the highest degree coefficient :math:`x^{N-1}`) and the last element is
+        the 0-th degree element :math:`x^0`.
+
+    Returns
+    -------
+    galois.Poly
+        The polynomial :math:`p(x)`.
 
     Examples
     --------
 
-    Create polynomials over GF(2)
+    Create polynomials over :math:`\\mathrm{GF}(2)[x]`.
 
     .. ipython:: python
 
@@ -36,7 +41,7 @@ class Poly:
         # Construct the same polynomial by only specifying its non-zero coefficients
         b = galois.Poly.NonZero([1,1,1], [3,1,0]); b
 
-    Create polynomials over GF(7)
+    Create polynomials over :math:`\\mathrm{GF}(7)[x]`.
 
     .. ipython:: python
 
@@ -49,7 +54,7 @@ class Poly:
         # Construct the same polynomial by only specifying its non-zero coefficients
         galois.Poly.NonZero([4,3,2], [5,3,0], field=GF)
 
-    Polynomial arithmetic
+    Polynomial arithmetic using binary operators.
 
     .. ipython:: python
 
@@ -91,6 +96,148 @@ class Poly:
             self.coeffs = c
 
     @classmethod
+    def Zero(cls, field=GF2):
+        """
+        Create the zero polynomial, :math:`p(x) = 0 \\in \\mathrm{GF}(q)[x]`.
+
+        Parameters
+        ----------
+        field : galois.GF, optional
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`p(x)`.
+
+        Examples
+        --------
+        Construct the zero polynomial over :math:`\\mathrm{GF}(2)[x]`.
+
+        .. ipython:: python
+
+            # Construct the zero polynomial over GF(2)
+            galois.Poly.Zero()
+
+        Construct the zero polynomial over :math:`\\mathrm{GF}(7)[x]`.
+
+        .. ipython:: python
+
+            GF7 = galois.GF_factory(7, 1)
+            galois.Poly.Zero(field=GF7)
+        """
+        return cls([0], field=field)
+
+    @classmethod
+    def One(cls, field=GF2):
+        """
+        Create the one polynomial, :math:`p(x) = 1 \\in \\mathrm{GF}(q)[x]`.
+
+        Parameters
+        ----------
+        field : galois.GF, optional
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`p(x)`.
+
+        Examples
+        --------
+        Construct the one polynomial over :math:`\\mathrm{GF}(2)[x]`.
+
+        .. ipython:: python
+
+            galois.Poly.One()
+
+        Construct the one polynomial over :math:`\\mathrm{GF}(7)[x]`.
+
+        .. ipython:: python
+
+            GF7 = galois.GF_factory(7, 1)
+            galois.Poly.One(field=GF7)
+        """
+        return cls([1], field=field)
+
+    @classmethod
+    def Identity(cls, field=GF2):
+        """
+        Create the identity polynomial, :math:`p(x) = x \\in \\mathrm{GF}(q)[x]`.
+
+        Parameters
+        ----------
+        field : galois.GF, optional
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`p(x)`.
+
+        Examples
+        --------
+        Construct the identity polynomial over :math:`\\mathrm{GF}(2)[x]`.
+
+        .. ipython:: python
+
+            # Construct the identity polynomial over GF(2)
+            galois.Poly.Identity()
+
+        Construct the identity polynomial over :math:`\\mathrm{GF}(7)[x]`.
+
+        .. ipython:: python
+
+            GF7 = galois.GF_factory(7, 1)
+            galois.Poly.Identity(field=GF7)
+        """
+        return cls([1, 0], field=field)
+
+    @classmethod
+    def Decimal(cls, decimal, field=GF2, order="desc"):
+        """
+        Create a polynomial from its decimal representation.
+
+        The decimal value :math:`d` represents polynomial :math:`p(x) =  a_{N-1}x^{N-1} + \\dots + a_1x + a_0`
+        over field :math:`\\mathrm{GF}(q)` if :math:`d = a_{N-1} q^{N-1} + \\dots + a_1 q + a_0` using integer arithmetic,
+        not field arithmetic.
+
+        Parameters
+        ----------
+        decimal : int
+            The decimal representation of the polynomial :math:`p(x)`.
+        field : galois.GF, optional
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`p(x)`.
+
+        Examples
+        --------
+        Construct a polynomial over :math:`\\mathrm{GF}(2)[x]` from its decimal representation.
+
+        .. ipython:: python
+
+            # Construct a polynomial over GF(2) from its decimal representation
+            galois.Poly.Decimal(5)
+
+        Construct a polynomial over :math:`\\mathrm{GF}(7)[x]` from its decimal representation.
+
+        .. ipython:: python
+
+            GF7 = galois.GF_factory(7, 1)
+            galois.Poly.Decimal(9, field=GF7)
+        """
+        if not isinstance(decimal, (int, np.integer)):
+            raise TypeError(f"Polynomial creation must have `decimal` be an integer, not {type(decimal)}")
+        c = decimal_to_poly(decimal, field.order)
+        if order == "desc":
+            c = np.flip(c)
+        return cls(c, field=field, order=order)
+
+    @classmethod
     def NonZero(cls, coeffs, degrees, field=GF2):
         """
         Examples
@@ -110,16 +257,59 @@ class Poly:
         return cls(all_coeffs, field=field)
 
     @classmethod
-    def Decimal(cls, decimal, field=GF2, order="desc"):
-        if not isinstance(decimal, (int, np.integer)):
-            raise TypeError(f"Polynomial creation must have `decimal` be an integer, not {type(decimal)}")
-        c = decimal_to_poly(decimal, field.order)
-        if order == "desc":
-            c = np.flip(c)
-        return cls(c, field=field, order=order)
+    def Roots(cls, roots, field=GF2):
+        """
+        Create a monic polynomial in :math:`\\mathrm{GF}(q)]x]` from its roots.
+
+        The polynomial :math:`p(x)` with roots :math:`\\{r_0, r_1, \\dots, r_{N-1}\\}` is:
+
+        .. math::
+            p(x) = (x - r_0) (x - r_1) \\dots (x - r_{N-1})
+
+        Parameters
+        ----------
+        roots : array_like
+            List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
+        field : galois.GF, optional
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`p(x)`.
+
+        Examples
+        --------
+        Construct a polynomial over :math:`\\mathrm{GF}(2)[x]` from a list of its roots.
+
+        .. ipython:: python
+
+            roots = [0,0,1]
+            p = galois.Poly.Roots(roots); p
+            p(roots)
+
+        Construct a polynomial over :math:`\\mathrm{GF}(7)[x]` from a list of its roots.
+
+        .. ipython:: python
+
+            GF7 = galois.GF_factory(7, 1)
+            roots = [2,6,1]
+            p = galois.Poly.Roots(roots, field=GF7); p
+            p(roots)
+        """
+        field._check_values(roots)  # pylint: disable=protected-access
+        p = cls.One(field=field)
+        for root in roots:
+            p = p * cls([1, -int(root)], field=field)
+        return p
 
     def __repr__(self):
-        return "Poly({}, {})".format(poly_to_str(self.coeffs_asc), self.field.__name__)
+        poly_str = poly_to_str(self.coeffs_asc)
+        if self.field.degree == 1:
+            order = "{}".format(self.field.characteristic)
+        else:
+            order = "{}^{}".format(self.field.characteristic, self.field.degree)
+        return f"Poly({poly_str}, GF({order}))"
 
     def __str__(self):
         return self.__repr__()
