@@ -2,9 +2,9 @@ Extremely large fields
 ======================
 
 Arbitrarily-large :math:`\mathrm{GF}(2^m)`, :math:`\mathrm{GF}(p)`, :math:`\mathrm{GF}(p^m)` fields are supported.
-Because field elements can't be represented with `np.int64`, we use `dtype=object` in the `numpy` arrays. This enables
-use of native python `int`, which doesn't overflow. It comes at a performance cost though. There are no JIT-compiled
-arithmetic ufuncs. All the arithmetic is done in pure python. All the same array operatoions, broadcasting, ufunc methods,
+Because field elements can't be represented with :obj:`numpy.int64`, we use `dtype=object` in the `numpy` arrays. This enables
+use of native python :obj:`int`, which doesn't overflow. It comes at a performance cost though. There are no JIT-compiled
+arithmetic ufuncs. All the arithmetic is done in pure python. All the same array operations, broadcasting, ufunc methods,
 etc are supported.
 
 

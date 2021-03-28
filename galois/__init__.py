@@ -40,6 +40,27 @@ def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto"
     -------
     galois.GF
         A new Galois field array class that is a sublcass of :obj:`galois.GF`.
+
+    Examples
+    --------
+
+    Construct various kinds of Galois fields.
+
+    .. ipython:: python
+
+        # Construct a GF(2^m) class
+        GF256 = galois.GF_factory(2, 8); print(GF256)
+
+        # Construct a GF(p) class
+        GF571 = galois.GF_factory(571, 1); print(GF571)
+
+        # Construct a very large GF(2^m) class
+        GF2m = galois.GF_factory(2, 100); print(GF2m)
+
+        # Construct a very large GF(p) class
+        GFp = galois.GF_factory(36893488147419103183, 1); print(GFp)
+
+    See :obj:`galois.GF` for more examples of what a Galois field array can do.
     """
     # pylint: disable=import-outside-toplevel
     import numpy as np

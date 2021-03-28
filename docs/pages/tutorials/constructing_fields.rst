@@ -5,7 +5,7 @@ Constructing finite field arrays
 GF(2) field class
 -----------------
 
-The :math:`\mathrm{GF}(2)` field is already constructed in `galois`. It can be accessed by :obj:`galois.GF2`.
+The :math:`\mathrm{GF}(2)` field is already constructed in :obj:`galois`. It can be accessed by :obj:`galois.GF2`.
 
 .. ipython:: python
 
