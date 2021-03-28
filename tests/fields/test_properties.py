@@ -61,7 +61,7 @@ def test_fermats_little_theorem(field):
     # p = field.characteristic
     for a in field.Elements():
         poly = poly * galois.Poly([1, -a], field=field)
-    assert poly == galois.Poly.NonZero([1, -1], [field.order, 1], field=field)
+    assert poly == galois.Poly.Degrees([field.order, 1], coeffs=[1, -1], field=field)
 
 
 def test_exp_log_duality(field):

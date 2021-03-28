@@ -242,7 +242,7 @@ Construct Galois field polynomials.
 Poly(x^4 + 22x^3 + 17x + 25, GF31)
 
 # Construct a polynomial by specifying only the non-zero coefficients
->>> q = galois.Poly.NonZero([4, 14],  [2, 0], field=GF31); q
+>>> q = galois.Poly.Degrees([2, 0], coeffs=[4, 14], field=GF31); q
 Poly(4x^2 + 14, GF31)
 ```
 

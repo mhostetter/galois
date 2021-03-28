@@ -139,7 +139,7 @@ Construct Galois field polynomials.
    p = galois.Poly([1, 22, 0, 17, 25], field=GF31); p
 
    # Construct a polynomial by specifying only the non-zero coefficients
-   q = galois.Poly.NonZero([4, 14],  [2, 0], field=GF31); q
+   q = galois.Poly.Degrees([2, 0], coeffs=[4, 14], field=GF31); q
 
 Galois field polynomial arithmetic
 ----------------------------------
