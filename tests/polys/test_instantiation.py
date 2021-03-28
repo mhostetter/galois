@@ -55,7 +55,9 @@ class TestList:
         c = [random.randint(0, field.order - 1) for _ in range(6)]
         c[0] = random.randint(1, field.order - 1)  # Ensure leading coefficient is non-zero
         p = galois.Poly(c, field=field)
-        assert np.all(p.coeffs == c)
+        # assert np.all(p.coeffs == c)  # TODO: This sometimes fails for really large ints and dtype=object, below is a workaround
+        assert p.coeffs.size == len(c)
+        assert all(p.coeffs[i] == c[i] for i in range(len(c)))
         assert isinstance(p, galois.Poly)
         assert p.field is field
         assert type(p.coeffs) is field
