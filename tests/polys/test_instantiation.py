@@ -56,8 +56,7 @@ class TestList:
         c[0] = random.randint(1, field.order - 1)  # Ensure leading coefficient is non-zero
         p = galois.Poly(c, field=field)
         # assert np.all(p.coeffs == c)  # TODO: This sometimes fails for really large ints and dtype=object, below is a workaround
-        assert p.coeffs.size == len(c)
-        assert all(p.coeffs[i] == c[i] for i in range(len(c)))
+        assert p.coeffs.size == len(c) and all(p.coeffs[i] == c[i] for i in range(p.coeffs.size))
         assert isinstance(p, galois.Poly)
         assert p.field is field
         assert type(p.coeffs) is field
@@ -67,7 +66,8 @@ class TestList:
         c[0] = 0  # Ensure leading coefficient is zero
         c[1] = random.randint(1, field.order - 1)  # Ensure next leading coefficient is non-zero
         p = galois.Poly(c, field=field)
-        assert np.all(p.coeffs == c[1:])
+        # assert np.all(p.coeffs == c[1:])
+        assert p.coeffs.size == len(c[1:]) and all(p.coeffs[i] == c[1+i] for i in range(p.coeffs.size))
         assert isinstance(p, galois.Poly)
         assert p.field is field
         assert type(p.coeffs) is field
@@ -78,7 +78,8 @@ class TestList:
         c[0] = random.randint(1, field.order - 1)  # Ensure leading coefficient is positive, TODO: is this needed?
         p = galois.Poly(c, field=field)
         c_field = [field(e) if e > 0 else -field(abs(e)) for e in c]  # Convert +/- field elements into the field
-        assert np.all(p.coeffs == c_field)
+        # assert np.all(p.coeffs == c_field)
+        assert p.coeffs.size == len(c_field) and all(p.coeffs[i] == c_field[i] for i in range(p.coeffs.size))
         assert isinstance(p, galois.Poly)
         assert p.field is field
         assert type(p.coeffs) is field
