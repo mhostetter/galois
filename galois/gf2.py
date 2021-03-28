@@ -1,6 +1,6 @@
 import numba
 
-from .gf import GF, GFArray, DTYPES
+from .gf import GF, DTYPES
 
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -10,9 +10,9 @@ ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 
 
-class GF2(GF, GFArray):
+class GF2(GF):
     """
-    Galois field array class for :math:`\\mathrm{GF}(2)` fields.
+    Create an array over :math:`\\mathrm{GF}(2)`.
 
     Parameters
     ----------
@@ -74,7 +74,7 @@ class GF2(GF, GFArray):
     dtypes = DTYPES
 
     @classmethod
-    def target(cls, target):
+    def target(cls, target):  # pylint: disable=arguments-differ
         """
         Retarget the just-in-time compiled `numba` ufuncs.
 

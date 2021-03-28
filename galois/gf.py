@@ -44,14 +44,41 @@ class GFMeta(type):
         return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.degree, poly_to_str(cls.prim_poly.coeffs_asc), cls.prim_poly.integer)
 
 
-class GF(metaclass=GFMeta):
+class GF(np.ndarray, metaclass=GFMeta):
     """
-    An abstract base class for all Galois field array classes.
+    Create an array over :math:`\\mathrm{GF}(p^m)`.
 
-    Note
-    ----
-        This is an abstract base class for all Galois fields. It cannot be instantiated directly.
-        Galois field array classes are created using :obj:`galois.GF_factory`.
+    Warning
+    -------
+        This is an abstract base class for all Galois field array classes. :obj:`galois.GF` cannot be instantiated
+        directly. Instead, Galois field array classes are created using :obj:`galois.GF_factory`.
+
+        For example, one can create the :math:`\\mathrm{GF}(7)` field array class as follows:
+
+        .. ipython:: python
+
+            GF7 = galois.GF_factory(7, 1)
+
+        This subclass can then be used to instantiate arrays over :math:`\\mathrm{GF}(7)`.
+
+        .. ipython:: python
+
+            GF7([3,5,0,2,1])
+            GF7.Random((2,5))
+
+    Parameters
+    ----------
+    array : array_like
+        The input array to be converted to a Galois field array. The input array is copied, so the original array
+        is unmodified by changes to the Galois field array. Valid input array types are :obj:`numpy.ndarray`,
+        :obj:`list`, :obj:`tuple`, or :obj:`int`.
+    dtype : numpy.dtype, optional
+        The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
+
+    Returns
+    -------
+    galois.GF
+        The copied input array as a :math:`\\mathrm{GF}(p^m)` field array.
     """
 
     # NOTE: These class attributes will be set in the subclasses of GF
@@ -105,6 +132,36 @@ class GF(metaclass=GFMeta):
 
     _display_mode = "int"
     _display_poly_var = "x"
+
+    _alpha_dec = None
+    _prim_poly_dec = None
+
+    _EXP = None
+    _LOG = None
+    _ZECH_LOG = None
+
+    _ufunc_add = None
+    _ufunc_subtract = None
+    _ufunc_multiply = None
+    _ufunc_divide = None
+    _ufunc_negative = None
+    _ufunc_multiple_add = None
+    _ufunc_power = None
+    _ufunc_log = None
+    _ufunc_poly_eval = None
+
+    def __new__(cls, array, dtype=None):
+        if cls is GF:
+            raise NotImplementedError("GF is an abstract base class that cannot be directly instantiated. Instead, create a GF subclass using `galois.GF_factory()`.")
+        dtype = cls.dtypes[0] if dtype is None else dtype
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+
+        array = cls._check_values(array)
+        array = array.astype(dtype)
+        array = array.view(cls)
+
+        return array
 
     @classmethod
     def Zeros(cls, shape, dtype=None):
@@ -227,99 +284,6 @@ class GF(metaclass=GFMeta):
         return dtype
 
     @classmethod
-    def display(cls, mode="int", poly_var="x"):
-        """
-        Sets the printing mode for arrays.
-
-        Parameters
-        ----------
-        mode : str, optional
-            The field element display mode, either `"int"` (default) or `"poly"`.
-        poly_var : str, optional
-            The polynomial representation's variable. The default is `"x"`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF_factory(2, 3)
-            a = GF.Random(4); a
-            GF.display("poly"); a
-            GF.display("poly", "r"); a
-
-            # Reset the print mode
-            GF.display(); a
-        """
-        if mode not in ["int", "poly"]:
-            raise ValueError(f"Valid Galois field print modes are ['int', 'poly'], not {mode}")
-        if not isinstance(poly_var, str):
-            raise TypeError(f"Polynomial varialbes must be a str, not {type(poly_var)}")
-        cls._display_mode = mode
-        cls._display_poly_var = poly_var
-
-
-class GFArray(np.ndarray):
-    """
-    asdf
-    """
-
-    characteristic = None
-    degree = None
-    order = None
-    prim_poly = None
-    alpha = None
-    dtypes = []
-
-    _display_mode = "int"
-    _display_poly_var = "x"
-
-    _alpha_dec = None
-    _prim_poly_dec = None
-
-    _EXP = None
-    _LOG = None
-    _ZECH_LOG = None
-
-    _ufunc_add = None
-    _ufunc_subtract = None
-    _ufunc_multiply = None
-    _ufunc_divide = None
-    _ufunc_negative = None
-    _ufunc_multiple_add = None
-    _ufunc_power = None
-    _ufunc_log = None
-    _ufunc_poly_eval = None
-
-    def __new__(cls, array, dtype=None):
-        if cls is GFArray:
-            raise NotImplementedError("GFArray is an abstract base class that cannot be directly instantiated")
-        dtype = cls.dtypes[0] if dtype is None else dtype
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
-
-        array = cls._check_values(array)
-
-        # # Convert the array-like object to a numpy array without specifying the desired dtype. This allows
-        # # numpy to determine the data type of the input array, list, tuple, etc. This allows for detection of
-        # # floating-point inputs. We will convert to the desired dtype after checking that the input array are integers
-        # # and within the field. We use `copy=True` to prevent newly created array from sharing memory with input array.
-        # array = np.array(array, copy=True, dtype=cls.dtypes[-1])
-
-        # # TODO: Better way to check if input "array" is integer, i.e. not float. With dtype=np.object_
-        # # any type of object will pass.
-
-        # if not (np.issubdtype(array.dtype, np.integer) or array.dtype == np.object_):
-        #     raise TypeError(f"Galois field array elements must have integer dtypes, not {array.dtype}")
-        # if np.any(array < 0) or np.any(array >= cls.order):
-        #     raise ValueError(f"Galois field arrays must have elements in [0, {cls.order}), not {array}")
-
-        # Convert array (already determined to be integers) to the Galois field's unsigned int dtype
-        array = array.astype(dtype)
-        array =  array.view(cls)
-
-        return array
-
-    @classmethod
     def _check_values(cls, array):
         if cls.dtypes[-1] == np.object_:
             # TODO: Clean this up
@@ -350,6 +314,90 @@ class GFArray(np.ndarray):
             array = array.astype(cls.dtypes[0])
 
         return array
+
+    @classmethod
+    def target(cls, target, mode, rebuild=False):  # pylint: disable=unused-argument
+        """
+        Retarget the just-in-time compiled numba ufuncs.
+        """
+        return
+
+    @classmethod
+    def display(cls, mode="int", poly_var="x"):
+        """
+        Sets the printing mode for arrays.
+
+        Parameters
+        ----------
+        mode : str, optional
+            The field element display mode, either `"int"` (default) or `"poly"`.
+        poly_var : str, optional
+            The polynomial representation's variable. The default is `"x"`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF_factory(2, 3)
+            a = GF.Random(4); a
+            GF.display("poly"); a
+            GF.display("poly", "r"); a
+
+            # Reset the print mode
+            GF.display(); a
+        """
+        if mode not in ["int", "poly"]:
+            raise ValueError(f"Valid Galois field print modes are ['int', 'poly'], not {mode}")
+        if not isinstance(poly_var, str):
+            raise TypeError(f"Polynomial varialbes must be a str, not {type(poly_var)}")
+        cls._display_mode = mode
+        cls._display_poly_var = poly_var
+
+    @classmethod
+    def _print_int(cls, decimal):
+        return "{:d}".format(int(decimal))
+
+    @classmethod
+    def _print_poly(cls, decimal):
+        poly = integer_to_poly(decimal, cls.characteristic)
+        return poly_to_str(poly, poly_var=cls._display_poly_var)
+
+    def __repr__(self):
+        formatter = {}
+        if self._display_mode == "poly":
+            formatter["int"] = self._print_poly
+            formatter["object"] = self._print_poly
+        elif self.dtype == np.object_:
+            formatter["object"] = self._print_int
+
+        cls = self.__class__
+        class_name = cls.__name__
+        with np.printoptions(formatter=formatter):
+            cls.__name__ = "GF"  # Rename the class so very large fields don't create large indenting
+            string = super().__repr__()
+        cls.__name__ = class_name
+
+        if cls.degree == 1:
+            order = "{}".format(cls.order)
+        else:
+            order = "{}^{}".format(cls.characteristic, cls.degree)
+
+        # Remove the dtype from the repr and add the Galois field order
+        dtype_idx = string.find("dtype")
+        if dtype_idx == -1:
+            string = string[:-1] + f", order={order})"
+        else:
+            string = string[:dtype_idx] + f"order={order})"
+
+        return string
+
+    def __str__(self):
+        return self.__repr__()
+
+    def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
+        if dtype not in self.dtypes:
+            raise TypeError(f"Galois field arrays can only be cast as integer dtypes {self.dtypes}, not {dtype}")
+        return super().astype(dtype, **kwargs)
 
     @classmethod
     def _link_python_calculate_ufuncs(cls):
@@ -422,52 +470,6 @@ class GFArray(np.ndarray):
             y = y[0]
 
         return y
-
-    @classmethod
-    def _print_int(cls, decimal):
-        return "{:d}".format(int(decimal))
-
-    @classmethod
-    def _print_poly(cls, decimal):
-        poly = integer_to_poly(decimal, cls.characteristic)
-        return poly_to_str(poly, poly_var=cls._display_poly_var)
-
-    def __repr__(self):
-        formatter = {}
-        if self._display_mode == "poly":
-            formatter["int"] = self._print_poly
-            formatter["object"] = self._print_poly
-        elif self.dtype == np.object_:
-            formatter["object"] = self._print_int
-
-        cls = self.__class__
-        class_name = cls.__name__
-        with np.printoptions(formatter=formatter):
-            cls.__name__ = "GF"  # Rename the class so very large fields don't create large indenting
-            string = super().__repr__()
-        cls.__name__ = class_name
-
-        if cls.degree == 1:
-            order = "{}".format(cls.order)
-        else:
-            order = "{}^{}".format(cls.characteristic, cls.degree)
-
-        # Remove the dtype from the repr and add the Galois field order
-        dtype_idx = string.find("dtype")
-        if dtype_idx == -1:
-            string = string[:-1] + f", order={order})"
-        else:
-            string = string[:dtype_idx] + f"order={order})"
-
-        return string
-
-    def __str__(self):
-        return self.__repr__()
-
-    def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
-        if dtype not in self.dtypes:
-            raise TypeError(f"Galois field arrays can only be cast as integer dtypes {self.dtypes}, not {dtype}")
-        return super().astype(dtype, **kwargs)
 
     def __array_finalize__(self, obj):
         """

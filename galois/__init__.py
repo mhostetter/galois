@@ -6,8 +6,6 @@ from .version import __version__
 from .algorithm import factors, euclidean_algorithm, extended_euclidean_algorithm, chinese_remainder_theorem, euler_totient, carmichael, primitive_root
 from .gf import GF
 from .gf2 import GF2
-from .gf2m import GF2m
-from .gfp import GFp
 from .modular import modular_exp
 from .poly import Poly
 from .prime import prev_prime, next_prime, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
@@ -40,8 +38,8 @@ def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto"
 
     Returns
     -------
-    galois.GF2, galois.GF2m, galois.GFp, galois.GFpm
-        A new Galois field class that is a sublcass of `galois.GF`.
+    galois.GF
+        A new Galois field array class that is a sublcass of :obj:`galois.GF`.
     """
     # pylint: disable=import-outside-toplevel
     import numpy as np
@@ -87,6 +85,7 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
     # pylint: disable=import-outside-toplevel
     import numpy as np
     from .gf import DTYPES
+    from .gf2m import GF2m
 
     characteristic = 2
     degree = m
@@ -133,6 +132,7 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     # pylint: disable=import-outside-toplevel
     import numpy as np
     from .gf import DTYPES
+    from .gfp import GFp
 
     characteristic = p
     degree = 1
