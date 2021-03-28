@@ -116,19 +116,19 @@ class GF2(GF, GFArray):
 # Galois field arithmetic, explicitly calculated wihtout lookup tables
 ###############################################################################
 
-def _add_calculate(a, b):
+def _add_calculate(a, b):  # pragma: no cover
     return a ^ b
 
 
-def _subtract_calculate(a, b):
+def _subtract_calculate(a, b):  # pragma: no cover
     return a ^ b
 
 
-def _multiply_calculate(a, b):
+def _multiply_calculate(a, b):  # pragma: no cover
     return a & b
 
 
-def _divide_calculate(a, b):
+def _divide_calculate(a, b):  # pragma: no cover
     if b == 0:
         # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
         return 0
@@ -136,16 +136,16 @@ def _divide_calculate(a, b):
         return a
 
 
-def _negative_calculate(a):
+def _negative_calculate(a):  # pragma: no cover
     return a
 
 
-def _multiple_add_calculate(a, multiple):
+def _multiple_add_calculate(a, multiple):  # pragma: no cover
     multiple = multiple % CHARACTERISTIC
     return MULTIPLY_JIT(a, multiple)
 
 
-def _power_calculate(a, power):
+def _power_calculate(a, power):  # pragma: no cover
     # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
     if power == 0:
         return 1
@@ -155,12 +155,13 @@ def _power_calculate(a, power):
         return a
 
 
-def _log_calculate(a):  # pylint: disable=unused-argument
+def _log_calculate(a):  # pragma: no cover
+    # pylint: disable=unused-argument
     # NOTE: The a == 0 condition will be caught outside of the ufunc and raise ArithmeticError
     return 0
 
 
-def _poly_eval_calculate(coeffs, values, results):
+def _poly_eval_calculate(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):

@@ -179,19 +179,19 @@ class GFp(GF, GFArray):
 # Galois field arithmetic, explicitly calculated wihtout lookup tables
 ###############################################################################
 
-def add_calculate(a, b):
+def add_calculate(a, b):  # pragma: no cover
     return (a + b) % ORDER
 
 
-def subtract_calculate(a, b):
+def subtract_calculate(a, b):  # pragma: no cover
     return (a - b) % ORDER
 
 
-def multiply_calculate(a, b):
+def multiply_calculate(a, b):  # pragma: no cover
     return (a * b) % ORDER
 
 
-def divide_calculate(a, b):
+def divide_calculate(a, b):  # pragma: no cover
     if a == 0 or b == 0:
         # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
         return 0
@@ -199,20 +199,20 @@ def divide_calculate(a, b):
     return MULTIPLY_JIT(a, b_inv)
 
 
-def additive_inverse_calculate(a):
+def additive_inverse_calculate(a):  # pragma: no cover
     return (-a) % ORDER
 
 
-def multiplicative_inverse_calculate(a):
+def multiplicative_inverse_calculate(a):  # pragma: no cover
     a_inv = extended_euclidean_algorithm_jit(a, ORDER)[0]
     return a_inv % ORDER
 
 
-def multiple_add_calculate(a, multiple):
+def multiple_add_calculate(a, multiple):  # pragma: no cover
     return (a * multiple) % ORDER
 
 
-def power_calculate(a, power):
+def power_calculate(a, power):  # pragma: no cover
     """
     Square and Multiply Algorithm
 
@@ -247,7 +247,7 @@ def power_calculate(a, power):
     return result
 
 
-def log_calculate(beta):
+def log_calculate(beta):  # pragma: no cover
     """
     TODO: Replace this with more efficient algorithm
 
@@ -265,7 +265,7 @@ def log_calculate(beta):
     return i
 
 
-def poly_eval_calculate(coeffs, values, results):
+def poly_eval_calculate(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
