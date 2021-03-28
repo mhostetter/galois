@@ -124,7 +124,7 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
 
     # Add helper variables for python ufuncs. This prevents the ufuncs from having to repeatedly calculate them.
     cls._alpha_dec = int(cls.alpha)  # pylint: disable=protected-access
-    cls._prim_poly_dec = cls.prim_poly.decimal  # pylint: disable=protected-access
+    cls._prim_poly_dec = cls.prim_poly.integer  # pylint: disable=protected-access
 
     return cls
 
@@ -172,7 +172,7 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
 
     # Add helper variables for python ufuncs. This prevents the ufuncs from having to repeatedly calculate them.
     cls._alpha_dec = int(cls.alpha)  # pylint: disable=protected-access
-    cls._prim_poly_dec = cls.prim_poly.decimal  # pylint: disable=protected-access
+    cls._prim_poly_dec = cls.prim_poly.integer  # pylint: disable=protected-access
 
     return cls
 

@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 
-def decimal_to_poly(decimal, order):
+def integer_to_poly(decimal, order):
     """
     Convert decimal value into polynomial representation.
 
@@ -35,7 +35,7 @@ def decimal_to_poly(decimal, order):
     return c
 
 
-def poly_to_decimal(coeffs, order):
+def poly_to_integer(coeffs, order):
     """
     Converts polynomial to decimal representation.
 
