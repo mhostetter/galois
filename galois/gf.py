@@ -68,6 +68,10 @@ class GF(np.ndarray, metaclass=GFMeta):
     """
     Create an array over :math:`\\mathrm{GF}(p^m)`.
 
+    The :obj:`galois.GF` class is a parent class for all Galois field array classes. Any Galois field :math:`\\mathrm{GF}(p^m)`
+    with prime characteristic :math:`p` and positive integer :math:`m`, can be constructed by calling the class factory
+    `galois.GF_factory(p, m)`.
+
     Warning
     -------
         This is an abstract base class for all Galois field array classes. :obj:`galois.GF` cannot be instantiated
@@ -87,6 +91,10 @@ class GF(np.ndarray, metaclass=GFMeta):
             GF7([3,5,0,2,1])
             GF7.Random((2,5))
 
+    :obj:`galois.GF` is a subclass of :obj:`numpy.ndarray`. The :obj:`galois.GF` constructor has the same syntax as
+    :obj:`numpy.array`. The returned :obj:`galois.GF` object is an array that can be acted upon like any other
+    numpy array.
+
     Parameters
     ----------
     array : array_like
@@ -94,7 +102,16 @@ class GF(np.ndarray, metaclass=GFMeta):
         is unmodified by changes to the Galois field array. Valid input array types are :obj:`numpy.ndarray`,
         :obj:`list`, :obj:`tuple`, or :obj:`int`.
     dtype : numpy.dtype, optional
-        The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
+        The `copy` keyword argument from :obj:`numpy.array`. Setting `dtype` will explicitly set the data type of each
+        element. The default is `None` which represents the smallest valid dtype for this field class, i.e. `cls.dtypes[0]`.
+    copy : bool, optional
+        The `copy` keyword argument from :obj:`numpy.array`. The default is `True` which makes a copy of the input
+        object is it's an array.
+    order : str, optional
+        The `order` keyword argument from :obj:`numpy.array`. Valid values are `"K"` (default), `"A"`, `"C"`, or `"F"`.
+    ndmin : int, optional
+        The `ndmin` keyword argument from :obj:`numpy.array`. The minimum number of dimensions of the output.
+        The default is 0.
 
     Returns
     -------
@@ -103,7 +120,6 @@ class GF(np.ndarray, metaclass=GFMeta):
 
     Examples
     --------
-
     Construct various kinds of Galois fields using :obj:`galois.GF_factory`.
 
     .. ipython:: python
@@ -200,7 +216,7 @@ class GF(np.ndarray, metaclass=GFMeta):
 
     alpha = None
     """
-    int: The primitive element of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive element is a root of the
+    int: The primitive element :math:`\\alpha` of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive element is a root of the
     primitive polynomial :math:`p(x)`, such that :math:`p(\\alpha) = 0`. The primitive element is also a multiplicative
     generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
     """
@@ -213,24 +229,28 @@ class GF(np.ndarray, metaclass=GFMeta):
 
     ufunc_mode = None
     """
-    str: The mode for ufunc compilation, either `"lookup"` or `"calculate"`.
+    str: The mode for ufunc compilation, either `"lookup"`, `"calculate"`, `"object"`.
     """
 
     ufunc_target = None
     """
-    str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, or `"cuda"`.
+    str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, `"cuda"`, or `None`.
     """
 
     _display_mode = "int"
     _display_poly_var = "x"
 
+    # Integer representations of the field's primitive element and primitive polynomial to be used in the
+    # pure python ufunc implementations for `ufunc_mode = "object"`
     _alpha_dec = None
     _prim_poly_dec = None
 
+    # Stored lookup tables which are JIT compiled in `ufunc_mode = "lookup"``
     _EXP = None
     _LOG = None
     _ZECH_LOG = None
 
+    # Set of ufuncs for overridden numpy arithmetic
     _ufunc_add = None
     _ufunc_subtract = None
     _ufunc_multiply = None
@@ -241,18 +261,10 @@ class GF(np.ndarray, metaclass=GFMeta):
     _ufunc_log = None
     _ufunc_poly_eval = None
 
-    def __new__(cls, array, dtype=None):
+    def __new__(cls, array, dtype=None, copy=True, order="K", ndmin=0):
         if cls is GF:
             raise NotImplementedError("GF is an abstract base class that cannot be directly instantiated. Instead, create a GF subclass using `galois.GF_factory()`.")
-        dtype = cls.dtypes[0] if dtype is None else dtype
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
-
-        array = cls._check_values(array)
-        array = array.astype(dtype)
-        array = array.view(cls)
-
-        return array
+        return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
     @classmethod
     def Zeros(cls, shape, dtype=None):
@@ -282,7 +294,8 @@ class GF(np.ndarray, metaclass=GFMeta):
             GF.Zeros((2,5))
         """
         dtype = cls._get_dtype(dtype)
-        return np.zeros(shape, dtype=dtype).view(cls)
+        array = np.zeros(shape, dtype=dtype)
+        return array.view(cls)
 
     @classmethod
     def Ones(cls, shape, dtype=None):
@@ -312,7 +325,8 @@ class GF(np.ndarray, metaclass=GFMeta):
             GF.Ones((2,5))
         """
         dtype = cls._get_dtype(dtype)
-        return np.ones(shape, dtype=dtype).view(cls)
+        array = np.ones(shape, dtype=dtype)
+        return array.view(cls)
 
     @classmethod
     def Range(cls, start, stop, step=1, dtype=None):
@@ -347,7 +361,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         if not stop <= cls.order:
             raise ValueError(f"The stopping value must be less than the field order of {cls.order}, not {stop}")
 
-        if dtype is not np.object_:
+        if dtype != np.object_:
             array = np.arange(start, stop, step=step, dtype=dtype)
         else:
             array = np.array(range(start, stop, step), dtype=dtype)
@@ -391,7 +405,7 @@ class GF(np.ndarray, metaclass=GFMeta):
             high = cls.order
         assert 0 <= low < cls.order and low < high <= cls.order
 
-        if dtype is not np.object_:
+        if dtype != np.object_:
             array = np.random.randint(low, high, shape, dtype=dtype)
         else:
             array = np.empty(shape, dtype=dtype)
@@ -429,42 +443,81 @@ class GF(np.ndarray, metaclass=GFMeta):
     @classmethod
     def _get_dtype(cls, dtype):
         if dtype is None:
-            dtype = cls.dtypes[0]
+            return cls.dtypes[0]
+
+        # Convert "dtype" to a numpy dtype. This does platform specific conversion, if necessary.
+        # For example, np.dtype(int) == np.int64 (on some systems).
+        dtype = np.dtype(dtype)
         if dtype not in cls.dtypes:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+
         return dtype
 
     @classmethod
-    def _check_values(cls, array):
-        if cls.dtypes[-1] == np.object_:
-            # TODO: Clean this up
-            array = np.array(array, dtype=np.object_)
-            if array.size == 0:
-                return array
-            valid_type = np.empty(array.shape, dtype=bool)
-            iterator = np.nditer(valid_type, flags=["multi_index", "refs_ok"])
-            for _ in iterator:
-                valid_type[iterator.multi_index] = isinstance(array[iterator.multi_index], int)
-            if not np.all(valid_type):
-                raise TypeError(f"Galois field array elements must be integers, not {array[valid_type is False]}")
-            array = np.array(array, dtype=cls.dtypes[-1])
-        else:
-            array = np.array(array)
-            if array.size == 0:
-                return array
-            if not np.issubdtype(array.dtype, np.integer):
-                raise TypeError(f"Galois field array elements must be integers, not {array.dtype}")
+    def _array(cls, array_like, dtype=None, copy=True, order="K", ndmin=0):
+        dtype = cls._get_dtype(dtype)
+        cls._check_array_like_object(array_like)
 
+        # After confirming the input is of the correct type and that all the values are in the
+        # field, we can convert to an array with the specified dtype. We need to check the values
+        # before converting to an array because, for example, -1 will cast to 255 with dtype=np.uint8.
+        # 255 is a valid field element in GF(2^8) but -1 isn't. We want to catch that condition, i.e. you
+        # shouldn't be able to silently convert -1 to a field element in GF(2^8).
+        array = np.array(array_like, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
+
+        return array.view(cls)
+
+    @classmethod
+    def _check_array_like_object(cls, array_like):
+        if isinstance(array_like, (int, np.integer)):
+            # Just check that the single int is in range
+            cls._check_array_values(array_like)
+
+        elif isinstance(array_like, (list, tuple)):
+            # Recursively check the items in the iterable to ensure they're of the correct type
+            # and that their values are in range
+            cls._check_iterable_types_and_values(array_like)
+
+        elif isinstance(array_like, np.ndarray):
+            if array_like.dtype == np.object_:
+                cls._check_array_types_dtype_object(array_like)
+            elif not np.issubdtype(array_like.dtype, np.integer):
+                raise TypeError(f"Galois field arrays must have integer dtypes, not {array_like.dtype}")
+            cls._check_array_values(array_like)
+
+        else:
+            raise TypeError(f"Galois field arrays can be created with scalars of type int, not {type(array_like)}")
+
+    @classmethod
+    def _check_iterable_types_and_values(cls, iterable):
+        for item in iterable:
+            if isinstance(item, (list, tuple)):
+                cls._check_iterable_types_and_values(item)
+            elif not isinstance(item, int):
+                raise TypeError(f"When Galois field arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
+            elif not 0 <= item < cls.order:
+                raise ValueError(f"Galois field arrays must have elements in 0 <= x < {cls.order}, not {item}")
+
+    @classmethod
+    def _check_array_types_dtype_object(cls, array):
+        if array.size == 0:
+            return
+        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+        for _ in iterator:
+            a = array[iterator.multi_index]
+            if not isinstance(a, (int, cls)):
+                raise TypeError(f"When Galois field arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
+
+    @classmethod
+    def _check_array_values(cls, array):
+        if not isinstance(array, np.ndarray):
+            # Convert integer to array so next step doesn't fail
+            array = np.array(array)
+
+        # Check the value of the "field elements" and make sure they are valid
         if np.any(array < 0) or np.any(array >= cls.order):
             idxs = np.logical_or(array < 0, array >= cls.order)
-            raise ValueError(f"Galois field arrays must have elements in [0, {cls.order}), not {array[idxs]} at indices {idxs}")
-
-        if array.dtype not in cls.dtypes:
-            # If the assignment array has a smaller integer dtype, we need to upconvert to a large
-            # dtype that can hold all the field elements
-            array = array.astype(cls.dtypes[0])
-
-        return array
+            raise ValueError(f"Galois field arrays must have elements in 0 <= x < {cls.order}, not {array[idxs]}")
 
     @classmethod
     def target(cls, target, mode, rebuild=False):  # pylint: disable=unused-argument
@@ -665,7 +718,7 @@ class GF(np.ndarray, metaclass=GFMeta):
 
     def __setitem__(self, key, value):
         # Verify the values to be written to the Galois field array are in the field
-        value = self._check_values(value)
+        value = self._array(value)
         value = value.view(self.__class__)
         super().__setitem__(key, value)
 

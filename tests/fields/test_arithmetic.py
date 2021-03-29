@@ -6,7 +6,7 @@ import pytest
 
 import galois
 
-from ..helper import ALL_DTYPES, randint
+from ..helper import randint
 
 
 # TODO: Add scalar arithmetic and array/scalar and radd, etc
@@ -99,6 +99,11 @@ class TestAccuracy:
             y = Y  # Don't convert this, it's not a field element
 
             z = x * y
+            assert np.all(z == Z)
+            assert type(z) is GF
+            assert z.dtype == dtype
+
+            z = y * x
             assert np.all(z == Z)
             assert type(z) is GF
             assert z.dtype == dtype

@@ -317,10 +317,14 @@ class Poly:
             p = galois.Poly.Roots(roots, field=GF7); p
             p(roots)
         """
-        field._check_values(roots)  # pylint: disable=protected-access
+        if not isinstance(roots, (list, tuple, np.ndarray)):
+            raise TypeError(f"The argument `roots` must be of type list, tuple, or ndarray. Found type {type(roots)}")
+
+        roots = field(roots).flatten().tolist()
         p = cls.One(field=field)
         for root in roots:
             p = p * cls([1, -int(root)], field=field)
+
         return p
 
     def __repr__(self):
