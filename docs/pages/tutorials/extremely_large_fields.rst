@@ -44,3 +44,6 @@ Large GF(2^m) fields
    b
    a + b
    a * b
+
+   # Reset the display mode
+   GF.display()

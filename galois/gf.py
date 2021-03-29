@@ -44,6 +44,26 @@ class GFMeta(type):
         return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.degree, poly_to_str(cls.prim_poly.coeffs_asc), cls.prim_poly.integer)
 
 
+class DisplayContext:
+    """
+    Simple context manager for the :obj:`galois.GF.display` method.
+    """
+
+    def __init__(self, cls, mode, poly_var):
+        self.cls = cls
+        self.mode = mode
+        self.poly_var = poly_var
+
+    def __enter__(self):
+        # Don't need to do anything, we already set the new mode and poly_var in the display() method
+        pass
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        # Reset mode and poly_var upon exiting the context
+        self.cls._display_mode = self.mode
+        self.cls._display_poly_var = self.poly_var
+
+
 class GF(np.ndarray, metaclass=GFMeta):
     """
     Create an array over :math:`\\mathrm{GF}(p^m)`.
@@ -467,6 +487,8 @@ class GF(np.ndarray, metaclass=GFMeta):
 
         Examples
         --------
+        Change the display mode by calling the :obj:`galois.GF.display` method.
+
         .. ipython:: python
 
             GF = galois.GF_factory(2, 3)
@@ -476,13 +498,33 @@ class GF(np.ndarray, metaclass=GFMeta):
 
             # Reset the print mode
             GF.display(); a
+
+        The :obj:`galois.GF.display` method can also be used as a context manager.
+
+        .. ipython:: python
+
+            # The original display mode
+            print(a)
+
+            # The new display context
+            with GF.display("poly"):
+                print(a)
+
+            # Returns to the original display mode
+            print(a)
         """
         if mode not in ["int", "poly"]:
             raise ValueError(f"Valid Galois field print modes are ['int', 'poly'], not {mode}")
         if not isinstance(poly_var, str):
             raise TypeError(f"Polynomial varialbes must be a str, not {type(poly_var)}")
+
+        context = DisplayContext(cls, cls._display_mode, cls._display_poly_var)
+
+        # Set the new state
         cls._display_mode = mode
         cls._display_poly_var = poly_var
+
+        return context
 
     @classmethod
     def _print_int(cls, decimal):

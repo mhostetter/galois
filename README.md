@@ -216,20 +216,16 @@ GF([[231, 157, 137,  89, 159,  82, 194, 164,  70, 175],
 Display field elements as integers or polynomials.
 
 ```python
->>> x
+>>> print(x)
 GF([118,  49, 122, 166, 136, 118,  53,  19, 233, 119], order=2^8)
 
-# Set the display mode to represent GF(p^m) field elements as polynomials over GF(p)[x].
->>> GF256.display("poly")
-
->>> x
+# Temporarily set the display mode to represent GF(p^m) field elements as polynomials over GF(p)[x].
+>>> with GF256.display("poly"):
+...     print(x)
 GF([x^6 + x^5 + x^4 + x^2 + x, x^5 + x^4 + 1, x^6 + x^5 + x^4 + x^3 + x,
     x^7 + x^5 + x^2 + x, x^7 + x^3, x^6 + x^5 + x^4 + x^2 + x,
     x^5 + x^4 + x^2 + 1, x^4 + x + 1, x^7 + x^6 + x^5 + x^3 + 1,
     x^6 + x^5 + x^4 + x^2 + x + 1], order=2^8)
-
-# Reset the display settings to the default of "int"
-GF256.display()
 ```
 
 ### Galois field polynomial construction
