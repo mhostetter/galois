@@ -144,3 +144,17 @@ as degree-3 polynomials in :math:`\mathrm{GF}(2)[x]`, i.e. :math:`\{0, 1, x, x+1
 
    # Reset the display mode to the default
    GF.display(); a
+
+The :obj:`galois.GF.display` method can be called as a context manager.
+
+.. ipython:: python
+
+   # The original display mode
+   print(a)
+
+   # The new display context
+   with GF.display("poly"):
+      print(a)
+
+   # Returns to the original display mode
+   print(a)

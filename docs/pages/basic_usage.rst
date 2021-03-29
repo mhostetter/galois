@@ -119,14 +119,11 @@ Display field elements as integers or polynomials.
 
 .. ipython:: python
 
-   x
+   print(x)
 
-   # Set the display mode to represent GF(p^m) field elements as polynomials over GF(p)[x].
-   GF256.display("poly")
-   x
-
-   # Reset the display settings to the default of "int"
-   GF256.display()
+   # Temporarily set the display mode to represent GF(p^m) field elements as polynomials over GF(p)[x].
+   with GF256.display("poly"):
+      print(x)
 
 Galois field polynomial construction
 ------------------------------------
