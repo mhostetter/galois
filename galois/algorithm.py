@@ -537,7 +537,7 @@ def trace(n: int) -> List[int]:
     trace(360) -> [2, 3, 5] #  all prime divisors of 360
     """
     assert n > 0
-    res, lo, step = [], 0, 10000  # TODO kick out magic number
+    res, lo, step = [], 0, 100  # TODO kick out magic number
     for hi in range(step, len(PRIMES), step):
         for p in islice(PRIMES, lo, hi):
             if not n % p:
