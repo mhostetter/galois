@@ -29,11 +29,18 @@ class TestField:
         assert p.field is field
         assert type(p.coeffs) is field
 
-    # def test_inconsistent_field_argument(self, field):
-    #     if field is not galois.GF2:
-    #         c = field([1, 0, 1, 1])
-    #         with pytest.raises(TypeError):
-    #             p = galois.Poly(c, field=galois.GF2)
+    def test_overridding_field_argument(self, field):
+        if field is not galois.GF2:
+            c = field([1, 0, 1, 1])
+            p = galois.Poly(c, field=galois.GF2)
+            assert isinstance(p, galois.Poly)
+            assert p.field is galois.GF2
+            assert type(p.coeffs) is galois.GF2
+
+    def test_invalid_field_argument(self, field):
+        c = field([1, 0, 1, 1])
+        with pytest.raises(TypeError):
+            p = galois.Poly(c, field=2)
 
     # def test_coeffs_asc_order(self, field):
     #     c1 = field.Random(6)
@@ -51,6 +58,11 @@ class TestField:
 
 
 class TestList:
+    def test_list_without_field(self, field):
+        c = [random.randint(0, field.order - 1) for _ in range(6)]
+        with pytest.raises(TypeError):
+            p = galois.Poly(c, field=field.order)  # Passing in the field's order, not the field
+
     def test_non_zero_leading_coeff(self, field):
         c = [random.randint(0, field.order - 1) for _ in range(6)]
         c[0] = random.randint(1, field.order - 1)  # Ensure leading coefficient is non-zero
@@ -107,6 +119,29 @@ class TestConstructors:
         assert type(p) is galois.Poly
         assert p.field is field
 
+    def test_integer(self, field):
+        d = field.order + 1  # x + 1
+        p = galois.Poly.Integer(d, field=field)
+        coeffs = field([1, 1])
+        assert np.array_equal(p.coeffs, coeffs)
+        assert type(p) is galois.Poly
+        assert p.field is field
+        assert p.integer == d
+
+
+    def test_integer_non_integer(self, field):
+        d = field.order + 1  # x + 1
+        d = float(d)
+        with pytest.raises(TypeError):
+            p = galois.Poly.Integer(d, field=field)
+
+    def test_degrees(self, field):
+        coeffs = [1, 0, 1, 0, 0, 1]
+        p = galois.Poly.Degrees([5,3,0], field=field)
+        assert np.array_equal(p.coeffs, coeffs)
+        assert type(p) is galois.Poly
+        assert p.field is field
+
     def test_roots_field(self, field):
         roots = field.Random(4)
         p = galois.Poly.Roots(roots, field=field)
@@ -124,3 +159,9 @@ class TestConstructors:
 
         z = p(roots)
         assert np.all(z == 0)
+
+    def test_roots_invalid_type(self, field):
+        with pytest.raises(TypeError):
+            p = galois.Poly.Roots(1.0, field=field)
+        with pytest.raises(TypeError):
+            p = galois.Poly.Roots([0, 1.0], field=field)

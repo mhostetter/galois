@@ -482,11 +482,11 @@ class GF(np.ndarray, metaclass=GFMeta):
             if array_like.dtype == np.object_:
                 cls._check_array_types_dtype_object(array_like)
             elif not np.issubdtype(array_like.dtype, np.integer):
-                raise TypeError(f"Galois field arrays must have integer dtypes, not {array_like.dtype}")
+                raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays must have integer dtypes, not {array_like.dtype}")
             cls._check_array_values(array_like)
 
         else:
-            raise TypeError(f"Galois field arrays can be created with scalars of type int, not {type(array_like)}")
+            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays can be created with scalars of type int, not {type(array_like)}")
 
     @classmethod
     def _check_iterable_types_and_values(cls, iterable):
@@ -494,9 +494,9 @@ class GF(np.ndarray, metaclass=GFMeta):
             if isinstance(item, (list, tuple)):
                 cls._check_iterable_types_and_values(item)
             elif not isinstance(item, int):
-                raise TypeError(f"When Galois field arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
+                raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
             elif not 0 <= item < cls.order:
-                raise ValueError(f"Galois field arrays must have elements in 0 <= x < {cls.order}, not {item}")
+                raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {item}")
 
     @classmethod
     def _check_array_types_dtype_object(cls, array):
@@ -506,7 +506,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         for _ in iterator:
             a = array[iterator.multi_index]
             if not isinstance(a, (int, cls)):
-                raise TypeError(f"When Galois field arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
+                raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
 
     @classmethod
     def _check_array_values(cls, array):
@@ -517,7 +517,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         # Check the value of the "field elements" and make sure they are valid
         if np.any(array < 0) or np.any(array >= cls.order):
             idxs = np.logical_or(array < 0, array >= cls.order)
-            raise ValueError(f"Galois field arrays must have elements in 0 <= x < {cls.order}, not {array[idxs]}")
+            raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {array[idxs]}")
 
     @classmethod
     def target(cls, target, mode, rebuild=False):  # pylint: disable=unused-argument
@@ -622,7 +622,7 @@ class GF(np.ndarray, metaclass=GFMeta):
 
     def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
         if dtype not in self.dtypes:
-            raise TypeError(f"Galois field arrays can only be cast as integer dtypes {self.dtypes}, not {dtype}")
+            raise TypeError(f"GF({self.characteristic}^{self.degree}) arrays can only be cast as integer dtypes in {self.dtypes}, not {dtype}")
         return super().astype(dtype, **kwargs)
 
     @classmethod
@@ -703,10 +703,12 @@ class GF(np.ndarray, metaclass=GFMeta):
         that view casting to a Galois field array has the appropriate dtype and that the values are in the field.
         """
         if obj is not None and not isinstance(obj, GF):
+            # Only invoked on view casting
             if obj.dtype not in self.dtypes:
-                raise TypeError(f"Galois field arrays can only have integer dtypes {self.dtypes}, not {obj.dtype}")
+                raise TypeError(f"GF({self.characteristic}^{self.degree}) can only have integer dtypes {self.dtypes}, not {obj.dtype}")
             if np.any(obj < 0) or np.any(obj >= self.order):
-                raise ValueError(f"GF({self.order}) arrays must have values in [0, {self.order})")
+                idxs = np.logical_or(obj < 0, obj >= self.order)
+                raise ValueError(f"GF({self.characteristic}^{self.degree}) arrays must have values in 0 <= x < {self.order}, not {obj[idxs]}")
 
     def __getitem__(self, key):
         item = super().__getitem__(key)
