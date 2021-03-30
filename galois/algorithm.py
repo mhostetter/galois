@@ -476,3 +476,243 @@ def primitive_root(n, start=1):
 #         assert len(roots) == euler_totient(phi), "The number of primitive roots, if there are any, is phi(phi(n))"
 
 #     return roots
+
+
+
+
+
+
+
+##############################################################################
+#                                                                            #
+#                                                                            #
+#                                 New era                                    #
+#                                                                            #
+#                                                                            #
+##############################################################################
+
+from itertools import islice
+from bisect import bisect_left, bisect_right
+from math import gcd, sqrt
+from functools import reduce
+from typing import List, Tuple, Iterable
+
+
+def primes(limit: int) -> List[int]:
+    """ TODO docstring  """
+    chanks = (limit + 29) // 30
+    lim, sieve = chanks * 15 - 1, bytearray(b'\0\0\1\0\1\1\0\1\1\0\1\0\0\1\1') * chanks
+    for b, p in zip(sieve, range(3, int(sqrt(chanks * 30 + 1)) + 1, 2)):
+        if b:
+            pp = (p * p - 3) // 2
+            sieve[pp::p] = b'\0' * ((lim - pp) // p + 1)
+    return [2, 3, 5, *(p for b, p in zip(sieve, range(3, limit, 2)) if b)]
+
+
+PRIMES = primes(10_000_000)  # TODO kick out magic number
+TOP_PRIME = PRIMES[-1]
+TOP_PRIME_SQUARE = TOP_PRIME ** 2
+
+
+def prev_prime(n: int) -> int:
+    """
+    Returns the nearest prime `p <= n`.
+    """
+    assert 2 < n <= TOP_PRIME
+    i = bisect_left(PRIMES, n)
+    return PRIMES[i - (n < PRIMES[i])]
+
+
+def next_prime(n: int) -> int:
+    """
+    Returns the nearest prime `p > n`.
+    """
+    assert 1 < n < TOP_PRIME
+    return PRIMES[bisect_right(PRIMES, n)]
+
+
+def trace(n: int) -> List[int]:
+    """
+    sample:
+    trace(360) -> [2, 3, 5] #  all prime divisors of 360
+    """
+    assert n > 0
+    res, lo, step = [], 0, 10000  # TODO kick out magic number
+    for hi in range(step, len(PRIMES), step):
+        for p in islice(PRIMES, lo, hi):
+            if not n % p:
+                res.append(p)
+                while not n % p:
+                    n //= p
+        if n < p * p:  # pylint: disable=W0631
+            if n != 1:
+                res.append(n)
+            return res
+        lo = hi
+    assert n < TOP_PRIME_SQUARE  # TODO more information when out of range
+
+
+def factors(n: int) -> List[int]:
+    """
+    sample:
+    factors(12) -> [1, 2, 3, 4, 6, 12] #  they all divide 12 without a remainder
+    """
+    res = [1]
+    for p in trace(n):
+        shift = -len(res)
+        while not n % p:
+            n //= p
+            for _ in range(shift, 0):
+                res.append(res[shift] * p)
+    return sorted(res)
+
+
+def prime_factors(n: int) -> List[Tuple[int, int]]:
+    """
+    sample:       360   ==  2^3  * 3^2  * 5
+    prime_factors(360) -> [(2,3), (3,2), (5,1)]
+    """
+    res = []
+    for prime in trace(n):
+        power = 0
+        while not n % prime:
+            n //= prime
+            power += 1
+        res.append((prime, power))
+    return res
+
+
+def is_prime(n: int) -> bool:
+    """
+    Determines if positive integer `n` is prime.
+    """
+    assert isinstance(n, int) and 1 < n <= TOP_PRIME_SQUARE
+    if n <= TOP_PRIME:
+        return PRIMES[bisect_left(PRIMES, n)] == n
+    return trace(n)[-1] == n
+
+
+def extended_gcd(a: int, b: int) -> Tuple[int, int, int]:
+    """
+    Implements the Extended Euclidean Algorithm to find the integer multiplicands of `a` and `b`,
+    samples:
+    extended_gcd(5, 7)) -> (3, -2, 1) #  means  5 * 3 + 7 * -2 == 1 == gcd(5, 7)
+    extended_gcd(6, 9)) -> (-1, 1, 3) #  means  6 * -1 + 9 * 1 == 3 == gcd(6, 9)
+    References:
+    * T. Moon, "Error Correction Coding", Section 5.2.2: The Euclidean Algorithm and Euclidean Domains, p. 181
+    * https://en.wikipedia.org/wiki/Euclidean_algorithm#Extended_Euclidean_algorithm
+    """
+    x1, y1, x2, y2 = 1, 0, 0, 1
+    while b:
+        q = a // b
+        a, b, x1, y1, x2, y2 = b, a % b, x2, y2, x1 - x2 * q, y1 - y2 * q
+    return x1, y1, a
+
+
+def inverse(n: int, mod: int) -> int:
+    """
+    Modular inverse WITHOUT check for coprime
+    simplified extended gcd algo
+    samples:
+    inverse(5, 7) -> 3 #  means 5 * 3 % 7 == 1 == gcd(5, 7)
+    inverse(6, 9) -> 8 #  MEANS 6 * 8 % 9 == 3 == gcd(6, 9)
+    """
+    a, b, m = 1, 0, mod
+    while m:
+        q = n // m
+        n, m, a, b = m, n % m, b, a - q * b
+    return a % mod
+
+
+def chinese_remainder(mod: Iterable[int], rem: Iterable[int]) -> int:
+    """
+    Implements the Chinese Remainder Theorem (CRT). The CRT is a method for finding the simultaneous
+    solution to a system of congruences.
+
+    .. math::
+        x &\\equiv a_1\\ (\\textrm{mod}\\ m_1)
+
+        x &\\equiv a_2\\ (\\textrm{mod}\\ m_2)
+
+        x &\\equiv \\ldots
+
+        x &\\equiv a_n\\ (\\textrm{mod}\\ m_n)
+
+    Parameters
+    ----------
+    mod : The integer modulii :math:`m_i`.
+    rem : The integer remainders :math:`a_i`.
+
+    Returns
+    -------
+        The simultaneous solution :math:`x` to the system of congruences, if exists
+    """
+    M = reduce(int.__mul__, mod)
+    res = sum(M // m * inverse(M // m, m) * r for m, r in zip(mod, rem)) % M
+    assert not any((res - r) % m for m, r in zip(mod, rem)), 'mod must be co-primes'
+    return res
+
+
+def euler_totient(n: int) -> int:
+    """
+    Implements the Euler Totient function to count the positive integers (totatives)
+    in `0 < k < n` that are relatively prime to `n`, i.e. `gcd(n, k) = 1`.
+    sample:
+    euler_totient(8) -> 4  # means 8 has 4 coprimes: [1, 3, 5, 7]
+    """
+    assert n > 0
+    for p in trace(n):
+        n -= n // p
+    return n
+
+
+def carmichael(n: int) -> int:
+    """
+    Implements the Carmichael function to find the smallest positive integer
+    `m` such that `a^m = 1 (mod n)` for `0 < a < n and gcd(a, m) == 1`
+    sample:
+    n = 12
+    carmichael (n) -> 2 # means 12 has coprimes less than it: [1, 5, 7, 11]
+    # they all satisfy the condition a ** m % n == 1 when m == 2 is the smallest
+    """
+    assert n > 0
+    res = 1
+    for prime, power in prime_factors(n if n & 7 else n // 2):
+        res //= gcd(res, prime - 1)
+        res *= prime ** (power - 1) * (prime - 1)
+    return res
+
+
+def primitive_roots(n: int) -> Iterable[int]:
+    """
+    idea taken from
+    https://en.wikipedia.org/wiki/Primitive_root_modulo_n#Finding_primitive_roots
+    """
+    if n < 5:
+        assert n > 0
+        return (n - 1,)
+    phi = euler_totient(n)
+    factors = [phi // f for f in trace(phi)]
+    return (
+        (g for g in range(2, n) if all(pow(g, f, n) != 1 for f in factors))
+        if n == phi + 1 else  # code below for non-prime n
+        (g for g in (range(2, n) if n & 1 else range(3, n, 2))
+         if pow(g, phi, n) == 1 and all(pow(g, f, n) != 1 for f in factors)))
+
+
+
+def primitive_root(n: int) -> int:
+    """
+    Returns the smallest primitive root of n if it exists, zero otherwise
+    Zero is a dummy value and checking for zero is up to the caller.
+    sample:
+    >>> r = primitive_root(8) #  eight has no primitive roots
+    >>> if r:  # r is non-zero
+    >>>     do_something()
+    >>> else:
+    >>>     do_something_other()
+    """
+    try:
+        return next(primitive_roots(n))
+    except StopIteration:
+        return 0
