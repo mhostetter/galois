@@ -502,7 +502,7 @@ def primes(limit: int) -> List[int]:
     """
     This is a slightly improved implementation of the good old Sieve of Eratosthenes.
     1. base type `bytearray` consumes 24 times less memory than` list` normal,
-       and faster than `array` for slice operations фтв sequential access;
+       and faster than `array` for slice operations and sequential access;
     2. we only work with odd numbers, encoding them as 2 * i + 1 -> i
        (example: 7 -> 3), this saves another half mem;
     3. Use slices instead of regular loops also make code faster;
