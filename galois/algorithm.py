@@ -9,7 +9,7 @@ from .prime import prime_factors, is_prime
 
 
 @numba.jit(nopython=True)
-def _numba_factors(x):
+def _numba_factors(x):  # pragma: no cover
     f = []  # Positive factors
     for i in range(1, int(np.ceil(np.sqrt(x))) + 1):
         if x % i == 0:
@@ -135,7 +135,7 @@ def extended_euclidean_algorithm(a, b):
 
 
 @numba.jit("int64[:](int64, int64)", nopython=True)
-def extended_euclidean_algorithm_jit(a, b):
+def extended_euclidean_algorithm_jit(a, b):  # pragma: no cover
     r = [a, b]
     s = [1, 0]
     t = [0, 1]
