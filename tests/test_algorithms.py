@@ -57,6 +57,8 @@ def test_carmichael():
 
 
 def test_modular_exp():
+    galois.modular_exp(2, 2, 1) == 0
+
     galois.modular_exp(2, 0, 71) == 1
     galois.modular_exp(1, 4, 71) == 1
     galois.modular_exp(2, 4, 71) == 16
@@ -82,6 +84,30 @@ def test_primitive_root():
     roots = [1,2,2,3,2,2,3,2,5,2,3,2,6,3,5,2,2,2,2,7,5,3,2,3,5,2,5,2,6,3,3,2,3,2,2,6,5,2,5,2,2,2,19,5,2,3,2,3,2,6,3,7,7,6,3,5,2,6,5,3,3,2,5,17,10,2,3,10,2,2,3,7,6,2,2,5,2,5,3,21,2,2,7,5,15,2,3,13,2,3,2,13,3,2,7,5,2,3,2,2,2,2,2,3]
     for n, root in zip(ns, roots):
         assert galois.primitive_root(primes[n-1]) == root
+
+
+def test_primitive_root_non_integer():
+    with pytest.raises(TypeError):
+        galois.primitive_root(13.0)
+
+
+def test_primitive_root_non_positive_integer():
+    with pytest.raises(ValueError):
+        galois.primitive_root(0)
+    with pytest.raises(ValueError):
+        galois.primitive_root(-2)
+
+
+def test_primitive_root_non_prime():
+    with pytest.raises(ValueError):
+        galois.primitive_root(15)
+
+
+def test_primitive_root_invalid_start():
+    with pytest.raises(ValueError):
+        galois.primitive_root(7, start=0)
+    with pytest.raises(ValueError):
+        galois.primitive_root(7, start=7)
 
 
 # def test_sum_primitive_roots():
