@@ -9,12 +9,49 @@ import pytest
 import galois
 
 
+def test_string():
+    poly = galois.Poly([1,0,1,1])
+    assert repr(poly) == str(poly) == "Poly(x^3 + x + 1, GF(2))"
+
+    GF = galois.GF_factory(7, 1)
+    poly = galois.Poly([5,0,3,1], field=GF)
+    assert repr(poly) == str(poly) == "Poly(5x^3 + 3x + 1, GF(7))"
+
+    GF = galois.GF_factory(2, 3)
+    poly = galois.Poly([2,0,3,1], field=GF)
+    assert repr(poly) == str(poly) == "Poly(2x^3 + 3x + 1, GF(2^3))"
+
+
 def test_integer():
     poly = galois.Poly([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,1])
     assert poly.integer == 4295000729
 
     poly = galois.Poly.Degrees([32,15,9,7,4,3,0])
     assert poly.integer == 4295000729
+
+
+def test_order_default(field):
+    c = [1, 0, 1, 1]
+    p = galois.Poly(c)
+    assert p.order == "desc"
+    assert np.array_equal(p.coeffs, c)
+    assert np.array_equal(p.coeffs_desc, c)
+    assert np.array_equal(p.coeffs_asc, c[::-1])
+
+
+def test_order_asc(field):
+    c = [1, 0, 1, 1]
+    p = galois.Poly(c, order="asc")
+    assert p.order == "asc"
+    assert np.array_equal(p.coeffs, c)
+    assert np.array_equal(p.coeffs_desc, c[::-1])
+    assert np.array_equal(p.coeffs_asc, c)
+
+
+def test_order_invalid(field):
+    c = [1, 0, 1, 1]
+    with pytest.raises(ValueError):
+        p = galois.Poly(c, order="left-to-right")
 
 
 def test_update_coeffs_field(field):

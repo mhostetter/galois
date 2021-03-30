@@ -80,13 +80,11 @@ class Poly:
             # operator to any negative integers. For instance, `coeffs=[1, -1]` represents
             # `x - 1` in GF2. However, the `-1` element does not exist in GF2, but the operation
             # `-1` (the additive inverse of the `1` element) does exist.
-            c = np.array(coeffs, dtype=field.dtypes[-1])
-            c = np.atleast_1d(c)
+            c = np.array(coeffs, dtype=field.dtypes[-1], copy=True, ndmin=1)
             assert c.ndim == 1, "Polynomials must only have one dimension"
             assert np.all(np.abs(c) < field.order)
             neg_idxs = np.where(c < 0)
-            c = np.abs(c)
-            c = field(c)
+            c = field(np.abs(c))
             c[neg_idxs] *= -1
             self.coeffs = c
 
@@ -317,7 +315,7 @@ class Poly:
             p = galois.Poly.Roots(roots, field=GF7); p
             p(roots)
         """
-        if not isinstance(roots, (list, tuple, np.ndarray)):
+        if not isinstance(roots, (int, list, tuple, np.ndarray)):
             raise TypeError(f"The argument `roots` must be of type list, tuple, or ndarray. Found type {type(roots)}")
 
         roots = field(roots).flatten().tolist()
@@ -357,8 +355,9 @@ class Poly:
         return a, b
 
     # TODO: Speed this up with numba
+    # TODO: Move this to __divmod__
     @staticmethod
-    def divmod(dividend, divisor):
+    def _divmod(dividend, divisor):
         # q(x)*b(x) + r(x) = a(x)
         a, b = Poly._verify_inputs(dividend, divisor)
         field = dividend.field
@@ -420,13 +419,13 @@ class Poly:
         return Poly(-self.coeffs, field=self.field)
 
     def __truediv__(self, other):
-        return Poly.divmod(self, other)[0]
+        return Poly._divmod(self, other)[0]
 
     def __floordiv__(self, other):
-        return Poly.divmod(self, other)[0]
+        return Poly._divmod(self, other)[0]
 
     def __mod__(self, other):
-        return Poly.divmod(self, other)[1]
+        return Poly._divmod(self, other)[1]
 
     def __pow__(self, other):
         assert isinstance(other, (int, np.integer)) and other >= 0
