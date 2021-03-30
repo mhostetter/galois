@@ -10,43 +10,53 @@
 A Python 3 package for Galois field arithmetic.
 
 - [Motivation](#motivation)
+- [Documentation](#documentation)
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
-  - [Galois field array construction](#galois-field-array-construction)
-  - [Galois field array arithmetic](#galois-field-array-arithmetic)
-  - [Galois field polynomial construction](#galois-field-polynomial-construction)
-  - [Galois field polynomial arithmetic](#galois-field-polynomial-arithmetic)
+  - [Array construction](#array-construction)
+  - [Field arithmetic](#field-arithmetic)
+  - [Numpy functions](#numpy-functions)
+  - [Numpy ufunc methods](#numpy-ufunc-methods)
+  - [Field element display modes](#field-element-display-modes)
+  - [Polynomial construction](#polynomial-construction)
+  - [Polynomial arithmetic](#polynomial-arithmetic)
 - [Performance](#performance)
   - [GF(31) addition speed test](#gf31-addition-speed-test)
+- [Acknowledgements](#acknowledgements)
 
 ## Motivation
 
 The project goals are for `galois` to be:
 
-- _**General:**_ Support all Galois field types: `GF(2)`, `GF(2^m)`, `GF(p)`, `GF(p^m)`
-- _**Accurate:**_ Guarantee arithmetic accuracy -- tests against industry-standard mathematics software
-- _**Compatible:**_ Seamlessley integrate with `numpy` arrays -- arithmetic operators (`x + y`), broadcasting, view casting, type casting, ufuncs, methods
-- _**Performant:**_ Run as fast as `numpy` or C -- avoids the speed sinkhole of Python `for` loops
-- _**Reconfigurable:**_ Dynamically optimize performance based on data size and processor (single-core CPU, multi-core CPU, or GPU)
+- _**General:**_ Support all Galois fields `GF(p^m)`, even arbitrarily large fields!
+- _**Accurate:**_ Guarantee arithmetic accuracy -- tests against industry-standard mathematics software.
+- _**Compatible:**_ Seamlessly integrate with `numpy` arrays -- arithmetic operators (`x + y`), broadcasting, view casting, type casting, numpy functions, ufuncs, ufunc methods.
+- _**Performant:**_ Run as fast as `numpy` or C -- avoids the speed sinkhole of Python `for` loops.
+- _**Reconfigurable:**_ Dynamically optimize JIT-compiled code for performance based on data size and processor (single-core CPU, multi-core CPU, or GPU).
+
+<!-- ## Features
+
+- asdf
+- asdfasdf -->
+
+## Documentation
+
+Our documentation can be found at https://galois.readthedocs.io/en/stable/. The documentation includes [installation instructions](https://galois.readthedocs.io/en/stable/pages/installation.html), [development guide](https://galois.readthedocs.io/en/stable/pages/development.html), [basic usage](https://galois.readthedocs.io/en/stable/pages/basic_usage.html), [tutorials](https://galois.readthedocs.io/en/stable/pages/tutorials.html), and an [API reference](https://galois.readthedocs.io/en/stable/pages/build/_autosummary/galois.html#module-galois).
 
 ## Installation
 
 The latest version of `galois` can be installed from [PyPI](https://pypi.org/project/galois/) via `pip`.
 
 ```bash
-pip3 install galois
+python3 -m pip install galois
 ```
 
-For development, the lastest code on `master` can be checked out and installed locally in "editable" mode.
-
-```bash
-git clone https://github.com/mhostetter/galois.git
-pip3 install -e galois
-```
+Fun fact: read [here](https://snarky.ca/why-you-should-use-python-m-pip/) from python core dev [Brett Cannon](https://twitter.com/brettsky) about why it's better
+to install with `python3 -m pip` rather than `pip3`.
 
 ## Basic Usage
 
-### Galois field array construction
+### Array construction
 
 Construct Galois field array classes using the `GF_factory()` class factory function.
 
@@ -64,7 +74,7 @@ Construct Galois field array classes using the `GF_factory()` class factory func
 GF(3, order=31)
 
 >>> GF31.prim_poly
-Poly(x + 28, GF31)
+Poly(x + 28, GF(31))
 ```
 
 Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even arbitrarily-large fields!
@@ -74,12 +84,12 @@ Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even
 >>> GF256 = galois.GF_factory(2, 8); print(GF256)
 <Galois Field: GF(2^8), prim_poly = x^8 + x^4 + x^3 + x^2 + 1 (285 decimal)>
 
-# Large prime field
 >>> prime = 36893488147419103183
 
 >>> galois.is_prime(prime)
 True
 
+# Large prime field
 >>> GFp = galois.GF_factory(prime, 1); print(GFp)
 <Galois Field: GF(36893488147419103183^1), prim_poly = x + 36893488147419103180 (73786976294838206363 decimal)>
 
@@ -88,7 +98,7 @@ True
 <Galois Field: GF(2^100), prim_poly = x^100 + x^57 + x^56 + x^55 + x^52 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^41 + x^37 + x^36 + x^35 + x^34 + x^31 + x^30 + x^27 + x^25 + x^24 + x^22 + x^20 + x^19 + x^16 + x^15 + x^11 + x^9 + x^8 + x^6 + x^5 + x^3 + 1 (1267650600228486663289456659305 decimal)>
 ```
 
-Create arrays from existing `numpy` arrays.
+Create arrays from existing `numpy` arrays, either explicitly or by view casting.
 
 ```python
 # Represents an existing numpy array
@@ -104,101 +114,68 @@ GF([ 71, 240, 210,  27, 124, 254,  13, 170, 221, 166], order=2^8)
 GF([ 71, 240, 210,  27, 124, 254,  13, 170, 221, 166], order=2^8)
 ```
 
-Or, create Galois field arrays using alternate constructors.
+### Field arithmetic
 
-```python
->>> x = GF256.Random(10); x
-GF([118,  49, 122, 166, 136, 118,  53,  19, 233, 119], order=2^8)
+Here, `GF` is any Galois field array class created from `galois.GF_factory`, `x` and `y` are `GF` arrays, and `z` is an integer `numpy.ndarray`. All arithmetic operations follow normal numpy [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) rules.
 
-# Construct a random array without zeros to prevent ZeroDivisonError
->>> y = GF256.Random(10, low=1); y
-GF([239,  63,  81, 225, 150,  12,  56,  24,  98, 245], order=2^8)
-```
+- Addition: `x + y == np.add(x, y)`
+- Subtraction: `x - y == np.subtract(x, y)`
+- Multiplication: `x * y == np.multiply(x, y)`
+- Division: `x / y == x // y == np.divide(x, y)`
+- Scalar multiplication: `x * z == z * x == x + x + x`, for `z = 3`
+- Reciprocal: `1 / x == np.reciprocal(x)`
+- Exponentiation: `x ** z == np.power(x, z)`
+- Logarithm base `alpha`: `np.log(x)`, where `alpha == GF.alpha`
+- **COMING SOON**: Logarithm base `b`: `GF.log(x, b)`, where `b` is any field element
+- **COMING SOON**: Matrix multiplication: `x @ y = np.matmul(x, y)`
 
-### Galois field array arithmetic
+**Note**
 
-Galois field arrays support traditional `numpy` array operations
+Generally, we don't allow Galois field array operations with scalars, i.e. `x + 5` or `x + z`, even if `5` is a valid element in `x`'s Galois field, or `z`'s integers are elements too. We prefer *explicit over implicit*. Instead, the correct notation would be `x + GF(5)` and `y = GF(y); x + y`.
 
-```python
->>> x + y
-GF([153,  14,  43,  71,  30, 122,  13,  11, 139, 130], order=2^8)
+There are a couple exceptions: scalar multiplication and exponentiation.
 
->>> -x
-GF([118,  49, 122, 166, 136, 118,  53,  19, 233, 119], order=2^8)
+For multiplication, `x * y` is interpreted as field multiplication. Whereas, `x * 3`, which is valid syntax, is interpreted as `x + x + x`. In prime fields, `x * GF(3) == x * 3`. In extension fields, `x * GF(3) != x * 3` so **be careful!**
 
->>> x * y
-GF([231,  91,  98, 212,  24,  82,  44, 181, 123,  90], order=2^8)
+For exponentiation, `x ** 3` or `x ** -2` are valid. The exponent can be any integer, not just a field element.
 
->>> x / y
-GF([209,  38, 117, 199, 171, 113, 182,  88, 161, 194], order=2^8)
+### Numpy functions
 
-# Multiple addition of a Galois field array with any integer
->>> x * -3  # NOTE: -3 is outside the field
-GF([118,  49, 122, 166, 136, 118,  53,  19, 233, 119], order=2^8)
+The `galois` package also supports linear algebra routines. They can be accessed using the
+natural numpy syntax.
 
-# Exponentiate a Galois field array with any integer
->>> y ** -2  # NOTE: -2 is outside the field
-GF([253, 171, 113,  60,  85,  56, 208,  14, 154,  70], order=2^8)
+- **COMING SOON**: [`np.inner`](https://numpy.org/doc/stable/reference/generated/numpy.inner.html)
+- **COMING SOON**: [`np.dot`](https://numpy.org/doc/stable/reference/generated/numpy.dot.html#numpy.dot)
+- **COMING SOON**: [`np.tensordot`](https://numpy.org/doc/stable/reference/generated/numpy.tensordot.html#numpy.tensordot)
 
-# Log base alpha (the field's primitive element)
->>> np.log(y)
-array([215, 166, 208,  89, 180,  27, 201,  28, 182, 231])
-```
+### Numpy ufunc methods
 
-Even field arithmetic on extremely large fields!
+Galois field arrays also support numpy ufunc methods. This allows you to apply a ufunc in a unique was across the target
+array.
 
-```python
->>> m = GFp.Random(3)
+The ufunc method signature is `<ufunc>.<method>(*args, **kwargs)`. Below are the supported ufuncs and their methods.
 
->>> n = GFp.Random(3)
+- `<ufunc>`: [`np.add`](https://numpy.org/doc/stable/reference/generated/numpy.add.html), [`np.subtract`](https://numpy.org/doc/stable/reference/generated/numpy.subtract.html), [`np.multiply`](https://numpy.org/doc/stable/reference/generated/numpy.multiply.html), [`np.divide`](https://numpy.org/doc/stable/reference/generated/numpy.divide.html), [`np.true_divide`](https://numpy.org/doc/stable/reference/generated/numpy.true_divide.html), [`np.floor_divide`](https://numpy.org/doc/stable/reference/generated/numpy.floor_divide.html), [`np.negative`](https://numpy.org/doc/stable/reference/generated/numpy.negative.html), [`np.power`](https://numpy.org/doc/stable/reference/generated/numpy.power.html), [`np.square`](https://numpy.org/doc/stable/reference/generated/numpy.square.html), [`np.log`](https://numpy.org/doc/stable/reference/generated/numpy.log.html)
 
->>> m + n
-GF([13628406805756046913, 32523641596143053984, 6779710980842128868],
-   order=36893488147419103183)
+- `<method>`: [`reduce`](https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduce.html), [`accumulate`](https://numpy.org/doc/stable/reference/generated/numpy.ufunc.accumulate.html), [`reduceat`](https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduceat.html), [`outer`](https://numpy.org/doc/stable/reference/generated/numpy.ufunc.outer.html), [`at`](https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html)
 
->>> m ** 123456
-GF([25998377155280209892, 5155207233739881631, 35111337553358290170],
-   order=36893488147419103183)
-
->>> r = GF2_100.Random(3); r
-GF([1208438098225504529643982094397, 1043242720211594207819544907628,
-    908206781068122096007332904544], order=2^100)
-
-# With characteristic 2, this will always be zero
->>> r + r
-GF([0, 0, 0], order=2^100)
-
-# This is equivalent
->>> r * 2
-GF([0, 0, 0], order=2^100)
-
-# But this will result in `r`
->>> r * 3
-GF([1208438098225504529643982094397, 1043242720211594207819544907628,
-    908206781068122096007332904544], order=2^100)
-```
-
-Galois field arrays support `numpy` array broadcasting.
+Below is are examples of how to use the `reduce` and `outer` methods with the `np.multiply` ufunc.
 
 ```python
 >>> a = GF31.Random((2,5)); a
 GF([[28, 30, 17, 21, 22],
     [23, 29, 23, 27, 17]], order=31)
 
->>> b = GF31.Random(5); b
-Out[33]: GF([ 7, 10, 12, 20, 24], order=31)
-
->>> a + b
-GF([[ 4,  9, 29, 10, 15],
-    [30,  8,  4, 16, 10]], order=31)
-```
-
-Galois field arrays also support `numpy` ufunc methods.
-
-```python
-# Valid ufunc methods include "reduce", "accumulate", "reduceat", "outer", "at"
 >>> np.multiply.reduce(a, axis=0)
 GF([24,  2, 19,  9,  2], order=31)
+```
+
+```python
+>>> x = GF256.Random(10); x
+GF([118,  49, 122, 166, 136, 118,  53,  19, 233, 119], order=2^8)
+
+>>> y = GF256.Random(10, low=1); y
+GF([239,  63,  81, 225, 150,  12,  56,  24,  98, 245], order=2^8)
 
 >>> np.multiply.outer(x, y)
 GF([[231, 157, 137,  89, 159,  82, 194, 164,  70, 175],
@@ -213,7 +190,9 @@ GF([[231, 157, 137,  89, 159,  82, 194, 164,  70, 175],
     [  8, 162, 216, 184,   9,  94, 250, 188,  36,  90]], order=2^8)
 ```
 
-Display field elements as integers or polynomials.
+### Field element display modes
+
+The user may display the finite field elements as either integers or polynomials.
 
 ```python
 >>> print(x)
@@ -228,40 +207,40 @@ GF([x^6 + x^5 + x^4 + x^2 + x, x^5 + x^4 + 1, x^6 + x^5 + x^4 + x^3 + x,
     x^6 + x^5 + x^4 + x^2 + x + 1], order=2^8)
 ```
 
-### Galois field polynomial construction
+### Polynomial construction
 
 Construct Galois field polynomials.
 
 ```python
 # Construct a polynomial by specifying all the coefficients in descending-degree order
 >>> p = galois.Poly([1, 22, 0, 17, 25], field=GF31); p
-Poly(x^4 + 22x^3 + 17x + 25, GF31)
+Poly(x^4 + 22x^3 + 17x + 25, GF(31))
 
 # Construct a polynomial by specifying only the non-zero coefficients
 >>> q = galois.Poly.Degrees([2, 0], coeffs=[4, 14], field=GF31); q
-Poly(4x^2 + 14, GF31)
+Poly(4x^2 + 14, GF(31))
 ```
 
-### Galois field polynomial arithmetic
+### Polynomial arithmetic
 
 Galois field polynomial arithmetic is similar to `numpy` array operations.
 
 ```python
 >>> p + q
-Poly(x^4 + 22x^3 + 4x^2 + 17x + 8, GF31)
+Poly(x^4 + 22x^3 + 4x^2 + 17x + 8, GF(31))
 
 >>> p // q, p % q
-(Poly(8x^2 + 21x + 3, GF31), Poly(2x + 14, GF31))
+(Poly(8x^2 + 21x + 3, GF(31)), Poly(2x + 14, GF(31)))
 
 >>> p ** 2
-Poly(x^8 + 13x^7 + 19x^6 + 3x^5 + 23x^4 + 15x^3 + 10x^2 + 13x + 5, GF31)
+Poly(x^8 + 13x^7 + 19x^6 + 3x^5 + 23x^4 + 15x^3 + 10x^2 + 13x + 5, GF(31))
 ```
 
 Galois field polynomials can also be evaluated at constants or arrays.
 
 ```python
 >>> p
-Poly(x^4 + 22x^3 + 17x + 25, GF31)
+Poly(x^4 + 22x^3 + 17x + 25, GF(31))
 
 >>> a
 GF([[28, 30, 17, 21, 22],
@@ -286,7 +265,7 @@ GF([[19, 18,  0,  7,  5],
 >>> import galois
 
 >>> GFp = galois.GF_factory(31, 1)
->>> print(GFp)
+>>> print(GFp)>
 <Galois Field: GF(31^1), prim_poly = x + 28 (None decimal)>
 
 >>> def construct_arrays(GF, N):
@@ -326,3 +305,9 @@ Native numpy addition in GF(31)
 `galois` implementation of addition in GF(31)
 73.1 µs ± 746 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
+
+## Acknowledgements
+
+This package heavily relies on [Numba](https://numba.pydata.org/) and its just-in-time compiler for performance.
+We use Frank Luebeck's [compilation of Conway polynomials](http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html)
+for computing primitive polynomials for extension fields. We utilize [SageMath](https://www.sagemath.org/) for generating test vectors.
