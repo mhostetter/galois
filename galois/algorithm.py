@@ -368,26 +368,26 @@ def primitive_root(n, start=1):
         # The algorithm is also efficient for very large prime n
         galois.primitive_root(1000000000000000035000061)
     """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"`n` must be an integer, not {type(n)}")
+    if not n >= 1:
+        raise ValueError(f"`n` must be a positive integer, not {n}")
+    if not is_prime(n):
+        raise ValueError(f"This algorithm is optimized for prime `n`, not {n}")
+    if not 1 <= start < n:
+        raise ValueError(f"The starting hypothesis `start` must be in 1 <= start < {n}, not {start}")
+
     if n == 1:
         return 0
     if n == 2:
         return 1
-
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"`n` must be an integer, not {type(n)}")
-    if not n >= 1:
-        raise ValueError(f"`n` must be a postive integer, not {n}")
-    if not is_prime(n):
-        raise ValueError(f"This algorithm is optimized for prime n, not {n}")
-    if not 1 <= start < n:
-        raise ValueError(f"The starting hypothesis must be in [1, {n}), not {start}")
 
     p, _ = prime_factors(n - 1)
 
     a = start  # Initial field element
     while a < n:
         tests = []  # Tests of primitivity
-        tests.append(modular_exp(a, n-1, n) == 1)
+        tests.append(modular_exp(a, n - 1, n) == 1)
         for prime_factor in p:
             tests.append(modular_exp(a, (n - 1)//prime_factor, n) != 1)
 
