@@ -1,6 +1,7 @@
 """
 A pytest module to test the various algorithms in the galois package.
 """
+import math
 import random
 
 import numpy as np
@@ -9,84 +10,34 @@ import pytest
 import galois
 
 
-def test_prev_next_prime():
-    assert galois.prev_prime(8) == 7
-    assert galois.next_prime(8) == 11
-
-    assert galois.prev_prime(11) == 11
-    assert galois.next_prime(11) == 13
+def test_factors():
+    factors = galois.factors(120)
+    true_factors = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120]
+    assert np.array_equal(factors, true_factors)
 
 
-def test_prime_factorization_small():
-    x = 8
-    P = [2,]
-    K = [3,]
-    p, k = galois.prime_factors(x)
-    assert np.all(p == P)
-    assert np.all(k == K)
-
-    x = 10
-    P = [2,5]
-    K = [1,1]
-    p, k = galois.prime_factors(x)
-    assert np.all(p == P)
-    assert np.all(k == K)
-
-    x = 11
-    P = [11,]
-    K = [1,]
-    p, k = galois.prime_factors(x)
-    assert np.all(p == P)
-    assert np.all(k == K)
+def test_euclidean_algorithm():
+    a = random.randint(0, 1_000_000)
+    b = random.randint(0, 1_000_000)
+    gcd = galois.euclidean_algorithm(a, b)
+    assert gcd == math.gcd(a, b)
 
 
-def test_prime_factorization_large():
-    x = 3015341941
-    P = [46021,65521]
-    K = [1,1]
-    p, k = galois.prime_factors(x)
-    assert np.all(p == P)
-    assert np.all(k == K)
+def test_extended_euclidean_algorithm():
+    a = random.randint(0, 1_000_000)
+    b = random.randint(0, 1_000_000)
+    x, y, gcd = galois.extended_euclidean_algorithm(a, b)
+    assert gcd == math.gcd(a, b)
+    assert a*x + b*y == gcd
 
 
-def test_prime_factorization_extremely_large():
-    prime = 1000000000000000035000061
-    p, k = galois.prime_factors(prime)
-    assert np.all(p == [prime])
-    assert np.all(k == [1])
-
-    p, k = galois.prime_factors(prime - 1)
-    assert np.multiply.reduce(p**k) == prime - 1
-
-
-def test_fermat_primality_test_on_primes():
-    primes = random.choices(galois._prime.PRIMES, k=10)
-    for prime in primes:
-        # Fermat's primality test should never call a prime a composite
-        assert galois.fermat_primality_test(prime) == True
-
-
-def test_fermat_primality_test_on_pseudoprimes():
-    # https://oeis.org/A001262
-    pseudoprimes = [2047,3277,4033,4681,8321,15841,29341,42799,49141,52633,65281,74665,80581,85489,88357,90751,104653,130561,196093,220729,233017,252601,253241,256999,271951,280601,314821,357761,390937,458989,476971,486737]
-    for pseudoprime in pseudoprimes:
-        # Fermat's primality test is fooled by strong pseudoprimes
-        assert galois.fermat_primality_test(pseudoprime) == True
-
-
-def test_miller_rabin_primality_test_on_primes():
-    primes = random.choices(galois._prime.PRIMES, k=10)
-    for prime in primes:
-        # Miller-Rabin's primality test should never call a prime a composite
-        assert galois.fermat_primality_test(prime) == True
-
-
-def test_miller_rabin_primality_test_on_pseudoprimes():
-    # https://oeis.org/A001262
-    pseudoprimes = [2047,3277,4033,4681,8321,15841,29341,42799,49141,52633,65281,74665,80581,85489,88357,90751,104653,130561,196093,220729,233017,252601,253241,256999,271951,280601,314821,357761,390937,458989,476971,486737]
-    for pseudoprime in pseudoprimes:
-        # With sufficient rounds, the Miller-Rabin primality test will detect the pseudoprimes as composite
-        assert galois.miller_rabin_primality_test(pseudoprime, rounds=7) == False
+def test_chinese_remainder_theorem():
+    a = [0, 3, 4]
+    m = [3, 4, 5]
+    x = galois.chinese_remainder_theorem(a, m)
+    assert x == 39
+    for i in range(len(a)):
+        assert x % m[i] == a[i]
 
 
 def test_euler_totient():
