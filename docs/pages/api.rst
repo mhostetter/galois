@@ -1,5 +1,5 @@
-API v\ |version|
-================
+API Reference v\ |version|
+==========================
 
 .. autosummary::
    :template: module.rst
