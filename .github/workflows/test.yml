@@ -25,14 +25,13 @@ jobs:
     - name: Install testing dependencies
       run: |
         python3 -m pip install --upgrade pip
-        pip3 install pytest
-        pip3 install pytest-cov
+        python3 -m pip install -r requirements-test.txt
     - name: Install minimum package dependencies
-      run: pip3 install -r requirements-min.txt
+      run: python3 -m pip install -r requirements-min.txt
     - name: Install python package
-      run: pip3 install .
+      run: python3 -m pip install .
     - name: Test with pytest
-      run: pytest --cov=galois/ --cov-report=xml tests/
+      run: python3 -m pytest --cov=galois/ --cov-report=xml tests/
     - name: Upload coverage report
       uses: codecov/codecov-action@v1
 
@@ -52,11 +51,10 @@ jobs:
     - name: Install testing dependencies
       run: |
         python3 -m pip install --upgrade pip
-        pip3 install pytest
-        pip3 install pytest-cov
+        python3 -m pip install -r requirements-test.txt
     - name: Install python package
-      run: pip3 install .
+      run: python3 -m pip install .
     - name: Test with pytest
-      run: pytest --cov=galois/ --cov-report=xml tests/
+      run: python3 -m pytest --cov=galois/ --cov-report=xml tests/
     - name: Upload coverage report
       uses: codecov/codecov-action@v1
