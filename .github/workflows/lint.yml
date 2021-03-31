@@ -23,8 +23,8 @@ jobs:
     - name: Install linting dependencies
       run: |
         python3 -m pip install --upgrade pip
-        pip3 install pylint
+        python3 -m pip install -r requirements-lint.txt
     - name: Install python package
-      run: pip3 install .  # Needed to guarantee dependencies are installed
+      run: python3 -m pip install .  # Needed to guarantee dependencies are installed
     - name: Lint with pylint
-      run: pylint --rcfile=setup.cfg galois/
+      run: python3 -m pylint --rcfile=setup.cfg galois/
