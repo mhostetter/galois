@@ -5,6 +5,7 @@ Galois: A performant numpy extension for Galois fields
    :maxdepth: 3
 
    pages/installation.rst
+   pages/development.rst
    pages/basic_usage.rst
    pages/tutorials.rst
 
