@@ -1,21 +1,16 @@
 Installation
 ============
+Fun fact: read `here <https://snarky.ca/why-you-should-use-python-m-pip/>`_ from python core dev `Brett Cannon <https://twitter.com/brettsky>`_ about  why it's better
+to install with `python3 -m pip` rather than `pip3`.
 
 Install with pip
 ----------------
 
-The latest version of `galois` can be installed from PyPI via `pip`.
+The latest version of :obj:`galois` can be installed from PyPI via `pip`.
 
-.. code-block::
+.. code-block:: sh
 
-   pip3 install galois
+   $ python3 - m pip install galois
 
-Install for development
------------------------
-
-The the lastest code from `master` can be checked out and installed locally in an "editable" fashion.
-
-.. code-block::
-
-   git clone https://github.com/mhostetter/galois.git
-   pip3 install -e galois
+Fun fact: read `here <https://snarky.ca/why-you-should-use-python-m-pip/>`_ from python core dev `Brett Cannon <https://twitter.com/brettsky>`_ about why it's better
+to install with `python3 -m pip` rather than `pip3`.
