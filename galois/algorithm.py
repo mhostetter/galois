@@ -597,11 +597,22 @@ def prime_factors(n: int) -> List[Tuple[int, int]]:
 def is_prime(n: int) -> bool:
     """
     Determines if positive integer `n` is prime.
+    Includes Miller-Rabin's primality test.
     """
-    assert isinstance(n, int) and 1 < n <= TOP_PRIME_SQUARE
     if n <= TOP_PRIME:
+        assert n > 1
         return PRIMES[bisect_left(PRIMES, n)] == n
-    return trace(n)[-1] == n
+    s = ((n - 1) ^ (n - 2)).bit_length() - 1
+    for a in PRIMES[:n.bit_length() // 4]:
+        a = pow(a, n >> s, n)
+        if a != 1:
+            for _ in range(s):
+                if a == n - 1:
+                    break
+                a = a * a % n
+            else:
+                return False
+    return True
 
 
 def extended_gcd(a: int, b: int) -> Tuple[int, int, int]:
