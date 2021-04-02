@@ -3,7 +3,7 @@ A performant numpy extension for Galois fields.
 """
 from .version import __version__
 
-from .algorithm import factors, euclidean_algorithm, extended_euclidean_algorithm, chinese_remainder_theorem, euler_totient, carmichael, primitive_root
+from .algorithm import factors, euclidean_algorithm, extended_euclidean_algorithm, chinese_remainder_theorem, euler_totient, carmichael,  is_cyclic, primitive_root, primitive_roots
 from .gf import GF
 from .gf2 import GF2
 from .poly import Poly
@@ -215,8 +215,8 @@ def conway_poly(characteristic, degree):
     galois.Poly
         The degree-:math:`m` polynomial in :math:`\\mathrm{GF}(p)[x]`.
 
-    Note
-    ----
+    Warning
+    -------
         If the :math:`\\mathrm{GF}(p)` field hasn't already been created, it will be created in this function
         since it's needed in the return polynomial.
 
