@@ -3,7 +3,6 @@ import random
 
 import numpy as np
 
-from .modular import modular_exp
 from ._prime import PRIMES
 
 
@@ -75,10 +74,10 @@ def prime_factors(x):
 
     Returns
     -------
-    numpy.ndarray
-        Sorted array of prime factors :math:`p = [p_1, p_2, \\dots, p_{n-1}]` with :math:`p_1 < p_2 < \\dots < p_{n-1}`.
-    numpy.ndarray
-        Array of corresponding prime powers :math:`k = [k_1, k_2, \\dots, k_{n-1}]`.
+    list
+        Sorted list of prime factors :math:`p = [p_1, p_2, \\dots, p_{n-1}]` with :math:`p_1 < p_2 < \\dots < p_{n-1}`.
+    list
+        List of corresponding prime powers :math:`k = [k_1, k_2, \\dots, k_{n-1}]`.
 
     Examples
     --------
@@ -88,12 +87,17 @@ def prime_factors(x):
         p, k
 
         # The product of the prime powers is the factored integer
-        np.multiply.reduce(p ** k)
+        np.multiply.reduce(np.array(p) ** np.array(k))
 
-        # Prime factorization of 1 less than a large prime
-        p, k = galois.prime_factors(1000000000000000035000061 - 1)
+    Prime factorization of 1 less than a large prime.
+
+    .. ipython:: python
+
+        prime =1000000000000000035000061
+        galois.is_prime(prime)
+        p, k = galois.prime_factors(prime - 1)
         p, k
-        np.multiply.reduce(p ** k)
+        np.multiply.reduce(np.array(p) ** np.array(k))
     """
     assert isinstance(x, (int, np.integer)) and x > 1
 
@@ -108,16 +112,16 @@ def prime_factors(x):
             degree += 1
             x = x // prime
         if degree > 0:
-            p.append(prime)
+            p.append(int(prime))  # TODO: Needed until PRIMES is a list of python ints
             k.append(degree)
         if x == 1:
             break
 
     if x > 2:
-        p.append(x)
+        p.append(int(x))  # TODO: Needed until PRIMES is a list of python ints
         k.append(1)
 
-    return np.array(p), np.array(k)
+    return p, k
 
 
 def is_prime(n):
@@ -146,6 +150,12 @@ def is_prime(n):
 
         galois.is_prime(13)
         galois.is_prime(15)
+
+    The algorithm is also efficient on very large :math:`n`.
+
+    .. ipython:: python
+
+        galois.is_prime(1000000000000000035000061)
     """
     assert isinstance(n, (int, np.integer)) and n > 1
 
@@ -200,10 +210,11 @@ def fermat_primality_test(n):
             p, k = galois.prime_factors(pseudoprime)
             print("Psuedoprime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
     """
+    n = int(n)  # TODO: Needed until primes is a list of python ints
     assert n > 2
     a = 2  # A value coprime with n
 
-    if modular_exp(a, n - 1, n) != 1:
+    if pow(a, n - 1, n) != 1:
         # n is definitely composite
         return False
 
@@ -259,14 +270,15 @@ def miller_rabin_primality_test(n, a=None, rounds=1):
         for pseudoprime in pseudoprimes:
             is_prime = galois.miller_rabin_primality_test(pseudoprime)
             p, k = galois.prime_factors(pseudoprime)
-            print("Psuedoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
+            print("Pseudoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
 
         # 7 rounds of Miller-Rabin, never fooled by pseudoprimes
         for pseudoprime in pseudoprimes:
             is_prime = galois.miller_rabin_primality_test(pseudoprime, rounds=7)
             p, k = galois.prime_factors(pseudoprime)
-            print("Psuedoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
+            print("Pseudoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
     """
+    n = int(n)  # TODO: Needed until primes is a list of python ints
     if a is None:
         a = random.randint(1, n - 1)
     else:
@@ -286,9 +298,9 @@ def miller_rabin_primality_test(n, a=None, rounds=1):
     assert 2**s * d == n - 1
 
     composite_tests = []
-    composite_tests.append(modular_exp(a, d, n) != 1)
+    composite_tests.append(pow(a, d, n) != 1)
     for r in range(0, s):
-        composite_tests.append(modular_exp(a, 2**r * d, n) != n - 1)
+        composite_tests.append(pow(a, 2**r * d, n) != n - 1)
     composite_test = all(composite_tests)
 
     if composite_test:
