@@ -1,10 +1,39 @@
 import math
 import random
 
+from math import sqrt
+from typing import List
+
 import numpy as np
 
 from .modular import modular_exp
-from ._prime import PRIMES
+
+def primes(limit: int) -> List[int]:
+    """
+    This is a slightly improved implementation of the good old Sieve of Eratosthenes.
+    1. base type `bytearray` consumes 24 times less memory than` list` normal,
+       and faster than `array` for slice operations фтв sequential access;
+    2. we only work with odd numbers, encoding them as 2 * i + 1 -> i
+       (example: 7 -> 3), this saves another half mem;
+    3. Use slices instead of regular loops also make code more faster;
+    4. Building a sieve from 15-byte blocks with suppressed 3 * x and 5 * x numbers
+       is an additional benefit on time;
+    5. So this is the best implementation of Eratosthenes sieve on clear CPython.
+        :param limit: top bound of prime numders range
+        :return: array of primes smaller then (limit + 30),
+                (this is to avoid worthless fuss around the upper border)
+    """
+    chanks = (limit + 29) // 30
+    lim, sieve = chanks * 15 - 1, bytearray(b'\0\0\1\0\1\1\0\1\1\0\1\0\0\1\1') * chanks
+    for b, p in zip(sieve, range(3, int(sqrt(chanks * 30 + 1)) + 1, 2)):
+        if b:
+            pp = (p * p - 3) // 2
+            sieve[pp::p] = b'\0' * ((lim - pp) // p + 1)
+    return [2, 3, 5, *(p for b, p in zip(sieve, range(3, limit, 2)) if b)]
+
+
+PRIMES = primes(1_000_000)  # TODO kick out magic number
+TOP_PRIME = PRIMES[-1]
 
 
 def _prev_prime_index(x):
