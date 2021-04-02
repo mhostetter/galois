@@ -1,17 +1,13 @@
 import math
 import random
+from bisect import bisect_left, bisect_right
 
 import numpy as np
 
 from ._prime import PRIMES
 
 
-def _prev_prime_index(x):
-    assert PRIMES[0] <= x < PRIMES[-1]
-    return np.where(PRIMES - x <= 0)[0][-1]
-
-
-def prev_prime(x):
+def prev_prime(n: int) -> int:
     """
     Returns the nearest prime :math:`p \\le x`.
 
@@ -32,11 +28,12 @@ def prev_prime(x):
         galois.prev_prime(13)
         galois.prev_prime(15)
     """
-    prev_idx = _prev_prime_index(x)
-    return PRIMES[prev_idx]
+    assert 2 < n <= TOP_PRIME
+    i = bisect_left(PRIMES, n)
+    return PRIMES[i - (n < PRIMES[i])]
 
 
-def next_prime(x):
+def next_prime(n: int) -> int:
     """
     Returns the nearest prime :math:`p > x`.
 
@@ -57,8 +54,8 @@ def next_prime(x):
         galois.next_prime(13)
         galois.next_prime(15)
     """
-    prev_idx = _prev_prime_index(x)
-    return PRIMES[prev_idx + 1]
+    assert 1 < n < TOP_PRIME
+    return PRIMES[bisect_right(PRIMES, n)]
 
 
 def prime_factors(x):
