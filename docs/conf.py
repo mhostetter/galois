@@ -116,7 +116,7 @@ autosummary_imported_members = True
 
 nbsphinx_execute = 'auto'
 
-ipython_execlines = ['import numpy as np', 'import galois']
+ipython_execlines = ['import math', 'import numpy as np', 'import galois']
 
 
 def skip_member(app, what, name, obj, skip, options):
