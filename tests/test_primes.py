@@ -56,6 +56,8 @@ def test_prime_factorization_extremely_large():
     assert np.all(k == [1])
 
     p, k = galois.prime_factors(prime - 1)
+    p = np.array(p)
+    k = np.array(k)
     assert np.multiply.reduce(p**k) == prime - 1
 
 

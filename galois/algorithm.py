@@ -4,7 +4,6 @@ import math
 import numba
 import numpy as np
 
-from .modular import modular_exp
 from .prime import prime_factors, is_prime
 
 
@@ -187,7 +186,7 @@ def chinese_remainder_theorem(a, m):
 
         for i in range(len(a)):
             ai = x % m[i]
-            print(f"{x} % {m[i]} = {ai}, Valid congruence: {ai == a[i]}")
+            print(f"{x} = {ai} (mod {m[i]}), Valid congruence: {ai == a[i]}")
     """
     a = np.array(a)
     m = np.array(m)
@@ -263,8 +262,11 @@ def euler_totient(n):
     if n == 1:
         return 1
     p, k = prime_factors(n)
-    phi = np.multiply.reduce(p**(k - 1) * (p - 1))
-    return phi
+    phi = 1
+    for i in range(len(p)):
+        phi *= p[i]**(k[i] - 1) * (p[i] - 1)
+    # phi = np.multiply.reduce(p**(k - 1) * (p - 1))
+    return int(phi)  # TODO: Needed until PRIMES is a list of ints
 
 
 def _carmichael_prime_power(p, k):
@@ -308,7 +310,7 @@ def carmichael(n):
         totatives = [i for i in range(n) if galois.euclidean_algorithm(i, n) == 1]; totatives
 
         for a in totatives:
-            result = galois.modular_exp(a, lambda_, n)
+            result = pow(a, lambda_, n)
             print("{:2d}^{} = {} (mod {})".format(a, lambda_, result, n))
 
         # For prime n, phi and lambda are always n-1
@@ -320,11 +322,11 @@ def carmichael(n):
 
     p, k = prime_factors(n)
 
-    lambdas = np.zeros(p.size, dtype=np.int64)
-    for i in range(p.size):
+    lambdas = np.zeros(len(p), dtype=np.int64)
+    for i in range(len(p)):
         lambdas[i] = _carmichael_prime_power(p[i], k[i])
 
-    lambda_ = np.lcm.reduce(lambdas)
+    lambda_ = int(np.lcm.reduce(lambdas))
 
     return lambda_
 
@@ -377,6 +379,8 @@ def primitive_root(n, start=1):
     if not 1 <= start < n:
         raise ValueError(f"The starting hypothesis `start` must be in 1 <= start < {n}, not {start}")
 
+    n = int(n)  # TODO: Needed until primes is a list of python ints
+
     if n == 1:
         return 0
     if n == 2:
@@ -387,9 +391,9 @@ def primitive_root(n, start=1):
     a = start  # Initial field element
     while a < n:
         tests = []  # Tests of primitivity
-        tests.append(modular_exp(a, n - 1, n) == 1)
+        tests.append(pow(a, n - 1, n) == 1)
         for prime_factor in p:
-            tests.append(modular_exp(a, (n - 1)//prime_factor, n) != 1)
+            tests.append(pow(a, (n - 1)//prime_factor, n) != 1)
 
         if all(tests):
             return a

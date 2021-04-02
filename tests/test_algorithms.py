@@ -56,27 +56,6 @@ def test_carmichael():
         assert galois.carmichael(n) == lambda_
 
 
-def test_modular_exp():
-    galois.modular_exp(2, 2, 1) == 0
-
-    galois.modular_exp(2, 0, 71) == 1
-    galois.modular_exp(1, 4, 71) == 1
-    galois.modular_exp(2, 4, 71) == 16
-    galois.modular_exp(5, 3, 71) == 4
-
-    # https://users.cs.jmu.edu/abzugcx/Public/Discrete-Structures-II/Modular-Exponentiation.pdf
-    galois.modular_exp(23, 20, 29) == 24
-    galois.modular_exp(23, 391, 55) == 12
-    galois.modular_exp(31, 397, 29) == 26
-
-
-def test_modular_exp_large_integers():
-    base = 123456789123456789
-    exponent = 1234
-    modulus = 98765431
-    assert galois.modular_exp(base, exponent, modulus) == base**exponent % modulus
-
-
 def test_primitive_root():
     # https://oeis.org/A001918
     primes = galois._prime.PRIMES
