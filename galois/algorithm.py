@@ -220,6 +220,37 @@ def chinese_remainder_theorem(a, m):
     return x
 
 
+def totatives(n):
+    """
+    Returns the positive integers (totatives) in :math:`1 \\le k < n` that are relatively prime to
+    :math:`n`, i.e. :math:`gcd(n, k) = 1`.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+
+    Returns
+    -------
+    list
+        The totatives of :math:`n`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        n = 20
+        totatives = galois.totatives(n); totatives
+        phi = galois.euler_totient(n); phi
+        len(totatives) == phi
+    """
+    assert n > 0
+    if n == 1:
+        return [0]
+    else:
+        return [t for t in range(1, n) if math.gcd(n, t) == 1]
+
+
 def euler_totient(n):
     """
     Counts the positive integers (totatives) in :math:`1 \\le k < n` that are relatively prime to
