@@ -198,3 +198,13 @@ def test_primitive_roots_are_generators(n):
         assert set(congruences) == set(elements)
 
     assert len(roots) == galois.euler_totient(phi)
+
+
+def test_is_primitive_root():
+    n = 7
+    roots = [3, 5]
+    for g in range(1, 7):
+        if g in roots:
+            assert galois.is_primitive_root(g, n)
+        else:
+            assert not galois.is_primitive_root(g, n)

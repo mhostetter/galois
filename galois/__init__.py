@@ -3,7 +3,7 @@ A performant numpy extension for Galois fields.
 """
 from .version import __version__
 
-from .algorithm import factors, euclidean_algorithm, extended_euclidean_algorithm, chinese_remainder_theorem, euler_totient, carmichael,  is_cyclic, primitive_root, primitive_roots
+from .algorithm import factors, euclidean_algorithm, extended_euclidean_algorithm, chinese_remainder_theorem, euler_totient, carmichael,  is_cyclic, primitive_root, primitive_roots, is_primitive_root
 from .gf import GF
 from .gf2 import GF2
 from .poly import Poly
