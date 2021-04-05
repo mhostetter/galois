@@ -13,7 +13,7 @@ def _prev_prime_index(x):
 
 def prev_prime(x):
     """
-    Returns the nearest prime :math:`p \\le x`.
+    Returns the nearest prime :math:`p`, such that :math:`p \\le x`.
 
     Parameters
     ----------
@@ -38,7 +38,7 @@ def prev_prime(x):
 
 def next_prime(x):
     """
-    Returns the nearest prime :math:`p > x`.
+    Returns the nearest prime :math:`p`, such that :math:`p > x`.
 
     Parameters
     ----------
@@ -99,7 +99,13 @@ def prime_factors(x):
         p, k
         np.multiply.reduce(np.array(p) ** np.array(k))
     """
-    assert isinstance(x, (int, np.integer)) and x > 1
+    if not isinstance(x, (int, np.integer)):
+        raise TypeError(f"Argument `x` must be an integer, not {type(x)}.")
+    if not x > 0:
+        raise ValueError(f"Argument `x` must be a positive integer, not {x}.")
+
+    if x == 1:
+        return [1], [1]
 
     max_factor = int(math.ceil(math.sqrt(x)))
     max_prime_idx = np.where(PRIMES - max_factor <= 0)[0][-1]
@@ -157,8 +163,13 @@ def is_prime(n):
 
         galois.is_prime(1000000000000000035000061)
     """
-    assert isinstance(n, (int, np.integer)) and n > 1
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
+    if n == 1:
+        return False
     if n == 2:
         return True
 
@@ -208,10 +219,14 @@ def fermat_primality_test(n):
         for pseudoprime in pseudoprimes:
             is_prime = galois.fermat_primality_test(pseudoprime)
             p, k = galois.prime_factors(pseudoprime)
-            print("Psuedoprime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
+            print("Pseudoprime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
     """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 2:
+        raise ValueError(f"Argument `n` must be greater than 2, not {n}.")
+
     n = int(n)  # TODO: Needed until primes is a list of python ints
-    assert n > 2
     a = 2  # A value coprime with n
 
     if pow(a, n - 1, n) != 1:
@@ -238,7 +253,7 @@ def miller_rabin_primality_test(n, a=None, rounds=1):
     a : int, optional
         Initial composite witness value, :math:`1 \\le a < n`. On subsequent rounds, :math:`a` will
         be a different value. The default is a random value.
-    rounds : int, optinal
+    rounds : int, optional
         The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
         new :math:`a`. Sufficient rounds have arbitrarily-high probability of detecting a composite.
 
@@ -278,11 +293,15 @@ def miller_rabin_primality_test(n, a=None, rounds=1):
             p, k = galois.prime_factors(pseudoprime)
             print("Pseudoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
     """
+    a = random.randint(1, n - 1) if a is None else a
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 1:
+        raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
+    if not 1 <= a < n:
+        raise ValueError(f"Arguments must satisfy `1 <= a < n`, not `1 <= {a} < {n}`.")
+
     n = int(n)  # TODO: Needed until primes is a list of python ints
-    if a is None:
-        a = random.randint(1, n - 1)
-    else:
-        assert 1 <= a < n
 
     # Factor (n - 1) by 2
     x = n -1

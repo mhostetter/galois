@@ -68,7 +68,8 @@ class Poly:
 
     def __init__(self, coeffs, field=None, order="desc"):
         if not (field is None or issubclass(field, GF)):
-            raise TypeError(f"The Galois field `field` must be a subclass of GF, not {field}")
+            raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
+
         self.order = order
 
         if isinstance(coeffs, GF) and field is None:
@@ -91,7 +92,7 @@ class Poly:
     @classmethod
     def Zero(cls, field=GF2):
         """
-        Create the zero polynomial, :math:`p(x) = 0 \\in \\mathrm{GF}(q)[x]`.
+        Constructs the zero polynomial, :math:`p(x) = 0 \\in \\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
@@ -123,7 +124,7 @@ class Poly:
     @classmethod
     def One(cls, field=GF2):
         """
-        Create the one polynomial, :math:`p(x) = 1 \\in \\mathrm{GF}(q)[x]`.
+        Constructs the one polynomial, :math:`p(x) = 1 \\in \\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
@@ -155,7 +156,7 @@ class Poly:
     @classmethod
     def Identity(cls, field=GF2):
         """
-        Create the identity polynomial, :math:`p(x) = x \\in \\mathrm{GF}(q)[x]`.
+        Constructs the identity polynomial, :math:`p(x) = x \\in \\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
@@ -187,7 +188,7 @@ class Poly:
     @classmethod
     def Integer(cls, integer, field=GF2, order="desc"):
         """
-        Create a polynomial over :math:`\\mathrm{GF}(q)[x]` from its integer representation.
+        Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its integer representation.
 
         The integer value :math:`d` represents polynomial :math:`p(x) =  a_{N-1}x^{N-1} + \\dots + a_1x + a_0`
         over field :math:`\\mathrm{GF}(q)` if :math:`d = a_{N-1} q^{N-1} + \\dots + a_1 q + a_0` using integer arithmetic,
@@ -222,15 +223,17 @@ class Poly:
         """
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Polynomial creation must have `integer` be an integer, not {type(integer)}")
+
         c = integer_to_poly(integer, field.order)
         if order == "desc":
             c = np.flip(c)
+
         return cls(c, field=field, order=order)
 
     @classmethod
     def Degrees(cls, degrees, coeffs=None, field=GF2):
         """
-        Create a polynomial over :math:`\\mathrm{GF}(q)[x]` from its non-zero degrees.
+        Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its non-zero degrees.
 
         Parameters
         ----------
@@ -264,20 +267,32 @@ class Poly:
             GF7 = galois.GF_factory(7, 1)
             galois.Poly.Degrees([3,1,0], coeffs=[5,2,1], field=GF7)
         """
-        if coeffs is None:
-            coeffs = [1,]*len(degrees)
-        assert len(coeffs) == len(degrees)
-        degrees = np.array(degrees)
-        assert np.issubdtype(degrees.dtype, np.integer) and np.all(degrees >= 0)
+        coeffs = [1,]*len(degrees) if coeffs is None else coeffs
+        if not isinstance(degrees, (list, tuple, np.ndarray)):
+            raise TypeError(f"Argument `degrees` must 'array-like', not {type(degrees)}.")
+        if not isinstance(coeffs, (list, tuple, np.ndarray)):
+            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
+        if not len(coeffs) == len(degrees):
+            raise ValueError(f"Arguments `coeffs` and `degrees` must be of the same length, not {len(coeffs)} and {len(degrees)}.")
+        if not all(degree >= 0 for degree in degrees):
+            raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
+
         degree = np.max(degrees)  # The degree of the polynomial
-        all_coeffs = np.zeros(degree + 1, dtype=np.int64)
-        all_coeffs[degree - degrees] = coeffs
+        if isinstance(coeffs, GF):
+            # Preserve coefficient field if a Galois field array was specified
+            all_coeffs = type(coeffs).Zeros(degree + 1)
+            all_coeffs[degree - degrees] = coeffs
+        else:
+            all_coeffs = [0]*(degree + 1)
+            for d, c in zip(degrees, coeffs):
+                all_coeffs[degree - d] = c
+
         return cls(all_coeffs, field=field)
 
     @classmethod
     def Roots(cls, roots, field=GF2):
         """
-        Create a monic polynomial in :math:`\\mathrm{GF}(q)[x]` from its roots.
+        Constructs a monic polynomial in :math:`\\mathrm{GF}(q)[x]` from its roots.
 
         The polynomial :math:`p(x)` with roots :math:`\\{r_0, r_1, \\dots, r_{N-1}\\}` is:
 
@@ -315,10 +330,11 @@ class Poly:
             p = galois.Poly.Roots(roots, field=GF7); p
             p(roots)
         """
-        if not isinstance(roots, (int, list, tuple, np.ndarray)):
-            raise TypeError(f"The argument `roots` must be of type list, tuple, or ndarray. Found type {type(roots)}")
+        if not isinstance(roots, (list, tuple, np.ndarray)):
+            raise TypeError(f"Argument `roots` must 'array-like', not {type(roots)}.")
 
         roots = field(roots).flatten().tolist()
+
         p = cls.One(field=field)
         for root in roots:
             p = p * cls([1, -int(root)], field=field)

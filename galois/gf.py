@@ -164,7 +164,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         a = GF256.Random(10, dtype=np.uint32); a
         a.dtype
 
-    Arrays can be created explicitly by converting an "array-like" object.
+    Arrays can also be created explicitly by converting an "array-like" object.
 
     .. ipython:: python
 
@@ -176,7 +176,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         x_np = np.array(l, dtype=np.int64); x_np
         GF256(l)
 
-    Arrays can also be created by "view casting" from an existing numpy array in memory. This avoids
+    Arrays can also be created by "view casting" from an existing numpy array. This avoids
     a copy operation, which is especially useful for large data already brought into memory.
 
     .. ipython:: python
@@ -401,9 +401,9 @@ class GF(np.ndarray, metaclass=GFMeta):
             GF.Random((2,5))
         """
         dtype = cls._get_dtype(dtype)
-        if high is None:
-            high = cls.order
-        assert 0 <= low < cls.order and low < high <= cls.order
+        high = cls.order if high is None else high
+        if not 0 <= low < high <= cls.order:
+            raise ValueError(f"Arguments must satisfy `0 <= low < high <= order`, not `0 <= {low} < {high} <= {cls.order}`.")
 
         if dtype != np.object_:
             array = np.random.randint(low, high, shape, dtype=dtype)
@@ -567,9 +567,9 @@ class GF(np.ndarray, metaclass=GFMeta):
             print(a)
         """
         if mode not in ["int", "poly"]:
-            raise ValueError(f"Valid Galois field print modes are ['int', 'poly'], not {mode}")
+            raise ValueError(f"Argument `mode` must be in ['int', 'poly'], not {mode}.")
         if not isinstance(poly_var, str):
-            raise TypeError(f"Polynomial varialbes must be a str, not {type(poly_var)}")
+            raise TypeError(f"Argument `poly_var` must be a string, not {type(poly_var)}.")
 
         context = DisplayContext(cls, cls._display_mode, cls._display_poly_var)
 

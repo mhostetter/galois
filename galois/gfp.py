@@ -80,14 +80,14 @@ class GFp(GF):
         rebuild : bool, optional
             Indicates whether to force a rebuild of the lookup tables. The default is `False`.
         """
-        global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT  # pylint: disable=global-statement
-
         if target not in ["cpu", "parallel", "cuda"]:
-            raise ValueError(f"Valid numba compilation targets are ['cpu', 'parallel', 'cuda'], not {target}")
+            raise ValueError(f"Argument `target` must be in ['cpu', 'parallel', 'cuda'], not {target}.")
         if mode not in ["lookup", "calculate"]:
-            raise ValueError(f"Valid GF(p) field calculation modes are ['lookup', 'calculate'], not {mode}")
+            raise ValueError(f"Argument `mode` must be in ['lookup', 'calculate'], not {mode}.")
         if not isinstance(rebuild, bool):
-            raise TypeError(f"The 'rebuild' argument must be a bool, not {type(rebuild)}")
+            raise TypeError(f"Argument 'rebuild' must be a bool, not {type(rebuild)}.")
+
+        global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT  # pylint: disable=global-statement
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
