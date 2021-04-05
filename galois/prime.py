@@ -1,14 +1,97 @@
+import bisect
 import math
 import random
 
 import numpy as np
 
-from ._prime import PRIMES
+
+def primes(n):
+    """
+    Returns the primes :math:`p \\le n`.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+
+    Returns
+    -------
+    list
+        The primes up to and including :math:`n`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.primes(19)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n >= 2:
+        raise ValueError(f"Argument `n` must be at least 2, not {n}.")
+
+    N_odd = int(math.ceil(n/2)) - 1  # Number of odd integers (including n) to check starting at 3, i.e. skip 1
+    composite = np.zeros(N_odd, dtype=bool)  # Indices correspond to integers 3,5,7,9,...
+
+    # We only need to test integers for compositeness up to sqrt(n) because at that point the
+    # integers above sqrt(n) have already been marked by the multiples of earlier primes
+    max_composite = int(math.ceil(math.sqrt(n)))
+    max_composite_idx = (max_composite - 3)//2
+
+    for i in range(0, max_composite_idx + 1):
+        if not composite[i]:
+            prime = i*2 + 3  # Convert index back to integer value
+
+            # We want to mark `2*prime, 3*prime, 4*prime, ...` as composite. We don't need to mark the
+            # even multiples because they're not in the composite array (which only has odds). So we'll
+            # mark `3*prime, 5*prime, ...`
+
+            delta = prime  # A delta of `2*prime` converted to an index of the odd composite array, i.e. `2*prime//2`
+            first_multiple = i + delta  # First odd multiple of the prime `3*prime`
+
+            # Mark multiples of the prime that are odd (and in the composite array) as composite
+            composite[first_multiple::delta] = True
+
+    prime_idxs = np.where(composite == False)[0]  # pylint: disable=singleton-comparison
+    p = (prime_idxs*2 + 3).tolist()  # Convert indices back to odd integers
+    p.insert(0, 2)  # Add the only even prime, 2
+
+    return p
 
 
-def _prev_prime_index(x):
-    assert PRIMES[0] <= x < PRIMES[-1]
-    return np.where(PRIMES - x <= 0)[0][-1]
+# Generate a prime lookup table for efficient lookup in other algorithms
+PRIMES = primes(10_000_000)
+MAX_K = len(PRIMES)
+MAX_PRIME = PRIMES[-1]
+
+
+def kth_prime(k):
+    """
+    Returns the :math:`k`-th prime.
+
+    Parameters
+    ----------
+    k : int
+        The prime index, where :math:`k = \\{1,2,3,4,\\dots\\}` for primes :math:`p = \\{2,3,5,7,\\dots\\}`.
+
+    Returns
+    -------
+    int
+        The :math:`k`-th prime.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.kth_prime(1)
+        galois.kth_prime(3)
+        galois.kth_prime(1000)
+    """
+    if not isinstance(k, (int, np.integer)):
+        raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
+    if not 1 <= k <= MAX_K:
+        raise ValueError(f"Argument `k` is out of range of the prime lookup table. The lookup table only stores the first {MAX_K} primes.")
+    return PRIMES[k - 1]
 
 
 def prev_prime(x):
@@ -32,8 +115,14 @@ def prev_prime(x):
         galois.prev_prime(13)
         galois.prev_prime(15)
     """
-    prev_idx = _prev_prime_index(x)
-    return PRIMES[prev_idx]
+    if not isinstance(x, (int, np.integer)):
+        raise TypeError(f"Argument `x` must be an integer, not {type(x)}.")
+    if not 2 <= x <= MAX_PRIME:
+        raise ValueError(f"Argument `x` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
+    idx = bisect.bisect_left(PRIMES, x)
+    if PRIMES[idx] != x:
+        idx -= 1
+    return PRIMES[idx]
 
 
 def next_prime(x):
@@ -57,8 +146,12 @@ def next_prime(x):
         galois.next_prime(13)
         galois.next_prime(15)
     """
-    prev_idx = _prev_prime_index(x)
-    return PRIMES[prev_idx + 1]
+    if not isinstance(x, (int, np.integer)):
+        raise TypeError(f"Argument `x` must be an integer, not {type(x)}.")
+    if not x < MAX_PRIME:
+        raise ValueError(f"Argument `x` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
+    idx = bisect.bisect_right(PRIMES, x)
+    return PRIMES[idx]
 
 
 def prime_factors(x):
@@ -108,23 +201,23 @@ def prime_factors(x):
         return [1], [1]
 
     max_factor = int(math.ceil(math.sqrt(x)))
-    max_prime_idx = np.where(PRIMES - max_factor <= 0)[0][-1]
+    max_prime_idx = bisect.bisect_right(PRIMES, max_factor)
 
     p = []
     k = []
-    for prime in PRIMES[0:max_prime_idx+1]:
+    for prime in PRIMES[0:max_prime_idx]:
         degree = 0
         while x % prime == 0:
             degree += 1
             x = x // prime
         if degree > 0:
-            p.append(int(prime))  # TODO: Needed until PRIMES is a list of python ints
+            p.append(prime)
             k.append(degree)
         if x == 1:
             break
 
     if x > 2:
-        p.append(int(x))  # TODO: Needed until PRIMES is a list of python ints
+        p.append(x)
         k.append(1)
 
     return p, k
@@ -226,7 +319,6 @@ def fermat_primality_test(n):
     if not n > 2:
         raise ValueError(f"Argument `n` must be greater than 2, not {n}.")
 
-    n = int(n)  # TODO: Needed until primes is a list of python ints
     a = 2  # A value coprime with n
 
     if pow(a, n - 1, n) != 1:
@@ -300,8 +392,6 @@ def miller_rabin_primality_test(n, a=None, rounds=1):
         raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
     if not 1 <= a < n:
         raise ValueError(f"Arguments must satisfy `1 <= a < n`, not `1 <= {a} < {n}`.")
-
-    n = int(n)  # TODO: Needed until primes is a list of python ints
 
     # Factor (n - 1) by 2
     x = n -1
