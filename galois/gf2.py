@@ -100,11 +100,11 @@ class GF2(GF):
         target : str
             The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`.
         """
+        if target not in ["cpu", "parallel", "cuda"]:
+            raise ValueError(f"Argument `target` must be in ['cpu', 'parallel', 'cuda'], not {target}.")
+
         global CHARACTERISTIC, ADD_JIT, MULTIPLY_JIT  # pylint: disable=global-statement
         CHARACTERISTIC = cls.characteristic
-
-        if target not in ["cpu", "parallel", "cuda"]:
-            raise ValueError(f"Valid numba compilation targets are ['cpu', 'parallel', 'cuda'], not {target}")
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":

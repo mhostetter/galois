@@ -1,5 +1,5 @@
-from itertools import combinations
 import math
+from itertools import combinations
 
 import numba
 import numpy as np
@@ -8,28 +8,29 @@ from .prime import prime_factors
 
 
 @numba.jit(nopython=True)
-def _numba_factors(x):  # pragma: no cover
+def _numba_factors(n):  # pragma: no cover
     f = []  # Positive factors
-    for i in range(1, int(np.ceil(np.sqrt(x))) + 1):
-        if x % i == 0:
-            q = x // i
+    max_factor = int(np.ceil(np.sqrt(n)))
+    for i in range(1, max_factor + 1):
+        if n % i == 0:
+            q = n // i
             f.extend([i, q])
     return f
 
 
-def factors(x):
+def factors(n):
     """
-    Computes the positive factors of the integer :math:`x`.
+    Returns the positive factors of the integer :math:`n`.
 
     Parameters
     ----------
-    x : int
+    n : int
         An integer to be factored.
 
     Returns
     -------
-    numpy.ndarray:
-        Sorted array of factors of :math:`x`.
+    list
+        Sorted array of factors of :math:`n`.
 
     Examples
     --------
@@ -37,14 +38,15 @@ def factors(x):
 
         galois.factors(120)
     """
-    f = _numba_factors(x)
-    f = sorted(list(set(f)))  # Use set() to emove duplicates
-    return np.array(f)
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    f = _numba_factors(n)
+    return sorted(list(set(f)))  # Use set() to remove duplicates
 
 
 def euclidean_algorithm(a, b):
     """
-    Finds the greatest common divisor of two integers.
+    Finds the greatest common divisor of two integers :math:`a` and :math:`b`.
 
     Parameters
     ----------
@@ -67,11 +69,15 @@ def euclidean_algorithm(a, b):
     --------
     .. ipython:: python
 
-        a, b = 2, 13
+        a = 2
+        b = 13
         galois.euclidean_algorithm(a, b)
     """
-    assert isinstance(a, (int, np.integer))
-    assert isinstance(b, (int, np.integer))
+    if not isinstance(a, (int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(b, (int, np.integer)):
+        raise TypeError(f"Argument `b` must be an integer, not {type(b)}.")
+
     r = [a, b]
 
     while True:
@@ -112,11 +118,17 @@ def extended_euclidean_algorithm(a, b):
     --------
     .. ipython:: python
 
-        a, b = 2, 13
+        a = 2
+        b = 13
         x, y, gcd = galois.extended_euclidean_algorithm(a, b)
         x, y, gcd
         a*x + b*y == gcd
     """
+    if not isinstance(a, (int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(b, (int, np.integer)):
+        raise TypeError(f"Argument `b` must be an integer, not {type(b)}.")
+
     r = [a, b]
     s = [1, 0]
     t = [0, 1]
@@ -190,11 +202,11 @@ def chinese_remainder_theorem(a, m):
     """
     a = np.array(a)
     m = np.array(m)
-    assert m.size == a.size
-
-    # Check that modulii are pairwise relatively coprime
+    if not m.size == a.size:
+        raise ValueError(f"Arguments `a` and `m` are not the same size, {a.size} != {m.size}.")
     for pair in combinations(m, 2):
-        assert math.gcd(pair[0], pair[1]) == 1, "{} and {} are not pairwise relatively coprime".format(pair[0], pair[1])
+        if not math.gcd(pair[0], pair[1]) == 1:
+            raise ValueError(f"Elements of argument `m` must be pairwise coprime, {pair} are not.")
 
     # Iterate through the system of congruences reducing a pair of congruences into a
     # single one. The answer to the final congruence solves all the congruences.
@@ -244,7 +256,11 @@ def totatives(n):
         phi = galois.euler_totient(n); phi
         len(totatives) == phi
     """
-    assert n > 0
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+
     if n == 1:
         return [0]
     else:
@@ -289,14 +305,20 @@ def euler_totient(n):
         # For prime n, phi is always n-1
         galois.euler_totient(13)
     """
-    assert n > 0
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+
     if n == 1:
         return 1
+
     p, k = prime_factors(n)
+
     phi = 1
     for i in range(len(p)):
         phi *= p[i]**(k[i] - 1) * (p[i] - 1)
-    # phi = np.multiply.reduce(p**(k - 1) * (p - 1))
+
     return int(phi)  # TODO: Needed until PRIMES is a list of ints
 
 
@@ -347,7 +369,11 @@ def carmichael(n):
         # For prime n, phi and lambda are always n-1
         galois.euler_totient(13), galois.carmichael(13)
     """
-    assert n > 0
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+
     if n == 1:
         return 1
 
@@ -448,8 +474,10 @@ def is_cyclic(n):
         # Note the max order of any element is 4, not 8, which is Carmichael's lambda function
         galois.carmichael(n)
     """
-    if not n >= 1:
-        raise ValueError(f"`n` must be a positive integer, not {n}")
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
     p, k = prime_factors(n)
 
@@ -731,15 +759,21 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
             print("Element: {}, Span: {:<6}, Primitive root: {}".format(a, str(span), primitive_root))
     """
     # pylint: disable=too-many-branches
-    stop = n if stop is None else stop
     if n in [1, 2]:
         yield n - 1
         return
 
+    stop = n if stop is None else stop
     if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"`n` must be an integer, not {type(n)}")
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not isinstance(start, (int, np.integer)):
+        raise TypeError(f"Argument `start` must be an integer, not {type(start)}.")
+    if not isinstance(stop, (int, np.integer)):
+        raise TypeError(f"Argument `stop` must be an integer, not {type(stop)}.")
+    if not isinstance(reverse, bool):
+        raise TypeError(f"Argument `reverse` must be a bool, not {type(reverse)}.")
     if not 1 <= start < stop <= n:
-        raise ValueError(f"The search criteria must match `1 <= start < stop <= n`, not `1 <= {start} < {stop} <= {n}")
+        raise ValueError(f"Arguments must satisfy `1 <= start < stop <= n`, not `1 <= {start} < {stop} <= {n}`.")
 
     if not is_cyclic(n):
         return
@@ -793,9 +827,13 @@ def is_primitive_root(g, n):
         list(galois.primitive_roots(7))
     """
     if not isinstance(g, (int, np.integer)):
-        raise TypeError(f"`g` must be an integer, not {type(g)}")
+        raise TypeError(f"Argument `g` must be an integer, not {type(g)}.")
     if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"`n` must be an integer, not {type(n)}")
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+    if not 0 < g < n:
+        raise ValueError(f"Argument `g` must be a positive integer less than `n`, not {g}.")
 
     n = int(n)  # TODO: Need while primes is a numpy array
     phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
