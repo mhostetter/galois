@@ -16,11 +16,23 @@ def test_factors():
     assert np.array_equal(factors, true_factors)
 
 
+def test_factors_exceptions():
+    with pytest.raises(TypeError):
+        galois.factors(120.0)
+
+
 def test_euclidean_algorithm():
     a = random.randint(0, 1_000_000)
     b = random.randint(0, 1_000_000)
     gcd = galois.euclidean_algorithm(a, b)
     assert gcd == math.gcd(a, b)
+
+
+def test_euclidean_algorithm_exceptions():
+    with pytest.raises(TypeError):
+        galois.euclidean_algorithm(10.0, 12)
+    with pytest.raises(TypeError):
+        galois.euclidean_algorithm(10, 12.0)
 
 
 def test_extended_euclidean_algorithm():
@@ -29,6 +41,13 @@ def test_extended_euclidean_algorithm():
     x, y, gcd = galois.extended_euclidean_algorithm(a, b)
     assert gcd == math.gcd(a, b)
     assert a*x + b*y == gcd
+
+
+def test_extended_euclidean_algorithm_exceptions():
+    with pytest.raises(TypeError):
+        galois.extended_euclidean_algorithm(10.0, 12)
+    with pytest.raises(TypeError):
+        galois.extended_euclidean_algorithm(10, 12.0)
 
 
 def test_chinese_remainder_theorem():
@@ -40,12 +59,26 @@ def test_chinese_remainder_theorem():
         assert x % m[i] == a[i]
 
 
+def test_chinese_remainder_theorem_exceptions():
+    with pytest.raises(ValueError):
+        galois.chinese_remainder_theorem([0, 3, 4], [3, 4, 5, 7])
+    with pytest.raises(ValueError):
+        galois.chinese_remainder_theorem([0, 3, 4], [3, 4, 6])
+
+
 def test_totatives():
     # https://oeis.org/A000010
     N = list(range(1,70))
     PHI = [1,1,2,2,4,2,6,4,6,4,10,4,12,6,8,8,16,6,18,8,12,10,22,8,20,12,18,12,28,8,30,16,20,16,24,12,36,18,24,16,40,12,42,20,24,22,46,16,42,20,32,24,52,18,40,24,36,28,58,16,60,30,36,32,48,20,66,32,44]
     for n, phi in zip(N, PHI):
         assert len(galois.totatives(n)) == phi
+
+
+def test_totatives_exceptions():
+    with pytest.raises(TypeError):
+        galois.totatives(20.0)
+    with pytest.raises(ValueError):
+        galois.totatives(-1)
 
 
 def test_euler_totient():
@@ -56,12 +89,26 @@ def test_euler_totient():
         assert galois.euler_totient(n) == phi
 
 
+def test_euler_totient_exceptions():
+    with pytest.raises(TypeError):
+        galois.euler_totient(20.0)
+    with pytest.raises(ValueError):
+        galois.euler_totient(-1)
+
+
 def test_carmichael():
     # https://oeis.org/A002322
     N = list(range(1,82))
     LAMBDA = [1,1,2,2,4,2,6,2,6,4,10,2,12,6,4,4,16,6,18,4,6,10,22,2,20,12,18,6,28,4,30,8,10,16,12,6,36,18,12,4,40,6,42,10,12,22,46,4,42,20,16,12,52,18,20,6,18,28,58,4,60,30,6,16,12,10,66,16,22,12,70,6,72,36,20,18,30,12,78,4,54]
     for n, lambda_ in zip(N, LAMBDA):
         assert galois.carmichael(n) == lambda_
+
+
+def test_carmichael_exceptions():
+    with pytest.raises(TypeError):
+        galois.carmichael(20.0)
+    with pytest.raises(ValueError):
+        galois.carmichael(-1)
 
 
 def test_is_cyclic():
@@ -73,30 +120,11 @@ def test_is_cyclic():
     assert galois.is_cyclic(2*5*7*9) == False
 
 
-def test_primitive_root_non_integer():
+def test_is_cyclic_exceptions():
     with pytest.raises(TypeError):
-        galois.primitive_root(13.0)
-
-
-def test_primitive_root_non_positive_integer():
+        galois.is_cyclic(20.0)
     with pytest.raises(ValueError):
-        galois.primitive_root(0)
-    with pytest.raises(ValueError):
-        galois.primitive_root(-2)
-
-
-def test_primitive_root_invalid_start():
-    with pytest.raises(ValueError):
-        galois.primitive_root(7, start=0)
-    with pytest.raises(ValueError):
-        galois.primitive_root(7, start=7)
-
-
-def test_primitive_root_invalid_stop():
-    with pytest.raises(ValueError):
-        galois.primitive_root(7, stop=1)
-    with pytest.raises(ValueError):
-        galois.primitive_root(7, start=6, stop=6)
+        galois.is_cyclic(-1)
 
 
 def test_smallest_primitive_root():
@@ -131,6 +159,30 @@ def test_largest_primitive_root_of_primes():
     roots = [1,2,3,5,8,11,14,15,21,27,24,35,35,34,45,51,56,59,63,69,68,77,80,86,92,99,101,104,103,110,118,128,134,135,147,146,152,159,165,171,176,179,189,188,195,197,207,214,224,223,230,237,234,248,254,261,267,269,272]
     for n, root in zip(ns, roots):
         assert galois.primitive_root(primes[n-1], largest=True) == root
+
+
+def test_primitive_root_exceptions():
+    with pytest.raises(TypeError):
+        galois.primitive_root(20.0)
+    with pytest.raises(TypeError):
+        galois.primitive_root(20, start=1.0)
+    with pytest.raises(TypeError):
+        galois.primitive_root(20, stop=20.0)
+    with pytest.raises(TypeError):
+        galois.primitive_root(20, largest=1)
+
+    with pytest.raises(ValueError):
+        galois.primitive_root(0)
+    with pytest.raises(ValueError):
+        galois.primitive_root(-2)
+    with pytest.raises(ValueError):
+        galois.primitive_root(7, start=0)
+    with pytest.raises(ValueError):
+        galois.primitive_root(7, start=7)
+    with pytest.raises(ValueError):
+        galois.primitive_root(7, stop=1)
+    with pytest.raises(ValueError):
+        galois.primitive_root(7, start=6, stop=6)
 
 
 def test_primitive_roots():
@@ -208,6 +260,30 @@ def test_primitive_roots_are_generators(n):
     assert len(roots) == galois.euler_totient(phi)
 
 
+def test_primitive_roots_exceptions():
+    with pytest.raises(TypeError):
+        list(galois.primitive_roots(20.0))
+    with pytest.raises(TypeError):
+        list(galois.primitive_roots(20, start=1.0))
+    with pytest.raises(TypeError):
+        list(galois.primitive_roots(20, stop=20.0))
+    with pytest.raises(TypeError):
+        list(galois.primitive_roots(20, reverse=1))
+
+    with pytest.raises(ValueError):
+        list(galois.primitive_roots(0))
+    with pytest.raises(ValueError):
+        list(galois.primitive_roots(-2))
+    with pytest.raises(ValueError):
+        list(galois.primitive_roots(7, start=0))
+    with pytest.raises(ValueError):
+        list(galois.primitive_roots(7, start=7))
+    with pytest.raises(ValueError):
+        list(galois.primitive_roots(7, stop=1))
+    with pytest.raises(ValueError):
+        list(galois.primitive_roots(7, start=6, stop=6))
+
+
 def test_is_primitive_root():
     n = 7
     roots = [3, 5]
@@ -216,3 +292,14 @@ def test_is_primitive_root():
             assert galois.is_primitive_root(g, n)
         else:
             assert not galois.is_primitive_root(g, n)
+
+
+def test_is_primitive_root_exceptions():
+    with pytest.raises(TypeError):
+        galois.is_primitive_root(3.0, 13)
+    with pytest.raises(TypeError):
+        galois.is_primitive_root(3, 13.0)
+    with pytest.raises(ValueError):
+        galois.is_primitive_root(3, 0)
+    with pytest.raises(ValueError):
+        galois.is_primitive_root(15, 13)
