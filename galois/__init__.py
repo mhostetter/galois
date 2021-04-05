@@ -7,7 +7,7 @@ from .algorithm import factors, euclidean_algorithm, extended_euclidean_algorith
 from .gf import GF
 from .gf2 import GF2
 from .poly import Poly
-from .prime import prev_prime, next_prime, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
+from .prime import primes, kth_prime, prev_prime, next_prime, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
 
 
 def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=redefined-outer-name

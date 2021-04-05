@@ -319,7 +319,7 @@ def euler_totient(n):
     for i in range(len(p)):
         phi *= p[i]**(k[i] - 1) * (p[i] - 1)
 
-    return int(phi)  # TODO: Needed until PRIMES is a list of ints
+    return phi
 
 
 def _carmichael_prime_power(p, k):
@@ -778,7 +778,7 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
     if not is_cyclic(n):
         return
 
-    n = int(n)  # TODO: Need while primes is a numpy array
+    n = int(n)  # Needed for the pow() function
     phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
     primes, _ = prime_factors(phi)
 
@@ -835,7 +835,6 @@ def is_primitive_root(g, n):
     if not 0 < g < n:
         raise ValueError(f"Argument `g` must be a positive integer less than `n`, not {g}.")
 
-    n = int(n)  # TODO: Need while primes is a numpy array
     phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
     primes, _ = prime_factors(phi)
 

@@ -9,12 +9,50 @@ import pytest
 import galois
 
 
-def test_prev_next_prime():
-    assert galois.prev_prime(8) == 7
-    assert galois.next_prime(8) == 11
+def test_primes():
+    assert galois.primes(19) == [2, 3, 5, 7, 11, 13, 17, 19]
+    assert galois.primes(20) == [2, 3, 5, 7, 11, 13, 17, 19]
 
+    with pytest.raises(TypeError):
+        galois.primes(20.0)
+    with pytest.raises(ValueError):
+        galois.primes(1)
+
+
+def test_kth_prime():
+    assert galois.kth_prime(1) == 2
+    assert galois.kth_prime(2) == 3
+    assert galois.kth_prime(100) == 541
+    assert galois.kth_prime(1000) == 7919
+
+    with pytest.raises(TypeError):
+        galois.kth_prime(20.0)
+    with pytest.raises(ValueError):
+        galois.kth_prime(0)
+    with pytest.raises(ValueError):
+        galois.kth_prime(galois.prime.MAX_K + 1)
+
+
+def test_prev_prime():
+    assert galois.prev_prime(8) == 7
     assert galois.prev_prime(11) == 11
+
+    with pytest.raises(TypeError):
+        galois.prev_prime(20.0)
+    with pytest.raises(ValueError):
+        galois.prev_prime(1)
+    with pytest.raises(ValueError):
+        galois.prev_prime(galois.prime.MAX_PRIME + 1)
+
+
+def test_next_prime():
+    assert galois.next_prime(8) == 11
     assert galois.next_prime(11) == 13
+
+    with pytest.raises(TypeError):
+        galois.next_prime(20.0)
+    with pytest.raises(ValueError):
+        galois.next_prime(galois.prime.MAX_PRIME)
 
 
 def test_prime_factorization_small():
@@ -62,7 +100,7 @@ def test_prime_factorization_extremely_large():
 
 
 def test_fermat_primality_test_on_primes():
-    primes = random.choices(galois._prime.PRIMES, k=10)
+    primes = random.choices(galois.prime.PRIMES, k=10)
     for prime in primes:
         # Fermat's primality test should never call a prime a composite
         assert galois.fermat_primality_test(prime) == True
@@ -77,7 +115,7 @@ def test_fermat_primality_test_on_pseudoprimes():
 
 
 def test_miller_rabin_primality_test_on_primes():
-    primes = random.choices(galois._prime.PRIMES, k=10)
+    primes = random.choices(galois.prime.PRIMES, k=10)
     for prime in primes:
         # Miller-Rabin's primality test should never call a prime a composite
         assert galois.fermat_primality_test(prime) == True
