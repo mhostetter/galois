@@ -7,15 +7,15 @@ from .gf2 import GF2
 
 class Poly:
     """
-    Create a polynomial over a Galois field, :math:`p(x) \\in \\mathrm{GF}(q)[x]`.
+    Create a polynomial :math:`p(x)` over :math:`\\mathrm{GF}(q)[x]`.
 
-    The polynomial :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0` has coefficients :math:`\\{a_{d}, \\dots, a_1, a_0\\}`
+    The polynomial :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0` has coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}`
     in :math:`\\mathrm{GF}(q)`.
 
     Parameters
     ----------
     coeffs : array_like
-        List of polynomial coefficients :math:`\\{a_{d}, \\dots, a_1, a_0\\}` with type :obj:`galois.GF`, :obj:`numpy.ndarray`,
+        List of polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.GF`, :obj:`numpy.ndarray`,
         :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
         the 0-th degree element if `order="asc"`.
     field : galois.GF, optional
@@ -33,7 +33,6 @@ class Poly:
 
     Examples
     --------
-
     Create a polynomial over :math:`\\mathrm{GF}(2)[x]`.
 
     .. ipython:: python
@@ -55,8 +54,8 @@ class Poly:
 
     .. ipython:: python
 
-        a = galois.Poly([117, 0, 63, 37], field=GF256); a
-        b = galois.Poly([224, 0, 21], field=GF256); b
+        a = galois.Poly([117,0,63,37], field=GF256); a
+        b = galois.Poly([224,0,21], field=GF256); b
 
         a + b
         a - b
@@ -94,7 +93,7 @@ class Poly:
     @classmethod
     def Zero(cls, field=GF2):
         """
-        Constructs the zero polynomial, :math:`p(x) = 0 \\in \\mathrm{GF}(q)[x]`.
+        Constructs the zero polynomial :math:`p(x) = 0` over :math:`\\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
@@ -126,7 +125,7 @@ class Poly:
     @classmethod
     def One(cls, field=GF2):
         """
-        Constructs the one polynomial, :math:`p(x) = 1 \\in \\mathrm{GF}(q)[x]`.
+        Constructs the one polynomial :math:`p(x) = 1` over :math:`\\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
@@ -158,7 +157,7 @@ class Poly:
     @classmethod
     def Identity(cls, field=GF2):
         """
-        Constructs the identity polynomial, :math:`p(x) = x \\in \\mathrm{GF}(q)[x]`.
+        Constructs the identity polynomial :math:`p(x) = x` over :math:`\\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
@@ -234,9 +233,9 @@ class Poly:
         """
         Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its integer representation.
 
-        The integer value :math:`d` represents polynomial :math:`p(x) =  a_{d}x^{d} + \\dots + a_1x + a_0`
-        over field :math:`\\mathrm{GF}(q)` if :math:`d = a_{d} q^{N-1} + \\dots + a_1 q + a_0` using integer arithmetic,
-        not field arithmetic.
+        The integer value :math:`i` represents the polynomial :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`
+        over field :math:`\\mathrm{GF}(q)` if :math:`i = a_{d}q^{d} + a_{d-1}q^{d-1} + \\dots + a_1q + a_0` using integer arithmetic,
+        not finite field arithmetic.
 
         Parameters
         ----------
@@ -263,7 +262,7 @@ class Poly:
         .. ipython:: python
 
             GF256 = galois.GF_factory(2, 8)
-            galois.Poly.Integer(256**3 + 117, field=GF256)
+            galois.Poly.Integer(13*256**3 + 117, field=GF256)
         """
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Polynomial creation must have `integer` be an integer, not {type(integer)}")
@@ -338,10 +337,12 @@ class Poly:
         """
         Constructs a monic polynomial in :math:`\\mathrm{GF}(q)[x]` from its roots.
 
-        The polynomial :math:`p(x)` with roots :math:`\\{r_0, r_1, \\dots, r_{N-1}\\}` is:
+        The polynomial :math:`p(x)` with :math:`d` roots :math:`\\{r_0, r_1, \\dots, r_{d-1}\\}` is:
 
         .. math::
-            p(x) = (x - r_0) (x - r_1) \\dots (x - r_{N-1})
+            p(x) &= (x - r_0) (x - r_1) \\dots (x - r_{d-1})
+
+            p(x) &= a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0
 
         Parameters
         ----------
@@ -623,8 +624,8 @@ class Poly:
     @property
     def coeffs_asc(self):
         """
-        galois.GF: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{d}\\}` as a Galois field array
-        in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
+        galois.GF: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{d-1}, a_{d}\\}` as a Galois field array
+        in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
         """
         if self.order == "asc":
             return self.field(self._coeffs)
@@ -634,8 +635,8 @@ class Poly:
     @property
     def coeffs_desc(self):
         """
-        galois.GF: The polynomial coefficients :math:`\\{a_{d}, \\dots, a_1, a_0\\}` as a Galois field array
-        in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
+        galois.GF: The polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` as a Galois field array
+        in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
         """
         if self.order == "desc":
             return self.field(self._coeffs)
@@ -652,16 +653,17 @@ class Poly:
     @property
     def field(self):
         """
-        galois.GF: The finite field to which the coefficients belong.
+        type: The Galois field to which the coefficients belong. The `field` property is a type that is a
+        subclass of :obj:`galois.GF`.
         """
         return self._field
 
     @property
     def integer(self):
         """
-        int: The integer representation of the polynomial. For :math:`p(x) =  a_{d}x^{d} + \\dots + a_1x + a_0`
-        with elements in :math:`\\mathrm{GF}(q)`, the integer representation is :math:`d = a_{d} q^{N-1} + \\dots + a_1 q + a_0`
-        (using integer arithmetic, not field arithmetic) where :math:`q` is the field order.
+        int: The integer representation of the polynomial. For :math:`p(x) =  a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`
+        with elements in :math:`\\mathrm{GF}(q)`, the integer representation is :math:`i = a_{d} q^{d} + a_{d-1} q^{d-1} + \\dots + a_1 q + a_0`
+        (using integer arithmetic, not finite field arithmetic) where :math:`q` is the field order.
         """
         c = self.coeffs_asc
         c = c.view(np.ndarray)  # We want to do integer math, not Galois field math
