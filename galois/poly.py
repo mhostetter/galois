@@ -44,7 +44,7 @@ class Poly:
 
     .. ipython:: python
 
-        GF256 = galois.GF_factory(2, 8)
+        GF256 = galois.GF_factory(2**8)
         galois.Poly([124,0,223,0,0,15], field=GF256)
 
         # Alternate way of constructing the same polynomial
@@ -117,7 +117,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2, 8)
+            GF256 = galois.GF_factory(2**8)
             galois.Poly.Zero(field=GF256)
         """
         return cls([0], field=field)
@@ -149,7 +149,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2, 8)
+            GF256 = galois.GF_factory(2**8)
             galois.Poly.One(field=GF256)
         """
         return cls([1], field=field)
@@ -181,7 +181,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2, 8)
+            GF256 = galois.GF_factory(2**8)
             galois.Poly.Identity(field=GF256)
         """
         return cls([1, 0], field=field)
@@ -215,7 +215,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2, 8)
+            GF256 = galois.GF_factory(2**8)
             galois.Poly.Random(5, field=GF256)
         """
         if not isinstance(degree, (int, np.integer)):
@@ -261,7 +261,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2, 8)
+            GF256 = galois.GF_factory(2**8)
             galois.Poly.Integer(13*256**3 + 117, field=GF256)
         """
         if not isinstance(integer, (int, np.integer)):
@@ -307,7 +307,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2, 8)
+            GF256 = galois.GF_factory(2**8)
             galois.Poly.Degrees([3,1,0], coeffs=[251,73,185], field=GF256)
         """
         coeffs = [1,]*len(degrees) if coeffs is None else coeffs
@@ -370,7 +370,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2, 8)
+            GF256 = galois.GF_factory(2**8)
             roots = [121, 198, 225]
             p = galois.Poly.Roots(roots, field=GF256); p
             p(roots)
@@ -471,7 +471,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2, 8)
+            GF256 = galois.GF_factory(2**8)
             p = galois.Poly.Roots([18,]*7 + [155,]*13 + [227,]*9, field=GF256); p
             p.roots()
             p.roots(multiplicity=True)
@@ -581,7 +581,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7, 1)
+            GF7 = galois.GF_factory(7)
             p = galois.Poly.Random(11, field=GF7); p
             p.derivative()
             p.derivative(2)
@@ -594,7 +594,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2, 8)
+            GF256 = galois.GF_factory(2**8)
             p = galois.Poly.Random(7, field=GF256); p
             p.derivative()
 

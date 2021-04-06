@@ -70,7 +70,7 @@ class GF(np.ndarray, metaclass=GFMeta):
 
     The :obj:`galois.GF` class is a parent class for all Galois field array classes. Any Galois field :math:`\\mathrm{GF}(p^m)`
     with prime characteristic :math:`p` and positive integer :math:`m`, can be constructed by calling the class factory
-    `galois.GF_factory(p, m)`.
+    `galois.GF_factory(p**m)`.
 
     Warning
     -------
@@ -81,7 +81,7 @@ class GF(np.ndarray, metaclass=GFMeta):
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7, 1)
+            GF7 = galois.GF_factory(7)
             print(GF7)
 
         This subclass can then be used to instantiate arrays over :math:`\\mathrm{GF}(7)`.
@@ -125,16 +125,16 @@ class GF(np.ndarray, metaclass=GFMeta):
     .. ipython:: python
 
         # Construct a GF(2^m) class
-        GF256 = galois.GF_factory(2, 8); print(GF256)
+        GF256 = galois.GF_factory(2**8); print(GF256)
 
         # Construct a GF(p) class
-        GF571 = galois.GF_factory(571, 1); print(GF571)
+        GF571 = galois.GF_factory(571); print(GF571)
 
         # Construct a very large GF(2^m) class
-        GF2m = galois.GF_factory(2, 100); print(GF2m)
+        GF2m = galois.GF_factory(2**100); print(GF2m)
 
         # Construct a very large GF(p) class
-        GFp = galois.GF_factory(36893488147419103183, 1); print(GFp)
+        GFp = galois.GF_factory(36893488147419103183); print(GFp)
 
     Depending on the field's order (size), only certain `dtype` values will be supported.
 
@@ -263,7 +263,7 @@ class GF(np.ndarray, metaclass=GFMeta):
 
     def __new__(cls, array, dtype=None, copy=True, order="K", ndmin=0):
         if cls is GF:
-            raise NotImplementedError("GF is an abstract base class that cannot be directly instantiated. Instead, create a GF subclass using `galois.GF_factory()`.")
+            raise NotImplementedError("GF is an abstract base class that cannot be directly instantiated. Instead, create a GF subclass using `galois.GF_factory`.")
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
     @classmethod
@@ -290,7 +290,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31, 1)
+            GF = galois.GF_factory(31)
             GF.Zeros((2,5))
         """
         dtype = cls._get_dtype(dtype)
@@ -321,7 +321,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31, 1)
+            GF = galois.GF_factory(31)
             GF.Ones((2,5))
         """
         dtype = cls._get_dtype(dtype)
@@ -354,7 +354,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31, 1)
+            GF = galois.GF_factory(31)
             GF.Range(10,20)
         """
         dtype = cls._get_dtype(dtype)
@@ -397,7 +397,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31, 1)
+            GF = galois.GF_factory(31)
             GF.Random((2,5))
         """
         dtype = cls._get_dtype(dtype)
@@ -435,7 +435,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31, 1)
+            GF = galois.GF_factory(31)
             GF.Elements()
         """
         return cls.Range(0, cls.order, step=1, dtype=dtype)
@@ -544,7 +544,7 @@ class GF(np.ndarray, metaclass=GFMeta):
 
         .. ipython:: python
 
-            GF = galois.GF_factory(2, 3)
+            GF = galois.GF_factory(2**3)
             a = GF.Random(4); a
             GF.display("poly"); a
             GF.display("poly", "r"); a

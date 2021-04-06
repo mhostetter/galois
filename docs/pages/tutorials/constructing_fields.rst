@@ -30,7 +30,7 @@ GF(p) field classes
 
 .. ipython:: python
 
-   GF7 = galois.GF_factory(7, 1)
+   GF7 = galois.GF_factory(7)
    print(GF7)
 
    # The primitive element of the finite field
@@ -51,7 +51,7 @@ factory :obj:`galois.GF_factory`.
 
 .. ipython:: python
 
-   GF8 = galois.GF_factory(2, 3)
+   GF8 = galois.GF_factory(2**3)
    print(GF8)
 
    # The primitive element of the finite field
@@ -111,7 +111,7 @@ in :math:`[0, p^m)`.
 
 .. ipython:: python
 
-   GF = galois.GF_factory(7, 1)
+   GF = galois.GF_factory(7)
    a = GF.Random(10); a
 
    # Type cast an existing Galois field array to a different dtype
@@ -130,7 +130,7 @@ as degree-3 polynomials in :math:`\mathrm{GF}(2)[x]`, i.e. :math:`\{0, 1, x, x+1
 
 .. ipython:: python
 
-   GF = galois.GF_factory(2, 3)
+   GF = galois.GF_factory(2**3)
    a = GF.Random(10)
 
    # The default mode represents the field elements as integers
