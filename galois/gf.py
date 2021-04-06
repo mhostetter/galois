@@ -35,9 +35,9 @@ ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 
 
-class GFMeta(type):
+class GFArrayMeta(type):
     """
-    Defines a metaclass to give all GF classes a `__str__()` special method, not just their instances.
+    Defines a metaclass to give all GFArray classes a `__str__()` special method, not just their instances.
     """
 
     def __str__(cls):
@@ -50,7 +50,7 @@ class GFMeta(type):
 
 class DisplayContext:
     """
-    Simple context manager for the :obj:`galois.GF.display` method.
+    Simple context manager for the :obj:`galois.GFArray.display` method.
     """
 
     def __init__(self, cls, mode, poly_var):
@@ -68,24 +68,24 @@ class DisplayContext:
         self.cls._display_poly_var = self.poly_var
 
 
-class GF(np.ndarray, metaclass=GFMeta):
+class GFArray(np.ndarray, metaclass=GFArrayMeta):
     """
     Create an array over :math:`\\mathrm{GF}(p^m)`.
 
-    The :obj:`galois.GF` class is a parent class for all Galois field array classes. Any Galois field :math:`\\mathrm{GF}(p^m)`
+    The :obj:`galois.GFArray` class is a parent class for all Galois field array classes. Any Galois field :math:`\\mathrm{GF}(p^m)`
     with prime characteristic :math:`p` and positive integer :math:`m`, can be constructed by calling the class factory
-    `galois.GF_factory(p**m)`.
+    `galois.GF(p**m)`.
 
     Warning
     -------
-        This is an abstract base class for all Galois field array classes. :obj:`galois.GF` cannot be instantiated
-        directly. Instead, Galois field array classes are created using :obj:`galois.GF_factory`.
+        This is an abstract base class for all Galois field array classes. :obj:`galois.GFArray` cannot be instantiated
+        directly. Instead, Galois field array classes are created using :obj:`galois.GF`.
 
         For example, one can create the :math:`\\mathrm{GF}(7)` field array class as follows:
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7)
+            GF7 = galois.GF(7)
             print(GF7)
 
         This subclass can then be used to instantiate arrays over :math:`\\mathrm{GF}(7)`.
@@ -95,8 +95,8 @@ class GF(np.ndarray, metaclass=GFMeta):
             GF7([3,5,0,2,1])
             GF7.Random((2,5))
 
-    :obj:`galois.GF` is a subclass of :obj:`numpy.ndarray`. The :obj:`galois.GF` constructor has the same syntax as
-    :obj:`numpy.array`. The returned :obj:`galois.GF` object is an array that can be acted upon like any other
+    :obj:`galois.GFArray` is a subclass of :obj:`numpy.ndarray`. The :obj:`galois.GFArray` constructor has the same syntax as
+    :obj:`numpy.array`. The returned :obj:`galois.GFArray` object is an array that can be acted upon like any other
     numpy array.
 
     Parameters
@@ -119,26 +119,26 @@ class GF(np.ndarray, metaclass=GFMeta):
 
     Returns
     -------
-    galois.GF
+    galois.GFArray
         The copied input array as a :math:`\\mathrm{GF}(p^m)` field array.
 
     Examples
     --------
-    Construct various kinds of Galois fields using :obj:`galois.GF_factory`.
+    Construct various kinds of Galois fields using :obj:`galois.GF`.
 
     .. ipython:: python
 
         # Construct a GF(2^m) class
-        GF256 = galois.GF_factory(2**8); print(GF256)
+        GF256 = galois.GF(2**8); print(GF256)
 
         # Construct a GF(p) class
-        GF571 = galois.GF_factory(571); print(GF571)
+        GF571 = galois.GF(571); print(GF571)
 
         # Construct a very large GF(2^m) class
-        GF2m = galois.GF_factory(2**100); print(GF2m)
+        GF2m = galois.GF(2**100); print(GF2m)
 
         # Construct a very large GF(p) class
-        GFp = galois.GF_factory(36893488147419103183); print(GFp)
+        GFp = galois.GF(36893488147419103183); print(GFp)
 
     Depending on the field's order (size), only certain `dtype` values will be supported.
 
@@ -192,7 +192,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         a
     """
 
-    # NOTE: These class attributes will be set in the subclasses of GF
+    # NOTE: These class attributes will be set in the subclasses of GFArray
 
     characteristic = None
     """
@@ -266,8 +266,8 @@ class GF(np.ndarray, metaclass=GFMeta):
     _ufunc_poly_eval = None
 
     def __new__(cls, array, dtype=None, copy=True, order="K", ndmin=0):
-        if cls is GF:
-            raise NotImplementedError("GF is an abstract base class that cannot be directly instantiated. Instead, create a GF subclass using `galois.GF_factory`.")
+        if cls is GFArray:
+            raise NotImplementedError("GFArray is an abstract base class that cannot be directly instantiated. Instead, create a GFArray subclass using `galois.GF`.")
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
     @classmethod
@@ -287,14 +287,14 @@ class GF(np.ndarray, metaclass=GFMeta):
 
         Returns
         -------
-        galois.GF
+        galois.GFArray
             A Galois field array of zeros.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31)
+            GF = galois.GF(31)
             GF.Zeros((2,5))
         """
         dtype = cls._get_dtype(dtype)
@@ -318,14 +318,14 @@ class GF(np.ndarray, metaclass=GFMeta):
 
         Returns
         -------
-        galois.GF
+        galois.GFArray
             A Galois field array of ones.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31)
+            GF = galois.GF(31)
             GF.Ones((2,5))
         """
         dtype = cls._get_dtype(dtype)
@@ -351,14 +351,14 @@ class GF(np.ndarray, metaclass=GFMeta):
 
         Returns
         -------
-        galois.GF
+        galois.GFArray
             A Galois field array of a range of field elements.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31)
+            GF = galois.GF(31)
             GF.Range(10,20)
         """
         dtype = cls._get_dtype(dtype)
@@ -394,14 +394,14 @@ class GF(np.ndarray, metaclass=GFMeta):
 
         Returns
         -------
-        galois.GF
+        galois.GFArray
             A Galois field array of random field elements.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31)
+            GF = galois.GF(31)
             GF.Random((2,5))
         """
         dtype = cls._get_dtype(dtype)
@@ -432,14 +432,14 @@ class GF(np.ndarray, metaclass=GFMeta):
 
         Returns
         -------
-        galois.GF
+        galois.GFArray
             A Galois field array of all the field's elements.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF_factory(31)
+            GF = galois.GF(31)
             GF.Elements()
         """
         return cls.Range(0, cls.order, step=1, dtype=dtype)
@@ -544,11 +544,11 @@ class GF(np.ndarray, metaclass=GFMeta):
 
         Examples
         --------
-        Change the display mode by calling the :obj:`galois.GF.display` method.
+        Change the display mode by calling the :obj:`galois.GFArray.display` method.
 
         .. ipython:: python
 
-            GF = galois.GF_factory(2**3)
+            GF = galois.GF(2**3)
             a = GF.Random(4); a
             GF.display("poly"); a
             GF.display("poly", "r"); a
@@ -556,7 +556,7 @@ class GF(np.ndarray, metaclass=GFMeta):
             # Reset the print mode
             GF.display(); a
 
-        The :obj:`galois.GF.display` method can also be used as a context manager.
+        The :obj:`galois.GFArray.display` method can also be used as a context manager.
 
         .. ipython:: python
 
@@ -706,7 +706,7 @@ class GF(np.ndarray, metaclass=GFMeta):
         A numpy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
         that view casting to a Galois field array has the appropriate dtype and that the values are in the field.
         """
-        if obj is not None and not isinstance(obj, GF):
+        if obj is not None and not isinstance(obj, GFArray):
             # Only invoked on view casting
             if obj.dtype not in self.dtypes:
                 raise TypeError(f"GF({self.characteristic}^{self.degree}) can only have integer dtypes {self.dtypes}, not {obj.dtype}")

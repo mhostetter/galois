@@ -4,13 +4,13 @@ A performant numpy extension for Galois fields.
 from .version import __version__
 
 from .algorithm import factors, euclidean_algorithm, extended_euclidean_algorithm, chinese_remainder_theorem, totatives, euler_totient, carmichael,  is_cyclic, primitive_root, primitive_roots, is_primitive_root
-from .gf import GF
+from .gf import GFArray
 from .gf2 import GF2
 from .poly import Poly
 from .prime import primes, kth_prime, prev_prime, next_prime, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
 
 
-def GF_factory(order, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=redefined-outer-name
+def GF(order, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=redefined-outer-name
     """
     Factory function to construct Galois field array classes of type :math:`\\mathrm{GF}(p^m)`.
 
@@ -35,29 +35,28 @@ def GF_factory(order, prim_poly=None, target="cpu", mode="auto", rebuild=False):
 
     Returns
     -------
-    galois.GF
-        A new Galois field array class that is a subclass of :obj:`galois.GF`.
+    type
+        A new Galois field array class that is a subclass of :obj:`galois.GFArray`.
 
     Examples
     --------
-
-    Construct various kinds of Galois fields.
+    Construct various Galois field array classes.
 
     .. ipython:: python
 
         # Construct a GF(2^m) class
-        GF256 = galois.GF_factory(2**8); print(GF256)
+        GF256 = galois.GF(2**8); print(GF256)
 
         # Construct a GF(p) class
-        GF571 = galois.GF_factory(571); print(GF571)
+        GF571 = galois.GF(571); print(GF571)
 
         # Construct a very large GF(2^m) class
-        GF2m = galois.GF_factory(2**100); print(GF2m)
+        GF2m = galois.GF(2**100); print(GF2m)
 
         # Construct a very large GF(p) class
-        GFp = galois.GF_factory(36893488147419103183); print(GFp)
+        GFp = galois.GF(36893488147419103183); print(GFp)
 
-    See :obj:`galois.GF` for more examples of what a Galois field array can do.
+    See :obj:`galois.GFArray` for more examples of what Galois field arrays can do.
     """
     # pylint: disable=import-outside-toplevel
     import numpy as np
@@ -78,8 +77,8 @@ def GF_factory(order, prim_poly=None, target="cpu", mode="auto", rebuild=False):
 
     # If the requested field has already been constructed, return it instead of rebuilding
     key = (characteristic, degree, mode)
-    if not rebuild and key in GF_factory.classes:
-        return GF_factory.classes[key]
+    if not rebuild and key in GF.classes:
+        return GF.classes[key]
 
     if characteristic == 2 and degree == 1:
         if not (prim_poly is None or prim_poly is GF2.prim_poly):
@@ -92,11 +91,11 @@ def GF_factory(order, prim_poly=None, target="cpu", mode="auto", rebuild=False):
         cls = _GFp_factory(characteristic, prim_poly=prim_poly, target=target, mode=mode)
 
     # Add class to dictionary of flyweights
-    GF_factory.classes[key] = cls
+    GF.classes[key] = cls
 
     return cls
 
-GF_factory.classes = {}
+GF.classes = {}
 
 
 def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):

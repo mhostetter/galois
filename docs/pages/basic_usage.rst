@@ -4,17 +4,27 @@ Basic Usage
 Galois field array construction
 -------------------------------
 
-Construct Galois field array classes using the `GF_factory()` class factory function.
+Construct Galois field array classes using the :obj:`galois.GF` class factory function.
 
 .. ipython:: python
 
    import numpy as np
    import galois
 
-   GF31 = galois.GF_factory(31);
-   print(GF31)
+   GF31 = galois.GF(31); print(GF31)
    issubclass(GF31, np.ndarray)
+
+Galois field array classes contain extra class attributes related to the finite field.
+
+.. ipython:: python
+
+   # The size of the finite field
+   GF31.order
+
+   # A primitive element of the finite field
    GF31.alpha
+
+   # The primitive polynomial of the finite field
    GF31.prim_poly
 
 Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even arbitrarily-large fields!
@@ -22,14 +32,14 @@ Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even
 .. ipython:: python
 
    # Field used in AES
-   GF256 = galois.GF_factory(2**8); print(GF256)
+   GF256 = galois.GF(2**8); print(GF256)
 
    prime = 36893488147419103183; galois.is_prime(prime)
    # Large prime field
-   GFp = galois.GF_factory(prime); print(GFp)
+   GFp = galois.GF(prime); print(GFp)
 
    # Large characteristic-2 field
-   GF2_100 = galois.GF_factory(2**100); print(GF2_100)
+   GF2_100 = galois.GF(2**100); print(GF2_100)
 
 Create arrays from existing `numpy` arrays.
 
@@ -52,6 +62,22 @@ Or, create Galois field arrays using alternate constructors.
 
    # Construct a random array without zeros to prevent ZeroDivisonError
    y = GF256.Random(10, low=1); y
+
+The class factory :obj:`galois.GF` stores flyweights of previously generated classes. So, after creating a Galois field array
+class you can assign it to a variable for future use or always use class factory. Both are equally fast. It's up to personal
+preference and coding style. When creating a Galois field array class with several keyword arguments, that may be a good time
+to save the class to a variable.
+
+.. ipython:: python
+
+   # Create a Galois field array class and assign it to a variable
+   GF256 = galois.GF(2**8); print(GF256)
+
+   # Use the class variable to create arrays
+   GF256.Random((2,5))
+
+   # Or simply call the class factory each time
+   galois.GF(2**8).Random((2,5))
 
 Galois field array arithmetic
 -----------------------------

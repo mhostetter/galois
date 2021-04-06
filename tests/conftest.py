@@ -61,28 +61,28 @@ def construct_field(folder):
         GF = galois.GF2
 
     elif folder == "GF(5)":
-        GF = galois.GF_factory(5, mode=mode)
+        GF = galois.GF(5, mode=mode)
     elif folder == "GF(7)":
-        GF = galois.GF_factory(7, mode=mode)
+        GF = galois.GF(7, mode=mode)
     elif folder == "GF(31)":
-        GF = galois.GF_factory(31, mode=mode)
+        GF = galois.GF(31, mode=mode)
     elif folder == "GF(3191)":
-        GF = galois.GF_factory(3191, mode=mode)
+        GF = galois.GF(3191, mode=mode)
     elif folder == "GF(2147483647)":
-        GF = galois.GF_factory(2147483647, mode=mode)
+        GF = galois.GF(2147483647, mode=mode)
     elif folder == "GF(36893488147419103183)":
-        GF = galois.GF_factory(36893488147419103183, mode=mode)
+        GF = galois.GF(36893488147419103183, mode=mode)
 
     elif folder == "GF(2^2)":
-        GF = galois.GF_factory(2**2, mode=mode)
+        GF = galois.GF(2**2, mode=mode)
     elif folder == "GF(2^3)":
-        GF = galois.GF_factory(2**3, mode=mode)
+        GF = galois.GF(2**3, mode=mode)
     elif folder == "GF(2^8)":
-        GF = galois.GF_factory(2**8, mode=mode)
+        GF = galois.GF(2**8, mode=mode)
     elif folder == "GF(2^32)":
-        GF = galois.GF_factory(2**32, mode=mode)
+        GF = galois.GF(2**32, mode=mode)
     elif folder == "GF(2^100)":
-        GF = galois.GF_factory(2**100, mode=mode)
+        GF = galois.GF(2**100, mode=mode)
 
     else:
         raise AssertionError(f"Test data folder {folder} not found")

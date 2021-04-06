@@ -26,11 +26,11 @@ GF(p) field classes
 -------------------
 
 :math:`\mathrm{GF}(p)` fields, where :math:`p` is prime, can be constructed using the class factory
-:obj:`galois.GF_factory`.
+:obj:`galois.GF`.
 
 .. ipython:: python
 
-   GF7 = galois.GF_factory(7)
+   GF7 = galois.GF(7)
    print(GF7)
 
    # The primitive element of the finite field
@@ -47,11 +47,11 @@ GF(2^m) field classes
 ---------------------
 
 :math:`\mathrm{GF}(2^m)` fields, where :math:`m` is a positive integer, can be constructed using the class
-factory :obj:`galois.GF_factory`.
+factory :obj:`galois.GF`.
 
 .. ipython:: python
 
-   GF8 = galois.GF_factory(2**3)
+   GF8 = galois.GF(2**3)
    print(GF8)
 
    # The primitive element of the finite field
@@ -111,7 +111,7 @@ in :math:`[0, p^m)`.
 
 .. ipython:: python
 
-   GF = galois.GF_factory(7)
+   GF = galois.GF(7)
    a = GF.Random(10); a
 
    # Type cast an existing Galois field array to a different dtype
@@ -130,7 +130,7 @@ as degree-3 polynomials in :math:`\mathrm{GF}(2)[x]`, i.e. :math:`\{0, 1, x, x+1
 
 .. ipython:: python
 
-   GF = galois.GF_factory(2**3)
+   GF = galois.GF(2**3)
    a = GF.Random(10)
 
    # The default mode represents the field elements as integers
@@ -145,7 +145,7 @@ as degree-3 polynomials in :math:`\mathrm{GF}(2)[x]`, i.e. :math:`\{0, 1, x, x+1
    # Reset the display mode to the default
    GF.display(); a
 
-The :obj:`galois.GF.display` method can be called as a context manager.
+The :obj:`galois.GFArray.display` method can be called as a context manager.
 
 .. ipython:: python
 
