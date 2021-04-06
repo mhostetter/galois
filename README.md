@@ -7,11 +7,10 @@
 ![Test](https://github.com/mhostetter/galois/workflows/Test/badge.svg?branch=master)
 [![Codecov](https://codecov.io/gh/mhostetter/galois/branch/master/graph/badge.svg)](https://codecov.io/gh/mhostetter/galois)
 
-A Python 3 package for Galois field arithmetic.
-
 - [Motivation](#motivation)
 - [Documentation](#documentation)
 - [Installation](#installation)
+- [Versioning](#versioning)
 - [Basic Usage](#basic-usage)
   - [Array construction](#array-construction)
   - [Field arithmetic](#field-arithmetic)
@@ -51,8 +50,11 @@ The latest version of `galois` can be installed from [PyPI](https://pypi.org/pro
 python3 -m pip install galois
 ```
 
-Fun fact: read [here](https://snarky.ca/why-you-should-use-python-m-pip/) from python core dev [Brett Cannon](https://twitter.com/brettsky) about why it's better
-to install with `python3 -m pip` rather than `pip3`.
+## Versioning
+
+This project uses [semantic versioning](https://semver.org/). Releases are versioned `major.minor.patch`. Major releases introduce API-changing features. Minor releases add features and are backwards compatible with other releases in `major.x.x`. Patch releases fix bugs in a minor release and are backwards compatible with other releases in `major.minor.x`.
+
+Releases before `1.0.0` are alpha and beta releases. Alpha releases are `0.0.alpha`. There is no API compatibility guarantee for them. They can be thought of as `0.0.alpha-major`. Beta releases are `0.beta.x` and are API compatible. They can be thought of as `0.beta-major.beta-minor`.
 
 ## Basic Usage
 
