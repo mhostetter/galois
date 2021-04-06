@@ -41,7 +41,11 @@ class GFMeta(type):
     """
 
     def __str__(cls):
-        return "<Galois Field: GF({}^{}), prim_poly = {} ({} decimal)>".format(cls.characteristic, cls.degree, poly_to_str(cls.prim_poly.coeffs_asc), cls.prim_poly.integer)
+        if cls.degree == 1:
+            s = "GF({})".format(cls.characteristic)
+        else:
+            s = "GF({}^{})".format(cls.characteristic, cls.degree)
+        return f"<class 'numpy.ndarray' over {s}>"
 
 
 class DisplayContext:
