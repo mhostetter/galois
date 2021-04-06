@@ -44,9 +44,11 @@ def factors(n):
     return sorted(list(set(f)))  # Use set() to remove duplicates
 
 
-def euclidean_algorithm(a, b):
+def gcd(a, b):
     """
     Finds the greatest common divisor of two integers :math:`a` and :math:`b`.
+
+    This implementation uses the Euclidean Algorithm.
 
     Parameters
     ----------
@@ -71,7 +73,7 @@ def euclidean_algorithm(a, b):
 
         a = 2
         b = 13
-        galois.euclidean_algorithm(a, b)
+        galois.gcd(a, b)
     """
     if not isinstance(a, (int, np.integer)):
         raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
@@ -89,9 +91,11 @@ def euclidean_algorithm(a, b):
     return r[-2]
 
 
-def extended_euclidean_algorithm(a, b):
+def extended_gcd(a, b):
     """
     Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = gcd(a,b)`.
+
+    This implementation uses the Extended Euclidean Algorithm.
 
     Parameters
     ----------
@@ -120,7 +124,7 @@ def extended_euclidean_algorithm(a, b):
 
         a = 2
         b = 13
-        x, y, gcd = galois.extended_euclidean_algorithm(a, b)
+        x, y, gcd = galois.extended_gcd(a, b)
         x, y, gcd
         a*x + b*y == gcd
     """
@@ -146,7 +150,7 @@ def extended_euclidean_algorithm(a, b):
 
 
 @numba.jit("int64[:](int64, int64)", nopython=True)
-def extended_euclidean_algorithm_jit(a, b):  # pragma: no cover
+def extended_gcd_jit(a, b):  # pragma: no cover
     r = [a, b]
     s = [1, 0]
     t = [0, 1]
@@ -218,7 +222,7 @@ def chinese_remainder_theorem(a, m):
 
         # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = 1,
         # where 1 is the GCD(m1, m2) because m1 and m2 are pairwise relatively coprime
-        b1, b2 = extended_euclidean_algorithm(m1, m2)[0:2]
+        b1, b2 = extended_gcd(m1, m2)[0:2]
 
         # Compute x through explicit construction
         x = a1*b2*m2 + a2*b1*m1
@@ -297,7 +301,7 @@ def euler_totient(n):
         phi = galois.euler_totient(n); phi
 
         # Find the totatives that are coprime with n
-        totatives = [k for k in range(n) if galois.euclidean_algorithm(k, n) == 1]; totatives
+        totatives = [k for k in range(n) if galois.gcd(k, n) == 1]; totatives
 
         # The number of totatives is phi
         len(totatives) == phi
@@ -360,7 +364,7 @@ def carmichael(n):
         lambda_ = galois.carmichael(n); lambda_
 
         # Find the totatives that are relatively coprime with n
-        totatives = [i for i in range(n) if galois.euclidean_algorithm(i, n) == 1]; totatives
+        totatives = [i for i in range(n) if galois.gcd(i, n) == 1]; totatives
 
         for a in totatives:
             result = pow(a, lambda_, n)
