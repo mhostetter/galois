@@ -41,20 +41,22 @@ class Poly:
         galois.Poly([1,0,1,1])
         galois.Poly.Degrees([3,1,0])
 
-    Create a polynomial over :math:`\\mathrm{GF}(7)[x]`.
+    Create a polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
 
     .. ipython:: python
 
-        GF7 = galois.GF_factory(7, 1)
-        galois.Poly([4,0,3,0,0,2], field=GF7)
-        galois.Poly.Degrees([5,3,0], coeffs=[4,3,2], field=GF7)
+        GF256 = galois.GF_factory(2, 8)
+        galois.Poly([124,0,223,0,0,15], field=GF256)
+
+        # Alternate way of constructing the same polynomial
+        galois.Poly.Degrees([5,3,0], coeffs=[124,223,15], field=GF256)
 
     Polynomial arithmetic using binary operators.
 
     .. ipython:: python
 
-        a = galois.Poly([1,0,6,3], field=GF7); a
-        b = galois.Poly([2,0,2], field=GF7); b
+        a = galois.Poly([117, 0, 63, 37], field=GF256); a
+        b = galois.Poly([224, 0, 21], field=GF256); b
 
         a + b
         a - b
@@ -112,12 +114,12 @@ class Poly:
 
             galois.Poly.Zero()
 
-        Construct the zero polynomial over :math:`\\mathrm{GF}(7)[x]`.
+        Construct the zero polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7, 1)
-            galois.Poly.Zero(field=GF7)
+            GF256 = galois.GF_factory(2, 8)
+            galois.Poly.Zero(field=GF256)
         """
         return cls([0], field=field)
 
@@ -144,12 +146,12 @@ class Poly:
 
             galois.Poly.One()
 
-        Construct the one polynomial over :math:`\\mathrm{GF}(7)[x]`.
+        Construct the one polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7, 1)
-            galois.Poly.One(field=GF7)
+            GF256 = galois.GF_factory(2, 8)
+            galois.Poly.One(field=GF256)
         """
         return cls([1], field=field)
 
@@ -176,12 +178,12 @@ class Poly:
 
             galois.Poly.Identity()
 
-        Construct the identity polynomial over :math:`\\mathrm{GF}(7)[x]`.
+        Construct the identity polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7, 1)
-            galois.Poly.Identity(field=GF7)
+            GF256 = galois.GF_factory(2, 8)
+            galois.Poly.Identity(field=GF256)
         """
         return cls([1, 0], field=field)
 
@@ -210,12 +212,12 @@ class Poly:
 
             galois.Poly.Random(5)
 
-        Construct a random degree-:math:`5` polynomial over :math:`\\mathrm{GF}(7)[x]`.
+        Construct a random degree-:math:`5` polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7, 1)
-            galois.Poly.Random(5, field=GF7)
+            GF256 = galois.GF_factory(2, 8)
+            galois.Poly.Random(5, field=GF256)
         """
         if not isinstance(degree, (int, np.integer)):
             raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
@@ -256,12 +258,12 @@ class Poly:
 
             galois.Poly.Integer(5)
 
-        Construct a polynomial over :math:`\\mathrm{GF}(7)[x]` from its integer representation.
+        Construct a polynomial over :math:`\\mathrm{GF}(2^8)[x]` from its integer representation.
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7, 1)
-            galois.Poly.Integer(9, field=GF7)
+            GF256 = galois.GF_factory(2, 8)
+            galois.Poly.Integer(256**3 + 117, field=GF256)
         """
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Polynomial creation must have `integer` be an integer, not {type(integer)}")
@@ -302,12 +304,12 @@ class Poly:
 
             galois.Poly.Degrees([3,1,0])
 
-        Construct a polynomial over :math:`\\mathrm{GF}(7)[x]` by specifying the degrees with non-zero coefficients.
+        Construct a polynomial over :math:`\\mathrm{GF}(2^8)[x]` by specifying the degrees with non-zero coefficients.
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7, 1)
-            galois.Poly.Degrees([3,1,0], coeffs=[5,2,1], field=GF7)
+            GF256 = galois.GF_factory(2, 8)
+            galois.Poly.Degrees([3,1,0], coeffs=[251,73,185], field=GF256)
         """
         coeffs = [1,]*len(degrees) if coeffs is None else coeffs
         if not isinstance(degrees, (list, tuple, np.ndarray)):
@@ -359,17 +361,17 @@ class Poly:
 
         .. ipython:: python
 
-            roots = [0,0,1]
+            roots = [0, 0, 1]
             p = galois.Poly.Roots(roots); p
             p(roots)
 
-        Construct a polynomial over :math:`\\mathrm{GF}(7)[x]` from a list of its roots.
+        Construct a polynomial over :math:`\\mathrm{GF}(2^8)[x]` from a list of its roots.
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7, 1)
-            roots = [2,6,1]
-            p = galois.Poly.Roots(roots, field=GF7); p
+            GF256 = galois.GF_factory(2, 8)
+            roots = [121, 198, 225]
+            p = galois.Poly.Roots(roots, field=GF256); p
             p(roots)
         """
         if not isinstance(roots, (list, tuple, np.ndarray)):
