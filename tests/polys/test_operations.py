@@ -29,6 +29,33 @@ def test_roots():
     assert set(poly.roots().tolist()) == set(roots)
 
 
+def test_derivative():
+    GF = galois.GF_factory(3, 1)
+    p = galois.Poly.Degrees([6,0], field=GF)
+    dp = p.derivative()
+    dp_truth = galois.Poly(0, field=GF)
+    assert dp == dp_truth
+    assert type(dp) is galois.Poly
+    assert dp.field is GF
+
+    GF = galois.GF_factory(7, 1)
+    p = galois.Poly([3,5,0,2], field=GF)
+    dp = p.derivative()
+    dp_truth = galois.Poly(GF([3,5,0]) * np.array([3,2,1]), field=GF)
+    assert dp == dp_truth
+    assert type(dp) is galois.Poly
+    assert dp.field is GF
+
+
+def test_multiple_derivatives():
+    GF = galois.GF_factory(31, 1)
+    p = galois.Poly.Random(5, field=GF)
+    dp = p.derivative(3)
+    assert dp == p.derivative().derivative().derivative()
+    assert type(dp) is galois.Poly
+    assert dp.field is GF
+
+
 def test_integer():
     poly = galois.Poly([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,1])
     assert poly.integer == 4295000729

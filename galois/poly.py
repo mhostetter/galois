@@ -459,6 +459,88 @@ class Poly:
 
         return np.sort(self.field(roots))
 
+    def derivative(self, k=1):
+        """
+        Computes the :math:`k`-th formal derivative :math:`\\frac{d^k}{dx^k} p(x)` of the polynomial :math:`p(x)`.
+
+        For the polynomial
+
+        .. math::
+            p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0
+
+        the first formal derivative is defined as
+
+        .. math::
+            p'(x) = (d) \\cdot a_{d} x^{d-1} + (d-1) \\cdot a_{d-1} x^{d-2} + \\dots + (2) \\cdot a_{2} x + a_1
+
+        where :math:`\\cdot` represents scalar multiplication (repeated addition), not finite field multiplication,
+        e.g. :math:`3 \\cdot a = a + a + a`.
+
+        Parameters
+        ----------
+        k : int, optional
+            The number of derivatives to compute. 1 corresponds to :math:`p'(x)`, 2 corresponds to :math:`p''(x)`, etc.
+            The default is 1.
+
+        Returns
+        -------
+        galois.Poly
+            The :math:`k`-th formal derivative of the polynomial :math:`p(x)`.
+
+        References
+        ----------
+        * https://en.wikipedia.org/wiki/Formal_derivative
+
+        Examples
+        --------
+        Compute the derivatives of a polynomial over :math:`\\mathrm{GF}(2)[x]`.
+
+        .. ipython:: python
+
+            p = galois.Poly.Random(7); p
+            p.derivative()
+
+            # k derivatives of a polynomial where k is the Galois field's characteristic will always result in 0
+            p.derivative(2)
+
+        Compute the derivatives of a polynomial over :math:`\\mathrm{GF}(7)[x]`.
+
+        .. ipython:: python
+
+            GF7 = galois.GF_factory(7, 1)
+            p = galois.Poly.Random(11, field=GF7); p
+            p.derivative()
+            p.derivative(2)
+            p.derivative(3)
+
+            # k derivatives of a polynomial where k is the Galois field's characteristic will always result in 0
+            p.derivative(7)
+
+        Compute the derivatives of a polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
+
+        .. ipython:: python
+
+            GF256 = galois.GF_factory(2, 8)
+            p = galois.Poly.Random(7, field=GF256); p
+            p.derivative()
+
+            # k derivatives of a polynomial where k is the Galois field's characteristic will always result in 0
+            p.derivative(2)
+        """
+        if not isinstance(k, (int, np.integer)):
+            raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
+        if not k > 0:
+            raise ValueError(f"Argument `k` must be a positive integer, not {k}.")
+
+        coeffs = self.coeffs_desc[0:-1] * np.arange(self.degree, 0, -1)
+        p_prime = self.__class__(coeffs)
+
+        k -= 1
+        if k > 0:
+            return p_prime.derivative(k)
+        else:
+            return p_prime
+
     def __repr__(self):
         poly_str = poly_to_str(self.coeffs_asc)
         if self.field.degree == 1:
