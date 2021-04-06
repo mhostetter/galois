@@ -87,7 +87,7 @@ class GFp(GF):
         if not isinstance(rebuild, bool):
             raise TypeError(f"Argument 'rebuild' must be a bool, not {type(rebuild)}.")
 
-        global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT  # pylint: disable=global-statement
+        global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
