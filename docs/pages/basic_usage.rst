@@ -13,6 +13,7 @@ Construct Galois field array classes using the `GF_factory()` class factory func
 
    GF31 = galois.GF_factory(31);
    print(GF31)
+   issubclass(GF31, np.ndarray)
    GF31.alpha
    GF31.prim_poly
 
@@ -23,9 +24,8 @@ Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even
    # Field used in AES
    GF256 = galois.GF_factory(2**8); print(GF256)
 
+   prime = 36893488147419103183; galois.is_prime(prime)
    # Large prime field
-   prime = 36893488147419103183
-   galois.is_prime(prime)
    GFp = galois.GF_factory(prime); print(GFp)
 
    # Large characteristic-2 field
