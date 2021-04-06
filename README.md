@@ -65,7 +65,7 @@ Construct Galois field array classes using the `GF_factory()` class factory func
 
 >>> import galois
 
->>> GF31 = galois.GF_factory(31, 1)
+>>> GF31 = galois.GF_factory(31)
 
 >>> print(GF31)
 <Galois Field: GF(31^1), prim_poly = x + 28 (59 decimal)>
@@ -81,7 +81,7 @@ Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even
 
 ```python
 # Field used in AES
->>> GF256 = galois.GF_factory(2, 8); print(GF256)
+>>> GF256 = galois.GF_factory(2**8); print(GF256)
 <Galois Field: GF(2^8), prim_poly = x^8 + x^4 + x^3 + x^2 + 1 (285 decimal)>
 
 >>> prime = 36893488147419103183
@@ -90,11 +90,11 @@ Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even
 True
 
 # Large prime field
->>> GFp = galois.GF_factory(prime, 1); print(GFp)
+>>> GFp = galois.GF_factory(prime); print(GFp)
 <Galois Field: GF(36893488147419103183^1), prim_poly = x + 36893488147419103180 (73786976294838206363 decimal)>
 
 # Large characteristic-2 field
->>> GF2_100 = galois.GF_factory(2, 100); print(GF2_100)
+>>> GF2_100 = galois.GF_factory(2**100); print(GF2_100)
 <Galois Field: GF(2^100), prim_poly = x^100 + x^57 + x^56 + x^55 + x^52 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^41 + x^37 + x^36 + x^35 + x^34 + x^31 + x^30 + x^27 + x^25 + x^24 + x^22 + x^20 + x^19 + x^16 + x^15 + x^11 + x^9 + x^8 + x^6 + x^5 + x^3 + 1 (1267650600228486663289456659305 decimal)>
 ```
 
@@ -264,7 +264,7 @@ GF([[19, 18,  0,  7,  5],
 >>> import numpy as np
 >>> import galois
 
->>> GFp = galois.GF_factory(31, 1)
+>>> GFp = galois.GF_factory(31)
 >>> print(GFp)>
 <Galois Field: GF(31^1), prim_poly = x + 28 (None decimal)>
 

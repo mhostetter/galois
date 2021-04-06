@@ -10,7 +10,7 @@ import galois
 
 
 def test_display_method():
-    GF = galois.GF_factory(2, 3)
+    GF = galois.GF_factory(2**3)
     a = GF([1, 5, 2])
     assert str(a) == "GF([1, 5, 2], order=2^3)"
     GF.display("poly")
@@ -20,7 +20,7 @@ def test_display_method():
 
 
 def test_display_context_manager():
-    GF = galois.GF_factory(2, 3)
+    GF = galois.GF_factory(2**3)
     a = GF([1, 5, 2])
     assert str(a) == "GF([1, 5, 2], order=2^3)"
     with GF.display("poly"):
@@ -29,7 +29,7 @@ def test_display_context_manager():
 
 
 def test_display_poly_var_method():
-    GF = galois.GF_factory(2, 3)
+    GF = galois.GF_factory(2**3)
     a = GF([1, 5, 2])
     assert str(a) == "GF([1, 5, 2], order=2^3)"
     GF.display("poly", "r")
@@ -39,7 +39,7 @@ def test_display_poly_var_method():
 
 
 def test_display_poly_var_context_manager():
-    GF = galois.GF_factory(2, 3)
+    GF = galois.GF_factory(2**3)
     a = GF([1, 5, 2])
     assert str(a) == "GF([1, 5, 2], order=2^3)"
     with GF.display("poly", "r"):

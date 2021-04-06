@@ -24,8 +24,8 @@ class GF2(GF):
             # The pre-made GF(2) class
             print(galois.GF2)
 
-            # The GF class factory for `(2,1)` returns `galois.GF2`
-            GF2 = galois.GF_factory(2, 1); print(GF2)
+            # The GF class factory for an order of 2 returns `galois.GF2`
+            GF2 = galois.GF_factory(2); print(GF2)
             GF2 is galois.GF2
 
     Parameters

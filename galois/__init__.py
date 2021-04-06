@@ -10,16 +10,14 @@ from .poly import Poly
 from .prime import primes, kth_prime, prev_prime, next_prime, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
 
 
-def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=redefined-outer-name
+def GF_factory(order, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=redefined-outer-name
     """
     Factory function to construct Galois field array classes of type :math:`\\mathrm{GF}(p^m)`.
 
     Parameters
     ----------
-    characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p^m)`.
-    degree : int
-        The prime characteristic's degree :math:`m` of the field :math:`\\mathrm{GF}(p^m)`.
+    order : int
+        The order :math:`p^m` of the field :math:`\\mathrm{GF}(p^m)`. Order must be a prime power.
     prim_poly : galois.Poly, optional
         The primitive polynomial of the field. Default is `None` which will use the Conway polynomial
         obtained from :obj:`galois.conway_poly`.
@@ -38,7 +36,7 @@ def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto"
     Returns
     -------
     galois.GF
-        A new Galois field array class that is a sublcass of :obj:`galois.GF`.
+        A new Galois field array class that is a subclass of :obj:`galois.GF`.
 
     Examples
     --------
@@ -48,35 +46,35 @@ def GF_factory(characteristic, degree, prim_poly=None, target="cpu", mode="auto"
     .. ipython:: python
 
         # Construct a GF(2^m) class
-        GF256 = galois.GF_factory(2, 8); print(GF256)
+        GF256 = galois.GF_factory(2**8); print(GF256)
 
         # Construct a GF(p) class
-        GF571 = galois.GF_factory(571, 1); print(GF571)
+        GF571 = galois.GF_factory(571); print(GF571)
 
         # Construct a very large GF(2^m) class
-        GF2m = galois.GF_factory(2, 100); print(GF2m)
+        GF2m = galois.GF_factory(2**100); print(GF2m)
 
         # Construct a very large GF(p) class
-        GFp = galois.GF_factory(36893488147419103183, 1); print(GFp)
+        GFp = galois.GF_factory(36893488147419103183); print(GFp)
 
     See :obj:`galois.GF` for more examples of what a Galois field array can do.
     """
     # pylint: disable=import-outside-toplevel
     import numpy as np
 
-    if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Galois field GF(p^m) prime characteristic `p` must be an int, not {type(characteristic)}")
-    if not isinstance(degree, int):
-        raise TypeError(f"Galois field GF(p^m) characteristic degree `m` must be an int, not {type(degree)}")
+    if not isinstance(order, (int, np.integer)):
+        raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
     if not (prim_poly is None or isinstance(prim_poly, Poly)):
-        raise TypeError(f"Primitive polynomial `prim_poly` must be either None or galois.Poly, not {type(prim_poly)}")
+        raise TypeError(f"Argument `prim_poly` must be either None or galois.Poly, not {type(prim_poly)}.")
     if not isinstance(rebuild, bool):
-        raise TypeError(f"The 'rebuild' argument must be a bool, not {type(rebuild)}")
+        raise TypeError(f"Argument `rebuild` must be a bool, not {type(rebuild)}.")
 
-    if not is_prime(characteristic):
-        raise ValueError(f"Galois field GF(p^m) characteristic `p` must be prime, not {characteristic}")
-    if not degree >= 1:
-        raise ValueError(f"Galois field GF(p^m) characteristic degree `m` must be >= 1, not {degree}")
+    p, k = prime_factors(order)
+    if not len(p) == 1:
+        s = " + ".join([f"{pp}**{kk}" for pp, kk in zip(p, k)])
+        raise ValueError(f"Argument `order` must be a prime power, not {order} = {s}.")
+    characteristic = p[0]
+    degree = k[0]
 
     # If the requested field has already been constructed, return it instead of rebuilding
     key = (characteristic, degree, mode)

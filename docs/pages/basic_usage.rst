@@ -11,7 +11,7 @@ Construct Galois field array classes using the `GF_factory()` class factory func
    import numpy as np
    import galois
 
-   GF31 = galois.GF_factory(31, 1);
+   GF31 = galois.GF_factory(31);
    print(GF31)
    GF31.alpha
    GF31.prim_poly
@@ -21,15 +21,15 @@ Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even
 .. ipython:: python
 
    # Field used in AES
-   GF256 = galois.GF_factory(2, 8); print(GF256)
+   GF256 = galois.GF_factory(2**8); print(GF256)
 
    # Large prime field
    prime = 36893488147419103183
    galois.is_prime(prime)
-   GFp = galois.GF_factory(prime, 1); print(GFp)
+   GFp = galois.GF_factory(prime); print(GFp)
 
    # Large characteristic-2 field
-   GF2_100 = galois.GF_factory(2, 100); print(GF2_100)
+   GF2_100 = galois.GF_factory(2**100); print(GF2_100)
 
 Create arrays from existing `numpy` arrays.
 

@@ -16,7 +16,7 @@ Large GF(p) fields
    prime = 36893488147419103183
    galois.is_prime(prime)
 
-   GF = galois.GF_factory(prime, 1)
+   GF = galois.GF_factory(prime)
    print(GF)
 
    a = GF.Random(10); a
@@ -30,7 +30,7 @@ Large GF(2^m) fields
 
 .. ipython:: python
 
-   GF = galois.GF_factory(2, 100)
+   GF = galois.GF_factory(2**100)
    print(GF)
 
    a = GF([2**8, 2**21, 2**35, 2**98]); a
