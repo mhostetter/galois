@@ -186,6 +186,48 @@ class Poly:
         return cls([1, 0], field=field)
 
     @classmethod
+    def Random(cls, degree, field=GF2):
+        """
+        Constructs a random polynomial over :math:`\\mathrm{GF}(q)[x]` with degree :math:`d`.
+
+        Parameters
+        ----------
+        degree : int
+            The degree of the polynomial.
+        field : galois.GF, optional
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`p(x)`.
+
+        Examples
+        --------
+        Construct a random degree-:math:`5` polynomial over :math:`\\mathrm{GF}(2)[x]`.
+
+        .. ipython:: python
+
+            galois.Poly.Random(5)
+
+        Construct a random degree-:math:`5` polynomial over :math:`\\mathrm{GF}(7)[x]`.
+
+        .. ipython:: python
+
+            GF7 = galois.GF_factory(7, 1)
+            galois.Poly.Random(5, field=GF7)
+        """
+        if not isinstance(degree, (int, np.integer)):
+            raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+        if not degree >= 0:
+            raise TypeError(f"Argument `degree` must be at least 0, not {degree}.")
+
+        coeffs = field.Random(degree + 1)
+        coeffs[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
+
+        return cls(coeffs)
+
+    @classmethod
     def Integer(cls, integer, field=GF2, order="desc"):
         """
         Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its integer representation.

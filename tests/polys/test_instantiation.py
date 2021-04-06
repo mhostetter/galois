@@ -119,6 +119,13 @@ class TestConstructors:
         assert type(p) is galois.Poly
         assert p.field is field
 
+    def test_random(self, field):
+        degree = random.randint(0, 5)
+        p = galois.Poly.Random(degree, field=field)
+        assert type(p) is galois.Poly
+        assert p.field is field
+        assert p.degree == degree
+
     def test_integer(self, field):
         d = field.order + 1  # x + 1
         p = galois.Poly.Integer(d, field=field)
