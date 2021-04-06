@@ -9,13 +9,13 @@ class Poly:
     """
     Create a polynomial over a Galois field, :math:`p(x) \\in \\mathrm{GF}(q)[x]`.
 
-    The polynomial :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0` has coefficients :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}`
+    The polynomial :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0` has coefficients :math:`\\{a_{d}, \\dots, a_1, a_0\\}`
     in :math:`\\mathrm{GF}(q)`.
 
     Parameters
     ----------
     coeffs : array_like
-        List of polynomial coefficients :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.GF`, :obj:`numpy.ndarray`,
+        List of polynomial coefficients :math:`\\{a_{d}, \\dots, a_1, a_0\\}` with type :obj:`galois.GF`, :obj:`numpy.ndarray`,
         :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
         the 0-th degree element if `order="asc"`.
     field : galois.GF, optional
@@ -23,7 +23,7 @@ class Poly:
         is a Galois field array, then that field is used and the `field` argument is ignored.
     order : str, optional
         The interpretation of the coefficient degrees, either `"desc"` (default) or `"asc"`. For `"desc"`,
-        the first element of `coeffs` is the highest degree coefficient :math:`x^{N-1}`) and the last element is
+        the first element of `coeffs` is the highest degree coefficient :math:`x^{d}`) and the last element is
         the 0-th degree element :math:`x^0`.
 
     Returns
@@ -190,8 +190,8 @@ class Poly:
         """
         Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its integer representation.
 
-        The integer value :math:`d` represents polynomial :math:`p(x) =  a_{N-1}x^{N-1} + \\dots + a_1x + a_0`
-        over field :math:`\\mathrm{GF}(q)` if :math:`d = a_{N-1} q^{N-1} + \\dots + a_1 q + a_0` using integer arithmetic,
+        The integer value :math:`d` represents polynomial :math:`p(x) =  a_{d}x^{d} + \\dots + a_1x + a_0`
+        over field :math:`\\mathrm{GF}(q)` if :math:`d = a_{d} q^{N-1} + \\dots + a_1 q + a_0` using integer arithmetic,
         not field arithmetic.
 
         Parameters
@@ -341,6 +341,79 @@ class Poly:
 
         return p
 
+    def roots(self):
+        """
+        Calculates the roots :math:`r` of the polynomial :math:`p(x)`, such that :math:`p(r) = 0`.
+
+        This implementation uses Chien's search to find the roots of the degree-:math:`d` polynomial
+        :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
+
+        The Galois field elements can be represented as :math:`\\mathrm{GF}(q) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{q-2}\\}`,
+        where :math:`\\alpha` is a primitive element of :math:`\\mathrm{GF}(q)`.
+
+        :math:`0` is a root of :math:`p(x)` if:
+
+        .. math::
+            a_0 = 0
+
+        :math:`1` is a root of :math:`p(x)` if:
+
+        .. math::
+            \\sum_{j=0}^{d} a_j = 0
+
+        The remaining elements of :math:`\\mathrm{GF}(q)` are powers of :math:`\\alpha`. The following
+        equations calculate :math:`p(\\alpha^i)`, where :math:`\\alpha^i` is a root of :math:`p(x)` if :math:`p(\\alpha^i) = 0`.
+
+        .. math::
+            p(\\alpha^i) &= a_{d}(\\alpha^i)^{d} + a_{d-1}(\\alpha^i)^{d-1} + \\dots + a_1(\\alpha^i) + a_0
+
+            p(\\alpha^i) &\\overset{\\Delta}{=} \\lambda_{i,d} + \\lambda_{i,d-1} + \\dots + \\lambda_{i,1} + \\lambda_{i,0}
+
+            p(\\alpha^i) &= \\sum_{j=0}^{d} \\lambda_{i,j}
+
+        The next power of :math:`\\alpha` can be easily calculated from the previous calculation.
+
+        .. math::
+            p(\\alpha^{i+1}) &= a_{d}(\\alpha^{i+1})^{d} + a_{d-1}(\\alpha^{i+1})^{d-1} + \\dots + a_1(\\alpha^{i+1}) + a_0
+
+            p(\\alpha^{i+1}) &= a_{d}(\\alpha^i)^{d}\\alpha^d + a_{d-1}(\\alpha^i)^{d-1}\\alpha^{d-1} + \\dots + a_1(\\alpha^i)\\alpha + a_0
+
+            p(\\alpha^{i+1}) &= \\lambda_{i,d}\\alpha^d + \\lambda_{i,d-1}\\alpha^{d-1} + \\dots + \\lambda_{i,1}\\alpha + \\lambda_{i,0}
+
+            p(\\alpha^{i+1}) &= \\sum_{j=0}^{d} \\lambda_{i,j}\\alpha^j
+
+        Returns
+        -------
+        galois.GF
+            Galois field array of roots of :math:`p(x)`.
+
+        References
+        ----------
+        * https://en.wikipedia.org/wiki/Chien_search
+        """
+        lambda_vector = self.coeffs_asc
+        alpha_vector = self.field.alpha ** np.arange(0, self.degree + 1)
+        roots = []
+
+        # Test if 0 is a root
+        if lambda_vector[0] == 0:
+            roots.append(0)
+
+        # Test if 1 is a root
+        if np.sum(lambda_vector) == 0:
+            roots.append(1)
+
+        # Test if the powers of alpha are roots
+        for i in range(1, self.field.order - 1):
+            lambda_vector *= alpha_vector
+            if np.sum(lambda_vector) == 0:
+                roots.append(int(self.field.alpha**i))
+            if len(roots) == self.degree:
+                # We can exit early once we have `d` roots for a degree-d polynomial
+                break
+
+        return np.sort(self.field(roots))
+
     def __repr__(self):
         poly_str = poly_to_str(self.coeffs_asc)
         if self.field.degree == 1:
@@ -365,8 +438,8 @@ class Poly:
             assert 0 <= input2 < input1.field.order
             b = input1.field(input2)
         else:
-            raise AssertionError("Can only perform polynomial arithmetic with Poly, GF, or int classes")
-        assert type(a) is type(b), "Can only perform polynomial arthimetic between two polynomials with coefficients in the same field"
+            raise TypeError(f"Can only perform polynomial arithmetic with Poly, GF, or int classes, not {type(input1)} and {type(input2)}.")
+        assert type(a) is type(b), "Can only perform polynomial arithmetic between two polynomials with coefficients in the same field"
 
         return a, b
 
@@ -479,10 +552,10 @@ class Poly:
     @property
     def coeffs(self):
         """
-        galois.GF: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` if `order="desc"` or
-        :math:`\\{a_0, a_1, \\dots, a_{N-1}\\}` if `order="asc"`, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
+        galois.GF: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{d}, \\dots, a_1, a_0\\}` if `order="desc"` or
+        :math:`\\{a_0, a_1, \\dots, a_{d}\\}` if `order="asc"`, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
         """
-        return self._coeffs
+        return self.field(self._coeffs)
 
     @coeffs.setter
     def coeffs(self, coeffs):
@@ -501,22 +574,29 @@ class Poly:
             coeffs = field([0])
 
         self._coeffs = coeffs
+        self._field = coeffs.__class__
 
     @property
     def coeffs_asc(self):
         """
-        galois.GF: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{N-1}\\}` as a Galois field array
-        in degree-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
+        galois.GF: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{d}\\}` as a Galois field array
+        in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
         """
-        return self.coeffs if self.order == "asc" else np.flip(self.coeffs)
+        if self.order == "asc":
+            return self.field(self._coeffs)
+        else:
+            return self.field(np.flip(self._coeffs))
 
     @property
     def coeffs_desc(self):
         """
-        galois.GF: The polynomial coefficients :math:`\\{a_{N-1}, \\dots, a_1, a_0\\}` as a Galois field array
-        in degree-ascending order, where :math:`p(x) = a_{N-1}x^{N-1} + \\dots + a_1x + a_0`.
+        galois.GF: The polynomial coefficients :math:`\\{a_{d}, \\dots, a_1, a_0\\}` as a Galois field array
+        in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
         """
-        return self.coeffs if self.order == "desc" else np.flip(self.coeffs)
+        if self.order == "desc":
+            return self.field(self._coeffs)
+        else:
+            return self.field(np.flip(self._coeffs))
 
     @property
     def degree(self):
@@ -530,13 +610,13 @@ class Poly:
         """
         galois.GF: The finite field to which the coefficients belong.
         """
-        return self.coeffs.__class__
+        return self._field
 
     @property
     def integer(self):
         """
-        int: The integer representation of the polynomial. For :math:`p(x) =  a_{N-1}x^{N-1} + \\dots + a_1x + a_0`
-        with elements in :math:`\\mathrm{GF}(q)`, the integer representation is :math:`d = a_{N-1} q^{N-1} + \\dots + a_1 q + a_0`
+        int: The integer representation of the polynomial. For :math:`p(x) =  a_{d}x^{d} + \\dots + a_1x + a_0`
+        with elements in :math:`\\mathrm{GF}(q)`, the integer representation is :math:`d = a_{d} q^{N-1} + \\dots + a_1 q + a_0`
         (using integer arithmetic, not field arithmetic) where :math:`q` is the field order.
         """
         c = self.coeffs_asc

@@ -22,6 +22,13 @@ def test_string():
     assert repr(poly) == str(poly) == "Poly(2x^3 + 3x + 1, GF(2^3))"
 
 
+def test_roots():
+    GF = galois.GF_factory(31, 1)
+    roots = GF.Random(5).tolist()
+    poly = galois.Poly.Roots(roots, field=GF)
+    assert set(poly.roots().tolist()) == set(roots)
+
+
 def test_integer():
     poly = galois.Poly([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,1])
     assert poly.integer == 4295000729
