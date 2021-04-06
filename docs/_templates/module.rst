@@ -14,6 +14,20 @@
    {% endif %}
    {% endblock %}
 
+   {% block factory_functions %}
+   {% if functions %}
+   .. rubric:: {{ _('Class Factory Functions') }}
+
+   .. autosummary::
+      :toctree:
+   {% for item in functions %}
+      {% if item in ["GF",] %}
+         {{ item }}
+      {% endif %}
+   {%- endfor %}
+   {% endif %}
+   {% endblock %}
+
    {% block classes %}
    {% if classes %}
    .. rubric:: {{ _('Classes') }}
@@ -27,20 +41,6 @@
    {% endif %}
    {% endblock %}
 
-   {% block factory_functions %}
-   {% if functions %}
-   .. rubric:: {{ _('Class Factory Functions') }}
-
-   .. autosummary::
-      :toctree:
-   {% for item in functions %}
-      {% if "_factory" in item %}
-         {{ item }}
-      {% endif %}
-   {%- endfor %}
-   {% endif %}
-   {% endblock %}
-
    {% block functions %}
    {% if functions %}
    .. rubric:: {{ _('Functions') }}
@@ -48,7 +48,7 @@
    .. autosummary::
       :toctree:
    {% for item in functions %}
-      {% if "_factory" not in item %}
+      {% if item not in ["GF",] %}
          {{ item }}
       {% endif %}
    {%- endfor %}

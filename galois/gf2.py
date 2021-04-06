@@ -1,6 +1,6 @@
 import numba
 
-from .gf import GF, DTYPES
+from .gf import GFArray, DTYPES
 
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -10,13 +10,13 @@ ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 
 
-class GF2(GF):
+class GF2(GFArray):
     """
     Create an array over :math:`\\mathrm{GF}(2)`.
 
     Note
     ----
-        This Galois field class is a pre-made subclass of :obj:`galois.GF`. It is included in the package
+        This Galois field class is a pre-made subclass of :obj:`galois.GFArray`. It is included in the package
         because of the ubiquity of :math:`\\mathrm{GF}(2)` fields.
 
         .. ipython:: python
@@ -25,7 +25,7 @@ class GF2(GF):
             print(galois.GF2)
 
             # The GF class factory for an order of 2 returns `galois.GF2`
-            GF2 = galois.GF_factory(2); print(GF2)
+            GF2 = galois.GF(2); print(GF2)
             GF2 is galois.GF2
 
     Parameters

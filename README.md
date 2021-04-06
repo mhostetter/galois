@@ -60,24 +60,34 @@ Releases before `1.0.0` are alpha and beta releases. Alpha releases are `0.0.alp
 
 ### Array construction
 
-Construct Galois field array classes using the `GF_factory()` class factory function.
+Construct Galois field array classes using the `galois.GF()` class factory function.
 
 ```python
 >>> import numpy as np
 
 >>> import galois
 
->>> GF31 = galois.GF_factory(31)
+>>> GF31 = galois.GF(31)
 
 >>> print(GF31)
 <class 'numpy.ndarray' over GF(31)>
 
 >>> issubclass(GF31, np.ndarray)
 True
+```
 
+Galois field array classes contain extra class attributes related to the finite field.
+
+```python
+# The size of the finite field
+>>> GF31.order
+31
+
+# A primitive element of the finite field
 >>> GF31.alpha
 GF(3, order=31)
 
+# The primitive polynomial of the finite field
 >>> GF31.prim_poly
 Poly(x + 28, GF(31))
 ```
@@ -86,18 +96,18 @@ Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even
 
 ```python
 # Field used in AES
->>> GF256 = galois.GF_factory(2**8); print(GF256)
+>>> GF256 = galois.GF(2**8); print(GF256)
 <class 'numpy.ndarray' over GF(2^8)>
 
 >>> prime = 36893488147419103183; galois.is_prime(prime)
 True
 
 # Large prime field
->>> GFp = galois.GF_factory(prime); print(GFp)
+>>> GFp = galois.GF(prime); print(GFp)
 <class 'numpy.ndarray' over GF(36893488147419103183)>
 
 # Large characteristic-2 field
->>> GF2_100 = galois.GF_factory(2**100); print(GF2_100)
+>>> GF2_100 = galois.GF(2**100); print(GF2_100)
 <class 'numpy.ndarray' over GF(2^100)>
 ```
 
@@ -119,13 +129,13 @@ GF([ 71, 240, 210,  27, 124, 254,  13, 170, 221, 166], order=2^8)
 
 ### Field arithmetic
 
-Here, `GF` is any Galois field array class created from `galois.GF_factory`, `x` and `y` are `GF` arrays, and `z` is an integer `numpy.ndarray`. All arithmetic operations follow normal numpy [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) rules.
+Here, `GF` is any Galois field array class created from `galois.GF`, `x` and `y` are `GF` arrays, and `z` is an integer `numpy.ndarray`. All arithmetic operations follow normal numpy [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) rules.
 
 - Addition: `x + y == np.add(x, y)`
 - Subtraction: `x - y == np.subtract(x, y)`
 - Multiplication: `x * y == np.multiply(x, y)`
 - Division: `x / y == x // y == np.divide(x, y)`
-- Scalar multiplication: `x * z == z * x == x + x + x`, for `z = 3`
+- Scalar multiplication: `x * z == z * x`, e.g. `x * 3 == x + x + x`
 - Reciprocal: `1 / x == np.reciprocal(x)`
 - Exponentiation: `x ** z == np.power(x, z)`
 - Logarithm base `alpha`: `np.log(x)`, where `alpha == GF.alpha`
@@ -267,7 +277,7 @@ GF([[19, 18,  0,  7,  5],
 >>> import numpy as np
 >>> import galois
 
->>> GFp = galois.GF_factory(31)
+>>> GFp = galois.GF(31)
 >>> print(GFp)>
 <class 'numpy.ndarray' over GF(31)>
 

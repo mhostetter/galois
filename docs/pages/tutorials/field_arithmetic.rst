@@ -10,7 +10,7 @@ is closed under these operations.
 
 .. ipython:: python
 
-   GF7 = galois.GF_factory(7)
+   GF7 = galois.GF(7)
    print(GF7)
 
    # Create a random GF(7) array with 10 elements
@@ -28,12 +28,12 @@ is closed under these operations.
    # Multiplication in the finite field
    x * y
 
-   # Divison in the finite field
+   # Division in the finite field
    x / y
    x // y
 
 
-One can easily create the addition, subtraction, multiplication, and divison tables for any field. Here is an
+One can easily create the addition, subtraction, multiplication, and division tables for any field. Here is an
 example using :math:`\mathrm{GF}(7)`.
 
 .. ipython:: python
@@ -66,7 +66,7 @@ they are not.
 
    .. ipython:: python
 
-      GF8 = galois.GF_factory(2**3)
+      GF8 = galois.GF(2**3)
       print(GF8)
 
       a = GF8.Random(10)
@@ -83,7 +83,7 @@ Exponentiation
 
 .. ipython:: python
 
-   GF7 = galois.GF_factory(7)
+   GF7 = galois.GF(7)
    print(GF7)
 
    x = GF7.Random(10); x
@@ -97,7 +97,7 @@ Logarithm
 
 .. ipython:: python
 
-   GF7 = galois.GF_factory(7)
+   GF7 = galois.GF(7)
    print(GF7)
 
    # The primitive element of the field

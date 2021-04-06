@@ -11,7 +11,7 @@ class TestAbstractClasses:
     def test_cant_instantiate_GF(self):
         v = [0, 1, 0, 1]
         with pytest.raises(NotImplementedError):
-            a = galois.GF(v)
+            a = galois.GFArray(v)
 
 
 class TestList:

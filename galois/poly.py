@@ -1,7 +1,7 @@
 import numpy as np
 
 from .conversion import integer_to_poly, poly_to_integer, poly_to_str
-from .gf import GF
+from .gf import GFArray
 from .gf2 import GF2
 
 
@@ -15,10 +15,10 @@ class Poly:
     Parameters
     ----------
     coeffs : array_like
-        List of polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.GF`, :obj:`numpy.ndarray`,
+        List of polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.GFArray`, :obj:`numpy.ndarray`,
         :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
         the 0-th degree element if `order="asc"`.
-    field : galois.GF, optional
+    field : galois.GFArray, optional
         The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`. If `coeffs`
         is a Galois field array, then that field is used and the `field` argument is ignored.
     order : str, optional
@@ -44,7 +44,7 @@ class Poly:
 
     .. ipython:: python
 
-        GF256 = galois.GF_factory(2**8)
+        GF256 = galois.GF(2**8)
         galois.Poly([124,0,223,0,0,15], field=GF256)
 
         # Alternate way of constructing the same polynomial
@@ -68,12 +68,12 @@ class Poly:
     """
 
     def __init__(self, coeffs, field=None, order="desc"):
-        if not (field is None or issubclass(field, GF)):
+        if not (field is None or issubclass(field, GFArray)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
 
         self.order = order
 
-        if isinstance(coeffs, GF) and field is None:
+        if isinstance(coeffs, GFArray) and field is None:
             self.coeffs = coeffs
         else:
             field = GF2 if field is None else field
@@ -97,7 +97,7 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.GF, optional
+        field : galois.GFArray, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
 
         Returns
@@ -117,7 +117,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2**8)
+            GF256 = galois.GF(2**8)
             galois.Poly.Zero(field=GF256)
         """
         return cls([0], field=field)
@@ -129,7 +129,7 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.GF, optional
+        field : galois.GFArray, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
 
         Returns
@@ -149,7 +149,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2**8)
+            GF256 = galois.GF(2**8)
             galois.Poly.One(field=GF256)
         """
         return cls([1], field=field)
@@ -161,7 +161,7 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.GF, optional
+        field : galois.GFArray, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
 
         Returns
@@ -181,7 +181,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2**8)
+            GF256 = galois.GF(2**8)
             galois.Poly.Identity(field=GF256)
         """
         return cls([1, 0], field=field)
@@ -195,7 +195,7 @@ class Poly:
         ----------
         degree : int
             The degree of the polynomial.
-        field : galois.GF, optional
+        field : galois.GFArray, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
 
         Returns
@@ -215,7 +215,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2**8)
+            GF256 = galois.GF(2**8)
             galois.Poly.Random(5, field=GF256)
         """
         if not isinstance(degree, (int, np.integer)):
@@ -241,7 +241,7 @@ class Poly:
         ----------
         integer : int
             The integer representation of the polynomial :math:`p(x)`.
-        field : galois.GF, optional
+        field : galois.GFArray, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
 
         Returns
@@ -261,7 +261,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2**8)
+            GF256 = galois.GF(2**8)
             galois.Poly.Integer(13*256**3 + 117, field=GF256)
         """
         if not isinstance(integer, (int, np.integer)):
@@ -287,7 +287,7 @@ class Poly:
             coefficients, i.e. `[1,]*len(degrees)`.
         roots : array_like
             List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
-        field : galois.GF, optional
+        field : galois.GFArray, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
 
         Returns
@@ -307,7 +307,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2**8)
+            GF256 = galois.GF(2**8)
             galois.Poly.Degrees([3,1,0], coeffs=[251,73,185], field=GF256)
         """
         coeffs = [1,]*len(degrees) if coeffs is None else coeffs
@@ -321,7 +321,7 @@ class Poly:
             raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
 
         degree = np.max(degrees)  # The degree of the polynomial
-        if isinstance(coeffs, GF):
+        if isinstance(coeffs, GFArray):
             # Preserve coefficient field if a Galois field array was specified
             all_coeffs = type(coeffs).Zeros(degree + 1)
             all_coeffs[degree - degrees] = coeffs
@@ -348,7 +348,7 @@ class Poly:
         ----------
         roots : array_like
             List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
-        field : galois.GF, optional
+        field : galois.GFArray, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
 
         Returns
@@ -370,7 +370,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2**8)
+            GF256 = galois.GF(2**8)
             roots = [121, 198, 225]
             p = galois.Poly.Roots(roots, field=GF256); p
             p(roots)
@@ -448,7 +448,7 @@ class Poly:
 
         Returns
         -------
-        galois.GF
+        galois.GFArray
             Galois field array of roots of :math:`p(x)`.
         np.ndarray
             The multiplicity of each root. Only returned if `multiplicity=True`.
@@ -471,7 +471,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2**8)
+            GF256 = galois.GF(2**8)
             p = galois.Poly.Roots([18,]*7 + [155,]*13 + [227,]*9, field=GF256); p
             p.roots()
             p.roots(multiplicity=True)
@@ -581,7 +581,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF7 = galois.GF_factory(7)
+            GF7 = galois.GF(7)
             p = galois.Poly.Random(11, field=GF7); p
             p.derivative()
             p.derivative(2)
@@ -594,7 +594,7 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF_factory(2**8)
+            GF256 = galois.GF(2**8)
             p = galois.Poly.Random(7, field=GF256); p
             p.derivative()
 
@@ -753,15 +753,15 @@ class Poly:
     @property
     def coeffs(self):
         """
-        galois.GF: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{d}, \\dots, a_1, a_0\\}` if `order="desc"` or
+        galois.GFArray: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{d}, \\dots, a_1, a_0\\}` if `order="desc"` or
         :math:`\\{a_0, a_1, \\dots, a_{d}\\}` if `order="asc"`, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
         """
         return self.field(self._coeffs)
 
     @coeffs.setter
     def coeffs(self, coeffs):
-        if not isinstance(coeffs, GF):
-            raise TypeError(f"Galois field polynomials must have coefficients in a valid Galois field class (i.e. subclasses of GF), not {type(coeffs)}")
+        if not isinstance(coeffs, GFArray):
+            raise TypeError(f"Galois field polynomials must have coefficients in a valid Galois field class (i.e. subclasses of GFArray), not {type(coeffs)}")
         if coeffs.ndim != 1:
             raise ValueError(f"Galois field polynomial coefficients must be arrays with dimension 1, not {coeffs.ndim}")
         idxs = np.nonzero(coeffs)[0]  # Non-zero indices
@@ -780,7 +780,7 @@ class Poly:
     @property
     def coeffs_asc(self):
         """
-        galois.GF: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{d-1}, a_{d}\\}` as a Galois field array
+        galois.GFArray: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{d-1}, a_{d}\\}` as a Galois field array
         in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
         """
         if self.order == "asc":
@@ -791,7 +791,7 @@ class Poly:
     @property
     def coeffs_desc(self):
         """
-        galois.GF: The polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` as a Galois field array
+        galois.GFArray: The polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` as a Galois field array
         in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
         """
         if self.order == "desc":
@@ -810,7 +810,7 @@ class Poly:
     def field(self):
         """
         type: The Galois field to which the coefficients belong. The `field` property is a type that is a
-        subclass of :obj:`galois.GF`.
+        subclass of :obj:`galois.GFArray`.
         """
         return self._field
 
