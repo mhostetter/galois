@@ -21,33 +21,33 @@ def test_factors_exceptions():
         galois.factors(120.0)
 
 
-def test_euclidean_algorithm():
+def test_gcd():
     a = random.randint(0, 1_000_000)
     b = random.randint(0, 1_000_000)
-    gcd = galois.euclidean_algorithm(a, b)
+    gcd = galois.gcd(a, b)
     assert gcd == math.gcd(a, b)
 
 
-def test_euclidean_algorithm_exceptions():
+def test_gcd_exceptions():
     with pytest.raises(TypeError):
-        galois.euclidean_algorithm(10.0, 12)
+        galois.gcd(10.0, 12)
     with pytest.raises(TypeError):
-        galois.euclidean_algorithm(10, 12.0)
+        galois.gcd(10, 12.0)
 
 
-def test_extended_euclidean_algorithm():
+def test_extended_gcd():
     a = random.randint(0, 1_000_000)
     b = random.randint(0, 1_000_000)
-    x, y, gcd = galois.extended_euclidean_algorithm(a, b)
+    x, y, gcd = galois.extended_gcd(a, b)
     assert gcd == math.gcd(a, b)
     assert a*x + b*y == gcd
 
 
-def test_extended_euclidean_algorithm_exceptions():
+def test_extended_gcd_exceptions():
     with pytest.raises(TypeError):
-        galois.extended_euclidean_algorithm(10.0, 12)
+        galois.extended_gcd(10.0, 12)
     with pytest.raises(TypeError):
-        galois.extended_euclidean_algorithm(10, 12.0)
+        galois.extended_gcd(10, 12.0)
 
 
 def test_chinese_remainder_theorem():
