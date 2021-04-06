@@ -3,9 +3,10 @@ A performant numpy extension for Galois fields.
 """
 from .version import __version__
 
-from .algorithm import factors, gcd, extended_gcd, chinese_remainder_theorem, totatives, euler_totient, carmichael,  is_cyclic, primitive_root, primitive_roots, is_primitive_root
+from .algorithm import factors, gcd, extended_gcd, chinese_remainder_theorem
 from .gf import GFArray
 from .gf2 import GF2
+from .modular import totatives, euler_totient, carmichael, is_cyclic, primitive_root, primitive_roots, is_primitive_root
 from .poly import Poly
 from .prime import primes, kth_prime, prev_prime, next_prime, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
 
