@@ -103,7 +103,7 @@ class GF2(GF):
         if target not in ["cpu", "parallel", "cuda"]:
             raise ValueError(f"Argument `target` must be in ['cpu', 'parallel', 'cuda'], not {target}.")
 
-        global CHARACTERISTIC, ADD_JIT, MULTIPLY_JIT  # pylint: disable=global-statement
+        global CHARACTERISTIC, ADD_JIT, MULTIPLY_JIT
         CHARACTERISTIC = cls.characteristic
 
         kwargs = {"nopython": True, "target": target}

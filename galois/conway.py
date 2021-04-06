@@ -11,10 +11,10 @@ class ConwayDatabase:
     """
 
     def __new__(cls):
+        global DATABASE
         if DATABASE is None:
-            return super().__new__(cls)
-        else:
-            return DATABASE
+            DATABASE = super().__new__(cls)
+        return DATABASE
 
     def __init__(self):
         self.conn = sqlite3.connect(DATABASE_FILE)

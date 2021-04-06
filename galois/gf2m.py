@@ -90,7 +90,7 @@ class GF2m(GF):
         if not isinstance(rebuild, bool):
             raise TypeError(f"Argument 'rebuild' must be a bool, not {type(rebuild)}.")
 
-        global CHARACTERISTIC, DEGREE, ORDER, ALPHA, PRIM_POLY_DEC, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT  # pylint: disable=global-statement
+        global CHARACTERISTIC, DEGREE, ORDER, ALPHA, PRIM_POLY_DEC, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
         CHARACTERISTIC = cls.characteristic
         DEGREE = cls.degree
         ORDER = cls.order

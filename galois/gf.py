@@ -640,7 +640,7 @@ class GF(np.ndarray, metaclass=GFMeta):
     @classmethod
     def _jit_compile_lookup_ufuncs(cls, target):
         # Export lookup tables to global variables so JIT compiling can cache the tables in the binaries
-        global CHARACTERISTIC, ORDER, EXP, LOG, ZECH_LOG, ZECH_E, ADD_JIT, MULTIPLY_JIT  # pylint: disable=global-statement
+        global CHARACTERISTIC, ORDER, EXP, LOG, ZECH_LOG, ZECH_E, ADD_JIT, MULTIPLY_JIT
         CHARACTERISTIC = cls.characteristic
         ORDER = cls.order
         EXP = cls._EXP
