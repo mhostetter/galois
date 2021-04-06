@@ -315,8 +315,8 @@ class Poly:
             raise TypeError(f"Argument `degrees` must 'array-like', not {type(degrees)}.")
         if not isinstance(coeffs, (list, tuple, np.ndarray)):
             raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
-        if not len(coeffs) == len(degrees):
-            raise ValueError(f"Arguments `coeffs` and `degrees` must be of the same length, not {len(coeffs)} and {len(degrees)}.")
+        if not len(degrees) == len(coeffs):
+            raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {len(degrees)} and {len(coeffs)}.")
         if not all(degree >= 0 for degree in degrees):
             raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
 
@@ -386,12 +386,25 @@ class Poly:
 
         return p
 
-    def roots(self):
+    def roots(self, multiplicity=False):
         """
         Calculates the roots :math:`r` of the polynomial :math:`p(x)`, such that :math:`p(r) = 0`.
 
-        This implementation uses Chien's search to find the roots of the degree-:math:`d` polynomial
-        :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
+        This implementation uses Chien's search to find the roots :math:`\\{r_0, r_1, \\dots, r_{k-1}\\}` of the degree-:math:`d`
+        polynomial
+
+        .. math::
+            p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0,
+
+        where :math:`k \\le d`. Then, :math:`p(x)` can be factored as
+
+        .. math::
+            p(x) = (x - r_0)^{m_0} (x - r_1)^{m_1} \\dots (x - r_{k-1})^{m_{k-1}},
+
+        where :math:`m_i` is the multiplicity of root :math:`r_i` and
+
+        .. math::
+            \\sum_{i=0}^{k-1} m_i = d.
 
         The Galois field elements can be represented as :math:`\\mathrm{GF}(q) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{q-2}\\}`,
         where :math:`\\alpha` is a primitive element of :math:`\\mathrm{GF}(q)`.
@@ -427,37 +440,98 @@ class Poly:
 
             p(\\alpha^{i+1}) &= \\sum_{j=0}^{d} \\lambda_{i,j}\\alpha^j
 
+        Parameters
+        ----------
+        multiplicity : bool, optional
+            Optionally return the multiplicity of each root. The default is `False`, which only returns the unique
+            roots.
+
         Returns
         -------
         galois.GF
             Galois field array of roots of :math:`p(x)`.
+        np.ndarray
+            The multiplicity of each root. Only returned if `multiplicity=True`.
 
         References
         ----------
         * https://en.wikipedia.org/wiki/Chien_search
+
+        Examples
+        --------
+        Find the roots of a polynomial over :math:`\\mathrm{GF}(2)[x]`.
+
+        .. ipython:: python
+
+            p = galois.Poly.Roots([0,]*7 + [1,]*13); p
+            p.roots()
+            p.roots(multiplicity=True)
+
+        Find the roots of a polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
+
+        .. ipython:: python
+
+            GF256 = galois.GF_factory(2, 8)
+            p = galois.Poly.Roots([18,]*7 + [155,]*13 + [227,]*9, field=GF256); p
+            p.roots()
+            p.roots(multiplicity=True)
         """
         lambda_vector = self.coeffs_asc
         alpha_vector = self.field.alpha ** np.arange(0, self.degree + 1)
         roots = []
+        multiplicities = []
 
         # Test if 0 is a root
         if lambda_vector[0] == 0:
-            roots.append(0)
+            root = 0
+            roots.append(root)
+            multiplicities.append(self._root_multiplicity(root) if multiplicity else 1)
 
         # Test if 1 is a root
         if np.sum(lambda_vector) == 0:
-            roots.append(1)
+            root = 1
+            roots.append(root)
+            multiplicities.append(self._root_multiplicity(root) if multiplicity else 1)
 
         # Test if the powers of alpha are roots
         for i in range(1, self.field.order - 1):
             lambda_vector *= alpha_vector
             if np.sum(lambda_vector) == 0:
-                roots.append(int(self.field.alpha**i))
-            if len(roots) == self.degree:
+                root = int(self.field.alpha**i)
+                roots.append(root)
+                multiplicities.append(self._root_multiplicity(root) if multiplicity else 1)
+            if sum(multiplicities) == self.degree:
                 # We can exit early once we have `d` roots for a degree-d polynomial
                 break
 
-        return np.sort(self.field(roots))
+        idxs = np.argsort(roots)
+        if not multiplicity:
+            return self.field(roots)[idxs]
+        else:
+            return self.field(roots)[idxs], np.array(multiplicities)[idxs]
+
+    def _root_multiplicity(self, root):
+        zero = Poly.Zero(self.field)
+        poly = Poly(self.coeffs_desc)
+        multiplicity = 1
+
+        while True:
+            # If the root is also a root of the derivative, then its a multiple root.
+            poly = poly.derivative()
+
+            if poly == zero:
+                # Cannot test whether p'(root) = 0 because p'(x) = 0. We've exhausted the non-zero derivatives. For
+                # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
+                # greater than the field's characteristic, we need factor the polynomial. Here we factor out (x - root)^m,
+                # where m is the current multiplicity.
+                poly = Poly(self.coeffs_desc) // (Poly([1, -root], field=self.field)**multiplicity)
+
+            if poly(root) == 0:
+                multiplicity += 1
+            else:
+                break
+
+        return multiplicity
 
     def derivative(self, k=1):
         """

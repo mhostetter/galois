@@ -4,6 +4,7 @@ A pytest module to test various Galois field polynomial operations.
 import random
 
 import numpy as np
+from numpy.core.defchararray import multiply
 import pytest
 
 import galois
@@ -27,6 +28,22 @@ def test_roots():
     roots = GF.Random(5).tolist()
     poly = galois.Poly.Roots(roots, field=GF)
     assert set(poly.roots().tolist()) == set(roots)
+
+
+def test_multiple_roots():
+    GF = galois.GF_factory(31, 1)
+    roots = [0, 3, 17, 24, 30]
+    multiplicities = [7, 5, 9, 2, 11]
+    all_roots = []
+    for r, m in zip(roots, multiplicities):
+        all_roots += [r,]*m
+
+    poly = galois.Poly.Roots(all_roots, field=GF)
+    r, m = poly.roots(multiplicity=True)
+    assert np.array_equal(r, roots)
+    assert np.array_equal(m, multiplicities)
+    assert type(r) is GF
+    assert type(m) is np.ndarray
 
 
 def test_derivative():
