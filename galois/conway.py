@@ -23,6 +23,11 @@ class ConwayDatabase:
     def fetch(self, characteristic, degree):
         self.cursor.execute("SELECT coefficients FROM polys WHERE characteristic=? AND degree=?", (int(characteristic), int(degree)))
         result = self.cursor.fetchone()
-        if result is not None:
-            result = result[0]
-        return result
+
+        if result is None:
+            raise LookupError(f"Frank Luebeck's database of Conway polynomials doesn't contain an entry for GF({characteristic}^{degree})")
+
+        coeffs = result[0]
+        coeffs = list(map(int, coeffs[1:-1].split(",")))  # List of degree-ascending coefficients
+
+        return coeffs[::-1]
