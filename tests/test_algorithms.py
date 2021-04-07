@@ -24,8 +24,9 @@ def test_factors_exceptions():
 def test_gcd():
     a = random.randint(0, 1_000_000)
     b = random.randint(0, 1_000_000)
-    gcd = galois.gcd(a, b)
+    gcd, x, y = galois.gcd(a, b)
     assert gcd == math.gcd(a, b)
+    assert a*x + b*y == gcd
 
 
 def test_gcd_exceptions():
@@ -33,21 +34,6 @@ def test_gcd_exceptions():
         galois.gcd(10.0, 12)
     with pytest.raises(TypeError):
         galois.gcd(10, 12.0)
-
-
-def test_extended_gcd():
-    a = random.randint(0, 1_000_000)
-    b = random.randint(0, 1_000_000)
-    x, y, gcd = galois.extended_gcd(a, b)
-    assert gcd == math.gcd(a, b)
-    assert a*x + b*y == gcd
-
-
-def test_extended_gcd_exceptions():
-    with pytest.raises(TypeError):
-        galois.extended_gcd(10.0, 12)
-    with pytest.raises(TypeError):
-        galois.extended_gcd(10, 12.0)
 
 
 def test_chinese_remainder_theorem():

@@ -44,54 +44,7 @@ def factors(n):
 
 def gcd(a, b):
     """
-    Finds the greatest common divisor of two integers :math:`a` and :math:`b`.
-
-    This implementation uses the Euclidean Algorithm.
-
-    Parameters
-    ----------
-    a : int
-        Any integer.
-    b : int
-        Any integer.
-
-    Returns
-    -------
-    int
-        Greatest common divisor of :math:`a` and :math:`b`, i.e. :math:`gcd(a,b)`.
-
-    References
-    ----------
-    * T. Moon, "Error Correction Coding", Section 5.2.2: The Euclidean Algorithm and Euclidean Domains, p. 181
-    * https://en.wikipedia.org/wiki/Euclidean_algorithm
-
-    Examples
-    --------
-    .. ipython:: python
-
-        a = 2
-        b = 13
-        galois.gcd(a, b)
-    """
-    if not isinstance(a, (int, np.integer)):
-        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
-    if not isinstance(b, (int, np.integer)):
-        raise TypeError(f"Argument `b` must be an integer, not {type(b)}.")
-
-    r = [a, b]
-
-    while True:
-        ri = r[-2] % r[-1]
-        r.append(ri)
-        if ri == 0:
-            break
-
-    return r[-2]
-
-
-def extended_gcd(a, b):
-    """
-    Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = gcd(a,b)`.
+    Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = gcd(a, b)`.
 
     This implementation uses the Extended Euclidean Algorithm.
 
@@ -105,11 +58,11 @@ def extended_gcd(a, b):
     Returns
     -------
     int
+        Greatest common divisor of :math:`a` and :math:`b`.
+    int
         Integer :math:`x`, such that :math:`a x + b y = gcd(a, b)`.
     int
         Integer :math:`y`, such that :math:`a x + b y = gcd(a, b)`.
-    int
-        Greatest common divisor of :math:`a` and :math:`b`.
 
     References
     ----------
@@ -122,8 +75,8 @@ def extended_gcd(a, b):
 
         a = 2
         b = 13
-        x, y, gcd = galois.extended_gcd(a, b)
-        x, y, gcd
+        gcd, x, y = galois.gcd(a, b)
+        gcd, x, y
         a*x + b*y == gcd
     """
     if not isinstance(a, (int, np.integer)):
@@ -144,11 +97,11 @@ def extended_gcd(a, b):
         if ri == 0:
             break
 
-    return s[-2], t[-2], r[-2]
+    return r[-2], s[-2], t[-2]
 
 
 @numba.jit("int64[:](int64, int64)", nopython=True)
-def extended_gcd_jit(a, b):  # pragma: no cover
+def gcd_jit(a, b):  # pragma: no cover
     r = [a, b]
     s = [1, 0]
     t = [0, 1]
@@ -162,7 +115,7 @@ def extended_gcd_jit(a, b):  # pragma: no cover
         if ri == 0:
             break
 
-    return np.array([s[-2], t[-2], r[-2]], dtype=np.int64)
+    return np.array([r[-2], s[-2], t[-2]], dtype=np.int64)
 
 
 def chinese_remainder_theorem(a, m):
@@ -220,7 +173,7 @@ def chinese_remainder_theorem(a, m):
 
         # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = 1,
         # where 1 is the GCD(m1, m2) because m1 and m2 are pairwise relatively coprime
-        b1, b2 = extended_gcd(m1, m2)[0:2]
+        b1, b2 = gcd(m1, m2)[1:3]
 
         # Compute x through explicit construction
         x = a1*b2*m2 + a2*b1*m1
