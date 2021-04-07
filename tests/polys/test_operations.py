@@ -137,6 +137,16 @@ def test_update_coeffs_list(field):
         p.coeffs = c2
 
 
+def test_update_field(field):
+    alpha = field.alpha
+    prim_poly = field.prim_poly
+    prim_poly.field = field
+    assert type(prim_poly) is galois.Poly
+    assert type(prim_poly.coeffs) is field
+    assert prim_poly.field is field
+    assert prim_poly(alpha) == 0
+
+
 def test_equal(field):
     c = field.Random(6)
     c[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero

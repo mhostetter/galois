@@ -827,6 +827,14 @@ class Poly:
         """
         return self._field
 
+    @field.setter
+    def field(self, field):
+        if not issubclass(field, GFArray):
+            raise TypeError(f"Property `field` must be a subclass of galois.GFArray, not {field}.")
+
+        self._field = field
+        self._coeffs = field(self._coeffs)
+
     @property
     def integer(self):
         """
