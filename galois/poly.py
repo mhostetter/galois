@@ -730,15 +730,23 @@ class Poly:
             raise TypeError(f"For polynomial exponentiation, argument 1 must be of type int. Argument 1 is of type {type(other)}. Argument 1 = {other}.")
         if not other >= 0:
             raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {other}.")
-        field, a, b = self.field, self, other
+        field, a, power = self.field, self, other
 
-        # c(x) = a(x) ** b
-        if b == 0:
+        # c(x) = a(x) ** power
+        if power == 0:
             return Poly.One(field)
 
-        c = Poly(a.coeffs_desc, field=field)
-        for _ in range(b - 1):
-            c *= a
+        c_square = Poly(a.coeffs_desc, field=field)  # The "squaring" part
+        c_mult = Poly.One(field)  # The "multiplicative" part
+
+        while power > 1:
+            if power % 2 == 0:
+                c_square *= c_square
+                power //= 2
+            else:
+                c_mult *= c_square
+                power -= 1
+        c = c_mult * c_square
 
         return c
 
