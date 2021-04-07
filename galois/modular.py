@@ -70,7 +70,7 @@ def euler_totient(n):
         phi = galois.euler_totient(n); phi
 
         # Find the totatives that are coprime with n
-        totatives = [k for k in range(n) if galois.gcd(k, n) == 1]; totatives
+        totatives = [k for k in range(n) if math.gcd(k, n) == 1]; totatives
 
         # The number of totatives is phi
         len(totatives) == phi
@@ -133,7 +133,7 @@ def carmichael(n):
         lambda_ = galois.carmichael(n); lambda_
 
         # Find the totatives that are relatively coprime with n
-        totatives = [i for i in range(n) if galois.gcd(i, n) == 1]; totatives
+        totatives = [i for i in range(n) if math.gcd(i, n) == 1]; totatives
 
         for a in totatives:
             result = pow(a, lambda_, n)

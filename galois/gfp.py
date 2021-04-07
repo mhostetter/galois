@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from .algorithm import extended_gcd, extended_gcd_jit
+from .algorithm import gcd, gcd_jit
 from .gf import GFArray
 
 # Field attribute globals
@@ -152,7 +152,7 @@ class GFp(GFArray):
 
     @classmethod
     def _multiplicative_inverse_calculate(cls, a):
-        a_inv = extended_gcd(a, cls.order)[0]
+        a_inv = gcd(a, cls.order)[1]
         return a_inv % cls.order
 
 
@@ -185,7 +185,7 @@ def additive_inverse_calculate(a):  # pragma: no cover
 
 
 def multiplicative_inverse_calculate(a):  # pragma: no cover
-    a_inv = extended_gcd_jit(a, ORDER)[0]
+    a_inv = gcd_jit(a, ORDER)[1]
     return a_inv % ORDER
 
 
