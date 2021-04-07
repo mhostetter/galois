@@ -824,3 +824,75 @@ class Poly:
         c = self.coeffs_asc
         c = c.view(np.ndarray)  # We want to do integer math, not Galois field math
         return poly_to_integer(c, self.field.order)
+
+
+def poly_gcd(a, b):
+    """
+    Finds the greatest common divisor of two polynomials :math:`a(x)` and :math:`b(x)`
+    over :math:`\\mathrm{GF}(q)[x]`.
+
+    This implementation uses the Extended Euclidean Algorithm.
+
+    Parameters
+    ----------
+    a : galois.Poly
+        A polynomial :math:`a(x)` over :math:`\\mathrm{GF}(q)[x]`.
+    b : galois.Poly
+        A polynomial :math:`b(x)` over :math:`\\mathrm{GF}(q)[x]`.
+
+    Returns
+    -------
+    galois.Poly
+        Polynomial greatest common divisor of :math:`a(x)` and :math:`b(x)`.
+    galois.Poly
+        Polynomial :math:`x(x)`, such that :math:`a x + b y = gcd(a, b)`.
+    galois.Poly
+        Polynomial :math:`y(x)`, such that :math:`a x + b y = gcd(a, b)`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        a = galois.Poly.Roots([2,2,2,3,6], field=GF); a
+
+        # a(x) and b(x) only share the root 2 in common
+        b = galois.Poly.Roots([1,2], field=GF); b
+
+        gcd, x, y = galois.poly_gcd(a, b)
+
+        # The GCD has only 2 as a root with multiplicity 1
+        gcd.roots(multiplicity=True)
+
+        a*x + b*y == gcd
+    """
+    if not isinstance(a, Poly):
+        raise TypeError(f"Argument `a` must be of type galois.Poly, not {type(a)}.")
+    if not isinstance(b, Poly):
+        raise TypeError(f"Argument `b` must be of type galois.Poly, not {type(b)}.")
+    if not a.field == b.field:
+        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {str(a.field)} and {str(b.field)}.")
+
+    field = a.field
+    zero = Poly.Zero(field)
+    one = Poly.One(field)
+
+    if a == zero:
+        return b, 0, 1
+    if b == zero:
+        return a, 1, 0
+
+    r = [a, b]
+    s = [one, zero]
+    t = [zero, one]
+
+    while True:
+        qi = r[-2] // r[-1]
+        ri = r[-2] % r[-1]
+        r.append(ri)
+        s.append(s[-2] - qi*s[-1])
+        t.append(t[-2] - qi*t[-1])
+        if ri == zero:
+            break
+
+    return r[-2], s[-2], t[-2]

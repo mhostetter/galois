@@ -145,3 +145,11 @@ def test_equal(field):
     p1 = galois.Poly(c)
     p2 = galois.Poly(c.tolist(), field=field)
     assert p1 == p2
+
+
+def test_poly_gcd():
+    GF = galois.GF(7)
+    a = galois.Poly.Roots([2,2,2,3,5], field=GF)
+    b = galois.Poly.Roots([1,2,6], field=GF)
+    gcd, x, y = galois.poly_gcd(a, b)
+    assert a*x + b*y == gcd
