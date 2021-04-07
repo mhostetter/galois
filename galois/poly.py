@@ -67,14 +67,16 @@ class Poly:
         a % b
     """
 
+    __slots__ = ["_coeffs", "_field"]
+
     def __init__(self, coeffs, field=None, order="desc"):
         if not (field is None or issubclass(field, GFArray)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
-
-        self.order = order
+        if not order in ["desc", "asc"]:
+            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order}.")
 
         if isinstance(coeffs, GFArray) and field is None:
-            self.coeffs = coeffs
+            c = coeffs
         else:
             field = GF2 if field is None else field
 
@@ -88,7 +90,11 @@ class Poly:
             neg_idxs = np.where(c < 0)
             c = field(np.abs(c))
             c[neg_idxs] *= -1
-            self.coeffs = c
+
+        if order == "desc":
+            self.coeffs_desc = c
+        else:
+            self.coeffs_asc = c
 
     @classmethod
     def Zero(cls, field=GF2):
@@ -757,45 +763,30 @@ class Poly:
         return not self.__eq__(other)
 
     @property
-    def order(self):
-        """
-        str: The interpretation of the ordering of the polynomial coefficients. `coeffs` are in degree-descending order
-        if `order="desc"` and in degree-ascending order if `order="asc"`.
-        """
-        return self._order
-
-    @order.setter
-    def order(self, order):
-        if order not in ["desc", "asc"]:
-            raise ValueError(f"The coefficient degree ordering `order` must be either 'desc' or 'asc', not {order}")
-        self._order = order
-
-    @property
     def coeffs(self):
         """
         galois.GFArray: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{d}, \\dots, a_1, a_0\\}` if `order="desc"` or
         :math:`\\{a_0, a_1, \\dots, a_{d}\\}` if `order="asc"`, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
         """
-        return self.field(self._coeffs)
+        return self.field(self._coeffs)  # TODO: Ensure copy operation
 
     @coeffs.setter
     def coeffs(self, coeffs):
         if not isinstance(coeffs, GFArray):
-            raise TypeError(f"Galois field polynomials must have coefficients in a valid Galois field class (i.e. subclasses of GFArray), not {type(coeffs)}")
+            raise TypeError(f"Galois field polynomials must have coefficients in a valid Galois field class (i.e. subclasses of GFArray), not {type(coeffs)}.")
         if coeffs.ndim != 1:
-            raise ValueError(f"Galois field polynomial coefficients must be arrays with dimension 1, not {coeffs.ndim}")
-        idxs = np.nonzero(coeffs)[0]  # Non-zero indices
+            raise ValueError(f"Galois field polynomial coefficients must be arrays with dimension 1, not {coeffs.ndim}.")
 
+        idxs = np.nonzero(coeffs)[0]  # Non-zero indices
         if idxs.size > 0:
             # Trim leading non-zero powers
-            coeffs = coeffs[:idxs[-1]+1] if self.order == "asc" else coeffs[idxs[0]:]
+            coeffs = coeffs[idxs[0]:]
         else:
             # All coefficients are zero, only return the x^0 place
-            field = coeffs.__class__
-            coeffs = field([0])
+            coeffs = type(coeffs)([0])
 
         self._coeffs = coeffs
-        self._field = coeffs.__class__
+        self._field = type(coeffs)
 
     @property
     def coeffs_asc(self):
@@ -803,10 +794,11 @@ class Poly:
         galois.GFArray: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{d-1}, a_{d}\\}` as a Galois field array
         in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
         """
-        if self.order == "asc":
-            return self.field(self._coeffs)
-        else:
-            return self.field(np.flip(self._coeffs))
+        return self.field(np.flip(self._coeffs))  # TODO: Ensure copy operation
+
+    @coeffs_asc.setter
+    def coeffs_asc(self, coeffs_asc):
+        self.coeffs = coeffs_asc[::-1]
 
     @property
     def coeffs_desc(self):
@@ -814,17 +806,18 @@ class Poly:
         galois.GFArray: The polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` as a Galois field array
         in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
         """
-        if self.order == "desc":
-            return self.field(self._coeffs)
-        else:
-            return self.field(np.flip(self._coeffs))
+        return self.field(self._coeffs)  # TODO: Ensure copy operation
+
+    @coeffs_desc.setter
+    def coeffs_desc(self, coeffs_desc):
+        self.coeffs = coeffs_desc
 
     @property
     def degree(self):
         """
         int: The degree of the polynomial, i.e. the highest degree with non-zero coefficient.
         """
-        return self.coeffs.size - 1
+        return self._coeffs.size - 1
 
     @property
     def field(self):

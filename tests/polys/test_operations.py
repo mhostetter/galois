@@ -84,7 +84,6 @@ def test_integer():
 def test_order_default(field):
     c = [1, 0, 1, 1]
     p = galois.Poly(c)
-    assert p.order == "desc"
     assert np.array_equal(p.coeffs, c)
     assert np.array_equal(p.coeffs_desc, c)
     assert np.array_equal(p.coeffs_asc, c[::-1])
@@ -93,8 +92,7 @@ def test_order_default(field):
 def test_order_asc(field):
     c = [1, 0, 1, 1]
     p = galois.Poly(c, order="asc")
-    assert p.order == "asc"
-    assert np.array_equal(p.coeffs, c)
+    assert np.array_equal(p.coeffs, c[::-1])
     assert np.array_equal(p.coeffs_desc, c[::-1])
     assert np.array_equal(p.coeffs_asc, c)
 

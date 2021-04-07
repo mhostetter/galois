@@ -51,19 +51,12 @@ def test_divmod(poly_divmod):
     for i in range(len(X)):
         x = X[i]
         y = Y[i]
-        q1 = x / y
-        q2 = x // y
-        r = x % y
+        q, r = divmod(x, y)
 
-        assert q1 == Q[i]
-        assert isinstance(q1, galois.Poly)
-        assert q1.field is GF
-        assert type(q1.coeffs) is GF
-
-        assert q2 == Q[i]
-        assert isinstance(q2, galois.Poly)
-        assert q2.field is GF
-        assert type(q2.coeffs) is GF
+        assert q == Q[i]
+        assert isinstance(q, galois.Poly)
+        assert q.field is GF
+        assert type(q.coeffs) is GF
 
         assert r == R[i]
         assert isinstance(r, galois.Poly)
