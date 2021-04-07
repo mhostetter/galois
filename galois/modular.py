@@ -608,6 +608,11 @@ def is_primitive_root(g, n):
     if not 0 < g < n:
         raise ValueError(f"Argument `g` must be a positive integer less than `n`, not {g}.")
 
+    if n == 2:
+        # Euler totient of 2 is 1. We cannot compute the prime factorization of 1. There is only one
+        # primitive root modulo 2 and it's 1.
+        return g == 1
+
     phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
     primes, _ = prime_factors(phi)
 
