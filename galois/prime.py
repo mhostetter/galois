@@ -194,11 +194,8 @@ def prime_factors(x):
     """
     if not isinstance(x, (int, np.integer)):
         raise TypeError(f"Argument `x` must be an integer, not {type(x)}.")
-    if not x > 0:
-        raise ValueError(f"Argument `x` must be a positive integer, not {x}.")
-
-    if x == 1:
-        return [1], [1]
+    if not x > 1:
+        raise ValueError(f"Argument `x` must be greater than 1, not {x}.")
 
     max_factor = int(math.ceil(math.sqrt(x)))
     max_prime_idx = bisect.bisect_right(PRIMES, max_factor)
