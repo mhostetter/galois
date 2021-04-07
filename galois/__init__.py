@@ -230,24 +230,22 @@ def conway_poly(characteristic, degree):
     from .conway import ConwayDatabase
 
     if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Galois field GF(p^m) prime characteristic `p` must be an integer, not {type(characteristic)}")
+        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}")
     if not isinstance(degree, (int, np.integer)):
-        raise TypeError(f"Galois field GF(p^m) characteristic degree `m` must be an integer, not {type(degree)}")
-
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}")
     if not is_prime(characteristic):
-        raise ValueError(f"Galois field GF(p^m) characteristic `p` must be prime, not {characteristic}")
+        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}")
     if not degree >= 1:
-        raise ValueError(f"Galois field GF(p^m) characteristic degree `m` must be >= 1, not {degree}")
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}")
 
-    db = ConwayDatabase()
-    coeffs = db.fetch(characteristic, degree)
-    if coeffs is None:
-        raise LookupError(f"Frank Luebeck's database of Conway polynomials doesn't contain an entry for GF({characteristic}^{degree})")
+    coeffs = ConwayDatabase().fetch(characteristic, degree)
+    if characteristic == 2:
+        field = GF2
+    else:
+        field = _GFp_factory(characteristic, primitive_root(characteristic))
+    poly = Poly(coeffs, field=field)
 
-    coeffs = list(map(int, coeffs[1:-1].split(",")))  # List of degree-ascending coefficients
-    field = GF2 if characteristic == 2 else _GFp_factory(characteristic)
-
-    return Poly(coeffs[::-1], field=field)
+    return poly
 
 
 # Create the default GF2 class and target the numba ufuncs for "cpu" (lowest overhead)
