@@ -676,6 +676,10 @@ class Poly:
 
         return quotient, remainder
 
+    def __hash__(self):
+        t = tuple([self.field.order,] + self.coeffs_desc.tolist())
+        return hash(t)
+
     def __call__(self, x):
         return self.field._poly_eval(self.coeffs, x)
 
