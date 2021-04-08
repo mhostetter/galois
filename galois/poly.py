@@ -19,7 +19,7 @@ class Poly:
         :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
         the 0-th degree element if `order="asc"`.
     field : galois.GFArray, optional
-        The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`. If `coeffs`
+        The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`. If `coeffs`
         is a Galois field array, then that field is used and the `field` argument is ignored.
     order : str, optional
         The interpretation of the coefficient degrees, either `"desc"` (default) or `"asc"`. For `"desc"`,
@@ -97,14 +97,14 @@ class Poly:
             self.coeffs_asc = c
 
     @classmethod
-    def Zero(cls, field=GF2):
+    def Zero(cls, field=None):
         """
         Constructs the zero polynomial :math:`p(x) = 0` over :math:`\\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
@@ -129,14 +129,14 @@ class Poly:
         return cls([0], field=field)
 
     @classmethod
-    def One(cls, field=GF2):
+    def One(cls, field=None):
         """
         Constructs the one polynomial :math:`p(x) = 1` over :math:`\\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
@@ -161,14 +161,14 @@ class Poly:
         return cls([1], field=field)
 
     @classmethod
-    def Identity(cls, field=GF2):
+    def Identity(cls, field=None):
         """
         Constructs the identity polynomial :math:`p(x) = x` over :math:`\\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
@@ -193,7 +193,7 @@ class Poly:
         return cls([1, 0], field=field)
 
     @classmethod
-    def Random(cls, degree, field=GF2):
+    def Random(cls, degree, field=None):
         """
         Constructs a random polynomial over :math:`\\mathrm{GF}(q)[x]` with degree :math:`d`.
 
@@ -202,7 +202,7 @@ class Poly:
         degree : int
             The degree of the polynomial.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
@@ -248,7 +248,7 @@ class Poly:
         integer : int
             The integer representation of the polynomial :math:`p(x)`.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
@@ -280,7 +280,7 @@ class Poly:
         return cls(c, field=field, order=order)
 
     @classmethod
-    def Degrees(cls, degrees, coeffs=None, field=GF2):
+    def Degrees(cls, degrees, coeffs=None, field=None):
         """
         Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its non-zero degrees.
 
@@ -294,7 +294,7 @@ class Poly:
         roots : array_like
             List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
@@ -339,7 +339,7 @@ class Poly:
         return cls(all_coeffs, field=field)
 
     @classmethod
-    def Roots(cls, roots, field=GF2):
+    def Roots(cls, roots, field=None):
         """
         Constructs a monic polynomial in :math:`\\mathrm{GF}(q)[x]` from its roots.
 
@@ -355,7 +355,7 @@ class Poly:
         roots : array_like
             List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
