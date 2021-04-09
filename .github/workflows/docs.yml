@@ -1,0 +1,28 @@
+name: Docs
+
+on:
+  # push:
+  #   branches:
+  #   - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - name: Install documentation dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r requirements-doc.txt
+    - name: Install python package
+      run: python3 -m pip install .
+    - name: Run sphinx to build docs
+      run: sphinx-build -b html -v docs/ docs/build/
