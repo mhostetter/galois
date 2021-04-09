@@ -1,277 +1,358 @@
 """
 A pytest module to test instantiation of new Galois field arrays.
 """
-import numpy as np
+import random
+
 import pytest
+import numpy as np
 
 import galois
 
-
-class TestAbstractClasses:
-    def test_cant_instantiate_GF(self):
-        v = [0, 1, 0, 1]
-        with pytest.raises(NotImplementedError):
-            a = galois.GFArray(v)
+from ..helper import array_equal
 
 
-class TestList:
-    def test_int(self, field):
-        v = [0, 1, 0, 1]
-        a = field(v)
+DTYPES = galois.gf.DTYPES + [np.object_]
+
+
+def test_cant_instantiate_GF():
+    v = [0, 1, 0, 1]
+    with pytest.raises(NotImplementedError):
+        a = galois.GFArray(v)
+
+
+class Test0D:
+    @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.GFArray])
+    def test_new(self, field, type1):
+        v = int(field.Random())
+        vt = convert_0d(v, type1, field)
+        a = field(vt)
         assert type(a) is field
+        assert a == v
 
-    def test_int_valid_dtypes(self, field):
-        v = [0, 1, 0, 1]
-        for dtype in field.dtypes:
-            a = field(v, dtype=dtype)
-            assert a.dtype == dtype
-
-    def test_int_invalid_dtypes(self, field):
-        v = [0, 1, 0, 1]
-        for dtype in [d for d in galois.gf.DTYPES if d not in field.dtypes]:
-            with pytest.raises(TypeError):
-                a = field(v, dtype=dtype)
-
-    def test_int_out_of_range(self, field):
-        v = [0, 1, 0, -1]
-        with pytest.raises(ValueError):
-            a = field(v)
-
-        v = [0, 1, 0, field.order]
-        with pytest.raises(ValueError):
-            a = field(v)
-
-    def test_float_valid_values(self, field):
-        # Tests float values that could be coerced to field elements
-        v = [0.0, 1.0, 0.0 , 1.0]
-        with pytest.raises(TypeError):
-            a = field(v)
-
-    def test_float_invalid_values(self, field):
-        # Tests float values that could not be coerced to field elements
-        v = [0.1, field.order-0.8, 0.1, field.order-0.8]
-        with pytest.raises(TypeError):
-            a = field(v)
-
-
-class TestListOfList:
-    def test_int(self, field):
-        v = [[0, 1], [0, 1]]
-        a = field(v)
+    @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.GFArray])
+    def test_valid_dtype(self, field, type1):
+        v = int(field.Random())
+        vt = convert_0d(v, type1, field)
+        dtype = valid_dtype(field)
+        a = field(vt, dtype=dtype)
         assert type(a) is field
+        assert a.dtype == dtype
+        assert a == v
 
-    def test_int_valid_dtypes(self, field):
-        v = [[0, 1], [0, 1]]
-        for dtype in field.dtypes:
-            a = field(v, dtype=dtype)
-            assert a.dtype == dtype
+    @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.GFArray])
+    def test_invalid_dtype(self, field, type1):
+        v = int(field.Random())
+        vt = convert_0d(v, type1, field)
+        dtype = invalid_dtype(field)
+        with pytest.raises(TypeError):
+            a = field(vt, dtype=dtype)
 
-    def test_int_invalid_dtypes(self, field):
-        v = [[0, 1], [0, 1]]
-        for dtype in [d for d in galois.gf.DTYPES if d not in field.dtypes]:
-            with pytest.raises(TypeError):
-                a = field(v, dtype=dtype)
+    @pytest.mark.parametrize("type1", [int, list, tuple, np.array])
+    def test_non_integer(self, field, type1):
+        v = float(field.order)
+        vt = convert_0d(v, type1, field)
+        with pytest.raises((TypeError, ValueError)):
+            a = field(vt)
 
-    def test_int_out_of_range(self, field):
-        v = [[0, 1], [0, -1]]
+    @pytest.mark.parametrize("type1", [int, list, tuple, np.array])
+    def test_out_of_range_low(self, field, type1):
+        v = -1
+        vt = convert_0d(v, type1, field)
         with pytest.raises(ValueError):
-            a = field(v)
+            a = field(vt)
 
-        v = [[0, 1], [0, field.order]]
+    @pytest.mark.parametrize("type1", [int, list, tuple, np.array])
+    def test_out_of_range_high(self, field, type1):
+        v = field.order
+        vt = convert_0d(v, type1, field)
         with pytest.raises(ValueError):
-            a = field(v)
+            a = field(vt)
 
-    def test_float_valid_values(self, field):
-        # Tests float values that could be coerced to field elements
-        v = [[0.0, 1.0], [0.0 , 1.0]]
-        with pytest.raises(TypeError):
-            a = field(v)
-
-    def test_float_invalid_values(self, field):
-        # Tests float values that could not be coerced to field elements
-        v = [[0.1, field.order-0.8], [0.1, field.order-0.8]]
-        with pytest.raises(TypeError):
-            a = field(v)
-
-
-class TestArray:
-    def test_int(self, field):
-        v = np.array([0, 1, 0, 1])
-        a = field(v)
-        assert type(a) is field
-
-    def test_valid_dtypes(self, field):
-        v = np.array([0, 1, 0, 1])
-        for dtype in field.dtypes:
-            a = field(v, dtype=dtype)
-            assert type(a) is field
-            assert a.dtype == dtype
-
-    def test_invalid_dtypes(self, field):
-        v = np.array([0, 1, 0, 1])
-        for dtype in [d for d in galois.gf.DTYPES if d not in field.dtypes]:
-            with pytest.raises(TypeError):
-                a = field(v, dtype=dtype)
-
-    def test_int_out_of_range(self, field):
-        v = np.array([0, 1, 0, -1])
-        with pytest.raises(ValueError):
-            a = field(v)
-
-        v = np.array([0, 1, 0, field.order])
-        with pytest.raises(ValueError):
-            a = field(v)
-
-    def test_float_valid_values(self, field):
-        # Tests float values that could be coerced to field elements
-        v = np.array([0.0, 1.0, 0.0 , 1.0])
-        with pytest.raises(TypeError):
-            a = field(v)
-
-    def test_float_invalid_values(self, field):
-        # Tests float values that could not be coerced to field elements
-        v = np.array([0.1, field.order-0.8, 0.1, field.order-0.8])
-        with pytest.raises(TypeError):
-            a = field(v)
-
-    def test_object_int(self, field):
-        v = np.array([0, 1, 0, 1], dtype=object)
-        a = field(v)
-        assert type(a) is field
-
-    def test_object_int_or_field(self, field):
-        v = np.array([0, 1, field(0), 1], dtype=object)
-        a = field(v)
-        assert type(a) is field
-
-    def test_object_float(self, field):
-        v = np.array([0, 1, 0.0, 1], dtype=object)
-        with pytest.raises(TypeError):
-            a = field(v)
-
-
-class TestNumpyKwargs:
     def test_copy_true(self, field):
-        l = [0, 1, 0, 1]
-        v = np.array(l)
-        a = field(v, copy=True)
+        v = int(field.Random(low=1))
+        va = np.array(v, dtype=field.dtypes[0])
+        a = field(va, copy=True)
         assert type(a) is field
-        assert np.array_equal(a, l)
-        v[0] = 1  # Change original array
-        assert np.array_equal(a, l)
+        assert array_equal(a, v)
+        va = 1  # Change original array
+        assert array_equal(a, v)
 
-    # TODO: Difficult to know when numpy will copy
-    # def test_copy_false(self, field):
-    #     v = np.array([0, 1, 0, 1])
-    #     a = field(v, copy=False)
-    #     assert type(a) is field
-    #     assert np.array_equal(a, v)
-    #     v[0] = 1  # Change original array
-    #     assert np.array_equal(a, v)
-
-    def test_order(self, field):
-        v = np.array([[0, 1], [0, 1]], order="C")
-        a = field(v)  # Default order is "K" which keeps current
+    def test_default_order_c(self, field):
+        v = int(field.Random())
+        va = np.array(v, order="C", dtype=field.dtypes[0])
+        a = field(va)  # Default order is "K" which keeps current
         assert type(a) is field
         assert a.flags["C_CONTIGUOUS"]
-        assert not a.flags["F_CONTIGUOUS"]
-
-        v = np.array([[0, 1], [0, 1]], order="F")
-        a = field(v)  # Default order is "K" which keeps current
-        assert type(a) is field
         assert a.flags["F_CONTIGUOUS"]
-        assert not a.flags["C_CONTIGUOUS"]
+
+    def test_default_order_f(self, field):
+        v = int(field.Random())
+        va = np.array(v, order="F", dtype=field.dtypes[0])
+        a = field(va)  # Default order is "K" which keeps current
+        assert type(a) is field
+        assert a.flags["C_CONTIGUOUS"]
+        assert a.flags["F_CONTIGUOUS"]
 
     def test_order_c(self, field):
-        v = [[0, 1], [0, 1]]
-        a = field(v, order="C")
+        v = int(field.Random())
+        va = np.array(v, order="F", dtype=field.dtypes[0])
+        a = field(va, order="C")
         assert type(a) is field
         assert a.flags["C_CONTIGUOUS"]
-        assert not a.flags["F_CONTIGUOUS"]
+        assert a.flags["F_CONTIGUOUS"]
 
     def test_order_f(self, field):
-        v = [[0, 1], [0, 1]]
-        a = field(v, order="F")
+        v = int(field.Random())
+        va = np.array(v, order="C", dtype=field.dtypes[0])
+        a = field(va, order="F")
         assert type(a) is field
+        assert a.flags["C_CONTIGUOUS"]
         assert a.flags["F_CONTIGUOUS"]
-        assert not a.flags["C_CONTIGUOUS"]
 
     def test_ndmin(self, field):
-        v = [0, 1, 0, 1]
+        v = int(field.Random())
+        a = field(v, ndmin=3)
+        assert type(a) is field
+        assert a.shape == (1,1,1)
+
+
+class Test1D:
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    def test_new(self, field, type1):
+        v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
+        vt = convert_1d(v, type1, field)
+        a = field(vt)
+        assert type(a) is field
+        assert array_equal(a, v)
+
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    def test_valid_dtype(self, field, type1):
+        v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
+        vt = convert_1d(v, type1, field)
+        dtype = valid_dtype(field)
+        a = field(vt, dtype=dtype)
+        assert type(a) is field
+        assert a.dtype == dtype
+        assert array_equal(a, v)
+
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    def test_invalid_dtype(self, field, type1):
+        v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
+        vt = convert_1d(v, type1, field)
+        dtype = invalid_dtype(field)
+        with pytest.raises(TypeError):
+            a = field(vt, dtype=dtype)
+
+    @pytest.mark.parametrize("type1", [list, tuple, np.array])
+    def test_non_integer(self, field, type1):
+        v = [int(field.Random()), float(field.Random()), int(field.Random()), int(field.Random())]
+        vt = convert_1d(v, type1, field)
+        with pytest.raises((TypeError, ValueError)):
+            a = field(vt)
+
+    @pytest.mark.parametrize("type1", [list, tuple, np.array])
+    def test_out_of_range_low(self, field, type1):
+        v = [int(field.Random()), -1, int(field.Random()), int(field.Random())]
+        vt = convert_1d(v, type1, field)
+        with pytest.raises(ValueError):
+            a = field(vt)
+
+    @pytest.mark.parametrize("type1", [list, tuple, np.array])
+    def test_out_of_range_high(self, field, type1):
+        v = [int(field.Random()), field.order, int(field.Random()), int(field.Random())]
+        vt = convert_1d(v, type1, field)
+        with pytest.raises(ValueError):
+            a = field(vt)
+
+    def test_copy_true(self, field):
+        v = [int(field.Random(low=1)), int(field.Random()), int(field.Random()), int(field.Random())]
+        va = np.array(v, dtype=field.dtypes[0])
+        a = field(va, copy=True)
+        assert type(a) is field
+        assert array_equal(a, v)
+        va[0] = 0  # Change original array
+        assert array_equal(a, v)
+
+    def test_default_order_c(self, field):
+        v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
+        va = np.array(v, order="C", dtype=field.dtypes[0])
+        a = field(va)  # Default order is "K" which keeps current
+        assert type(a) is field
+        assert a.flags["C_CONTIGUOUS"]
+        assert a.flags["F_CONTIGUOUS"]
+
+    def test_default_order_f(self, field):
+        v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
+        va = np.array(v, order="F", dtype=field.dtypes[0])
+        a = field(va)  # Default order is "K" which keeps current
+        assert type(a) is field
+        assert a.flags["C_CONTIGUOUS"]
+        assert a.flags["F_CONTIGUOUS"]
+
+    def test_order_c(self, field):
+        v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
+        va = np.array(v, order="F", dtype=field.dtypes[0])
+        a = field(va, order="C")
+        assert type(a) is field
+        assert a.flags["C_CONTIGUOUS"]
+        assert a.flags["F_CONTIGUOUS"]
+
+    def test_order_f(self, field):
+        v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
+        va = np.array(v, order="C", dtype=field.dtypes[0])
+        a = field(va, order="F")
+        assert type(a) is field
+        assert a.flags["C_CONTIGUOUS"]
+        assert a.flags["F_CONTIGUOUS"]
+
+    def test_ndmin(self, field):
+        v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
         a = field(v, ndmin=3)
         assert type(a) is field
         assert a.shape == (1,1,4)
 
 
-class TestConstructors:
-    def test_zeros(self, field):
-        a = field.Zeros(10)
-        assert np.all(a == 0)
+class Test2D:
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    def test_new(self, field, type1):
+        v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
+        vt = convert_2d(v, type1, field)
+        a = field(vt)
         assert type(a) is field
-        assert a.dtype == field.dtypes[0]
+        assert array_equal(a, v)
 
-    def test_zeros_valid_dtypes(self, field):
-        for dtype in field.dtypes:
-            a = field.Zeros(10, dtype=dtype)
-            assert np.all(a == 0)
-            assert type(a) is field
-            assert a.dtype == dtype
-
-    def test_zeros_invalid_dtypes(self, field):
-        for dtype in [d for d in galois.gf.DTYPES if d not in field.dtypes]:
-            with pytest.raises(TypeError):
-                a = field.Zeros(10, dtype=dtype)
-
-    def test_ones(self, field):
-        a = field.Ones(10)
-        assert np.all(a == 1)
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    def test_valid_dtype(self, field, type1):
+        v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
+        vt = convert_2d(v, type1, field)
+        dtype = valid_dtype(field)
+        a = field(vt, dtype=dtype)
         assert type(a) is field
-        assert a.dtype == field.dtypes[0]
+        assert a.dtype == dtype
+        assert array_equal(a, v)
 
-    def test_ones_valid_dtypes(self, field):
-        for dtype in field.dtypes:
-            a = field.Ones(10, dtype=dtype)
-            assert np.all(a == 1)
-            assert type(a) is field
-            assert a.dtype == dtype
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    def test_invalid_dtype(self, field, type1):
+        v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
+        vt = convert_2d(v, type1, field)
+        dtype = invalid_dtype(field)
+        with pytest.raises(TypeError):
+            a = field(vt, dtype=dtype)
 
-    def test_ones_invalid_dtypes(self, field):
-        for dtype in [d for d in galois.gf.DTYPES if d not in field.dtypes]:
-            with pytest.raises(TypeError):
-                a = field.Ones(10, dtype=dtype)
+    @pytest.mark.parametrize("type1", [list, tuple, np.array])
+    def test_non_integer(self, field, type1):
+        v = [[int(field.Random()), float(field.Random())], [int(field.Random()), int(field.Random())]]
+        vt = convert_2d(v, type1, field)
+        with pytest.raises((TypeError, ValueError)):
+            a = field(vt)
 
-    def test_random(self, field):
-        a = field.Random(10)
-        assert np.all(a >= 0) and np.all(a < field.order)
+    @pytest.mark.parametrize("type1", [list, tuple, np.array])
+    def test_out_of_range_low(self, field, type1):
+        v = [[int(field.Random()), -1], [int(field.Random()), int(field.Random())]]
+        vt = convert_2d(v, type1, field)
+        with pytest.raises(ValueError):
+            a = field(vt)
+
+    @pytest.mark.parametrize("type1", [list, tuple, np.array])
+    def test_out_of_range_high(self, field, type1):
+        v = [[int(field.Random()), field.order], [int(field.Random()), int(field.Random())]]
+        vt = convert_2d(v, type1, field)
+        with pytest.raises(ValueError):
+            a = field(vt)
+
+    def test_copy_true(self, field):
+        v = [[int(field.Random(low=1)), int(field.Random())], [int(field.Random()), int(field.Random())]]
+        va = np.array(v, dtype=field.dtypes[0])
+        a = field(va, copy=True)
         assert type(a) is field
-        assert a.dtype == field.dtypes[0]
+        assert array_equal(a, v)
+        va[0][0] = 0  # Change original array
+        assert array_equal(a, v)
 
-    def test_random_valid_dtypes(self, field):
-        for dtype in field.dtypes:
-            a = field.Random(10, dtype=dtype)
-            assert np.all(a >= 0) and np.all(a < field.order)
-            assert type(a) is field
-            assert a.dtype == dtype
-
-    def test_random_invalid_dtypes(self, field):
-        for dtype in [d for d in galois.gf.DTYPES if d not in field.dtypes]:
-            with pytest.raises(TypeError):
-                a = field.Random(10, dtype=dtype)
-
-    def test_random_element(self, field):
-        a = field.Random()
-        assert np.all(a >= 0) and np.all(a < field.order)
+    def test_default_order_c(self, field):
+        v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
+        va = np.array(v, order="C", dtype=field.dtypes[0])
+        a = field(va)  # Default order is "K" which keeps current
         assert type(a) is field
-        assert a.dtype == field.dtypes[0]
+        assert a.flags["C_CONTIGUOUS"]
+        assert not a.flags["F_CONTIGUOUS"]
 
-    def test_random_element_valid_dtypes(self, field):
-        for dtype in field.dtypes:
-            a = field.Random(dtype=dtype)
-            assert np.all(a >= 0) and np.all(a < field.order)
-            assert type(a) is field
-            assert a.dtype == dtype
+    def test_default_order_f(self, field):
+        v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
+        va = np.array(v, order="F", dtype=field.dtypes[0])
+        a = field(va)  # Default order is "K" which keeps current
+        assert type(a) is field
+        assert not a.flags["C_CONTIGUOUS"]
+        assert a.flags["F_CONTIGUOUS"]
 
-    def test_random_element_invalid_dtypes(self, field):
-        for dtype in [d for d in galois.gf.DTYPES if d not in field.dtypes]:
-            with pytest.raises(TypeError):
-                a = field.Random(dtype=dtype)
+    def test_order_c(self, field):
+        v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
+        va = np.array(v, order="F", dtype=field.dtypes[0])
+        a = field(va, order="C")
+        assert type(a) is field
+        assert a.flags["C_CONTIGUOUS"]
+        assert not a.flags["F_CONTIGUOUS"]
+
+    def test_order_f(self, field):
+        v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
+        va = np.array(v, order="C", dtype=field.dtypes[0])
+        a = field(va, order="F")
+        assert type(a) is field
+        assert not a.flags["C_CONTIGUOUS"]
+        assert a.flags["F_CONTIGUOUS"]
+
+    def test_ndmin(self, field):
+        v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
+        a = field(v, ndmin=3)
+        assert type(a) is field
+        assert a.shape == (1,2,2)
+
+
+def convert_0d(v, type1, field):
+    if type1 is int:
+        vt = v
+    elif type1 in [list, tuple]:
+        vt = type1([v])
+    elif type1 is np.array and field.dtypes == [np.object_]:
+        vt = np.array(v, dtype=np.object_)
+    elif type1 is np.array:
+        vt = np.array(v)
+    elif type1 is galois.GFArray:
+        vt = field(v)
+    else:
+        raise NotImplementedError
+    return vt
+
+
+def convert_1d(v, type1, field):
+    if type1 is galois.GFArray:
+        vt = field(v)
+    elif type1 is np.array and field.dtypes == [np.object_]:
+        vt = np.array(v, dtype=np.object_)
+    elif type1 is np.array:
+        vt = np.array(v)
+    else:
+        vt = type1(v)
+    return vt
+
+
+def convert_2d(v, type1, field):
+    if type1 is galois.GFArray:
+        vt = field(v)
+    elif type1 is np.array and field.dtypes == [np.object_]:
+        vt = np.array(v, dtype=np.object_)
+    elif type1 is np.array:
+        vt = np.array(v)
+    elif type1 in [list, tuple]:
+        vt = type1([type1([b for b in a]) for a in v])
+    else:
+        raise NotImplementedError
+    return vt
+
+
+def valid_dtype(field):
+    return random.choice(field.dtypes)
+
+
+def invalid_dtype(field):
+    return random.choice([dtype for dtype in DTYPES if dtype not in field.dtypes])

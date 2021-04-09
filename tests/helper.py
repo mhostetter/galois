@@ -3,6 +3,14 @@ import random
 import numpy as np
 
 
+def array_equal(a, b):
+    # Weird numpy comparison bug, see https://github.com/mhostetter/galois/issues/37
+    if a.dtype == np.object_:
+        return np.array_equal(a, np.array(b, dtype=np.object_))
+    else:
+        return np.array_equal(a, b)
+
+
 def randint(low, high, shape, dtype):
     if np.issubdtype(dtype, np.integer):
         array = np.random.randint(low, high, shape, dtype=np.int64)
