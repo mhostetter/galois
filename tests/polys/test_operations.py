@@ -50,9 +50,9 @@ def test_derivative():
     GF = galois.GF(3)
     p = galois.Poly.Degrees([6,0], field=GF)
     dp = p.derivative()
-    dp_truth = galois.Poly(0, field=GF)
+    dp_truth = galois.Poly([0], field=GF)
     assert dp == dp_truth
-    assert type(dp) is galois.Poly
+    assert isinstance(dp, galois.Poly)
     assert dp.field is GF
 
     GF = galois.GF(7)
@@ -60,7 +60,7 @@ def test_derivative():
     dp = p.derivative()
     dp_truth = galois.Poly(GF([3,5,0]) * np.array([3,2,1]), field=GF)
     assert dp == dp_truth
-    assert type(dp) is galois.Poly
+    assert isinstance(dp, galois.Poly)
     assert dp.field is GF
 
 
@@ -69,7 +69,7 @@ def test_multiple_derivatives():
     p = galois.Poly.Random(5, field=GF)
     dp = p.derivative(3)
     assert dp == p.derivative().derivative().derivative()
-    assert type(dp) is galois.Poly
+    assert isinstance(dp, galois.Poly)
     assert dp.field is GF
 
 
@@ -81,67 +81,11 @@ def test_integer():
     assert poly.integer == 4295000729
 
 
-def test_order_default(field):
-    c = [1, 0, 1, 1]
-    p = galois.Poly(c)
-    assert np.array_equal(p.coeffs, c)
-    assert np.array_equal(p.coeffs_desc, c)
-    assert np.array_equal(p.coeffs_asc, c[::-1])
-
-
-def test_order_asc(field):
-    c = [1, 0, 1, 1]
-    p = galois.Poly(c, order="asc")
-    assert np.array_equal(p.coeffs, c[::-1])
-    assert np.array_equal(p.coeffs_desc, c[::-1])
-    assert np.array_equal(p.coeffs_asc, c)
-
-
-def test_order_invalid(field):
-    c = [1, 0, 1, 1]
-    with pytest.raises(ValueError):
-        p = galois.Poly(c, order="left-to-right")
-
-
-def test_update_coeffs_field(field):
-    c = field.Random(6)
-    c[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
-    p = galois.Poly(c)
-    assert np.array_equal(p.coeffs, c)
-    assert isinstance(p, galois.Poly)
-    assert p.field is field
-    assert type(p.coeffs) is field
-
-    c2 = field.Random(3)
-    c2[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
-    p.coeffs = c2
-    assert np.array_equal(p.coeffs, c2)
-    assert isinstance(p, galois.Poly)
-    assert p.field is field
-    assert type(p.coeffs) is field
-
-
-def test_update_coeffs_list(field):
-    c = field.Random(6)
-    c[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
-    l = c.tolist()
-    p = galois.Poly(l, field=field)
-    assert np.array_equal(p.coeffs, c)
-    assert isinstance(p, galois.Poly)
-    assert p.field is field
-    assert type(p.coeffs) is field
-
-    c2 = [random.randint(0, field.order - 1) for _ in range(3)]
-    c2[0] = random.randint(1, field.order - 1)  # Ensure leading coefficient is non-zero
-    with pytest.raises(TypeError):
-        p.coeffs = c2
-
-
 def test_update_field(field):
     alpha = field.alpha
     prim_poly = field.prim_poly
     prim_poly.field = field
-    assert type(prim_poly) is galois.Poly
+    assert isinstance(prim_poly, galois.Poly)
     assert type(prim_poly.coeffs) is field
     assert prim_poly.field is field
     assert prim_poly(alpha) == 0
