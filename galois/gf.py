@@ -460,7 +460,7 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
     @classmethod
     def _array(cls, array_like, dtype=None, copy=True, order="K", ndmin=0):
         dtype = cls._get_dtype(dtype)
-        cls._check_array_like_object(array_like)
+        array_like = cls._check_array_like_object(array_like)
 
         # After confirming the input is of the correct type and that all the values are in the
         # field, we can convert to an array with the specified dtype. We need to check the values
@@ -476,46 +476,62 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
         if isinstance(array_like, (int, np.integer)):
             # Just check that the single int is in range
             cls._check_array_values(array_like)
+            return array_like
 
         elif isinstance(array_like, (list, tuple)):
             # Recursively check the items in the iterable to ensure they're of the correct type
             # and that their values are in range
-            cls._check_iterable_types_and_values(array_like)
+            return cls._check_iterable_types_and_values(array_like)
 
         elif isinstance(array_like, np.ndarray):
             if array_like.dtype == np.object_:
-                cls._check_array_types_dtype_object(array_like)
+                return cls._check_array_types_dtype_object(array_like)
             elif not np.issubdtype(array_like.dtype, np.integer):
                 raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays must have integer dtypes, not {array_like.dtype}")
             cls._check_array_values(array_like)
+            return array_like
 
         else:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays can be created with scalars of type int, not {type(array_like)}")
 
     @classmethod
     def _check_iterable_types_and_values(cls, iterable):
+        new_iterable = []
         for item in iterable:
             if isinstance(item, (list, tuple)):
-                cls._check_iterable_types_and_values(item)
-            elif not isinstance(item, int):
+                return cls._check_iterable_types_and_values(item)
+            elif not isinstance(item, (int, np.integer, cls)):
                 raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
             elif not 0 <= item < cls.order:
                 raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {item}")
 
+            # Ensure the type is int so dtype=object classes don't get all mixed up
+            new_iterable.append(int(item))
+
+        return new_iterable
+
     @classmethod
     def _check_array_types_dtype_object(cls, array):
         if array.size == 0:
-            return
+            return array
+        if array.ndim == 0:
+            return int(array)
+
         iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
         for _ in iterator:
             a = array[iterator.multi_index]
             if not isinstance(a, (int, cls)):
                 raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
 
+            # Ensure the type is int so dtype=object classes don't get all mixed up
+            array[iterator.multi_index] = int(a)
+
+        return array
+
     @classmethod
     def _check_array_values(cls, array):
         if not isinstance(array, np.ndarray):
-            # Convert integer to array so next step doesn't fail
+            # Convert single integer to array so next step doesn't fail
             array = np.array(array)
 
         # Check the value of the "field elements" and make sure they are valid
@@ -724,8 +740,7 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
 
     def __setitem__(self, key, value):
         # Verify the values to be written to the Galois field array are in the field
-        value = self._array(value)
-        value = value.view(self.__class__)
+        value = self._check_array_like_object(value)
         super().__setitem__(key, value)
 
     def _view_input_gf_as_ndarray(self, inputs, kwargs, meta):
