@@ -305,9 +305,9 @@ def poly_power(field_folder):
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF
-    d["X"] = galois.Poly(d["X"], field=GF)
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = d["Y"]
-    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    d["Z"] = [[galois.Poly(p, field=GF) for p in l] for l in d["Z"]]
     return d
 
 
