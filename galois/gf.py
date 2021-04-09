@@ -41,11 +41,14 @@ class GFArrayMeta(type):
     """
 
     def __str__(cls):
+        return f"<class 'numpy.ndarray' over {cls.name}>"
+
+    @property
+    def name(cls):
         if cls.degree == 1:
-            s = "GF({})".format(cls.characteristic)
+            return f"GF({cls.characteristic})"
         else:
-            s = "GF({}^{})".format(cls.characteristic, cls.degree)
-        return f"<class 'numpy.ndarray' over {s}>"
+            return f"GF({cls.characteristic}^{cls.degree})"
 
 
 class DisplayContext:
@@ -476,33 +479,36 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
         if isinstance(array_like, (int, np.integer)):
             # Just check that the single int is in range
             cls._check_array_values(array_like)
-            return array_like
 
         elif isinstance(array_like, (list, tuple)):
             # Recursively check the items in the iterable to ensure they're of the correct type
             # and that their values are in range
-            return cls._check_iterable_types_and_values(array_like)
+            array_like = cls._check_iterable_types_and_values(array_like)
 
         elif isinstance(array_like, np.ndarray):
             if array_like.dtype == np.object_:
-                return cls._check_array_types_dtype_object(array_like)
+                array_like = cls._check_array_types_dtype_object(array_like)
             elif not np.issubdtype(array_like.dtype, np.integer):
                 raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays must have integer dtypes, not {array_like.dtype}")
             cls._check_array_values(array_like)
-            return array_like
 
         else:
             raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays can be created with scalars of type int, not {type(array_like)}")
+
+        return array_like
 
     @classmethod
     def _check_iterable_types_and_values(cls, iterable):
         new_iterable = []
         for item in iterable:
             if isinstance(item, (list, tuple)):
-                return cls._check_iterable_types_and_values(item)
-            elif not isinstance(item, (int, np.integer, cls)):
+                item = cls._check_iterable_types_and_values(item)
+                new_iterable.append(item)
+                continue
+
+            if not isinstance(item, (int, np.integer, cls)):
                 raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
-            elif not 0 <= item < cls.order:
+            if not 0 <= item < cls.order:
                 raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {item}")
 
             # Ensure the type is int so dtype=object classes don't get all mixed up
@@ -797,13 +803,13 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
         # Verify input operand types
         if ufunc in [np.add, np.subtract, np.true_divide, np.floor_divide]:
             if not all(t is self.__class__ for t in types):
-                raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the same field {repr(self.__class__)}, not {types}")
+                raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the same field {self.__class__}, not {types}")
         if ufunc in [np.multiply, np.power, np.square]:
             if not all(np.issubdtype(o.dtype, np.integer) or o.dtype == np.object_ for o in operands):
-                raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the field {repr(self.__class__)} or integers, not {types}")
+                raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the field {self.__class__} or integers, not {types}")
         if ufunc in [np.power, np.square]:
             if not types[0] is self.__class__:
-                raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields can only exponentiate elements in the same field {repr(self.__class__)}, not {types[0]}")
+                raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields can only exponentiate elements in the same field {self.__class__}, not {types[0]}")
 
         # Verify no divide by zero or log(0) errors
         if ufunc in [np.true_divide, np.floor_divide] and np.count_nonzero(operands[-1]) != operands[-1].size:

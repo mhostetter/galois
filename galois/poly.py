@@ -1,6 +1,6 @@
 import numpy as np
 
-from .conversion import integer_to_poly, poly_to_integer, poly_to_str
+from .conversion import integer_to_poly, sparse_poly_to_integer, sparse_poly_to_str
 from .gf import GFArray
 from .gf2 import GF2
 
@@ -67,44 +67,25 @@ class Poly:
         a % b
     """
 
-    __slots__ = ["_coeffs", "_field"]
+    __slots__ = ["_degrees", "_coeffs"]
 
-    def __init__(self, coeffs, field=None, order="desc"):
-        if not (field is None or issubclass(field, GFArray)):
-            raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
-        if not order in ["desc", "asc"]:
-            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order}.")
-
-        if isinstance(coeffs, GFArray) and field is None:
-            c = coeffs
+    def __new__(cls, coeffs, field=None, order="desc"):
+        if not isinstance(coeffs, (list, tuple, np.ndarray, GFArray)):
+            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
+        if len(coeffs) > 1000 and np.count_nonzero(coeffs) < 0.001*len(coeffs):
+            return SparsePoly.Coeffs(coeffs, field=field, order=order)
         else:
-            field = GF2 if field is None else field
-
-            # Convert list or np.ndarray of integers into the specified `field`. Apply negation
-            # operator to any negative integers. For instance, `coeffs=[1, -1]` represents
-            # `x - 1` in GF2. However, the `-1` element does not exist in GF2, but the operation
-            # `-1` (the additive inverse of the `1` element) does exist.
-            c = np.array(coeffs, dtype=field.dtypes[-1], copy=True, ndmin=1)
-            assert c.ndim == 1, "Polynomials must only have one dimension"
-            assert np.all(np.abs(c) < field.order)
-            neg_idxs = np.where(c < 0)
-            c = field(np.abs(c))
-            c[neg_idxs] *= -1
-
-        if order == "desc":
-            self.coeffs_desc = c
-        else:
-            self.coeffs_asc = c
+            return DensePoly(coeffs, field=field, order=order)
 
     @classmethod
-    def Zero(cls, field=None):
+    def Zero(cls, field=GF2):
         """
         Constructs the zero polynomial :math:`p(x) = 0` over :math:`\\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
@@ -126,17 +107,17 @@ class Poly:
             GF256 = galois.GF(2**8)
             galois.Poly.Zero(field=GF256)
         """
-        return cls([0], field=field)
+        return DensePoly.Zero(field=field)
 
     @classmethod
-    def One(cls, field=None):
+    def One(cls, field=GF2):
         """
         Constructs the one polynomial :math:`p(x) = 1` over :math:`\\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
@@ -158,17 +139,17 @@ class Poly:
             GF256 = galois.GF(2**8)
             galois.Poly.One(field=GF256)
         """
-        return cls([1], field=field)
+        return DensePoly.One(field=field)
 
     @classmethod
-    def Identity(cls, field=None):
+    def Identity(cls, field=GF2):
         """
         Constructs the identity polynomial :math:`p(x) = x` over :math:`\\mathrm{GF}(q)[x]`.
 
         Parameters
         ----------
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
@@ -190,10 +171,10 @@ class Poly:
             GF256 = galois.GF(2**8)
             galois.Poly.Identity(field=GF256)
         """
-        return cls([1, 0], field=field)
+        return DensePoly.Identity(field=field)
 
     @classmethod
-    def Random(cls, degree, field=None):
+    def Random(cls, degree, field=GF2):
         """
         Constructs a random polynomial over :math:`\\mathrm{GF}(q)[x]` with degree :math:`d`.
 
@@ -202,7 +183,7 @@ class Poly:
         degree : int
             The degree of the polynomial.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
@@ -224,18 +205,10 @@ class Poly:
             GF256 = galois.GF(2**8)
             galois.Poly.Random(5, field=GF256)
         """
-        if not isinstance(degree, (int, np.integer)):
-            raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
-        if not degree >= 0:
-            raise TypeError(f"Argument `degree` must be at least 0, not {degree}.")
-
-        coeffs = field.Random(degree + 1)
-        coeffs[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
-
-        return cls(coeffs)
+        return DensePoly.Random(degree, field=field)
 
     @classmethod
-    def Integer(cls, integer, field=GF2, order="desc"):
+    def Integer(cls, integer, field=GF2):
         """
         Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its integer representation.
 
@@ -248,7 +221,7 @@ class Poly:
         integer : int
             The integer representation of the polynomial :math:`p(x)`.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
@@ -270,14 +243,7 @@ class Poly:
             GF256 = galois.GF(2**8)
             galois.Poly.Integer(13*256**3 + 117, field=GF256)
         """
-        if not isinstance(integer, (int, np.integer)):
-            raise TypeError(f"Polynomial creation must have `integer` be an integer, not {type(integer)}")
-
-        c = integer_to_poly(integer, field.order)
-        if order == "desc":
-            c = np.flip(c)
-
-        return cls(c, field=field, order=order)
+        return DensePoly.Integer(integer, field=field)
 
     @classmethod
     def Degrees(cls, degrees, coeffs=None, field=None):
@@ -294,7 +260,7 @@ class Poly:
         roots : array_like
             List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
@@ -316,27 +282,18 @@ class Poly:
             GF256 = galois.GF(2**8)
             galois.Poly.Degrees([3,1,0], coeffs=[251,73,185], field=GF256)
         """
-        coeffs = [1,]*len(degrees) if coeffs is None else coeffs
-        if not isinstance(degrees, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `degrees` must 'array-like', not {type(degrees)}.")
-        if not isinstance(coeffs, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
-        if not len(degrees) == len(coeffs):
-            raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {len(degrees)} and {len(coeffs)}.")
-        if not all(degree >= 0 for degree in degrees):
-            raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
-
-        degree = np.max(degrees)  # The degree of the polynomial
-        if isinstance(coeffs, GFArray):
-            # Preserve coefficient field if a Galois field array was specified
-            all_coeffs = type(coeffs).Zeros(degree + 1)
-            all_coeffs[degree - degrees] = coeffs
+        degree = max(degrees)
+        if len(degrees) < 0.001*degree:
+            return SparsePoly.Degrees(degrees, coeffs=coeffs, field=field)
         else:
-            all_coeffs = [0]*(degree + 1)
-            for d, c in zip(degrees, coeffs):
-                all_coeffs[degree - d] = c
+            return DensePoly.Degrees(degrees, coeffs=coeffs, field=field)
 
-        return cls(all_coeffs, field=field)
+    @classmethod
+    def Coeffs(cls, coeffs, field=None, order="desc"):
+        """
+        TODO: Add docstring
+        """
+        return DensePoly.Coeffs(coeffs, field=field, order=order)
 
     @classmethod
     def Roots(cls, roots, field=None):
@@ -355,7 +312,7 @@ class Poly:
         roots : array_like
             List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
@@ -381,16 +338,15 @@ class Poly:
             p = galois.Poly.Roots(roots, field=GF256); p
             p(roots)
         """
-        if not isinstance(roots, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `roots` must 'array-like', not {type(roots)}.")
+        return DensePoly.Roots(roots, field=field)
 
-        roots = field(roots).flatten().tolist()
-
-        p = cls.One(field=field)
-        for root in roots:
-            p = p * cls([1, -int(root)], field=field)
-
-        return p
+    def copy(self):
+        if isinstance(self, DensePoly):
+            return DensePoly(self.coeffs)
+        elif isinstance(self, SparsePoly):
+            return SparsePoly(self.nonzero_degrees, self.nonzero_coeffs)
+        else:
+            raise NotImplementedError
 
     def roots(self, multiplicity=False):
         """
@@ -482,13 +438,13 @@ class Poly:
             p.roots()
             p.roots(multiplicity=True)
         """
-        lambda_vector = self.coeffs_asc
-        alpha_vector = self.field.alpha ** np.arange(0, self.degree + 1)
+        lambda_vector = self.nonzero_coeffs
+        alpha_vector = self.field.alpha ** self.nonzero_degrees
         roots = []
         multiplicities = []
 
         # Test if 0 is a root
-        if lambda_vector[0] == 0:
+        if 0 not in self.nonzero_degrees:
             root = 0
             roots.append(root)
             multiplicities.append(self._root_multiplicity(root) if multiplicity else 1)
@@ -518,7 +474,7 @@ class Poly:
 
     def _root_multiplicity(self, root):
         zero = Poly.Zero(self.field)
-        poly = Poly(self.coeffs_desc)
+        poly = self.copy()
         multiplicity = 1
 
         while True:
@@ -530,7 +486,7 @@ class Poly:
                 # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
                 # greater than the field's characteristic, we need factor the polynomial. Here we factor out (x - root)^m,
                 # where m is the current multiplicity.
-                poly = Poly(self.coeffs_desc) // (Poly([1, -root], field=self.field)**multiplicity)
+                poly = self.copy() // (Poly([1, -root], field=self.field)**multiplicity)
 
             if poly(root) == 0:
                 multiplicity += 1
@@ -612,8 +568,16 @@ class Poly:
         if not k > 0:
             raise ValueError(f"Argument `k` must be a positive integer, not {k}.")
 
-        coeffs = self.coeffs_desc[0:-1] * np.arange(self.degree, 0, -1)
-        p_prime = self.__class__(coeffs)
+        if 0 in self.nonzero_degrees:
+            # Cut off the 0th degree
+            degrees = self.nonzero_degrees[:-1] - 1
+            coeffs = self.nonzero_coeffs[:-1] * self.nonzero_degrees[:-1]
+        else:
+            degrees = self.nonzero_degrees - 1
+            coeffs = self.nonzero_coeffs * self.nonzero_degrees
+
+        cls = self.__class__
+        p_prime = cls.Degrees(degrees, coeffs)
 
         k -= 1
         if k > 0:
@@ -622,103 +586,60 @@ class Poly:
             return p_prime
 
     def __repr__(self):
-        poly_str = poly_to_str(self.coeffs_asc)
-        if self.field.degree == 1:
-            order = "{}".format(self.field.characteristic)
-        else:
-            order = "{}^{}".format(self.field.characteristic, self.field.degree)
-        return f"Poly({poly_str}, GF({order}))"
+        poly_str = sparse_poly_to_str(self.nonzero_degrees, self.nonzero_coeffs)
+        return f"Poly({poly_str}, {self.field.name})"
 
     def __str__(self):
         return self.__repr__()
 
     def __hash__(self):
-        t = tuple([self.field.order,] + self.coeffs_desc.tolist())
+        t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
         return hash(t)
 
-    def __call__(self, x):
-        return self.field._poly_eval(self.coeffs_desc, x)
+    @classmethod
+    def _check_inputs_are_polys(cls, a, b):
+        if not isinstance(a, Poly):
+            raise TypeError(f"Both arguments must be of type galois.Poly, not {type(a)} for a = {a}.")
+        if not isinstance(b, Poly):
+            raise TypeError(f"Both arguments must be of type galois.Poly, not {type(b)} for b = {b}.")
+        if not a.field is b.field:
+            raise TypeError(f"Both polynomials must be over the same field, not {str(a.field)} and {str(b.field)}.")
+
+        # If only one input is sparse, convert the other to sparse
+        if isinstance(a, SparsePoly) and not isinstance(b, SparsePoly):
+            b = SparsePoly.Coeffs(b.coeffs)
+        if isinstance(b, SparsePoly) and not isinstance(a, SparsePoly):
+            a = SparsePoly.Coeffs(a.coeffs)
+
+        return a, b
 
     def __add__(self, other):
-        if not isinstance(self, Poly):
-            raise TypeError(f"For polynomial addition, both arguments must be of type galois.Poly. Argument 0 is of type {type(self)}. Argument 0 = {self}.")
-        if not isinstance(other, Poly):
-            raise TypeError(f"For polynomial addition, both arguments must be of type galois.Poly. Argument 1 is of type {type(other)}. Argument 1 = {other}.")
-        field, a, b = self.field, self.coeffs_desc, other.coeffs_desc
-
-        # c(x) = a(x) + b(x)
-        c = field.Zeros(max(a.size, b.size))
-        c[-a.size:] = a
-        c[-b.size:] += b
-
-        return Poly(c, field=field)
+        a, b = self._check_inputs_are_polys(self, other)
+        if isinstance(a, DensePoly):
+            return DensePoly._add(a, b)
+        else:
+            return SparsePoly._add(a, b)
 
     def __sub__(self, other):
-        if not isinstance(self, Poly):
-            raise TypeError(f"For polynomial subtraction, both arguments must be of type galois.Poly. Argument 0 is of type {type(self)}. Argument 0 = {self}.")
-        if not isinstance(other, Poly):
-            raise TypeError(f"For polynomial subtraction, both arguments must be of type galois.Poly. Argument 1 is of type {type(other)}. Argument 1 = {other}.")
-        field, a, b = self.field, self.coeffs_desc, other.coeffs_desc
-
-        # c(x) = a(x) - b(x)
-        c = field.Zeros(max(a.size, b.size))
-        c[-a.size:] = a
-        c[-b.size:] -= b
-
-        return Poly(c, field=field)
+        a, b = self._check_inputs_are_polys(self, other)
+        if isinstance(a, DensePoly):
+            return DensePoly._sub(a, b)
+        else:
+            return SparsePoly._sub(a, b)
 
     def __mul__(self, other):
-        if not isinstance(self, Poly):
-            raise TypeError(f"For polynomial multiplication, both arguments must be of type galois.Poly. Argument 0 is of type {type(self)}. Argument 0 = {self}.")
-        if not isinstance(other, Poly):
-            raise TypeError(f"For polynomial multiplication, both arguments must be of type galois.Poly. Argument 1 is of type {type(other)}. Argument 1 = {other}.")
-        field, a, b = self.field, self.coeffs_desc, other.coeffs_desc
-
-        # c(x) = a(x) * b(x)
-        a_degree = a.size - 1
-        b_degree = b.size - 1
-        c = field.Zeros(a_degree + b_degree + 1)
-        for i in np.nonzero(b)[0]:
-            c[i:i + a.size] += a*b[i]
-
-        return Poly(c, field=field)
-
-    def __neg__(self):
-        return Poly(-self.coeffs_desc, field=self.field)
+        a, b = self._check_inputs_are_polys(self, other)
+        if isinstance(a, DensePoly):
+            return DensePoly._mul(a, b)
+        else:
+            return SparsePoly._mul(a, b)
 
     def __divmod__(self, other):
-        if not isinstance(self, Poly):
-            raise TypeError(f"For polynomial divmod, both arguments must be of type galois.Poly. Argument 0 is of type {type(self)}. Argument 0 = {self}.")
-        if not isinstance(other, Poly):
-            raise TypeError(f"For polynomial divmod, both arguments must be of type galois.Poly. Argument 1 is of type {type(other)}. Argument 1 = {other}.")
-        field, a, b = self.field, self.coeffs_desc, other.coeffs_desc
-
-        # q(x)*b(x) + r(x) = a(x)
-        field = self.field
-        a_degree = self.degree
-        b_degree = other.degree
-
-        if np.array_equal(a, [0]):
-            quotient = Poly.Zero(field)
-            remainder = Poly.Zero(field)
-        elif a_degree < b_degree:
-            quotient = Poly.Zero(field)
-            remainder = Poly(a, field=field)
+        a, b = self._check_inputs_are_polys(self, other)
+        if isinstance(a, DensePoly):
+            return DensePoly._divmod(a, b)
         else:
-            deg_q = a_degree - b_degree
-            deg_r = b_degree - 1
-            aa = field(np.append(a, field.Zeros(deg_r + 1)))
-            for i in range(0, deg_q + 1):
-                if aa[i] != 0:
-                    val = aa[i] / b[0]
-                    aa[i:i+b.size] -= val*b
-                else:
-                    val = 0
-                aa[i] = val
-            quotient = Poly(aa[0:deg_q + 1], field=field)
-            remainder = Poly(aa[deg_q + 1:deg_q + 1 + deg_r + 1], field=field)
-
-        return quotient, remainder
+            return SparsePoly._divmod(a, b)
 
     def __truediv__(self, other):
         return self.__divmod__(other)[0]
@@ -727,7 +648,11 @@ class Poly:
         return self.__divmod__(other)[0]
 
     def __mod__(self, other):
-        return self.__divmod__(other)[1]
+        a, b = self._check_inputs_are_polys(self, other)
+        if isinstance(a, DensePoly):
+            return DensePoly._mod(a, b)
+        else:
+            return SparsePoly._mod(a, b)
 
     def __pow__(self, other):
         if not isinstance(self, Poly):
@@ -742,7 +667,7 @@ class Poly:
         if power == 0:
             return Poly.One(field)
 
-        c_square = Poly(a.coeffs_desc, field=field)  # The "squaring" part
+        c_square = a  # The "squaring" part
         c_mult = Poly.One(field)  # The "multiplicative" part
 
         while power > 1:
@@ -756,68 +681,35 @@ class Poly:
 
         return c
 
+    def __neg__(self):
+        self._coeffs = -self._coeffs
+        return self
+
     def __eq__(self, other):
-        return isinstance(other, Poly) and (self.field is other.field) and np.array_equal(self.coeffs_desc, other.coeffs_desc)
+        return isinstance(other, Poly) and self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    @property
-    def coeffs(self):
-        """
-        galois.GFArray: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{d}, \\dots, a_1, a_0\\}` if `order="desc"` or
-        :math:`\\{a_0, a_1, \\dots, a_{d}\\}` if `order="asc"`, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
-        """
-        return self.field(self._coeffs)  # TODO: Ensure copy operation
+    @classmethod
+    def _add(cls, a, b):
+        raise NotImplementedError
 
-    @coeffs.setter
-    def coeffs(self, coeffs):
-        if not isinstance(coeffs, GFArray):
-            raise TypeError(f"Galois field polynomials must have coefficients in a valid Galois field class (i.e. subclasses of GFArray), not {type(coeffs)}.")
-        if coeffs.ndim != 1:
-            raise ValueError(f"Galois field polynomial coefficients must be arrays with dimension 1, not {coeffs.ndim}.")
+    @classmethod
+    def _sub(cls, a, b):
+        raise NotImplementedError
 
-        idxs = np.nonzero(coeffs)[0]  # Non-zero indices
-        if idxs.size > 0:
-            # Trim leading non-zero powers
-            coeffs = coeffs[idxs[0]:]
-        else:
-            # All coefficients are zero, only return the x^0 place
-            coeffs = type(coeffs)([0])
+    @classmethod
+    def _mul(cls, a, b):
+        raise NotImplementedError
 
-        self._coeffs = coeffs
-        self._field = type(coeffs)
+    @classmethod
+    def _divmod(cls, a, b):
+        raise NotImplementedError
 
-    @property
-    def coeffs_asc(self):
-        """
-        galois.GFArray: The polynomial coefficients :math:`\\{a_0, a_1, \\dots, a_{d-1}, a_{d}\\}` as a Galois field array
-        in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
-        """
-        return self.field(np.flip(self._coeffs))  # TODO: Ensure copy operation
-
-    @coeffs_asc.setter
-    def coeffs_asc(self, coeffs_asc):
-        self.coeffs = coeffs_asc[::-1]
-
-    @property
-    def coeffs_desc(self):
-        """
-        galois.GFArray: The polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` as a Galois field array
-        in degree-ascending order, where :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`.
-        """
-        return self.field(self._coeffs)  # TODO: Ensure copy operation
-
-    @coeffs_desc.setter
-    def coeffs_desc(self, coeffs_desc):
-        self.coeffs = coeffs_desc
-
-    @property
-    def degree(self):
-        """
-        int: The degree of the polynomial, i.e. the highest degree with non-zero coefficient.
-        """
-        return self._coeffs.size - 1
+    @classmethod
+    def _mod(cls, a, b):
+        raise NotImplementedError
 
     @property
     def field(self):
@@ -825,15 +717,75 @@ class Poly:
         type: The Galois field to which the coefficients belong. The `field` property is a type that is a
         subclass of :obj:`galois.GFArray`.
         """
-        return self._field
+        return type(self._coeffs)
 
     @field.setter
     def field(self, field):
         if not issubclass(field, GFArray):
             raise TypeError(f"Property `field` must be a subclass of galois.GFArray, not {field}.")
-
-        self._field = field
         self._coeffs = field(self._coeffs)
+
+    @property
+    def degree(self):
+        """
+        int: The degree of the polynomial, i.e. the highest degree with non-zero coefficient.
+        """
+        # pylint: disable=no-member
+        if isinstance(self, DensePoly):
+            return self._coeffs.size - 1
+        elif isinstance(self, SparsePoly):
+            return 0 if self._degrees.size == 0 else int(np.max(self._degrees))
+        else:
+            raise NotImplementedError
+
+    @property
+    def nonzero_degrees(self):
+        """
+        np.ndarray: The degrees of the polynomial that have non-zero coefficients.
+        """
+        # pylint: disable=no-member
+        if isinstance(self, DensePoly):
+            return self.degree - np.nonzero(self._coeffs)[0]
+        elif isinstance(self, SparsePoly):
+            return self._degrees
+        else:
+            raise NotImplementedError
+
+    @property
+    def nonzero_coeffs(self):
+        """
+        galois.GFArray: The non-zero coefficients of the polynomial.
+        """
+        if isinstance(self, DensePoly):
+            return self._coeffs[np.nonzero(self._coeffs)[0]]
+        elif isinstance(self, SparsePoly):
+            return self._coeffs
+        else:
+            raise NotImplementedError
+
+    @property
+    def degrees(self):
+        """
+        np.ndarray: The degrees of the polynomial.
+        """
+        return np.arange(self.degree, -1, -1)
+
+    @property
+    def coeffs(self):
+        """
+        galois.GFArray: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{d}, \\dots, a_1, a_0\\}` if `order="desc"` or
+        :math:`\\{a_0, a_1, \\dots, a_{d}\\}` if `order="asc"`, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
+        """
+        if isinstance(self, DensePoly):
+            return self._coeffs
+        elif isinstance(self, SparsePoly):
+            # Assemble a full list of coefficients, including zeros
+            coeffs = self.field.Zeros(self.degree + 1)
+            if self.nonzero_degrees.size > 0:
+                coeffs[self.degree - self.nonzero_degrees] = self.nonzero_coeffs
+            return coeffs
+        else:
+            raise NotImplementedError
 
     @property
     def integer(self):
@@ -842,9 +794,462 @@ class Poly:
         with elements in :math:`\\mathrm{GF}(q)`, the integer representation is :math:`i = a_{d} q^{d} + a_{d-1} q^{d-1} + \\dots + a_1 q + a_0`
         (using integer arithmetic, not finite field arithmetic) where :math:`q` is the field order.
         """
-        c = self.coeffs_asc
-        c = c.view(np.ndarray)  # We want to do integer math, not Galois field math
-        return poly_to_integer(c, self.field.order)
+        return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
+
+
+class DensePoly(Poly):
+    """
+    Galois field polynomial implementation using dense polynomials.
+    """
+
+    def __new__(cls, *args, **kwargs):  # pylint: disable=unused-argument
+        return object.__new__(cls)
+
+    def __init__(self, coeffs, field=None, order="desc"):
+        if not (field is None or issubclass(field, GFArray)):
+            raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
+        if not isinstance(coeffs, (list, tuple, np.ndarray, GFArray)):
+            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
+        if not len(coeffs) > 0:
+            raise ValueError(f"Argument `coeffs` must have non-zero length, not {len(coeffs)}.")
+        if not order in ["desc", "asc"]:
+            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order}.")
+
+        if isinstance(coeffs, GFArray) and field is None:
+            pass
+        else:
+            field = GF2 if field is None else field
+            if isinstance(coeffs, np.ndarray):
+                # Ensure coeffs is an iterable
+                coeffs = coeffs.tolist()
+            coeffs = field([-field(abs(c)) if c < 0 else field(c) for c in coeffs])
+
+        if order == "desc":
+            self._coeffs = coeffs
+        else:
+            self._coeffs = coeffs[::-1]
+
+        # Remove leading zero coefficients
+        idxs = np.nonzero(self._coeffs)[0]
+        if idxs.size > 0:
+            self._coeffs = self._coeffs[idxs[0]:]
+        else:
+            self._coeffs = self._coeffs[-1]
+
+        # Ensure the coefficient array isn't 0-dimension
+        self._coeffs = np.atleast_1d(self._coeffs)
+
+    @classmethod
+    def Zero(cls, field=GF2):
+        return DensePoly([0], field=field)
+
+    @classmethod
+    def One(cls, field=GF2):
+        return DensePoly([1], field=field)
+
+    @classmethod
+    def Identity(cls, field=GF2):
+        return DensePoly([1, 0], field=field)
+
+    @classmethod
+    def Random(cls, degree, field=GF2):
+        if not isinstance(degree, (int, np.integer)):
+            raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+        if not degree >= 0:
+            raise TypeError(f"Argument `degree` must be at least 0, not {degree}.")
+
+        coeffs = field.Random(degree + 1)
+        coeffs[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
+
+        return DensePoly(coeffs, field=field)
+
+    @classmethod
+    def Integer(cls, integer, field=GF2):
+        if not isinstance(integer, (int, np.integer)):
+            raise TypeError(f"Polynomial creation must have `integer` be an integer, not {type(integer)}")
+        c = integer_to_poly(integer, field.order)
+        return DensePoly(c, field=field)
+
+    @classmethod
+    def Degrees(cls, degrees, coeffs=None, field=None):
+        coeffs = [1,]*len(degrees) if coeffs is None else coeffs
+        if not isinstance(degrees, (list, tuple, np.ndarray)):
+            raise TypeError(f"Argument `degrees` must 'array-like', not {type(degrees)}.")
+        if not isinstance(coeffs, (list, tuple, np.ndarray)):
+            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
+        if not len(degrees) == len(coeffs):
+            raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {len(degrees)} and {len(coeffs)}.")
+        if not all(degree >= 0 for degree in degrees):
+            raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
+
+        if len(degrees) == 0:
+            # The zero polynomial p(x) = 0
+            degrees = [0]
+            coeffs = [0]
+
+        degree = np.max(degrees)  # The degree of the polynomial
+        if isinstance(coeffs, GFArray):
+            # Preserve coefficient field if a Galois field array was specified
+            all_coeffs = type(coeffs).Zeros(degree + 1)
+            all_coeffs[degree - degrees] = coeffs
+        else:
+            all_coeffs = [0]*(degree + 1)
+            for d, c in zip(degrees, coeffs):
+                all_coeffs[degree - d] = c
+
+        return DensePoly(all_coeffs, field=field)
+
+    @classmethod
+    def Coeffs(cls, coeffs, field=None, order="desc"):
+        # Alias of Coeffs()
+        return DensePoly(coeffs, field=field, order=order)
+
+    @classmethod
+    def Roots(cls, roots, field=None):
+        if not (field is None or issubclass(field, GFArray)):
+            raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
+        if not isinstance(roots, (list, tuple, np.ndarray)):
+            raise TypeError(f"Argument `roots` must 'array-like', not {type(roots)}.")
+        field = GF2 if field is None else field
+
+        roots = field(roots).flatten().tolist()
+
+        p = DensePoly.One(field=field)
+        for root in roots:
+            p = p * DensePoly([1, -int(root)], field=field)
+
+        return p
+
+    def __call__(self, x):
+        return self.field._poly_eval(self.coeffs, x)
+
+    @classmethod
+    def _check_inputs_are_dense_polys(cls, a, b):
+        if not isinstance(a, DensePoly):
+            raise TypeError(f"Both arguments must be of type galois.DensePoly, not {type(a)} and {a}.")
+        if not isinstance(b, DensePoly):
+            raise TypeError(f"Both arguments must be of type galois.DensePoly, not {type(b)} and {b}.")
+        if not a.field is b.field:
+            raise TypeError(f"Both polynomials must be over the same field, not {str(a.field)} and {str(b.field)}.")
+
+    @classmethod
+    def _add(cls, a, b):
+        cls._check_inputs_are_dense_polys(a, b)
+        field = a.field
+
+        # c(x) = a(x) + b(x)
+        c_coeffs = field.Zeros(max(a.coeffs.size, b.coeffs.size))
+        c_coeffs[-a.coeffs.size:] = a.coeffs
+        c_coeffs[-b.coeffs.size:] += b.coeffs
+
+        return DensePoly(c_coeffs)
+
+    @classmethod
+    def _sub(cls, a, b):
+        cls._check_inputs_are_dense_polys(a, b)
+        field = a.field
+
+        # c(x) = a(x) + b(x)
+        c_coeffs = field.Zeros(max(a.coeffs.size, b.coeffs.size))
+        c_coeffs[-a.coeffs.size:] = a.coeffs
+        c_coeffs[-b.coeffs.size:] -= b.coeffs
+
+        return DensePoly(c_coeffs)
+
+    @classmethod
+    def _mul(cls, a, b):
+        cls._check_inputs_are_dense_polys(a, b)
+        field = a.field
+
+        # c(x) = a(x) * b(x)
+        a_degree = a.coeffs.size - 1
+        b_degree = b.coeffs.size - 1
+        c_coeffs = field.Zeros(a_degree + b_degree + 1)
+        for i in np.nonzero(b.coeffs)[0]:
+            c_coeffs[i:i + a.coeffs.size] += a.coeffs*b.coeffs[i]
+
+        return DensePoly(c_coeffs)
+
+    @classmethod
+    def _divmod(cls, a, b):
+        cls._check_inputs_are_dense_polys(a, b)
+        field = a.field
+        zero = DensePoly.Zero(field)
+
+        # q(x)*b(x) + r(x) = a(x)
+        if b.degree == 0:
+            return DensePoly(a.coeffs // b.coeffs), zero
+
+        elif a == zero:
+            return zero, zero
+
+        elif a.degree < b.degree:
+            return zero, a.copy()
+
+        else:
+            q_degree = a.degree - b.degree
+            r_degree = b.degree  # One degree larger than final remainder
+            q_coeffs = field.Zeros(q_degree + 1)
+            r_coeffs = field.Zeros(r_degree + 1)
+
+            # Preset remainder so we can rotate at the start of loop
+            r_coeffs[1:] = a.coeffs[0:b.degree]
+
+            for i in range(0, q_degree + 1):
+                r_coeffs = np.roll(r_coeffs, -1)
+                r_coeffs[-1] = a.coeffs[i + b.degree]
+
+                if r_coeffs[0] > 0:
+                    q_coeffs[i] = r_coeffs[0] // b.coeffs[0]
+                    r_coeffs -= q_coeffs[i]*b.coeffs
+
+            return DensePoly(q_coeffs), DensePoly(r_coeffs[1:])
+
+    @classmethod
+    def _mod(cls, a, b):
+        cls._check_inputs_are_dense_polys(a, b)
+        field = a.field
+        zero = DensePoly.Zero(field)
+
+        # q(x)*b(x) + r(x) = a(x)
+        if b.degree == 0:
+            return zero
+
+        elif a == zero:
+            return zero
+
+        elif a.degree < b.degree:
+            return a.copy()
+
+        else:
+            q_degree = a.degree - b.degree
+            r_degree = b.degree  # One degree larger than final remainder
+            r_coeffs = field.Zeros(r_degree + 1)
+
+            # Preset remainder so we can rotate at the start of loop
+            r_coeffs[1:] = a.coeffs[0:b.degree]
+
+            for i in range(0, q_degree + 1):
+                r_coeffs = np.roll(r_coeffs, -1)
+                r_coeffs[-1] = a.coeffs[i + b.degree]
+
+                if r_coeffs[0] > 0:
+                    q = r_coeffs[0] // b.coeffs[0]
+                    r_coeffs -= q*b.coeffs
+
+            return DensePoly(r_coeffs[1:])
+
+
+class SparsePoly(Poly):
+    """
+    Galois field polynomial implementation using dense polynomials.
+    """
+
+    def __new__(cls, *args, **kwargs):  # pylint: disable=unused-argument
+        return object.__new__(cls)
+
+    def __init__(self, degrees, coeffs=None, field=None):
+        coeffs = [1,]*len(degrees) if coeffs is None else coeffs
+        if not isinstance(degrees, (list, tuple, np.ndarray)):
+            raise TypeError(f"Argument `degrees` must 'array-like', not {type(degrees)}.")
+        if not isinstance(coeffs, (list, tuple, np.ndarray)):
+            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
+        if not len(degrees) == len(coeffs):
+            raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {len(degrees)} and {len(coeffs)}.")
+        if not all(degree >= 0 for degree in degrees):
+            raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
+
+        if isinstance(coeffs, GFArray) and field is None:
+            self._degrees = np.array(degrees)
+            self._coeffs = coeffs
+        else:
+            field = GF2 if field is None else field
+            if isinstance(coeffs, np.ndarray):
+                # Ensure coeffs is an iterable
+                coeffs = coeffs.tolist()
+            self._degrees = np.array(degrees)
+            self._coeffs = field([-field(abs(c)) if c < 0 else field(c) for c in coeffs])
+
+        # Sort the degrees and coefficients in descending order
+        idxs = np.argsort(degrees)[::-1]
+        self._degrees = self._degrees[idxs]
+        self._coeffs = self._coeffs[idxs]
+
+        # Remove zero coefficients
+        idxs = np.nonzero(self._coeffs)[0]
+        self._degrees = self._degrees[idxs]
+        self._coeffs = self._coeffs[idxs]
+
+    @classmethod
+    def Zero(cls, field=GF2):
+        return SparsePoly.Coeffs([0], field=field)
+
+    @classmethod
+    def One(cls, field=GF2):
+        return SparsePoly.Coeffs([1], field=field)
+
+    @classmethod
+    def Identity(cls, field=GF2):
+        return SparsePoly.Coeffs([1, 0], field=field)
+
+    @classmethod
+    def Random(cls, degree, field=GF2):
+        coeffs = DensePoly.Random(degree, field=field).coeffs
+        return SparsePoly.Coeffs(coeffs)
+
+    @classmethod
+    def Integer(cls, integer, field=GF2):
+        coeffs = DensePoly.Integer(integer, field=field).coeffs
+        return SparsePoly.Coeffs(coeffs)
+
+    @classmethod
+    def Degrees(cls, degrees, coeffs=None, field=None):
+        # Alias of SparsePoly()
+        return SparsePoly(degrees, coeffs=coeffs, field=field)
+
+    @classmethod
+    def Coeffs(cls, coeffs, field=None, order="desc"):
+        coeffs = DensePoly(coeffs, field=field, order=order).coeffs
+        degrees = np.arange(coeffs.size - 1, -1, -1)
+        return SparsePoly(degrees, coeffs, field=field)
+
+    @classmethod
+    def Roots(cls, roots, field=None):
+        coeffs = DensePoly.Roots(roots, field=field).coeffs
+        return SparsePoly.Coeffs(coeffs)
+
+    # def __call__(self, x):
+    #     return self.field._poly_eval(self.coeffs, x)
+
+    @classmethod
+    def _check_inputs_are_sparse_polys(cls, a, b):
+        if not isinstance(a, SparsePoly):
+            raise TypeError(f"Both arguments must be of type galois.SparsePoly, not {type(a)} and {a}.")
+        if not isinstance(b, SparsePoly):
+            raise TypeError(f"Both arguments must be of type galois.SparsePoly, not {type(b)} and {b}.")
+        if not a.field is b.field:
+            raise TypeError(f"Both polynomials must be over the same field, not {str(a.field)} and {str(b.field)}.")
+
+    @classmethod
+    def _add(cls, a, b):
+        cls._check_inputs_are_sparse_polys(a, b)
+        field = a.field
+
+        # c(x) = a(x) + b(x)
+        d = {}
+        for a_degree, a_coeff in zip(a.nonzero_degrees, a.nonzero_coeffs):
+            d[a_degree] = a_coeff
+        for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
+            d[b_degree] = d.get(b_degree, field(0)) + b_coeff
+
+        return SparsePoly(list(d.keys()), list(d.values()), field=field)
+
+    @classmethod
+    def _sub(cls, a, b):
+        cls._check_inputs_are_sparse_polys(a, b)
+        field = a.field
+
+        # c(x) = a(x) - b(x)
+        d = {}
+        for a_degree, a_coeff in zip(a.nonzero_degrees, a.nonzero_coeffs):
+            d[a_degree] = a_coeff
+        for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
+            d[b_degree] = d.get(b_degree, field(0)) - b_coeff
+
+        return SparsePoly(list(d.keys()), list(d.values()), field=field)
+
+    @classmethod
+    def _mul(cls, a, b):
+        cls._check_inputs_are_sparse_polys(a, b)
+        field = a.field
+
+        # c(x) = a(x) * b(x)
+        d = {}
+        for a_degree, a_coeff in zip(a.nonzero_degrees, a.nonzero_coeffs):
+            for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
+                d[a_degree + b_degree] = d.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
+
+        return SparsePoly(list(d.keys()), list(d.values()), field=field)
+
+    @classmethod
+    def _divmod(cls, a, b):
+        cls._check_inputs_are_sparse_polys(a, b)
+        field = a.field
+        zero = SparsePoly.Zero(field)
+
+        # q(x)*b(x) + r(x) = a(x)
+        if b.degree == 0:
+            q_degrees = a.nonzero_degrees
+            q_coeffs = [a_coeff // b.coeffs[0] for a_coeff in a.nonzero_coeffs]
+            return SparsePoly(q_degrees, q_coeffs, field=field), zero
+
+        elif a == zero:
+            return zero, zero
+
+        elif a.degree < b.degree:
+            return zero, a.copy()
+
+        else:
+            aa = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))
+            b_coeffs = b.coeffs
+
+            q_degree = a.degree - b.degree
+            r_degree = b.degree  # One larger than final remainder
+            qq = {}
+            r_coeffs = field.Zeros(r_degree + 1)
+
+            # Preset remainder so we can rotate at the start of loop
+            for i in range(0, b.degree):
+                r_coeffs[1 + i] = aa.get(a.degree - i, 0)
+
+            for i in range(0, q_degree + 1):
+                r_coeffs = np.roll(r_coeffs, -1)
+                r_coeffs[-1] = aa.get(a.degree - (i + b.degree), 0)
+
+                if r_coeffs[0] > 0:
+                    q = r_coeffs[0] // b_coeffs[0]
+                    r_coeffs -= q*b_coeffs
+                    qq[q_degree - i] = q
+
+            return SparsePoly(list(qq.keys()), list(qq.values()), field=field), DensePoly(r_coeffs[1:])
+
+    @classmethod
+    def _mod(cls, a, b):
+        cls._check_inputs_are_sparse_polys(a, b)
+        field = a.field
+        zero = SparsePoly.Zero(field)
+
+        # q(x)*b(x) + r(x) = a(x)
+        if b.degree == 0:
+            return zero
+
+        elif a == zero:
+            return zero
+
+        elif a.degree < b.degree:
+            return a.copy()
+
+        else:
+            aa = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))
+            b_coeffs = b.coeffs
+
+            q_degree = a.degree - b.degree
+            r_degree = b.degree  # One larger than final remainder
+            r_coeffs = field.Zeros(r_degree + 1)
+
+            # Preset remainder so we can rotate at the start of loop
+            for i in range(0, b.degree):
+                r_coeffs[1 + i] = aa.get(a.degree - i, 0)
+
+            for i in range(0, q_degree + 1):
+                r_coeffs = np.roll(r_coeffs, -1)
+                r_coeffs[-1] = aa.get(a.degree - (i + b.degree), 0)
+
+                if r_coeffs[0] > 0:
+                    q = r_coeffs[0] // b_coeffs[0]
+                    r_coeffs -= q*b_coeffs
+
+            return DensePoly(r_coeffs[1:])
 
 
 def poly_gcd(a, b):
