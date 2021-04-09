@@ -44,27 +44,33 @@ class Poly:
 
     .. ipython:: python
 
-        GF256 = galois.GF(2**8)
-        galois.Poly([124,0,223,0,0,15], field=GF256)
+        GF = galois.GF(2**8)
+        galois.Poly([124,0,223,0,0,15], field=GF)
 
         # Alternate way of constructing the same polynomial
-        galois.Poly.Degrees([5,3,0], coeffs=[124,223,15], field=GF256)
+        galois.Poly.Degrees([5,3,0], coeffs=[124,223,15], field=GF)
 
     Polynomial arithmetic using binary operators.
 
     .. ipython:: python
 
-        a = galois.Poly([117,0,63,37], field=GF256); a
-        b = galois.Poly([224,0,21], field=GF256); b
+        a = galois.Poly([117,0,63,37], field=GF); a
+        b = galois.Poly([224,0,21], field=GF); b
 
         a + b
         a - b
+
         # Compute the quotient of the polynomial division
         a / b
+
         # True division and floor division are equivalent
         a / b == a // b
+
         # Compute the remainder of the polynomial division
         a % b
+
+        # Compute both the quotient and remainder in one pass
+        divmod(a, b)
     """
 
     __slots__ = ["_degrees", "_coeffs"]
@@ -104,8 +110,8 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF(2**8)
-            galois.Poly.Zero(field=GF256)
+            GF = galois.GF(2**8)
+            galois.Poly.Zero(field=GF)
         """
         return DensePoly.Zero(field=field)
 
@@ -136,8 +142,8 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF(2**8)
-            galois.Poly.One(field=GF256)
+            GF = galois.GF(2**8)
+            galois.Poly.One(field=GF)
         """
         return DensePoly.One(field=field)
 
@@ -168,8 +174,8 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF(2**8)
-            galois.Poly.Identity(field=GF256)
+            GF = galois.GF(2**8)
+            galois.Poly.Identity(field=GF)
         """
         return DensePoly.Identity(field=field)
 
@@ -202,8 +208,8 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF(2**8)
-            galois.Poly.Random(5, field=GF256)
+            GF = galois.GF(2**8)
+            galois.Poly.Random(5, field=GF)
         """
         return DensePoly.Random(degree, field=field)
 
@@ -240,8 +246,8 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF(2**8)
-            galois.Poly.Integer(13*256**3 + 117, field=GF256)
+            GF = galois.GF(2**8)
+            galois.Poly.Integer(13*256**3 + 117, field=GF)
         """
         return DensePoly.Integer(integer, field=field)
 
@@ -253,12 +259,10 @@ class Poly:
         Parameters
         ----------
         degrees : list
-            The polynomial degrees with non-zero coefficients.
+            List of polynomial degrees with non-zero coefficients.
         coeffs : array_like, optional
             List of corresponding non-zero coefficients. The default is `None` which corresponds to all one
             coefficients, i.e. `[1,]*len(degrees)`.
-        roots : array_like
-            List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
         field : galois.GFArray, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
@@ -279,8 +283,8 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF(2**8)
-            galois.Poly.Degrees([3,1,0], coeffs=[251,73,185], field=GF256)
+            GF = galois.GF(2**8)
+            galois.Poly.Degrees([3,1,0], coeffs=[251,73,185], field=GF)
         """
         degree = max(degrees)
         if len(degrees) < 0.001*degree:
@@ -291,7 +295,28 @@ class Poly:
     @classmethod
     def Coeffs(cls, coeffs, field=None, order="desc"):
         """
-        TODO: Add docstring
+        Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its coefficients.
+
+        Alias of :obj:`galois.Poly` constructor.
+
+        Parameters
+        ----------
+        coeffs : array_like
+            List of polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.GFArray`, :obj:`numpy.ndarray`,
+            :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
+            the 0-th degree element if `order="asc"`.
+        field : galois.GFArray, optional
+            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`. If `coeffs`
+            is a Galois field array, then that field is used and the `field` argument is ignored.
+        order : str, optional
+            The interpretation of the coefficient degrees, either `"desc"` (default) or `"asc"`. For `"desc"`,
+            the first element of `coeffs` is the highest degree coefficient :math:`x^{d}`) and the last element is
+            the 0-th degree element :math:`x^0`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`p(x)`.
         """
         return DensePoly.Coeffs(coeffs, field=field, order=order)
 
@@ -333,9 +358,9 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF(2**8)
+            GF = galois.GF(2**8)
             roots = [121, 198, 225]
-            p = galois.Poly.Roots(roots, field=GF256); p
+            p = galois.Poly.Roots(roots, field=GF); p
             p(roots)
         """
         return DensePoly.Roots(roots, field=field)
@@ -433,8 +458,8 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF(2**8)
-            p = galois.Poly.Roots([18,]*7 + [155,]*13 + [227,]*9, field=GF256); p
+            GF = galois.GF(2**8)
+            p = galois.Poly.Roots([18,]*7 + [155,]*13 + [227,]*9, field=GF); p
             p.roots()
             p.roots(multiplicity=True)
         """
@@ -543,8 +568,8 @@ class Poly:
 
         .. ipython:: python
 
-            GF7 = galois.GF(7)
-            p = galois.Poly.Random(11, field=GF7); p
+            GF = galois.GF(7)
+            p = galois.Poly.Random(11, field=GF); p
             p.derivative()
             p.derivative(2)
             p.derivative(3)
@@ -556,8 +581,8 @@ class Poly:
 
         .. ipython:: python
 
-            GF256 = galois.GF(2**8)
-            p = galois.Poly.Random(7, field=GF256); p
+            GF = galois.GF(2**8)
+            p = galois.Poly.Random(7, field=GF); p
             p.derivative()
 
             # k derivatives of a polynomial where k is the Galois field's characteristic will always result in 0
@@ -714,8 +739,24 @@ class Poly:
     @property
     def field(self):
         """
-        type: The Galois field to which the coefficients belong. The `field` property is a type that is a
-        subclass of :obj:`galois.GFArray`.
+        type: The Galois field to which the coefficients belong. The :obj:`galois.Poly.field` property is a
+        subclass of :obj:`galois.GFArray`. This property is settable.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(2**8)
+
+            # The primitive polynomial of the field GF(p^m) is degree-m over GF(p)[x]
+            prim_poly = GF.prim_poly; prim_poly
+            prim_poly.field
+
+            # Convert the primitive polynomial from GF(p)[x] to GF(p^m)[x]
+            prim_poly.field = GF; prim_poly
+
+            # The primitive element alpha is a root of the primitive polynomial in GF(p^m)
+            prim_poly(GF.alpha)
         """
         return type(self._coeffs)
 
@@ -729,6 +770,14 @@ class Poly:
     def degree(self):
         """
         int: The degree of the polynomial, i.e. the highest degree with non-zero coefficient.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF)
+            p.degree
         """
         # pylint: disable=no-member
         if isinstance(self, DensePoly):
@@ -741,7 +790,16 @@ class Poly:
     @property
     def nonzero_degrees(self):
         """
-        np.ndarray: The degrees of the polynomial that have non-zero coefficients.
+        numpy.ndarray: An array of the polynomial degrees that have non-zero coefficients, in degree-descending order. The entries of
+        :obj:`galois.Poly.nonzero_degrees` are paired with :obj:`galois.Poly.nonzero_coeffs`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF)
+            p.nonzero_degrees
         """
         # pylint: disable=no-member
         if isinstance(self, DensePoly):
@@ -754,7 +812,16 @@ class Poly:
     @property
     def nonzero_coeffs(self):
         """
-        galois.GFArray: The non-zero coefficients of the polynomial.
+        galois.GFArray: The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`galois.Poly.nonzero_degrees`
+        are paired with :obj:`galois.Poly.nonzero_coeffs`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF)
+            p.nonzero_coeffs
         """
         if isinstance(self, DensePoly):
             return self._coeffs[np.nonzero(self._coeffs)[0]]
@@ -766,15 +833,32 @@ class Poly:
     @property
     def degrees(self):
         """
-        np.ndarray: The degrees of the polynomial.
+        numpy.ndarray: An array of the polynomial degrees in degree-descending order. The entries of :obj:`galois.Poly.degrees`
+        are paired with :obj:`galois.Poly.coeffs`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF)
+            p.degrees
         """
         return np.arange(self.degree, -1, -1)
 
     @property
     def coeffs(self):
         """
-        galois.GFArray: The polynomial coefficients as a Galois field array. Coefficients are :math:`\\{a_{d}, \\dots, a_1, a_0\\}` if `order="desc"` or
-        :math:`\\{a_0, a_1, \\dots, a_{d}\\}` if `order="asc"`, where :math:`p(x) = a_{d}x^{d} + \\dots + a_1x + a_0`.
+        galois.GFArray: The coefficients of the polynomial in degree-descending order. The entries of :obj:`galois.Poly.degrees` are
+        paired with :obj:`galois.Poly.coeffs`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF)
+            p.coeffs
         """
         if isinstance(self, DensePoly):
             return self._coeffs
@@ -790,9 +874,18 @@ class Poly:
     @property
     def integer(self):
         """
-        int: The integer representation of the polynomial. For :math:`p(x) =  a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`
-        with elements in :math:`\\mathrm{GF}(q)`, the integer representation is :math:`i = a_{d} q^{d} + a_{d-1} q^{d-1} + \\dots + a_1 q + a_0`
-        (using integer arithmetic, not finite field arithmetic) where :math:`q` is the field order.
+        int: The integer representation of the polynomial. For polynomial :math:`p(x) =  a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`
+        with elements in :math:`a_k \\in \\mathrm{GF}(q)`, the integer representation is :math:`i = a_{d} q^{d} + a_{d-1} q^{d-1} + \\dots + a_1 q + a_0`
+        (using integer arithmetic, not finite field arithmetic).
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF)
+            p.integer
+            p.integer == 3*7**3 + 5*7**1 + 2*7**0
         """
         return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
 
