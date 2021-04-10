@@ -7,7 +7,7 @@ from .gf2 import GF2
 
 class Poly:
     """
-    Create a polynomial :math:`p(x)` over :math:`\\mathrm{GF}(q)[x]`.
+    Create a polynomial :math:`p(x)` over :math:`\\mathrm{GF}(q)`.
 
     The polynomial :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0` has coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}`
     in :math:`\\mathrm{GF}(q)`.
@@ -33,14 +33,14 @@ class Poly:
 
     Examples
     --------
-    Create a polynomial over :math:`\\mathrm{GF}(2)[x]`.
+    Create a polynomial over :math:`\\mathrm{GF}(2)`.
 
     .. ipython:: python
 
         galois.Poly([1,0,1,1])
         galois.Poly.Degrees([3,1,0])
 
-    Create a polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
+    Create a polynomial over :math:`\\mathrm{GF}(2^8)`.
 
     .. ipython:: python
 
@@ -76,9 +76,7 @@ class Poly:
     __slots__ = ["_degrees", "_coeffs"]
 
     def __new__(cls, coeffs, field=None, order="desc"):
-        if not isinstance(coeffs, (list, tuple, np.ndarray, GFArray)):
-            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
-        if len(coeffs) > 1000 and np.count_nonzero(coeffs) < 0.001*len(coeffs):
+        if not isinstance(coeffs, int) and len(coeffs) > 1000 and np.count_nonzero(coeffs) < 0.001*len(coeffs):
             return SparsePoly.Coeffs(coeffs, field=field, order=order)
         else:
             return DensePoly(coeffs, field=field, order=order)
@@ -86,7 +84,7 @@ class Poly:
     @classmethod
     def Zero(cls, field=GF2):
         """
-        Constructs the zero polynomial :math:`p(x) = 0` over :math:`\\mathrm{GF}(q)[x]`.
+        Constructs the zero polynomial :math:`p(x) = 0` over :math:`\\mathrm{GF}(q)`.
 
         Parameters
         ----------
@@ -100,13 +98,13 @@ class Poly:
 
         Examples
         --------
-        Construct the zero polynomial over :math:`\\mathrm{GF}(2)[x]`.
+        Construct the zero polynomial over :math:`\\mathrm{GF}(2)`.
 
         .. ipython:: python
 
             galois.Poly.Zero()
 
-        Construct the zero polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
+        Construct the zero polynomial over :math:`\\mathrm{GF}(2^8)`.
 
         .. ipython:: python
 
@@ -118,7 +116,7 @@ class Poly:
     @classmethod
     def One(cls, field=GF2):
         """
-        Constructs the one polynomial :math:`p(x) = 1` over :math:`\\mathrm{GF}(q)[x]`.
+        Constructs the one polynomial :math:`p(x) = 1` over :math:`\\mathrm{GF}(q)`.
 
         Parameters
         ----------
@@ -132,13 +130,13 @@ class Poly:
 
         Examples
         --------
-        Construct the one polynomial over :math:`\\mathrm{GF}(2)[x]`.
+        Construct the one polynomial over :math:`\\mathrm{GF}(2)`.
 
         .. ipython:: python
 
             galois.Poly.One()
 
-        Construct the one polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
+        Construct the one polynomial over :math:`\\mathrm{GF}(2^8)`.
 
         .. ipython:: python
 
@@ -150,7 +148,7 @@ class Poly:
     @classmethod
     def Identity(cls, field=GF2):
         """
-        Constructs the identity polynomial :math:`p(x) = x` over :math:`\\mathrm{GF}(q)[x]`.
+        Constructs the identity polynomial :math:`p(x) = x` over :math:`\\mathrm{GF}(q)`.
 
         Parameters
         ----------
@@ -164,13 +162,13 @@ class Poly:
 
         Examples
         --------
-        Construct the identity polynomial over :math:`\\mathrm{GF}(2)[x]`.
+        Construct the identity polynomial over :math:`\\mathrm{GF}(2)`.
 
         .. ipython:: python
 
             galois.Poly.Identity()
 
-        Construct the identity polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
+        Construct the identity polynomial over :math:`\\mathrm{GF}(2^8)`.
 
         .. ipython:: python
 
@@ -182,7 +180,7 @@ class Poly:
     @classmethod
     def Random(cls, degree, field=GF2):
         """
-        Constructs a random polynomial over :math:`\\mathrm{GF}(q)[x]` with degree :math:`d`.
+        Constructs a random polynomial over :math:`\\mathrm{GF}(q)` with degree :math:`d`.
 
         Parameters
         ----------
@@ -198,13 +196,13 @@ class Poly:
 
         Examples
         --------
-        Construct a random degree-:math:`5` polynomial over :math:`\\mathrm{GF}(2)[x]`.
+        Construct a random degree-:math:`5` polynomial over :math:`\\mathrm{GF}(2)`.
 
         .. ipython:: python
 
             galois.Poly.Random(5)
 
-        Construct a random degree-:math:`5` polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
+        Construct a random degree-:math:`5` polynomial over :math:`\\mathrm{GF}(2^8)`.
 
         .. ipython:: python
 
@@ -216,7 +214,7 @@ class Poly:
     @classmethod
     def Integer(cls, integer, field=GF2):
         """
-        Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its integer representation.
+        Constructs a polynomial over :math:`\\mathrm{GF}(q)` from its integer representation.
 
         The integer value :math:`i` represents the polynomial :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`
         over field :math:`\\mathrm{GF}(q)` if :math:`i = a_{d}q^{d} + a_{d-1}q^{d-1} + \\dots + a_1q + a_0` using integer arithmetic,
@@ -236,13 +234,13 @@ class Poly:
 
         Examples
         --------
-        Construct a polynomial over :math:`\\mathrm{GF}(2)[x]` from its integer representation.
+        Construct a polynomial over :math:`\\mathrm{GF}(2)` from its integer representation.
 
         .. ipython:: python
 
             galois.Poly.Integer(5)
 
-        Construct a polynomial over :math:`\\mathrm{GF}(2^8)[x]` from its integer representation.
+        Construct a polynomial over :math:`\\mathrm{GF}(2^8)` from its integer representation.
 
         .. ipython:: python
 
@@ -254,7 +252,7 @@ class Poly:
     @classmethod
     def Degrees(cls, degrees, coeffs=None, field=None):
         """
-        Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its non-zero degrees.
+        Constructs a polynomial over :math:`\\mathrm{GF}(q)` from its non-zero degrees.
 
         Parameters
         ----------
@@ -273,13 +271,13 @@ class Poly:
 
         Examples
         --------
-        Construct a polynomial over :math:`\\mathrm{GF}(2)[x]` by specifying the degrees with non-zero coefficients.
+        Construct a polynomial over :math:`\\mathrm{GF}(2)` by specifying the degrees with non-zero coefficients.
 
         .. ipython:: python
 
             galois.Poly.Degrees([3,1,0])
 
-        Construct a polynomial over :math:`\\mathrm{GF}(2^8)[x]` by specifying the degrees with non-zero coefficients.
+        Construct a polynomial over :math:`\\mathrm{GF}(2^8)` by specifying the degrees with non-zero coefficients.
 
         .. ipython:: python
 
@@ -295,7 +293,7 @@ class Poly:
     @classmethod
     def Coeffs(cls, coeffs, field=None, order="desc"):
         """
-        Constructs a polynomial over :math:`\\mathrm{GF}(q)[x]` from its coefficients.
+        Constructs a polynomial over :math:`\\mathrm{GF}(q)` from its coefficients.
 
         Alias of :obj:`galois.Poly` constructor.
 
@@ -346,7 +344,7 @@ class Poly:
 
         Examples
         --------
-        Construct a polynomial over :math:`\\mathrm{GF}(2)[x]` from a list of its roots.
+        Construct a polynomial over :math:`\\mathrm{GF}(2)` from a list of its roots.
 
         .. ipython:: python
 
@@ -354,7 +352,7 @@ class Poly:
             p = galois.Poly.Roots(roots); p
             p(roots)
 
-        Construct a polynomial over :math:`\\mathrm{GF}(2^8)[x]` from a list of its roots.
+        Construct a polynomial over :math:`\\mathrm{GF}(2^8)` from a list of its roots.
 
         .. ipython:: python
 
@@ -446,7 +444,7 @@ class Poly:
 
         Examples
         --------
-        Find the roots of a polynomial over :math:`\\mathrm{GF}(2)[x]`.
+        Find the roots of a polynomial over :math:`\\mathrm{GF}(2)`.
 
         .. ipython:: python
 
@@ -454,7 +452,7 @@ class Poly:
             p.roots()
             p.roots(multiplicity=True)
 
-        Find the roots of a polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
+        Find the roots of a polynomial over :math:`\\mathrm{GF}(2^8)`.
 
         .. ipython:: python
 
@@ -554,7 +552,7 @@ class Poly:
 
         Examples
         --------
-        Compute the derivatives of a polynomial over :math:`\\mathrm{GF}(2)[x]`.
+        Compute the derivatives of a polynomial over :math:`\\mathrm{GF}(2)`.
 
         .. ipython:: python
 
@@ -564,7 +562,7 @@ class Poly:
             # k derivatives of a polynomial where k is the Galois field's characteristic will always result in 0
             p.derivative(2)
 
-        Compute the derivatives of a polynomial over :math:`\\mathrm{GF}(7)[x]`.
+        Compute the derivatives of a polynomial over :math:`\\mathrm{GF}(7)`.
 
         .. ipython:: python
 
@@ -577,7 +575,7 @@ class Poly:
             # k derivatives of a polynomial where k is the Galois field's characteristic will always result in 0
             p.derivative(7)
 
-        Compute the derivatives of a polynomial over :math:`\\mathrm{GF}(2^8)[x]`.
+        Compute the derivatives of a polynomial over :math:`\\mathrm{GF}(2^8)`.
 
         .. ipython:: python
 
@@ -624,11 +622,11 @@ class Poly:
     @classmethod
     def _check_inputs_are_polys(cls, a, b):
         if not isinstance(a, Poly):
-            raise TypeError(f"Both arguments must be of type galois.Poly, not {type(a)} for a = {a}.")
+            raise TypeError(f"Both operands must be a galois.Poly, not {type(a)}.")
         if not isinstance(b, Poly):
-            raise TypeError(f"Both arguments must be of type galois.Poly, not {type(b)} for b = {b}.")
+            raise TypeError(f"Both operands must be a galois.Poly, not {type(b)}.")
         if not a.field is b.field:
-            raise TypeError(f"Both polynomials must be over the same field, not {str(a.field)} and {str(b.field)}.")
+            raise TypeError(f"Both polynomial operands must be over the same field, not {str(a.field)} and {str(b.field)}.")
 
         # If only one input is sparse, convert the other to sparse
         if isinstance(a, SparsePoly) and not isinstance(b, SparsePoly):
@@ -1348,16 +1346,16 @@ class SparsePoly(Poly):
 def poly_gcd(a, b):
     """
     Finds the greatest common divisor of two polynomials :math:`a(x)` and :math:`b(x)`
-    over :math:`\\mathrm{GF}(q)[x]`.
+    over :math:`\\mathrm{GF}(q)`.
 
     This implementation uses the Extended Euclidean Algorithm.
 
     Parameters
     ----------
     a : galois.Poly
-        A polynomial :math:`a(x)` over :math:`\\mathrm{GF}(q)[x]`.
+        A polynomial :math:`a(x)` over :math:`\\mathrm{GF}(q)`.
     b : galois.Poly
-        A polynomial :math:`b(x)` over :math:`\\mathrm{GF}(q)[x]`.
+        A polynomial :math:`b(x)` over :math:`\\mathrm{GF}(q)`.
 
     Returns
     -------
