@@ -1415,3 +1415,69 @@ def poly_gcd(a, b):
             break
 
     return r[-2], s[-2], t[-2]
+
+
+def poly_exp_mod(poly, power, modulus):
+    """
+    Efficiently exponentiates a polynomial :math:`f(x)` to the power :math:`k` reducing by modulo :math:`g(x)`,
+    :math:`f^k\\ \\textrm{mod}\\ g`.
+
+    The algorithm is more efficient than exponentiating first and then reducing modulo :math:`g(x)`. Instead,
+    this algorithm repeatedly squares :math:`f`, reducing modulo :math:`g` at each step.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        The polynomial to be exponentiated :math:`f(x)`.
+    power : int
+        The non-negative exponent :math:`k`.
+    modulus : galois.Poly
+        The reducing polynomial :math:`g(x)`.
+
+    Returns
+    -------
+    galois.Poly
+        The resulting polynomial :math:`h(x) = f^k\\ \\textrm{mod}\\ g`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        f = galois.Poly.Random(10, field=GF); f
+        g = galois.Poly.Random(7, field=GF); g
+
+        # %timeit f**200 % g
+        # 1.23 s ± 41.1 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+        f**200 % g
+
+        # %timeit galois.poly_exp_mod(f, 200, g)
+        # 41.7 ms ± 468 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+        galois.poly_exp_mod(f, 200, g)
+    """
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    if not isinstance(power, (int, np.integer)):
+        raise TypeError(f"Argument `power` must be an integer, not {type(power)}.")
+    if not isinstance(modulus, Poly):
+        raise TypeError(f"Argument `modulus` must be a galois.Poly, not {type(modulus)}.")
+    if not power >= 0:
+        raise ValueError(f"Argument `power` must be non-negative, not {power}.")
+
+    if power == 0:
+        return Poly.One(poly.field)
+
+    result_s = poly  # The "squaring" part
+    result_m = Poly.One(poly.field)  # The "multiplicative" part
+
+    while power > 1:
+        if power % 2 == 0:
+            result_s = (result_s * result_s) % modulus
+            power //= 2
+        else:
+            result_m = (result_m * result_s) % modulus
+            power -= 1
+
+    result = (result_s * result_m) % modulus
+
+    return result
