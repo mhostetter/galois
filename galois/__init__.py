@@ -195,23 +195,37 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     return cls
 
 
-def conway_poly(characteristic, degree):
+def conway_poly(p, n):
     """
-    Returns the Conway polynomial for :math:`\\mathrm{GF}(p^m)`.
+    Returns the degree-:math:`n` Conway polynomial :math:`C_{p,n}` over :math:`\\mathrm{GF}(p)`.
 
-    This function uses Frank Luebeck's Conway polynomial database. See: http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html.
+    A Conway polynomial is a an irreducible polynomial over :math:`\\mathrm{GF}(p)` that provides a standard
+    representation of :math:`\\mathrm{GF}(p^n)` as a splitting field of :math:`C_{p,n}`. Conway polynomials
+    provide compatability between fields and their subfields, and hence are the common way to represent extension
+    fields.
+
+    The Conway polynomial :math:`C_{p,n}` is defined as the lexicographically-minimal monic irreducible polynomial
+    of degree :math:`n` over :math:`\\mathrm{GF}(p)` that is compatible with all :math:`C_{p,m}`, for :math:`m` dividing
+    :math:`n`.
+
+    This function uses Frank Luebeck's Conway polynomial database for fast lookup, not construction.
 
     Parameters
     ----------
-    characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p^m)`.
-    degree : int
-        The prime characteristic's degree :math:`m` of the field :math:`\\mathrm{GF}(p^m)`.
+    p : int
+        The prime characteristic of the field :math:`\\mathrm{GF}(p)`.
+    n : int
+        The degree :math:`n` of the Conway polynomial.
 
     Returns
     -------
     galois.Poly
-        The degree-:math:`m` polynomial in :math:`\\mathrm{GF}(p)[x]`.
+        The degree-:math:`n` Conway polynomial :math:`C_{p,n}` over :math:`\\mathrm{GF}(p)`.
+
+    Raises
+    ------
+    LookupError
+        If the Conway polynomial :math:`C_{p,n}` is not found in Frank Luebeck's database.
 
     Warning
     -------
@@ -229,20 +243,20 @@ def conway_poly(characteristic, degree):
     import numpy as np
     from .conway import ConwayDatabase
 
-    if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}")
-    if not isinstance(degree, (int, np.integer)):
-        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}")
-    if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}")
-    if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}")
+    if not isinstance(p, (int, np.integer)):
+        raise TypeError(f"Argument `p` must be an integer, not {type(p)}")
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}")
+    if not is_prime(p):
+        raise ValueError(f"Argument `p` must be prime, not {p}")
+    if not n >= 1:
+        raise ValueError(f"Argument `n` must be at least 1, not {n}")
 
-    coeffs = ConwayDatabase().fetch(characteristic, degree)
-    if characteristic == 2:
+    coeffs = ConwayDatabase().fetch(p, n)
+    if p == 2:
         field = GF2
     else:
-        field = _GFp_factory(characteristic, primitive_root(characteristic))
+        field = GF(p)
     poly = Poly(coeffs, field=field)
 
     return poly

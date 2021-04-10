@@ -1401,20 +1401,26 @@ def poly_gcd(a, b):
     if b == zero:
         return a, 1, 0
 
-    r = [a, b]
-    s = [one, zero]
-    t = [zero, one]
+    r2, r1 = a, b
+    s2, s1 = one, zero
+    t2, t1 = zero, one
 
     while True:
-        qi = r[-2] // r[-1]
-        ri = r[-2] % r[-1]
-        r.append(ri)
-        s.append(s[-2] - qi*s[-1])
-        t.append(t[-2] - qi*t[-1])
+        qi = r2 // r1
+        ri = r2 % r1
+        r2, r1 = r1, ri
+        s2, s1 = s1, s2 - qi*s1
+        t2, t1 = t1, t2 - qi*t1
         if ri == zero:
             break
 
-    return r[-2], s[-2], t[-2]
+    # Non-zero scalar is considered a unit in a fintie field
+    if r2.degree == 0 and r2.coeffs[0] > 0:
+        r2 /= r2
+        s2 /= r2
+        t2 /= r2
+
+    return r2, s2, t2
 
 
 def poly_exp_mod(poly, power, modulus):
