@@ -7,7 +7,7 @@ from .algorithm import factors, gcd, chinese_remainder_theorem
 from .gf import GFArray
 from .gf2 import GF2
 from .modular import totatives, euler_totient, carmichael, is_cyclic, primitive_root, primitive_roots, is_primitive_root
-from .poly import Poly, poly_gcd
+from .poly import Poly, poly_gcd, poly_exp_mod
 from .prime import primes, kth_prime, prev_prime, next_prime, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
 
 
