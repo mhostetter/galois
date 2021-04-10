@@ -3,6 +3,7 @@ import numpy as np
 from .conversion import integer_to_poly, sparse_poly_to_integer, sparse_poly_to_str
 from .gf import GFArray
 from .gf2 import GF2
+from .prime import prime_factors
 
 
 class Poly:
@@ -1485,3 +1486,69 @@ def poly_exp_mod(poly, power, modulus):
     result = (result_s * result_m) % modulus
 
     return result
+
+
+def is_irreducible(poly):
+    """
+    Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is irreducible.
+
+    This implementation uses Rabin's irreducibility test. It says a degree-:math:`n` polynomial :math:`f(x)`
+    over :math:`\\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if
+
+    .. math::
+        f(x)\\ |\\ (x^{p^n} - x)
+
+    and
+
+    .. math::
+        \\textrm{gcd}(f(x),\\ x^{p^{m_i}} - x) = 1,\\ 1 \\le i \\le k,
+
+    where :math:`m_i = n/p_i` for the :math:`k` prime divisors :math:`p_i` of :math:`n`.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        A polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+
+    Returns
+    -------
+    bool
+        `True` if the polynomial is irreducible.
+
+    References
+    ----------
+    * Michael O Rabin. Probabilistic algorithms in finite fields. SIAM Journal on computing, 9(2):273–280, 1980. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
+    * S. Gao and D. Panarino. Tests and Constructions of Irreducible Polynomials over Finite Fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
+    * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
+    """
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    if not poly.field.degree == 1:
+        raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
+
+    field = poly.field
+    p = field.order
+    n = poly.degree
+    primes, _ = prime_factors(n)
+    zero = Poly.Zero(field)
+    one = Poly.One(field)
+    x = Poly.Identity(field)
+
+    if poly.coeffs[-1] == 0:
+        # We can factor out (x), therefore it is not irreducible.
+        return False
+
+    for pi in primes:
+        # The GCD of f(x) and (x^(p^(n/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of n
+        h = poly_exp_mod(x, p**(n // pi), poly)
+        g = poly_gcd(poly, h - x)[0]
+        if g != one:
+            return False
+
+    # f(x) must divide (x^(p^n) - x) to be irreducible
+    h = poly_exp_mod(x, p**n, poly)
+    g = (h - x) % poly
+    if g != zero:
+        return False
+
+    return True

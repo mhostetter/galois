@@ -29,3 +29,26 @@ def test_poly_exp_mod():
     g = galois.Poly.Random(7, field=GF)
     power = 20
     assert f**power % g == galois.poly_exp_mod(f, power, g)
+
+
+def test_is_irreducible():
+    p1 = galois.conway_poly(2, 4)
+    assert galois.is_irreducible(p1)
+
+    p2 = galois.conway_poly(2, 5)
+    assert galois.is_irreducible(p2)
+
+    p3 = p1 * p2  # Has no roots in GF(2) but is still reducible
+    assert not galois.is_irreducible(p3)
+
+    p4 = galois.conway_poly(7, 5)
+    assert galois.is_irreducible(p4)
+
+    GF = galois.GF(7)
+    p5 = galois.Poly.Roots([2, 3], field=GF)
+    assert not galois.is_irreducible(p5)
+
+    GF = galois.GF(7)
+    x = galois.Poly.Identity(GF)
+    p6 = galois.Poly.Random(20, field=GF) * x
+    assert not galois.is_irreducible(p6)
