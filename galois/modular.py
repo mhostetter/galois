@@ -7,8 +7,10 @@ from .prime import prime_factors
 
 def totatives(n):
     """
-    Returns the positive integers (totatives) in :math:`1 \\le k < n` that are relatively prime to
-    :math:`n`, i.e. :math:`gcd(n, k) = 1`.
+    Returns the positive integers (totatives) in :math:`1 \\le k < n` that are coprime with :math:`n`,
+    i.e. :math:`gcd(n, k) = 1`.
+
+    The totatives of :math:`n` form the multiplicative group :math:`\\mathbb{Z}{_n^\\times}`.
 
     Parameters
     ----------
@@ -19,6 +21,11 @@ def totatives(n):
     -------
     list
         The totatives of :math:`n`.
+
+    References
+    ----------
+    * https://en.wikipedia.org/wiki/Totative
+    * https://oeis.org/A000010
 
     Examples
     --------
@@ -303,10 +310,10 @@ def primitive_root(n, start=1, stop=None, largest=False):
 
     References
     ----------
+    * V. Shoup. Searching for primitive roots in finite fields. https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
+    * L. K. Hua. On the least primitive root of a prime. https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf
     * https://en.wikipedia.org/wiki/Finite_field#Roots_of_unity
     * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
-    * https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
-    * https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf
     * http://www.numbertheory.org/courses/MP313/lectures/lecture7/page1.html
 
     Examples
@@ -433,10 +440,9 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
 
     References
     ----------
+    * V. Shoup. Searching for primitive roots in finite fields. https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
     * https://en.wikipedia.org/wiki/Finite_field#Roots_of_unity
     * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
-    * https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
-    * https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf
     * http://www.numbertheory.org/courses/MP313/lectures/lecture7/page1.html
 
     Examples

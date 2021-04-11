@@ -50,7 +50,7 @@ def isqrt(n):
 
 def primes(n):
     """
-    Returns the primes :math:`p \\le n`.
+    Returns all primes :math:`p` for :math:`p \\le n`.
 
     Parameters
     ----------
@@ -61,6 +61,10 @@ def primes(n):
     -------
     list
         The primes up to and including :math:`n`.
+
+    References
+    ----------
+    * https://oeis.org/A000040
 
     Examples
     --------
@@ -90,7 +94,7 @@ def primes(n):
             # mark `3*prime, 5*prime, ...`
 
             delta = prime  # A delta of `2*prime` converted to an index of the odd composite array, i.e. `2*prime//2`
-            first_multiple = i + delta  # First odd multiple of the prime `3*prime`
+            first_multiple = i + delta  # First odd multiple of the prime, i.e. `3*prime`
 
             # Mark multiples of the prime that are odd (and in the composite array) as composite
             composite[first_multiple::delta] = True
@@ -162,10 +166,7 @@ def prev_prime(x):
         raise TypeError(f"Argument `x` must be an integer, not {type(x)}.")
     if not 2 <= x <= MAX_PRIME:
         raise ValueError(f"Argument `x` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
-    idx = bisect.bisect_left(PRIMES, x)
-    if PRIMES[idx] != x:
-        idx -= 1
-    return PRIMES[idx]
+    return PRIMES[bisect.bisect_right(PRIMES, x) - 1]
 
 
 def next_prime(x):
@@ -193,9 +194,7 @@ def next_prime(x):
         raise TypeError(f"Argument `x` must be an integer, not {type(x)}.")
     if not x < MAX_PRIME:
         raise ValueError(f"Argument `x` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
-    idx = bisect.bisect_right(PRIMES, x)
-    return PRIMES[idx]
-
+    return PRIMES[bisect.bisect_right(PRIMES, x)]
 
 MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3217,4253,4423,9689,9941,11213,19937,21701,23209,44497,86243,110503,132049,216091,756839,859433,1257787,1398269,2976221,3021377,6972593,13466917,20996011,24036583,25964951,30402457,32582657,37156667,42643801,43112609]
 
@@ -224,15 +223,12 @@ def mersenne_exponents(n=None):
     --------
     .. ipython:: python
 
-        # List all Mersenne exponents for Mersenne primes up to 4000 bits
-        e = galois.mersenne_exponents(4000); e
+        # List all Mersenne exponents for Mersenne primes up to 2000 bits
+        e = galois.mersenne_exponents(2000); e
 
         # Select one Merseene exponent and compute its Mersenne prime
         p = 2**e[-1] - 1; p
         galois.is_prime(p)
-
-        # Display all known Mersenne exponenets
-        galois.mersenne_exponents()
     """
     if n is None:
         return MERSENNE_EXPONENTS
@@ -344,11 +340,11 @@ def is_prime(n):
     """
     Determines if :math:`n` is prime.
 
-    This algorithm will first run Fermat's primality test to check :math:`n` for compositeness. If
-    it determines :math:`n` is composite, the function will quickly return. If Fermat's primality test
-    returns `True`, then :math:`n` could be prime or pseudoprime. If so, then this function will run seven
-    rounds of Miller-Rabin's primality test. With this many rounds, a result of `True` should have high
-    probability of being a true prime, not a pseudoprime.
+    This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
+    :obj:`galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
+    If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
+    will run seven rounds of Miller-Rabin's primality test, see :obj:`galois.miller_rabin_primality_test`. With this many rounds,
+    a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
 
     Parameters
     ----------
@@ -410,6 +406,11 @@ def fermat_primality_test(n):
     -------
     bool
         `False` if :math:`n` is known to be composite. `True` if :math:`n` is prime or pseudoprime.
+
+    References
+    ----------
+    * https://oeis.org/A001262
+    * https://oeis.org/A001567
 
     Examples
     --------
@@ -474,6 +475,7 @@ def miller_rabin_primality_test(n, a=None, rounds=1):
     References
     ----------
     * https://math.dartmouth.edu/~carlp/PDF/paper25.pdf
+    * https://oeis.org/A001262
 
     Examples
     --------
