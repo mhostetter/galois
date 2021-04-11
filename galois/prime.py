@@ -154,6 +154,80 @@ def next_prime(x):
     return PRIMES[idx]
 
 
+MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3217,4253,4423,9689,9941,11213,19937,21701,23209,44497,86243,110503,132049,216091,756839,859433,1257787,1398269,2976221,3021377,6972593,13466917,20996011,24036583,25964951,30402457,32582657,37156667,42643801,43112609]
+
+
+def mersenne_exponents(n=None):
+    """
+    Returns all known Mersenne exponents :math:`e` for :math:`e \\le n`.
+
+    A Mersenne exponent :math:`e` is an exponent of :math:`2` such that :math:`2^e - 1` is prime.
+
+    Parameters
+    ----------
+    n : int, optional
+        The max exponent of 2. The default is `None` which returns all known Mersenne exponents.
+
+    Returns
+    -------
+    list
+        The list of Mersenne exponents :math:`e` for :math:`e \\le n`.
+
+    References
+    ----------
+    * https://oeis.org/A000043
+
+    Examples
+    --------
+    .. ipython:: python
+
+        # List all Mersenne exponents for Mersenne primes up to 4000 bits
+        e = galois.mersenne_exponents(4000); e
+
+        # Select one Merseene exponent and compute its Mersenne prime
+        p = 2**e[-1] - 1; p
+        galois.is_prime(p)
+
+        # Display all known Mersenne exponenets
+        galois.mersenne_exponents()
+    """
+    if n is None:
+        return MERSENNE_EXPONENTS
+    else:
+        return MERSENNE_EXPONENTS[0:bisect.bisect_right(MERSENNE_EXPONENTS, n)]
+
+
+def mersenne_primes(n=None):
+    """
+    Returns all known Mersenne primes :math:`p` for :math:`p \\le 2^n - 1`.
+
+    Mersenne primes are primes that are one less than a power of 2.
+
+    Parameters
+    ----------
+    n : int, optional
+        The max power of 2. The default is `None` which returns all known Mersenne exponents.
+
+    Returns
+    -------
+    list
+        The list of known Mersenne primes :math:`p` for :math:`p \\le 2^n - 1`.
+
+    References
+    ----------
+    * https://oeis.org/A000668
+
+    Examples
+    --------
+    .. ipython:: python
+
+        # List all Mersenne primes up to 2000 bits
+        p = galois.mersenne_primes(2000); p
+        galois.is_prime(p[-1])
+    """
+    return [2**e - 1 for e in mersenne_exponents(n)]
+
+
 def prime_factors(x):
     """
     Computes the prime factors of the positive integer :math:`x`.

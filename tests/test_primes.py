@@ -55,6 +55,18 @@ def test_next_prime():
         galois.next_prime(galois.prime.MAX_PRIME)
 
 
+def test_mersenne_exponents():
+    # https://oeis.org/A000043
+    exponents = [2,3,5,7,13,17,19,31,61,89,107,127]  # Up to 128 bits
+    assert galois.mersenne_exponents(128) == exponents
+
+
+def test_mersenne_primes():
+    # https://oeis.org/A000668
+    primes = [3,7,31,127,8191,131071,524287,2147483647,2305843009213693951,618970019642690137449562111,162259276829213363391578010288127,170141183460469231731687303715884105727]  # Up to 128 bits
+    assert galois.mersenne_primes(128) == primes
+
+
 def test_prime_factorization_small():
     x = 8
     P = [2,]
