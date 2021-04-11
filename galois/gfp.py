@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 from .algorithm import gcd, gcd_jit
-from .gf import GFArray
+from .array import GFArray
 
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -93,8 +93,8 @@ class GFp(GFArray):
         if target == "cuda":
             kwargs.pop("nopython")
 
-        cls.ufunc_mode = mode
-        cls.ufunc_target = target
+        cls._ufunc_mode = mode
+        cls._ufunc_target = target
 
         object_mode = cls.dtypes[-1] == np.object_
 

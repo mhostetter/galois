@@ -43,6 +43,6 @@ class TestAsType:
 
     def test_invalid_dtypes(self, field):
         a = field.Random(10)
-        for dtype in [d for d in galois.gf.DTYPES if d not in field.dtypes]:
+        for dtype in [d for d in galois.array.DTYPES if d not in field.dtypes]:
             with pytest.raises(TypeError):
                 b = a.astype(dtype)
