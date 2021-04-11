@@ -41,7 +41,7 @@ def test_is_irreducible():
     p3 = p1 * p2  # Has no roots in GF(2) but is still reducible
     assert not galois.is_irreducible(p3)
 
-    p4 = galois.conway_poly(7, 5)
+    p4 = galois.conway_poly(7, 20)
     assert galois.is_irreducible(p4)
 
     GF = galois.GF(7)

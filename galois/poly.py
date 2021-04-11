@@ -1492,18 +1492,10 @@ def is_irreducible(poly):
     """
     Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is irreducible.
 
-    This implementation uses Rabin's irreducibility test. It says a degree-:math:`n` polynomial :math:`f(x)`
-    over :math:`\\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if
-
-    .. math::
-        f(x)\\ |\\ (x^{p^n} - x)
-
-    and
-
-    .. math::
-        \\textrm{gcd}(f(x),\\ x^{p^{m_i}} - x) = 1,\\ 1 \\le i \\le k,
-
-    where :math:`m_i = n/p_i` for the :math:`k` prime divisors :math:`p_i` of :math:`n`.
+    This function implementats Rabin's irreducibility test. It says a degree-:math:`n` polynomial :math:`f(x)`
+    over :math:`\\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\\ |\\ (x^{p^n} - x)`
+    and :math:`\\textrm{gcd}(f(x),\\ x^{p^{m_i}} - x) = 1` for :math:`1 \\le i \\le k`, where :math:`m_i = n/p_i` for
+    the :math:`k` prime divisors :math:`p_i` of :math:`n`.
 
     Parameters
     ----------
@@ -1517,8 +1509,8 @@ def is_irreducible(poly):
 
     References
     ----------
-    * Michael O Rabin. Probabilistic algorithms in finite fields. SIAM Journal on computing, 9(2):273–280, 1980. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
-    * S. Gao and D. Panarino. Tests and Constructions of Irreducible Polynomials over Finite Fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
+    * M. O. Rabin. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273–280. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
+    * S. Gao and D. Panarino. Tests and constructions of irreducible polynomials over finite fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
     * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
     """
     if not isinstance(poly, Poly):
@@ -1538,15 +1530,18 @@ def is_irreducible(poly):
         # We can factor out (x), therefore it is not irreducible.
         return False
 
-    for pi in primes:
+    h0 = Poly.Identity(field)
+    n0 = 0
+    for ni in sorted([n // pi for pi in primes]):
         # The GCD of f(x) and (x^(p^(n/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of n
-        h = poly_exp_mod(x, p**(n // pi), poly)
-        g = poly_gcd(poly, h - x)[0]
+        hi = poly_exp_mod(h0, p**(ni - n0), poly)
+        g = poly_gcd(poly, hi - x)[0]
         if g != one:
             return False
+        h0, n0 = hi, ni
 
     # f(x) must divide (x^(p^n) - x) to be irreducible
-    h = poly_exp_mod(x, p**n, poly)
+    h = poly_exp_mod(h0, p**(n - n0), poly)
     g = (h - x) % poly
     if g != zero:
         return False
