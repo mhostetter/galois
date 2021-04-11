@@ -1228,6 +1228,16 @@ class SparsePoly(Poly):
             raise TypeError(f"Both polynomials must be over the same field, not {str(a.field)} and {str(b.field)}.")
 
     @classmethod
+    def _return_poly(cls, d, field):
+        degree = 0 if len(d.keys()) == 0 else max(d.keys())
+        nonzero_degrees = list(d.keys())
+        nonzero_coeffs = list(d.values())
+        if len(nonzero_degrees) < 0.001*(degree + 1):
+            return SparsePoly(nonzero_degrees, nonzero_coeffs, field=field)
+        else:
+            return DensePoly.Degrees(nonzero_degrees, nonzero_coeffs, field=field)
+
+    @classmethod
     def _add(cls, a, b):
         cls._check_inputs_are_sparse_polys(a, b)
         field = a.field
@@ -1239,7 +1249,7 @@ class SparsePoly(Poly):
         for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
             d[b_degree] = d.get(b_degree, field(0)) + b_coeff
 
-        return SparsePoly(list(d.keys()), list(d.values()), field=field)
+        return cls._return_poly(d, field)
 
     @classmethod
     def _sub(cls, a, b):
@@ -1253,7 +1263,7 @@ class SparsePoly(Poly):
         for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
             d[b_degree] = d.get(b_degree, field(0)) - b_coeff
 
-        return SparsePoly(list(d.keys()), list(d.values()), field=field)
+        return cls._return_poly(d, field)
 
     @classmethod
     def _mul(cls, a, b):
@@ -1266,19 +1276,20 @@ class SparsePoly(Poly):
             for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
                 d[a_degree + b_degree] = d.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
 
-        return SparsePoly(list(d.keys()), list(d.values()), field=field)
+        return cls._return_poly(d, field)
 
     @classmethod
     def _divmod(cls, a, b):
         cls._check_inputs_are_sparse_polys(a, b)
         field = a.field
-        zero = SparsePoly.Zero(field)
+        zero = DensePoly.Zero(field)
 
         # q(x)*b(x) + r(x) = a(x)
         if b.degree == 0:
             q_degrees = a.nonzero_degrees
             q_coeffs = [a_coeff // b.coeffs[0] for a_coeff in a.nonzero_coeffs]
-            return SparsePoly(q_degrees, q_coeffs, field=field), zero
+            qq = dict(zip(q_degrees, q_coeffs))
+            return cls._return_poly(qq, field), zero
 
         elif a == zero:
             return zero, zero
@@ -1308,13 +1319,13 @@ class SparsePoly(Poly):
                     r_coeffs -= q*b_coeffs
                     qq[q_degree - i] = q
 
-            return SparsePoly(list(qq.keys()), list(qq.values()), field=field), DensePoly(r_coeffs[1:])
+            return cls._return_poly(qq, field), DensePoly(r_coeffs[1:])
 
     @classmethod
     def _mod(cls, a, b):
         cls._check_inputs_are_sparse_polys(a, b)
         field = a.field
-        zero = SparsePoly.Zero(field)
+        zero = DensePoly.Zero(field)
 
         # q(x)*b(x) + r(x) = a(x)
         if b.degree == 0:
