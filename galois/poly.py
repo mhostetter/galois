@@ -320,7 +320,7 @@ class Poly:
         return DensePoly.Coeffs(coeffs, field=field, order=order)
 
     @classmethod
-    def Roots(cls, roots, field=None):
+    def Roots(cls, roots, multiplicities=None, field=None):
         """
         Constructs a monic polynomial in :math:`\\mathrm{GF}(q)[x]` from its roots.
 
@@ -335,6 +335,8 @@ class Poly:
         ----------
         roots : array_like
             List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
+        multiplicities : array_like, optional
+            List of multiplicity of each root. The default is `None` which corresponds to all ones.
         field : galois.GFArray, optional
             The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
@@ -362,7 +364,7 @@ class Poly:
             p = galois.Poly.Roots(roots, field=GF); p
             p(roots)
         """
-        return DensePoly.Roots(roots, field=field)
+        return DensePoly.Roots(roots, multiplicities=multiplicities, field=field)
 
     def copy(self):
         if isinstance(self, DensePoly):
@@ -997,18 +999,21 @@ class DensePoly(Poly):
         return DensePoly(coeffs, field=field, order=order)
 
     @classmethod
-    def Roots(cls, roots, field=None):
+    def Roots(cls, roots, multiplicities=None, field=None):
         if not (field is None or issubclass(field, GFArray)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
         if not isinstance(roots, (list, tuple, np.ndarray)):
             raise TypeError(f"Argument `roots` must 'array-like', not {type(roots)}.")
-        field = GF2 if field is None else field
+        if not isinstance(multiplicities, (type(None), list, tuple, np.ndarray)):
+            raise TypeError(f"Argument `multiplicities` must 'array-like', not {type(multiplicities)}.")
 
+        field = GF2 if field is None else field
+        multiplicities = [1,]*len(roots) if multiplicities is None else multiplicities
         roots = field(roots).flatten().tolist()
 
         p = DensePoly.One(field=field)
-        for root in roots:
-            p = p * DensePoly([1, -int(root)], field=field)
+        for root, multiplicity in zip(roots, multiplicities):
+            p *= DensePoly([1, -int(root)], field=field)**multiplicity
 
         return p
 
@@ -1206,8 +1211,8 @@ class SparsePoly(Poly):
         return SparsePoly(degrees, coeffs, field=field)
 
     @classmethod
-    def Roots(cls, roots, field=None):
-        coeffs = DensePoly.Roots(roots, field=field).coeffs
+    def Roots(cls, roots, multiplicities=None, field=None):
+        coeffs = DensePoly.Roots(roots, multiplicities=multiplicities, field=field).coeffs
         return SparsePoly.Coeffs(coeffs)
 
     # def __call__(self, x):

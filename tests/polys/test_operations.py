@@ -30,15 +30,12 @@ def test_roots():
     assert set(poly.roots().tolist()) == set(roots)
 
 
-def test_multiple_roots():
+def test_roots_with_multiplicity():
     GF = galois.GF(31)
     roots = [0, 3, 17, 24, 30]
     multiplicities = [7, 5, 9, 2, 11]
-    all_roots = []
-    for r, m in zip(roots, multiplicities):
-        all_roots += [r,]*m
 
-    poly = galois.Poly.Roots(all_roots, field=GF)
+    poly = galois.Poly.Roots(roots, multiplicities=multiplicities, field=GF)
     r, m = poly.roots(multiplicity=True)
     assert np.array_equal(r, roots)
     assert np.array_equal(m, multiplicities)
