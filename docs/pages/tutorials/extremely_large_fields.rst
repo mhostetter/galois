@@ -40,6 +40,7 @@ Large GF(2^m) fields
 
    # Display elements as polynomials
    GF.display("poly")
+
    a
    b
    a + b

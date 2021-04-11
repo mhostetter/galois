@@ -44,7 +44,7 @@ def factors(n):
 
 def gcd(a, b):
     """
-    Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = gcd(a, b)`.
+    Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.
 
     This implementation uses the Extended Euclidean Algorithm.
 
@@ -60,9 +60,9 @@ def gcd(a, b):
     int
         Greatest common divisor of :math:`a` and :math:`b`.
     int
-        Integer :math:`x`, such that :math:`a x + b y = gcd(a, b)`.
+        Integer :math:`x`, such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.
     int
-        Integer :math:`y`, such that :math:`a x + b y = gcd(a, b)`.
+        Integer :math:`y`, such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.
 
     References
     ----------

@@ -107,26 +107,38 @@ Galois field array dtypes
 -------------------------
 
 Galois field arrays support all signed and unsigned integer dtypes, presuming the data type can store values
-in :math:`[0, p^m)`.
+in :math:`[0, p^m)`. The default dtype is the smallest valid unsigned dtype.
 
 .. ipython:: python
 
    GF = galois.GF(7)
    a = GF.Random(10); a
+   a.dtype
 
    # Type cast an existing Galois field array to a different dtype
-   a.astype(np.uint8)
+   a = a.astype(np.int16); a
+   a.dtype
+
+A specific dtype can be chosen by providing the `dtype` keyword argument during array creation.
+
+.. ipython:: python
 
    # Explicitly create a Galois field array with a specific dtype
-   b = GF.Random(10, dtype=np.uint8); b
+   b = GF.Random(10, dtype=np.int16); b
+   b.dtype
 
 
 Field element display modes
 ---------------------------
 
-The default representation of a finite field element is the integer representation. That is, for :math:`\mathrm{GF}(2^3)`
-the 8 field elements are represented as :math:`\{0, 1, 2, 3, 4, 5, 6, 7\}`. Alternatively, the field elements can be represented
-as degree-3 polynomials in :math:`\mathrm{GF}(2)[x]`, i.e. :math:`\{0, 1, x, x+1, x^2, x^2+1, x^2+x, x^2+x+1\}`.
+The default representation of a finite field element is the integer representation. That is, for :math:`\mathrm{GF}(p^m)`
+the :math:`p^m` elements are represented as :math:`\{0,1,\dots,p^m-1\}`. For extension fields, the field elements can
+alternatively be represented as polynomials in :math:`\mathrm{GF}(p)[x]` with degree less than :math:`m`. For prime fields, the integer
+and polynomial representations are equivalent because in the polynomial representation each element is a degree-:math`0` polynomial over
+:math:`\mathrm{GF}(p)`.
+
+For example, in :math:`\mathrm{GF}(2^3)` the integer representation of the :math:`8` field elements is :math:`\{0, 1, 2, 3, 4, 5, 6, 7\}`
+and the polynomial representation is :math:`\{0,\ 1,\ x,\ x+1,\ x^2,\ x^2+1,\ x^2+x,\ x^2+x+1\}`.
 
 .. ipython:: python
 

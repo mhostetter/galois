@@ -47,32 +47,43 @@ example using :math:`\mathrm{GF}(7)`.
    X / Y
 
 
-Multiple addition
------------------
+Scalar multiplication
+---------------------
 
 A finite field :math:`\mathrm{GF}(p^m)` is a set that is closed under four operations: addition, subtraction, multiplication,
-and division. For multiplication, :math:`x * y = z` for :math:`x, y, z \in \mathrm{GF}(p^m)`.
+and division. For multiplication, :math:`x y = z` for :math:`x, y, z \in \mathrm{GF}(p^m)`.
 
-Let's define another notation :math:`x \cdot r = z` for :math:`x, z \in \mathrm{GF}(p^m)` and :math:`r \in \mathbb{Z}`,
-which represents :math:`r` additions of :math:`x`, i.e. :math:`x + \dotsb + x = z`. In prime fields :math:`\mathrm{GF}(p)`,
-multiplication :math:`*` and "multiple addition" :math:`\cdot` are equivalent. However, in extension fields :math:`\mathrm{GF}(p^m)`
+Let's define another notation for scalar multiplication. For :math:`x \cdot r = z` for :math:`x, z \in \mathrm{GF}(p^m)` and :math:`r \in \mathbb{Z}`,
+which represents :math:`r` additions of :math:`x`, i.e. :math:`x + \dotsb + x = z`. In prime fields :math:`\mathrm{GF}(p)`
+multiplication and scalar multiplication are equivalent. However, in extension fields :math:`\mathrm{GF}(p^m)`
 they are not.
 
 .. warning::
 
-   There is a difference between `GF8(6) * GF8(2)` and `GF8(6) * 2`. The former represents the field element "6"
-   multiplied by the field element "2" using field multiplication. The latter represents adding the field element
-   "6" two times.
+   In the extension field :math:`\\mathrm{GF}(2^8)`, there is a difference between `GF8(6) * GF8(2)` and `GF8(6) * 2`.
+   The former represents the field element "6" multiplied by the field element "2" using finite field multiplication. The
+   latter represents adding the field element "6" two times.
 
    .. ipython:: python
 
       GF8 = galois.GF(2**3)
-      print(GF8)
-
-      a = GF8.Random(10)
+      a = GF8.Random(10); a
 
       # Calculates a x "2" in the finite field
       a * GF8(2)
+
+      # Calculates a + a
+      a * 2
+
+   In prime fields :math:`\\mathrm{GF}(p)`, multiplication and scalar multiplication are equivalent.
+
+   .. ipython:: python
+
+      GF7 = galois.GF(7)
+      a = GF7.Random(10); a
+
+      # Calculates a x "2" in the finite field
+      a * GF7(2)
 
       # Calculates a + a
       a * 2
