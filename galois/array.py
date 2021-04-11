@@ -3,6 +3,7 @@ import random
 import numba
 import numpy as np
 
+from .array_meta import GFArrayMeta
 from .conversion import integer_to_poly, poly_to_str
 
 # Dictionary mapping numpy ufuncs to our implementation method
@@ -33,42 +34,6 @@ ZECH_E = None  # alpha^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
-
-
-class GFArrayMeta(type):
-    """
-    Defines a metaclass to give all GFArray classes a `__str__()` special method, not just their instances.
-    """
-
-    def __str__(cls):
-        return f"<class 'numpy.ndarray' over {cls.name}>"
-
-    @property
-    def name(cls):
-        if cls.degree == 1:
-            return f"GF({cls.characteristic})"
-        else:
-            return f"GF({cls.characteristic}^{cls.degree})"
-
-
-class DisplayContext:
-    """
-    Simple context manager for the :obj:`galois.GFArray.display` method.
-    """
-
-    def __init__(self, cls, mode, poly_var):
-        self.cls = cls
-        self.mode = mode
-        self.poly_var = poly_var
-
-    def __enter__(self):
-        # Don't need to do anything, we already set the new mode and poly_var in the display() method
-        pass
-
-    def __exit__(self, exc_type, exc_value, exc_traceback):
-        # Reset mode and poly_var upon exiting the context
-        self.cls._display_mode = self.mode
-        self.cls._display_poly_var = self.poly_var
 
 
 class GFArray(np.ndarray, metaclass=GFArrayMeta):
@@ -195,58 +160,6 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
         a
     """
 
-    # NOTE: These class attributes will be set in the subclasses of GFArray
-
-    characteristic = None
-    """
-    int: The prime characteristic :math:`p` of the Galois field :math:`\\mathrm{GF}(p^m)`. Adding
-    :math:`p` copies of any element will always result in :math:`0`.
-    """
-
-    degree = None
-    """
-    int: The prime characteristic's degree :math:`m` of the Galois field :math:`\\mathrm{GF}(p^m)`. The degree
-    is a positive integer.
-    """
-
-    order = None
-    """
-    int: The order :math:`p^m` of the Galois field :math:`\\mathrm{GF}(p^m)`. The order of the field is also equal to
-    the field's size.
-    """
-
-    prim_poly = None
-    """
-    galois.Poly: The primitive polynomial :math:`p(x)` of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive
-    polynomial is of degree :math:`m` in :math:`\\mathrm{GF}(p)[x]`.
-    """
-
-    alpha = None
-    """
-    int: The primitive element :math:`\\alpha` of the Galois field :math:`\\mathrm{GF}(p^m)`. The primitive element is a root of the
-    primitive polynomial :math:`p(x)`, such that :math:`p(\\alpha) = 0`. The primitive element is also a multiplicative
-    generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
-    """
-
-    dtypes = []
-    """
-    list: List of valid integer :obj:`numpy.dtype` objects that are compatible with this Galois field. Valid data
-    types are signed and unsinged integers that can represent decimal values in :math:`[0, p^m)`.
-    """
-
-    ufunc_mode = None
-    """
-    str: The mode for ufunc compilation, either `"lookup"`, `"calculate"`, `"object"`.
-    """
-
-    ufunc_target = None
-    """
-    str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, `"cuda"`, or `None`.
-    """
-
-    _display_mode = "int"
-    _display_poly_var = "x"
-
     # Integer representations of the field's primitive element and primitive polynomial to be used in the
     # pure python ufunc implementations for `ufunc_mode = "object"`
     _alpha_dec = None
@@ -272,6 +185,108 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
         if cls is GFArray:
             raise NotImplementedError("GFArray is an abstract base class that cannot be directly instantiated. Instead, create a GFArray subclass using `galois.GF`.")
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
+
+    @classmethod
+    def _get_dtype(cls, dtype):
+        if dtype is None:
+            return cls.dtypes[0]
+
+        # Convert "dtype" to a numpy dtype. This does platform specific conversion, if necessary.
+        # For example, np.dtype(int) == np.int64 (on some systems).
+        dtype = np.dtype(dtype)
+        if dtype not in cls.dtypes:
+            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+
+        return dtype
+
+    @classmethod
+    def _array(cls, array_like, dtype=None, copy=True, order="K", ndmin=0):
+        dtype = cls._get_dtype(dtype)
+        array_like = cls._check_array_like_object(array_like)
+
+        # After confirming the input is of the correct type and that all the values are in the
+        # field, we can convert to an array with the specified dtype. We need to check the values
+        # before converting to an array because, for example, -1 will cast to 255 with dtype=np.uint8.
+        # 255 is a valid field element in GF(2^8) but -1 isn't. We want to catch that condition, i.e. you
+        # shouldn't be able to silently convert -1 to a field element in GF(2^8).
+        array = np.array(array_like, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
+
+        return array.view(cls)
+
+    @classmethod
+    def _check_array_like_object(cls, array_like):
+        if isinstance(array_like, (int, np.integer)):
+            # Just check that the single int is in range
+            cls._check_array_values(array_like)
+
+        elif isinstance(array_like, (list, tuple)):
+            # Recursively check the items in the iterable to ensure they're of the correct type
+            # and that their values are in range
+            array_like = cls._check_iterable_types_and_values(array_like)
+
+        elif isinstance(array_like, np.ndarray):
+            if array_like.dtype == np.object_:
+                array_like = cls._check_array_types_dtype_object(array_like)
+            elif not np.issubdtype(array_like.dtype, np.integer):
+                raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays must have integer dtypes, not {array_like.dtype}")
+            cls._check_array_values(array_like)
+
+        else:
+            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays can be created with scalars of type int, not {type(array_like)}")
+
+        return array_like
+
+    @classmethod
+    def _check_iterable_types_and_values(cls, iterable):
+        new_iterable = []
+        for item in iterable:
+            if isinstance(item, (list, tuple)):
+                item = cls._check_iterable_types_and_values(item)
+                new_iterable.append(item)
+                continue
+
+            if not isinstance(item, (int, np.integer, cls)):
+                raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
+            if not 0 <= item < cls.order:
+                raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {item}")
+
+            # Ensure the type is int so dtype=object classes don't get all mixed up
+            new_iterable.append(int(item))
+
+        return new_iterable
+
+    @classmethod
+    def _check_array_types_dtype_object(cls, array):
+        if array.size == 0:
+            return array
+        if array.ndim == 0:
+            return int(array)
+
+        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+        for _ in iterator:
+            a = array[iterator.multi_index]
+            if not isinstance(a, (int, cls)):
+                raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
+
+            # Ensure the type is int so dtype=object classes don't get all mixed up
+            array[iterator.multi_index] = int(a)
+
+        return array
+
+    @classmethod
+    def _check_array_values(cls, array):
+        if not isinstance(array, np.ndarray):
+            # Convert single integer to array so next step doesn't fail
+            array = np.array(array)
+
+        # Check the value of the "field elements" and make sure they are valid
+        if np.any(array < 0) or np.any(array >= cls.order):
+            idxs = np.logical_or(array < 0, array >= cls.order)
+            raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {array[idxs]}")
+
+    ###############################################################################
+    # Alternate constructors
+    ###############################################################################
 
     @classmethod
     def Zeros(cls, shape, dtype=None):
@@ -447,182 +462,22 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
         """
         return cls.Range(0, cls.order, step=1, dtype=dtype)
 
-    @classmethod
-    def _get_dtype(cls, dtype):
-        if dtype is None:
-            return cls.dtypes[0]
+    ###############################################################################
+    # Overridden numpy ufuncs and methods
+    ###############################################################################
 
-        # Convert "dtype" to a numpy dtype. This does platform specific conversion, if necessary.
-        # For example, np.dtype(int) == np.int64 (on some systems).
-        dtype = np.dtype(dtype)
-        if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
-
-        return dtype
-
-    @classmethod
-    def _array(cls, array_like, dtype=None, copy=True, order="K", ndmin=0):
-        dtype = cls._get_dtype(dtype)
-        array_like = cls._check_array_like_object(array_like)
-
-        # After confirming the input is of the correct type and that all the values are in the
-        # field, we can convert to an array with the specified dtype. We need to check the values
-        # before converting to an array because, for example, -1 will cast to 255 with dtype=np.uint8.
-        # 255 is a valid field element in GF(2^8) but -1 isn't. We want to catch that condition, i.e. you
-        # shouldn't be able to silently convert -1 to a field element in GF(2^8).
-        array = np.array(array_like, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
-
-        return array.view(cls)
-
-    @classmethod
-    def _check_array_like_object(cls, array_like):
-        if isinstance(array_like, (int, np.integer)):
-            # Just check that the single int is in range
-            cls._check_array_values(array_like)
-
-        elif isinstance(array_like, (list, tuple)):
-            # Recursively check the items in the iterable to ensure they're of the correct type
-            # and that their values are in range
-            array_like = cls._check_iterable_types_and_values(array_like)
-
-        elif isinstance(array_like, np.ndarray):
-            if array_like.dtype == np.object_:
-                array_like = cls._check_array_types_dtype_object(array_like)
-            elif not np.issubdtype(array_like.dtype, np.integer):
-                raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays must have integer dtypes, not {array_like.dtype}")
-            cls._check_array_values(array_like)
-
-        else:
-            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays can be created with scalars of type int, not {type(array_like)}")
-
-        return array_like
-
-    @classmethod
-    def _check_iterable_types_and_values(cls, iterable):
-        new_iterable = []
-        for item in iterable:
-            if isinstance(item, (list, tuple)):
-                item = cls._check_iterable_types_and_values(item)
-                new_iterable.append(item)
-                continue
-
-            if not isinstance(item, (int, np.integer, cls)):
-                raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
-            if not 0 <= item < cls.order:
-                raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {item}")
-
-            # Ensure the type is int so dtype=object classes don't get all mixed up
-            new_iterable.append(int(item))
-
-        return new_iterable
-
-    @classmethod
-    def _check_array_types_dtype_object(cls, array):
-        if array.size == 0:
-            return array
-        if array.ndim == 0:
-            return int(array)
-
-        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
-        for _ in iterator:
-            a = array[iterator.multi_index]
-            if not isinstance(a, (int, cls)):
-                raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
-
-            # Ensure the type is int so dtype=object classes don't get all mixed up
-            array[iterator.multi_index] = int(a)
-
-        return array
-
-    @classmethod
-    def _check_array_values(cls, array):
-        if not isinstance(array, np.ndarray):
-            # Convert single integer to array so next step doesn't fail
-            array = np.array(array)
-
-        # Check the value of the "field elements" and make sure they are valid
-        if np.any(array < 0) or np.any(array >= cls.order):
-            idxs = np.logical_or(array < 0, array >= cls.order)
-            raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {array[idxs]}")
-
-    @classmethod
-    def target(cls, target, mode, rebuild=False):  # pylint: disable=unused-argument
-        """
-        Retarget the just-in-time compiled numba ufuncs.
-        """
-        return
-
-    @classmethod
-    def display(cls, mode="int", poly_var="x"):
-        """
-        Sets the printing mode for arrays.
-
-        Parameters
-        ----------
-        mode : str, optional
-            The field element display mode, either `"int"` (default) or `"poly"`.
-        poly_var : str, optional
-            The polynomial representation's variable. The default is `"x"`.
-
-        Examples
-        --------
-        Change the display mode by calling the :obj:`galois.GFArray.display` method.
-
-        .. ipython:: python
-
-            GF = galois.GF(2**3)
-            a = GF.Random(4); a
-            GF.display("poly"); a
-            GF.display("poly", "r"); a
-
-            # Reset the print mode
-            GF.display(); a
-
-        The :obj:`galois.GFArray.display` method can also be used as a context manager.
-
-        .. ipython:: python
-
-            # The original display mode
-            print(a)
-
-            # The new display context
-            with GF.display("poly"):
-                print(a)
-
-            # Returns to the original display mode
-            print(a)
-        """
-        if mode not in ["int", "poly"]:
-            raise ValueError(f"Argument `mode` must be in ['int', 'poly'], not {mode}.")
-        if not isinstance(poly_var, str):
-            raise TypeError(f"Argument `poly_var` must be a string, not {type(poly_var)}.")
-
-        context = DisplayContext(cls, cls._display_mode, cls._display_poly_var)
-
-        # Set the new state
-        cls._display_mode = mode
-        cls._display_poly_var = poly_var
-
-        return context
-
-    @classmethod
-    def _print_int(cls, decimal):
-        return "{:d}".format(int(decimal))
-
-    @classmethod
-    def _print_poly(cls, decimal):
-        poly = integer_to_poly(decimal, cls.characteristic)
-        return poly_to_str(poly, poly_var=cls._display_poly_var)
+    def __str__(self):
+        return self.__repr__()
 
     def __repr__(self):
         formatter = {}
-        if self._display_mode == "poly":
+        if type(self).display_mode == "poly":
             formatter["int"] = self._print_poly
             formatter["object"] = self._print_poly
         elif self.dtype == np.object_:
             formatter["object"] = self._print_int
 
-        cls = self.__class__
+        cls = type(self)
         class_name = cls.__name__
         with np.printoptions(formatter=formatter):
             cls.__name__ = "GF"  # Rename the class so very large fields don't create large indenting
@@ -643,12 +498,17 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
 
         return string
 
-    def __str__(self):
-        return self.__repr__()
+    @staticmethod
+    def _print_int(decimal):
+        return "{:d}".format(int(decimal))
+
+    def _print_poly(self, decimal):
+        poly = integer_to_poly(decimal, type(self).characteristic)
+        return poly_to_str(poly, poly_var=type(self).display_poly_var)
 
     def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
-        if dtype not in self.dtypes:
-            raise TypeError(f"GF({self.characteristic}^{self.degree}) arrays can only be cast as integer dtypes in {self.dtypes}, not {dtype}")
+        if dtype not in type(self).dtypes:
+            raise TypeError(f"{type(self).name} arrays can only be cast as integer dtypes in {type(self).dtypes}, not {dtype}")
         return super().astype(dtype, **kwargs)
 
     @classmethod
@@ -723,6 +583,23 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
 
         return y
 
+    def __array_function__(self, func, types, args, kwargs):
+        # if func in UNSUPPORTED_FUNCTIONS:
+        #     raise NotImplementedError(f"Numpy function '{func.__name__}' is not supported on Galois field arrays")
+
+        # if func in OVERRIDDEN_FUNCTIONS:
+        #     output = getattr(self, OVERRIDDEN_FUNCTIONS[func])(func, types, args, kwargs)
+        # else:
+        if func is np.insert:
+            args[2] = self._check_array_like_object(args[2])
+
+        output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
+
+        if func in [np.copy, np.concatenate, np.broadcast_to]:
+            output = output.view(self.__class__)
+
+        return output
+
     def __array_finalize__(self, obj):
         """
         A numpy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
@@ -730,11 +607,11 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
         """
         if obj is not None and not isinstance(obj, GFArray):
             # Only invoked on view casting
-            if obj.dtype not in self.dtypes:
-                raise TypeError(f"GF({self.characteristic}^{self.degree}) can only have integer dtypes {self.dtypes}, not {obj.dtype}")
-            if np.any(obj < 0) or np.any(obj >= self.order):
-                idxs = np.logical_or(obj < 0, obj >= self.order)
-                raise ValueError(f"GF({self.characteristic}^{self.degree}) arrays must have values in 0 <= x < {self.order}, not {obj[idxs]}")
+            if obj.dtype not in type(self).dtypes:
+                raise TypeError(f"{type(self).name} can only have integer dtypes {type(self).dtypes}, not {obj.dtype}")
+            if np.any(obj < 0) or np.any(obj >= type(self).order):
+                idxs = np.logical_or(obj < 0, obj >= type(self).order)
+                raise ValueError(f"{type(self).name} arrays must have values in 0 <= x < {type(self).order}, not {obj[idxs]}")
 
     def __getitem__(self, key):
         item = super().__getitem__(key)
@@ -776,7 +653,7 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
         for i in meta["operands"]:
             if isinstance(inputs[i], int):
                 # Use the largest valid dtype for this field
-                v_inputs[i] = np.array(inputs[i], dtype=self.dtypes[-1])
+                v_inputs[i] = np.array(inputs[i], dtype=type(self).dtypes[-1])
 
         return v_inputs
 
@@ -858,7 +735,7 @@ class GFArray(np.ndarray, metaclass=GFArrayMeta):
         # Need to set the intermediate dtype for reduction operations or an error will be thrown. We
         # use the largest valid dtype for this field.
         if method in ["reduce"]:
-            kwargs["dtype"] = self.dtypes[-1]
+            kwargs["dtype"] = type(self).dtypes[-1]
 
         # Call appropriate ufunc method (implemented in subclasses)
         if ufunc is np.add:

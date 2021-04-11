@@ -48,3 +48,66 @@ def test_dtypes(field):
         assert field.dtypes == [np.object_]
     else:
         raise AssertionError(f"There is an untested field, {field}")
+
+
+def test_cant_set_characteristic():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.characteristic = None
+
+
+def test_cant_set_degree():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.degree = None
+
+
+def test_cant_set_order():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.order = None
+
+
+def test_cant_set_prim_poly():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.prim_poly = None
+    assert GF.prim_poly is not GF._prim_poly
+
+
+def test_cant_set_alpha():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.alpha = None
+    assert GF.alpha is not GF._alpha
+
+
+def test_cant_set_dtypes():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.dtypes = None
+    assert GF.dtypes is not GF._dtypes
+
+
+def test_cant_set_ufunc_mode():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.ufunc_mode = None
+
+
+def test_cant_set_ufunc_target():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.ufunc_target = None
+
+
+def test_cant_set_display_mode():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.display_mode = None
+
+
+def test_cant_set_display_poly_var():
+    GF = galois.GF2
+    with pytest.raises(AttributeError):
+        GF.display_poly_var = None

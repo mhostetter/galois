@@ -1,7 +1,7 @@
 import numpy as np
 
+from .array import GFArray
 from .conversion import integer_to_poly, sparse_poly_to_integer, sparse_poly_to_str
-from .gf import GFArray
 from .gf2 import GF2
 from .prime import prime_factors
 
@@ -81,6 +81,10 @@ class Poly:
             return SparsePoly.Coeffs(coeffs, field=field, order=order)
         else:
             return DensePoly(coeffs, field=field, order=order)
+
+    ###############################################################################
+    # Alternate constructors
+    ###############################################################################
 
     @classmethod
     def Zero(cls, field=GF2):
@@ -366,6 +370,10 @@ class Poly:
         """
         return DensePoly.Roots(roots, multiplicities=multiplicities, field=field)
 
+    ###############################################################################
+    # Methods
+    ###############################################################################
+
     def copy(self):
         if isinstance(self, DensePoly):
             return DensePoly(self.coeffs)
@@ -615,6 +623,10 @@ class Poly:
         poly_str = sparse_poly_to_str(self.nonzero_degrees, self.nonzero_coeffs)
         return f"Poly({poly_str}, {self.field.name})"
 
+    ###############################################################################
+    # Overridden dunder methods
+    ###############################################################################
+
     def __str__(self):
         return self.__repr__()
 
@@ -736,6 +748,10 @@ class Poly:
     @classmethod
     def _mod(cls, a, b):
         raise NotImplementedError
+
+    ###############################################################################
+    # Instance properties
+    ###############################################################################
 
     @property
     def field(self):
@@ -933,6 +949,10 @@ class DensePoly(Poly):
         # Ensure the coefficient array isn't 0-dimension
         self._coeffs = np.atleast_1d(self._coeffs)
 
+    ###############################################################################
+    # Alternate constructors
+    ###############################################################################
+
     @classmethod
     def Zero(cls, field=GF2):
         return DensePoly([0], field=field)
@@ -1016,6 +1036,10 @@ class DensePoly(Poly):
             p *= DensePoly([1, -int(root)], field=field)**multiplicity
 
         return p
+
+    ###############################################################################
+    # Arithmetic methods
+    ###############################################################################
 
     def __call__(self, x):
         return self.field._poly_eval(self.coeffs, x)
@@ -1177,6 +1201,10 @@ class SparsePoly(Poly):
         self._degrees = self._degrees[idxs]
         self._coeffs = self._coeffs[idxs]
 
+    ###############################################################################
+    # Alternate constructors
+    ###############################################################################
+
     @classmethod
     def Zero(cls, field=GF2):
         return SparsePoly.Coeffs([0], field=field)
@@ -1214,6 +1242,10 @@ class SparsePoly(Poly):
     def Roots(cls, roots, multiplicities=None, field=None):
         coeffs = DensePoly.Roots(roots, multiplicities=multiplicities, field=field).coeffs
         return SparsePoly.Coeffs(coeffs)
+
+    ###############################################################################
+    # Arithmetic methods
+    ###############################################################################
 
     # def __call__(self, x):
     #     return self.field._poly_eval(self.coeffs, x)
@@ -1359,6 +1391,10 @@ class SparsePoly(Poly):
 
             return DensePoly(r_coeffs[1:])
 
+
+###############################################################################
+# Functions on polynomials
+###############################################################################
 
 def poly_gcd(a, b):
     """

@@ -11,7 +11,7 @@ import galois
 from ..helper import array_equal
 
 
-DTYPES = galois.gf.DTYPES + [np.object_]
+DTYPES = galois.array.DTYPES + [np.object_]
 
 
 def test_cant_instantiate_GF():

@@ -4,7 +4,8 @@ A performant numpy extension for Galois fields.
 from .version import __version__
 
 from .algorithm import factors, gcd, chinese_remainder_theorem
-from .gf import GFArray
+from .array_meta import GFArrayMeta
+from .array import GFArray
 from .gf2 import GF2
 from .modular import totatives, euler_totient, carmichael, is_cyclic, primitive_root, primitive_roots, is_primitive_root
 from .poly import Poly, poly_gcd, poly_exp_mod, is_irreducible
@@ -100,9 +101,9 @@ GF.classes = {}
 
 
 def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
-    # pylint: disable=import-outside-toplevel
+    # pylint: disable=import-outside-toplevel,protected-access
     import numpy as np
-    from .gf import DTYPES
+    from .array import DTYPES
     from .gf2m import GF2m
 
     characteristic = 2
@@ -124,15 +125,15 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
 
     # Create new class type
     cls = type(name, (GF2m,), {
-        "characteristic": characteristic,
-        "degree": degree,
-        "order": order,
-        "prim_poly": prim_poly,
-        "dtypes": dtypes
+        "_characteristic": characteristic,
+        "_degree": degree,
+        "_order": order,
+        "_prim_poly": prim_poly,
+        "_dtypes": dtypes
     })
 
     # Define the primitive element as a 0-dim array in the newly created Galois field array class
-    cls.alpha = cls(alpha)
+    cls._alpha = cls(alpha)
 
     # JIT compile the numba ufuncs
     if mode == "auto":
@@ -147,9 +148,9 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
 
 
 def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disable=unused-argument
-    # pylint: disable=import-outside-toplevel
+    # pylint: disable=import-outside-toplevel,protected-access
     import numpy as np
-    from .gf import DTYPES
+    from .array import DTYPES
     from .gfp import GFp
 
     characteristic = p
@@ -172,25 +173,25 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
 
     # Create new class type
     cls = type(name, (GFp,), {
-        "characteristic": characteristic,
-        "degree": degree,
-        "order": order,
-        "dtypes": dtypes
+        "_characteristic": characteristic,
+        "_degree": degree,
+        "_order": order,
+        "_dtypes": dtypes
     })
 
     # Define the primitive element as a 0-dim array in the newly created Galois field array class
-    cls.alpha = cls(alpha)
+    cls._alpha = cls(alpha)
 
     # JIT compile the numba ufuncs
     if mode == "auto":
-        mode = "lookup" if cls.order <= 2**16 else "calculate"
+        mode = "lookup" if order <= 2**16 else "calculate"
     cls.target(target, mode)
 
-    cls.prim_poly = Poly([1, -alpha], field=cls)  # pylint: disable=invalid-unary-operand-type
+    cls._prim_poly = Poly([1, -alpha], field=cls)  # pylint: disable=invalid-unary-operand-type
 
     # Add helper variables for python ufuncs. This prevents the ufuncs from having to repeatedly calculate them.
     cls._alpha_dec = int(cls.alpha)  # pylint: disable=protected-access
-    cls._prim_poly_dec = cls.prim_poly.integer  # pylint: disable=protected-access
+    cls._prim_poly_dec = cls._prim_poly.integer  # pylint: disable=protected-access
 
     return cls
 
@@ -265,9 +266,9 @@ def conway_poly(p, n):
 # Create the default GF2 class and target the numba ufuncs for "cpu" (lowest overhead)
 GF2.target("cpu")
 
-GF2.alpha = GF2(1)
+GF2._alpha = GF2(1)  # pylint: disable=protected-access
 
 # Define the GF2 primitve polynomial here, not in gf2.py, to avoid a circular dependency.
 # The primitive polynomial is p(x) = x - alpha, where alpha=1. Over GF2, this is equivalent
 # to p(x) = x + 1
-GF2.prim_poly = conway_poly(2, 1)
+GF2._prim_poly = conway_poly(2, 1)  # pylint: disable=protected-access

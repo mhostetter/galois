@@ -1,6 +1,6 @@
 import numba
 
-from .gf import GFArray, DTYPES
+from .array import GFArray, DTYPES
 
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -83,12 +83,12 @@ class GF2(GFArray):
     # NOTE: Ignore pylint errors for not overridding _add_calculate(), etc. We don't need to override them
     # because GF2 doesn't support object mode.
 
-    characteristic = 2
-    degree = 1
-    order = 2
-    prim_poly = None  # Will set this in __init__.py
-    alpha = 1
-    dtypes = DTYPES
+    _characteristic = 2
+    _degree = 1
+    _order = 2
+    _prim_poly = None  # Will set this in __init__.py
+    _alpha = 1
+    _dtypes = DTYPES
 
     @classmethod
     def target(cls, target):  # pylint: disable=arguments-differ
@@ -110,8 +110,8 @@ class GF2(GFArray):
         if target == "cuda":
             kwargs.pop("nopython")
 
-        cls.ufunc_mode = "calculate"
-        cls.ufunc_target = target
+        cls._ufunc_mode = "calculate"
+        cls._ufunc_target = target
 
         # JIT-compile add and multiply routines for reference in polynomial evaluation routine
         ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
@@ -130,7 +130,7 @@ class GF2(GFArray):
 
 
 ###############################################################################
-# Galois field arithmetic, explicitly calculated wihtout lookup tables
+# Galois field arithmetic, explicitly calculated without lookup tables
 ###############################################################################
 
 def _add_calculate(a, b):  # pragma: no cover
