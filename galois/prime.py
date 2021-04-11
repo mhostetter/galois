@@ -5,6 +5,49 @@ import random
 import numpy as np
 
 
+def isqrt(n):
+    """
+    Computes the integer square root of :math:`n` such that :math:`\\textrm{isqrt}(n)^2 \\le n`.
+
+    This is here for Python versions before 3.8. For Python 3.8 and later, use `math.isqrt`.
+
+    Parameters
+    ----------
+    n : int
+        A non-negative integer
+
+    Returns
+    -------
+    int
+        The integer square root of :math:`n` such that :math:`\\textrm{isqrt}(n)^2 \\le n`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        # Use a large Mersenne prime
+        p = galois.mersenne_primes(2000)[-1]; p
+        sqrt_p = galois.isqrt(p); sqrt_p
+        sqrt_p**2 <= p
+        (sqrt_p + 1)**2 <= p
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n >= 0:
+        raise ValueError(f"Argument `n` must be non-negative, not {n}.")
+
+    n = int(n)
+    if n < 2:
+        return n
+
+    small_candidate = isqrt(n >> 2) << 1
+    large_candidate = small_candidate + 1
+    if large_candidate * large_candidate > n:
+        return small_candidate
+    else:
+        return large_candidate
+
+
 def primes(n):
     """
     Returns the primes :math:`p \\le n`.
@@ -35,7 +78,7 @@ def primes(n):
 
     # We only need to test integers for compositeness up to sqrt(n) because at that point the
     # integers above sqrt(n) have already been marked by the multiples of earlier primes
-    max_composite = int(math.ceil(math.sqrt(n)))
+    max_composite = isqrt(n)  # Python 3.8 has math.isqrt(). Use this until the supported python versions are bumped.
     max_composite_idx = (max_composite - 3)//2
 
     for i in range(0, max_composite_idx + 1):
@@ -271,7 +314,10 @@ def prime_factors(x):
     if not x > 1:
         raise ValueError(f"Argument `x` must be greater than 1, not {x}.")
 
-    max_factor = int(math.ceil(math.sqrt(x)))
+    if x == 2:
+        return [2], [1]
+
+    max_factor = isqrt(x)  # Python 3.8 has math.isqrt(). Use this until the supported python versions are bumped.
     max_prime_idx = bisect.bisect_right(PRIMES, max_factor)
 
     p = []
