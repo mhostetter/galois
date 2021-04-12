@@ -5,43 +5,6 @@ import numba
 import numpy as np
 
 
-@numba.jit(nopython=True)
-def _numba_factors(n):  # pragma: no cover
-    f = []  # Positive factors
-    max_factor = int(np.ceil(np.sqrt(n)))
-    for i in range(1, max_factor + 1):
-        if n % i == 0:
-            q = n // i
-            f.extend([i, q])
-    return f
-
-
-def factors(n):
-    """
-    Returns the positive factors of the integer :math:`n`.
-
-    Parameters
-    ----------
-    n : int
-        An integer to be factored.
-
-    Returns
-    -------
-    list
-        Sorted array of factors of :math:`n`.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        galois.factors(120)
-    """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    f = _numba_factors(n)
-    return sorted(list(set(f)))  # Use set() to remove duplicates
-
-
 def gcd(a, b):
     """
     Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.

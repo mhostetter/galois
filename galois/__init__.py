@@ -3,7 +3,7 @@ A performant numpy extension for Galois fields.
 """
 from .version import __version__
 
-from .algorithm import factors, gcd, chinese_remainder_theorem
+from .algorithm import gcd, chinese_remainder_theorem
 from .array_meta import GFArrayMeta
 from .array import GFArray
 from .gf2 import GF2

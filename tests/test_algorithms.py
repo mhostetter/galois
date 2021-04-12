@@ -10,17 +10,6 @@ import pytest
 import galois
 
 
-def test_factors():
-    factors = galois.factors(120)
-    true_factors = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120]
-    assert np.array_equal(factors, true_factors)
-
-
-def test_factors_exceptions():
-    with pytest.raises(TypeError):
-        galois.factors(120.0)
-
-
 def test_gcd():
     a = random.randint(0, 1_000_000)
     b = random.randint(0, 1_000_000)
