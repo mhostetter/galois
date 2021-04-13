@@ -21,7 +21,7 @@ class GFArrayMeta(type):
     _ufunc_mode = None
     _ufunc_target = None
     _display_mode = "int"
-    _display_poly_var = "x"
+    _display_poly_var = "α"
 
     def __str__(cls):
         return f"<class 'numpy.ndarray' over {cls.name}>"
@@ -38,7 +38,7 @@ class GFArrayMeta(type):
         return
 
     @classmethod
-    def display(cls, mode="int", poly_var="x"):
+    def display(cls, mode="int", poly_var="α"):
         """
         Sets the display mode for all arrays of this type to either the integer representation or
         polynomial representation.
