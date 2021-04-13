@@ -1,31 +1,14 @@
 import numpy as np
 
 
-class DisplayContext:
-    """
-    Simple context manager for the :obj:`galois.GFArrayMeta.display` method.
-    """
-
-    def __init__(self, cls):
-        self.cls = cls
-        self.mode = cls._display_mode
-        self.poly_var = cls._display_poly_var
-
-    def __enter__(self):
-        # Don't need to do anything, we already set the new mode and poly_var in the display() method
-        pass
-
-    def __exit__(self, exc_type, exc_value, exc_traceback):
-        # Reset mode and poly_var upon exiting the context
-        self.cls._display_mode = self.mode
-        self.cls._display_poly_var = self.poly_var
-
-
 class GFArrayMeta(type):
     """
-    Defines a metaclass to give all GFArray classes a `__str__()` special method, not just their instances. The
-    metaclass also contains class properties for its finite field attributes. This protects them from write access.
-    GFArray instances also return the same class properties.
+    Defines a metaclass for all :obj:`GFArray` classes.
+
+    This metaclass gives :obj:`GFArray` classes returned from :func:`galois.GF` class properties relating to its finite field
+    attributes. This metaclass protects them from being written over when accessed. There are also classmethods that modify the class
+    itself. For instance, :func:`GFArrayMeta.display` changes the way in which elements of this class are displayed
+    by `str()` and `repr()`.
     """
 
     # These class attributes will be set in the subclasses of GFArray
@@ -42,6 +25,10 @@ class GFArrayMeta(type):
 
     def __str__(cls):
         return f"<class 'numpy.ndarray' over {cls.name}>"
+
+    ###############################################################################
+    # Class methods
+    ###############################################################################
 
     @classmethod
     def target(cls, target, mode, rebuild=False):  # pylint: disable=unused-argument
@@ -105,6 +92,10 @@ class GFArrayMeta(type):
         cls._display_poly_var = poly_var
 
         return context
+
+    ###############################################################################
+    # Class attributes
+    ###############################################################################
 
     @property
     def name(cls):
@@ -301,3 +292,48 @@ class GFArrayMeta(type):
             # galois.GF(7**5).display_poly_var
         """
         return cls._display_poly_var
+
+    @property
+    def properties(cls):
+        """
+        str: A formmatted string displaying all the Galois field's attributes in one dict.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            print(galois.GF(2**8).properties)
+        """
+        string = f"{cls.name}:"
+        string += f"\n  characteristic: {cls._characteristic}"
+        string += f"\n  degree: {cls._degree}"
+        string += f"\n  order: {cls._order}"
+        string += f"\n  prim_poly: {cls._prim_poly}"
+        string += f"\n  alpha: {cls._alpha!r}"
+        string += f"\n  dtypes: {[np.dtype(d).name for d in cls._dtypes]}"
+        string += f"\n  ufunc_mode: '{cls._ufunc_mode}'"
+        string += f"\n  ufunc_target: '{cls._ufunc_target}'"
+        string += f"\n  display_mode: '{cls._display_mode}'"
+        string += f"\n  display_poly_var: '{cls._display_poly_var}'"
+        return string
+
+
+class DisplayContext:
+    """
+    Simple context manager for the :obj:`GFArrayMeta.display` method.
+    """
+
+    def __init__(self, cls):
+        # Save the previous state
+        self.cls = cls
+        self.mode = cls._display_mode
+        self.poly_var = cls._display_poly_var
+
+    def __enter__(self):
+        # Don't need to do anything, we already set the new mode and poly_var in the display() method
+        pass
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        # Reset mode and poly_var upon exiting the context
+        self.cls._display_mode = self.mode
+        self.cls._display_poly_var = self.poly_var
