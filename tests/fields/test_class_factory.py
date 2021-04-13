@@ -10,11 +10,11 @@ import galois
 def test_valid():
     GF = galois.GF(2**8)
     assert issubclass(GF, galois.GFArray)
-    assert issubclass(GF, galois.gf2m.GF2m)
+    assert issubclass(GF, galois.array_2m.GF2m)
 
     GF = galois.GF(31)
     assert issubclass(GF, galois.GFArray)
-    assert issubclass(GF, galois.gfp.GFp)
+    assert issubclass(GF, galois.array_p.GFp)
 
 
 def test_non_integer_order():

@@ -4,9 +4,9 @@ A performant numpy extension for Galois fields.
 from .version import __version__
 
 from .algorithm import gcd, chinese_remainder_theorem
-from .array_meta import GFArrayMeta
 from .array import GFArray
-from .gf2 import GF2
+from .array_meta import GFArrayMeta
+from .array_2 import GF2
 from .modular import totatives, euler_totient, carmichael, is_cyclic, primitive_root, primitive_roots, is_primitive_root
 from .poly import Poly, poly_gcd, poly_exp_mod, is_irreducible
 from .prime import isqrt, primes, kth_prime, prev_prime, next_prime, mersenne_exponents, mersenne_primes, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
@@ -104,7 +104,7 @@ def _GF2m_factory(m, prim_poly=None, target="cpu", mode="auto"):
     # pylint: disable=import-outside-toplevel,protected-access
     import numpy as np
     from .array import DTYPES
-    from .gf2m import GF2m
+    from .array_2m import GF2m
 
     characteristic = 2
     degree = m
@@ -151,7 +151,7 @@ def _GFp_factory(p, prim_poly=None, target="cpu", mode="auto"):  # pylint: disab
     # pylint: disable=import-outside-toplevel,protected-access
     import numpy as np
     from .array import DTYPES
-    from .gfp import GFp
+    from .array_p import GFp
 
     characteristic = p
     degree = 1
