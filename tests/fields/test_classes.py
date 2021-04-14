@@ -68,18 +68,18 @@ def test_cant_set_order():
         GF.order = None
 
 
-def test_cant_set_prim_poly():
+def test_cant_set_irreducible_poly():
     GF = galois.GF2
     with pytest.raises(AttributeError):
-        GF.prim_poly = None
-    assert GF.prim_poly is not GF._prim_poly
+        GF.irreducible_poly = None
+    assert GF.irreducible_poly is not GF._irreducible_poly
 
 
-def test_cant_set_alpha():
+def test_cant_set_primitive_element():
     GF = galois.GF2
     with pytest.raises(AttributeError):
-        GF.alpha = None
-    assert GF.alpha is not GF._alpha
+        GF.primitive_element = None
+    assert GF.primitive_element is not GF._primitive_element
 
 
 def test_cant_set_dtypes():

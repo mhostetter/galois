@@ -84,11 +84,11 @@ Galois field array classes contain extra class attributes related to the finite 
 31
 
 # A primitive element of the finite field
->>> GF31.alpha
+>>> GF31.primitive_element
 GF(3, order=31)
 
 # The primitive polynomial of the finite field
->>> GF31.prim_poly
+>>> GF31.irreducible_poly
 Poly(x + 28, GF(31))
 ```
 
@@ -138,7 +138,7 @@ Here, `GF` is any Galois field array class created from `galois.GF`, `x` and `y`
 - Scalar multiplication: `x * z == z * x`, e.g. `x * 3 == x + x + x`
 - Reciprocal: `1 / x == np.reciprocal(x)`
 - Exponentiation: `x ** z == np.power(x, z)`
-- Logarithm base `alpha`: `np.log(x)`, where `alpha == GF.alpha`
+- Logarithm base `GF.primitive_element`: `np.log(x)`
 - **COMING SOON**: Logarithm base `b`: `GF.log(x, b)`, where `b` is any field element
 - **COMING SOON**: Matrix multiplication: `x @ y = np.matmul(x, y)`
 

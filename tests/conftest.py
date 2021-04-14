@@ -27,7 +27,7 @@ FIELDS = [
 ]
 
 FIELDS_DIFF_MODES = [
-    pytest.param("GF(2)", marks=[pytest.mark.GF2]),
+    pytest.param("GF(2)-calculate", marks=[pytest.mark.GF2]),
 
     pytest.param("GF(2^2)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
     pytest.param("GF(2^2)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
@@ -36,7 +36,7 @@ FIELDS_DIFF_MODES = [
     pytest.param("GF(2^8)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
     pytest.param("GF(2^8)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
     pytest.param("GF(2^32)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
-    pytest.param("GF(2^100)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
+    pytest.param("GF(2^100)-object", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
 
     pytest.param("GF(5)-lookup", marks=[pytest.mark.GFp, pytest.mark.GF5]),
     pytest.param("GF(5)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF5]),
@@ -46,8 +46,8 @@ FIELDS_DIFF_MODES = [
     pytest.param("GF(31)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF31]),
     pytest.param("GF(3191)-lookup", marks=[pytest.mark.GFp, pytest.mark.GF31]),
     pytest.param("GF(3191)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF3191]),
-    pytest.param("GF(2147483647)", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
-    pytest.param("GF(36893488147419103183)", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
+    pytest.param("GF(2147483647)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
+    pytest.param("GF(36893488147419103183)-object", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
 ]
 
 

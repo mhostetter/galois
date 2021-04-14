@@ -30,9 +30,9 @@ def test_property_2(field):
     assert np.all(a**q == a)
 
 
-def test_prim_poly(field):
-    prim_poly = field.prim_poly  # Polynomial in GF(p)
-    alpha = field.alpha
+def test_irreducible_poly(field):
+    prim_poly = field.irreducible_poly  # Polynomial in GF(p)
+    alpha = field.primitive_element
     poly = galois.Poly(prim_poly.coeffs, field=field)  # Polynomial in GF(p^m)
     assert poly(alpha) == 0
 
@@ -58,7 +58,7 @@ def test_fermats_little_theorem(field):
 def test_exp_log_duality(field):
     if field.order > 2**16:  # TODO: Skip slow log() for very large fields
         return
-    alpha = field.alpha
+    alpha = field.primitive_element
     x = field.Random(10, low=1)
     e = np.log(x)
     assert np.all(alpha**e == x)

@@ -8,7 +8,7 @@ import numpy as np
 
 import galois
 
-DTYPES = galois.array.DTYPES + [np.object_]
+DTYPES = galois.dtypes.DTYPES + [np.object_]
 
 
 @pytest.mark.parametrize("shape", [(), (4,), (4,4)])
