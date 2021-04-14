@@ -7,7 +7,7 @@ import sqlite3
 import requests
 
 POLY_TEXT_FILE_URL = "http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/CPimport.txt"
-DATABASE_FILE = os.path.join(os.path.dirname(__file__), "..", "databases", "conway_polys.db")
+DATABASE_FILE = os.path.join(os.path.dirname(__file__), "..", "galois", "databases", "conway_polys.db")
 
 if os.path.exists(DATABASE_FILE):
     os.remove(DATABASE_FILE)

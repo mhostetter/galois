@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 DATABASE = None  # Database singleton class
-DATABASE_FILE = os.path.join(os.path.dirname(__file__), "..", "databases", "conway_polys.db")
+DATABASE_FILE = os.path.join(os.path.dirname(__file__), "databases", "conway_polys.db")
 
 
 class ConwayDatabase:

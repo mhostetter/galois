@@ -44,12 +44,12 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Update version file
       run: |
-        echo -n "${{ steps.next_version.outputs.version }}" > version.txt
-        cat version.txt
+        echo -n "${{ steps.next_version.outputs.version }}" > galois/version.txt
+        cat galois/version.txt
     - name: Commit and tag version
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        file_pattern: version.txt
+        file_pattern: galois/version.txt
         commit_message: "Version bump to ${{ steps.next_version.outputs.version }}"
         repository: .
         branch: master
