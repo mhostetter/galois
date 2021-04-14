@@ -112,13 +112,13 @@ Logarithm
    print(GF7)
 
    # The primitive element of the field
-   GF7.alpha
+   GF7.primitive_element
 
    x = GF7.Random(10, low=1); x
 
    # Notice the outputs of log(x) are not field elements, but integers
    e = np.log(x); e
 
-   GF7.alpha**e
+   GF7.primitive_element**e
 
-   np.all(GF7.alpha**e == x)
+   np.all(GF7.primitive_element**e == x)

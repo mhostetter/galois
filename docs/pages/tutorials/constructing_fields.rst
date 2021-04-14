@@ -13,13 +13,13 @@ The :math:`\mathrm{GF}(2)` field is already constructed in :obj:`galois`. It can
    print(GF2)
 
    # The primitive element of the finite field
-   GF2.alpha
+   GF2.primitive_element
 
    # The primitive polynomial of the finite field
-   GF2.prim_poly
+   GF2.irreducible_poly
 
    # The primitive element is a root of the primitive polynomial
-   GF2.prim_poly(GF2.alpha)
+   GF2.irreducible_poly(GF2.primitive_element)
 
 
 GF(p) field classes
@@ -34,13 +34,13 @@ GF(p) field classes
    print(GF7)
 
    # The primitive element of the finite field
-   GF7.alpha
+   GF7.primitive_element
 
    # The primitive polynomial of the finite field
-   GF7.prim_poly
+   GF7.irreducible_poly
 
    # The primitive element is a root of the primitive polynomial
-   GF7.prim_poly(GF7.alpha)
+   GF7.irreducible_poly(GF7.primitive_element)
 
 
 GF(2^m) field classes
@@ -55,16 +55,16 @@ factory :obj:`galois.GF`.
    print(GF8)
 
    # The primitive element of the finite field
-   GF8.alpha
+   GF8.primitive_element
 
    # The primitive polynomial of the finite field
-   GF8.prim_poly
+   GF8.irreducible_poly
 
    # Convert the polynomial from GF(2)[x] to GF(8)[x]
-   prim_poly = galois.Poly(GF8.prim_poly.coeffs, field=GF8); prim_poly
+   prim_poly = galois.Poly(GF8.irreducible_poly.coeffs, field=GF8); prim_poly
 
    # The primitive element is a root of the primitive polynomial in GF(8)
-   prim_poly(GF8.alpha)
+   prim_poly(GF8.primitive_element)
 
 
 Array creation: explicit and view casting

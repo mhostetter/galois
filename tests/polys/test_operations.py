@@ -79,8 +79,8 @@ def test_integer():
 
 
 def test_update_field(field):
-    alpha = field.alpha
-    prim_poly = field.prim_poly
+    alpha = field.primitive_element
+    prim_poly = field.irreducible_poly
     prim_poly.field = field
     assert isinstance(prim_poly, galois.Poly)
     assert type(prim_poly.coeffs) is field

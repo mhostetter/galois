@@ -22,10 +22,10 @@ Galois field array classes contain extra class attributes related to the finite 
    GF31.order
 
    # A primitive element of the finite field
-   GF31.alpha
+   GF31.primitive_element
 
    # The primitive polynomial of the finite field
-   GF31.prim_poly
+   GF31.irreducible_poly
 
 Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even arbitrarily-large fields!
 

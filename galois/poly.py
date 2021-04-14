@@ -1,9 +1,8 @@
 import numpy as np
 
 from .array import GFArray
-from .array_2 import GF2
 from .conversion import integer_to_poly, sparse_poly_to_integer, sparse_poly_to_str
-from .prime import prime_factors
+from .gf2 import GF2
 
 
 class Poly:
@@ -72,6 +71,8 @@ class Poly:
 
         # Compute both the quotient and remainder in one pass
         divmod(a, b)
+
+    :special-members: __call__
     """
 
     __slots__ = ["_degrees", "_coeffs"]
@@ -473,7 +474,7 @@ class Poly:
             p.roots(multiplicity=True)
         """
         lambda_vector = self.nonzero_coeffs
-        alpha_vector = self.field.alpha ** self.nonzero_degrees
+        alpha_vector = self.field.primitive_element ** self.nonzero_degrees
         roots = []
         multiplicities = []
 
@@ -493,7 +494,7 @@ class Poly:
         for i in range(1, self.field.order - 1):
             lambda_vector *= alpha_vector
             if np.sum(lambda_vector) == 0:
-                root = int(self.field.alpha**i)
+                root = int(self.field.primitive_element**i)
                 roots.append(root)
                 multiplicities.append(self._root_multiplicity(root) if multiplicity else 1)
             if sum(multiplicities) == self.degree:
@@ -766,14 +767,14 @@ class Poly:
             GF = galois.GF(2**8)
 
             # The primitive polynomial of the field GF(p^m) is degree-m over GF(p)[x]
-            prim_poly = GF.prim_poly; prim_poly
+            prim_poly = GF.irreducible_poly; prim_poly
             prim_poly.field
 
             # Convert the primitive polynomial from GF(p)[x] to GF(p^m)[x]
             prim_poly.field = GF; prim_poly
 
             # The primitive element alpha is a root of the primitive polynomial in GF(p^m)
-            prim_poly(GF.alpha)
+            prim_poly(GF.primitive_element)
         """
         return type(self._coeffs)
 
@@ -932,7 +933,7 @@ class DensePoly(Poly):
             if isinstance(coeffs, np.ndarray):
                 # Ensure coeffs is an iterable
                 coeffs = coeffs.tolist()
-            coeffs = field([-field(abs(c)) if c < 0 else field(c) for c in coeffs])
+            coeffs = field([-field(abs(c)) if c < 0 else field(c) for c in coeffs])  # pylint: disable=invalid-unary-operand-type
 
         if order == "desc":
             self._coeffs = coeffs
@@ -1041,8 +1042,28 @@ class DensePoly(Poly):
     # Arithmetic methods
     ###############################################################################
 
-    def __call__(self, x):
-        return self.field._poly_eval(self.coeffs, x)
+    def __call__(self, x, field=None):
+        """
+        Evaluate the polynomial.
+
+        Parameters
+        ----------
+        x : galois.GFArray
+            An array (or 0-dim array) of field element to evaluate the polynomial over.
+        field : galois.GFMeta, optional
+            The Galois field to evaluate the polynomial over. The default is `None` which represents
+            the polynomial's current field, i.e. :obj:`field`.
+
+        Returns
+        -------
+        galois.GFArray
+            The result of the polynomial evaluation of the same shape as `x`.
+        """
+        if field is None:
+            return self.field._poly_eval(self.coeffs, x)
+        else:
+            assert issubclass(field, GFArray)
+            return field._poly_eval(self.coeffs, x)
 
     @classmethod
     def _check_inputs_are_dense_polys(cls, a, b):
@@ -1189,7 +1210,7 @@ class SparsePoly(Poly):
                 # Ensure coeffs is an iterable
                 coeffs = coeffs.tolist()
             self._degrees = np.array(degrees)
-            self._coeffs = field([-field(abs(c)) if c < 0 else field(c) for c in coeffs])
+            self._coeffs = field([-field(abs(c)) if c < 0 else field(c) for c in coeffs])  # pylint: disable=invalid-unary-operand-type
 
         # Sort the degrees and coefficients in descending order
         idxs = np.argsort(degrees)[::-1]
@@ -1246,9 +1267,6 @@ class SparsePoly(Poly):
     ###############################################################################
     # Arithmetic methods
     ###############################################################################
-
-    # def __call__(self, x):
-    #     return self.field._poly_eval(self.coeffs, x)
 
     @classmethod
     def _check_inputs_are_sparse_polys(cls, a, b):
@@ -1390,212 +1408,3 @@ class SparsePoly(Poly):
                     r_coeffs -= q*b_coeffs
 
             return DensePoly(r_coeffs[1:])
-
-
-###############################################################################
-# Functions on polynomials
-###############################################################################
-
-def poly_gcd(a, b):
-    """
-    Finds the greatest common divisor of two polynomials :math:`a(x)` and :math:`b(x)`
-    over :math:`\\mathrm{GF}(q)`.
-
-    This implementation uses the Extended Euclidean Algorithm.
-
-    Parameters
-    ----------
-    a : galois.Poly
-        A polynomial :math:`a(x)` over :math:`\\mathrm{GF}(q)`.
-    b : galois.Poly
-        A polynomial :math:`b(x)` over :math:`\\mathrm{GF}(q)`.
-
-    Returns
-    -------
-    galois.Poly
-        Polynomial greatest common divisor of :math:`a(x)` and :math:`b(x)`.
-    galois.Poly
-        Polynomial :math:`x(x)`, such that :math:`a x + b y = gcd(a, b)`.
-    galois.Poly
-        Polynomial :math:`y(x)`, such that :math:`a x + b y = gcd(a, b)`.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        GF = galois.GF(7)
-        a = galois.Poly.Roots([2,2,2,3,6], field=GF); a
-
-        # a(x) and b(x) only share the root 2 in common
-        b = galois.Poly.Roots([1,2], field=GF); b
-
-        gcd, x, y = galois.poly_gcd(a, b)
-
-        # The GCD has only 2 as a root with multiplicity 1
-        gcd.roots(multiplicity=True)
-
-        a*x + b*y == gcd
-    """
-    if not isinstance(a, Poly):
-        raise TypeError(f"Argument `a` must be of type galois.Poly, not {type(a)}.")
-    if not isinstance(b, Poly):
-        raise TypeError(f"Argument `b` must be of type galois.Poly, not {type(b)}.")
-    if not a.field == b.field:
-        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {str(a.field)} and {str(b.field)}.")
-
-    field = a.field
-    zero = Poly.Zero(field)
-    one = Poly.One(field)
-
-    if a == zero:
-        return b, 0, 1
-    if b == zero:
-        return a, 1, 0
-
-    r2, r1 = a, b
-    s2, s1 = one, zero
-    t2, t1 = zero, one
-
-    while True:
-        qi = r2 // r1
-        ri = r2 % r1
-        r2, r1 = r1, ri
-        s2, s1 = s1, s2 - qi*s1
-        t2, t1 = t1, t2 - qi*t1
-        if ri == zero:
-            break
-
-    # Non-zero scalar is considered a unit in a fintie field
-    if r2.degree == 0 and r2.coeffs[0] > 0:
-        r2 /= r2
-        s2 /= r2
-        t2 /= r2
-
-    return r2, s2, t2
-
-
-def poly_exp_mod(poly, power, modulus):
-    """
-    Efficiently exponentiates a polynomial :math:`f(x)` to the power :math:`k` reducing by modulo :math:`g(x)`,
-    :math:`f^k\\ \\textrm{mod}\\ g`.
-
-    The algorithm is more efficient than exponentiating first and then reducing modulo :math:`g(x)`. Instead,
-    this algorithm repeatedly squares :math:`f`, reducing modulo :math:`g` at each step.
-
-    Parameters
-    ----------
-    poly : galois.Poly
-        The polynomial to be exponentiated :math:`f(x)`.
-    power : int
-        The non-negative exponent :math:`k`.
-    modulus : galois.Poly
-        The reducing polynomial :math:`g(x)`.
-
-    Returns
-    -------
-    galois.Poly
-        The resulting polynomial :math:`h(x) = f^k\\ \\textrm{mod}\\ g`.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        f = galois.Poly.Random(10, field=GF); f
-        g = galois.Poly.Random(7, field=GF); g
-
-        # %timeit f**200 % g
-        # 1.23 s ± 41.1 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
-        f**200 % g
-
-        # %timeit galois.poly_exp_mod(f, 200, g)
-        # 41.7 ms ± 468 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
-        galois.poly_exp_mod(f, 200, g)
-    """
-    if not isinstance(poly, Poly):
-        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not isinstance(power, (int, np.integer)):
-        raise TypeError(f"Argument `power` must be an integer, not {type(power)}.")
-    if not isinstance(modulus, Poly):
-        raise TypeError(f"Argument `modulus` must be a galois.Poly, not {type(modulus)}.")
-    if not power >= 0:
-        raise ValueError(f"Argument `power` must be non-negative, not {power}.")
-
-    if power == 0:
-        return Poly.One(poly.field)
-
-    result_s = poly  # The "squaring" part
-    result_m = Poly.One(poly.field)  # The "multiplicative" part
-
-    while power > 1:
-        if power % 2 == 0:
-            result_s = (result_s * result_s) % modulus
-            power //= 2
-        else:
-            result_m = (result_m * result_s) % modulus
-            power -= 1
-
-    result = (result_s * result_m) % modulus
-
-    return result
-
-
-def is_irreducible(poly):
-    """
-    Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is irreducible.
-
-    This function implementats Rabin's irreducibility test. It says a degree-:math:`n` polynomial :math:`f(x)`
-    over :math:`\\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\\ |\\ (x^{p^n} - x)`
-    and :math:`\\textrm{gcd}(f(x),\\ x^{p^{m_i}} - x) = 1` for :math:`1 \\le i \\le k`, where :math:`m_i = n/p_i` for
-    the :math:`k` prime divisors :math:`p_i` of :math:`n`.
-
-    Parameters
-    ----------
-    poly : galois.Poly
-        A polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
-
-    Returns
-    -------
-    bool
-        `True` if the polynomial is irreducible.
-
-    References
-    ----------
-    * M. O. Rabin. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273–280. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
-    * S. Gao and D. Panarino. Tests and constructions of irreducible polynomials over finite fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
-    * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
-    """
-    if not isinstance(poly, Poly):
-        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not poly.field.degree == 1:
-        raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
-
-    field = poly.field
-    p = field.order
-    n = poly.degree
-    primes, _ = prime_factors(n)
-    zero = Poly.Zero(field)
-    one = Poly.One(field)
-    x = Poly.Identity(field)
-
-    if poly.coeffs[-1] == 0:
-        # We can factor out (x), therefore it is not irreducible.
-        return False
-
-    h0 = Poly.Identity(field)
-    n0 = 0
-    for ni in sorted([n // pi for pi in primes]):
-        # The GCD of f(x) and (x^(p^(n/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of n
-        hi = poly_exp_mod(h0, p**(ni - n0), poly)
-        g = poly_gcd(poly, hi - x)[0]
-        if g != one:
-            return False
-        h0, n0 = hi, ni
-
-    # f(x) must divide (x^(p^n) - x) to be irreducible
-    h = poly_exp_mod(h0, p**(n - n0), poly)
-    g = (h - x) % poly
-    if g != zero:
-        return False
-
-    return True

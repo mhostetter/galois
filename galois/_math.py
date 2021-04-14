@@ -10,8 +10,8 @@ def isqrt(n):
 
     Note
     ----
-        This function is included for Python versions before 3.8. For Python 3.8 and later, use
-        `math.isqrt` from the standard library.
+    This function is included for Python versions before 3.8. For Python 3.8 and later, use
+    `math.isqrt` from the standard library.
 
     Parameters
     ----------
