@@ -3,13 +3,14 @@ A performant numpy extension for Galois fields.
 """
 from .version import __version__
 
+from ._math import isqrt
 from .algorithm import gcd, chinese_remainder_theorem
 from .array import GFArray
 from .array_meta import GFArrayMeta
 from .array_2 import GF2
 from .modular import totatives, euler_totient, carmichael, is_cyclic, primitive_root, primitive_roots, is_primitive_root
 from .poly import Poly, poly_gcd, poly_exp_mod, is_irreducible
-from .prime import isqrt, primes, kth_prime, prev_prime, next_prime, mersenne_exponents, mersenne_primes, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
+from .prime import primes, kth_prime, prev_prime, next_prime, mersenne_exponents, mersenne_primes, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
 
 
 def GF(order, prim_poly=None, target="cpu", mode="auto", rebuild=False):  # pylint: disable=redefined-outer-name
