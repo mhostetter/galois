@@ -9,8 +9,50 @@ on:
     - master
 
 jobs:
+  test-coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - name: Install testing dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r requirements-test.txt
+    - name: Install python package
+      run: python3 -m pip install .
+    - name: Test with pytest
+      run: python3 -m pytest --cov=galois/ --cov-report=xml tests/
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v1
+
+  build-wheel:
+    name: Build Wheel
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Build python package
+      run: |
+        python3 -m pip install --upgrade setuptools wheel twine
+        python3 setup.py sdist bdist_wheel
+        python3 -m twine check dist/*
+    - name: Upload wheel artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist/
+        retention-days: 1
+
   test-min:
     name: Minimum Dependencies
+    needs: build-wheel
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -28,15 +70,22 @@ jobs:
         python3 -m pip install -r requirements-test.txt
     - name: Install minimum package dependencies
       run: python3 -m pip install -r requirements-min.txt
-    - name: Install python package
-      run: python3 -m pip install .
+    - name: Download wheel artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: dist
+        path: dist/
+    - name: Install package wheel
+      run: |
+        python3 -m pip install $(ls dist/galois-*.whl)
     - name: Test with pytest
-      run: python3 -m pytest --cov=galois/ --cov-report=xml tests/
-    - name: Upload coverage report
-      uses: codecov/codecov-action@v1
+      run: |
+        cd dist/  # Move into subfolder so pytest can't see the source code
+        python3 -m pytest ../tests/
 
   test-latest:
     name: Latest Dependencies
+    needs: build-wheel
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -52,9 +101,15 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements-test.txt
-    - name: Install python package
-      run: python3 -m pip install .
+    - name: Download wheel artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: dist
+        path: dist/
+    - name: Install package wheel
+      run: |
+        python3 -m pip install $(ls dist/galois-*.whl)
     - name: Test with pytest
-      run: python3 -m pytest --cov=galois/ --cov-report=xml tests/
-    - name: Upload coverage report
-      uses: codecov/codecov-action@v1
+      run: |
+        cd dist/  # Move into subfolder so pytest can't see the source code
+        python3 -m pytest ../tests/
