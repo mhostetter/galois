@@ -24,11 +24,12 @@ class GFMeta(TargetMixin):
         cls._irreducible_poly = None
         cls._is_primitive_poly = None
         cls._primitive_element = None
+        cls._ground_field = None
         cls._dtypes = []
         cls._ufunc_mode = None
         cls._ufunc_target = None
         cls._display_mode = "int"
-        cls._display_poly_var = "x"
+        cls._display_poly_var = "α"
 
     def __str__(cls):
         return f"<class 'numpy.ndarray' over {cls.name}>"
@@ -78,7 +79,7 @@ class GFMeta(TargetMixin):
         else:
             raise AttributeError(f"Attribute `ufunc_mode` is invalid, {cls._ufunc_mode}.")
 
-    def display(cls, mode="int", poly_var="x"):
+    def display(cls, mode="int", poly_var="α"):
         """
         Sets the display mode for all Galois field arrays of this type.
 
@@ -90,7 +91,7 @@ class GFMeta(TargetMixin):
         mode : str, optional
             The field element display mode, either `"int"` (default) or `"poly"`.
         poly_var : str, optional
-            The polynomial representation's variable. The default is `"x"`.
+            The polynomial representation's variable. The default is `"α"`.
 
         Examples
         --------
@@ -214,38 +215,6 @@ class GFMeta(TargetMixin):
         return cls._order
 
     @property
-    def is_prime_field(cls):
-        """
-        bool: Indicates if the field's order is prime.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).is_prime_field
-            galois.GF(2**8).is_prime_field
-            galois.GF(31).is_prime_field
-            # galois.GF(7**5).is_prime_field
-        """
-        return cls._degree == 1
-
-    @property
-    def is_extension_field(cls):
-        """
-        bool: Indicates if the field's order is a prime power.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).is_extension_field
-            galois.GF(2**8).is_extension_field
-            galois.GF(31).is_extension_field
-            # galois.GF(7**5).is_extension_field
-        """
-        return cls._degree > 1
-
-    @property
     def irreducible_poly(cls):
         """
         galois.Poly: The irreducible polynomial :math:`\\pi(x)` of the Galois field :math:`\\mathrm{GF}(p^m)`. The irreducible
@@ -318,6 +287,54 @@ class GFMeta(TargetMixin):
     def primitive_elements(cls):
         powers = np.array(totatives(cls.order - 1))
         return np.sort(cls.primitive_element ** powers)
+
+    @property
+    def is_prime_field(cls):
+        """
+        bool: Indicates if the field's order is prime.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).is_prime_field
+            galois.GF(2**8).is_prime_field
+            galois.GF(31).is_prime_field
+            # galois.GF(7**5).is_prime_field
+        """
+        return cls._degree == 1
+
+    @property
+    def is_extension_field(cls):
+        """
+        bool: Indicates if the field's order is a prime power.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).is_extension_field
+            galois.GF(2**8).is_extension_field
+            galois.GF(31).is_extension_field
+            # galois.GF(7**5).is_extension_field
+        """
+        return cls._degree > 1
+
+    @property
+    def ground_field(cls):
+        """
+        galois.GFMeta: The ground field :math:`\\mathrm{GF}(p)` of the extension field :math:`\\mathrm{GF}(p^m)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            print(galois.GF(2).ground_field.properties)
+            print(galois.GF(2**8).ground_field.properties)
+            print(galois.GF(31).ground_field.properties)
+            # print(galois.GF(7**5).ground_field.properties)
+        """
+        return cls._ground_field
 
     @property
     def dtypes(cls):
@@ -399,16 +416,16 @@ class GFMeta(TargetMixin):
     def display_poly_var(cls):
         """
         str: The polynomial indeterminate for the polynomial representation of the field elements. The default
-        is `"x"`. This can be changed with :func:`display`.
+        is `"α"`. This can be changed with :func:`display`.
 
         Examples
         --------
         .. ipython:: python
 
             GF = galois.GF(2**8)
-            GF.display_mode
+            GF.display_mode, GF.display_poly_var
             a = GF.Random(); a
-            with GF.display("poly", "x"):
+            with GF.display("poly"):
                 print(GF.display_mode, GF.display_poly_var)
                 print(a)
         """

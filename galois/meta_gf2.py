@@ -90,6 +90,7 @@ class GF2Meta(GFMeta, PrimeFieldMixin):
         cls._order = cls.characteristic**cls.degree
         cls._irreducible_poly = None  # Will be set in __init__.py to avoid circular import with Poly
         cls._primitive_element = 1
+        cls._ground_field = cls
         cls._dtypes = cls._valid_dtypes()
 
         cls.target(kwargs["target"], kwargs["mode"])
