@@ -2,6 +2,7 @@ import math
 
 import numpy as np
 
+from .math_ import lcm
 from .prime import prime_factors
 
 
@@ -104,7 +105,7 @@ def euler_totient(n):
 
 def _carmichael_prime_power(p, k):
     if p == 2 and k > 2:
-        return 1/2 * euler_totient(p**k)
+        return euler_totient(p**k) // 2
     else:
         return euler_totient(p**k)
 
@@ -159,11 +160,11 @@ def carmichael(n):
 
     p, k = prime_factors(n)
 
-    lambdas = np.zeros(len(p), dtype=np.int64)
+    lambdas = []
     for i in range(len(p)):
-        lambdas[i] = _carmichael_prime_power(p[i], k[i])
+        lambdas.append(_carmichael_prime_power(p[i], k[i]))
 
-    lambda_ = int(np.lcm.reduce(lambdas))
+    lambda_ = lcm(*lambdas)
 
     return lambda_
 

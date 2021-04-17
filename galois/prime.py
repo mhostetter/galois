@@ -4,7 +4,7 @@ import random
 
 import numpy as np
 
-from ._math import isqrt
+from .math_ import isqrt
 
 
 def primes(n):

@@ -9,22 +9,6 @@ import pytest
 import galois
 
 
-def test_isqrt():
-    p = galois.mersenne_primes(2000)[-1]
-
-    sqrt_p = galois.isqrt(p)
-    assert isinstance(sqrt_p, int)
-    assert sqrt_p**2 <= p and not (sqrt_p + 1)**2 <= p
-
-    sqrt_p = galois.isqrt(p - 1)
-    assert isinstance(sqrt_p, int)
-    assert sqrt_p**2 <= p and not (sqrt_p + 1)**2 <= p
-
-    sqrt_p = galois.isqrt(p + 1)
-    assert isinstance(sqrt_p, int)
-    assert sqrt_p**2 <= p and not (sqrt_p + 1)**2 <= p
-
-
 def test_primes():
     assert galois.primes(19) == [2, 3, 5, 7, 11, 13, 17, 19]
     assert galois.primes(20) == [2, 3, 5, 7, 11, 13, 17, 19]
