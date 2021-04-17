@@ -3,12 +3,12 @@ A performant numpy extension for Galois fields.
 """
 from .version import __version__
 
-from ._math import isqrt
 from .algorithm import gcd, chinese_remainder_theorem
 from .array import GFArray
 from .conway import conway_poly
 from .gf import GF
 from .gf2 import GF2
+from .math_ import isqrt, lcm
 from .meta_gf import GFMeta
 from .modular import totatives, euler_totient, carmichael, is_cyclic, is_primitive_root, primitive_root, primitive_roots
 from .poly import Poly
