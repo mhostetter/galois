@@ -5,10 +5,10 @@ import numpy as np
 CHARACTERISTIC = None  # The field's prime characteristic `p`
 ORDER = None  # The field's order `p^m`
 
-EXP = []  # EXP[i] = alpha^i
-LOG = []  # LOG[i] = x, such that alpha^x = i
-ZECH_LOG = []  # ZECH_LOG[i] = log(1 + alpha^i)
-ZECH_E = None  # alpha^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
+EXP = []  # EXP[i] = α^i
+LOG = []  # LOG[i] = x, such that α^x = i
+ZECH_LOG = []  # ZECH_LOG[i] = log(1 + α^i)
+ZECH_E = None  # α^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
 
 ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
@@ -44,12 +44,38 @@ class TargetMixin(type):
     def _check_ufunc_mode(cls, mode):
         raise NotImplementedError
 
-    def _build_lookup_tables(cls):
+    def _fill_in_lookup_tables(cls):
         """
         To be implemented in PrimeTargetMixin and ExtensionTargetMixin. Each class GF2Meta, GF2mMeta,
         GFpMeta, and GFpmMeta will inherit from either PrimeTargetMixin or ExtensionLookupMixin.
         """
         raise NotImplementedError
+
+    def _build_lookup_tables(cls):
+        order = cls.order
+        dtype = np.int64
+        if order > np.iinfo(dtype).max:
+            raise RuntimeError(f"Cannot build lookup tables for {cls.name} since the elements cannot be represented with dtype {dtype}.")
+
+        cls._EXP = np.zeros(2*order, dtype=dtype)
+        cls._LOG = np.zeros(order, dtype=dtype)
+        cls._ZECH_LOG = np.zeros(order, dtype=dtype)
+
+        cls._fill_in_lookup_tables()
+
+        if not cls._EXP[order - 1] == 1:
+            raise RuntimeError(f"""The anti-log lookup table for {cls.name} is not cyclic with size {order - 1}, which means the
+                                   primitive element {cls.primitive_element} does not have multiplicative order {order - 1} and
+                                   therefore isn't a multiplicative generator for {cls.name}.""")
+        if not len(set(cls._EXP[0:order - 1])) == order - 1:
+            raise RuntimeError(f"""The anti-log lookup table for {cls.name} is not unique, which means the primitive element
+                                   {cls.primitive_element} has order less than {order - 1} and is not a multiplicative generator
+                                   of {cls.name}.""")
+        if not len(set(cls._LOG[1:order])) == order - 1:
+            raise RuntimeError(f"The log lookup table for {cls.name} is not unique.")
+
+        # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
+        cls._EXP[order:2*order] = cls._EXP[1:1 + order]
 
     def _target_jit_lookup(cls, target):
         """
@@ -60,7 +86,7 @@ class TargetMixin(type):
 
         # Build the lookup tables if they don't exist
         if cls._EXP is None:
-            cls._EXP, cls._LOG, cls._ZECH_LOG = cls._build_lookup_tables()
+            cls._build_lookup_tables()
 
         # Export lookup tables to global variables so JIT compiling can cache the tables in the binaries
         CHARACTERISTIC = cls.characteristic
@@ -193,10 +219,10 @@ class TargetMixin(type):
         """
         TODO: Replace this with more efficient algorithm
 
-        alpha in GF(p^m) and generates field
+        α in GF(p^m) and generates field
         beta in GF(p^m)
 
-        gamma = log_primitive_element(beta), such that: alpha^gamma = beta
+        gamma = log_primitive_element(beta), such that: α^gamma = beta
         """
         # Naive algorithm
         result = 1
@@ -222,12 +248,12 @@ def _add(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
-    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
 
-    a + b = alpha^m + alpha^n
-          = alpha^m * (1 + alpha^(n - m))  # If n is larger, factor out alpha^m
-          = alpha^m * alpha^ZECH_LOG(n - m)
-          = alpha^(m + ZECH_LOG(n - m))
+    a + b = α^m + α^n
+          = α^m * (1 + α^(n - m))  # If n is larger, factor out α^m
+          = α^m * α^ZECH_LOG(n - m)
+          = α^(m + ZECH_LOG(n - m))
     """
     m = LOG[a]
     n = LOG[b]
@@ -239,12 +265,12 @@ def _add(a, b):  # pragma: no cover
         return a
 
     if m > n:
-        # We want to factor out alpha^m, where m is smaller than n, such that `n - m` is always positive. If
+        # We want to factor out α^m, where m is smaller than n, such that `n - m` is always positive. If
         # m is larger than n, switch a and b in the addition.
         m, n = n, m
 
     if n - m == ZECH_E:
-        # ZECH_LOG[ZECH_E] = -Inf and alpha^(-Inf) = 0
+        # ZECH_LOG[ZECH_E] = -Inf and α^(-Inf) = 0
         return 0
 
     return EXP[m + ZECH_LOG[n - m]]
@@ -254,13 +280,13 @@ def _subtract(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
-    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
 
-    a - b = alpha^m - alpha^n
-          = alpha^m + (-alpha^n)
-          = alpha^m + (-1 * alpha^n)
-          = alpha^m + (alpha^e * alpha^n)
-          = alpha^m + alpha^(e + n)
+    a - b = α^m - α^n
+          = α^m + (-α^n)
+          = α^m + (-1 * α^n)
+          = α^m + (α^e * α^n)
+          = α^m + α^(e + n)
     """
     # Same as addition if n = LOG[b] + e
     m = LOG[a]
@@ -273,13 +299,13 @@ def _subtract(a, b):  # pragma: no cover
         return EXP[n]
 
     if m > n:
-        # We want to factor out alpha^m, where m is smaller than n, such that `n - m` is always positive. If
+        # We want to factor out α^m, where m is smaller than n, such that `n - m` is always positive. If
         # m is larger than n, switch a and b in the addition.
         m, n = n, m
 
     z = n - m
     if z == ZECH_E:
-        # ZECH_LOG[ZECH_E] = -Inf and alpha^(-Inf) = 0
+        # ZECH_LOG[ZECH_E] = -Inf and α^(-Inf) = 0
         return 0
     if z >= ORDER - 1:
         # Reduce index of ZECH_LOG by the multiplicative order of the field, i.e. `order - 1`
@@ -292,10 +318,10 @@ def _multiply(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
-    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
 
-    a * b = alpha^m * alpha^n
-          = alpha^(m + n)
+    a * b = α^m * α^n
+          = α^(m + n)
     """
     m = LOG[a]
     n = LOG[b]
@@ -311,13 +337,13 @@ def _divide(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
-    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
 
-    a / b = alpha^m / alpha^n
-          = alpha^(m - n)
-          = 1 * alpha^(m - n)
-          = alpha^(ORDER - 1) * alpha^(m - n)
-          = alpha^(ORDER - 1 + m - n)
+    a / b = α^m / α^n
+          = α^(m - n)
+          = 1 * α^(m - n)
+          = α^(ORDER - 1) * α^(m - n)
+          = α^(ORDER - 1 + m - n)
     """
     m = LOG[a]
     n = LOG[b]
@@ -334,12 +360,12 @@ def _divide(a, b):  # pragma: no cover
 def _additive_inverse(a):  # pragma: no cover
     """
     a in GF(p^m)
-    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
 
-    -a = -alpha^n
-       = -1 * alpha^n
-       = alpha^e * alpha^n
-       = alpha^(e + n)
+    -a = -α^n
+       = -1 * α^n
+       = α^e * α^n
+       = α^(e + n)
     """
     n = LOG[a]
 
@@ -353,13 +379,13 @@ def _additive_inverse(a):  # pragma: no cover
 def _multiplicative_inverse(a):  # pragma: no cover
     """
     a in GF(p^m)
-    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
 
-    1 / a = 1 / alpha^m
-          = alpha^(-m)
-          = 1 * alpha^(-m)
-          = alpha^(ORDER - 1) * alpha^(-m)
-          = alpha^(ORDER - 1 - m)
+    1 / a = 1 / α^m
+          = α^(-m)
+          = 1 * α^(-m)
+          = α^(ORDER - 1) * α^(-m)
+          = α^(ORDER - 1 - m)
     """
     m = LOG[a]
 
@@ -375,7 +401,7 @@ def _multiple_add(a, b_int):  # pragma: no cover
     """
     a in GF(p^m)
     b_int in Z
-    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
     b in GF(p^m)
 
     a . b_int = a + a + ... + a = b_int additions of a
@@ -404,14 +430,14 @@ def _power(a, b_int):  # pragma: no cover
     """
     a in GF(p^m)
     b_int in Z
-    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
 
-    a ** b_int = alpha^m ** b_int
-               = alpha^(m * b_int)
-               = alpha^(m * ((b_int // (ORDER - 1))*(ORDER - 1) + b_int % (ORDER - 1)))
-               = alpha^(m * ((b_int // (ORDER - 1))*(ORDER - 1)) * alpha^(m * (b_int % (ORDER - 1)))
-               = 1 * alpha^(m * (b_int % (ORDER - 1)))
-               = alpha^(m * (b_int % (ORDER - 1)))
+    a ** b_int = α^m ** b_int
+               = α^(m * b_int)
+               = α^(m * ((b_int // (ORDER - 1))*(ORDER - 1) + b_int % (ORDER - 1)))
+               = α^(m * ((b_int // (ORDER - 1))*(ORDER - 1)) * α^(m * (b_int % (ORDER - 1)))
+               = 1 * α^(m * (b_int % (ORDER - 1)))
+               = α^(m * (b_int % (ORDER - 1)))
     """
     m = LOG[a]
 
@@ -428,10 +454,10 @@ def _power(a, b_int):  # pragma: no cover
 def _log(a):  # pragma: no cover
     """
     a in GF(p^m)
-    alpha is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, alpha^1, ..., alpha^(p^m - 2)}
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
 
-    log_primitive_element(a) = log_primitive_element(alpha^m)
-                 = m
+    log(a, α) = log(α^m, α)
+              = m
     """
     return LOG[a]
 
