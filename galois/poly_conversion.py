@@ -139,14 +139,83 @@ def sparse_poly_to_str(degrees, coeffs, poly_var="x"):
     """
     x = []
     for degree, coeff in zip(degrees, coeffs):
-        if degree > 1:
-            s = "{}{}^{}".format(coeff if coeff != 1 else "", poly_var, degree)
-        elif degree == 1:
-            s = "{}{}".format(coeff if coeff != 1 else "", poly_var)
+        if hasattr(coeff, "_display_mode") and getattr(coeff, "_display_mode") == "poly":
+            # This is a Galois field array coefficient using the polynomial representation
+            coeff_repr = repr(coeff)
+            start = coeff_repr.find("(")
+            stop = coeff_repr.find(",")
+            coeff_repr = coeff_repr[start:stop] + ")"
         else:
-            s = "{}".format(coeff if coeff != 0 else "")
+            coeff_repr = coeff
+
+        if degree > 1:
+            s = "{}{}^{}".format(coeff_repr if coeff != 1 else "", poly_var, degree)
+        elif degree == 1:
+            s = "{}{}".format(coeff_repr if coeff != 1 else "", poly_var)
+        else:
+            s = "{}".format(coeff_repr if coeff != 0 else "")
         x.append(s)
 
     poly_str = " + ".join(x) if x else "0"
 
     return poly_str
+
+
+def str_to_integer(poly_str, ground_field):
+    """
+    Convert a polynomial string to its integer representation.
+
+    Parameters
+    ----------
+    poly_str : str
+        A polynomial representation of the string.
+    ground_field : galois.GFMeta
+        The Galois field the polynomial is over.
+
+    Returns
+    -------
+    int
+        The polynomial integer representation.
+    """
+    s = poly_str.replace(" ", "")  # Strip whitespace for easier processing
+    s = s.replace("-", "+-")  # Convert `x^2 - x` into `x^2 + -x`
+    s = s.replace("++", "+")  # Places that were `x^2 + - x` before the previous line are now `x^2 + + -x`, fix them
+    s = s[1:] if s[0] == "+" else s  # Remove added `+` to a negative leading coefficient
+
+    # Find the unique polynomial indeterminate
+    indeterminates = set(c for c in s if c.isalpha())
+    if len(indeterminates) == 0:
+        var = "x"
+    elif len(indeterminates) == 1:
+        var = list(indeterminates)[0]
+    else:
+        raise ValueError(f"Found multiple polynomial indeterminates {vars} in string '{poly_str}'.")
+
+    integer = 0
+    for element in s.split("+"):
+        if var not in element:
+            degree = 0
+            coeff = element
+        elif "^" not in element and "**" not in element:
+            degree = 1
+            coeff = element.split(var, 1)[0]
+        elif "^" in element:
+            coeff, degree = element.split(var + "^", 1)
+        elif "**" in element:
+            coeff, degree = element.split(var + "**", 1)
+        else:
+            raise ValueError(f"Could not parse polynomial degree {element}.")
+
+        # If the degree was negative `3*x^-2`, it was converted to `3*x^+-2` previously. When split
+        # by "+" it will leave the degree empty.
+        if degree == "":
+            raise ValueError(f"Cannot parse polynomials with negative exponents, '{poly_str}'.")
+        degree = int(degree)
+
+        coeff = coeff.replace("*", "")  # Remove multiplication sign for elements like `3*x^2`
+        coeff = int(coeff) if coeff != "" else 1
+        coeff = coeff if coeff >= 0 else int(-ground_field(abs(coeff)))
+
+        integer += coeff * ground_field.order**degree
+
+    return integer

@@ -1,5 +1,3 @@
-import numpy as np
-
 from .meta_mixin_target import TargetMixin
 
 

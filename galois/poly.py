@@ -1,8 +1,8 @@
 import numpy as np
 
 from .array import GFArray
-from .conversion import integer_to_poly, sparse_poly_to_integer, sparse_poly_to_str
 from .gf2 import GF2
+from .poly_conversion import integer_to_poly, sparse_poly_to_integer, sparse_poly_to_str
 
 
 class Poly:

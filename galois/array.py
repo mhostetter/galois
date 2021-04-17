@@ -4,8 +4,8 @@ import numpy as np
 
 from .array_mixin_function import FunctionMixin
 from .array_mixin_ufunc import UfuncMixin
-from .conversion import integer_to_poly, poly_to_str
 from .meta_gf import GFMeta
+from .poly_conversion import integer_to_poly, poly_to_str, str_to_integer
 
 
 class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
@@ -44,7 +44,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
     array : array_like
         The input array to be converted to a Galois field array. The input array is copied, so the original array
         is unmodified by changes to the Galois field array. Valid input array types are :obj:`numpy.ndarray`,
-        :obj:`list`, :obj:`tuple`, or :obj:`int`.
+        :obj:`list` or :obj:`tuple` of ints or strs, :obj:`int`, or :obj:`str`.
     dtype : numpy.dtype, optional
         The `copy` keyword argument from :obj:`numpy.array`. Setting `dtype` will explicitly set the data type of each
         element. The default is `None` which represents the smallest valid dtype for this field class, i.e. `cls.dtypes[0]`.
@@ -146,7 +146,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
         # For example, np.dtype(int) == np.int64 (on some systems).
         dtype = np.dtype(dtype)
         if dtype not in cls.dtypes:
-            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays only support dtypes {cls.dtypes}, not {dtype}")
+            raise TypeError(f"{cls.name} arrays only support dtypes {cls.dtypes}, not {dtype}.")
 
         return dtype
 
@@ -159,6 +159,10 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
 
     @classmethod
     def _check_array_like_object(cls, array_like):
+        if isinstance(array_like, str):
+            # Convert the string to an integer
+            array_like = str_to_integer(array_like, cls.ground_field)
+
         if isinstance(array_like, (int, np.integer)):
             # Just check that the single int is in range
             cls._check_array_values(array_like)
@@ -172,11 +176,11 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
             if array_like.dtype == np.object_:
                 array_like = cls._check_array_types_dtype_object(array_like)
             elif not np.issubdtype(array_like.dtype, np.integer):
-                raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays must have integer dtypes, not {array_like.dtype}")
+                raise TypeError(f"{cls.name} arrays must have integer dtypes, not {array_like.dtype}.")
             cls._check_array_values(array_like)
 
         else:
-            raise TypeError(f"GF({cls.characteristic}^{cls.degree}) arrays can be created with scalars of type int, not {type(array_like)}")
+            raise TypeError(f"{cls.name} arrays can be created with scalars of type int, not {type(array_like)}.")
 
         return array_like
 
@@ -189,10 +193,13 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
                 new_iterable.append(item)
                 continue
 
-            if not isinstance(item, (int, np.integer, cls)):
-                raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
+            if isinstance(item, str):
+                item = str_to_integer(item, cls.ground_field)
+            elif not isinstance(item, (int, np.integer, cls)):
+                raise TypeError(f"When {cls.name} arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
+
             if not 0 <= item < cls.order:
-                raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {item}")
+                raise ValueError(f"{cls.name} arrays must have elements in 0 <= x < {cls.order}, not {item}.")
 
             # Ensure the type is int so dtype=object classes don't get all mixed up
             new_iterable.append(int(item))
@@ -210,7 +217,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
         for _ in iterator:
             a = array[iterator.multi_index]
             if not isinstance(a, (int, cls)):
-                raise TypeError(f"When GF({cls.characteristic}^{cls.degree}) arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
+                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
 
             # Ensure the type is int so dtype=object classes don't get all mixed up
             array[iterator.multi_index] = int(a)
@@ -226,7 +233,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
         # Check the value of the "field elements" and make sure they are valid
         if np.any(array < 0) or np.any(array >= cls.order):
             idxs = np.logical_or(array < 0, array >= cls.order)
-            raise ValueError(f"GF({cls.characteristic}^{cls.degree}) arrays must have elements in 0 <= x < {cls.order}, not {array[idxs]}")
+            raise ValueError(f"{cls.name} arrays must have elements in 0 <= x < {cls.order}, not {array[idxs]}.")
 
     ###############################################################################
     # Alternate constructors
@@ -325,7 +332,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
         """
         dtype = cls._get_dtype(dtype)
         if not stop <= cls.order:
-            raise ValueError(f"The stopping value must be less than the field order of {cls.order}, not {stop}")
+            raise ValueError(f"The stopping value must be less than the field order of {cls.order}, not {stop}.")
 
         if dtype != np.object_:
             array = np.arange(start, stop, step=step, dtype=dtype)
