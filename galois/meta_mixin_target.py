@@ -31,6 +31,7 @@ class TargetMixin(type):
         cls._ufunc_multiply = None
         cls._ufunc_divide = None
         cls._ufunc_negative = None
+        cls._ufunc_reciprocal = None
         cls._ufunc_multiple_add = None
         cls._ufunc_power = None
         cls._ufunc_log = None
@@ -64,13 +65,9 @@ class TargetMixin(type):
         cls._fill_in_lookup_tables()
 
         if not cls._EXP[order - 1] == 1:
-            raise RuntimeError(f"""The anti-log lookup table for {cls.name} is not cyclic with size {order - 1}, which means the
-                                   primitive element {cls.primitive_element} does not have multiplicative order {order - 1} and
-                                   therefore isn't a multiplicative generator for {cls.name}.""")
+            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not cyclic with size {order - 1}, which means the primitive element {cls.primitive_element} does not have multiplicative order {order - 1} and therefore isn't a multiplicative generator for {cls.name}.")
         if not len(set(cls._EXP[0:order - 1])) == order - 1:
-            raise RuntimeError(f"""The anti-log lookup table for {cls.name} is not unique, which means the primitive element
-                                   {cls.primitive_element} has order less than {order - 1} and is not a multiplicative generator
-                                   of {cls.name}.""")
+            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not unique, which means the primitive element {cls.primitive_element} has order less than {order - 1} and is not a multiplicative generator of {cls.name}.")
         if not len(set(cls._LOG[1:order])) == order - 1:
             raise RuntimeError(f"The log lookup table for {cls.name} is not unique.")
 
@@ -100,23 +97,24 @@ class TargetMixin(type):
             ZECH_E = (cls.order - 1) // 2
 
         # JIT-compile add and multiply routines for reference in other routines
-        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add)
-        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply)
+        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_lookup)
+        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_lookup)
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
             kwargs.pop("nopython")
 
         # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add)
-        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract)
-        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply)
-        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide)
-        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse)
-        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add)
-        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power)
-        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log)
-        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval)
+        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
+        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
+        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
+        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
+        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
+        cls._ufunc_reciprocal = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_lookup)
+        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_lookup)
+        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
+        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
+        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
 
     def _target_jit_calculate(cls, target):
         """
@@ -131,6 +129,7 @@ class TargetMixin(type):
         cls._ufunc_multiply = np.frompyfunc(cls._multiply_python, 2, 1)
         cls._ufunc_divide = np.frompyfunc(cls._divide_python, 2, 1)
         cls._ufunc_negative = np.frompyfunc(cls._additive_inverse_python, 1, 1)
+        cls._ufunc_reciprocal = np.frompyfunc(cls._multiplicative_inverse_python, 1, 1)
         cls._ufunc_multiple_add = np.frompyfunc(cls._multiple_add_python, 2, 1)
         cls._ufunc_power = np.frompyfunc(cls._power_python, 2, 1)
         cls._ufunc_log = np.frompyfunc(cls._log_python, 1, 1)
@@ -244,7 +243,7 @@ class TargetMixin(type):
 # Galois field arithmetic for any field using EXP, LOG, and ZECH_LOG lookup tables
 ###################################################################################
 
-def _add(a, b):  # pragma: no cover
+def _add_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -276,7 +275,7 @@ def _add(a, b):  # pragma: no cover
     return EXP[m + ZECH_LOG[n - m]]
 
 
-def _subtract(a, b):  # pragma: no cover
+def _subtract_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -314,7 +313,7 @@ def _subtract(a, b):  # pragma: no cover
     return EXP[m + ZECH_LOG[z]]
 
 
-def _multiply(a, b):  # pragma: no cover
+def _multiply_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -333,7 +332,7 @@ def _multiply(a, b):  # pragma: no cover
     return EXP[m + n]
 
 
-def _divide(a, b):  # pragma: no cover
+def _divide_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -357,7 +356,7 @@ def _divide(a, b):  # pragma: no cover
     return EXP[(ORDER - 1) + m - n]
 
 
-def _additive_inverse(a):  # pragma: no cover
+def _additive_inverse_lookup(a):  # pragma: no cover
     """
     a in GF(p^m)
     α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
@@ -376,7 +375,7 @@ def _additive_inverse(a):  # pragma: no cover
     return EXP[ZECH_E + n]
 
 
-def _multiplicative_inverse(a):  # pragma: no cover
+def _multiplicative_inverse_lookup(a):  # pragma: no cover
     """
     a in GF(p^m)
     α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
@@ -397,7 +396,7 @@ def _multiplicative_inverse(a):  # pragma: no cover
     return EXP[(ORDER - 1) - m]
 
 
-def _multiple_add(a, b_int):  # pragma: no cover
+def _multiple_add_lookup(a, b_int):  # pragma: no cover
     """
     a in GF(p^m)
     b_int in Z
@@ -426,7 +425,7 @@ def _multiple_add(a, b_int):  # pragma: no cover
     return EXP[m + n]
 
 
-def _power(a, b_int):  # pragma: no cover
+def _power_lookup(a, b_int):  # pragma: no cover
     """
     a in GF(p^m)
     b_int in Z
@@ -451,7 +450,7 @@ def _power(a, b_int):  # pragma: no cover
     return EXP[(m * b_int) % (ORDER - 1)]
 
 
-def _log(a):  # pragma: no cover
+def _log_lookup(a):  # pragma: no cover
     """
     a in GF(p^m)
     α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
@@ -462,7 +461,7 @@ def _log(a):  # pragma: no cover
     return LOG[a]
 
 
-def _poly_eval(coeffs, values, results):  # pragma: no cover
+def _poly_eval_lookup(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):

@@ -114,42 +114,43 @@ class GF2Meta(GFMeta, PrimeFieldMixin):
         CHARACTERISTIC = cls._characteristic
 
         # JIT-compile add and multiply routines for reference in polynomial evaluation routine
-        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_jit)
-        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_jit)
+        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
+        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
             kwargs.pop("nopython")
 
         # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_jit)
-        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_jit)
-        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_jit)
-        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_jit)
-        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_negative_jit)
-        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_jit)
-        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_jit)
-        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_jit)
-        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_jit)
+        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
+        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
+        cls._ufunc_reciprocal = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
+        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_calculate)
+        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
 
 ###############################################################################
 # Galois field arithmetic, explicitly calculated without lookup tables
 ###############################################################################
 
-def _add_jit(a, b):  # pragma: no cover
+def _add_calculate(a, b):  # pragma: no cover
     return a ^ b
 
 
-def _subtract_jit(a, b):  # pragma: no cover
+def _subtract_calculate(a, b):  # pragma: no cover
     return a ^ b
 
 
-def _multiply_jit(a, b):  # pragma: no cover
+def _multiply_calculate(a, b):  # pragma: no cover
     return a & b
 
 
-def _divide_jit(a, b):  # pragma: no cover
+def _divide_calculate(a, b):  # pragma: no cover
     if b == 0:
         # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
         return 0
@@ -157,16 +158,20 @@ def _divide_jit(a, b):  # pragma: no cover
         return a
 
 
-def _negative_jit(a):  # pragma: no cover
+def _additive_inverse_calculate(a):  # pragma: no cover
     return a
 
 
-def _multiple_add_jit(a, multiple):  # pragma: no cover
+def _multiplicative_inverse_calculate(a):  # pragma: no cover
+    return a
+
+
+def _multiple_add_calculate(a, multiple):  # pragma: no cover
     multiple = multiple % CHARACTERISTIC
     return MULTIPLY_JIT(a, multiple)
 
 
-def _power_jit(a, power):  # pragma: no cover
+def _power_calculate(a, power):  # pragma: no cover
     # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
     if power == 0:
         return 1
@@ -176,13 +181,13 @@ def _power_jit(a, power):  # pragma: no cover
         return a
 
 
-def _log_jit(a):  # pragma: no cover
+def _log_calculate(a):  # pragma: no cover
     # pylint: disable=unused-argument
     # NOTE: The a == 0 condition will be caught outside of the ufunc and raise ArithmeticError
     return 0
 
 
-def _poly_eval_jit(coeffs, values, results):  # pragma: no cover
+def _poly_eval_calculate(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
