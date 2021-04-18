@@ -7,5 +7,5 @@ from .meta_gf2 import GF2Meta
 GF2 = types.new_class("GF2", bases=(GFArray,), kwds={
     "metaclass": GF2Meta,
     "target": "cpu",
-    "mode": "calculate"
+    "mode": "jit-calculate"
 })

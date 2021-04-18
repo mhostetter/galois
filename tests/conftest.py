@@ -27,33 +27,33 @@ FIELDS = [
 ]
 
 FIELDS_DIFF_MODES = [
-    pytest.param("GF(2)-calculate", marks=[pytest.mark.GF2]),
+    pytest.param("GF(2)-jit-calculate", marks=[pytest.mark.GF2]),
 
-    pytest.param("GF(2^2)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
-    pytest.param("GF(2^2)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
-    pytest.param("GF(2^3)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
-    pytest.param("GF(2^3)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
-    pytest.param("GF(2^8)-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^8)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^32)-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
-    pytest.param("GF(2^100)-object", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
+    pytest.param("GF(2^2)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
+    pytest.param("GF(2^2)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
+    pytest.param("GF(2^3)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
+    pytest.param("GF(2^3)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
+    pytest.param("GF(2^8)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("GF(2^8)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("GF(2^32)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
+    pytest.param("GF(2^100)-python-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
 
-    pytest.param("GF(5)-lookup", marks=[pytest.mark.GFp, pytest.mark.GF5]),
-    pytest.param("GF(5)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF5]),
-    pytest.param("GF(7)-lookup", marks=[pytest.mark.GFp, pytest.mark.GF7]),
-    pytest.param("GF(7)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF7]),
-    pytest.param("GF(31)-lookup", marks=[pytest.mark.GFp, pytest.mark.GF31]),
-    pytest.param("GF(31)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF31]),
-    pytest.param("GF(3191)-lookup", marks=[pytest.mark.GFp, pytest.mark.GF31]),
-    pytest.param("GF(3191)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF3191]),
-    pytest.param("GF(2147483647)-calculate", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
-    pytest.param("GF(36893488147419103183)-object", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
+    pytest.param("GF(5)-jit-lookup", marks=[pytest.mark.GFp, pytest.mark.GF5]),
+    pytest.param("GF(5)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF5]),
+    pytest.param("GF(7)-jit-lookup", marks=[pytest.mark.GFp, pytest.mark.GF7]),
+    pytest.param("GF(7)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF7]),
+    pytest.param("GF(31)-jit-lookup", marks=[pytest.mark.GFp, pytest.mark.GF31]),
+    pytest.param("GF(31)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF31]),
+    pytest.param("GF(3191)-jit-lookup", marks=[pytest.mark.GFp, pytest.mark.GF31]),
+    pytest.param("GF(3191)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF3191]),
+    pytest.param("GF(2147483647)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
+    pytest.param("GF(36893488147419103183)-python-calculate", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
 ]
 
 
 def construct_field(folder):
     if len(folder.split("-")) >= 2:
-        folder, mode = folder.split("-")[0:2]
+        folder, mode = folder.split("-", maxsplit=1)
     else:
         mode = "auto"
 

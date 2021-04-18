@@ -9,9 +9,9 @@ class GFMeta(TargetMixin):
     Defines a metaclass for all :obj:`galois.GFArray` classes.
 
     This metaclass gives :obj:`galois.GFArray` classes returned from :func:`galois.GF` class methods and properties
-    relating to its finite field.
+    relating to its Galois field.
     """
-    # pylint: disable=no-value-for-parameter
+    # pylint: disable=no-value-for-parameter,comparison-with-callable,too-many-public-methods
 
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
         return super().__new__(cls, name, bases, namespace)
@@ -34,50 +34,48 @@ class GFMeta(TargetMixin):
     def __str__(cls):
         return f"<class 'numpy.ndarray' over {cls.name}>"
 
-    def _valid_dtypes(cls):
-        raise NotImplementedError
-
     ###############################################################################
     # Class methods
     ###############################################################################
 
-    def target(cls, target, mode):
+    def target(cls, mode, target):
         """
         Retarget the just-in-time compiled numba ufuncs.
 
         Parameters
         ----------
-        target : str
-            The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`.
         mode : str
-            The type of field computation, either `"lookup"` or `"calculate"`. The "lookup" mode will use Zech log, log,
-            and anti-log lookup tables for speed. The "calculate" mode will not store any lookup tables, but perform field
-            arithmetic on the fly. The "calculate" mode is designed for large fields that cannot store lookup tables in RAM.
-            Generally, "calculate" will be slower than "lookup".
+            The method of field computation, either `"jit-lookup"`, `"jit-calculate"`, `"python-calculate"`. The "jit-lookup" mode will
+            use Zech log, log, and anti-log lookup tables for speed. The "jit-calculate" mode will not store any lookup tables, but perform field
+            arithmetic on the fly. The "jit-calculate" mode is designed for large fields that cannot store lookup tables in RAM.
+            Generally, "jit-calculate" is slower than "jit-lookup". The "python-calculate" mode is reserved for extremely large fields. In
+            this mode the ufuncs are not JIT-compiled, but are pur python functions operating on python ints.
+        target : str, optional
+            The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. The default
+            is `"cpu"`. For extremely large fields the only supported target is `"cpu"` (which doesn't use numba it uses pure python to
+            calculate the field arithmetic).
         """
-        if target not in ["cpu", "parallel", "cuda"]:
-            raise ValueError(f"Argument `target` must be in ['cpu', 'parallel', 'cuda'], not {target}.")
-        if mode not in ["auto", "lookup", "calculate", "object"]:
-            raise ValueError(f"Argument `mode` must be in ['auto', 'lookup', 'calculate', 'object'], not {mode}.")
+        if target not in cls.ufunc_targets:
+            raise ValueError(f"Argument `target` must be in {cls.ufunc_targets} for {cls.name}, not {target}.")
+        mode = cls.default_ufunc_mode if mode == "auto" else mode
+        if mode not in cls.ufunc_modes:
+            raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls.name}, not {mode}.")
 
-        mode = cls._check_ufunc_mode(mode)
-        new_mode = mode != cls._ufunc_mode
-        new_target = target != cls._ufunc_target
-
-        if not new_mode and not new_target:
+        if mode == cls.ufunc_mode and target == cls.ufunc_target:
+            # Don't need to rebuild these ufuncs
             return
 
-        cls._ufunc_target = target
         cls._ufunc_mode = mode
+        cls._ufunc_target = target
 
-        if cls._ufunc_mode == "object":
-            cls._target_python_calculate()
-        elif cls._ufunc_mode == "lookup":
+        if cls.ufunc_mode == "jit-lookup":
             cls._target_jit_lookup(target)
-        elif cls._ufunc_mode == "calculate":
+        elif cls.ufunc_mode == "jit-calculate":
             cls._target_jit_calculate(target)
+        elif cls.ufunc_mode == "python-calculate":
+            cls._target_python_calculate()
         else:
-            raise AttributeError(f"Attribute `ufunc_mode` is invalid, {cls._ufunc_mode}.")
+            raise RuntimeError(f"Attribute `ufunc_mode` was not processed, {cls._ufunc_mode}. Please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
     def display(cls, mode="int", poly_var="α"):
         """
@@ -358,13 +356,12 @@ class GFMeta(TargetMixin):
             galois.GF(2**100).dtypes
             galois.GF(36893488147419103183).dtypes
         """
-        # Ensure accesses of this property don't alter it
-        return list(cls._dtypes)
+        raise NotImplementedError
 
     @property
     def ufunc_mode(cls):
         """
-        str: The mode for ufunc compilation, either `"lookup"`, `"calculate"`, `"object"`.
+        str: The mode for ufunc compilation, either `"jit-lookup"`, `"jit-calculate"`, `"python-calculate"`.
 
         Examples
         --------
@@ -376,6 +373,46 @@ class GFMeta(TargetMixin):
             # galois.GF(7**5).ufunc_mode
         """
         return cls._ufunc_mode
+
+    @property
+    def ufunc_modes(cls):
+        """
+        list: All supported ufunc modes for this Galois field array class.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).ufunc_modes
+            galois.GF(2**8).ufunc_modes
+            galois.GF(31).ufunc_modes
+            galois.GF(2**100).ufunc_modes
+        """
+        if cls.dtypes == [np.object_]:
+            return ["python-calculate"]
+        else:
+            return ["jit-lookup", "jit-calculate"]
+
+    @property
+    def default_ufunc_mode(cls):
+        """
+        str: The default ufunc arithmetic mode for this Galois field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).default_ufunc_mode
+            galois.GF(2**8).default_ufunc_mode
+            galois.GF(31).default_ufunc_mode
+            galois.GF(2**100).default_ufunc_mode
+        """
+        if cls.dtypes == [np.object_]:
+            return "python-calculate"
+        elif cls.order <= 2**16:
+            return "jit-lookup"
+        else:
+            return "jit-calculate"
 
     @property
     def ufunc_target(cls):
@@ -392,6 +429,25 @@ class GFMeta(TargetMixin):
             # galois.GF(7**5).ufunc_target
         """
         return cls._ufunc_target
+
+    @property
+    def ufunc_targets(cls):
+        """
+        list: All supported ufunc targets for this Galois field array class.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).ufunc_targets
+            galois.GF(2**8).ufunc_targets
+            galois.GF(31).ufunc_targets
+            galois.GF(2**100).ufunc_targets
+        """
+        if cls._dtypes == [np.object_]:
+            return ["cpu"]
+        else:
+            return ["cpu", "parallel", "cuda"]
 
     @property
     def display_mode(cls):
