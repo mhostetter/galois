@@ -72,24 +72,25 @@ class GFpMeta(GFMeta, PrimeFieldMixin):
         ALPHA = int(cls.primitive_element)  # Convert from field element to integer
 
         # JIT-compile add, multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
-        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_jit)
-        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_jit)
-        MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(_multiplicative_inverse_jit)
+        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
+        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
+        MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(_multiplicative_inverse_calculate)
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
             kwargs.pop("nopython")
 
         # Create numba JIT-compiled ufuncs
-        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_jit)
-        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_jit)
-        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_jit)
-        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_jit)
-        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_jit)
-        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_jit)
-        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_jit)
-        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_jit)
-        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_jit)
+        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
+        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
+        cls._ufunc_reciprocal = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
+        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_calculate)
+        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
     ###############################################################################
     # Overridden methods from ObjectCalculateMixin
@@ -116,19 +117,19 @@ class GFpMeta(GFMeta, PrimeFieldMixin):
 # Galois field arithmetic, explicitly calculated without lookup tables
 ###############################################################################
 
-def _add_jit(a, b):  # pragma: no cover
+def _add_calculate(a, b):  # pragma: no cover
     return (a + b) % ORDER
 
 
-def _subtract_jit(a, b):  # pragma: no cover
+def _subtract_calculate(a, b):  # pragma: no cover
     return (a - b) % ORDER
 
 
-def _multiply_jit(a, b):  # pragma: no cover
+def _multiply_calculate(a, b):  # pragma: no cover
     return (a * b) % ORDER
 
 
-def _divide_jit(a, b):  # pragma: no cover
+def _divide_calculate(a, b):  # pragma: no cover
     if a == 0 or b == 0:
         # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
         return 0
@@ -136,20 +137,20 @@ def _divide_jit(a, b):  # pragma: no cover
     return MULTIPLY_JIT(a, b_inv)
 
 
-def _additive_inverse_jit(a):  # pragma: no cover
+def _additive_inverse_calculate(a):  # pragma: no cover
     return (-a) % ORDER
 
 
-def _multiplicative_inverse_jit(a):  # pragma: no cover
+def _multiplicative_inverse_calculate(a):  # pragma: no cover
     a_inv = gcd_jit(a, ORDER)[1]
     return a_inv % ORDER
 
 
-def _multiple_add_jit(a, multiple):  # pragma: no cover
+def _multiple_add_calculate(a, multiple):  # pragma: no cover
     return (a * multiple) % ORDER
 
 
-def _power_jit(a, power):  # pragma: no cover
+def _power_calculate(a, power):  # pragma: no cover
     """
     Square and Multiply Algorithm
 
@@ -184,7 +185,7 @@ def _power_jit(a, power):  # pragma: no cover
     return result
 
 
-def _log_jit(beta):  # pragma: no cover
+def _log_calculate(beta):  # pragma: no cover
     """
     TODO: Replace this with more efficient algorithm
 
@@ -202,7 +203,7 @@ def _log_jit(beta):  # pragma: no cover
     return i
 
 
-def _poly_eval_jit(coeffs, values, results):  # pragma: no cover
+def _poly_eval_calculate(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):

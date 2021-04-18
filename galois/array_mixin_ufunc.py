@@ -8,6 +8,7 @@ OVERRIDDEN_UFUNCS = [
     np.floor_divide,
     np.true_divide,
     np.negative,
+    np.reciprocal,
     np.power,
     np.square,
     np.log,
@@ -153,6 +154,8 @@ class UfuncMixin(np.ndarray):
             outputs = getattr(self._ufunc_divide, method)(*inputs, **kwargs)
         elif ufunc is np.negative:
             outputs = getattr(self._ufunc_negative, method)(*inputs, **kwargs)
+        elif ufunc is np.reciprocal:
+            outputs = getattr(self._ufunc_reciprocal, method)(*inputs, **kwargs)
         elif ufunc is np.power:
             outputs = getattr(self._ufunc_power, method)(*inputs, **kwargs)
         elif ufunc is np.square:
@@ -160,6 +163,8 @@ class UfuncMixin(np.ndarray):
             outputs = getattr(self._ufunc_power, method)(*inputs, **kwargs)
         elif ufunc is np.log:
             outputs = getattr(self._ufunc_log, method)(*inputs, **kwargs)
+        else:
+            raise RuntimeError(f"The numpy ufunc '{ufunc.__name__}' wasn't processed even though it was supposed to be. Please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         if outputs is None or ufunc is np.log:
             return outputs
