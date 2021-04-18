@@ -242,7 +242,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
     @classmethod
     def Zeros(cls, shape, dtype=None):
         """
-        Create a Galois field array with all zeros.
+        Creates a Galois field array with all zeros.
 
         Parameters
         ----------
@@ -273,7 +273,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
     @classmethod
     def Ones(cls, shape, dtype=None):
         """
-        Create a Galois field array with all ones.
+        Creates a Galois field array with all ones.
 
         Parameters
         ----------
@@ -302,9 +302,38 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
         return array.view(cls)
 
     @classmethod
+    def Eye(cls, size, dtype=None):
+        """
+        Creates a Galois field identity matrix.
+
+        Parameters
+        ----------
+        size : int
+            The size along one axis of the matrix. The resulting array has shape `(size,size)`.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this field class, i.e. `cls.dtypes[0]`.
+
+        Returns
+        -------
+        galois.GFArray
+            A Galois field identity matrix of shape `(size, size)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.Eye(4)
+        """
+        dtype = cls._get_dtype(dtype)
+        array = np.eye(size, dtype=dtype)
+        return array.view(cls)
+
+    @classmethod
     def Range(cls, start, stop, step=1, dtype=None):
         """
-        Create a Galois field array with a range of field elements.
+        Creates a Galois field array with a range of field elements.
 
         Parameters
         ----------
@@ -344,7 +373,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
     @classmethod
     def Random(cls, shape=(), low=0, high=None, dtype=None):
         """
-        Create a Galois field array with random field elements.
+        Creates a Galois field array with random field elements.
 
         Parameters
         ----------
@@ -391,7 +420,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
     @classmethod
     def Elements(cls, dtype=None):
         """
-        Create a Galois field array of the field's elements :math:`\\{0, \\dots, p^m-1\\}`.
+        Creates a Galois field array of the field's elements :math:`\\{0, \\dots, p^m-1\\}`.
 
         Parameters
         ----------
