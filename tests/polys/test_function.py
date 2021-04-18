@@ -52,3 +52,13 @@ def test_is_irreducible():
     x = galois.Poly.Identity(GF)
     p6 = galois.Poly.Random(20, field=GF) * x
     assert not galois.is_irreducible(p6)
+
+
+def test_is_monic():
+    GF = galois.GF(7)
+    p = galois.Poly([1,0,4,5], field=GF)
+    assert galois.is_monic(p)
+
+    GF = galois.GF(7)
+    p = galois.Poly([3,0,4,5], field=GF)
+    assert not galois.is_monic(p)

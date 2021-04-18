@@ -466,3 +466,35 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
     elements = sorted(elements, key=lambda e: e.integer, reverse=reverse)
 
     return elements
+
+
+def is_monic(poly):
+    """
+    Determines whether the polynomial is monic, i.e. having leading coefficient equal to 1.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        A polynomial over a Galois field.
+
+    Returns
+    -------
+    bool
+        `True` if the polynomial is monic.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        p = galois.Poly([1,0,4,5], field=GF); p
+        galois.is_monic(p)
+
+    .. ipython:: python
+
+        p = galois.Poly([3,0,4,5], field=GF); p
+        galois.is_monic(p)
+    """
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    return poly.nonzero_coeffs[0] == 1

@@ -12,7 +12,7 @@ from .math_ import isqrt, lcm
 from .meta_gf import GFMeta
 from .modular import totatives, euler_totient, carmichael, is_cyclic, is_primitive_root, primitive_root, primitive_roots
 from .poly import Poly
-from .poly_functions import poly_gcd, poly_exp_mod, is_irreducible, is_primitive, is_primitive_element, primitive_element, primitive_elements
+from .poly_functions import poly_gcd, poly_exp_mod, is_irreducible, is_primitive, is_primitive_element, primitive_element, primitive_elements, is_monic
 from .prime import primes, kth_prime, prev_prime, next_prime, mersenne_exponents, mersenne_primes, prime_factors, is_prime, fermat_primality_test, miller_rabin_primality_test
 
 # Define the GF2 primitive polynomial here, not in gf2.py, to avoid a circular dependency.
