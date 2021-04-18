@@ -33,9 +33,8 @@ class GF2mMeta(GFMeta, ExtensionFieldMixin):
         cls._irreducible_poly = kwargs["irreducible_poly"]
         cls._primitive_element = kwargs["primitive_element"]
         cls._ground_field = kwargs["ground_field"]
-        cls._dtypes = cls._valid_dtypes()
 
-        cls.target(kwargs["target"], kwargs["mode"])
+        cls.target(kwargs["mode"], kwargs["target"])
 
         cls._primitive_element = cls(cls._primitive_element.integer)
         cls._primitive_element_dec = int(cls.primitive_element)
@@ -45,26 +44,12 @@ class GF2mMeta(GFMeta, ExtensionFieldMixin):
         poly.field = cls
         cls._is_primitive_poly = poly(cls.primitive_element) == 0
 
-    def _valid_dtypes(cls):
-        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
-        if len(dtypes) == 0:
-            dtypes = [np.object_]
-        return dtypes
-
-    def _check_ufunc_mode(cls, mode):
-        object_class = cls._dtypes[-1] == np.object_
-        if object_class and mode not in ["auto", "object"]:
-            raise ValueError(f"{cls.name} arrays can only be targeted in 'object' mode, not {mode}.")
-
-        if mode == "auto":
-            if object_class:
-                mode = "object"
-            elif cls._order <= 2**16:
-                mode = "lookup"
-            else:
-                mode = "calculate"
-
-        return mode
+    @property
+    def dtypes(cls):
+        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
+        if len(d) == 0:
+            d = [np.object_]
+        return d
 
     def _target_jit_calculate(cls, target):
         global CHARACTERISTIC, ORDER, ALPHA, PRIM_POLY_DEC, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT

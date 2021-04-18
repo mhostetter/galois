@@ -31,9 +31,8 @@ class GFpMeta(GFMeta, PrimeFieldMixin):
         cls._order = cls.characteristic**cls.degree
         cls._primitive_element = kwargs["primitive_element"]
         cls._ground_field = cls
-        cls._dtypes = cls._valid_dtypes()
 
-        cls.target(kwargs["target"], kwargs["mode"])
+        cls.target(kwargs["mode"], kwargs["target"])
 
         cls._irreducible_poly = Poly([1, -int(cls.primitive_element)], field=cls)
         cls._primitive_element = cls(cls.primitive_element)
@@ -43,27 +42,13 @@ class GFpMeta(GFMeta, PrimeFieldMixin):
         cls._primitive_element_dec = int(cls.primitive_element)
         cls._irreducible_poly_dec = cls.irreducible_poly.integer  # pylint: disable=no-member
 
-    def _valid_dtypes(cls):
+    @property
+    def dtypes(cls):
         max_dtype = DTYPES[-1]
-        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1)**2]
-        if len(dtypes) == 0:
-            dtypes = [np.object_]
-        return dtypes
-
-    def _check_ufunc_mode(cls, mode):
-        object_class = cls._dtypes[-1] == np.object_
-        if object_class and mode not in ["auto", "object"]:
-            raise ValueError(f"{cls.name} arrays can only be targeted in 'object' mode, not {mode}.")
-
-        if mode == "auto":
-            if object_class:
-                mode = "object"
-            elif cls._order <= 2**16:
-                mode = "lookup"
-            else:
-                mode = "calculate"
-
-        return mode
+        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1)**2]
+        if len(d) == 0:
+            d = [np.object_]
+        return d
 
     def _target_jit_calculate(cls, target):
         global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT

@@ -33,13 +33,13 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=
         Indicates whether to verify that the specified primitive element is in fact a generator of the multiplicative group.
         The default is `True`.
     mode : str, optional
-        The type of field computation, either `"auto"`, `"lookup"`, or `"calculate"`. The default is `"auto"`.
-        The "lookup" mode will use Zech log, log, and anti-log lookup tables for efficient calculation. The "calculate"
-        mode will not store any lookup tables, but instead perform field arithmetic on the fly. The "calculate" mode is
-        designed for large fields that cannot or should not store lookup tables in RAM. Generally, "calculate" mode will
-        be slower than "lookup". The "auto" mode will determine whether to use "lookup" or "calculate" based on the field's
-        size. In "auto" mode, field's with `order <= 2**16` will use the "lookup" mode.
-    target : str
+        The type of field computation, either `"auto"`, `"jit-lookup"`, or `"jit-calculate"`. The default is `"auto"`.
+        The "jit-lookup" mode will use Zech log, log, and anti-log lookup tables for efficient calculation. The "jit-calculate"
+        mode will not store any lookup tables, but instead perform field arithmetic on the fly. The "jit-calculate" mode is
+        designed for large fields that cannot or should not store lookup tables in RAM. Generally, "jit-calculate" mode will
+        be slower than "jit-lookup". The "auto" mode will determine whether to use "jit-lookup" or "jit-calculate" based on the field's
+        size. In "auto" mode, field's with `order <= 2**16` will use the "jit-lookup" mode.
+    target : str, optional
         The `target` keyword argument from :func:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`.
 
     Returns

@@ -91,23 +91,22 @@ class GF2Meta(GFMeta, PrimeFieldMixin):
         cls._irreducible_poly = None  # Will be set in __init__.py to avoid circular import with Poly
         cls._primitive_element = 1
         cls._ground_field = cls
-        cls._dtypes = cls._valid_dtypes()
 
-        cls.target(kwargs["target"], kwargs["mode"])
+        cls.target(kwargs["mode"], kwargs["target"])
 
         cls._primitive_element = cls(cls.primitive_element)
         cls._is_primitive_poly = True
 
-    def _valid_dtypes(cls):
-        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
-        if len(dtypes) == 0:
-            dtypes = [np.object_]
-        return dtypes
+    @property
+    def dtypes(cls):
+        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
+        if len(d) == 0:
+            d = [np.object_]
+        return d
 
-    def _check_ufunc_mode(cls, mode):
-        if mode not in ["auto", "calculate"]:
-            raise ValueError(f"{cls.name} arrays can only be targeted in 'calculate' mode, not {mode}. For {cls.name} arrays 'calculate' mode is always fastest.")
-        return "calculate"
+    @property
+    def default_ufunc_mode(cls):
+        return "jit-calculate"
 
     def _target_jit_calculate(cls, target):
         global CHARACTERISTIC, ADD_JIT, MULTIPLY_JIT

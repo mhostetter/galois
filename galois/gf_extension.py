@@ -22,8 +22,8 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
     if not degree > 1:
         raise ValueError(f"Argument `degree` must be greater than 1, not {degree}.")
-    if not mode in ["auto", "lookup", "calculate", "object"]:
-        raise ValueError(f"Argument `mode` must be in ['auto', 'lookup', 'calculate', 'object'], not {mode}.")
+    if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
+        raise ValueError(f"Argument `mode` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode}.")
     if not target in ["cpu", "parallel", "cuda"]:
         raise ValueError(f"Argument `target` must be in ['cpu', 'parallel', 'cuda'], not {target}.")
     order = characteristic**degree
@@ -68,7 +68,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     # If the requested field has already been constructed, return it
     if key in GF_extension.classes:
         cls = GF_extension.classes[key]
-        cls.target(target, mode)
+        cls.target(mode, target)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"

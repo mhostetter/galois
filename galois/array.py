@@ -146,7 +146,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
         # For example, np.dtype(int) == np.int64 (on some systems).
         dtype = np.dtype(dtype)
         if dtype not in cls.dtypes:
-            raise TypeError(f"{cls.name} arrays only support dtypes {cls.dtypes}, not {dtype}.")
+            raise TypeError(f"{cls.name} arrays only support dtypes {[np.dtype(d).name for d in cls.dtypes]}, not '{dtype.name}'.")
 
         return dtype
 

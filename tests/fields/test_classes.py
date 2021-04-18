@@ -11,11 +11,11 @@ def test_ufunc_attributes(field_classes):
     GF, mode = field_classes["GF"], field_classes["mode"]
     if mode == "auto":
         if GF.order == 2:
-            mode = "calculate"
+            mode = "jit-calculate"
         elif GF.order <= 2**16:
-            mode = "lookup"
+            mode = "jit-lookup"
         else:
-            mode = "calculate"
+            mode = "jit-calculate"
 
     assert GF.ufunc_target == "cpu"
     assert GF.ufunc_mode == mode

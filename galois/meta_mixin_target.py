@@ -38,12 +38,9 @@ class TargetMixin(type):
         cls._ufunc_poly_eval = None
 
         # Integer representations of the field's primitive element and primitive polynomial to be used in the
-        # pure python ufunc implementations for `ufunc_mode = "object"`
+        # pure python ufunc implementations for `ufunc_mode = "python-calculate"`
         cls._primitive_element_dec = None
         cls._irreducible_poly_dec = None
-
-    def _check_ufunc_mode(cls, mode):
-        raise NotImplementedError
 
     def _fill_in_lookup_tables(cls):
         """
