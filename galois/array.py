@@ -538,11 +538,11 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
 
         if cls.dtypes[-1] == np.object_:
             # For object dtypes, call the vectorized classmethod
-            y = cls._ufunc_poly_eval(coeffs=coeffs, values=x)  # pylint: disable=not-callable
+            y = cls._ufuncs["poly_eval"](coeffs=coeffs, values=x)  # pylint: disable=not-callable
         else:
             # For integer dtypes, call the JIT-compiled gufunc
             y = np.copy(x)
-            cls._ufunc_poly_eval(coeffs, x, y, casting="unsafe")  # pylint: disable=not-callable
+            cls._ufuncs["poly_eval"](coeffs, x, y, casting="unsafe")  # pylint: disable=not-callable
 
         y = cls(y)
         if y.size == 1:

@@ -25,17 +25,7 @@ class TargetMixin(type):
         cls._EXP = None
         cls._LOG = None
         cls._ZECH_LOG = None
-
-        cls._ufunc_add = None
-        cls._ufunc_subtract = None
-        cls._ufunc_multiply = None
-        cls._ufunc_divide = None
-        cls._ufunc_negative = None
-        cls._ufunc_reciprocal = None
-        cls._ufunc_multiple_add = None
-        cls._ufunc_power = None
-        cls._ufunc_log = None
-        cls._ufunc_poly_eval = None
+        cls._ufuncs = {}
 
         # Integer representations of the field's primitive element and primitive polynomial to be used in the
         # pure python ufunc implementations for `ufunc_mode = "python-calculate"`
@@ -101,17 +91,20 @@ class TargetMixin(type):
         if target == "cuda":
             kwargs.pop("nopython")
 
+        # TODO: Use smallest possible dtype for ufuncs
+        # d = np.dtype(self.dtypes[0]).name
+
         # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
-        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
-        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
-        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
-        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
-        cls._ufunc_reciprocal = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_lookup)
-        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_lookup)
-        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
-        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
-        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
+        cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
+        cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
+        cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
+        cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
+        cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
+        cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_lookup)
+        cls._ufuncs["multiple_add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_lookup)
+        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
+        cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
+        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
 
     def _target_jit_calculate(cls, target):
         """
@@ -121,16 +114,16 @@ class TargetMixin(type):
         raise NotImplementedError
 
     def _target_python_calculate(cls):
-        cls._ufunc_add = np.frompyfunc(cls._add_python, 2, 1)
-        cls._ufunc_subtract = np.frompyfunc(cls._subtract_python, 2, 1)
-        cls._ufunc_multiply = np.frompyfunc(cls._multiply_python, 2, 1)
-        cls._ufunc_divide = np.frompyfunc(cls._divide_python, 2, 1)
-        cls._ufunc_negative = np.frompyfunc(cls._additive_inverse_python, 1, 1)
-        cls._ufunc_reciprocal = np.frompyfunc(cls._multiplicative_inverse_python, 1, 1)
-        cls._ufunc_multiple_add = np.frompyfunc(cls._multiple_add_python, 2, 1)
-        cls._ufunc_power = np.frompyfunc(cls._power_python, 2, 1)
-        cls._ufunc_log = np.frompyfunc(cls._log_python, 1, 1)
-        cls._ufunc_poly_eval = np.vectorize(cls._poly_eval_python, excluded=["coeffs"], otypes=[np.object_])
+        cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
+        cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
+        cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
+        cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
+        cls._ufuncs["negative"] = np.frompyfunc(cls._additive_inverse_python, 1, 1)
+        cls._ufuncs["reciprocal"] = np.frompyfunc(cls._multiplicative_inverse_python, 1, 1)
+        cls._ufuncs["multiple_add"] = np.frompyfunc(cls._multiple_add_python, 2, 1)
+        cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
+        cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
+        cls._ufuncs["poly_eval"] = np.vectorize(cls._poly_eval_python, excluded=["coeffs"], otypes=[np.object_])
 
     ###############################################################################
     # Pure python arithmetic methods

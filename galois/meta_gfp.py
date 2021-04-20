@@ -66,16 +66,16 @@ class GFpMeta(GFMeta, PrimeFieldMixin):
             kwargs.pop("nopython")
 
         # Create numba JIT-compiled ufuncs
-        cls._ufunc_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
-        cls._ufunc_subtract = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
-        cls._ufunc_multiply = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
-        cls._ufunc_divide = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
-        cls._ufunc_negative = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
-        cls._ufunc_reciprocal = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
-        cls._ufunc_multiple_add = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_calculate)
-        cls._ufunc_power = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
-        cls._ufunc_log = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
-        cls._ufunc_poly_eval = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
+        cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
+        cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+        cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+        cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+        cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
+        cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
+        cls._ufuncs["multiple_add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_calculate)
+        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
     ###############################################################################
     # Overridden methods from ObjectCalculateMixin

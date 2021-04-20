@@ -9,6 +9,8 @@ import galois
 from ..helper import randint
 
 
+# TODO: Test using "out" keyword argument
+
 class TestReduce:
     def test_add(self, field):
         a = field.Random(10)
