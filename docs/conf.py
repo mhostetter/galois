@@ -106,7 +106,6 @@ autodoc_default_options = {
     'members': True,
     'undoc-members': True,
     'member-order': 'groupwise',
-    'show-inheritance': True,
     'inherited-members': 'ndarray'  # Inherit from all classes except np.ndarray
 }
 
