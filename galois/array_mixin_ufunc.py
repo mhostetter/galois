@@ -1,97 +1,254 @@
 import numpy as np
 
-# Dictionary mapping numpy ufuncs to our implementation method
-OVERRIDDEN_UFUNCS = [
-    np.add,
-    np.subtract,
-    np.multiply,
-    np.floor_divide,
-    np.true_divide,
-    np.negative,
-    np.reciprocal,
-    np.power,
-    np.square,
-    np.log,
-]
+from .meta_gf import GFMeta
 
+
+###############################################################################
+# Overridden ufunc routines
+###############################################################################
+
+# NOTE: These are functions, not methods, because we don't want all these private
+# methods being carried around by the np.ndarray subclass.
+
+def _ufunc_add(ufunc, method, inputs, kwargs, meta):
+    _verify_operands_in_same_field(ufunc, inputs, meta)
+    output = getattr(meta["ufuncs"]["add"], method)(*inputs, **kwargs)
+    output = _view_output_as_field(output, meta["field"], meta["dtype"])
+    return output
+
+
+def _ufunc_subtract(ufunc, method, inputs, kwargs, meta):
+    _verify_operands_in_same_field(ufunc, inputs, meta)
+    output = getattr(meta["ufuncs"]["subtract"], method)(*inputs, **kwargs)
+    output = _view_output_as_field(output, meta["field"], meta["dtype"])
+    return output
+
+
+def _ufunc_multiply(ufunc, method, inputs, kwargs, meta):
+    if len(meta["non_field_operands"]) == 0:
+        # In-field multiplication
+        output = getattr(meta["ufuncs"]["multiply"], method)(*inputs, **kwargs)
+    else:
+        # Scalar multiplication
+        inputs = _verify_and_flip_operands_first_field_second_int(ufunc, method, inputs, meta)
+        print(inputs)
+        output = getattr(meta["ufuncs"]["multiple_add"], method)(*inputs, **kwargs)
+    output = _view_output_as_field(output, meta["field"], meta["dtype"])
+    return output
+
+
+def _ufunc_divide(ufunc, method, inputs, kwargs, meta):
+    _verify_operands_in_same_field(ufunc, inputs, meta)
+    if np.count_nonzero(inputs[meta["operands"][-1]]) != inputs[meta["operands"][-1]].size:
+        raise ZeroDivisionError("Cannot divide by 0 in Galois fields.")
+    output = getattr(meta["ufuncs"]["divide"], method)(*inputs, **kwargs)
+    output = _view_output_as_field(output, meta["field"], meta["dtype"])
+    return output
+
+
+def _ufunc_negative(ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    output = getattr(meta["ufuncs"]["negative"], method)(*inputs, **kwargs)
+    output = _view_output_as_field(output, meta["field"], meta["dtype"])
+    return output
+
+
+def _ufunc_reciprocal(ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    output = getattr(meta["ufuncs"]["reciprocal"], method)(*inputs, **kwargs)
+    output = _view_output_as_field(output, meta["field"], meta["dtype"])
+    return output
+
+
+def _ufunc_power(ufunc, method, inputs, kwargs, meta):
+    _verify_operands_first_field_second_int(ufunc, inputs, meta)
+    if method == "outer" and (np.any(inputs[meta["operands"][0]] == 0) and np.any(inputs[meta["operands"][1]] < 0)):
+        raise ZeroDivisionError("Cannot take the multiplicative inverse of 0 in Galois fields.")
+    if method == "__call__" and np.any(np.logical_and(inputs[meta["operands"][0]] == 0, inputs[meta["operands"][1]] < 0)):
+        raise ZeroDivisionError("Cannot take the multiplicative inverse of 0 in Galois fields.")
+    output = getattr(meta["ufuncs"]["power"], method)(*inputs, **kwargs)
+    output = _view_output_as_field(output, meta["field"], meta["dtype"])
+    return output
+
+
+def _ufunc_square(ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    inputs = list(inputs)
+    inputs.append(2)
+    output = getattr(meta["ufuncs"]["power"], method)(*inputs, **kwargs)
+    output = _view_output_as_field(output, meta["field"], meta["dtype"])
+    return output
+
+
+def _ufunc_log(ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    if np.count_nonzero(inputs[meta["operands"][0]]) != inputs[meta["operands"][0]].size:
+        raise ArithmeticError("Cannot take the logarithm of 0 in Galois fields.")
+    output = getattr(meta["ufuncs"]["log"], method)(*inputs, **kwargs)
+    output = _view_output_as_field(output, meta["field"], meta["dtype"])
+    return output
+
+
+# def _ufunc_matmul(ufunc, method, inputs, kwargs, meta):
+#     return matmul(*inputs, **kwargs)
+
+
+OVERRIDDEN_UFUNCS = {
+    np.add: _ufunc_add,
+    np.subtract: _ufunc_subtract,
+    np.multiply: _ufunc_multiply,
+    np.floor_divide: _ufunc_divide,
+    np.true_divide: _ufunc_divide,
+    np.negative: _ufunc_negative,
+    np.reciprocal: _ufunc_reciprocal,
+    np.power: _ufunc_power,
+    np.square: _ufunc_square,
+    np.log: _ufunc_log,
+    # np.matmul: _ufunc_matmul,
+}
+
+
+###############################################################################
+# Input conversion and type verification functions
+###############################################################################
+
+def _verify_operands_in_same_field(ufunc, inputs, meta):
+    if len(meta["non_field_operands"]) > 0:
+        raise TypeError(f"Operation '{ufunc.__name__}' requires both operands to be Galois field arrays over the same field, not {[inputs[i] for i in meta['operands']]}.")
+
+
+def _verify_and_flip_operands_first_field_second_int(ufunc, method, inputs, meta):
+    if len(meta["operands"]) == 1 or method == "reduceat":
+        return inputs
+
+    assert len(meta["non_field_operands"]) == 1
+    i = meta["non_field_operands"][0]
+
+    if isinstance(inputs[i], (int, np.integer)):
+        pass
+    elif isinstance(inputs[i], np.ndarray):
+        if meta["field"].dtypes == [np.object_]:
+            if not (inputs[i].dtype == np.object_ or np.issubdtype(inputs[i].dtype, np.integer)):
+                raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
+        else:
+            if not np.issubdtype(inputs[i].dtype, np.integer):
+                raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
+    else:
+        raise TypeError(f"Operation '{ufunc.__name__}' requires operands that are not Galois field arrays to be an integers or integer np.ndarrays, not {type(inputs[i])}.")
+
+    if meta["operands"][0] == meta["field_operands"][0]:
+        # If the Galois field array is the first argument, continue
+        pass
+    else:
+        # Switch arguments to guarantee the Galois field array is the first element
+        inputs = list(inputs)
+        inputs[meta["operands"][0]], inputs[meta["operands"][1]] = inputs[meta["operands"][1]], inputs[meta["operands"][0]]
+
+    return inputs
+
+
+def _verify_operands_first_field_second_int(ufunc, inputs, meta):
+    if len(meta["operands"]) == 1:
+        return
+    first = inputs[meta["operands"][0]]
+    second = inputs[meta["operands"][1]]
+
+    if not meta["operands"][0] == meta["field_operands"][0]:
+        raise TypeError(f"Operation '{ufunc.__name__}' requires the first operand to be a Galois field array, not {first}.")
+
+    if isinstance(second, (int, np.integer)):
+        return
+    # elif type(second) is np.ndarray:
+    #     if not np.issubdtype(second.dtype, np.integer):
+    #         raise ValueError(f"Operation '{ufunc.__name__}' requires the second operand with type np.ndarray to have integer dtype, not '{second.dtype}'.")
+    elif isinstance(second, np.ndarray):
+        if meta["field"].dtypes == [np.object_]:
+            if not (second.dtype == np.object_ or np.issubdtype(second.dtype, np.integer)):
+                raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{second.dtype}'.")
+        else:
+            if not np.issubdtype(second.dtype, np.integer):
+                raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{second.dtype}'.")
+    else:
+        raise TypeError(f"Operation '{ufunc.__name__}' requires the second operand to be an integer or integer np.ndarray, not {type(second)}.")
+
+
+def _view_inputs_as_ndarray(inputs, kwargs):
+    # View all inputs that are Galois field arrays as np.ndarray to avoid infinite recursion
+    v_inputs = list(inputs)
+    for i in range(len(inputs)):
+        if isinstance(type(inputs[i]), GFMeta):
+            v_inputs[i] = inputs[i].view(np.ndarray)
+
+    # View all output arrays as np.ndarray to avoid infinite recursion
+    if "out" in kwargs:
+        outputs = kwargs["out"]
+        v_outputs = []
+        for output in outputs:
+            if isinstance(type(output), GFMeta):
+                o = output.view(np.ndarray)
+            else:
+                o = output
+            v_outputs.append(o)
+        kwargs["out"] = tuple(v_outputs)
+
+    return v_inputs, kwargs
+
+
+def _view_output_as_field(output, field, dtype):
+    if isinstance(output, np.ndarray):
+        return output.astype(dtype).view(field)
+    elif output is None:
+        return None
+    else:
+        return field(output)
+
+
+###############################################################################
+# GFArray mixin class
+###############################################################################
 
 class UfuncMixin(np.ndarray):
     """
     A mixin class that provides the overridding numpy ufunc functionality.
     """
 
-    def _view_input_gf_as_ndarray(self, inputs, kwargs, meta):
-        # View all input operands as np.ndarray to avoid infinite recursion
-        v_inputs = list(inputs)
-        # for i in meta["operands"]:
-        for i in meta["gf_operands"]:
-            if isinstance(inputs[i], self.__class__):
-                v_inputs[i] = inputs[i].view(np.ndarray)
+    # def _view_output_ndarray_as_field(self, ufunc, v_outputs):
+    #     if v_outputs is NotImplemented:
+    #         return v_outputs
+    #     if ufunc.nout == 1:
+    #         v_outputs = (v_outputs, )
 
-        # View all output arrays as np.ndarray to avoid infinite recursion
-        if "out" in kwargs:
-            outputs = kwargs["out"]
-            v_outputs = []
-            for output in outputs:
-                if isinstance(output, self.__class__):
-                    o = output.view(np.ndarray)
-                else:
-                    o = output
-                v_outputs.append(o)
-            kwargs["out"] = tuple(v_outputs)
+    #     outputs = []
+    #     for v_output in v_outputs:
+    #         o = self.__class__(v_output, dtype=self.dtype)
+    #         outputs.append(o)
 
-        return v_inputs, kwargs
+    #     return outputs[0] if len(outputs) == 1 else outputs
 
-    def _view_input_int_as_ndarray(self, inputs, meta):  # pylint: disable=no-self-use
-        v_inputs = list(inputs)
-        for i in meta["operands"]:
-            if isinstance(inputs[i], int):
-                # Use the largest valid dtype for this field
-                v_inputs[i] = np.array(inputs[i], dtype=type(self).dtypes[-1])
+    # def _verify_inputs(self, ufunc, method, inputs, meta):  # pylint: disable=too-many-branches
+    #     types = [meta["types"][i] for i in meta["operands"]]  # List of types of the "operands", excludes index lists, etc
+    #     operands = [inputs[i] for i in meta["operands"]]
 
-        return v_inputs
+    #     if method == "reduceat":
+    #         return
 
-    def _view_output_ndarray_as_gf(self, ufunc, v_outputs):
-        if v_outputs is NotImplemented:
-            return v_outputs
-        if ufunc.nout == 1:
-            v_outputs = (v_outputs, )
+    #     # Verify input operand types
+    #     if ufunc in [np.add, np.subtract, np.true_divide, np.floor_divide]:
+    #         if not all(t is self.__class__ for t in types):
+    #             raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the same field {self.__class__}, not {types}")
+    #     if ufunc in [np.multiply, np.power, np.square]:
+    #         if not all(np.issubdtype(o.dtype, np.integer) or o.dtype == np.object_ for o in operands):
+    #             raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the field {self.__class__} or integers, not {types}")
+    #     if ufunc in [np.power, np.square]:
+    #         if not types[0] is self.__class__:
+    #             raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields can only exponentiate elements in the same field {self.__class__}, not {types[0]}")
 
-        outputs = []
-        for v_output in v_outputs:
-            o = self.__class__(v_output, dtype=self.dtype)
-            outputs.append(o)
-
-        return outputs[0] if len(outputs) == 1 else outputs
-
-    def _verify_inputs(self, ufunc, method, inputs, meta):  # pylint: disable=too-many-branches
-        types = [meta["types"][i] for i in meta["operands"]]  # List of types of the "operands", excludes index lists, etc
-        operands = [inputs[i] for i in meta["operands"]]
-
-        if method == "reduceat":
-            return
-
-        # Verify input operand types
-        if ufunc in [np.add, np.subtract, np.true_divide, np.floor_divide]:
-            if not all(t is self.__class__ for t in types):
-                raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the same field {self.__class__}, not {types}")
-        if ufunc in [np.multiply, np.power, np.square]:
-            if not all(np.issubdtype(o.dtype, np.integer) or o.dtype == np.object_ for o in operands):
-                raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields must be performed against elements in the field {self.__class__} or integers, not {types}")
-        if ufunc in [np.power, np.square]:
-            if not types[0] is self.__class__:
-                raise TypeError(f"Operation '{ufunc.__name__}' in Galois fields can only exponentiate elements in the same field {self.__class__}, not {types[0]}")
-
-        # Verify no divide by zero or log(0) errors
-        if ufunc in [np.true_divide, np.floor_divide] and np.count_nonzero(operands[-1]) != operands[-1].size:
-            raise ZeroDivisionError("Divide by 0")
-        if ufunc is np.power:
-            if method == "outer" and (np.any(operands[0] == 0) and np.any(operands[1] < 0)):
-                raise ZeroDivisionError("Divide by 0")
-            if method == "__call__" and np.any(np.logical_and(operands[0] == 0, operands[1] < 0)):
-                raise ZeroDivisionError("Divide by 0")
-        if ufunc is np.log and np.count_nonzero(operands[0]) != operands[0].size:
-            raise ArithmeticError("Log(0) error")
+    #     # Verify no divide by zero or log(0) errors
+    #     if ufunc in [np.true_divide, np.floor_divide] and np.count_nonzero(operands[-1]) != operands[-1].size:
+    #         raise ZeroDivisionError("Divide by 0")
+    #     if ufunc is np.power:
+    #         if method == "outer" and (np.any(operands[0] == 0) and np.any(operands[1] < 0)):
+    #             raise ZeroDivisionError("Divide by 0")
+    #         if method == "__call__" and np.any(np.logical_and(operands[0] == 0, operands[1] < 0)):
+    #             raise ZeroDivisionError("Divide by 0")
+    #     if ufunc is np.log and np.count_nonzero(operands[0]) != operands[0].size:
+    #         raise ArithmeticError("Log(0) error")
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):  # pylint: disable=too-many-branches
         """
@@ -102,72 +259,30 @@ class UfuncMixin(np.ndarray):
         """
         meta = {}
         meta["types"] = [type(inputs[i]) for i in range(len(inputs))]
-        meta["operands"] = list(range(0, len(inputs)))
+        meta["operands"] = list(range(len(inputs)))
         if method in ["at", "reduceat"]:
             # Remove the second argument for "at" ufuncs which is the indices list
             meta["operands"].pop(1)
-        meta["gf_operands"] = [i for i in meta["operands"] if isinstance(inputs[i], self.__class__)]
-        meta["non_gf_operands"] = [i for i in meta["operands"] if not isinstance(inputs[i], self.__class__)]
+        meta["field_operands"] = [i for i in meta["operands"] if isinstance(inputs[i], self.__class__)]
+        meta["non_field_operands"] = [i for i in meta["operands"] if not isinstance(inputs[i], self.__class__)]
+        meta["field"] = self.__class__
+        meta["dtype"] = self.dtype
+        meta["ufuncs"] = self._ufuncs
 
-        # View Galois field array inputs as np.ndarray so subsequent numpy ufunc calls go to numpy and don't
-        # result in infinite recursion
-        inputs, kwargs = self._view_input_gf_as_ndarray(inputs, kwargs, meta)
+        inputs, kwargs = _view_inputs_as_ndarray(inputs, kwargs)
 
-        # For ufuncs we are not overriding, call the parent implementation
-        if ufunc not in OVERRIDDEN_UFUNCS:
-            return super().__array_ufunc__(ufunc, method, *inputs)  # pylint: disable=no-member
+        if ufunc in OVERRIDDEN_UFUNCS:
+            # Set all ufuncs with "casting" keyword argument to "unsafe" so we can cast unsigned integers
+            # to integers. We know this is safe because we already verified the inputs.
+            if method not in ["reduce", "accumulate", "at", "reduceat"]:
+                kwargs["casting"] = "unsafe"
 
-        inputs = self._view_input_int_as_ndarray(inputs, meta)
+            # Need to set the intermediate dtype for reduction operations or an error will be thrown. We
+            # use the largest valid dtype for this field.
+            if method in ["reduce"]:
+                kwargs["dtype"] = type(self).dtypes[-1]
 
-        self._verify_inputs(ufunc, method, inputs, meta)
+            return OVERRIDDEN_UFUNCS[ufunc](ufunc, method, inputs, kwargs, meta)
 
-        # Set all ufuncs with "casting" keyword argument to "unsafe" so we can cast unsigned integers
-        # to integers. We know this is safe because we already verified the inputs.
-        if method not in ["reduce", "accumulate", "at", "reduceat"]:
-            kwargs["casting"] = "unsafe"
-
-        # Need to set the intermediate dtype for reduction operations or an error will be thrown. We
-        # use the largest valid dtype for this field.
-        if method in ["reduce"]:
-            kwargs["dtype"] = type(self).dtypes[-1]
-
-        # Call appropriate ufunc method (implemented in subclasses)
-        if ufunc is np.add:
-            outputs = getattr(self._ufunc_add, method)(*inputs, **kwargs)
-        elif ufunc is np.subtract:
-            outputs = getattr(self._ufunc_subtract, method)(*inputs, **kwargs)
-        elif ufunc is np.multiply:
-            if meta["gf_operands"] == meta["operands"]:
-                # In-field multiplication
-                outputs = getattr(self._ufunc_multiply, method)(*inputs, **kwargs)
-            else:
-                # In-field "multiple addition" by an integer, i.e. GF(x) * 3 = GF(x) + GF(x) + GF(x)
-                if 0 not in meta["gf_operands"]:
-                    # If the integer is the first argument and the field element is the second, switch them. This
-                    # is done because the ufunc needs to know which input is not in the field (so it can perform a
-                    # modulus operation).
-                    i = meta["gf_operands"][0]
-                    j = meta["non_gf_operands"][0]
-                    inputs[j], inputs[i] = inputs[i], inputs[j]
-                outputs = getattr(self._ufunc_multiple_add, method)(*inputs, **kwargs)
-        elif ufunc in [np.true_divide, np.floor_divide]:
-            outputs = getattr(self._ufunc_divide, method)(*inputs, **kwargs)
-        elif ufunc is np.negative:
-            outputs = getattr(self._ufunc_negative, method)(*inputs, **kwargs)
-        elif ufunc is np.reciprocal:
-            outputs = getattr(self._ufunc_reciprocal, method)(*inputs, **kwargs)
-        elif ufunc is np.power:
-            outputs = getattr(self._ufunc_power, method)(*inputs, **kwargs)
-        elif ufunc is np.square:
-            inputs.append(np.array(2, dtype=self.dtype))
-            outputs = getattr(self._ufunc_power, method)(*inputs, **kwargs)
-        elif ufunc is np.log:
-            outputs = getattr(self._ufunc_log, method)(*inputs, **kwargs)
         else:
-            raise RuntimeError(f"The numpy ufunc '{ufunc.__name__}' wasn't processed even though it was supposed to be. Please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
-
-        if outputs is None or ufunc is np.log:
-            return outputs
-        else:
-            outputs = self._view_output_ndarray_as_gf(ufunc, outputs)
-            return outputs
+            return super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member

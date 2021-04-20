@@ -32,7 +32,10 @@ class GFMeta(TargetMixin):
         cls._display_poly_var = "α"
 
     def __str__(cls):
-        return f"<class 'numpy.ndarray' over {cls.name}>"
+        return f"<class 'numpy.ndarray over {cls.name}'>"
+
+    def __repr__(cls):
+        return f"<class 'numpy.ndarray over {cls.name}'>"
 
     ###############################################################################
     # Class methods
@@ -409,7 +412,7 @@ class GFMeta(TargetMixin):
         """
         if cls.dtypes == [np.object_]:
             return "python-calculate"
-        elif cls.order <= 2**16:
+        elif cls.order <= 2**20:
             return "jit-lookup"
         else:
             return "jit-calculate"
@@ -509,6 +512,8 @@ class GFMeta(TargetMixin):
         string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
         string += f"\n  primitive_element: {cls.primitive_element!r}"
         string += f"\n  dtypes: {[np.dtype(d).name for d in cls.dtypes]}"
+        string += f"\n  ufunc_mode: '{cls.ufunc_mode}'"
+        string += f"\n  ufunc_target: '{cls.ufunc_target}'"
         return string
 
 
