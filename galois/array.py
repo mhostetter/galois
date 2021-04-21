@@ -252,7 +252,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
             `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this field class, i.e. `cls.dtypes[0]`.
+            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
 
         Returns
         -------
@@ -283,7 +283,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
             `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this field class, i.e. `cls.dtypes[0]`.
+            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
 
         Returns
         -------
@@ -312,7 +312,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
             The size along one axis of the matrix. The resulting array has shape `(size,size)`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this field class, i.e. `cls.dtypes[0]`.
+            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
 
         Returns
         -------
@@ -345,7 +345,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
             The space between values. The default is 1.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this field class, i.e. `cls.dtypes[0]`.
+            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
 
         Returns
         -------
@@ -388,7 +388,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
             field's order :math:`p^m`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this field class, i.e. `cls.dtypes[0]`.
+            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
 
         Returns
         -------
@@ -426,7 +426,7 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
         ----------
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this field class, i.e. `cls.dtypes[0]`.
+            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
 
         Returns
         -------
