@@ -25,7 +25,6 @@ class GFMeta(TargetMixin):
         cls._is_primitive_poly = None
         cls._primitive_element = None
         cls._ground_field = None
-        cls._dtypes = []
         cls._ufunc_mode = None
         cls._ufunc_target = None
         cls._display_mode = "int"
@@ -218,7 +217,7 @@ class GFMeta(TargetMixin):
     @property
     def irreducible_poly(cls):
         """
-        galois.Poly: The irreducible polynomial :math:`\\pi(x)` of the Galois field :math:`\\mathrm{GF}(p^m)`. The irreducible
+        galois.Poly: The irreducible polynomial :math:`f(x)` of the Galois field :math:`\\mathrm{GF}(p^m)`. The irreducible
         polynomial is of degree :math:`m` over :math:`\\mathrm{GF}(p)`.
 
         Examples
@@ -270,7 +269,8 @@ class GFMeta(TargetMixin):
         int: A primitive element :math:`\\alpha` of the Galois field :math:`\\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
 
-        A primitive element is a root of the primitive polynomial :math:`\\pi(x)`, such that :math:`\\pi(\\alpha) = 0`
+        A primitive element is a root of the primitive polynomial :math:`\\f(x)`, such that :math:`f(\\alpha) = 0` over
+        :math:`\\mathrm{GF}(p^m)`.
 
         Examples
         --------
@@ -286,6 +286,19 @@ class GFMeta(TargetMixin):
 
     @property
     def primitive_elements(cls):
+        """
+        int: All primitive elements :math:`\\alpha` of the Galois field :math:`\\mathrm{GF}(p^m)`. A primitive element is a multiplicative
+        generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).primitive_elements
+            galois.GF(2**8).primitive_elements
+            galois.GF(31).primitive_elements
+            # galois.GF(7**5).primitive_elements
+        """
         powers = np.array(totatives(cls.order - 1))
         return np.sort(cls.primitive_element ** powers)
 
@@ -420,7 +433,7 @@ class GFMeta(TargetMixin):
     @property
     def ufunc_target(cls):
         """
-        str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, `"cuda"`, or `None`.
+        str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, or `"cuda"`.
 
         Examples
         --------
@@ -447,7 +460,7 @@ class GFMeta(TargetMixin):
             galois.GF(31).ufunc_targets
             galois.GF(2**100).ufunc_targets
         """
-        if cls._dtypes == [np.object_]:
+        if cls.dtypes == [np.object_]:
             return ["cpu"]
         else:
             return ["cpu", "parallel", "cuda"]
@@ -493,7 +506,7 @@ class GFMeta(TargetMixin):
     @property
     def properties(cls):
         """
-        str: A formmatted string displaying all the Galois field's attributes.
+        str: A formmatted string displaying relevant properties of the Galois field.
 
         Examples
         --------

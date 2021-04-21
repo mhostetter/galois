@@ -1,8 +1,8 @@
 """
 A pytest module to test the class attributes of Galois field array classes.
 """
-import numpy as np
 import pytest
+import numpy as np
 
 import galois
 
@@ -50,64 +50,15 @@ def test_dtypes(field):
         raise AssertionError(f"There is an untested field, {field}")
 
 
-def test_cant_set_characteristic():
+ATTRIBUTES = [
+    "characteristic", "default_ufunc_mode", "degree", "display_mode", "display_poly_var",
+    "dtypes", "ground_field", "irreducible_poly", "is_extension_field", "is_prime_field",
+    "is_primitive_poly", "name", "order", "primitive_element", "primitive_elements",
+    "properties", "ufunc_mode", "ufunc_modes", "ufunc_target", "ufunc_targets",
+]
+
+@pytest.mark.parametrize("attribute", ATTRIBUTES)
+def test_cant_set_attribute(attribute):
     GF = galois.GF2
     with pytest.raises(AttributeError):
-        GF.characteristic = None
-
-
-def test_cant_set_degree():
-    GF = galois.GF2
-    with pytest.raises(AttributeError):
-        GF.degree = None
-
-
-def test_cant_set_order():
-    GF = galois.GF2
-    with pytest.raises(AttributeError):
-        GF.order = None
-
-
-def test_cant_set_irreducible_poly():
-    GF = galois.GF2
-    with pytest.raises(AttributeError):
-        GF.irreducible_poly = None
-    assert GF.irreducible_poly is not GF._irreducible_poly
-
-
-def test_cant_set_primitive_element():
-    GF = galois.GF2
-    with pytest.raises(AttributeError):
-        GF.primitive_element = None
-    assert GF.primitive_element is not GF._primitive_element
-
-
-def test_cant_set_dtypes():
-    GF = galois.GF2
-    with pytest.raises(AttributeError):
-        GF.dtypes = None
-    assert GF.dtypes is not GF._dtypes
-
-
-def test_cant_set_ufunc_mode():
-    GF = galois.GF2
-    with pytest.raises(AttributeError):
-        GF.ufunc_mode = None
-
-
-def test_cant_set_ufunc_target():
-    GF = galois.GF2
-    with pytest.raises(AttributeError):
-        GF.ufunc_target = None
-
-
-def test_cant_set_display_mode():
-    GF = galois.GF2
-    with pytest.raises(AttributeError):
-        GF.display_mode = None
-
-
-def test_cant_set_display_poly_var():
-    GF = galois.GF2
-    with pytest.raises(AttributeError):
-        GF.display_poly_var = None
+        setattr(GF, attribute, None)

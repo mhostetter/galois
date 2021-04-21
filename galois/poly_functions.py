@@ -154,7 +154,12 @@ def is_irreducible(poly):
     """
     Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is irreducible.
 
-    This function implementats Rabin's irreducibility test. It says a degree-:math:`n` polynomial :math:`f(x)`
+    A polynomial :math:`f(x) \\in \\mathrm{GF}(p)[x]` is *reducible* over :math:`\\mathrm{GF}(p)` if it can
+    be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \\in \\mathrm{GF}(p)[x]` of strictly
+    lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
+    closed, such irreducible polynomials exist.
+
+    This function implements Rabin's irreducibility test. It says a degree-:math:`n` polynomial :math:`f(x)`
     over :math:`\\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\\ |\\ (x^{p^n} - x)`
     and :math:`\\textrm{gcd}(f(x),\\ x^{p^{m_i}} - x) = 1` for :math:`1 \\le i \\le k`, where :math:`m_i = n/p_i` for
     the :math:`k` prime divisors :math:`p_i` of :math:`n`.
@@ -174,6 +179,29 @@ def is_irreducible(poly):
     * M. O. Rabin. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273–280. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
     * S. Gao and D. Panarino. Tests and constructions of irreducible polynomials over finite fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
     * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
+
+    Examples
+    --------
+    .. ipython:: python
+
+        # Conway polynomials are always irreducible (and primitive)
+        f = galois.conway_poly(2, 5); f
+
+        # f(x) has no roots in GF(2), a requirement of being irreducible
+        f.roots()
+
+        galois.is_irreducible(f)
+
+    .. ipython:: python
+
+        g = galois.conway_poly(2, 4); g
+        h = galois.conway_poly(2, 5); h
+        f = g * h; f
+
+        # Even though f(x) has no roots in GF(2), it is still reducible
+        f.roots()
+
+        galois.is_irreducible(f)
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
@@ -239,7 +267,7 @@ def is_primitive(poly):
 def is_primitive_element(element, irreducible_poly):
     """
     Determines if :math:`g(x)` is a primitive element of the Galois field :math:`\\mathrm{GF}(p^m)` with
-    degree-:math:`m` irreducible polynomial :math:`p(x)` over :math:`\\mathrm{GF}(p)`.
+    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
 
     The number of primitive elements of :math:`\\mathrm{GF}(p^m)` is :math:`\\phi(p^m - 1)`, where
     :math:`\\phi(n)` is the Euler totient function, see :obj:`galois.euler_totient`.
@@ -250,35 +278,35 @@ def is_primitive_element(element, irreducible_poly):
         An element :math:`g(x)` of :math:`\\mathrm{GF}(p^m)` as a polynomial over :math:`\\mathrm{GF}(p)` with degree
         less than :math:`m`.
     irreducible_poly : galois.Poly
-        The degree-:math:`m` irreducible polynomial :math:`p(x)` over :math:`\\mathrm{GF}(p)` that defines the extension field :math:`\\mathrm{GF}(p^m)`.
+        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` that defines the extension field :math:`\\mathrm{GF}(p^m)`.
 
     Returns
     -------
     bool
         `True` if :math:`g(x)` is a primitive element of :math:`\\mathrm{GF}(p^m)` with irreducible polynomial
-        :math:`p(x)`.
+        :math:`f(x)`.
 
     Examples
     --------
     .. ipython:: python
 
         GF = galois.GF(3)
-        poly = galois.Poly([1,1,2], field=GF); poly
-        galois.is_irreducible(poly)
-        galois.is_primitive(poly)
+        f = galois.Poly([1,1,2], field=GF); f
+        galois.is_irreducible(f)
+        galois.is_primitive(f)
 
-        alpha = galois.Poly.Identity(GF); alpha
-        galois.is_primitive_element(alpha, poly)
+        g = galois.Poly.Identity(GF); g
+        galois.is_primitive_element(g, f)
 
     .. ipython:: python
 
         GF = galois.GF(3)
-        poly = galois.Poly([1,0,1], field=GF); poly
-        galois.is_irreducible(poly)
-        galois.is_primitive(poly)
+        f = galois.Poly([1,0,1], field=GF); f
+        galois.is_irreducible(f)
+        galois.is_primitive(f)
 
-        alpha = galois.Poly.Identity(GF); alpha
-        galois.is_primitive_element(alpha, poly)
+        g = galois.Poly.Identity(GF); g
+        galois.is_primitive_element(g, f)
     """
     assert isinstance(element, Poly) and isinstance(irreducible_poly, Poly)
     assert element.field is irreducible_poly.field
@@ -305,28 +333,26 @@ def is_primitive_element(element, irreducible_poly):
 
 def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):
     """
-    Finds the smallest primitive element of the Galois field :math:`\\mathrm{GF}(p^m)` with
-    degree-:math:`m` irreducible polynomial :math:`p(x)` over :math:`\\mathrm{GF}(p)`.
+    Finds the smallest primitive element :math:`g(x)` of the Galois field :math:`\\mathrm{GF}(p^m)` with
+    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
 
     Parameters
     ----------
     irreducible_poly : galois.Poly
-        The degree-:math:`m` irreducible polynomial :math:`p(x)` over :math:`\\mathrm{GF}(p)` that defines the extension field :math:`\\mathrm{GF}(p^m)`.
+        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` that defines the extension field :math:`\\mathrm{GF}(p^m)`.
     start : int, optional
-        Starting value (inclusive) in the search for a primitive element of :math:`\\mathrm{GF}(p^m)`. The default is `None`
-        which represents :math:`p`, which is corresponds to :math:`x` over :math:`\\mathrm{GF}(p)`. The resulting primitive elements,
-        if found, will be :math:`\\textrm{start} \\le x < \\textrm{stop}`.
+        Starting value (inclusive, integer representation of the polynomial) in the search for a primitive element :math:`g(x)` of :math:`\\mathrm{GF}(p^m)`.
+        The default is `None` which represents :math:`p`, which corresponds to :math:`g(x) = x` over :math:`\\mathrm{GF}(p)`.
     stop : int, optional
-        Stopping value (exclusive) in the search for a primitive element of :math:`\\mathrm{GF}(p^m)`. The default is `None`
-        which represents to :math:`p^m`, which is corresponds to :math:`x^n` over :math:`\\mathrm{GF}(p)`. The resulting primitive elements,
-        if found, will be :math:`\\textrm{start} \\le x < \\textrm{stop}`.
+        Stopping value (exclusive, integer representation of the polynomial) in the search for a primitive element :math:`g(x)` of :math:`\\mathrm{GF}(p^m)`.
+        The default is `None` which represents :math:`p^m`, which corresponds to :math:`g(x) = x^m` over :math:`\\mathrm{GF}(p)`.
     reverse : bool, optional
         Search for a primitive element in reverse order, i.e. find the largest primitive element first. Default is `False`.
 
     Returns
     -------
     galois.Poly
-        A primitive element of :math:`\\mathrm{GF}(p^m)` with irreducible polynomial :math:`p(x)`. The primitive element is
+        A primitive element of :math:`\\mathrm{GF}(p^m)` with irreducible polynomial :math:`f(x)`. The primitive element :math:`g(x)` is
         a polynomial over :math:`\\mathrm{GF}(p)` with degree less than :math:`m`.
 
     Examples
@@ -334,39 +360,31 @@ def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):
     .. ipython:: python
 
         GF = galois.GF(3)
-        poly = galois.Poly([1,1,2], field=GF); poly
-        galois.is_irreducible(poly)
-        galois.is_primitive(poly)
-        galois.primitive_element(poly)
+        f = galois.Poly([1,1,2], field=GF); f
+        galois.is_irreducible(f)
+        galois.is_primitive(f)
+        galois.primitive_element(f)
 
     .. ipython:: python
 
         GF = galois.GF(3)
-        poly = galois.Poly([1,0,1], field=GF); poly
-        galois.is_irreducible(poly)
-        galois.is_primitive(poly)
-        galois.primitive_element(poly)
-
-    .. ipython:: python
-
-        GF = galois.GF(3)
-        poly = galois.Poly([1,1,0], field=GF); poly
-        galois.is_irreducible(poly)
-        galois.primitive_element(poly)
+        f = galois.Poly([1,0,1], field=GF); f
+        galois.is_irreducible(f)
+        galois.is_primitive(f)
+        galois.primitive_element(f)
     """
     if not isinstance(irreducible_poly, Poly):
         raise TypeError(f"Argument `irreducible_poly` must be a galois.Poly, not {type(irreducible_poly)}.")
-    if not irreducible_poly.degree > 1:
-        raise ValueError(f"Argument `irreducible_poly` must have degree greater than 1, not {irreducible_poly.degree}.")
     if not isinstance(start, (type(None), int, np.integer)):
         raise TypeError(f"Argument `start` must be an integer, not {type(start)}.")
     if not isinstance(stop, (type(None), int, np.integer)):
         raise TypeError(f"Argument `stop` must be an integer, not {type(stop)}.")
     if not isinstance(reverse, bool):
         raise TypeError(f"Argument `reverse` must be a bool, not {type(reverse)}.")
-
+    if not irreducible_poly.degree > 1:
+        raise ValueError(f"Argument `irreducible_poly` must have degree greater than 1, not {irreducible_poly.degree}.")
     if not is_irreducible(irreducible_poly):
-        return None
+        raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly} is reducible over {irreducible_poly.field.name}.")
 
     p = irreducible_poly.field.order
     m = irreducible_poly.degree
@@ -391,31 +409,29 @@ def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):
 
 def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
     """
-    Finds all primitive elements of the Galois field :math:`\\mathrm{GF}(p^m)` with
-    degree-:math:`m` irreducible polynomial :math:`p(x)` over :math:`\\mathrm{GF}(p)`.
+    Finds all primitive elements :math:`g(x)` of the Galois field :math:`\\mathrm{GF}(p^m)` with
+    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
 
     The number of primitive elements of :math:`\\mathrm{GF}(p^m)` is :math:`\\phi(p^m - 1)`, where
-    :math:`\\phi(n)` is the Euler totient function, see :obj:galois.euler_totient`.
+    :math:`\\phi(n)` is the Euler totient function. See :obj:galois.euler_totient`.
 
     Parameters
     ----------
     irreducible_poly : galois.Poly
-        The degree-:math:`m` irreducible polynomial :math:`p(x)` over :math:`\\mathrm{GF}(p)` that defines the extension field :math:`\\mathrm{GF}(p^m)`.
+        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` that defines the extension field :math:`\\mathrm{GF}(p^m)`.
     start : int, optional
-        Starting value (inclusive) in the search for a primitive element of :math:`\\mathrm{GF}(p^m)`. The default is `None`
-        which represents :math:`p`, which is corresponds to :math:`x` over :math:`\\mathrm{GF}(p)`. The resulting primitive elements,
-        if found, will be :math:`\\textrm{start} \\le x < \\textrm{stop}`.
+        Starting value (inclusive, integer representation of the polynomial) in the search for primitive elements :math:`g(x)` of :math:`\\mathrm{GF}(p^m)`.
+        The default is `None` which represents :math:`p`, which corresponds to :math:`g(x) = x` over :math:`\\mathrm{GF}(p)`.
     stop : int, optional
-        Stopping value (exclusive) in the search for a primitive element of :math:`\\mathrm{GF}(p^m)`. The default is `None`
-        which represents to :math:`p^m`, which is corresponds to :math:`x^n` over :math:`\\mathrm{GF}(p)`. The resulting primitive elements,
-        if found, will be :math:`\\textrm{start} \\le x < \\textrm{stop}`.
+        Stopping value (exclusive, integer representation of the polynomial) in the search for primitive elements :math:`g(x)` of :math:`\\mathrm{GF}(p^m)`.
+        The default is `None` which represents :math:`p^m`, which corresponds to :math:`g(x) = x^m` over :math:`\\mathrm{GF}(p)`.
     reverse : bool, optional
-        List all primitive elements in descending order, i.e. largest to smallest. Default is `False`.
+        Search for primitive elements in reverse order, i.e. largest to smallest. Default is `False`.
 
     Returns
     -------
     list
-        List of all primitive elements of :math:`\\mathrm{GF}(p^m)` with irreducible polynomial :math:`p(x)`. Each primitive element is
+        List of all primitive elements of :math:`\\mathrm{GF}(p^m)` with irreducible polynomial :math:`f(x)`. Each primitive element :math:`g(x)` is
         a polynomial over :math:`\\mathrm{GF}(p)` with degree less than :math:`m`.
 
     Examples
@@ -423,31 +439,29 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
     .. ipython:: python
 
         GF = galois.GF(3)
-        poly = galois.Poly([1,1,2], field=GF); poly
-        galois.is_irreducible(poly)
-        galois.is_primitive(poly)
-        elements = galois.primitive_elements(poly); elements
-        len(elements) == galois.euler_totient(3**2 - 1)
+        f = galois.Poly([1,1,2], field=GF); f
+        galois.is_irreducible(f)
+        galois.is_primitive(f)
+        g = galois.primitive_elements(f); g
+        len(g) == galois.euler_totient(3**2 - 1)
 
     .. ipython:: python
 
         GF = galois.GF(3)
-        poly = galois.Poly([1,0,1], field=GF); poly
-        galois.is_irreducible(poly)
-        galois.is_primitive(poly)
-        elements = galois.primitive_elements(poly); elements
-        len(elements) == galois.euler_totient(3**2 - 1)
-
-    .. ipython:: python
-
-        GF = galois.GF(3)
-        poly = galois.Poly([1,1,0], field=GF); poly
-        galois.is_irreducible(poly)
-        elements = galois.primitive_elements(poly); elements
+        f = galois.Poly([1,0,1], field=GF); f
+        galois.is_irreducible(f)
+        galois.is_primitive(f)
+        g = galois.primitive_elements(f); g
+        len(g) == galois.euler_totient(3**2 - 1)
     """
+    if not isinstance(start, (type(None), int, np.integer)):
+        raise TypeError(f"Argument `start` must be an integer, not {type(start)}.")
+    if not isinstance(stop, (type(None), int, np.integer)):
+        raise TypeError(f"Argument `stop` must be an integer, not {type(stop)}.")
+    if not isinstance(reverse, bool):
+        raise TypeError(f"Argument `reverse` must be a bool, not {type(reverse)}.")
+
     element = primitive_element(irreducible_poly)
-    if element is None:
-        return []
 
     p = irreducible_poly.field.order
     m = irreducible_poly.degree
@@ -459,11 +473,8 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
         h = poly_exp_mod(element, totative, irreducible_poly)
         elements.append(h)
 
-    # Only return elements in the search range
-    elements = [e for e in elements if start <= e.integer < stop]
-
-    # Sort element lexicographically
-    elements = sorted(elements, key=lambda e: e.integer, reverse=reverse)
+    elements = [e for e in elements if start <= e.integer < stop]  # Only return elements in the search range
+    elements = sorted(elements, key=lambda e: e.integer, reverse=reverse)  # Sort element lexicographically
 
     return elements
 

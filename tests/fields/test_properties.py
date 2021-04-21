@@ -1,8 +1,10 @@
 """
 A pytest module to test various Galois field properties.
 """
-import numpy as np
+import random
+
 import pytest
+import numpy as np
 
 import galois
 
@@ -18,7 +20,7 @@ def test_characteristic(field):
     assert np.all(b == 0)
 
 
-def test_property_2(field):
+def test_element_order(field):
     if field.order > 1e6:  # TODO: Skip for extremely large fields
         return
     if field.order < 2**16:
@@ -27,14 +29,21 @@ def test_property_2(field):
         # Only select some, not all, elements for very large fields
         a = field.Random(2**16, low=1)
     q = field.order
-    assert np.all(a**q == a)
+    assert np.all(a**(q - 1) == 1)
+
+
+def test_primitive_element_is_generator(field):
+    if field.order > 1e6:  # TODO: Skip for extremely large fields
+        return
+    a = random.choice(field.primitive_elements)
+    elements = a ** np.arange(0, field.order - 1)
+    assert len(set(elements.tolist())) == field.order - 1
 
 
 def test_irreducible_poly(field):
-    prim_poly = field.irreducible_poly  # Polynomial in GF(p)
+    poly = field.irreducible_poly  # Polynomial in GF(p)
     alpha = field.primitive_element
-    poly = galois.Poly(prim_poly.coeffs, field=field)  # Polynomial in GF(p^m)
-    assert poly(alpha) == 0
+    assert field.is_primitive_poly == (poly(alpha, field=field) == 0)
 
 
 def test_freshmans_dream(field):
