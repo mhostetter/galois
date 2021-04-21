@@ -2,13 +2,14 @@ import random
 
 import numpy as np
 
+from .meta_gf import GFMeta
 from .array_mixin_function import FunctionMixin
 from .array_mixin_ufunc import UfuncMixin
-from .meta_gf import GFMeta
+from .array_mixin_linalg import LinearAlgebraMixin
 from .poly_conversion import integer_to_poly, poly_to_str, str_to_integer
 
 
-class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
+class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metaclass=GFMeta):  # pylint: disable=too-many-ancestors
     """
     Create an array over :math:`\\mathrm{GF}(p^m)`.
 
@@ -46,8 +47,8 @@ class GFArray(FunctionMixin, UfuncMixin, metaclass=GFMeta):
         is unmodified by changes to the Galois field array. Valid input array types are :obj:`numpy.ndarray`,
         :obj:`list` or :obj:`tuple` of ints or strs, :obj:`int`, or :obj:`str`.
     dtype : numpy.dtype, optional
-        The `copy` keyword argument from :obj:`numpy.array`. Setting `dtype` will explicitly set the data type of each
-        element. The default is `None` which represents the smallest valid dtype for this field class, i.e. `cls.dtypes[0]`.
+        The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+        dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
     copy : bool, optional
         The `copy` keyword argument from :obj:`numpy.array`. The default is `True` which makes a copy of the input
         object is it's an array.

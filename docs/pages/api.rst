@@ -6,3 +6,9 @@ API Reference v\ |version|
    :toctree: autosummary
 
    galois
+
+.. autosummary::
+   :template: np_module.rst
+   :toctree: autosummary
+
+   np
