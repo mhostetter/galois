@@ -1,8 +1,8 @@
 """
 A pytest module to test the accuracy of Galois field array arithmetic.
 """
-import numpy as np
 import pytest
+import numpy as np
 
 import galois
 
