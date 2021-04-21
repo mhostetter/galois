@@ -85,20 +85,6 @@ def _ufunc_log(ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-a
     return output
 
 
-OVERRIDDEN_UFUNCS = {
-    np.add: _ufunc_add,
-    np.subtract: _ufunc_subtract,
-    np.multiply: _ufunc_multiply,
-    np.floor_divide: _ufunc_divide,
-    np.true_divide: _ufunc_divide,
-    np.negative: _ufunc_negative,
-    np.reciprocal: _ufunc_reciprocal,
-    np.power: _ufunc_power,
-    np.square: _ufunc_square,
-    np.log: _ufunc_log,
-}
-
-
 ###############################################################################
 # Input conversion and type verification functions
 ###############################################################################
@@ -198,6 +184,41 @@ def _view_output_as_field(output, field, dtype):
 # GFArray mixin class
 ###############################################################################
 
+OVERRIDDEN_UFUNCS = {
+    np.add: _ufunc_add,
+    np.subtract: _ufunc_subtract,
+    np.multiply: _ufunc_multiply,
+    np.floor_divide: _ufunc_divide,
+    np.true_divide: _ufunc_divide,
+    np.negative: _ufunc_negative,
+    np.reciprocal: _ufunc_reciprocal,
+    np.power: _ufunc_power,
+    np.square: _ufunc_square,
+    np.log: _ufunc_log,
+}
+
+UNSUPPORTED_ONE_ARG_UFUNCS = [
+    np.invert, np.sqrt,
+    np.log2, np.log10,
+    np.exp, np.expm1, np.exp2,
+    np.sin, np.cos, np.tan,
+    np.sinh, np.cosh, np.tanh,
+    np.arcsin, np.arccos, np.arctan,
+    np.arcsinh, np.arccosh, np.arctanh,
+    np.degrees, np.radians,
+    np.deg2rad, np.rad2deg,
+    np.floor, np.ceil, np.trunc, np.rint,
+]
+
+UNSUPPORTED_TWO_ARG_UFUNCS = [
+    np.hypot, np.arctan2,
+    np.logaddexp, np.logaddexp2,
+    np.remainder,
+]
+
+UNSUPPORTED_UFUNCS = UNSUPPORTED_ONE_ARG_UFUNCS + UNSUPPORTED_TWO_ARG_UFUNCS
+
+
 class UfuncMixin(np.ndarray):
     """
     A mixin class that provides the overridding numpy ufunc functionality.
@@ -281,6 +302,9 @@ class UfuncMixin(np.ndarray):
                 kwargs["dtype"] = type(self).dtypes[-1]
 
             return OVERRIDDEN_UFUNCS[ufunc](ufunc, method, inputs, kwargs, meta)
+
+        elif ufunc in UNSUPPORTED_UFUNCS:
+            raise NotImplementedError(f"The numpy ufunc '{ufunc.__name__}' is not supported on Galois field arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         else:
             return super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
