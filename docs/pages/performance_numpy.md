@@ -1,4 +1,4 @@
-# Performance
+# Performance compared with native numpy
 
 To compare the performance of `galois` and native numpy, we'll use a prime field `GF(p)`. This is because
 it is the simplest field. Namely, addition, subtraction, and multiplication are modulo `p`, which can

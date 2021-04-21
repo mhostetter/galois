@@ -1,7 +1,7 @@
 Development
 ===========
 
-For users who'd like to actively develop with :obj:`galois`, these sections may prove helpful.
+For users who would like to actively develop with :obj:`galois`, these sections may prove helpful.
 
 Install for development
 -----------------------
@@ -31,9 +31,9 @@ the oldest supported dependencies, you can do the following:
    $ git clone https://github.com/mhostetter/galois.git
 
    # First install the minimum version of the dependencies
-   $ python3 -m pip install -r  galois/requirements-min.txt
+   $ python3 -m pip install -r galois/requirements-min.txt
 
-   # Then installing the package won't upgrade those dependencies
+   # Then, installing the package won't upgrade the dependencies since their versions are satisfactory
    $ python3 -m pip install -e galois
 
 Locally lint the package
@@ -60,8 +60,8 @@ Run the linter.
 Locally run the unit tests
 --------------------------
 
-The unit testing is done through `pytest <https://docs.pytest.org/en/stable/>`_. The tests themselves are stored in `tests/`. We test
-against test vectors, stored in `tests/data/`. generated from the `SageMath <https://www.sagemath.org/>`_ package.
+Unit testing is done through `pytest <https://docs.pytest.org/en/stable/>`_. The tests themselves are stored in `tests/`. We test
+against test vectors, stored in `tests/data/`. generated using `SageMath <https://www.sagemath.org/>`_.
 See the `scripts/generate_test_vectors.py` script. The testing dependencies are stored in `requirements-test.txt`.
 
 .. literalinclude:: ../../requirements-test.txt
