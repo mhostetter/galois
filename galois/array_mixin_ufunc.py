@@ -1,7 +1,7 @@
 import numpy as np
 
+from .linalg import matmul
 from .meta_gf import GFMeta
-
 
 ###############################################################################
 # Overridden ufunc routines
@@ -85,10 +85,6 @@ def _ufunc_log(ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-a
     return output
 
 
-# def _ufunc_matmul(ufunc, method, inputs, kwargs, meta):
-#     return matmul(*inputs, **kwargs)
-
-
 OVERRIDDEN_UFUNCS = {
     np.add: _ufunc_add,
     np.subtract: _ufunc_subtract,
@@ -100,7 +96,6 @@ OVERRIDDEN_UFUNCS = {
     np.power: _ufunc_power,
     np.square: _ufunc_square,
     np.log: _ufunc_log,
-    # np.matmul: _ufunc_matmul,
 }
 
 
@@ -257,6 +252,9 @@ class UfuncMixin(np.ndarray):
         appropriate, use native numpy ufuncs for their efficiency and generality in supporting various array
         shapes, etc.
         """
+        if ufunc is np.matmul:
+            return matmul(*inputs, **kwargs)
+
         meta = {}
         meta["types"] = [type(inputs[i]) for i in range(len(inputs))]
         meta["operands"] = list(range(len(inputs)))
