@@ -9,17 +9,13 @@ Galois: A performant numpy extension for Galois fields
    Evariste Galois, `image credit <https://www.deviantart.com/daga-ra/art/Evariste-Galois-283582290>`_
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    pages/installation.rst
    pages/basic_usage.rst
    pages/tutorials.rst
    pages/performance.rst
    pages/development.rst
-
-.. toctree::
-   :maxdepth: 1
-
    pages/api.rst
 
 Indices and tables
