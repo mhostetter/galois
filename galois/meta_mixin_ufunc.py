@@ -14,7 +14,7 @@ ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 
 
-class TargetMixin(type):
+class UfuncMixin(type):
     """
     A mixin class that provides the basics for compiling ufuncs.
     """
@@ -32,15 +32,9 @@ class TargetMixin(type):
         cls._primitive_element_dec = None
         cls._irreducible_poly_dec = None
 
-    def _fill_in_lookup_tables(cls):
-        """
-        To be implemented in PrimeTargetMixin and ExtensionTargetMixin. Each class GF2Meta, GF2mMeta,
-        GFpMeta, and GFpmMeta will inherit from either PrimeTargetMixin or ExtensionLookupMixin.
-        """
-        raise NotImplementedError
-
     def _build_lookup_tables(cls):
         order = cls.order
+        primitive_element = cls._primitive_element_dec
         dtype = np.int64
         if order > np.iinfo(dtype).max:
             raise RuntimeError(f"Cannot build lookup tables for {cls.name} since the elements cannot be represented with dtype {dtype}.")
@@ -49,7 +43,23 @@ class TargetMixin(type):
         cls._LOG = np.zeros(order, dtype=dtype)
         cls._ZECH_LOG = np.zeros(order, dtype=dtype)
 
-        cls._fill_in_lookup_tables()
+        element = 1
+        cls._EXP[0] = element
+        cls._LOG[0] = 0  # Technically -Inf
+        for i in range(1, order):
+            # Increment by multiplying by the primitive element, which is a multiplicative generator of the field
+            element = cls._multiply_python(element, primitive_element)
+            cls._EXP[i] = element
+
+            # Assign to the log lookup table but skip indices greater than or equal to `order - 1`
+            # because `EXP[0] == EXP[order - 1]`
+            if i < order - 1:
+                cls._LOG[cls._EXP[i]] = i
+
+        # Compute Zech log lookup table
+        for i in range(0, order):
+            one_plus_element = cls._add_python(1, cls._EXP[i])
+            cls._ZECH_LOG[i] = cls._LOG[one_plus_element]
 
         if not cls._EXP[order - 1] == 1:
             raise RuntimeError(f"The anti-log lookup table for {cls.name} is not cyclic with size {order - 1}, which means the primitive element {cls.primitive_element} does not have multiplicative order {order - 1} and therefore isn't a multiplicative generator for {cls.name}.")
@@ -131,19 +141,19 @@ class TargetMixin(type):
 
     def _add_python(cls, a, b):
         """
-        To be implemented by GF2, GF2m, GFp, and GFpm.
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
         """
         raise NotImplementedError
 
     def _subtract_python(cls, a, b):
         """
-        To be implemented by GF2, GF2m, GFp, and GFpm.
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
         """
         raise NotImplementedError
 
     def _multiply_python(cls, a, b):
         """
-        To be implemented by GF2, GF2m, GFp, and GFpm.
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
         """
         raise NotImplementedError
 
@@ -156,13 +166,13 @@ class TargetMixin(type):
 
     def _additive_inverse_python(cls, a):
         """
-        To be implemented by GF2, GF2m, GFp, and GFpm.
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
         """
         raise NotImplementedError
 
     def _multiplicative_inverse_python(cls, a):
         """
-        To be implemented by GF2, GF2m, GFp, and GFpm.
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
         """
         raise NotImplementedError
 

@@ -1,10 +1,10 @@
 import numpy as np
 
-from .meta_mixin_target import TargetMixin
+from .meta_mixin_ufunc import UfuncMixin
 from .modular import totatives
 
 
-class GFMeta(TargetMixin):
+class GFMeta(UfuncMixin):
     """
     Defines a metaclass for all :obj:`galois.GFArray` classes.
 
