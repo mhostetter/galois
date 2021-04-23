@@ -525,9 +525,6 @@ class GFMeta(TargetMixin):
         string += f"\n  irreducible_poly: {cls.irreducible_poly}"
         string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
         string += f"\n  primitive_element: {cls.primitive_element!r}"
-        string += f"\n  dtypes: {[np.dtype(d).name for d in cls.dtypes]}"
-        string += f"\n  ufunc_mode: '{cls.ufunc_mode}'"
-        string += f"\n  ufunc_target: '{cls.ufunc_target}'"
         return string
 
 
