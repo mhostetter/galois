@@ -36,8 +36,8 @@ the oldest supported dependencies, you can do the following:
    # Then, installing the package won't upgrade the dependencies since their versions are satisfactory
    $ python3 -m pip install -e galois
 
-Locally lint the package
-------------------------
+Lint the package
+----------------
 
 Linting is done with `pylint <https://www.pylint.org/>`_. The linting dependencies are stored in `requirements-lint.txt`.
 
@@ -57,8 +57,8 @@ Run the linter.
 
    $ python3 -m pylint --rcfile=setup.cfg galois/
 
-Locally run the unit tests
---------------------------
+Run the unit tests
+------------------
 
 Unit testing is done through `pytest <https://docs.pytest.org/en/stable/>`_. The tests themselves are stored in `tests/`. We test
 against test vectors, stored in `tests/data/`. generated using `SageMath <https://www.sagemath.org/>`_.
@@ -80,8 +80,8 @@ Run the unit tests.
 
    $ python3 -m pytest tests/
 
-Locally build the documentation
--------------------------------
+Build the documentation
+-----------------------
 
 The documentation is generated with `Sphinx <https://www.sphinx-doc.org/en/master/>`_. The dependencies are
 stored in `requirements-doc.txt`.

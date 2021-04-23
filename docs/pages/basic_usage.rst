@@ -1,189 +1,257 @@
 Basic Usage
 ===========
 
-Galois field array construction
--------------------------------
+The main idea of the :obj:`galois` package can be summarized as follows. The user creates a "Galois field array class" using `GF = galois.GF(p**m)`.
+A Galois field array class `GF` is a subclass of :obj:`numpy.ndarray` and its constructor `x = GF(array_like)` mimics
+the call signature of :func:`numpy.array`. A Galois field array `x` is operated on like any other numpy array, but all
+arithmetic is performed in :math:`\mathrm{GF}(p^m)` not :math:`\mathbb{Z}` or :math:`\mathbb{R}`.
 
-Construct Galois field array classes using the :obj:`galois.GF` class factory function.
+Internally, the Galois field arithmetic is implemented by replacing `numpy ufuncs <https://numpy.org/doc/stable/reference/ufuncs.html>`_.
+The new ufuncs are written in python and then `just-in-time compiled <https://numba.pydata.org/numba-doc/dev/user/vectorize.html>`_ with
+`numba <https://numba.pydata.org/>`_. The ufuncs can be configured to use either lookup tables (for speed) or explicit
+calculation (for memory savings). Numba also provides the ability to `"target" <https://numba.readthedocs.io/en/stable/user/vectorize.html?highlight=target>`_
+the JIT-compiled ufuncs for CPUs or GPUs.
+
+In addition to normal array arithmetic, :obj:`galois` also supports linear algebra (with :obj:`numpy.linalg` functions) and polynomials over Galois fields
+(with the :obj:`galois.Poly` class).
+
+Class construction
+------------------
+
+Galois field array classes are created using the :func:`galois.GF` class factory function.
 
 .. ipython:: python
 
    import numpy as np
    import galois
 
-   GF31 = galois.GF(31); print(GF31)
-   issubclass(GF31, np.ndarray)
+   GF256 = galois.GF(2**8)
+   print(GF256)
 
-Galois field array classes contain extra class attributes related to the finite field.
-
-.. ipython:: python
-
-   # The size of the finite field
-   GF31.order
-
-   # A primitive element of the finite field
-   GF31.primitive_element
-
-   # The primitive polynomial of the finite field
-   GF31.irreducible_poly
-
-Create any Galois field array class type: `GF(2^m)`, `GF(p)`, or `GF(p^m)`. Even arbitrarily-large fields!
+These classes are subclasses of :obj:`galois.GFArray` (which itself subclasses :obj:`numpy.ndarray`) and have :obj:`galois.GFMeta` as their metaclass.
 
 .. ipython:: python
 
-   # Field used in AES
-   GF256 = galois.GF(2**8); print(GF256)
+   issubclass(GF256, np.ndarray)
+   issubclass(GF256, galois.GFArray)
+   issubclass(type(GF256), galois.GFMeta)
 
-   prime = 36893488147419103183; galois.is_prime(prime)
-   # Large prime field
-   GFp = galois.GF(prime); print(GFp)
+A Galois field array class contains attributes relating to its Galois field and methods to modify how the field
+is calculated or displayed. See the attributes and methods in :obj:`galois.GFMeta`.
 
-   # Large characteristic-2 field
-   GF2_100 = galois.GF(2**100); print(GF2_100)
+.. ipython:: python
 
-Create arrays from existing `numpy` arrays.
+   # Summarizes some properties of the Galois field
+   print(GF256.properties)
+
+   # Access each attribute individually
+   GF256.irreducible_poly
+
+The :obj:`galois` package even supports arbitrarily-large fields! This is accomplished by using numpy arrays
+with `dtype=object` and pure-python ufuncs. This comes at a performance penalty compared to smaller fields
+which use numpy integer dtypes (e.g., :obj:`numpy.uint32`) and have compiled ufuncs.
+
+.. ipython:: python
+
+   GF = galois.GF(36893488147419103183); print(GF.properties)
+   GF = galois.GF(2**100); print(GF.properties)
+
+Array creation
+--------------
+
+Galois field arrays can be created from existing numpy arrays.
 
 .. ipython:: python
 
    # Represents an existing numpy array
    array = np.random.randint(0, GF256.order, 10, dtype=int); array
 
-   # Explicit Galois field construction
+   # Explicit Galois field array creation (a copy is performed)
    GF256(array)
 
-   # Numpy view casting to a Galois field
+   # Or view an existing numpy array as a Galois field array (no copy is performed)
    array.view(GF256)
 
-Or, create Galois field arrays using alternate constructors.
+Or they can be created from "array-like" objects. These include strings representing a Galois field element
+as a polynomial over its prime subfield.
 
 .. ipython:: python
 
-   x = GF256.Random(10); x
+   # Arrays can be specified as iterables of iterables
+   GF256([[217, 130, 42], [74, 208, 113]])
 
-   # Construct a random array without zeros to prevent ZeroDivisonError
-   y = GF256.Random(10, low=1); y
+   # You can mix-and-match polynomial strings and integers
+   GF256(["x^6 + 1", 2, "1", "x^5 + x^4 + x"])
 
-The class factory :obj:`galois.GF` stores flyweights of previously generated classes. So, after creating a Galois field array
-class you can assign it to a variable for future use or always use class factory. Both are equally fast. It's up to personal
-preference and coding style. When creating a Galois field array class with several keyword arguments, that may be a good time
-to save the class to a variable.
+   # Single field elements are 0-dimensional arrays
+   GF256("x^6 + x^4 + 1")
 
-.. ipython:: python
+Galois field arrays also have constructor class methods for convenience. They include:
 
-   # Create a Galois field array class and assign it to a variable
-   GF256 = galois.GF(2**8); print(GF256)
+- :func:`galois.GFArray.Zeros`, :func:`galois.GFArray.Ones`, :func:`galois.GFArray.Eye`, :func:`galois.GFArray.Range`, :func:`galois.GFArray.Random`, :func:`galois.GFArray.Elements`
 
-   # Use the class variable to create arrays
-   GF256.Random((2,5))
-
-   # Or simply call the class factory each time
-   galois.GF(2**8).Random((2,5))
-
-Galois field array arithmetic
------------------------------
-
-Galois field arrays support traditional numpy array operations.
+Galois field elements can either be displayed using their integer representation or their polynomial representation.
+Calling :func:`galois.GFMeta.display` will change the element representation. If called as a context manager, the
+display mode will only be temporarily changed.
 
 .. ipython:: python
 
-   x + y
+   x = GF256(["y**6 + 1", 2, "1", "y**5 + y**4 + y"]); x
 
-   -x
-
-   x * y
-
-   x / y
-
-   # Multiple addition of a Galois field array with any integer
-   x * -3  # NOTE: -3 is outside the field
-
-   # Exponentiate a Galois field array with any integer
-   y ** -2  # NOTE: -2 is outside the field
-
-   # Log base alpha (the field's primitive element)
-   np.log(y)
-
-Even field arithmetic on extremely large fields!
-
-.. ipython:: python
-
-   m = GFp.Random(3)
-   n = GFp.Random(3)
-   m + n
-   m ** 123456
-
-   r = GF2_100.Random(3); r
-
-   # With characteristic 2, this will always be zero
-   r + r
-
-   # This is equivalent
-   r * 2
-
-   # But this will result in `r`
-   r * 3
-
-Galois field arrays support numpy array broadcasting.
-
-.. ipython:: python
-
-   a = GF31.Random((2,5)); a
-   b = GF31.Random(5); b
-
-   a + b
-
-Galois field arrays also support numpy ufunc methods.
-
-.. ipython:: python
-
-   # Valid ufunc methods include "reduce", "accumulate", "reduceat", "outer", "at"
-   np.multiply.reduce(a, axis=0)
-
-   np.multiply.outer(x, y)
-
-Display field elements as integers or polynomials.
-
-.. ipython:: python
-
-   print(x)
-
-   # Temporarily set the display mode to represent GF(p^m) field elements as polynomials over GF(p)[x].
+   # Temporarily set the display mode to represent GF(2^8) field elements as polynomials over GF(2) with degree less than 8
    with GF256.display("poly"):
       print(x)
 
-Galois field polynomial construction
-------------------------------------
+Field arithmetic
+----------------
 
-Construct Galois field polynomials.
+Galois field arrays are treated like any other numpy array. Array arithmetic is performed using python operators or numpy
+functions.
+
+In the list below, `GF` is a Galois field array class created by `GF = galois.GF(p**m)`, `x` and `y` are `GF` arrays, and `z` is an
+integer `numpy.ndarray`. All arithmetic operations follow normal numpy `broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules.
+
+- Addition: `x + y == np.add(x, y)`
+- Subtraction: `x - y == np.subtract(x, y)`
+- Multiplication: `x * y == np.multiply(x, y)`
+- Division: `x / y == x // y == np.divide(x, y)`
+- Scalar multiplication: `x * z == np.multiply(x, z)`, e.g. `x * 3 == x + x + x`
+- Additive inverse: `-x == np.negative(x)`
+- Multiplicative inverse: `GF(1) / x == np.reciprocal(x)`
+- Exponentiation: `x ** z == np.power(x, z)`, e.g. `x ** 3 == x * x * x`
+- Logarithm: `np.log(x)`, e.g. `GF.primitive_element ** np.log(x) == x`
+- **COMING SOON:** Logarithm base `b`: `GF.log(x, b)`, where `b` is any field element
+- Matrix multiplication: `A @ B == np.matmul(A, B)`
 
 .. ipython:: python
 
-   # Construct a polynomial by specifying all the coefficients in descending-degree order
-   p = galois.Poly([1, 22, 0, 17, 25], field=GF31); p
+   x = GF256.Random((2,5)); x
+   y = GF256.Random(5); y
+   # y is broadcast over the last dimension of x
+   x + y
 
-   # Construct a polynomial by specifying only the non-zero coefficients
-   q = galois.Poly.Degrees([2, 0], coeffs=[4, 14], field=GF31); q
+Linear algebra
+--------------
 
-Galois field polynomial arithmetic
-----------------------------------
+The :obj:`galois` package intercepts relevant calls to numpy's linear algebra functions and performs the specified
+operation in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{R}`. Some of these functions include:
 
-Galois field polynomial arithmetic is similar to numpy array operations.
+- :func:`np.trace`
+- :func:`np.linalg.matrix_rank`, :func:`np.linalg.matrix_power`
+- :func:`np.linalg.det`, :func:`np.linalg.inv`, :func:`np.linalg.solve`
 
 .. ipython:: python
 
-   p + q
-   p // q, p % q
-   p ** 2
+   A = GF256.Random((3,3)); A
+   b = GF256.Random(3); b
+   x = np.linalg.solve(A, b); x
+   np.array_equal(A @ x, b)
 
-Galois field polynomials can also be evaluated at constants or arrays.
+Galois field arrays also contain matrix decomposition routines not included in numpy. These include:
+
+- :func:`galois.GFArray.row_reduce`, :func:`galois.GFArray.lu_decompose`, :func:`galois.GFArray.lup_decompose`
+
+Numpy ufunc methods
+-------------------
+
+Galois field arrays support `numpy ufunc methods <https://numpy.org/devdocs/reference/ufuncs.html#methods>`_. This allows the user to apply a ufunc in a unique was across the target
+array. The ufunc method signature is `<ufunc>.<method>(*args, **kwargs)`. All arithmetic ufuncs are supported. Below
+is a list of their ufunc methods.
+
+- `<method>`: `reduce`, `accumulate`, `reduceat`, `outer`, `at`
+
+.. ipython:: python
+
+   X = GF256.Random((2,5)); X
+   np.multiply.reduce(X, axis=0)
+
+.. ipython:: python
+
+   x = GF256.Random(5); x
+   y = GF256.Random(5); y
+   np.multiply.outer(x, y)
+
+Numpy functions
+---------------
+
+Many other relevant numpy functions are supported on Galois field arrays. These include:
+
+- :func:`np.copy`, :func:`np.concatenate`, :func:`np.insert`, :func:`np.reshape`
+
+Polynomial construction
+-----------------------
+
+The :obj:`galois` package supports polynomials over Galois fields with the :obj:`galois.Poly` class. :obj:`galois.Poly`
+does not subclass :obj:`numpy.ndarray` but instead contains a :obj:`galois.GFArray` of coefficients as an attribute
+(implements the "has-a", not "is-a", architecture).
+
+Polynomials can be created by specifying the polynomial coefficients as either a :obj:`galois.GFArray` or an "array-like"
+object with the `field` keyword argument.
+
+.. ipython:: python
+
+   p = galois.Poly([172, 22, 0, 0, 225], field=GF256); p
+
+   coeffs = GF256([33, 17, 0, 225]); coeffs
+   p = galois.Poly(coeffs, order="asc"); p
+
+Polynomials over Galois fields can also display the field elements as polynomials over their prime subfields.
+This can be quite confusing to read, so be warned!
+
+.. ipython:: python
+
+   print(p)
+   with GF256.display("poly"):
+      print(p)
+
+Polynomials can also be created using a number of constructor class methods. They include:
+
+- :func:`galois.Poly.Zero`, :func:`galois.Poly.One`, :func:`galois.Poly.Identity`, :func:`galois.Poly.Random`, :func:`galois.Poly.Integer`, :func:`galois.Poly.Degrees`, :func:`galois.Poly.Roots`
+
+.. ipython:: python
+
+   # Construct a polynomial by specifying its roots
+   q = galois.Poly.Roots([155, 37], field=GF256); q
+   q.roots()
+
+Polynomial arithmetic
+---------------------
+
+Polynomial arithmetic is performed using python operators.
 
 .. ipython:: python
 
    p
-   a
+   q
+   p + q
+   divmod(p, q)
+   p ** 2
 
-   # Evaluate a polynomial at a single value
+Polynomials over Galois fields can be evaluated at scalars or arrays of field elements.
+
+.. ipython:: python
+
+   p = galois.Poly.Degrees([4, 3, 0], [172, 22, 225], field=GF256); p
+
+   # Evaluate the polynomial at a single value
    p(1)
 
-   # Evaluate a polynomial at an array of values
-   p(a)
+   x = GF256.Random((2,5)); x
+
+   # Evaluate the polynomial at an array of values
+   p(x)
+
+Polynomials can also be evaluated in superfields. For example, evaluating a Galois field's irreducible
+polynomial at one of its elements.
+
+.. ipython:: python
+
+   # Notice the irreducible polynomial is over GF(2), not GF(2^8)
+   p = GF256.irreducible_poly; p
+   GF256.is_primitive_poly
+
+   # Notice the primitive element is in GF(2^8)
+   alpha = GF256.primitive_element; alpha
+
+   # Since p(x) is a primitive polynomial, alpha is one of its roots
+   p(alpha, field=GF256)
