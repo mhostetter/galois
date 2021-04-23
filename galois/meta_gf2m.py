@@ -3,7 +3,6 @@ import numpy as np
 
 from .dtypes import DTYPES
 from .meta_gf import GFMeta
-from .meta_mixin_extension_field import ExtensionFieldMixin
 from .poly import Poly
 
 # Field attribute globals
@@ -19,7 +18,7 @@ MULTIPLY_JIT = lambda x, y: x * y
 MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
 
-class GF2mMeta(GFMeta, ExtensionFieldMixin):
+class GF2mMeta(GFMeta):
     """
     An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
     """
@@ -34,11 +33,11 @@ class GF2mMeta(GFMeta, ExtensionFieldMixin):
         cls._primitive_element = kwargs["primitive_element"]
         cls._ground_field = kwargs["ground_field"]
 
-        cls.compile(kwargs["mode"], kwargs["target"])
+        cls._primitive_element_dec = cls._primitive_element.integer
+        cls._irreducible_poly_dec = cls._irreducible_poly.integer  # pylint: disable=no-member
 
+        cls.compile(kwargs["mode"], kwargs["target"])
         cls._primitive_element = cls(cls._primitive_element.integer)
-        cls._primitive_element_dec = int(cls.primitive_element)
-        cls._irreducible_poly_dec = cls.irreducible_poly.integer  # pylint: disable=no-member
 
         poly = cls.irreducible_poly
         poly.field = cls

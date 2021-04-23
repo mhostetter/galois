@@ -3,7 +3,6 @@ import numpy as np
 
 from .dtypes import DTYPES
 from .meta_gf import GFMeta
-from .meta_mixin_prime_field import PrimeFieldMixin
 
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -13,7 +12,7 @@ ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 
 
-class GF2Meta(GFMeta, PrimeFieldMixin):
+class GF2Meta(GFMeta):
     """
     Create an array over :math:`\\mathrm{GF}(2)`.
 
@@ -92,6 +91,7 @@ class GF2Meta(GFMeta, PrimeFieldMixin):
         cls._primitive_element = 1
         cls._ground_field = cls
 
+        cls._primitive_element_dec = int(cls._primitive_element)
         cls.compile(kwargs["mode"], kwargs["target"])
 
         cls._primitive_element = cls(cls.primitive_element)

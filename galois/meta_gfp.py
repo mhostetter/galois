@@ -4,7 +4,6 @@ import numpy as np
 from .algorithm import gcd, gcd_jit
 from .dtypes import DTYPES
 from .meta_gf import GFMeta
-from .meta_mixin_prime_field import PrimeFieldMixin
 from .poly import Poly
 
 # Field attribute globals
@@ -18,7 +17,7 @@ MULTIPLY_JIT = lambda x, y: x * y
 MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
 
-class GFpMeta(GFMeta, PrimeFieldMixin):
+class GFpMeta(GFMeta):
     """
     An abstract base class for all :math:`\\mathrm{GF}(p)` field array classes.
     """
@@ -32,6 +31,7 @@ class GFpMeta(GFMeta, PrimeFieldMixin):
         cls._primitive_element = kwargs["primitive_element"]
         cls._ground_field = cls
 
+        cls._primitive_element_dec = int(cls._primitive_element)
         cls.compile(kwargs["mode"], kwargs["target"])
 
         cls._irreducible_poly = Poly([1, -int(cls.primitive_element)], field=cls)
@@ -39,7 +39,6 @@ class GFpMeta(GFMeta, PrimeFieldMixin):
         cls._is_primitive_poly = True
 
         # Add helper variables for python ufuncs. This prevents the ufuncs from having to repeatedly calculate them.
-        cls._primitive_element_dec = int(cls.primitive_element)
         cls._irreducible_poly_dec = cls.irreducible_poly.integer  # pylint: disable=no-member
 
     @property
