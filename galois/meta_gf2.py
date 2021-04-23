@@ -92,7 +92,7 @@ class GF2Meta(GFMeta, PrimeFieldMixin):
         cls._primitive_element = 1
         cls._ground_field = cls
 
-        cls.target(kwargs["mode"], kwargs["target"])
+        cls.compile(kwargs["mode"], kwargs["target"])
 
         cls._primitive_element = cls(cls.primitive_element)
         cls._is_primitive_poly = True
@@ -108,7 +108,7 @@ class GF2Meta(GFMeta, PrimeFieldMixin):
     def default_ufunc_mode(cls):
         return "jit-calculate"
 
-    def _target_jit_calculate(cls, target):
+    def _compile_jit_calculate(cls, target):
         global CHARACTERISTIC, ADD_JIT, MULTIPLY_JIT
         CHARACTERISTIC = cls._characteristic
 

@@ -34,7 +34,7 @@ class GF2mMeta(GFMeta, ExtensionFieldMixin):
         cls._primitive_element = kwargs["primitive_element"]
         cls._ground_field = kwargs["ground_field"]
 
-        cls.target(kwargs["mode"], kwargs["target"])
+        cls.compile(kwargs["mode"], kwargs["target"])
 
         cls._primitive_element = cls(cls._primitive_element.integer)
         cls._primitive_element_dec = int(cls.primitive_element)
@@ -51,7 +51,7 @@ class GF2mMeta(GFMeta, ExtensionFieldMixin):
             d = [np.object_]
         return d
 
-    def _target_jit_calculate(cls, target):
+    def _compile_jit_calculate(cls, target):
         global CHARACTERISTIC, ORDER, ALPHA, PRIM_POLY_DEC, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
         CHARACTERISTIC = cls.characteristic
         ORDER = cls.order

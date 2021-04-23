@@ -12,10 +12,6 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
         raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
     if not is_prime(characteristic):
         raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
-    if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
-        raise ValueError(f"Argument `mode` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode}.")
-    if not target in ["cpu", "parallel", "cuda"]:
-        raise ValueError(f"Argument `target` must be in ['cpu', 'parallel', 'cuda'], not {target}.")
     degree = 1
     order = characteristic**degree
 
@@ -32,7 +28,7 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
     # If the requested field has already been constructed, return it
     if key in GF_prime.classes:
         cls = GF_prime.classes[key]
-        cls.target(mode, target)
+        cls.compile(mode, target)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
@@ -41,7 +37,7 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
         raise ValueError(f"Argument `primitive_element` must be a primitive root modulo {characteristic}, {primitive_element} is not.")
 
     if characteristic == 2:
-        GF2.target(mode, target)
+        GF2.compile(mode, target)
         cls = GF2
     else:
         cls = types.new_class(name, bases=(GFArray,), kwds={

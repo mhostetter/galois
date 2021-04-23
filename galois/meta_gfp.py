@@ -32,7 +32,7 @@ class GFpMeta(GFMeta, PrimeFieldMixin):
         cls._primitive_element = kwargs["primitive_element"]
         cls._ground_field = cls
 
-        cls.target(kwargs["mode"], kwargs["target"])
+        cls.compile(kwargs["mode"], kwargs["target"])
 
         cls._irreducible_poly = Poly([1, -int(cls.primitive_element)], field=cls)
         cls._primitive_element = cls(cls.primitive_element)
@@ -50,7 +50,7 @@ class GFpMeta(GFMeta, PrimeFieldMixin):
             d = [np.object_]
         return d
 
-    def _target_jit_calculate(cls, target):
+    def _compile_jit_calculate(cls, target):
         global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
         CHARACTERISTIC = cls.characteristic
         ORDER = cls.order
