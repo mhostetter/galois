@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-# Placeholder globals that will be set in _target_jit_lookup()
+# Placeholder globals that will be set in _compile_jit_lookup()
 CHARACTERISTIC = None  # The field's prime characteristic `p`
 ORDER = None  # The field's order `p^m`
 
@@ -61,7 +61,7 @@ class TargetMixin(type):
         # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
         cls._EXP[order:2*order] = cls._EXP[1:1 + order]
 
-    def _target_jit_lookup(cls, target):
+    def _compile_jit_lookup(cls, target):
         """
         A method to JIT-compile the standard lookup arithmetic for any field. The functions that are
         JIT compiled are at the bottom of this file.
@@ -106,14 +106,14 @@ class TargetMixin(type):
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
         cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
 
-    def _target_jit_calculate(cls, target):
+    def _compile_jit_calculate(cls, target):
         """
         To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta. The functions that will
         be JIT-compiled will be located at the bottom of those files.
         """
         raise NotImplementedError
 
-    def _target_python_calculate(cls):
+    def _compile_python_calculate(cls):
         cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
         cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
         cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)

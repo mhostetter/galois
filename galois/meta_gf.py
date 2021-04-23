@@ -40,9 +40,9 @@ class GFMeta(TargetMixin):
     # Class methods
     ###############################################################################
 
-    def target(cls, mode, target):
+    def compile(cls, mode, target="cpu"):
         """
-        Retarget the just-in-time compiled numba ufuncs.
+        Recompile the just-in-time compiled numba ufuncs with a new calculation mode or target.
 
         Parameters
         ----------
@@ -51,17 +51,18 @@ class GFMeta(TargetMixin):
             use Zech log, log, and anti-log lookup tables for speed. The "jit-calculate" mode will not store any lookup tables, but perform field
             arithmetic on the fly. The "jit-calculate" mode is designed for large fields that cannot store lookup tables in RAM.
             Generally, "jit-calculate" is slower than "jit-lookup". The "python-calculate" mode is reserved for extremely large fields. In
-            this mode the ufuncs are not JIT-compiled, but are pur python functions operating on python ints.
+            this mode the ufuncs are not JIT-compiled, but are pur python functions operating on python ints. The list of valid
+            modes for this field is in :obj:`galois.GFMeta.ufunc_modes`.
         target : str, optional
             The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. The default
             is `"cpu"`. For extremely large fields the only supported target is `"cpu"` (which doesn't use numba it uses pure python to
-            calculate the field arithmetic).
+            calculate the field arithmetic). The list of valid targets for this field is in :obj:`galois.GFMeta.ufunc_targets`.
         """
-        if target not in cls.ufunc_targets:
-            raise ValueError(f"Argument `target` must be in {cls.ufunc_targets} for {cls.name}, not {target}.")
         mode = cls.default_ufunc_mode if mode == "auto" else mode
         if mode not in cls.ufunc_modes:
             raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls.name}, not {mode}.")
+        if target not in cls.ufunc_targets:
+            raise ValueError(f"Argument `target` must be in {cls.ufunc_targets} for {cls.name}, not {target}.")
 
         if mode == cls.ufunc_mode and target == cls.ufunc_target:
             # Don't need to rebuild these ufuncs
@@ -71,11 +72,11 @@ class GFMeta(TargetMixin):
         cls._ufunc_target = target
 
         if cls.ufunc_mode == "jit-lookup":
-            cls._target_jit_lookup(target)
+            cls._compile_jit_lookup(target)
         elif cls.ufunc_mode == "jit-calculate":
-            cls._target_jit_calculate(target)
+            cls._compile_jit_calculate(target)
         elif cls.ufunc_mode == "python-calculate":
-            cls._target_python_calculate()
+            cls._compile_python_calculate()
         else:
             raise RuntimeError(f"Attribute `ufunc_mode` was not processed, {cls._ufunc_mode}. Please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 

@@ -55,7 +55,12 @@ def matrix_power(x):
     .. ipython:: python
 
         GF = galois.GF(31)
-        A = GF.Random((3,3)); A
+        # Ensure A is full rank and invertible
+        while True:
+            A = GF.Random((3,3));
+            if np.linalg.matrix_rank(A) == 3:
+                break
+        A
         np.linalg.matrix_power(A, -3)
         A_inv = np.linalg.inv(A)
         A_inv @ A_inv @ A_inv
