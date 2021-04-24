@@ -1104,11 +1104,14 @@ class DensePoly(Poly):
         field = a.field
 
         # c(x) = a(x) * b(x)
-        a_degree = a.coeffs.size - 1
-        b_degree = b.coeffs.size - 1
-        c_coeffs = field.Zeros(a_degree + b_degree + 1)
-        for i in np.nonzero(b.coeffs)[0]:
-            c_coeffs[i:i + a.coeffs.size] += a.coeffs*b.coeffs[i]
+        if field.order == 2:
+            c_coeffs = field(np.convolve(a.coeffs, b.coeffs) % field.characteristic)
+        else:
+            a_degree = a.coeffs.size - 1
+            b_degree = b.coeffs.size - 1
+            c_coeffs = field.Zeros(a_degree + b_degree + 1)
+            for i in np.nonzero(b.coeffs)[0]:
+                c_coeffs[i:i + a.coeffs.size] += a.coeffs*b.coeffs[i]
 
         return DensePoly(c_coeffs)
 
