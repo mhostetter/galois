@@ -11,7 +11,7 @@ CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 DEGREE = None  # The prime power `m` of the Galois field
 ORDER = None  # The field's order `p^m`
 ALPHA = None  # The field's primitive element
-PRIM_POLY_DEC = None  # The field's primitive polynomial in decimal form
+IRREDUCIBLE_POLY_DEC = None  # The field's primitive polynomial in decimal form
 
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_JIT = lambda x, y: x + y
@@ -52,14 +52,14 @@ class GF2mMeta(GFMeta, ExtensionFieldMixin):
         return d
 
     def _compile_jit_calculate(cls, target):
-        global CHARACTERISTIC, ORDER, ALPHA, PRIM_POLY_DEC, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
+        global CHARACTERISTIC, ORDER, ALPHA, IRREDUCIBLE_POLY_DEC, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
         CHARACTERISTIC = cls.characteristic
         ORDER = cls.order
         if isinstance(cls._primitive_element, Poly):
             ALPHA = cls._primitive_element.integer
         else:
             ALPHA = int(cls._primitive_element)
-        PRIM_POLY_DEC = cls.irreducible_poly.integer  # pylint: disable=no-member
+        IRREDUCIBLE_POLY_DEC = cls.irreducible_poly.integer  # pylint: disable=no-member
 
         # JIT-compile add,  multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
         ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
@@ -103,18 +103,21 @@ class GF2mMeta(GFMeta, ExtensionFieldMixin):
             = c(x)
             = c
         """
-        result = 0
-        while a != 0 and b != 0:
-            if b & 0b1 != 0:
-                result ^= a
+        # Re-order operands such that a > b so the while loop has less loops
+        if b > a:
+            a, b = b, a
 
-            a *= cls._primitive_element_dec
-            b //= cls._primitive_element_dec
+        c = 0
+        while b > 0:
+            if b & 0b1:
+                c ^= a  # Add a(x) to c(x)
 
+            b >>= 1  # Divide b(x) by x
+            a <<= 1  # Multiply a(x) by x
             if a >= cls._order:
-                a ^= cls._irreducible_poly_dec
+                a ^= cls._irreducible_poly_dec  # Compute a(x) % p(x)
 
-        return result
+        return c
 
     def _additive_inverse_python(cls, a):
         return a
@@ -179,18 +182,21 @@ def _multiply_calculate(a, b):  # pragma: no cover
           = c(x)
           = c
     """
-    result = 0
-    while a != 0 and b != 0:
-        if b & 0b1 != 0:
-            result ^= a
+    # Re-order operands such that a > b so the while loop has less loops
+    if b > a:
+        a, b = b, a
 
-        a *= ALPHA
-        b //= ALPHA
+    c = 0
+    while b > 0:
+        if b & 0b1:
+            c ^= a  # Add a(x) to c(x)
 
+        b >>= 1  # Divide b(x) by x
+        a <<= 1  # Multiply a(x) by x
         if a >= ORDER:
-            a ^= PRIM_POLY_DEC
+            a ^= IRREDUCIBLE_POLY_DEC  # Compute a(x) % p(x)
 
-    return result
+    return c
 
 
 def _divide_calculate(a, b):  # pragma: no cover
