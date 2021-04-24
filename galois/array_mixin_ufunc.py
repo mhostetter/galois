@@ -80,7 +80,6 @@ def _ufunc_log(ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-a
     if np.count_nonzero(inputs[meta["operands"][0]]) != inputs[meta["operands"][0]].size:
         raise ArithmeticError("Cannot take the logarithm of 0 in Galois fields.")
     output = getattr(meta["ufuncs"]["log"], method)(*inputs, **kwargs)
-    output = _view_output_as_field(output, meta["field"], meta["dtype"])
     return output
 
 
