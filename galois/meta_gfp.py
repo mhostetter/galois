@@ -81,16 +81,25 @@ class GFpMeta(GFMeta):
     ###############################################################################
 
     def _add_python(cls, a, b):
-        return (a + b) % cls.order
+        c = a + b
+        if c >= cls.order:  # pylint: disable=comparison-with-callable
+            c -= cls.order
+        return c
 
     def _subtract_python(cls, a, b):
-        return (a - b) % cls.order
+        c = a - b
+        if c < 0:
+            c += cls.order
+        return c
 
     def _multiply_python(cls, a, b):
         return (a * b) % cls.order
 
     def _additive_inverse_python(cls, a):
-        return (-a) % cls.order
+        if a == 0:
+            return 0
+        else:
+            return cls.order - a
 
     def _multiplicative_inverse_python(cls, a):
         a_inv = gcd(a, cls.order)[1]
@@ -102,11 +111,17 @@ class GFpMeta(GFMeta):
 ###############################################################################
 
 def _add_calculate(a, b):  # pragma: no cover
-    return (a + b) % ORDER
+    c = a + b
+    if c >= ORDER:
+        c -= ORDER
+    return c
 
 
 def _subtract_calculate(a, b):  # pragma: no cover
-    return (a - b) % ORDER
+    c = a - b
+    if c < 0:
+        c += ORDER
+    return c
 
 
 def _multiply_calculate(a, b):  # pragma: no cover
@@ -122,7 +137,10 @@ def _divide_calculate(a, b):  # pragma: no cover
 
 
 def _additive_inverse_calculate(a):  # pragma: no cover
-    return (-a) % ORDER
+    if a == 0:
+        return 0
+    else:
+        return ORDER - a
 
 
 def _multiplicative_inverse_calculate(a):  # pragma: no cover
