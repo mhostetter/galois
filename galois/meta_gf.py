@@ -28,7 +28,6 @@ class GFMeta(UfuncMixin):
         cls._ufunc_mode = None
         cls._ufunc_target = None
         cls._display_mode = "int"
-        cls._display_poly_var = "α"
 
     def __str__(cls):
         return f"<class 'numpy.ndarray over {cls.name}'>"
@@ -80,19 +79,20 @@ class GFMeta(UfuncMixin):
         else:
             raise RuntimeError(f"Attribute `ufunc_mode` was not processed, {cls._ufunc_mode}. Please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
-    def display(cls, mode="int", poly_var="α"):
+    def display(cls, mode="int"):
         """
         Sets the display mode for all Galois field arrays of this type.
 
-        The display mode can be set to either the integer representation or polynomial representation.
-        This function updates :obj:`display_mode` and :obj:`display_poly_var`.
+        The display mode can be set to either the integer representation, polynomial representation, or power
+        representation. This function updates :obj:`display_mode`.
+
+        For the power representation, :func:`np.log` is computed on each element. So for large fields without lookup
+        tables, this may take longer than desired.
 
         Parameters
         ----------
         mode : str, optional
-            The field element display mode, either `"int"` (default) or `"poly"`.
-        poly_var : str, optional
-            The polynomial representation's variable. The default is `"α"`.
+            The field element display mode, either `"int"` (default), `"poly"`, or `"power"`.
 
         Examples
         --------
@@ -102,35 +102,49 @@ class GFMeta(UfuncMixin):
 
             GF = galois.GF(2**8)
             a = GF.Random(); a
+
+            # Change the display mode going forward
             GF.display("poly"); a
+            GF.display("power"); a
 
             # Reset to the default display mode
             GF.display(); a
 
-        The :func:`display` method can also be used as a context manager.
+        The :func:`display` method can also be used as a context manager, as shown below.
+
+        For the polynomial representation, when the primitive element is :math:`x \\in \\mathrm{GF}(p)[x]` the polynomial
+        indeterminate used is  `α`.
 
         .. ipython:: python
 
-            # The original display mode
-            a
-
-            # The new display context
+            GF = galois.GF(2**8)
+            print(GF.properties)
+            a = GF.Random(); a
             with GF.display("poly"):
                 print(a)
+            with GF.display("power"):
+                print(a)
 
-            # Returns to the default display mode
-            a
+        But when the primitive element is not :math:`x \\in \\mathrm{GF}(p)[x]`, the polynomial
+        indeterminate used is `x`.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]))
+            print(GF.properties)
+            a = GF.Random(); a
+            with GF.display("poly"):
+                print(a)
+            with GF.display("power"):
+                print(a)
         """
-        if mode not in ["int", "poly"]:
-            raise ValueError(f"Argument `mode` must be in ['int', 'poly'], not {mode}.")
-        if not isinstance(poly_var, str):
-            raise TypeError(f"Argument `poly_var` must be a string, not {type(poly_var)}.")
+        if mode not in ["int", "poly", "power"]:
+            raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode}.")
 
         context = DisplayContext(cls)
 
         # Set the new state
         cls._display_mode = mode
-        cls._display_poly_var = poly_var
 
         return context
 
@@ -469,40 +483,38 @@ class GFMeta(UfuncMixin):
     @property
     def display_mode(cls):
         """
-        str: The representation of Galois field elements, either `"int"` or `"poly"`. This can be
+        str: The representation of Galois field elements, either `"int"`, `"poly"`, or `"power"`. This can be
         changed with :func:`display`.
 
         Examples
         --------
+        For the polynomial representation, when the primitive element is :math:`x \\in \\mathrm{GF}(p)[x]` the polynomial
+        indeterminate used is  `α`.
+
         .. ipython:: python
 
             GF = galois.GF(2**8)
-            GF.display_mode
+            print(GF.properties)
             a = GF.Random(); a
             with GF.display("poly"):
-                print(GF.display_mode)
+                print(a)
+            with GF.display("power"):
+                print(a)
+
+        But when the primitive element is not :math:`x \\in \\mathrm{GF}(p)[x]`, the polynomial
+        indeterminate used is `x`.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]))
+            print(GF.properties)
+            a = GF.Random(); a
+            with GF.display("poly"):
+                print(a)
+            with GF.display("power"):
                 print(a)
         """
         return cls._display_mode
-
-    @property
-    def display_poly_var(cls):
-        """
-        str: The polynomial indeterminate for the polynomial representation of the field elements. The default
-        is `"α"`. This can be changed with :func:`display`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(2**8)
-            GF.display_mode, GF.display_poly_var
-            a = GF.Random(); a
-            with GF.display("poly"):
-                print(GF.display_mode, GF.display_poly_var)
-                print(a)
-        """
-        return cls._display_poly_var
 
     @property
     def properties(cls):
@@ -537,13 +549,11 @@ class DisplayContext:
         # Save the previous state
         self.cls = cls
         self.mode = cls.display_mode
-        self.poly_var = cls.display_poly_var
 
     def __enter__(self):
-        # Don't need to do anything, we already set the new mode and poly_var in the display() method
+        # Don't need to do anything, we already set the new mode in the display() method
         pass
 
     def __exit__(self, exc_type, exc_value, traceback):
-        # Reset mode and poly_var upon exiting the context
+        # Reset mode and upon exiting the context
         self.cls._display_mode = self.mode
-        self.cls._display_poly_var = self.poly_var

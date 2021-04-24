@@ -51,7 +51,7 @@ def test_dtypes(field):
 
 
 ATTRIBUTES = [
-    "characteristic", "default_ufunc_mode", "degree", "display_mode", "display_poly_var",
+    "characteristic", "default_ufunc_mode", "degree", "display_mode",
     "dtypes", "ground_field", "irreducible_poly", "is_extension_field", "is_prime_field",
     "is_primitive_poly", "name", "order", "primitive_element", "primitive_elements",
     "properties", "ufunc_mode", "ufunc_modes", "ufunc_target", "ufunc_targets",

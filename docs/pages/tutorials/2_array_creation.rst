@@ -1,74 +1,8 @@
-Constructing finite field arrays
-================================
+Array creation
+==============
 
-
-GF(2) field class
------------------
-
-The :math:`\mathrm{GF}(2)` field is already constructed in :obj:`galois`. It can be accessed by :obj:`galois.GF2`.
-
-.. ipython:: python
-
-   GF2 = galois.GF2
-   print(GF2)
-
-   # The primitive element of the finite field
-   GF2.primitive_element
-
-   # The primitive polynomial of the finite field
-   GF2.irreducible_poly
-
-   # The primitive element is a root of the primitive polynomial
-   GF2.irreducible_poly(GF2.primitive_element)
-
-
-GF(p) field classes
--------------------
-
-:math:`\mathrm{GF}(p)` fields, where :math:`p` is prime, can be constructed using the class factory
-:obj:`galois.GF`.
-
-.. ipython:: python
-
-   GF7 = galois.GF(7)
-   print(GF7)
-
-   # The primitive element of the finite field
-   GF7.primitive_element
-
-   # The primitive polynomial of the finite field
-   GF7.irreducible_poly
-
-   # The primitive element is a root of the primitive polynomial
-   GF7.irreducible_poly(GF7.primitive_element)
-
-
-GF(2^m) field classes
+Explicit construction
 ---------------------
-
-:math:`\mathrm{GF}(2^m)` fields, where :math:`m` is a positive integer, can be constructed using the class
-factory :obj:`galois.GF`.
-
-.. ipython:: python
-
-   GF8 = galois.GF(2**3)
-   print(GF8)
-
-   # The primitive element of the finite field
-   GF8.primitive_element
-
-   # The primitive polynomial of the finite field
-   GF8.irreducible_poly
-
-   # Convert the polynomial from GF(2)[x] to GF(8)[x]
-   prim_poly = galois.Poly(GF8.irreducible_poly.coeffs, field=GF8); prim_poly
-
-   # The primitive element is a root of the primitive polynomial in GF(8)
-   prim_poly(GF8.primitive_element)
-
-
-Array creation: explicit and view casting
------------------------------------------
 
 Galois field arrays can be constructed either explicitly or through `numpy` view casting. The method of array
 creation is the same for all Galois fields, but :math:`\mathrm{GF}(7)` is used as an example here.
@@ -80,6 +14,12 @@ creation is the same for all Galois fields, but :math:`\mathrm{GF}(7)` is used a
 
    # Create a Galois field array through explicit construction (x_np is copied)
    x = GF7(x_np); x
+
+
+View casting
+------------
+
+.. ipython:: python
 
    # View cast an existing array to a Galois field array (no copy operation)
    y = x_np.view(GF7); y
@@ -103,8 +43,21 @@ creation is the same for all Galois fields, but :math:`\mathrm{GF}(7)` is used a
       y
 
 
-Galois field array dtypes
--------------------------
+Alternate constructors
+----------------------
+
+There are alternate constructors for convenience: :obj:`galois.GFArray.Zeros`, :obj:`galois.GFArray.Ones`, :obj:`galois.GFArray.Range`,
+:obj:`galois.GFArray.Random`, and :obj:`galois.GFArray.Elements`.
+
+.. ipython:: python
+
+   GF256.Random((2,5))
+   GF256.Range(10,20)
+   GF256.Elements()
+
+
+Array dtypes
+------------
 
 Galois field arrays support all signed and unsigned integer dtypes, presuming the data type can store values
 in :math:`[0, p^m)`. The default dtype is the smallest valid unsigned dtype.
@@ -151,8 +104,8 @@ and the polynomial representation is :math:`\{0,\ 1,\ x,\ x+1,\ x^2,\ x^2+1,\ x^
    # The display mode can be set to "poly" mode
    GF.display("poly"); a
 
-   # The polynomial variable can also be set
-   GF.display("poly", "r"); a
+   # The display mode can be set to "power" mode
+   GF.display("power"); a
 
    # Reset the display mode to the default
    GF.display(); a
@@ -166,6 +119,9 @@ The :obj:`galois.GFArray.display` method can be called as a context manager.
 
    # The new display context
    with GF.display("poly"):
+      print(a)
+
+   with GF.display("power"):
       print(a)
 
    # Returns to the original display mode

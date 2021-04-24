@@ -486,10 +486,25 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
         return self.__repr__()
 
     def __repr__(self):
+        # pylint: disable=attribute-defined-outside-init
         formatter = {}
         if type(self).display_mode == "poly":
             formatter["int"] = self._print_poly
             formatter["object"] = self._print_poly
+        elif type(self).display_mode == "power":
+            nonzero_idxs = np.nonzero(self)
+            if self.ndim > 1:
+                self._display_power_pre_width = 0 if nonzero_idxs[0].size == self.size else 1
+                max_power = np.max(np.log(self[nonzero_idxs]))
+                if max_power > 1:
+                    self._display_power_width = self._display_power_pre_width + 2 + len(str(max_power))
+                else:
+                    self._display_power_width = self._display_power_pre_width + 1
+            else:
+                self._display_power_pre_width = None
+                self._display_power_width = None
+            formatter["int"] = self._print_power
+            formatter["object"] = self._print_power
         elif self.dtype == np.object_:
             formatter["object"] = self._print_int
 
@@ -515,14 +530,33 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
         return string
 
     @staticmethod
-    def _print_int(decimal):
-        return "{:d}".format(int(decimal))
+    def _print_int(element):
+        return "{:d}".format(int(element))
 
-    def _print_poly(self, decimal):
-        poly = integer_to_poly(decimal, type(self).characteristic)
-        return poly_to_str(poly, poly_var=type(self).display_poly_var)
+    def _print_poly(self, element):
+        poly = integer_to_poly(element, type(self).characteristic)
+        poly_var = "α" if type(self).primitive_element == type(self).characteristic else "x"
+        return poly_to_str(poly, poly_var=poly_var)
 
-    # TODO: Figure out where to put this
+    def _print_power(self, element):
+        if element == 0:
+            s = "-∞"
+        else:
+            power = type(self)._ufuncs["log"](element)
+            if power > 1:
+                s = f"α^{power}"
+            elif power == 1:
+                s = "α"
+            else:
+                s = "1"
+
+            if self._display_power_pre_width:
+                s = " " + s
+
+        if self._display_power_width:
+            return s + " "*(self._display_power_width - len(s))
+        else:
+            return s
 
     @classmethod
     def _poly_eval(cls, coeffs, x):
