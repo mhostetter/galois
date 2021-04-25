@@ -340,6 +340,50 @@ def prime_factors(x):
     return p, k
 
 
+def is_smooth(a, B):
+    """
+    Determines if the positive integer :math:`a` is :math:`B`-smooth, i.e. all its prime factors satisfy :math:`p \\le B`.
+
+    The :math:`2`-smooth numbers are the powers of :math:`2`. The :math:`5`-smooth numbers are known
+    as *regular numbers*. The :math:`7`-smooth numbers are known as *humble numbers* or *highly composite numbers*.
+
+    Parameters
+    ----------
+    a : int
+        A positive integer.
+    B : int
+        The smoothness bound.
+
+    Returns
+    -------
+    bool
+        `True` if :math:`a` is :math:`B`-smooth.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.is_smooth(2**10, 2)
+        galois.is_smooth(10, 5)
+        galois.is_smooth(12, 5)
+        galois.is_smooth(60**2, 5)
+    """
+    if not isinstance(a, (int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(B, (int, np.integer)):
+        raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
+    if not a > 0:
+        raise ValueError(f"Argument `a` must be non-negative, not {a}.")
+    if not B >= 2:
+        raise ValueError(f"Argument `B` must be at least 2, not {B}.")
+
+    if a == 1:
+        return True
+    else:
+        p, _ = prime_factors(a)
+        return p[-1] <= B
+
+
 def is_prime(n):
     """
     Determines if :math:`n` is prime.

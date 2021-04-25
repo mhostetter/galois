@@ -111,6 +111,14 @@ def test_prime_factorization_extremely_large():
     assert np.multiply.reduce(p**k) == prime - 1
 
 
+def test_smooth():
+    assert galois.is_smooth(2**10, 2)
+    assert galois.is_smooth(10, 5)
+    assert galois.is_smooth(12, 5)
+    assert not galois.is_smooth(14, 5)
+    assert galois.is_smooth(60**2, 5)
+
+
 def test_fermat_primality_test_on_primes():
     primes = random.choices(galois.prime.PRIMES, k=10)
     for prime in primes:
