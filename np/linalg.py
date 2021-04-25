@@ -126,7 +126,12 @@ def solve(x):
     .. ipython:: python
 
         GF = galois.GF(31)
-        A = GF.Random((4,4)); A
+        # Ensure A is full rank and invertible
+        while True:
+            A = GF.Random((4,4))
+            if np.linalg.matrix_rank(A) == 4:
+                break
+        A
         b = GF.Random(4); b
         x = np.linalg.solve(A, b); x
         A @ x
@@ -134,7 +139,12 @@ def solve(x):
     .. ipython:: python
 
         GF = galois.GF(31)
-        A = GF.Random((4,4)); A
+        # Ensure A is full rank and invertible
+        while True:
+            A = GF.Random((4,4))
+            if np.linalg.matrix_rank(A) == 4:
+                break
+        A
         B = GF.Random((4,2)); B
         X = np.linalg.solve(A, B); X
         A @ X
