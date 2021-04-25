@@ -305,12 +305,12 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
     @classmethod
     def Eye(cls, size, dtype=None):
         """
-        Creates a Galois field identity matrix.
+        Creates an :math:`n \\times n` identity matrix over :math:`\\mathrm{GF}(q)`.
 
         Parameters
         ----------
         size : int
-            The size along one axis of the matrix. The resulting array has shape `(size,size)`.
+            The size :math:`n` along one axis of the matrix. The resulting array has shape `(size,size)`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
             dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
@@ -330,6 +330,59 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
         dtype = cls._get_dtype(dtype)
         array = np.eye(size, dtype=dtype)
         return array.view(cls)
+
+    @classmethod
+    def Vandermonde(cls, a, m, n, dtype=None):
+        """
+        Creates a :math:`m \\times n` Vandermonde matrix of :math:`a \\in \\mathrm{GF}(q)`.
+
+        Parameters
+        ----------
+        a : int, galois.GFArray
+            An element of :math:`\\mathrm{GF}(q)`.
+        m : int
+            The number of rows in the Vandermonde matrix.
+        n : int
+            The number of columns in the Vandermonde matrix.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+
+        Returns
+        -------
+        galois.GFArray
+            The :math:`m \\times n` Vandermonde matrix.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(2**3)
+            a = GF.primitive_element
+            V = GF.Vandermonde(a, 7, 7)
+            with GF.display("power"):
+                print(V)
+        """
+        if not isinstance(a, (int, np.integer,cls)):
+            raise TypeError(f"Argument `a` must be an integer or element of {cls.name}, not {type(a)}.")
+        if not isinstance(m, (int, np.integer)):
+            raise TypeError(f"Argument `m` must be an integer, not {type(m)}.")
+        if not isinstance(n, (int, np.integer)):
+            raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+        if not m > 0:
+            raise ValueError(f"Argument `m` must be non-negative, not {m}.")
+        if not n > 0:
+            raise ValueError(f"Argument `n` must be non-negative, not {n}.")
+
+        dtype = cls._get_dtype(dtype)
+        a = cls(a, dtype=dtype)
+        if not a.ndim == 0:
+            raise ValueError(f"Argument `a` must be a scalar, not {a.ndim}-D.")
+
+        v = a ** np.arange(0, m)
+        V = np.power.outer(v, np.arange(0, n))
+
+        return V
 
     @classmethod
     def Range(cls, start, stop, step=1, dtype=None):
