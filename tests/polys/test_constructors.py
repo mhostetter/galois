@@ -7,8 +7,6 @@ import pytest
 import galois
 
 
-POLY_CLASSES = [galois.Poly, galois.poly.DensePoly, galois.poly.SparsePoly]
-
 FIELDS = [
     galois.GF2,  # GF(2)
     galois.GF(31),  # GF(p) with np.int dtypes
@@ -18,10 +16,9 @@ FIELDS = [
 ]
 
 
-@pytest.mark.parametrize("poly", POLY_CLASSES)
 @pytest.mark.parametrize("field", FIELDS)
-def test_zero(poly, field):
-    p = poly.Zero(field)
+def test_zero(field):
+    p = galois.Poly.Zero(field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 0
@@ -32,10 +29,9 @@ def test_zero(poly, field):
     assert p.integer == 0
 
 
-@pytest.mark.parametrize("poly", POLY_CLASSES)
 @pytest.mark.parametrize("field", FIELDS)
-def test_one(poly, field):
-    p = poly.One(field)
+def test_one(field):
+    p = galois.Poly.One(field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 0
@@ -46,10 +42,9 @@ def test_one(poly, field):
     assert p.integer == 1
 
 
-@pytest.mark.parametrize("poly", POLY_CLASSES)
 @pytest.mark.parametrize("field", FIELDS)
-def test_identity(poly, field):
-    p = poly.Identity(field)
+def test_identity(field):
+    p = galois.Poly.Identity(field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 1
@@ -60,20 +55,18 @@ def test_identity(poly, field):
     assert p.integer == field.order
 
 
-@pytest.mark.parametrize("poly", POLY_CLASSES)
 @pytest.mark.parametrize("field", FIELDS)
-def test_random(poly, field):
-    p = poly.Random(2, field=field)
+def test_random(field):
+    p = galois.Poly.Random(2, field=field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 2
 
 
-@pytest.mark.parametrize("poly", POLY_CLASSES)
 @pytest.mark.parametrize("field", FIELDS)
-def test_integer(poly, field):
+def test_integer(field):
     integer = field.order + 1  # Corresponds to p(x) = x + 1
-    p = poly.Integer(integer, field=field)
+    p = galois.Poly.Integer(integer, field=field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 1
@@ -84,13 +77,12 @@ def test_integer(poly, field):
     assert p.integer == integer
 
 
-@pytest.mark.parametrize("poly", POLY_CLASSES)
 @pytest.mark.parametrize("field", FIELDS)
-def test_degrees(poly, field):
+def test_degrees(field):
     # Corresponds to p(x) = x^2 + 1
     degrees = [2,0]
     coeffs = [1,1]
-    p = poly.Degrees(degrees, coeffs, field=field)
+    p = galois.Poly.Degrees(degrees, coeffs, field=field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 2
@@ -101,24 +93,8 @@ def test_degrees(poly, field):
     assert p.integer == field.order**2 + 1
 
 
-@pytest.mark.parametrize("poly", POLY_CLASSES)
 @pytest.mark.parametrize("field", FIELDS)
-def test_coeffs(poly, field):
-    coeffs = [1,0,1]  # Corresponds to p(x) = x^2 + 1
-    p = poly.Coeffs(coeffs, field=field)
-    assert isinstance(p, galois.Poly)
-    assert p.field is field
-    assert p.degree == 2
-    assert np.array_equal(p.nonzero_degrees, [2,0])
-    assert np.array_equal(p.nonzero_coeffs, [1,1])
-    assert np.array_equal(p.degrees, [2,1,0])
-    assert np.array_equal(p.coeffs, [1,0,1])
-    assert p.integer == field.order**2 + 1
-
-
-@pytest.mark.parametrize("poly", POLY_CLASSES)
-@pytest.mark.parametrize("field", FIELDS)
-def test_roots(poly, field):
+def test_roots(field):
     a, b = field.Random(), field.Random()
     roots = [a, b]  # p(x) = (x - a)*(x - b)
     degree = 2
@@ -128,7 +104,7 @@ def test_roots(poly, field):
     nonzero_coeffs = [c for d, c in zip(degrees, coeffs) if c > 0]
     integer = sum([int(c)*field.order**d for d, c in zip(degrees, coeffs)])
 
-    p = poly.Roots(roots, field=field)
+    p = galois.Poly.Roots(roots, field=field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == degree
@@ -139,9 +115,8 @@ def test_roots(poly, field):
     assert p.integer == integer
 
 
-@pytest.mark.parametrize("poly", POLY_CLASSES)
 @pytest.mark.parametrize("field", FIELDS)
-def test_roots_with_multiplicity(poly, field):
+def test_roots_with_multiplicity(field):
     a = field.Random()
     roots = [a]  # p(x) = (x - a)*(x - a)
     multiplicities = [2]
@@ -152,7 +127,7 @@ def test_roots_with_multiplicity(poly, field):
     nonzero_coeffs = [c for d, c in zip(degrees, coeffs) if c > 0]
     integer = sum([int(c)*field.order**d for d, c in zip(degrees, coeffs)])
 
-    p = poly.Roots(roots, multiplicities=multiplicities, field=field)
+    p = galois.Poly.Roots(roots, multiplicities=multiplicities, field=field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == degree

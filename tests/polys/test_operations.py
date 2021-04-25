@@ -78,16 +78,6 @@ def test_integer():
     assert poly.integer == 4295000729
 
 
-def test_update_field(field):
-    alpha = field.primitive_element
-    prim_poly = field.irreducible_poly
-    prim_poly.field = field
-    assert isinstance(prim_poly, galois.Poly)
-    assert type(prim_poly.coeffs) is field
-    assert prim_poly.field is field
-    assert prim_poly(alpha) == 0
-
-
 def test_equal(field):
     c = field.Random(6)
     c[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero

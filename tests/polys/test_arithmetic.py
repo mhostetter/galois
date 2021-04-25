@@ -7,11 +7,15 @@ import pytest
 import galois
 
 
+def degrees(x):
+    return np.arange(x.coeffs.size - 1, -1, -1)
+
+
 def convert_poly(x, poly_type):
     if poly_type == "dense":
         pass
     elif poly_type == "sparse":
-        x = galois.poly.SparsePoly.Coeffs(x.coeffs, field=x.field)
+        x = galois.poly.SparsePoly(degrees(x), x.coeffs, field=x.field)
     else:
         raise AssertionError
 
@@ -22,12 +26,12 @@ def convert_polys(x, y, poly_types):
     if poly_types == "dense-dense":
         pass
     elif poly_types == "dense-sparse":
-        y = galois.poly.SparsePoly.Coeffs(y.coeffs, field=y.field)
+        y = galois.poly.SparsePoly(degrees(y), y.coeffs, field=y.field)
     elif poly_types == "sparse-dense":
-        x = galois.poly.SparsePoly.Coeffs(x.coeffs, field=x.field)
+        x = galois.poly.SparsePoly(degrees(x), x.coeffs, field=x.field)
     elif poly_types == "sparse-sparse":
-        x = galois.poly.SparsePoly.Coeffs(x.coeffs, field=x.field)
-        y = galois.poly.SparsePoly.Coeffs(y.coeffs, field=y.field)
+        x = galois.poly.SparsePoly(degrees(x), x.coeffs, field=x.field)
+        y = galois.poly.SparsePoly(degrees(y), y.coeffs, field=y.field)
     else:
         raise AssertionError
 
