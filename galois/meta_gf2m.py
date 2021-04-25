@@ -39,8 +39,7 @@ class GF2mMeta(GFMeta):
         cls.compile(kwargs["mode"], kwargs["target"])
         cls._primitive_element = cls(cls._primitive_element.integer)
 
-        poly = cls.irreducible_poly
-        poly.field = cls
+        poly = Poly(cls._irreducible_poly.coeffs, field=cls)
         cls._is_primitive_poly = poly(cls.primitive_element) == 0
 
     @property
