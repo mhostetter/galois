@@ -185,19 +185,25 @@ Galois field arrays also have constructor class methods for convenience. They in
 
 - `GFArray.Zeros`, `GFArray.Ones`, `GFArray.Eye`, `GFArray.Range`, `GFArray.Random`, `GFArray.Elements`
 
-Galois field elements can either be displayed using their integer representation or their polynomial representation.
-Calling `GFMeta.display` will change the element representation. If called as a context manager, the
-display mode will only be temporarily changed.
+Galois field elements can either be displayed using their integer representation, polynomial representation, or
+power representation. Calling `GFMeta.display` will change the element representation. If called as a context
+manager, the display mode will only be temporarily changed.
 
 ```python
->>> x = GF256(["y**6 + 1", 2, "1", "y**5 + y**4 + y"]); x
-GF([65,  2,  1, 50], order=2^8)
+>>> x = GF256(["y**6 + 1", 0, 2, "1", "y**5 + y**4 + y"]); x
+GF([65,  0,  2,  1, 50], order=2^8)
 
-# Temporarily set the display mode to represent GF(2^8) field elements as polynomials over GF(2) with degree less than 8
->>> with GF256.display("poly"):
+# Set the display mode to represent GF(2^8) field elements as polynomials over GF(2) with degree less than 8
+>>> GF256.display("poly"):
+
+>>> x
+GF([α^6 + 1, 0, α, 1, α^5 + α^4 + α], order=2^8)
+
+# Temporarily set the display mode to represent GF(2^8) field elements as powers of the primitive element
+>>> with GF256.display("power"):
 ...     print(x)
 
-GF([α^6 + 1, α, 1, α^5 + α^4 + α], order=2^8)
+GF([α^191, -∞, α, 1, α^194], order=2^8)
 ```
 
 ### Field arithmetic
@@ -259,13 +265,13 @@ GF([114, 170, 178], order=2^8)
 True
 ```
 
-Galois field arrays also contain matrix decomposition routines not included in np. These include:
+Galois field arrays also contain matrix decomposition routines not included in numpy. These include:
 
 - `GFArray.row_reduce`, `GFArray.lu_decompose`, `GFArray.lup_decompose`
 
 ### Numpy ufunc methods
 
-Galois field arrays support [numpy ufunc methods](https://np.org/devdocs/reference/ufuncs.html#methods). This allows the user to apply a ufunc in a unique was across the target
+Galois field arrays support [numpy ufunc methods](https://np.org/devdocs/reference/ufuncs.html#methods). This allows the user to apply a ufunc in a unique way across the target
 array. The ufunc method signature is `<ufunc>.<method>(*args, **kwargs)`. All arithmetic ufuncs are supported. Below
 is a list of their ufunc methods.
 
@@ -412,7 +418,7 @@ GF(0, order=2^8)
 To compare the performance of `galois` and native numpy, we'll use a prime field `GF(p)`. This is because
 it is the simplest field. Namely, addition, subtraction, and multiplication are modulo `p`, which can
 be simply computed with numpy arrays `(x + y) % p`. For extension fields `GF(p^m)`, the arithmetic is
-computed using polynomials over `GF(p)` and can't be so tersely expressed in np.
+computed using polynomials over `GF(p)` and can't be so tersely expressed in numpy.
 
 ### Lookup performance
 
@@ -492,7 +498,7 @@ In [21]: %timeit a.astype(np.uint8).view(GF)
 31.2 µs ± 5.53 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
 
-However, for large N `galois` is strictly faster than np.
+However, for large N `galois` is strictly faster than numpy.
 
 ```python
 In [22]: N = int(10e6)

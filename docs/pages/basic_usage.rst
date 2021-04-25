@@ -90,16 +90,20 @@ Galois field arrays also have constructor class methods for convenience. They in
 
 - :func:`galois.GFArray.Zeros`, :func:`galois.GFArray.Ones`, :func:`galois.GFArray.Eye`, :func:`galois.GFArray.Range`, :func:`galois.GFArray.Random`, :func:`galois.GFArray.Elements`
 
-Galois field elements can either be displayed using their integer representation or their polynomial representation.
-Calling :func:`galois.GFMeta.display` will change the element representation. If called as a context manager, the
-display mode will only be temporarily changed.
+Galois field elements can either be displayed using their integer representation, polynomial representation, or
+power representation. Calling :func:`galois.GFMeta.display` will change the element representation. If called as a context
+manager, the display mode will only be temporarily changed.
 
 .. ipython:: python
 
-   x = GF256(["y**6 + 1", 2, "1", "y**5 + y**4 + y"]); x
+   x = GF256(["y**6 + 1", 0, 2, "1", "y**5 + y**4 + y"]); x
 
-   # Temporarily set the display mode to represent GF(2^8) field elements as polynomials over GF(2) with degree less than 8
-   with GF256.display("poly"):
+   # Set the display mode to represent GF(2^8) field elements as polynomials over GF(2) with degree less than 8
+   GF256.display("poly");
+   x
+
+   # Temporarily set the display mode to represent GF(2^8) field elements as powers of the primitive element
+   with GF256.display("power"):
       print(x)
 
 Field arithmetic
@@ -154,7 +158,7 @@ Galois field arrays also contain matrix decomposition routines not included in n
 Numpy ufunc methods
 -------------------
 
-Galois field arrays support `numpy ufunc methods <https://numpy.org/devdocs/reference/ufuncs.html#methods>`_. This allows the user to apply a ufunc in a unique was across the target
+Galois field arrays support `numpy ufunc methods <https://numpy.org/devdocs/reference/ufuncs.html#methods>`_. This allows the user to apply a ufunc in a unique way across the target
 array. The ufunc method signature is `<ufunc>.<method>(*args, **kwargs)`. All arithmetic ufuncs are supported. Below
 is a list of their ufunc methods.
 
