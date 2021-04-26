@@ -228,7 +228,7 @@ class UfuncMixin(type):
         for i in range(0, cls.order - 1):
             if result == beta:
                 break
-            result = cls._multiply_python(result, cls.primitive_element)
+            result = cls._multiply_python(result, cls._primitive_element_dec)
         return i
 
     def _poly_eval_python(cls, coeffs, values):
