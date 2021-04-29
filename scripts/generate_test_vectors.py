@@ -118,7 +118,7 @@ def make_luts(field, folder, sparse=False):
     dtype = np.int64 if order <= np.iinfo(np.int64).max else object
     alpha = field.primitive_element()
     ring = PolynomialRing(field, names="x")
-    assert field.gen() == field.multiplicative_generator()
+    # assert field.gen() == field.multiplicative_generator()
 
     d = {
         "characteristic": int(field.characteristic()),
@@ -187,7 +187,7 @@ def make_luts(field, folder, sparse=False):
     for i in range(Z.shape[0]):
         try:
             # TODO: Figure out why we need to mod by (order - 1)
-            Z[i] = field.int_to_log(X[i]) % (order - 1)
+            Z[i] = field.fetch_int(X[i]).log(alpha)
         except:
             Z[i] = I(log(F(X[i]), alpha))
     d = {"X": X, "Z": Z}
@@ -340,6 +340,11 @@ if __name__ == "__main__":
     np.random.seed(123456789 + 10), random.seed(123456789 + 10)
     field = GF(2**8, "x", modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(2^8)")
+    make_luts(field, folder)
+
+    np.random.seed(123456789 + 100), random.seed(123456789 + 100)
+    field = GF(2**8, "x", modulus=[1,1,0,1,1,0,0,0,1], repr="int")
+    folder = os.path.join(path, "GF(2^8, 0x11b, 19)")
     make_luts(field, folder)
 
     np.random.seed(123456789 + 11), random.seed(123456789 + 11)
