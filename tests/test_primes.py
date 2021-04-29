@@ -72,22 +72,22 @@ def test_prime_factorization_small():
     P = [2,]
     K = [3,]
     p, k = galois.prime_factors(x)
-    assert np.all(p == P)
-    assert np.all(k == K)
+    assert np.array_equal(p, P)
+    assert np.array_equal(k, K)
 
     x = 10
     P = [2,5]
     K = [1,1]
     p, k = galois.prime_factors(x)
-    assert np.all(p == P)
-    assert np.all(k == K)
+    assert np.array_equal(p, P)
+    assert np.array_equal(k, K)
 
     x = 11
     P = [11,]
     K = [1,]
     p, k = galois.prime_factors(x)
-    assert np.all(p == P)
-    assert np.all(k == K)
+    assert np.array_equal(p, P)
+    assert np.array_equal(k, K)
 
 
 def test_prime_factorization_large():
@@ -95,19 +95,19 @@ def test_prime_factorization_large():
     P = [46021,65521]
     K = [1,1]
     p, k = galois.prime_factors(x)
-    assert np.all(p == P)
-    assert np.all(k == K)
+    assert np.array_equal(p, P)
+    assert np.array_equal(k, K)
 
 
 def test_prime_factorization_extremely_large():
     prime = 1000000000000000035000061
     p, k = galois.prime_factors(prime)
-    assert np.all(p == [prime])
-    assert np.all(k == [1])
+    assert np.array_equal(p, [prime])
+    assert np.array_equal(k, [1])
 
     p, k = galois.prime_factors(prime - 1)
-    p = np.array(p)
-    k = np.array(k)
+    p = np.array(p, dtype=object)
+    k = np.array(k, dtype=object)
     assert np.multiply.reduce(p**k) == prime - 1
 
 
