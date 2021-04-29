@@ -19,7 +19,7 @@ def test_add(add):
         y = Y.astype(dtype)
 
         z = x + y
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
@@ -31,7 +31,7 @@ def test_subtract(subtract):
         y = Y.astype(dtype)
 
         z = x - y
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
@@ -43,7 +43,7 @@ def test_multiply(multiply):
         y = Y.astype(dtype)
 
         z = x * y
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
@@ -55,12 +55,12 @@ def test_divide(divide):
         y = Y.astype(dtype)
 
         z = x / y
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
         z = x // y
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
@@ -71,7 +71,7 @@ def test_additive_inverse(additive_inverse):
         x = X.astype(dtype)
 
         z = -x
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
@@ -82,17 +82,17 @@ def test_multiplicative_inverse(multiplicative_inverse):
         x = X.astype(dtype)
 
         z = GF(1, dtype=dtype) / x  # Need dtype of "1" to be as large as x for `z.dtype == dtype`
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
         z = GF(1, dtype=dtype) // x  # Need dtype of "1" to be as large as x for `z.dtype == dtype`
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
         z = x ** -1
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
@@ -104,12 +104,12 @@ def test_multiple_add(multiple_add):
         y = Y  # Don't convert this, it's not a field element
 
         z = x * y
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
         z = y * x
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
@@ -121,7 +121,7 @@ def test_power(power):
         y = Y  # Don't convert this, it's not a field element
 
         z = x ** y
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is GF
         assert z.dtype == dtype
 
@@ -132,7 +132,7 @@ def test_power_zero_to_zero(field):
         y = np.zeros(10, field.dtypes[-1])
         z = x ** y
         Z = np.ones(10, field.dtypes[-1])
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is field
         assert z.dtype == dtype
 
@@ -143,7 +143,7 @@ def test_power_zero_to_positive_integer(field):
         y = randint(1, 2*field.order, 10, field.dtypes[-1])
         z = x ** y
         Z = np.zeros(10, field.dtypes[-1])
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
         assert type(z) is field
         assert z.dtype == dtype
 
@@ -159,7 +159,7 @@ def test_square(power):
             j = np.where(y == 2)[1][0]  # Index of Y where y=2
             x = x[:,j]
             z = x ** 2
-            assert np.all(z == Z[:,j])
+            assert np.array_equal(z, Z[:,j])
             assert type(z) is GF
             assert z.dtype == dtype
 
@@ -171,7 +171,7 @@ def test_log(log):
     for dtype in GF.dtypes:
         x = X.astype(dtype)
         z = np.log(x)
-        assert np.all(z == Z)
+        assert np.array_equal(z, Z)
 
 
 # class TestArithmeticNonField:
@@ -183,8 +183,8 @@ def test_log(log):
 #         j = np.random.randint(0, Z.shape[1])  # Random y index
 #         x = X[i,0]
 #         y = Y[0,j]
-#         assert np.all(x * y == Z[i,j])
-#         assert np.all(y * x == Z[i,j])
+#         assert np.array_equal(x * y, Z[i,j])
+#         assert np.array_equal(y * x, Z[i,j])
 
 
 #     def test_multiple_add_int_array(multiple_add):
@@ -193,8 +193,8 @@ def test_log(log):
 #         j = np.random.randint(0, Z.shape[1])  # Random y index
 #         x = X[i,0]
 #         y = Y[0,j]
-#         assert np.all(x * y == Z[i,j])
-#         assert np.all(y * x == Z[i,j])
+#         assert np.array_equal(x * y, Z[i,j])
+#         assert np.array_equal(y * x, Z[i,j])
 
 
 #     def test_rmul_int_scalar(multiple_add):
@@ -223,11 +223,11 @@ def test_log(log):
 #         x = X.copy()
 #         y = Y[i,:]
 #         x[i,:] *= y
-#         assert np.all(x[i,:] == Z[i,:])
+#         assert np.array_equal(x[i,:], Z[i,:])
 #         assert isinstance(x, GF)
 
 #         x = X
 #         y = Y[i,:].copy()
 #         y *= x[i,:]
-#         assert np.all(y == Z[i,:])
+#         assert np.array_equal(y, Z[i,:])
 #         assert isinstance(y, GF)

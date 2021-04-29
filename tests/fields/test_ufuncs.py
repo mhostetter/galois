@@ -68,7 +68,7 @@ class TestAccumulate:
         b_truth[0] = a[0]
         for i in range(1, 10):
             b_truth[i] = b_truth[i-1] + a[i]
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -77,7 +77,7 @@ class TestAccumulate:
         b_truth[0] = a[0]
         for i in range(1, 10):
             b_truth[i] = b_truth[i-1] - a[i]
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
     def test_multiply(self, field):
         a = field.Random(10)
@@ -86,7 +86,7 @@ class TestAccumulate:
         b_truth[0] = a[0]
         for i in range(1, 10):
             b_truth[i] = b_truth[i-1] * a[i]
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
     def test_divide(self, field):
         a = field.Random(10, low=1)
@@ -95,7 +95,7 @@ class TestAccumulate:
         b_truth[0] = a[0]
         for i in range(1, 10):
             b_truth[i] = b_truth[i-1] / a[i]
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
         a = field.Random(10, low=1)
         b = np.floor_divide.accumulate(a)
@@ -103,7 +103,7 @@ class TestAccumulate:
         b_truth[0] = a[0]
         for i in range(1, 10):
             b_truth[i] = b_truth[i-1] // a[i]
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
     def test_power(self, field):
         a = field.Random(10)
@@ -112,7 +112,7 @@ class TestAccumulate:
         b_truth[0] = a[0]
         for i in range(1, 10):
             b_truth[i] = b_truth[i-1] ** a[i]
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
 
 class TestReduceAt:
@@ -126,7 +126,7 @@ class TestReduceAt:
                 b_truth[i] = np.add.reduce(a[idxs[i]:])
             else:
                 b_truth[i] = np.add.reduce(a[idxs[i]:idxs[i+1]])
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -138,7 +138,7 @@ class TestReduceAt:
                 b_truth[i] = np.subtract.reduce(a[idxs[i]:])
             else:
                 b_truth[i] = np.subtract.reduce(a[idxs[i]:idxs[i+1]])
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
     def test_multiply(self, field):
         a = field.Random(10)
@@ -150,7 +150,7 @@ class TestReduceAt:
                 b_truth[i] = np.multiply.reduce(a[idxs[i]:])
             else:
                 b_truth[i] = np.multiply.reduce(a[idxs[i]:idxs[i+1]])
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
     def test_divide(self, field):
         a = field.Random(10, low=1)
@@ -162,7 +162,7 @@ class TestReduceAt:
                 b_truth[i] = np.true_divide.reduce(a[idxs[i]:])
             else:
                 b_truth[i] = np.true_divide.reduce(a[idxs[i]:idxs[i+1]])
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
         a = field.Random(10, low=1)
         idxs = [1,4,5,8]
@@ -173,7 +173,7 @@ class TestReduceAt:
                 b_truth[i] = np.floor_divide.reduce(a[idxs[i]:])
             else:
                 b_truth[i] = np.floor_divide.reduce(a[idxs[i]:idxs[i+1]])
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
     def test_power(self, field):
         a = field.Random(10)
@@ -185,7 +185,7 @@ class TestReduceAt:
                 b_truth[i] = np.power.reduce(a[idxs[i]:])
             else:
                 b_truth[i] = np.power.reduce(a[idxs[i]:idxs[i+1]])
-        assert np.all(b == b_truth)
+        assert np.array_equal(b, b_truth)
 
 
 class TestOuter:
@@ -197,7 +197,7 @@ class TestOuter:
         for i in range(a.size):
             for j in range(b.size):
                 c_truth[i,j] = a[i] + b[j]
-        assert np.all(c == c_truth)
+        assert np.array_equal(c, c_truth)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -207,7 +207,7 @@ class TestOuter:
         for i in range(a.size):
             for j in range(b.size):
                 c_truth[i,j] = a[i] - b[j]
-        assert np.all(c == c_truth)
+        assert np.array_equal(c, c_truth)
 
     def test_multiply(self, field):
         a = field.Random(10)
@@ -217,7 +217,7 @@ class TestOuter:
         for i in range(a.size):
             for j in range(b.size):
                 c_truth[i,j] = a[i] * b[j]
-        assert np.all(c == c_truth)
+        assert np.array_equal(c, c_truth)
 
     def test_divide(self, field):
         a = field.Random(10)
@@ -227,7 +227,7 @@ class TestOuter:
         for i in range(a.size):
             for j in range(b.size):
                 c_truth[i,j] = a[i] / b[j]
-        assert np.all(c == c_truth)
+        assert np.array_equal(c, c_truth)
 
         a = field.Random(10)
         b = field.Random(12, low=1)
@@ -236,7 +236,7 @@ class TestOuter:
         for i in range(a.size):
             for j in range(b.size):
                 c_truth[i,j] = a[i] // b[j]
-        assert np.all(c == c_truth)
+        assert np.array_equal(c, c_truth)
 
     def test_power(self, field):
         a = field.Random(10)
@@ -246,7 +246,7 @@ class TestOuter:
         for i in range(a.size):
             for j in range(b.size):
                 c_truth[i,j] = a[i] ** b[j]
-        assert np.all(c == c_truth)
+        assert np.array_equal(c, c_truth)
 
 
 class TestAt:
@@ -258,7 +258,7 @@ class TestAt:
         np.add.at(a, idxs, b)
         for i in idxs:
             a_truth[i] = a_truth[i] + b
-        assert np.all(a == a_truth)
+        assert np.array_equal(a, a_truth)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -268,7 +268,7 @@ class TestAt:
         np.subtract.at(a, idxs, b)
         for i in idxs:
             a_truth[i] = a_truth[i] - b
-        assert np.all(a == a_truth)
+        assert np.array_equal(a, a_truth)
 
     def test_multiply(self, field):
         a = field.Random(10)
@@ -278,7 +278,7 @@ class TestAt:
         np.multiply.at(a, idxs, b)
         for i in idxs:
             a_truth[i] = a_truth[i] * b
-        assert np.all(a == a_truth)
+        assert np.array_equal(a, a_truth)
 
     def test_divide(self, field):
         a = field.Random(10)
@@ -288,7 +288,7 @@ class TestAt:
         np.true_divide.at(a, idxs, b)
         for i in idxs:
             a_truth[i] = a_truth[i] / b
-        assert np.all(a == a_truth)
+        assert np.array_equal(a, a_truth)
 
         a = field.Random(10)
         b = field.Random(low=1)
@@ -297,7 +297,7 @@ class TestAt:
         np.floor_divide.at(a, idxs, b)
         for i in idxs:
             a_truth[i] = a_truth[i] // b
-        assert np.all(a == a_truth)
+        assert np.array_equal(a, a_truth)
 
     def test_negative(self, field):
         a = field.Random(10)
@@ -306,7 +306,7 @@ class TestAt:
         np.negative.at(a, idxs)
         for i in idxs:
             a_truth[i] = -a_truth[i]
-        assert np.all(a == a_truth)
+        assert np.array_equal(a, a_truth)
 
     def test_power(self, field):
         a = field.Random(10)
@@ -316,7 +316,7 @@ class TestAt:
         np.power.at(a, idxs, b)
         for i in idxs:
             a_truth[i] = a_truth[i] ** b
-        assert np.all(a == a_truth)
+        assert np.array_equal(a, a_truth)
 
     def test_log(self, field):
         if field.order > 2**16:  # TODO: Skip slow log() for very large fields
@@ -327,4 +327,4 @@ class TestAt:
         np.log.at(a, idxs)
         for i in idxs:
             a_truth[i] = np.log(a_truth[i])
-        assert np.all(a == a_truth)
+        assert np.array_equal(a, a_truth)
