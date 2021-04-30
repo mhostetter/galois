@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from .algorithm import gcd, gcd_jit
+from .algorithm import gcd, _gcd_jit
 from .dtypes import DTYPES
 from .meta_gf import GFMeta
 from .poly import Poly
@@ -141,7 +141,7 @@ def _additive_inverse_calculate(a):  # pragma: no cover
 
 
 def _multiplicative_inverse_calculate(a):  # pragma: no cover
-    a_inv = gcd_jit(a, ORDER)[1]
+    a_inv = _gcd_jit(a, ORDER)[1]
     return a_inv % ORDER
 
 

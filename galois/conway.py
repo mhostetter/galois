@@ -4,8 +4,11 @@ import sqlite3
 import numpy as np
 
 from .gf_prime import GF_prime
+from .overrides import set_module
 from .prime import is_prime
 from .poly import Poly
+
+__all__ = ["conway_poly"]
 
 DATABASE = None  # Database singleton class
 DATABASE_FILE = os.path.join(os.path.dirname(__file__), "databases", "conway_polys.db")
@@ -39,6 +42,7 @@ class ConwayDatabase:
         return coeffs[::-1]
 
 
+@set_module("galois")
 def conway_poly(p, n):
     """
     Returns the degree-:math:`n` Conway polynomial :math:`C_{p,n}` over :math:`\\mathrm{GF}(p)`.

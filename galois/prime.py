@@ -5,8 +5,15 @@ import random
 import numpy as np
 
 from .math_ import isqrt
+from .overrides import set_module
+
+__all__ = [
+    "primes", "kth_prime", "prev_prime", "next_prime", "random_prime", "mersenne_exponents", "mersenne_primes",
+    "prime_factors", "is_smooth", "is_prime", "fermat_primality_test", "miller_rabin_primality_test"
+]
 
 
+@set_module("galois")
 def primes(n):
     """
     Returns all primes :math:`p` for :math:`p \\le n`.
@@ -71,6 +78,7 @@ MAX_K = len(PRIMES)
 MAX_PRIME = PRIMES[-1]
 
 
+@set_module("galois")
 def kth_prime(k):
     """
     Returns the :math:`k`-th prime.
@@ -100,6 +108,7 @@ def kth_prime(k):
     return PRIMES[k - 1]
 
 
+@set_module("galois")
 def prev_prime(x):
     """
     Returns the nearest prime :math:`p`, such that :math:`p \\le x`.
@@ -128,6 +137,7 @@ def prev_prime(x):
     return PRIMES[bisect.bisect_right(PRIMES, x) - 1]
 
 
+@set_module("galois")
 def next_prime(x):
     """
     Returns the nearest prime :math:`p`, such that :math:`p > x`.
@@ -156,6 +166,7 @@ def next_prime(x):
     return PRIMES[bisect.bisect_right(PRIMES, x)]
 
 
+@set_module("galois")
 def random_prime(bits):
     """
     Returns a random prime :math:`p` with :math:`b` bits, such that :math:`2^b \\le p < 2^{b+1}`.
@@ -203,6 +214,7 @@ def random_prime(bits):
 MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3217,4253,4423,9689,9941,11213,19937,21701,23209,44497,86243,110503,132049,216091,756839,859433,1257787,1398269,2976221,3021377,6972593,13466917,20996011,24036583,25964951,30402457,32582657,37156667,42643801,43112609]
 
 
+@set_module("galois")
 def mersenne_exponents(n=None):
     """
     Returns all known Mersenne exponents :math:`e` for :math:`e \\le n`.
@@ -240,6 +252,7 @@ def mersenne_exponents(n=None):
         return MERSENNE_EXPONENTS[0:bisect.bisect_right(MERSENNE_EXPONENTS, n)]
 
 
+@set_module("galois")
 def mersenne_primes(n=None):
     """
     Returns all known Mersenne primes :math:`p` for :math:`p \\le 2^n - 1`.
@@ -271,6 +284,7 @@ def mersenne_primes(n=None):
     return [2**e - 1 for e in mersenne_exponents(n)]
 
 
+@set_module("galois")
 def prime_factors(x):
     """
     Computes the prime factors of the positive integer :math:`x`.
@@ -340,6 +354,7 @@ def prime_factors(x):
     return p, k
 
 
+@set_module("galois")
 def is_smooth(a, B):
     """
     Determines if the positive integer :math:`a` is :math:`B`-smooth, i.e. all its prime factors satisfy :math:`p \\le B`.
@@ -384,6 +399,7 @@ def is_smooth(a, B):
         return p[-1] <= B
 
 
+@set_module("galois")
 def is_prime(n):
     """
     Determines if :math:`n` is prime.
@@ -438,6 +454,7 @@ def is_prime(n):
     return True
 
 
+@set_module("galois")
 def fermat_primality_test(n):
     """
     Probabilistic primality test of :math:`n`.
@@ -495,6 +512,7 @@ def fermat_primality_test(n):
     return True
 
 
+@set_module("galois")
 def miller_rabin_primality_test(n, a=None, rounds=1):
     """
     Probabilistic primality test of :math:`n`.

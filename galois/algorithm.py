@@ -4,7 +4,12 @@ from itertools import combinations
 import numba
 import numpy as np
 
+from .overrides import set_module
 
+__all__ = ["gcd", "chinese_remainder_theorem"]
+
+
+@set_module("galois")
 def gcd(a, b):
     """
     Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.
@@ -64,7 +69,7 @@ def gcd(a, b):
 
 
 @numba.jit("int64[:](int64, int64)", nopython=True)
-def gcd_jit(a, b):  # pragma: no cover
+def _gcd_jit(a, b):  # pragma: no cover
     r = [a, b]
     s = [1, 0]
     t = [0, 1]
@@ -81,6 +86,7 @@ def gcd_jit(a, b):  # pragma: no cover
     return np.array([r[-2], s[-2], t[-2]], dtype=np.int64)
 
 
+@set_module("galois")
 def chinese_remainder_theorem(a, m):
     """
     Solves the simultaneous system of congruences for :math:`x`.

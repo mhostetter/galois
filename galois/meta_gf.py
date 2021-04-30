@@ -2,8 +2,12 @@ import numpy as np
 
 from .meta_mixin_ufunc import UfuncMixin
 from .modular import totatives
+from .overrides import set_module
+
+__all__ = ["GFMeta"]
 
 
+@set_module("galois")
 class GFMeta(UfuncMixin):
     """
     Defines a metaclass for all :obj:`galois.GFArray` classes.

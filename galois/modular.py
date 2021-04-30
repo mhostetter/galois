@@ -3,9 +3,13 @@ import math
 import numpy as np
 
 from .math_ import lcm
+from .overrides import set_module
 from .prime import prime_factors
 
+__all__ = ["totatives", "euler_totient", "carmichael", "is_cyclic", "is_primitive_root", "primitive_root", "primitive_roots"]
 
+
+@set_module("galois")
 def totatives(n):
     """
     Returns the positive integers (totatives) in :math:`1 \\le k < n` that are coprime with :math:`n`,
@@ -48,6 +52,7 @@ def totatives(n):
         return [t for t in range(1, n) if math.gcd(n, t) == 1]
 
 
+@set_module("galois")
 def euler_totient(n):
     """
     Counts the positive integers (totatives) in :math:`1 \\le k < n` that are relatively prime to
@@ -110,6 +115,7 @@ def _carmichael_prime_power(p, k):
         return euler_totient(p**k)
 
 
+@set_module("galois")
 def carmichael(n):
     """
     Finds the smallest positive integer :math:`m` such that :math:`a^m \\equiv 1 (\\textrm{mod}\\ n)` for
@@ -169,6 +175,7 @@ def carmichael(n):
     return lambda_
 
 
+@set_module("galois")
 def is_cyclic(n):
     """
     Determines whether the multiplicative group :math:`\\mathbb{Z}{_n^\\times}` is cyclic.
@@ -274,6 +281,7 @@ def is_cyclic(n):
         return False
 
 
+@set_module("galois")
 def is_primitive_root(g, n):
     """
     Determines if :math:`g` is a primitive root modulo :math:`n`.
@@ -321,6 +329,7 @@ def is_primitive_root(g, n):
     return pow(g, phi, n) == 1 and all(pow(g, phi // p, n) != 1 for p in primes)
 
 
+@set_module("galois")
 def primitive_root(n, start=1, stop=None, reverse=False):
     """
     Finds the smallest primitive root modulo :math:`n`.
@@ -450,6 +459,7 @@ def primitive_root(n, start=1, stop=None, reverse=False):
         return None
 
 
+@set_module("galois")
 def primitive_roots(n, start=1, stop=None, reverse=False):
     """
     Finds all primitive roots modulo :math:`n`.

@@ -4,9 +4,13 @@ import numpy as np
 
 from .array import GFArray
 from .gf2 import GF2
+from .overrides import set_module
 from .poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_integer, sparse_poly_to_str
 
+__all__ = ["Poly"]
 
+
+@set_module("galois")
 class Poly:
     """
     Create a polynomial :math:`p(x)` over :math:`\\mathrm{GF}(q)`.

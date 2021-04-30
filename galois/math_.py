@@ -6,7 +6,12 @@ import sys
 
 import numpy as np
 
+from .overrides import set_module
 
+__all__ = ["isqrt", "lcm"]
+
+
+@set_module("galois")
 def isqrt(n):
     """
     Computes the integer square root of :math:`n` such that :math:`\\textrm{isqrt}(n)^2 \\le n`.
@@ -56,6 +61,7 @@ def isqrt(n):
             return large_candidate
 
 
+@set_module("galois")
 def lcm(*integers):
     """
     Computes the least common multiple of the integer arguments.
