@@ -97,8 +97,8 @@ def test_multiplicative_inverse(multiplicative_inverse):
         assert z.dtype == dtype
 
 
-def test_multiple_add(multiple_add):
-    GF, X, Y, Z = multiple_add["GF"], multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
+def test_scalar_multiply(scalar_multiply):
+    GF, X, Y, Z = scalar_multiply["GF"], scalar_multiply["X"], scalar_multiply["Y"], scalar_multiply["Z"]
     for dtype in GF.dtypes:
         x = X.astype(dtype)
         y = Y  # Don't convert this, it's not a field element
@@ -177,8 +177,8 @@ def test_log(log):
 # class TestArithmeticNonField:
 
 
-#     def test_multiple_add_int_scalar(multiple_add):
-#         X, Y, Z = multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
+#     def test_scalar_multiply_int_scalar(scalar_multiply):
+#         X, Y, Z = scalar_multiply["X"], scalar_multiply["Y"], scalar_multiply["Z"]
 #         i = np.random.randint(0, Z.shape[0], 10)  # Random x indices
 #         j = np.random.randint(0, Z.shape[1])  # Random y index
 #         x = X[i,0]
@@ -187,8 +187,8 @@ def test_log(log):
 #         assert np.array_equal(y * x, Z[i,j])
 
 
-#     def test_multiple_add_int_array(multiple_add):
-#         X, Y, Z = multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
+#     def test_scalar_multiply_int_array(scalar_multiply):
+#         X, Y, Z = scalar_multiply["X"], scalar_multiply["Y"], scalar_multiply["Z"]
 #         i = np.random.randint(0, Z.shape[0], 10)  # Random x indices
 #         j = np.random.randint(0, Z.shape[1])  # Random y index
 #         x = X[i,0]
@@ -197,8 +197,8 @@ def test_log(log):
 #         assert np.array_equal(y * x, Z[i,j])
 
 
-#     def test_rmul_int_scalar(multiple_add):
-#         GF, X, Y, Z = multiple_add["GF"], multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
+#     def test_rmul_int_scalar(scalar_multiply):
+#         GF, X, Y, Z = scalar_multiply["GF"], scalar_multiply["X"], scalar_multiply["Y"], scalar_multiply["Z"]
 #         i = np.random.randint(0, Z.shape[0])  # Random x index
 #         j = np.random.randint(0, Z.shape[1])  # Random y index
 
@@ -216,8 +216,8 @@ def test_log(log):
 #         # assert isinstance(y, GF)
 
 
-#     def test_rmul_int_array(multiple_add):
-#         GF, X, Y, Z = multiple_add["GF"], multiple_add["X"], multiple_add["Y"], multiple_add["Z"]
+#     def test_rmul_int_array(scalar_multiply):
+#         GF, X, Y, Z = scalar_multiply["GF"], scalar_multiply["X"], scalar_multiply["Y"], scalar_multiply["Z"]
 #         i = np.random.randint(0, Z.shape[0])  # Random x index
 
 #         x = X.copy()

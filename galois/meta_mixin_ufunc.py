@@ -111,7 +111,7 @@ class UfuncMixin(type):
         cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
         cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
         cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_lookup)
-        cls._ufuncs["multiple_add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_lookup)
+        cls._ufuncs["scalar_multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_scalar_multiply_lookup)
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
         cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
@@ -130,7 +130,7 @@ class UfuncMixin(type):
         cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
         cls._ufuncs["negative"] = np.frompyfunc(cls._additive_inverse_python, 1, 1)
         cls._ufuncs["reciprocal"] = np.frompyfunc(cls._multiplicative_inverse_python, 1, 1)
-        cls._ufuncs["multiple_add"] = np.frompyfunc(cls._multiple_add_python, 2, 1)
+        cls._ufuncs["scalar_multiply"] = np.frompyfunc(cls._scalar_multiply_python, 2, 1)
         cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
         cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
         cls._ufuncs["poly_eval"] = np.vectorize(cls._poly_eval_python, excluded=["coeffs"], otypes=[np.object_])
@@ -176,7 +176,7 @@ class UfuncMixin(type):
         """
         raise NotImplementedError
 
-    def _multiple_add_python(cls, a, multiple):
+    def _scalar_multiply_python(cls, a, multiple):
         b = multiple % cls.characteristic
         return cls._multiply_python(a, b)
 
@@ -396,7 +396,7 @@ def _multiplicative_inverse_lookup(a):  # pragma: no cover
     return EXP[(ORDER - 1) - m]
 
 
-def _multiple_add_lookup(a, b_int):  # pragma: no cover
+def _scalar_multiply_lookup(a, b_int):  # pragma: no cover
     """
     a in GF(p^m)
     b_int in Z
