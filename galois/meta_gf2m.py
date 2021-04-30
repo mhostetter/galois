@@ -26,21 +26,17 @@ class GF2mMeta(GFMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._characteristic = 2
-        cls._degree = kwargs["degree"]
-        cls._order = cls.characteristic**cls.degree
-        cls._irreducible_poly = kwargs["irreducible_poly"]
-        cls._primitive_element = kwargs["primitive_element"]
-        cls._ground_field = kwargs["ground_field"]
-
-        cls._primitive_element_dec = cls._primitive_element.integer
         cls._irreducible_poly_dec = cls._irreducible_poly.integer  # pylint: disable=no-member
+        cls._primitive_element_dec = cls._primitive_element.integer
+        cls._prime_subfield = kwargs["prime_subfield"]
 
         cls.compile(kwargs["mode"], kwargs["target"])
+
+        # Convert primitive element from a poly in GF(2)[x] to an integer
         cls._primitive_element = cls(cls._primitive_element.integer)
 
-        poly = Poly(cls._irreducible_poly.coeffs, field=cls)
-        cls._is_primitive_poly = poly(cls.primitive_element) == 0
+        # Determine if the irreducible polynomial is primitive
+        cls._is_primitive_poly = cls._irreducible_poly(cls.primitive_element, field=cls) == 0
 
     @property
     def dtypes(cls):

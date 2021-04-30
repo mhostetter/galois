@@ -3,7 +3,7 @@ from .meta_gf2 import GF2Meta
 
 # Create GF2 class for use in poly.py
 
-class GF2(GFArray, metaclass=GF2Meta, mode="jit-calculate", target="cpu"):  # pylint: disable=too-many-ancestors
+class GF2(GFArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, mode="jit-calculate", target="cpu"):  # pylint: disable=too-many-ancestors
     """
     A pre-created Galois field array class for :math:`\\mathrm{GF}(2)`.
 

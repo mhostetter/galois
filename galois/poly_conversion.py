@@ -161,7 +161,7 @@ def sparse_poly_to_str(degrees, coeffs, poly_var="x"):
     return poly_str
 
 
-def str_to_integer(poly_str, ground_field):
+def str_to_integer(poly_str, prime_subfield):
     """
     Convert a polynomial string to its integer representation.
 
@@ -169,7 +169,7 @@ def str_to_integer(poly_str, ground_field):
     ----------
     poly_str : str
         A polynomial representation of the string.
-    ground_field : galois.GFMeta
+    prime_subfield : galois.GFMeta
         The Galois field the polynomial is over.
 
     Returns
@@ -214,8 +214,8 @@ def str_to_integer(poly_str, ground_field):
 
         coeff = coeff.replace("*", "")  # Remove multiplication sign for elements like `3*x^2`
         coeff = int(coeff) if coeff != "" else 1
-        coeff = coeff if coeff >= 0 else int(-ground_field(abs(coeff)))
+        coeff = coeff if coeff >= 0 else int(-prime_subfield(abs(coeff)))
 
-        integer += coeff * ground_field.order**degree
+        integer += coeff * prime_subfield.order**degree
 
     return integer
