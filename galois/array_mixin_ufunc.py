@@ -31,7 +31,7 @@ def _ufunc_multiply(ufunc, method, inputs, kwargs, meta):
     else:
         # Scalar multiplication
         inputs = _verify_and_flip_operands_first_field_second_int(ufunc, method, inputs, meta)
-        output = getattr(meta["ufuncs"]["multiple_add"], method)(*inputs, **kwargs)
+        output = getattr(meta["ufuncs"]["scalar_multiply"], method)(*inputs, **kwargs)
     output = _view_output_as_field(output, meta["field"], meta["dtype"])
     return output
 

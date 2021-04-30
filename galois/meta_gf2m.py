@@ -71,7 +71,7 @@ class GF2mMeta(GFMeta):
         cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
         cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
         cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
-        cls._ufuncs["multiple_add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiple_add_calculate)
+        cls._ufuncs["scalar_multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_scalar_multiply_calculate)
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
         cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
@@ -233,7 +233,7 @@ def _multiplicative_inverse_calculate(a):  # pragma: no cover
     return result
 
 
-def _multiple_add_calculate(a, multiple):  # pragma: no cover
+def _scalar_multiply_calculate(a, multiple):  # pragma: no cover
     multiple = multiple % CHARACTERISTIC
     if multiple == 0:
         return 0

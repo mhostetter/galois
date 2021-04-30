@@ -216,9 +216,9 @@ def multiplicative_inverse(field_folder):
     return d
 
 @pytest.fixture(scope="session")
-def multiple_add(field_folder):
+def scalar_multiply(field_folder):
     GF, folder = field_folder
-    with open(os.path.join(folder, "multiple_add.pkl"), "rb") as f:
+    with open(os.path.join(folder, "scalar_multiply.pkl"), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
     d["GF"] = GF

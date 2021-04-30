@@ -155,7 +155,7 @@ def make_luts(field, folder, sparse=False):
         for j in range(ZZ.shape[1]):
             ZZ[i,j] = I(F(XX[i,j]) * YY[i,j])
     d = {"X": X, "Y": Y, "Z": ZZ}
-    save_pickle(d, folder, "multiple_add.pkl")
+    save_pickle(d, folder, "scalar_multiply.pkl")
 
     X, Y, XX, YY, ZZ = io_2d(0, order, 1, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
@@ -186,8 +186,7 @@ def make_luts(field, folder, sparse=False):
     X, Z = io_1d(1, order, sparse=sparse)
     for i in range(Z.shape[0]):
         try:
-            # TODO: Figure out why we need to mod by (order - 1)
-            Z[i] = field.fetch_int(X[i]).log(alpha)
+            Z[i] = I(field.fetch_int(X[i]).log(alpha))
         except:
             Z[i] = I(log(F(X[i]), alpha))
     d = {"X": X, "Z": Z}
