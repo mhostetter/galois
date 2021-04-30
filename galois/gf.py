@@ -1,8 +1,12 @@
-from galois.gf_extension import GF_extension
+from .gf_extension import GF_extension
 from .gf_prime import GF_prime
+from .overrides import set_module
 from .prime import prime_factors
 
+__all__ = ["GF"]
 
+
+@set_module("galois")
 def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=True, verify_primitive=True, mode="auto", target="cpu"):
     """
     Factory function to construct a Galois field array class of type :math:`\\mathrm{GF}(p^m)`.

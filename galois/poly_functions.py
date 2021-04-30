@@ -2,10 +2,14 @@ import numpy as np
 
 from .gf_prime import GF_prime
 from .modular import totatives
+from .overrides import set_module
 from .poly import Poly
 from .prime import prime_factors
 
+__all__ = ["poly_gcd", "poly_exp_mod", "is_irreducible", "is_primitive", "is_primitive_element", "primitive_element", "primitive_elements", "is_monic"]
 
+
+@set_module("galois")
 def poly_gcd(a, b):
     """
     Finds the greatest common divisor of two polynomials :math:`a(x)` and :math:`b(x)`
@@ -84,6 +88,7 @@ def poly_gcd(a, b):
     return r2, s2, t2
 
 
+@set_module("galois")
 def poly_exp_mod(poly, power, modulus):
     """
     Efficiently exponentiates a polynomial :math:`f(x)` to the power :math:`k` reducing by modulo :math:`g(x)`,
@@ -150,6 +155,7 @@ def poly_exp_mod(poly, power, modulus):
     return result
 
 
+@set_module("galois")
 def is_irreducible(poly):
     """
     Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is irreducible.
@@ -239,6 +245,7 @@ def is_irreducible(poly):
     return True
 
 
+@set_module("galois")
 def is_primitive(poly):
     assert isinstance(poly, Poly)
     assert poly.degree > 1
@@ -264,6 +271,7 @@ def is_primitive(poly):
     return True
 
 
+@set_module("galois")
 def is_primitive_element(element, irreducible_poly):
     """
     Determines if :math:`g(x)` is a primitive element of the Galois field :math:`\\mathrm{GF}(p^m)` with
@@ -331,6 +339,7 @@ def is_primitive_element(element, irreducible_poly):
     return True
 
 
+@set_module("galois")
 def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):
     """
     Finds the smallest primitive element :math:`g(x)` of the Galois field :math:`\\mathrm{GF}(p^m)` with
@@ -407,6 +416,7 @@ def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):
     return None
 
 
+@set_module("galois")
 def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
     """
     Finds all primitive elements :math:`g(x)` of the Galois field :math:`\\mathrm{GF}(p^m)` with
@@ -479,6 +489,7 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
     return elements
 
 
+@set_module("galois")
 def is_monic(poly):
     """
     Determines whether the polynomial is monic, i.e. having leading coefficient equal to 1.

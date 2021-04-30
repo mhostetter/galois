@@ -1,9 +1,12 @@
 from .array import GFArray
 from .meta_gf2 import GF2Meta
+from .overrides import set_module
 
-# Create GF2 class for use in poly.py
+__all__ = ["GF2"]
 
-class GF2(GFArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, mode="jit-calculate", target="cpu"):  # pylint: disable=too-many-ancestors
+
+@set_module("galois")
+class GF2(GFArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, mode="jit-calculate", target="cpu"):
     """
     A pre-created Galois field array class for :math:`\\mathrm{GF}(2)`.
 

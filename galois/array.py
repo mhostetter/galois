@@ -6,10 +6,14 @@ from .meta_gf import GFMeta
 from .array_mixin_function import FunctionMixin
 from .array_mixin_ufunc import UfuncMixin
 from .array_mixin_linalg import LinearAlgebraMixin
+from .overrides import set_module
 from .poly_conversion import integer_to_poly, poly_to_str, str_to_integer
 
+__all__ = ["GFArray"]
 
-class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metaclass=GFMeta):  # pylint: disable=too-many-ancestors
+
+@set_module("galois")
+class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metaclass=GFMeta):
     """
     Create an array over :math:`\\mathrm{GF}(p^m)`.
 
