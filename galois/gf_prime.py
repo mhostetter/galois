@@ -43,6 +43,8 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
         cls = types.new_class(name, bases=(GFArray,), kwds={
             "metaclass": GFpMeta,
             "characteristic": characteristic,
+            "degree": 1,
+            "order": characteristic**1,
             "primitive_element": primitive_element,
             "target": target,
             "mode": mode

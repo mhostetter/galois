@@ -18,13 +18,15 @@ class GFMeta(UfuncMixin):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._characteristic = None
-        cls._degree = None
-        cls._order = None
-        cls._irreducible_poly = None
+        cls._characteristic = kwargs.get("characteristic", None)
+        cls._degree = kwargs.get("degree", None)
+        cls._order = kwargs.get("order", None)
+        cls._irreducible_poly = kwargs.get("irreducible_poly", None)
+        cls._primitive_element = kwargs.get("primitive_element", None)
+
         cls._is_primitive_poly = None
-        cls._primitive_element = None
-        cls._ground_field = None
+        cls._prime_subfield = None
+
         cls._ufunc_mode = None
         cls._ufunc_target = None
         cls._display_mode = "int"
@@ -350,20 +352,20 @@ class GFMeta(UfuncMixin):
         return cls._degree > 1
 
     @property
-    def ground_field(cls):
+    def prime_subfield(cls):
         """
-        galois.GFMeta: The ground field :math:`\\mathrm{GF}(p)` of the extension field :math:`\\mathrm{GF}(p^m)`.
+        galois.GFMeta: The prime subfield :math:`\\mathrm{GF}(p)` of the extension field :math:`\\mathrm{GF}(p^m)`.
 
         Examples
         --------
         .. ipython:: python
 
-            print(galois.GF(2).ground_field.properties)
-            print(galois.GF(2**8).ground_field.properties)
-            print(galois.GF(31).ground_field.properties)
-            # print(galois.GF(7**5).ground_field.properties)
+            print(galois.GF(2).prime_subfield.properties)
+            print(galois.GF(2**8).prime_subfield.properties)
+            print(galois.GF(31).prime_subfield.properties)
+            # print(galois.GF(7**5).prime_subfield.properties)
         """
-        return cls._ground_field
+        return cls._prime_subfield
 
     @property
     def dtypes(cls):

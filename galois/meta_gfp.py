@@ -25,16 +25,13 @@ class GFpMeta(GFMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._characteristic = kwargs["characteristic"]
-        cls._degree = 1
-        cls._order = cls.characteristic**cls.degree
-        cls._primitive_element = kwargs["primitive_element"]
-        cls._ground_field = cls
-
         cls._primitive_element_dec = int(cls._primitive_element)
+        cls._prime_subfield = cls
+
         cls.compile(kwargs["mode"], kwargs["target"])
 
-        cls._irreducible_poly = Poly([1, -int(cls.primitive_element)], field=cls)
+        cls._irreducible_poly = Poly([1, -cls._primitive_element_dec], field=cls)
+        cls._irreducible_poly_dec = cls.irreducible_poly.integer  # pylint: disable=no-member
         cls._primitive_element = cls(cls.primitive_element)
         cls._is_primitive_poly = True
 

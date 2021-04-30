@@ -84,12 +84,9 @@ class GF2Meta(GFMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._characteristic = 2
-        cls._degree = 1
-        cls._order = cls.characteristic**cls.degree
         cls._irreducible_poly = None  # Will be set in __init__.py to avoid circular import with Poly
-        cls._primitive_element = 1
-        cls._ground_field = cls
+        cls._primitive_element_dec = int(cls._primitive_element)
+        cls._prime_subfield = cls
 
         cls._primitive_element_dec = int(cls._primitive_element)
         cls.compile(kwargs["mode"], kwargs["target"])

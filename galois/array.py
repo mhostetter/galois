@@ -162,7 +162,7 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
     def _check_array_like_object(cls, array_like):
         if isinstance(array_like, str):
             # Convert the string to an integer
-            array_like = str_to_integer(array_like, cls.ground_field)
+            array_like = str_to_integer(array_like, cls.prime_subfield)
 
         if isinstance(array_like, (int, np.integer)):
             # Just check that the single int is in range
@@ -195,7 +195,7 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
                 continue
 
             if isinstance(item, str):
-                item = str_to_integer(item, cls.ground_field)
+                item = str_to_integer(item, cls.prime_subfield)
             elif not isinstance(item, (int, np.integer, cls)):
                 raise TypeError(f"When {cls.name} arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
 
