@@ -24,6 +24,19 @@ def dot(a, b, **kwargs):  # pylint: disable=unused-argument
         raise NotImplementedError
 
 
+def inner(a, b, **kwargs):  # pylint: disable=unused-argument
+    """
+    https://numpy.org/doc/stable/reference/generated/numpy.inner.html#numpy.inner
+    """
+    if not type(a) is type(b):
+        raise TypeError(f"Operation 'inner' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+    if a.ndim == 0 or b.ndim == 0:
+        return a * b
+    if not a.shape[-1] == b.shape[-1]:
+        raise ValueError(f"Operation 'inner' requires `a` and `b` to have the same last dimension, not {a.shape} and {b.shape}.")
+    return np.sum(a * b, axis=-1)
+
+
 def matmul(A, B, **kwargs):
     # pylint: disable=too-many-branches
     if not type(A) is type(B):
