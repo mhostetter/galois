@@ -35,8 +35,8 @@ FIELDS_DIFF_MODES = [
     pytest.param("GF(2^3)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
     pytest.param("GF(2^8)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
     pytest.param("GF(2^8)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^8, 0x11b, 19)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^8, 0x11b, 19)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("GF(2^8, 283, 19)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
+    pytest.param("GF(2^8, 283, 19)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
     pytest.param("GF(2^32)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
     pytest.param("GF(2^100)-python-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
 
@@ -81,8 +81,8 @@ def construct_field(folder):
         GF = galois.GF(2**3, mode=mode)
     elif folder == "GF(2^8)":
         GF = galois.GF(2**8, mode=mode)
-    elif folder == "GF(2^8, 0x11b, 19)":
-        GF = galois.GF(2**8, irreducible_poly=0x11b, primitive_element=19, mode=mode)
+    elif folder == "GF(2^8, 283, 19)":
+        GF = galois.GF(2**8, irreducible_poly=283, primitive_element=19, mode=mode)
     elif folder == "GF(2^32)":
         GF = galois.GF(2**32, mode=mode)
     elif folder == "GF(2^100)":
