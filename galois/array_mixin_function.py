@@ -8,6 +8,7 @@ UNSUPPORTED_ONE_ARG_FUNCTIONS = [
     np.around, np.round_, np.fix,
     np.gradient, np.trapz,
     np.i0, np.sinc,
+    np.angle, np.real, np.imag, np.conj, np.conjugate,
 ]
 
 UNSUPPORTED_TWO_ARG_FUNCTIONS = [
@@ -31,7 +32,7 @@ OVERRIDDEN_FUNCTIONS = {
 FUNCTIONS_REQUIRING_VIEW = [
     np.copy, np.concatenate,
     np.broadcast_to,
-    np.trace
+    np.trace,
 ]
 
 class FunctionMixin(np.ndarray):
