@@ -500,6 +500,82 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
         """
         return cls.Range(0, cls.order, step=1, dtype=dtype)
 
+    @classmethod
+    def Vector(cls, array, dtype=None):
+        """
+        Creates a Galois field array over :math:`\\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\\mathrm{GF}(p)`.
+
+        Parameters
+        ----------
+        array : array_like
+            The input array with field elements in :math:`\\mathrm{GF}(p)` to be converted to a Galois field array in :math:`\\mathrm{GF}(p^m)`.
+            The last dimension of the input array must be :math:`m`. An input array with shape `(n1, n2, m)` has output shape `(n1, n2)`.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+
+        Returns
+        -------
+        galois.GFArray
+            A Galois field array over :math:`\\mathrm{GF}(p^m)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(2**6)
+            vec = galois.GF2.Random((3,6)); vec
+            a = GF.Vector(vec); a
+            with GF.display("poly"):
+                print(a)
+            a.vector()
+        """
+        order = cls.prime_subfield.order
+        degree = cls.degree
+        array = cls.prime_subfield(array).view(np.ndarray).astype(cls.dtypes[-1])  # Use the largest dtype so computation doesn't overflow
+        if not array.shape[-1] == degree:
+            raise ValueError(f"The last dimension of `array` must be the field extension dimension {cls.degree}, not {array.shape[-1]}.")
+        degrees = np.arange(degree - 1, -1, -1, dtype=cls.dtypes[-1])
+        array = np.sum(array * order**degrees, axis=-1)
+        return cls(array, dtype=dtype)
+
+    def vector(self, dtype=None):
+        """
+        Converts the Galois field array over :math:`\\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\\mathrm{GF}(p)`.
+
+        For an input array with shape `(n1, n2)`, the output shape is `(n1, n2, m)`.
+
+        Parameters
+        ----------
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+
+        Returns
+        -------
+        galois.GFArray
+            A Galois field array of length-:math:`m` vectors over :math:`\\mathrm{GF}(p)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(2**6)
+            a = GF.Random(3); a
+            vec = a.vector(); vec
+            GF.Vector(vec)
+        """
+        order = type(self).prime_subfield.order
+        degree = type(self).degree
+        array = self.view(np.ndarray)
+        array = np.repeat(array, degree).reshape(*array.shape, degree)
+        x = 0
+        for i in range(degree):
+            q = (array[...,i] - x) // order**(degree - 1 - i)
+            array[...,i] = q
+            x += q*order**(degree - 1 - i)
+        return type(self).prime_subfield(array, dtype=dtype)
+
     ###############################################################################
     # Overridden numpy methods
     ###############################################################################
