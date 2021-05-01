@@ -343,7 +343,7 @@ if __name__ == "__main__":
 
     np.random.seed(123456789 + 100), random.seed(123456789 + 100)
     field = GF(2**8, "x", modulus=[1,1,0,1,1,0,0,0,1], repr="int")
-    folder = os.path.join(path, "GF(2^8, 0x11b, 19)")
+    folder = os.path.join(path, "GF(2^8, 283, 19)")
     make_luts(field, folder)
 
     np.random.seed(123456789 + 11), random.seed(123456789 + 11)
