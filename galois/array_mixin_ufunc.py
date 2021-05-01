@@ -182,19 +182,6 @@ def _view_output_as_field(output, field, dtype):
 # GFArray mixin class
 ###############################################################################
 
-OVERRIDDEN_UFUNCS = {
-    np.add: _ufunc_add,
-    np.subtract: _ufunc_subtract,
-    np.multiply: _ufunc_multiply,
-    np.floor_divide: _ufunc_divide,
-    np.true_divide: _ufunc_divide,
-    np.negative: _ufunc_negative,
-    np.reciprocal: _ufunc_reciprocal,
-    np.power: _ufunc_power,
-    np.square: _ufunc_square,
-    np.log: _ufunc_log,
-}
-
 UNSUPPORTED_ONE_ARG_UFUNCS = [
     np.invert, np.sqrt,
     np.log2, np.log10,
@@ -212,9 +199,29 @@ UNSUPPORTED_TWO_ARG_UFUNCS = [
     np.hypot, np.arctan2,
     np.logaddexp, np.logaddexp2,
     np.remainder,
+    np.fmod, np.modf,
+    np.fmin, np.fmax,
 ]
 
 UNSUPPORTED_UFUNCS = UNSUPPORTED_ONE_ARG_UFUNCS + UNSUPPORTED_TWO_ARG_UFUNCS
+
+OVERRIDDEN_UFUNCS = {
+    np.add: _ufunc_add,
+    np.subtract: _ufunc_subtract,
+    np.multiply: _ufunc_multiply,
+    np.floor_divide: _ufunc_divide,
+    np.true_divide: _ufunc_divide,
+    np.negative: _ufunc_negative,
+    np.reciprocal: _ufunc_reciprocal,
+    np.power: _ufunc_power,
+    np.square: _ufunc_square,
+    np.log: _ufunc_log,
+}
+
+UFUNCS_REQUIRING_VIEW = [
+    np.bitwise_and, np.bitwise_or, np.bitwise_xor,
+    np.left_shift, np.right_shift,
+]
 
 
 class UfuncMixin(np.ndarray):
@@ -265,12 +272,6 @@ class UfuncMixin(np.ndarray):
     #         raise ArithmeticError("Log(0) error")
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):  # pylint: disable=too-many-branches
-        """
-        Intercept various numpy ufuncs (triggered by operators like `+` , `-`, etc). Then determine
-        which operations will result in the correct answer in the given Galois field. Wherever
-        appropriate, use native numpy ufuncs for their efficiency and generality in supporting various array
-        shapes, etc.
-        """
         if ufunc is np.matmul:
             return matmul(*inputs, **kwargs)
 
@@ -305,4 +306,9 @@ class UfuncMixin(np.ndarray):
             raise NotImplementedError(f"The numpy ufunc '{ufunc.__name__}' is not supported on Galois field arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         else:
-            return super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
+            output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
+
+            if ufunc in UFUNCS_REQUIRING_VIEW:
+                output = output.view(type(self))
+
+            return output
