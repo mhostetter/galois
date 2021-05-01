@@ -39,6 +39,22 @@ def test_dot_tensor_vector(field):
     assert np.array_equal(C, np.sum(A * b, axis=-1))
 
 
+def test_inner_scalar_scalar(field):
+    a = field.Random()
+    b = field.Random()
+    c = np.inner(a, b)
+    assert type(c) is field
+    assert c == a*b
+
+
+def test_inner_vector_vector(field):
+    a = field.Random(3)
+    b = field.Random(3)
+    c = np.inner(a, b)
+    assert type(c) is field
+    assert np.array_equal(c, np.sum(a * b))
+
+
 def test_matmul_scalar(field):
     A = field.Random((3,3))
     B = field.Random()

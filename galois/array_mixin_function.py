@@ -1,6 +1,6 @@
 import numpy as np
 
-from .linalg import dot, matrix_rank, solve, inv, det
+from .linalg import dot, inner, matrix_rank, solve, inv, det
 
 UNSUPPORTED_ONE_ARG_FUNCTIONS = [
     np.packbits, np.unpackbits,
@@ -18,8 +18,8 @@ UNSUPPORTED_TWO_ARG_FUNCTIONS = [
 UNSUPPORTED_FUNCTIONS = UNSUPPORTED_ONE_ARG_FUNCTIONS + UNSUPPORTED_TWO_ARG_FUNCTIONS
 
 OVERRIDDEN_FUNCTIONS = {
-    # np.inner: "inner",
     np.dot: dot,
+    np.inner: inner,
     # np.tensordot: "tensordot",
     np.linalg.matrix_rank: matrix_rank,
     np.linalg.inv: inv,
