@@ -119,6 +119,29 @@ def test_random_invalid_dtype(field, shape):
         a = field.Random(shape, dtype=dtype)
 
 
+@pytest.mark.parametrize("shape", [(), (4,), (4,4)])
+def test_vector_valid_dtype(field, shape):
+    v_dtype = valid_dtype(field.prime_subfield)
+    v_shape = list(shape) + [field.degree]
+    v = field.prime_subfield.Random(v_shape, dtype=v_dtype)
+    dtype = valid_dtype(field)
+    a = field.Vector(v, dtype=dtype)
+    assert np.all(a >= 0) and np.all(a < field.order)
+    assert type(a) is field
+    assert a.dtype == dtype
+    assert a.shape == shape
+
+
+@pytest.mark.parametrize("shape", [(), (4,), (4,4)])
+def test_vector_invalid_dtype(field, shape):
+    v_dtype = valid_dtype(field.prime_subfield)
+    v_shape = list(shape) + [field.degree]
+    v = field.prime_subfield.Random(v_shape, dtype=v_dtype)
+    dtype = invalid_dtype(field)
+    with pytest.raises(TypeError):
+        a = field.Vector(v, dtype=dtype)
+
+
 def valid_dtype(field):
     return random.choice(field.dtypes)
 
