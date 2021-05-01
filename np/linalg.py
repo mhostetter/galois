@@ -11,7 +11,7 @@ def matrix_rank(x):
     .. ipython:: python
 
         GF = galois.GF(31)
-        A = GF.Eye(4); A
+        A = GF.Identity(4); A
         np.linalg.matrix_rank(A)
 
     One column is a linear combination of another.

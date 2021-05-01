@@ -88,7 +88,7 @@ as a polynomial over its prime subfield.
 
 Galois field arrays also have constructor class methods for convenience. They include:
 
-- :func:`galois.GFArray.Zeros`, :func:`galois.GFArray.Ones`, :func:`galois.GFArray.Eye`, :func:`galois.GFArray.Range`, :func:`galois.GFArray.Random`, :func:`galois.GFArray.Elements`
+- :func:`galois.GFArray.Zeros`, :func:`galois.GFArray.Ones`, :func:`galois.GFArray.Identity`, :func:`galois.GFArray.Range`, :func:`galois.GFArray.Random`, :func:`galois.GFArray.Elements`
 
 Galois field elements can either be displayed using their integer representation, polynomial representation, or
 power representation. Calling :func:`galois.GFMeta.display` will change the element representation. If called as a context
@@ -105,6 +105,9 @@ manager, the display mode will only be temporarily changed.
    # Temporarily set the display mode to represent GF(2^8) field elements as powers of the primitive element
    with GF256.display("power"):
       print(x)
+
+   # Resets the display mode to the integer representation
+   GF256.display();
 
 Field arithmetic
 ----------------
@@ -141,6 +144,7 @@ The :obj:`galois` package intercepts relevant calls to numpy's linear algebra fu
 operation in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{R}`. Some of these functions include:
 
 - :func:`np.trace`
+- :func:`np.dot`, :func:`np.inner`, :func:`np.outer`
 - :func:`np.linalg.matrix_rank`, :func:`np.linalg.matrix_power`
 - :func:`np.linalg.det`, :func:`np.linalg.inv`, :func:`np.linalg.solve`
 

@@ -155,7 +155,7 @@ def test_lu_decomposition():
 
 def test_lup_decomposition():
     GF = galois.GF(3)
-    I = GF.Eye(3)
+    I = GF.Identity(3)
     for trial in range(100):
         A = GF.Random((3,3))
         L, U, P = A.lup_decompose()
@@ -220,7 +220,7 @@ def test_solve_2d_2d(field):
 
 
 def full_rank_matrix(field, n):
-    A = field.Eye(n)
+    A = field.Identity(n)
     while True:
         A = field.Random((n,n))
         if np.linalg.matrix_rank(A) == n:

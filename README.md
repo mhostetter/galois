@@ -10,7 +10,7 @@
 The main idea of the `galois` package can be summarized as follows. The user creates a "Galois field array class" using `GF = galois.GF(p**m)`.
 A Galois field array class `GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)` mimics
 the call signature of `np.array`. A Galois field array `x` is operated on like any other numpy array, but all
-arithmetic is performed in GF(p^m) not **Z** or **R**.
+arithmetic is performed in `GF(p^m)` not **Z** or **R**.
 
 Internally, the Galois field arithmetic is implemented by replacing [numpy ufuncs](https://np.org/doc/stable/reference/ufuncs.html).
 The new ufuncs are written in python and then [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
@@ -41,8 +41,8 @@ In addition to normal array arithmetic, `galois` also supports linear algebra (w
 
 ## Features
 
-- Supports all Galois fields GF(p^m), even arbitrarily-large fields!
-- **Faster** than native numpy! `GF(x) * GF(y)` is faster than `(x * y) % p` for GF(p)
+- Supports all Galois fields `GF(p^m)`, even arbitrarily-large fields!
+- **Faster** than native numpy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`
 - Seamless integration with numpy -- normal numpy functions work on Galois field arrays
 - Linear algebra over Galois fields using native `np.linalg` functions
 - Polynomials over Galois fields with `galois.Poly`, both dense and sparse polynomials
@@ -183,7 +183,7 @@ GF(81, order=2^8)
 
 Galois field arrays also have constructor class methods for convenience. They include:
 
-- `GFArray.Zeros`, `GFArray.Ones`, `GFArray.Eye`, `GFArray.Range`, `GFArray.Random`, `GFArray.Elements`
+- `GFArray.Zeros`, `GFArray.Ones`, `GFArray.Identity`, `GFArray.Range`, `GFArray.Random`, `GFArray.Elements`
 
 Galois field elements can either be displayed using their integer representation, polynomial representation, or
 power representation. Calling `GFMeta.display` will change the element representation. If called as a context
@@ -204,6 +204,9 @@ GF([α^6 + 1, 0, α, 1, α^5 + α^4 + α], order=2^8)
 ...     print(x)
 
 GF([α^191, -∞, α, 1, α^194], order=2^8)
+
+# Resets the display mode to the integer representation
+>>> GF256.display():
 ```
 
 ### Field arithmetic
@@ -243,9 +246,10 @@ GF([[191,  33,  85,  77,  88],
 ### Linear algebra
 
 The `galois` package intercepts relevant calls to numpy's linear algebra functions and performs the specified
-operation in GF(p^m) not in **R**. Some of these functions include:
+operation in `GF(p^m)` not in **R**. Some of these functions include:
 
 - `np.trace`
+- `np.dot`, `np.inner`, `np.outer`
 - `np.linalg.matrix_rank`, `np.linalg.matrix_power`
 - `np.linalg.det`, `np.linalg.inv`, `np.linalg.solve`
 
