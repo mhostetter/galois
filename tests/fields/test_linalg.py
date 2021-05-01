@@ -55,6 +55,22 @@ def test_inner_vector_vector(field):
     assert np.array_equal(c, np.sum(a * b))
 
 
+def test_outer_vector_vector(field):
+    a = field.Random(3)
+    b = field.Random(4)
+    c = np.outer(a, b)
+    assert type(c) is field
+    assert np.array_equal(c, np.multiply.outer(a, b))
+
+
+def test_outer_nd_nd(field):
+    a = field.Random((3,3))
+    b = field.Random((4,4))
+    c = np.outer(a, b)
+    assert type(c) is field
+    assert np.array_equal(c, np.multiply.outer(a.ravel(), b.ravel()))
+
+
 def test_matmul_scalar(field):
     A = field.Random((3,3))
     B = field.Random()

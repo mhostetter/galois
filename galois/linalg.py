@@ -37,6 +37,15 @@ def inner(a, b, **kwargs):  # pylint: disable=unused-argument
     return np.sum(a * b, axis=-1)
 
 
+def outer(a, b, **kwargs):  # pylint: disable=unused-argument
+    """
+    https://numpy.org/doc/stable/reference/generated/numpy.outer.html#numpy.outer
+    """
+    if not type(a) is type(b):
+        raise TypeError(f"Operation 'outer' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+    return np.multiply.outer(a.ravel(), b.ravel())
+
+
 def matmul(A, B, **kwargs):
     # pylint: disable=too-many-branches
     if not type(A) is type(B):
