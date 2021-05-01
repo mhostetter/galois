@@ -996,14 +996,11 @@ class DensePoly(Poly):
         field = a.field
 
         # c(x) = a(x) * b(x)
-        if field.order == 2:
-            c_coeffs = field(np.convolve(a.coeffs, b.coeffs) % field.characteristic)
-        else:
-            a_degree = a.coeffs.size - 1
-            b_degree = b.coeffs.size - 1
-            c_coeffs = field.Zeros(a_degree + b_degree + 1)
-            for i in np.nonzero(b.coeffs)[0]:
-                c_coeffs[i:i + a.coeffs.size] += a.coeffs*b.coeffs[i]
+        a_degree = a.coeffs.size - 1
+        b_degree = b.coeffs.size - 1
+        c_coeffs = field.Zeros(a_degree + b_degree + 1)
+        for i in np.nonzero(b.coeffs)[0]:
+            c_coeffs[i:i + a.coeffs.size] += a.coeffs*b.coeffs[i]
 
         return Poly(c_coeffs)
 
@@ -1103,7 +1100,7 @@ class DensePoly(Poly):
         return self._coeffs
 
 
-class BinaryPoly(Poly):  # pylint: disable=signature-differs
+class BinaryPoly(Poly):
     """
     Implementation of polynomials over GF(2).
     """
