@@ -134,7 +134,7 @@ def lu_decompose(A):
     field = type(A)
     n = A.shape[0]
     Ai = np.copy(A)
-    L = field.Eye(n)
+    L = field.Identity(n)
 
     for i in range(0, n-1):
         if Ai[i,i] == 0:
@@ -155,7 +155,7 @@ def lup_decompose(A):
     n = A.shape[0]
     Ai = np.copy(A)
     L = field.Zeros((n,n))
-    P = field.Eye(n)
+    P = field.Identity(n)
 
     for i in range(0, n-1):
         if Ai[i,i] == 0:
@@ -191,7 +191,7 @@ def inv(A):
         raise ValueError(f"Argument `A` must be square, not {A.shape}.")
     field = type(A)
     n = A.shape[0]
-    I = field.Eye(n)
+    I = field.Identity(n)
 
     # Concatenate A and I to get the matrix AI = [A | I]
     AI = np.concatenate((A, I), axis=-1)

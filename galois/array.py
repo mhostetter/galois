@@ -307,7 +307,7 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
         return array.view(cls)
 
     @classmethod
-    def Eye(cls, size, dtype=None):
+    def Identity(cls, size, dtype=None):
         """
         Creates an :math:`n \\times n` identity matrix over :math:`\\mathrm{GF}(q)`.
 
@@ -329,10 +329,10 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
         .. ipython:: python
 
             GF = galois.GF(31)
-            GF.Eye(4)
+            GF.Identity(4)
         """
         dtype = cls._get_dtype(dtype)
-        array = np.eye(size, dtype=dtype)
+        array = np.identity(size, dtype=dtype)
         return array.view(cls)
 
     @classmethod

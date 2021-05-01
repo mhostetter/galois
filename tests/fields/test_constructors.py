@@ -65,7 +65,7 @@ def test_ones_invalid_dtype(field, shape):
 
 def test_eye(field):
     size = 4
-    a = field.Eye(size)
+    a = field.Identity(size)
     for i in range(size):
         for j in range(size):
             assert a[i,j] == 1 if i == j else a[i,j] == 0
@@ -77,7 +77,7 @@ def test_eye(field):
 def test_eye_valid_dtype(field):
     dtype = valid_dtype(field)
     size = 4
-    a = field.Eye(size, dtype=dtype)
+    a = field.Identity(size, dtype=dtype)
     for i in range(size):
         for j in range(size):
             assert a[i,j] == 1 if i == j else a[i,j] == 0
@@ -90,7 +90,7 @@ def test_eye_invalid_dtype(field):
     dtype = invalid_dtype(field)
     size = 4
     with pytest.raises(TypeError):
-        a = field.Eye(size, dtype=dtype)
+        a = field.Identity(size, dtype=dtype)
 
 
 @pytest.mark.parametrize("shape", [(), (4,), (4,4)])
