@@ -1,4 +1,27 @@
+"""
+a module that contains linear algebra routines over Galois fields.
+"""
 import numpy as np
+
+
+def dot(a, b, **kwargs):  # pylint: disable=unused-argument
+    """
+    https://numpy.org/doc/stable/reference/generated/numpy.dot.html
+    """
+    if not type(a) is type(b):
+        raise TypeError(f"Operation 'dot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+
+    if a.ndim == 0 or b.ndim == 0:
+        return a * b
+    elif a.ndim == 1 and b.ndim == 1:
+        return np.sum(a * b)
+    elif a.ndim == 2 and b.ndim == 2:
+        return a @ b
+    elif a.ndim >= 2 and b.ndim == 1:
+        return np.sum(a * b, axis=-1)
+    # elif a.dnim >= 2 and b.ndim >= 2:
+    else:
+        raise NotImplementedError
 
 
 def matmul(A, B, **kwargs):
