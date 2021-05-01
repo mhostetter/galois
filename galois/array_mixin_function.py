@@ -1,6 +1,6 @@
 import numpy as np
 
-from .linalg import matrix_rank, solve, inv, det
+from .linalg import dot, matrix_rank, solve, inv, det
 
 UNSUPPORTED_ONE_ARG_FUNCTIONS = [
     np.packbits, np.unpackbits,
@@ -19,7 +19,7 @@ UNSUPPORTED_FUNCTIONS = UNSUPPORTED_ONE_ARG_FUNCTIONS + UNSUPPORTED_TWO_ARG_FUNC
 
 OVERRIDDEN_FUNCTIONS = {
     # np.inner: "inner",
-    # np.dot: "dot",
+    np.dot: dot,
     # np.tensordot: "tensordot",
     np.linalg.matrix_rank: matrix_rank,
     np.linalg.inv: inv,
@@ -43,7 +43,7 @@ class FunctionMixin(np.ndarray):
             output = OVERRIDDEN_FUNCTIONS[func](*args, **kwargs)
 
         elif func in UNSUPPORTED_FUNCTIONS:
-            raise NotImplementedError(f"The numpy function '{func.__name__}' is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array.view(np.ndarray)` and then call the function.")
+            raise NotImplementedError(f"The numpy function '{func.__name__}' is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array = array.view(np.ndarray)` and then call the function.")
 
         else:
             if func is np.insert:

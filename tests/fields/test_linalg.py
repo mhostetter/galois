@@ -7,6 +7,38 @@ import numpy as np
 import galois
 
 
+def test_dot_scalar(field):
+    a = field.Random((3,3))
+    b = field.Random()
+    c = np.dot(a, b)
+    assert type(c) is field
+    assert np.array_equal(c, a * b)
+
+
+def test_dot_vector_vector(field):
+    a = field.Random(3)
+    b = field.Random(3)
+    c = np.dot(a, b)
+    assert type(c) is field
+    assert np.array_equal(c, np.sum(a * b))
+
+
+def test_dot_matrix_matrix(field):
+    A = field.Random((3,3))
+    B = field.Random((3,3))
+    C = np.dot(A, B)
+    assert type(C) is field
+    assert np.array_equal(C, A @ B)
+
+
+def test_dot_tensor_vector(field):
+    A = field.Random((3,4,5))
+    b = field.Random(5)
+    C = np.dot(A, b)
+    assert type(C) is field
+    assert np.array_equal(C, np.sum(A * b, axis=-1))
+
+
 def test_matmul_scalar(field):
     A = field.Random((3,3))
     B = field.Random()
