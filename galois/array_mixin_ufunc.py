@@ -125,12 +125,13 @@ def _verify_and_flip_operands_first_field_second_int(ufunc, method, inputs, meta
 def _verify_operands_first_field_second_int(ufunc, inputs, meta):
     if len(meta["operands"]) == 1:
         return
-    first = inputs[meta["operands"][0]]
-    second = inputs[meta["operands"][1]]
 
     if not meta["operands"][0] == meta["field_operands"][0]:
-        raise TypeError(f"Operation '{ufunc.__name__}' requires the first operand to be a Galois field array, not {first}.")
+        raise TypeError(f"Operation '{ufunc.__name__}' requires the first operand to be a Galois field array, not {meta['types'][meta['operands'][0]]}.")
+    if len(meta["field_operands"]) > 1 and meta["operands"][1] == meta["field_operands"][1]:
+        raise TypeError(f"Operation '{ufunc.__name__}' requires the second operand to be an integer array, not {meta['types'][meta['operands'][1]]}.")
 
+    second = inputs[meta["operands"][1]]
     if isinstance(second, (int, np.integer)):
         return
     # elif type(second) is np.ndarray:
