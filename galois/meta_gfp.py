@@ -9,7 +9,7 @@ from .poly import Poly
 # Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 ORDER = None  # The field's order `p^m`
-ALPHA = None  # The field's primitive element
+PRIMITIVE_ELEMENT = None  # The field's primitive element
 
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_JIT = lambda x, y: x + y
@@ -25,13 +25,13 @@ class GFpMeta(GFMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._primitive_element_dec = int(cls._primitive_element)
+        cls._primitive_element_int = int(cls._primitive_element)
         cls._prime_subfield = cls
 
         cls.compile(kwargs["mode"], kwargs["target"])
 
-        cls._irreducible_poly = Poly([1, -cls._primitive_element_dec], field=cls)
-        cls._irreducible_poly_dec = cls.irreducible_poly.integer  # pylint: disable=no-member
+        cls._irreducible_poly = Poly([1, -cls._primitive_element_int], field=cls)
+        cls._irreducible_poly_int = cls.irreducible_poly.integer  # pylint: disable=no-member
         cls._primitive_element = cls(cls.primitive_element)
         cls._is_primitive_poly = True
 
@@ -47,10 +47,10 @@ class GFpMeta(GFMeta):
         return d
 
     def _compile_jit_calculate(cls, target):
-        global CHARACTERISTIC, ORDER, ALPHA, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
+        global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
         CHARACTERISTIC = cls.characteristic
         ORDER = cls.order
-        ALPHA = int(cls.primitive_element)  # Convert from field element to integer
+        PRIMITIVE_ELEMENT = int(cls.primitive_element)  # Convert from field element to integer
 
         # JIT-compile add, multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
         ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
@@ -74,7 +74,7 @@ class GFpMeta(GFMeta):
         cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
     ###############################################################################
-    # Overridden methods from ObjectCalculateMixin
+    # Pure python arithmetic methods
     ###############################################################################
 
     def _add_python(cls, a, b):
@@ -198,7 +198,7 @@ def _log_calculate(beta):  # pragma: no cover
     for i in range(0, ORDER-1):
         if result == beta:
             break
-        result = MULTIPLY_JIT(result, ALPHA)
+        result = MULTIPLY_JIT(result, PRIMITIVE_ELEMENT)
     return i
 
 

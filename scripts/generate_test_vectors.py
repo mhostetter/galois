@@ -12,6 +12,7 @@ import pickle
 import random
 import shutil
 
+import sage
 import numpy as np
 from sage.all import GF, PolynomialRing, log
 
@@ -21,6 +22,10 @@ SPARSE_SIZE = 20
 
 def I(element):
     """Convert from various finite field elements to an integer"""
+    if isinstance(element, sage.rings.finite_rings.element_pari_ffelt.FiniteFieldElement_pari_ffelt):
+        coeffs = element._vector_()
+        characteristic = int(FIELD.characteristic())
+        return sum(int(c)*characteristic**i for i, c in enumerate(coeffs))
     try:
         return int(element)
     except TypeError:
@@ -29,6 +34,15 @@ def I(element):
 
 def F(integer):
     """Convert from an integer to various finite field elements"""
+    if isinstance(FIELD, sage.rings.finite_rings.finite_field_pari_ffelt.FiniteField_pari_ffelt):
+        l = []
+        characteristic = int(FIELD.characteristic())
+        degree = int(FIELD.degree())
+        for d in range(degree - 1, -1, -1):
+            q = integer // characteristic**d
+            l += [f"{q}*x^{d}"]
+            integer -= q*characteristic**d
+        return FIELD(" + ".join(l))
     try:
         return FIELD.fetch_int(int(integer))
     except:
@@ -354,4 +368,19 @@ if __name__ == "__main__":
     np.random.seed(123456789 + 12), random.seed(123456789 + 12)
     field = GF(2**100, "x", modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(2^100)")
+    make_luts(field, folder, sparse=True)
+
+    np.random.seed(123456789 + 13), random.seed(123456789 + 13)
+    field = GF(7**3, "x", modulus="primitive", repr="int")
+    folder = os.path.join(path, "GF(7^3)")
+    make_luts(field, folder)
+
+    np.random.seed(123456789 + 14), random.seed(123456789 + 14)
+    field = GF(7**3, "x", modulus=[6,0,6,1], repr="int")
+    folder = os.path.join(path, "GF(7^3, 643, 244)")
+    make_luts(field, folder)
+
+    np.random.seed(123456789 + 15), random.seed(123456789 + 15)
+    field = GF(109987**4, "x", modulus="primitive", repr="int")
+    folder = os.path.join(path, "GF(109987^4)")
     make_luts(field, folder, sparse=True)

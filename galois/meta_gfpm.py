@@ -10,15 +10,18 @@ CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 DEGREE = None  # The prime power `m` of the Galois field
 ORDER = None  # The field's order `p^m`
 PRIMITIVE_ELEMENT = None  # The field's primitive element
-IRREDUCIBLE_POLY_INT = None  # The field's primitive polynomial in decimal form
+IRREDUCIBLE_POLY = None  # The field's primitive polynomial in decimal form
+DTYPE = None  # The largest valid data-type for this field
 
 # Placeholder functions to be replaced by JIT-compiled function
+INT_TO_POLY_JIT = lambda x: [0]
+POLY_TO_INT_JIT = lambda vec: 0
 ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
 
-class GF2mMeta(GFMeta):
+class GFpmMeta(GFMeta):
     """
     An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
     """
@@ -26,7 +29,8 @@ class GF2mMeta(GFMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._irreducible_poly_int = cls._irreducible_poly.integer  # pylint: disable=no-member
+        cls._irreducible_poly_int = cls._irreducible_poly.integer
+        cls._irreducible_poly_coeffs = np.array(cls._irreducible_poly.coeffs, dtype=cls.dtypes[-1])  # pylint: disable=unsubscriptable-object
         cls._primitive_element_int = cls._primitive_element.integer
         cls._prime_subfield = kwargs["prime_subfield"]
 
@@ -40,20 +44,26 @@ class GF2mMeta(GFMeta):
 
     @property
     def dtypes(cls):
-        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
+        max_dtype = DTYPES[-1]
+        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1)**2]
         if len(d) == 0:
             d = [np.object_]
         return d
 
     def _compile_jit_calculate(cls, target):
-        global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, IRREDUCIBLE_POLY_INT, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
+        global CHARACTERISTIC, DEGREE, ORDER, PRIMITIVE_ELEMENT, IRREDUCIBLE_POLY, DTYPE, INT_TO_POLY_JIT, POLY_TO_INT_JIT, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
         CHARACTERISTIC = cls.characteristic
+        DEGREE = cls.degree
         ORDER = cls.order
         if isinstance(cls._primitive_element, Poly):
             PRIMITIVE_ELEMENT = cls._primitive_element.integer
         else:
             PRIMITIVE_ELEMENT = int(cls._primitive_element)
-        IRREDUCIBLE_POLY_INT = cls.irreducible_poly.integer  # pylint: disable=no-member
+        IRREDUCIBLE_POLY = cls._irreducible_poly.coeffs.view(np.ndarray)
+        DTYPE = cls.dtypes[-1]  # pylint: disable=unsubscriptable-object
+
+        INT_TO_POLY_JIT = numba.jit("int64[:](int64)", nopython=True)(_int_to_poly)
+        POLY_TO_INT_JIT = numba.jit("int64(int64[:])", nopython=True)(_poly_to_int)
 
         # JIT-compile add,  multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
         ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
@@ -77,44 +87,117 @@ class GF2mMeta(GFMeta):
         cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
     ###############################################################################
+    # Ufunc routines
+    ###############################################################################
+
+    def _convert_inputs_to_vector(cls, inputs, kwargs):
+        v_inputs = list(inputs)
+        for i in range(len(inputs)):
+            if issubclass(type(inputs[i]), cls):
+                v_inputs[i] = inputs[i].vector()
+
+        # View all output arrays as np.ndarray to avoid infinite recursion
+        if "out" in kwargs:
+            outputs = kwargs["out"]
+            v_outputs = []
+            for output in outputs:
+                if issubclass(type(output), cls):
+                    o = output.vector()
+                else:
+                    o = output
+                v_outputs.append(o)
+            kwargs["out"] = tuple(v_outputs)
+
+        return v_inputs, kwargs
+
+    def _convert_output_from_vector(cls, output, field, dtype):  # pylint: disable=no-self-use
+        if output is None:
+            return None
+        else:
+            return field.Vector(output, dtype=dtype)
+
+    # def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
+    #     if cls._ufunc_mode == "jit-lookup":
+    #         # Use the lookup ufunc on each array entry
+    #         return super()._ufunc_add(ufunc, method, inputs, kwargs, meta)
+    #     else:
+    #         # Convert to entire polynomial/vector representation and perform array operation in GF(p)
+    #         cls._verify_operands_in_same_field(ufunc, inputs, meta)
+    #         inputs, kwargs = cls._convert_inputs_to_vector(inputs, kwargs)
+    #         output = getattr(ufunc, method)(*inputs, **kwargs)
+    #         output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
+    #         return output
+
+    # def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
+    #     if cls._ufunc_mode == "jit-lookup":
+    #         # Use the lookup ufunc on each array entry
+    #         return super()._ufunc_subtract(ufunc, method, inputs, kwargs, meta)
+    #     else:
+    #         # Convert entire array to polynomial/vector representation and perform array operation in GF(p)
+    #         cls._verify_operands_in_same_field(ufunc, inputs, meta)
+    #         inputs, kwargs = cls._convert_inputs_to_vector(inputs, kwargs)
+    #         output = getattr(ufunc, method)(*inputs, **kwargs)
+    #         output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
+    #         return output
+
+    ###############################################################################
     # Pure python arithmetic methods
     ###############################################################################
 
+    def _int_to_poly(cls, a):
+        a_vec = np.zeros(cls.degree, dtype=cls.dtypes[-1])  # pylint: disable=unsubscriptable-object
+        for i in range(0, cls.degree):
+            q = a // cls.characteristic**(cls.degree - 1 - i)
+            a_vec[i] = q
+            a -= q*cls.characteristic**(cls.degree - 1 - i)
+        return a_vec
+
+    def _poly_to_int(cls, a_vec):
+        a = 0
+        for i in range(0, cls.degree):
+            a += a_vec[i]*cls.characteristic**(cls.degree - 1 - i)
+        return a
+
     def _add_python(cls, a, b):
-        return a ^ b
+        a_vec = cls._int_to_poly(a)
+        b_vec = cls._int_to_poly(b)
+        c_vec = (a_vec + b_vec) % cls.characteristic
+        return cls._poly_to_int(c_vec)
 
     def _subtract_python(cls, a, b):
-        return a ^ b
+        a_vec = cls._int_to_poly(a)
+        b_vec = cls._int_to_poly(b)
+        c_vec = (a_vec - b_vec) % cls.characteristic
+        return cls._poly_to_int(c_vec)
 
     def _multiply_python(cls, a, b):
-        """
-        a in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
-        b in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
-        p(x) in GF(2)[x] with degree m is the primitive polynomial of GF(2^m)
+        a_vec = cls._int_to_poly(a)
+        b_vec = cls._int_to_poly(b)
 
-        a * b = c
-            = (a(x) * b(x)) % p(x), in GF(2)
-            = c(x)
-            = c
-        """
-        # Re-order operands such that a > b so the while loop has less loops
-        if b > a:
-            a, b = b, a
+        c_vec = np.zeros(cls.degree, dtype=cls.dtypes[-1])  # pylint: disable=unsubscriptable-object
+        for _ in range(cls.degree):
+            if b_vec[-1] > 0:
+                c_vec = (c_vec + b_vec[-1]*a_vec) % cls.characteristic
 
-        c = 0
-        while b > 0:
-            if b & 0b1:
-                c ^= a  # Add a(x) to c(x)
+            # Multiply a(x) by x
+            q = a_vec[0]  # Don't need to divide by the leading coefficient of p(x) because it must be 1
+            a_vec[:-1] = a_vec[1:]
+            a_vec[-1] = 0
 
-            b >>= 1  # Divide b(x) by x
-            a <<= 1  # Multiply a(x) by x
-            if a >= cls._order:
-                a ^= cls._irreducible_poly_int  # Compute a(x) % p(x)
+            # Reduce a(x) modulo the irreducible polynomial p(x)
+            if q > 0:
+                a_vec = (a_vec - q*cls._irreducible_poly_coeffs[1:]) % cls.characteristic
 
-        return c
+            # Divide b(x) by x
+            b_vec[1:] = b_vec[:-1]
+            b_vec[0] = 0
+
+        return cls._poly_to_int(c_vec)
 
     def _additive_inverse_python(cls, a):
-        return a
+        a_vec = cls._int_to_poly(a)
+        c_vec = (-a_vec) % cls.characteristic
+        return cls._poly_to_int(c_vec)
 
     def _multiplicative_inverse_python(cls, a):
         """
@@ -128,6 +211,7 @@ class GF2mMeta(GFMeta):
             a^-1 = a^(p^m - 2)
         """
         power = cls.order - 2
+
         result_s = a  # The "squaring" part
         result_m = 1  # The "multiplicative" part
 
@@ -148,49 +232,65 @@ class GF2mMeta(GFMeta):
 # Galois field arithmetic, explicitly calculated without lookup tables
 ###############################################################################
 
-def _add_calculate(a, b):  # pragma: no cover
+def _int_to_poly(a):
     """
-    a in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
-    b in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
+    Convert the integer representation to vector/polynomial representation
+    """
+    a_vec = np.zeros(DEGREE, dtype=DTYPE)
+    for i in range(0, DEGREE):
+        q = a // CHARACTERISTIC**(DEGREE - 1 - i)
+        a_vec[i] = q
+        a -= q*CHARACTERISTIC**(DEGREE - 1 - i)
+    return a_vec
 
-    a + b = c
-          = a(x) + b(x), in GF(2)
-          = c(x)
-          = c
+
+def _poly_to_int(a_vec):
     """
-    return a ^ b
+    Convert the integer representation to vector/polynomial representation
+    """
+    a = 0
+    for i in range(0, DEGREE):
+        a += a_vec[i]*CHARACTERISTIC**(DEGREE - 1 - i)
+    return a
+
+
+def _add_calculate(a, b):  # pragma: no cover
+    a_vec = INT_TO_POLY_JIT(a)
+    b_vec = INT_TO_POLY_JIT(b)
+    c_vec = (a_vec + b_vec) % CHARACTERISTIC
+    return POLY_TO_INT_JIT(c_vec)
 
 
 def _subtract_calculate(a, b):  # pragma: no cover
-    return a ^ b
+    a_vec = INT_TO_POLY_JIT(a)
+    b_vec = INT_TO_POLY_JIT(b)
+    c_vec = (a_vec - b_vec) % CHARACTERISTIC
+    return POLY_TO_INT_JIT(c_vec)
 
 
 def _multiply_calculate(a, b):  # pragma: no cover
-    """
-    a in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
-    b in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
-    p(x) in GF(2)[x] with degree m is the primitive polynomial of GF(2^m)
+    a_vec = INT_TO_POLY_JIT(a)
+    b_vec = INT_TO_POLY_JIT(b)
 
-    a * b = c
-          = (a(x) * b(x)) % p(x), in GF(2)
-          = c(x)
-          = c
-    """
-    # Re-order operands such that a > b so the while loop has less loops
-    if b > a:
-        a, b = b, a
+    c_vec = np.zeros(DEGREE, dtype=DTYPE)
+    for _ in range(DEGREE):
+        if b_vec[-1] > 0:
+            c_vec = (c_vec + b_vec[-1]*a_vec) % CHARACTERISTIC
 
-    c = 0
-    while b > 0:
-        if b & 0b1:
-            c ^= a  # Add a(x) to c(x)
+        # Multiply a(x) by x
+        q = a_vec[0]
+        a_vec[:-1] = a_vec[1:]
+        a_vec[-1] = 0
 
-        b >>= 1  # Divide b(x) by x
-        a <<= 1  # Multiply a(x) by x
-        if a >= ORDER:
-            a ^= IRREDUCIBLE_POLY_INT  # Compute a(x) % p(x)
+        # Reduce a(x) modulo the irreducible polynomial
+        if q > 0:
+            a_vec = (a_vec - q*IRREDUCIBLE_POLY[1:]) % CHARACTERISTIC
 
-    return c
+        # Divide b(x) by x
+        b_vec[1:] = b_vec[:-1]
+        b_vec[0] = 0
+
+    return POLY_TO_INT_JIT(c_vec)
 
 
 def _divide_calculate(a, b):  # pragma: no cover
@@ -202,15 +302,17 @@ def _divide_calculate(a, b):  # pragma: no cover
 
 
 def _additive_inverse_calculate(a):  # pragma: no cover
-    return a
+    a_vec = INT_TO_POLY_JIT(a)
+    a_vec = (-a_vec) % CHARACTERISTIC
+    return POLY_TO_INT_JIT(a_vec)
 
 
 def _multiplicative_inverse_calculate(a):  # pragma: no cover
     """
-    TODO: Replace this with more efficient algorithm
+    TODO: Replace this with a more efficient algorithm
 
     From Fermat's Little Theorem:
-    a^(p^m - 1) = 1 (mod p^m), for a in GF(p^m)
+    a^(p^m - 1) = 1, for a in GF(p^m)
 
     a * a^-1 = 1
     a * a^-1 = a^(p^m - 1)
@@ -238,7 +340,7 @@ def _scalar_multiply_calculate(a, multiple):  # pragma: no cover
     if multiple == 0:
         return 0
     else:
-        return a
+        return MULTIPLY_JIT(a, multiple)
 
 
 def _power_calculate(a, power):  # pragma: no cover
@@ -287,7 +389,7 @@ def _log_calculate(beta):  # pragma: no cover
     """
     # Naive algorithm
     result = 1
-    for i in range(0, ORDER-1):
+    for i in range(0, ORDER - 1):
         if result == beta:
             break
         result = MULTIPLY_JIT(result, PRIMITIVE_ELEMENT)

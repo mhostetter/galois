@@ -46,6 +46,10 @@ def test_dtypes(field):
         assert field.dtypes == [np.uint32, np.int32, np.int64]
     elif field.order == 36893488147419103183:
         assert field.dtypes == [np.object_]
+    elif field.order == 7**3:
+        assert field.dtypes == [np.uint16, np.uint32, np.int16, np.int32, np.int64]
+    elif field.order == 109987**4:
+        assert field.dtypes == [np.object_]
     else:
         raise AssertionError(f"There is an untested field, {field}")
 

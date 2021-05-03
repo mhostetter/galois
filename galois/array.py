@@ -3,17 +3,91 @@ import random
 import numpy as np
 
 from .meta_gf import GFMeta
-from .array_mixin_function import FunctionMixin
-from .array_mixin_ufunc import UfuncMixin
-from .array_mixin_linalg import LinearAlgebraMixin
+from .linalg import dot, inner, outer, matrix_rank, solve, inv, det, row_reduce, lu_decompose, lup_decompose
 from .overrides import set_module
 from .poly_conversion import integer_to_poly, poly_to_str, str_to_integer
 
 __all__ = ["GFArray"]
 
 
+UNSUPPORTED_ONE_ARG_FUNCTIONS = [
+    np.packbits, np.unpackbits,
+    np.unwrap,
+    np.around, np.round_, np.fix,
+    np.gradient, np.trapz,
+    np.i0, np.sinc,
+    np.angle, np.real, np.imag, np.conj, np.conjugate,
+]
+
+UNSUPPORTED_TWO_ARG_FUNCTIONS = [
+    np.lib.scimath.logn,
+    np.cross,
+]
+
+UNSUPPORTED_FUNCTIONS = UNSUPPORTED_ONE_ARG_FUNCTIONS + UNSUPPORTED_TWO_ARG_FUNCTIONS
+
+OVERRIDDEN_FUNCTIONS = {
+    np.dot: dot,
+    np.inner: inner,
+    np.outer: outer,
+    # np.tensordot: "tensordot",
+    np.linalg.matrix_rank: matrix_rank,
+    np.linalg.inv: inv,
+    np.linalg.det: det,
+    np.linalg.solve: solve
+}
+
+FUNCTIONS_REQUIRING_VIEW = [
+    np.copy, np.concatenate,
+    np.broadcast_to,
+    np.trace,
+]
+
+UNSUPPORTED_ONE_ARG_UFUNCS = [
+    np.invert, np.sqrt,
+    np.log2, np.log10,
+    np.exp, np.expm1, np.exp2,
+    np.sin, np.cos, np.tan,
+    np.sinh, np.cosh, np.tanh,
+    np.arcsin, np.arccos, np.arctan,
+    np.arcsinh, np.arccosh, np.arctanh,
+    np.degrees, np.radians,
+    np.deg2rad, np.rad2deg,
+    np.floor, np.ceil, np.trunc, np.rint,
+]
+
+UNSUPPORTED_TWO_ARG_UFUNCS = [
+    np.hypot, np.arctan2,
+    np.logaddexp, np.logaddexp2,
+    np.remainder,
+    np.fmod, np.modf,
+    np.fmin, np.fmax,
+]
+
+UNSUPPORTED_UFUNCS = UNSUPPORTED_ONE_ARG_UFUNCS + UNSUPPORTED_TWO_ARG_UFUNCS
+
+OVERRIDDEN_UFUNCS = {
+    np.add: "_ufunc_add",
+    np.subtract: "_ufunc_subtract",
+    np.multiply: "_ufunc_multiply",
+    np.floor_divide: "_ufunc_divide",
+    np.true_divide: "_ufunc_divide",
+    np.negative: "_ufunc_negative",
+    np.reciprocal: "_ufunc_reciprocal",
+    np.power: "_ufunc_power",
+    np.square: "_ufunc_square",
+    np.log: "_ufunc_log",
+    np.matmul: "_ufunc_matmul",
+}
+
+UFUNCS_REQUIRING_VIEW = [
+    np.bitwise_and, np.bitwise_or, np.bitwise_xor,
+    np.left_shift, np.right_shift,
+]
+
+
 @set_module("galois")
-class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metaclass=GFMeta):
+class GFArray(np.ndarray, metaclass=GFMeta):
     """
     Create an array over :math:`\\mathrm{GF}(p^m)`.
 
@@ -216,12 +290,14 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
         if array.size == 0:
             return array
         if array.ndim == 0:
+            if not isinstance(array[()], (int, np.integer, cls)):
+                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(array[()])}.")
             return int(array)
 
         iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
         for _ in iterator:
             a = array[iterator.multi_index]
-            if not isinstance(a, (int, cls)):
+            if not isinstance(a, (int, np.integer, cls)):
                 raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
 
             # Ensure the type is int so dtype=object classes don't get all mixed up
@@ -539,6 +615,10 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
         array = np.sum(array * order**degrees, axis=-1)
         return cls(array, dtype=dtype)
 
+    ###############################################################################
+    # Array methods
+    ###############################################################################
+
     def vector(self, dtype=None):
         """
         Converts the Galois field array over :math:`\\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\\mathrm{GF}(p)`.
@@ -576,6 +656,115 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
             x += q*order**(degree - 1 - i)
         return type(self).prime_subfield(array, dtype=dtype)
 
+    def row_reduce(self, ncols=None):
+        """
+        Performs Gaussian elimination on the matrix to achieve reduced row echelon form.
+
+        **Row reduction operations**
+
+        1. Swap the position of any two rows.
+        2. Multiply a row by a non-zero scalar.
+        3. Add one row to a scalar multiple of another row.
+
+        Parameters
+        ----------
+        ncols : int, optional
+            The number of columns to perform Gaussian elimination over. The default is `None` which represents
+            the number of columns of the input array.
+
+        Returns
+        -------
+        galois.GFArray
+            The reduced row echelon form of the input array.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            A = GF.Random((4,4)); A
+            A.row_reduce()
+            np.linalg.matrix_rank(A)
+
+        One column is a linear combination of another.
+
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            A = GF.Random((4,4)); A
+            A[:,2] = A[:,1] * GF(17); A
+            A.row_reduce()
+            np.linalg.matrix_rank(A)
+
+        One row is a linear combination of another.
+
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            A = GF.Random((4,4)); A
+            A[3,:] = A[2,:] * GF(8); A
+            A.row_reduce()
+            np.linalg.matrix_rank(A)
+        """
+        return row_reduce(self, ncols=ncols)
+
+    def lu_decompose(self):
+        """
+        Decomposes the input array into the product of lower and upper triangular matrices.
+
+        Returns
+        -------
+        galois.GFArray
+            The lower triangular matrix.
+        galois.GFArray
+            The upper triangular matrix.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(5)
+
+            # Not every square matrix has an LU decomposition
+            A = GF([[2, 4, 4, 1], [3, 3, 1, 4], [4, 3, 4, 2], [4, 4, 3, 1]])
+            L, U = A.lu_decompose()
+            L
+            U
+
+            # A = L U
+            np.array_equal(A, L @ U)
+        """
+        return lu_decompose(self)
+
+    def lup_decompose(self):
+        """
+        Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
+
+        Returns
+        -------
+        galois.GFArray
+            The lower triangular matrix.
+        galois.GFArray
+            The upper triangular matrix.
+        galois.GFArray
+            The permutation matrix.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(5)
+            A = GF([[1, 3, 2, 0], [3, 4, 2, 3], [0, 2, 1, 4], [4, 3, 3, 1]])
+            L, U, P = A.lup_decompose()
+            L
+            U
+            P
+
+            # P A = L U
+            np.array_equal(P @ A, L @ U)
+        """
+        return lup_decompose(self)
+
     ###############################################################################
     # Overridden numpy methods
     ###############################################################################
@@ -610,6 +799,68 @@ class GFArray(FunctionMixin, UfuncMixin, LinearAlgebraMixin, np.ndarray, metacla
         # Verify the values to be written to the Galois field array are in the field
         value = self._check_array_like_object(value)
         super().__setitem__(key, value)
+
+    def __array_function__(self, func, types, args, kwargs):
+        if func in OVERRIDDEN_FUNCTIONS:
+            output = OVERRIDDEN_FUNCTIONS[func](*args, **kwargs)
+
+        elif func in UNSUPPORTED_FUNCTIONS:
+            raise NotImplementedError(f"The numpy function '{func.__name__}' is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array = array.view(np.ndarray)` and then call the function.")
+
+        else:
+            if func is np.insert:
+                args = list(args)
+                args[2] = self._check_array_like_object(args[2])
+                args = tuple(args)
+
+            output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
+
+            if func in FUNCTIONS_REQUIRING_VIEW:
+                if np.isscalar(output):
+                    output = type(self)(output, dtype=self.dtype)
+                else:
+                    output = output.view(type(self))
+
+        return output
+
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):  # pylint: disable=too-many-branches
+        # print(ufunc, method, inputs, kwargs)
+        meta = {}
+        meta["types"] = [type(inputs[i]) for i in range(len(inputs))]
+        meta["operands"] = list(range(len(inputs)))
+        if method in ["at", "reduceat"]:
+            # Remove the second argument for "at" ufuncs which is the indices list
+            meta["operands"].pop(1)
+        meta["field_operands"] = [i for i in meta["operands"] if isinstance(inputs[i], self.__class__)]
+        meta["non_field_operands"] = [i for i in meta["operands"] if not isinstance(inputs[i], self.__class__)]
+        meta["field"] = self.__class__
+        meta["dtype"] = self.dtype
+        # meta["ufuncs"] = self._ufuncs
+
+        if ufunc in OVERRIDDEN_UFUNCS:
+            # Set all ufuncs with "casting" keyword argument to "unsafe" so we can cast unsigned integers
+            # to integers. We know this is safe because we already verified the inputs.
+            if method not in ["reduce", "accumulate", "at", "reduceat"]:
+                kwargs["casting"] = "unsafe"
+
+            # Need to set the intermediate dtype for reduction operations or an error will be thrown. We
+            # use the largest valid dtype for this field.
+            if method in ["reduce"]:
+                kwargs["dtype"] = type(self).dtypes[-1]
+
+            return getattr(type(self), OVERRIDDEN_UFUNCS[ufunc])(ufunc, method, inputs, kwargs, meta)
+
+        elif ufunc in UNSUPPORTED_UFUNCS:
+            raise NotImplementedError(f"The numpy ufunc '{ufunc.__name__}' is not supported on Galois field arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+
+        else:
+            inputs, kwargs = type(self)._view_inputs_as_ndarray(inputs, kwargs)
+            output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
+
+            if ufunc in UFUNCS_REQUIRING_VIEW:
+                output = output.view(type(self))
+
+            return output
 
     ###############################################################################
     # Display methods
