@@ -1,0 +1,12 @@
+{
+    "characteristic": 7,
+    "degree": 3,
+    "order": 343,
+    "alpha": 244,
+    "prim_poly": [
+        1,
+        6,
+        0,
+        6
+    ]
+}

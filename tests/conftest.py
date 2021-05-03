@@ -24,6 +24,9 @@ FIELDS = [
     pytest.param("GF(3191)", marks=[pytest.mark.GFp, pytest.mark.GF31]),
     pytest.param("GF(2147483647)", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
     pytest.param("GF(36893488147419103183)", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
+
+    pytest.param("GF(7^3)", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
+    pytest.param("GF(109987^4)", marks=[pytest.mark.GFpm, pytest.mark.GF109987_4]),
 ]
 
 FIELDS_DIFF_MODES = [
@@ -50,6 +53,12 @@ FIELDS_DIFF_MODES = [
     pytest.param("GF(3191)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF3191]),
     pytest.param("GF(2147483647)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
     pytest.param("GF(36893488147419103183)-python-calculate", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
+
+    pytest.param("GF(7^3)-jit-lookup", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
+    pytest.param("GF(7^3)-jit-calculate", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
+    pytest.param("GF(7^3, 643, 244)-jit-lookup", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
+    pytest.param("GF(7^3, 643, 244)-jit-calculate", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
+    pytest.param("GF(109987^4)-python-calculate", marks=[pytest.mark.GFpm, pytest.mark.GF109987_4]),
 ]
 
 
@@ -87,6 +96,13 @@ def construct_field(folder):
         GF = galois.GF(2**32, mode=mode)
     elif folder == "GF(2^100)":
         GF = galois.GF(2**100, mode=mode)
+
+    elif folder == "GF(7^3)":
+        GF = galois.GF(7**3, mode=mode)
+    elif folder == "GF(7^3, 643, 244)":
+        GF = galois.GF(7**3, irreducible_poly=643, primitive_element=244, mode=mode)
+    elif folder == "GF(109987^4)":
+        GF = galois.GF(109987**4, mode=mode)
 
     else:
         raise AssertionError(f"Test data folder {folder} not found")

@@ -3,8 +3,8 @@ A pytest module to test Galois field polynomial instantiation.
 """
 import random
 
-import numpy as np
 import pytest
+import numpy as np
 
 import galois
 
@@ -15,11 +15,14 @@ FIELDS = [
     galois.GF(36893488147419103183),  # GF(p) with object dtype
     galois.GF(2**8),  # GF(2^m) with np.int dtypes
     galois.GF(2**100),  # GF(2^m) with object dtype
+    galois.GF(7**3),  # GF(p^m) with np.int dtypes
+    galois.GF(109987**4),  # GF(p^m) with object dtypes
 ]
 
 
 @pytest.fixture(params=FIELDS)
-def config(field):
+def config(request):
+    field = request.param
     d = {}
     d["GF"] = field
     d["degree"] = 5

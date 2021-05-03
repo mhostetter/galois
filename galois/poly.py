@@ -118,7 +118,7 @@ class Poly:
             if isinstance(coeffs, np.ndarray):
                 # Ensure coeffs is an iterable
                 coeffs = coeffs.tolist()
-            coeffs = field([int(-field(abs(c))) if c < 0 else c for c in coeffs])  # pylint: disable=invalid-unary-operand-type
+            coeffs = field([int(-field(abs(c))) if c < 0 else c for c in coeffs])
 
         return coeffs, field
 
@@ -1254,7 +1254,7 @@ class SparsePoly(Poly):
                 # Ensure coeffs is an iterable
                 coeffs = coeffs.tolist()
             obj._degrees = np.array(degrees)
-            obj._coeffs = field([-field(abs(c)) if c < 0 else field(c) for c in coeffs])  # pylint: disable=invalid-unary-operand-type
+            obj._coeffs = field([-field(abs(c)) if c < 0 else field(c) for c in coeffs])
 
         # Sort the degrees and coefficients in descending order
         idxs = np.argsort(degrees)[::-1]
@@ -1280,7 +1280,7 @@ class SparsePoly(Poly):
     ###############################################################################
 
     def __neg__(self):
-        return SparsePoly(self._degrees, -self._coeffs)  # pylint: disable=invalid-unary-operand-type
+        return SparsePoly(self._degrees, -self._coeffs)
 
     @classmethod
     def _add(cls, a, b):

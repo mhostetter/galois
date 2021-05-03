@@ -3,9 +3,8 @@ A pytest module to test various Galois field polynomial operations.
 """
 import random
 
-import numpy as np
-from numpy.core.defchararray import multiply
 import pytest
+import numpy as np
 
 import galois
 

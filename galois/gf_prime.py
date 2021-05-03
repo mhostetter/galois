@@ -50,6 +50,8 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
             "mode": mode
         })
 
+    cls.__module__ = "galois"
+
     # Add class to dictionary of flyweights
     GF_prime.classes[key] = cls
 

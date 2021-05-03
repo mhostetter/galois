@@ -1,6 +1,8 @@
 import numba
 import numpy as np
 
+from .linalg import matmul
+
 # Placeholder globals that will be set in _compile_jit_lookup()
 CHARACTERISTIC = None  # The field's prime characteristic `p`
 ORDER = None  # The field's order `p^m`
@@ -29,12 +31,52 @@ class UfuncMixin(type):
 
         # Integer representations of the field's primitive element and primitive polynomial to be used in the
         # pure python ufunc implementations for `ufunc_mode = "python-calculate"`
-        cls._primitive_element_dec = None
-        cls._irreducible_poly_dec = None
+        cls._primitive_element_int = None
+        cls._irreducible_poly_int = None
+
+    def compile(cls, mode, target="cpu"):
+        """
+        Recompile the just-in-time compiled numba ufuncs with a new calculation mode or target.
+
+        Parameters
+        ----------
+        mode : str
+            The method of field computation, either `"jit-lookup"`, `"jit-calculate"`, `"python-calculate"`. The "jit-lookup" mode will
+            use Zech log, log, and anti-log lookup tables for speed. The "jit-calculate" mode will not store any lookup tables, but perform field
+            arithmetic on the fly. The "jit-calculate" mode is designed for large fields that cannot store lookup tables in RAM.
+            Generally, "jit-calculate" is slower than "jit-lookup". The "python-calculate" mode is reserved for extremely large fields. In
+            this mode the ufuncs are not JIT-compiled, but are pur python functions operating on python ints. The list of valid
+            modes for this field is in :obj:`galois.GFMeta.ufunc_modes`.
+        target : str, optional
+            The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. The default
+            is `"cpu"`. For extremely large fields the only supported target is `"cpu"` (which doesn't use numba it uses pure python to
+            calculate the field arithmetic). The list of valid targets for this field is in :obj:`galois.GFMeta.ufunc_targets`.
+        """
+        mode = cls.default_ufunc_mode if mode == "auto" else mode
+        if mode not in cls.ufunc_modes:
+            raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls.name}, not {mode}.")
+        if target not in cls.ufunc_targets:
+            raise ValueError(f"Argument `target` must be in {cls.ufunc_targets} for {cls.name}, not {target}.")
+
+        if mode == cls.ufunc_mode and target == cls.ufunc_target:
+            # Don't need to rebuild these ufuncs
+            return
+
+        cls._ufunc_mode = mode
+        cls._ufunc_target = target
+
+        if cls.ufunc_mode == "jit-lookup":
+            cls._compile_jit_lookup(target)
+        elif cls.ufunc_mode == "jit-calculate":
+            cls._compile_jit_calculate(target)
+        elif cls.ufunc_mode == "python-calculate":
+            cls._compile_python_calculate()
+        else:
+            raise RuntimeError(f"Attribute `ufunc_mode` was not processed, {cls._ufunc_mode}. Please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
     def _build_lookup_tables(cls):
         order = cls.order
-        primitive_element = cls._primitive_element_dec
+        primitive_element = cls._primitive_element_int
         dtype = np.int64
         if order > np.iinfo(dtype).max:
             raise RuntimeError(f"Cannot build lookup tables for {cls.name} since the elements cannot be represented with dtype {dtype}.")
@@ -136,6 +178,175 @@ class UfuncMixin(type):
         cls._ufuncs["poly_eval"] = np.vectorize(cls._poly_eval_python, excluded=["coeffs"], otypes=[np.object_])
 
     ###############################################################################
+    # Ufunc routines
+    ###############################################################################
+
+    def _verify_operands_in_same_field(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
+        if len(meta["non_field_operands"]) > 0:
+            raise TypeError(f"Operation '{ufunc.__name__}' requires both operands to be Galois field arrays over the same field, not {[inputs[i] for i in meta['operands']]}.")
+
+    def _verify_and_flip_operands_first_field_second_int(cls, ufunc, method, inputs, meta):  # pylint: disable=no-self-use
+        if len(meta["operands"]) == 1 or method == "reduceat":
+            return inputs
+
+        assert len(meta["non_field_operands"]) == 1
+        i = meta["non_field_operands"][0]
+
+        if isinstance(inputs[i], (int, np.integer)):
+            pass
+        elif isinstance(inputs[i], np.ndarray):
+            if meta["field"].dtypes == [np.object_]:
+                if not (inputs[i].dtype == np.object_ or np.issubdtype(inputs[i].dtype, np.integer)):
+                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
+            else:
+                if not np.issubdtype(inputs[i].dtype, np.integer):
+                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
+        else:
+            raise TypeError(f"Operation '{ufunc.__name__}' requires operands that are not Galois field arrays to be an integers or integer np.ndarrays, not {type(inputs[i])}.")
+
+        if meta["operands"][0] == meta["field_operands"][0]:
+            # If the Galois field array is the first argument, continue
+            pass
+        else:
+            # Switch arguments to guarantee the Galois field array is the first element
+            inputs = list(inputs)
+            inputs[meta["operands"][0]], inputs[meta["operands"][1]] = inputs[meta["operands"][1]], inputs[meta["operands"][0]]
+
+        return inputs
+
+    def _verify_operands_first_field_second_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
+        if len(meta["operands"]) == 1:
+            return
+
+        if not meta["operands"][0] == meta["field_operands"][0]:
+            raise TypeError(f"Operation '{ufunc.__name__}' requires the first operand to be a Galois field array, not {meta['types'][meta['operands'][0]]}.")
+        if len(meta["field_operands"]) > 1 and meta["operands"][1] == meta["field_operands"][1]:
+            raise TypeError(f"Operation '{ufunc.__name__}' requires the second operand to be an integer array, not {meta['types'][meta['operands'][1]]}.")
+
+        second = inputs[meta["operands"][1]]
+        if isinstance(second, (int, np.integer)):
+            return
+        # elif type(second) is np.ndarray:
+        #     if not np.issubdtype(second.dtype, np.integer):
+        #         raise ValueError(f"Operation '{ufunc.__name__}' requires the second operand with type np.ndarray to have integer dtype, not '{second.dtype}'.")
+        elif isinstance(second, np.ndarray):
+            if meta["field"].dtypes == [np.object_]:
+                if not (second.dtype == np.object_ or np.issubdtype(second.dtype, np.integer)):
+                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{second.dtype}'.")
+            else:
+                if not np.issubdtype(second.dtype, np.integer):
+                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{second.dtype}'.")
+        else:
+            raise TypeError(f"Operation '{ufunc.__name__}' requires the second operand to be an integer or integer np.ndarray, not {type(second)}.")
+
+    def _view_inputs_as_ndarray(cls, inputs, kwargs):  # pylint: disable=no-self-use
+        # View all inputs that are Galois field arrays as np.ndarray to avoid infinite recursion
+        v_inputs = list(inputs)
+        for i in range(len(inputs)):
+            if issubclass(type(inputs[i]), cls):
+                v_inputs[i] = inputs[i].view(np.ndarray)
+
+        # View all output arrays as np.ndarray to avoid infinite recursion
+        if "out" in kwargs:
+            outputs = kwargs["out"]
+            v_outputs = []
+            for output in outputs:
+                if issubclass(type(output), cls):
+                    o = output.view(np.ndarray)
+                else:
+                    o = output
+                v_outputs.append(o)
+            kwargs["out"] = tuple(v_outputs)
+
+        return v_inputs, kwargs
+
+    def _view_output_as_field(cls, output, field, dtype):  # pylint: disable=no-self-use
+        if isinstance(output, np.ndarray):
+            return output.astype(dtype).view(field)
+        elif output is None:
+            return None
+        else:
+            return field(output)
+
+    def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufuncs["add"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufuncs["subtract"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    def _ufunc_multiply(cls, ufunc, method, inputs, kwargs, meta):
+        if len(meta["non_field_operands"]) == 0:
+            # In-field multiplication
+            inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+            output = getattr(cls._ufuncs["multiply"], method)(*inputs, **kwargs)
+        else:
+            # Scalar multiplication
+            inputs = cls._verify_and_flip_operands_first_field_second_int(ufunc, method, inputs, meta)
+            inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+            output = getattr(cls._ufuncs["scalar_multiply"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        if np.count_nonzero(inputs[meta["operands"][-1]]) != inputs[meta["operands"][-1]].size:
+            raise ZeroDivisionError("Cannot divide by 0 in Galois fields.")
+        output = getattr(cls._ufuncs["divide"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufuncs["negative"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufuncs["reciprocal"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    def _ufunc_power(cls, ufunc, method, inputs, kwargs, meta):
+        cls._verify_operands_first_field_second_int(ufunc, inputs, meta)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        if method == "outer" and (np.any(inputs[meta["operands"][0]] == 0) and np.any(inputs[meta["operands"][1]] < 0)):
+            raise ZeroDivisionError("Cannot take the multiplicative inverse of 0 in Galois fields.")
+        if method == "__call__" and np.any(np.logical_and(inputs[meta["operands"][0]] == 0, inputs[meta["operands"][1]] < 0)):
+            raise ZeroDivisionError("Cannot take the multiplicative inverse of 0 in Galois fields.")
+        output = getattr(cls._ufuncs["power"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    def _ufunc_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        inputs = list(inputs)
+        inputs.append(2)
+        output = getattr(cls._ufuncs["power"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    def _ufunc_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        if np.count_nonzero(inputs[meta["operands"][0]]) != inputs[meta["operands"][0]].size:
+            raise ArithmeticError("Cannot take the logarithm of 0 in Galois fields.")
+        output = getattr(cls._ufuncs["log"], method)(*inputs, **kwargs)
+        return output
+
+    def _ufunc_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument,no-self-use
+        assert method == "__call__"
+        return matmul(*inputs, **kwargs)
+
+    ###############################################################################
     # Pure python arithmetic methods
     ###############################################################################
 
@@ -159,7 +370,7 @@ class UfuncMixin(type):
 
     def _divide_python(cls, a, b):
         if a == 0 or b == 0:
-            # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
+            # NOTE: The b == 0 condition will be caught outside of the ufunc and will raise ZeroDivisionError
             return 0
         b_inv = cls._multiplicative_inverse_python(b)
         return cls._multiply_python(a, b_inv)
@@ -185,12 +396,12 @@ class UfuncMixin(type):
         Square and Multiply Algorithm
 
         a^13 = (1) * (a)^13
-            = (a) * (a)^12
-            = (a) * (a^2)^6
-            = (a) * (a^4)^3
-            = (a * a^4) * (a^4)^2
-            = (a * a^4) * (a^8)
-            = result_m * result_s
+             = (a) * (a)^12
+             = (a) * (a^2)^6
+             = (a) * (a^4)^3
+             = (a * a^4) * (a^4)^2
+             = (a * a^4) * (a^8)
+             = result_m * result_s
         """
         # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
         if power == 0:
@@ -216,20 +427,43 @@ class UfuncMixin(type):
 
     def _log_python(cls, beta):
         """
-        TODO: Replace this with more efficient algorithm
+        TODO: Replace this with a more efficient algorithm
 
-        α in GF(p^m) and generates field
-        beta in GF(p^m)
+        α in GF(p^m) and is a multiplicative generator
+        β in GF(p^m)
 
-        gamma = log_primitive_element(beta), such that: α^gamma = beta
+        ɣ = log_α(β), such that: α^ɣ = β
         """
         # Naive algorithm
         result = 1
         for i in range(0, cls.order - 1):
             if result == beta:
                 break
-            result = cls._multiply_python(result, cls._primitive_element_dec)
+            result = cls._multiply_python(result, cls._primitive_element_int)
         return i
+
+        # N = cls.order
+        # alpha = cls._primitive_element_int
+        # n = N - 1  # Multiplicative order of the group
+        # x, a, b = 1, 0, 0
+        # X, A, B = x, a, b
+
+        # def update(x, a, b):
+        #     if x % 3 == 0:
+        #         return (x*x) % N, (a*2) % n, (b*2) % n
+        #     elif x % 3 == 1:
+        #         return (x*alpha) % N, (a + 1) % n, b
+        #     else:
+        #         return (x*beta) % N, a, (b + 1) % n
+
+        # for i in range(1, n):
+        #     x, a, b = update(x, a, b)
+        #     X, A, B = update(X, A, B)
+        #     X, A, B = update(X, A, B)
+        #     if x == X:
+        #         break
+
+        # return cls(a - A) / cls(B - b)
 
     def _poly_eval_python(cls, coeffs, values):
         result = coeffs[0]
