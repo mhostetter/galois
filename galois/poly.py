@@ -9,6 +9,9 @@ from .poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_in
 
 __all__ = ["Poly"]
 
+SPARSE_POLY_FACTOR = 0.01  # If less than 1% of the coefficients are non-zero, make it a SparsePoly
+SPARSE_POLY_MIN_COEFFS = int(1 / SPARSE_POLY_FACTOR)
+
 
 @set_module("galois")
 class Poly:
@@ -101,7 +104,7 @@ class Poly:
         if field is GF2:
             integer = poly_to_integer(coeffs, 2)
             return BinaryPoly(integer)
-        elif len(coeffs) > 1000 and np.count_nonzero(coeffs) < 0.001*len(coeffs):
+        elif len(coeffs) >= SPARSE_POLY_MIN_COEFFS and np.count_nonzero(coeffs) <= SPARSE_POLY_FACTOR*len(coeffs):
             degrees = np.arange(coeffs.size - 1, -1, -1)
             return SparsePoly(degrees, coeffs, field=field)
         else:
@@ -357,7 +360,7 @@ class Poly:
             degrees = [0]
             coeffs = [0]
 
-        if len(degrees) < 0.001*max(degrees):
+        if len(degrees) < SPARSE_POLY_FACTOR*max(degrees):
             # Explicitly create a sparse poly
             return SparsePoly(degrees, coeffs=coeffs, field=field)
         else:
@@ -960,7 +963,7 @@ class DensePoly(Poly):
     ###############################################################################
 
     def copy(self):
-        return DensePoly(self._coeffs)
+        return DensePoly(np.copy(self._coeffs))
 
     ###############################################################################
     # Arithmetic methods
@@ -1273,7 +1276,7 @@ class SparsePoly(Poly):
     ###############################################################################
 
     def copy(self):
-        return SparsePoly(self._degrees, self._coeffs)
+        return SparsePoly(np.copy(self._degrees), np.copy(self._coeffs))
 
     ###############################################################################
     # Arithmetic methods
