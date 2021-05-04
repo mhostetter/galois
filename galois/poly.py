@@ -1199,7 +1199,7 @@ class BinaryPoly(Poly):
         if self._integer == 0:
             return 0
         else:
-            return int(math.floor(math.log(self._integer, 2)))
+            return int(math.floor(math.log2(self._integer)))
 
     @property
     def nonzero_degrees(self):
