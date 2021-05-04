@@ -9,6 +9,26 @@ import numpy as np
 import galois
 
 
+def test_copy():
+    p1 = galois.Poly([2,0,1,2], field=galois.GF(3))
+    assert isinstance(p1, galois.poly.DensePoly)
+    p2 = p1.copy()
+    p2._coeffs[0] = 0
+    assert np.array_equal(p1.coeffs, [2,0,1,2])
+
+    p1 = galois.Poly([1,0,1,1])
+    assert isinstance(p1, galois.poly.BinaryPoly)
+    p2 = p1.copy()
+    p2._integer = 27
+    assert np.array_equal(p1.coeffs, [1,0,1,1])
+
+    p1 = galois.Poly.Degrees([3000,1,0], [1,1,1])
+    assert isinstance(p1, galois.poly.SparsePoly)
+    p2 = p1.copy()
+    p2._degrees[0] = 4000
+    assert np.array_equal(p1.nonzero_degrees, [3000,1,0])
+
+
 def test_string():
     poly = galois.Poly([1,0,1,1])
     assert repr(poly) == str(poly) == "Poly(x^3 + x + 1, GF(2))"
