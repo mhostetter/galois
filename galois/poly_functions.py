@@ -204,18 +204,18 @@ def is_irreducible(poly):
     if not poly.field.degree == 1:
         raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
-    field = poly.field
-    p = field.order
-    n = poly.degree
-    primes, _ = prime_factors(n)
-    zero = Poly.Zero(field)
-    one = Poly.One(field)
-    x = Poly.Identity(field)
-
     if poly.coeffs[-1] == 0:
         # We can factor out (x), therefore it is not irreducible.
         return False
 
+    field = poly.field
+    p = field.order
+    n = poly.degree
+    zero = Poly.Zero(field)
+    one = Poly.One(field)
+    x = Poly.Identity(field)
+
+    primes, _ = prime_factors(n)
     h0 = Poly.Identity(field)
     n0 = 0
     for ni in sorted([n // pi for pi in primes]):
@@ -237,6 +237,41 @@ def is_irreducible(poly):
 
 @set_module("galois")
 def is_primitive(poly):
+    """
+    Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is primitive.
+
+    A degree-:math:`n` polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is *primitive* if :math:`f(x)\\ |\\ (x^k - 1)` for
+    :math:`k = p^n - 1` and no :math:`k` less than :math:`p^n - 1`.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        A polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+
+    Returns
+    -------
+    bool
+        `True` if the polynomial is primitive.
+
+    Examples
+    --------
+    All Conway polynomials are primitive.
+
+    .. ipython:: python
+
+        f = galois.conway_poly(2, 8); f
+        galois.is_primitive(f)
+
+        f = galois.conway_poly(3, 5); f
+        galois.is_primitive(f)
+
+    The irreducible polynomial of :math:`\\mathrm{GF}(2^8)` for AES is not primitive.
+
+    .. ipython:: python
+
+        f = galois.Poly.Degrees([8,4,3,1,0]); f
+        galois.is_primitive(f)
+    """
     assert isinstance(poly, Poly)
     assert poly.degree > 1
     assert poly.field.degree == 1
@@ -246,17 +281,24 @@ def is_primitive(poly):
     n = poly.degree
     zero = Poly.Zero(field)
     one = Poly.One(field)
-    x = Poly.Identity(field)
 
-    # f(x) must divide (x^(p^n) - x) to be irreducible
-    h = Poly.One(field)
-    for k in range(1, p**n):
-        h = h * x
-        g = (h - one) % poly
-        if g == zero and k < p**n - 1:
+    primes, _ = prime_factors(p**n - 1)
+    h0 = Poly.Identity(field)
+    k0 = 1
+    for ki in sorted([(p**n - 1) // pi for pi in primes]):
+        # Multiply h0(x) by x^(ki - k0) and reduce by p(x) such that hi(x) = x^ki mod p(x)
+        hi = (h0 * Poly.Degrees([ki - k0], field=field)) % poly
+        g = hi - one  # Equivalent to g(x) = (x^ki - 1) mod p(x)
+
+        # f(x) must not divide (x^((p^n - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of p**n - 1
+        if ki < p**n - 1 and not g != zero:
             return False
-        if g != zero and k == p**n - 1:
+
+        # f(x) must divide (x^(p^n - 1) - 1) for f(x) to be primitive
+        if ki == p**n - 1 and not g == zero:
             return False
+
+        h0, k0 = hi, ki
 
     return True
 
