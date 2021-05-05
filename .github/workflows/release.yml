@@ -62,7 +62,10 @@ jobs:
       run: |
         prev=v${{ steps.previous_version.outputs.version }}
         next=v${{ steps.next_version.outputs.version }}
-        git log --oneline ${prev}..${next} > release_notes.txt
+        echo "## Contributors" > release_notes.md
+        git log ${prev}..${next} --pretty="- @%an" | sort | uniq >> release_notes.md
+        echo "\n## Commits" >> release_notes.md
+        git log --oneline ${prev}..${next} >> release_notes.md
     - name: Create GitHub release
       uses: actions/create-release@v1
       env:
@@ -70,7 +73,7 @@ jobs:
       with:
         tag_name: v${{ steps.next_version.outputs.version }}
         release_name: galois v${{ steps.next_version.outputs.version }}
-        body_path: release_notes.txt
+        body_path: release_notes.md
         draft: false
     - name: Build python package
       run: |
