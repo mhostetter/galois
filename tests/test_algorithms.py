@@ -30,8 +30,11 @@ def test_crt():
     m = [3, 4, 5]
     x = galois.crt(a, m)
     assert x == 39
-    for i in range(len(a)):
-        assert x % m[i] == a[i]
+
+    a = [2, 1, 3, 8]
+    m = [5, 7, 11, 13]
+    x = galois.crt(a, m)
+    assert x == 2192
 
 
 def test_crt_exceptions():

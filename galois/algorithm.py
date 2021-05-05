@@ -4,6 +4,7 @@ from itertools import combinations
 import numpy as np
 
 from .overrides import set_module
+from .math_ import prod
 
 __all__ = ["gcd", "crt"]
 
@@ -55,14 +56,11 @@ def gcd(a, b):
     s2, s1 = 1, 0
     t2, t1 = 0, 1
 
-    while True:
-        qi = r2 // r1
-        ri = r2 % r1
-        r2, r1 = r1, ri
-        s2, s1 = s1, s2 - qi*s1
-        t2, t1 = t1, t2 - qi*t1
-        if ri == 0:
-            break
+    while r1 != 0:
+        q = r2 // r1
+        r2, r1 = r1, r2 - q*r1
+        s2, s1 = s1, s2 - q*s1
+        t2, t1 = t1, t2 - q*t1
 
     return r2, s2, t2
 
@@ -107,25 +105,19 @@ def crt(a, m):
             ai = x % m[i]
             print(f"{x} = {ai} (mod {m[i]}), Valid congruence: {ai == a[i]}")
     """
-    a = np.array(a)
-    m = np.array(m)
-    if not m.size == a.size:
-        raise ValueError(f"Arguments `a` and `m` are not the same size, {a.size} != {m.size}.")
+    if not len(a) == len(m):
+        raise ValueError(f"Arguments `a` and `m` are not the same length, {len(a)} != {len(m)}.")
     for pair in combinations(m, 2):
         if not math.gcd(pair[0], pair[1]) == 1:
             raise ValueError(f"Elements of argument `m` must be pairwise coprime, {pair} are not.")
 
     # Iterate through the system of congruences reducing a pair of congruences into a
     # single one. The answer to the final congruence solves all the congruences.
-    a1 = a[0]
-    m1 = m[0]
-    for i in range(1, m.size):
-        a2 = a[i]
-        m2 = m[i]
-
+    a1, m1 = a[0], m[0]
+    for a2, m2 in zip(a[1:], m[1:]):
         # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = 1,
         # where 1 is the GCD(m1, m2) because m1 and m2 are pairwise relatively coprime
-        b1, b2 = gcd(m1, m2)[1:3]
+        b1, b2 = gcd(m1, m2)[1:]
 
         # Compute x through explicit construction
         x = a1*b2*m2 + a2*b1*m1
@@ -134,6 +126,6 @@ def crt(a, m):
         a1 = x % m1  # The new equivalent remainder
 
     # Align x to be within [0, prod(m))
-    x = x % np.prod(m)
+    x = x % prod(m)
 
     return x
