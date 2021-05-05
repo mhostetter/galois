@@ -85,7 +85,18 @@ def poly_gcd(a, b):
         s2 /= r2
         t2 /= r2
 
-    return r2, s2, t2
+    target_mul = None
+
+    irred_lin_comb = s2 * a + t2 * b
+    for elem in field.Elements():
+        mul = Poly([int(elem)], field=field)
+        if mul * irred_lin_comb == r2:
+            target_mul = mul
+            break
+    
+    s2mul, t2mul = s2 * target_mul, t2 * target_mul
+
+    return r2, s2mul, t2mul
 
 
 @set_module("galois")
