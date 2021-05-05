@@ -3,6 +3,46 @@ a module that contains linear algebra routines over Galois fields.
 """
 import numpy as np
 
+from .dtypes import DTYPES
+
+
+def _lapack_linalg(a, b, function, n_sum=None):
+    """
+    In prime fields GF(p), it's much more efficient to use LAPACK/BLAS implementations of linear algebra
+    and then reduce modulo p rather than compute explicitly.
+    """
+    assert type(a).is_prime_field
+    field = type(a)
+    characteristic = field.characteristic
+
+    # Determine the return data-type which is the minimum of the two inputs' data-types
+    if a.dtype == np.object_ or b.dtype == np.object_:
+        return_dtype = np.object_
+    else:
+        return_dtype = a.dtype if np.iinfo(a.dtype).max < np.iinfo(b.dtype).max else b.dtype
+
+    a = a.view(np.ndarray)
+    b = b.view(np.ndarray)
+
+    # Determine the minimum dtype to hold the entire product and summation without overflowing
+    if n_sum is None:
+        n_sum = 1 if len(a.shape) == 0 else max(a.shape)
+    max_value = n_sum * (characteristic - 1)**2
+    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= max_value]
+    dtype = np.object_ if len(dtypes) == 0 else dtypes[0]
+    a = a.astype(dtype)
+    b = b.astype(dtype)
+
+    c = function(a, b)  # Compute result using native numpy LAPACK/BLAS implementation
+    c = np.mod(c, characteristic)  # Reduce the result mod p
+
+    if np.isscalar(c):
+        c = field(c, dtype=return_dtype)
+    else:
+        c = c.astype(return_dtype).view(field)
+
+    return c
+
 
 def dot(a, b, **kwargs):  # pylint: disable=unused-argument
     """
@@ -10,6 +50,9 @@ def dot(a, b, **kwargs):  # pylint: disable=unused-argument
     """
     if not type(a) is type(b):
         raise TypeError(f"Operation 'dot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+
+    if type(a).is_prime_field:
+        return _lapack_linalg(a, b, np.dot)
 
     if a.ndim == 0 or b.ndim == 0:
         return a * b
@@ -30,6 +73,10 @@ def inner(a, b, **kwargs):  # pylint: disable=unused-argument
     """
     if not type(a) is type(b):
         raise TypeError(f"Operation 'inner' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+
+    if type(a).is_prime_field:
+        return _lapack_linalg(a, b, np.inner)
+
     if a.ndim == 0 or b.ndim == 0:
         return a * b
     if not a.shape[-1] == b.shape[-1]:
@@ -43,6 +90,10 @@ def outer(a, b, **kwargs):  # pylint: disable=unused-argument
     """
     if not type(a) is type(b):
         raise TypeError(f"Operation 'outer' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+
+    if type(a).is_prime_field:
+        return _lapack_linalg(a, b, np.outer, n_sum=1)
+
     return np.multiply.outer(a.ravel(), b.ravel())
 
 
@@ -52,6 +103,9 @@ def matmul(A, B, **kwargs):
         raise TypeError(f"Operation 'matmul' requires both arrays be in the same Galois field, not {type(A)} and {type(B)}.")
     if not (A.ndim >= 1 and B.ndim >= 1):
         raise ValueError(f"Operation 'matmul' requires both arrays have dimension at least 1, not {A.ndim}-D and {B.ndim}-D.")
+
+    if type(A).is_prime_field:
+        return _lapack_linalg(A, B, np.matmul)
 
     prepend, append = False, False
     if A.ndim == 1:
