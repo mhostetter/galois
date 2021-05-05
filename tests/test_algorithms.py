@@ -25,20 +25,20 @@ def test_gcd_exceptions():
         galois.gcd(10, 12.0)
 
 
-def test_chinese_remainder_theorem():
+def test_crt():
     a = [0, 3, 4]
     m = [3, 4, 5]
-    x = galois.chinese_remainder_theorem(a, m)
+    x = galois.crt(a, m)
     assert x == 39
     for i in range(len(a)):
         assert x % m[i] == a[i]
 
 
-def test_chinese_remainder_theorem_exceptions():
+def test_crt_exceptions():
     with pytest.raises(ValueError):
-        galois.chinese_remainder_theorem([0, 3, 4], [3, 4, 5, 7])
+        galois.crt([0, 3, 4], [3, 4, 5, 7])
     with pytest.raises(ValueError):
-        galois.chinese_remainder_theorem([0, 3, 4], [3, 4, 6])
+        galois.crt([0, 3, 4], [3, 4, 6])
 
 
 def test_totatives():
