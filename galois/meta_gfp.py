@@ -1,7 +1,6 @@
 import numba
 import numpy as np
 
-from .algorithm import gcd, _gcd_jit
 from .dtypes import DTYPES
 from .meta_gf import GFMeta
 from .poly import Poly
@@ -12,8 +11,6 @@ ORDER = None  # The field's order `p^m`
 PRIMITIVE_ELEMENT = None  # The field's primitive element
 
 # Placeholder functions to be replaced by JIT-compiled function
-ADD_JIT = lambda x, y: x + y
-MULTIPLY_JIT = lambda x, y: x * y
 MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
 
@@ -35,9 +32,6 @@ class GFpMeta(GFMeta):
         cls._primitive_element = cls(cls.primitive_element)
         cls._is_primitive_poly = True
 
-        # Add helper variables for python ufuncs. This prevents the ufuncs from having to repeatedly calculate them.
-        cls._irreducible_poly_dec = cls.irreducible_poly.integer  # pylint: disable=no-member
-
     @property
     def dtypes(cls):
         max_dtype = DTYPES[-1]
@@ -47,14 +41,12 @@ class GFpMeta(GFMeta):
         return d
 
     def _compile_jit_calculate(cls, target):
-        global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
+        global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, MULTIPLICATIVE_INVERSE_JIT
         CHARACTERISTIC = cls.characteristic
         ORDER = cls.order
         PRIMITIVE_ELEMENT = int(cls.primitive_element)  # Convert from field element to integer
 
         # JIT-compile add, multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
-        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
-        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
         MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(_multiplicative_inverse_calculate)
 
         kwargs = {"nopython": True, "target": target}
@@ -99,8 +91,24 @@ class GFpMeta(GFMeta):
             return cls.order - a
 
     def _multiplicative_inverse_python(cls, a):
-        a_inv = gcd(a, cls.order)[1]
-        return a_inv % cls.order
+        """
+        s*x + t*y = gcd(x, y) = 1
+        x = p
+        y = a in GF(p)
+        t = a**-1 in GF(p)
+        """
+        r2, r1 = cls.order, a
+        t2, t1 = 0, 1
+
+        while r1 != 0:
+            q = r2 // r1
+            r2, r1 = r1, r2 - q*r1
+            t2, t1 = t1, t2 - q*t1
+
+        if t2 < 0:
+            t2 += cls.order
+
+        return t2
 
 
 ###############################################################################
@@ -130,7 +138,7 @@ def _divide_calculate(a, b):  # pragma: no cover
         # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
         return 0
     b_inv = MULTIPLICATIVE_INVERSE_JIT(b)
-    return MULTIPLY_JIT(a, b_inv)
+    return (a * b_inv) % ORDER
 
 
 def _additive_inverse_calculate(a):  # pragma: no cover
@@ -141,8 +149,24 @@ def _additive_inverse_calculate(a):  # pragma: no cover
 
 
 def _multiplicative_inverse_calculate(a):  # pragma: no cover
-    a_inv = _gcd_jit(a, ORDER)[1]
-    return a_inv % ORDER
+    """
+    s*x + t*y = gcd(x, y) = 1
+    x = p
+    y = a in GF(p)
+    t = a**-1 in GF(p)
+    """
+    r2, r1 = ORDER, a
+    t2, t1 = 0, 1
+
+    while r1 != 0:
+        q = r2 // r1
+        r2, r1 = r1, r2 - q*r1
+        t2, t1 = t1, t2 - q*t1
+
+    if t2 < 0:
+        t2 += ORDER
+
+    return t2
 
 
 def _scalar_multiply_calculate(a, multiple):  # pragma: no cover
@@ -173,13 +197,13 @@ def _power_calculate(a, power):  # pragma: no cover
 
     while power > 1:
         if power % 2 == 0:
-            result_s = MULTIPLY_JIT(result_s, result_s)
+            result_s = (result_s * result_s) % ORDER
             power //= 2
         else:
-            result_m = MULTIPLY_JIT(result_m, result_s)
+            result_m = (result_m * result_s) % ORDER
             power -= 1
 
-    result = MULTIPLY_JIT(result_m, result_s)
+    result = (result_m * result_s) % ORDER
 
     return result
 
@@ -198,7 +222,7 @@ def _log_calculate(beta):  # pragma: no cover
     for i in range(0, ORDER-1):
         if result == beta:
             break
-        result = MULTIPLY_JIT(result, PRIMITIVE_ELEMENT)
+        result = (result * PRIMITIVE_ELEMENT) % ORDER
     return i
 
 
@@ -206,4 +230,4 @@ def _poly_eval_calculate(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
-            results[i] = ADD_JIT(coeffs[j], MULTIPLY_JIT(results[i], values[i]))
+            results[i] = (coeffs[j] + results[i]*values[i]) % ORDER
