@@ -186,6 +186,7 @@ class UfuncMixin(type):
             raise TypeError(f"Operation '{ufunc.__name__}' requires both operands to be Galois field arrays over the same field, not {[inputs[i] for i in meta['operands']]}.")
 
     def _verify_and_flip_operands_first_field_second_int(cls, ufunc, method, inputs, meta):  # pylint: disable=no-self-use
+        inputs = list(inputs)
         if len(meta["operands"]) == 1 or method == "reduceat":
             return inputs
 
@@ -209,7 +210,6 @@ class UfuncMixin(type):
             pass
         else:
             # Switch arguments to guarantee the Galois field array is the first element
-            inputs = list(inputs)
             inputs[meta["operands"][0]], inputs[meta["operands"][1]] = inputs[meta["operands"][1]], inputs[meta["operands"][0]]
 
         return inputs

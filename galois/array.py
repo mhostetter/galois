@@ -857,7 +857,7 @@ class GFArray(np.ndarray, metaclass=GFMeta):
             inputs, kwargs = type(self)._view_inputs_as_ndarray(inputs, kwargs)
             output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
 
-            if ufunc in UFUNCS_REQUIRING_VIEW:
+            if ufunc in UFUNCS_REQUIRING_VIEW and output is not None:
                 output = output.view(type(self))
 
             return output

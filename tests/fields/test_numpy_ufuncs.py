@@ -320,14 +320,3 @@ class TestAt:
         for i in idxs:
             a_truth[i] = a_truth[i] ** b
         assert np.array_equal(a, a_truth)
-
-    def test_log(self, field):
-        if field.order > 2**16:  # TODO: Skip slow log() for very large fields
-            return
-        a = field.Random(10, low=1)
-        idxs = [0,1,4,8]  # Dont test index=1 twice like other tests because in GF(2) log(1)=0 and then log(0)=error
-        a_truth = field(a)  # Ensure a copy happens
-        np.log.at(a, idxs)
-        for i in idxs:
-            a_truth[i] = np.log(a_truth[i])
-        assert np.array_equal(a, a_truth)

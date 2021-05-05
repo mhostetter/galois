@@ -88,10 +88,22 @@ class GF2Meta(GFMeta):
         cls._primitive_element_int = int(cls._primitive_element)
         cls._prime_subfield = cls
 
-        cls.compile(kwargs["mode"], kwargs["target"])
+        # Use cached ufuncs only where necessary
+        kwargs = {"nopython": True, "cache": True}
+        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
         cls._primitive_element = cls(cls.primitive_element)
         cls._is_primitive_poly = True
+
+    def compile(cls, mode, target="cpu"):
+        """
+        Error
+        -----
+        The Galois field array class for GF(2) cannot be recompiled. It is pre-compiled using
+        native numpy bitwise ufuncs.
+        """
+        raise RuntimeError("Cannot recompile GF(2) Galois field arrays. They are pre-compiled using numpy bitwise operations.")
 
     @property
     def dtypes(cls):
@@ -101,70 +113,136 @@ class GF2Meta(GFMeta):
         return d
 
     @property
+    def ufunc_mode(cls):
+        return "jit-calculate"
+
+    @property
+    def ufunc_modes(cls):
+        return ["jit-calculate"]
+
+    @property
     def default_ufunc_mode(cls):
         return "jit-calculate"
 
-    def _compile_jit_calculate(cls, target):
-        global CHARACTERISTIC, ADD_JIT, MULTIPLY_JIT
-        CHARACTERISTIC = cls._characteristic
+    @property
+    def ufunc_target(cls):
+        return "cpu"
 
-        # JIT-compile add and multiply routines for reference in polynomial evaluation routine
-        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
-        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
+    ###############################################################################
+    # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
+    ###############################################################################
 
-        kwargs = {"nopython": True, "target": target}
-        if target == "cuda":
-            kwargs.pop("nopython")
+    def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
+        """
+        a, b, c in GF(2)
+        c = a + b
+          = a ^ b
+        """
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
+        if np.isscalar(output):
+            output = meta["field"](output)
+        return output
 
-        # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-        cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
-        cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
-        cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
-        cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
-        cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
-        cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
-        cls._ufuncs["scalar_multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_scalar_multiply_calculate)
-        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
-        cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
-        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
+    def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
+        """
+        a, b, c in GF(2)
+        c = a - b
+          = a ^ b
+        """
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
+        if np.isscalar(output):
+            output = meta["field"](output)
+        return output
+
+    def _ufunc_multiply(cls, ufunc, method, inputs, kwargs, meta):
+        """
+        In-field multiplication:
+        a, b, c in GF(2)
+        c = a * b
+          = a & b
+
+        Scalar multiplication:
+        a, c in GF(2)
+        b in Z
+        c = a * b
+          = a * (b % 2)
+          = a * (b & 0b1)
+          = a & b & 0b1
+        """
+        if len(meta["non_field_operands"]) == 0:
+            # In-field multiplication
+            output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
+        else:
+            # Scalar multiplication
+            inputs = cls._verify_and_flip_operands_first_field_second_int(ufunc, method, inputs, meta)
+            inputs[meta["operands"][1]] = np.bitwise_and(inputs[meta["operands"][1]], 0b1, dtype=inputs[meta["operands"][0]].dtype, casting="unsafe")
+            output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
+        if np.isscalar(output):
+            output = meta["field"](output)
+        return output
+
+    def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
+        """
+        In-field multiplication:
+        a, b, c in GF(2)
+        c = a / b, b = 1 is the only valid element with a multiplicative inverse, which is 1
+          = a & b
+        """
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        if np.count_nonzero(inputs[meta["operands"][-1]]) != inputs[meta["operands"][-1]].size:
+            raise ZeroDivisionError("Cannot divide by 0 in Galois fields.")
+        output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
+        if np.isscalar(output):
+            output = meta["field"](output)
+        return output
+
+    def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        """
+        a, b in GF(2)
+        b = -a
+          = a
+        """
+        return inputs[0]
+
+    def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        """
+        a, b in GF(2)
+        b = 1 / a, a = 1 is the only valid element with a multiplicative inverse, which is 1
+          = a
+        """
+        if np.count_nonzero(inputs[0]) != inputs[0].size:
+            raise ZeroDivisionError("Cannot divide by 0 in Galois fields.")
+        return inputs[0]
+
+    def _ufunc_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        """
+        a, c in GF(2)
+        c = a ** 2
+          = a * a
+          = a
+        """
+        return inputs[0]
+
+    def _ufunc_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        """
+        a in GF(2)
+        b in Z
+        b = log_α(a), a = 1 is the only valid element with a logarithm base α, which is 0
+          = 0
+        """
+        if np.count_nonzero(inputs[meta["operands"][0]]) != inputs[meta["operands"][0]].size:
+            raise ArithmeticError("Cannot take the logarithm of 0 in Galois fields.")
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        inputs = list(inputs) + [np.int(0)]
+        output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
+        return output
 
 
 ###############################################################################
 # Galois field arithmetic, explicitly calculated without lookup tables
 ###############################################################################
-
-def _add_calculate(a, b):  # pragma: no cover
-    return a ^ b
-
-
-def _subtract_calculate(a, b):  # pragma: no cover
-    return a ^ b
-
-
-def _multiply_calculate(a, b):  # pragma: no cover
-    return a & b
-
-
-def _divide_calculate(a, b):  # pragma: no cover
-    if b == 0:
-        # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
-        return 0
-    else:
-        return a
-
-
-def _additive_inverse_calculate(a):  # pragma: no cover
-    return a
-
-
-def _multiplicative_inverse_calculate(a):  # pragma: no cover
-    return a
-
-
-def _scalar_multiply_calculate(a, multiple):  # pragma: no cover
-    multiple = multiple % CHARACTERISTIC
-    return MULTIPLY_JIT(a, multiple)
-
 
 def _power_calculate(a, power):  # pragma: no cover
     # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
@@ -176,14 +254,8 @@ def _power_calculate(a, power):  # pragma: no cover
         return a
 
 
-def _log_calculate(a):  # pragma: no cover
-    # pylint: disable=unused-argument
-    # NOTE: The a == 0 condition will be caught outside of the ufunc and raise ArithmeticError
-    return 0
-
-
 def _poly_eval_calculate(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
-            results[i] = ADD_JIT(coeffs[j], MULTIPLY_JIT(results[i], values[i]))
+            results[i] = coeffs[j] ^ (results[i] & values[i])
