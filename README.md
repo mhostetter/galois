@@ -22,6 +22,7 @@ In addition to normal array arithmetic, `galois` also supports linear algebra (w
 (with the `galois.Poly` class).
 
 - [Features](#features)
+- [Roadmap](#roadmap)
 - [Documentation](#documentation)
 - [Installation](#installation)
 - [Versioning](#versioning)
@@ -47,6 +48,16 @@ In addition to normal array arithmetic, `galois` also supports linear algebra (w
 - Linear algebra over Galois fields using native `np.linalg` functions
 - Polynomials over Galois fields with `galois.Poly`, both dense and sparse polynomials
 - Compile ufuncs to target GPUs for massive data processing
+
+## Roadmap
+
+Planned future functionality of `galois` includes:
+
+- Ring support
+- Linear feedback shift registers over arbitrary Galois fields
+- Number-theoretic transform, DFT over Galois fields
+- Elliptic curves over Galois fields
+- Cryptographic ciphers using Galois fields (RSA, AES, ECC, etc)
 
 ## Documentation
 
