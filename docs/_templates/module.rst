@@ -28,6 +28,21 @@
    {% endif %}
    {% endblock %}
 
+   {% block abstract_classes %}
+   {% if classes %}
+   .. rubric:: {{ _('Abstract Classes') }}
+
+   .. autosummary::
+      :template: class.rst
+      :toctree:
+   {% for item in classes %}
+      {% if item in ["GFMeta", "GFArray"] %}
+         {{ item }}
+      {% endif %}
+   {%- endfor %}
+   {% endif %}
+   {% endblock %}
+
    {% block classes %}
    {% if classes %}
    .. rubric:: {{ _('Classes') }}
@@ -36,7 +51,9 @@
       :template: class.rst
       :toctree:
    {% for item in classes %}
-      {{ item }}
+      {% if item not in ["GFMeta", "GFArray"] %}
+         {{ item }}
+      {% endif %}
    {%- endfor %}
    {% endif %}
    {% endblock %}
