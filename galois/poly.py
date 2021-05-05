@@ -16,10 +16,10 @@ SPARSE_POLY_MIN_COEFFS = int(1 / SPARSE_POLY_FACTOR)
 @set_module("galois")
 class Poly:
     """
-    Create a polynomial :math:`p(x)` over :math:`\\mathrm{GF}(q)`.
+    Create a polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p^m)`.
 
-    The polynomial :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0` has coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}`
-    in :math:`\\mathrm{GF}(q)`.
+    The polynomial :math:`f(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0` has coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}`
+    in :math:`\\mathrm{GF}(p^m)`.
 
     Parameters
     ----------
@@ -28,7 +28,7 @@ class Poly:
         :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
         the 0-th degree element if `order="asc"`.
     field : galois.GFArray, optional
-        The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`. If `coeffs`
+        The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`. If `coeffs`
         is a Galois field array, then that field is used and the `field` argument is ignored.
     order : str, optional
         The interpretation of the coefficient degrees, either `"desc"` (default) or `"asc"`. For `"desc"`,
@@ -38,7 +38,7 @@ class Poly:
     Returns
     -------
     galois.Poly
-        The polynomial :math:`p(x)`.
+        The polynomial :math:`f(x)`.
 
     Examples
     --------
@@ -132,17 +132,17 @@ class Poly:
     @classmethod
     def Zero(cls, field=GF2):
         """
-        Constructs the zero polynomial :math:`p(x) = 0` over :math:`\\mathrm{GF}(q)`.
+        Constructs the zero polynomial :math:`f(x) = 0` over :math:`\\mathrm{GF}(p^m)`.
 
         Parameters
         ----------
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
         galois.Poly
-            The polynomial :math:`p(x)`.
+            The polynomial :math:`f(x)`.
 
         Examples
         --------
@@ -164,17 +164,17 @@ class Poly:
     @classmethod
     def One(cls, field=GF2):
         """
-        Constructs the one polynomial :math:`p(x) = 1` over :math:`\\mathrm{GF}(q)`.
+        Constructs the one polynomial :math:`f(x) = 1` over :math:`\\mathrm{GF}(p^m)`.
 
         Parameters
         ----------
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
         galois.Poly
-            The polynomial :math:`p(x)`.
+            The polynomial :math:`f(x)`.
 
         Examples
         --------
@@ -196,17 +196,17 @@ class Poly:
     @classmethod
     def Identity(cls, field=GF2):
         """
-        Constructs the identity polynomial :math:`p(x) = x` over :math:`\\mathrm{GF}(q)`.
+        Constructs the identity polynomial :math:`f(x) = x` over :math:`\\mathrm{GF}(p^m)`.
 
         Parameters
         ----------
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
         galois.Poly
-            The polynomial :math:`p(x)`.
+            The polynomial :math:`f(x)`.
 
         Examples
         --------
@@ -228,19 +228,19 @@ class Poly:
     @classmethod
     def Random(cls, degree, field=GF2):
         """
-        Constructs a random polynomial over :math:`\\mathrm{GF}(q)` with degree :math:`d`.
+        Constructs a random polynomial over :math:`\\mathrm{GF}(p^m)` with degree :math:`d`.
 
         Parameters
         ----------
         degree : int
             The degree of the polynomial.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
         galois.Poly
-            The polynomial :math:`p(x)`.
+            The polynomial :math:`f(x)`.
 
         Examples
         --------
@@ -268,23 +268,23 @@ class Poly:
     @classmethod
     def Integer(cls, integer, field=GF2):
         """
-        Constructs a polynomial over :math:`\\mathrm{GF}(q)` from its integer representation.
+        Constructs a polynomial over :math:`\\mathrm{GF}(p^m)` from its integer representation.
 
-        The integer value :math:`i` represents the polynomial :math:`p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`
-        over field :math:`\\mathrm{GF}(q)` if :math:`i = a_{d}q^{d} + a_{d-1}q^{d-1} + \\dots + a_1q + a_0` using integer arithmetic,
+        The integer value :math:`i` represents the polynomial :math:`f(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`
+        over field :math:`\\mathrm{GF}(p^m)` if :math:`i = a_{d}(p^m)^{d} + a_{d-1}(p^m)^{d-1} + \\dots + a_1(p^m) + a_0` using integer arithmetic,
         not finite field arithmetic.
 
         Parameters
         ----------
         integer : int
-            The integer representation of the polynomial :math:`p(x)`.
+            The integer representation of the polynomial :math:`f(x)`.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
         galois.Poly
-            The polynomial :math:`p(x)`.
+            The polynomial :math:`f(x)`.
 
         Examples
         --------
@@ -314,7 +314,7 @@ class Poly:
     @classmethod
     def Degrees(cls, degrees, coeffs=None, field=None):
         """
-        Constructs a polynomial over :math:`\\mathrm{GF}(q)` from its non-zero degrees.
+        Constructs a polynomial over :math:`\\mathrm{GF}(p^m)` from its non-zero degrees.
 
         Parameters
         ----------
@@ -324,12 +324,12 @@ class Poly:
             List of corresponding non-zero coefficients. The default is `None` which corresponds to all one
             coefficients, i.e. `[1,]*len(degrees)`.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
         galois.Poly
-            The polynomial :math:`p(x)`.
+            The polynomial :math:`f(x)`.
 
         Examples
         --------
@@ -379,28 +379,28 @@ class Poly:
     @classmethod
     def Roots(cls, roots, multiplicities=None, field=None):
         """
-        Constructs a monic polynomial in :math:`\\mathrm{GF}(q)[x]` from its roots.
+        Constructs a monic polynomial in :math:`\\mathrm{GF}(p^m)[x]` from its roots.
 
-        The polynomial :math:`p(x)` with :math:`d` roots :math:`\\{r_0, r_1, \\dots, r_{d-1}\\}` is:
+        The polynomial :math:`f(x)` with :math:`d` roots :math:`\\{r_0, r_1, \\dots, r_{d-1}\\}` is:
 
         .. math::
-            p(x) &= (x - r_0) (x - r_1) \\dots (x - r_{d-1})
+            f(x) &= (x - r_0) (x - r_1) \\dots (x - r_{d-1})
 
-            p(x) &= a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0
+            f(x) &= a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0
 
         Parameters
         ----------
         roots : array_like
-            List of roots in :math:`\\mathrm{GF}(q)` of the desired polynomial.
+            List of roots in :math:`\\mathrm{GF}(p^m)` of the desired polynomial.
         multiplicities : array_like, optional
             List of multiplicity of each root. The default is `None` which corresponds to all ones.
         field : galois.GFArray, optional
-            The field :math:`\\mathrm{GF}(q)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
+            The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
         Returns
         -------
         galois.Poly
-            The polynomial :math:`p(x)`.
+            The polynomial :math:`f(x)`.
 
         Examples
         --------
@@ -447,39 +447,39 @@ class Poly:
 
     def roots(self, multiplicity=False):
         """
-        Calculates the roots :math:`r` of the polynomial :math:`p(x)`, such that :math:`p(r) = 0`.
+        Calculates the roots :math:`r` of the polynomial :math:`f(x)`, such that :math:`f(r) = 0`.
 
         This implementation uses Chien's search to find the roots :math:`\\{r_0, r_1, \\dots, r_{k-1}\\}` of the degree-:math:`d`
         polynomial
 
         .. math::
-            p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0,
+            f(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0,
 
-        where :math:`k \\le d`. Then, :math:`p(x)` can be factored as
+        where :math:`k \\le d`. Then, :math:`f(x)` can be factored as
 
         .. math::
-            p(x) = (x - r_0)^{m_0} (x - r_1)^{m_1} \\dots (x - r_{k-1})^{m_{k-1}},
+            f(x) = (x - r_0)^{m_0} (x - r_1)^{m_1} \\dots (x - r_{k-1})^{m_{k-1}},
 
         where :math:`m_i` is the multiplicity of root :math:`r_i` and
 
         .. math::
             \\sum_{i=0}^{k-1} m_i = d.
 
-        The Galois field elements can be represented as :math:`\\mathrm{GF}(q) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{q-2}\\}`,
-        where :math:`\\alpha` is a primitive element of :math:`\\mathrm{GF}(q)`.
+        The Galois field elements can be represented as :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{p^m-2}\\}`,
+        where :math:`\\alpha` is a primitive element of :math:`\\mathrm{GF}(p^m)`.
 
-        :math:`0` is a root of :math:`p(x)` if:
+        :math:`0` is a root of :math:`f(x)` if:
 
         .. math::
             a_0 = 0
 
-        :math:`1` is a root of :math:`p(x)` if:
+        :math:`1` is a root of :math:`f(x)` if:
 
         .. math::
             \\sum_{j=0}^{d} a_j = 0
 
-        The remaining elements of :math:`\\mathrm{GF}(q)` are powers of :math:`\\alpha`. The following
-        equations calculate :math:`p(\\alpha^i)`, where :math:`\\alpha^i` is a root of :math:`p(x)` if :math:`p(\\alpha^i) = 0`.
+        The remaining elements of :math:`\\mathrm{GF}(p^m)` are powers of :math:`\\alpha`. The following
+        equations calculate :math:`p(\\alpha^i)`, where :math:`\\alpha^i` is a root of :math:`f(x)` if :math:`p(\\alpha^i) = 0`.
 
         .. math::
             p(\\alpha^i) &= a_{d}(\\alpha^i)^{d} + a_{d-1}(\\alpha^i)^{d-1} + \\dots + a_1(\\alpha^i) + a_0
@@ -508,7 +508,7 @@ class Poly:
         Returns
         -------
         galois.GFArray
-            Galois field array of roots of :math:`p(x)`.
+            Galois field array of roots of :math:`f(x)`.
         np.ndarray
             The multiplicity of each root. Only returned if `multiplicity=True`.
 
@@ -594,12 +594,12 @@ class Poly:
 
     def derivative(self, k=1):
         """
-        Computes the :math:`k`-th formal derivative :math:`\\frac{d^k}{dx^k} p(x)` of the polynomial :math:`p(x)`.
+        Computes the :math:`k`-th formal derivative :math:`\\frac{d^k}{dx^k} f(x)` of the polynomial :math:`f(x)`.
 
         For the polynomial
 
         .. math::
-            p(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0
+            f(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0
 
         the first formal derivative is defined as
 
@@ -618,7 +618,7 @@ class Poly:
         Returns
         -------
         galois.Poly
-            The :math:`k`-th formal derivative of the polynomial :math:`p(x)`.
+            The :math:`k`-th formal derivative of the polynomial :math:`f(x)`.
 
         References
         ----------
@@ -917,8 +917,8 @@ class Poly:
     @property
     def integer(self):
         """
-        int: The integer representation of the polynomial. For polynomial :math:`p(x) =  a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`
-        with elements in :math:`a_k \\in \\mathrm{GF}(q)`, the integer representation is :math:`i = a_{d} q^{d} + a_{d-1} q^{d-1} + \\dots + a_1 q + a_0`
+        int: The integer representation of the polynomial. For polynomial :math:`f(x) =  a_{d}x^{d} + a_{d-1}x^{d-1} + \\dots + a_1x + a_0`
+        with elements in :math:`a_k \\in \\mathrm{GF}(p^m)`, the integer representation is :math:`i = a_{d} (p^m)^{d} + a_{d-1} (p^m)^{d-1} + \\dots + a_1 (p^m) + a_0`
         (using integer arithmetic, not finite field arithmetic).
 
         Examples
