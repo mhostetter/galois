@@ -5,7 +5,7 @@ import numpy as np
 
 from .overrides import set_module
 
-__all__ = ["gcd", "chinese_remainder_theorem"]
+__all__ = ["gcd", "crt"]
 
 
 @set_module("galois")
@@ -68,9 +68,11 @@ def gcd(a, b):
 
 
 @set_module("galois")
-def chinese_remainder_theorem(a, m):
+def crt(a, m):
     """
     Solves the simultaneous system of congruences for :math:`x`.
+
+    This function implements the Chinese Remainder Theorem.
 
     .. math::
         x &\\equiv a_1\\ (\\textrm{mod}\\ m_1)
@@ -99,7 +101,7 @@ def chinese_remainder_theorem(a, m):
 
         a = [0, 3, 4]
         m = [3, 4, 5]
-        x = galois.chinese_remainder_theorem(a, m); x
+        x = galois.crt(a, m); x
 
         for i in range(len(a)):
             ai = x % m[i]
