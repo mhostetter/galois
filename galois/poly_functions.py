@@ -62,9 +62,9 @@ def poly_gcd(a, b):
     one = Poly.One(field)
 
     if a == zero:
-        return b, 0, 1
+        return b, Poly([0], field=field), Poly([1], field=field)
     if b == zero:
-        return a, 1, 0
+        return a, Poly([1], field=field), Poly([0], field=field)
 
     r2, r1 = a, b
     s2, s1 = one, zero
