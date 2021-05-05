@@ -28,7 +28,8 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
     # If the requested field has already been constructed, return it
     if key in GF_prime.classes:
         cls = GF_prime.classes[key]
-        cls.compile(mode, target)
+        if characteristic != 2:
+            cls.compile(mode, target)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
@@ -37,7 +38,6 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
         raise ValueError(f"Argument `primitive_element` must be a primitive root modulo {characteristic}, {primitive_element} is not.")
 
     if characteristic == 2:
-        GF2.compile(mode, target)
         cls = GF2
     else:
         cls = types.new_class(name, bases=(GFArray,), kwds={
