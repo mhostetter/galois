@@ -1,7 +1,6 @@
 import math
 from itertools import combinations
 
-import numba
 import numpy as np
 
 from .overrides import set_module
@@ -66,24 +65,6 @@ def gcd(a, b):
             break
 
     return r2, s2, t2
-
-
-@numba.jit("int64[:](int64, int64)", nopython=True)
-def _gcd_jit(a, b):  # pragma: no cover
-    r = [a, b]
-    s = [1, 0]
-    t = [0, 1]
-
-    while True:
-        qi = r[-2] // r[-1]
-        ri = r[-2] % r[-1]
-        r.append(ri)
-        s.append(s[-2] - qi*s[-1])
-        t.append(t[-2] - qi*t[-1])
-        if ri == 0:
-            break
-
-    return np.array([r[-2], s[-2], t[-2]], dtype=np.int64)
 
 
 @set_module("galois")
