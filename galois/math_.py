@@ -8,7 +8,7 @@ import numpy as np
 
 from .overrides import set_module
 
-__all__ = ["isqrt", "lcm"]
+__all__ = ["isqrt", "lcm", "prod"]
 
 
 @set_module("galois")
@@ -101,3 +101,34 @@ def lcm(*integers):
         for integer in integers:
             _lcm = _lcm * integer // math.gcd(_lcm, integer)
         return _lcm
+
+
+@set_module("galois")
+def prod(iterable, start=1):
+    """
+    Computes the product of the integer arguments.
+
+    Note
+    ----
+    This function is included for Python versions before 3.8. For Python 3.8 and later, this function
+    calls :func:`math.prod` from the standard library.
+
+    Returns
+    -------
+    int
+        The product of the integer arguments.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.prod([2, 4, 14])
+        galois.prod([2, 4, 14], start=2)
+    """
+    if sys.version_info.major == 3 and sys.version_info.minor >= 8:
+        return math.prod(iterable, start=start)  # pylint: disable=no-member
+    else:
+        result = start
+        for integer in iterable:
+            result *= integer
+        return result

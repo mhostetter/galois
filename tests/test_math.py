@@ -29,3 +29,8 @@ def test_lcm():
 
     prime1, prime2 = galois.mersenne_primes(100)[-2:]
     assert galois.lcm(prime1, prime2) == prime1 * prime2
+
+
+def test_prod():
+    assert galois.prod([2, 4, 14]) == 2*4*14
+    assert galois.prod([2, 4, 14], start=2) == 2*2*4*14
