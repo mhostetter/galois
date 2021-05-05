@@ -97,12 +97,6 @@ class GF2Meta(GFMeta):
         cls._is_primitive_poly = True
 
     def compile(cls, mode, target="cpu"):
-        """
-        Error
-        -----
-        The Galois field array class for GF(2) cannot be recompiled. It is pre-compiled using
-        native numpy bitwise ufuncs.
-        """
         raise RuntimeError("Cannot recompile GF(2) Galois field arrays. They are pre-compiled using numpy bitwise operations.")
 
     @property

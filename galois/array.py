@@ -115,7 +115,7 @@ class GFArray(np.ndarray, metaclass=GFMeta):
             GF7.Random((2,5))
 
     :obj:`galois.GFArray` is a subclass of :obj:`numpy.ndarray`. The :obj:`galois.GFArray` constructor has the same syntax as
-    :obj:`numpy.array`. The returned :obj:`galois.GFArray` object is an array that can be acted upon like any other
+    :func:`numpy.array`. The returned :obj:`galois.GFArray` object is an array that can be acted upon like any other
     numpy array.
 
     Parameters
@@ -123,17 +123,17 @@ class GFArray(np.ndarray, metaclass=GFMeta):
     array : array_like
         The input array to be converted to a Galois field array. The input array is copied, so the original array
         is unmodified by changes to the Galois field array. Valid input array types are :obj:`numpy.ndarray`,
-        :obj:`list` or :obj:`tuple` of ints or strs, :obj:`int`, or :obj:`str`.
+        :obj:`list` or :obj:`tuple` of int or str, :obj:`int`, or :obj:`str`.
     dtype : numpy.dtype, optional
         The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
         dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
     copy : bool, optional
-        The `copy` keyword argument from :obj:`numpy.array`. The default is `True` which makes a copy of the input
+        The `copy` keyword argument from :func:`numpy.array`. The default is `True` which makes a copy of the input
         object is it's an array.
-    order : str, optional
-        The `order` keyword argument from :obj:`numpy.array`. Valid values are `"K"` (default), `"A"`, `"C"`, or `"F"`.
+    order : {`"K"`, `"A"`, `"C"`, `"F"`}, optional
+        The `order` keyword argument from :func:`numpy.array`. Valid values are `"K"` (default), `"A"`, `"C"`, or `"F"`.
     ndmin : int, optional
-        The `ndmin` keyword argument from :obj:`numpy.array`. The minimum number of dimensions of the output.
+        The `ndmin` keyword argument from :func:`numpy.array`. The minimum number of dimensions of the output.
         The default is 0.
 
     Returns
@@ -213,7 +213,7 @@ class GFArray(np.ndarray, metaclass=GFMeta):
 
     def __new__(cls, array, dtype=None, copy=True, order="K", ndmin=0):
         if cls is GFArray:
-            raise NotImplementedError("GFArray is an abstract base class that cannot be directly instantiated. Instead, create a GFArray subclass using `galois.GF`.")
+            raise NotImplementedError("GFArray is an abstract base class that cannot be directly instantiated. Instead, create a GFArray subclass for GF(p^m) arithmetic using `galois.GF(p**m)`.")
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
     @classmethod
@@ -385,7 +385,7 @@ class GFArray(np.ndarray, metaclass=GFMeta):
     @classmethod
     def Identity(cls, size, dtype=None):
         """
-        Creates an :math:`n \\times n` identity matrix over :math:`\\mathrm{GF}(q)`.
+        Creates an :math:`n \\times n` Galois field identity matrix.
 
         Parameters
         ----------
@@ -414,12 +414,12 @@ class GFArray(np.ndarray, metaclass=GFMeta):
     @classmethod
     def Vandermonde(cls, a, m, n, dtype=None):
         """
-        Creates a :math:`m \\times n` Vandermonde matrix of :math:`a \\in \\mathrm{GF}(q)`.
+        Creates a :math:`m \\times n` Vandermonde matrix of :math:`a \\in \\mathrm{GF}(p^m)`.
 
         Parameters
         ----------
         a : int, galois.GFArray
-            An element of :math:`\\mathrm{GF}(q)`.
+            An element of :math:`\\mathrm{GF}(p^m)`.
         m : int
             The number of rows in the Vandermonde matrix.
         n : int
