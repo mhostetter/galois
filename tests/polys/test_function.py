@@ -71,6 +71,25 @@ def test_is_irreducible():
     assert not galois.is_irreducible(p6)
 
 
+def test_is_primitive():
+    assert galois.is_primitive(galois.conway_poly(2, 2))
+    assert galois.is_primitive(galois.conway_poly(2, 3))
+    assert galois.is_primitive(galois.conway_poly(2, 4))
+    assert galois.is_primitive(galois.conway_poly(2, 5))
+    assert galois.is_primitive(galois.conway_poly(2, 6))
+    assert galois.is_primitive(galois.conway_poly(2, 7))
+    assert galois.is_primitive(galois.conway_poly(2, 8))
+
+    # The AES irreducible polynomial is not primitive
+    p = galois.Poly.Degrees([8,4,3,1,0])
+    assert not galois.is_primitive(p)
+
+    assert galois.is_primitive(galois.conway_poly(3, 2))
+    assert galois.is_primitive(galois.conway_poly(3, 3))
+    assert galois.is_primitive(galois.conway_poly(3, 4))
+    assert galois.is_primitive(galois.conway_poly(3, 5))
+
+
 def test_is_monic():
     GF = galois.GF(7)
     p = galois.Poly([1,0,4,5], field=GF)
