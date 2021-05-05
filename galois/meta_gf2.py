@@ -130,6 +130,7 @@ class GF2Meta(GFMeta):
 
     ###############################################################################
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
+    # arithmetic
     ###############################################################################
 
     def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):

@@ -27,6 +27,7 @@ class UfuncMixin(type):
         cls._EXP = None
         cls._LOG = None
         cls._ZECH_LOG = None
+        cls._ZECH_E = None
         cls._ufuncs = {}
 
         # Integer representations of the field's primitive element and primitive polynomial to be used in the
@@ -84,6 +85,10 @@ class UfuncMixin(type):
         cls._EXP = np.zeros(2*order, dtype=dtype)
         cls._LOG = np.zeros(order, dtype=dtype)
         cls._ZECH_LOG = np.zeros(order, dtype=dtype)
+        if cls.characteristic == 2:
+            cls._ZECH_E = 0
+        else:
+            cls._ZECH_E = (cls.order - 1) // 2
 
         element = 1
         cls._EXP[0] = element
@@ -130,10 +135,7 @@ class UfuncMixin(type):
         EXP = cls._EXP
         LOG = cls._LOG
         ZECH_LOG = cls._ZECH_LOG
-        if cls.characteristic == 2:
-            ZECH_E = 0
-        else:
-            ZECH_E = (cls.order - 1) // 2
+        ZECH_E = cls._ZECH_E
 
         # JIT-compile add and multiply routines for reference in other routines
         ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_lookup)
@@ -239,12 +241,12 @@ class UfuncMixin(type):
         else:
             raise TypeError(f"Operation '{ufunc.__name__}' requires the second operand to be an integer or integer np.ndarray, not {type(second)}.")
 
-    def _view_inputs_as_ndarray(cls, inputs, kwargs):  # pylint: disable=no-self-use
+    def _view_inputs_as_ndarray(cls, inputs, kwargs, dtype=None):  # pylint: disable=no-self-use
         # View all inputs that are Galois field arrays as np.ndarray to avoid infinite recursion
         v_inputs = list(inputs)
         for i in range(len(inputs)):
             if issubclass(type(inputs[i]), cls):
-                v_inputs[i] = inputs[i].view(np.ndarray)
+                v_inputs[i] = inputs[i].view(np.ndarray) if dtype is None else inputs[i].view(np.ndarray).astype(dtype)
 
         # View all output arrays as np.ndarray to avoid infinite recursion
         if "out" in kwargs:
@@ -252,7 +254,7 @@ class UfuncMixin(type):
             v_outputs = []
             for output in outputs:
                 if issubclass(type(output), cls):
-                    o = output.view(np.ndarray)
+                    o = output.view(np.ndarray) if dtype is None else output.view(np.ndarray).astype(dtype)
                 else:
                     o = output
                 v_outputs.append(o)
