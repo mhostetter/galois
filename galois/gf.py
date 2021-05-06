@@ -1,7 +1,7 @@
+from .factor import prime_factors
 from .gf_extension import GF_extension
 from .gf_prime import GF_prime
 from .overrides import set_module
-from .prime import prime_factors
 
 __all__ = ["GF"]
 

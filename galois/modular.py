@@ -2,9 +2,9 @@ import math
 
 import numpy as np
 
+from .factor import prime_factors
 from .math_ import lcm
 from .overrides import set_module
-from .prime import prime_factors
 
 __all__ = ["totatives", "euler_totient", "carmichael", "is_cyclic", "is_primitive_root", "primitive_root", "primitive_roots"]
 

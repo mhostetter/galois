@@ -6,6 +6,7 @@ from .version import __version__
 from .algorithm import *
 from .array import *
 from .conway import *
+from .factor import *
 from .gf import *
 from .gf2 import *
 from .math_ import *
