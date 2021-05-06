@@ -1,10 +1,10 @@
 import numpy as np
 
+from .factor import prime_factors
 from .gf_prime import GF_prime
 from .modular import totatives
 from .overrides import set_module
 from .poly import Poly
-from .prime import prime_factors
 
 __all__ = ["poly_gcd", "poly_exp_mod", "is_irreducible", "is_primitive", "is_primitive_element", "primitive_element", "primitive_elements", "is_monic"]
 

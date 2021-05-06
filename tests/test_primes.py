@@ -3,8 +3,8 @@ A pytest module to test the functions relating to primes.
 """
 import random
 
-import numpy as np
 import pytest
+import numpy as np
 
 import galois
 
@@ -65,58 +65,6 @@ def test_mersenne_primes():
     # https://oeis.org/A000668
     primes = [3,7,31,127,8191,131071,524287,2147483647,2305843009213693951,618970019642690137449562111,162259276829213363391578010288127,170141183460469231731687303715884105727]  # Up to 128 bits
     assert galois.mersenne_primes(128) == primes
-
-
-def test_prime_factorization_small():
-    x = 8
-    P = [2,]
-    K = [3,]
-    p, k = galois.prime_factors(x)
-    assert np.array_equal(p, P)
-    assert np.array_equal(k, K)
-
-    x = 10
-    P = [2,5]
-    K = [1,1]
-    p, k = galois.prime_factors(x)
-    assert np.array_equal(p, P)
-    assert np.array_equal(k, K)
-
-    x = 11
-    P = [11,]
-    K = [1,]
-    p, k = galois.prime_factors(x)
-    assert np.array_equal(p, P)
-    assert np.array_equal(k, K)
-
-
-def test_prime_factorization_large():
-    x = 3015341941
-    P = [46021,65521]
-    K = [1,1]
-    p, k = galois.prime_factors(x)
-    assert np.array_equal(p, P)
-    assert np.array_equal(k, K)
-
-
-def test_prime_factorization_extremely_large():
-    prime = 1000000000000000035000061
-    p, k = galois.prime_factors(prime)
-    assert np.array_equal(p, [prime])
-    assert np.array_equal(k, [1])
-
-    p, k = galois.prime_factors(prime - 1)
-    p = np.array(p, dtype=object)
-    k = np.array(k, dtype=object)
-    assert np.multiply.reduce(p**k) == prime - 1
-
-
-def test_smooth():
-    assert galois.is_smooth(2**10, 2)
-    assert galois.is_smooth(10, 5)
-    assert galois.is_smooth(12, 5)
-    assert not galois.is_smooth(14, 5)
-    assert galois.is_smooth(60**2, 5)
 
 
 def test_fermat_primality_test_on_primes():

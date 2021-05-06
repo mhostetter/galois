@@ -9,7 +9,7 @@ from .overrides import set_module
 
 __all__ = [
     "primes", "kth_prime", "prev_prime", "next_prime", "random_prime", "mersenne_exponents", "mersenne_primes",
-    "prime_factors", "is_smooth", "is_prime", "fermat_primality_test", "miller_rabin_primality_test"
+    "is_prime", "fermat_primality_test", "miller_rabin_primality_test"
 ]
 
 
@@ -282,121 +282,6 @@ def mersenne_primes(n=None):
         galois.is_prime(p[-1])
     """
     return [2**e - 1 for e in mersenne_exponents(n)]
-
-
-@set_module("galois")
-def prime_factors(x):
-    """
-    Computes the prime factors of the positive integer :math:`x`.
-
-    The integer :math:`x` can be factored into :math:`x = p_1^{k_1} p_2^{k_2} \\dots p_{n-1}^{k_{n-1}}`.
-
-    Parameters
-    ----------
-    x : int
-        The positive integer to be factored.
-
-    Returns
-    -------
-    list
-        Sorted list of prime factors :math:`p = [p_1, p_2, \\dots, p_{n-1}]` with :math:`p_1 < p_2 < \\dots < p_{n-1}`.
-    list
-        List of corresponding prime powers :math:`k = [k_1, k_2, \\dots, k_{n-1}]`.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        p, k = galois.prime_factors(120)
-        p, k
-
-        # The product of the prime powers is the factored integer
-        np.multiply.reduce(np.array(p) ** np.array(k))
-
-    Prime factorization of 1 less than a large prime.
-
-    .. ipython:: python
-
-        prime =1000000000000000035000061
-        galois.is_prime(prime)
-        p, k = galois.prime_factors(prime - 1)
-        p, k
-        np.multiply.reduce(np.array(p) ** np.array(k))
-    """
-    if not isinstance(x, (int, np.integer)):
-        raise TypeError(f"Argument `x` must be an integer, not {type(x)}.")
-    if not x > 1:
-        raise ValueError(f"Argument `x` must be greater than 1, not {x}.")
-
-    if x == 2:
-        return [2], [1]
-
-    max_factor = isqrt(x)  # Python 3.8 has math.isqrt(). Use this until the supported python versions are bumped.
-    max_prime_idx = bisect.bisect_right(PRIMES, max_factor)
-
-    p = []
-    k = []
-    for prime in PRIMES[0:max_prime_idx]:
-        degree = 0
-        while x % prime == 0:
-            degree += 1
-            x = x // prime
-        if degree > 0:
-            p.append(prime)
-            k.append(degree)
-        if x == 1:
-            break
-
-    if x > 2:
-        p.append(x)
-        k.append(1)
-
-    return p, k
-
-
-@set_module("galois")
-def is_smooth(a, B):
-    """
-    Determines if the positive integer :math:`a` is :math:`B`-smooth, i.e. all its prime factors satisfy :math:`p \\le B`.
-
-    The :math:`2`-smooth numbers are the powers of :math:`2`. The :math:`5`-smooth numbers are known
-    as *regular numbers*. The :math:`7`-smooth numbers are known as *humble numbers* or *highly composite numbers*.
-
-    Parameters
-    ----------
-    a : int
-        A positive integer.
-    B : int
-        The smoothness bound.
-
-    Returns
-    -------
-    bool
-        `True` if :math:`a` is :math:`B`-smooth.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        galois.is_smooth(2**10, 2)
-        galois.is_smooth(10, 5)
-        galois.is_smooth(12, 5)
-        galois.is_smooth(60**2, 5)
-    """
-    if not isinstance(a, (int, np.integer)):
-        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
-    if not isinstance(B, (int, np.integer)):
-        raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
-    if not a > 0:
-        raise ValueError(f"Argument `a` must be non-negative, not {a}.")
-    if not B >= 2:
-        raise ValueError(f"Argument `B` must be at least 2, not {B}.")
-
-    if a == 1:
-        return True
-    else:
-        p, _ = prime_factors(a)
-        return p[-1] <= B
 
 
 @set_module("galois")
