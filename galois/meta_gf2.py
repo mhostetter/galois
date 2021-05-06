@@ -124,7 +124,7 @@ class GF2Meta(GFMeta):
 
     ###############################################################################
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
-    # arithmetic
+    # arithmetic, which is faster than custom ufuncs
     ###############################################################################
 
     def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
@@ -136,7 +136,7 @@ class GF2Meta(GFMeta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
         output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
         if np.isscalar(output):
-            output = meta["field"](output)
+            output = meta["field"](output, dtype=meta["dtype"])
         return output
 
     def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
@@ -148,7 +148,7 @@ class GF2Meta(GFMeta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
         output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
         if np.isscalar(output):
-            output = meta["field"](output)
+            output = meta["field"](output, dtype=meta["dtype"])
         return output
 
     def _ufunc_multiply(cls, ufunc, method, inputs, kwargs, meta):
@@ -175,22 +175,21 @@ class GF2Meta(GFMeta):
             inputs[meta["operands"][1]] = np.bitwise_and(inputs[meta["operands"][1]], 0b1, dtype=inputs[meta["operands"][0]].dtype, casting="unsafe")
             output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
         if np.isscalar(output):
-            output = meta["field"](output)
+            output = meta["field"](output, dtype=meta["dtype"])
         return output
 
     def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
         """
-        In-field multiplication:
         a, b, c in GF(2)
         c = a / b, b = 1 is the only valid element with a multiplicative inverse, which is 1
           = a & b
         """
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
         if np.count_nonzero(inputs[meta["operands"][-1]]) != inputs[meta["operands"][-1]].size:
-            raise ZeroDivisionError("Cannot divide by 0 in Galois fields.")
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
         output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
         if np.isscalar(output):
-            output = meta["field"](output)
+            output = meta["field"](output, dtype=meta["dtype"])
         return output
 
     def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
@@ -208,7 +207,7 @@ class GF2Meta(GFMeta):
           = a
         """
         if np.count_nonzero(inputs[0]) != inputs[0].size:
-            raise ZeroDivisionError("Cannot divide by 0 in Galois fields.")
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
         return inputs[0]
 
     def _ufunc_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
@@ -228,10 +227,9 @@ class GF2Meta(GFMeta):
           = 0
         """
         if np.count_nonzero(inputs[meta["operands"][0]]) != inputs[meta["operands"][0]].size:
-            raise ArithmeticError("Cannot take the logarithm of 0 in Galois fields.")
+            raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
-        inputs = list(inputs) + [np.int(0)]
-        output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
+        output = getattr(np.bitwise_and, method)(*inputs, 0, **kwargs)
         return output
 
 
@@ -240,7 +238,9 @@ class GF2Meta(GFMeta):
 ###############################################################################
 
 def _power_calculate(a, power):  # pragma: no cover
-    # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
+    if a == 0 and power < 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
     if power == 0:
         return 1
     elif a == 0:

@@ -300,8 +300,6 @@ class UfuncMixin(type):
     def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
-        if np.count_nonzero(inputs[meta["operands"][-1]]) != inputs[meta["operands"][-1]].size:
-            raise ZeroDivisionError("Cannot divide by 0 in Galois fields.")
         output = getattr(cls._ufuncs["divide"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
@@ -321,10 +319,6 @@ class UfuncMixin(type):
     def _ufunc_power(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_first_field_second_int(ufunc, inputs, meta)
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
-        if method == "outer" and (np.any(inputs[meta["operands"][0]] == 0) and np.any(inputs[meta["operands"][1]] < 0)):
-            raise ZeroDivisionError("Cannot take the multiplicative inverse of 0 in Galois fields.")
-        if method == "__call__" and np.any(np.logical_and(inputs[meta["operands"][0]] == 0, inputs[meta["operands"][1]] < 0)):
-            raise ZeroDivisionError("Cannot take the multiplicative inverse of 0 in Galois fields.")
         output = getattr(cls._ufuncs["power"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
@@ -339,8 +333,6 @@ class UfuncMixin(type):
 
     def _ufunc_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
-        if np.count_nonzero(inputs[meta["operands"][0]]) != inputs[meta["operands"][0]].size:
-            raise ArithmeticError("Cannot take the logarithm of 0 in Galois fields.")
         output = getattr(cls._ufuncs["log"], method)(*inputs, **kwargs)
         return output
 
@@ -371,11 +363,14 @@ class UfuncMixin(type):
         raise NotImplementedError
 
     def _divide_python(cls, a, b):
-        if a == 0 or b == 0:
-            # NOTE: The b == 0 condition will be caught outside of the ufunc and will raise ZeroDivisionError
+        if b == 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        if a == 0:
             return 0
-        b_inv = cls._multiplicative_inverse_python(b)
-        return cls._multiply_python(a, b_inv)
+        else:
+            b_inv = cls._multiplicative_inverse_python(b)
+            return cls._multiply_python(a, b_inv)
 
     def _additive_inverse_python(cls, a):
         """
@@ -405,7 +400,9 @@ class UfuncMixin(type):
              = (a * a^4) * (a^8)
              = result_m * result_s
         """
-        # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
+        if a == 0 and power < 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
         if power == 0:
             return 1
         elif power < 0:
@@ -436,12 +433,16 @@ class UfuncMixin(type):
 
         ɣ = log_α(β), such that: α^ɣ = β
         """
+        if beta == 0:
+            raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
+
         # Naive algorithm
         result = 1
         for i in range(0, cls.order - 1):
             if result == beta:
                 break
             result = cls._multiply_python(result, cls._primitive_element_int)
+
         return i
 
         # N = cls.order
@@ -490,14 +491,14 @@ def _add_lookup(a, b):  # pragma: no cover
           = α^m * α^ZECH_LOG(n - m)
           = α^(m + ZECH_LOG(n - m))
     """
-    m = LOG[a]
-    n = LOG[b]
-
     # LOG[0] = -Inf, so catch these conditions
     if a == 0:
         return b
-    if b == 0:
+    elif b == 0:
         return a
+
+    m = LOG[a]
+    n = LOG[b]
 
     if m > n:
         # We want to factor out α^m, where m is smaller than n, such that `n - m` is always positive. If
@@ -507,8 +508,8 @@ def _add_lookup(a, b):  # pragma: no cover
     if n - m == ZECH_E:
         # ZECH_LOG[ZECH_E] = -Inf and α^(-Inf) = 0
         return 0
-
-    return EXP[m + ZECH_LOG[n - m]]
+    else:
+        return EXP[m + ZECH_LOG[n - m]]
 
 
 def _subtract_lookup(a, b):  # pragma: no cover
@@ -530,7 +531,7 @@ def _subtract_lookup(a, b):  # pragma: no cover
     # LOG[0] = -Inf, so catch these conditions
     if b == 0:
         return a
-    if a == 0:
+    elif a == 0:
         return EXP[n]
 
     if m > n:
@@ -558,14 +559,12 @@ def _multiply_lookup(a, b):  # pragma: no cover
     a * b = α^m * α^n
           = α^(m + n)
     """
-    m = LOG[a]
-    n = LOG[b]
-
-    # LOG[0] = -Inf, so catch these conditions
-    if a == 0 or b == 0:
+    if a == 0 or b == 0:  # LOG[0] = -Inf, so catch these conditions
         return 0
-
-    return EXP[m + n]
+    else:
+        m = LOG[a]
+        n = LOG[b]
+        return EXP[m + n]
 
 
 def _divide_lookup(a, b):  # pragma: no cover
@@ -580,16 +579,15 @@ def _divide_lookup(a, b):  # pragma: no cover
           = α^(ORDER - 1) * α^(m - n)
           = α^(ORDER - 1 + m - n)
     """
-    m = LOG[a]
-    n = LOG[b]
+    if b == 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
-    # LOG[0] = -Inf, so catch these conditions
-    if a == 0 or b == 0:
-        # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
+    if a == 0:  # LOG[0] = -Inf, so catch this condition
         return 0
-
-    # We add `ORDER - 1` to guarantee the index is non-negative
-    return EXP[(ORDER - 1) + m - n]
+    else:
+        m = LOG[a]
+        n = LOG[b]
+        return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
 
 
 def _additive_inverse_lookup(a):  # pragma: no cover
@@ -602,13 +600,11 @@ def _additive_inverse_lookup(a):  # pragma: no cover
        = α^e * α^n
        = α^(e + n)
     """
-    n = LOG[a]
-
-    # LOG[0] = -Inf, so catch these conditions
-    if a == 0:
+    if a == 0:  # LOG[0] = -Inf, so catch this condition
         return 0
-
-    return EXP[ZECH_E + n]
+    else:
+        n = LOG[a]
+        return EXP[ZECH_E + n]
 
 
 def _multiplicative_inverse_lookup(a):  # pragma: no cover
@@ -622,13 +618,10 @@ def _multiplicative_inverse_lookup(a):  # pragma: no cover
           = α^(ORDER - 1) * α^(-m)
           = α^(ORDER - 1 - m)
     """
-    m = LOG[a]
-
-    # LOG[0] = -Inf, so catch these conditions
     if a == 0:
-        # NOTE: The a == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
-        return 0
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
+    m = LOG[a]
     return EXP[(ORDER - 1) - m]
 
 
@@ -651,14 +644,12 @@ def _scalar_multiply_lookup(a, b_int):  # pragma: no cover
     b = b_int % p_int
     """
     b = b_int % CHARACTERISTIC
-    m = LOG[a]
-    n = LOG[b]
-
-    # LOG[0] = -Inf, so catch these conditions
-    if a == 0 or b == 0:
+    if a == 0 or b == 0:  # LOG[0] = -Inf, so catch these conditions
         return 0
-
-    return EXP[m + n]
+    else:
+        m = LOG[a]
+        n = LOG[b]
+        return EXP[m + n]
 
 
 def _power_lookup(a, b_int):  # pragma: no cover
@@ -674,16 +665,16 @@ def _power_lookup(a, b_int):  # pragma: no cover
                = 1 * α^(m * (b_int % (ORDER - 1)))
                = α^(m * (b_int % (ORDER - 1)))
     """
-    m = LOG[a]
+    if a == 0 and b_int < 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
     if b_int == 0:
         return 1
-
-    # LOG[0] = -Inf, so catch these conditions
-    if a == 0:
+    elif a == 0:  # LOG[0] = -Inf, so catch this condition
         return 0
-
-    return EXP[(m * b_int) % (ORDER - 1)]
+    else:
+        m = LOG[a]
+        return EXP[(m * b_int) % (ORDER - 1)]
 
 
 def _log_lookup(a):  # pragma: no cover
@@ -694,6 +685,9 @@ def _log_lookup(a):  # pragma: no cover
     log(a, α) = log(α^m, α)
               = m
     """
+    if a == 0:
+        raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
+
     return LOG[a]
 
 
