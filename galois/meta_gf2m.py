@@ -127,6 +127,9 @@ class GF2mMeta(GFMeta):
         a * a^-1 = a^(p^m - 1)
             a^-1 = a^(p^m - 2)
         """
+        if a == 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
         power = cls.order - 2
         result_s = a  # The "squaring" part
         result_m = 1  # The "multiplicative" part
@@ -194,11 +197,14 @@ def _multiply_calculate(a, b):  # pragma: no cover
 
 
 def _divide_calculate(a, b):  # pragma: no cover
-    if a == 0 or b == 0:
-        # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
+    if b == 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+    if a == 0:
         return 0
-    b_inv = MULTIPLICATIVE_INVERSE_JIT(b)
-    return MULTIPLY_JIT(a, b_inv)
+    else:
+        b_inv = MULTIPLICATIVE_INVERSE_JIT(b)
+        return MULTIPLY_JIT(a, b_inv)
 
 
 def _additive_inverse_calculate(a):  # pragma: no cover
@@ -216,6 +222,9 @@ def _multiplicative_inverse_calculate(a):  # pragma: no cover
     a * a^-1 = a^(p^m - 1)
         a^-1 = a^(p^m - 2)
     """
+    if a == 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
     power = ORDER - 2
     result_s = a  # The "squaring" part
     result_m = 1  # The "multiplicative" part
@@ -253,7 +262,9 @@ def _power_calculate(a, power):  # pragma: no cover
          = (a * a^4) * (a^8)
          = result_m * result_s
     """
-    # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
+    if a == 0 and power < 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
     if power == 0:
         return 1
     elif power < 0:
@@ -285,12 +296,16 @@ def _log_calculate(beta):  # pragma: no cover
 
     gamma = log_primitive_element(beta), such that: alpha^gamma = beta
     """
+    if beta == 0:
+        raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
+
     # Naive algorithm
     result = 1
     for i in range(0, ORDER-1):
         if result == beta:
             break
         result = MULTIPLY_JIT(result, PRIMITIVE_ELEMENT)
+
     return i
 
 

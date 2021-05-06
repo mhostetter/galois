@@ -97,6 +97,9 @@ class GFpMeta(GFMeta):
         y = a in GF(p)
         t = a**-1 in GF(p)
         """
+        if a == 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
         r2, r1 = cls.order, a
         t2, t1 = 0, 1
 
@@ -122,7 +125,9 @@ class GFpMeta(GFMeta):
              = (a * a^4) * (a^8)
              = result_m * result_s
         """
-        # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
+        if a == 0 and power < 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
         if power == 0:
             return 1
         elif power < 0:
@@ -172,11 +177,14 @@ def _multiply_calculate(a, b):  # pragma: no cover
 
 
 def _divide_calculate(a, b):  # pragma: no cover
-    if a == 0 or b == 0:
-        # NOTE: The b == 0 condition will be caught outside of the ufunc and raise ZeroDivisonError
+    if b == 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+    if a == 0:
         return 0
-    b_inv = MULTIPLICATIVE_INVERSE_JIT(b)
-    return (a * b_inv) % ORDER
+    else:
+        b_inv = MULTIPLICATIVE_INVERSE_JIT(b)
+        return (a * b_inv) % ORDER
 
 
 def _additive_inverse_calculate(a):  # pragma: no cover
@@ -193,6 +201,9 @@ def _multiplicative_inverse_calculate(a):  # pragma: no cover
     y = a in GF(p)
     t = a**-1 in GF(p)
     """
+    if a == 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
     r2, r1 = ORDER, a
     t2, t1 = 0, 1
 
@@ -223,7 +234,9 @@ def _power_calculate(a, power):  # pragma: no cover
          = (a * a^4) * (a^8)
          = result_m * result_s
     """
-    # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
+    if a == 0 and power < 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
     if power == 0:
         return 1
     elif power < 0:
@@ -259,12 +272,16 @@ def _log_calculate(beta):  # pragma: no cover
 
     gamma = log_primitive_element(beta), such that: alpha^gamma = beta
     """
+    if beta == 0:
+        raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
+
     # Naive algorithm
     result = 1
     for i in range(0, ORDER-1):
         if result == beta:
             break
         result = (result * PRIMITIVE_ELEMENT) % ORDER
+
     return i
 
 
