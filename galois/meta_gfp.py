@@ -110,6 +110,44 @@ class GFpMeta(GFMeta):
 
         return t2
 
+    def _power_python(cls, a, power):
+        """
+        Square and Multiply Algorithm
+
+        a^13 = (1) * (a)^13
+             = (a) * (a)^12
+             = (a) * (a^2)^6
+             = (a) * (a^4)^3
+             = (a * a^4) * (a^4)^2
+             = (a * a^4) * (a^8)
+             = result_m * result_s
+        """
+        # NOTE: The a == 0 and b < 0 condition will be caught outside of the the ufunc and raise ZeroDivisonError
+        if power == 0:
+            return 1
+        elif power < 0:
+            a = cls._multiplicative_inverse_python(a)
+            power = abs(power)
+
+        # In GF(p), we can reduce the power mod p-1 since a^(p-1) = 1 (mod p)
+        if power > cls.order - 1:
+            power = power % (cls.order - 1)
+
+        result_s = a  # The "squaring" part
+        result_m = 1  # The "multiplicative" part
+
+        while power > 1:
+            if power % 2 == 0:
+                result_s = cls._multiply_python(result_s, result_s)
+                power //= 2
+            else:
+                result_m = cls._multiply_python(result_m, result_s)
+                power -= 1
+
+        result = cls._multiply_python(result_m, result_s)
+
+        return result
+
 
 ###############################################################################
 # Galois field arithmetic, explicitly calculated without lookup tables
@@ -191,6 +229,10 @@ def _power_calculate(a, power):  # pragma: no cover
     elif power < 0:
         a = MULTIPLICATIVE_INVERSE_JIT(a)
         power = abs(power)
+
+    # In GF(p), we can reduce the power mod p-1 since a^(p-1) = 1 (mod p)
+    if power > ORDER - 1:
+        power = power % (ORDER - 1)
 
     result_s = a  # The "squaring" part
     result_m = 1  # The "multiplicative" part
