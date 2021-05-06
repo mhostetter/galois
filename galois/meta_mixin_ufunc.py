@@ -268,18 +268,16 @@ class UfuncMixin(type):
         elif output is None:
             return None
         else:
-            return field(output)
+            return field(output, dtype=dtype)
 
     def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufuncs["add"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufuncs["subtract"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
@@ -287,52 +285,42 @@ class UfuncMixin(type):
     def _ufunc_multiply(cls, ufunc, method, inputs, kwargs, meta):
         if len(meta["non_field_operands"]) == 0:
             # In-field multiplication
-            inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
             output = getattr(cls._ufuncs["multiply"], method)(*inputs, **kwargs)
         else:
             # Scalar multiplication
             inputs = cls._verify_and_flip_operands_first_field_second_int(ufunc, method, inputs, meta)
-            inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
             output = getattr(cls._ufuncs["scalar_multiply"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufuncs["divide"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufuncs["negative"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufuncs["reciprocal"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_power(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_first_field_second_int(ufunc, inputs, meta)
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufuncs["power"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
-        inputs = list(inputs)
-        inputs.append(2)
-        output = getattr(cls._ufuncs["power"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufuncs["power"], method)(*inputs, 2, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufuncs["log"], method)(*inputs, **kwargs)
         return output
 
