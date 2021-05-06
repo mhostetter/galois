@@ -13,7 +13,6 @@ PRIMITIVE_ELEMENT = None  # The field's primitive element
 IRREDUCIBLE_POLY_INT = None  # The field's primitive polynomial in decimal form
 
 # Placeholder functions to be replaced by JIT-compiled function
-ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
 
@@ -46,7 +45,7 @@ class GF2mMeta(GFMeta):
         return d
 
     def _compile_jit_calculate(cls, target):
-        global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, IRREDUCIBLE_POLY_INT, ADD_JIT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
+        global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, IRREDUCIBLE_POLY_INT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
         CHARACTERISTIC = cls.characteristic
         ORDER = cls.order
         if isinstance(cls._primitive_element, Poly):
@@ -56,7 +55,6 @@ class GF2mMeta(GFMeta):
         IRREDUCIBLE_POLY_INT = cls.irreducible_poly.integer  # pylint: disable=no-member
 
         # JIT-compile add,  multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
-        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
         MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
         MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(_multiplicative_inverse_calculate)
 
@@ -65,8 +63,6 @@ class GF2mMeta(GFMeta):
             kwargs.pop("nopython")
 
         # Create numba JIT-compiled ufuncs
-        cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
-        cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
         cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
         cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
         cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
@@ -75,6 +71,35 @@ class GF2mMeta(GFMeta):
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
         cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
+
+    ###############################################################################
+    # Override ufunc routines to use native numpy bitwise ufuncs for GF(2^m)
+    # arithmetic, which is faster than custom ufuncs
+    ###############################################################################
+
+    def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
+        """
+        a, b, c in GF(2^m)
+        c = a + b
+          = a ^ b
+        """
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
+        if np.isscalar(output):
+            output = meta["field"](output, dtype=meta["dtype"])
+        return output
+
+    def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
+        """
+        a, b, c in GF(2^m)
+        c = a - b
+          = a ^ b
+        """
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
+        if np.isscalar(output):
+            output = meta["field"](output, dtype=meta["dtype"])
+        return output
 
     ###############################################################################
     # Pure python arithmetic methods
@@ -150,23 +175,6 @@ class GF2mMeta(GFMeta):
 ###############################################################################
 # Galois field arithmetic, explicitly calculated without lookup tables
 ###############################################################################
-
-def _add_calculate(a, b):  # pragma: no cover
-    """
-    a in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
-    b in GF(2^m), can be represented as a degree m-1 polynomial in GF(2)[x]
-
-    a + b = c
-          = a(x) + b(x), in GF(2)
-          = c(x)
-          = c
-    """
-    return a ^ b
-
-
-def _subtract_calculate(a, b):  # pragma: no cover
-    return a ^ b
-
 
 def _multiply_calculate(a, b):  # pragma: no cover
     """
@@ -313,4 +321,4 @@ def _poly_eval_calculate(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
-            results[i] = ADD_JIT(coeffs[j], MULTIPLY_JIT(results[i], values[i]))
+            results[i] = coeffs[j] ^ MULTIPLY_JIT(results[i], values[i])
