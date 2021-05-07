@@ -93,7 +93,7 @@ def poly_gcd(a, b):
         if mul * irred_lin_comb == r2:
             target_mul = mul
             break
-    
+
     s2mul, t2mul = s2 * target_mul, t2 * target_mul
 
     return r2, s2mul, t2mul
