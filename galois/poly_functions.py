@@ -6,7 +6,7 @@ from .modular import totatives
 from .overrides import set_module
 from .poly import Poly
 
-__all__ = ["poly_gcd", "poly_exp_mod", "is_irreducible", "is_primitive", "is_primitive_element", "primitive_element", "primitive_elements", "is_monic"]
+__all__ = ["poly_gcd", "poly_pow", "is_irreducible", "is_primitive", "is_primitive_element", "primitive_element", "primitive_elements", "is_monic"]
 
 
 @set_module("galois")
@@ -79,13 +79,14 @@ def poly_gcd(a, b):
 
 
 @set_module("galois")
-def poly_exp_mod(poly, power, modulus):
+def poly_pow(poly, power, modulus):
     """
     Efficiently exponentiates a polynomial :math:`f(x)` to the power :math:`k` reducing by modulo :math:`g(x)`,
-    :math:`f^k\\ \\textrm{mod}\\ g`.
+    :math:`f(x)^k\\ \\textrm{mod}\\ g(x)`.
 
     The algorithm is more efficient than exponentiating first and then reducing modulo :math:`g(x)`. Instead,
-    this algorithm repeatedly squares :math:`f`, reducing modulo :math:`g` at each step.
+    this algorithm repeatedly squares :math:`f(x)`, reducing modulo :math:`g(x)` at each step. This is the polynomial
+    equivalent of :func:`pow`.
 
     Parameters
     ----------
@@ -113,9 +114,9 @@ def poly_exp_mod(poly, power, modulus):
         # 1.23 s ± 41.1 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
         f**200 % g
 
-        # %timeit galois.poly_exp_mod(f, 200, g)
+        # %timeit galois.poly_pow(f, 200, g)
         # 41.7 ms ± 468 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
-        galois.poly_exp_mod(f, 200, g)
+        galois.poly_pow(f, 200, g)
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
@@ -220,14 +221,14 @@ def is_irreducible(poly):
     n0 = 0
     for ni in sorted([n // pi for pi in primes]):
         # The GCD of f(x) and (x^(p^(n/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of n
-        hi = poly_exp_mod(h0, p**(ni - n0), poly)
+        hi = poly_pow(h0, p**(ni - n0), poly)
         g = poly_gcd(poly, hi - x)[0]
         if g != one:
             return False
         h0, n0 = hi, ni
 
     # f(x) must divide (x^(p^n) - x) to be irreducible
-    h = poly_exp_mod(h0, p**(n - n0), poly)
+    h = poly_pow(h0, p**(n - n0), poly)
     g = (h - x) % poly
     if g != zero:
         return False
@@ -360,11 +361,11 @@ def is_primitive_element(element, irreducible_poly):
     primes, _ = prime_factors(order)
 
     for k in sorted([order // pi for pi in primes]):
-        g = poly_exp_mod(element, k, irreducible_poly)
+        g = poly_pow(element, k, irreducible_poly)
         if g == one:
             return False
 
-    g = poly_exp_mod(element, order, irreducible_poly)
+    g = poly_pow(element, order, irreducible_poly)
     if g != one:
         return False
 
@@ -512,7 +513,7 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
 
     elements = []
     for totative in totatives(p**m - 1):
-        h = poly_exp_mod(element, totative, irreducible_poly)
+        h = poly_pow(element, totative, irreducible_poly)
         elements.append(h)
 
     elements = [e for e in elements if start <= e.integer < stop]  # Only return elements in the search range

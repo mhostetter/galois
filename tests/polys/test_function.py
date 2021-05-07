@@ -40,12 +40,12 @@ def test_poly_gcd_unit():
     assert gcd == galois.Poly([1], field=GF)  # Note, not 3
 
 
-def test_poly_exp_mod():
+def test_poly_pow():
     GF = galois.GF(31)
     f = galois.Poly.Random(10, field=GF)
     g = galois.Poly.Random(7, field=GF)
     power = 20
-    assert f**power % g == galois.poly_exp_mod(f, power, g)
+    assert f**power % g == galois.poly_pow(f, power, g)
 
 
 def test_is_irreducible():
