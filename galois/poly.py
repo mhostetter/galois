@@ -1290,38 +1290,34 @@ class SparsePoly(Poly):
         field = a.field
 
         # c(x) = a(x) + b(x)
-        d = {}
-        for a_degree, a_coeff in zip(a.nonzero_degrees, a.nonzero_coeffs):
-            d[a_degree] = a_coeff
+        cc = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))
         for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
-            d[b_degree] = d.get(b_degree, field(0)) + b_coeff
+            cc[b_degree] = cc.get(b_degree, field(0)) + b_coeff
 
-        return Poly.Degrees(list(d.keys()), list(d.values()), field=field)
+        return Poly.Degrees(list(cc.keys()), list(cc.values()), field=field)
 
     @classmethod
     def _sub(cls, a, b):
         field = a.field
 
         # c(x) = a(x) - b(x)
-        d = {}
-        for a_degree, a_coeff in zip(a.nonzero_degrees, a.nonzero_coeffs):
-            d[a_degree] = a_coeff
+        cc = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))
         for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
-            d[b_degree] = d.get(b_degree, field(0)) - b_coeff
+            cc[b_degree] = cc.get(b_degree, field(0)) - b_coeff
 
-        return Poly.Degrees(list(d.keys()), list(d.values()), field=field)
+        return Poly.Degrees(list(cc.keys()), list(cc.values()), field=field)
 
     @classmethod
     def _mul(cls, a, b):
         field = a.field
 
         # c(x) = a(x) * b(x)
-        d = {}
+        cc = {}
         for a_degree, a_coeff in zip(a.nonzero_degrees, a.nonzero_coeffs):
             for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
-                d[a_degree + b_degree] = d.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
+                cc[a_degree + b_degree] = cc.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
 
-        return Poly.Degrees(list(d.keys()), list(d.values()), field=field)
+        return Poly.Degrees(list(cc.keys()), list(cc.values()), field=field)
 
     @classmethod
     def _divmod(cls, a, b):
