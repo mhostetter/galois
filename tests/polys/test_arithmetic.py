@@ -127,12 +127,12 @@ def test_power(poly_power, poly_type):
 def test_evaluate_constant(poly_evaluate, poly_type):
     GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
     for i in range(len(X)):
-        for j in range(Y.size):
-            x = convert_poly(X[i], poly_type)  # Polynomial
-            y = Y[j]  # GF element
-            z = x(y)  # GF element
-            assert z == Z[i,j]
-            assert type(z) is GF
+        j = np.random.randint(0, Y.size)
+        x = convert_poly(X[i], poly_type)  # Polynomial
+        y = Y[j]  # GF element
+        z = x(y)  # GF element
+        assert z == Z[i,j]
+        assert type(z) is GF
 
 
 # @pytest.mark.parametrize("poly_type", ["dense", "sparse"])
