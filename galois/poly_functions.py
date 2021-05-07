@@ -61,42 +61,21 @@ def poly_gcd(a, b):
     zero = Poly.Zero(field)
     one = Poly.One(field)
 
-    if a == zero:
-        return b, Poly([0], field=field), Poly([1], field=field)
-    if b == zero:
-        return a, Poly([1], field=field), Poly([0], field=field)
-
     r2, r1 = a, b
     s2, s1 = one, zero
     t2, t1 = zero, one
 
-    while True:
-        qi = r2 // r1
-        ri = r2 % r1
-        r2, r1 = r1, ri
-        s2, s1 = s1, s2 - qi*s1
-        t2, t1 = t1, t2 - qi*t1
-        if ri == zero:
-            break
+    while r1 != zero:
+        q = r2 / r1
+        r2, r1 = r1, r2 - q*r1
+        s2, s1 = s1, s2 - q*s1
+        t2, t1 = t1, t2 - q*t1
 
     # Non-zero scalar is considered a unit in a fintie field
     if r2.degree == 0 and r2.coeffs[0] > 0:
-        r2 /= r2
-        s2 /= r2
-        t2 /= r2
+        r2, s2, t2 = r2 / r2, s2 / r2, t2 / r2
 
-    target_mul = None
-
-    irred_lin_comb = s2 * a + t2 * b
-    for elem in field.Elements():
-        mul = Poly([int(elem)], field=field)
-        if mul * irred_lin_comb == r2:
-            target_mul = mul
-            break
-
-    s2mul, t2mul = s2 * target_mul, t2 * target_mul
-
-    return r2, s2mul, t2mul
+    return r2, s2, t2
 
 
 @set_module("galois")

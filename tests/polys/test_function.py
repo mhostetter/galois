@@ -8,14 +8,25 @@ import galois
 
 
 def test_poly_gcd():
+    a = galois.Poly.Random(5)
+    b = galois.Poly.Zero()
+    gcd, x, y = galois.poly_gcd(a, b)
+    assert gcd == a
+    assert a*x + b*y == gcd
+
+    a = galois.Poly.Zero()
+    b = galois.Poly.Random(5)
+    gcd, x, y = galois.poly_gcd(a, b)
+    assert gcd == b
+    assert a*x + b*y == gcd
+
     GF = galois.GF(7)
     a = galois.Poly.Roots([2,2,2,3,5], field=GF)
     b = galois.Poly.Roots([1,2,6], field=GF)
     gcd, x, y = galois.poly_gcd(a, b)
     assert a*x + b*y == gcd
 
-def test_poly_gcd_2():
-    GF = galois.GF(2**5, irreducible_poly=galois.Poly(list(reversed([1, 0, 1, 0, 0, 1]))))
+    GF = galois.GF(2**5, irreducible_poly=galois.Poly([1, 0, 1, 0, 0, 1], order="asc"))
     a = galois.Poly([1, 2, 4, 1], field=GF)
     b = galois.Poly([9, 3], field=GF)
     gcd, x, y = galois.poly_gcd(a, b)
