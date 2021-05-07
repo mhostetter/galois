@@ -127,17 +127,6 @@ def field_folder(request):
     return field, folder
 
 
-@pytest.fixture(scope="session", params=FIELDS_DIFF_MODES)
-def field_classes(request):
-    folder = request.param
-    field, mode, folder = construct_field(folder)
-    d = {
-        "GF": field,
-        "mode": mode
-    }
-    return d
-
-
 ###############################################################################
 # Fixtures for arithmetic over finite fields
 ###############################################################################
