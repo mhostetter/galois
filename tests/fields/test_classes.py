@@ -7,20 +7,6 @@ import numpy as np
 import galois
 
 
-def test_ufunc_attributes(field_classes):
-    GF, mode = field_classes["GF"], field_classes["mode"]
-    if mode == "auto":
-        if GF.order == 2:
-            mode = "jit-calculate"
-        elif GF.order <= 2**16:
-            mode = "jit-lookup"
-        else:
-            mode = "jit-calculate"
-
-    assert GF.ufunc_target == "cpu"
-    assert GF.ufunc_mode == mode
-
-
 def test_dtypes(field):
     if field.order == 2:
         assert field.dtypes == [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
