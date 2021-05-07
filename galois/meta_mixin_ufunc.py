@@ -155,7 +155,6 @@ class UfuncMixin(type):
         cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
         cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
         cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_lookup)
-        cls._ufuncs["scalar_multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_scalar_multiply_lookup)
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
         cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
@@ -174,7 +173,6 @@ class UfuncMixin(type):
         cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
         cls._ufuncs["negative"] = np.frompyfunc(cls._additive_inverse_python, 1, 1)
         cls._ufuncs["reciprocal"] = np.frompyfunc(cls._multiplicative_inverse_python, 1, 1)
-        cls._ufuncs["scalar_multiply"] = np.frompyfunc(cls._scalar_multiply_python, 2, 1)
         cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
         cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
         cls._ufuncs["poly_eval"] = np.vectorize(cls._poly_eval_python, excluded=["coeffs"], otypes=[np.object_])
@@ -187,34 +185,19 @@ class UfuncMixin(type):
         if len(meta["non_field_operands"]) > 0:
             raise TypeError(f"Operation '{ufunc.__name__}' requires both operands to be Galois field arrays over the same field, not {[inputs[i] for i in meta['operands']]}.")
 
-    def _verify_and_flip_operands_first_field_second_int(cls, ufunc, method, inputs, meta):  # pylint: disable=no-self-use
-        inputs = list(inputs)
-        if len(meta["operands"]) == 1 or method == "reduceat":
-            return inputs
-
-        assert len(meta["non_field_operands"]) == 1
-        i = meta["non_field_operands"][0]
-
-        if isinstance(inputs[i], (int, np.integer)):
-            pass
-        elif isinstance(inputs[i], np.ndarray):
-            if meta["field"].dtypes == [np.object_]:
-                if not (inputs[i].dtype == np.object_ or np.issubdtype(inputs[i].dtype, np.integer)):
-                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
+    def _verify_operands_in_field_or_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
+        for i in meta["non_field_operands"]:
+            if isinstance(inputs[i], (int, np.integer)):
+                pass
+            elif isinstance(inputs[i], np.ndarray):
+                if meta["field"].dtypes == [np.object_]:
+                    if not (inputs[i].dtype == np.object_ or np.issubdtype(inputs[i].dtype, np.integer)):
+                        raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
+                else:
+                    if not np.issubdtype(inputs[i].dtype, np.integer):
+                        raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
             else:
-                if not np.issubdtype(inputs[i].dtype, np.integer):
-                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
-        else:
-            raise TypeError(f"Operation '{ufunc.__name__}' requires operands that are not Galois field arrays to be an integers or integer np.ndarrays, not {type(inputs[i])}.")
-
-        if meta["operands"][0] == meta["field_operands"][0]:
-            # If the Galois field array is the first argument, continue
-            pass
-        else:
-            # Switch arguments to guarantee the Galois field array is the first element
-            inputs[meta["operands"][0]], inputs[meta["operands"][1]] = inputs[meta["operands"][1]], inputs[meta["operands"][0]]
-
-        return inputs
+                raise TypeError(f"Operation '{ufunc.__name__}' requires operands that are not Galois field arrays to be an integers or integer np.ndarrays, not {type(inputs[i])}.")
 
     def _verify_operands_first_field_second_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
         if len(meta["operands"]) == 1:
@@ -263,7 +246,9 @@ class UfuncMixin(type):
         return v_inputs, kwargs
 
     def _view_output_as_field(cls, output, field, dtype):  # pylint: disable=no-self-use
-        if isinstance(output, np.ndarray):
+        if isinstance(type(output), field):
+            return output
+        elif isinstance(output, np.ndarray):
             return output.astype(dtype).view(field)
         elif output is None:
             return None
@@ -283,13 +268,12 @@ class UfuncMixin(type):
         return output
 
     def _ufunc_multiply(cls, ufunc, method, inputs, kwargs, meta):
-        if len(meta["non_field_operands"]) == 0:
-            # In-field multiplication
-            output = getattr(cls._ufuncs["multiply"], method)(*inputs, **kwargs)
-        else:
+        if len(meta["non_field_operands"]) > 0:
             # Scalar multiplication
-            inputs = cls._verify_and_flip_operands_first_field_second_int(ufunc, method, inputs, meta)
-            output = getattr(cls._ufuncs["scalar_multiply"], method)(*inputs, **kwargs)
+            cls._verify_operands_in_field_or_int(ufunc, inputs, meta)
+            inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+            inputs[meta["non_field_operands"][0]] = np.mod(inputs[meta["non_field_operands"][0]], cls.characteristic)
+        output = getattr(cls._ufuncs["multiply"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
@@ -371,10 +355,6 @@ class UfuncMixin(type):
         To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
         """
         raise NotImplementedError
-
-    def _scalar_multiply_python(cls, a, multiple):
-        b = multiple % cls.characteristic
-        return cls._multiply_python(a, b)
 
     def _power_python(cls, a, power):
         """
@@ -611,33 +591,6 @@ def _multiplicative_inverse_lookup(a):  # pragma: no cover
 
     m = LOG[a]
     return EXP[(ORDER - 1) - m]
-
-
-def _scalar_multiply_lookup(a, b_int):  # pragma: no cover
-    """
-    a in GF(p^m)
-    b_int in Z
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
-    b in GF(p^m)
-
-    a . b_int = a + a + ... + a = b_int additions of a
-    a . p_int = 0, where p_int is the prime characteristic of the field
-
-    a . b_int = a * ((b_int // p_int)*p_int + b_int % p_int)
-              = a * ((b_int // p_int)*p_int) + a * (b_int % p_int)
-              = 0 + a * (b_int % p_int)
-              = a * (b_int % p_int)
-              = a * b, field multiplication
-
-    b = b_int % p_int
-    """
-    b = b_int % CHARACTERISTIC
-    if a == 0 or b == 0:  # LOG[0] = -Inf, so catch these conditions
-        return 0
-    else:
-        m = LOG[a]
-        n = LOG[b]
-        return EXP[m + n]
 
 
 def _power_lookup(a, b_int):  # pragma: no cover

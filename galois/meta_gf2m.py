@@ -63,43 +63,15 @@ class GF2mMeta(GFMeta):
             kwargs.pop("nopython")
 
         # Create numba JIT-compiled ufuncs
+        cls._ufuncs["add"] = np.bitwise_xor
+        cls._ufuncs["subtract"] = np.bitwise_xor
         cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
         cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
         cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
         cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
-        cls._ufuncs["scalar_multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_scalar_multiply_calculate)
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
         cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
-
-    ###############################################################################
-    # Override ufunc routines to use native numpy bitwise ufuncs for GF(2^m)
-    # arithmetic, which is faster than custom ufuncs
-    ###############################################################################
-
-    def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
-        """
-        a, b, c in GF(2^m)
-        c = a + b
-          = a ^ b
-        """
-        cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
-        if np.isscalar(output):
-            output = meta["field"](output, dtype=meta["dtype"])
-        return output
-
-    def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
-        """
-        a, b, c in GF(2^m)
-        c = a - b
-          = a ^ b
-        """
-        cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
-        if np.isscalar(output):
-            output = meta["field"](output, dtype=meta["dtype"])
-        return output
 
     ###############################################################################
     # Pure python arithmetic methods
@@ -248,14 +220,6 @@ def _multiplicative_inverse_calculate(a):  # pragma: no cover
     result = MULTIPLY_JIT(result_m, result_s)
 
     return result
-
-
-def _scalar_multiply_calculate(a, multiple):  # pragma: no cover
-    multiple = multiple % CHARACTERISTIC
-    if multiple == 0:
-        return 0
-    else:
-        return a
 
 
 def _power_calculate(a, power):  # pragma: no cover

@@ -28,8 +28,7 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
     # If the requested field has already been constructed, return it
     if key in GF_prime.classes:
         cls = GF_prime.classes[key]
-        if characteristic != 2:
-            cls.compile(mode, target)
+        cls.compile(mode, target)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
@@ -39,6 +38,7 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
 
     if characteristic == 2:
         cls = GF2
+        cls.compile(mode, target)
     else:
         cls = types.new_class(name, bases=(GFArray,), kwds={
             "metaclass": GFpMeta,
