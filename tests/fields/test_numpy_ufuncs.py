@@ -214,7 +214,8 @@ class TestOuter:
 
     def test_multiply(self, field):
         a = field.Random(10)
-        b = randint(0, field.order, 12, field.dtypes[-1])
+        b = field.Random(12)
+        # b = randint(0, field.order, 12, field.dtypes[-1])  # Why do this? It's scalar multiplication....
         c = np.multiply.outer(a, b)
         c_truth = field.Zeros((a.size, b.size))
         for i in range(a.size):
