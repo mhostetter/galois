@@ -173,6 +173,5 @@ def test_log_of_zero(field):
         x = field(0)
         z = np.log(x)
     with pytest.raises(ArithmeticError):
-        x = field.Random(10)
-        x[0] = 0  # Ensure one value is zero
+        x = field.Zeros(10)
         z = np.log(x)
