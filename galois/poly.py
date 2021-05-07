@@ -9,8 +9,11 @@ from .poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_in
 
 __all__ = ["Poly"]
 
-SPARSE_POLY_FACTOR = 0.01  # If less than 1% of the coefficients are non-zero, make it a SparsePoly
-SPARSE_POLY_MIN_COEFFS = int(1 / SPARSE_POLY_FACTOR)
+SPARSE_VS_BINARY_POLY_FACTOR = 0.00001
+SPARSE_VS_BINARY_POLY_MIN_COEFFS = int(1 / SPARSE_VS_BINARY_POLY_FACTOR)
+
+SPARSE_VS_DENSE_POLY_FACTOR = 0.01
+SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
 
 
 @set_module("galois")
@@ -102,13 +105,18 @@ class Poly:
         coeffs, field = cls._convert_coeffs(coeffs, field)
 
         if field is GF2:
-            integer = poly_to_integer(coeffs, 2)
-            return BinaryPoly(integer)
-        elif len(coeffs) >= SPARSE_POLY_MIN_COEFFS and np.count_nonzero(coeffs) <= SPARSE_POLY_FACTOR*len(coeffs):
-            degrees = np.arange(coeffs.size - 1, -1, -1)
-            return SparsePoly(degrees, coeffs, field=field)
+            if len(coeffs) >= SPARSE_VS_BINARY_POLY_MIN_COEFFS and np.count_nonzero(coeffs) <= SPARSE_VS_BINARY_POLY_FACTOR*len(coeffs):
+                degrees = np.arange(coeffs.size - 1, -1, -1)
+                return SparsePoly(degrees, coeffs, field=field)
+            else:
+                integer = poly_to_integer(coeffs, 2)
+                return BinaryPoly(integer)
         else:
-            return DensePoly(coeffs, field=field)
+            if len(coeffs) >= SPARSE_VS_DENSE_POLY_MIN_COEFFS and np.count_nonzero(coeffs) <= SPARSE_VS_DENSE_POLY_FACTOR*len(coeffs):
+                degrees = np.arange(coeffs.size - 1, -1, -1)
+                return SparsePoly(degrees, coeffs, field=field)
+            else:
+                return DensePoly(coeffs, field=field)
 
     @classmethod
     def _convert_coeffs(cls, coeffs, field):
@@ -360,8 +368,12 @@ class Poly:
             degrees = [0]
             coeffs = [0]
 
-        if len(degrees) < SPARSE_POLY_FACTOR*max(degrees):
-            # Explicitly create a sparse poly
+
+        if field in [GF2, None] and len(degrees) < SPARSE_VS_BINARY_POLY_FACTOR*max(degrees):
+            # Explicitly create a sparse poly over GF(2)
+            return SparsePoly(degrees, coeffs=coeffs, field=field)
+        elif field not in [GF2, None] and len(degrees) < SPARSE_VS_DENSE_POLY_FACTOR*max(degrees):
+            # Explicitly create a sparse poly over GF(p^m)
             return SparsePoly(degrees, coeffs=coeffs, field=field)
         else:
             degree = max(degrees)  # The degree of the polynomial
@@ -730,7 +742,7 @@ class Poly:
 
         if isinstance(a, SparsePoly) or isinstance(b, SparsePoly):
             return SparsePoly
-        if isinstance(a, BinaryPoly) or isinstance(b, BinaryPoly):
+        elif isinstance(a, BinaryPoly) or isinstance(b, BinaryPoly):
             return BinaryPoly
         else:
             return DensePoly

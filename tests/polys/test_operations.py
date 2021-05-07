@@ -22,7 +22,7 @@ def test_copy():
     p2._integer = 27
     assert np.array_equal(p1.coeffs, [1,0,1,1])
 
-    p1 = galois.Poly.Degrees([3000,1,0], [1,1,1])
+    p1 = galois.Poly.Degrees([3000,1,0], [1,2,1], field=galois.GF(3))
     assert isinstance(p1, galois.poly.SparsePoly)
     p2 = p1.copy()
     p2._degrees[0] = 4000
