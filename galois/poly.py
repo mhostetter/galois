@@ -730,6 +730,8 @@ class Poly:
 
         if isinstance(a, SparsePoly) or isinstance(b, SparsePoly):
             return SparsePoly
+        if isinstance(a, BinaryPoly) or isinstance(b, BinaryPoly):
+            return BinaryPoly
         else:
             return DensePoly
 
