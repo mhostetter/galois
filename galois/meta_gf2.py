@@ -4,13 +4,6 @@ import numpy as np
 from .dtypes import DTYPES
 from .meta_gf import GFMeta
 
-# Field attribute globals
-CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
-
-# Placeholder functions to be replaced by JIT-compiled function
-ADD_JIT = lambda x, y: x + y
-MULTIPLY_JIT = lambda x, y: x * y
-
 
 class GF2Meta(GFMeta):
     """
@@ -88,16 +81,10 @@ class GF2Meta(GFMeta):
         cls._primitive_element_int = int(cls._primitive_element)
         cls._prime_subfield = cls
 
-        # Use cached ufuncs only where necessary
-        kwargs = {"nopython": True, "cache": True}
-        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
-        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
+        cls.compile(kwargs["mode"], kwargs["target"])
 
         cls._primitive_element = cls(cls.primitive_element)
         cls._is_primitive_poly = True
-
-    def compile(cls, mode, target="cpu"):
-        raise RuntimeError("Cannot recompile GF(2) Galois field arrays. They are pre-compiled using numpy bitwise operations.")
 
     @property
     def dtypes(cls):
@@ -107,10 +94,6 @@ class GF2Meta(GFMeta):
         return d
 
     @property
-    def ufunc_mode(cls):
-        return "jit-calculate"
-
-    @property
     def ufunc_modes(cls):
         return ["jit-calculate"]
 
@@ -118,78 +101,37 @@ class GF2Meta(GFMeta):
     def default_ufunc_mode(cls):
         return "jit-calculate"
 
-    @property
-    def ufunc_target(cls):
-        return "cpu"
+    def _compile_jit_calculate(cls, target):
+        assert target == "cpu"
+        kwargs = {"nopython": True, "target": target, "cache": True}
+        if target == "cuda":
+            kwargs.pop("nopython")
+
+        # Create numba JIT-compiled ufuncs
+        cls._ufuncs["add"] = np.bitwise_xor
+        cls._ufuncs["subtract"] = np.bitwise_xor
+        cls._ufuncs["multiply"] = np.bitwise_and
+        cls._ufuncs["divide"] = np.bitwise_and
+        # cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
+        # cls._ufuncs["reciprocal"] = lambda *args, **kwargs: args[0]
+        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        # cls._ufuncs["log"] = lambda *args, **kwargs: args[0]
+        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
     ###############################################################################
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
     # arithmetic, which is faster than custom ufuncs
     ###############################################################################
 
-    def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
-        """
-        a, b, c in GF(2)
-        c = a + b
-          = a ^ b
-        """
-        cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
-        if np.isscalar(output):
-            output = meta["field"](output, dtype=meta["dtype"])
-        return output
-
-    def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
-        """
-        a, b, c in GF(2)
-        c = a - b
-          = a ^ b
-        """
-        cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(np.bitwise_xor, method)(*inputs, **kwargs)
-        if np.isscalar(output):
-            output = meta["field"](output, dtype=meta["dtype"])
-        return output
-
-    def _ufunc_multiply(cls, ufunc, method, inputs, kwargs, meta):
-        """
-        In-field multiplication:
-        a, b, c in GF(2)
-        c = a * b
-          = a & b
-
-        Scalar multiplication:
-        a, c in GF(2)
-        b in Z
-        c = a * b
-          = a * (b % 2)
-          = a * (b & 0b1)
-          = a & b & 0b1
-        """
-        if len(meta["non_field_operands"]) == 0:
-            # In-field multiplication
-            output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
-        else:
-            # Scalar multiplication
-            inputs = cls._verify_and_flip_operands_first_field_second_int(ufunc, method, inputs, meta)
-            inputs[meta["operands"][1]] = np.bitwise_and(inputs[meta["operands"][1]], 0b1, dtype=inputs[meta["operands"][0]].dtype, casting="unsafe")
-            output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
-        if np.isscalar(output):
-            output = meta["field"](output, dtype=meta["dtype"])
-        return output
-
     def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
         """
-        a, b, c in GF(2)
-        c = a / b, b = 1 is the only valid element with a multiplicative inverse, which is 1
-          = a & b
+        Need to re-implement this to manually throw ZeroDivisionError if necessary
         """
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
         if np.count_nonzero(inputs[meta["operands"][-1]]) != inputs[meta["operands"][-1]].size:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-        output = getattr(np.bitwise_and, method)(*inputs, **kwargs)
-        if np.isscalar(output):
-            output = meta["field"](output, dtype=meta["dtype"])
+        output = getattr(cls._ufuncs["divide"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument

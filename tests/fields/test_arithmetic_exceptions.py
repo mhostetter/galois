@@ -111,7 +111,7 @@ def test_divide_int_array(field):
 
 
 def test_right_divide_int_scalar(field):
-    x = field.Random(10)
+    x = field.Random(10, low=1)
     y = int(randint(1, field.order, 1, field.dtypes[-1]))
     with pytest.raises(TypeError):
         x /= y
@@ -124,7 +124,7 @@ def test_right_divide_int_scalar(field):
 
 
 def test_right_divide_int_array(field):
-    x = field.Random(10)
+    x = field.Random(10, low=1)
     y = randint(1, field.order, 10, field.dtypes[-1])
     with pytest.raises(TypeError):
         x /= y

@@ -81,7 +81,6 @@ class GFpmMeta(GFMeta):
         cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
         cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
         cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
-        cls._ufuncs["scalar_multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_scalar_multiply_calculate)
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
         cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
@@ -341,14 +340,6 @@ def _multiplicative_inverse_calculate(a):  # pragma: no cover
     result = MULTIPLY_JIT(result_m, result_s)
 
     return result
-
-
-def _scalar_multiply_calculate(a, multiple):  # pragma: no cover
-    multiple = multiple % CHARACTERISTIC
-    if multiple == 0:
-        return 0
-    else:
-        return MULTIPLY_JIT(a, multiple)
 
 
 def _power_calculate(a, power):  # pragma: no cover
