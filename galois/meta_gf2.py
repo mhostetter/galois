@@ -107,7 +107,7 @@ class GF2Meta(GFMeta):
 
         kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
         cls._ufuncs["add"] = np.bitwise_xor
-        cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
+        cls._ufuncs["negative"] = np.positive
         cls._ufuncs["subtract"] = np.bitwise_xor
         cls._ufuncs["multiply"] = np.bitwise_and
         # NOTE: Don't need a ufunc for "reciprocal", already overrode _ufunc_reciprocal()
