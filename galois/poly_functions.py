@@ -202,7 +202,9 @@ def is_irreducible(poly):
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not poly.field.degree == 1:
+    if not poly.degree > 1:
+        raise TypeError(f"Argument `poly` must have degree greater than 1, not {poly.degree}.")
+    if not poly.field.is_prime_field:
         raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
     if poly.coeffs[-1] == 0:
@@ -254,6 +256,10 @@ def is_primitive(poly):
     bool
         `True` if the polynomial is primitive.
 
+    References
+    ----------
+    * Algorithm 4.77 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
+
     Examples
     --------
     All Conway polynomials are primitive.
@@ -273,9 +279,12 @@ def is_primitive(poly):
         f = galois.Poly.Degrees([8,4,3,1,0]); f
         galois.is_primitive(f)
     """
-    assert isinstance(poly, Poly)
-    assert poly.degree > 1
-    assert poly.field.degree == 1
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    if not poly.degree > 1:
+        raise TypeError(f"Argument `poly` must have degree greater than 1, not {poly.degree}.")
+    if not poly.field.is_prime_field:
+        raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
     field = poly.field
     p = field.order
