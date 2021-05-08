@@ -37,7 +37,8 @@ def _lapack_linalg(a, b, function, n_sum=None):
     c = np.mod(c, characteristic)  # Reduce the result mod p
 
     if np.isscalar(c):
-        c = field(c, dtype=return_dtype)
+        # TODO: Sometimes the scalar c is a float?
+        c = field(int(c), dtype=return_dtype)
     else:
         c = c.astype(return_dtype).view(field)
 
