@@ -51,30 +51,26 @@ class JITMixin(type):
         field = type(a)
         dtype = a.dtype
 
-        if cls.ufunc_mode == "python-calculate":
-            return cls._convolve_python(a, b)
-
-        # Try to perform convolution using native numpy
         if field.is_prime_field:
             # Determine the minimum dtype to hold the entire product and summation without overflowing
             n_sum = min(a.size, b.size)
             max_value = n_sum * (field.characteristic - 1)**2
             dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= max_value]
-            if len(dtypes) > 0:
-                dtype = dtypes[0]
-                a = a.astype(dtype).view(np.ndarray)
-                b = b.astype(dtype).view(np.ndarray)
-                c = np.convolve(a, b)
-                c = np.mod(c, field.characteristic)
-                c = c.astype(a.dtype).view(field) if not np.isscalar(c) else field(c, dtype=a.dtype)
-                return c
-
-        # If this is an extension field or the previous attempt yielded a dtype of np.object_ (which is slow),
-        # then use the custom JIT-compiled version
-        c = cls._funcs["convolve"](a.astype(np.int64), b.astype(np.int64))
-        c = c.astype(dtype).view(field)
-
-        return c
+            dtype = np.object_ if len(dtypes) == 0 else dtypes[0]
+            return_dtype = a.dtype
+            a = a.view(np.ndarray).astype(dtype)
+            b = b.view(np.ndarray).astype(dtype)
+            c = np.convolve(a, b)
+            c = np.mod(c, field.characteristic)
+            c = c.astype(return_dtype).view(field) if not np.isscalar(c) else field(c, dtype=return_dtype)
+            return c
+        else:
+            if cls.ufunc_mode == "python-calculate":
+                return cls._convolve_python(a, b)
+            else:
+                c = cls._funcs["convolve"](a.astype(np.int64), b.astype(np.int64))
+                c = c.astype(dtype).view(field)
+            return c
 
     def _poly_divmod(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
