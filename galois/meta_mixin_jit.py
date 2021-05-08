@@ -2,6 +2,7 @@ import numba
 import numpy as np
 
 from .dtypes import DTYPES
+from .linalg import _lapack_linalg
 
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_JIT = lambda x, y: x + y
@@ -42,9 +43,56 @@ class JITMixin(type):
             SUBTRACT_JIT = cls._SUBTRACT_JIT
             MULTIPLY_JIT = cls._MULTIPLY_JIT
             DIVIDE_JIT = cls._DIVIDE_JIT
+            cls._funcs["matmul"] = numba.jit("int64[:,:](int64[:,:], int64[:,:])", **kwargs)(_matmul_jit)
             cls._funcs["convolve"] = numba.jit("int64[:](int64[:], int64[:])", **kwargs)(_convolve_jit)
             cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", **kwargs)(_poly_divmod_jit)
             cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_evaluate_jit)
+
+    def _matmul(cls, A, B):
+        if not type(A) is type(B):
+            raise TypeError(f"Operation 'matmul' requires both arrays be in the same Galois field, not {type(A)} and {type(B)}.")
+        if not (A.ndim >= 1 and B.ndim >= 1):
+            raise ValueError(f"Operation 'matmul' requires both arrays have dimension at least 1, not {A.ndim}-D and {B.ndim}-D.")
+        if not (A.ndim <= 2 and B.ndim <= 2):
+            raise ValueError("Operation 'matmul' currently only supports matrix multiplication up to 2-D. If you would like matrix multiplication of N-D arrays, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+        field = type(A)
+        dtype = A.dtype
+
+        if field.is_prime_field:
+            return _lapack_linalg(A, B, np.matmul)
+
+        prepend, append = False, False
+        if A.ndim == 1:
+            A = A.reshape((1,A.size))
+            prepend = True
+        if B.ndim == 1:
+            B = B.reshape((B.size,1))
+            append = True
+
+        if not A.shape[-1] == B.shape[-2]:
+            raise ValueError(f"Operation 'matmul' requires the last dimension of A to match the second-to-last dimension of B, not {A.shape} and {B.shape}.")
+
+        # if A.ndim > 2 and B.ndim == 2:
+        #     new_shape = list(A.shape[:-2]) + list(B.shape)
+        #     B = np.broadcast_to(B, new_shape)
+        # if B.ndim > 2 and A.ndim == 2:
+        #     new_shape = list(B.shape[:-2]) + list(A.shape)
+        #     A = np.broadcast_to(A, new_shape)
+
+        if cls.ufunc_mode == "python-calculate":
+            C = cls._matmul_python(A, B)
+        else:
+            C = cls._funcs["matmul"](A.astype(np.int64), B.astype(np.int64))
+            C = C.astype(dtype).view(field)
+
+        shape = list(C.shape)
+        if prepend:
+            shape = shape[1:]
+        if append:
+            shape = shape[:-1]
+        C = C.reshape(shape)
+
+        return C
 
     def _convolve(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
@@ -109,8 +157,21 @@ class JITMixin(type):
         return y
 
     ###############################################################################
-    # Pure python arithmetic methods
+    # Pure python implementation, operating on Galois field arrays (not integers),
+    # for fields in ufunc_mode="python-calculate"
     ###############################################################################
+
+    def _matmul_python(cls, A, B):
+        assert A.ndim == 2 and B.ndim == 2
+        assert A.shape[-1] == B.shape[-2]
+        M, N = A.shape[-2], B.shape[-1]
+        C = cls.Zeros((M, N), dtype=A.dtype)
+
+        for i in range(M):
+            for j in range(N):
+                C[i,j] = np.sum(A[i,:] * B[:,j])
+
+        return C
 
     def _convolve_python(cls, a, b):
         c = cls.Zeros(a.size + b.size - 1, dtype=a.dtype)
@@ -147,6 +208,19 @@ class JITMixin(type):
 ###############################################################################
 # Galois field arithmetic, explicitly calculated without lookup tables
 ###############################################################################
+
+def _matmul_jit(A, B):  # pragma: no cover
+    assert A.ndim == 2 and B.ndim == 2
+    assert A.shape[-1] == B.shape[-2]
+    M, K = A.shape
+    K, N = B.shape
+    C = np.zeros((M, N), dtype=np.int64)
+    for i in range(M):
+        for j in range(N):
+            for k in range(K):
+                C[i,j] = ADD_JIT(C[i,j], MULTIPLY_JIT(A[i,k], B[k,j]))
+    return C
+
 
 def _convolve_jit(a, b):  # pragma: no cover
     c = np.zeros(a.size + b.size - 1, dtype=a.dtype)

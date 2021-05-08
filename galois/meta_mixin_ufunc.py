@@ -1,7 +1,6 @@
 import numba
 import numpy as np
 
-from .linalg import matmul
 from .meta_mixin_jit import JITMixin
 
 # Placeholder globals that will be set in _compile_jit_lookup()
@@ -261,6 +260,10 @@ class UfuncMixin(JITMixin):
         else:
             return field(output, dtype=dtype)
 
+    ###############################################################################
+    # Ufunc routines
+    ###############################################################################
+
     def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
         output = getattr(cls._ufuncs["add"], method)(*inputs, **kwargs)
@@ -314,9 +317,9 @@ class UfuncMixin(JITMixin):
         output = getattr(cls._ufuncs["log"], method)(*inputs, **kwargs)
         return output
 
-    def _ufunc_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument,no-self-use
+    def _ufunc_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         assert method == "__call__"
-        return matmul(*inputs, **kwargs)
+        return cls._matmul(*inputs[0:2])
 
     ###############################################################################
     # Pure python arithmetic methods
