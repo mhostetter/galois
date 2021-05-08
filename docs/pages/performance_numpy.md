@@ -177,3 +177,59 @@ In [16]: %timeit (a * b) % GF.order
 In [17]: %timeit ga * gb
 50.3 ms ± 619 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 ```
+
+## Linear algebra performance
+
+Linear algebra over Galois fields is highly optimized. For prime fields `GF(p)`, the performance is
+comparable to the native numpy implementation (using BLAS/LAPACK).
+
+```python
+In [1]: import numpy as np
+
+In [2]: import galois
+
+In [3]: GF = galois.GF(31)
+
+In [4]: A = GF.Random((100,100), dtype=int)
+
+In [5]: B = GF.Random((100,100), dtype=int)
+
+In [6]: %timeit A @ B
+720 µs ± 5.36 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+
+In [7]: AA, BB = A.view(np.ndarray), B.view(np.ndarray)
+
+# Equivalent calculation of A @ B using the native numpy implementation
+In [8]: %timeit (AA @ BB) % GF.order
+777 µs ± 4.6 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+```
+
+For extension fields `GF(p^m)`, the performance of `galois` is close to native numpy linear algebra
+(about 10x slower). However, for extension fields, each multiplication operation is equivalently
+a convolution (polynomial multiplication) of two `m`-length arrays. So it's not an apples-to-apples
+comparison.
+
+Below is a comparison of `galois` computing the correct matrix multiplication over `GF(2^8)` and numpy
+computing a normal integer matrix multiplication (which is not the correct result!). This
+comparison is just for a performance reference.
+
+```python
+In [1]: import numpy as np
+
+In [2]: import galois
+
+In [3]: GF = galois.GF(2**8)
+
+In [4]: A = GF.Random((100,100), dtype=int)
+
+In [5]: B = GF.Random((100,100), dtype=int)
+
+In [6]: %timeit A @ B
+7.13 ms ± 114 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+In [7]: AA, BB = A.view(np.ndarray), B.view(np.ndarray)
+
+# Native numpy matrix multiplication, which doesn't produce the correct result!!
+In [8]: %timeit AA @ BB
+651 µs ± 12.4 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+```
