@@ -3,7 +3,6 @@ import numpy as np
 
 from .meta_mixin_jit import JITMixin
 
-# Placeholder globals that will be set in _compile_jit_lookup()
 CHARACTERISTIC = None  # The field's prime characteristic `p`
 ORDER = None  # The field's order `p^m`
 
@@ -11,9 +10,6 @@ EXP = []  # EXP[i] = α^i
 LOG = []  # LOG[i] = x, such that α^x = i
 ZECH_LOG = []  # ZECH_LOG[i] = log(1 + α^i)
 ZECH_E = None  # α^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
-
-ADD_JIT = lambda x, y: x + y
-MULTIPLY_JIT = lambda x, y: x * y
 
 
 class UfuncMixin(JITMixin):
@@ -134,6 +130,14 @@ class UfuncMixin(JITMixin):
         kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
         return numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
 
+    def _compile_negative_lookup(cls, target):
+        global EXP, LOG, ZECH_E
+        EXP = cls._EXP
+        LOG = cls._LOG
+        ZECH_E = cls._ZECH_E
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_negative_lookup)
+
     def _compile_subtract_lookup(cls, target):
         global ORDER, EXP, LOG, ZECH_LOG, ZECH_E
         ORDER = cls.order
@@ -151,6 +155,14 @@ class UfuncMixin(JITMixin):
         kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
         return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
 
+    def _compile_reciprocal_lookup(cls, target):
+        global ORDER, EXP, LOG
+        ORDER = cls.order
+        EXP = cls._EXP
+        LOG = cls._LOG
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_lookup)
+
     def _compile_divide_lookup(cls, target):
         global ORDER, EXP, LOG
         ORDER = cls.order
@@ -158,22 +170,6 @@ class UfuncMixin(JITMixin):
         LOG = cls._LOG
         kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
         return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
-
-    def _compile_additive_inverse_lookup(cls, target):
-        global EXP, LOG, ZECH_E
-        EXP = cls._EXP
-        LOG = cls._LOG
-        ZECH_E = cls._ZECH_E
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
-
-    def _compile_multiplicative_inverse_lookup(cls, target):
-        global ORDER, EXP, LOG
-        ORDER = cls.order
-        EXP = cls._EXP
-        LOG = cls._LOG
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_lookup)
 
     def _compile_power_lookup(cls, target):
         global ORDER, EXP, LOG
@@ -277,6 +273,11 @@ class UfuncMixin(JITMixin):
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
+    def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        output = getattr(cls._ufuncs["negative"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
     def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
         output = getattr(cls._ufuncs["subtract"], method)(*inputs, **kwargs)
@@ -293,19 +294,14 @@ class UfuncMixin(JITMixin):
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
+    def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        output = getattr(cls._ufuncs["reciprocal"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
     def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
         output = getattr(cls._ufuncs["divide"], method)(*inputs, **kwargs)
-        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
-        return output
-
-    def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        output = getattr(cls._ufuncs["negative"], method)(*inputs, **kwargs)
-        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
-        return output
-
-    def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        output = getattr(cls._ufuncs["reciprocal"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
@@ -338,6 +334,12 @@ class UfuncMixin(JITMixin):
         """
         raise NotImplementedError
 
+    def _negative_python(cls, a):
+        """
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
+        """
+        raise NotImplementedError
+
     def _subtract_python(cls, a, b):
         """
         To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
@@ -350,6 +352,12 @@ class UfuncMixin(JITMixin):
         """
         raise NotImplementedError
 
+    def _reciprocal_python(cls, a):
+        """
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
+        """
+        raise NotImplementedError
+
     def _divide_python(cls, a, b):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
@@ -357,20 +365,8 @@ class UfuncMixin(JITMixin):
         if a == 0:
             return 0
         else:
-            b_inv = cls._multiplicative_inverse_python(b)
+            b_inv = cls._reciprocal_python(b)
             return cls._multiply_python(a, b_inv)
-
-    def _additive_inverse_python(cls, a):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
-        raise NotImplementedError
-
-    def _multiplicative_inverse_python(cls, a):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
-        raise NotImplementedError
 
     def _power_python(cls, a, power):
         """
@@ -390,7 +386,7 @@ class UfuncMixin(JITMixin):
         if power == 0:
             return 1
         elif power < 0:
-            a = cls._multiplicative_inverse_python(a)
+            a = cls._reciprocal_python(a)
             power = abs(power)
 
         result_s = a  # The "squaring" part
@@ -489,6 +485,23 @@ def _add_lookup(a, b):  # pragma: no cover
         return EXP[m + ZECH_LOG[n - m]]
 
 
+def _negative_lookup(a):  # pragma: no cover
+    """
+    a in GF(p^m)
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
+
+    -a = -α^n
+       = -1 * α^n
+       = α^e * α^n
+       = α^(e + n)
+    """
+    if a == 0:  # LOG[0] = -Inf, so catch this condition
+        return 0
+    else:
+        n = LOG[a]
+        return EXP[ZECH_E + n]
+
+
 def _subtract_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
@@ -544,6 +557,24 @@ def _multiply_lookup(a, b):  # pragma: no cover
         return EXP[m + n]
 
 
+def _reciprocal_lookup(a):  # pragma: no cover
+    """
+    a in GF(p^m)
+    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
+
+    1 / a = 1 / α^m
+          = α^(-m)
+          = 1 * α^(-m)
+          = α^(ORDER - 1) * α^(-m)
+          = α^(ORDER - 1 - m)
+    """
+    if a == 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+    m = LOG[a]
+    return EXP[(ORDER - 1) - m]
+
+
 def _divide_lookup(a, b):  # pragma: no cover
     """
     a in GF(p^m)
@@ -565,41 +596,6 @@ def _divide_lookup(a, b):  # pragma: no cover
         m = LOG[a]
         n = LOG[b]
         return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
-
-
-def _additive_inverse_lookup(a):  # pragma: no cover
-    """
-    a in GF(p^m)
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
-
-    -a = -α^n
-       = -1 * α^n
-       = α^e * α^n
-       = α^(e + n)
-    """
-    if a == 0:  # LOG[0] = -Inf, so catch this condition
-        return 0
-    else:
-        n = LOG[a]
-        return EXP[ZECH_E + n]
-
-
-def _multiplicative_inverse_lookup(a):  # pragma: no cover
-    """
-    a in GF(p^m)
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
-
-    1 / a = 1 / α^m
-          = α^(-m)
-          = 1 * α^(-m)
-          = α^(ORDER - 1) * α^(-m)
-          = α^(ORDER - 1 - m)
-    """
-    if a == 0:
-        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-    m = LOG[a]
-    return EXP[(ORDER - 1) - m]
 
 
 def _power_lookup(a, b_int):  # pragma: no cover

@@ -72,12 +72,12 @@ UNSUPPORTED_UFUNCS = UNSUPPORTED_ONE_ARG_UFUNCS + UNSUPPORTED_TWO_ARG_UFUNCS
 
 OVERRIDDEN_UFUNCS = {
     np.add: "_ufunc_add",
+    np.negative: "_ufunc_negative",
     np.subtract: "_ufunc_subtract",
     np.multiply: "_ufunc_multiply",
+    np.reciprocal: "_ufunc_reciprocal",
     np.floor_divide: "_ufunc_divide",
     np.true_divide: "_ufunc_divide",
-    np.negative: "_ufunc_negative",
-    np.reciprocal: "_ufunc_reciprocal",
     np.power: "_ufunc_power",
     np.square: "_ufunc_square",
     np.log: "_ufunc_log",
