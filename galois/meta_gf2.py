@@ -101,26 +101,19 @@ class GF2Meta(GFMeta):
     def default_ufunc_mode(cls):
         return "jit-calculate"
 
-    def _compile_jit_calculate(cls, target):
-        cls._ADD_JIT = np.bitwise_xor
-        cls._SUBTRACT_JIT = np.bitwise_xor
-        cls._MULTIPLY_JIT = np.bitwise_and
-        cls._DIVIDE_JIT = np.bitwise_and
-
+    def _compile_ufuncs(cls, target):
+        assert cls._ufunc_mode == "jit-calculate"
         assert target == "cpu"
-        kwargs = {"nopython": True, "target": target, "cache": True}
-        if target == "cuda":
-            kwargs.pop("nopython")
 
-        # Create numba JIT-compiled ufuncs
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
         cls._ufuncs["add"] = np.bitwise_xor
         cls._ufuncs["subtract"] = np.bitwise_xor
         cls._ufuncs["multiply"] = np.bitwise_and
         cls._ufuncs["divide"] = np.bitwise_and
-        # cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
-        # cls._ufuncs["reciprocal"] = lambda *args, **kwargs: args[0]
+        # NOTE: Don't need a ufunc for "negative", already overrode _ufunc_negative()
+        # NOTE: Don't need a ufunc for "reciprocal", already overrode _ufunc_reciprocal()
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
-        # cls._ufuncs["log"] = lambda *args, **kwargs: args[0]
+        # NOTE: Don't need a ufunc for "log", already overrode _ufunc_log()
 
     ###############################################################################
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)

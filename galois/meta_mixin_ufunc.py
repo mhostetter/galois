@@ -66,19 +66,13 @@ class UfuncMixin(JITMixin):
 
         cls._ufunc_mode = mode
         cls._ufunc_target = target
-
-        if cls.ufunc_mode == "jit-lookup":
-            cls._compile_jit_lookup(target)
-        elif cls.ufunc_mode == "jit-calculate":
-            cls._compile_jit_calculate(target)
-        elif cls.ufunc_mode == "python-calculate":
-            cls._compile_python_calculate()
-        else:
-            raise RuntimeError(f"Attribute `ufunc_mode` was not processed, {cls._ufunc_mode}. Please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
-
+        cls._compile_ufuncs(target)
         cls._compile_special_functions(target)
 
     def _build_lookup_tables(cls):
+        if cls._EXP is not None:
+            return
+
         order = cls.order
         primitive_element = cls._primitive_element_int
         dtype = np.int64
@@ -121,69 +115,82 @@ class UfuncMixin(JITMixin):
         # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
         cls._EXP[order:2*order] = cls._EXP[1:1 + order]
 
-    def _compile_jit_lookup(cls, target):
+    def _compile_ufuncs(cls, target):
         """
-        A method to JIT-compile the standard lookup arithmetic for any field. The functions that are
-        JIT compiled are at the bottom of this file.
+        To be implemented in GF2Meta, GFpMeta, GF2mMeta, and GFpmMeta
         """
-        global CHARACTERISTIC, ORDER, EXP, LOG, ZECH_LOG, ZECH_E, ADD_JIT, MULTIPLY_JIT
+        raise NotImplementedError
 
-        # Build the lookup tables if they don't exist
-        if cls._EXP is None:
-            cls._build_lookup_tables()
+    ###############################################################################
+    # Compile general-purpose lookup functions
+    ###############################################################################
 
-        # Export lookup tables to global variables so JIT compiling can cache the tables in the binaries
-        CHARACTERISTIC = cls.characteristic
+    def _compile_add_lookup(cls, target):
+        global EXP, LOG, ZECH_LOG, ZECH_E
+        EXP = cls._EXP
+        LOG = cls._LOG
+        ZECH_LOG = cls._ZECH_LOG
+        ZECH_E = cls._ZECH_E
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
+
+    def _compile_subtract_lookup(cls, target):
+        global ORDER, EXP, LOG, ZECH_LOG, ZECH_E
         ORDER = cls.order
         EXP = cls._EXP
         LOG = cls._LOG
         ZECH_LOG = cls._ZECH_LOG
         ZECH_E = cls._ZECH_E
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
 
-        # JIT-compile add and multiply routines for reference in other routines
-        cls._ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_lookup)
-        cls._SUBTRACT_JIT = numba.jit("int64(int64, int64)", nopython=True)(_subtract_lookup)
-        cls._MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_lookup)
-        cls._DIVIDE_JIT = numba.jit("int64(int64, int64)", nopython=True)(_divide_lookup)
+    def _compile_multiply_lookup(cls, target):
+        global EXP, LOG
+        EXP = cls._EXP
+        LOG = cls._LOG
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
 
-        kwargs = {"nopython": True, "target": target}
-        if target == "cuda":
-            kwargs.pop("nopython")
+    def _compile_divide_lookup(cls, target):
+        global ORDER, EXP, LOG
+        ORDER = cls.order
+        EXP = cls._EXP
+        LOG = cls._LOG
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
 
-        # TODO: Use smallest possible dtype for ufuncs
-        # d = np.dtype(self.dtypes[0]).name
+    def _compile_additive_inverse_lookup(cls, target):
+        global EXP, LOG, ZECH_E
+        EXP = cls._EXP
+        LOG = cls._LOG
+        ZECH_E = cls._ZECH_E
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
 
-        # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
-        ADD_JIT = cls._ADD_JIT
-        MULTIPLY_JIT = cls._MULTIPLY_JIT
-        cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
-        cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
-        cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
-        cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
-        cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_lookup)
-        cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_lookup)
-        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
-        cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
+    def _compile_multiplicative_inverse_lookup(cls, target):
+        global ORDER, EXP, LOG
+        ORDER = cls.order
+        EXP = cls._EXP
+        LOG = cls._LOG
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_lookup)
 
-    def _compile_jit_calculate(cls, target):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta. The functions that will
-        be JIT-compiled will be located at the bottom of those files.
-        """
-        raise NotImplementedError
+    def _compile_power_lookup(cls, target):
+        global ORDER, EXP, LOG
+        ORDER = cls.order
+        EXP = cls._EXP
+        LOG = cls._LOG
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
 
-    def _compile_python_calculate(cls):
-        cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
-        cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
-        cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
-        cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
-        cls._ufuncs["negative"] = np.frompyfunc(cls._additive_inverse_python, 1, 1)
-        cls._ufuncs["reciprocal"] = np.frompyfunc(cls._multiplicative_inverse_python, 1, 1)
-        cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
-        cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
+    def _compile_log_lookup(cls, target):
+        global LOG
+        LOG = cls._LOG
+        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
 
     ###############################################################################
-    # Ufunc routines
+    # Input/output conversion functions
     ###############################################################################
 
     def _verify_operands_in_same_field(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
