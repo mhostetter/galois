@@ -107,7 +107,7 @@ class GF2Meta(GFMeta):
 
         kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
         cls._ufuncs["add"] = np.bitwise_xor
-        # NOTE: Don't need a ufunc for "negative", already overrode _ufunc_negative()
+        cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
         cls._ufuncs["subtract"] = np.bitwise_xor
         cls._ufuncs["multiply"] = np.bitwise_and
         # NOTE: Don't need a ufunc for "reciprocal", already overrode _ufunc_reciprocal()
@@ -119,14 +119,6 @@ class GF2Meta(GFMeta):
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
     # arithmetic, which is faster than custom ufuncs
     ###############################################################################
-
-    def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        """
-        a, b in GF(2)
-        b = -a
-          = a
-        """
-        return inputs[0]
 
     def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         """
