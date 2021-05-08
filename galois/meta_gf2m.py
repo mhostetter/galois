@@ -46,7 +46,7 @@ class GF2mMeta(GFMeta):
 
         # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835552639.
         cls._ufuncs["add"] = np.bitwise_xor
-        cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
+        cls._ufuncs["negative"] = np.positive
         cls._ufuncs["subtract"] = np.bitwise_xor
 
         if cls._ufunc_mode == "jit-lookup":

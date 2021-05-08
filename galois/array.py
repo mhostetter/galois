@@ -87,6 +87,7 @@ OVERRIDDEN_UFUNCS = {
 UFUNCS_REQUIRING_VIEW = [
     np.bitwise_and, np.bitwise_or, np.bitwise_xor,
     np.left_shift, np.right_shift,
+    np.positive,
 ]
 
 
@@ -823,10 +824,7 @@ class GFArray(np.ndarray, metaclass=GFMeta):
             output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
 
             if func in FUNCTIONS_REQUIRING_VIEW:
-                if np.isscalar(output):
-                    output = type(self)(output, dtype=self.dtype)
-                else:
-                    output = output.view(type(self))
+                output = output.view(type(self)) if not np.isscalar(output) else type(self)(output, dtype=self.dtype)
 
         return output
 
@@ -865,7 +863,7 @@ class GFArray(np.ndarray, metaclass=GFMeta):
             output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
 
             if ufunc in UFUNCS_REQUIRING_VIEW and output is not None:
-                output = output.view(type(self))
+                output = output.view(type(self)) if not np.isscalar(output) else type(self)(output, dtype=self.dtype)
 
             return output
 
