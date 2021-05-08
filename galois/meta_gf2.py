@@ -126,6 +126,7 @@ class GF2Meta(GFMeta):
         b = 1 / a, a = 1 is the only valid element with a multiplicative inverse, which is 1
           = a
         """
+        cls._verify_method_not_reduction(method)
         if np.count_nonzero(inputs[0]) != inputs[0].size:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
         return inputs[0]

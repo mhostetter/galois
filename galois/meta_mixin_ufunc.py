@@ -189,6 +189,10 @@ class UfuncMixin(JITMixin):
     # Input/output conversion functions
     ###############################################################################
 
+    def _verify_method_not_reduction(cls, method):  # pylint: disable=no-self-use
+        if method in ["reduce", "accumulate", "reduceat", "outer"]:
+            raise ValueError(f"Ufunc method '{method}' is only supported on binary functions.")
+
     def _verify_operands_in_same_field(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
         if len(meta["non_field_operands"]) > 0:
             raise TypeError(f"Operation '{ufunc.__name__}' requires both operands to be Galois field arrays over the same field, not {[inputs[i] for i in meta['operands']]}.")
@@ -274,6 +278,7 @@ class UfuncMixin(JITMixin):
         return output
 
     def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        cls._verify_method_not_reduction(method)
         output = getattr(cls._ufuncs["negative"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
@@ -295,6 +300,7 @@ class UfuncMixin(JITMixin):
         return output
 
     def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        cls._verify_method_not_reduction(method)
         output = getattr(cls._ufuncs["reciprocal"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
