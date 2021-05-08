@@ -120,24 +120,24 @@ def test_matmul_2d_2d(field):
     assert np.array_equal(A @ B, np.matmul(A, B))
 
 
-def test_matmul_nd_2d(field):
-    A = field.Random((2,3,4))
-    B = field.Random((4,3))
-    C = A @ B
-    assert np.array_equal(C[0,0,0], np.sum(A[0,0,:] * B[:,0]))  # Spot check
-    assert C.shape == (2,3,3)
-    assert type(C) is field
-    assert np.array_equal(A @ B, np.matmul(A, B))
+# def test_matmul_nd_2d(field):
+#     A = field.Random((2,3,4))
+#     B = field.Random((4,3))
+#     C = A @ B
+#     assert np.array_equal(C[0,0,0], np.sum(A[0,0,:] * B[:,0]))  # Spot check
+#     assert C.shape == (2,3,3)
+#     assert type(C) is field
+#     assert np.array_equal(A @ B, np.matmul(A, B))
 
 
-def test_matmul_nd_nd(field):
-    A = field.Random((2,3,4))
-    B = field.Random((2,4,3))
-    C = A @ B
-    assert np.array_equal(C[0,0,0], np.sum(A[0,0,:] * B[0,:,0]))  # Spot check
-    assert C.shape == (2,3,3)
-    assert type(C) is field
-    assert np.array_equal(A @ B, np.matmul(A, B))
+# def test_matmul_nd_nd(field):
+#     A = field.Random((2,3,4))
+#     B = field.Random((2,4,3))
+#     C = A @ B
+#     assert np.array_equal(C[0,0,0], np.sum(A[0,0,:] * B[0,:,0]))  # Spot check
+#     assert C.shape == (2,3,3)
+#     assert type(C) is field
+#     assert np.array_equal(A @ B, np.matmul(A, B))
 
 
 def test_lu_decomposition():
