@@ -47,7 +47,11 @@ class GFpMeta(GFMeta):
         PRIMITIVE_ELEMENT = int(cls.primitive_element)  # Convert from field element to integer
 
         # JIT-compile add, multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
+        cls._ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
+        cls._SUBTRACT_JIT = numba.jit("int64(int64, int64)", nopython=True)(_subtract_calculate)
+        cls._MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
         MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(_multiplicative_inverse_calculate)
+        cls._DIVIDE_JIT = numba.jit("int64(int64, int64)", nopython=True)(_divide_calculate)
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
@@ -62,7 +66,6 @@ class GFpMeta(GFMeta):
         cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
-        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
     ###############################################################################
     # Pure python arithmetic methods
@@ -278,10 +281,3 @@ def _log_calculate(beta):  # pragma: no cover
         result = (result * PRIMITIVE_ELEMENT) % ORDER
 
     return i
-
-
-def _poly_eval_calculate(coeffs, values, results):  # pragma: no cover
-    for i in range(values.size):
-        results[i] = coeffs[0]
-        for j in range(1, coeffs.size):
-            results[i] = (coeffs[j] + results[i]*values[i]) % ORDER

@@ -941,30 +941,3 @@ class GFArray(np.ndarray, metaclass=GFMeta):
             return s + " "*(self._display_power_width - len(s))
         else:
             return s
-
-    @classmethod
-    def _poly_eval(cls, coeffs, x):
-        coeffs = cls(coeffs)  # Convert coefficient into the field
-        coeffs = coeffs.view(np.ndarray)  # View cast to normal integers so ufunc_poly_eval call uses normal arithmetic
-        coeffs = np.atleast_1d(coeffs)
-        if coeffs.size == 1:
-            # TODO: Why must coeffs have atleast 2 elements otherwise it will be converted to a scalar, not 1d array?
-            coeffs = np.insert(coeffs, 0, 0)
-
-        x = cls(x)  # Convert evaluation values into the field (checks that values are in the field)
-        x = x.view(np.ndarray)  # View cast to normal integers so ufunc_poly_eval call uses normal arithmetic
-        x = np.atleast_1d(x)
-
-        if cls.dtypes[-1] == np.object_:
-            # For object dtypes, call the vectorized classmethod
-            y = cls._ufuncs["poly_eval"](coeffs=coeffs, values=x)  # pylint: disable=not-callable
-        else:
-            # For integer dtypes, call the JIT-compiled gufunc
-            y = np.copy(x)
-            cls._ufuncs["poly_eval"](coeffs, x, y, casting="unsafe")  # pylint: disable=not-callable
-
-        y = cls(y)
-        if y.size == 1:
-            y = y[0]
-
-        return y
