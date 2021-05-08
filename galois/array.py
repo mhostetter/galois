@@ -27,6 +27,10 @@ UNSUPPORTED_TWO_ARG_FUNCTIONS = [
 UNSUPPORTED_FUNCTIONS = UNSUPPORTED_ONE_ARG_FUNCTIONS + UNSUPPORTED_TWO_ARG_FUNCTIONS
 
 OVERRIDDEN_FUNCTIONS = {
+    np.convolve: "_convolve",
+}
+
+OVERRIDDEN_LINALG_FUNCTIONS = {
     np.dot: dot,
     np.inner: inner,
     np.outer: outer,
@@ -802,7 +806,10 @@ class GFArray(np.ndarray, metaclass=GFMeta):
 
     def __array_function__(self, func, types, args, kwargs):
         if func in OVERRIDDEN_FUNCTIONS:
-            output = OVERRIDDEN_FUNCTIONS[func](*args, **kwargs)
+            output = getattr(type(self), OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
+
+        elif func in OVERRIDDEN_LINALG_FUNCTIONS:
+            output = OVERRIDDEN_LINALG_FUNCTIONS[func](*args, **kwargs)
 
         elif func in UNSUPPORTED_FUNCTIONS:
             raise NotImplementedError(f"The numpy function '{func.__name__}' is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array = array.view(np.ndarray)` and then call the function.")

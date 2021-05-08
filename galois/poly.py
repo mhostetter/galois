@@ -1013,10 +1013,8 @@ class DensePoly(Poly):
 
     @classmethod
     def _mul(cls, a, b):
-        field = a.field
-
         # c(x) = a(x) * b(x)
-        c_coeffs = field._poly_multiply(a.coeffs, b.coeffs)  # pylint: disable=protected-access
+        c_coeffs = np.convolve(a.coeffs, b.coeffs)
 
         return Poly(c_coeffs)
 
