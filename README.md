@@ -447,41 +447,23 @@ In [1]: import numpy as np
 
 In [2]: import galois
 
-In [3]: GF = galois.GF(31); print(GF.properties)
-GF(31):
-  characteristic: 31
-  degree: 1
-  order: 31
-  irreducible_poly: Poly(x + 28, GF(31))
-  is_primitive_poly: True
-  primitive_element: GF(3, order=31)
-  dtypes: ['uint8', 'uint16', 'uint32', 'int8', 'int16', 'int32', 'int64']
-  ufunc_mode: 'jit-lookup'
-  ufunc_target: 'cpu'
+In [3]: GF = galois.GF(31)
 
-In [4]: def construct_arrays(GF, N):
-   ...:     a = np.random.randint(1, GF.order, N, dtype=int)
-   ...:     b = np.random.randint(1, GF.order, N, dtype=int)
-   ...:     ga = a.view(GF)
-   ...:     gb = b.view(GF)
-   ...:     return a, b, ga, gb
-   ...:
+In [4]: GF.ufunc_mode
+Out[4]: 'jit-lookup'
 
-In [5]: N = int(10e3)
+In [5]: a = GF.Random(10_000, dtype=int)
 
-In [6]: a, b, ga, gb = construct_arrays(GF, N)
+In [6]: b = GF.Random(10_000, dtype=int)
 
-In [7]: a
-Out[7]: array([29, 20, 29, ..., 29, 22, 24])
+In [7]: %timeit a * b
+79.7 µs ± 1 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
-In [8]: ga
-Out[8]: GF([29, 20, 29, ..., 29, 22, 24], order=31)
+In [8]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
-In [9]: %timeit (a * b) % GF.order
-88.2 µs ± 931 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
-
-In [10]: %timeit ga * gb
-67.9 µs ± 425 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+# Equivalent calculation of a * b using native numpy implementation
+In [9]: %timeit (aa * bb) % GF.order
+96.6 µs ± 2.4 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
 
 The `galois` ufunc runtime has a floor, however. This is due to a requirement to `view` the output
@@ -489,49 +471,35 @@ array and convert its dtype with `astype()`. For example, for small array sizes 
 `galois` because it doesn't need to do these conversions.
 
 ```python
-In [15]: N = 10
+In [4]: a = GF.Random(10, dtype=int)
 
-In [16]: a, b, ga, gb = construct_arrays(GF, N)
+In [5]: b = GF.Random(10, dtype=int)
 
-In [17]: a
-Out[17]: array([17, 22,  9, 11,  7, 14, 27, 16, 21, 30])
+In [6]: %timeit a * b
+45.1 µs ± 1.82 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
-In [18]: ga
-Out[18]: GF([17, 22,  9, 11,  7, 14, 27, 16, 21, 30], order=31)
+In [7]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
-In [19]: %timeit (a * b) % GF.order
-1.32 µs ± 22.5 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
-
-In [20]: %timeit ga * gb
-35.1 µs ± 879 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
-```
-
-This runtime discrepancy can be explained by the time numpy takes to perform the type conversion
-and view.
-
-```python
-In [21]: %timeit a.astype(np.uint8).view(GF)
-31.2 µs ± 5.53 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+# Equivalent calculation of a * b using native numpy implementation
+In [8]: %timeit (aa * bb) % GF.order
+1.52 µs ± 34.8 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
 ```
 
 However, for large N `galois` is strictly faster than numpy.
 
 ```python
-In [22]: N = int(10e6)
+In [10]: a = GF.Random(10_000_000, dtype=int)
 
-In [23]: a, b, ga, gb = construct_arrays(GF, N)
+In [11]: b = GF.Random(10_000_000, dtype=int)
 
-In [24]: a
-Out[24]: array([29,  9, 16, ..., 15, 24,  9])
+In [12]: %timeit a * b
+59.8 ms ± 1.64 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
-In [25]: ga
-Out[25]: GF([29,  9, 16, ..., 15, 24,  9], order=31)
+In [13]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
-In [26]: %timeit (a * b) % GF.order
-109 ms ± 1.01 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
-
-In [27]: %timeit ga * gb
-55.2 ms ± 1.18 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+# Equivalent calculation of a * b using native numpy implementation
+In [14]: %timeit (aa * bb) % GF.order
+129 ms ± 8.01 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 ```
 
 ### Calculation performance
@@ -547,44 +515,23 @@ In [1]: import numpy as np
 
 In [2]: import galois
 
-In [3]: prime = galois.next_prime(2**21); prime
-Out[3]: 2097169
+In [3]: GF = galois.GF(2097169)
 
-In [4]: GF = galois.GF(prime); print(GF.properties)
-GF(2097169):
-  characteristic: 2097169
-  degree: 1
-  order: 2097169
-  irreducible_poly: Poly(x + 2097122, GF(2097169))
-  is_primitive_poly: True
-  primitive_element: GF(47, order=2097169)
-  dtypes: ['uint32', 'int32', 'int64']
-  ufunc_mode: 'jit-calculate'
-  ufunc_target: 'cpu'
+In [4]: GF.ufunc_mode
+Out[4]: 'jit-calculate'
 
-In [5]: def construct_arrays(GF, N):
-   ...:     a = np.random.randint(1, GF.order, N, dtype=int)
-   ...:     b = np.random.randint(1, GF.order, N, dtype=int)
-   ...:     ga = a.view(GF)
-   ...:     gb = b.view(GF)
-   ...:     return a, b, ga, gb
-   ...:
+In [5]: a = GF.Random(10_000, dtype=int)
 
-In [6]: N = int(10e3)
+In [6]: b = GF.Random(10_000, dtype=int)
 
-In [7]: a, b, ga, gb = construct_arrays(GF, N)
+In [7]: %timeit a * b
+68.2 µs ± 2.09 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
-In [8]: a
-Out[8]: array([331469, 337477, 453485, ..., 186502, 794636, 535201])
+In [8]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
-In [9]: ga
-Out[9]: GF([331469, 337477, 453485, ..., 186502, 794636, 535201], order=2097169)
-
-In [10]: %timeit (a * b) % GF.order
-88.3 µs ± 557 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
-
-In [11]: %timeit ga * gb
-57.2 µs ± 749 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+# Equivalent calculation of a * b using native numpy implementation
+In [9]: %timeit (aa * bb) % GF.order
+93.4 µs ± 2.12 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
 
 And again, the runtime comparison with numpy improves with large N because the time of viewing
@@ -593,21 +540,18 @@ performance than numpy because the multiplication and modulo operations are comp
 one ufunc rather than two.
 
 ```python
-In [12]: N = int(10e6)
+In [10]: a = GF.Random(10_000_000, dtype=int)
 
-In [13]: a, b, ga, gb = construct_arrays(GF, N)
+In [11]: b = GF.Random(10_000_000, dtype=int)
 
-In [14]: a
-Out[14]: array([2090232, 2071169, 1463892, ..., 1382279, 1067677, 1901668])
+In [12]: %timeit a * b
+51.2 ms ± 1.08 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
-In [15]: ga
-Out[15]: GF([2090232, 2071169, 1463892, ..., 1382279, 1067677, 1901668], order=2097169)
+In [13]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
-In [16]: %timeit (a * b) % GF.order
-109 ms ± 781 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
-
-In [17]: %timeit ga * gb
-50.3 ms ± 619 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+# Equivalent calculation of a * b using native numpy implementation
+In [14]: %timeit (aa * bb) % GF.order
+111 ms ± 1.48 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 ```
 
 ### Linear algebra performance
