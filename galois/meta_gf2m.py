@@ -44,37 +44,52 @@ class GF2mMeta(GFMeta):
             d = [np.object_]
         return d
 
-    def _compile_jit_calculate(cls, target):
+    def _compile_ufuncs(cls, target):
         global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, IRREDUCIBLE_POLY_INT, MULTIPLY_JIT, MULTIPLICATIVE_INVERSE_JIT
-        CHARACTERISTIC = cls.characteristic
-        ORDER = cls.order
-        if isinstance(cls._primitive_element, Poly):
-            PRIMITIVE_ELEMENT = cls._primitive_element.integer
+
+        if cls._ufunc_mode == "jit-lookup":
+            cls._build_lookup_tables()
+
+            cls._ufuncs["add"] = cls._compile_add_lookup(target)
+            cls._ufuncs["subtract"] = cls._compile_subtract_lookup(target)
+            cls._ufuncs["multiply"] = cls._compile_multiply_lookup(target)
+            cls._ufuncs["divide"] = cls._compile_divide_lookup(target)
+            cls._ufuncs["negative"] = cls._compile_additive_inverse_lookup(target)
+            cls._ufuncs["reciprocal"] = cls._compile_multiplicative_inverse_lookup(target)
+            cls._ufuncs["power"] = cls._compile_power_lookup(target)
+            cls._ufuncs["log"] = cls._compile_log_lookup(target)
+
+        elif cls._ufunc_mode == "jit-calculate":
+            CHARACTERISTIC = cls.characteristic
+            ORDER = cls.order
+            if isinstance(cls._primitive_element, Poly):
+                PRIMITIVE_ELEMENT = cls._primitive_element.integer
+            else:
+                PRIMITIVE_ELEMENT = int(cls._primitive_element)
+            IRREDUCIBLE_POLY_INT = cls.irreducible_poly.integer  # pylint: disable=no-member
+
+            MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
+            MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(_multiplicative_inverse_calculate)
+
+            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+            cls._ufuncs["add"] = np.bitwise_xor
+            cls._ufuncs["subtract"] = np.bitwise_xor
+            cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+            cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+            cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
+            cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
+            cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+            cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+
         else:
-            PRIMITIVE_ELEMENT = int(cls._primitive_element)
-        IRREDUCIBLE_POLY_INT = cls.irreducible_poly.integer  # pylint: disable=no-member
-
-        # JIT-compile add,  multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
-        cls._ADD_JIT = np.bitwise_xor
-        cls._SUBTRACT_JIT = np.bitwise_xor
-        cls._MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
-        MULTIPLY_JIT = cls._MULTIPLY_JIT
-        MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(_multiplicative_inverse_calculate)
-        cls._DIVIDE_JIT = numba.jit("int64(int64, int64)", nopython=True)(_divide_calculate)
-
-        kwargs = {"nopython": True, "target": target}
-        if target == "cuda":
-            kwargs.pop("nopython")
-
-        # Create numba JIT-compiled ufuncs
-        cls._ufuncs["add"] = np.bitwise_xor
-        cls._ufuncs["subtract"] = np.bitwise_xor
-        cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
-        cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
-        cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
-        cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
-        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
-        cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+            cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
+            cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
+            cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
+            cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
+            cls._ufuncs["negative"] = np.frompyfunc(cls._additive_inverse_python, 1, 1)
+            cls._ufuncs["reciprocal"] = np.frompyfunc(cls._multiplicative_inverse_python, 1, 1)
+            cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
+            cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
 
     ###############################################################################
     # Pure python arithmetic methods

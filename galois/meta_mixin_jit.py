@@ -34,19 +34,16 @@ class JITMixin(type):
             cls._funcs["poly_evaluate"] = np.vectorize(cls._poly_evaluate_python, excluded=["coeffs"], otypes=[np.object_])
 
         else:
-            kwargs = {"nopython": True}
-            if target == "cuda":
-                kwargs.pop("nopython")
+            ADD_JIT = cls._ufuncs["add"]
+            SUBTRACT_JIT = cls._ufuncs["subtract"]
+            MULTIPLY_JIT = cls._ufuncs["multiply"]
+            DIVIDE_JIT = cls._ufuncs["divide"]
 
-            # Create numba JIT-compiled functions using the already JIT-compiled basic arithmetic operators
-            ADD_JIT = cls._ADD_JIT
-            SUBTRACT_JIT = cls._SUBTRACT_JIT
-            MULTIPLY_JIT = cls._MULTIPLY_JIT
-            DIVIDE_JIT = cls._DIVIDE_JIT
-            cls._funcs["matmul"] = numba.jit("int64[:,:](int64[:,:], int64[:,:])", **kwargs)(_matmul_jit)
-            cls._funcs["convolve"] = numba.jit("int64[:](int64[:], int64[:])", **kwargs)(_convolve_jit)
-            cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", **kwargs)(_poly_divmod_jit)
-            cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_evaluate_jit)
+            assert target == "cpu"
+            cls._funcs["matmul"] = numba.jit("int64[:,:](int64[:,:], int64[:,:])", nopython=True)(_matmul_jit)
+            cls._funcs["convolve"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_convolve_jit)
+            cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_poly_divmod_jit)
+            cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", nopython=True)(_poly_evaluate_jit)
 
     def _matmul(cls, A, B):
         if not type(A) is type(B):
