@@ -27,6 +27,13 @@
       np.log
       np.matmul
 
+   .. rubric:: {{ _('Advanced Arithmetic') }}
+
+   .. autosummary::
+      :toctree:
+
+      np.convolve
+
    .. rubric:: {{ _('Linear Algebra') }}
 
    .. autosummary::

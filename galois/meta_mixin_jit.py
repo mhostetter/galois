@@ -1,6 +1,8 @@
 import numba
 import numpy as np
 
+from .dtypes import DTYPES
+
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_JIT = lambda x, y: x + y
 SUBTRACT_JIT = lambda x, y: x - y
@@ -27,7 +29,7 @@ class JITMixin(type):
         global ADD_JIT, SUBTRACT_JIT, MULTIPLY_JIT, DIVIDE_JIT
 
         if cls.ufunc_mode == "python-calculate":
-            # NOTE: Don't need to vectorize cls._poly_multiply or cls._poly_divmod
+            # NOTE: Don't need to vectorize cls._convolve or cls._poly_divmod
             cls._funcs["poly_evaluate"] = np.vectorize(cls._poly_evaluate_python, excluded=["coeffs"], otypes=[np.object_])
 
         else:
@@ -40,32 +42,37 @@ class JITMixin(type):
             SUBTRACT_JIT = cls._SUBTRACT_JIT
             MULTIPLY_JIT = cls._MULTIPLY_JIT
             DIVIDE_JIT = cls._DIVIDE_JIT
-            cls._funcs["poly_multiply"] = numba.jit("int64[:](int64[:], int64[:])", **kwargs)(_poly_multiply_calculate)
-            cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", **kwargs)(_poly_divmod_calculate)
-            cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_evaluate_calculate)
+            cls._funcs["convolve"] = numba.jit("int64[:](int64[:], int64[:])", **kwargs)(_convolve_jit)
+            cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", **kwargs)(_poly_divmod_jit)
+            cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_evaluate_jit)
 
-    # def _convolve(cls, a, b):
-    #     if type(a) is not type(b):
-    #         raise TypeError(f"Convolve requires both operands to be Galois field arrays over the same field, not {type(a)} and {type(b)}.")
-    #     field = type(a)
-    #     dtype = a.dtype
-    #     if cls.ufunc_mode == "python-calculate":
-    #         raise NotImplementedError
-    #     else:
-    #         c = cls._funcs["convolve"](a.astype(np.int64), b.astype(np.int64))
-    #         c = c.astype(dtype).view(field)
-    #     return c
-
-    def _poly_multiply(cls, a, b):
+    def _convolve(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
         field = type(a)
         dtype = a.dtype
 
         if cls.ufunc_mode == "python-calculate":
-            c = cls._poly_multiply_python(a, b)
-        else:
-            c = cls._funcs["poly_multiply"](a.astype(np.int64), b.astype(np.int64))
-            c = c.astype(dtype).view(field)
+            return cls._convolve_python(a, b)
+
+        # Try to perform convolution using native numpy
+        if field.is_prime_field:
+            # Determine the minimum dtype to hold the entire product and summation without overflowing
+            n_sum = min(a.size, b.size)
+            max_value = n_sum * (field.characteristic - 1)**2
+            dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= max_value]
+            if len(dtypes) > 0:
+                dtype = dtypes[0]
+                a = a.astype(dtype).view(np.ndarray)
+                b = b.astype(dtype).view(np.ndarray)
+                c = np.convolve(a, b)
+                c = np.mod(c, field.characteristic)
+                c = c.astype(a.dtype).view(field) if not np.isscalar(c) else field(c, dtype=a.dtype)
+                return c
+
+        # If this is an extension field or the previous attempt yielded a dtype of np.object_ (which is slow),
+        # then use the custom JIT-compiled version
+        c = cls._funcs["convolve"](a.astype(np.int64), b.astype(np.int64))
+        c = c.astype(dtype).view(field)
 
         return c
 
@@ -109,7 +116,7 @@ class JITMixin(type):
     # Pure python arithmetic methods
     ###############################################################################
 
-    def _poly_multiply_python(cls, a, b):
+    def _convolve_python(cls, a, b):
         c = cls.Zeros(a.size + b.size - 1, dtype=a.dtype)
 
         # Want a to be the shorter sequence
@@ -145,7 +152,7 @@ class JITMixin(type):
 # Galois field arithmetic, explicitly calculated without lookup tables
 ###############################################################################
 
-def _poly_multiply_calculate(a, b):  # pragma: no cover
+def _convolve_jit(a, b):  # pragma: no cover
     c = np.zeros(a.size + b.size - 1, dtype=a.dtype)
 
     for i in range(a.size):
@@ -155,7 +162,7 @@ def _poly_multiply_calculate(a, b):  # pragma: no cover
     return c
 
 
-def _poly_divmod_calculate(a, b):  # pragma: no cover
+def _poly_divmod_jit(a, b):  # pragma: no cover
     assert a.size >= b.size
     q_degree = a.size - b.size
     qr = np.copy(a)
@@ -170,7 +177,7 @@ def _poly_divmod_calculate(a, b):  # pragma: no cover
     return qr
 
 
-def _poly_evaluate_calculate(coeffs, values, results):  # pragma: no cover
+def _poly_evaluate_jit(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
