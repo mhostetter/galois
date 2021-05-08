@@ -14,7 +14,7 @@ def gcd(a, b):
     """
     Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.
 
-    This implementation uses the Extended Euclidean Algorithm.
+    This function implements the Extended Euclidean Algorithm.
 
     Parameters
     ----------
