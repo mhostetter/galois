@@ -48,9 +48,8 @@ class GF2mMeta(GFMeta):
             cls._build_lookup_tables()
 
             # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835552639.
-            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
             cls._ufuncs["add"] = np.bitwise_xor
-            cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
+            cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
             cls._ufuncs["subtract"] = np.bitwise_xor
 
             cls._ufuncs["multiply"] = cls._compile_multiply_lookup(target)
@@ -68,10 +67,11 @@ class GF2mMeta(GFMeta):
             else:
                 PRIMITIVE_ELEMENT = int(cls._primitive_element)
 
-            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
             cls._ufuncs["add"] = np.bitwise_xor
-            cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
+            cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
             cls._ufuncs["subtract"] = np.bitwise_xor
+
+            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
             cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
             MULTIPLY_UFUNC = cls._ufuncs["multiply"]
             cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
@@ -164,10 +164,6 @@ class GF2mMeta(GFMeta):
 ###############################################################################
 # Galois field arithmetic, explicitly calculated without lookup tables
 ###############################################################################
-
-def _negative_calculate(a):  # pragma: no cover
-    return a
-
 
 def _multiply_calculate(a, b):  # pragma: no cover
     """
