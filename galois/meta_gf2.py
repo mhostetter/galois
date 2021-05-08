@@ -107,11 +107,11 @@ class GF2Meta(GFMeta):
 
         kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
         cls._ufuncs["add"] = np.bitwise_xor
+        # NOTE: Don't need a ufunc for "negative", already overrode _ufunc_negative()
         cls._ufuncs["subtract"] = np.bitwise_xor
         cls._ufuncs["multiply"] = np.bitwise_and
-        cls._ufuncs["divide"] = np.bitwise_and
-        # NOTE: Don't need a ufunc for "negative", already overrode _ufunc_negative()
         # NOTE: Don't need a ufunc for "reciprocal", already overrode _ufunc_reciprocal()
+        cls._ufuncs["divide"] = np.bitwise_and
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
         # NOTE: Don't need a ufunc for "log", already overrode _ufunc_log()
 
@@ -119,17 +119,6 @@ class GF2Meta(GFMeta):
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
     # arithmetic, which is faster than custom ufuncs
     ###############################################################################
-
-    def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
-        """
-        Need to re-implement this to manually throw ZeroDivisionError if necessary
-        """
-        cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        if np.count_nonzero(inputs[meta["operands"][-1]]) != inputs[meta["operands"][-1]].size:
-            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-        output = getattr(cls._ufuncs["divide"], method)(*inputs, **kwargs)
-        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
-        return output
 
     def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         """
@@ -148,6 +137,17 @@ class GF2Meta(GFMeta):
         if np.count_nonzero(inputs[0]) != inputs[0].size:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
         return inputs[0]
+
+    def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
+        """
+        Need to re-implement this to manually throw ZeroDivisionError if necessary
+        """
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        if np.count_nonzero(inputs[meta["operands"][-1]]) != inputs[meta["operands"][-1]].size:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+        output = getattr(cls._ufuncs["divide"], method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
 
     def _ufunc_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         """

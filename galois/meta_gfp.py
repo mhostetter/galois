@@ -5,13 +5,11 @@ from .dtypes import DTYPES
 from .meta_gf import GFMeta
 from .poly import Poly
 
-# Field attribute globals
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 ORDER = None  # The field's order `p^m`
 PRIMITIVE_ELEMENT = None  # The field's primitive element
 
-# Placeholder functions to be replaced by JIT-compiled function
-MULTIPLICATIVE_INVERSE_JIT = lambda x: 1 / x
+RECIPROCAL_UFUNC = lambda x: 1 / x
 
 
 class GFpMeta(GFMeta):
@@ -41,17 +39,17 @@ class GFpMeta(GFMeta):
         return d
 
     def _compile_ufuncs(cls, target):
-        global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, MULTIPLICATIVE_INVERSE_JIT
+        global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, RECIPROCAL_UFUNC
 
         if cls._ufunc_mode == "jit-lookup":
             cls._build_lookup_tables()
 
             cls._ufuncs["add"] = cls._compile_add_lookup(target)
+            cls._ufuncs["negative"] = cls._compile_negative_lookup(target)
             cls._ufuncs["subtract"] = cls._compile_subtract_lookup(target)
             cls._ufuncs["multiply"] = cls._compile_multiply_lookup(target)
+            cls._ufuncs["reciprocal"] = cls._compile_reciprocal_lookup(target)
             cls._ufuncs["divide"] = cls._compile_divide_lookup(target)
-            cls._ufuncs["negative"] = cls._compile_additive_inverse_lookup(target)
-            cls._ufuncs["reciprocal"] = cls._compile_multiplicative_inverse_lookup(target)
             cls._ufuncs["power"] = cls._compile_power_lookup(target)
             cls._ufuncs["log"] = cls._compile_log_lookup(target)
 
@@ -60,25 +58,24 @@ class GFpMeta(GFMeta):
             ORDER = cls.order
             PRIMITIVE_ELEMENT = int(cls.primitive_element)  # Convert from field element to integer
 
-            MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(_multiplicative_inverse_calculate)
-
             kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
             cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
+            cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
             cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
             cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+            cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
+            RECIPROCAL_UFUNC = cls._ufuncs["reciprocal"]
             cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
-            cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_additive_inverse_calculate)
-            cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
             cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
             cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
 
         else:
             cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
+            cls._ufuncs["negative"] = np.frompyfunc(cls._negative_python, 1, 1)
             cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
             cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
+            cls._ufuncs["reciprocal"] = np.frompyfunc(cls._reciprocal_python, 1, 1)
             cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
-            cls._ufuncs["negative"] = np.frompyfunc(cls._additive_inverse_python, 1, 1)
-            cls._ufuncs["reciprocal"] = np.frompyfunc(cls._multiplicative_inverse_python, 1, 1)
             cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
             cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
 
@@ -92,6 +89,12 @@ class GFpMeta(GFMeta):
             c -= cls.order
         return c
 
+    def _negative_python(cls, a):
+        if a == 0:
+            return 0
+        else:
+            return cls.order - a
+
     def _subtract_python(cls, a, b):
         c = a - b
         if c < 0:
@@ -101,13 +104,7 @@ class GFpMeta(GFMeta):
     def _multiply_python(cls, a, b):
         return (a * b) % cls.order
 
-    def _additive_inverse_python(cls, a):
-        if a == 0:
-            return 0
-        else:
-            return cls.order - a
-
-    def _multiplicative_inverse_python(cls, a):
+    def _reciprocal_python(cls, a):
         """
         s*x + t*y = gcd(x, y) = 1
         x = p
@@ -148,7 +145,7 @@ class GFpMeta(GFMeta):
         if power == 0:
             return 1
         elif power < 0:
-            a = cls._multiplicative_inverse_python(a)
+            a = cls._reciprocal_python(a)
             power = abs(power)
 
         # In GF(p), we can reduce the power mod p-1 since a^(p-1) = 1 (mod p)
@@ -182,6 +179,13 @@ def _add_calculate(a, b):  # pragma: no cover
     return c
 
 
+def _negative_calculate(a):  # pragma: no cover
+    if a == 0:
+        return 0
+    else:
+        return ORDER - a
+
+
 def _subtract_calculate(a, b):  # pragma: no cover
     c = a - b
     if c < 0:
@@ -193,25 +197,7 @@ def _multiply_calculate(a, b):  # pragma: no cover
     return (a * b) % ORDER
 
 
-def _divide_calculate(a, b):  # pragma: no cover
-    if b == 0:
-        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-    if a == 0:
-        return 0
-    else:
-        b_inv = MULTIPLICATIVE_INVERSE_JIT(b)
-        return (a * b_inv) % ORDER
-
-
-def _additive_inverse_calculate(a):  # pragma: no cover
-    if a == 0:
-        return 0
-    else:
-        return ORDER - a
-
-
-def _multiplicative_inverse_calculate(a):  # pragma: no cover
+def _reciprocal_calculate(a):  # pragma: no cover
     """
     s*x + t*y = gcd(x, y) = 1
     x = p
@@ -235,6 +221,17 @@ def _multiplicative_inverse_calculate(a):  # pragma: no cover
     return t2
 
 
+def _divide_calculate(a, b):  # pragma: no cover
+    if b == 0:
+        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+    if a == 0:
+        return 0
+    else:
+        b_inv = RECIPROCAL_UFUNC(b)
+        return (a * b_inv) % ORDER
+
+
 def _power_calculate(a, power):  # pragma: no cover
     """
     Square and Multiply Algorithm
@@ -253,7 +250,7 @@ def _power_calculate(a, power):  # pragma: no cover
     if power == 0:
         return 1
     elif power < 0:
-        a = MULTIPLICATIVE_INVERSE_JIT(a)
+        a = RECIPROCAL_UFUNC(a)
         power = abs(power)
 
     # In GF(p), we can reduce the power mod p-1 since a^(p-1) = 1 (mod p)

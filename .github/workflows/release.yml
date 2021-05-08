@@ -64,7 +64,7 @@ jobs:
         next=v${{ steps.next_version.outputs.version }}
         echo "## Contributors" > release_notes.md
         git log ${prev}..${next} --pretty="- @%an" | sort | uniq >> release_notes.md
-        echo "\n## Commits" >> release_notes.md
+        echo -e "\n## Commits" >> release_notes.md
         git log --oneline ${prev}..${next} >> release_notes.md
     - name: Create GitHub release
       uses: actions/create-release@v1
