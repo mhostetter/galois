@@ -44,13 +44,13 @@ class GF2mMeta(GFMeta):
     def _compile_ufuncs(cls, target):
         global CHARACTERISTIC, ORDER, IRREDUCIBLE_POLY, PRIMITIVE_ELEMENT, MULTIPLY_UFUNC, RECIPROCAL_UFUNC
 
+        # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835552639.
+        cls._ufuncs["add"] = np.bitwise_xor
+        cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
+        cls._ufuncs["subtract"] = np.bitwise_xor
+
         if cls._ufunc_mode == "jit-lookup":
             cls._build_lookup_tables()
-
-            # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835552639.
-            cls._ufuncs["add"] = np.bitwise_xor
-            cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
-            cls._ufuncs["subtract"] = np.bitwise_xor
 
             cls._ufuncs["multiply"] = cls._compile_multiply_lookup(target)
             cls._ufuncs["reciprocal"] = cls._compile_reciprocal_lookup(target)
@@ -67,10 +67,6 @@ class GF2mMeta(GFMeta):
             else:
                 PRIMITIVE_ELEMENT = int(cls._primitive_element)
 
-            cls._ufuncs["add"] = np.bitwise_xor
-            cls._ufuncs["negative"] = lambda *args, **kwargs: args[0]
-            cls._ufuncs["subtract"] = np.bitwise_xor
-
             kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
             cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
             MULTIPLY_UFUNC = cls._ufuncs["multiply"]
@@ -81,9 +77,6 @@ class GF2mMeta(GFMeta):
             cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
 
         else:
-            cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
-            cls._ufuncs["negative"] = np.frompyfunc(cls._negative_python, 1, 1)
-            cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
             cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
             cls._ufuncs["reciprocal"] = np.frompyfunc(cls._reciprocal_python, 1, 1)
             cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
