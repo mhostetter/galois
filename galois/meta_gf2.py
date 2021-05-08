@@ -102,6 +102,11 @@ class GF2Meta(GFMeta):
         return "jit-calculate"
 
     def _compile_jit_calculate(cls, target):
+        cls._ADD_JIT = np.bitwise_xor
+        cls._SUBTRACT_JIT = np.bitwise_xor
+        cls._MULTIPLY_JIT = np.bitwise_and
+        cls._DIVIDE_JIT = np.bitwise_and
+
         assert target == "cpu"
         kwargs = {"nopython": True, "target": target, "cache": True}
         if target == "cuda":
@@ -116,7 +121,6 @@ class GF2Meta(GFMeta):
         # cls._ufuncs["reciprocal"] = lambda *args, **kwargs: args[0]
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
         # cls._ufuncs["log"] = lambda *args, **kwargs: args[0]
-        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
     ###############################################################################
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
@@ -189,10 +193,3 @@ def _power_calculate(a, power):  # pragma: no cover
         return 0
     else:
         return a
-
-
-def _poly_eval_calculate(coeffs, values, results):  # pragma: no cover
-    for i in range(values.size):
-        results[i] = coeffs[0]
-        for j in range(1, coeffs.size):
-            results[i] = coeffs[j] ^ (results[i] & values[i])

@@ -9,10 +9,10 @@ from .poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_in
 
 __all__ = ["Poly"]
 
-SPARSE_VS_BINARY_POLY_FACTOR = 0.00001
+# Values were obtained by running scripts/sparse_poly_performance_test.py
+SPARSE_VS_BINARY_POLY_FACTOR = 0.00_05
 SPARSE_VS_BINARY_POLY_MIN_COEFFS = int(1 / SPARSE_VS_BINARY_POLY_FACTOR)
-
-SPARSE_VS_DENSE_POLY_FACTOR = 0.01
+SPARSE_VS_DENSE_POLY_FACTOR = 0.00_5
 SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
 
 
@@ -320,7 +320,7 @@ class Poly:
             return Poly(coeffs, field=field)
 
     @classmethod
-    def Degrees(cls, degrees, coeffs=None, field=None):
+    def Degrees(cls, degrees, coeffs=None, field=None):  # pylint: disable=too-many-branches
         """
         Constructs a polynomial over :math:`\\mathrm{GF}(p^m)` from its non-zero degrees.
 
@@ -367,26 +367,25 @@ class Poly:
         if len(degrees) == 0:
             degrees = [0]
             coeffs = [0]
+        degrees = np.array(degrees, dtype=int)
+        coeffs, field = cls._convert_coeffs(coeffs, field)
 
-
-        if field in [GF2, None] and len(degrees) < SPARSE_VS_BINARY_POLY_FACTOR*max(degrees):
-            # Explicitly create a sparse poly over GF(2)
-            return SparsePoly(degrees, coeffs=coeffs, field=field)
-        elif field not in [GF2, None] and len(degrees) < SPARSE_VS_DENSE_POLY_FACTOR*max(degrees):
-            # Explicitly create a sparse poly over GF(p^m)
-            return SparsePoly(degrees, coeffs=coeffs, field=field)
+        if field is GF2:
+            if len(degrees) < SPARSE_VS_BINARY_POLY_FACTOR*max(degrees):
+                # Explicitly create a sparse poly over GF(2)
+                return SparsePoly(degrees, coeffs=coeffs, field=field)
+            else:
+                integer = sparse_poly_to_integer(degrees, coeffs, 2)
+                return BinaryPoly(integer)
         else:
-            degree = max(degrees)  # The degree of the polynomial
-            if isinstance(coeffs, GFArray):
-                # Preserve coefficient field if a Galois field array was specified
+            if len(degrees) < SPARSE_VS_DENSE_POLY_FACTOR*max(degrees):
+                # Explicitly create a sparse poly over GF(p^m)
+                return SparsePoly(degrees, coeffs=coeffs, field=field)
+            else:
+                degree = max(degrees)  # The degree of the polynomial
                 all_coeffs = type(coeffs).Zeros(degree + 1)
                 all_coeffs[degree - degrees] = coeffs
-            else:
-                all_coeffs = [0]*(degree + 1)
-                for d, c in zip(degrees, coeffs):
-                    all_coeffs[degree - d] = c
-
-            return Poly(all_coeffs, field=field)
+                return DensePoly(all_coeffs)
 
     @classmethod
     def Roots(cls, roots, multiplicities=None, field=None):
@@ -726,10 +725,14 @@ class Poly:
             The result of the polynomial evaluation of the same shape as `x`.
         """
         if field is None:
-            return self.field._poly_eval(self.coeffs, x)
+            field = self.field
+            coeffs = self.coeffs
         else:
             assert issubclass(field, GFArray)
-            return field._poly_eval(self.coeffs, x)
+            coeffs = field(self.coeffs)
+        if not isinstance(x, field):
+            x = field(x)
+        return field._poly_evaluate(coeffs, x)
 
     @classmethod
     def _check_inputs_are_polys(cls, a, b):
@@ -1013,11 +1016,7 @@ class DensePoly(Poly):
         field = a.field
 
         # c(x) = a(x) * b(x)
-        a_degree = a.coeffs.size - 1
-        b_degree = b.coeffs.size - 1
-        c_coeffs = field.Zeros(a_degree + b_degree + 1)
-        for i in np.nonzero(b.coeffs)[0]:
-            c_coeffs[i:i + a.coeffs.size] += a.coeffs*b.coeffs[i]
+        c_coeffs = field._poly_multiply(a.coeffs, b.coeffs)  # pylint: disable=protected-access
 
         return Poly(c_coeffs)
 
@@ -1037,56 +1036,12 @@ class DensePoly(Poly):
             return zero, a.copy()
 
         else:
-            q_degree = a.degree - b.degree
-            r_degree = b.degree  # One degree larger than final remainder
-            q_coeffs = field.Zeros(q_degree + 1)
-            r_coeffs = field.Zeros(r_degree + 1)
-
-            # Preset remainder so we can rotate at the start of loop
-            r_coeffs[1:] = a.coeffs[0:b.degree]
-
-            for i in range(0, q_degree + 1):
-                r_coeffs = np.roll(r_coeffs, -1)
-                r_coeffs[-1] = a.coeffs[i + b.degree]
-
-                if r_coeffs[0] > 0:
-                    q_coeffs[i] = r_coeffs[0] // b.coeffs[0]
-                    r_coeffs -= q_coeffs[i]*b.coeffs
-
-            return Poly(q_coeffs), Poly(r_coeffs[1:])
+            q_coeffs, r_coeffs = field._poly_divmod(a.coeffs, b.coeffs)  # pylint: disable=protected-access
+            return Poly(q_coeffs), Poly(r_coeffs)
 
     @classmethod
     def _mod(cls, a, b):
-        field = a.field
-        zero = Poly.Zero(field)
-
-        # q(x)*b(x) + r(x) = a(x)
-        if b.degree == 0:
-            return zero
-
-        elif a == zero:
-            return zero
-
-        elif a.degree < b.degree:
-            return a.copy()
-
-        else:
-            q_degree = a.degree - b.degree
-            r_degree = b.degree  # One degree larger than final remainder
-            r_coeffs = field.Zeros(r_degree + 1)
-
-            # Preset remainder so we can rotate at the start of loop
-            r_coeffs[1:] = a.coeffs[0:b.degree]
-
-            for i in range(0, q_degree + 1):
-                r_coeffs = np.roll(r_coeffs, -1)
-                r_coeffs[-1] = a.coeffs[i + b.degree]
-
-                if r_coeffs[0] > 0:
-                    q = r_coeffs[0] // b.coeffs[0]
-                    r_coeffs -= q*b.coeffs
-
-            return Poly(r_coeffs[1:])
+        return cls._divmod(a, b)[1]
 
     ###############################################################################
     # Instance properties

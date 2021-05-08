@@ -62,13 +62,16 @@ class GFpmMeta(GFMeta):
         IRREDUCIBLE_POLY = cls._irreducible_poly.coeffs.view(np.ndarray)
         DTYPE = cls.dtypes[-1]  # pylint: disable=unsubscriptable-object
 
+        # JIT-compile add,  multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
         INT_TO_POLY_JIT = numba.jit("int64[:](int64)", nopython=True)(_int_to_poly)
         POLY_TO_INT_JIT = numba.jit("int64(int64[:])", nopython=True)(_poly_to_int)
-
-        # JIT-compile add,  multiply, and multiplicative inverse routines for reference in polynomial evaluation routine
-        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
-        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
+        cls._ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_calculate)
+        ADD_JIT = cls._ADD_JIT
+        cls._SUBTRACT_JIT = numba.jit("int64(int64, int64)", nopython=True)(_subtract_calculate)
+        cls._MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_calculate)
+        MULTIPLY_JIT = cls._MULTIPLY_JIT
         MULTIPLICATIVE_INVERSE_JIT = numba.jit("int64(int64)", nopython=True)(_multiplicative_inverse_calculate)
+        cls._DIVIDE_JIT = numba.jit("int64(int64, int64)", nopython=True)(_divide_calculate)
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
@@ -83,7 +86,6 @@ class GFpmMeta(GFMeta):
         cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_calculate)
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
-        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_calculate)
 
     ###############################################################################
     # Ufunc routines
@@ -399,10 +401,3 @@ def _log_calculate(beta):  # pragma: no cover
         result = MULTIPLY_JIT(result, PRIMITIVE_ELEMENT)
 
     return i
-
-
-def _poly_eval_calculate(coeffs, values, results):  # pragma: no cover
-    for i in range(values.size):
-        results[i] = coeffs[0]
-        for j in range(1, coeffs.size):
-            results[i] = ADD_JIT(coeffs[j], MULTIPLY_JIT(results[i], values[i]))

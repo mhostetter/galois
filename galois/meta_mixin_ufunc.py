@@ -2,6 +2,7 @@ import numba
 import numpy as np
 
 from .linalg import matmul
+from .meta_mixin_jit import JITMixin
 
 # Placeholder globals that will be set in _compile_jit_lookup()
 CHARACTERISTIC = None  # The field's prime characteristic `p`
@@ -16,7 +17,7 @@ ADD_JIT = lambda x, y: x + y
 MULTIPLY_JIT = lambda x, y: x * y
 
 
-class UfuncMixin(type):
+class UfuncMixin(JITMixin):
     """
     A mixin class that provides the basics for compiling ufuncs.
     """
@@ -28,6 +29,7 @@ class UfuncMixin(type):
         cls._LOG = None
         cls._ZECH_LOG = None
         cls._ZECH_E = None
+
         cls._ufuncs = {}
 
         # Integer representations of the field's primitive element and primitive polynomial to be used in the
@@ -74,6 +76,8 @@ class UfuncMixin(type):
             cls._compile_python_calculate()
         else:
             raise RuntimeError(f"Attribute `ufunc_mode` was not processed, {cls._ufunc_mode}. Please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+
+        cls._compile_special_functions(target)
 
     def _build_lookup_tables(cls):
         order = cls.order
@@ -138,8 +142,10 @@ class UfuncMixin(type):
         ZECH_E = cls._ZECH_E
 
         # JIT-compile add and multiply routines for reference in other routines
-        ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_lookup)
-        MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_lookup)
+        cls._ADD_JIT = numba.jit("int64(int64, int64)", nopython=True)(_add_lookup)
+        cls._SUBTRACT_JIT = numba.jit("int64(int64, int64)", nopython=True)(_subtract_lookup)
+        cls._MULTIPLY_JIT = numba.jit("int64(int64, int64)", nopython=True)(_multiply_lookup)
+        cls._DIVIDE_JIT = numba.jit("int64(int64, int64)", nopython=True)(_divide_lookup)
 
         kwargs = {"nopython": True, "target": target}
         if target == "cuda":
@@ -149,6 +155,8 @@ class UfuncMixin(type):
         # d = np.dtype(self.dtypes[0]).name
 
         # Create numba JIT-compiled ufuncs using the *current* EXP, LOG, and MUL_INV lookup tables
+        ADD_JIT = cls._ADD_JIT
+        MULTIPLY_JIT = cls._MULTIPLY_JIT
         cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
         cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
         cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
@@ -157,7 +165,6 @@ class UfuncMixin(type):
         cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_multiplicative_inverse_lookup)
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
         cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
-        cls._ufuncs["poly_eval"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **kwargs)(_poly_eval_lookup)
 
     def _compile_jit_calculate(cls, target):
         """
@@ -175,7 +182,6 @@ class UfuncMixin(type):
         cls._ufuncs["reciprocal"] = np.frompyfunc(cls._multiplicative_inverse_python, 1, 1)
         cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
         cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
-        cls._ufuncs["poly_eval"] = np.vectorize(cls._poly_eval_python, excluded=["coeffs"], otypes=[np.object_])
 
     ###############################################################################
     # Ufunc routines
@@ -436,13 +442,6 @@ class UfuncMixin(type):
 
         # return cls(a - A) / cls(B - b)
 
-    def _poly_eval_python(cls, coeffs, values):
-        result = coeffs[0]
-        for j in range(1, coeffs.size):
-            p = cls._multiply_python(result, values)
-            result = cls._add_python(coeffs[j], p)
-        return result
-
 
 ###################################################################################
 # Galois field arithmetic for any field using EXP, LOG, and ZECH_LOG lookup tables
@@ -630,10 +629,3 @@ def _log_lookup(a):  # pragma: no cover
         raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
     return LOG[a]
-
-
-def _poly_eval_lookup(coeffs, values, results):  # pragma: no cover
-    for i in range(values.size):
-        results[i] = coeffs[0]
-        for j in range(1, coeffs.size):
-            results[i] = ADD_JIT(coeffs[j], MULTIPLY_JIT(results[i], values[i]))
