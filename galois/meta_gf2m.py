@@ -47,9 +47,12 @@ class GF2mMeta(GFMeta):
         if cls._ufunc_mode == "jit-lookup":
             cls._build_lookup_tables()
 
-            cls._ufuncs["add"] = cls._compile_add_lookup(target)
-            cls._ufuncs["negative"] = cls._compile_negative_lookup(target)
-            cls._ufuncs["subtract"] = cls._compile_subtract_lookup(target)
+            # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835552639.
+            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+            cls._ufuncs["add"] = np.bitwise_xor
+            cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
+            cls._ufuncs["subtract"] = np.bitwise_xor
+
             cls._ufuncs["multiply"] = cls._compile_multiply_lookup(target)
             cls._ufuncs["reciprocal"] = cls._compile_reciprocal_lookup(target)
             cls._ufuncs["divide"] = cls._compile_divide_lookup(target)
