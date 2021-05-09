@@ -109,19 +109,19 @@ def kth_prime(k):
 
 
 @set_module("galois")
-def prev_prime(x):
+def prev_prime(n):
     """
-    Returns the nearest prime :math:`p`, such that :math:`p \\le x`.
+    Returns the nearest prime :math:`p`, such that :math:`p \\le n`.
 
     Parameters
     ----------
-    x : int
+    n : int
         A positive integer.
 
     Returns
     -------
     int
-        The nearest prime :math:`p \\le x`.
+        The nearest prime :math:`p \\le n`.
 
     Examples
     --------
@@ -130,27 +130,27 @@ def prev_prime(x):
         galois.prev_prime(13)
         galois.prev_prime(15)
     """
-    if not isinstance(x, (int, np.integer)):
-        raise TypeError(f"Argument `x` must be an integer, not {type(x)}.")
-    if not 2 <= x <= MAX_PRIME:
-        raise ValueError(f"Argument `x` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
-    return PRIMES[bisect.bisect_right(PRIMES, x) - 1]
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not 2 <= n <= MAX_PRIME:
+        raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
+    return PRIMES[bisect.bisect_right(PRIMES, n) - 1]
 
 
 @set_module("galois")
-def next_prime(x):
+def next_prime(n):
     """
-    Returns the nearest prime :math:`p`, such that :math:`p > x`.
+    Returns the nearest prime :math:`p`, such that :math:`p > n`.
 
     Parameters
     ----------
-    x : int
+    n : int
         A positive integer.
 
     Returns
     -------
     int
-        The nearest prime :math:`p > x`.
+        The nearest prime :math:`p > n`.
 
     Examples
     --------
@@ -159,11 +159,11 @@ def next_prime(x):
         galois.next_prime(13)
         galois.next_prime(15)
     """
-    if not isinstance(x, (int, np.integer)):
-        raise TypeError(f"Argument `x` must be an integer, not {type(x)}.")
-    if not x < MAX_PRIME:
-        raise ValueError(f"Argument `x` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
-    return PRIMES[bisect.bisect_right(PRIMES, x)]
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n < MAX_PRIME:
+        raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
+    return PRIMES[bisect.bisect_right(PRIMES, n)]
 
 
 @set_module("galois")
@@ -342,7 +342,7 @@ def is_prime(n):
 @set_module("galois")
 def fermat_primality_test(n):
     """
-    Probabilistic primality test of :math:`n`.
+    Determines if :math:`n` is composite.
 
     This function implements Fermat's primality test. The test says that for an integer :math:`n`, select an integer
     :math:`a` coprime with :math:`n`. If :math:`a^{n-1} \\equiv 1 (\\textrm{mod}\\ n)`, then :math:`n` is prime or pseudoprime.
@@ -400,7 +400,7 @@ def fermat_primality_test(n):
 @set_module("galois")
 def miller_rabin_primality_test(n, a=None, rounds=1):
     """
-    Probabilistic primality test of :math:`n`.
+    Determines if :math:`n` is composite.
 
     This function implements the Miller-Rabin primality test. The test says that for an integer :math:`n`, select an integer
     :math:`a` such that :math:`a < n`. Factor :math:`n - 1` such that :math:`2^s d = n - 1`. Then, :math:`n` is composite,

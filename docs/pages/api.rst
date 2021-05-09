@@ -2,7 +2,7 @@ API Reference v\ |version|
 ==========================
 
 .. autosummary::
-   :template: module.rst
+   :template: galois_module.rst
    :toctree: autosummary
 
    galois

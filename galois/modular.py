@@ -13,7 +13,7 @@ __all__ = ["totatives", "euler_totient", "carmichael", "is_cyclic", "is_primitiv
 def totatives(n):
     """
     Returns the positive integers (totatives) in :math:`1 \\le k < n` that are coprime with :math:`n`,
-    i.e. :math:`gcd(n, k) = 1`.
+    i.e. :math:`\\mathrm{gcd}(n, k) = 1`.
 
     The totatives of :math:`n` form the multiplicative group :math:`\\mathbb{Z}{_n^\\times}`.
 
@@ -56,7 +56,7 @@ def totatives(n):
 def euler_totient(n):
     """
     Counts the positive integers (totatives) in :math:`1 \\le k < n` that are relatively prime to
-    :math:`n`, i.e. :math:`gcd(n, k) = 1`.
+    :math:`n`, i.e. :math:`\\mathrm{gcd}(n, k) = 1`.
 
     Implements the Euler Totient function :math:`\\phi(n)`.
 
