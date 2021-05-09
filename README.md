@@ -46,13 +46,11 @@ In addition to normal array arithmetic, `galois` also supports linear algebra (w
 - Supports all Galois fields `GF(p^m)`, even arbitrarily-large fields!
 - **Faster** than native numpy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`
 - Seamless integration with numpy -- normal numpy functions work on Galois field arrays
-- Linear algebra over Galois fields using native `np.linalg` functions
+- Linear algebra over Galois fields using normal `np.linalg` functions
 - Polynomials over Galois fields with `galois.Poly`, both dense and sparse polynomials
 - Compile ufuncs to target GPUs for massive data processing
 
 ## Roadmap
-
-Planned future functionality of `galois` includes:
 
 - Ring support
 - Linear feedback shift registers over arbitrary Galois fields
@@ -62,7 +60,7 @@ Planned future functionality of `galois` includes:
 
 ## Documentation
 
-Our documentation can be found at https://galois.readthedocs.io/en/stable/. The documentation includes
+The documentation for `galois` can be found at https://galois.readthedocs.io/en/stable/. It includes
 [installation instructions](https://galois.readthedocs.io/en/stable/pages/installation.html), [basic usage](https://galois.readthedocs.io/en/stable/pages/basic_usage.html),
 [tutorials](https://galois.readthedocs.io/en/stable/pages/tutorials.html), [development guide](https://galois.readthedocs.io/en/stable/pages/development.html),
 and an [API reference](https://galois.readthedocs.io/en/stable/pages/build/_autosummary/galois.html#module-galois).
@@ -114,7 +112,7 @@ True
 True
 ```
 
-A Galois field array class contains attributes relating to its Galois field and methods to modify how the field
+A Galois field array class contains attributes relating to its Galois field and has methods to modify how the field
 is calculated or displayed. See the attributes and methods in `galois.GFMeta`.
 
 ```python
