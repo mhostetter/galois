@@ -57,6 +57,7 @@
       lcm
       crt
       isqrt
+      pow
       is_cyclic
       carmichael
       euler_totient

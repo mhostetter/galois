@@ -86,7 +86,7 @@ def poly_pow(poly, power, modulus):
 
     The algorithm is more efficient than exponentiating first and then reducing modulo :math:`g(x)`. Instead,
     this algorithm repeatedly squares :math:`f(x)`, reducing modulo :math:`g(x)` at each step. This is the polynomial
-    equivalent of :func:`pow`.
+    equivalent of :func:`galois.pow`.
 
     Parameters
     ----------
