@@ -126,7 +126,7 @@ class GF2Meta(GFMeta):
         b = 1 / a, a = 1 is the only valid element with a multiplicative inverse, which is 1
           = a
         """
-        cls._verify_method_not_reduction(method)
+        cls._verify_unary_method_not_reduction(ufunc, method)
         if np.count_nonzero(inputs[0]) != inputs[0].size:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
         return inputs[0]
@@ -149,6 +149,7 @@ class GF2Meta(GFMeta):
           = a * a
           = a
         """
+        cls._verify_unary_method_not_reduction(ufunc, method)
         return inputs[0]
 
     def _ufunc_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
@@ -158,6 +159,7 @@ class GF2Meta(GFMeta):
         b = log_α(a), a = 1 is the only valid element with a logarithm base α, which is 0
           = 0
         """
+        cls._verify_method_only_call(ufunc, method)
         if np.count_nonzero(inputs[meta["operands"][0]]) != inputs[meta["operands"][0]].size:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
