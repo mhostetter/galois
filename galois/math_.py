@@ -8,7 +8,44 @@ import numpy as np
 
 from .overrides import set_module
 
-__all__ = ["isqrt", "lcm", "prod"]
+__all__ = ["pow", "isqrt", "lcm", "prod"]
+
+
+@set_module("galois")
+def pow(base, exp, mod):  # pylint: disable=redefined-builtin
+    """
+    Efficiently exponentiates an integer :math:`a^k (\\textrm{mod}\\ m)`.
+
+    The algorithm is more efficient than exponentiating first and then reducing modulo :math:`m`. This
+    is the integer equivalent of :func:`galois.poly_pow`.
+
+    Note
+    ----
+    This function is an alias of :func:`pow` in the standard library.
+
+    Parameters
+    ----------
+    base : int
+        The integer base :math:`a`.
+    exp : int
+        The integer exponent :math:`k`.
+    mod : int
+        The integer modulus :math:`m`.
+
+    Returns
+    -------
+    int
+        The modular exponentiation :math:`a^k (\\textrm{mod}\\ m)`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.pow(3, 5, 7)
+        (3**5) % 7
+    """
+    import builtins  # pylint: disable=import-outside-toplevel
+    return builtins.pow(base, exp, mod)
 
 
 @set_module("galois")
