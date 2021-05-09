@@ -14,7 +14,6 @@ PRIMITIVE_ELEMENT = None  # The field's primitive element in integer form
 INT_TO_POLY_JIT = lambda x: [0]
 POLY_TO_INT_JIT = lambda vec: 0
 
-ADD_UFUNC = lambda x, y: x + y
 MULTIPLY_UFUNC = lambda x, y: x * y
 RECIPROCAL_UFUNC = lambda x: 1 / x
 
@@ -49,7 +48,7 @@ class GFpmMeta(GFMeta):
         return d
 
     def _compile_ufuncs(cls, target):
-        global CHARACTERISTIC, DEGREE, ORDER, IRREDUCIBLE_POLY, PRIMITIVE_ELEMENT, INT_TO_POLY_JIT, POLY_TO_INT_JIT, ADD_UFUNC, MULTIPLY_UFUNC, RECIPROCAL_UFUNC
+        global CHARACTERISTIC, DEGREE, ORDER, IRREDUCIBLE_POLY, PRIMITIVE_ELEMENT, INT_TO_POLY_JIT, POLY_TO_INT_JIT, MULTIPLY_UFUNC, RECIPROCAL_UFUNC
 
         if cls._ufunc_mode == "jit-lookup":
             cls._build_lookup_tables()
@@ -78,7 +77,6 @@ class GFpmMeta(GFMeta):
 
             kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
             cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
-            ADD_UFUNC = cls._ufuncs["add"]
             cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
             cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
             cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
@@ -129,29 +127,41 @@ class GFpmMeta(GFMeta):
         else:
             return field.Vector(output, dtype=dtype)
 
-    # def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
-    #     if cls._ufunc_mode == "jit-lookup":
-    #         # Use the lookup ufunc on each array entry
-    #         return super()._ufunc_add(ufunc, method, inputs, kwargs, meta)
-    #     else:
-    #         # Convert to entire polynomial/vector representation and perform array operation in GF(p)
-    #         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-    #         inputs, kwargs = cls._convert_inputs_to_vector(inputs, kwargs)
-    #         output = getattr(ufunc, method)(*inputs, **kwargs)
-    #         output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
-    #         return output
+    def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
+        if cls._ufunc_mode == "jit-lookup" or method != "__call__":
+            # Use the lookup ufunc on each array entry
+            return super()._ufunc_add(ufunc, method, inputs, kwargs, meta)
+        else:
+            # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+            cls._verify_operands_in_same_field(ufunc, inputs, meta)
+            inputs, kwargs = cls._convert_inputs_to_vector(inputs, kwargs)
+            output = getattr(ufunc, method)(*inputs, **kwargs)
+            output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
+            return output
 
-    # def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
-    #     if cls._ufunc_mode == "jit-lookup":
-    #         # Use the lookup ufunc on each array entry
-    #         return super()._ufunc_subtract(ufunc, method, inputs, kwargs, meta)
-    #     else:
-    #         # Convert entire array to polynomial/vector representation and perform array operation in GF(p)
-    #         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-    #         inputs, kwargs = cls._convert_inputs_to_vector(inputs, kwargs)
-    #         output = getattr(ufunc, method)(*inputs, **kwargs)
-    #         output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
-    #         return output
+    def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):
+        if cls._ufunc_mode == "jit-lookup" or method != "__call__":
+            # Use the lookup ufunc on each array entry
+            return super()._ufunc_negative(ufunc, method, inputs, kwargs, meta)
+        else:
+            # Convert entire array to polynomial/vector representation and perform array operation in GF(p)
+            cls._verify_operands_in_same_field(ufunc, inputs, meta)
+            inputs, kwargs = cls._convert_inputs_to_vector(inputs, kwargs)
+            output = getattr(ufunc, method)(*inputs, **kwargs)
+            output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
+            return output
+
+    def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
+        if cls._ufunc_mode == "jit-lookup" or method != "__call__":
+            # Use the lookup ufunc on each array entry
+            return super()._ufunc_subtract(ufunc, method, inputs, kwargs, meta)
+        else:
+            # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+            cls._verify_operands_in_same_field(ufunc, inputs, meta)
+            inputs, kwargs = cls._convert_inputs_to_vector(inputs, kwargs)
+            output = getattr(ufunc, method)(*inputs, **kwargs)
+            output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
+            return output
 
     ###############################################################################
     # Pure python arithmetic methods
@@ -161,8 +171,8 @@ class GFpmMeta(GFMeta):
         a_vec = np.zeros(cls.degree, dtype=cls.dtypes[-1])  # pylint: disable=unsubscriptable-object
         for i in range(0, cls.degree):
             q = a // cls.characteristic**(cls.degree - 1 - i)
-            a_vec[i] = q
             a -= q*cls.characteristic**(cls.degree - 1 - i)
+            a_vec[i] = q
         return a_vec
 
     def _poly_to_int(cls, a_vec):
@@ -254,8 +264,8 @@ def _int_to_poly(a):
     a_vec = np.zeros(DEGREE, dtype=np.int64)
     for i in range(0, DEGREE):
         q = a // CHARACTERISTIC**(DEGREE - 1 - i)
-        a_vec[i] = q
         a -= q*CHARACTERISTIC**(DEGREE - 1 - i)
+        a_vec[i] = q
     return a_vec
 
 
