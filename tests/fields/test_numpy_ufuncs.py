@@ -20,6 +20,11 @@ class TestReduce:
             b_truth = b_truth + ai
         assert b == b_truth
 
+    def test_negative(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.negative.reduce(a)
+
     def test_subtract(self, field):
         a = field.Random(10)
         b = np.subtract.reduce(a)
@@ -36,6 +41,11 @@ class TestReduce:
             b_truth = b_truth * ai
         assert b == b_truth
 
+    def test_reciprocal(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.reciprocal.reduce(a)
+
     def test_divide(self, field):
         a = field.Random(10, low=1)
         b = np.true_divide.reduce(a)
@@ -51,14 +61,20 @@ class TestReduce:
             b_truth = b_truth // ai
         assert b == b_truth
 
-    # TODO: Revisist if this is valid
-    # def test_power(self, field):
-    #     a = field.Random(10)
-    #     b = np.power.reduce(a)
-    #     b_truth = a[0]
-    #     for ai in a[1:]:
-    #         b_truth = b_truth ** ai
-    #     assert b == b_truth
+    def test_power(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.power.reduce(a)
+
+    def test_square(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.square.reduce(a)
+
+    def test_log(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.log.reduce(a)
 
 
 class TestAccumulate:
@@ -70,6 +86,11 @@ class TestAccumulate:
         for i in range(1, 10):
             b_truth[i] = b_truth[i-1] + a[i]
         assert np.array_equal(b, b_truth)
+
+    def test_negative(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.negative.accumulate(a)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -89,6 +110,11 @@ class TestAccumulate:
             b_truth[i] = b_truth[i-1] * a[i]
         assert np.array_equal(b, b_truth)
 
+    def test_reciprocal(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.reciprocal.accumulate(a)
+
     def test_divide(self, field):
         a = field.Random(10, low=1)
         b = np.true_divide.accumulate(a)
@@ -106,15 +132,20 @@ class TestAccumulate:
             b_truth[i] = b_truth[i-1] // a[i]
         assert np.array_equal(b, b_truth)
 
-    # TODO: Revisist if this is valid
-    # def test_power(self, field):
-    #     a = field.Random(10)
-    #     b = np.power.accumulate(a)
-    #     b_truth = field.Zeros(10)
-    #     b_truth[0] = a[0]
-    #     for i in range(1, 10):
-    #         b_truth[i] = b_truth[i-1] ** a[i]
-    #     assert np.array_equal(b, b_truth)
+    def test_power(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.power.accumulate(a)
+
+    def test_square(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.square.accumulate(a)
+
+    def test_log(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.log.accumulate(a)
 
 
 class TestReduceAt:
@@ -129,6 +160,12 @@ class TestReduceAt:
             else:
                 b_truth[i] = np.add.reduce(a[idxs[i]:idxs[i+1]])
         assert np.array_equal(b, b_truth)
+
+    def test_negative(self, field):
+        a = field.Random(10)
+        idxs = [1,4,5,8]
+        with pytest.raises(ValueError):
+            b = np.negative.reduceat(a, idxs)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -154,6 +191,12 @@ class TestReduceAt:
                 b_truth[i] = np.multiply.reduce(a[idxs[i]:idxs[i+1]])
         assert np.array_equal(b, b_truth)
 
+    def test_reciprocal(self, field):
+        a = field.Random(10)
+        idxs = [1,4,5,8]
+        with pytest.raises(ValueError):
+            b = np.reciprocal.reduceat(a, idxs)
+
     def test_divide(self, field):
         a = field.Random(10, low=1)
         idxs = [1,4,5,8]
@@ -177,18 +220,23 @@ class TestReduceAt:
                 b_truth[i] = np.floor_divide.reduce(a[idxs[i]:idxs[i+1]])
         assert np.array_equal(b, b_truth)
 
-    # TODO: Revisist if this is valid
-    # def test_power(self, field):
-    #     a = field.Random(10)
-    #     idxs = [1,4,5,8]
-    #     b = np.power.reduceat(a, idxs)
-    #     b_truth = field.Zeros(len(idxs))
-    #     for i in range(len(idxs)):
-    #         if i == len(idxs) - 1:
-    #             b_truth[i] = np.power.reduce(a[idxs[i]:])
-    #         else:
-    #             b_truth[i] = np.power.reduce(a[idxs[i]:idxs[i+1]])
-    #     assert np.array_equal(b, b_truth)
+    def test_power(self, field):
+        a = field.Random(10)
+        idxs = [1,4,5,8]
+        with pytest.raises(ValueError):
+            b = np.power.reduceat(a, idxs)
+
+    def test_square(self, field):
+        a = field.Random(10)
+        idxs = [1,4,5,8]
+        with pytest.raises(ValueError):
+            b = np.square.reduceat(a, idxs)
+
+    def test_log(self, field):
+        a = field.Random(10)
+        idxs = [1,4,5,8]
+        with pytest.raises(ValueError):
+            b = np.log.reduceat(a, idxs)
 
 
 class TestOuter:
@@ -201,6 +249,11 @@ class TestOuter:
             for j in range(b.size):
                 c_truth[i,j] = a[i] + b[j]
         assert np.array_equal(c, c_truth)
+
+    def test_negative(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.negative.outer(a)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -222,6 +275,11 @@ class TestOuter:
             for j in range(b.size):
                 c_truth[i,j] = a[i] * b[j]
         assert np.array_equal(c, c_truth)
+
+    def test_reciprocal(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.reciprocal.outer(a)
 
     def test_divide(self, field):
         a = field.Random(10)
@@ -252,6 +310,16 @@ class TestOuter:
                 c_truth[i,j] = a[i] ** b[j]
         assert np.array_equal(c, c_truth)
 
+    def test_square(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.square.outer(a)
+
+    def test_log(self, field):
+        a = field.Random(10)
+        with pytest.raises(ValueError):
+            b = np.log.outer(a)
+
 
 class TestAt:
     def test_add(self, field):
@@ -262,6 +330,15 @@ class TestAt:
         np.add.at(a, idxs, b)
         for i in idxs:
             a_truth[i] = a_truth[i] + b
+        assert np.array_equal(a, a_truth)
+
+    def test_negative(self, field):
+        a = field.Random(10)
+        idxs = [0,1,1,4,8]
+        a_truth = field(a)  # Ensure a copy happens
+        np.negative.at(a, idxs)
+        for i in idxs:
+            a_truth[i] = np.negative(a_truth[i])
         assert np.array_equal(a, a_truth)
 
     def test_subtract(self, field):
@@ -284,6 +361,15 @@ class TestAt:
             a_truth[i] = a_truth[i] * b
         assert np.array_equal(a, a_truth)
 
+    def test_reciprocal(self, field):
+        a = field.Random(10, low=1)
+        idxs = [0,1,1,4,8]
+        a_truth = field(a)  # Ensure a copy happens
+        np.reciprocal.at(a, idxs)
+        for i in idxs:
+            a_truth[i] = np.reciprocal(a_truth[i])
+        assert np.array_equal(a, a_truth)
+
     def test_divide(self, field):
         a = field.Random(10)
         b = field.Random(low=1)
@@ -303,15 +389,6 @@ class TestAt:
             a_truth[i] = a_truth[i] // b
         assert np.array_equal(a, a_truth)
 
-    def test_negative(self, field):
-        a = field.Random(10)
-        idxs = [0,1,1,4,8]
-        a_truth = field(a)  # Ensure a copy happens
-        np.negative.at(a, idxs)
-        for i in idxs:
-            a_truth[i] = -a_truth[i]
-        assert np.array_equal(a, a_truth)
-
     def test_power(self, field):
         a = field.Random(10)
         b = randint(1, field.order, 1, field.dtypes[-1])
@@ -320,4 +397,13 @@ class TestAt:
         np.power.at(a, idxs, b)
         for i in idxs:
             a_truth[i] = a_truth[i] ** b
+        assert np.array_equal(a, a_truth)
+
+    def test_square(self, field):
+        a = field.Random(10)
+        idxs = [0,1,1,4,8]
+        a_truth = field(a)  # Ensure a copy happens
+        np.square.at(a, idxs)
+        for i in idxs:
+            a_truth[i] = np.square(a_truth[i])
         assert np.array_equal(a, a_truth)

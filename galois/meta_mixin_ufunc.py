@@ -189,9 +189,17 @@ class UfuncMixin(JITMixin):
     # Input/output conversion functions
     ###############################################################################
 
-    def _verify_method_not_reduction(cls, method):  # pylint: disable=no-self-use
+    def _verify_unary_method_not_reduction(cls, ufunc, method):  # pylint: disable=no-self-use
         if method in ["reduce", "accumulate", "reduceat", "outer"]:
-            raise ValueError(f"Ufunc method '{method}' is only supported on binary functions.")
+            raise ValueError(f"Ufunc method '{method}' is not supported on '{ufunc.__name__}'. Reduction methods are only supported on binary functions.")
+
+    def _verify_binary_method_not_reduction(cls, ufunc, method):  # pylint: disable=no-self-use
+        if method in ["reduce", "accumulate", "reduceat"]:
+            raise ValueError(f"Ufunc method '{method}' is not supported on '{ufunc.__name__}' because it takes inputs with type of Galois field array and integer array. Different types do not uspport reduction.")
+
+    def _verify_method_only_call(cls, ufunc, method):  # pylint: disable=no-self-use
+        if not method == "__call__":
+            raise ValueError(f"Ufunc method '{method}' is not supported on '{ufunc.__name__}'. Only '__call__' is supported.")
 
     def _verify_operands_in_same_field(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
         if len(meta["non_field_operands"]) > 0:
@@ -278,7 +286,7 @@ class UfuncMixin(JITMixin):
         return output
 
     def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        cls._verify_method_not_reduction(method)
+        cls._verify_unary_method_not_reduction(ufunc, method)
         output = getattr(cls._ufuncs["negative"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
@@ -300,7 +308,7 @@ class UfuncMixin(JITMixin):
         return output
 
     def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        cls._verify_method_not_reduction(method)
+        cls._verify_unary_method_not_reduction(ufunc, method)
         output = getattr(cls._ufuncs["reciprocal"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
@@ -312,22 +320,25 @@ class UfuncMixin(JITMixin):
         return output
 
     def _ufunc_power(cls, ufunc, method, inputs, kwargs, meta):
+        cls._verify_binary_method_not_reduction(ufunc, method)
         cls._verify_operands_first_field_second_int(ufunc, inputs, meta)
         output = getattr(cls._ufuncs["power"], method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        cls._verify_unary_method_not_reduction(ufunc, method)
         output = getattr(cls._ufuncs["power"], method)(*inputs, 2, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        cls._verify_method_only_call(ufunc, method)
         output = getattr(cls._ufuncs["log"], method)(*inputs, **kwargs)
         return output
 
     def _ufunc_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        assert method == "__call__"
+        cls._verify_method_only_call(ufunc, method)
         return cls._matmul(*inputs[0:2])
 
     ###############################################################################
