@@ -108,17 +108,10 @@ def euler_totient(n):
     return phi
 
 
-def _carmichael_prime_power(p, k):
-    if p == 2 and k > 2:
-        return euler_totient(p**k) // 2
-    else:
-        return euler_totient(p**k)
-
-
 @set_module("galois")
 def carmichael(n):
     """
-    Finds the smallest positive integer :math:`m` such that :math:`a^m \\equiv 1 (\\textrm{mod}\\ n)` for
+    Finds the smallest positive integer :math:`m` such that :math:`a^m \\equiv 1\\ (\\textrm{mod}\\ n)` for
     every integer :math:`a` in :math:`1 \\le a < n` that is coprime to :math:`n`.
 
     Implements the Carmichael function :math:`\\lambda(n)`.
@@ -164,15 +157,18 @@ def carmichael(n):
     if n == 1:
         return 1
 
-    p, k = prime_factors(n)
+    p, e = prime_factors(n)
 
     lambdas = []
     for i in range(len(p)):
-        lambdas.append(_carmichael_prime_power(p[i], k[i]))
+        # Carmichael function for prime powers
+        if p[i] == 2 and e[i] > 2:
+            l = euler_totient(p[i]**e[i]) // 2
+        else:
+            l = euler_totient(p[i]**e[i])
+        lambdas.append(l)
 
-    lambda_ = lcm(*lambdas)
-
-    return lambda_
+    return lcm(*lambdas)
 
 
 @set_module("galois")
@@ -186,7 +182,7 @@ def is_cyclic(n):
     The order of the group is defined by Euler's totient function, :math:`\\phi(n) = k`. If :math:`\\mathbb{Z}{_n^\\times}` is cyclic,
     the number of primitive roots is found by :math:`\\phi(k)` or :math:`\\phi(\\phi(n))`.
 
-    :math:`\\mathbb{Z}{_n^\\times}` is cyclic if and only if :math:`n` is :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`,
+    :math:`\\mathbb{Z}{_n^\\times}` is *cyclic* if and only if :math:`n` is :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`,
     where :math:`p` is an odd prime and :math:`k` is a positive integer.
 
     Parameters

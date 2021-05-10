@@ -73,6 +73,13 @@
       euler_totient
       totatives
 
+   .. rubric:: {{ _('Discrete Logarithms') }}
+
+   .. autosummary::
+      :toctree:
+
+      log_naive
+
    .. rubric:: {{ _('Primes') }}
 
    .. autosummary::
