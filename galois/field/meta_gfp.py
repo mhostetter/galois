@@ -100,10 +100,10 @@ class GFpMeta(GFMeta):
             return cls.order - a
 
     def _subtract_python(cls, a, b):
-        c = a - b
-        if c < 0:
-            c += cls.order
-        return c
+        if a >= b:
+            return a - b
+        else:
+            return cls.order + a - b
 
     def _multiply_python(cls, a, b):
         return (a * b) % cls.order
@@ -191,10 +191,10 @@ def _negative_calculate(a):  # pragma: no cover
 
 
 def _subtract_calculate(a, b):  # pragma: no cover
-    c = a - b
-    if c < 0:
-        c += ORDER
-    return c
+    if a >= b:
+        return a - b
+    else:
+        return ORDER + a - b
 
 
 def _multiply_calculate(a, b):  # pragma: no cover

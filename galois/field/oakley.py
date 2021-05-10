@@ -1,6 +1,7 @@
+from ..overrides import set_module
+
 from .gf import GF
 from .poly import Poly
-from .overrides import set_module
 
 __all__ = ["Oakley1", "Oakley2", "Oakley3", "Oakley4"]
 

@@ -1,10 +1,11 @@
 import types
 
+from ..modular import primitive_root, is_primitive_root
+from ..prime import is_prime
+
 from .array import GFArray
 from .gf2 import GF2
 from .meta_gfp import GFpMeta
-from .modular import primitive_root, is_primitive_root
-from .prime import is_prime
 
 
 def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode="auto", target="cpu"):

@@ -5,10 +5,10 @@ from .dtypes import DTYPES
 from .linalg import _lapack_linalg
 
 # Placeholder functions to be replaced by JIT-compiled function
-ADD_JIT = lambda x, y: x + y
-SUBTRACT_JIT = lambda x, y: x - y
-MULTIPLY_JIT = lambda x, y: x * y
-DIVIDE_JIT = lambda x, y: x // y
+ADD_UFUNC = lambda x, y: x + y
+SUBTRACT_UFUNC = lambda x, y: x - y
+MULTIPLY_UFUNC = lambda x, y: x * y
+DIVIDE_UFUNC = lambda x, y: x // y
 
 
 class JITMixin(type):
@@ -19,25 +19,25 @@ class JITMixin(type):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._ADD_JIT = None
-        cls._SUBTRACT_JIT = None
-        cls._MULTIPLY_JIT = None
-        cls._DIVIDE_JIT = None
+        cls._ADD_UFUNC = None
+        cls._SUBTRACT_UFUNC = None
+        cls._MULTIPLY_UFUNC = None
+        cls._DIVIDE_UFUNC = None
 
         cls._funcs = {}
 
     def _compile_special_functions(cls, target):
-        global ADD_JIT, SUBTRACT_JIT, MULTIPLY_JIT, DIVIDE_JIT
+        global ADD_UFUNC, SUBTRACT_UFUNC, MULTIPLY_UFUNC, DIVIDE_UFUNC
 
         if cls.ufunc_mode == "python-calculate":
             # NOTE: Don't need to vectorize cls._convolve or cls._poly_divmod
             cls._funcs["poly_evaluate"] = np.vectorize(cls._poly_evaluate_python, excluded=["coeffs"], otypes=[np.object_])
 
         else:
-            ADD_JIT = cls._ufuncs["add"]
-            SUBTRACT_JIT = cls._ufuncs["subtract"]
-            MULTIPLY_JIT = cls._ufuncs["multiply"]
-            DIVIDE_JIT = cls._ufuncs["divide"]
+            ADD_UFUNC = cls._ufuncs["add"]
+            SUBTRACT_UFUNC = cls._ufuncs["subtract"]
+            MULTIPLY_UFUNC = cls._ufuncs["multiply"]
+            DIVIDE_UFUNC = cls._ufuncs["divide"]
 
             assert target == "cpu"
             cls._funcs["matmul"] = numba.jit("int64[:,:](int64[:,:], int64[:,:])", nopython=True)(_matmul_jit)
@@ -215,7 +215,7 @@ def _matmul_jit(A, B):  # pragma: no cover
     for i in range(M):
         for j in range(N):
             for k in range(K):
-                C[i,j] = ADD_JIT(C[i,j], MULTIPLY_JIT(A[i,k], B[k,j]))
+                C[i,j] = ADD_UFUNC(C[i,j], MULTIPLY_UFUNC(A[i,k], B[k,j]))
     return C
 
 
@@ -224,7 +224,7 @@ def _convolve_jit(a, b):  # pragma: no cover
 
     for i in range(a.size):
         for j in range(b.size - 1, -1, -1):
-            c[i + j] = ADD_JIT(c[i + j], MULTIPLY_JIT(a[i], b[j]))
+            c[i + j] = ADD_UFUNC(c[i + j], MULTIPLY_UFUNC(a[i], b[j]))
 
     return c
 
@@ -236,9 +236,9 @@ def _poly_divmod_jit(a, b):  # pragma: no cover
 
     for i in range(0, q_degree + 1):
         if qr[i] > 0:
-            q = DIVIDE_JIT(qr[i], b[0])
+            q = DIVIDE_UFUNC(qr[i], b[0])
             for j in range(0, b.size):
-                qr[i + j] = SUBTRACT_JIT(qr[i + j], MULTIPLY_JIT(q, b[j]))
+                qr[i + j] = SUBTRACT_UFUNC(qr[i + j], MULTIPLY_UFUNC(q, b[j]))
             qr[i] = q
 
     return qr
@@ -248,4 +248,4 @@ def _poly_evaluate_jit(coeffs, values, results):  # pragma: no cover
     for i in range(values.size):
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
-            results[i] = ADD_JIT(coeffs[j], MULTIPLY_JIT(results[i], values[i]))
+            results[i] = ADD_UFUNC(coeffs[j], MULTIPLY_UFUNC(results[i], values[i]))
