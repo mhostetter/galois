@@ -36,6 +36,16 @@
       primitive_elements
       is_primitive_element
 
+   .. rubric:: {{ _('Galois Fields for Cryptography') }}
+
+   .. autosummary::
+      :toctree:
+
+      Oakley1
+      Oakley2
+      Oakley3
+      Oakley4
+
    .. rubric:: {{ _('Polynomials over Galois Fields') }}
 
    .. autosummary::
