@@ -1,6 +1,7 @@
+from ..overrides import set_module
+
 from .array import GFArray
 from .meta_gf2 import GF2Meta
-from .overrides import set_module
 
 __all__ = ["GF2"]
 

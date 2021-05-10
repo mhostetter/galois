@@ -30,7 +30,7 @@ class GF2Meta(GFMeta):
         is unmodified by changes to the Galois field array. Valid input array types are :obj:`numpy.ndarray`,
         :obj:`list`, :obj:`tuple`, or :obj:`int`.
     dtype : numpy.dtype, optional
-        The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.int64`.
+        The :obj:`numpy.dtype` of the array elements. The default is :obj:`numpy.uint8`.
 
     Returns
     -------

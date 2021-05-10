@@ -3,19 +3,15 @@ A performant numpy extension for Galois fields.
 """
 from .version import __version__
 
+# Subpackages
+from .field import *
+
+# Modules
 from .algorithm import *
-from .array import *
-from .conway import *
 from .factor import *
-from .gf import *
-from .gf2 import *
 from .log import *
 from .math_ import *  # pylint: disable=redefined-builtin
-from .meta_gf import *
 from .modular import *
-from .oakley import *
-from .poly import *
-from .poly_functions import *
 from .prime import *
 
 # Define the GF2 primitive polynomial here, not in gf2.py, to avoid a circular dependency.

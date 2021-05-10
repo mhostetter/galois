@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 
-def integer_to_poly(decimal, order):
+def integer_to_poly(decimal, order, degree=None):
     """
     Convert decimal value into polynomial representation.
 
@@ -20,10 +20,11 @@ def integer_to_poly(decimal, order):
         List of polynomial coefficients in descending order.
     """
     decimal = int(decimal)
-    if decimal > 0:
-        degree = int(math.floor(math.log(decimal, order)))
-    else:
-        degree = 0
+    if degree is None:
+        if decimal > 0:
+            degree = int(math.floor(math.log(decimal, order)))
+        else:
+            degree = 0
 
     c = []  # Coefficients in descending order
     for d in range(degree, -1, -1):

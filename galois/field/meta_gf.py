@@ -1,8 +1,8 @@
 import numpy as np
 
 from .meta_mixin_ufunc import UfuncMixin
-from .modular import totatives
-from .overrides import set_module
+from ..modular import totatives
+from ..overrides import set_module
 
 __all__ = ["GFMeta"]
 

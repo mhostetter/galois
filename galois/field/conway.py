@@ -3,15 +3,16 @@ import sqlite3
 
 import numpy as np
 
+from ..overrides import set_module
+from ..prime import is_prime
+
 from .gf_prime import GF_prime
-from .overrides import set_module
-from .prime import is_prime
 from .poly import Poly
 
 __all__ = ["conway_poly"]
 
 DATABASE = None  # Database singleton class
-DATABASE_FILE = os.path.join(os.path.dirname(__file__), "databases", "conway_polys.db")
+DATABASE_FILE = os.path.join(os.path.dirname(__file__), "..", "databases", "conway_polys.db")
 
 
 class ConwayDatabase:

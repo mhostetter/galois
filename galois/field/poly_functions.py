@@ -1,9 +1,10 @@
 import numpy as np
 
-from .factor import prime_factors
+from ..factor import prime_factors
+from ..modular import totatives
+from ..overrides import set_module
+
 from .gf_prime import GF_prime
-from .modular import totatives
-from .overrides import set_module
 from .poly import Poly
 
 __all__ = ["poly_gcd", "poly_pow", "is_irreducible", "is_primitive", "is_primitive_element", "primitive_element", "primitive_elements", "is_monic"]
@@ -144,6 +145,11 @@ def poly_pow(poly, power, modulus):
     result = (result_s * result_m) % modulus
 
     return result
+
+# @set_module("galois")
+# def poly_factors(poly):
+
+#     return
 
 
 @set_module("galois")

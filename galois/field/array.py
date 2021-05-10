@@ -2,9 +2,10 @@ import random
 
 import numpy as np
 
+from ..overrides import set_module
+
 from .meta_gf import GFMeta
 from .linalg import dot, inner, outer, matrix_rank, solve, inv, det, row_reduce, lu_decompose, lup_decompose
-from .overrides import set_module
 from .poly_conversion import integer_to_poly, poly_to_str, str_to_integer
 
 __all__ = ["GFArray"]
