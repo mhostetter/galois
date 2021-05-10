@@ -9,6 +9,7 @@ from .conway import *
 from .factor import *
 from .gf import *
 from .gf2 import *
+from .log import *
 from .math_ import *  # pylint: disable=redefined-builtin
 from .meta_gf import *
 from .modular import *
