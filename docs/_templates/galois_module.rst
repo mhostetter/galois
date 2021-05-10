@@ -76,7 +76,7 @@
       mersenne_exponents
       mersenne_primes
       prime_factors
-      is_prime
       is_smooth
-      fermat_primality_test
-      miller_rabin_primality_test
+      is_prime
+      is_prime_fermat
+      is_prime_miller_rabin

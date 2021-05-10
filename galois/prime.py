@@ -9,7 +9,7 @@ from .overrides import set_module
 
 __all__ = [
     "primes", "kth_prime", "prev_prime", "next_prime", "random_prime", "mersenne_exponents", "mersenne_primes",
-    "is_prime", "fermat_primality_test", "miller_rabin_primality_test"
+    "is_prime", "is_prime_fermat", "is_prime_miller_rabin"
 ]
 
 
@@ -290,9 +290,9 @@ def is_prime(n):
     Determines if :math:`n` is prime.
 
     This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
-    :obj:`galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
+    :obj:`galois.is_prime_fermat`. If it determines :math:`n` is composite, the function will quickly return.
     If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
-    will run seven rounds of Miller-Rabin's primality test, see :obj:`galois.miller_rabin_primality_test`. With this many rounds,
+    will run seven rounds of Miller-Rabin's primality test, see :obj:`galois.is_prime_miller_rabin`. With this many rounds,
     a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
 
     Parameters
@@ -328,11 +328,11 @@ def is_prime(n):
     if n == 2:
         return True
 
-    if not fermat_primality_test(n):
+    if not is_prime_fermat(n):
         # If the test returns False, then n is definitely composite
         return False
 
-    if not miller_rabin_primality_test(n, rounds=7):
+    if not is_prime_miller_rabin(n, rounds=7):
         # If the test returns False, then n is definitely composite
         return False
 
@@ -340,7 +340,7 @@ def is_prime(n):
 
 
 @set_module("galois")
-def fermat_primality_test(n):
+def is_prime_fermat(n):
     """
     Determines if :math:`n` is composite.
 
@@ -370,7 +370,7 @@ def fermat_primality_test(n):
         primes = [257, 24841, 65497]
 
         for prime in primes:
-            is_prime = galois.fermat_primality_test(prime)
+            is_prime = galois.is_prime_fermat(prime)
             p, k = galois.prime_factors(prime)
             print("Prime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(prime, is_prime, list(p)))
 
@@ -378,7 +378,7 @@ def fermat_primality_test(n):
         pseudoprimes = [2047, 29341, 65281]
 
         for pseudoprime in pseudoprimes:
-            is_prime = galois.fermat_primality_test(pseudoprime)
+            is_prime = galois.is_prime_fermat(pseudoprime)
             p, k = galois.prime_factors(pseudoprime)
             print("Pseudoprime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
     """
@@ -398,7 +398,7 @@ def fermat_primality_test(n):
 
 
 @set_module("galois")
-def miller_rabin_primality_test(n, a=None, rounds=1):
+def is_prime_miller_rabin(n, a=None, rounds=1):
     """
     Determines if :math:`n` is composite.
 
@@ -436,7 +436,7 @@ def miller_rabin_primality_test(n, a=None, rounds=1):
         primes = [257, 24841, 65497]
 
         for prime in primes:
-            is_prime = galois.miller_rabin_primality_test(prime)
+            is_prime = galois.is_prime_miller_rabin(prime)
             p, k = galois.prime_factors(prime)
             print("Prime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(prime, is_prime, list(p)))
 
@@ -445,13 +445,13 @@ def miller_rabin_primality_test(n, a=None, rounds=1):
 
         # Single round of Miller-Rabin, sometimes fooled by pseudoprimes
         for pseudoprime in pseudoprimes:
-            is_prime = galois.miller_rabin_primality_test(pseudoprime)
+            is_prime = galois.is_prime_miller_rabin(pseudoprime)
             p, k = galois.prime_factors(pseudoprime)
             print("Pseudoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
 
         # 7 rounds of Miller-Rabin, never fooled by pseudoprimes
         for pseudoprime in pseudoprimes:
-            is_prime = galois.miller_rabin_primality_test(pseudoprime, rounds=7)
+            is_prime = galois.is_prime_miller_rabin(pseudoprime, rounds=7)
             p, k = galois.prime_factors(pseudoprime)
             print("Pseudoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
     """
@@ -490,7 +490,7 @@ def miller_rabin_primality_test(n, a=None, rounds=1):
         rounds -= 1
         if rounds > 0:
             # On subsequent rounds, don't specify a -- we want new, different a's
-            return miller_rabin_primality_test(n, rounds=rounds)
+            return is_prime_miller_rabin(n, rounds=rounds)
         else:
             # n might be a prime
             return True
