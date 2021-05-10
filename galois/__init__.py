@@ -12,6 +12,7 @@ from .gf2 import *
 from .math_ import *  # pylint: disable=redefined-builtin
 from .meta_gf import *
 from .modular import *
+from .oakley import *
 from .poly import *
 from .poly_functions import *
 from .prime import *
