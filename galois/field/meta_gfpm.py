@@ -1,8 +1,8 @@
 import numba
 import numpy as np
 
-from .dtypes import DTYPES
-from .meta_gf import GFMeta
+from ..dtypes import DTYPES
+from .meta import GFMeta
 from .poly import Poly
 
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field

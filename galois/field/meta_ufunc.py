@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from .meta_mixin_jit import JITMixin
+from ..meta_ufunc import Ufunc
 
 CHARACTERISTIC = None  # The field's prime characteristic `p`
 ORDER = None  # The field's order `p^m`
@@ -12,11 +12,25 @@ ZECH_LOG = []  # ZECH_LOG[i] = log(1 + α^i)
 ZECH_E = None  # α^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
 
 
-class UfuncMixin(JITMixin):
+class FieldUfunc(Ufunc):
     """
     A mixin class that provides the basics for compiling ufuncs.
     """
     # pylint: disable=no-value-for-parameter
+
+    _overridden_ufuncs = {
+        np.add: "_ufunc_add",
+        np.negative: "_ufunc_negative",
+        np.subtract: "_ufunc_subtract",
+        np.multiply: "_ufunc_multiply",
+        np.reciprocal: "_ufunc_reciprocal",
+        np.floor_divide: "_ufunc_divide",
+        np.true_divide: "_ufunc_divide",
+        np.power: "_ufunc_power",
+        np.square: "_ufunc_square",
+        np.log: "_ufunc_log",
+        np.matmul: "_ufunc_matmul",
+    }
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
@@ -31,39 +45,6 @@ class UfuncMixin(JITMixin):
         # pure python ufunc implementations for `ufunc_mode = "python-calculate"`
         cls._primitive_element_int = None
         cls._irreducible_poly_int = None
-
-    def compile(cls, mode, target="cpu"):
-        """
-        Recompile the just-in-time compiled numba ufuncs with a new calculation mode or target.
-
-        Parameters
-        ----------
-        mode : str
-            The method of field computation, either `"jit-lookup"`, `"jit-calculate"`, `"python-calculate"`. The "jit-lookup" mode will
-            use Zech log, log, and anti-log lookup tables for speed. The "jit-calculate" mode will not store any lookup tables, but perform field
-            arithmetic on the fly. The "jit-calculate" mode is designed for large fields that cannot store lookup tables in RAM.
-            Generally, "jit-calculate" is slower than "jit-lookup". The "python-calculate" mode is reserved for extremely large fields. In
-            this mode the ufuncs are not JIT-compiled, but are pur python functions operating on python ints. The list of valid
-            modes for this field is in :obj:`galois.GFMeta.ufunc_modes`.
-        target : str, optional
-            The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. The default
-            is `"cpu"`. For extremely large fields the only supported target is `"cpu"` (which doesn't use numba it uses pure python to
-            calculate the field arithmetic). The list of valid targets for this field is in :obj:`galois.GFMeta.ufunc_targets`.
-        """
-        mode = cls.default_ufunc_mode if mode == "auto" else mode
-        if mode not in cls.ufunc_modes:
-            raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls.name}, not {mode}.")
-        if target not in cls.ufunc_targets:
-            raise ValueError(f"Argument `target` must be in {cls.ufunc_targets} for {cls.name}, not {target}.")
-
-        if mode == cls.ufunc_mode and target == cls.ufunc_target:
-            # Don't need to rebuild these ufuncs
-            return
-
-        cls._ufunc_mode = mode
-        cls._ufunc_target = target
-        cls._compile_ufuncs(target)
-        cls._compile_special_functions(target)
 
     def _build_lookup_tables(cls):
         if cls._EXP is not None:
@@ -110,12 +91,6 @@ class UfuncMixin(JITMixin):
 
         # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
         cls._EXP[order:2*order] = cls._EXP[1:1 + order]
-
-    def _compile_ufuncs(cls, target):
-        """
-        To be implemented in GF2Meta, GFpMeta, GF2mMeta, and GFpmMeta
-        """
-        raise NotImplementedError
 
     ###############################################################################
     # Compile general-purpose lookup functions
@@ -184,96 +159,6 @@ class UfuncMixin(JITMixin):
         LOG = cls._LOG
         kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
         return numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
-
-    ###############################################################################
-    # Input/output conversion functions
-    ###############################################################################
-
-    def _verify_unary_method_not_reduction(cls, ufunc, method):  # pylint: disable=no-self-use
-        if method in ["reduce", "accumulate", "reduceat", "outer"]:
-            raise ValueError(f"Ufunc method '{method}' is not supported on '{ufunc.__name__}'. Reduction methods are only supported on binary functions.")
-
-    def _verify_binary_method_not_reduction(cls, ufunc, method):  # pylint: disable=no-self-use
-        if method in ["reduce", "accumulate", "reduceat"]:
-            raise ValueError(f"Ufunc method '{method}' is not supported on '{ufunc.__name__}' because it takes inputs with type of Galois field array and integer array. Different types do not uspport reduction.")
-
-    def _verify_method_only_call(cls, ufunc, method):  # pylint: disable=no-self-use
-        if not method == "__call__":
-            raise ValueError(f"Ufunc method '{method}' is not supported on '{ufunc.__name__}'. Only '__call__' is supported.")
-
-    def _verify_operands_in_same_field(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
-        if len(meta["non_field_operands"]) > 0:
-            raise TypeError(f"Operation '{ufunc.__name__}' requires both operands to be Galois field arrays over the same field, not {[inputs[i] for i in meta['operands']]}.")
-
-    def _verify_operands_in_field_or_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
-        for i in meta["non_field_operands"]:
-            if isinstance(inputs[i], (int, np.integer)):
-                pass
-            elif isinstance(inputs[i], np.ndarray):
-                if meta["field"].dtypes == [np.object_]:
-                    if not (inputs[i].dtype == np.object_ or np.issubdtype(inputs[i].dtype, np.integer)):
-                        raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
-                else:
-                    if not np.issubdtype(inputs[i].dtype, np.integer):
-                        raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
-            else:
-                raise TypeError(f"Operation '{ufunc.__name__}' requires operands that are not Galois field arrays to be an integers or integer np.ndarrays, not {type(inputs[i])}.")
-
-    def _verify_operands_first_field_second_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
-        if len(meta["operands"]) == 1:
-            return
-
-        if not meta["operands"][0] == meta["field_operands"][0]:
-            raise TypeError(f"Operation '{ufunc.__name__}' requires the first operand to be a Galois field array, not {meta['types'][meta['operands'][0]]}.")
-        if len(meta["field_operands"]) > 1 and meta["operands"][1] == meta["field_operands"][1]:
-            raise TypeError(f"Operation '{ufunc.__name__}' requires the second operand to be an integer array, not {meta['types'][meta['operands'][1]]}.")
-
-        second = inputs[meta["operands"][1]]
-        if isinstance(second, (int, np.integer)):
-            return
-        # elif type(second) is np.ndarray:
-        #     if not np.issubdtype(second.dtype, np.integer):
-        #         raise ValueError(f"Operation '{ufunc.__name__}' requires the second operand with type np.ndarray to have integer dtype, not '{second.dtype}'.")
-        elif isinstance(second, np.ndarray):
-            if meta["field"].dtypes == [np.object_]:
-                if not (second.dtype == np.object_ or np.issubdtype(second.dtype, np.integer)):
-                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{second.dtype}'.")
-            else:
-                if not np.issubdtype(second.dtype, np.integer):
-                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{second.dtype}'.")
-        else:
-            raise TypeError(f"Operation '{ufunc.__name__}' requires the second operand to be an integer or integer np.ndarray, not {type(second)}.")
-
-    def _view_inputs_as_ndarray(cls, inputs, kwargs, dtype=None):  # pylint: disable=no-self-use
-        # View all inputs that are Galois field arrays as np.ndarray to avoid infinite recursion
-        v_inputs = list(inputs)
-        for i in range(len(inputs)):
-            if issubclass(type(inputs[i]), cls):
-                v_inputs[i] = inputs[i].view(np.ndarray) if dtype is None else inputs[i].view(np.ndarray).astype(dtype)
-
-        # View all output arrays as np.ndarray to avoid infinite recursion
-        if "out" in kwargs:
-            outputs = kwargs["out"]
-            v_outputs = []
-            for output in outputs:
-                if issubclass(type(output), cls):
-                    o = output.view(np.ndarray) if dtype is None else output.view(np.ndarray).astype(dtype)
-                else:
-                    o = output
-                v_outputs.append(o)
-            kwargs["out"] = tuple(v_outputs)
-
-        return v_inputs, kwargs
-
-    def _view_output_as_field(cls, output, field, dtype):  # pylint: disable=no-self-use
-        if isinstance(type(output), field):
-            return output
-        elif isinstance(output, np.ndarray):
-            return output.astype(dtype).view(field)
-        elif output is None:
-            return None
-        else:
-            return field(output, dtype=dtype)
 
     ###############################################################################
     # Ufunc routines

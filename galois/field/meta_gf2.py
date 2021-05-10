@@ -1,8 +1,8 @@
 import numba
 import numpy as np
 
-from .dtypes import DTYPES
-from .meta_gf import GFMeta
+from ..dtypes import DTYPES
+from .meta import GFMeta
 
 
 class GF2Meta(GFMeta):

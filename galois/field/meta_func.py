@@ -1,8 +1,10 @@
 import numba
 import numpy as np
 
-from .dtypes import DTYPES
-from .linalg import _lapack_linalg
+from ..dtypes import DTYPES
+from ..meta_func import Func
+
+from .linalg import _lapack_linalg, dot, inner, outer, matrix_rank, solve, inv, det
 
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_UFUNC = lambda x, y: x + y
@@ -11,11 +13,26 @@ MULTIPLY_UFUNC = lambda x, y: x * y
 DIVIDE_UFUNC = lambda x, y: x // y
 
 
-class JITMixin(type):
+class FieldFunc(Func):
     """
     A mixin class that JIT compiles general purpose functions for polynomial arithmetic and convolution.
     """
     # pylint: disable=no-value-for-parameter
+
+    _overridden_functions = {
+        np.convolve: "_convolve",
+    }
+
+    _overridden_linalg_functions = {
+        np.dot: dot,
+        np.inner: inner,
+        np.outer: outer,
+        # np.tensordot: "tensordot",
+        np.linalg.matrix_rank: matrix_rank,
+        np.linalg.inv: inv,
+        np.linalg.det: det,
+        np.linalg.solve: solve
+    }
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
@@ -26,7 +43,7 @@ class JITMixin(type):
 
         cls._funcs = {}
 
-    def _compile_special_functions(cls, target):
+    def _compile_funcs(cls, target):
         global ADD_UFUNC, SUBTRACT_UFUNC, MULTIPLY_UFUNC, DIVIDE_UFUNC
 
         if cls.ufunc_mode == "python-calculate":
@@ -183,6 +200,7 @@ class JITMixin(type):
         return c
 
     def _poly_divmod_python(cls, a, b):
+        # pylint: disable=unsubscriptable-object,unsupported-assignment-operation
         assert a.size >= b.size
         q_degree = a.size - b.size
         qr = cls(a)

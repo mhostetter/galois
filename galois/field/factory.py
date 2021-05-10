@@ -1,8 +1,8 @@
 from ..factor import prime_factors
 from ..overrides import set_module
 
-from .gf_extension import GF_extension
-from .gf_prime import GF_prime
+from .factory_extension import GF_extension
+from .factory_prime import GF_prime
 
 __all__ = ["GF"]
 

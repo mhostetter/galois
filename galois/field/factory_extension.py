@@ -4,7 +4,7 @@ from ..prime import is_prime
 
 from .array import GFArray
 from .conway import conway_poly
-from .gf_prime import GF_prime
+from .factory_prime import GF_prime
 from .meta_gf2m import GF2mMeta
 from .meta_gfpm import GFpmMeta
 from .poly import Poly
