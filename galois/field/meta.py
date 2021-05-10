@@ -1,14 +1,18 @@
 import numpy as np
 
-from .meta_mixin_ufunc import UfuncMixin
+from ..meta import FieldMetaBase
 from ..modular import totatives
 from ..overrides import set_module
+
+from .meta_func import FieldFunc
+from .meta_ufunc import FieldUfunc
+from .poly_conversion import integer_to_poly, poly_to_str
 
 __all__ = ["GFMeta"]
 
 
 @set_module("galois")
-class GFMeta(UfuncMixin):
+class GFMeta(FieldMetaBase, FieldUfunc, FieldFunc):
     """
     Defines a metaclass for all :obj:`galois.GFArray` classes.
 
@@ -16,9 +20,6 @@ class GFMeta(UfuncMixin):
     relating to its Galois field.
     """
     # pylint: disable=no-value-for-parameter,comparison-with-callable,too-many-public-methods
-
-    def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
-        return super().__new__(cls, name, bases, namespace)
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
@@ -35,11 +36,66 @@ class GFMeta(UfuncMixin):
         cls._ufunc_target = None
         cls._display_mode = "int"
 
-    def __str__(cls):
-        return f"<class 'numpy.ndarray over {cls.name}'>"
+        if cls.degree == 1:
+            cls._order_str = "order={}".format(cls.order)
+        else:
+            cls._order_str = "order={}^{}".format(cls.characteristic, cls.degree)
 
-    def __repr__(cls):
-        return f"<class 'numpy.ndarray over {cls.name}'>"
+    ###############################################################################
+    # Array display methods
+    ###############################################################################
+
+    def _formatter(cls, array):
+        # pylint: disable=attribute-defined-outside-init
+        formatter = {}
+        if cls.display_mode == "poly":
+            formatter["int"] = cls._print_poly
+            formatter["object"] = cls._print_poly
+        elif cls.display_mode == "power":
+            nonzero_idxs = np.nonzero(array)
+            if array.ndim > 1:
+                cls._display_power_pre_width = 0 if nonzero_idxs[0].size == array.size else 1
+                max_power = np.max(np.log(array[nonzero_idxs]))
+                if max_power > 1:
+                    cls._display_power_width = cls._display_power_pre_width + 2 + len(str(max_power))
+                else:
+                    cls._display_power_width = cls._display_power_pre_width + 1
+            else:
+                cls._display_power_pre_width = None
+                cls._display_power_width = None
+            formatter["int"] = cls._print_power
+            formatter["object"] = cls._print_power
+        elif array.dtype == np.object_:
+            formatter["object"] = cls._print_int
+        return formatter
+
+    def _print_int(cls, element):  # pylint: disable=no-self-use
+        return "{:d}".format(int(element))
+
+    def _print_poly(cls, element):
+        poly = integer_to_poly(element, cls.characteristic)
+        poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
+        return poly_to_str(poly, poly_var=poly_var)
+
+    def _print_power(cls, element):
+        if element == 0:
+            s = "-∞"
+        else:
+            power = cls._ufuncs["log"](element)
+            if power > 1:
+                s = f"α^{power}"
+            elif power == 1:
+                s = "α"
+            else:
+                s = "1"
+
+            if cls._display_power_pre_width:
+                s = " " + s
+
+        if cls._display_power_width:
+            return s + " "*(cls._display_power_width - len(s))
+        else:
+            return s
 
     ###############################################################################
     # Class methods
@@ -117,6 +173,14 @@ class GFMeta(UfuncMixin):
     ###############################################################################
     # Class attributes
     ###############################################################################
+
+    @property
+    def structure(cls):
+        return "Finite Field"
+
+    @property
+    def short_name(cls):
+        return "GF"
 
     @property
     def name(cls):
@@ -250,7 +314,7 @@ class GFMeta(UfuncMixin):
         int: A primitive element :math:`\\alpha` of the Galois field :math:`\\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
 
-        A primitive element is a root of the primitive polynomial :math:`\\f(x)`, such that :math:`f(\\alpha) = 0` over
+        A primitive element is a root of the primitive polynomial :math:`f(x)`, such that :math:`f(\\alpha) = 0` over
         :math:`\\mathrm{GF}(p^m)`.
 
         Examples
@@ -497,6 +561,7 @@ class GFMeta(UfuncMixin):
             # print(galois.GF(7**5).properties)
         """
         string = f"{cls.name}:"
+        string += f"\n  structure: {cls.structure}"
         string += f"\n  characteristic: {cls.characteristic}"
         string += f"\n  degree: {cls.degree}"
         string += f"\n  order: {cls.order}"

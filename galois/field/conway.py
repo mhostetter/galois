@@ -6,7 +6,7 @@ import numpy as np
 from ..overrides import set_module
 from ..prime import is_prime
 
-from .gf_prime import GF_prime
+from .factory_prime import GF_prime
 from .poly import Poly
 
 __all__ = ["conway_poly"]
