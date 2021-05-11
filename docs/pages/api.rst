@@ -1,14 +1,8 @@
 API Reference v\ |version|
 ==========================
 
-.. autosummary::
-   :template: galois_module.rst
-   :toctree: autosummary
+.. toctree::
+   :maxdepth: 2
 
    galois
-
-.. autosummary::
-   :template: np_module.rst
-   :toctree: autosummary
-
-   np
+   numpy
