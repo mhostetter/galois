@@ -737,35 +737,46 @@ class Poly:
 
     @classmethod
     def _check_inputs_are_polys(cls, a, b):
+        if not isinstance(a, (Poly, b.field)):
+            raise TypeError(f"Both operands must be a galois.Poly or an element of its field {b.field.name}, not {type(a)}.")
+        if not isinstance(b, (Poly, a.field)):
+            raise TypeError(f"Both operands must be a galois.Poly or an element of its field {a.field.name}, not {type(b)}.")
+
+        # Promote a single field element to a 0-dim polynomials
         if not isinstance(a, Poly):
-            raise TypeError(f"Both operands must be a galois.Poly, not {type(a)}.")
+            if not a.size == 1:
+                raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-D polynomial), not size {a.size}.")
+            a = Poly(np.atleast_1d(a))
         if not isinstance(b, Poly):
-            raise TypeError(f"Both operands must be a galois.Poly, not {type(b)}.")
+            if not b.size == 1:
+                raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-D polynomial), not size {b.size}.")
+            b = Poly(np.atleast_1d(b))
+
         if not a.field is b.field:
             raise TypeError(f"Both polynomial operands must be over the same field, not {str(a.field)} and {str(b.field)}.")
 
         if isinstance(a, SparsePoly) or isinstance(b, SparsePoly):
-            return SparsePoly
+            return SparsePoly, a, b
         elif isinstance(a, BinaryPoly) or isinstance(b, BinaryPoly):
-            return BinaryPoly
+            return BinaryPoly, a, b
         else:
-            return DensePoly
+            return DensePoly, a, b
 
     def __add__(self, other):
-        cls = self._check_inputs_are_polys(self, other)
-        return cls._add(self, other)
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._add(a, b)
 
     def __sub__(self, other):
-        cls = self._check_inputs_are_polys(self, other)
-        return cls._sub(self, other)
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._sub(a, b)
 
     def __mul__(self, other):
-        cls = self._check_inputs_are_polys(self, other)
-        return cls._mul(self, other)
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._mul(a, b)
 
     def __divmod__(self, other):
-        cls = self._check_inputs_are_polys(self, other)
-        return cls._divmod(self, other)
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._divmod(a, b)
 
     def __truediv__(self, other):
         return self.__divmod__(other)[0]
@@ -774,8 +785,8 @@ class Poly:
         return self.__divmod__(other)[0]
 
     def __mod__(self, other):
-        cls = self._check_inputs_are_polys(self, other)
-        return cls._mod(self, other)
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._mod(a, b)
 
     def __pow__(self, other):
         if not isinstance(self, Poly):
