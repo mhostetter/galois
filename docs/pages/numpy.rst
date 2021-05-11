@@ -1,21 +1,20 @@
-{{ fullname | escape | underline }}
+numpy
+=====
 
-.. automodule:: {{ fullname }}
+.. automodule:: np
 
-   .. rubric:: {{ _('General') }}
-
+   General
+   ^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       np.copy
       np.concatenate
       np.insert
 
-   .. rubric:: {{ _('Arithmetic') }}
-
+   Arithmetic
+   ^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       np.add
       np.subtract
       np.multiply
@@ -27,18 +26,16 @@
       np.log
       np.matmul
 
-   .. rubric:: {{ _('Advanced Arithmetic') }}
-
+   Advanced Arithmetic
+   ^^^^^^^^^^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       np.convolve
 
-   .. rubric:: {{ _('Linear Algebra') }}
-
+   Linear Algebra
+   ^^^^^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       np.trace
       np.matmul
       np.linalg.matrix_rank

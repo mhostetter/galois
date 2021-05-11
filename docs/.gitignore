@@ -1,3 +1,5 @@
 build/
-pages/autosummary/
+pages/galois.*
+!pages/galois.rst
+pages/np.*
 .ipynb_checkpoints/

@@ -1,33 +1,31 @@
-{{ fullname | escape | underline }}
+galois
+======
 
-.. automodule:: {{ fullname }}
+.. automodule:: galois
 
-   .. rubric:: {{ _('Galois Fields') }}
-
+   Galois Fields
+   ^^^^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       GF
       GFArray
       GFMeta
       GF2
 
-   .. rubric:: {{ _('Constructing Prime Fields') }}
-
+   Prime Fields
+   ^^^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       GF
       is_prime
       primitive_root
       primitive_roots
       is_primitive_root
 
-   .. rubric:: {{ _('Constructing Extension Fields') }}
-
+   Extension Fields
+   ^^^^^^^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       GF
       conway_poly
       is_irreducible
@@ -36,21 +34,19 @@
       primitive_elements
       is_primitive_element
 
-   .. rubric:: {{ _('Galois Fields for Cryptography') }}
-
+   Galois Fields for Cryptography
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       Oakley1
       Oakley2
       Oakley3
       Oakley4
 
-   .. rubric:: {{ _('Polynomials over Galois Fields') }}
-
+   Polynomials over Galois Fields
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       Poly
       poly_gcd
       poly_pow
@@ -58,11 +54,10 @@
       is_irreducible
       is_primitive
 
-   .. rubric:: {{ _('Modular Arithmetic') }}
-
+   Modular Arithmetic
+   ^^^^^^^^^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       gcd
       lcm
       crt
@@ -73,18 +68,16 @@
       euler_totient
       totatives
 
-   .. rubric:: {{ _('Discrete Logarithms') }}
-
+   Discrete Logarithms
+   ^^^^^^^^^^^^^^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       log_naive
 
-   .. rubric:: {{ _('Primes') }}
-
+   Primes
+   ^^^^^^
+   .. rubric::
    .. autosummary::
-      :toctree:
-
       primes
       kth_prime
       prev_prime
