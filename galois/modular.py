@@ -6,7 +6,10 @@ from .factor import prime_factors
 from .math_ import lcm
 from .overrides import set_module
 
-__all__ = ["totatives", "euler_totient", "carmichael", "is_cyclic", "is_primitive_root", "primitive_root", "primitive_roots"]
+__all__ = [
+    "totatives", "euler_totient", "carmichael", "is_cyclic",
+    "is_primitive_root", "primitive_root", "primitive_roots", "order"
+]
 
 
 @set_module("galois")
@@ -632,3 +635,79 @@ def _primitive_roots(n, start=1, stop=None, reverse=False):
     for r in possible_roots:
         if pow(r, phi, n) == 1 and all(pow(r, phi // p, n) != 1 for p in primes):
             yield r
+
+
+@set_module("galois")
+def order(a, n):
+    """
+    Determines :math:`\\textrm{ord}_{n}(a)` of :math:`a` modulo :math:`n`.
+
+    The multiplicative order of :math:`a` modulo :math:`n` is the smallest :math:`k` such
+    that :math:`a^k \\equiv 1\\ (\\textrm{mod}\\ n)`.
+
+    Parameters
+    ----------
+    a : int
+        A positive integer :math:`1 \\le k < n` that is coprime to :math:`n`.
+    n : int
+        A positive integer.
+
+    Returns
+    -------
+    int
+        The multiplicative order of :math:`a` modulo :math:`n`.
+
+    Examples
+    --------
+    The elements of :math:`\\mathbb{Z}{_n^\\times}` are the positive integers less than :math:`n` that are coprime with :math:`n`.
+    For example when :math:`n = 14`, then :math:`\\mathbb{Z}{_{14}^\\times} = \\{1, 3, 5, 9, 11, 13\\}`.
+
+    .. ipython:: python
+
+        # n is of type 2*p^k, which is cyclic
+        n = 14
+        galois.is_cyclic(n)
+
+        # The congruence class coprime with n
+        Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
+
+        # Euler's totient function counts the "totatives", positive integers coprime with n
+        phi = galois.euler_totient(n); phi
+
+        len(Znx) == phi
+
+        # The primitive roots are the elements in Znx that multiplicatively generate the group
+        for a in Znx:
+            span = set([pow(a, i, n) for i in range(1, phi + 1)])
+            primitive_root = span == Znx
+            print("Element: {:2d}, Span: {:<20}, Primitive root: {}".format(a, str(span), primitive_root))
+
+        roots = galois.primitive_roots(n); roots
+
+        galois.order(1, n)
+        # The multiplicative order == phi, therefore it's a primitive root of n
+        galois.order(3, n)
+        # The multiplicative order == phi, therefore it's a primitive root of n
+        galois.order(3, n)
+        galois.order(9, n)
+        galois.order(11, n)
+        galois.order(13, n)
+    """
+    if not isinstance(a, (int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not 1 <= a < n:
+        raise ValueError(f"Argument `a` must be a positive integer less than `n`, not {a}.")
+    if not math.gcd(a, n) == 1:
+        raise ValueError(f"Argument `a` must be coprime to `n`, {a} is not coprime to {n}.")
+
+    lambda_ = carmichael(n)
+    primes, _ = prime_factors(lambda_)
+
+    powers = [1] + sorted([lambda_ // pi for pi in primes]) + [lambda_]
+    for power in powers:
+        if pow(a, power, n) == 1:
+            return power
+
+    raise RuntimeError("The multiplicative order of {a} mod {n} was not found. Please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")

@@ -98,6 +98,9 @@ galois
       isqrt
       pow
       is_cyclic
+      order
+      primitive_root
+      primitive_roots
       carmichael
       euler_totient
       totatives

@@ -246,3 +246,12 @@ def test_is_primitive_root_exceptions():
         galois.is_primitive_root(3, 0)
     with pytest.raises(ValueError):
         galois.is_primitive_root(15, 13)
+
+
+def test_ord():
+    assert galois.order(1, 14) == 1
+    assert galois.order(3, 14) == 6
+    assert galois.order(5, 14) == 6
+    assert galois.order(9, 14) == 3
+    assert galois.order(11, 14) == 3
+    assert galois.order(13, 14) == 2
