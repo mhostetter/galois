@@ -819,7 +819,16 @@ class Poly:
         raise NotImplementedError
 
     def __eq__(self, other):
-        return isinstance(other, Poly) and self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
+        if not isinstance(other, Poly):
+            if other == 0:
+                addendum = " If you are trying to compare against 0, use `galois.Poly.Zero(GF)` or `galois.Poly([0], field=GF)`."
+            elif other == 1:
+                addendum = " If you are trying to compare against 1, use `galois.Poly.One(GF)` or `galois.Poly([1], field=GF)`."
+            else:
+                addendum = ""
+            raise TypeError(f"Can't compare Poly and non-Poly objects, {other} is not a Poly object.{addendum}")
+
+        return self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
 
     def __ne__(self, other):
         return not self.__eq__(other)
