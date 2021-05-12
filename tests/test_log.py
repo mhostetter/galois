@@ -59,3 +59,11 @@ def test_log_baby_giant_step():
         beta = random.randint(1, prime-1)
         x = galois.log_baby_giant_step(beta, alpha, prime)
         assert pow(alpha, x, prime) == beta
+
+
+def test_log_pollard_rho():
+    modulus = 383
+    alpha = 2
+    x = galois.log_pollard_rho(228, alpha, modulus)
+    assert x == 110
+    assert pow(alpha, x, modulus) == 228

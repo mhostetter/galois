@@ -8,7 +8,7 @@ from .math_ import isqrt
 from .modular import euler_totient, is_cyclic, is_primitive_root, order
 from .overrides import set_module
 
-__all__ = ["log_naive", "log_baby_giant_step"]
+__all__ = ["log_naive", "log_baby_giant_step", "log_pollard_rho"]
 
 
 @set_module("galois")
@@ -138,3 +138,76 @@ def log_baby_giant_step(beta, alpha, modulus, cache=True):
     raise ValueError(f"The discrete logarithm of {beta} base {alpha} mod {modulus} does not exist.")
 
 log_baby_giant_step._LUTs = {}  # pylint: disable=protected-access
+
+
+@set_module("galois")
+def log_pollard_rho(beta, alpha, modulus):
+    """
+    Computes the discrete logarithm :math:`x = \\textrm{log}_{\\alpha}(\\beta)\\ (\\textrm{mod}\\ m)`.
+
+    This function implements the Pollard's rho algorithm. The running time of the algorithm is :math:`O(\\sqrt{n})`.
+
+    Arguments
+    ---------
+    beta : int
+        The integer :math:`\\beta` to compute the logarithm of. :math:`\\beta` must be coprime to :math:`m`.
+    alpha : int
+        The base :math:`\\alpha`. :math:`\\alpha` must be coprime to :math:`m`.
+    modulus : int
+        The modulus :math:`m`.
+
+    References
+    ----------
+    * Chapter 3.6.3 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
+
+    Examples
+    --------
+    .. ipython:: python
+
+        N = 383
+        galois.is_cyclic(N)
+        galois.primitive_roots(N, stop=20)
+        alpha = 2
+        galois.order(alpha, N)
+        x = galois.log_pollard_rho(228, alpha, N); x
+        pow(alpha, x, N)
+    """
+    # pylint: disable=protected-access
+    if not is_cyclic(modulus):
+        raise ValueError(f"Argument `modulus` must produce a multiplicative cyclic group, (ℤ/{modulus}ℤ)* is not cyclic.")
+    if not math.gcd(beta, modulus) == 1:
+        raise ValueError(f"Argument `beta` must be coprime with `modulus`, {beta} is not coprime with {modulus}.")
+    if not math.gcd(alpha, modulus) == 1:
+        raise ValueError(f"Argument `alpha` must be coprime with `modulus`, {alpha} is not coprime with {modulus}.")
+
+    n = order(alpha, modulus)  # The multiplicative order of alpha
+
+    xi, ai, bi = 1, 0, 0
+    x2i, a2i, b2i = xi, 0, 0
+
+    def update(x, a, b):
+        if x % 3 == 1:  # Set 1
+            x = (beta * x) % modulus
+            b = (b + 1) % n
+        elif x % 3 == 0:  # Set 2
+            x = (x * x) % modulus
+            a = (2*a) % n
+            b = (2*b) % n
+        else:
+            x = (alpha * x) % modulus
+            a = (a + 1) % n
+        return x, a, b
+
+    while True:
+        xi, ai, bi = update(xi, ai, bi)
+        x2i, a2i, b2i = update(*update(x2i, a2i, b2i))  # Runs twice as fast
+        if xi == x2i:  # Cycle found
+            break
+
+    r = (bi - b2i) % n
+    if r == 0:
+        return RuntimeError("Failed")
+    r_inv = gcd(r, n)[1] % n
+    x = (r_inv * (a2i - ai)) % n
+
+    return x

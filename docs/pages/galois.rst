@@ -114,6 +114,7 @@ galois
 
       log_naive
       log_baby_giant_step
+      log_pollard_rho
 
    Primes
    ^^^^^^
