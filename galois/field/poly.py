@@ -89,8 +89,10 @@ class Poly:
     def __new__(cls, coeffs, field=None, order="desc"):
         if not (field is None or issubclass(field, GFArray)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
-        if not isinstance(coeffs, (list, tuple, np.ndarray, GFArray)):
+        if not isinstance(coeffs, (int, np.integer, list, tuple, np.ndarray, GFArray)):
             raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
+        if isinstance(coeffs, (int, np.integer)):
+            coeffs = [coeffs,]  # Ensure it's iterable
         if isinstance(coeffs, (GFArray, np.ndarray)) and not coeffs.ndim <= 1:
             raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
         if not len(coeffs) > 0:
@@ -98,8 +100,6 @@ class Poly:
         if not order in ["desc", "asc"]:
             raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order}.")
 
-        if isinstance(coeffs, (int, np.integer)):
-            coeffs = [coeffs,]  # Ensure it's iterable
         if order == "asc":
             coeffs = coeffs[::-1]  # Ensure it's in descending-degree order
 
