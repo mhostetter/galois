@@ -113,6 +113,7 @@ galois
       :template: class.rst
 
       log_naive
+      log_baby_giant_step
 
    Primes
    ^^^^^^
