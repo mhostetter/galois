@@ -9,7 +9,7 @@ __all__ = ["Oakley1", "Oakley2", "Oakley3", "Oakley4"]
 @set_module("galois")
 def Oakley1():
     """
-    Returns the Galois field for the first Oakley group from RFC 2409.
+    Factory function that returns the Galois field for the first Oakley group from RFC 2409.
 
     References
     ----------
@@ -30,7 +30,7 @@ def Oakley1():
 @set_module("galois")
 def Oakley2():
     """
-    Returns the Galois field for the second Oakley group from RFC 2409.
+    Factory function that returns the Galois field for the second Oakley group from RFC 2409.
 
     References
     ----------
@@ -51,7 +51,7 @@ def Oakley2():
 @set_module("galois")
 def Oakley3():
     """
-    Returns the Galois field for the third Oakley group from RFC 2409.
+    Factory function that returns the Galois field for the third Oakley group from RFC 2409.
 
     References
     ----------
@@ -73,7 +73,7 @@ def Oakley3():
 @set_module("galois")
 def Oakley4():
     """
-    Returns the Galois field for the fourth Oakley group from RFC 2409.
+    Factory function that returns the Galois field for the fourth Oakley group from RFC 2409.
 
     References
     ----------

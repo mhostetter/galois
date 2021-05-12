@@ -7,6 +7,8 @@ numpy
    ^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       np.copy
       np.concatenate
       np.insert
@@ -15,6 +17,8 @@ numpy
    ^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       np.add
       np.subtract
       np.multiply
@@ -30,12 +34,16 @@ numpy
    ^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       np.convolve
 
    Linear Algebra
    ^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       np.trace
       np.matmul
       np.linalg.matrix_rank

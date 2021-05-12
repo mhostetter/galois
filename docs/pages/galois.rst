@@ -7,6 +7,9 @@ galois
    ^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+      :template: class.rst
+
       GF
       GFArray
       GFMeta
@@ -16,6 +19,9 @@ galois
    ^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+      :template: class.rst
+
       GF
       is_prime
       primitive_root
@@ -26,6 +32,9 @@ galois
    ^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+      :template: class.rst
+
       GF
       conway_poly
       is_irreducible
@@ -38,6 +47,9 @@ galois
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+      :template: class.rst
+
       Oakley1
       Oakley2
       Oakley3
@@ -47,6 +59,9 @@ galois
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+      :template: class.rst
+
       Poly
       poly_gcd
       poly_pow
@@ -54,10 +69,29 @@ galois
       is_irreducible
       is_primitive
 
+   Finite Groups
+   ^^^^^^^^^^^^^
+   .. rubric::
+   .. autosummary::
+      :toctree:
+      :template: class.rst
+
+      Group
+      AdditiveGroupArray
+      AdditiveGroupMeta
+      MultiplicativeGroupArray
+      MultiplicativeGroupMeta
+      is_cyclic
+      euler_totient
+      totatives
+
    Modular Arithmetic
    ^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+      :template: class.rst
+
       gcd
       lcm
       crt
@@ -72,12 +106,18 @@ galois
    ^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+      :template: class.rst
+
       log_naive
 
    Primes
    ^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+      :template: class.rst
+
       primes
       kth_prime
       prev_prime
