@@ -86,6 +86,9 @@ class Poly:
         divmod(a, b)
     """
 
+    # Increase my array priority so numpy will call my __radd__ instead of its own __add__
+    __array_priority__ = 100
+
     def __new__(cls, coeffs, field=None, order="desc"):
         if not (field is None or issubclass(field, GFArray)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
@@ -735,21 +738,20 @@ class Poly:
             x = field(x)
         return field._poly_evaluate(coeffs, x)
 
-    @classmethod
-    def _check_inputs_are_polys(cls, a, b):
-        if not isinstance(a, (Poly, b.field)):
-            raise TypeError(f"Both operands must be a galois.Poly or an element of its field {b.field.name}, not {type(a)}.")
-        if not isinstance(b, (Poly, a.field)):
-            raise TypeError(f"Both operands must be a galois.Poly or an element of its field {a.field.name}, not {type(b)}.")
+    def _check_inputs_are_polys(self, a, b):
+        if not isinstance(a, (Poly, self.field)):
+            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {b.field.name}, not {type(a)}.")
+        if not isinstance(b, (Poly, self.field)):
+            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {a.field.name}, not {type(b)}.")
 
-        # Promote a single field element to a 0-dim polynomials
+        # Promote a single field element to a 0-degree polynomial
         if not isinstance(a, Poly):
             if not a.size == 1:
-                raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-D polynomial), not size {a.size}.")
+                raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {a.size}.")
             a = Poly(np.atleast_1d(a))
         if not isinstance(b, Poly):
             if not b.size == 1:
-                raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-D polynomial), not size {b.size}.")
+                raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {b.size}.")
             b = Poly(np.atleast_1d(b))
 
         if not a.field is b.field:
@@ -766,27 +768,57 @@ class Poly:
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._add(a, b)
 
+    def __radd__(self, other):
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._add(b, a)
+
     def __sub__(self, other):
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._sub(a, b)
+
+    def __rsub__(self, other):
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._sub(b, a)
 
     def __mul__(self, other):
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._mul(a, b)
 
+    def __rmul__(self, other):
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._mul(b, a)
+
     def __divmod__(self, other):
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._divmod(a, b)
 
+    def __rdivmod__(self, other):
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._divmod(b, a)
+
     def __truediv__(self, other):
-        return self.__divmod__(other)[0]
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._divmod(a, b)[0]
+
+    def __rtruediv__(self, other):
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._divmod(b, a)[0]
 
     def __floordiv__(self, other):
-        return self.__divmod__(other)[0]
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._divmod(a, b)[0]
+
+    def __rfloordiv__(self, other):
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._divmod(b, a)[0]
 
     def __mod__(self, other):
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._mod(a, b)
+
+    def __rmod__(self, other):
+        cls, a, b = self._check_inputs_are_polys(self, other)
+        return cls._mod(b, a)
 
     def __pow__(self, other):
         if not isinstance(self, Poly):
