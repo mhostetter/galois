@@ -67,3 +67,19 @@ def test_log_pollard_rho():
     x = galois.log_pollard_rho(228, alpha, modulus)
     assert x == 110
     assert pow(alpha, x, modulus) == 228
+
+
+def test_log_pohlig_hellman():
+    modulus = 251
+    alpha = 71
+    x = galois.log_pohlig_hellman(210, alpha, modulus)
+    assert x == 197
+    assert pow(alpha, x, modulus) == 210
+
+
+# def test_log_pohlig_hellman_large():
+#     modulus = 22708823198678103974314518195029102158525052496759285596453269189798311427475159776411276642277139650833937
+#     alpha = 3
+#     x = galois.log_pohlig_hellman(123456789, alpha, modulus)
+#     assert x == 14779162551733666933424095765296669896168562456605963921868102059346587805144229337814994797820872223240979
+#     assert pow(alpha, x, modulus) == 123456789
