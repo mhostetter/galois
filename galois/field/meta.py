@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..meta import FieldMetaBase
+from ..meta import Meta
 from ..modular import totatives
 from ..overrides import set_module
 
@@ -12,7 +12,7 @@ __all__ = ["FieldMeta"]
 
 
 @set_module("galois")
-class FieldMeta(FieldMetaBase, FieldUfunc, FieldFunc):
+class FieldMeta(Meta, FieldUfunc, FieldFunc):
     """
     Defines a metaclass for all :obj:`galois.FieldArray` classes.
 
@@ -395,26 +395,6 @@ class FieldMeta(FieldMetaBase, FieldUfunc, FieldFunc):
 
     @property
     def dtypes(cls):
-        """
-        list: List of valid integer :obj:`numpy.dtype` objects that are compatible with this Galois field. Valid data
-        types are signed and unsigned integers that can represent decimal values in :math:`[0, p^m)`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).dtypes
-            galois.GF(2**8).dtypes
-            galois.GF(31).dtypes
-            # galois.GF(7**5).dtypes
-
-        For field's with orders that cannot be represented by :obj:`numpy.int64`, the only valid dtype is :obj:`numpy.object_`.
-
-        .. ipython:: python
-
-            galois.GF(2**100).dtypes
-            galois.GF(36893488147419103183).dtypes
-        """
         raise NotImplementedError
 
     @property
@@ -455,18 +435,6 @@ class FieldMeta(FieldMetaBase, FieldUfunc, FieldFunc):
 
     @property
     def properties(cls):
-        """
-        str: A formmatted string displaying relevant properties of the Galois field.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            print(galois.GF(2).properties)
-            print(galois.GF(2**8).properties)
-            print(galois.GF(31).properties)
-            # print(galois.GF(7**5).properties)
-        """
         string = f"{cls.name}:"
         string += f"\n  structure: {cls.structure}"
         string += f"\n  characteristic: {cls.characteristic}"

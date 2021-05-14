@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 from ..array import Array
@@ -7,13 +9,13 @@ from .linalg import row_reduce, lu_decompose, lup_decompose
 from .meta import FieldMeta
 from .poly_conversion import str_to_integer
 
-__all__ = ["FieldArray"]
+__all__ = ["FieldArray", "is_field"]
 
 
 @set_module("galois")
 class FieldArray(Array, metaclass=FieldMeta):
     """
-    Create an array over :math:`\\mathrm{GF}(p^m)`.
+    Creates an array over :math:`\\mathrm{GF}(p^m)`.
 
     The :obj:`galois.FieldArray` class is a parent class for all Galois field array classes. Any Galois field :math:`\\mathrm{GF}(p^m)`
     with prime characteristic :math:`p` and positive integer :math:`m`, can be constructed by calling the class factory
@@ -22,7 +24,7 @@ class FieldArray(Array, metaclass=FieldMeta):
     Warning
     -------
         This is an abstract base class for all Galois field array classes. :obj:`galois.FieldArray` cannot be instantiated
-        directly. Instead, Galois field array classes are created using :obj:`galois.GF`.
+        directly. Instead, Galois field array classes are created using :func:`galois.GF`.
 
         For example, one can create the :math:`\\mathrm{GF}(7)` field array class as follows:
 
@@ -159,6 +161,180 @@ class FieldArray(Array, metaclass=FieldMeta):
     ###############################################################################
     # Alternate constructors
     ###############################################################################
+
+    @classmethod
+    def Zeros(cls, shape, dtype=None):
+        """
+        Creates a Galois field array with all zeros.
+
+        Parameters
+        ----------
+        shape : tuple
+            A numpy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+            A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-dim array. An n-tuple, e.g.
+            `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+
+        Returns
+        -------
+        galois.FieldArray
+            A Galois field array of zeros.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.Zeros((2,5))
+        """
+        dtype = cls._get_dtype(dtype)
+        array = np.zeros(shape, dtype=dtype)
+        return array.view(cls)
+
+    @classmethod
+    def Ones(cls, shape, dtype=None):
+        """
+        Creates a Galois field array with all ones.
+
+        Parameters
+        ----------
+        shape : tuple
+            A numpy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+            A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-dim array. An n-tuple, e.g.
+            `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+
+        Returns
+        -------
+        galois.FieldArray
+            A Galois field array of ones.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.Ones((2,5))
+        """
+        dtype = cls._get_dtype(dtype)
+        array = np.ones(shape, dtype=dtype)
+        return array.view(cls)
+
+    @classmethod
+    def Range(cls, start, stop, step=1, dtype=None):
+        """
+        Creates a Galois field array with a range of field elements.
+
+        Parameters
+        ----------
+        start : int
+            The starting value (inclusive).
+        stop : int
+            The stopping value (exclusive).
+        step : int, optional
+            The space between values. The default is 1.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+
+        Returns
+        -------
+        galois.FieldArray
+            A Galois field array of a range of field elements.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.Range(10,20)
+        """
+        if not stop <= cls.order:
+            raise ValueError(f"The stopping value must be less than the field order of {cls.order}, not {stop}.")
+        dtype = cls._get_dtype(dtype)
+
+        if dtype != np.object_:
+            array = np.arange(start, stop, step=step, dtype=dtype)
+        else:
+            array = np.array(range(start, stop, step), dtype=dtype)
+
+        return array.view(cls)
+
+    @classmethod
+    def Random(cls, shape=(), low=0, high=None, dtype=None):
+        """
+        Creates a Galois field array with random field elements.
+
+        Parameters
+        ----------
+        shape : tuple
+            A numpy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+            A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-dim array. An n-tuple, e.g.
+            `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
+        low : int, optional
+            The lowest value (inclusive) of a random field element. The default is 0.
+        high : int, optional
+            The highest value (exclusive) of a random field element. The default is `None` which represents the
+            field's order :math:`p^m`.
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+
+        Returns
+        -------
+        galois.FieldArray
+            A Galois field array of random field elements.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.Random((2,5))
+        """
+        dtype = cls._get_dtype(dtype)
+        high = cls.order if high is None else high
+        if not 0 <= low < high <= cls.order:
+            raise ValueError(f"Arguments must satisfy `0 <= low < high <= order`, not `0 <= {low} < {high} <= {cls.order}`.")
+
+        if dtype != np.object_:
+            array = np.random.randint(low, high, shape, dtype=dtype)
+        else:
+            array = np.empty(shape, dtype=dtype)
+            iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+            for _ in iterator:
+                array[iterator.multi_index] = random.randint(low, high - 1)
+
+        return array.view(cls)
+
+    @classmethod
+    def Elements(cls, dtype=None):
+        """
+        Creates a Galois field array of the field's elements :math:`\\{0, \\dots, p^m-1\\}`.
+
+        Parameters
+        ----------
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+
+        Returns
+        -------
+        galois.FieldArray
+            A Galois field array of all the field's elements.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.Elements()
+        """
+        return cls.Range(0, cls.order, step=1, dtype=dtype)
 
     @classmethod
     def Identity(cls, size, dtype=None):
@@ -430,3 +606,20 @@ class FieldArray(Array, metaclass=FieldMeta):
             np.array_equal(P @ A, L @ U)
         """
         return lup_decompose(self)
+
+
+def is_field(cls):
+    """
+    Determines if the class is a Galois field array class created from :func:`galois.GF` or `:func:`galois.Field`.
+
+    Parameters
+    ----------
+    cls : type
+        Any class.
+
+    Returns
+    -------
+    bool
+        `True` if `cls` is a Galois field array class generated from :func:`galois.GF` or `:func:`galois.Field`.
+    """
+    return issubclass(cls, FieldArray) and cls is not FieldArray
