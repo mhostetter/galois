@@ -7,7 +7,10 @@ galois
    ^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       GF
+      Field
       GFArray
       GFMeta
       GF2
@@ -16,7 +19,10 @@ galois
    ^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       GF
+      Field
       is_prime
       primitive_root
       primitive_roots
@@ -26,7 +32,10 @@ galois
    ^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       GF
+      Field
       conway_poly
       is_irreducible
       is_primitive
@@ -38,6 +47,8 @@ galois
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       Oakley1
       Oakley2
       Oakley3
@@ -47,9 +58,13 @@ galois
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       Poly
       poly_gcd
       poly_pow
+      poly_factors
+      poly_factors_berlekamp
       is_monic
       is_irreducible
       is_primitive
@@ -58,6 +73,8 @@ galois
    ^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       gcd
       lcm
       crt
@@ -72,12 +89,16 @@ galois
    ^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       log_naive
 
    Primes
    ^^^^^^
    .. rubric::
    .. autosummary::
+      :toctree:
+
       primes
       kth_prime
       prev_prime

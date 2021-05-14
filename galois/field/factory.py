@@ -4,7 +4,7 @@ from ..overrides import set_module
 from .factory_extension import GF_extension
 from .factory_prime import GF_prime
 
-__all__ = ["GF"]
+__all__ = ["GF", "Field"]
 
 
 @set_module("galois")
@@ -100,3 +100,11 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=
         return GF_prime(p, primitive_element=primitive_element, verify_primitive=verify_primitive, target=target, mode=mode)
     else:
         return GF_extension(p, m, primitive_element=primitive_element, irreducible_poly=irreducible_poly, verify_primitive=verify_primitive, verify_irreducible=verify_irreducible, target=target, mode=mode)
+
+
+@set_module("galois")
+def Field(order, irreducible_poly=None, primitive_element=None, verify_irreducible=True, verify_primitive=True, mode="auto", target="cpu"):
+    """
+    Alias of :func:`galois.GF`.
+    """
+    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify_irreducible=verify_irreducible, verify_primitive=verify_primitive, mode=mode, target=target)
