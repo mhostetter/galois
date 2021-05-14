@@ -141,48 +141,6 @@ class GFArray(Array, metaclass=GFMeta):
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
     @classmethod
-    def _check_iterable_types_and_values(cls, iterable):
-        new_iterable = []
-        for item in iterable:
-            if isinstance(item, (list, tuple)):
-                item = cls._check_iterable_types_and_values(item)
-                new_iterable.append(item)
-                continue
-
-            if isinstance(item, str):
-                item = str_to_integer(item, cls.prime_subfield)
-            elif not isinstance(item, (int, np.integer, cls)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
-
-            if not 0 <= item < cls.order:
-                raise ValueError(f"{cls.name} arrays must have elements in 0 <= x < {cls.order}, not {item}.")
-
-            # Ensure the type is int so dtype=object classes don't get all mixed up
-            new_iterable.append(int(item))
-
-        return new_iterable
-
-    @classmethod
-    def _check_array_types_dtype_object(cls, array):
-        if array.size == 0:
-            return array
-        if array.ndim == 0:
-            if not isinstance(array[()], (int, np.integer, cls)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(array[()])}.")
-            return int(array)
-
-        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
-        for _ in iterator:
-            a = array[iterator.multi_index]
-            if not isinstance(a, (int, np.integer, cls)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
-
-            # Ensure the type is int so dtype=object classes don't get all mixed up
-            array[iterator.multi_index] = int(a)
-
-        return array
-
-    @classmethod
     def _check_array_values(cls, array):
         if not isinstance(array, np.ndarray):
             # Convert single integer to array so next step doesn't fail
@@ -191,7 +149,8 @@ class GFArray(Array, metaclass=GFMeta):
         # Check the value of the "field elements" and make sure they are valid
         if np.any(array < 0) or np.any(array >= cls.order):
             idxs = np.logical_or(array < 0, array >= cls.order)
-            raise ValueError(f"{cls.name} arrays must have elements in 0 <= x < {cls.order}, not {array[idxs]}.")
+            values = array if array.ndim == 0 else array[idxs]
+            raise ValueError(f"{cls.name} arrays must have elements in 0 <= x < {cls.order}, not {values}.")
 
     @classmethod
     def _check_string_value(cls, string):

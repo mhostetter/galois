@@ -67,11 +67,46 @@ class Array(np.ndarray, metaclass=Meta):
 
     @classmethod
     def _check_iterable_types_and_values(cls, iterable):
-        raise NotImplementedError
+        new_iterable = []
+        for item in iterable:
+            if isinstance(item, (list, tuple)):
+                item = cls._check_iterable_types_and_values(item)
+                new_iterable.append(item)
+                continue
+
+            if isinstance(item, str):
+                item = cls._check_string_value(item)
+            elif not isinstance(item, (int, np.integer, cls)):
+                raise TypeError(f"When {cls.name} arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
+
+            cls._check_array_values(item)
+            # if not 0 <= item < cls.order:
+            #     raise ValueError(f"{cls.name} arrays must have elements in 0 <= x < {cls.order}, not {item}.")
+
+            # Ensure the type is int so dtype=object classes don't get all mixed up
+            new_iterable.append(int(item))
+
+        return new_iterable
 
     @classmethod
     def _check_array_types_dtype_object(cls, array):
-        raise NotImplementedError
+        if array.size == 0:
+            return array
+        if array.ndim == 0:
+            if not isinstance(array[()], (int, np.integer, cls)):
+                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(array[()])}.")
+            return int(array)
+
+        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+        for _ in iterator:
+            a = array[iterator.multi_index]
+            if not isinstance(a, (int, np.integer, cls)):
+                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
+
+            # Ensure the type is int so dtype=object classes don't get all mixed up
+            array[iterator.multi_index] = int(a)
+
+        return array
 
     @classmethod
     def _check_array_values(cls, array):
@@ -342,7 +377,7 @@ class Array(np.ndarray, metaclass=Meta):
             return getattr(type(self), type(self)._overridden_ufuncs[ufunc])(ufunc, method, inputs, kwargs, meta)
 
         elif ufunc in type(self)._unsupported_ufuncs:
-            raise NotImplementedError(f"The numpy ufunc '{ufunc.__name__}' is not supported on Galois field arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+            raise NotImplementedError(f"The numpy ufunc '{ufunc.__name__}' is not supported on {type(self).name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         else:
             inputs, kwargs = type(self)._view_inputs_as_ndarray(inputs, kwargs)

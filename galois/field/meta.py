@@ -32,8 +32,6 @@ class GFMeta(FieldMetaBase, FieldUfunc, FieldFunc):
         cls._is_primitive_poly = None
         cls._prime_subfield = None
 
-        cls._ufunc_mode = None
-        cls._ufunc_target = None
         cls._display_mode = "int"
 
         if cls.degree == 1:
@@ -399,7 +397,7 @@ class GFMeta(FieldMetaBase, FieldUfunc, FieldFunc):
     def dtypes(cls):
         """
         list: List of valid integer :obj:`numpy.dtype` objects that are compatible with this Galois field. Valid data
-        types are signed and unsinged integers that can represent decimal values in :math:`[0, p^m)`.
+        types are signed and unsigned integers that can represent decimal values in :math:`[0, p^m)`.
 
         Examples
         --------
@@ -418,97 +416,6 @@ class GFMeta(FieldMetaBase, FieldUfunc, FieldFunc):
             galois.GF(36893488147419103183).dtypes
         """
         raise NotImplementedError
-
-    @property
-    def ufunc_mode(cls):
-        """
-        str: The mode for ufunc compilation, either `"jit-lookup"`, `"jit-calculate"`, `"python-calculate"`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).ufunc_mode
-            galois.GF(2**8).ufunc_mode
-            galois.GF(31).ufunc_mode
-            # galois.GF(7**5).ufunc_mode
-        """
-        return cls._ufunc_mode
-
-    @property
-    def ufunc_modes(cls):
-        """
-        list: All supported ufunc modes for this Galois field array class.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).ufunc_modes
-            galois.GF(2**8).ufunc_modes
-            galois.GF(31).ufunc_modes
-            galois.GF(2**100).ufunc_modes
-        """
-        if cls.dtypes == [np.object_]:
-            return ["python-calculate"]
-        else:
-            return ["jit-lookup", "jit-calculate"]
-
-    @property
-    def default_ufunc_mode(cls):
-        """
-        str: The default ufunc arithmetic mode for this Galois field.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).default_ufunc_mode
-            galois.GF(2**8).default_ufunc_mode
-            galois.GF(31).default_ufunc_mode
-            galois.GF(2**100).default_ufunc_mode
-        """
-        if cls.dtypes == [np.object_]:
-            return "python-calculate"
-        elif cls.order <= 2**20:
-            return "jit-lookup"
-        else:
-            return "jit-calculate"
-
-    @property
-    def ufunc_target(cls):
-        """
-        str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, or `"cuda"`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).ufunc_target
-            galois.GF(2**8).ufunc_target
-            galois.GF(31).ufunc_target
-            # galois.GF(7**5).ufunc_target
-        """
-        return cls._ufunc_target
-
-    @property
-    def ufunc_targets(cls):
-        """
-        list: All supported ufunc targets for this Galois field array class.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).ufunc_targets
-            galois.GF(2**8).ufunc_targets
-            galois.GF(31).ufunc_targets
-            galois.GF(2**100).ufunc_targets
-        """
-        if cls.dtypes == [np.object_]:
-            return ["cpu"]
-        else:
-            return ["cpu", "parallel", "cuda"]
 
     @property
     def display_mode(cls):
