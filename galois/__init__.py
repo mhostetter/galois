@@ -4,6 +4,7 @@ A performant numpy extension for Galois fields.
 from .version import __version__
 
 # Subpackages
+from .group import *
 from .field import *
 
 # Modules

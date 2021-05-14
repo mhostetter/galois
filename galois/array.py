@@ -1,8 +1,6 @@
 """
 A module that defines Array which is a base class for GroupArray, RingArray, and FieldArray.
 """
-import random
-
 import numpy as np
 
 from .meta import Meta

@@ -81,22 +81,88 @@ class Meta(Ufunc, Func):
 
     @property
     def structure(cls):
+        """
+        str: The algebraic structure of the array class.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            G = galois.Group(16, "+"); G.structure
+            G = galois.Group(16, "*"); G.structure
+            GF = galois.GF(2**4); GF.structure
+        """
         raise NotImplementedError
 
     @property
     def short_name(cls):
+        """
+        str: The abbreviated name of the finite group, ring, or field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            G = galois.Group(16, "+"); G.short_name
+            G = galois.Group(16, "*"); G.short_name
+            GF = galois.GF(2**4); GF.short_name
+        """
         raise NotImplementedError
 
     @property
     def name(cls):
+        """
+        str: The expanded name of the finite group, ring, or field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            G = galois.Group(16, "+"); G.name
+            G = galois.Group(16, "*"); G.name
+            GF = galois.GF(2**4); GF.name
+        """
         raise NotImplementedError
 
     @property
     def order(cls):
+        """
+        str: The order of (or the number of elements in) the finite group, ring, or field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            G = galois.Group(16, "+"); G.order
+            G = galois.Group(16, "*"); G.order
+            GF = galois.GF(2**4); GF.order
+        """
         raise NotImplementedError
 
     @property
     def dtypes(cls):
+        """
+        list: List of valid integer :obj:`numpy.dtype` objects that are compatible with this group, ring, or field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            G = galois.Group(16, "+"); G.dtypes
+            G = galois.Group(16, "*"); G.dtypes
+            GF = galois.GF(2); GF.dtypes
+            GF = galois.GF(2**8); GF.dtypes
+            GF = galois.GF(31); GF.dtypes
+            GF = galois.GF(7**5); GF.dtypes
+
+        For algebraic structures that cannot be represented by :obj:`numpy.int64`, the only valid dtype is :obj:`numpy.object_`.
+
+        .. ipython:: python
+
+            G = galois.Group(10**20, "*"); G.dtypes
+            GF = galois.GF(2**100); GF.dtypes
+            GF = galois.GF(36893488147419103183); GF.dtypes
+        """
         raise NotImplementedError
 
     @property
@@ -192,4 +258,21 @@ class Meta(Ufunc, Func):
 
     @property
     def properties(cls):
+        """
+        str: A formatted string displaying relevant properties of group, ring, or field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            G = galois.Group(16, "+"); print(G.properties)
+            G = galois.Group(16, "*"); print(G.properties)
+
+        .. ipython:: python
+
+            GF = galois.GF(2); print(GF.properties)
+            GF = galois.GF(2**8); print(GF.properties)
+            GF = galois.GF(31); print(GF.properties)
+            GF = galois.GF(7**5); print(GF.properties)
+        """
         raise NotImplementedError

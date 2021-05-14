@@ -72,6 +72,20 @@ galois
       is_irreducible
       is_primitive
 
+   Finite Groups
+   ^^^^^^^^^^^^^
+   .. rubric::
+   .. autosummary::
+      :toctree:
+
+      Group
+      GroupArray
+      GroupMeta
+      is_group
+      is_cyclic
+      euler_totient
+      totatives
+
    Modular Arithmetic
    ^^^^^^^^^^^^^^^^^^
    .. rubric::
