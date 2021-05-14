@@ -151,6 +151,9 @@ operation in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{R}`. Some of these f
 .. ipython:: python
 
    A = GF256.Random((3,3)); A
+   # Ensure A is invertible
+   while np.linalg.matrix_rank(A) < 3:
+      A = GF256.Random((3,3)); A
    b = GF256.Random(3); b
    x = np.linalg.solve(A, b); x
    np.array_equal(A @ x, b)
