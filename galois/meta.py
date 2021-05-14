@@ -193,24 +193,3 @@ class Meta(Ufunc, Func):
     @property
     def properties(cls):
         raise NotImplementedError
-
-
-class GroupMetaBase(Meta):
-    """
-    A base class for the GroupMeta class. Included here so other functions can easily
-    check whether a class is a finite group or other algebraic structure.
-    """
-
-
-class RingMetaBase(Meta):
-    """
-    A base class for the RingMeta class. Included here so other functions can easily
-    check whether a class is a finite group or other algebraic structure.
-    """
-
-
-class FieldMetaBase(Meta):
-    """
-    A base class for the FieldMeta class. Included here so other functions can easily
-    check whether a class is a finite field or other algebraic structure.
-    """
