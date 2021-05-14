@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 from ..dtypes import DTYPES
-from .meta import GFMeta
+from .meta import FieldMeta
 from .poly import Poly
 
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
@@ -18,7 +18,7 @@ MULTIPLY_UFUNC = lambda x, y: x * y
 RECIPROCAL_UFUNC = lambda x: 1 / x
 
 
-class GFpmMeta(GFMeta):
+class GFpmMeta(FieldMeta):
     """
     An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
     """

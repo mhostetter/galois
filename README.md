@@ -99,21 +99,21 @@ Galois field array classes are created using the `galois.GF()` class factory fun
 <class 'np.ndarray over GF(2^8)'>
 ```
 
-These classes are subclasses of `galois.GFArray` (which itself subclasses `np.ndarray`) and have `galois.GFMeta` as their metaclass.
+These classes are subclasses of `galois.FieldArray` (which itself subclasses `np.ndarray`) and have `galois.FieldMeta` as their metaclass.
 
 ```python
 >>> issubclass(GF256, np.ndarray)
 True
 
->>> issubclass(GF256, galois.GFArray)
+>>> issubclass(GF256, galois.FieldArray)
 True
 
->>> issubclass(type(GF256), galois.GFMeta)
+>>> issubclass(type(GF256), galois.FieldMeta)
 True
 ```
 
 A Galois field array class contains attributes relating to its Galois field and has methods to modify how the field
-is calculated or displayed. See the attributes and methods in `galois.GFMeta`.
+is calculated or displayed. See the attributes and methods in `galois.FieldMeta`.
 
 ```python
 # Summarizes some properties of the Galois field
@@ -193,10 +193,10 @@ GF(81, order=2^8)
 
 Galois field arrays also have constructor class methods for convenience. They include:
 
-- `GFArray.Zeros`, `GFArray.Ones`, `GFArray.Identity`, `GFArray.Range`, `GFArray.Random`, `GFArray.Elements`
+- `FieldArray.Zeros`, `FieldArray.Ones`, `FieldArray.Identity`, `FieldArray.Range`, `FieldArray.Random`, `FieldArray.Elements`
 
 Galois field elements can either be displayed using their integer representation, polynomial representation, or
-power representation. Calling `GFMeta.display` will change the element representation. If called as a context
+power representation. Calling `FieldMeta.display` will change the element representation. If called as a context
 manager, the display mode will only be temporarily changed.
 
 ```python
@@ -281,7 +281,7 @@ True
 
 Galois field arrays also contain matrix decomposition routines not included in numpy. These include:
 
-- `GFArray.row_reduce`, `GFArray.lu_decompose`, `GFArray.lup_decompose`
+- `FieldArray.row_reduce`, `FieldArray.lu_decompose`, `FieldArray.lup_decompose`
 
 ### Numpy ufunc methods
 
@@ -324,10 +324,10 @@ Many other relevant numpy functions are supported on Galois field arrays. These 
 ### Polynomial construction
 
 The `galois` package supports polynomials over Galois fields with the `galois.Poly` class. `galois.Poly`
-does not subclass `np.ndarray` but instead contains a `GFArray` of coefficients as an attribute
+does not subclass `np.ndarray` but instead contains a `FieldArray` of coefficients as an attribute
 (implements the "has-a", not "is-a", architecture).
 
-Polynomials can be created by specifying the polynomial coefficients as either a `GFArray` or an "array-like"
+Polynomials can be created by specifying the polynomial coefficients as either a `FieldArray` or an "array-like"
 object with the `field` keyword argument.
 
 ```python

@@ -4,7 +4,7 @@ import numpy as np
 
 from ..overrides import set_module
 
-from .array import GFArray
+from .array import FieldArray
 from .gf2 import GF2
 from .poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_integer, sparse_poly_to_str
 
@@ -28,10 +28,10 @@ class Poly:
     Parameters
     ----------
     coeffs : array_like
-        List of polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.GFArray`, :obj:`numpy.ndarray`,
+        List of polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.FieldArray`, :obj:`numpy.ndarray`,
         :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
         the 0-th degree element if `order="asc"`.
-    field : galois.GFArray, optional
+    field : galois.FieldArray, optional
         The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`. If `coeffs`
         is a Galois field array, then that field is used and the `field` argument is ignored.
     order : str, optional
@@ -90,13 +90,13 @@ class Poly:
     __array_priority__ = 100
 
     def __new__(cls, coeffs, field=None, order="desc"):
-        if not (field is None or issubclass(field, GFArray)):
+        if not (field is None or issubclass(field, FieldArray)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
-        if not isinstance(coeffs, (int, np.integer, list, tuple, np.ndarray, GFArray)):
+        if not isinstance(coeffs, (int, np.integer, list, tuple, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
         if isinstance(coeffs, (int, np.integer)):
             coeffs = [coeffs,]  # Ensure it's iterable
-        if isinstance(coeffs, (GFArray, np.ndarray)) and not coeffs.ndim <= 1:
+        if isinstance(coeffs, (FieldArray, np.ndarray)) and not coeffs.ndim <= 1:
             raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
         if not len(coeffs) > 0:
             raise ValueError(f"Argument `coeffs` must have non-zero length, not {len(coeffs)}.")
@@ -124,7 +124,7 @@ class Poly:
 
     @classmethod
     def _convert_coeffs(cls, coeffs, field):
-        if isinstance(coeffs, GFArray) and field is None:
+        if isinstance(coeffs, FieldArray) and field is None:
             # Use the field of the coefficients
             field = type(coeffs)
         else:
@@ -148,7 +148,7 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.GFArray, optional
+        field : galois.FieldArray, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -180,7 +180,7 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.GFArray, optional
+        field : galois.FieldArray, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -212,7 +212,7 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.GFArray, optional
+        field : galois.FieldArray, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -246,7 +246,7 @@ class Poly:
         ----------
         degree : int
             The degree of the polynomial.
-        field : galois.GFArray, optional
+        field : galois.FieldArray, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -290,7 +290,7 @@ class Poly:
         ----------
         integer : int
             The integer representation of the polynomial :math:`f(x)`.
-        field : galois.GFArray, optional
+        field : galois.FieldArray, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -335,7 +335,7 @@ class Poly:
         coeffs : array_like, optional
             List of corresponding non-zero coefficients. The default is `None` which corresponds to all one
             coefficients, i.e. `[1,]*len(degrees)`.
-        field : galois.GFArray, optional
+        field : galois.FieldArray, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
         Returns
@@ -409,7 +409,7 @@ class Poly:
             List of roots in :math:`\\mathrm{GF}(p^m)` of the desired polynomial.
         multiplicities : array_like, optional
             List of multiplicity of each root. The default is `None` which corresponds to all ones.
-        field : galois.GFArray, optional
+        field : galois.FieldArray, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
         Returns
@@ -436,7 +436,7 @@ class Poly:
             p = galois.Poly.Roots(roots, field=GF); p
             p(roots)
         """
-        if not (field is None or issubclass(field, GFArray)):
+        if not (field is None or issubclass(field, FieldArray)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
         if not isinstance(roots, (list, tuple, np.ndarray)):
             raise TypeError(f"Argument `roots` must 'array-like', not {type(roots)}.")
@@ -522,7 +522,7 @@ class Poly:
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             Galois field array of roots of :math:`f(x)`.
         np.ndarray
             The multiplicity of each root. Only returned if `multiplicity=True`.
@@ -717,22 +717,22 @@ class Poly:
 
         Parameters
         ----------
-        x : galois.GFArray
+        x : galois.FieldArray
             An array (or 0-dim array) of field element to evaluate the polynomial over.
-        field : galois.GFMeta, optional
+        field : galois.FieldMeta, optional
             The Galois field to evaluate the polynomial over. The default is `None` which represents
             the polynomial's current field, i.e. :obj:`field`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             The result of the polynomial evaluation of the same shape as `x`.
         """
         if field is None:
             field = self.field
             coeffs = self.coeffs
         else:
-            assert issubclass(field, GFArray)
+            assert issubclass(field, FieldArray)
             coeffs = field(self.coeffs)
         if not isinstance(x, field):
             x = field(x)
@@ -892,7 +892,7 @@ class Poly:
     @property
     def field(self):
         """
-        galois.GFMeta: The Galois field array class to which the coefficients belong.
+        galois.FieldMeta: The Galois field array class to which the coefficients belong.
 
         Examples
         --------
@@ -939,7 +939,7 @@ class Poly:
     @property
     def nonzero_coeffs(self):
         """
-        galois.GFArray: The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`galois.Poly.nonzero_degrees`
+        galois.FieldArray: The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`galois.Poly.nonzero_degrees`
         are paired with :obj:`galois.Poly.nonzero_coeffs`.
 
         Examples
@@ -971,7 +971,7 @@ class Poly:
     @property
     def coeffs(self):
         """
-        galois.GFArray: The coefficients of the polynomial in degree-descending order. The entries of :obj:`galois.Poly.degrees` are
+        galois.FieldArray: The coefficients of the polynomial in degree-descending order. The entries of :obj:`galois.Poly.degrees` are
         paired with :obj:`galois.Poly.coeffs`.
 
         Examples
@@ -1268,7 +1268,7 @@ class SparsePoly(Poly):
 
         obj = object.__new__(cls)
 
-        if isinstance(coeffs, GFArray) and field is None:
+        if isinstance(coeffs, FieldArray) and field is None:
             obj._degrees = np.array(degrees)
             obj._coeffs = coeffs
         else:

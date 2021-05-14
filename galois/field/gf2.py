@@ -1,17 +1,17 @@
 from ..overrides import set_module
 
-from .array import GFArray
+from .array import FieldArray
 from .meta_gf2 import GF2Meta
 
 __all__ = ["GF2"]
 
 
 @set_module("galois")
-class GF2(GFArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, mode="jit-calculate", target="cpu"):
+class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, mode="jit-calculate", target="cpu"):
     """
     A pre-created Galois field array class for :math:`\\mathrm{GF}(2)`.
 
-    This class is a subclass of :obj:`galois.GFArray` and has metaclass :obj:`galois.GFMeta`.
+    This class is a subclass of :obj:`galois.FieldArray` and has metaclass :obj:`galois.FieldMeta`.
 
     Examples
     --------
@@ -24,7 +24,7 @@ class GF2(GFArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primi
         GF2 = galois.GF(2); print(GF2)
         GF2 is galois.GF2
 
-    The Galois field properties can be viewed by class attributes, see :obj:`galois.GFMeta`.
+    The Galois field properties can be viewed by class attributes, see :obj:`galois.FieldMeta`.
 
     .. ipython:: python
 

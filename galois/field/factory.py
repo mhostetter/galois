@@ -12,8 +12,8 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=
     """
     Factory function to construct a Galois field array class of type :math:`\\mathrm{GF}(p^m)`.
 
-    The created class will be a subclass of :obj:`galois.GFArray` with metaclass :obj:`galois.GFMeta`.
-    The :obj:`galois.GFArray` inheritance provides the :obj:`numpy.ndarray` functionality. The :obj:`galois.GFMeta` metaclass
+    The created class will be a subclass of :obj:`galois.FieldArray` with metaclass :obj:`galois.FieldMeta`.
+    The :obj:`galois.FieldArray` inheritance provides the :obj:`numpy.ndarray` functionality. The :obj:`galois.FieldMeta` metaclass
     provides a variety of class attributes and methods relating to the finite field.
 
     Parameters
@@ -49,8 +49,8 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=
 
     Returns
     -------
-    galois.GFMeta
-        A new Galois field array class that is a subclass of :obj:`galois.GFArray` with :obj:`galois.GFMeta` metaclass.
+    galois.FieldMeta
+        A new Galois field array class that is a subclass of :obj:`galois.FieldArray` with :obj:`galois.FieldMeta` metaclass.
 
     Examples
     --------
@@ -84,7 +84,7 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=
         # Construct a very large GF(p) class
         GFp = galois.GF(36893488147419103183); print(GFp.properties)
 
-    See :obj:`galois.GFArray` for more examples of what Galois field arrays can do.
+    See :obj:`galois.FieldArray` for more examples of what Galois field arrays can do.
     """
     if not isinstance(order, int):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
