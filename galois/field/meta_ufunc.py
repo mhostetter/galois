@@ -39,8 +39,6 @@ class FieldUfunc(Ufunc):
         cls._ZECH_LOG = None
         cls._ZECH_E = None
 
-        cls._ufuncs = {}
-
         # Integer representations of the field's primitive element and primitive polynomial to be used in the
         # pure python ufunc implementations for `ufunc_mode = "python-calculate"`
         cls._primitive_element_int = None

@@ -184,12 +184,6 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "additive_inverse.pkl")
 
-    X, Z = io_1d(1, order, sparse=sparse)
-    for i in range(X.shape[0]):
-        Z[i] = I(1 / F(X[i]))
-    d = {"X": X, "Z": Z}
-    save_pickle(d, folder, "multiplicative_inverse.pkl")
-
     X, Y, XX, YY, ZZ = io_2d(1, order, -order-2, order+3, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
@@ -301,7 +295,7 @@ def make_luts(field, folder, sparse=False):
 
 
 if __name__ == "__main__":
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "data")
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "data", "fields")
 
     np.random.seed(123456789 + 1), random.seed(123456789 + 1)
     field = GF(2, modulus="primitive", repr="int")

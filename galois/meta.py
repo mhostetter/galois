@@ -1,6 +1,8 @@
 """
 A module that defines Meta which is a base class for GroupMeta, RingMeta, and FieldMeta.
 """
+import numpy as np
+
 from .meta_func import Func
 from .meta_ufunc import Ufunc
 
@@ -19,6 +21,9 @@ class Meta(Ufunc, Func):
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
         cls._order_str = None
+
+        cls._ufunc_mode = None
+        cls._ufunc_target = None
 
     def __str__(cls):
         return f"<class 'numpy.ndarray over {cls.name}'>"
@@ -93,6 +98,97 @@ class Meta(Ufunc, Func):
     @property
     def dtypes(cls):
         raise NotImplementedError
+
+    @property
+    def ufunc_mode(cls):
+        """
+        str: The mode for ufunc compilation, either `"jit-lookup"`, `"jit-calculate"`, `"python-calculate"`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).ufunc_mode
+            galois.GF(2**8).ufunc_mode
+            galois.GF(31).ufunc_mode
+            # galois.GF(7**5).ufunc_mode
+        """
+        return cls._ufunc_mode
+
+    @property
+    def ufunc_modes(cls):
+        """
+        list: All supported ufunc modes for this Galois field array class.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).ufunc_modes
+            galois.GF(2**8).ufunc_modes
+            galois.GF(31).ufunc_modes
+            galois.GF(2**100).ufunc_modes
+        """
+        if cls.dtypes == [np.object_]:
+            return ["python-calculate"]
+        else:
+            return ["jit-lookup", "jit-calculate"]
+
+    @property
+    def default_ufunc_mode(cls):
+        """
+        str: The default ufunc arithmetic mode for this Galois field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).default_ufunc_mode
+            galois.GF(2**8).default_ufunc_mode
+            galois.GF(31).default_ufunc_mode
+            galois.GF(2**100).default_ufunc_mode
+        """
+        if cls.dtypes == [np.object_]:
+            return "python-calculate"
+        elif cls.order <= 2**20:
+            return "jit-lookup"
+        else:
+            return "jit-calculate"
+
+    @property
+    def ufunc_target(cls):
+        """
+        str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, or `"cuda"`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).ufunc_target
+            galois.GF(2**8).ufunc_target
+            galois.GF(31).ufunc_target
+            # galois.GF(7**5).ufunc_target
+        """
+        return cls._ufunc_target
+
+    @property
+    def ufunc_targets(cls):
+        """
+        list: All supported ufunc targets for this Galois field array class.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            galois.GF(2).ufunc_targets
+            galois.GF(2**8).ufunc_targets
+            galois.GF(31).ufunc_targets
+            galois.GF(2**100).ufunc_targets
+        """
+        if cls.dtypes == [np.object_]:
+            return ["cpu"]
+        else:
+            return ["cpu", "parallel", "cuda"]
 
     @property
     def properties(cls):

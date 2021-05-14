@@ -7,7 +7,7 @@ import pytest
 
 import galois
 
-PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "fields")
 
 FIELDS = [
     pytest.param("GF(2)", marks=[pytest.mark.GF2]),
@@ -257,77 +257,4 @@ def log(field_folder):
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = d["Z"]
-    return d
-
-
-###############################################################################
-# Fixtures for polynomial arithmetic over finite fields
-###############################################################################
-
-def load_poly_luts(name, GF, folder):
-    with open(os.path.join(folder, name), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    d["GF"] = GF
-    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
-    d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
-    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
-    return d
-
-
-@pytest.fixture(scope="session")
-def poly_add(field_folder):
-    GF, folder = field_folder
-    return load_poly_luts("poly_add.pkl", GF, folder)
-
-
-@pytest.fixture(scope="session")
-def poly_subtract(field_folder):
-    GF, folder = field_folder
-    return load_poly_luts("poly_subtract.pkl", GF, folder)
-
-
-@pytest.fixture(scope="session")
-def poly_multiply(field_folder):
-    GF, folder = field_folder
-    return load_poly_luts("poly_multiply.pkl", GF, folder)
-
-
-@pytest.fixture(scope="session")
-def poly_divmod(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "poly_divmod.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    d["GF"] = GF
-    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
-    d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
-    d["Q"] = [galois.Poly(p, field=GF) for p in d["Q"]]
-    d["R"] = [galois.Poly(p, field=GF) for p in d["R"]]
-    return d
-
-
-@pytest.fixture(scope="session")
-def poly_power(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "poly_power.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    d["GF"] = GF
-    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
-    d["Y"] = d["Y"]
-    d["Z"] = [[galois.Poly(p, field=GF) for p in l] for l in d["Z"]]
-    return d
-
-
-@pytest.fixture(scope="session")
-def poly_evaluate(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "poly_evaluate.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    d["GF"] = GF
-    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
-    d["Y"] = GF(d["Y"])
-    d["Z"] = GF(d["Z"])
     return d

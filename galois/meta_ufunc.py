@@ -39,6 +39,10 @@ class Ufunc(type):
     _ufuncs_requiring_view = UFUNCS_REQUIRING_VIEW
     _overridden_ufuncs = {}
 
+    def __init__(cls, name, bases, namespace, **kwargs):
+        super().__init__(name, bases, namespace, **kwargs)
+        cls._ufuncs = {}
+
     def _compile_ufuncs(cls, target):
         raise NotImplementedError
 
