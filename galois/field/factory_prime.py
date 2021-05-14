@@ -3,7 +3,7 @@ import types
 from ..modular import primitive_root, is_primitive_root
 from ..prime import is_prime
 
-from .array import GFArray
+from .array import FieldArray
 from .gf2 import GF2
 from .meta_gfp import GFpMeta
 
@@ -41,7 +41,7 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
         cls = GF2
         cls.compile(mode, target)
     else:
-        cls = types.new_class(name, bases=(GFArray,), kwds={
+        cls = types.new_class(name, bases=(FieldArray,), kwds={
             "metaclass": GFpMeta,
             "characteristic": characteristic,
             "degree": 1,

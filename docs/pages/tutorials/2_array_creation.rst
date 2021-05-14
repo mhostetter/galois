@@ -46,8 +46,8 @@ View casting
 Alternate constructors
 ----------------------
 
-There are alternate constructors for convenience: :obj:`galois.GFArray.Zeros`, :obj:`galois.GFArray.Ones`, :obj:`galois.GFArray.Range`,
-:obj:`galois.GFArray.Random`, and :obj:`galois.GFArray.Elements`.
+There are alternate constructors for convenience: :obj:`galois.FieldArray.Zeros`, :obj:`galois.FieldArray.Ones`, :obj:`galois.FieldArray.Range`,
+:obj:`galois.FieldArray.Random`, and :obj:`galois.FieldArray.Elements`.
 
 .. ipython:: python
 
@@ -110,7 +110,7 @@ and the polynomial representation is :math:`\{0,\ 1,\ x,\ x+1,\ x^2,\ x^2+1,\ x^
    # Reset the display mode to the default
    GF.display(); a
 
-The :obj:`galois.GFArray.display` method can be called as a context manager.
+The :obj:`galois.FieldArray.display` method can be called as a context manager.
 
 .. ipython:: python
 

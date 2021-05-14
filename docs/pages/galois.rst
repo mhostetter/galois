@@ -11,8 +11,8 @@ galois
 
       GF
       Field
-      GFArray
-      GFMeta
+      FieldArray
+      FieldMeta
       GF2
 
    Prime Fields

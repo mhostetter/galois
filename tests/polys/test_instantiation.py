@@ -50,30 +50,30 @@ def config(request):
     return d
 
 
-@pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+@pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
 def test_coeffs(type1, config):
     GF = config["GF"]
-    if type1 is not galois.GFArray:
+    if type1 is not galois.FieldArray:
         p = galois.Poly(type1(config["coeffs"]), field=GF)
     else:
         p = galois.Poly(GF(config["coeffs"]))
     check_attributes(p, config)
 
 
-@pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+@pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
 def test_leading_zero_coeffs(type1, config):
     GF = config["GF"]
-    if type1 is not galois.GFArray:
+    if type1 is not galois.FieldArray:
         p = galois.Poly(type1(config["lz_coeffs"]), field=GF)
     else:
         p = galois.Poly(GF(config["lz_coeffs"]))
     check_attributes(p, config)
 
 
-@pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+@pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
 def test_ascending_coeffs(type1, config):
     GF = config["GF"]
-    if type1 is not galois.GFArray:
+    if type1 is not galois.FieldArray:
         p = galois.Poly(type1(config["coeffs"][::-1]), field=GF, order="asc")
     else:
         p = galois.Poly(GF(config["coeffs"][::-1]), order="asc")
@@ -87,11 +87,11 @@ def test_negative_coeffs(type1, config):
     check_attributes(p, config)
 
 
-@pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+@pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
 @pytest.mark.parametrize("field", FIELDS)
 def test_zero(type1, field):
     # The zero polynomial can cause problems, so test it explicitly
-    if type1 is not galois.GFArray:
+    if type1 is not galois.FieldArray:
         p = galois.Poly(type1([0]), field=field)
     else:
         p = galois.Poly(field([0]))

@@ -4,24 +4,24 @@ from ..array import Array
 from ..overrides import set_module
 
 from .linalg import row_reduce, lu_decompose, lup_decompose
-from .meta import GFMeta
+from .meta import FieldMeta
 from .poly_conversion import str_to_integer
 
-__all__ = ["GFArray"]
+__all__ = ["FieldArray"]
 
 
 @set_module("galois")
-class GFArray(Array, metaclass=GFMeta):
+class FieldArray(Array, metaclass=FieldMeta):
     """
     Create an array over :math:`\\mathrm{GF}(p^m)`.
 
-    The :obj:`galois.GFArray` class is a parent class for all Galois field array classes. Any Galois field :math:`\\mathrm{GF}(p^m)`
+    The :obj:`galois.FieldArray` class is a parent class for all Galois field array classes. Any Galois field :math:`\\mathrm{GF}(p^m)`
     with prime characteristic :math:`p` and positive integer :math:`m`, can be constructed by calling the class factory
     `galois.GF(p**m)`.
 
     Warning
     -------
-        This is an abstract base class for all Galois field array classes. :obj:`galois.GFArray` cannot be instantiated
+        This is an abstract base class for all Galois field array classes. :obj:`galois.FieldArray` cannot be instantiated
         directly. Instead, Galois field array classes are created using :obj:`galois.GF`.
 
         For example, one can create the :math:`\\mathrm{GF}(7)` field array class as follows:
@@ -38,8 +38,8 @@ class GFArray(Array, metaclass=GFMeta):
             GF7([3,5,0,2,1])
             GF7.Random((2,5))
 
-    :obj:`galois.GFArray` is a subclass of :obj:`numpy.ndarray`. The :obj:`galois.GFArray` constructor has the same syntax as
-    :func:`numpy.array`. The returned :obj:`galois.GFArray` object is an array that can be acted upon like any other
+    :obj:`galois.FieldArray` is a subclass of :obj:`numpy.ndarray`. The :obj:`galois.FieldArray` constructor has the same syntax as
+    :func:`numpy.array`. The returned :obj:`galois.FieldArray` object is an array that can be acted upon like any other
     numpy array.
 
     Parameters
@@ -50,7 +50,7 @@ class GFArray(Array, metaclass=GFMeta):
         :obj:`list` or :obj:`tuple` of int or str, :obj:`int`, or :obj:`str`.
     dtype : numpy.dtype, optional
         The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-        dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+        dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
     copy : bool, optional
         The `copy` keyword argument from :func:`numpy.array`. The default is `True` which makes a copy of the input
         object is it's an array.
@@ -62,7 +62,7 @@ class GFArray(Array, metaclass=GFMeta):
 
     Returns
     -------
-    galois.GFArray
+    galois.FieldArray
         The copied input array as a :math:`\\mathrm{GF}(p^m)` field array.
 
     Examples
@@ -136,8 +136,8 @@ class GFArray(Array, metaclass=GFMeta):
     """
 
     def __new__(cls, array, dtype=None, copy=True, order="K", ndmin=0):
-        if cls is GFArray:
-            raise NotImplementedError("GFArray is an abstract base class that cannot be directly instantiated. Instead, create a GFArray subclass for GF(p^m) arithmetic using `galois.GF(p**m)`.")
+        if cls is FieldArray:
+            raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `galois.GF(p**m)`.")
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
     @classmethod
@@ -171,11 +171,11 @@ class GFArray(Array, metaclass=GFMeta):
             The size :math:`n` along one axis of the matrix. The resulting array has shape `(size,size)`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             A Galois field identity matrix of shape `(size, size)`.
 
         Examples
@@ -196,7 +196,7 @@ class GFArray(Array, metaclass=GFMeta):
 
         Parameters
         ----------
-        a : int, galois.GFArray
+        a : int, galois.FieldArray
             An element of :math:`\\mathrm{GF}(p^m)`.
         m : int
             The number of rows in the Vandermonde matrix.
@@ -204,11 +204,11 @@ class GFArray(Array, metaclass=GFMeta):
             The number of columns in the Vandermonde matrix.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             The :math:`m \\times n` Vandermonde matrix.
 
         Examples
@@ -254,11 +254,11 @@ class GFArray(Array, metaclass=GFMeta):
             The last dimension of the input array must be :math:`m`. An input array with shape `(n1, n2, m)` has output shape `(n1, n2)`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             A Galois field array over :math:`\\mathrm{GF}(p^m)`.
 
         Examples
@@ -295,11 +295,11 @@ class GFArray(Array, metaclass=GFMeta):
         ----------
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             A Galois field array of length-:math:`m` vectors over :math:`\\mathrm{GF}(p)`.
 
         Examples
@@ -340,7 +340,7 @@ class GFArray(Array, metaclass=GFMeta):
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             The reduced row echelon form of the input array.
 
         Examples
@@ -380,9 +380,9 @@ class GFArray(Array, metaclass=GFMeta):
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             The lower triangular matrix.
-        galois.GFArray
+        galois.FieldArray
             The upper triangular matrix.
 
         Examples
@@ -408,11 +408,11 @@ class GFArray(Array, metaclass=GFMeta):
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             The lower triangular matrix.
-        galois.GFArray
+        galois.FieldArray
             The upper triangular matrix.
-        galois.GFArray
+        galois.FieldArray
             The permutation matrix.
 
         Examples

@@ -133,11 +133,11 @@ class Array(np.ndarray, metaclass=Meta):
             `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             A Galois field array of zeros.
 
         Examples
@@ -164,11 +164,11 @@ class Array(np.ndarray, metaclass=Meta):
             `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             A Galois field array of ones.
 
         Examples
@@ -197,11 +197,11 @@ class Array(np.ndarray, metaclass=Meta):
             The space between values. The default is 1.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             A Galois field array of a range of field elements.
 
         Examples
@@ -240,11 +240,11 @@ class Array(np.ndarray, metaclass=Meta):
             field's order :math:`p^m`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             A Galois field array of random field elements.
 
         Examples
@@ -278,11 +278,11 @@ class Array(np.ndarray, metaclass=Meta):
         ----------
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.GFMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
 
         Returns
         -------
-        galois.GFArray
+        galois.FieldArray
             A Galois field array of all the field's elements.
 
         Examples

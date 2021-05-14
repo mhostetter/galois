@@ -2,16 +2,16 @@ import numba
 import numpy as np
 
 from ..dtypes import DTYPES
-from .meta import GFMeta
+from .meta import FieldMeta
 
 
-class GF2Meta(GFMeta):
+class GF2Meta(FieldMeta):
     """
     Create an array over :math:`\\mathrm{GF}(2)`.
 
     Note
     ----
-        This Galois field class is a pre-made subclass of :obj:`galois.GFArray`. It is included in the package
+        This Galois field class is a pre-made subclass of :obj:`galois.FieldArray`. It is included in the package
         because of the ubiquity of :math:`\\mathrm{GF}(2)` fields.
 
         .. ipython:: python

@@ -17,11 +17,11 @@ DTYPES = galois.dtypes.DTYPES + [np.object_]
 def test_cant_instantiate_GF():
     v = [0, 1, 0, 1]
     with pytest.raises(NotImplementedError):
-        a = galois.GFArray(v)
+        a = galois.FieldArray(v)
 
 
 class Test0D:
-    @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.GFArray])
+    @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.FieldArray])
     def test_new(self, field, type1):
         v = int(field.Random())
         vt = convert_0d(v, type1, field)
@@ -29,7 +29,7 @@ class Test0D:
         assert type(a) is field
         assert a == v
 
-    @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.GFArray])
+    @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.FieldArray])
     def test_valid_dtype(self, field, type1):
         v = int(field.Random())
         vt = convert_0d(v, type1, field)
@@ -39,7 +39,7 @@ class Test0D:
         assert a.dtype == dtype
         assert a == v
 
-    @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.GFArray])
+    @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.FieldArray])
     def test_invalid_dtype(self, field, type1):
         v = int(field.Random())
         vt = convert_0d(v, type1, field)
@@ -117,7 +117,7 @@ class Test0D:
 
 
 class Test1D:
-    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
     def test_new(self, field, type1):
         v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
         vt = convert_1d(v, type1, field)
@@ -125,7 +125,7 @@ class Test1D:
         assert type(a) is field
         assert array_equal(a, v)
 
-    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
     def test_valid_dtype(self, field, type1):
         v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
         vt = convert_1d(v, type1, field)
@@ -135,7 +135,7 @@ class Test1D:
         assert a.dtype == dtype
         assert array_equal(a, v)
 
-    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
     def test_invalid_dtype(self, field, type1):
         v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
         vt = convert_1d(v, type1, field)
@@ -213,7 +213,7 @@ class Test1D:
 
 
 class Test2D:
-    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
     def test_new(self, field, type1):
         v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
         vt = convert_2d(v, type1, field)
@@ -221,7 +221,7 @@ class Test2D:
         assert type(a) is field
         assert array_equal(a, v)
 
-    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
     def test_valid_dtype(self, field, type1):
         v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
         vt = convert_2d(v, type1, field)
@@ -231,7 +231,7 @@ class Test2D:
         assert a.dtype == dtype
         assert array_equal(a, v)
 
-    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.GFArray])
+    @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
     def test_invalid_dtype(self, field, type1):
         v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
         vt = convert_2d(v, type1, field)
@@ -317,7 +317,7 @@ def convert_0d(v, type1, field):
         vt = np.array(v, dtype=np.object_)
     elif type1 is np.array:
         vt = np.array(v)
-    elif type1 is galois.GFArray:
+    elif type1 is galois.FieldArray:
         vt = field(v)
     else:
         raise NotImplementedError
@@ -325,7 +325,7 @@ def convert_0d(v, type1, field):
 
 
 def convert_1d(v, type1, field):
-    if type1 is galois.GFArray:
+    if type1 is galois.FieldArray:
         vt = field(v)
     elif type1 is np.array and field.dtypes == [np.object_]:
         vt = np.array(v, dtype=np.object_)
@@ -337,7 +337,7 @@ def convert_1d(v, type1, field):
 
 
 def convert_2d(v, type1, field):
-    if type1 is galois.GFArray:
+    if type1 is galois.FieldArray:
         vt = field(v)
     elif type1 is np.array and field.dtypes == [np.object_]:
         vt = np.array(v, dtype=np.object_)

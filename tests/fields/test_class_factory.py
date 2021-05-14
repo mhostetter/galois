@@ -9,16 +9,16 @@ import galois
 
 def test_valid():
     GF = galois.GF(2)
-    assert issubclass(GF, galois.GFArray)
-    assert issubclass(type(GF), galois.GFMeta)
+    assert issubclass(GF, galois.FieldArray)
+    assert issubclass(type(GF), galois.FieldMeta)
 
     GF = galois.GF(2**8)
-    assert issubclass(GF, galois.GFArray)
-    assert issubclass(type(GF), galois.GFMeta)
+    assert issubclass(GF, galois.FieldArray)
+    assert issubclass(type(GF), galois.FieldMeta)
 
     GF = galois.GF(31)
-    assert issubclass(GF, galois.GFArray)
-    assert issubclass(type(GF), galois.GFMeta)
+    assert issubclass(GF, galois.FieldArray)
+    assert issubclass(type(GF), galois.FieldMeta)
 
 
 def test_non_integer_order():

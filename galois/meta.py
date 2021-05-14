@@ -47,11 +47,11 @@ class Meta(Ufunc, Func):
             arithmetic on the fly. The "jit-calculate" mode is designed for large fields that cannot store lookup tables in RAM.
             Generally, "jit-calculate" is slower than "jit-lookup". The "python-calculate" mode is reserved for extremely large fields. In
             this mode the ufuncs are not JIT-compiled, but are pur python functions operating on python ints. The list of valid
-            modes for this field is in :obj:`galois.GFMeta.ufunc_modes`.
+            modes for this field is in :obj:`galois.FieldMeta.ufunc_modes`.
         target : str, optional
             The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. The default
             is `"cpu"`. For extremely large fields the only supported target is `"cpu"` (which doesn't use numba it uses pure python to
-            calculate the field arithmetic). The list of valid targets for this field is in :obj:`galois.GFMeta.ufunc_targets`.
+            calculate the field arithmetic). The list of valid targets for this field is in :obj:`galois.FieldMeta.ufunc_targets`.
         """
         mode = cls.default_ufunc_mode if mode == "auto" else mode
         if mode not in cls.ufunc_modes:

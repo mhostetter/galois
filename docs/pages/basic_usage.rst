@@ -28,16 +28,16 @@ Galois field array classes are created using the :func:`galois.GF` class factory
    GF256 = galois.GF(2**8)
    print(GF256)
 
-These classes are subclasses of :obj:`galois.GFArray` (which itself subclasses :obj:`numpy.ndarray`) and have :obj:`galois.GFMeta` as their metaclass.
+These classes are subclasses of :obj:`galois.FieldArray` (which itself subclasses :obj:`numpy.ndarray`) and have :obj:`galois.FieldMeta` as their metaclass.
 
 .. ipython:: python
 
    issubclass(GF256, np.ndarray)
-   issubclass(GF256, galois.GFArray)
-   issubclass(type(GF256), galois.GFMeta)
+   issubclass(GF256, galois.FieldArray)
+   issubclass(type(GF256), galois.FieldMeta)
 
 A Galois field array class contains attributes relating to its Galois field and methods to modify how the field
-is calculated or displayed. See the attributes and methods in :obj:`galois.GFMeta`.
+is calculated or displayed. See the attributes and methods in :obj:`galois.FieldMeta`.
 
 .. ipython:: python
 
@@ -88,10 +88,10 @@ as a polynomial over its prime subfield.
 
 Galois field arrays also have constructor class methods for convenience. They include:
 
-- :func:`galois.GFArray.Zeros`, :func:`galois.GFArray.Ones`, :func:`galois.GFArray.Identity`, :func:`galois.GFArray.Range`, :func:`galois.GFArray.Random`, :func:`galois.GFArray.Elements`
+- :func:`galois.FieldArray.Zeros`, :func:`galois.FieldArray.Ones`, :func:`galois.FieldArray.Identity`, :func:`galois.FieldArray.Range`, :func:`galois.FieldArray.Random`, :func:`galois.FieldArray.Elements`
 
 Galois field elements can either be displayed using their integer representation, polynomial representation, or
-power representation. Calling :func:`galois.GFMeta.display` will change the element representation. If called as a context
+power representation. Calling :func:`galois.FieldMeta.display` will change the element representation. If called as a context
 manager, the display mode will only be temporarily changed.
 
 .. ipython:: python
@@ -157,7 +157,7 @@ operation in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{R}`. Some of these f
 
 Galois field arrays also contain matrix decomposition routines not included in numpy. These include:
 
-- :func:`galois.GFArray.row_reduce`, :func:`galois.GFArray.lu_decompose`, :func:`galois.GFArray.lup_decompose`
+- :func:`galois.FieldArray.row_reduce`, :func:`galois.FieldArray.lu_decompose`, :func:`galois.FieldArray.lup_decompose`
 
 Numpy ufunc methods
 -------------------
@@ -190,10 +190,10 @@ Polynomial construction
 -----------------------
 
 The :obj:`galois` package supports polynomials over Galois fields with the :obj:`galois.Poly` class. :obj:`galois.Poly`
-does not subclass :obj:`numpy.ndarray` but instead contains a :obj:`galois.GFArray` of coefficients as an attribute
+does not subclass :obj:`numpy.ndarray` but instead contains a :obj:`galois.FieldArray` of coefficients as an attribute
 (implements the "has-a", not "is-a", architecture).
 
-Polynomials can be created by specifying the polynomial coefficients as either a :obj:`galois.GFArray` or an "array-like"
+Polynomials can be created by specifying the polynomial coefficients as either a :obj:`galois.FieldArray` or an "array-like"
 object with the `field` keyword argument.
 
 .. ipython:: python

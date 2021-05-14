@@ -8,15 +8,15 @@ from .meta_func import FieldFunc
 from .meta_ufunc import FieldUfunc
 from .poly_conversion import integer_to_poly, poly_to_str
 
-__all__ = ["GFMeta"]
+__all__ = ["FieldMeta"]
 
 
 @set_module("galois")
-class GFMeta(FieldMetaBase, FieldUfunc, FieldFunc):
+class FieldMeta(FieldMetaBase, FieldUfunc, FieldFunc):
     """
-    Defines a metaclass for all :obj:`galois.GFArray` classes.
+    Defines a metaclass for all :obj:`galois.FieldArray` classes.
 
-    This metaclass gives :obj:`galois.GFArray` classes returned from :func:`galois.GF` class methods and properties
+    This metaclass gives :obj:`galois.FieldArray` classes returned from :func:`galois.GF` class methods and properties
     relating to its Galois field.
     """
     # pylint: disable=no-value-for-parameter,comparison-with-callable,too-many-public-methods
@@ -380,7 +380,7 @@ class GFMeta(FieldMetaBase, FieldUfunc, FieldFunc):
     @property
     def prime_subfield(cls):
         """
-        galois.GFMeta: The prime subfield :math:`\\mathrm{GF}(p)` of the extension field :math:`\\mathrm{GF}(p^m)`.
+        galois.FieldMeta: The prime subfield :math:`\\mathrm{GF}(p)` of the extension field :math:`\\mathrm{GF}(p^m)`.
 
         Examples
         --------
@@ -480,7 +480,7 @@ class GFMeta(FieldMetaBase, FieldUfunc, FieldFunc):
 
 class DisplayContext:
     """
-    Simple context manager for the :obj:`GFArrayMeta.display` method.
+    Simple context manager for the :obj:`FieldArrayMeta.display` method.
     """
 
     def __init__(self, cls):
