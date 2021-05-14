@@ -192,7 +192,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             galois.GF(2).name
             galois.GF(2**8).name
             galois.GF(31).name
-            # galois.GF(7**5).name
+            galois.GF(7**5).name
         """
         if cls._degree == 1:
             return f"GF({cls._characteristic})"
@@ -236,7 +236,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             galois.GF(2).degree
             galois.GF(2**8).degree
             galois.GF(31).degree
-            # galois.GF(7**5).degree
+            galois.GF(7**5).degree
         """
         return cls._degree
 
@@ -253,7 +253,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             galois.GF(2).order
             galois.GF(2**8).order
             galois.GF(31).order
-            # galois.GF(7**5).order
+            galois.GF(7**5).order
         """
         return cls._order
 
@@ -270,7 +270,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             galois.GF(2).irreducible_poly
             galois.GF(2**8).irreducible_poly
             galois.GF(31).irreducible_poly
-            # galois.GF(7**5).irreducible_poly
+            galois.GF(7**5).irreducible_poly
         """
         # Ensure accesses of this property don't alter it
         return cls._irreducible_poly.copy()
@@ -322,7 +322,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             galois.GF(2).primitive_element
             galois.GF(2**8).primitive_element
             galois.GF(31).primitive_element
-            # galois.GF(7**5).primitive_element
+            galois.GF(7**5).primitive_element
         """
         # Ensure accesses of this property don't alter it
         return np.copy(cls._primitive_element)
@@ -340,7 +340,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             galois.GF(2).primitive_elements
             galois.GF(2**8).primitive_elements
             galois.GF(31).primitive_elements
-            # galois.GF(7**5).primitive_elements
+            galois.GF(7**5).primitive_elements
         """
         powers = np.array(totatives(cls.order - 1))
         return np.sort(cls.primitive_element ** powers)
@@ -357,7 +357,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             galois.GF(2).is_prime_field
             galois.GF(2**8).is_prime_field
             galois.GF(31).is_prime_field
-            # galois.GF(7**5).is_prime_field
+            galois.GF(7**5).is_prime_field
         """
         return cls._degree == 1
 
@@ -373,7 +373,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             galois.GF(2).is_extension_field
             galois.GF(2**8).is_extension_field
             galois.GF(31).is_extension_field
-            # galois.GF(7**5).is_extension_field
+            galois.GF(7**5).is_extension_field
         """
         return cls._degree > 1
 
@@ -389,7 +389,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             print(galois.GF(2).prime_subfield.properties)
             print(galois.GF(2**8).prime_subfield.properties)
             print(galois.GF(31).prime_subfield.properties)
-            # print(galois.GF(7**5).prime_subfield.properties)
+            print(galois.GF(7**5).prime_subfield.properties)
         """
         return cls._prime_subfield
 
