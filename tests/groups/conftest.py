@@ -4,13 +4,13 @@ import galois
 
 
 ADDITIVE_GROUPS = [
-    pytest.param("Z(17, +)", marks=[pytest.mark.Z17]),
-    pytest.param("Z(10**20, +)", marks=[pytest.mark.Z10_20]),
+    pytest.param("Z(17, +)", marks=[pytest.mark.Z17_add]),
+    pytest.param("Z(10**20, +)", marks=[pytest.mark.Z10_20_add]),
 ]
 
 MULTIPLICATIVE_GROUPS = [
-    pytest.param("Z(17, *)", marks=[pytest.mark.Z17]),
-    pytest.param("Z(10**20, *)", marks=[pytest.mark.Z10_20]),
+    pytest.param("Z(17, *)", marks=[pytest.mark.Z17_mul]),
+    pytest.param("Z(10**20, *)", marks=[pytest.mark.Z10_20_mul]),
 ]
 
 GROUPS = ADDITIVE_GROUPS + MULTIPLICATIVE_GROUPS
