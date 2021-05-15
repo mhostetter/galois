@@ -6,13 +6,15 @@ import numpy as np
 
 import galois
 
+from ..helper import array_equal
+
 
 def test_dot_scalar(field):
     a = field.Random((3,3))
     b = field.Random()
     c = np.dot(a, b)
     assert type(c) is field
-    assert np.array_equal(c, a * b)
+    assert array_equal(c, a * b)
 
 
 def test_dot_vector_vector(field):
@@ -20,7 +22,7 @@ def test_dot_vector_vector(field):
     b = field.Random(3)
     c = np.dot(a, b)
     assert type(c) is field
-    assert np.array_equal(c, np.sum(a * b))
+    assert array_equal(c, np.sum(a * b))
 
 
 def test_dot_matrix_matrix(field):
@@ -28,7 +30,7 @@ def test_dot_matrix_matrix(field):
     B = field.Random((3,3))
     C = np.dot(A, B)
     assert type(C) is field
-    assert np.array_equal(C, A @ B)
+    assert array_equal(C, A @ B)
 
 
 def test_dot_tensor_vector(field):
@@ -36,7 +38,7 @@ def test_dot_tensor_vector(field):
     b = field.Random(5)
     C = np.dot(A, b)
     assert type(C) is field
-    assert np.array_equal(C, np.sum(A * b, axis=-1))
+    assert array_equal(C, np.sum(A * b, axis=-1))
 
 
 def test_inner_scalar_scalar(field):
@@ -52,7 +54,7 @@ def test_inner_vector_vector(field):
     b = field.Random(3)
     c = np.inner(a, b)
     assert type(c) is field
-    assert np.array_equal(c, np.sum(a * b))
+    assert array_equal(c, np.sum(a * b))
 
 
 def test_outer_vector_vector(field):
@@ -60,7 +62,7 @@ def test_outer_vector_vector(field):
     b = field.Random(4)
     c = np.outer(a, b)
     assert type(c) is field
-    assert np.array_equal(c, np.multiply.outer(a, b))
+    assert array_equal(c, np.multiply.outer(a, b))
 
 
 def test_outer_nd_nd(field):
@@ -68,7 +70,7 @@ def test_outer_nd_nd(field):
     b = field.Random((4,4))
     c = np.outer(a, b)
     assert type(c) is field
-    assert np.array_equal(c, np.multiply.outer(a.ravel(), b.ravel()))
+    assert array_equal(c, np.multiply.outer(a.ravel(), b.ravel()))
 
 
 def test_matmul_scalar(field):
@@ -87,7 +89,7 @@ def test_matmul_1d_1d(field):
     assert C == np.sum(A * B)
     assert C.shape == ()
     assert type(C) is field
-    assert np.array_equal(A @ B, np.matmul(A, B))
+    assert array_equal(A @ B, np.matmul(A, B))
 
 
 def test_matmul_2d_1d(field):
@@ -97,7 +99,7 @@ def test_matmul_2d_1d(field):
     assert C[0] == np.sum(A[0,:] * B)  # Spot check
     assert C.shape == (3,)
     assert type(C) is field
-    assert np.array_equal(A @ B, np.matmul(A, B))
+    assert array_equal(A @ B, np.matmul(A, B))
 
 
 def test_matmul_1d_2d(field):
@@ -107,7 +109,7 @@ def test_matmul_1d_2d(field):
     assert C[0] == np.sum(A * B[:,0])  # Spot check
     assert C.shape == (3,)
     assert type(C) is field
-    assert np.array_equal(A @ B, np.matmul(A, B))
+    assert array_equal(A @ B, np.matmul(A, B))
 
 
 def test_matmul_2d_2d(field):
@@ -117,27 +119,27 @@ def test_matmul_2d_2d(field):
     assert C[0,0] == np.sum(A[0,:] * B[:,0])  # Spot check
     assert C.shape == (3,3)
     assert type(C) is field
-    assert np.array_equal(A @ B, np.matmul(A, B))
+    assert array_equal(A @ B, np.matmul(A, B))
 
 
 # def test_matmul_nd_2d(field):
 #     A = field.Random((2,3,4))
 #     B = field.Random((4,3))
 #     C = A @ B
-#     assert np.array_equal(C[0,0,0], np.sum(A[0,0,:] * B[:,0]))  # Spot check
+#     assert array_equal(C[0,0,0], np.sum(A[0,0,:] * B[:,0]))  # Spot check
 #     assert C.shape == (2,3,3)
 #     assert type(C) is field
-#     assert np.array_equal(A @ B, np.matmul(A, B))
+#     assert array_equal(A @ B, np.matmul(A, B))
 
 
 # def test_matmul_nd_nd(field):
 #     A = field.Random((2,3,4))
 #     B = field.Random((2,4,3))
 #     C = A @ B
-#     assert np.array_equal(C[0,0,0], np.sum(A[0,0,:] * B[0,:,0]))  # Spot check
+#     assert array_equal(C[0,0,0], np.sum(A[0,0,:] * B[0,:,0]))  # Spot check
 #     assert C.shape == (2,3,3)
 #     assert type(C) is field
-#     assert np.array_equal(A @ B, np.matmul(A, B))
+#     assert array_equal(A @ B, np.matmul(A, B))
 
 
 def test_lu_decomposition():
@@ -150,7 +152,7 @@ def test_lu_decomposition():
             # The LU decomposition isn't guaranteed to exist
             continue
         # For those decompositions that exist, confirm they are correct
-        assert np.array_equal(L @ U, A)
+        assert array_equal(L @ U, A)
 
 
 def test_lup_decomposition():
@@ -159,7 +161,7 @@ def test_lup_decomposition():
     for trial in range(100):
         A = GF.Random((3,3))
         L, U, P = A.lup_decompose()
-        assert np.array_equal(L @ U, P @ A)
+        assert array_equal(L @ U, P @ A)
 
 
 def test_det_2x2(field):
@@ -205,7 +207,7 @@ def test_solve_2d_1d(field):
     A = full_rank_matrix(field, 3)
     b = field.Random(3)
     x = np.linalg.solve(A, b)
-    assert np.array_equal(A @ x, b)
+    assert array_equal(A @ x, b)
     assert x.shape == b.shape
     assert type(x) is field
 
@@ -214,7 +216,7 @@ def test_solve_2d_2d(field):
     A = full_rank_matrix(field, 3)
     b = field.Random((3,5))
     x = np.linalg.solve(A, b)
-    assert np.array_equal(A @ x, b)
+    assert array_equal(A @ x, b)
     assert x.shape == b.shape
     assert type(x) is field
 
