@@ -62,8 +62,7 @@ In addition to normal array arithmetic, `galois` also supports linear algebra (w
 
 The documentation for `galois` can be found at https://galois.readthedocs.io/en/stable/. It includes
 [installation instructions](https://galois.readthedocs.io/en/stable/pages/installation.html), [basic usage](https://galois.readthedocs.io/en/stable/pages/basic_usage.html),
-[tutorials](https://galois.readthedocs.io/en/stable/pages/tutorials.html), [development guide](https://galois.readthedocs.io/en/stable/pages/development.html),
-and an [API reference](https://galois.readthedocs.io/en/stable/pages/build/_autosummary/galois.html#module-galois).
+[tutorials](https://galois.readthedocs.io/en/stable/pages/tutorials.html), a [development guide](https://galois.readthedocs.io/en/stable/pages/development.html), an [API reference](https://galois.readthedocs.io/en/stable/pages/api.html), and [release notes](https://galois.readthedocs.io/en/stable/pages/release_notes.html).
 
 ## Installation
 
