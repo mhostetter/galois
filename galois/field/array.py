@@ -9,7 +9,7 @@ from .linalg import row_reduce, lu_decompose, lup_decompose
 from .meta import FieldMeta
 from .poly_conversion import str_to_integer
 
-__all__ = ["FieldArray", "is_field"]
+__all__ = ["FieldArray"]
 
 
 @set_module("galois")
@@ -606,20 +606,3 @@ class FieldArray(Array, metaclass=FieldMeta):
             np.array_equal(P @ A, L @ U)
         """
         return lup_decompose(self)
-
-
-def is_field(cls):
-    """
-    Determines if the class is a Galois field array class created from :func:`galois.GF` or `:func:`galois.Field`.
-
-    Parameters
-    ----------
-    cls : type
-        Any class.
-
-    Returns
-    -------
-    bool
-        `True` if `cls` is a Galois field array class generated from :func:`galois.GF` or `:func:`galois.Field`.
-    """
-    return issubclass(cls, FieldArray) and cls is not FieldArray

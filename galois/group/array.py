@@ -7,7 +7,7 @@ from ..overrides import set_module
 
 from .meta import GroupMeta
 
-__all__ = ["GroupArray", "is_group"]
+__all__ = ["GroupArray"]
 
 
 @set_module("galois")
@@ -333,20 +333,3 @@ class GroupArray(Array, metaclass=GroupMeta):
             array = array[idxs]
 
         return array.view(cls)
-
-
-def is_group(cls):
-    """
-    Determines if the class is a finite group array class created from :func:`galois.Group`.
-
-    Parameters
-    ----------
-    cls : type
-        Any class.
-
-    Returns
-    -------
-    bool
-        `True` if `cls` is a finite group array class generated from :func:`galois.Group`.
-    """
-    return issubclass(cls, GroupArray) and cls is not GroupArray

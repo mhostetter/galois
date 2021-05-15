@@ -1,5 +1,6 @@
 import types
 
+from ..array import FieldArrayBase
 from ..modular import primitive_root, is_primitive_root
 from ..prime import is_prime
 
@@ -41,7 +42,7 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
         cls = GF2
         cls.compile(mode, target)
     else:
-        cls = types.new_class(name, bases=(FieldArray,), kwds={
+        cls = types.new_class(name, bases=(FieldArray, FieldArrayBase), kwds={
             "metaclass": GFpMeta,
             "characteristic": characteristic,
             "degree": 1,
