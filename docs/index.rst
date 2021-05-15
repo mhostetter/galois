@@ -21,6 +21,11 @@ Galois: A performant numpy extension for Galois fields
    pages/development.rst
    pages/api.rst
 
+.. toctree::
+   :maxdepth: 1
+
+   pages/release_notes.md
+
 Indices and tables
 ------------------
 
