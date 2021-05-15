@@ -34,7 +34,7 @@ def _lapack_linalg(a, b, function, n_sum=None):
     b = b.astype(dtype)
 
     c = function(a, b)  # Compute result using native numpy LAPACK/BLAS implementation
-    c = np.mod(c, characteristic)  # Reduce the result mod p
+    c = c % characteristic  # Reduce the result mod p
 
     if np.isscalar(c):
         # TODO: Sometimes the scalar c is a float?
