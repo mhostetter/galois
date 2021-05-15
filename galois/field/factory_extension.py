@@ -1,5 +1,6 @@
 import types
 
+from ..array import FieldArrayBase
 from ..prime import is_prime
 
 from .array import FieldArray
@@ -76,7 +77,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         raise ValueError(f"Argument `primitive_element` must be a multiplicative generator of GF({characteristic}^{degree}), {primitive_element} is not.")
 
     if characteristic == 2:
-        cls = types.new_class(name, bases=(FieldArray,), kwds={
+        cls = types.new_class(name, bases=(FieldArray, FieldArrayBase), kwds={
             "metaclass": GF2mMeta,
             "characteristic": characteristic,
             "degree": degree,
@@ -89,7 +90,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         })
 
     else:
-        cls = types.new_class(name, bases=(FieldArray,), kwds={
+        cls = types.new_class(name, bases=(FieldArray, FieldArrayBase), kwds={
             "metaclass": GFpmMeta,
             "characteristic": characteristic,
             "degree": degree,

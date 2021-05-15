@@ -2,6 +2,7 @@ import types
 
 import numpy as np
 
+from ..array import GroupArrayBase
 from ..overrides import set_module
 
 from .array import GroupArray
@@ -71,7 +72,7 @@ def Group(modulus, operator):
 
     if operator == "+":
         name = f"Z_{modulus}"
-        cls = types.new_class(name, bases=(GroupArray,), kwds={
+        cls = types.new_class(name, bases=(GroupArray, GroupArrayBase), kwds={
             "metaclass": AdditiveGroupMeta,
             "operator": "+",
             "modulus": modulus,
@@ -80,7 +81,7 @@ def Group(modulus, operator):
         })
     else:
         name = f"Z_{modulus}"
-        cls = types.new_class(name, bases=(GroupArray,), kwds={
+        cls = types.new_class(name, bases=(GroupArray, GroupArrayBase), kwds={
             "metaclass": MultiplicativeGroupMeta,
             "operator": "*",
             "modulus": modulus,

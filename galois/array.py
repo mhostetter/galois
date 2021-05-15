@@ -233,3 +233,21 @@ class Array(np.ndarray, metaclass=Meta):
             string = string[:dtype_idx] + f"{cls._order_str})"
 
         return string
+
+
+class GroupArrayBase(Array):  # pylint: disable=abstract-method
+    """
+    A class for `GroupArray` to inherit from.
+    """
+
+
+class RingArrayBase(Array):  # pylint: disable=abstract-method
+    """
+    A class for `RingArray` to inherit from.
+    """
+
+
+class FieldArrayBase(Array):  # pylint: disable=abstract-method
+    """
+    A class for `FieldArray` to inherit from.
+    """

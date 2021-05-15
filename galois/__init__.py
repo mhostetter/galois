@@ -14,3 +14,4 @@ from .log import *
 from .math_ import *  # pylint: disable=redefined-builtin
 from .modular import *
 from .prime import *
+from .structure import *

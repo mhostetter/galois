@@ -16,6 +16,8 @@ galois
       FieldMeta
       GF2
       is_field
+      is_prime_field
+      is_extension_field
 
    Prime Fields
    ^^^^^^^^^^^^
@@ -27,6 +29,7 @@ galois
       GF
       Field
       is_field
+      is_prime_field
       is_prime
       primitive_root
       primitive_roots
@@ -42,6 +45,7 @@ galois
       GF
       Field
       is_field
+      is_extension_field
       conway_poly
       is_irreducible
       is_primitive
