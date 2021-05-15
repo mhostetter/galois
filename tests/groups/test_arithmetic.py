@@ -8,6 +8,8 @@ import numpy as np
 
 import galois
 
+from ..helper import randint, array_equal
+
 
 class TestAdditive:
     def test_add(self, additive_group):
@@ -18,7 +20,7 @@ class TestAdditive:
 
         z = x + y
         Z = (np.array(x, dtype=object) + np.array(y, dtype=object)) % G.modulus
-        assert np.array_equal(z, Z)
+        assert array_equal(z, Z)
         assert type(z) is G
         assert z.dtype == dtype
 
@@ -32,6 +34,30 @@ class TestAdditive:
         assert type(z) is G
         assert z.dtype == dtype
 
+    def test_power(self, additive_group):
+        G = additive_group
+        dtype = random.choice(G.dtypes)
+        x = G.Random(10, dtype=dtype)
+        y = randint(-G.modulus, G.modulus, 10, dtype)
+
+        z = x ** y
+        Z = (np.array(x, dtype=object) * np.array(y, dtype=object)) % G.modulus
+        assert array_equal(z, Z)
+        assert type(z) is G
+        assert z.dtype == dtype
+
+    def test_square(self, additive_group):
+        G = additive_group
+        dtype = random.choice(G.dtypes)
+        x = G.Random(10, dtype=dtype)
+        y = 2*np.ones(10, dtype=dtype)
+
+        z = x ** y
+        Z = (np.array(x, dtype=object) * 2) % G.modulus
+        assert array_equal(z, Z)
+        assert type(z) is G
+        assert z.dtype == dtype
+
 
 class TestMultiplicative:
     def test_multiply(self, multiplicative_group):
@@ -42,7 +68,7 @@ class TestMultiplicative:
 
         z = x * y
         Z = (np.array(x, dtype=object) * np.array(y, dtype=object)) % G.modulus
-        assert np.array_equal(z, Z)
+        assert array_equal(z, Z)
         assert type(z) is G
         assert z.dtype == dtype
 
@@ -53,6 +79,34 @@ class TestMultiplicative:
 
         z = x * np.reciprocal(x)
         assert np.all(z == 1)
+        assert type(z) is G
+        assert z.dtype == dtype
+
+    def test_power(self, multiplicative_group):
+        G = multiplicative_group
+        dtype = random.choice(G.dtypes)
+        x = G.Random(10, dtype=dtype)
+        y = randint(0, G.modulus, 10, dtype)
+
+        z = x ** y
+        Z = [pow(int(x[i]), int(y[i]), G.modulus) for i in range(x.size)]
+        print(x)
+        print(y)
+        print(z)
+        print(Z)
+        assert array_equal(z, Z)
+        assert type(z) is G
+        assert z.dtype == dtype
+
+    def test_square(self, multiplicative_group):
+        G = multiplicative_group
+        dtype = random.choice(G.dtypes)
+        x = G.Random(10, dtype=dtype)
+        y = 2*np.ones(10, dtype=dtype)
+
+        z = x ** y
+        Z = [pow(int(x[i]), int(y[i]), G.modulus) for i in range(x.size)]
+        assert array_equal(z, Z)
         assert type(z) is G
         assert z.dtype == dtype
 

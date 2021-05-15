@@ -115,13 +115,11 @@ class MultiplicativeGroupUfunc(Ufunc):
              = (a * a^4) * (a^8)
              = result_m * result_s
         """
-        if power == 0:
-            return 1
-        elif power < 0:
+        if power < 0:
             a = cls._reciprocal_python(a)
             power = abs(power)
 
-        return pow(a, power, cls.order)
+        return pow(a, power, cls.modulus)
 
 
 ###############################################################################
@@ -154,9 +152,8 @@ def _power_calculate(a, power):  # pragma: no cover
         a = RECIPROCAL_UFUNC(a)
         power = abs(power)
 
-    # In GF(p), we can reduce the power mod p-1 since a^(p-1) = 1 (mod p)
-    if power > ORDER - 1:
-        power = power % (ORDER - 1)
+    if power > ORDER:
+        power = power % (ORDER)
 
     result_s = a  # The "squaring" part
     result_m = 1  # The "multiplicative" part

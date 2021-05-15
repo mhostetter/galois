@@ -241,11 +241,8 @@ class GroupMeta(Meta):
 
     @property
     def dtypes(cls):
-        if cls.operator == "+":
-            d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.modulus - 1]
-        else:
-            max_dtype = DTYPES[-1]
-            d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.modulus - 1 and np.iinfo(max_dtype).max >= (cls.modulus - 1)**2]
+        max_dtype = DTYPES[-1]
+        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.modulus - 1 and np.iinfo(max_dtype).max >= (cls.modulus - 1)**2]
         if len(d) == 0:
             d = [np.object_]
         return d
