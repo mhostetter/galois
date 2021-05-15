@@ -7,6 +7,7 @@ galois
    ^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :template: class.rst
       :toctree:
 
       GF
@@ -20,6 +21,7 @@ galois
    ^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :template: class.rst
       :toctree:
 
       GF
@@ -34,6 +36,7 @@ galois
    ^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :template: class.rst
       :toctree:
 
       GF
@@ -50,6 +53,7 @@ galois
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :template: class.rst
       :toctree:
 
       Oakley1
@@ -61,6 +65,7 @@ galois
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :template: class.rst
       :toctree:
 
       Poly
@@ -76,6 +81,7 @@ galois
    ^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :template: class.rst
       :toctree:
 
       Group
@@ -90,6 +96,7 @@ galois
    ^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :template: class.rst
       :toctree:
 
       gcd
@@ -106,6 +113,7 @@ galois
    ^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+      :template: class.rst
       :toctree:
 
       log_naive
@@ -114,6 +122,7 @@ galois
    ^^^^^^
    .. rubric::
    .. autosummary::
+      :template: class.rst
       :toctree:
 
       primes
