@@ -174,15 +174,15 @@ def carmichael(n):
 @set_module("galois")
 def is_cyclic(n):
     """
-    Determines whether the multiplicative group :math:`\\mathbb{Z}{_n^\\times}` is cyclic.
+    Determines whether the multiplicative group :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is cyclic.
 
-    The multiplicative group :math:`\\mathbb{Z}{_n^\\times}` is the set of positive integers :math:`1 \\le a < n`
-    that are coprime with :math:`n`. :math:`\\mathbb{Z}{_n^\\times}` being cyclic means that some primitive root
-    (or generator) :math:`g` can generate the group :math:`\\mathbb{Z}{_n^\\times} = \\{g, g^2, \\dots, g^k\\}`, where :math:`k` is order of the group.
-    The order of the group is defined by Euler's totient function, :math:`\\phi(n) = k`. If :math:`\\mathbb{Z}{_n^\\times}` is cyclic,
-    the number of primitive roots is found by :math:`\\phi(k)` or :math:`\\phi(\\phi(n))`.
+    The multiplicative group :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is the set of positive integers :math:`1 \\le a < n`
+    that are coprime with :math:`n`. :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` being cyclic means that some primitive root of :math:`n`,
+    or generator, :math:`g` can generate the group :math:`\\{g^0, g^1, g^2, \\dots, g^{\\phi(n)-1}\\}`, where
+    :math:`\\phi(n)` is Euler's totient function and calculates the order of the group. If :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is cyclic,
+    the number of primitive roots is found by :math:`\\phi(\\phi(n))`.
 
-    :math:`\\mathbb{Z}{_n^\\times}` is *cyclic* if and only if :math:`n` is :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`,
+    :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is *cyclic* if and only if :math:`n` is :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`,
     where :math:`p` is an odd prime and :math:`k` is a positive integer.
 
     Parameters
@@ -193,16 +193,12 @@ def is_cyclic(n):
     Returns
     -------
     bool
-        `True` if the multiplicative group :math:`\\mathbb{Z}{_n^\\times}` is cyclic.
-
-    References
-    ----------
-    * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
+        `True` if the multiplicative group :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is cyclic.
 
     Examples
     --------
-    The elements of :math:`\\mathbb{Z}{_n^\\times}` are the positive integers less than :math:`n` that are coprime with :math:`n`.
-    For example when :math:`n = 14`, then :math:`\\mathbb{Z}{_{14}^\\times} = \\{1, 3, 5, 9, 11, 13\\}`.
+    The elements of :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` are the positive integers less than :math:`n` that are coprime with :math:`n`.
+    For example, :math:`(\\mathbb{Z}/14\\mathbb{Z}){^\\times} = \\{1, 3, 5, 9, 11, 13\\}`.
 
     .. ipython:: python
 
@@ -230,7 +226,7 @@ def is_cyclic(n):
         len(roots) == galois.euler_totient(phi)
 
     A counterexample is :math:`n = 15 = 3*5`, which doesn't fit the condition for cyclicness.
-    :math:`\\mathbb{Z}{_{15}^\\times} = \\{1, 2, 4, 7, 8, 11, 13, 14\\}`.
+    :math:`(\\mathbb{Z}/15\\mathbb{Z}){^\\times} = \\{1, 2, 4, 7, 8, 11, 13, 14\\}`.
 
     .. ipython:: python
 
