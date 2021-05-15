@@ -203,7 +203,7 @@ class GroupArray(Array, metaclass=GroupMeta):
         .. ipython:: python
 
             G = galois.Group(36, "+")
-            G.Range(10,20)
+            G.Range(10, 20)
         """
         if not stop <= cls.modulus:
             raise ValueError(f"The stopping value must be less than the group modulus of {cls.modulus}, not {stop}.")
