@@ -94,14 +94,15 @@ class Poly:
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
         if not isinstance(coeffs, (int, np.integer, list, tuple, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
-        if isinstance(coeffs, (int, np.integer)):
-            coeffs = [coeffs,]  # Ensure it's iterable
         if isinstance(coeffs, (FieldArray, np.ndarray)) and not coeffs.ndim <= 1:
             raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
-        if not len(coeffs) > 0:
-            raise ValueError(f"Argument `coeffs` must have non-zero length, not {len(coeffs)}.")
         if not order in ["desc", "asc"]:
             raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order}.")
+
+        if isinstance(coeffs, (int, np.integer)):
+            coeffs = [coeffs,]  # Ensure it's iterable
+        if isinstance(coeffs, (FieldArray, np.ndarray)):
+            coeffs = np.atleast_1d(coeffs)
 
         if order == "asc":
             coeffs = coeffs[::-1]  # Ensure it's in descending-degree order
