@@ -2,6 +2,7 @@
 A module containing routines for integer factorization.
 """
 import bisect
+import functools
 import math
 import random
 
@@ -33,6 +34,7 @@ def trial_division_factor(n):
     return p, e, n
 
 
+@functools.lru_cache(maxsize=1024)
 def pollard_rho_factor(n, c=1):
     """
     References
