@@ -39,17 +39,12 @@ class FieldUfunc(Ufunc):
         cls._ZECH_LOG = None
         cls._ZECH_E = None
 
-        # Integer representations of the field's primitive element and primitive polynomial to be used in the
-        # pure python ufunc implementations for `ufunc_mode = "python-calculate"`
-        cls._primitive_element_int = None
-        cls._irreducible_poly_int = None
-
     def _build_lookup_tables(cls):
         if cls._EXP is not None:
             return
 
         order = cls.order
-        primitive_element = cls._primitive_element_int
+        primitive_element = int(cls.primitive_element)
         dtype = np.int64
         if order > np.iinfo(dtype).max:
             raise RuntimeError(f"Cannot build lookup tables for {cls.name} since the elements cannot be represented with dtype {dtype}.")
@@ -321,7 +316,7 @@ class FieldUfunc(Ufunc):
         for i in range(0, cls.order - 1):
             if result == beta:
                 break
-            result = cls._multiply_python(result, cls._primitive_element_int)
+            result = cls._multiply_python(result, int(cls.primitive_element))
 
         return i
 
