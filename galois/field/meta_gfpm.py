@@ -3,7 +3,6 @@ import numpy as np
 
 from ..dtypes import DTYPES
 from .meta import FieldMeta
-from .poly import Poly
 
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 DEGREE = None  # The prime power `m` of the Galois field
@@ -26,15 +25,10 @@ class GFpmMeta(FieldMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._irreducible_poly_int = cls._irreducible_poly.integer
         cls._irreducible_poly_coeffs = np.array(cls._irreducible_poly.coeffs, dtype=cls.dtypes[-1])  # pylint: disable=unsubscriptable-object
-        cls._primitive_element_int = cls._primitive_element.integer
         cls._prime_subfield = kwargs["prime_subfield"]
 
         cls.compile(kwargs["mode"], kwargs["target"])
-
-        # Convert primitive element from a poly in GF(2)[x] to an integer
-        cls._primitive_element = cls(cls._primitive_element.integer)
 
         # Determine if the irreducible polynomial is primitive
         cls._is_primitive_poly = cls._irreducible_poly(cls.primitive_element, field=cls) == 0
@@ -67,10 +61,7 @@ class GFpmMeta(FieldMeta):
             DEGREE = cls.degree
             ORDER = cls.order
             IRREDUCIBLE_POLY = cls._irreducible_poly.coeffs.view(np.ndarray)
-            if isinstance(cls._primitive_element, Poly):
-                PRIMITIVE_ELEMENT = cls._primitive_element.integer
-            else:
-                PRIMITIVE_ELEMENT = int(cls._primitive_element)
+            PRIMITIVE_ELEMENT = int(cls.primitive_element)
 
             INT_TO_POLY_JIT = numba.jit("int64[:](int64)", nopython=True)(_int_to_poly)
             POLY_TO_INT_JIT = numba.jit("int64(int64[:])", nopython=True)(_poly_to_int)

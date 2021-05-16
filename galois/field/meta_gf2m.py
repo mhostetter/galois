@@ -3,7 +3,6 @@ import numpy as np
 
 from ..dtypes import DTYPES
 from .meta import FieldMeta
-from .poly import Poly
 
 CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 ORDER = None  # The field's order `p^m`
@@ -22,14 +21,10 @@ class GF2mMeta(FieldMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._irreducible_poly_int = cls._irreducible_poly.integer  # pylint: disable=no-member
-        cls._primitive_element_int = cls._primitive_element.integer
+        cls._irreducible_poly_int = cls.irreducible_poly.integer  # pylint: disable=no-member
         cls._prime_subfield = kwargs["prime_subfield"]
 
         cls.compile(kwargs["mode"], kwargs["target"])
-
-        # Convert primitive element from a poly in GF(2)[x] to an integer
-        cls._primitive_element = cls(cls._primitive_element.integer)
 
         # Determine if the irreducible polynomial is primitive
         cls._is_primitive_poly = cls._irreducible_poly(cls.primitive_element, field=cls) == 0
@@ -62,10 +57,7 @@ class GF2mMeta(FieldMeta):
             CHARACTERISTIC = cls.characteristic
             ORDER = cls.order
             IRREDUCIBLE_POLY = cls.irreducible_poly.integer  # pylint: disable=no-member
-            if isinstance(cls._primitive_element, Poly):
-                PRIMITIVE_ELEMENT = cls._primitive_element.integer
-            else:
-                PRIMITIVE_ELEMENT = int(cls._primitive_element)
+            PRIMITIVE_ELEMENT = int(cls.primitive_element)
 
             kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
             cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)

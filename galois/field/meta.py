@@ -324,8 +324,8 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             galois.GF(31).primitive_element
             galois.GF(7**5).primitive_element
         """
-        # Ensure accesses of this property don't alter it
-        return np.copy(cls._primitive_element)
+        # Ensure accesses of this property doesn't alter it
+        return cls(cls._primitive_element)
 
     @property
     def primitive_elements(cls):
@@ -440,9 +440,10 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
         string += f"\n  characteristic: {cls.characteristic}"
         string += f"\n  degree: {cls.degree}"
         string += f"\n  order: {cls.order}"
-        string += f"\n  irreducible_poly: {cls.irreducible_poly}"
-        string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
-        string += f"\n  primitive_element: {cls.primitive_element!r}"
+        if cls.degree > 1:
+            string += f"\n  irreducible_poly: {cls.irreducible_poly}"
+            string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
+            string += f"\n  primitive_element: {cls.primitive_element!r}"
         return string
 
 

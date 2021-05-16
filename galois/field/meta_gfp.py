@@ -2,6 +2,8 @@ import numba
 import numpy as np
 
 from ..dtypes import DTYPES
+from ..modular import primitive_root
+
 from .meta import FieldMeta
 from .poly import Poly
 
@@ -20,15 +22,22 @@ class GFpMeta(FieldMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._primitive_element_int = int(cls._primitive_element)
         cls._prime_subfield = cls
+        cls._is_primitive_poly = True
 
         cls.compile(kwargs["mode"], kwargs["target"])
 
-        cls._irreducible_poly = Poly([1, -cls._primitive_element_int], field=cls)
-        cls._irreducible_poly_int = cls.irreducible_poly.integer  # pylint: disable=no-member
-        cls._primitive_element = cls(cls.primitive_element)
-        cls._is_primitive_poly = True
+    @property
+    def irreducible_poly(cls):
+        if cls._irreducible_poly is None:
+            cls._irreducible_poly = Poly([1, -cls.primitive_element], field=cls)
+        return cls._irreducible_poly
+
+    @property
+    def primitive_element(cls):
+        if cls._primitive_element is None:
+            cls._primitive_element = primitive_root(cls._characteristic)
+        return cls(cls._primitive_element)
 
     @property
     def dtypes(cls):

@@ -30,7 +30,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         irreducible_poly = conway_poly(characteristic, degree)
         primitive_element = Poly.Identity(prime_subfield)
         verify_irreducible = False  # We don't need to verify Conway polynomials are irreducible
-        verify_primitive = False  # We know `g(x) = x` is a primitive root of the Conway polynomial because Conway polynomials are primitive polynomials
+        verify_primitive = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
 
     # Get default irreducible polynomial
     if irreducible_poly is None:
@@ -52,17 +52,16 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
 
     # Check polynomial fields and degrees
     if not irreducible_poly.field.order == characteristic:
-        raise ValueError(f"Argument `irreducible_poly` must be over GF({characteristic}), not {irreducible_poly.field.name}.")
+        raise ValueError(f"Argument `irreducible_poly` must be over {prime_subfield.name}, not {irreducible_poly.field.name}.")
     if not irreducible_poly.degree == degree:
         raise ValueError(f"Argument `irreducible_poly` must have degree equal to {degree}, not {irreducible_poly.degree}.")
     if not primitive_element.field.order == characteristic:
-        raise ValueError(f"Argument `primitive_element` must be a polynomial over GF({characteristic}), not {primitive_element.field.name}.")
+        raise ValueError(f"Argument `primitive_element` must be a polynomial over {prime_subfield.name}, not {primitive_element.field.name}.")
     if not primitive_element.degree < degree:
         raise ValueError(f"Argument `primitive_element` must have degree strictly less than {degree}, not {primitive_element.degree}.")
 
-    key = (order, primitive_element.integer, irreducible_poly.integer)
-
     # If the requested field has already been constructed, return it
+    key = (order, primitive_element.integer, irreducible_poly.integer)
     if key in GF_extension.classes:
         cls = GF_extension.classes[key]
         cls.compile(mode, target)
@@ -70,7 +69,6 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
 
-    # For extension fields
     if verify_irreducible and not is_irreducible(irreducible_poly):
         raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly} is not.")
     if verify_primitive and not is_primitive_element(primitive_element, irreducible_poly):
@@ -83,7 +81,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "degree": degree,
             "order": characteristic**degree,
             "irreducible_poly": irreducible_poly,
-            "primitive_element": primitive_element,
+            "primitive_element": primitive_element.integer,
             "prime_subfield": prime_subfield,
             "target": target,
             "mode": mode
@@ -96,7 +94,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "degree": degree,
             "order": characteristic**degree,
             "irreducible_poly": irreducible_poly,
-            "primitive_element": primitive_element,
+            "primitive_element": primitive_element.integer,
             "prime_subfield": prime_subfield,
             "target": target,
             "mode": mode
