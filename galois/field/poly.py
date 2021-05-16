@@ -372,7 +372,8 @@ class Poly:
         if len(degrees) == 0:
             degrees = [0]
             coeffs = [0]
-        degrees = np.array(degrees, dtype=int)
+        dtype = np.int64 if max(degrees) <= np.iinfo(np.int64).max else np.object_
+        degrees = np.array(degrees, dtype=dtype)
         coeffs, field = cls._convert_coeffs(coeffs, field)
 
         if field is GF2:
