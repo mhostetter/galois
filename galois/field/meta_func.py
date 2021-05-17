@@ -62,7 +62,7 @@ class FieldFunc(Func):
             cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_poly_divmod_jit)
             cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", nopython=True)(_poly_evaluate_jit)
 
-    def _matmul(cls, A, B):
+    def _matmul(cls, A, B, out=None, **kwargs):  # pylint: disable=unused-argument
         if not type(A) is type(B):
             raise TypeError(f"Operation 'matmul' requires both arrays be in the same Galois field, not {type(A)} and {type(B)}.")
         if not (A.ndim >= 1 and B.ndim >= 1):
@@ -73,7 +73,7 @@ class FieldFunc(Func):
         dtype = A.dtype
 
         if field.is_prime_field:
-            return _lapack_linalg(A, B, np.matmul)
+            return _lapack_linalg(A, B, np.matmul, out=out)
 
         prepend, append = False, False
         if A.ndim == 1:
@@ -106,10 +106,19 @@ class FieldFunc(Func):
             shape = shape[:-1]
         C = C.reshape(shape)
 
+        # TODO: Determine a better way to do this
+        if out is not None:
+            assert isinstance(out, tuple) and len(out) == 1  # TODO: Why is `out` getting populated as tuple?
+            out = out[0]
+            out[:] = C[:]
+
         return C
 
-    def _convolve(cls, a, b):
-        assert isinstance(a, cls) and isinstance(b, cls)
+    def _convolve(cls, a, b, mode="full"):
+        if not type(a) is type(b):
+            raise TypeError(f"Arguments `a` and `b` must be of the same Galois field array class, not {type(a)} and {type(b)}.")
+        if not mode == "full":
+            raise ValueError(f"Operation 'convolve' currently only supports mode of 'full', not '{mode}'.")
         field = type(a)
         dtype = a.dtype
 
@@ -122,8 +131,8 @@ class FieldFunc(Func):
             return_dtype = a.dtype
             a = a.view(np.ndarray).astype(dtype)
             b = b.view(np.ndarray).astype(dtype)
-            c = np.convolve(a, b)
-            c = np.mod(c, field.characteristic)
+            c = np.convolve(a, b)  # Compute result using native numpy LAPACK/BLAS implementation
+            c = c % field.characteristic  # Reduce the result mod p
             c = c.astype(return_dtype).view(field) if not np.isscalar(c) else field(c, dtype=return_dtype)
             return c
         else:
@@ -221,7 +230,7 @@ class FieldFunc(Func):
 
 
 ###############################################################################
-# Galois field arithmetic, explicitly calculated without lookup tables
+# JIT-compiled implementation of the specified functions
 ###############################################################################
 
 def _matmul_jit(A, B):  # pragma: no cover
