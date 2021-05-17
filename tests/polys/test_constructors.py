@@ -1,6 +1,7 @@
 """
 A pytest module to test Galois field polynomial alternate constructors.
 """
+from typing import Type
 import numpy as np
 import pytest
 
@@ -65,6 +66,13 @@ def test_random(field):
     assert p.degree == 2
 
 
+def test_random_exceptions():
+    with pytest.raises(TypeError):
+        p = galois.Poly.Random(2.0)
+    with pytest.raises(TypeError):
+        p = galois.Poly.Random(-1)
+
+
 @pytest.mark.parametrize("field", FIELDS)
 def test_integer(field):
     integer = field.order + 1  # Corresponds to p(x) = x + 1
@@ -77,6 +85,11 @@ def test_integer(field):
     assert np.array_equal(p.degrees, [1,0])
     assert np.array_equal(p.coeffs, [1,1])
     assert p.integer == integer
+
+
+def test_integer_exceptions():
+    with pytest.raises(TypeError):
+        p = galois.Poly.Integer(5.0)
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -93,6 +106,26 @@ def test_degrees(field):
     assert np.array_equal(p.degrees, [2,1,0])
     assert np.array_equal(p.coeffs, [1,0,1])
     assert p.integer == field.order**2 + 1
+
+
+@pytest.mark.parametrize("field", FIELDS)
+def test_degrees_empty(field):
+    p = galois.Poly.Degrees([], field=field)
+    assert p == galois.Poly([0], field=field)
+
+
+def test_degrees_exceptions():
+    GF = galois.GF(3)
+    degrees = [5, 3, 0]
+    coeffs = [1, 2, 1]
+    with pytest.raises(TypeError):
+        galois.Poly.Degrees("invalid-type", coeffs=coeffs, field=GF)
+    with pytest.raises(TypeError):
+        galois.Poly.Degrees(degrees, coeffs="invalid-type", field=GF)
+    with pytest.raises(ValueError):
+        galois.Poly.Degrees([7] + degrees, coeffs=coeffs, field=GF)
+    with pytest.raises(ValueError):
+        galois.Poly.Degrees([5, -3, 0], coeffs=coeffs, field=GF)
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -138,3 +171,17 @@ def test_roots_with_multiplicity(field):
     assert np.array_equal(p.degrees, degrees)
     assert np.array_equal(p.coeffs, coeffs)
     assert p.integer == integer
+
+
+def test_roots_exceptions():
+    GF = galois.GF(2**8)
+    roots = [134, 212]
+    multiplicities = [1, 2]
+    with pytest.raises(TypeError):
+        galois.Poly.Roots(roots, field="invalid-type")
+    with pytest.raises(TypeError):
+        galois.Poly.Roots(134, field=GF)
+    with pytest.raises(TypeError):
+        galois.Poly.Roots(roots, multiplicities=134, field=GF)
+    with pytest.raises(ValueError):
+        galois.Poly.Roots(roots, multiplicities=multiplicities + [1], field=GF)

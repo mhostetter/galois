@@ -105,6 +105,38 @@ def test_zero(type1, field):
     assert p.integer == 0
 
 
+@pytest.mark.parametrize("field", FIELDS)
+def test_degree_zero(field):
+    value = 0
+    coeffs = field([value])
+    p = galois.Poly(field(value))
+    assert np.array_equal(p.coeffs, coeffs)
+    p = galois.Poly(field([value]))
+    assert np.array_equal(p.coeffs, coeffs)
+    p = galois.Poly(value, field=field)
+    assert np.array_equal(p.coeffs, coeffs)
+
+    value = random.randint(1, field.order - 1)
+    coeffs = field([value])
+    p = galois.Poly(field(value))
+    assert np.array_equal(p.coeffs, coeffs)
+    p = galois.Poly(field([value]))
+    assert np.array_equal(p.coeffs, coeffs)
+    p = galois.Poly(value, field=field)
+    assert np.array_equal(p.coeffs, coeffs)
+
+
+def test_exceptions():
+    with pytest.raises(TypeError):
+        galois.Poly([1, 0, 1], field="invalid-type")
+    with pytest.raises(TypeError):
+        galois.Poly("invalid-type")
+    with pytest.raises(ValueError):
+        galois.Poly(np.array([[1, 0, 1], [1, 1, 1]]))
+    with pytest.raises(ValueError):
+        galois.Poly([1, 0, 1], order="invalid-type")
+
+
 def check_attributes(poly, config):
     assert isinstance(poly, galois.Poly)
     assert poly.field is config["GF"]

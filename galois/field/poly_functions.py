@@ -512,6 +512,7 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
         g = galois.primitive_elements(f); g
         len(g) == galois.euler_totient(3**2 - 1)
     """
+    # NOTE: `irreducible_poly` will be verified in the call to `primitive_element()`
     if not isinstance(start, (type(None), int, np.integer)):
         raise TypeError(f"Argument `start` must be an integer, not {type(start)}.")
     if not isinstance(stop, (type(None), int, np.integer)):
@@ -525,6 +526,8 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
     m = irreducible_poly.degree
     start = p if start is None else start
     stop = p**m if stop is None else stop
+    if not 1 <= start < stop <= p**m:
+        raise ValueError(f"Arguments must satisfy `1 <= start < stop <= p^m`, `1 <= {start} < {stop} <= {p**m}` doesn't.")
 
     elements = []
     for totative in totatives(p**m - 1):

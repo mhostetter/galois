@@ -41,10 +41,12 @@ def test_dtypes(field):
 
 
 ATTRIBUTES = [
-    "characteristic", "default_ufunc_mode", "degree", "display_mode",
-    "dtypes", "prime_subfield", "irreducible_poly", "is_extension_field", "is_prime_field",
-    "is_primitive_poly", "name", "order", "primitive_element", "primitive_elements",
-    "properties", "ufunc_mode", "ufunc_modes", "ufunc_target", "ufunc_targets",
+    "structure", "short_name", "name",
+    "characteristic", "degree", "order",
+    "irreducible_poly", "is_primitive_poly", "primitive_element", "primitive_elements",
+    "is_prime_field", "is_extension_field", "prime_subfield",
+    "dtypes", "display_mode", "properties",
+    "ufunc_mode", "ufunc_modes", "ufunc_target", "ufunc_targets",
 ]
 
 @pytest.mark.parametrize("attribute", ATTRIBUTES)
