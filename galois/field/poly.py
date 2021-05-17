@@ -446,8 +446,10 @@ class Poly:
             raise TypeError(f"Argument `multiplicities` must 'array-like', not {type(multiplicities)}.")
 
         field = GF2 if field is None else field
-        multiplicities = [1,]*len(roots) if multiplicities is None else multiplicities
         roots = field(roots).flatten().tolist()
+        multiplicities = [1,]*len(roots) if multiplicities is None else multiplicities
+        if not len(roots) == len(multiplicities):
+            raise ValueError(f"Arguments `roots` and `multiplicities` must have the same length, not {len(roots)} and {len(multiplicities)}.")
 
         poly = Poly.One(field=field)
         for root, multiplicity in zip(roots, multiplicities):
@@ -823,8 +825,6 @@ class Poly:
         return cls._mod(b, a)
 
     def __pow__(self, other):
-        if not isinstance(self, Poly):
-            raise TypeError(f"For polynomial exponentiation, argument 0 must be of type galois.Poly. Argument 0 is of type {type(self)}. Argument 0 = {self}.")
         if not isinstance(other, (int, np.integer)):
             raise TypeError(f"For polynomial exponentiation, argument 1 must be of type int. Argument 1 is of type {type(other)}. Argument 1 = {other}.")
         if not other >= 0:

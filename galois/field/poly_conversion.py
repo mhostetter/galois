@@ -52,7 +52,7 @@ def poly_to_integer(coeffs, order):
     """
     decimal = 0
     coeffs = coeffs[::-1]  # Coefficients in ascending order
-    for i in range(coeffs.size):
+    for i in range(len(coeffs)):
         decimal += int(coeffs[i]) * order**i
     return decimal
 
@@ -153,8 +153,10 @@ def sparse_poly_to_str(degrees, coeffs, poly_var="x"):
             s = "{}{}^{}".format(coeff_repr if coeff != 1 else "", poly_var, degree)
         elif degree == 1:
             s = "{}{}".format(coeff_repr if coeff != 1 else "", poly_var)
+        elif coeff != 0:
+            s = "{}".format(coeff_repr)
         else:
-            s = "{}".format(coeff_repr if coeff != 0 else "")
+            continue
         x.append(s)
 
     poly_str = " + ".join(x) if x else "0"

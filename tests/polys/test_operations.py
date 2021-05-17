@@ -1,8 +1,6 @@
 """
 A pytest module to test various Galois field polynomial operations.
 """
-import random
-
 import pytest
 import numpy as np
 
@@ -87,6 +85,15 @@ def test_multiple_derivatives():
     assert dp == p.derivative().derivative().derivative()
     assert isinstance(dp, galois.Poly)
     assert dp.field is GF
+
+
+def test_derivative_exceptions():
+    GF = galois.GF(31)
+    p = galois.Poly.Random(5, field=GF)
+    with pytest.raises(TypeError):
+        p.derivative(3.0)
+    with pytest.raises(ValueError):
+        p.derivative(-3)
 
 
 def test_integer():

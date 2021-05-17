@@ -1,0 +1,67 @@
+"""
+A pytest module to test the polynomial conversion functions.
+"""
+import pytest
+
+import galois
+
+
+def test_integer_to_poly():
+    assert galois.field.poly_conversion.integer_to_poly(0, 2) == [0]
+    assert galois.field.poly_conversion.integer_to_poly(5, 2) == [1, 0, 1]
+    assert galois.field.poly_conversion.integer_to_poly(5, 2, degree=3) == [0, 1, 0, 1]
+
+
+def test_poly_to_integer():
+    assert galois.field.poly_conversion.poly_to_integer([0], 2) == 0
+    assert galois.field.poly_conversion.poly_to_integer([1, 0, 1], 2) == 5
+    assert galois.field.poly_conversion.poly_to_integer([0, 1, 0, 1], 2) == 5
+
+
+def test_sparse_poly_to_integer():
+    assert galois.field.poly_conversion.sparse_poly_to_integer([0], [0], 2) == 0
+    assert galois.field.poly_conversion.sparse_poly_to_integer([2, 0], [1, 1], 2) == 5
+
+
+def test_poly_to_str():
+    assert galois.field.poly_conversion.poly_to_str([0]) == "0"
+    assert galois.field.poly_conversion.poly_to_str([1, 0, 1, 1]) == "x^3 + x + 1"
+    assert galois.field.poly_conversion.poly_to_str([0, 1, 0, 1, 1]) == "x^3 + x + 1"
+
+    assert galois.field.poly_conversion.poly_to_str([0], poly_var="y") == "0"
+    assert galois.field.poly_conversion.poly_to_str([1, 0, 1, 1], poly_var="y") == "y^3 + y + 1"
+    assert galois.field.poly_conversion.poly_to_str([0, 1, 0, 1, 1], poly_var="y") == "y^3 + y + 1"
+
+
+def test_sparse_poly_to_str():
+    assert galois.field.poly_conversion.sparse_poly_to_str([0], [0]) == "0"
+    assert galois.field.poly_conversion.sparse_poly_to_str([3, 1, 0], [1, 1, 1]) == "x^3 + x + 1"
+
+    assert galois.field.poly_conversion.sparse_poly_to_str([0], [0], poly_var="y") == "0"
+    assert galois.field.poly_conversion.sparse_poly_to_str([3, 1, 0], [1, 1, 1], poly_var="y") == "y^3 + y + 1"
+
+    GF = galois.GF(2**8)
+    with GF.display("poly"):
+        assert galois.field.poly_conversion.sparse_poly_to_str([0], GF([0])) == "0"
+        assert galois.field.poly_conversion.sparse_poly_to_str([3, 1, 0], GF([1, 2, 3])) == "x^3 + (α)x + (α + 1)"
+
+        assert galois.field.poly_conversion.sparse_poly_to_str([0], GF([0]), poly_var="y") == "0"
+        assert galois.field.poly_conversion.sparse_poly_to_str([3, 1, 0], GF([1, 2, 3]), poly_var="y") == "y^3 + (α)y + (α + 1)"
+
+
+def test_str_to_integer():
+    GF = galois.GF2
+    assert galois.field.poly_conversion.str_to_integer("x^2 + 1", GF) == 5
+    assert galois.field.poly_conversion.str_to_integer("x**2 + 1", GF) == 5
+    assert galois.field.poly_conversion.str_to_integer("y^2 + y + 1", GF) == 7
+    assert galois.field.poly_conversion.str_to_integer("y**2 + y**1 + 1*y**0", GF) == 7
+
+    GF = galois.GF(3)
+    assert galois.field.poly_conversion.str_to_integer("2*x^2 + 2", GF) == 2*3**2 + 2
+    assert galois.field.poly_conversion.str_to_integer("2*x^2 - 1", GF) == 2*3**2 + 2
+
+    GF = galois.GF2
+    with pytest.raises(ValueError):
+        galois.field.poly_conversion.str_to_integer("x^2 + y + 1", GF)
+    with pytest.raises(ValueError):
+        galois.field.poly_conversion.str_to_integer("x^2 + x^-1 + 1", GF)
