@@ -6,10 +6,10 @@ import numpy as np
 from ..dtypes import DTYPES
 
 
-def _lapack_linalg(a, b, function, n_sum=None):
+def _lapack_linalg(a, b, function, out=None, n_sum=None):
     """
     In prime fields GF(p), it's much more efficient to use LAPACK/BLAS implementations of linear algebra
-    and then reduce modulo p rather than compute explicitly.
+    and then reduce modulo p rather than compute manually.
     """
     assert type(a).is_prime_field
     field = type(a)
@@ -33,7 +33,12 @@ def _lapack_linalg(a, b, function, n_sum=None):
     a = a.astype(dtype)
     b = b.astype(dtype)
 
-    c = function(a, b)  # Compute result using native numpy LAPACK/BLAS implementation
+    # Compute result using native numpy LAPACK/BLAS implementation
+    if function in [np.inner]:
+        # These functions don't have and `out` keyword argument
+        c = function(a, b)
+    else:
+        c = function(a, b, out=out)
     c = c % characteristic  # Reduce the result mod p
 
     if np.isscalar(c):
@@ -45,7 +50,11 @@ def _lapack_linalg(a, b, function, n_sum=None):
     return c
 
 
-def dot(a, b, **kwargs):  # pylint: disable=unused-argument
+###############################################################################
+# Matrix/vector products
+###############################################################################
+
+def dot(a, b, out=None):  # pylint: disable=unused-argument
     """
     https://numpy.org/doc/stable/reference/generated/numpy.dot.html
     """
@@ -53,22 +62,22 @@ def dot(a, b, **kwargs):  # pylint: disable=unused-argument
         raise TypeError(f"Operation 'dot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
 
     if type(a).is_prime_field:
-        return _lapack_linalg(a, b, np.dot)
+        return _lapack_linalg(a, b, np.dot, out=out)
 
     if a.ndim == 0 or b.ndim == 0:
         return a * b
     elif a.ndim == 1 and b.ndim == 1:
         return np.sum(a * b)
     elif a.ndim == 2 and b.ndim == 2:
-        return a @ b
+        return np.matmul(a, b, out=out)
     elif a.ndim >= 2 and b.ndim == 1:
-        return np.sum(a * b, axis=-1)
+        return np.sum(a * b, axis=-1, out=out)
     # elif a.dnim >= 2 and b.ndim >= 2:
     else:
-        raise NotImplementedError
+        raise NotImplementedError("Currently 'dot' is only supported up to 2-D matrices. Please open a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
 
-def inner(a, b, **kwargs):  # pylint: disable=unused-argument
+def inner(a, b):
     """
     https://numpy.org/doc/stable/reference/generated/numpy.inner.html#numpy.inner
     """
@@ -82,10 +91,11 @@ def inner(a, b, **kwargs):  # pylint: disable=unused-argument
         return a * b
     if not a.shape[-1] == b.shape[-1]:
         raise ValueError(f"Operation 'inner' requires `a` and `b` to have the same last dimension, not {a.shape} and {b.shape}.")
+
     return np.sum(a * b, axis=-1)
 
 
-def outer(a, b, **kwargs):  # pylint: disable=unused-argument
+def outer(a, b, out=None):  # pylint: disable=unused-argument
     """
     https://numpy.org/doc/stable/reference/generated/numpy.outer.html#numpy.outer
     """
@@ -93,10 +103,14 @@ def outer(a, b, **kwargs):  # pylint: disable=unused-argument
         raise TypeError(f"Operation 'outer' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
 
     if type(a).is_prime_field:
-        return _lapack_linalg(a, b, np.outer, n_sum=1)
+        return _lapack_linalg(a, b, np.outer, out=out, n_sum=1)
+    else:
+        return np.multiply.outer(a.ravel(), b.ravel(), out=out)
 
-    return np.multiply.outer(a.ravel(), b.ravel())
 
+###############################################################################
+# Matrix decomposition routines
+###############################################################################
 
 def row_reduce(A, ncols=None):
     if not A.ndim == 2:
@@ -185,14 +199,18 @@ def lup_decompose(A):
     return L, U, P
 
 
-def matrix_rank(A, **kwargs):  # pylint: disable=unused-argument
+###############################################################################
+# Matrix inversions, solutions, rank, etc
+###############################################################################
+
+def matrix_rank(A):
     A_rre = row_reduce(A)
     return np.sum(~np.all(A_rre == 0, axis=1))
 
 
 def inv(A):
     if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
-        raise ValueError(f"Argument `A` must be square, not {A.shape}.")
+        raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
     field = type(A)
     n = A.shape[0]
     I = field.Identity(n)
@@ -206,7 +224,7 @@ def inv(A):
     # The rank is the number of non-zero rows of the row reduced echelon form
     rank = np.sum(~np.all(AI_rre[:,0:n] == 0, axis=1))
     if not rank == n:
-        raise ValueError(f"The matrix `A` is not invertible because it does not have full rank of {n}, but rank {rank}.")
+        raise np.linalg.LinAlgError(f"Argument `A` is singular and not invertible because it does not have full rank of {n}, but rank of {rank}.")
 
     A_inv = AI_rre[:,-n:]
 
@@ -214,16 +232,21 @@ def inv(A):
 
 
 def triangular_det(A):
-    assert A.ndim == 2 and A.shape[0] == A.shape[1]
+    if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
+        raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
     idxs = np.arange(0, A.shape[0])
     return np.multiply.reduce(A[idxs,idxs])
 
 
 def det(A):
-    assert A.ndim == 2 and A.shape[0] == A.shape[1]
+    if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
+        raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
     n = A.shape[0]
+
     if n == 2:
         return A[0,0]*A[1,1] - A[0,1]*A[1,0]
+    elif n == 3:
+        return A[0,0]*(A[1,1]*A[2,2] - A[1,2]*A[2,1]) - A[0,1]*(A[1,0]*A[2,2] - A[1,2]*A[2,0]) + A[0,2]*(A[1,0]*A[2,1] - A[1,1]*A[2,0])
     else:
         L, U, P = lup_decompose(A)
         idxs = np.arange(0, n)
@@ -232,14 +255,12 @@ def det(A):
         return (-1)**S * triangular_det(L) * triangular_det(U)
 
 
-def solve(A, b, **kwargs):  # pylint: disable=unused-argument
+def solve(A, b):
     if not type(A) is type(b):
         raise TypeError(f"Arguments `A` and `b` must be of the same Galois field array class, not {type(A)} and {type(b)}.")
-    # if not A.ndim >= 2 and A.shape[-2] == A.shape[-1]:
-    #     raise ValueError(f"Argument `A` must be square in the last two dimensions, not {A.shape}.")
-    if not A.ndim == 2 and A.shape[-2] == A.shape[-1]:
-        raise ValueError(f"Argument `A` must be square, not {A.shape}.")
-    if not b.ndim in [A.ndim - 1, A.ndim]:
+    if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
+        raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
+    if not b.ndim in [1, 2]:
         raise ValueError(f"Argument `b` must have dimension equal to A or one less, not {b.ndim}.")
     if not A.shape[-1] == b.shape[0]:
         raise ValueError(f"The last dimension of `A` must equal the first dimension of `b`, not {A.shape} and {b.shape}.")

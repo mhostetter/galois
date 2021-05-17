@@ -217,7 +217,7 @@ class FieldUfunc(Ufunc):
 
     def _ufunc_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_method_only_call(ufunc, method)
-        return cls._matmul(*inputs[0:2])
+        return cls._matmul(*inputs, **kwargs)
 
     ###############################################################################
     # Pure python arithmetic methods
