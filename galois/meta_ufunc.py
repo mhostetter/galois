@@ -1,3 +1,6 @@
+"""
+A module containint a metaclass mixin abstract base class that handles overridding numpy ufunc calls.
+"""
 import numpy as np
 
 # List of ufuncs that are not valid on arrays over finite groups, rings, and fields
@@ -32,6 +35,9 @@ UFUNCS_REQUIRING_VIEW = [
 class Ufunc(type):
     """
     A base class for :obj:`GroupUfunc`, :obj:`RingUfunc`, and :obj:`FieldUfunc`.
+
+    The metaclass contains the attributes with the unsupported or overridden ufunc, but Array.__array_ufunc__()
+    implements the overridding action.
     """
     # pylint: disable=no-value-for-parameter
 

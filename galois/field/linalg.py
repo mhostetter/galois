@@ -34,7 +34,7 @@ def _lapack_linalg(a, b, function, out=None, n_sum=None):
     b = b.astype(dtype)
 
     # Compute result using native numpy LAPACK/BLAS implementation
-    if function in [np.inner]:
+    if function in [np.inner, np.vdot]:
         # These functions don't have and `out` keyword argument
         c = function(a, b)
     else:
@@ -75,6 +75,22 @@ def dot(a, b, out=None):  # pylint: disable=unused-argument
     # elif a.dnim >= 2 and b.ndim >= 2:
     else:
         raise NotImplementedError("Currently 'dot' is only supported up to 2-D matrices. Please open a GitHub issue at https://github.com/mhostetter/galois/issues.")
+
+
+def vdot(a, b):
+    """
+    https://numpy.org/doc/stable/reference/generated/numpy.vdot.html
+    """
+    if not type(a) is type(b):
+        raise TypeError(f"Operation 'dot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+
+    if type(a).is_prime_field:
+        return _lapack_linalg(a, b, np.vdot)
+
+    a = a.flatten()
+    b = b.flatten().reshape(a.shape)  # This is done to mimic numpy's error scenarios
+
+    return np.sum(a * b)
 
 
 def inner(a, b):
@@ -213,7 +229,7 @@ def inv(A):
         raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
     field = type(A)
     n = A.shape[0]
-    I = field.Identity(n)
+    I = field.Identity(n, dtype=A.dtype)
 
     # Concatenate A and I to get the matrix AI = [A | I]
     AI = np.concatenate((A, I), axis=-1)

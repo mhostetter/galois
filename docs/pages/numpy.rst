@@ -7,6 +7,7 @@ numpy
    ^^^^^^^
    .. rubric::
    .. autosummary::
+
       np.copy
       np.concatenate
       np.insert
@@ -15,6 +16,7 @@ numpy
    ^^^^^^^^^^
    .. rubric::
    .. autosummary::
+
       np.add
       np.subtract
       np.multiply
@@ -30,16 +32,22 @@ numpy
    ^^^^^^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
+
       np.convolve
 
    Linear Algebra
    ^^^^^^^^^^^^^^
    .. rubric::
    .. autosummary::
-      np.trace
+
+      np.dot
+      np.vdot
+      np.inner
+      np.outer
       np.matmul
-      np.linalg.matrix_rank
       np.linalg.matrix_power
       np.linalg.det
-      np.linalg.inv
+      np.linalg.matrix_rank
+      np.trace
       np.linalg.solve
+      np.linalg.inv

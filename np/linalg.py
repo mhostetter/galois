@@ -1,40 +1,3 @@
-def matrix_rank(x):
-    """
-    Returns the rank of a Galois field matrix.
-
-    References
-    ----------
-    * https://numpy.org/doc/stable/reference/generated/numpy.linalg.matrix_rank.html
-
-    Examples
-    --------
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF.Identity(4); A
-        np.linalg.matrix_rank(A)
-
-    One column is a linear combination of another.
-
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF.Random((4,4)); A
-        A[:,2] = A[:,1] * GF(17); A
-        np.linalg.matrix_rank(A)
-
-    One row is a linear combination of another.
-
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF.Random((4,4)); A
-        A[3,:] = A[2,:] * GF(8); A
-        np.linalg.matrix_rank(A)
-    """
-    return
-
-
 def matrix_power(x):
     """
     Raises a square Galois field matrix to an integer power.
@@ -88,27 +51,39 @@ def det(A):
     return
 
 
-def inv(A):
+def matrix_rank(x):
     """
-    Computes the inverse of the matrix.
+    Returns the rank of a Galois field matrix.
 
     References
     ----------
-    * https://numpy.org/doc/stable/reference/generated/numpy.linalg.inv.html
+    * https://numpy.org/doc/stable/reference/generated/numpy.linalg.matrix_rank.html
 
     Examples
     --------
     .. ipython:: python
 
         GF = galois.GF(31)
-        # Ensure A is full rank and invertible
-        while True:
-            A = GF.Random((3,3))
-            if np.linalg.matrix_rank(A) == 3:
-                break
-        A
-        A_inv = np.linalg.inv(A); A_inv
-        A_inv @ A
+        A = GF.Identity(4); A
+        np.linalg.matrix_rank(A)
+
+    One column is a linear combination of another.
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF.Random((4,4)); A
+        A[:,2] = A[:,1] * GF(17); A
+        np.linalg.matrix_rank(A)
+
+    One row is a linear combination of another.
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF.Random((4,4)); A
+        A[3,:] = A[2,:] * GF(8); A
+        np.linalg.matrix_rank(A)
     """
     return
 
@@ -150,3 +125,29 @@ def solve(x):
         A @ X
     """
     return
+
+
+def inv(A):
+    """
+    Computes the inverse of the matrix.
+
+    References
+    ----------
+    * https://numpy.org/doc/stable/reference/generated/numpy.linalg.inv.html
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        # Ensure A is full rank and invertible
+        while True:
+            A = GF.Random((3,3))
+            if np.linalg.matrix_rank(A) == 3:
+                break
+        A
+        A_inv = np.linalg.inv(A); A_inv
+        A_inv @ A
+    """
+    return
+

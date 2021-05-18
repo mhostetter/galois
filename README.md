@@ -257,10 +257,9 @@ GF([[191,  33,  85,  77,  88],
 The `galois` package intercepts relevant calls to numpy's linear algebra functions and performs the specified
 operation in `GF(p^m)` not in **R**. Some of these functions include:
 
-- `np.trace`
-- `np.dot`, `np.inner`, `np.outer`
-- `np.linalg.matrix_rank`, `np.linalg.matrix_power`
-- `np.linalg.det`, `np.linalg.inv`, `np.linalg.solve`
+- `np.dot`, `np.vdot`, `np.inner`, `np.outer`, `np.matmul`, `np.linalg.matrix_power`
+- `np.linalg.det`, `np.linalg.matrix_rank`, `np.trace`
+- `np.linalg.solve`, `np.linalg.inv`
 
 ```python
 >>> A = GF256.Random((3,3)); A

@@ -1,3 +1,6 @@
+"""
+A module containint a metaclass mixin abstract base class that handles overridding numpy function calls.
+"""
 import numpy as np
 
 # List of functions that are not valid on arrays over finite groups, rings, and fields
@@ -25,6 +28,9 @@ FUNCTIONS_REQUIRING_VIEW = [
 class Func(type):
     """
     A base class for :obj:`GroupFunc`, :obj:`RingFunc`, and :obj:`FieldFunc`.
+
+    The metaclass contains the attributes with the unsupported or overridden function, but Array.__array_function__()
+    implements the overridding action.
     """
     # pylint: disable=no-value-for-parameter
 

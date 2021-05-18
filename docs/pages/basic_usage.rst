@@ -143,10 +143,9 @@ Linear algebra
 The :obj:`galois` package intercepts relevant calls to numpy's linear algebra functions and performs the specified
 operation in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{R}`. Some of these functions include:
 
-- :func:`np.trace`
-- :func:`np.dot`, :func:`np.inner`, :func:`np.outer`
-- :func:`np.linalg.matrix_rank`, :func:`np.linalg.matrix_power`
-- :func:`np.linalg.det`, :func:`np.linalg.inv`, :func:`np.linalg.solve`
+- :func:`np.dot`, :func:`np.vdot`, :func:`np.inner`, :func:`np.outer`, :func:`np.matmul`, :func:`np.linalg.matrix_power`
+- :func:`np.linalg.det`, :func:`np.linalg.matrix_rank`, :func:`np.trace`
+- :func:`np.linalg.solve`, :func:`np.linalg.inv`
 
 .. ipython:: python
 
