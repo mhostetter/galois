@@ -578,8 +578,8 @@ In [8]: %timeit (AA @ BB) % GF.order
 
 For extension fields `GF(p^m)`, the performance of `galois` is close to native numpy linear algebra
 (about 10x slower). However, for extension fields, each multiplication operation is equivalently
-a convolution (polynomial multiplication) of two `m`-length arrays. So it's not an apples-to-apples
-comparison.
+a convolution (polynomial multiplication) of two `m`-length arrays and polynomial remainder division with the
+irreducible polynomial. So it's not an apples-to-apples comparison.
 
 Below is a comparison of `galois` computing the correct matrix multiplication over `GF(2^8)` and numpy
 computing a normal integer matrix multiplication (which is not the correct result!). This

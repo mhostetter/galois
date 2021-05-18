@@ -7,7 +7,11 @@ from ..overrides import set_module
 from .factory_prime import GF_prime
 from .poly import Poly
 
-__all__ = ["poly_gcd", "poly_pow", "is_irreducible", "is_primitive", "is_primitive_element", "primitive_element", "primitive_elements", "is_monic"]
+__all__ = [
+    "poly_gcd", "poly_pow", "poly_factors",
+    "is_monic", "is_irreducible", "is_primitive",
+    "is_primitive_element", "primitive_element", "primitive_elements"
+]
 
 
 @set_module("galois")
@@ -149,10 +153,135 @@ def poly_pow(poly, power, modulus):
 
     return result
 
-# @set_module("galois")
-# def poly_factors(poly):
 
-#     return
+@set_module("galois")
+def poly_factors(poly):
+    """
+    Factors the polynomial :math:`f(x)` into a product of :math:`n` irreducible factors :math:`f(x) = g_0(x)^{k_0} g_1(x)^{k_1} \\dots g_{n-1}(x)^{k_{n-1}}`
+    with :math:`k_0 \\le k_1 \\le \\dots \\le k_{n-1}`.
+
+    This function implements the Square-Free Factorization algorithm.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        The polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p^m)` to be factored.
+
+    Returns
+    -------
+    list
+        The list of :math:`n` polynomial factors :math:`\\{g_0(x), g_1(x), \\dots, g_{n-1}(x)\\}`.
+    list
+        The list of :math:`n` polynomial multiplicities :math:`\\{k_0, k_1, \\dots, k_{n-1}\\}`.
+
+    References
+    ----------
+    * D. Hachenberger, D. Jungnickel. Topics in Galois Fields. Algorithm 6.1.7.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF2
+        # Ensure the factors are irreducible by using Conway polynomials
+        g0, g1, g2 = galois.conway_poly(2, 3), galois.conway_poly(2, 4), galois.conway_poly(2, 5)
+        g0, g1, g2
+        k0, k1, k2 = 2, 3, 4
+        # Construct the composite polynomial
+        f = g0**k0 * g1**k1 * g2**k2
+        galois.poly_factors(f)
+
+    .. ipython:: python
+
+        GF = galois.GF(3)
+        # Ensure the factors are irreducible by using Conway polynomials
+        g0, g1, g2 = galois.conway_poly(3, 3), galois.conway_poly(3, 4), galois.conway_poly(3, 5)
+        g0, g1, g2
+        k0, k1, k2 = 3, 4, 6
+        # Construct the composite polynomial
+        f = g0**k0 * g1**k1 * g2**k2
+        galois.poly_factors(f)
+    """
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    if not is_monic(poly):
+        raise ValueError(f"Argument `poly` must be monic (otherwise there's a trivial 0-degree factor), not a leading coefficient of {poly.coeffs[0]}.")
+
+    field = poly.field
+    p = field.characteristic
+    one = Poly.One(field=field)
+
+    L = Poly.One(field=field)
+    r = 0
+    factors = []
+    multiplicities = []
+
+    def square_free_factorization(c, r):
+        nonlocal L, factors, multiplicities
+        i = 1
+        a = c.copy()
+        b = c.derivative()
+        d = poly_gcd(a, b)[0]
+        w = a / d
+
+        while w != one:
+            y = poly_gcd(w, d)[0]
+            z = w / y
+            if z != one and i % p != 0:
+                L *= z**(i * p**r)
+                factors.append(z)
+                multiplicities.append(i * p**r)
+            i = i + 1
+            w = y
+            d = d / y
+
+        return d
+
+    d = square_free_factorization(poly, r)
+
+    while d != one:
+        degrees = [degree // p for degree in d.degrees]
+        coeffs = d.coeffs
+        delta = Poly.Degrees(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
+        r += 1
+        d = square_free_factorization(delta, r)
+
+    factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: item[1]))
+
+    return list(factors), list(multiplicities)
+
+
+@set_module("galois")
+def is_monic(poly):
+    """
+    Determines whether the polynomial is monic, i.e. having leading coefficient equal to 1.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        A polynomial over a Galois field.
+
+    Returns
+    -------
+    bool
+        `True` if the polynomial is monic.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        p = galois.Poly([1,0,4,5], field=GF); p
+        galois.is_monic(p)
+
+    .. ipython:: python
+
+        p = galois.Poly([3,0,4,5], field=GF); p
+        galois.is_monic(p)
+    """
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    return poly.nonzero_coeffs[0] == 1
 
 
 @set_module("galois")
@@ -541,36 +670,3 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
     elements = sorted(elements, key=lambda e: e.integer, reverse=reverse)  # Sort element lexicographically
 
     return elements
-
-
-@set_module("galois")
-def is_monic(poly):
-    """
-    Determines whether the polynomial is monic, i.e. having leading coefficient equal to 1.
-
-    Parameters
-    ----------
-    poly : galois.Poly
-        A polynomial over a Galois field.
-
-    Returns
-    -------
-    bool
-        `True` if the polynomial is monic.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        GF = galois.GF(7)
-        p = galois.Poly([1,0,4,5], field=GF); p
-        galois.is_monic(p)
-
-    .. ipython:: python
-
-        p = galois.Poly([3,0,4,5], field=GF); p
-        galois.is_monic(p)
-    """
-    if not isinstance(poly, Poly):
-        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    return poly.nonzero_coeffs[0] == 1
