@@ -4,7 +4,7 @@ import numpy as np
 from ..dtypes import DTYPES
 from ..meta_func import Func
 
-from .linalg import _lapack_linalg, dot, inner, outer, matrix_rank, solve, inv, det
+from .linalg import _lapack_linalg, dot, vdot, inner, outer, matrix_rank, solve, inv, det
 
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_UFUNC = lambda x, y: x + y
@@ -25,13 +25,14 @@ class FieldFunc(Func):
 
     _overridden_linalg_functions = {
         np.dot: dot,
+        np.vdot: vdot,
         np.inner: inner,
         np.outer: outer,
         # np.tensordot: "tensordot",
-        np.linalg.matrix_rank: matrix_rank,
-        np.linalg.inv: inv,
         np.linalg.det: det,
-        np.linalg.solve: solve
+        np.linalg.matrix_rank: matrix_rank,
+        np.linalg.solve: solve,
+        np.linalg.inv: inv,
     }
 
     def __init__(cls, name, bases, namespace, **kwargs):
