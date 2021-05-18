@@ -72,9 +72,12 @@ def poly_gcd(a, b):
         s2, s1 = s1, s2 - q*s1
         t2, t1 = t1, t2 - q*t1
 
-    # Non-zero scalar is considered a unit in a fintie field
-    if r2.degree == 0 and r2.coeffs[0] > 0:
-        r2, s2, t2 = r2 / r2, s2 / r2, t2 / r2
+    # Make the gcd polynomial monic
+    c = r2.coeffs[0]  # The leading coefficient
+    if c > 1:
+        r2 /= c
+        s2 /= c
+        t2 /= c
 
     return r2, s2, t2
 

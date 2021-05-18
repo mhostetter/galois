@@ -28,6 +28,17 @@ def test_poly_gcd():
     assert gcd == galois.Poly.Degrees([3, 1, 0])
     assert x == galois.Poly.Degrees([4])
     assert y == galois.Poly.Degrees([5, 4, 3, 2, 1, 0])
+    assert a*x + b*y == gcd
+
+    # Tested against SageMath
+    GF = galois.GF(3)
+    a = galois.Poly.Degrees([11, 9, 8, 6, 5, 3, 2, 0], [1, 2, 2, 1, 1, 2, 2, 1], field=GF)
+    b = a.derivative()
+    gcd, x, y = galois.poly_gcd(a, b)
+    assert gcd == galois.Poly.Degrees([9, 6, 3, 0], [1, 2, 1, 2], field=GF)
+    assert x == galois.Poly([2], field=GF)
+    assert y == galois.Poly([2, 0], field=GF)
+    assert a*x + b*y == gcd
 
     GF = galois.GF(7)
     a = galois.Poly.Roots([2,2,2,3,5], field=GF)
