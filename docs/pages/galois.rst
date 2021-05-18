@@ -76,7 +76,6 @@ galois
       poly_gcd
       poly_pow
       poly_factors
-      poly_factors_berlekamp
       is_monic
       is_irreducible
       is_primitive
