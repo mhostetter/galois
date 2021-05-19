@@ -48,6 +48,7 @@ galois
       is_extension_field
       conway_poly
       irreducible_poly
+      primitive_poly
       is_irreducible
       is_primitive
       primitive_element
@@ -77,6 +78,9 @@ galois
       poly_gcd
       poly_pow
       poly_factors
+      conway_poly
+      irreducible_poly
+      primitive_poly
       is_monic
       is_irreducible
       is_primitive

@@ -153,6 +153,18 @@ def test_irreducible_poly():
     assert galois.is_irreducible(p)
 
 
+def test_primitive_poly():
+    p = galois.primitive_poly(2, 8)
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+    assert galois.is_primitive(p)
+
+    p = galois.primitive_poly(2, 8, method="smallest")
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+    assert galois.is_primitive(p)
+    assert p == galois.conway_poly(2, 8)
+
 
 def test_is_monic():
     GF = galois.GF(7)
