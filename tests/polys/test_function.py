@@ -121,6 +121,39 @@ def test_poly_factors():
     assert multiplicities == [k0, k1, k2]
 
 
+def test_irreducible_poly():
+    p = galois.irreducible_poly(2, 3)
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+    p = galois.irreducible_poly(2, 3, method="smallest")
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+    p = galois.irreducible_poly(2, 3, method="largest")
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+
+    p = galois.irreducible_poly(2, 8)
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+    p = galois.irreducible_poly(2, 8, method="smallest")
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+    p = galois.irreducible_poly(2, 8, method="largest")
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+
+    p = galois.irreducible_poly(3, 5)
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+    p = galois.irreducible_poly(3, 5, method="smallest")
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+    p = galois.irreducible_poly(3, 5, method="largest")
+    assert galois.is_monic(p)
+    assert galois.is_irreducible(p)
+
+
+
 def test_is_monic():
     GF = galois.GF(7)
     p = galois.Poly([1,0,4,5], field=GF)

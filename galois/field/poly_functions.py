@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 from ..factor import prime_factors
@@ -9,6 +11,7 @@ from .poly import Poly
 
 __all__ = [
     "poly_gcd", "poly_pow", "poly_factors",
+    "irreducible_poly",
     "is_monic", "is_irreducible", "is_primitive",
     "is_primitive_element", "primitive_element", "primitive_elements"
 ]
@@ -252,6 +255,79 @@ def poly_factors(poly):
 
 
 @set_module("galois")
+def irreducible_poly(characteristic, degree, method="random"):
+    """
+    Returns a degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+
+    Parameters
+    ----------
+    characteristic : int
+        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
+    degree : int
+        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
+        of :math:`\\mathrm{GF}(p)`.
+    method : str, optional
+        The search method for finding the irreducible polynomial, either `"random"` (default), `"smallest"`, or `"largest"`. The random
+        search method will randomly generate degree-:math:`m` polynomials and test for irreducibility. The smallest/largest search
+        method will produce polynomials in increasing/decreasing lexicographical order and test for irreducibility.
+
+    Returns
+    -------
+    galois.Poly
+        The degree-:math:`m` irreducible polynomial over :math:`\\mathrm{GF}(p)`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        p = galois.irreducible_poly(7, 5); p
+        galois.is_irreducible(p)
+        p = galois.irreducible_poly(7, 5, method="smallest"); p
+        galois.is_irreducible(p)
+        p = galois.irreducible_poly(7, 5, method="largest"); p
+        galois.is_irreducible(p)
+
+    For the extension field :math:`\\mathrm{GF}(2^8)`, notice the lexicographically-smallest irreducible polynomial
+    is not primitive. The Conway polynomial :math:`C_{2,8}` is the lexicographically-smallest irreducible *and primitive*
+    polynomial.
+
+    .. ipython:: python
+
+        p = galois.irreducible_poly(2, 8, method="smallest"); p
+        galois.is_irreducible(p)
+        galois.is_primitive(p)
+
+        c = galois.conway_poly(2, 8); c
+        galois.is_irreducible(c)
+        galois.is_primitive(c)
+    """
+    GF = GF_prime(characteristic)
+
+    # Only search monic polynomials of degree m over GF(p)
+    min_ = characteristic**degree
+    max_ = 2*characteristic**degree
+
+    if method == "random":
+        while True:
+            integer = random.randint(min_, max_ - 1)
+            poly = Poly.Integer(integer, field=GF)
+            if is_irreducible(poly):
+                break
+    else:
+        if method == "smallest":
+            elements = range(min_, max_)
+        else:
+            elements = range(max_ - 1, min_ - 1, -1)
+
+        for element in elements:
+            poly = Poly.Integer(element, field=GF)
+            if is_irreducible(poly):
+                break
+
+    return poly
+
+
+@set_module("galois")
 def is_monic(poly):
     """
     Determines whether the polynomial is monic, i.e. having leading coefficient equal to 1.
@@ -452,7 +528,7 @@ def is_primitive(poly):
 
 
 @set_module("galois")
-def is_primitive_element(element, irreducible_poly):
+def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefined-outer-name
     """
     Determines if :math:`g(x)` is a primitive element of the Galois field :math:`\\mathrm{GF}(p^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
@@ -520,7 +596,7 @@ def is_primitive_element(element, irreducible_poly):
 
 
 @set_module("galois")
-def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):
+def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):  # pylint: disable=redefined-outer-name
     """
     Finds the smallest primitive element :math:`g(x)` of the Galois field :math:`\\mathrm{GF}(p^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
@@ -597,7 +673,7 @@ def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):
 
 
 @set_module("galois")
-def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):
+def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):  # pylint: disable=redefined-outer-name
     """
     Finds all primitive elements :math:`g(x)` of the Galois field :math:`\\mathrm{GF}(p^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.

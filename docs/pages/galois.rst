@@ -47,6 +47,7 @@ galois
       is_field
       is_extension_field
       conway_poly
+      irreducible_poly
       is_irreducible
       is_primitive
       primitive_element
