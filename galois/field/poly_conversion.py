@@ -23,6 +23,11 @@ def integer_to_poly(decimal, order, degree=None):
     if degree is None:
         if decimal > 0:
             degree = int(math.floor(math.log(decimal, order)))
+            # math.log() is notoriously wrong, need to manually check that it isn't wrong
+            if decimal < order**degree:
+                degree -= 1
+            if decimal >= order**(degree + 1):
+                degree += 1
         else:
             degree = 0
 
