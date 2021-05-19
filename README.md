@@ -12,7 +12,7 @@ A Galois field array class `GF` is a subclass of `np.ndarray` and its constructo
 the call signature of `np.array()`. A Galois field array `x` is operated on like any other numpy array, but all
 arithmetic is performed in `GF(p^m)` not **Z** or **R**.
 
-Internally, the Galois field arithmetic is implemented by replacing [numpy ufuncs](https://np.org/doc/stable/reference/ufuncs.html).
+Internally, the Galois field arithmetic is implemented by replacing [numpy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html).
 The new ufuncs are written in python and then [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
 [numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit
 calculation (for memory savings). Numba also provides the ability to ["target"](https://numba.readthedocs.io/en/stable/user/vectorize.html?highlight=target)
@@ -224,7 +224,7 @@ Galois field arrays are treated like any other numpy array. Array arithmetic is 
 functions.
 
 In the list below, `GF` is a Galois field array class created by `GF = galois.GF(p**m)`, `x` and `y` are `GF` arrays, and `z` is an
-integer `np.ndarray`. All arithmetic operations follow normal numpy [broadcasting](https://np.org/doc/stable/user/basics.broadcasting.html) rules.
+integer `np.ndarray`. All arithmetic operations follow normal numpy [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) rules.
 
 - Addition: `x + y == np.add(x, y)`
 - Subtraction: `x - y == np.subtract(x, y)`
@@ -283,7 +283,7 @@ Galois field arrays also contain matrix decomposition routines not included in n
 
 ### Numpy ufunc methods
 
-Galois field arrays support [numpy ufunc methods](https://np.org/devdocs/reference/ufuncs.html#methods). This allows the user to apply a ufunc in a unique way across the target
+Galois field arrays support [numpy ufunc methods](https://numpy.org/devdocs/reference/ufuncs.html#methods). This allows the user to apply a ufunc in a unique way across the target
 array. The ufunc method signature is `<ufunc>.<method>(*args, **kwargs)`. All arithmetic ufuncs are supported. Below
 is a list of their ufunc methods.
 
