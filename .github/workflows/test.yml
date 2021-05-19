@@ -70,6 +70,10 @@ jobs:
         python3 -m pip install -r requirements-test.txt
     - name: Install minimum package dependencies
       run: python3 -m pip install -r requirements-min.txt
+    - name: Remove source code
+      uses: JesseTG/rm@v1.0.2
+      with:
+        path: galois/
     - name: Download wheel artifact
       uses: actions/download-artifact@v2
       with:
@@ -80,8 +84,7 @@ jobs:
         python3 -m pip install $(ls dist/galois-*.whl)
     - name: Test with pytest
       run: |
-        cd dist/  # Move into subfolder so pytest can't see the source code
-        python3 -m pytest ../tests/
+        python3 -m pytest tests/
 
   test-latest:
     name: Latest Dependencies
@@ -101,6 +104,10 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements-test.txt
+    - name: Remove source code
+      uses: JesseTG/rm@v1.0.2
+      with:
+        path: galois/
     - name: Download wheel artifact
       uses: actions/download-artifact@v2
       with:
@@ -111,5 +118,4 @@ jobs:
         python3 -m pip install $(ls dist/galois-*.whl)
     - name: Test with pytest
       run: |
-        cd dist/  # Move into subfolder so pytest can't see the source code
-        python3 -m pytest ../tests/
+        python3 -m pytest tests/
