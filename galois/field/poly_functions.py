@@ -11,7 +11,7 @@ from .poly import Poly
 
 __all__ = [
     "poly_gcd", "poly_pow", "poly_factors",
-    "irreducible_poly",
+    "irreducible_poly", "primitive_poly",
     "is_monic", "is_irreducible", "is_primitive",
     "is_primitive_element", "primitive_element", "primitive_elements"
 ]
@@ -294,12 +294,10 @@ def irreducible_poly(characteristic, degree, method="random"):
     .. ipython:: python
 
         p = galois.irreducible_poly(2, 8, method="smallest"); p
-        galois.is_irreducible(p)
-        galois.is_primitive(p)
+        galois.is_irreducible(p), galois.is_primitive(p)
 
-        c = galois.conway_poly(2, 8); c
-        galois.is_irreducible(c)
-        galois.is_primitive(c)
+        p = galois.conway_poly(2, 8); p
+        galois.is_irreducible(p), galois.is_primitive(p)
     """
     GF = GF_prime(characteristic)
 
@@ -322,6 +320,72 @@ def irreducible_poly(characteristic, degree, method="random"):
         for element in elements:
             poly = Poly.Integer(element, field=GF)
             if is_irreducible(poly):
+                break
+
+    return poly
+
+
+@set_module("galois")
+def primitive_poly(characteristic, degree, method="random"):
+    """
+    Returns a degree-:math:`m` primitive polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+
+    Parameters
+    ----------
+    characteristic : int
+        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
+    degree : int
+        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
+        of :math:`\\mathrm{GF}(p)`.
+    method : str, optional
+        The search method for finding the primitive polynomial, either `"random"` (default), `"smallest"`, or `"largest"`. The random
+        search method will randomly generate degree-:math:`m` polynomials and test for primitivity. The smallest/largest search
+        method will produce polynomials in increasing/decreasing lexicographical order and test for primitivity.
+
+    Returns
+    -------
+    galois.Poly
+        The degree-:math:`m` primitive polynomial over :math:`\\mathrm{GF}(p)`.
+
+    Examples
+    --------
+    For the extension field :math:`\\mathrm{GF}(2^8)`, notice the lexicographically-smallest irreducible polynomial
+    is not primitive. The Conway polynomial :math:`C_{2,8}` is the lexicographically-smallest primitive *and primitive*
+    polynomial.
+
+    .. ipython:: python
+
+        p = galois.irreducible_poly(2, 8, method="smallest"); p
+        galois.is_irreducible(p), galois.is_primitive(p)
+
+        # This is the same as the Conway polynomial C_2,8
+        p = galois.primitive_poly(2, 8, method="smallest"); p
+        galois.is_irreducible(p), galois.is_primitive(p)
+
+        p = galois.conway_poly(2, 8); p
+        galois.is_irreducible(p), galois.is_primitive(p)
+    """
+    GF = GF_prime(characteristic)
+
+    # Only search monic polynomials of degree m over GF(p)
+    min_ = characteristic**degree
+    max_ = 2*characteristic**degree
+
+    if method == "random":
+        while True:
+            integer = random.randint(min_, max_ - 1)
+            poly = Poly.Integer(integer, field=GF)
+            if is_primitive(poly):
+                break
+    else:
+        if method == "smallest":
+            elements = range(min_, max_)
+        else:
+            elements = range(max_ - 1, min_ - 1, -1)
+
+        for element in elements:
+            poly = Poly.Integer(element, field=GF)
+            if is_primitive(poly):
                 break
 
     return poly
