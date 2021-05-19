@@ -213,6 +213,9 @@ def test_is_primitive():
     assert galois.is_primitive(galois.conway_poly(2, 7))
     assert galois.is_primitive(galois.conway_poly(2, 8))
 
+    # x^8 passes the primitivity tests but not irreducibility tests, needs to return False not True
+    assert not galois.is_primitive(galois.Poly.Degrees([8]))
+
     # The AES irreducible polynomial is not primitive
     p = galois.Poly.Degrees([8,4,3,1,0])
     assert not galois.is_primitive(p)
