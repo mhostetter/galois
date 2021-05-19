@@ -206,6 +206,16 @@ def test_is_irreducible():
     p6 = galois.Poly.Random(20, field=GF) * x
     assert not galois.is_irreducible(p6)
 
+    # x is not irreducible over any field
+    GF = galois.GF(5)
+    p = galois.Poly([1, 0], field=GF)
+    assert not galois.is_irreducible(p)
+
+    # x + 1 is irreducible over GF(5) but not primitive
+    GF = galois.GF(5)
+    p = galois.Poly([1, 1], field=GF)
+    assert galois.is_irreducible(p)
+
 
 def test_is_irreducible_exceptions():
     with pytest.raises(TypeError):
@@ -236,6 +246,16 @@ def test_is_primitive():
     assert galois.is_primitive(galois.conway_poly(3, 3))
     assert galois.is_primitive(galois.conway_poly(3, 4))
     assert galois.is_primitive(galois.conway_poly(3, 5))
+
+    # x + 1 is irreducible over GF(5) but not primitive
+    GF = galois.GF(5)
+    p = galois.Poly([1, 1], field=GF)
+    assert not galois.is_primitive(p)
+
+    # x + 2 is irreducible over GF(5) and primitive
+    GF = galois.GF(5)
+    p = galois.Poly([1, 2], field=GF)
+    assert galois.is_primitive(p)
 
 
 def test_is_primitive_exceptions():
