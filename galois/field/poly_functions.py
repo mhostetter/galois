@@ -457,8 +457,8 @@ def is_primitive(poly):
     """
     Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is primitive.
 
-    A degree-:math:`n` polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is *primitive* if :math:`f(x)\\ |\\ (x^k - 1)` for
-    :math:`k = p^n - 1` and no :math:`k` less than :math:`p^n - 1`.
+    A degree-:math:`n` polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is *primitive* if it is irreducible and
+    :math:`f(x)\\ |\\ (x^k - 1)` for :math:`k = p^n - 1` and no :math:`k` less than :math:`p^n - 1`.
 
     Parameters
     ----------
@@ -499,6 +499,10 @@ def is_primitive(poly):
         raise TypeError(f"Argument `poly` must have degree greater than 1, not {poly.degree}.")
     if not poly.field.is_prime_field:
         raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
+
+    if not is_irreducible(poly):
+        # A polynomial must be irreducible to be primitive
+        return False
 
     field = poly.field
     p = field.order
