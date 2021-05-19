@@ -164,21 +164,21 @@ def sparse_poly_to_str(degrees, coeffs, poly_var="x"):
     return poly_str
 
 
-def str_to_integer(poly_str, prime_subfield):
+def str_to_sparse_poly(poly_str):
     """
-    Convert a polynomial string to its integer representation.
+    Convert a polynomial string to its non-zero degrees and coefficients.
 
     Parameters
     ----------
     poly_str : str
         A polynomial representation of the string.
-    prime_subfield : galois.FieldMeta
-        The Galois field the polynomial is over.
 
     Returns
     -------
-    int
-        The polynomial integer representation.
+    list
+        The polynomial non-zero degrees.
+    list
+        The polynomial non-zero coefficients.
     """
     s = poly_str.replace(" ", "")  # Strip whitespace for easier processing
     s = s.replace("-", "+-")  # Convert `x^2 - x` into `x^2 + -x`
@@ -194,7 +194,8 @@ def str_to_integer(poly_str, prime_subfield):
     else:
         raise ValueError(f"Found multiple polynomial indeterminates {vars} in string '{poly_str}'.")
 
-    integer = 0
+    degrees = []
+    coeffs = []
     for element in s.split("+"):
         if var not in element:
             degree = 0
@@ -217,8 +218,34 @@ def str_to_integer(poly_str, prime_subfield):
 
         coeff = coeff.replace("*", "")  # Remove multiplication sign for elements like `3*x^2`
         coeff = int(coeff) if coeff != "" else 1
-        coeff = coeff if coeff >= 0 else int(-prime_subfield(abs(coeff)))
 
+        degrees.append(degree)
+        coeffs.append(coeff)
+
+    return degrees, coeffs
+
+
+def str_to_integer(poly_str, prime_subfield):
+    """
+    Convert a polynomial string to its integer representation.
+
+    Parameters
+    ----------
+    poly_str : str
+        A polynomial representation of the string.
+    prime_subfield : galois.FieldMeta
+        The Galois field the polynomial is over.
+
+    Returns
+    -------
+    int
+        The polynomial integer representation.
+    """
+    degrees, coeffs = str_to_sparse_poly(poly_str)
+
+    integer = 0
+    for degree, coeff in zip(degrees, coeffs):
+        coeff = coeff if coeff >= 0 else int(-prime_subfield(abs(coeff)))
         integer += coeff * prime_subfield.order**degree
 
     return integer

@@ -6,7 +6,7 @@ from ..overrides import set_module
 
 from .array import FieldArray
 from .gf2 import GF2
-from .poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_integer, sparse_poly_to_str
+from .poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
 
 __all__ = ["Poly"]
 
@@ -323,6 +323,44 @@ class Poly:
         else:
             coeffs = integer_to_poly(integer, field.order)
             return Poly(coeffs, field=field)
+
+    @classmethod
+    def String(cls, string, field=GF2):
+        """
+        Constructs a polynomial over :math:`\\mathrm{GF}(p^m)` from its string representation.
+
+        Parameters
+        ----------
+        string : str
+            The string representation of the polynomial :math:`f(x)`.
+        field : galois.FieldArray, optional
+            The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`f(x)`.
+
+        Examples
+        --------
+        Construct a polynomial over :math:`\\mathrm{GF}(2)` from its string representation.
+
+        .. ipython:: python
+
+            galois.Poly.String("x^2 + 1")
+
+        Construct a polynomial over :math:`\\mathrm{GF}(2^8)` from its string representation.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**8)
+            galois.Poly.String("13x^3 + 117", field=GF)
+        """
+        if not isinstance(string, str):
+            raise TypeError(f"Polynomial creation must have `string` be an str, not {type(string)}")
+
+        return Poly.Degrees(*str_to_sparse_poly(string), field=field)
+
 
     @classmethod
     def Degrees(cls, degrees, coeffs=None, field=None):  # pylint: disable=too-many-branches
@@ -701,8 +739,7 @@ class Poly:
             return p_prime
 
     def __repr__(self):
-        poly_str = sparse_poly_to_str(self.nonzero_degrees, self.nonzero_coeffs)
-        return f"Poly({poly_str}, {self.field.name})"
+        return f"Poly({self.string}, {self.field.name})"
 
     ###############################################################################
     # Overridden dunder methods
@@ -1003,6 +1040,21 @@ class Poly:
             p.integer == 3*7**3 + 5*7**1 + 2*7**0
         """
         return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
+
+    @property
+    def string(self):
+        """
+        str: The string representation of the polynomial, without specifying the Galois field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF); p
+            p.string
+        """
+        return sparse_poly_to_str(self.nonzero_degrees, self.nonzero_coeffs)
 
 
 class DensePoly(Poly):

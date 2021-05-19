@@ -30,6 +30,7 @@ def test_zero(field):
     assert np.array_equal(p.degrees, [0])
     assert np.array_equal(p.coeffs, [0])
     assert p.integer == 0
+    assert p.string == "0"
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -43,6 +44,7 @@ def test_one(field):
     assert np.array_equal(p.degrees, [0])
     assert np.array_equal(p.coeffs, [1])
     assert p.integer == 1
+    assert p.string == "1"
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -56,6 +58,7 @@ def test_identity(field):
     assert np.array_equal(p.degrees, [1,0])
     assert np.array_equal(p.coeffs, [1,0])
     assert p.integer == field.order
+    assert p.string == "x"
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -106,6 +109,7 @@ def test_degrees(field):
     assert np.array_equal(p.degrees, [2,1,0])
     assert np.array_equal(p.coeffs, [1,0,1])
     assert p.integer == field.order**2 + 1
+    assert p.string == "x^2 + 1"
 
 
 @pytest.mark.parametrize("field", FIELDS)
