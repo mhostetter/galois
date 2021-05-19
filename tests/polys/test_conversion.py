@@ -49,6 +49,24 @@ def test_sparse_poly_to_str():
         assert galois.field.poly_conversion.sparse_poly_to_str([3, 1, 0], GF([1, 2, 3]), poly_var="y") == "y^3 + (α)y + (α + 1)"
 
 
+def test_str_to_sparse_poly():
+    # Over GF(2)
+    assert galois.field.poly_conversion.str_to_sparse_poly("x^2 + 1") == ([2, 0], [1, 1])
+    assert galois.field.poly_conversion.str_to_sparse_poly("x**2 + 1") == ([2, 0], [1, 1])
+    assert galois.field.poly_conversion.str_to_sparse_poly("y^2 + y + 1") == ([2, 1, 0], [1, 1, 1])
+    assert galois.field.poly_conversion.str_to_sparse_poly("y**2 + y**1 + 1*y**0") == ([2, 1, 0], [1, 1, 1])
+
+    # Over GF(3)
+    assert galois.field.poly_conversion.str_to_sparse_poly("2*x^2 + 2") == ([2, 0], [2, 2])
+    assert galois.field.poly_conversion.str_to_sparse_poly("2*x^2 - 1") == ([2, 0], [2, -1])
+
+    # Over GF(2)
+    with pytest.raises(ValueError):
+        galois.field.poly_conversion.str_to_sparse_poly("x^2 + y + 1")
+    with pytest.raises(ValueError):
+        galois.field.poly_conversion.str_to_sparse_poly("x^2 + x^-1 + 1")
+
+
 def test_str_to_integer():
     GF = galois.GF2
     assert galois.field.poly_conversion.str_to_integer("x^2 + 1", GF) == 5

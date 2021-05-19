@@ -216,7 +216,7 @@ This can be quite confusing to read, so be warned!
 
 Polynomials can also be created using a number of constructor class methods. They include:
 
-- :func:`galois.Poly.Zero`, :func:`galois.Poly.One`, :func:`galois.Poly.Identity`, :func:`galois.Poly.Random`, :func:`galois.Poly.Integer`, :func:`galois.Poly.Degrees`, :func:`galois.Poly.Roots`
+- :func:`galois.Poly.Zero`, :func:`galois.Poly.One`, :func:`galois.Poly.Identity`, :func:`galois.Poly.Random`, :func:`galois.Poly.Integer`, :func:`galois.Poly.String`, :func:`galois.Poly.Degrees`, :func:`galois.Poly.Roots`
 
 .. ipython:: python
 

@@ -354,7 +354,7 @@ Poly((α^7 + α^6 + α^5 + 1)x^3 + (α^4 + 1)x + (α^5 + 1), GF(2^8))
 
 Polynomials can also be created using a number of constructor class methods. They include:
 
-- `Poly.Zero`, `Poly.One`, `Poly.Identity`, `Poly.Random`, `Poly.Integer`, `Poly.Degrees`, `Poly.Roots`
+- `Poly.Zero`, `Poly.One`, `Poly.Identity`, `Poly.Random`, `Poly.Integer`, `Poly.String`, `Poly.Degrees`, `Poly.Roots`
 
 ```python
 # Construct a polynomial by specifying its roots
