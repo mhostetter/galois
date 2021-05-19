@@ -480,14 +480,18 @@ def is_irreducible(poly):
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not poly.degree > 1:
-        raise TypeError(f"Argument `poly` must have degree greater than 1, not {poly.degree}.")
+    if not poly.degree >= 1:
+        raise TypeError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
     if not poly.field.is_prime_field:
         raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
     if poly.coeffs[-1] == 0:
         # We can factor out (x), therefore it is not irreducible.
         return False
+
+    if poly.degree == 1:
+        # x + a in any Galois field is irreducible
+        return True
 
     field = poly.field
     p = field.order
@@ -559,8 +563,8 @@ def is_primitive(poly):
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not poly.degree > 1:
-        raise TypeError(f"Argument `poly` must have degree greater than 1, not {poly.degree}.")
+    if not poly.degree >= 1:
+        raise TypeError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
     if not poly.field.is_prime_field:
         raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
