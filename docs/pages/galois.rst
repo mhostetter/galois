@@ -54,6 +54,7 @@ galois
       primitive_element
       primitive_elements
       is_primitive_element
+      minimal_poly
 
    Galois Fields for Cryptography
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -81,6 +82,7 @@ galois
       conway_poly
       irreducible_poly
       primitive_poly
+      minimal_poly
       is_monic
       is_irreducible
       is_primitive

@@ -166,6 +166,31 @@ def test_primitive_poly():
     assert p == galois.conway_poly(2, 8)
 
 
+def test_minimal_poly():
+    GF = galois.GF(5)
+    alpha = GF.primitive_element
+    p = galois.minimal_poly(alpha)
+    assert p.field == GF
+    assert p == galois.Poly([1, 3], field=GF)
+
+    assert galois.minimal_poly(GF(0)) == galois.Poly.Identity(GF)
+    assert galois.minimal_poly(GF(1)) == galois.Poly([1, 4], field=GF)
+    assert galois.minimal_poly(GF(2)) == galois.Poly([1, 3], field=GF)
+    assert galois.minimal_poly(GF(3)) == galois.Poly([1, 2], field=GF)
+
+    GF = galois.GF(2**4)
+    alpha = GF.primitive_element
+    p = galois.minimal_poly(alpha)
+    assert p.field == galois.GF2
+    assert p == galois.Poly.Degrees([4, 1, 0])
+
+    assert galois.minimal_poly(GF(0)) == galois.Poly.Identity()
+    assert galois.minimal_poly(alpha**1) == galois.minimal_poly(alpha**2) == galois.minimal_poly(alpha**4) == galois.minimal_poly(alpha**8) == galois.Poly.Degrees([4, 1, 0])
+    assert galois.minimal_poly(alpha**3) == galois.minimal_poly(alpha**6) == galois.minimal_poly(alpha**9) == galois.minimal_poly(alpha**12) == galois.Poly.Degrees([4, 3, 2, 1, 0])
+    assert galois.minimal_poly(alpha**5) == galois.minimal_poly(alpha**10) == galois.Poly.Degrees([2, 1, 0])
+    assert galois.minimal_poly(alpha**7) == galois.minimal_poly(alpha**11) == galois.minimal_poly(alpha**13) == galois.minimal_poly(alpha**14) == galois.Poly.Degrees([4, 3, 0])
+
+
 def test_is_monic():
     GF = galois.GF(7)
     p = galois.Poly([1,0,4,5], field=GF)
