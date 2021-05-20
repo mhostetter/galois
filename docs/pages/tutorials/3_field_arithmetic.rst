@@ -60,7 +60,7 @@ they are not.
 
 .. warning::
 
-   In the extension field :math:`\\mathrm{GF}(2^8)`, there is a difference between `GF8(6) * GF8(2)` and `GF8(6) * 2`.
+   In the extension field :math:`\mathrm{GF}(2^8)`, there is a difference between `GF8(6) * GF8(2)` and `GF8(6) * 2`.
    The former represents the field element "6" multiplied by the field element "2" using finite field multiplication. The
    latter represents adding the field element "6" two times.
 
@@ -75,7 +75,7 @@ they are not.
       # Calculates a + a
       a * 2
 
-   In prime fields :math:`\\mathrm{GF}(p)`, multiplication and scalar multiplication are equivalent.
+   In prime fields :math:`\mathrm{GF}(p)`, multiplication and scalar multiplication are equivalent.
 
    .. ipython:: python
 
