@@ -483,15 +483,17 @@ class Poly:
         if not isinstance(multiplicities, (type(None), list, tuple, np.ndarray)):
             raise TypeError(f"Argument `multiplicities` must 'array-like', not {type(multiplicities)}.")
 
-        field = GF2 if field is None else field
-        roots = field(roots).flatten().tolist()
+        roots, field = cls._convert_coeffs(roots, field)
+
+        roots = field(roots).flatten()
         multiplicities = [1,]*len(roots) if multiplicities is None else multiplicities
         if not len(roots) == len(multiplicities):
             raise ValueError(f"Arguments `roots` and `multiplicities` must have the same length, not {len(roots)} and {len(multiplicities)}.")
 
         poly = Poly.One(field=field)
+        x = Poly.Identity(field=field)
         for root, multiplicity in zip(roots, multiplicities):
-            poly *= Poly([1, -int(root)], field=field)**multiplicity
+            poly *= (x - root)**multiplicity
 
         return poly
 
