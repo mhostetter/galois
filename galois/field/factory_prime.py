@@ -8,6 +8,8 @@ from .array import FieldArray
 from .gf2 import GF2
 from .meta_gfp import GFpMeta
 
+# pylint: disable=protected-access
+
 
 def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode="auto", target="cpu"):
     if not isinstance(characteristic, int):
@@ -21,8 +23,8 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
 
     # If the requested field has already been constructed, return it
     key = (order, primitive_element)
-    if key in GF_prime.classes:
-        cls = GF_prime.classes[key]
+    if key in GF_prime._classes:
+        cls = GF_prime._classes[key]
         cls.compile(mode, target)
         return cls
 
@@ -51,8 +53,8 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
     cls.__module__ = "galois"
 
     # Add class to dictionary of flyweights
-    GF_prime.classes[key] = cls
+    GF_prime._classes[key] = cls
 
     return cls
 
-GF_prime.classes = {}
+GF_prime._classes = {}

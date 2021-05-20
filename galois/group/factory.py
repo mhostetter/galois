@@ -10,6 +10,8 @@ from .meta import AdditiveGroupMeta, MultiplicativeGroupMeta
 
 __all__ = ["Group"]
 
+# pylint: disable=protected-access
+
 
 @set_module("galois")
 def Group(modulus, operator):
@@ -65,8 +67,8 @@ def Group(modulus, operator):
     target = "cpu"
 
     key = (modulus, operator)
-    if key in Group.classes:
-        cls = Group.classes[key]
+    if key in Group._classes:
+        cls = Group._classes[key]
         cls.compile(mode, target)
         return cls
 
@@ -90,8 +92,8 @@ def Group(modulus, operator):
         })
 
     # Add class to dictionary of flyweights
-    Group.classes[key] = cls
+    Group._classes[key] = cls
 
     return cls
 
-Group.classes = {}
+Group._classes = {}
