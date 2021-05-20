@@ -203,7 +203,7 @@ manager, the display mode will only be temporarily changed.
 GF([65,  0,  2,  1, 50], order=2^8)
 
 # Set the display mode to represent GF(2^8) field elements as polynomials over GF(2) with degree less than 8
->>> GF256.display("poly"):
+>>> GF256.display("poly");
 
 >>> x
 GF([α^6 + 1, 0, α, 1, α^5 + α^4 + α], order=2^8)
@@ -215,7 +215,7 @@ GF([α^6 + 1, 0, α, 1, α^5 + α^4 + α], order=2^8)
 GF([α^191, -∞, α, 1, α^194], order=2^8)
 
 # Resets the display mode to the integer representation
->>> GF256.display():
+>>> GF256.display();
 ```
 
 ### Field arithmetic
