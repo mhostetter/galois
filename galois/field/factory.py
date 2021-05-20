@@ -66,7 +66,6 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=
 
         poly = GF256.irreducible_poly
 
-
     Construct a Galois field specifying a specific irreducible polynomial.
 
     .. ipython:: python

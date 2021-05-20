@@ -10,11 +10,12 @@ from .meta_gf2m import GF2mMeta
 from .meta_gfpm import GFpmMeta
 from .poly import Poly
 from .poly_functions import is_irreducible, is_primitive_element
-from .poly_functions import primitive_element as _primitive_element  # To avoid name conflict with GF() arguments
+from .poly_functions import primitive_element as _primitive_element  # To avoid name conflict with GF_extension() arguments
+
+# pylint: disable=too-many-branches,too-many-statements,protected-access
 
 
 def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify_irreducible=True, verify_primitive=True, mode="auto", target="cpu"):
-    # pylint: disable=too-many-branches,too-many-statements
     if not isinstance(characteristic, int):
         raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
     if not isinstance(degree, int):
@@ -62,8 +63,8 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
 
     # If the requested field has already been constructed, return it
     key = (order, primitive_element.integer, irreducible_poly.integer)
-    if key in GF_extension.classes:
-        cls = GF_extension.classes[key]
+    if key in GF_extension._classes:
+        cls = GF_extension._classes[key]
         cls.compile(mode, target)
         return cls
 
@@ -103,8 +104,8 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     cls.__module__ = "galois"
 
     # Add class to dictionary of flyweights
-    GF_extension.classes[key] = cls
+    GF_extension._classes[key] = cls
 
     return cls
 
-GF_extension.classes = {}
+GF_extension._classes = {}
