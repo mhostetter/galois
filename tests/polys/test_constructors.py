@@ -153,6 +153,16 @@ def test_roots(field):
     assert np.array_equal(p.coeffs, coeffs)
     assert p.integer == integer
 
+    p = galois.Poly.Roots(field(roots))
+    assert isinstance(p, galois.Poly)
+    assert p.field is field
+    assert p.degree == degree
+    assert np.array_equal(p.nonzero_degrees, nonzero_degrees)
+    assert np.array_equal(p.nonzero_coeffs, nonzero_coeffs)
+    assert np.array_equal(p.degrees, degrees)
+    assert np.array_equal(p.coeffs, coeffs)
+    assert p.integer == integer
+
 
 @pytest.mark.parametrize("field", FIELDS)
 def test_roots_with_multiplicity(field):
@@ -167,6 +177,16 @@ def test_roots_with_multiplicity(field):
     integer = sum([int(c)*field.order**d for d, c in zip(degrees, coeffs)])
 
     p = galois.Poly.Roots(roots, multiplicities=multiplicities, field=field)
+    assert isinstance(p, galois.Poly)
+    assert p.field is field
+    assert p.degree == degree
+    assert np.array_equal(p.nonzero_degrees, nonzero_degrees)
+    assert np.array_equal(p.nonzero_coeffs, nonzero_coeffs)
+    assert np.array_equal(p.degrees, degrees)
+    assert np.array_equal(p.coeffs, coeffs)
+    assert p.integer == integer
+
+    p = galois.Poly.Roots(field(roots), multiplicities=multiplicities)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == degree
