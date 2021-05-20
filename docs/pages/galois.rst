@@ -1,149 +1,151 @@
 galois
 ======
 
-.. automodule:: galois
+A performant numpy extension for Galois fields.
 
-   Galois Fields
-   ^^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
-      :template: class.rst
-      :toctree:
+.. currentmodule:: galois
 
-      GF
-      Field
-      FieldArray
-      FieldMeta
-      GF2
-      is_field
-      is_prime_field
-      is_extension_field
+Galois Fields
+-------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
 
-   Prime Fields
-   ^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
-      :template: class.rst
-      :toctree:
+   GF
+   Field
+   FieldArray
+   FieldMeta
+   GF2
+   is_field
+   is_prime_field
+   is_extension_field
 
-      GF
-      Field
-      is_field
-      is_prime_field
-      is_prime
-      primitive_root
-      primitive_roots
-      is_primitive_root
+Prime Fields
+------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
 
-   Extension Fields
-   ^^^^^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
-      :template: class.rst
-      :toctree:
+   GF
+   Field
+   is_field
+   is_prime_field
+   is_prime
+   primitive_root
+   primitive_roots
+   is_primitive_root
 
-      GF
-      Field
-      is_field
-      is_extension_field
-      conway_poly
-      irreducible_poly
-      primitive_poly
-      is_irreducible
-      is_primitive
-      primitive_element
-      primitive_elements
-      is_primitive_element
-      minimal_poly
+Extension Fields
+----------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
 
-   Galois Fields for Cryptography
-   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
-      :template: class.rst
-      :toctree:
+   GF
+   Field
+   is_field
+   is_extension_field
+   conway_poly
+   irreducible_poly
+   primitive_poly
+   is_irreducible
+   is_primitive
+   primitive_element
+   primitive_elements
+   is_primitive_element
+   minimal_poly
 
-      Oakley1
-      Oakley2
-      Oakley3
-      Oakley4
+Galois Fields for Cryptography
+------------------------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
 
-   Polynomials over Galois Fields
-   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
-      :template: class.rst
-      :toctree:
+   Oakley1
+   Oakley2
+   Oakley3
+   Oakley4
 
-      Poly
-      poly_gcd
-      poly_pow
-      poly_factors
-      conway_poly
-      irreducible_poly
-      primitive_poly
-      minimal_poly
-      is_monic
-      is_irreducible
-      is_primitive
+Polynomials over Galois Fields
+------------------------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
 
-   Finite Groups
-   ^^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
-      :template: class.rst
-      :toctree:
+   Poly
+   poly_gcd
+   poly_pow
+   poly_factors
+   conway_poly
+   irreducible_poly
+   primitive_poly
+   minimal_poly
+   is_monic
+   is_irreducible
+   is_primitive
 
-      Group
-      GroupArray
-      GroupMeta
-      is_group
-      is_cyclic
-      euler_totient
-      totatives
+Finite Groups
+-------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
 
-   Modular Arithmetic
-   ^^^^^^^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
-      :template: class.rst
-      :toctree:
+   Group
+   GroupArray
+   GroupMeta
+   is_group
+   is_cyclic
+   euler_totient
+   totatives
 
-      gcd
-      lcm
-      crt
-      isqrt
-      pow
-      is_cyclic
-      carmichael
-      euler_totient
-      totatives
+Modular Arithmetic
+------------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
 
-   Discrete Logarithms
-   ^^^^^^^^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
-      :template: class.rst
-      :toctree:
+   gcd
+   lcm
+   crt
+   isqrt
+   pow
+   is_cyclic
+   carmichael
+   euler_totient
+   totatives
 
-      log_naive
+Discrete Logarithms
+-------------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
 
-   Primes
-   ^^^^^^
-   .. rubric::
-   .. autosummary::
-      :template: class.rst
-      :toctree:
+   log_naive
 
-      primes
-      kth_prime
-      prev_prime
-      next_prime
-      random_prime
-      mersenne_exponents
-      mersenne_primes
-      prime_factors
-      is_smooth
-      is_prime
-      is_prime_fermat
-      is_prime_miller_rabin
+Primes
+------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
+
+   primes
+   kth_prime
+   prev_prime
+   next_prime
+   random_prime
+   mersenne_exponents
+   mersenne_primes
+   prime_factors
+   is_smooth
+   is_prime
+   is_prime_fermat
+   is_prime_miller_rabin

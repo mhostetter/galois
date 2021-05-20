@@ -1,6 +1,3 @@
-"""
-Documentation of some native numpy functions when called on Galois field arrays.
-"""
 from . import linalg
 
 from .advanced import *

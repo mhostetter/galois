@@ -1,53 +1,55 @@
 numpy
 =====
 
-.. automodule:: np
+Documentation of some native numpy functions when called on Galois field arrays.
 
-   General
-   ^^^^^^^
-   .. rubric::
-   .. autosummary::
+.. currentmodule:: np
 
-      np.copy
-      np.concatenate
-      np.insert
+General
+-------
+.. rubric::
+.. autosummary::
 
-   Arithmetic
-   ^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
+   np.copy
+   np.concatenate
+   np.insert
 
-      np.add
-      np.subtract
-      np.multiply
-      np.divide
-      np.negative
-      np.reciprocal
-      np.power
-      np.square
-      np.log
-      np.matmul
+Arithmetic
+----------
+.. rubric::
+.. autosummary::
 
-   Advanced Arithmetic
-   ^^^^^^^^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
+   np.add
+   np.subtract
+   np.multiply
+   np.divide
+   np.negative
+   np.reciprocal
+   np.power
+   np.square
+   np.log
+   np.matmul
 
-      np.convolve
+Advanced Arithmetic
+-------------------
+.. rubric::
+.. autosummary::
 
-   Linear Algebra
-   ^^^^^^^^^^^^^^
-   .. rubric::
-   .. autosummary::
+   np.convolve
 
-      np.dot
-      np.vdot
-      np.inner
-      np.outer
-      np.matmul
-      np.linalg.matrix_power
-      np.linalg.det
-      np.linalg.matrix_rank
-      np.trace
-      np.linalg.solve
-      np.linalg.inv
+Linear Algebra
+--------------
+.. rubric::
+.. autosummary::
+
+   np.dot
+   np.vdot
+   np.inner
+   np.outer
+   np.matmul
+   np.linalg.matrix_power
+   np.linalg.det
+   np.linalg.matrix_rank
+   np.trace
+   np.linalg.solve
+   np.linalg.inv
