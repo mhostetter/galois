@@ -8,7 +8,6 @@ from .group import *
 from .field import *
 
 # Modules
-from .algorithm import *
 from .factor import *
 from .log import *
 from .math_ import *  # pylint: disable=redefined-builtin
