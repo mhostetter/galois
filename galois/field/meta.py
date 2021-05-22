@@ -50,17 +50,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             formatter["int"] = cls._print_poly
             formatter["object"] = cls._print_poly
         elif cls.display_mode == "power":
-            nonzero_idxs = np.nonzero(array)
-            if array.ndim > 1:
-                cls._display_power_pre_width = 0 if nonzero_idxs[0].size == array.size else 1
-                max_power = np.max(np.log(array[nonzero_idxs]))
-                if max_power > 1:
-                    cls._display_power_width = cls._display_power_pre_width + 2 + len(str(max_power))
-                else:
-                    cls._display_power_width = cls._display_power_pre_width + 1
-            else:
-                cls._display_power_pre_width = None
-                cls._display_power_width = None
+            cls._set_print_power_vars(array)
             formatter["int"] = cls._print_power
             formatter["object"] = cls._print_power
         elif array.dtype == np.object_:
@@ -75,9 +65,20 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
         poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
         return poly_to_str(poly, poly_var=poly_var)
 
+    def _set_print_power_vars(cls, array):
+        nonzero_idxs = np.nonzero(array)
+        if array.ndim > 1:
+            max_power = np.max(np.log(array[nonzero_idxs]))
+            if max_power > 1:
+                cls._display_power_width = 2 + len(str(max_power))
+            else:
+                cls._display_power_width = 1
+        else:
+            cls._display_power_width = None
+
     def _print_power(cls, element):
         if element == 0:
-            s = "-∞"
+            s = "0"
         else:
             power = cls._ufuncs["log"](element)
             if power > 1:
@@ -87,11 +88,8 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
             else:
                 s = "1"
 
-            if cls._display_power_pre_width:
-                s = " " + s
-
         if cls._display_power_width:
-            return s + " "*(cls._display_power_width - len(s))
+            return s.rjust(cls._display_power_width)
         else:
             return s
 

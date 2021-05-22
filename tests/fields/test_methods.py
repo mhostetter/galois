@@ -14,7 +14,7 @@ def test_display_method():
     GF.display("poly")
     assert str(a) == "GF([1, 0, α^2 + 1, α], order=2^3)"
     GF.display("power")
-    assert str(a) == "GF([1, -∞, α^6, α], order=2^3)"
+    assert str(a) == "GF([1, 0, α^6, α], order=2^3)"
     GF.display()
     assert str(a) == "GF([1, 0, 5, 2], order=2^3)"
 
@@ -26,7 +26,7 @@ def test_display_context_manager():
     with GF.display("poly"):
         assert str(a) == "GF([1, 0, α^2 + 1, α], order=2^3)"
     with GF.display("power"):
-        assert str(a) == "GF([1, -∞, α^6, α], order=2^3)"
+        assert str(a) == "GF([1, 0, α^6, α], order=2^3)"
     assert str(a) == "GF([1, 0, 5, 2], order=2^3)"
 
 

@@ -212,7 +212,7 @@ GF([α^6 + 1, 0, α, 1, α^5 + α^4 + α], order=2^8)
 >>> with GF256.display("power"):
 ...     print(x)
 
-GF([α^191, -∞, α, 1, α^194], order=2^8)
+GF([α^191, 0, α, 1, α^194], order=2^8)
 
 # Resets the display mode to the integer representation
 >>> GF256.display();
