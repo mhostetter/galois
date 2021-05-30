@@ -98,7 +98,7 @@ class GFpMeta(FieldMeta):
 
     def _add_python(cls, a, b):
         c = a + b
-        if c >= cls.order:  # pylint: disable=comparison-with-callable
+        if c >= cls.order:
             c -= cls.order
         return c
 

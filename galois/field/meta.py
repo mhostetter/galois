@@ -19,7 +19,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
     This metaclass gives :obj:`galois.FieldArray` classes returned from :func:`galois.GF` class methods and properties
     relating to its Galois field.
     """
-    # pylint: disable=no-value-for-parameter,comparison-with-callable,too-many-public-methods
+    # pylint: disable=no-value-for-parameter,too-many-public-methods
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)

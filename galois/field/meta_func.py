@@ -168,10 +168,10 @@ class FieldFunc(Func):
 
         if cls.ufunc_mode == "python-calculate":
             # For object dtypes, call the vectorized classmethod
-            y = cls._funcs["poly_evaluate"](coeffs=coeffs.view(np.ndarray), values=x.view(np.ndarray))  # pylint: disable=not-callable
+            y = cls._funcs["poly_evaluate"](coeffs=coeffs.view(np.ndarray), values=x.view(np.ndarray))
         else:
             # For integer dtypes, call the JIT-compiled gufunc
-            y = cls._funcs["poly_evaluate"](coeffs, x, field.Zeros(x.shape), casting="unsafe")  # pylint: disable=not-callable
+            y = cls._funcs["poly_evaluate"](coeffs, x, field.Zeros(x.shape), casting="unsafe")
             y = y.astype(dtype)
         y = y.view(field)
 
@@ -210,7 +210,7 @@ class FieldFunc(Func):
         return c
 
     def _poly_divmod_python(cls, a, b):
-        # pylint: disable=unsubscriptable-object,unsupported-assignment-operation
+        # pylint: disable=unsupported-assignment-operation
         assert a.size >= b.size
         q_degree = a.size - b.size
         qr = cls(a)

@@ -25,7 +25,7 @@ class GFpmMeta(FieldMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._irreducible_poly_coeffs = np.array(cls._irreducible_poly.coeffs, dtype=cls.dtypes[-1])  # pylint: disable=unsubscriptable-object
+        cls._irreducible_poly_coeffs = np.array(cls._irreducible_poly.coeffs, dtype=cls.dtypes[-1])
         cls._prime_subfield = kwargs["prime_subfield"]
 
         cls.compile(kwargs["mode"], kwargs["target"])
@@ -159,7 +159,7 @@ class GFpmMeta(FieldMeta):
     ###############################################################################
 
     def _int_to_poly(cls, a):
-        a_vec = np.zeros(cls.degree, dtype=cls.dtypes[-1])  # pylint: disable=unsubscriptable-object
+        a_vec = np.zeros(cls.degree, dtype=cls.dtypes[-1])
         for i in range(0, cls.degree):
             q = a // cls.characteristic**(cls.degree - 1 - i)
             a -= q*cls.characteristic**(cls.degree - 1 - i)
@@ -193,7 +193,7 @@ class GFpmMeta(FieldMeta):
         a_vec = cls._int_to_poly(a)
         b_vec = cls._int_to_poly(b)
 
-        c_vec = np.zeros(cls.degree, dtype=cls.dtypes[-1])  # pylint: disable=unsubscriptable-object
+        c_vec = np.zeros(cls.degree, dtype=cls.dtypes[-1])
         for _ in range(cls.degree):
             if b_vec[-1] > 0:
                 c_vec = (c_vec + b_vec[-1]*a_vec) % cls.characteristic
