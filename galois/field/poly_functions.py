@@ -300,6 +300,8 @@ def irreducible_poly(characteristic, degree, method="random"):
         p = galois.conway_poly(2, 8); p
         galois.is_irreducible(p), galois.is_primitive(p)
     """
+    if not method in ["random", "smallest", "largest"]:
+        raise ValueError(f"Argument `method` must be in ['random', 'smallest', 'largest'], not {method}.")
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
@@ -366,6 +368,8 @@ def primitive_poly(characteristic, degree, method="random"):
         p = galois.conway_poly(2, 8); p
         galois.is_irreducible(p), galois.is_primitive(p)
     """
+    if not method in ["random", "smallest", "largest"]:
+        raise ValueError(f"Argument `method` must be in ['random', 'smallest', 'largest'], not {method}.")
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
