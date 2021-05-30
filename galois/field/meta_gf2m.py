@@ -4,7 +4,6 @@ import numpy as np
 from ..dtypes import DTYPES
 from .meta import FieldMeta
 
-CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 ORDER = None  # The field's order `p^m`
 IRREDUCIBLE_POLY = None  # The field's primitive polynomial in integer form
 PRIMITIVE_ELEMENT = None  # The field's primitive element in integer form
@@ -85,7 +84,7 @@ class GF2mMeta(FieldMeta):
         return numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
 
     ###############################################################################
-    # Pure python arithmetic methods
+    # GF(2^m) arithmetic in pure python
     ###############################################################################
 
     def _add_python(cls, a, b):
@@ -156,7 +155,7 @@ class GF2mMeta(FieldMeta):
 
 
 ###############################################################################
-# Galois field arithmetic, explicitly calculated without lookup tables
+# GF(2^m) arithmetic explicitly calculated without lookup tables
 ###############################################################################
 
 def _multiply_calculate(a, b):  # pragma: no cover
@@ -280,7 +279,7 @@ def _log_calculate(beta):  # pragma: no cover
 
     # Naive algorithm
     result = 1
-    for i in range(0, ORDER-1):
+    for i in range(0, ORDER - 1):
         if result == beta:
             break
         result = MULTIPLY_UFUNC(result, PRIMITIVE_ELEMENT)

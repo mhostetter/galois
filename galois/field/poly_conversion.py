@@ -80,6 +80,7 @@ def sparse_poly_to_integer(degrees, coeffs, order):
     int
         The decimal representation.
     """
+    assert len(degrees) == len(coeffs)
     order = int(order)
     decimal = 0
     for d, c in zip(degrees, coeffs):
