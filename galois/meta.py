@@ -13,7 +13,7 @@ class Meta(Ufunc, Func):
     """
     A base class for :obj:`GroupMeta`, :obj:`RingMeta`, and :obj:`FieldMeta`.
     """
-    # pylint: disable=no-value-for-parameter,comparison-with-callable,too-many-public-methods
+    # pylint: disable=no-value-for-parameter,too-many-public-methods
 
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
         return super().__new__(cls, name, bases, namespace)

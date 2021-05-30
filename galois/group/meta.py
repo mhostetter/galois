@@ -17,7 +17,7 @@ class GroupMeta(Meta):
     """
     Defines a metaclass for all :obj:`galois.GroupArray` classes.
     """
-    # pylint: disable=no-value-for-parameter,comparison-with-callable,too-many-public-methods,abstract-method
+    # pylint: disable=no-value-for-parameter,too-many-public-methods,abstract-method
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
