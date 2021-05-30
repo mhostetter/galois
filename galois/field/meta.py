@@ -231,6 +231,93 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
 
         return string
 
+    def arithmetic_table(cls, operation, mode="int"):
+        """
+        Generates the specified arithmetic table for the Galois field.
+
+        Parameters
+        ----------
+        operation : str
+            Either `"+"`, `"-"`, `"*"`, or `"/"`.
+        mode : str, optional
+            The display mode to represent the field elements, either `"int"` (default), `"poly"`, or `"power"`.
+
+        Returns
+        -------
+        str
+            A UTF-8 formatted arithmetic table.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(3**2)
+            print(GF.arithmetic_table("+"))
+
+        .. ipython:: python
+
+            GF = galois.GF(3**2)
+            print(GF.arithmetic_table("+", mode="poly"))
+        """
+        # pylint: disable=too-many-branches
+        if not operation in ["+", "-", "*", "/"]:
+            raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation}.")
+        if mode not in ["int", "poly", "power"]:
+            raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode}.")
+
+        x = cls.Elements() if mode != "power" else np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1)))
+        y = x if operation != "/" else x[1:]
+        X, Y = np.meshgrid(x, y, indexing="ij")
+
+        if operation == "+":
+            Z = X + Y
+        elif operation == "-":
+            Z = X - Y
+        elif operation == "*":
+            Z = X * Y
+        else:
+            Z = X / Y
+
+        if mode == "int":
+            print_element = cls._print_int
+        elif mode == "poly":
+            print_element = cls._print_poly
+        else:
+            cls._set_print_power_vars(x)
+            print_element = cls._print_power
+
+        operation_str = f"x {operation} y"
+
+        N = max([len(print_element(e)) for e in x]) + 2
+        N_left = max(N, len(operation_str) + 2)
+
+        string = "╔" + "═"*N_left + ("╦" + "═"*N)*y.size + "╗"
+
+        line = "║" + operation_str.rjust(N_left - 1) + " ║"
+        for j in range(y.size):
+            line += print_element(y[j]).center(N)
+            line += "│" if j < y.size - 1 else "║"
+        string += "\n" + line
+
+        divider = "╠" + "═"*N_left + ("╬" + "═"*N)*y.size + "╣"
+        string += "\n" + divider
+
+        for i in range(x.size):
+            line = "║" + print_element(x[i]).rjust(N_left - 1) + " ║"
+            for j in range(y.size):
+                line += print_element(Z[i,j]).center(N)
+                line += "│" if j < y.size - 1 else "║"
+            string += "\n" + line
+
+            if i < x.size - 1:
+                divider = "╟" + "─"*N_left + "╫" + ("─"*N + "┼")*(y.size - 1) + "─"*N + "╢"
+                string += "\n" + divider
+
+        bottom = "╚" + "═"*N_left + ("╩" + "═"*N)*y.size + "╝"
+        string += "\n" + bottom
+
+        return string
+
     ###############################################################################
     # Class attributes
     ###############################################################################
