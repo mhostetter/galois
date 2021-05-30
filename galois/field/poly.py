@@ -1,5 +1,3 @@
-import math
-
 import numpy as np
 
 from ..overrides import set_module
@@ -1278,7 +1276,7 @@ class BinaryPoly(Poly):
         if self._integer == 0:
             return 0
         else:
-            return int(math.floor(math.log2(self._integer)))
+            return len(bin(self._integer)[2:]) - 1
 
     @property
     def nonzero_degrees(self):
