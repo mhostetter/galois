@@ -166,6 +166,71 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
 
         return context
 
+    def repr_table(cls, primitive_element=None):
+        """
+        Generates an element representation table comparing the power, polynomial, vector, and integer representations.
+
+        Parameters
+        ----------
+        primitive_element : galois.FieldArray, optional
+            The primitive element to use for the power representation. The default is `None` which uses the field's
+            default primitive element, :obj:`galois.FieldMeta.primitive_element`.
+
+        Returns
+        -------
+        str
+            A UTF-8 formatted table comparing the power, polynomial, vector, and integer representations of each
+            field element.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(2**4)
+            print(GF.repr_table())
+
+        .. ipython:: python
+
+            alpha = GF.primitive_elements[-1]
+            print(GF.repr_table(alpha))
+        """
+        if primitive_element is None:
+            primitive_element = cls.primitive_element
+
+        degrees = np.arange(0, cls.order - 1)
+        x = np.concatenate((np.atleast_1d(cls(0)), primitive_element**degrees))
+        prim = cls._print_poly(primitive_element)
+
+        N_power = max(len("({})^{}".format(prim, str(cls.order - 1))), len("Power")) + 2
+        N_poly = max([len(cls._print_poly(e)) for e in x] + [len("Polynomial")]) + 2
+        N_vec = max([len(str(integer_to_poly(e, cls.characteristic, degree=cls.degree-1))) for e in x] + [len("Vector")]) + 2
+        N_int = max([len(cls._print_int(e)) for e in x] + [len("Integer")]) + 2
+
+        string = "╔" + "═"*N_power + "╦" + "═"*N_poly + "╦" + "═"*N_vec + "╦" + "═"*N_int + "╗"
+
+        labels = "║" + "Power".center(N_power) + "│" + "Polynomial".center(N_poly) + "│" + "Vector".center(N_vec) + "│" + "Integer".center(N_int) + "║"
+        string += "\n" + labels
+
+        divider = "║" + "═"*N_power + "╬" + "═"*N_poly + "╬" + "═"*N_vec + "╬" + "═"*N_int + "║"
+        string += "\n" + divider
+
+        for i in range(x.size):
+            if i  == 0:
+                power = "0"
+            else:
+                power = "({})^{}".format(prim, degrees[i - 1]) if len(prim) > 1 else "{}^{}".format(prim, degrees[i - 1])
+            line = "║" + power.center(N_power) + "│" + cls._print_poly(x[i]).center(N_poly) + "│" + str(integer_to_poly(x[i], cls.characteristic, degree=cls.degree-1)).center(N_vec) + "│" + cls._print_int(x[i]).center(N_int) + "║"
+            string += "\n" + line
+
+            if i < x.size - 1:
+                divider = "╟" + "─"*N_power + "┼" + "─"*N_poly + "┼" + "─"*N_vec + "┼" + "─"*N_int + "╢"
+                string += "\n" + divider
+
+        bottom = "╚" + "═"*N_power + "╩" + "═"*N_poly + "╩"+ "═"*N_vec + "╩" + "═"*N_int + "╝"
+        string += "\n" + bottom
+
+        return string
+
     ###############################################################################
     # Class attributes
     ###############################################################################
