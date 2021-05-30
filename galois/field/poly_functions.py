@@ -38,9 +38,9 @@ def poly_gcd(a, b):
     galois.Poly
         Polynomial greatest common divisor of :math:`a(x)` and :math:`b(x)`.
     galois.Poly
-        Polynomial :math:`x(x)`, such that :math:`a x + b y = gcd(a, b)`.
+        Polynomial :math:`x(x)`, such that :math:`a x + b y = \\textrm{gcd}(a, b)`.
     galois.Poly
-        Polynomial :math:`y(x)`, such that :math:`a x + b y = gcd(a, b)`.
+        Polynomial :math:`y(x)`, such that :math:`a x + b y = \\textrm{gcd}(a, b)`.
 
     Examples
     --------

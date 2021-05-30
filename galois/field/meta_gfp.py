@@ -7,7 +7,6 @@ from ..modular import primitive_root
 from .meta import FieldMeta
 from .poly import Poly
 
-CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
 ORDER = None  # The field's order `p^m`
 PRIMITIVE_ELEMENT = None  # The field's primitive element
 
@@ -119,7 +118,7 @@ class GFpMeta(FieldMeta):
         return numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
 
     ###############################################################################
-    # Pure python arithmetic methods
+    # GF(p) arithmetic in pure python
     ###############################################################################
 
     def _add_python(cls, a, b):
@@ -208,7 +207,7 @@ class GFpMeta(FieldMeta):
 
 
 ###############################################################################
-# Galois field arithmetic, explicitly calculated without lookup tables
+# GF(p) arithmetic explicitly calculated without lookup tables
 ###############################################################################
 
 def _add_calculate(a, b):  # pragma: no cover
@@ -326,7 +325,7 @@ def _log_calculate(beta):  # pragma: no cover
 
     # Naive algorithm
     result = 1
-    for i in range(0, ORDER-1):
+    for i in range(0, ORDER - 1):
         if result == beta:
             break
         result = (result * PRIMITIVE_ELEMENT) % ORDER

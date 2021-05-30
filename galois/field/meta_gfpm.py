@@ -185,7 +185,7 @@ class GFpmMeta(FieldMeta):
             return output
 
     ###############################################################################
-    # Pure python arithmetic methods
+    # GF(p^m) arithmetic in pure python
     ###############################################################################
 
     def _int_to_poly(cls, a):
@@ -275,7 +275,7 @@ class GFpmMeta(FieldMeta):
 
 
 ###############################################################################
-# Galois field arithmetic, explicitly calculated without lookup tables
+# GF(p^m) arithmetic explicitly calculated without lookup tables
 ###############################################################################
 
 def _int_to_poly(a):

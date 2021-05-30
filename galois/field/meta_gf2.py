@@ -167,7 +167,7 @@ class GF2Meta(FieldMeta):
 
 
 ###############################################################################
-# Galois field arithmetic, explicitly calculated without lookup tables
+# GF(2) arithmetic explicitly calculated without lookup tables
 ###############################################################################
 
 def _power_calculate(a, power):  # pragma: no cover

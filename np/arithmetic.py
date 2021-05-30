@@ -210,8 +210,8 @@ def log(x):
     """
     Computes the logarithm (base `GF.primitive_element`) of a Galois field array element-wise.
 
-    Calling :func:`np.log` implicitly uses base :obj:`galois.GFMeta.primitive_element`. See
-    :func:`galois.GFArray.log` for logarithm with arbitrary base.
+    Calling :func:`np.log` implicitly uses base :obj:`galois.FieldMeta.primitive_element`. See
+    :func:`galois.FieldArray.log` for logarithm with arbitrary base.
 
     References
     ----------
