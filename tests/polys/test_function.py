@@ -153,6 +153,19 @@ def test_irreducible_poly():
     assert galois.is_irreducible(p)
 
 
+def test_irreducible_polys():
+    """
+    Generated with Octave:
+        primpoly(5, 'all')
+        primpoly(8, 'all')
+    """
+    polys = galois.irreducible_polys(2, 5)
+    assert set([p.integer for p in polys]).issuperset(set([37, 41, 47, 55, 59, 61]))
+
+    polys = galois.irreducible_polys(2, 8)
+    assert set([p.integer for p in polys]).issuperset(set([285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]))
+
+
 def test_primitive_poly():
     p = galois.primitive_poly(2, 8)
     assert galois.is_monic(p)
@@ -168,7 +181,9 @@ def test_primitive_poly():
 
 def test_primitive_polys():
     """
-    Generated with Octave `primpoly(5, 'all')`.
+    Generated with Octave:
+        primpoly(5, 'all')
+        primpoly(8, 'all')
     """
     polys = galois.primitive_polys(2, 5)
     assert [p.integer for p in polys] == [37, 41, 47, 55, 59, 61]

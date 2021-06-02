@@ -50,8 +50,10 @@ Extension Fields
    is_extension_field
    conway_poly
    irreducible_poly
-   primitive_poly
+   irreducible_polys
    is_irreducible
+   primitive_poly
+   primitive_polys
    is_primitive
    primitive_element
    primitive_elements
@@ -83,6 +85,7 @@ Polynomials over Galois Fields
    poly_factors
    conway_poly
    irreducible_poly
+   irreducible_polys
    primitive_poly
    primitive_polys
    minimal_poly
