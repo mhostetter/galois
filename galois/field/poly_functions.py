@@ -12,7 +12,7 @@ from .poly import Poly
 
 __all__ = [
     "poly_gcd", "poly_pow", "poly_factors",
-    "irreducible_poly", "primitive_poly", "primitive_polys", "minimal_poly",
+    "irreducible_poly", "irreducible_polys", "primitive_poly", "primitive_polys", "minimal_poly",
     "is_monic", "is_irreducible", "is_primitive",
     "is_primitive_element", "primitive_element", "primitive_elements"
 ]
@@ -326,6 +326,45 @@ def irreducible_poly(characteristic, degree, method="random"):
                 break
 
     return poly
+
+
+@set_module("galois")
+def irreducible_polys(characteristic, degree):
+    """
+    Returns all degree-:math:`m` irreducible polynomials :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+
+    Parameters
+    ----------
+    characteristic : int
+        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
+    degree : int
+        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
+        of :math:`\\mathrm{GF}(p)`.
+
+    Returns
+    -------
+    list
+        All degree-:math:`m` irreducible polynomials over :math:`\\mathrm{GF}(p)`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.irreducible_polys(2, 5)
+    """
+    GF = GF_prime(characteristic)
+
+    # Only search monic polynomials of degree m over GF(p)
+    min_ = characteristic**degree
+    max_ = 2*characteristic**degree
+
+    polys = []
+    for element in range(min_, max_):
+        poly = Poly.Integer(element, field=GF)
+        if is_irreducible(poly):
+            polys.append(poly)
+
+    return polys
 
 
 @set_module("galois")
