@@ -166,6 +166,17 @@ def test_primitive_poly():
     assert p == galois.conway_poly(2, 8)
 
 
+def test_primitive_polys():
+    """
+    Generated with Octave `primpoly(5, 'all')`.
+    """
+    polys = galois.primitive_polys(2, 5)
+    assert [p.integer for p in polys] == [37, 41, 47, 55, 59, 61]
+
+    polys = galois.primitive_polys(2, 8)
+    assert [p.integer for p in polys] == [285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]
+
+
 def test_minimal_poly():
     GF = galois.GF(5)
     alpha = GF.primitive_element

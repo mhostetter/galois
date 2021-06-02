@@ -84,6 +84,7 @@ Polynomials over Galois Fields
    conway_poly
    irreducible_poly
    primitive_poly
+   primitive_polys
    minimal_poly
    is_monic
    is_irreducible
