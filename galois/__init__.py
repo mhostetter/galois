@@ -9,6 +9,7 @@ from .field import *
 
 # Modules
 from .factor import *
+from .lfsr import *
 from .log import *
 from .math_ import *  # pylint: disable=redefined-builtin
 from .modular import *
