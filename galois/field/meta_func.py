@@ -6,11 +6,15 @@ from ..meta_func import Func
 
 from .linalg import _lapack_linalg, dot, vdot, inner, outer, matrix_rank, solve, inv, det
 
+ORDER = None  # The field's order `p^m`
+PRIMITIVE_ELEMENT = None  # The field's primitive element in integer form
+
 # Placeholder functions to be replaced by JIT-compiled function
 ADD_UFUNC = lambda x, y: x + y
 SUBTRACT_UFUNC = lambda x, y: x - y
 MULTIPLY_UFUNC = lambda x, y: x * y
 DIVIDE_UFUNC = lambda x, y: x // y
+POWER_UFUNC = lambda x, y: x ** y
 
 
 class FieldFunc(Func):
@@ -87,6 +91,21 @@ class FieldFunc(Func):
                 assert cls.ufunc_target == "cpu"
                 cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", nopython=True)(_poly_evaluate_jit)
         return cls._funcs["poly_evaluate"]
+
+    def _func_poly_roots(cls):
+        if cls._funcs.get("poly_roots", None) is None:
+            if cls.ufunc_mode == "python-calculate":
+                cls._funcs["poly_roots"] = cls._poly_roots_python
+            else:
+                global ORDER, PRIMITIVE_ELEMENT, ADD_UFUNC, MULTIPLY_UFUNC, POWER_UFUNC
+                ORDER = cls.order
+                PRIMITIVE_ELEMENT = int(cls.primitive_element)
+                ADD_UFUNC = cls._ufunc_add()
+                MULTIPLY_UFUNC = cls._ufunc_multiply()
+                POWER_UFUNC = cls._ufunc_power()
+                assert cls.ufunc_target == "cpu"
+                cls._funcs["poly_roots"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_poly_roots_jit)
+        return cls._funcs["poly_roots"]
 
     ###############################################################################
     # Function routines
@@ -216,6 +235,22 @@ class FieldFunc(Func):
 
         return y
 
+    def _poly_roots(cls, nonzero_degrees, nonzero_coeffs):
+        assert isinstance(nonzero_coeffs, cls)
+        field = cls
+        dtype = nonzero_coeffs.dtype
+
+        if cls._ufunc_mode != "python-calculate":
+            nonzero_degrees, nonzero_coeffs = nonzero_degrees.astype(np.int64), nonzero_coeffs.astype(np.int64)
+
+        roots = cls._func_poly_roots()(nonzero_degrees, nonzero_coeffs)
+
+        if cls._ufunc_mode != "python-calculate":
+            roots = roots.astype(dtype).view(field)
+
+        idxs = np.argsort(roots)
+        return roots[idxs]
+
     ###############################################################################
     # Pure python implementation, operating on Galois field arrays (not integers),
     # for fields in ufunc_mode="python-calculate"
@@ -265,6 +300,31 @@ class FieldFunc(Func):
             result = cls._add_python(coeffs[j], cls._multiply_python(result, values))
         return result
 
+    def _poly_roots_python(cls, nonzero_degrees, nonzero_coeffs):
+        lambda_vector = nonzero_coeffs
+        alpha_vector = cls.primitive_element ** nonzero_degrees
+        degree = max(nonzero_degrees)
+        roots = []
+
+        # Test if 0 is a root
+        if 0 not in nonzero_degrees:
+            roots.append(0)
+
+        # Test if 1 is a root
+        if np.sum(lambda_vector) == 0:
+            roots.append(1)
+
+        # Test if the powers of alpha are roots
+        for i in range(1, cls.order - 1):
+            lambda_vector *= alpha_vector
+            if np.sum(lambda_vector) == 0:
+                root = int(cls.primitive_element**i)
+                roots.append(root)
+            if len(roots) == degree:
+                break
+
+        return cls(roots)
+
 
 ###############################################################################
 # JIT-compiled implementation of the specified functions
@@ -313,3 +373,38 @@ def _poly_evaluate_jit(coeffs, values, results):  # pragma: no cover
         results[i] = coeffs[0]
         for j in range(1, coeffs.size):
             results[i] = ADD_UFUNC(coeffs[j], MULTIPLY_UFUNC(results[i], values[i]))
+
+
+def _poly_roots_jit(nonzero_degrees, nonzero_coeffs):
+    N = nonzero_degrees.size
+    lambda_vector = nonzero_coeffs
+    alpha_vector = np.zeros(N, dtype=np.int64)
+    for i in range(N):
+        alpha_vector[i] = POWER_UFUNC(PRIMITIVE_ELEMENT, nonzero_degrees[i])
+    degree = np.max(nonzero_degrees)
+    roots = []
+
+    # Test if 0 is a root
+    if nonzero_degrees[-1] != 0:
+        roots.append(0)
+
+    # Test if 1 is a root
+    _sum = 0
+    for i in range(N):
+        _sum = ADD_UFUNC(_sum, lambda_vector[i])
+    if _sum == 0:
+        roots.append(1)
+
+    # Test if the powers of alpha are roots
+    for i in range(1, ORDER - 1):
+        _sum = 0
+        for j in range(N):
+            lambda_vector[j] = MULTIPLY_UFUNC(lambda_vector[j], alpha_vector[j])
+            _sum = ADD_UFUNC(_sum, lambda_vector[j])
+        if _sum == 0:
+            root = POWER_UFUNC(PRIMITIVE_ELEMENT, i)
+            roots.append(root)
+        if len(roots) == degree:
+            break
+
+    return np.array(roots, dtype=np.int64)
