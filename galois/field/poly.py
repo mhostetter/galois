@@ -592,39 +592,13 @@ class Poly:
             p.roots()
             p.roots(multiplicity=True)
         """
-        lambda_vector = self.nonzero_coeffs
-        alpha_vector = self.field.primitive_element ** self.nonzero_degrees
-        roots = []
-        multiplicities = []
+        roots = self.field._poly_roots(self.nonzero_degrees, self.nonzero_coeffs)  # pylint: disable=protected-access
 
-        # Test if 0 is a root
-        if 0 not in self.nonzero_degrees:
-            root = 0
-            roots.append(root)
-            multiplicities.append(self._root_multiplicity(root) if multiplicity else 1)
-
-        # Test if 1 is a root
-        if np.sum(lambda_vector) == 0:
-            root = 1
-            roots.append(root)
-            multiplicities.append(self._root_multiplicity(root) if multiplicity else 1)
-
-        # Test if the powers of alpha are roots
-        for i in range(1, self.field.order - 1):
-            lambda_vector *= alpha_vector
-            if np.sum(lambda_vector) == 0:
-                root = int(self.field.primitive_element**i)
-                roots.append(root)
-                multiplicities.append(self._root_multiplicity(root) if multiplicity else 1)
-            if sum(multiplicities) == self.degree:
-                # We can exit early once we have `d` roots for a degree-d polynomial
-                break
-
-        idxs = np.argsort(roots)
         if not multiplicity:
-            return self.field(roots)[idxs]
+            return roots
         else:
-            return self.field(roots)[idxs], np.array(multiplicities)[idxs]
+            multiplicities = np.array([self._root_multiplicity(root) for root in roots])
+            return roots, multiplicities
 
     def _root_multiplicity(self, root):
         zero = Poly.Zero(self.field)
@@ -638,7 +612,7 @@ class Poly:
             if poly == zero:
                 # Cannot test whether p'(root) = 0 because p'(x) = 0. We've exhausted the non-zero derivatives. For
                 # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
-                # greater than the field's characteristic, we need factor the polynomial. Here we factor out (x - root)^m,
+                # greater than the field's characteristic, we need factor to the polynomial. Here we factor out (x - root)^m,
                 # where m is the current multiplicity.
                 poly = self.copy() // (Poly([1, -root], field=self.field)**multiplicity)
 
