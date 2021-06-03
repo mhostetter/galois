@@ -51,37 +51,32 @@ class GF2mMeta(FieldMeta):
         global ORDER, IRREDUCIBLE_POLY
         ORDER = cls.order
         IRREDUCIBLE_POLY = cls.irreducible_poly.integer  # pylint: disable=no-member
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_multiply_calculate)
 
     def _compile_reciprocal_calculate(cls):
         global ORDER, MULTIPLY_UFUNC
         ORDER = cls.order
         MULTIPLY_UFUNC = cls._ufunc_multiply()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_reciprocal_calculate)
 
     def _compile_divide_calculate(cls):
         global MULTIPLY_UFUNC, RECIPROCAL_UFUNC
         MULTIPLY_UFUNC = cls._ufunc_multiply()
         RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_divide_calculate)
 
     def _compile_power_calculate(cls):
         global MULTIPLY_UFUNC, RECIPROCAL_UFUNC
         MULTIPLY_UFUNC = cls._ufunc_multiply()
         RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_power_calculate)
 
     def _compile_log_calculate(cls):
         global ORDER, PRIMITIVE_ELEMENT, MULTIPLY_UFUNC
         ORDER = cls.order
         PRIMITIVE_ELEMENT = int(cls.primitive_element)
         MULTIPLY_UFUNC = cls._ufunc_multiply()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_log_calculate)
 
     ###############################################################################
     # GF(2^m) arithmetic in pure python

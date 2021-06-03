@@ -52,6 +52,9 @@ class Ufunc(type):
     def _compile_ufuncs(cls):
         cls._ufuncs = {}  # Reset the dictionary so each ufunc will get recompiled
 
+    def _numba_vectorize_kwargs(cls):
+        return {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+
     ###############################################################################
     # Input/output conversion functions
     ###############################################################################

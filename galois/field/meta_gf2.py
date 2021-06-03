@@ -104,14 +104,13 @@ class GF2Meta(FieldMeta):
         assert cls.ufunc_mode == "jit-calculate"
         assert cls.ufunc_target == "cpu"
 
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         cls._ufuncs["add"] = np.bitwise_xor
         cls._ufuncs["negative"] = np.positive
         cls._ufuncs["subtract"] = np.bitwise_xor
         cls._ufuncs["multiply"] = np.bitwise_and
         # NOTE: Don't need a ufunc for "reciprocal", already overrode _ufunc_reciprocal()
         cls._ufuncs["divide"] = np.bitwise_and
-        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_power_calculate)
         # NOTE: Don't need a ufunc for "log", already overrode _ufunc_log()
 
     ###############################################################################
