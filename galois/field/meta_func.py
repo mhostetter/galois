@@ -13,6 +13,7 @@ PRIMITIVE_ELEMENT = None  # The field's primitive element in integer form
 ADD_UFUNC = lambda x, y: x + y
 SUBTRACT_UFUNC = lambda x, y: x - y
 MULTIPLY_UFUNC = lambda x, y: x * y
+RECIPROCAL_UFUNC = lambda x: 1 / x
 DIVIDE_UFUNC = lambda x, y: x // y
 POWER_UFUNC = lambda x, y: x ** y
 
@@ -106,6 +107,20 @@ class FieldFunc(Func):
                 assert cls.ufunc_target == "cpu"
                 cls._funcs["poly_roots"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_poly_roots_jit)
         return cls._funcs["poly_roots"]
+
+    def _func_berlekamp_massey(cls):
+        if cls._funcs.get("berlekamp_massey", None) is None:
+            if cls.ufunc_mode == "python-calculate":
+                cls._funcs["berlekamp_massey"] = cls._berlekamp_massey_python
+            else:
+                global ADD_UFUNC, SUBTRACT_UFUNC, MULTIPLY_UFUNC, RECIPROCAL_UFUNC
+                ADD_UFUNC = cls._ufunc_add()
+                SUBTRACT_UFUNC = cls._ufunc_subtract()
+                MULTIPLY_UFUNC = cls._ufunc_multiply()
+                RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
+                assert cls.ufunc_target == "cpu"
+                cls._funcs["berlekamp_massey"] = numba.jit("int64[:](int64[:])", nopython=True)(_berlekamp_massey_jit)
+        return cls._funcs["berlekamp_massey"]
 
     ###############################################################################
     # Function routines
@@ -223,7 +238,7 @@ class FieldFunc(Func):
 
         if cls.ufunc_mode == "python-calculate":
             # For object dtypes, call the vectorized classmethod
-            y = cls._func_poly_evaluate()(coeffs=coeffs.view(np.ndarray), values=x.view(np.ndarray))
+            y = cls._func_poly_evaluate()(coeffs=coeffs.view(np.ndarray), value=x.view(np.ndarray))
         else:
             # For integer dtypes, call the JIT-compiled gufunc
             y = cls._func_poly_evaluate()(coeffs, x, field.Zeros(x.shape), casting="unsafe")
@@ -250,6 +265,21 @@ class FieldFunc(Func):
 
         idxs = np.argsort(roots)
         return roots[idxs]
+
+    def _berlekamp_massey(cls, sequence):
+        assert isinstance(sequence, cls)
+        field = cls
+        dtype = sequence.dtype
+
+        if cls._ufunc_mode != "python-calculate":
+            sequence = sequence.astype(np.int64)
+
+        coeffs = cls._func_berlekamp_massey()(sequence)
+
+        if cls._ufunc_mode != "python-calculate":
+            coeffs = coeffs.astype(dtype).view(field)
+
+        return coeffs
 
     ###############################################################################
     # Pure python implementation, operating on Galois field arrays (not integers),
@@ -294,10 +324,10 @@ class FieldFunc(Func):
 
         return qr
 
-    def _poly_evaluate_python(cls, coeffs, values):
+    def _poly_evaluate_python(cls, coeffs, value):
         result = coeffs[0]
         for j in range(1, coeffs.size):
-            result = cls._add_python(coeffs[j], cls._multiply_python(result, values))
+            result = cls._add_python(coeffs[j], cls._multiply_python(result, value))
         return result
 
     def _poly_roots_python(cls, nonzero_degrees, nonzero_coeffs):
@@ -324,6 +354,36 @@ class FieldFunc(Func):
                 break
 
         return cls(roots)
+
+    def _berlekamp_massey_python(cls, sequence):
+        N = sequence.size
+
+        s = sequence
+        c = cls.Zeros(N)
+        b = cls.Zeros(N)
+        c[0] = 1  # The polynomial c(x) = 1
+        b[0] = 1  # The polynomial b(x) = 1
+        L = 0
+        m = 1
+        bb = cls(1)
+
+        for n in range(0, N):
+            d = np.sum(s[n - L:n + 1][::-1] * c[0:L + 1])
+
+            if d == 0:
+                m += 1
+            elif 2*L <= n:
+                t = np.copy(c)
+                c[m:] -= d*np.reciprocal(bb)*b[0:N - m]
+                L = n + 1 - L
+                b = np.copy(t)
+                bb = d
+                m = 1
+            else:
+                c[m:] -= d*np.reciprocal(bb)*b[0:N - m]
+                m += 1
+
+        return c[0:L + 1][::-1]
 
 
 ###############################################################################
@@ -408,3 +468,40 @@ def _poly_roots_jit(nonzero_degrees, nonzero_coeffs):
             break
 
     return np.array(roots, dtype=np.int64)
+
+
+def _berlekamp_massey_jit(sequence):
+    N = sequence.size
+
+    s = sequence
+    c = np.zeros(N, dtype=np.int64)
+    b = np.zeros(N, dtype=np.int64)
+    c[0] = 1  # The polynomial c(x) = 1
+    b[0] = 1  # The polynomial b(x) = 1
+    L = 0
+    m = 1
+    bb = 1
+
+    for n in range(0, N):
+        d = 0
+        for i in range(0, L + 1):
+            d = ADD_UFUNC(d, MULTIPLY_UFUNC(s[n - i], c[i]))
+
+        if d == 0:
+            m += 1
+        elif 2*L <= n:
+            t = np.copy(c)
+            d_bb = MULTIPLY_UFUNC(d, RECIPROCAL_UFUNC(bb))
+            for i in range(m, N):
+                c[i] = SUBTRACT_UFUNC(c[i], MULTIPLY_UFUNC(d_bb, b[i - m]))
+            L = n + 1 - L
+            b = np.copy(t)
+            bb = d
+            m = 1
+        else:
+            d_bb = MULTIPLY_UFUNC(d, RECIPROCAL_UFUNC(bb))
+            for i in range(m, N):
+                c[i] = SUBTRACT_UFUNC(c[i], MULTIPLY_UFUNC(d_bb, b[i - m]))
+            m += 1
+
+    return c[0:L + 1][::-1]

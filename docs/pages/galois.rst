@@ -93,6 +93,15 @@ Polynomials over Galois Fields
    is_irreducible
    is_primitive
 
+Linear Sequences
+----------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
+
+   berlekamp_massey
+
 Finite Groups
 -------------
 .. rubric::
