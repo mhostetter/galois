@@ -65,8 +65,8 @@ class Meta(Ufunc, Func):
 
         cls._ufunc_mode = mode
         cls._ufunc_target = target
-        cls._compile_ufuncs(target)
-        cls._compile_funcs(target)
+        cls._compile_ufuncs()
+        cls._compile_funcs()
 
     ###############################################################################
     # Array display methods

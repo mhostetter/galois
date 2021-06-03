@@ -49,8 +49,8 @@ class Ufunc(type):
         super().__init__(name, bases, namespace, **kwargs)
         cls._ufuncs = {}
 
-    def _compile_ufuncs(cls, target):
-        raise NotImplementedError
+    def _compile_ufuncs(cls):
+        cls._ufuncs = {}  # Reset the dictionary so each ufunc will get recompiled
 
     ###############################################################################
     # Input/output conversion functions

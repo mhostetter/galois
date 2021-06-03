@@ -17,7 +17,7 @@ class GF2mMeta(FieldMeta):
     """
     An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
     """
-    # pylint: disable=no-value-for-parameter
+    # pylint: disable=abstract-method,no-value-for-parameter
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
@@ -36,44 +36,53 @@ class GF2mMeta(FieldMeta):
             d = [np.object_]
         return d
 
-    def _compile_ufuncs(cls, target):
-        global CHARACTERISTIC, ORDER, IRREDUCIBLE_POLY, PRIMITIVE_ELEMENT, MULTIPLY_UFUNC, RECIPROCAL_UFUNC
+    def _compile_ufuncs(cls):
+        super()._compile_ufuncs()
 
         # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835552639.
         cls._ufuncs["add"] = np.bitwise_xor
         cls._ufuncs["negative"] = np.positive
         cls._ufuncs["subtract"] = np.bitwise_xor
 
-        if cls._ufunc_mode == "jit-lookup":
-            cls._build_lookup_tables()
+    ###############################################################################
+    # Compile general-purpose calculate functions
+    ###############################################################################
 
-            cls._ufuncs["multiply"] = cls._compile_multiply_lookup(target)
-            cls._ufuncs["reciprocal"] = cls._compile_reciprocal_lookup(target)
-            cls._ufuncs["divide"] = cls._compile_divide_lookup(target)
-            cls._ufuncs["power"] = cls._compile_power_lookup(target)
-            cls._ufuncs["log"] = cls._compile_log_lookup(target)
+    def _compile_multiply_calculate(cls):
+        global ORDER, IRREDUCIBLE_POLY
+        ORDER = cls.order
+        IRREDUCIBLE_POLY = cls.irreducible_poly.integer  # pylint: disable=no-member
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
 
-        elif cls._ufunc_mode == "jit-calculate":
-            CHARACTERISTIC = cls.characteristic
-            ORDER = cls.order
-            IRREDUCIBLE_POLY = cls.irreducible_poly.integer  # pylint: disable=no-member
-            PRIMITIVE_ELEMENT = int(cls.primitive_element)
+    def _compile_reciprocal_calculate(cls):
+        global ORDER, MULTIPLY_UFUNC
+        ORDER = cls.order
+        MULTIPLY_UFUNC = cls._ufunc_multiply()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
 
-            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
-            cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
-            MULTIPLY_UFUNC = cls._ufuncs["multiply"]
-            cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
-            RECIPROCAL_UFUNC = cls._ufuncs["reciprocal"]
-            cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
-            cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
-            cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+    def _compile_divide_calculate(cls):
+        global MULTIPLY_UFUNC, RECIPROCAL_UFUNC
+        MULTIPLY_UFUNC = cls._ufunc_multiply()
+        RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
 
-        else:
-            cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
-            cls._ufuncs["reciprocal"] = np.frompyfunc(cls._reciprocal_python, 1, 1)
-            cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
-            cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
-            cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
+    def _compile_power_calculate(cls):
+        global MULTIPLY_UFUNC, RECIPROCAL_UFUNC
+        MULTIPLY_UFUNC = cls._ufunc_multiply()
+        RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+
+    def _compile_log_calculate(cls):
+        global ORDER, PRIMITIVE_ELEMENT, MULTIPLY_UFUNC
+        ORDER = cls.order
+        PRIMITIVE_ELEMENT = int(cls.primitive_element)
+        MULTIPLY_UFUNC = cls._ufunc_multiply()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
 
     ###############################################################################
     # Pure python arithmetic methods

@@ -47,50 +47,76 @@ class GFpMeta(FieldMeta):
             d = [np.object_]
         return d
 
-    def _compile_ufuncs(cls, target):
-        global CHARACTERISTIC, ORDER, PRIMITIVE_ELEMENT, RECIPROCAL_UFUNC
+    ###############################################################################
+    # Compile general-purpose lookup functions
+    ###############################################################################
 
-        if cls._ufunc_mode == "jit-lookup":
-            cls._build_lookup_tables()
+    def _compile_add_lookup(cls):
+        # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
+        return cls._compile_add_calculate()
 
-            # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
-            ORDER = cls.order
-            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
-            cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
-            cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
-            cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+    def _compile_negative_lookup(cls):
+        # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
+        return cls._compile_negative_calculate()
 
-            cls._ufuncs["multiply"] = cls._compile_multiply_lookup(target)
-            cls._ufuncs["reciprocal"] = cls._compile_reciprocal_lookup(target)
-            cls._ufuncs["divide"] = cls._compile_divide_lookup(target)
-            cls._ufuncs["power"] = cls._compile_power_lookup(target)
-            cls._ufuncs["log"] = cls._compile_log_lookup(target)
+    def _compile_subtract_lookup(cls):
+        # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
+        return cls._compile_subtract_calculate()
 
-        elif cls._ufunc_mode == "jit-calculate":
-            CHARACTERISTIC = cls.characteristic
-            ORDER = cls.order
-            PRIMITIVE_ELEMENT = int(cls.primitive_element)  # Convert from field element to integer
+    ###############################################################################
+    # Compile general-purpose calculate functions
+    ###############################################################################
 
-            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
-            cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
-            cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
-            cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
-            cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
-            cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
-            RECIPROCAL_UFUNC = cls._ufuncs["reciprocal"]
-            cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
-            cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
-            cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+    def _compile_add_calculate(cls):
+        global ORDER
+        ORDER = cls.order
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
 
-        else:
-            cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
-            cls._ufuncs["negative"] = np.frompyfunc(cls._negative_python, 1, 1)
-            cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
-            cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
-            cls._ufuncs["reciprocal"] = np.frompyfunc(cls._reciprocal_python, 1, 1)
-            cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
-            cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
-            cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
+    def _compile_negative_calculate(cls):
+        global ORDER
+        ORDER = cls.order
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
+
+    def _compile_subtract_calculate(cls):
+        global ORDER
+        ORDER = cls.order
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+
+    def _compile_multiply_calculate(cls):
+        global ORDER
+        ORDER = cls.order
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+
+    def _compile_reciprocal_calculate(cls):
+        global ORDER
+        ORDER = cls.order
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
+
+    def _compile_divide_calculate(cls):
+        global ORDER, RECIPROCAL_UFUNC
+        ORDER = cls.order
+        RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+
+    def _compile_power_calculate(cls):
+        global ORDER, RECIPROCAL_UFUNC
+        ORDER = cls.order
+        RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+
+    def _compile_log_calculate(cls):
+        global ORDER, PRIMITIVE_ELEMENT
+        ORDER = cls.order
+        PRIMITIVE_ELEMENT = int(cls.primitive_element)
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
 
     ###############################################################################
     # Pure python arithmetic methods

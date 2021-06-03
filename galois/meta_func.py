@@ -39,5 +39,9 @@ class Func(type):
     _overridden_functions = {}
     _overridden_linalg_functions = {}
 
-    def _compile_funcs(cls, target):
-        raise NotImplementedError
+    def __init__(cls, name, bases, namespace, **kwargs):
+        super().__init__(name, bases, namespace, **kwargs)
+        cls._funcs = {}
+
+    def _compile_funcs(cls):
+        cls._funcs = {}  # Reset the dictionary so each func will get recompiled

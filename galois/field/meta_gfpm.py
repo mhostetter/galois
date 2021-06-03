@@ -41,52 +41,82 @@ class GFpmMeta(FieldMeta):
             d = [np.object_]
         return d
 
-    def _compile_ufuncs(cls, target):
-        global CHARACTERISTIC, DEGREE, ORDER, IRREDUCIBLE_POLY, PRIMITIVE_ELEMENT, INT_TO_POLY_JIT, POLY_TO_INT_JIT, MULTIPLY_UFUNC, RECIPROCAL_UFUNC
+    def _compile_ufuncs(cls):
+        super()._compile_ufuncs()
 
-        if cls._ufunc_mode == "jit-lookup":
-            cls._build_lookup_tables()
-
-            cls._ufuncs["add"] = cls._compile_add_lookup(target)
-            cls._ufuncs["negative"] = cls._compile_negative_lookup(target)
-            cls._ufuncs["subtract"] = cls._compile_subtract_lookup(target)
-            cls._ufuncs["multiply"] = cls._compile_multiply_lookup(target)
-            cls._ufuncs["reciprocal"] = cls._compile_reciprocal_lookup(target)
-            cls._ufuncs["divide"] = cls._compile_divide_lookup(target)
-            cls._ufuncs["power"] = cls._compile_power_lookup(target)
-            cls._ufuncs["log"] = cls._compile_log_lookup(target)
-
-        elif cls._ufunc_mode == "jit-calculate":
+        if cls.ufunc_mode == "jit-calculate":
+            global CHARACTERISTIC, DEGREE
             CHARACTERISTIC = cls.characteristic
             DEGREE = cls.degree
-            ORDER = cls.order
-            IRREDUCIBLE_POLY = cls._irreducible_poly.coeffs.view(np.ndarray)
-            PRIMITIVE_ELEMENT = int(cls.primitive_element)
+            cls._INT_TO_POLY_JIT = numba.jit("int64[:](int64)", nopython=True)(_int_to_poly)
+            cls._POLY_TO_INT_JIT = numba.jit("int64(int64[:])", nopython=True)(_poly_to_int)
 
-            INT_TO_POLY_JIT = numba.jit("int64[:](int64)", nopython=True)(_int_to_poly)
-            POLY_TO_INT_JIT = numba.jit("int64(int64[:])", nopython=True)(_poly_to_int)
+    ###############################################################################
+    # Compile general-purpose calculate functions
+    ###############################################################################
 
-            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
-            cls._ufuncs["add"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
-            cls._ufuncs["negative"] = numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
-            cls._ufuncs["subtract"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
-            cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
-            MULTIPLY_UFUNC = cls._ufuncs["multiply"]
-            cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
-            RECIPROCAL_UFUNC = cls._ufuncs["reciprocal"]
-            cls._ufuncs["divide"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
-            cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
-            cls._ufuncs["log"] = numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+    def _compile_add_calculate(cls):
+        global CHARACTERISTIC, INT_TO_POLY_JIT, POLY_TO_INT_JIT
+        CHARACTERISTIC = cls.characteristic
+        INT_TO_POLY_JIT = cls._INT_TO_POLY_JIT
+        POLY_TO_INT_JIT = cls._POLY_TO_INT_JIT
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
 
-        else:
-            cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
-            cls._ufuncs["negative"] = np.frompyfunc(cls._negative_python, 1, 1)
-            cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
-            cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
-            cls._ufuncs["reciprocal"] = np.frompyfunc(cls._reciprocal_python, 1, 1)
-            cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
-            cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
-            cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
+    def _compile_negative_calculate(cls):
+        global CHARACTERISTIC, INT_TO_POLY_JIT, POLY_TO_INT_JIT
+        CHARACTERISTIC = cls.characteristic
+        INT_TO_POLY_JIT = cls._INT_TO_POLY_JIT
+        POLY_TO_INT_JIT = cls._POLY_TO_INT_JIT
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
+
+    def _compile_subtract_calculate(cls):
+        global CHARACTERISTIC, INT_TO_POLY_JIT, POLY_TO_INT_JIT
+        CHARACTERISTIC = cls.characteristic
+        INT_TO_POLY_JIT = cls._INT_TO_POLY_JIT
+        POLY_TO_INT_JIT = cls._POLY_TO_INT_JIT
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+
+    def _compile_multiply_calculate(cls):
+        global CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY, INT_TO_POLY_JIT, POLY_TO_INT_JIT
+        CHARACTERISTIC = cls.characteristic
+        DEGREE = cls.degree
+        IRREDUCIBLE_POLY = cls._irreducible_poly.coeffs.view(np.ndarray)
+        INT_TO_POLY_JIT = cls._INT_TO_POLY_JIT
+        POLY_TO_INT_JIT = cls._POLY_TO_INT_JIT
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+
+    def _compile_reciprocal_calculate(cls):
+        global ORDER, MULTIPLY_UFUNC
+        ORDER = cls.order
+        MULTIPLY_UFUNC = cls._ufunc_multiply()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
+
+    def _compile_divide_calculate(cls):
+        global MULTIPLY_UFUNC, RECIPROCAL_UFUNC
+        MULTIPLY_UFUNC = cls._ufunc_multiply()
+        RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+
+    def _compile_power_calculate(cls):
+        global MULTIPLY_UFUNC, RECIPROCAL_UFUNC
+        MULTIPLY_UFUNC = cls._ufunc_multiply()
+        RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+
+    def _compile_log_calculate(cls):
+        global ORDER, PRIMITIVE_ELEMENT, MULTIPLY_UFUNC
+        ORDER = cls.order
+        PRIMITIVE_ELEMENT = int(cls.primitive_element)
+        MULTIPLY_UFUNC = cls._ufunc_multiply()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
 
     ###############################################################################
     # Ufunc routines
@@ -118,10 +148,10 @@ class GFpmMeta(FieldMeta):
         else:
             return field.Vector(output, dtype=dtype)
 
-    def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
-        if cls._ufunc_mode == "jit-lookup" or method != "__call__":
+    def _ufunc_routine_add(cls, ufunc, method, inputs, kwargs, meta):
+        if cls.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
-            return super()._ufunc_add(ufunc, method, inputs, kwargs, meta)
+            return super()._ufunc_routine_add(ufunc, method, inputs, kwargs, meta)
         else:
             # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
             cls._verify_operands_in_same_field(ufunc, inputs, meta)
@@ -130,10 +160,10 @@ class GFpmMeta(FieldMeta):
             output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
             return output
 
-    def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):
-        if cls._ufunc_mode == "jit-lookup" or method != "__call__":
+    def _ufunc_routine_negative(cls, ufunc, method, inputs, kwargs, meta):
+        if cls.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
-            return super()._ufunc_negative(ufunc, method, inputs, kwargs, meta)
+            return super()._ufunc_routine_negative(ufunc, method, inputs, kwargs, meta)
         else:
             # Convert entire array to polynomial/vector representation and perform array operation in GF(p)
             cls._verify_operands_in_same_field(ufunc, inputs, meta)
@@ -142,10 +172,10 @@ class GFpmMeta(FieldMeta):
             output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
             return output
 
-    def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
-        if cls._ufunc_mode == "jit-lookup" or method != "__call__":
+    def _ufunc_routine_subtract(cls, ufunc, method, inputs, kwargs, meta):
+        if cls.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
-            return super()._ufunc_subtract(ufunc, method, inputs, kwargs, meta)
+            return super()._ufunc_routine_subtract(ufunc, method, inputs, kwargs, meta)
         else:
             # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
             cls._verify_operands_in_same_field(ufunc, inputs, meta)

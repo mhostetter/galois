@@ -19,17 +19,17 @@ class FieldUfunc(Ufunc):
     # pylint: disable=no-value-for-parameter
 
     _overridden_ufuncs = {
-        np.add: "_ufunc_add",
-        np.negative: "_ufunc_negative",
-        np.subtract: "_ufunc_subtract",
-        np.multiply: "_ufunc_multiply",
-        np.reciprocal: "_ufunc_reciprocal",
-        np.floor_divide: "_ufunc_divide",
-        np.true_divide: "_ufunc_divide",
-        np.power: "_ufunc_power",
-        np.square: "_ufunc_square",
-        np.log: "_ufunc_log",
-        np.matmul: "_ufunc_matmul",
+        np.add: "_ufunc_routine_add",
+        np.negative: "_ufunc_routine_negative",
+        np.subtract: "_ufunc_routine_subtract",
+        np.multiply: "_ufunc_routine_multiply",
+        np.reciprocal: "_ufunc_routine_reciprocal",
+        np.floor_divide: "_ufunc_routine_divide",
+        np.true_divide: "_ufunc_routine_divide",
+        np.power: "_ufunc_routine_power",
+        np.square: "_ufunc_routine_square",
+        np.log: "_ufunc_routine_log",
+        np.matmul: "_ufunc_routine_matmul",
     }
 
     def __init__(cls, name, bases, namespace, **kwargs):
@@ -38,6 +38,12 @@ class FieldUfunc(Ufunc):
         cls._LOG = None
         cls._ZECH_LOG = None
         cls._ZECH_E = None
+
+    def _compile_ufuncs(cls):
+        super()._compile_ufuncs()
+
+        if cls.ufunc_mode == "jit-lookup":
+            cls._build_lookup_tables()
 
     def _build_lookup_tables(cls):
         if cls._EXP is not None:
@@ -89,133 +95,246 @@ class FieldUfunc(Ufunc):
     # Compile general-purpose lookup functions
     ###############################################################################
 
-    def _compile_add_lookup(cls, target):
+    def _compile_add_lookup(cls):
         global EXP, LOG, ZECH_LOG, ZECH_E
         EXP = cls._EXP
         LOG = cls._LOG
         ZECH_LOG = cls._ZECH_LOG
         ZECH_E = cls._ZECH_E
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         return numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
 
-    def _compile_negative_lookup(cls, target):
+    def _compile_negative_lookup(cls):
         global EXP, LOG, ZECH_E
         EXP = cls._EXP
         LOG = cls._LOG
         ZECH_E = cls._ZECH_E
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         return numba.vectorize(["int64(int64)"], **kwargs)(_negative_lookup)
 
-    def _compile_subtract_lookup(cls, target):
+    def _compile_subtract_lookup(cls):
         global ORDER, EXP, LOG, ZECH_LOG, ZECH_E
         ORDER = cls.order
         EXP = cls._EXP
         LOG = cls._LOG
         ZECH_LOG = cls._ZECH_LOG
         ZECH_E = cls._ZECH_E
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         return numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
 
-    def _compile_multiply_lookup(cls, target):
+    def _compile_multiply_lookup(cls):
         global EXP, LOG
         EXP = cls._EXP
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
 
-    def _compile_reciprocal_lookup(cls, target):
+    def _compile_reciprocal_lookup(cls):
         global ORDER, EXP, LOG
         ORDER = cls.order
         EXP = cls._EXP
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_lookup)
 
-    def _compile_divide_lookup(cls, target):
+    def _compile_divide_lookup(cls):
         global ORDER, EXP, LOG
         ORDER = cls.order
         EXP = cls._EXP
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
 
-    def _compile_power_lookup(cls, target):
+    def _compile_power_lookup(cls):
         global ORDER, EXP, LOG
         ORDER = cls.order
         EXP = cls._EXP
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
 
-    def _compile_log_lookup(cls, target):
+    def _compile_log_lookup(cls):
         global LOG
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         return numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
+
+    ###############################################################################
+    # Compile general-purpose calculate functions
+    ###############################################################################
+
+    def _compile_add_calculate(cls):
+        raise NotImplementedError
+
+    def _compile_negative_calculate(cls):
+        raise NotImplementedError
+
+    def _compile_subtract_calculate(cls):
+        raise NotImplementedError
+
+    def _compile_multiply_calculate(cls):
+        raise NotImplementedError
+
+    def _compile_reciprocal_calculate(cls):
+        raise NotImplementedError
+
+    def _compile_divide_calculate(cls):
+        raise NotImplementedError
+
+    def _compile_power_calculate(cls):
+        raise NotImplementedError
+
+    def _compile_log_calculate(cls):
+        raise NotImplementedError
+
+    ###############################################################################
+    # Individual ufuncs, compiled on-demand
+    ###############################################################################
+
+    def _ufunc_add(cls):
+        if cls._ufuncs.get("add", None) is None:
+            if cls.ufunc_mode == "jit-lookup":
+                cls._ufuncs["add"] = cls._compile_add_lookup()
+            elif cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["add"] = cls._compile_add_calculate()
+            else:
+                cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
+        return cls._ufuncs["add"]
+
+    def _ufunc_negative(cls):
+        print(cls._ufuncs)
+        if cls._ufuncs.get("negative", None) is None:
+            if cls.ufunc_mode == "jit-lookup":
+                cls._ufuncs["negative"] = cls._compile_negative_lookup()
+            elif cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["negative"] = cls._compile_negative_calculate()
+            else:
+                cls._ufuncs["negative"] = np.frompyfunc(cls._negative_python, 1, 1)
+        return cls._ufuncs["negative"]
+
+    def _ufunc_subtract(cls):
+        if cls._ufuncs.get("subtract", None) is None:
+            if cls.ufunc_mode == "jit-lookup":
+                cls._ufuncs["subtract"] = cls._compile_subtract_lookup()
+            elif cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["subtract"] = cls._compile_subtract_calculate()
+            else:
+                cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
+        return cls._ufuncs["subtract"]
+
+    def _ufunc_multiply(cls):
+        if cls._ufuncs.get("multiply", None) is None:
+            if cls.ufunc_mode == "jit-lookup":
+                cls._ufuncs["multiply"] = cls._compile_multiply_lookup()
+            elif cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["multiply"] = cls._compile_multiply_calculate()
+            else:
+                cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
+        return cls._ufuncs["multiply"]
+
+    def _ufunc_reciprocal(cls):
+        if cls._ufuncs.get("reciprocal", None) is None:
+            if cls.ufunc_mode == "jit-lookup":
+                cls._ufuncs["reciprocal"] = cls._compile_reciprocal_lookup()
+            elif cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["reciprocal"] = cls._compile_reciprocal_calculate()
+            else:
+                cls._ufuncs["reciprocal"] = np.frompyfunc(cls._reciprocal_python, 1, 1)
+        return cls._ufuncs["reciprocal"]
+
+    def _ufunc_divide(cls):
+        if cls._ufuncs.get("divide", None) is None:
+            if cls.ufunc_mode == "jit-lookup":
+                cls._ufuncs["divide"] = cls._compile_divide_lookup()
+            elif cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["divide"] = cls._compile_divide_calculate()
+            else:
+                cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
+        return cls._ufuncs["divide"]
+
+    def _ufunc_power(cls):
+        if cls._ufuncs.get("power", None) is None:
+            if cls.ufunc_mode == "jit-lookup":
+                cls._ufuncs["power"] = cls._compile_power_lookup()
+            elif cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["power"] = cls._compile_power_calculate()
+            else:
+                cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
+        return cls._ufuncs["power"]
+
+    def _ufunc_log(cls):
+        if cls._ufuncs.get("log", None) is None:
+            if cls.ufunc_mode == "jit-lookup":
+                cls._ufuncs["log"] = cls._compile_log_lookup()
+            elif cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["log"] = cls._compile_log_calculate()
+            else:
+                cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
+        return cls._ufuncs["log"]
 
     ###############################################################################
     # Ufunc routines
     ###############################################################################
 
-    def _ufunc_add(cls, ufunc, method, inputs, kwargs, meta):
+    def _ufunc_routine_add(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(cls._ufuncs["add"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_add(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_unary_method_not_reduction(ufunc, method)
-        output = getattr(cls._ufuncs["negative"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_negative(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_subtract(cls, ufunc, method, inputs, kwargs, meta):
+    def _ufunc_routine_subtract(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(cls._ufuncs["subtract"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_subtract(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_multiply(cls, ufunc, method, inputs, kwargs, meta):
+    def _ufunc_routine_multiply(cls, ufunc, method, inputs, kwargs, meta):
         if len(meta["non_field_operands"]) > 0:
             # Scalar multiplication
             cls._verify_operands_in_field_or_int(ufunc, inputs, meta)
             inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
             inputs[meta["non_field_operands"][0]] = np.mod(inputs[meta["non_field_operands"][0]], cls.characteristic)
-        output = getattr(cls._ufuncs["multiply"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_multiply(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_unary_method_not_reduction(ufunc, method)
-        output = getattr(cls._ufuncs["reciprocal"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_reciprocal(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
+    def _ufunc_routine_divide(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(cls._ufuncs["divide"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_divide(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_power(cls, ufunc, method, inputs, kwargs, meta):
+    def _ufunc_routine_power(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_binary_method_not_reduction(ufunc, method)
         cls._verify_operands_first_field_second_int(ufunc, inputs, meta)
-        output = getattr(cls._ufuncs["power"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_power(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_unary_method_not_reduction(ufunc, method)
-        output = getattr(cls._ufuncs["power"], method)(*inputs, 2, **kwargs)
+        output = getattr(cls._ufunc_power(), method)(*inputs, 2, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_method_only_call(ufunc, method)
-        output = getattr(cls._ufuncs["log"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_log(), method)(*inputs, **kwargs)
         return output
 
-    def _ufunc_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_method_only_call(ufunc, method)
         return cls._matmul(*inputs, **kwargs)
 
