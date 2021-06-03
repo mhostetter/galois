@@ -98,11 +98,13 @@ class GF2Meta(FieldMeta):
     def default_ufunc_mode(cls):
         return "jit-calculate"
 
-    def _compile_ufuncs(cls, target):
-        assert cls._ufunc_mode == "jit-calculate"
-        assert target == "cpu"
+    def _compile_ufuncs(cls):
+        super()._compile_ufuncs()
 
-        kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
+        assert cls.ufunc_mode == "jit-calculate"
+        assert cls.ufunc_target == "cpu"
+
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
         cls._ufuncs["add"] = np.bitwise_xor
         cls._ufuncs["negative"] = np.positive
         cls._ufuncs["subtract"] = np.bitwise_xor
@@ -117,7 +119,7 @@ class GF2Meta(FieldMeta):
     # arithmetic, which is faster than custom ufuncs
     ###############################################################################
 
-    def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         """
         a, b in GF(2)
         b = 1 / a, a = 1 is the only valid element with a multiplicative inverse, which is 1
@@ -128,18 +130,18 @@ class GF2Meta(FieldMeta):
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
         return inputs[0]
 
-    def _ufunc_divide(cls, ufunc, method, inputs, kwargs, meta):
+    def _ufunc_routine_divide(cls, ufunc, method, inputs, kwargs, meta):
         """
         Need to re-implement this to manually throw ZeroDivisionError if necessary
         """
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
         if np.count_nonzero(inputs[meta["operands"][-1]]) != inputs[meta["operands"][-1]].size:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-        output = getattr(cls._ufuncs["divide"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_divide(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         """
         a, c in GF(2)
         c = a ** 2
@@ -149,7 +151,7 @@ class GF2Meta(FieldMeta):
         cls._verify_unary_method_not_reduction(ufunc, method)
         return inputs[0]
 
-    def _ufunc_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         """
         a in GF(2)
         b in Z

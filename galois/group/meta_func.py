@@ -9,6 +9,3 @@ class GroupFunc(Func):
 
     _overridden_functions = {}
     _overridden_linalg_functions = {}
-
-    def _compile_funcs(cls, target):
-        return

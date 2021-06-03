@@ -16,10 +16,10 @@ class MultiplicativeGroupUfunc(Ufunc):
     # pylint: disable=no-value-for-parameter
 
     _overridden_ufuncs = {
-        np.multiply: "_ufunc_multiply",
-        np.reciprocal: "_ufunc_reciprocal",
-        np.power: "_ufunc_power",
-        np.square: "_ufunc_square",
+        np.multiply: "_ufunc_routine_multiply",
+        np.reciprocal: "_ufunc_routine_reciprocal",
+        np.power: "_ufunc_routine_power",
+        np.square: "_ufunc_routine_square",
     }
 
     _unsupported_ufuncs = Ufunc._unsupported_ufuncs + [
@@ -32,49 +32,84 @@ class MultiplicativeGroupUfunc(Ufunc):
         np.matmul,
     ]
 
-    def _compile_ufuncs(cls, target):
+    ###############################################################################
+    # Compile general-purpose calculate functions
+    ###############################################################################
+
+    def _compile_multiply_calculate(cls):
+        global MODULUS
+        MODULUS = cls.modulus
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+
+    def _compile_reciprocal_calculate(cls):
+        global MODULUS
+        MODULUS = cls.modulus
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
+
+    def _compile_power_calculate(cls):
         global MODULUS, ORDER, RECIPROCAL_UFUNC
+        MODULUS = cls.modulus
+        ORDER = cls.order
+        RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
+        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
+        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
 
-        if cls._ufunc_mode == "jit-calculate":
-            MODULUS = cls.modulus
-            ORDER = cls.order
-            kwargs = {"nopython": True, "target": target} if target != "cuda" else {"target": target}
-            cls._ufuncs["multiply"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
-            cls._ufuncs["reciprocal"] = numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
-            RECIPROCAL_UFUNC = cls._ufuncs["reciprocal"]
-            cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+    ###############################################################################
+    # Individual ufuncs, compiled on-demand
+    ###############################################################################
 
-        else:
-            cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
-            cls._ufuncs["reciprocal"] = np.frompyfunc(cls._reciprocal_python, 1, 1)
-            cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
+    def _ufunc_multiply(cls):
+        if cls._ufuncs.get("multiply", None) is None:
+            if cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["multiply"] = cls._compile_multiply_calculate()
+            else:
+                cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
+        return cls._ufuncs["multiply"]
+
+    def _ufunc_reciprocal(cls):
+        if cls._ufuncs.get("reciprocal", None) is None:
+            if cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["reciprocal"] = cls._compile_reciprocal_calculate()
+            else:
+                cls._ufuncs["reciprocal"] = np.frompyfunc(cls._reciprocal_python, 1, 1)
+        return cls._ufuncs["reciprocal"]
+
+    def _ufunc_power(cls):
+        if cls._ufuncs.get("power", None) is None:
+            if cls.ufunc_mode == "jit-calculate":
+                cls._ufuncs["power"] = cls._compile_power_calculate()
+            else:
+                cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
+        return cls._ufuncs["power"]
 
     ###############################################################################
     # Ufunc routines
     ###############################################################################
 
-    def _ufunc_multiply(cls, ufunc, method, inputs, kwargs, meta):
+    def _ufunc_routine_multiply(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(cls._ufuncs["multiply"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_multiply(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_unary_method_not_reduction(ufunc, method)
-        output = getattr(cls._ufuncs["reciprocal"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_reciprocal(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_power(cls, ufunc, method, inputs, kwargs, meta):
+    def _ufunc_routine_power(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_binary_method_not_reduction(ufunc, method)
         cls._verify_operands_first_field_second_int(ufunc, inputs, meta)
-        output = getattr(cls._ufuncs["power"], method)(*inputs, **kwargs)
+        output = getattr(cls._ufunc_power(), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
-    def _ufunc_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         inputs = list(inputs) + [2]
-        return cls._ufunc_power(ufunc, method, inputs, kwargs, meta)
+        return cls._ufunc_power()(ufunc, method, inputs, kwargs, meta)
 
     ###############################################################################
     # Pure python arithmetic methods

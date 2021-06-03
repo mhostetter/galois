@@ -35,33 +35,62 @@ class FieldFunc(Func):
         np.linalg.inv: inv,
     }
 
-    def __init__(cls, name, bases, namespace, **kwargs):
-        super().__init__(name, bases, namespace, **kwargs)
-        cls._ADD_UFUNC = None
-        cls._SUBTRACT_UFUNC = None
-        cls._MULTIPLY_UFUNC = None
-        cls._DIVIDE_UFUNC = None
+    ###############################################################################
+    # Individual functions, compiled on-demand
+    ###############################################################################
 
-        cls._funcs = {}
+    def _func_matmul(cls):
+        if cls._funcs.get("matmul", None) is None:
+            if cls.ufunc_mode == "python-calculate":
+                cls._funcs["matmul"] = cls._matmul_python
+            else:
+                global ADD_UFUNC, MULTIPLY_UFUNC
+                ADD_UFUNC = cls._ufunc_add()
+                MULTIPLY_UFUNC = cls._ufunc_multiply()
+                assert cls.ufunc_target == "cpu"
+                cls._funcs["matmul"] = numba.jit("int64[:,:](int64[:,:], int64[:,:])", nopython=True)(_matmul_jit)
+        return cls._funcs["matmul"]
 
-    def _compile_funcs(cls, target):
-        global ADD_UFUNC, SUBTRACT_UFUNC, MULTIPLY_UFUNC, DIVIDE_UFUNC
+    def _func_convolve(cls):
+        if cls._funcs.get("convolve", None) is None:
+            if cls.ufunc_mode == "python-calculate":
+                cls._funcs["convolve"] = cls._convolve_python
+            else:
+                global ADD_UFUNC, MULTIPLY_UFUNC
+                ADD_UFUNC = cls._ufunc_add()
+                MULTIPLY_UFUNC = cls._ufunc_multiply()
+                assert cls.ufunc_target == "cpu"
+                cls._funcs["convolve"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_convolve_jit)
+        return cls._funcs["convolve"]
 
-        if cls.ufunc_mode == "python-calculate":
-            # NOTE: Don't need to vectorize cls._convolve or cls._poly_divmod
-            cls._funcs["poly_evaluate"] = np.vectorize(cls._poly_evaluate_python, excluded=["coeffs"], otypes=[np.object_])
+    def _func_poly_divmod(cls):
+        if cls._funcs.get("poly_divmod", None) is None:
+            if cls.ufunc_mode == "python-calculate":
+                cls._funcs["poly_divmod"] = cls._poly_divmod_python
+            else:
+                global SUBTRACT_UFUNC, MULTIPLY_UFUNC, DIVIDE_UFUNC
+                SUBTRACT_UFUNC = cls._ufunc_subtract()
+                MULTIPLY_UFUNC = cls._ufunc_multiply()
+                DIVIDE_UFUNC = cls._ufunc_divide()
+                assert cls.ufunc_target == "cpu"
+                cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_poly_divmod_jit)
+        return cls._funcs["poly_divmod"]
 
-        else:
-            ADD_UFUNC = cls._ufuncs["add"]
-            SUBTRACT_UFUNC = cls._ufuncs["subtract"]
-            MULTIPLY_UFUNC = cls._ufuncs["multiply"]
-            DIVIDE_UFUNC = cls._ufuncs["divide"]
+    def _func_poly_evaluate(cls):
+        if cls._funcs.get("poly_evaluate", None) is None:
+            if cls.ufunc_mode == "python-calculate":
+                cls._funcs["poly_evaluate"] = np.vectorize(cls._poly_evaluate_python, excluded=["coeffs"], otypes=[np.object_])
+            else:
+                global ADD_UFUNC, MULTIPLY_UFUNC
+                ADD_UFUNC = cls._ufunc_add()
+                MULTIPLY_UFUNC = cls._ufunc_multiply()
+                assert cls.ufunc_target == "cpu"
+                cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", nopython=True)(_poly_evaluate_jit)
+        return cls._funcs["poly_evaluate"]
 
-            assert target == "cpu"
-            cls._funcs["matmul"] = numba.jit("int64[:,:](int64[:,:], int64[:,:])", nopython=True)(_matmul_jit)
-            cls._funcs["convolve"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_convolve_jit)
-            cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_poly_divmod_jit)
-            cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", nopython=True)(_poly_evaluate_jit)
+    ###############################################################################
+    # Function routines
+    ###############################################################################
 
     def _matmul(cls, A, B, out=None, **kwargs):  # pylint: disable=unused-argument
         if not type(A) is type(B):
@@ -94,10 +123,12 @@ class FieldFunc(Func):
         #     new_shape = list(B.shape[:-2]) + list(A.shape)
         #     A = np.broadcast_to(A, new_shape)
 
-        if cls.ufunc_mode == "python-calculate":
-            C = cls._matmul_python(A, B)
-        else:
-            C = cls._funcs["matmul"](A.astype(np.int64), B.astype(np.int64))
+        if cls._ufunc_mode != "python-calculate":
+            A, B = A.astype(np.int64), B.astype(np.int64)
+
+        C = cls._func_matmul()(A, B)
+
+        if cls._ufunc_mode != "python-calculate":
             C = C.astype(dtype).view(field)
 
         shape = list(C.shape)
@@ -137,11 +168,14 @@ class FieldFunc(Func):
             c = c.astype(return_dtype).view(field) if not np.isscalar(c) else field(c, dtype=return_dtype)
             return c
         else:
-            if cls.ufunc_mode == "python-calculate":
-                return cls._convolve_python(a, b)
-            else:
-                c = cls._funcs["convolve"](a.astype(np.int64), b.astype(np.int64))
+            if cls._ufunc_mode != "python-calculate":
+                a, b = a.astype(np.int64), b.astype(np.int64)
+
+            c = cls._func_convolve()(a, b)
+
+            if cls._ufunc_mode != "python-calculate":
                 c = c.astype(dtype).view(field)
+
             return c
 
     def _poly_divmod(cls, a, b):
@@ -151,10 +185,12 @@ class FieldFunc(Func):
         q_degree = a.size - b.size
         r_degree = b.size - 1
 
-        if cls.ufunc_mode == "python-calculate":
-            qr = cls._poly_divmod_python(a, b)
-        else:
-            qr = cls._funcs["poly_divmod"](a.astype(np.int64), b.astype(np.int64))
+        if cls._ufunc_mode != "python-calculate":
+            a, b = a.astype(np.int64), b.astype(np.int64)
+
+        qr = cls._func_poly_divmod()(a, b)
+
+        if cls._ufunc_mode != "python-calculate":
             qr = qr.astype(dtype).view(field)
 
         return qr[0:q_degree + 1], qr[q_degree + 1:q_degree + 1 + r_degree + 1]
@@ -168,10 +204,10 @@ class FieldFunc(Func):
 
         if cls.ufunc_mode == "python-calculate":
             # For object dtypes, call the vectorized classmethod
-            y = cls._funcs["poly_evaluate"](coeffs=coeffs.view(np.ndarray), values=x.view(np.ndarray))
+            y = cls._func_poly_evaluate()(coeffs=coeffs.view(np.ndarray), values=x.view(np.ndarray))
         else:
             # For integer dtypes, call the JIT-compiled gufunc
-            y = cls._funcs["poly_evaluate"](coeffs, x, field.Zeros(x.shape), casting="unsafe")
+            y = cls._func_poly_evaluate()(coeffs, x, field.Zeros(x.shape), casting="unsafe")
             y = y.astype(dtype)
         y = y.view(field)
 

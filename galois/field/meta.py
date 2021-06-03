@@ -80,7 +80,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
         if element == 0:
             s = "0"
         else:
-            power = cls._ufuncs["log"](element)
+            power = cls._ufunc_log()(element)
             if power > 1:
                 s = f"α^{power}"
             elif power == 1:
