@@ -101,16 +101,14 @@ class FieldUfunc(Ufunc):
         LOG = cls._LOG
         ZECH_LOG = cls._ZECH_LOG
         ZECH_E = cls._ZECH_E
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_lookup)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_add_lookup)
 
     def _compile_negative_lookup(cls):
         global EXP, LOG, ZECH_E
         EXP = cls._EXP
         LOG = cls._LOG
         ZECH_E = cls._ZECH_E
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_negative_lookup)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_negative_lookup)
 
     def _compile_subtract_lookup(cls):
         global ORDER, EXP, LOG, ZECH_LOG, ZECH_E
@@ -119,45 +117,39 @@ class FieldUfunc(Ufunc):
         LOG = cls._LOG
         ZECH_LOG = cls._ZECH_LOG
         ZECH_E = cls._ZECH_E
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_lookup)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_subtract_lookup)
 
     def _compile_multiply_lookup(cls):
         global EXP, LOG
         EXP = cls._EXP
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_lookup)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_multiply_lookup)
 
     def _compile_reciprocal_lookup(cls):
         global ORDER, EXP, LOG
         ORDER = cls.order
         EXP = cls._EXP
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_lookup)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_reciprocal_lookup)
 
     def _compile_divide_lookup(cls):
         global ORDER, EXP, LOG
         ORDER = cls.order
         EXP = cls._EXP
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_lookup)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_divide_lookup)
 
     def _compile_power_lookup(cls):
         global ORDER, EXP, LOG
         ORDER = cls.order
         EXP = cls._EXP
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_lookup)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_power_lookup)
 
     def _compile_log_lookup(cls):
         global LOG
         LOG = cls._LOG
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_log_lookup)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_log_lookup)
 
     ###############################################################################
     # Compile general-purpose calculate functions
@@ -202,7 +194,6 @@ class FieldUfunc(Ufunc):
         return cls._ufuncs["add"]
 
     def _ufunc_negative(cls):
-        print(cls._ufuncs)
         if cls._ufuncs.get("negative", None) is None:
             if cls.ufunc_mode == "jit-lookup":
                 cls._ufuncs["negative"] = cls._compile_negative_lookup()

@@ -53,7 +53,7 @@ class FieldFunc(Func):
                 ADD_UFUNC = cls._ufunc_add()
                 MULTIPLY_UFUNC = cls._ufunc_multiply()
                 assert cls.ufunc_target == "cpu"
-                cls._funcs["matmul"] = numba.jit("int64[:,:](int64[:,:], int64[:,:])", nopython=True)(_matmul_jit)
+                cls._funcs["matmul"] = numba.jit("int64[:,:](int64[:,:], int64[:,:])", **cls._numba_jit_kwargs())(_matmul_jit)
         return cls._funcs["matmul"]
 
     def _func_convolve(cls):
@@ -65,7 +65,7 @@ class FieldFunc(Func):
                 ADD_UFUNC = cls._ufunc_add()
                 MULTIPLY_UFUNC = cls._ufunc_multiply()
                 assert cls.ufunc_target == "cpu"
-                cls._funcs["convolve"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_convolve_jit)
+                cls._funcs["convolve"] = numba.jit("int64[:](int64[:], int64[:])", **cls._numba_jit_kwargs())(_convolve_jit)
         return cls._funcs["convolve"]
 
     def _func_poly_divmod(cls):
@@ -78,7 +78,7 @@ class FieldFunc(Func):
                 MULTIPLY_UFUNC = cls._ufunc_multiply()
                 DIVIDE_UFUNC = cls._ufunc_divide()
                 assert cls.ufunc_target == "cpu"
-                cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_poly_divmod_jit)
+                cls._funcs["poly_divmod"] = numba.jit("int64[:](int64[:], int64[:])", **cls._numba_jit_kwargs())(_poly_divmod_jit)
         return cls._funcs["poly_divmod"]
 
     def _func_poly_evaluate(cls):
@@ -90,7 +90,7 @@ class FieldFunc(Func):
                 ADD_UFUNC = cls._ufunc_add()
                 MULTIPLY_UFUNC = cls._ufunc_multiply()
                 assert cls.ufunc_target == "cpu"
-                cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", nopython=True)(_poly_evaluate_jit)
+                cls._funcs["poly_evaluate"] = numba.guvectorize([(numba.int64[:], numba.int64[:], numba.int64[:])], "(n),(m)->(m)", **cls._numba_guvectorize_kwargs())(_poly_evaluate_jit)
         return cls._funcs["poly_evaluate"]
 
     def _func_poly_roots(cls):
@@ -105,7 +105,7 @@ class FieldFunc(Func):
                 MULTIPLY_UFUNC = cls._ufunc_multiply()
                 POWER_UFUNC = cls._ufunc_power()
                 assert cls.ufunc_target == "cpu"
-                cls._funcs["poly_roots"] = numba.jit("int64[:](int64[:], int64[:])", nopython=True)(_poly_roots_jit)
+                cls._funcs["poly_roots"] = numba.jit("int64[:](int64[:], int64[:])", **cls._numba_jit_kwargs())(_poly_roots_jit)
         return cls._funcs["poly_roots"]
 
     def _func_berlekamp_massey(cls):
@@ -119,7 +119,7 @@ class FieldFunc(Func):
                 MULTIPLY_UFUNC = cls._ufunc_multiply()
                 RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
                 assert cls.ufunc_target == "cpu"
-                cls._funcs["berlekamp_massey"] = numba.jit("int64[:](int64[:])", nopython=True)(_berlekamp_massey_jit)
+                cls._funcs["berlekamp_massey"] = numba.jit("int64[:](int64[:])", **cls._numba_jit_kwargs())(_berlekamp_massey_jit)
         return cls._funcs["berlekamp_massey"]
 
     ###############################################################################

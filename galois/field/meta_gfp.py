@@ -69,53 +69,45 @@ class GFpMeta(FieldMeta):
     def _compile_add_calculate(cls):
         global ORDER
         ORDER = cls.order
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_add_calculate)
 
     def _compile_negative_calculate(cls):
         global ORDER
         ORDER = cls.order
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_negative_calculate)
 
     def _compile_subtract_calculate(cls):
         global ORDER
         ORDER = cls.order
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_subtract_calculate)
 
     def _compile_multiply_calculate(cls):
         global ORDER
         ORDER = cls.order
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_multiply_calculate)
 
     def _compile_reciprocal_calculate(cls):
         global ORDER
         ORDER = cls.order
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_reciprocal_calculate)
 
     def _compile_divide_calculate(cls):
         global ORDER, RECIPROCAL_UFUNC
         ORDER = cls.order
         RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_divide_calculate)
 
     def _compile_power_calculate(cls):
         global ORDER, RECIPROCAL_UFUNC
         ORDER = cls.order
         RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_power_calculate)
 
     def _compile_log_calculate(cls):
         global ORDER, PRIMITIVE_ELEMENT
         ORDER = cls.order
         PRIMITIVE_ELEMENT = int(cls.primitive_element)
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_log_calculate)
 
     ###############################################################################
     # GF(p) arithmetic in pure python

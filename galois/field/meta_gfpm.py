@@ -60,24 +60,21 @@ class GFpmMeta(FieldMeta):
         CHARACTERISTIC = cls.characteristic
         INT_TO_POLY_JIT = cls._INT_TO_POLY_JIT
         POLY_TO_INT_JIT = cls._POLY_TO_INT_JIT
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_add_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_add_calculate)
 
     def _compile_negative_calculate(cls):
         global CHARACTERISTIC, INT_TO_POLY_JIT, POLY_TO_INT_JIT
         CHARACTERISTIC = cls.characteristic
         INT_TO_POLY_JIT = cls._INT_TO_POLY_JIT
         POLY_TO_INT_JIT = cls._POLY_TO_INT_JIT
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_negative_calculate)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_negative_calculate)
 
     def _compile_subtract_calculate(cls):
         global CHARACTERISTIC, INT_TO_POLY_JIT, POLY_TO_INT_JIT
         CHARACTERISTIC = cls.characteristic
         INT_TO_POLY_JIT = cls._INT_TO_POLY_JIT
         POLY_TO_INT_JIT = cls._POLY_TO_INT_JIT
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_subtract_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_subtract_calculate)
 
     def _compile_multiply_calculate(cls):
         global CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY, INT_TO_POLY_JIT, POLY_TO_INT_JIT
@@ -86,37 +83,32 @@ class GFpmMeta(FieldMeta):
         IRREDUCIBLE_POLY = cls._irreducible_poly.coeffs.view(np.ndarray)
         INT_TO_POLY_JIT = cls._INT_TO_POLY_JIT
         POLY_TO_INT_JIT = cls._POLY_TO_INT_JIT
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_multiply_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_multiply_calculate)
 
     def _compile_reciprocal_calculate(cls):
         global ORDER, MULTIPLY_UFUNC
         ORDER = cls.order
         MULTIPLY_UFUNC = cls._ufunc_multiply()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_reciprocal_calculate)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_reciprocal_calculate)
 
     def _compile_divide_calculate(cls):
         global MULTIPLY_UFUNC, RECIPROCAL_UFUNC
         MULTIPLY_UFUNC = cls._ufunc_multiply()
         RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_divide_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_divide_calculate)
 
     def _compile_power_calculate(cls):
         global MULTIPLY_UFUNC, RECIPROCAL_UFUNC
         MULTIPLY_UFUNC = cls._ufunc_multiply()
         RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64, int64)"], **kwargs)(_power_calculate)
+        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_power_calculate)
 
     def _compile_log_calculate(cls):
         global ORDER, PRIMITIVE_ELEMENT, MULTIPLY_UFUNC
         ORDER = cls.order
         PRIMITIVE_ELEMENT = int(cls.primitive_element)
         MULTIPLY_UFUNC = cls._ufunc_multiply()
-        kwargs = {"nopython": True, "target": cls.ufunc_target} if cls.ufunc_target != "cuda" else {"target": cls.ufunc_target}
-        return numba.vectorize(["int64(int64)"], **kwargs)(_log_calculate)
+        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_log_calculate)
 
     ###############################################################################
     # Ufunc routines
