@@ -108,10 +108,10 @@ class GF2Meta(FieldMeta):
         cls._ufuncs["negative"] = np.positive
         cls._ufuncs["subtract"] = np.bitwise_xor
         cls._ufuncs["multiply"] = np.bitwise_and
-        # NOTE: Don't need a ufunc for "reciprocal", already overrode _ufunc_reciprocal()
+        cls._ufuncs["reciprocal"] = np.positive
         cls._ufuncs["divide"] = np.bitwise_and
         cls._ufuncs["power"] = numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_power_calculate)
-        # NOTE: Don't need a ufunc for "log", already overrode _ufunc_log()
+        cls._ufuncs["log"] = np.bitwise_and
 
     ###############################################################################
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
@@ -127,7 +127,8 @@ class GF2Meta(FieldMeta):
         cls._verify_unary_method_not_reduction(ufunc, method)
         if np.count_nonzero(inputs[0]) != inputs[0].size:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-        return inputs[0]
+        output = getattr(cls._ufunc_reciprocal(), method)(*inputs, **kwargs)
+        return output
 
     def _ufunc_routine_divide(cls, ufunc, method, inputs, kwargs, meta):
         """
@@ -161,7 +162,7 @@ class GF2Meta(FieldMeta):
         if np.count_nonzero(inputs[meta["operands"][0]]) != inputs[meta["operands"][0]].size:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
-        output = getattr(np.bitwise_and, method)(*inputs, 0, **kwargs)
+        output = getattr(cls._ufunc_log(), method)(*inputs, **kwargs)
         return output
 
 
