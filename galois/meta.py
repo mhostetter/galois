@@ -66,7 +66,6 @@ class Meta(Ufunc, Func):
         cls._ufunc_mode = mode
         cls._ufunc_target = target
         cls._compile_ufuncs()
-        cls._compile_funcs()
 
     ###############################################################################
     # Array display methods
@@ -177,7 +176,7 @@ class Meta(Ufunc, Func):
             galois.GF(2).ufunc_mode
             galois.GF(2**8).ufunc_mode
             galois.GF(31).ufunc_mode
-            # galois.GF(7**5).ufunc_mode
+            galois.GF(7**5).ufunc_mode
         """
         return cls._ufunc_mode
 
@@ -233,7 +232,7 @@ class Meta(Ufunc, Func):
             galois.GF(2).ufunc_target
             galois.GF(2**8).ufunc_target
             galois.GF(31).ufunc_target
-            # galois.GF(7**5).ufunc_target
+            galois.GF(7**5).ufunc_target
         """
         return cls._ufunc_target
 

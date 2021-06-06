@@ -12,6 +12,9 @@ from .meta_gfp import GFpMeta
 
 
 def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode="auto", target="cpu"):
+    """
+    Class factory for prime fields GF(p).
+    """
     if not isinstance(characteristic, int):
         raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
     if not is_prime(characteristic):
@@ -46,6 +49,7 @@ def GF_prime(characteristic, primitive_element=None, verify_primitive=True, mode
             "degree": 1,
             "order": characteristic**1,
             "primitive_element": primitive_element,
+            "is_primitive_poly": True,
             "target": target,
             "mode": mode
         })

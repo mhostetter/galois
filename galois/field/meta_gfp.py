@@ -4,13 +4,9 @@ import numpy as np
 from ..dtypes import DTYPES
 from ..modular import primitive_root
 
+from .meta_ufunc import _func_type
 from .meta import FieldMeta
 from .poly import Poly
-
-ORDER = None  # The field's order `p^m`
-PRIMITIVE_ELEMENT = None  # The field's primitive element
-
-RECIPROCAL_UFUNC = lambda x: 1 / x
 
 
 class GFpMeta(FieldMeta):
@@ -22,7 +18,6 @@ class GFpMeta(FieldMeta):
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
         cls._prime_subfield = cls
-        cls._is_primitive_poly = True
 
         cls.compile(kwargs["mode"], kwargs["target"])
 
@@ -47,70 +42,30 @@ class GFpMeta(FieldMeta):
         return d
 
     ###############################################################################
-    # Compile general-purpose lookup functions
+    # Individual JIT arithmetic functions, pre-compiled (cached)
     ###############################################################################
 
-    def _compile_add_lookup(cls):
+    def _calculate_jit(cls, name):
+        return compile_jit(name)
+
+    def _python_func(cls, name):
+        return eval(f"{name}")
+
+    ###############################################################################
+    # Individual ufuncs, compiled on-demand
+    ###############################################################################
+
+    def _ufunc(cls, name):
         # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
-        return cls._compile_add_calculate()
+        if name not in cls._ufuncs and cls.ufunc_mode == "jit-lookup" and name in ["add", "negative", "subtract"]:
+            cls._ufuncs[name] = cls._calculate_ufunc(name)
+        return super()._ufunc(name)
 
-    def _compile_negative_lookup(cls):
-        # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
-        return cls._compile_negative_calculate()
-
-    def _compile_subtract_lookup(cls):
-        # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
-        return cls._compile_subtract_calculate()
+    def _calculate_ufunc(cls, name):
+        return compile_ufunc(name, cls.characteristic, cls.degree, cls._irreducible_poly_int)
 
     ###############################################################################
-    # Compile general-purpose calculate functions
-    ###############################################################################
-
-    def _compile_add_calculate(cls):
-        global ORDER
-        ORDER = cls.order
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_add_calculate)
-
-    def _compile_negative_calculate(cls):
-        global ORDER
-        ORDER = cls.order
-        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_negative_calculate)
-
-    def _compile_subtract_calculate(cls):
-        global ORDER
-        ORDER = cls.order
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_subtract_calculate)
-
-    def _compile_multiply_calculate(cls):
-        global ORDER
-        ORDER = cls.order
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_multiply_calculate)
-
-    def _compile_reciprocal_calculate(cls):
-        global ORDER
-        ORDER = cls.order
-        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_reciprocal_calculate)
-
-    def _compile_divide_calculate(cls):
-        global ORDER, RECIPROCAL_UFUNC
-        ORDER = cls.order
-        RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_divide_calculate)
-
-    def _compile_power_calculate(cls):
-        global ORDER, RECIPROCAL_UFUNC
-        ORDER = cls.order
-        RECIPROCAL_UFUNC = cls._ufunc_reciprocal()
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_power_calculate)
-
-    def _compile_log_calculate(cls):
-        global ORDER, PRIMITIVE_ELEMENT
-        ORDER = cls.order
-        PRIMITIVE_ELEMENT = int(cls.primitive_element)
-        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_log_calculate)
-
-    ###############################################################################
-    # GF(p) arithmetic in pure python
+    # Pure python arithmetic methods
     ###############################################################################
 
     def _add_python(cls, a, b):
@@ -135,12 +90,6 @@ class GFpMeta(FieldMeta):
         return (a * b) % cls.order
 
     def _reciprocal_python(cls, a):
-        """
-        s*x + t*y = gcd(x, y) = 1
-        x = p
-        y = a in GF(p)
-        t = a**-1 in GF(p)
-        """
         if a == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -157,77 +106,122 @@ class GFpMeta(FieldMeta):
 
         return t2
 
-    def _power_python(cls, a, power):
-        """
-        Square and Multiply Algorithm
 
-        a^13 = (1) * (a)^13
-             = (a) * (a)^12
-             = (a) * (a^2)^6
-             = (a) * (a^4)^3
-             = (a * a^4) * (a^4)^2
-             = (a * a^4) * (a^8)
-             = result_m * result_s
-        """
-        if a == 0 and power < 0:
-            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+###############################################################################
+# Compile functions
+###############################################################################
 
-        if power == 0:
-            return 1
-        elif power < 0:
-            a = cls._reciprocal_python(a)
-            power = abs(power)
+CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
+DEGREE = None  # The prime power `m` of the Galois field
+IRREDUCIBLE_POLY = None  # The field's primitive polynomial in integer form
 
-        # In GF(p), we can reduce the power mod p-1 since a^(p-1) = 1 (mod p)
-        if power > cls.order - 1:
-            power = power % (cls.order - 1)
+RECIPROCAL = lambda a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY: 1 / a
 
-        result_s = a  # The "squaring" part
-        result_m = 1  # The "multiplicative" part
+# pylint: disable=redefined-outer-name,unused-argument
 
-        while power > 1:
-            if power % 2 == 0:
-                result_s = cls._multiply_python(result_s, result_s)
-                power //= 2
-            else:
-                result_m = cls._multiply_python(result_m, result_s)
-                power -= 1
 
-        result = cls._multiply_python(result_m, result_s)
+def compile_jit(name, reset=True):
+    """
+    Compile a JIT arithmetic function. These can be cached.
+    """
+    if name not in compile_jit.cache:
+        global RECIPROCAL
 
-        return result
+        if name in ["divide", "power"]:
+            RECIPROCAL = compile_jit("reciprocal", reset=False)
+
+        function = eval(f"{name}")
+        if _func_type[name] == "unary":
+            compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64)"], nopython=True, cache=True)(function)
+        else:
+            compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64, int64)"], nopython=True, cache=True)(function)
+
+        if reset:
+            reset_globals()
+
+    return compile_jit.cache[name]
+
+compile_jit.cache = {}
+
+
+def compile_ufunc(name, CHARACTERISTIC_, DEGREE_, IRREDUCIBLE_POLY_):
+    """
+    Compile an arithmetic ufunc. These cannot be cached as the field parameters are compiled into the binary.
+    """
+    key = (name, CHARACTERISTIC_, DEGREE_, IRREDUCIBLE_POLY_)
+    if key not in compile_ufunc.cache:
+        global CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY, RECIPROCAL
+        CHARACTERISTIC = CHARACTERISTIC_
+        DEGREE = DEGREE_
+        IRREDUCIBLE_POLY = IRREDUCIBLE_POLY_
+
+        if name in ["divide", "power"]:
+            RECIPROCAL = compile_jit("reciprocal", reset=False)
+
+        function = eval(f"{name}_ufunc")
+        if _func_type[name] == "unary":
+            compile_ufunc.cache[key] = numba.vectorize(["int64(int64)"], nopython=True)(function)
+        else:
+            compile_ufunc.cache[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(function)
+
+        reset_globals()
+
+    return compile_ufunc.cache[key]
+
+compile_ufunc.cache = {}
 
 
 ###############################################################################
-# GF(p) arithmetic explicitly calculated without lookup tables
+# Arithmetic explicitly calculated
 ###############################################################################
 
-def _add_calculate(a, b):  # pragma: no cover
+@numba.extending.register_jitable(inline="always")
+def add(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     c = a + b
-    if c >= ORDER:
-        c -= ORDER
+    if c >= CHARACTERISTIC:
+        c -= CHARACTERISTIC
     return c
 
 
-def _negative_calculate(a):  # pragma: no cover
+def add_ufunc(a, b):  # pragma: no cover
+    return add(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+
+
+@numba.extending.register_jitable(inline="always")
+def negative(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     if a == 0:
         return 0
     else:
-        return ORDER - a
+        return CHARACTERISTIC - a
 
 
-def _subtract_calculate(a, b):  # pragma: no cover
+def negative_ufunc(a):  # pragma: no cover
+    return negative(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+
+
+@numba.extending.register_jitable(inline="always")
+def subtract(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     if a >= b:
         return a - b
     else:
-        return ORDER + a - b
+        return CHARACTERISTIC + a - b
 
 
-def _multiply_calculate(a, b):  # pragma: no cover
-    return (a * b) % ORDER
+def subtract_ufunc(a, b):  # pragma: no cover
+    return subtract(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
 
 
-def _reciprocal_calculate(a):  # pragma: no cover
+@numba.extending.register_jitable(inline="always")
+def multiply(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+    return (a * b) % CHARACTERISTIC
+
+
+def multiply_ufunc(a, b):  # pragma: no cover
+    return multiply(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+
+
+@numba.extending.register_jitable(inline="always")
+def reciprocal(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """
     s*x + t*y = gcd(x, y) = 1
     x = p
@@ -237,7 +231,7 @@ def _reciprocal_calculate(a):  # pragma: no cover
     if a == 0:
         raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
-    r2, r1 = ORDER, a
+    r2, r1 = CHARACTERISTIC, a
     t2, t1 = 0, 1
 
     while r1 != 0:
@@ -246,23 +240,33 @@ def _reciprocal_calculate(a):  # pragma: no cover
         t2, t1 = t1, t2 - q*t1
 
     if t2 < 0:
-        t2 += ORDER
+        t2 += CHARACTERISTIC
 
     return t2
 
 
-def _divide_calculate(a, b):  # pragma: no cover
+def reciprocal_ufunc(a):  # pragma: no cover
+    return reciprocal(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+
+
+@numba.extending.register_jitable(inline="always")
+def divide(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     if b == 0:
         raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
     if a == 0:
         return 0
     else:
-        b_inv = RECIPROCAL_UFUNC(b)
-        return (a * b_inv) % ORDER
+        b_inv = RECIPROCAL(b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+        return (a * b_inv) % CHARACTERISTIC
 
 
-def _power_calculate(a, power):  # pragma: no cover
+def divide_ufunc(a, b):  # pragma: no cover
+    return divide(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+
+
+@numba.extending.register_jitable(inline="always")
+def power(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """
     Square and Multiply Algorithm
 
@@ -274,52 +278,69 @@ def _power_calculate(a, power):  # pragma: no cover
          = (a * a^4) * (a^8)
          = result_m * result_s
     """
-    if a == 0 and power < 0:
+    if a == 0 and b < 0:
         raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
-    if power == 0:
+    if b == 0:
         return 1
-    elif power < 0:
-        a = RECIPROCAL_UFUNC(a)
-        power = abs(power)
-
-    # In GF(p), we can reduce the power mod p-1 since a^(p-1) = 1 (mod p)
-    if power > ORDER - 1:
-        power = power % (ORDER - 1)
+    elif b < 0:
+        a = RECIPROCAL(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+        b = abs(b)
 
     result_s = a  # The "squaring" part
     result_m = 1  # The "multiplicative" part
 
-    while power > 1:
-        if power % 2 == 0:
-            result_s = (result_s * result_s) % ORDER
-            power //= 2
+    while b > 1:
+        if b % 2 == 0:
+            result_s = (result_s * result_s) % CHARACTERISTIC
+            b //= 2
         else:
-            result_m = (result_m * result_s) % ORDER
-            power -= 1
+            result_m = (result_m * result_s) % CHARACTERISTIC
+            b -= 1
 
-    result = (result_m * result_s) % ORDER
+    result = (result_m * result_s) % CHARACTERISTIC
 
     return result
 
 
-def _log_calculate(beta):  # pragma: no cover
+def power_ufunc(a, b):  # pragma: no cover
+    return power(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+
+
+@numba.extending.register_jitable(inline="always")
+def log(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """
     TODO: Replace this with more efficient algorithm
 
-    alpha in GF(p^m) and generates field
-    beta in GF(p^m)
+    a in GF(p^m)
+    b in GF(p^m) and generates field
 
-    gamma = log_primitive_element(beta), such that: alpha^gamma = beta
+    c = log(a, b), such that b^a = c
     """
-    if beta == 0:
+    if a == 0:
         raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
     # Naive algorithm
+    ORDER = CHARACTERISTIC**DEGREE
     result = 1
     for i in range(0, ORDER - 1):
-        if result == beta:
+        if result == a:
             break
-        result = (result * PRIMITIVE_ELEMENT) % ORDER
+        result = (result * b) % CHARACTERISTIC
 
     return i
+
+
+def log_ufunc(a, b):  # pragma: no cover
+    return log(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+
+
+def reset_globals():
+    """
+    Reset the global variable so when the pure-python ufuncs call these routines, they reference
+    the correct pure-python functions (not JIT functions or JIT-compiled ufuncs).
+    """
+    global RECIPROCAL
+    RECIPROCAL = reciprocal
+
+reset_globals()

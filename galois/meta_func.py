@@ -41,14 +41,5 @@ class Func(type):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
+        cls._gufuncs = {}
         cls._funcs = {}
-
-    def _compile_funcs(cls):
-        cls._funcs = {}  # Reset the dictionary so each func will get recompiled
-
-    def _numba_jit_kwargs(cls):
-        # return {"nopython": True, "nogil": True}
-        return {"nopython": True}
-
-    def _numba_guvectorize_kwargs(cls):
-        return {"nopython": True}

@@ -4,8 +4,8 @@ from ..meta import Meta
 from ..modular import totatives
 from ..overrides import set_module
 
-from .meta_func import FieldFunc
 from .meta_ufunc import FieldUfunc
+from .meta_func import FieldFunc
 from .poly_conversion import integer_to_poly, poly_to_str
 
 __all__ = ["FieldMeta"]
@@ -22,14 +22,20 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
     # pylint: disable=no-value-for-parameter,too-many-public-methods
 
     def __init__(cls, name, bases, namespace, **kwargs):
-        super().__init__(name, bases, namespace, **kwargs)
         cls._characteristic = kwargs.get("characteristic", None)
         cls._degree = kwargs.get("degree", None)
         cls._order = kwargs.get("order", None)
-        cls._irreducible_poly = kwargs.get("irreducible_poly", None)
+        super().__init__(name, bases, namespace, **kwargs)
+
+        if "irreducible_poly" in kwargs:
+            cls._irreducible_poly = kwargs["irreducible_poly"]
+            cls._irreducible_poly_int = cls._irreducible_poly.integer
+        else:
+            cls._irreducible_poly = None
+            cls._irreducible_poly_int = 0
         cls._primitive_element = kwargs.get("primitive_element", None)
 
-        cls._is_primitive_poly = None
+        cls._is_primitive_poly = kwargs.get("is_primitive_poly", None)
         cls._prime_subfield = None
 
         cls._display_mode = "int"
@@ -80,7 +86,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
         if element == 0:
             s = "0"
         else:
-            power = cls._ufunc_log()(element)
+            power = np.log(element)
             if power > 1:
                 s = f"α^{power}"
             elif power == 1:
@@ -424,6 +430,7 @@ class FieldMeta(Meta, FieldUfunc, FieldFunc):
         """
         # Ensure accesses of this property don't alter it
         return cls._irreducible_poly.copy()
+        # return Poly(cls._irreducible_poly, field=cls.prime_subfield)
 
     @property
     def is_primitive_poly(cls):

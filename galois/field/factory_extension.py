@@ -16,6 +16,9 @@ from .poly_functions import primitive_element as _primitive_element  # To avoid 
 
 
 def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify_irreducible=True, verify_primitive=True, mode="auto", target="cpu"):
+    """
+    Class factory for extension fields GF(p^m).
+    """
     if not isinstance(characteristic, int):
         raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
     if not isinstance(degree, int):
@@ -26,9 +29,11 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         raise ValueError(f"Argument `degree` must be greater than 1, not {degree}.")
     order = characteristic**degree
     prime_subfield = GF_prime(characteristic)
+    is_primitive_poly = None
 
     if irreducible_poly is None and primitive_element is None:
         irreducible_poly = conway_poly(characteristic, degree)
+        is_primitive_poly = True
         primitive_element = Poly.Identity(prime_subfield)
         verify_irreducible = False  # We don't need to verify Conway polynomials are irreducible
         verify_primitive = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
@@ -36,6 +41,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     # Get default irreducible polynomial
     if irreducible_poly is None:
         irreducible_poly = conway_poly(characteristic, degree)
+        is_primitive_poly = True
         verify_irreducible = False  # We don't need to verify Conway polynomials are irreducible
     elif isinstance(irreducible_poly, int):
         irreducible_poly = Poly.Integer(irreducible_poly, field=prime_subfield)
@@ -82,6 +88,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "degree": degree,
             "order": characteristic**degree,
             "irreducible_poly": irreducible_poly,
+            "is_primitive_poly": is_primitive_poly,
             "primitive_element": primitive_element.integer,
             "prime_subfield": prime_subfield,
             "target": target,
@@ -95,6 +102,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "degree": degree,
             "order": characteristic**degree,
             "irreducible_poly": irreducible_poly,
+            "is_primitive_poly": is_primitive_poly,
             "primitive_element": primitive_element.integer,
             "prime_subfield": prime_subfield,
             "target": target,
