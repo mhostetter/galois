@@ -3,13 +3,16 @@ import numpy as np
 
 from ..meta_ufunc import Ufunc
 
-CHARACTERISTIC = None  # The field's prime characteristic `p`
-ORDER = None  # The field's order `p^m`
-
-EXP = []  # EXP[i] = α^i
-LOG = []  # LOG[i] = x, such that α^x = i
-ZECH_LOG = []  # ZECH_LOG[i] = log(1 + α^i)
-ZECH_E = None  # α^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
+_func_type = {
+    "add": "binary",
+    "negative": "unary",
+    "subtract": "binary",
+    "multiply": "binary",
+    "reciprocal": "unary",
+    "divide": "binary",
+    "power": "binary",
+    "log": "binary",
+}
 
 
 class FieldUfunc(Ufunc):
@@ -34,10 +37,10 @@ class FieldUfunc(Ufunc):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._EXP = None
-        cls._LOG = None
-        cls._ZECH_LOG = None
-        cls._ZECH_E = None
+        cls._EXP = np.array([], dtype=np.int64)
+        cls._LOG = np.array([], dtype=np.int64)
+        cls._ZECH_LOG = np.array([], dtype=np.int64)
+        cls._ZECH_E = 0
 
     def _compile_ufuncs(cls):
         super()._compile_ufuncs()
@@ -46,18 +49,17 @@ class FieldUfunc(Ufunc):
             cls._build_lookup_tables()
 
     def _build_lookup_tables(cls):
-        if cls._EXP is not None:
+        # TODO: JIT compile this
+
+        if cls._EXP.size > 0:
             return
 
         order = cls.order
         primitive_element = int(cls.primitive_element)
-        dtype = np.int64
-        if order > np.iinfo(dtype).max:
-            raise RuntimeError(f"Cannot build lookup tables for {cls.name} since the elements cannot be represented with dtype {dtype}.")
 
-        cls._EXP = np.zeros(2*order, dtype=dtype)
-        cls._LOG = np.zeros(order, dtype=dtype)
-        cls._ZECH_LOG = np.zeros(order, dtype=dtype)
+        cls._EXP = np.zeros(2*order, dtype=np.int64)
+        cls._LOG = np.zeros(order, dtype=np.int64)
+        cls._ZECH_LOG = np.zeros(order, dtype=np.int64)
         if cls.characteristic == 2:
             cls._ZECH_E = 0
         else:
@@ -92,176 +94,44 @@ class FieldUfunc(Ufunc):
         cls._EXP[order:2*order] = cls._EXP[1:1 + order]
 
     ###############################################################################
-    # Compile general-purpose lookup functions
+    # Individual JIT arithmetic functions, pre-compiled (cached)
     ###############################################################################
 
-    def _compile_add_lookup(cls):
-        global EXP, LOG, ZECH_LOG, ZECH_E
-        EXP = cls._EXP
-        LOG = cls._LOG
-        ZECH_LOG = cls._ZECH_LOG
-        ZECH_E = cls._ZECH_E
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_add_lookup)
+    def _lookup_jit(cls, name):  # pylint: disable=no-self-use
+        return compile_jit(name)
 
-    def _compile_negative_lookup(cls):
-        global EXP, LOG, ZECH_E
-        EXP = cls._EXP
-        LOG = cls._LOG
-        ZECH_E = cls._ZECH_E
-        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_negative_lookup)
-
-    def _compile_subtract_lookup(cls):
-        global ORDER, EXP, LOG, ZECH_LOG, ZECH_E
-        ORDER = cls.order
-        EXP = cls._EXP
-        LOG = cls._LOG
-        ZECH_LOG = cls._ZECH_LOG
-        ZECH_E = cls._ZECH_E
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_subtract_lookup)
-
-    def _compile_multiply_lookup(cls):
-        global EXP, LOG
-        EXP = cls._EXP
-        LOG = cls._LOG
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_multiply_lookup)
-
-    def _compile_reciprocal_lookup(cls):
-        global ORDER, EXP, LOG
-        ORDER = cls.order
-        EXP = cls._EXP
-        LOG = cls._LOG
-        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_reciprocal_lookup)
-
-    def _compile_divide_lookup(cls):
-        global ORDER, EXP, LOG
-        ORDER = cls.order
-        EXP = cls._EXP
-        LOG = cls._LOG
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_divide_lookup)
-
-    def _compile_power_lookup(cls):
-        global ORDER, EXP, LOG
-        ORDER = cls.order
-        EXP = cls._EXP
-        LOG = cls._LOG
-        return numba.vectorize(["int64(int64, int64)"], **cls._numba_vectorize_kwargs())(_power_lookup)
-
-    def _compile_log_lookup(cls):
-        global LOG
-        LOG = cls._LOG
-        return numba.vectorize(["int64(int64)"], **cls._numba_vectorize_kwargs())(_log_lookup)
-
-    ###############################################################################
-    # Compile general-purpose calculate functions
-    ###############################################################################
-
-    def _compile_add_calculate(cls):
+    def _calculate_jit(cls, name):
         raise NotImplementedError
 
-    def _compile_negative_calculate(cls):
-        raise NotImplementedError
-
-    def _compile_subtract_calculate(cls):
-        raise NotImplementedError
-
-    def _compile_multiply_calculate(cls):
-        raise NotImplementedError
-
-    def _compile_reciprocal_calculate(cls):
-        raise NotImplementedError
-
-    def _compile_divide_calculate(cls):
-        raise NotImplementedError
-
-    def _compile_power_calculate(cls):
-        raise NotImplementedError
-
-    def _compile_log_calculate(cls):
+    def _python_func(cls, name):
         raise NotImplementedError
 
     ###############################################################################
     # Individual ufuncs, compiled on-demand
     ###############################################################################
 
-    def _ufunc_add(cls):
-        if cls._ufuncs.get("add", None) is None:
+    def _ufunc(cls, name):
+        if name not in cls._ufuncs:
             if cls.ufunc_mode == "jit-lookup":
-                cls._ufuncs["add"] = cls._compile_add_lookup()
+                cls._ufuncs[name] = cls._lookup_ufunc(name)
             elif cls.ufunc_mode == "jit-calculate":
-                cls._ufuncs["add"] = cls._compile_add_calculate()
+                cls._ufuncs[name] = cls._calculate_ufunc(name)
             else:
-                cls._ufuncs["add"] = np.frompyfunc(cls._add_python, 2, 1)
-        return cls._ufuncs["add"]
+                cls._ufuncs[name] = cls._python_ufunc(name)
+        return cls._ufuncs[name]
 
-    def _ufunc_negative(cls):
-        if cls._ufuncs.get("negative", None) is None:
-            if cls.ufunc_mode == "jit-lookup":
-                cls._ufuncs["negative"] = cls._compile_negative_lookup()
-            elif cls.ufunc_mode == "jit-calculate":
-                cls._ufuncs["negative"] = cls._compile_negative_calculate()
-            else:
-                cls._ufuncs["negative"] = np.frompyfunc(cls._negative_python, 1, 1)
-        return cls._ufuncs["negative"]
+    def _lookup_ufunc(cls, name):
+        return compile_ufunc(name, cls.characteristic, cls.degree, cls._irreducible_poly_int, cls._EXP, cls._LOG, cls._ZECH_LOG, cls._ZECH_E)
 
-    def _ufunc_subtract(cls):
-        if cls._ufuncs.get("subtract", None) is None:
-            if cls.ufunc_mode == "jit-lookup":
-                cls._ufuncs["subtract"] = cls._compile_subtract_lookup()
-            elif cls.ufunc_mode == "jit-calculate":
-                cls._ufuncs["subtract"] = cls._compile_subtract_calculate()
-            else:
-                cls._ufuncs["subtract"] = np.frompyfunc(cls._subtract_python, 2, 1)
-        return cls._ufuncs["subtract"]
+    def _calculate_ufunc(cls, name):
+        raise NotImplementedError
 
-    def _ufunc_multiply(cls):
-        if cls._ufuncs.get("multiply", None) is None:
-            if cls.ufunc_mode == "jit-lookup":
-                cls._ufuncs["multiply"] = cls._compile_multiply_lookup()
-            elif cls.ufunc_mode == "jit-calculate":
-                cls._ufuncs["multiply"] = cls._compile_multiply_calculate()
-            else:
-                cls._ufuncs["multiply"] = np.frompyfunc(cls._multiply_python, 2, 1)
-        return cls._ufuncs["multiply"]
-
-    def _ufunc_reciprocal(cls):
-        if cls._ufuncs.get("reciprocal", None) is None:
-            if cls.ufunc_mode == "jit-lookup":
-                cls._ufuncs["reciprocal"] = cls._compile_reciprocal_lookup()
-            elif cls.ufunc_mode == "jit-calculate":
-                cls._ufuncs["reciprocal"] = cls._compile_reciprocal_calculate()
-            else:
-                cls._ufuncs["reciprocal"] = np.frompyfunc(cls._reciprocal_python, 1, 1)
-        return cls._ufuncs["reciprocal"]
-
-    def _ufunc_divide(cls):
-        if cls._ufuncs.get("divide", None) is None:
-            if cls.ufunc_mode == "jit-lookup":
-                cls._ufuncs["divide"] = cls._compile_divide_lookup()
-            elif cls.ufunc_mode == "jit-calculate":
-                cls._ufuncs["divide"] = cls._compile_divide_calculate()
-            else:
-                cls._ufuncs["divide"] = np.frompyfunc(cls._divide_python, 2, 1)
-        return cls._ufuncs["divide"]
-
-    def _ufunc_power(cls):
-        if cls._ufuncs.get("power", None) is None:
-            if cls.ufunc_mode == "jit-lookup":
-                cls._ufuncs["power"] = cls._compile_power_lookup()
-            elif cls.ufunc_mode == "jit-calculate":
-                cls._ufuncs["power"] = cls._compile_power_calculate()
-            else:
-                cls._ufuncs["power"] = np.frompyfunc(cls._power_python, 2, 1)
-        return cls._ufuncs["power"]
-
-    def _ufunc_log(cls):
-        if cls._ufuncs.get("log", None) is None:
-            if cls.ufunc_mode == "jit-lookup":
-                cls._ufuncs["log"] = cls._compile_log_lookup()
-            elif cls.ufunc_mode == "jit-calculate":
-                cls._ufuncs["log"] = cls._compile_log_calculate()
-            else:
-                cls._ufuncs["log"] = np.frompyfunc(cls._log_python, 1, 1)
-        return cls._ufuncs["log"]
+    def _python_ufunc(cls, name):  # pylint: disable=no-self-use
+        function = eval(f"cls._{name}_python")
+        if _func_type[name] == "unary":
+            return np.frompyfunc(function, 1, 1)
+        else:
+            return np.frompyfunc(function, 2, 1)
 
     ###############################################################################
     # Ufunc routines
@@ -269,19 +139,22 @@ class FieldUfunc(Ufunc):
 
     def _ufunc_routine_add(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(cls._ufunc_add(), method)(*inputs, **kwargs)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("add"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_routine_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_unary_method_not_reduction(ufunc, method)
-        output = getattr(cls._ufunc_negative(), method)(*inputs, **kwargs)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("negative"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_routine_subtract(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(cls._ufunc_subtract(), method)(*inputs, **kwargs)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("subtract"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
@@ -291,38 +164,46 @@ class FieldUfunc(Ufunc):
             cls._verify_operands_in_field_or_int(ufunc, inputs, meta)
             inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
             inputs[meta["non_field_operands"][0]] = np.mod(inputs[meta["non_field_operands"][0]], cls.characteristic)
-        output = getattr(cls._ufunc_multiply(), method)(*inputs, **kwargs)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("multiply"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_routine_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_unary_method_not_reduction(ufunc, method)
-        output = getattr(cls._ufunc_reciprocal(), method)(*inputs, **kwargs)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("reciprocal"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_routine_divide(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        output = getattr(cls._ufunc_divide(), method)(*inputs, **kwargs)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("divide"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_routine_power(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_binary_method_not_reduction(ufunc, method)
         cls._verify_operands_first_field_second_int(ufunc, inputs, meta)
-        output = getattr(cls._ufunc_power(), method)(*inputs, **kwargs)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("power"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_routine_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_unary_method_not_reduction(ufunc, method)
-        output = getattr(cls._ufunc_power(), method)(*inputs, 2, **kwargs)
+        inputs = list(inputs) + [2]
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("power"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
     def _ufunc_routine_log(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_method_only_call(ufunc, method)
-        output = getattr(cls._ufunc_log(), method)(*inputs, **kwargs)
+        inputs = list(inputs) + [int(cls.primitive_element)]
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("log"), method)(*inputs, **kwargs)
         return output
 
     def _ufunc_routine_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
@@ -334,33 +215,18 @@ class FieldUfunc(Ufunc):
     ###############################################################################
 
     def _add_python(cls, a, b):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
         raise NotImplementedError
 
     def _negative_python(cls, a):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
         raise NotImplementedError
 
     def _subtract_python(cls, a, b):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
         raise NotImplementedError
 
     def _multiply_python(cls, a, b):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
         raise NotImplementedError
 
     def _reciprocal_python(cls, a):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
         raise NotImplementedError
 
     def _divide_python(cls, a, b):
@@ -373,60 +239,44 @@ class FieldUfunc(Ufunc):
             b_inv = cls._reciprocal_python(b)
             return cls._multiply_python(a, b_inv)
 
-    def _power_python(cls, a, power):
-        """
-        Square and Multiply Algorithm
-
-        a^13 = (1) * (a)^13
-             = (a) * (a)^12
-             = (a) * (a^2)^6
-             = (a) * (a^4)^3
-             = (a * a^4) * (a^4)^2
-             = (a * a^4) * (a^8)
-             = result_m * result_s
-        """
-        if a == 0 and power < 0:
+    def _power_python(cls, a, b):
+        if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
-        if power == 0:
+        if b == 0:
             return 1
-        elif power < 0:
+        elif b < 0:
             a = cls._reciprocal_python(a)
-            power = abs(power)
+            b = abs(b)
 
         result_s = a  # The "squaring" part
         result_m = 1  # The "multiplicative" part
 
-        while power > 1:
-            if power % 2 == 0:
+        while b > 1:
+            if b % 2 == 0:
                 result_s = cls._multiply_python(result_s, result_s)
-                power //= 2
+                b //= 2
             else:
                 result_m = cls._multiply_python(result_m, result_s)
-                power -= 1
+                b -= 1
 
         result = cls._multiply_python(result_m, result_s)
 
         return result
 
-    def _log_python(cls, beta):
+    def _log_python(cls, a, b):
         """
         TODO: Replace this with a more efficient algorithm
-
-        α in GF(p^m) and is a multiplicative generator
-        β in GF(p^m)
-
-        ɣ = log_α(β), such that: α^ɣ = β
         """
-        if beta == 0:
+        if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
         # Naive algorithm
         result = 1
         for i in range(0, cls.order - 1):
-            if result == beta:
+            if result == a:
                 break
-            result = cls._multiply_python(result, int(cls.primitive_element))
+            result = cls._multiply_python(result, b)
 
         return i
 
@@ -454,11 +304,63 @@ class FieldUfunc(Ufunc):
         # return cls(a - A) / cls(B - b)
 
 
-###################################################################################
-# Galois field arithmetic for any field using EXP, LOG, and ZECH_LOG lookup tables
-###################################################################################
+###############################################################################
+# Compile functions
+###############################################################################
 
-def _add_lookup(a, b):  # pragma: no cover
+EXP = []  # EXP[i] = α^i
+LOG = []  # LOG[i] = x, such that α^x = i
+ZECH_LOG = []  # ZECH_LOG[i] = log(1 + α^i)
+ZECH_E = 0  # α^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
+
+# pylint: disable=redefined-outer-name,unused-argument
+
+
+def compile_jit(name):
+    """
+    Compile a JIT arithmetic function. These can be cached.
+    """
+    if name not in compile_jit.cache:
+        function = eval(f"{name}")
+        if _func_type[name] == "unary":
+            compile_jit.cache[name] = numba.jit("int64(int64, int64[:], int64[:], int64[:], int64)", nopython=True, cache=True)(function)
+        else:
+            compile_jit.cache[name] = numba.jit("int64(int64, int64, int64[:], int64[:], int64[:], int64)", nopython=True, cache=True)(function)
+
+    return compile_jit.cache[name]
+
+compile_jit.cache = {}
+
+
+def compile_ufunc(name, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY, EXP_, LOG_, ZECH_LOG_, ZECH_E_):
+    """
+    Compile an arithmetic ufunc. These cannot be cached as the lookup tables are compiled into the binary.
+    """
+    key = (name, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+    if key not in compile_ufunc.cache:
+        global EXP, LOG, ZECH_LOG, ZECH_E
+        EXP = EXP_
+        LOG = LOG_
+        ZECH_LOG = ZECH_LOG_
+        ZECH_E = ZECH_E_
+
+        function = eval(f"{name}_ufunc")
+        if _func_type[name] == "unary":
+            compile_ufunc.cache[key] = numba.vectorize(["int64(int64)"], nopython=True)(function)
+        else:
+            compile_ufunc.cache[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(function)
+
+    return compile_ufunc.cache[key]
+
+compile_ufunc.cache = {}
+
+
+###############################################################################
+# Arithmetic using lookup tables
+###############################################################################
+
+@numba.extending.register_jitable(inline="always")
+def add(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -490,7 +392,12 @@ def _add_lookup(a, b):  # pragma: no cover
         return EXP[m + ZECH_LOG[n - m]]
 
 
-def _negative_lookup(a):  # pragma: no cover
+def add_ufunc(a, b):  # pragma: no cover
+    return add(a, b, EXP, LOG, ZECH_LOG, ZECH_E)
+
+
+@numba.extending.register_jitable(inline="always")
+def negative(a, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     """
     a in GF(p^m)
     α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
@@ -507,7 +414,12 @@ def _negative_lookup(a):  # pragma: no cover
         return EXP[ZECH_E + n]
 
 
-def _subtract_lookup(a, b):  # pragma: no cover
+def negative_ufunc(a):  # pragma: no cover
+    return negative(a, EXP, LOG, ZECH_LOG, ZECH_E)
+
+
+@numba.extending.register_jitable(inline="always")
+def subtract(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -519,6 +431,8 @@ def _subtract_lookup(a, b):  # pragma: no cover
           = α^m + (α^e * α^n)
           = α^m + α^(e + n)
     """
+    ORDER = LOG.size
+
     # Same as addition if n = LOG[b] + e
     m = LOG[a]
     n = LOG[b] + ZECH_E
@@ -545,7 +459,12 @@ def _subtract_lookup(a, b):  # pragma: no cover
     return EXP[m + ZECH_LOG[z]]
 
 
-def _multiply_lookup(a, b):  # pragma: no cover
+def subtract_ufunc(a, b):  # pragma: no cover
+    return subtract(a, b, EXP, LOG, ZECH_LOG, ZECH_E)
+
+
+@numba.extending.register_jitable(inline="always")
+def multiply(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -562,7 +481,12 @@ def _multiply_lookup(a, b):  # pragma: no cover
         return EXP[m + n]
 
 
-def _reciprocal_lookup(a):  # pragma: no cover
+def multiply_ufunc(a, b):  # pragma: no cover
+    return multiply(a, b, EXP, LOG, ZECH_LOG, ZECH_E)
+
+
+@numba.extending.register_jitable(inline="always")
+def reciprocal(a, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     """
     a in GF(p^m)
     α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
@@ -576,11 +500,17 @@ def _reciprocal_lookup(a):  # pragma: no cover
     if a == 0:
         raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
+    ORDER = LOG.size
     m = LOG[a]
     return EXP[(ORDER - 1) - m]
 
 
-def _divide_lookup(a, b):  # pragma: no cover
+def reciprocal_ufunc(a):  # pragma: no cover
+    return reciprocal(a, EXP, LOG, ZECH_LOG, ZECH_E)
+
+
+@numba.extending.register_jitable(inline="always")
+def divide(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     """
     a in GF(p^m)
     b in GF(p^m)
@@ -598,12 +528,18 @@ def _divide_lookup(a, b):  # pragma: no cover
     if a == 0:  # LOG[0] = -Inf, so catch this condition
         return 0
     else:
+        ORDER = LOG.size
         m = LOG[a]
         n = LOG[b]
         return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
 
 
-def _power_lookup(a, b_int):  # pragma: no cover
+def divide_ufunc(a, b):  # pragma: no cover
+    return divide(a, b, EXP, LOG, ZECH_LOG, ZECH_E)
+
+
+@numba.extending.register_jitable(inline="always")
+def power(a, b_int, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     """
     a in GF(p^m)
     b_int in Z
@@ -624,19 +560,29 @@ def _power_lookup(a, b_int):  # pragma: no cover
     elif a == 0:  # LOG[0] = -Inf, so catch this condition
         return 0
     else:
+        ORDER = LOG.size
         m = LOG[a]
         return EXP[(m * b_int) % (ORDER - 1)]
 
 
-def _log_lookup(a):  # pragma: no cover
+def power_ufunc(a, b_int):  # pragma: no cover
+    return power(a, b_int, EXP, LOG, ZECH_LOG, ZECH_E)
+
+
+@numba.extending.register_jitable(inline="always")
+def log(beta, alpha, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     """
     a in GF(p^m)
     α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
 
-    log(a, α) = log(α^m, α)
-              = m
+    log(beta, α) = log(α^m, α)
+                 = m
     """
-    if a == 0:
+    if beta == 0:
         raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
-    return LOG[a]
+    return LOG[beta]
+
+
+def log_ufunc(beta, alpha):  # pragma: no cover
+    return log(beta, alpha, EXP, LOG, ZECH_LOG, ZECH_E)
