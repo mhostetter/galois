@@ -74,7 +74,7 @@ class Array(np.ndarray, metaclass=Meta):
 
             if isinstance(item, str):
                 item = cls._check_string_value(item)
-            elif not isinstance(item, (int, np.integer, cls)):
+            elif not isinstance(item, (int, np.integer, Array)):
                 raise TypeError(f"When {cls.name} arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
 
             cls._check_array_values(item)
@@ -91,14 +91,14 @@ class Array(np.ndarray, metaclass=Meta):
         if array.size == 0:
             return array
         if array.ndim == 0:
-            if not isinstance(array[()], (int, np.integer, cls)):
+            if not isinstance(array[()], (int, np.integer, Array)):
                 raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(array[()])}.")
             return int(array)
 
         iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
         for _ in iterator:
             a = array[iterator.multi_index]
-            if not isinstance(a, (int, np.integer, cls)):
+            if not isinstance(a, (int, np.integer, Array)):
                 raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
 
             # Ensure the type is int so dtype=object classes don't get all mixed up
