@@ -203,10 +203,14 @@ class FieldFunc(Func):
 
     def _poly_divmod(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
+        assert 1 <= a.ndim <= 2 and b.ndim == 1
         field = type(a)
         dtype = a.dtype
-        q_degree = a.size - b.size
-        r_degree = b.size - 1
+        a_1d = a.ndim == 1
+        a = np.atleast_2d(a)
+
+        q_degree = a.shape[-1] - b.shape[-1]
+        r_degree = b.shape[-1] - 1
 
         if cls._ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
@@ -225,7 +229,14 @@ class FieldFunc(Func):
             qr = cls._func("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
         qr = qr.view(field)
 
-        return qr[0:q_degree + 1], qr[q_degree + 1:q_degree + 1 + r_degree + 1]
+        q = qr[:, 0:q_degree + 1]
+        r = qr[:, q_degree + 1:q_degree + 1 + r_degree + 1]
+
+        if a_1d:
+            q = q.reshape(q.size)
+            r = r.reshape(r.size)
+
+        return q, r
 
     def _poly_roots(cls, nonzero_degrees, nonzero_coeffs):
         assert isinstance(nonzero_coeffs, cls)
@@ -319,27 +330,17 @@ def poly_evaluate_python_calculate(coeffs, value, ADD, MULTIPLY, CHARACTERISTIC,
 # Compilation functions
 ###############################################################################
 
-UNARY_LOOKUP = numba.types.FunctionType(int64(int64, int64[:], int64[:], int64[:], int64))
-BINARY_LOOKUP = numba.types.FunctionType(int64(int64, int64, int64[:], int64[:], int64[:], int64))
-UNARY_CALCULATE = numba.types.FunctionType(int64(int64, int64, int64, int64))
-BINARY_CALCULATE = numba.types.FunctionType(int64(int64, int64, int64, int64, int64))
+UNARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64[:], int64[:], int64[:], int64))
+BINARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64, int64[:], int64[:], int64[:], int64))
+UNARY_CALCULATE_SIG = numba.types.FunctionType(int64(int64, int64, int64, int64))
+BINARY_CALCULATE_SIG = numba.types.FunctionType(int64(int64, int64, int64, int64, int64))
 
 
 def jit_lookup(name):
     if name not in jit_lookup.cache:
         function = eval(f"{name}_lookup")
-        if name == "matmul":
-            jit_lookup.cache[name] = numba.jit(int64[:,:](int64[:,:], int64[:,:], BINARY_LOOKUP, BINARY_LOOKUP, int64[:], int64[:], int64[:], int64), nopython=True, cache=True)(function)
-        elif name == "convolve":
-            jit_lookup.cache[name] = numba.jit(int64[:](int64[:], int64[:], BINARY_LOOKUP, BINARY_LOOKUP, int64[:], int64[:], int64[:], int64), nopython=True, cache=True)(function)
-        elif name == "poly_divmod":
-            jit_lookup.cache[name] = numba.jit(int64[:](int64[:], int64[:], BINARY_LOOKUP, BINARY_LOOKUP, BINARY_LOOKUP, int64[:], int64[:], int64[:], int64), nopython=True, cache=True)(function)
-        elif name == "poly_roots":
-            jit_lookup.cache[name] = numba.jit(int64[:,:](int64[:], int64[:], int64, BINARY_LOOKUP, BINARY_LOOKUP, BINARY_LOOKUP, int64[:], int64[:], int64[:], int64), nopython=True, cache=True)(function)
-        elif name == "berlekamp_massey":
-            jit_lookup.cache[name] = numba.jit(int64[:](int64[:], BINARY_LOOKUP, BINARY_LOOKUP, BINARY_LOOKUP, UNARY_LOOKUP, int64[:], int64[:], int64[:], int64), nopython=True, cache=True)(function)
-        else:
-            raise NotImplementedError
+        sig = eval(f"{name.upper()}_LOOKUP_SIG")
+        jit_calculate.cache[name] = numba.jit(sig.signature, nopython=True, cache=True)(function)
     return jit_lookup.cache[name]
 
 jit_lookup.cache = {}
@@ -348,18 +349,8 @@ jit_lookup.cache = {}
 def jit_calculate(name):
     if name not in jit_calculate.cache:
         function = eval(f"{name}_calculate")
-        if name == "matmul":
-            jit_calculate.cache[name] = numba.jit(int64[:,:](int64[:,:], int64[:,:], BINARY_CALCULATE, BINARY_CALCULATE, int64, int64, int64), nopython=True, cache=True)(function)
-        elif name == "convolve":
-            jit_calculate.cache[name] = numba.jit(int64[:](int64[:], int64[:], BINARY_CALCULATE, BINARY_CALCULATE, int64, int64, int64), nopython=True, cache=True)(function)
-        elif name == "poly_divmod":
-            jit_calculate.cache[name] = numba.jit(int64[:](int64[:], int64[:], BINARY_CALCULATE, BINARY_CALCULATE, BINARY_CALCULATE, int64, int64, int64), nopython=True, cache=True)(function)
-        elif name == "poly_roots":
-            jit_calculate.cache[name] = numba.jit(int64[:,:](int64[:], int64[:], int64, BINARY_CALCULATE, BINARY_CALCULATE, BINARY_CALCULATE, int64, int64, int64), nopython=True, cache=True)(function)
-        elif name == "berlekamp_massey":
-            jit_calculate.cache[name] = numba.jit(int64[:](int64[:], BINARY_CALCULATE, BINARY_CALCULATE, BINARY_CALCULATE, UNARY_CALCULATE, int64, int64, int64), nopython=True, cache=True)(function)
-        else:
-            raise NotImplementedError
+        sig = eval(f"{name.upper()}_CALCULATE_SIG")
+        jit_calculate.cache[name] = numba.jit(sig.signature, nopython=True, cache=True)(function)
     return jit_calculate.cache[name]
 
 jit_calculate.cache = {}
@@ -372,6 +363,8 @@ def python_func(name):
 ###############################################################################
 # Matrix multiplication
 ###############################################################################
+
+MATMUL_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
 
 def matmul_lookup(A, B, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
@@ -390,6 +383,8 @@ def matmul_lookup(A, B, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: n
 
     return C
 
+
+MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def matmul_calculate(A, B, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
@@ -413,6 +408,8 @@ def matmul_calculate(A, B, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_PO
 # Convolution
 ###############################################################################
 
+CONVOLVE_LOOKUP_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+
 def convolve_lookup(a, b, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
     dtype = a.dtype
@@ -424,6 +421,8 @@ def convolve_lookup(a, b, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma:
 
     return c
 
+
+CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def convolve_calculate(a, b, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
@@ -441,36 +440,46 @@ def convolve_calculate(a, b, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_
 # Polynomial division with remainder
 ###############################################################################
 
+POLY_DIVMOD_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+
 def poly_divmod_lookup(a, b, SUBTRACT, MULTIPLY, DIVIDE, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
 
-    assert a.size >= b.size
+    assert a.ndim == 2 and b.ndim == 1
+    assert a.shape[-1] >= b.shape[-1]
 
-    q_degree = a.size - b.size
+    q_degree = a.shape[1] - b.shape[-1]
     qr = np.copy(a)
-    for i in range(0, q_degree + 1):
-        if qr[i] > 0:
-            q = DIVIDE(qr[i], b[0], *args)
-            for j in range(0, b.size):
-                qr[i + j] = SUBTRACT(qr[i + j], MULTIPLY(q, b[j], *args), *args)
-            qr[i] = q
+
+    for k in range(a.shape[0]):
+        for i in range(q_degree + 1):
+            if qr[k,i] > 0:
+                q = DIVIDE(qr[k,i], b[0], *args)
+                for j in range(b.size):
+                    qr[k, i + j] = SUBTRACT(qr[k, i + j], MULTIPLY(q, b[j], *args), *args)
+                qr[k,i] = q
 
     return qr
 
 
+POLY_DIVMOD_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
+
 def poly_divmod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
 
-    assert a.size >= b.size
+    assert a.ndim == 2 and b.ndim == 1
+    assert a.shape[-1] >= b.shape[-1]
 
-    q_degree = a.size - b.size
+    q_degree = a.shape[1] - b.shape[-1]
     qr = np.copy(a)
-    for i in range(0, q_degree + 1):
-        if qr[i] > 0:
-            q = DIVIDE(qr[i], b[0], *args)
-            for j in range(0, b.size):
-                qr[i + j] = SUBTRACT(qr[i + j], MULTIPLY(q, b[j], *args), *args)
-            qr[i] = q
+
+    for k in range(a.shape[0]):
+        for i in range(q_degree + 1):
+            if qr[k,i] > 0:
+                q = DIVIDE(qr[k,i], b[0], *args)
+                for j in range(b.size):
+                    qr[k, i + j] = SUBTRACT(qr[k, i + j], MULTIPLY(q, b[j], *args), *args)
+                qr[k,i] = q
 
     return qr
 
@@ -478,6 +487,8 @@ def poly_divmod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGR
 ###############################################################################
 # Polynomial roots
 ###############################################################################
+
+POLY_ROOTS_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
 
 def poly_roots_lookup(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, EXP, LOG, ZECH_LOG, ZECH_E):
     args = EXP, LOG, ZECH_LOG, ZECH_E
@@ -521,6 +532,8 @@ def poly_roots_lookup(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, M
 
     return np.array([roots, powers], dtype=dtype)
 
+
+POLY_ROOTS_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
@@ -569,6 +582,8 @@ def poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD
 # Berlekamp-Massey algorithm
 ###############################################################################
 
+BERLEKAMP_MASSEY_LOOKUP_SIG = numba.types.FunctionType(int64[:](int64[:], BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, UNARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+
 def berlekamp_massey_lookup(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, EXP, LOG, ZECH_LOG, ZECH_E):
     args = EXP, LOG, ZECH_LOG, ZECH_E
     dtype = sequence.dtype
@@ -608,6 +623,8 @@ def berlekamp_massey_lookup(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, EXP, 
 
     return c[0:L + 1][::-1]
 
+
+BERLEKAMP_MASSEY_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, UNARY_CALCULATE_SIG, int64, int64, int64))
 
 def berlekamp_massey_calculate(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
