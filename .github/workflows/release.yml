@@ -74,7 +74,7 @@ jobs:
         tag_name: v${{ steps.next_version.outputs.version }}
         release_name: galois v${{ steps.next_version.outputs.version }}
         body_path: release_notes.md
-        draft: false
+        draft: true
     - name: Build python package
       run: |
         python3 -m pip install --upgrade setuptools wheel twine
