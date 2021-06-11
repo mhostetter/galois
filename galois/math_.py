@@ -8,7 +8,7 @@ import numpy as np
 
 from .overrides import set_module
 
-__all__ = ["pow", "isqrt", "lcm", "prod"]
+__all__ = ["pow", "isqrt", "iroot", "ilog", "lcm", "prod"]
 
 
 @set_module("galois")
@@ -72,11 +72,9 @@ def isqrt(n):
     --------
     .. ipython:: python
 
-        # Use a large Mersenne prime
-        p = galois.mersenne_primes(2000)[-1]; p
-        sqrt_p = galois.isqrt(p); sqrt_p
-        sqrt_p**2 <= p
-        (sqrt_p + 1)**2 <= p
+        galois.isqrt(27**2 - 1)
+        galois.isqrt(27**2)
+        galois.isqrt(27**2 + 1)
     """
     if sys.version_info.major == 3 and sys.version_info.minor >= 8:
         return math.isqrt(n)  # pylint: disable=no-member
@@ -96,6 +94,108 @@ def isqrt(n):
             return small_candidate
         else:
             return large_candidate
+
+
+@set_module("galois")
+def iroot(n, k):
+    """
+    Finds the integer :math:`k`-th root :math:`x` of :math:`n`, such that :math:`x^k \\le n`.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+    k : int
+        The root :math:`k`, must be at least 2.
+
+    Returns
+    -------
+    int
+        The integer :math:`k`-th root :math:`x` of :math:`n`, such that :math:`x^k \\le n`
+
+    Examples
+    --------
+    .. ipython :: python
+
+        galois.iroot(27**5 - 1, 5)
+        galois.iroot(27**5, 5)
+        galois.iroot(27**5 + 1, 5)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not isinstance(k, (int, np.integer)):
+        raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be positive, not {n}.")
+    if not k >= 2:
+        raise ValueError(f"Argument `k` must be at least 2, not {k}.")
+
+    # https://stackoverflow.com/a/39191163/11694321
+    u = n
+    x = n + 1
+    k1 = k - 1
+
+    while u < x:
+        x = u
+        u = (k1*u + n // u**k1) // k
+
+    return x
+
+
+@set_module("galois")
+def ilog(n, b):
+    """
+    Finds the integer :math:`\\textrm{log}_b(n) = k`, such that :math:`b^k \\le n`.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+    b : int
+        The logarithm base :math:`b`.
+
+    Returns
+    -------
+    int
+        The integer :math:`\\textrm{log}_b(n) = k`, such that :math:`b^k \\le n`.
+
+    Examples
+    --------
+    .. ipython :: python
+
+        galois.ilog(27**5 - 1, 27)
+        galois.ilog(27**5, 27)
+        galois.ilog(27**5 + 1, 27)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not isinstance(b, (int, np.integer)):
+        raise TypeError(f"Argument `b` must be an integer, not {type(b)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be positive, not {n}.")
+    if not b >= 2:
+        raise ValueError(f"Argument `b` must be at least 2, not {b}.")
+
+    # https://stackoverflow.com/a/39191163/11694321
+    low, b_low, high, b_high = 0, 1, 1, b
+
+    while b_high < n:
+        low, b_low, high, b_high = high, b_high, high*2, b_high**2
+
+    while high - low > 1:
+        mid = (low + high) // 2
+        b_mid = b_low * b**(mid - low)
+        if n < b_mid:
+            high, b_high = mid, b_mid
+        elif b_mid < n:
+            low, b_low = mid, b_mid
+        else:
+            return mid
+
+    if b_high == n:
+        return high
+
+    return low
 
 
 @set_module("galois")

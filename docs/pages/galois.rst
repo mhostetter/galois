@@ -140,6 +140,8 @@ Modular Arithmetic
    lcm
    crt
    isqrt
+   iroot
+   ilog
    pow
    is_cyclic
    carmichael
