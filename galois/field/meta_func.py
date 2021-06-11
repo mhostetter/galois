@@ -1,18 +1,44 @@
+"""
+A module containint a metaclass mixin abstract base class that handles overridding numpy function calls.
+"""
 import numba
 from numba import int64
 import numpy as np
 
 from ..dtypes import DTYPES
-from ..meta_func import Func
 
 from . import linalg
 
+# List of functions that are not valid on arrays over finite groups, rings, and fields
+UNSUPPORTED_FUNCTIONS_UNARY = [
+    np.packbits, np.unpackbits,
+    np.unwrap,
+    np.around, np.round_, np.fix,
+    np.gradient, np.trapz,
+    np.i0, np.sinc,
+    np.angle, np.real, np.imag, np.conj, np.conjugate,
+]
 
-class FieldFunc(Func):
+UNSUPPORTED_FUNCTIONS_BINARY = [
+    np.lib.scimath.logn,
+    np.cross,
+]
+
+FUNCTIONS_REQUIRING_VIEW = [
+    np.copy, np.concatenate,
+    np.broadcast_to,
+    np.trace,
+]
+
+
+class FieldFunc(type):
     """
     A mixin class that JIT compiles general purpose functions for polynomial arithmetic and convolution.
     """
     # pylint: disable=no-value-for-parameter
+
+    _unsupported_functions = UNSUPPORTED_FUNCTIONS_UNARY + UNSUPPORTED_FUNCTIONS_BINARY
+    _functions_requiring_view = FUNCTIONS_REQUIRING_VIEW
 
     _overridden_functions = {
         np.convolve: "_convolve",
@@ -29,6 +55,11 @@ class FieldFunc(Func):
         np.linalg.solve: linalg.solve,
         np.linalg.inv: linalg.inv,
     }
+
+    def __init__(cls, name, bases, namespace, **kwargs):
+        super().__init__(name, bases, namespace, **kwargs)
+        cls._gufuncs = {}
+        cls._funcs = {}
 
     ###############################################################################
     # Individual gufuncs, compiled on-demand

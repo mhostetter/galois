@@ -4,7 +4,7 @@ import numpy as np
 from ..dtypes import DTYPES
 from ..modular import primitive_root
 
-from .meta_ufunc import _func_type
+from .meta_ufunc import _FUNCTION_TYPE
 from .meta import FieldMeta
 from .poly import Poly
 
@@ -131,7 +131,7 @@ def compile_jit(name, reset=True):
             RECIPROCAL = compile_jit("reciprocal", reset=False)
 
         function = eval(f"{name}")
-        if _func_type[name] == "unary":
+        if _FUNCTION_TYPE[name] == "unary":
             compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64)"], nopython=True, cache=True)(function)
         else:
             compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64, int64)"], nopython=True, cache=True)(function)
@@ -159,7 +159,7 @@ def compile_ufunc(name, CHARACTERISTIC_, DEGREE_, IRREDUCIBLE_POLY_):
             RECIPROCAL = compile_jit("reciprocal", reset=False)
 
         function = eval(f"{name}_ufunc")
-        if _func_type[name] == "unary":
+        if _FUNCTION_TYPE[name] == "unary":
             compile_ufunc.cache[key] = numba.vectorize(["int64(int64)"], nopython=True)(function)
         else:
             compile_ufunc.cache[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(function)

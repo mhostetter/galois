@@ -5,7 +5,6 @@ from .version import __version__
 
 # Subpackages
 from .code import *
-from .group import *
 from .field import *
 
 # Modules
