@@ -114,21 +114,6 @@ Forward Error Correcting Codes
    bch_generator_poly
    bch_generator_matrix
 
-Finite Groups
--------------
-.. rubric::
-.. autosummary::
-   :template: class.rst
-   :toctree:
-
-   Group
-   GroupArray
-   GroupMeta
-   is_group
-   is_cyclic
-   euler_totient
-   totatives
-
 Modular Arithmetic
 ------------------
 .. rubric::

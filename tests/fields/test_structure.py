@@ -7,24 +7,14 @@ import galois
 
 
 def test_not_abstract_classes():
-    assert not galois.is_field(galois.array.Array)
     assert not galois.is_field(galois.FieldArray)
-
-    assert not galois.is_prime_field(galois.array.Array)
     assert not galois.is_prime_field(galois.FieldArray)
-
-    assert not galois.is_extension_field(galois.array.Array)
     assert not galois.is_extension_field(galois.FieldArray)
 
 
 def test_not_metaclasses():
-    assert not galois.is_field(galois.meta.Meta)
     assert not galois.is_field(galois.FieldMeta)
-
-    assert not galois.is_prime_field(galois.meta.Meta)
     assert not galois.is_prime_field(galois.FieldMeta)
-
-    assert not galois.is_extension_field(galois.meta.Meta)
     assert not galois.is_extension_field(galois.FieldMeta)
 
 

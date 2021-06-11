@@ -3,33 +3,9 @@ A module to determine the algebraic structure of an array or array class.
 """
 import numpy as np
 
-from .array import GroupArrayBase, FieldArrayBase
+from .field.array import FieldArray
 
-__all__ = ["is_group", "is_field", "is_prime_field", "is_extension_field"]
-
-
-###############################################################################
-# Groups
-###############################################################################
-
-def is_group(obj):
-    """
-    Determines if the object is a finite group array class created from :func:`galois.Group` or one of
-    its instances.
-
-    Parameters
-    ----------
-    obj : type
-        Any object.
-
-    Returns
-    -------
-    bool
-        `True` if `obj` is a finite group array class generated from :func:`galois.Group` or one of its instances.
-    """
-    if isinstance(obj, np.ndarray):
-        obj = type(obj)
-    return issubclass(obj, GroupArrayBase) and obj is not GroupArrayBase
+__all__ = ["is_field", "is_prime_field", "is_extension_field"]
 
 
 ###############################################################################
@@ -53,7 +29,7 @@ def is_field(obj):
     """
     if isinstance(obj, np.ndarray):
         obj = type(obj)
-    return issubclass(obj, FieldArrayBase) and obj is not FieldArrayBase
+    return issubclass(obj, FieldArray) and obj is not FieldArray
 
 
 def is_prime_field(obj):
@@ -73,7 +49,7 @@ def is_prime_field(obj):
     """
     if isinstance(obj, np.ndarray):
         obj = type(obj)
-    return issubclass(obj, FieldArrayBase) and obj is not FieldArrayBase and obj.degree == 1
+    return issubclass(obj, FieldArray) and obj is not FieldArray and obj.degree == 1
 
 
 def is_extension_field(obj):
@@ -93,4 +69,4 @@ def is_extension_field(obj):
     """
     if isinstance(obj, np.ndarray):
         obj = type(obj)
-    return issubclass(obj, FieldArrayBase) and obj is not FieldArrayBase and obj.degree > 1
+    return issubclass(obj, FieldArray) and obj is not FieldArray and obj.degree > 1
