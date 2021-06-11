@@ -200,6 +200,9 @@ class Array(np.ndarray, metaclass=Meta):
             raise NotImplementedError(f"The numpy ufunc '{ufunc.__name__}' is not supported on {type(self).name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         else:
+            if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:
+                kwargs["casting"] = "unsafe"
+
             inputs, kwargs = type(self)._view_inputs_as_ndarray(inputs, kwargs)
             output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
 

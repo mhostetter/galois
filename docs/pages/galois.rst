@@ -102,6 +102,18 @@ Linear Sequences
 
    berlekamp_massey
 
+Forward Error Correcting Codes
+------------------------------
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
+
+   BCH
+   bch_valid_codes
+   bch_generator_poly
+   bch_generator_matrix
+
 Finite Groups
 -------------
 .. rubric::
