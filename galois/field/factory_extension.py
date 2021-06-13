@@ -1,5 +1,7 @@
 import types
 
+import numpy as np
+
 from ..array import FieldArrayBase
 from ..prime import is_prime
 
@@ -47,8 +49,10 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         verify_poly = False  # We don't need to verify Conway polynomials are irreducible
     elif isinstance(irreducible_poly, int):
         irreducible_poly = Poly.Integer(irreducible_poly, field=prime_subfield)
+    elif isinstance(irreducible_poly, (tuple, list, np.ndarray)):
+        irreducible_poly = Poly(irreducible_poly, field=prime_subfield)
     elif not isinstance(irreducible_poly, Poly):
-        raise TypeError(f"Argument `irreducible_poly` must be an integer or galois.Poly, not {type(irreducible_poly)}.")
+        raise TypeError(f"Argument `irreducible_poly` must be an int, tuple, list, np.ndarray, or galois.Poly, not {type(irreducible_poly)}.")
 
     # Get default primitive element
     if primitive_element is None:
@@ -56,8 +60,10 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         verify_element = False
     elif isinstance(primitive_element, int):
         primitive_element = Poly.Integer(primitive_element, field=prime_subfield)
+    elif isinstance(primitive_element, (tuple, list, np.ndarray)):
+        primitive_element = Poly(primitive_element, field=prime_subfield)
     elif not isinstance(primitive_element, Poly):
-        raise TypeError(f"Argument `primitive_element` must be an integer or galois.Poly, not {type(primitive_element)}.")
+        raise TypeError(f"Argument `primitive_element` must be an int, tuple, list, np.ndarray, or galois.Poly, not {type(primitive_element)}.")
 
     # Check polynomial fields and degrees
     if not irreducible_poly.field.order == characteristic:

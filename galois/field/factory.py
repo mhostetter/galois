@@ -20,27 +20,31 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="
     ----------
     order : int
         The order :math:`p^m` of the field :math:`\\mathrm{GF}(p^m)`. The order must be a prime power.
-    irreducible_poly : int, galois.Poly, optional
+    irreducible_poly : int, tuple, list, numpy.ndarray, galois.Poly, optional
         Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\\mathrm{GF}(p)` that will
         define the Galois field arithmetic. An integer may be provided, which is the integer representation of the
-        irreducible polynomial. Default is `None` which uses the Conway polynomial :math:`C_{p,m}` obtained from :func:`galois.conway_poly`.
-    primitive_element : int, galois.Poly, optional
+        irreducible polynomial. A tuple, list, or ndarray may be provided, which represents the polynomial coefficients in
+        degree-descending order. The default is `None` which uses the Conway polynomial :math:`C_{p,m}` obtained from :func:`galois.conway_poly`.
+    primitive_element : int, tuple, list, numpy.ndarray, galois.Poly, optional
         Optionally specify a primitive element of the field :math:`\\mathrm{GF}(p^m)`. A primitive element is a generator of
         the multiplicative group of the field. For prime fields :math:`\\mathrm{GF}(p)`, the primitive element must be an integer
         and is a primitive root modulo :math:`p`. For extension fields :math:`\\mathrm{GF}(p^m)`, the primitive element is a polynomial
-        of degree less than :math:`m` over :math:`\\mathrm{GF}(p)` or its integer representation. The default is `None` which uses
-        :obj:`galois.primitive_root(p)` for prime fields and :obj:`galois.primitive_element(irreducible_poly)` for extension fields.
+        of degree less than :math:`m` over :math:`\\mathrm{GF}(p)`. An integer may be provided, which is the integer representation of the polynomial.
+        A tuple, list, or ndarray may be provided, which represents the polynomial coefficients in degree-descending order. The default is `None`
+        which uses :obj:`galois.primitive_root(p)` for prime fields and :obj:`galois.primitive_element(irreducible_poly)` for extension fields.
     verify : bool, optional
         Indicates whether to verify that the specified irreducible polynomial is in fact irreducible and that the specified primitive element
-        is in fact a generator of the multiplicative group. The default is `True`. For large fields, irreducible polynomials that are already
-        known to be irreducible (and may take a long time to verify), this argument can be set to `False`.
+        is in fact a generator of the multiplicative group. The default is `True`. For large fields and irreducible polynomials that are already
+        known to be irreducible (and may take a long time to verify), this argument can be set to `False`. If the default irreducible polynomial
+        and primitive element are used, no verification is performed because the defaults are already guaranteed to be irreducible and a multiplicative
+        generator, respectively.
     mode : str, optional
         The type of field computation, either `"auto"`, `"jit-lookup"`, or `"jit-calculate"`. The default is `"auto"`.
         The "jit-lookup" mode will use Zech log, log, and anti-log lookup tables for efficient calculation. The "jit-calculate"
         mode will not store any lookup tables, but instead perform field arithmetic on the fly. The "jit-calculate" mode is
         designed for large fields that cannot or should not store lookup tables in RAM. Generally, "jit-calculate" mode will
         be slower than "jit-lookup". The "auto" mode will determine whether to use "jit-lookup" or "jit-calculate" based on the field's
-        size. In "auto" mode, field's with `order <= 2**16` will use the "jit-lookup" mode.
+        size. In "auto" mode, field's with `order <= 2**20` will use the "jit-lookup" mode.
     target : str, optional
         The `target` keyword argument from :func:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`.
 
