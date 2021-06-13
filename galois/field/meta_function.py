@@ -5,9 +5,10 @@ import numba
 from numba import int64
 import numpy as np
 
-from ..dtypes import DTYPES
+from .dtypes import DTYPES
 
 from . import linalg
+from .meta_properties import PropertiesMeta
 
 # List of functions that are not valid on arrays over finite groups, rings, and fields
 UNSUPPORTED_FUNCTIONS_UNARY = [
@@ -31,9 +32,9 @@ FUNCTIONS_REQUIRING_VIEW = [
 ]
 
 
-class FieldFunc(type):
+class FunctionMeta(PropertiesMeta):
     """
-    A mixin class that JIT compiles general purpose functions for polynomial arithmetic and convolution.
+    A mixin metaclass that JIT compiles general-purpose functions on Galois field arrays.
     """
     # pylint: disable=no-value-for-parameter
 
@@ -59,7 +60,7 @@ class FieldFunc(type):
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
         cls._gufuncs = {}
-        cls._funcs = {}
+        cls._functions = {}
 
     ###############################################################################
     # Individual gufuncs, compiled on-demand
@@ -83,13 +84,13 @@ class FieldFunc(type):
     # Individual functions, pre-compiled (cached)
     ###############################################################################
 
-    def _func(cls, name):
-        if cls._funcs.get(name, None) is None:
+    def _function(cls, name):
+        if cls._functions.get(name, None) is None:
             if cls.ufunc_mode != "python-calculate":
-                cls._funcs[name] = jit_calculate(name)
+                cls._functions[name] = jit_calculate(name)
             else:
-                cls._funcs[name] = python_func(name)
-        return cls._funcs[name]
+                cls._functions[name] = python_func(name)
+        return cls._functions[name]
 
     ###############################################################################
     # Gufunc routines
@@ -168,14 +169,14 @@ class FieldFunc(type):
             B = B.astype(np.int64)
             add = cls._calculate_jit("add")
             multiply = cls._calculate_jit("multiply")
-            C = cls._func("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             C = C.astype(dtype)
         else:
             A = A.view(np.ndarray)
             B = B.view(np.ndarray)
             add = cls._python_func("add")
             multiply = cls._python_func("multiply")
-            C = cls._func("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
         C = C.view(field)
 
         shape = list(C.shape)
@@ -220,14 +221,14 @@ class FieldFunc(type):
                 b = b.astype(np.int64)
                 add = cls._calculate_jit("add")
                 multiply = cls._calculate_jit("multiply")
-                c = cls._func("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+                c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
                 c = c.astype(dtype)
             else:
                 a = a.view(np.ndarray)
                 b = b.view(np.ndarray)
                 add = cls._python_func("add")
                 multiply = cls._python_func("multiply")
-                c = cls._func("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+                c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             c = c.view(field)
 
             return c
@@ -249,7 +250,7 @@ class FieldFunc(type):
             subtract = cls._calculate_jit("subtract")
             multiply = cls._calculate_jit("multiply")
             divide = cls._calculate_jit("divide")
-            qr = cls._func("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             qr = qr.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -257,7 +258,7 @@ class FieldFunc(type):
             subtract = cls._python_func("subtract")
             multiply = cls._python_func("multiply")
             divide = cls._python_func("divide")
-            qr = cls._func("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
         qr = qr.view(field)
 
         q = qr[:, 0:q_degree + 1]
@@ -280,7 +281,7 @@ class FieldFunc(type):
             add = cls._calculate_jit("add")
             multiply = cls._calculate_jit("multiply")
             power = cls._calculate_jit("power")
-            roots = cls._func("poly_roots")(nonzero_degrees, nonzero_coeffs, np.int64(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0,:]
+            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, np.int64(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0,:]
             roots = roots.astype(dtype)
         else:
             nonzero_degrees = nonzero_degrees.view(np.ndarray)
@@ -288,7 +289,7 @@ class FieldFunc(type):
             add = cls._python_func("add")
             multiply = cls._python_func("multiply")
             power = cls._python_func("power")
-            roots = cls._func("poly_roots")(nonzero_degrees, nonzero_coeffs, int(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0,:]
+            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, int(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0,:]
         roots = roots.view(field)
 
         idxs = np.argsort(roots)
@@ -305,7 +306,7 @@ class FieldFunc(type):
             subtract = cls._calculate_jit("subtract")
             multiply = cls._calculate_jit("multiply")
             reciprocal = cls._calculate_jit("reciprocal")
-            coeffs = cls._func("berlekamp_massey")(sequence, add, subtract, multiply, reciprocal, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            coeffs = cls._function("berlekamp_massey")(sequence, add, subtract, multiply, reciprocal, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             coeffs = coeffs.astype(dtype)
         else:
             sequence = sequence.view(np.ndarray)
@@ -313,7 +314,7 @@ class FieldFunc(type):
             multiply = cls._python_func("multiply")
             DIVIDE = cls._python_func("divide")
             reciprocal = cls._python_func("reciprocal")
-            coeffs = cls._func("berlekamp_massey")(sequence, subtract, multiply, DIVIDE, reciprocal, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            coeffs = cls._function("berlekamp_massey")(sequence, subtract, multiply, DIVIDE, reciprocal, cls.characteristic, cls.degree, cls._irreducible_poly_int)
         coeffs = coeffs.view(field)
 
         return coeffs

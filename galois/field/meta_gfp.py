@@ -1,17 +1,17 @@
 import numba
 import numpy as np
 
-from ..dtypes import DTYPES
 from ..modular import primitive_root
 
-from .meta_ufunc import _FUNCTION_TYPE
+from .dtypes import DTYPES
+from .meta_ufunc import  _FUNCTION_TYPE
 from .meta import FieldMeta
 from .poly import Poly
 
 
 class GFpMeta(FieldMeta):
     """
-    An abstract base class for all :math:`\\mathrm{GF}(p)` field array classes.
+    An metaclass for all GF(p) classes.
     """
     # pylint: disable=no-value-for-parameter
 
