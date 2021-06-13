@@ -15,7 +15,7 @@ from .poly_functions import primitive_element as _primitive_element  # To avoid 
 # pylint: disable=too-many-branches,too-many-statements,protected-access
 
 
-def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify_irreducible=True, verify_primitive=True, mode="auto", target="cpu"):
+def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, mode="auto", target="cpu"):
     """
     Class factory for extension fields GF(p^m).
     """
@@ -30,19 +30,21 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     order = characteristic**degree
     prime_subfield = GF_prime(characteristic)
     is_primitive_poly = None
+    verify_poly = verify
+    verify_element = verify
 
     if irreducible_poly is None and primitive_element is None:
         irreducible_poly = conway_poly(characteristic, degree)
         is_primitive_poly = True
         primitive_element = Poly.Identity(prime_subfield)
-        verify_irreducible = False  # We don't need to verify Conway polynomials are irreducible
-        verify_primitive = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
+        verify_poly = False  # We don't need to verify Conway polynomials are irreducible
+        verify_element = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
 
     # Get default irreducible polynomial
     if irreducible_poly is None:
         irreducible_poly = conway_poly(characteristic, degree)
         is_primitive_poly = True
-        verify_irreducible = False  # We don't need to verify Conway polynomials are irreducible
+        verify_poly = False  # We don't need to verify Conway polynomials are irreducible
     elif isinstance(irreducible_poly, int):
         irreducible_poly = Poly.Integer(irreducible_poly, field=prime_subfield)
     elif not isinstance(irreducible_poly, Poly):
@@ -51,7 +53,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     # Get default primitive element
     if primitive_element is None:
         primitive_element = _primitive_element(irreducible_poly)
-        verify_primitive = False
+        verify_element = False
     elif isinstance(primitive_element, int):
         primitive_element = Poly.Integer(primitive_element, field=prime_subfield)
     elif not isinstance(primitive_element, Poly):
@@ -76,9 +78,9 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
 
-    if verify_irreducible and not is_irreducible(irreducible_poly):
+    if verify_poly and not is_irreducible(irreducible_poly):
         raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly} is not.")
-    if verify_primitive and not is_primitive_element(primitive_element, irreducible_poly):
+    if verify_element and not is_primitive_element(primitive_element, irreducible_poly):
         raise ValueError(f"Argument `primitive_element` must be a multiplicative generator of GF({characteristic}^{degree}), {primitive_element} is not.")
 
     if characteristic == 2:

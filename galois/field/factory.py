@@ -8,7 +8,7 @@ __all__ = ["GF", "Field"]
 
 
 @set_module("galois")
-def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=True, verify_primitive=True, mode="auto", target="cpu"):
+def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="auto", target="cpu"):
     """
     Factory function to construct a Galois field array class of type :math:`\\mathrm{GF}(p^m)`.
 
@@ -30,13 +30,10 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=
         and is a primitive root modulo :math:`p`. For extension fields :math:`\\mathrm{GF}(p^m)`, the primitive element is a polynomial
         of degree less than :math:`m` over :math:`\\mathrm{GF}(p)` or its integer representation. The default is `None` which uses
         :obj:`galois.primitive_root(p)` for prime fields and :obj:`galois.primitive_element(irreducible_poly)` for extension fields.
-    verify_irreducible : bool, optional
-        Indicates whether to verify that the specified irreducible polynomial is in fact irreducible. The default is
-        `True`. For large irreducible polynomials that are already known to be irreducible (and may take a long time to verify),
-        this argument can be set to `False`.
-    verify_primitive : bool, optional
-        Indicates whether to verify that the specified primitive element is in fact a generator of the multiplicative group.
-        The default is `True`.
+    verify : bool, optional
+        Indicates whether to verify that the specified irreducible polynomial is in fact irreducible and that the specified primitive element
+        is in fact a generator of the multiplicative group. The default is `True`. For large fields, irreducible polynomials that are already
+        known to be irreducible (and may take a long time to verify), this argument can be set to `False`.
     mode : str, optional
         The type of field computation, either `"auto"`, `"jit-lookup"`, or `"jit-calculate"`. The default is `"auto"`.
         The "jit-lookup" mode will use Zech log, log, and anti-log lookup tables for efficient calculation. The "jit-calculate"
@@ -96,14 +93,14 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify_irreducible=
     if m == 1:
         if not irreducible_poly is None:
             raise ValueError(f"Argument `irreducible_poly` can only be specified for prime fields, not the extension field GF({p}^{m}).")
-        return GF_prime(p, primitive_element=primitive_element, verify_primitive=verify_primitive, target=target, mode=mode)
+        return GF_prime(p, primitive_element=primitive_element, verify=verify, target=target, mode=mode)
     else:
-        return GF_extension(p, m, primitive_element=primitive_element, irreducible_poly=irreducible_poly, verify_primitive=verify_primitive, verify_irreducible=verify_irreducible, target=target, mode=mode)
+        return GF_extension(p, m, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, target=target, mode=mode)
 
 
 @set_module("galois")
-def Field(order, irreducible_poly=None, primitive_element=None, verify_irreducible=True, verify_primitive=True, mode="auto", target="cpu"):
+def Field(order, irreducible_poly=None, primitive_element=None, verify=True, mode="auto", target="cpu"):
     """
     Alias of :func:`galois.GF`.
     """
-    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify_irreducible=verify_irreducible, verify_primitive=verify_primitive, mode=mode, target=target)
+    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, mode=mode, target=target)
