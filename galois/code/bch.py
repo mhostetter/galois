@@ -4,7 +4,7 @@ import numpy as np
 
 from ..factor import prime_factors
 from ..field import Field, Poly, GF2, primitive_poly as primitive_poly_
-from ..field.meta_func import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG
+from ..field.meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG
 from ..overrides import set_module
 
 from .bch_functions import _compute_generator_poly, _convert_poly_to_matrix
@@ -101,9 +101,9 @@ class BCH:
         self._power_jit = self.field._calculate_jit("power")
 
         # Pre-compile the JIT functions
-        self._berlekamp_massey_jit = self.field._func("berlekamp_massey")
-        self._poly_roots_jit = self.field._func("poly_roots")
-        self._poly_divmod_jit = GF2._func("poly_divmod")
+        self._berlekamp_massey_jit = self.field._function("berlekamp_massey")
+        self._poly_roots_jit = self.field._function("poly_roots")
+        self._poly_divmod_jit = GF2._function("poly_divmod")
 
         # Pre-compile the JIT decoder
         self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(decode_calculate)

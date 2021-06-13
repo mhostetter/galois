@@ -1,15 +1,13 @@
 import numba
 import numpy as np
 
-from ..dtypes import DTYPES
-
-from .meta_ufunc import _FUNCTION_TYPE
+from .meta_ufunc import  _FUNCTION_TYPE
 from .meta import FieldMeta
 
 
 class GF2mMeta(FieldMeta):
     """
-    An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
+    A metaclass for all GF(2^m) classes.
     """
     # pylint: disable=abstract-method,no-value-for-parameter
 
@@ -22,13 +20,6 @@ class GF2mMeta(FieldMeta):
         # Determine if the irreducible polynomial is primitive
         if cls._is_primitive_poly is None:
             cls._is_primitive_poly = cls._poly_evaluate_python(cls._irreducible_poly.coeffs, cls.primitive_element) == 0
-
-    @property
-    def dtypes(cls):
-        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
-        if len(d) == 0:
-            d = [np.object_]
-        return d
 
     def _compile_ufuncs(cls):
         super()._compile_ufuncs()

@@ -1,15 +1,13 @@
 import numba
 import numpy as np
 
-from ..dtypes import DTYPES
-
-from .meta_ufunc import _FUNCTION_TYPE
+from .meta_ufunc import  _FUNCTION_TYPE
 from .meta import FieldMeta
 
 
 class GF2Meta(FieldMeta):
     """
-    An abstract base class for the :math:`\\mathrm{GF}(2)` field array class.
+    A metaclass for the GF(2) class.
     """
     # pylint: disable=abstract-method,no-value-for-parameter
 
@@ -19,13 +17,6 @@ class GF2Meta(FieldMeta):
         cls._is_primitive_poly = True
 
         cls.compile(kwargs["mode"], kwargs["target"])
-
-    @property
-    def dtypes(cls):
-        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
-        if len(d) == 0:
-            d = [np.object_]
-        return d
 
     @property
     def ufunc_modes(cls):

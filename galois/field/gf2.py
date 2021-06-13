@@ -6,12 +6,6 @@ from .meta_gf2 import GF2Meta
 __all__ = ["GF2"]
 
 
-# class GF2Meta_(GF2Meta, FieldFunc):
-#     """
-#     GF2Meta with FieldFunc mixin.
-#     """
-
-
 @set_module("galois")
 class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, mode="jit-calculate", target="cpu"):
     """

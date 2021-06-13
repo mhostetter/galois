@@ -1,15 +1,14 @@
 import numba
 import numpy as np
 
-from ..dtypes import DTYPES
-
-from .meta_ufunc import _FUNCTION_TYPE
+from .dtypes import DTYPES
+from .meta_ufunc import  _FUNCTION_TYPE
 from .meta import FieldMeta
 
 
 class GFpmMeta(FieldMeta):
     """
-    An abstract base class for all :math:`\\mathrm{GF}(2^m)` field array classes.
+    A metaclass for all GF(p^m) classes.
     """
     # pylint: disable=no-value-for-parameter
 

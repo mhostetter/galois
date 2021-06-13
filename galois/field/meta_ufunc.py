@@ -1,6 +1,8 @@
 import numba
 import numpy as np
 
+from .meta_properties import PropertiesMeta
+
 _FUNCTION_TYPE = {
     "add": "binary",
     "negative": "unary",
@@ -41,7 +43,7 @@ UFUNCS_REQUIRING_VIEW = [
 ]
 
 
-class FieldUfunc(type):
+class UfuncMeta(PropertiesMeta):
     """
     A mixin class that provides the basics for compiling ufuncs.
     """
