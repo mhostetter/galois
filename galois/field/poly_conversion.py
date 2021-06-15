@@ -239,7 +239,7 @@ def str_to_integer(poly_str, prime_subfield):
     ----------
     poly_str : str
         A polynomial representation of the string.
-    prime_subfield : galois.FieldMeta
+    prime_subfield : galois.FieldClass
         The Galois field the polynomial is over.
 
     Returns

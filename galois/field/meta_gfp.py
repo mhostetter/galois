@@ -4,12 +4,12 @@ import numpy as np
 from ..modular import primitive_root
 
 from .dtypes import DTYPES
+from .meta_class import FieldClass
 from .meta_ufunc import  _FUNCTION_TYPE
-from .meta import FieldMeta
 from .poly import Poly
 
 
-class GFpMeta(FieldMeta):
+class GFpMeta(FieldClass):
     """
     An metaclass for all GF(p) classes.
     """

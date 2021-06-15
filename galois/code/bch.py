@@ -284,7 +284,7 @@ class BCH:
     @property
     def field(self):
         """
-        galois.FieldMeta: The Galois field :math:`\\mathrm{GF}(2^m)` that defines the BCH code.
+        galois.FieldClass: The Galois field :math:`\\mathrm{GF}(2^m)` that defines the BCH code.
         """
         return self._field
 

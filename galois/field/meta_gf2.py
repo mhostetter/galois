@@ -1,11 +1,11 @@
 import numba
 import numpy as np
 
+from .meta_class import FieldClass
 from .meta_ufunc import  _FUNCTION_TYPE
-from .meta import FieldMeta
 
 
-class GF2Meta(FieldMeta):
+class GF2Meta(FieldClass):
     """
     A metaclass for the GF(2) class.
     """

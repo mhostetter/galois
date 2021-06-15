@@ -243,7 +243,7 @@ class PropertiesMeta(type):
     @property
     def prime_subfield(cls):
         """
-        galois.FieldMeta: The prime subfield :math:`\\mathrm{GF}(p)` of the extension field :math:`\\mathrm{GF}(p^m)`.
+        galois.FieldClass: The prime subfield :math:`\\mathrm{GF}(p)` of the extension field :math:`\\mathrm{GF}(p^m)`.
 
         Examples
         --------

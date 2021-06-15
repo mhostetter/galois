@@ -28,16 +28,16 @@ Galois field array classes are created using the :func:`galois.GF` class factory
    GF256 = galois.GF(2**8)
    print(GF256)
 
-These classes are subclasses of :obj:`galois.FieldArray` (which itself subclasses :obj:`numpy.ndarray`) and have :obj:`galois.FieldMeta` as their metaclass.
+These classes are subclasses of :obj:`galois.FieldArray` (which itself subclasses :obj:`numpy.ndarray`) and have :obj:`galois.FieldClass` as their metaclass.
 
 .. ipython:: python
 
    issubclass(GF256, np.ndarray)
    issubclass(GF256, galois.FieldArray)
-   issubclass(type(GF256), galois.FieldMeta)
+   isinstance(GF256, galois.FieldClass)
 
 A Galois field array class contains attributes relating to its Galois field and methods to modify how the field
-is calculated or displayed. See the attributes and methods in :obj:`galois.FieldMeta`.
+is calculated or displayed. See the attributes and methods in :obj:`galois.FieldClass`.
 
 .. ipython:: python
 
@@ -91,7 +91,7 @@ Galois field arrays also have constructor class methods for convenience. They in
 - :func:`galois.FieldArray.Zeros`, :func:`galois.FieldArray.Ones`, :func:`galois.FieldArray.Identity`, :func:`galois.FieldArray.Range`, :func:`galois.FieldArray.Random`, :func:`galois.FieldArray.Elements`
 
 Galois field elements can either be displayed using their integer representation, polynomial representation, or
-power representation. Calling :func:`galois.FieldMeta.display` will change the element representation. If called as a context
+power representation. Calling :func:`galois.FieldClass.display` will change the element representation. If called as a context
 manager, the display mode will only be temporarily changed.
 
 .. ipython:: python

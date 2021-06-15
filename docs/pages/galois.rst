@@ -16,7 +16,7 @@ Galois Fields
    GF
    Field
    FieldArray
-   FieldMeta
+   FieldClass
 
 .. rubric:: Pre-made Galois field classes
 .. autosummary::

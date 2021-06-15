@@ -4,6 +4,7 @@ from ..overrides import set_module
 
 from .array import FieldArray
 from .gf2 import GF2
+from .meta_class import FieldClass
 from .poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
 
 __all__ = ["Poly"]
@@ -26,10 +27,10 @@ class Poly:
     Parameters
     ----------
     coeffs : array_like
-        List of polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.FieldArray`, :obj:`numpy.ndarray`,
+        The polynomial coefficients :math:`\\{a_{d}, a_{d-1}, \\dots, a_1, a_0\\}` with type :obj:`galois.FieldArray`, :obj:`numpy.ndarray`,
         :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
         the 0-th degree element if `order="asc"`.
-    field : galois.FieldArray, optional
+    field : galois.FieldClass, optional
         The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`. If `coeffs`
         is a Galois field array, then that field is used and the `field` argument is ignored.
     order : str, optional
@@ -88,7 +89,7 @@ class Poly:
     __array_priority__ = 100
 
     def __new__(cls, coeffs, field=None, order="desc"):
-        if not (field is None or issubclass(field, FieldArray)):
+        if not isinstance(field, (type(None), FieldClass)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
         if not isinstance(coeffs, (int, np.integer, list, tuple, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
@@ -147,7 +148,7 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.FieldArray, optional
+        field : galois.FieldClass, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -179,7 +180,7 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.FieldArray, optional
+        field : galois.FieldClass, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -211,7 +212,7 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.FieldArray, optional
+        field : galois.FieldClass, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -245,7 +246,7 @@ class Poly:
         ----------
         degree : int
             The degree of the polynomial.
-        field : galois.FieldArray, optional
+        field : galois.FieldClass, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -289,7 +290,7 @@ class Poly:
         ----------
         integer : int
             The integer representation of the polynomial :math:`f(x)`.
-        field : galois.FieldArray, optional
+        field : galois.FieldClass, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -331,7 +332,7 @@ class Poly:
         ----------
         string : str
             The string representation of the polynomial :math:`f(x)`.
-        field : galois.FieldArray, optional
+        field : galois.FieldClass, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
@@ -372,7 +373,7 @@ class Poly:
         coeffs : array_like, optional
             List of corresponding non-zero coefficients. The default is `None` which corresponds to all one
             coefficients, i.e. `[1,]*len(degrees)`.
-        field : galois.FieldArray, optional
+        field : galois.FieldClass, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
         Returns
@@ -447,7 +448,7 @@ class Poly:
             List of roots in :math:`\\mathrm{GF}(p^m)` of the desired polynomial.
         multiplicities : array_like, optional
             List of multiplicity of each root. The default is `None` which corresponds to all ones.
-        field : galois.FieldArray, optional
+        field : galois.FieldClass, optional
             The field :math:`\\mathrm{GF}(p^m)` the polynomial is over. The default is`None` which represents :obj:`galois.GF2`.
 
         Returns
@@ -474,7 +475,7 @@ class Poly:
             p = galois.Poly.Roots(roots, field=GF); p
             p(roots)
         """
-        if not (field is None or issubclass(field, FieldArray)):
+        if not isinstance(field, (type(None), FieldClass)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
         if not isinstance(roots, (list, tuple, np.ndarray)):
             raise TypeError(f"Argument `roots` must 'array-like', not {type(roots)}.")
@@ -734,7 +735,7 @@ class Poly:
         ----------
         x : galois.FieldArray
             An array (or 0-dim array) of field element to evaluate the polynomial over.
-        field : galois.FieldMeta, optional
+        field : galois.FieldClass, optional
             The Galois field to evaluate the polynomial over. The default is `None` which represents
             the polynomial's current field, i.e. :obj:`field`.
 
@@ -747,7 +748,7 @@ class Poly:
             field = self.field
             coeffs = self.coeffs
         else:
-            assert issubclass(field, FieldArray)
+            assert isinstance(field, FieldClass)
             coeffs = field(self.coeffs)
         if not isinstance(x, field):
             x = field(x)
@@ -905,7 +906,7 @@ class Poly:
     @property
     def field(self):
         """
-        galois.FieldMeta: The Galois field array class to which the coefficients belong.
+        galois.FieldClass: The Galois field array class to which the coefficients belong.
 
         Examples
         --------

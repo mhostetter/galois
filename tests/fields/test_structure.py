@@ -13,9 +13,9 @@ def test_not_abstract_classes():
 
 
 def test_not_metaclasses():
-    assert not galois.is_field(galois.FieldMeta)
-    assert not galois.is_prime_field(galois.FieldMeta)
-    assert not galois.is_extension_field(galois.FieldMeta)
+    assert not galois.is_field(galois.FieldClass)
+    assert not galois.is_prime_field(galois.FieldClass)
+    assert not galois.is_extension_field(galois.FieldClass)
 
 
 def test_array_classes():

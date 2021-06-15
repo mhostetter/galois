@@ -10,15 +10,15 @@ import galois
 def test_valid():
     GF = galois.GF(2)
     assert issubclass(GF, galois.FieldArray)
-    assert issubclass(type(GF), galois.FieldMeta)
+    assert isinstance(GF, galois.FieldClass)
 
     GF = galois.GF(2**8)
     assert issubclass(GF, galois.FieldArray)
-    assert issubclass(type(GF), galois.FieldMeta)
+    assert isinstance(GF, galois.FieldClass)
 
     GF = galois.GF(31)
     assert issubclass(GF, galois.FieldArray)
-    assert issubclass(type(GF), galois.FieldMeta)
+    assert isinstance(GF, galois.FieldClass)
 
 
 def test_non_integer_order():

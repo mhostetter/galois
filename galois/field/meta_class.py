@@ -9,11 +9,11 @@ from .meta_ufunc import UfuncMeta
 from .meta_properties import PropertiesMeta
 from .poly_conversion import integer_to_poly, poly_to_str
 
-__all__ = ["FieldMeta"]
+__all__ = ["FieldClass"]
 
 
 @set_module("galois")
-class FieldMeta(UfuncMeta, FunctionMeta, PropertiesMeta):
+class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
     """
     Defines a metaclass for all :obj:`galois.FieldArray` classes.
 
@@ -59,7 +59,7 @@ class FieldMeta(UfuncMeta, FunctionMeta, PropertiesMeta):
         return str(cls)
 
     def __dir__(cls):
-        if isinstance(cls, FieldMeta):
+        if isinstance(cls, FieldClass):
             meta_dir = dir(type(cls))
             classmethods = [attribute for attribute in super().__dir__() if attribute[0] != "_" and inspect.ismethod(getattr(cls, attribute))]
             return sorted(meta_dir + classmethods)
@@ -67,7 +67,7 @@ class FieldMeta(UfuncMeta, FunctionMeta, PropertiesMeta):
             return super().__dir__()
 
     ###############################################################################
-    # Methods
+    # Class methods
     ###############################################################################
 
     def compile(cls, mode, target="cpu"):
@@ -82,11 +82,11 @@ class FieldMeta(UfuncMeta, FunctionMeta, PropertiesMeta):
             arithmetic on the fly. The "jit-calculate" mode is designed for large fields that cannot store lookup tables in RAM.
             Generally, "jit-calculate" is slower than "jit-lookup". The "python-calculate" mode is reserved for extremely large fields. In
             this mode the ufuncs are not JIT-compiled, but are pur python functions operating on python ints. The list of valid
-            modes for this field is in :obj:`galois.FieldMeta.ufunc_modes`.
+            modes for this field is in :obj:`galois.FieldClass.ufunc_modes`.
         target : str, optional
             The `target` keyword argument from :obj:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`. The default
             is `"cpu"`. For extremely large fields the only supported target is `"cpu"` (which doesn't use numba it uses pure python to
-            calculate the field arithmetic). The list of valid targets for this field is in :obj:`galois.FieldMeta.ufunc_targets`.
+            calculate the field arithmetic). The list of valid targets for this field is in :obj:`galois.FieldClass.ufunc_targets`.
         """
         mode = cls.default_ufunc_mode if mode == "auto" else mode
         if mode not in cls.ufunc_modes:
@@ -101,64 +101,6 @@ class FieldMeta(UfuncMeta, FunctionMeta, PropertiesMeta):
         cls._ufunc_mode = mode
         cls._ufunc_target = target
         cls._compile_ufuncs()
-
-    ###############################################################################
-    # Array display methods
-    ###############################################################################
-
-    def _formatter(cls, array):
-        # pylint: disable=attribute-defined-outside-init
-        formatter = {}
-        if cls.display_mode == "poly":
-            formatter["int"] = cls._print_poly
-            formatter["object"] = cls._print_poly
-        elif cls.display_mode == "power":
-            cls._set_print_power_vars(array)
-            formatter["int"] = cls._print_power
-            formatter["object"] = cls._print_power
-        elif array.dtype == np.object_:
-            formatter["object"] = cls._print_int
-        return formatter
-
-    def _print_int(cls, element):  # pylint: disable=no-self-use
-        return "{:d}".format(int(element))
-
-    def _print_poly(cls, element):
-        poly = integer_to_poly(element, cls.characteristic)
-        poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
-        return poly_to_str(poly, poly_var=poly_var)
-
-    def _set_print_power_vars(cls, array):
-        nonzero_idxs = np.nonzero(array)
-        if array.ndim > 1:
-            max_power = np.max(np.log(array[nonzero_idxs]))
-            if max_power > 1:
-                cls._display_power_width = 2 + len(str(max_power))
-            else:
-                cls._display_power_width = 1
-        else:
-            cls._display_power_width = None
-
-    def _print_power(cls, element):
-        if element == 0:
-            s = "0"
-        else:
-            power = np.log(element)
-            if power > 1:
-                s = f"α^{power}"
-            elif power == 1:
-                s = "α"
-            else:
-                s = "1"
-
-        if cls._display_power_width:
-            return s.rjust(cls._display_power_width)
-        else:
-            return s
-
-    ###############################################################################
-    # Class methods
-    ###############################################################################
 
     def display(cls, mode="int"):
         """
@@ -237,7 +179,7 @@ class FieldMeta(UfuncMeta, FunctionMeta, PropertiesMeta):
         ----------
         primitive_element : galois.FieldArray, optional
             The primitive element to use for the power representation. The default is `None` which uses the field's
-            default primitive element, :obj:`galois.FieldMeta.primitive_element`.
+            default primitive element, :obj:`galois.FieldClass.primitive_element`.
 
         Returns
         -------
@@ -380,6 +322,60 @@ class FieldMeta(UfuncMeta, FunctionMeta, PropertiesMeta):
         string += "\n" + bottom
 
         return string
+
+    ###############################################################################
+    # Array display methods
+    ###############################################################################
+
+    def _formatter(cls, array):
+        # pylint: disable=attribute-defined-outside-init
+        formatter = {}
+        if cls.display_mode == "poly":
+            formatter["int"] = cls._print_poly
+            formatter["object"] = cls._print_poly
+        elif cls.display_mode == "power":
+            cls._set_print_power_vars(array)
+            formatter["int"] = cls._print_power
+            formatter["object"] = cls._print_power
+        elif array.dtype == np.object_:
+            formatter["object"] = cls._print_int
+        return formatter
+
+    def _print_int(cls, element):  # pylint: disable=no-self-use
+        return "{:d}".format(int(element))
+
+    def _print_poly(cls, element):
+        poly = integer_to_poly(element, cls.characteristic)
+        poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
+        return poly_to_str(poly, poly_var=poly_var)
+
+    def _set_print_power_vars(cls, array):
+        nonzero_idxs = np.nonzero(array)
+        if array.ndim > 1:
+            max_power = np.max(np.log(array[nonzero_idxs]))
+            if max_power > 1:
+                cls._display_power_width = 2 + len(str(max_power))
+            else:
+                cls._display_power_width = 1
+        else:
+            cls._display_power_width = None
+
+    def _print_power(cls, element):
+        if element == 0:
+            s = "0"
+        else:
+            power = np.log(element)
+            if power > 1:
+                s = f"α^{power}"
+            elif power == 1:
+                s = "α"
+            else:
+                s = "1"
+
+        if cls._display_power_width:
+            return s.rjust(cls._display_power_width)
+        else:
+            return s
 
 
 class DisplayContext:

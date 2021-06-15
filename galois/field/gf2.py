@@ -11,7 +11,7 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
     """
     Creates an array over :math:`\\mathrm{GF}(2)`.
 
-    This class is a subclass of :obj:`galois.FieldArray` and has metaclass :obj:`galois.FieldMeta`.
+    This class is a subclass of :obj:`galois.FieldArray` and instance of :obj:`galois.FieldClass`.
 
     Parameters
     ----------
@@ -21,7 +21,7 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
         :obj:`list` or :obj:`tuple` of int or str, :obj:`int`, or :obj:`str`.
     dtype : numpy.dtype, optional
         The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-        dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+        dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
     copy : bool, optional
         The `copy` keyword argument from :func:`numpy.array`. The default is `True` which makes a copy of the input
         object is it's an array.
@@ -42,7 +42,7 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
         GF2 = galois.GF(2); print(GF2)
         GF2 is galois.GF2
 
-    The Galois field properties can be viewed by class attributes, see :obj:`galois.FieldMeta`.
+    The Galois field properties can be viewed by class attributes, see :obj:`galois.FieldClass`.
 
     .. ipython:: python
 

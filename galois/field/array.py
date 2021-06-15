@@ -5,14 +5,14 @@ import numpy as np
 from ..overrides import set_module
 
 from .linalg import row_reduce, lu_decompose, lup_decompose
-from .meta import FieldMeta
+from .meta_class import FieldClass
 from .poly_conversion import str_to_integer
 
 __all__ = ["FieldArray"]
 
 
 @set_module("galois")
-class FieldArray(np.ndarray, metaclass=FieldMeta):
+class FieldArray(np.ndarray, metaclass=FieldClass):
     """
     Creates an array over :math:`\\mathrm{GF}(p^m)`.
 
@@ -51,7 +51,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
         :obj:`list` or :obj:`tuple` of int or str, :obj:`int`, or :obj:`str`.
     dtype : numpy.dtype, optional
         The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-        dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+        dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
     copy : bool, optional
         The `copy` keyword argument from :func:`numpy.array`. The default is `True` which makes a copy of the input
         object is it's an array.
@@ -264,7 +264,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
             `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
 
         Returns
         -------
@@ -295,7 +295,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
             `(M,N)`, represents an n-dim array with each element indicating the size in each dimension.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
 
         Returns
         -------
@@ -328,7 +328,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
             The space between values. The default is 1.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
 
         Returns
         -------
@@ -371,7 +371,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
             field's order :math:`p^m`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
 
         Returns
         -------
@@ -409,7 +409,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
         ----------
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
 
         Returns
         -------
@@ -436,7 +436,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
             The size :math:`n` along one axis of the matrix. The resulting array has shape `(size,size)`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
 
         Returns
         -------
@@ -469,7 +469,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
             The number of columns in the Vandermonde matrix.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
 
         Returns
         -------
@@ -519,7 +519,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
             The last dimension of the input array must be :math:`m`. An input array with shape `(n1, n2, m)` has output shape `(n1, n2)`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
 
         Returns
         -------
@@ -547,7 +547,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
         return cls(array, dtype=dtype)
 
     ###############################################################################
-    # FieldArray methods
+    # Instance methods
     ###############################################################################
 
     def vector(self, dtype=None):
@@ -560,7 +560,7 @@ class FieldArray(np.ndarray, metaclass=FieldMeta):
         ----------
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
-            dtype for this class, i.e. the first element in :obj:`galois.FieldMeta.dtypes`.
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
 
         Returns
         -------
