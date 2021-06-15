@@ -10,10 +10,10 @@ __all__ = ["GF", "Field"]
 @set_module("galois")
 def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="auto", target="cpu"):
     """
-    Factory function to construct a Galois field array class of type :math:`\\mathrm{GF}(p^m)`.
+    Factory function to construct a Galois field array class for :math:`\\mathrm{GF}(p^m)`.
 
-    The created class will be a subclass of :obj:`galois.FieldArray` with metaclass :obj:`galois.FieldMeta`.
-    The :obj:`galois.FieldArray` inheritance provides the :obj:`numpy.ndarray` functionality. The :obj:`galois.FieldMeta` metaclass
+    The created class will be a subclass of :obj:`galois.FieldArray` and instance of :obj:`galois.FieldClass`.
+    The :obj:`galois.FieldArray` inheritance provides the :obj:`numpy.ndarray` functionality. The :obj:`galois.FieldClass` metaclass
     provides a variety of class attributes and methods relating to the finite field.
 
     Parameters
@@ -50,8 +50,8 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="
 
     Returns
     -------
-    galois.FieldMeta
-        A new Galois field array class that is a subclass of :obj:`galois.FieldArray` with :obj:`galois.FieldMeta` metaclass.
+    galois.FieldClass
+        A new Galois field array class that is a subclass of :obj:`galois.FieldArray` and instance of :obj:`galois.FieldClass`.
 
     Examples
     --------

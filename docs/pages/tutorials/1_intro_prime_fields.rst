@@ -139,7 +139,7 @@ namely :math:`\mathrm{GF}(7)^{\times}`.
    g = GF7(3); g
    g ** np.arange(0, GF7.order - 1)
 
-A primitive element of :math:`\mathrm{GF}(p)` can be accessed through :obj:`galois.FieldMeta.primitive_element`.
+A primitive element of :math:`\mathrm{GF}(p)` can be accessed through :obj:`galois.FieldClass.primitive_element`.
 
 .. ipython:: python
 

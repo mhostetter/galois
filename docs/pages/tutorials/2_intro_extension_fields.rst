@@ -221,8 +221,8 @@ Primitive elements
 A property of finite fields is that some elements can produce the entire field by their powers. Namely, a *primitive element*
 :math:`g` of :math:`\mathrm{GF}(p^m)` is an element such that :math:`\mathrm{GF}(p^m) = \{0, g^0, g^1, \dots, g^{p^m - 1}\}`.
 
-In :obj:`galois`, the primitive elements of an extension field can be found by the class attribute :obj:`galois.FieldMeta.primitive_element`
-and :obj:`galois.FieldMeta.primitive_elements`.
+In :obj:`galois`, the primitive elements of an extension field can be found by the class attribute :obj:`galois.FieldClass.primitive_element`
+and :obj:`galois.FieldClass.primitive_elements`.
 
 .. ipython:: python
 
