@@ -1,3 +1,5 @@
+import inspect
+
 import numpy as np
 
 from ..overrides import set_module
@@ -55,6 +57,14 @@ class FieldMeta(UfuncMeta, FunctionMeta, PropertiesMeta):
 
     def __repr__(cls):
         return str(cls)
+
+    def __dir__(cls):
+        if isinstance(cls, FieldMeta):
+            meta_dir = dir(type(cls))
+            classmethods = [attribute for attribute in super().__dir__() if attribute[0] != "_" and inspect.ismethod(getattr(cls, attribute))]
+            return sorted(meta_dir + classmethods)
+        else:
+            return super().__dir__()
 
     ###############################################################################
     # Methods
