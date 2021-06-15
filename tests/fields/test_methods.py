@@ -8,14 +8,33 @@ import galois
 
 def test_display_method():
     GF = galois.GF(2**3)
-    a = GF([1, 0, 5, 2])
-    assert str(a) == "GF([1, 0, 5, 2], order=2^3)"
+
+    assert str(GF(1)) == "GF(1, order=2^3)"
+    assert str(GF(0)) == "GF(0, order=2^3)"
+    assert str(GF(5)) == "GF(5, order=2^3)"
+    assert str(GF(2)) == "GF(2, order=2^3)"
+    assert str(GF([1, 0, 5, 2])) == "GF([1, 0, 5, 2], order=2^3)"
+
     GF.display("poly")
-    assert str(a) == "GF([1, 0, α^2 + 1, α], order=2^3)"
+    assert str(GF(1)) == "GF(1, order=2^3)"
+    assert str(GF(0)) == "GF(0, order=2^3)"
+    assert str(GF(5)) == "GF(α^2 + 1, order=2^3)"
+    assert str(GF(2)) == "GF(α, order=2^3)"
+    assert str(GF([1, 0, 5, 2])) == "GF([1, 0, α^2 + 1, α], order=2^3)"
+
     GF.display("power")
-    assert str(a) == "GF([1, 0, α^6, α], order=2^3)"
+    assert str(GF(1)) == "GF(1, order=2^3)"
+    assert str(GF(0)) == "GF(0, order=2^3)"
+    assert str(GF(5)) == "GF(α^6, order=2^3)"
+    assert str(GF(2)) == "GF(α, order=2^3)"
+    assert str(GF([1, 0, 5, 2])) == "GF([1, 0, α^6, α], order=2^3)"
+
     GF.display()
-    assert str(a) == "GF([1, 0, 5, 2], order=2^3)"
+    assert str(GF(1)) == "GF(1, order=2^3)"
+    assert str(GF(0)) == "GF(0, order=2^3)"
+    assert str(GF(5)) == "GF(5, order=2^3)"
+    assert str(GF(2)) == "GF(2, order=2^3)"
+    assert str(GF([1, 0, 5, 2])) == "GF([1, 0, 5, 2], order=2^3)"
 
 
 def test_display_context_manager():
