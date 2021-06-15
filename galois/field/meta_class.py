@@ -345,7 +345,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
     def _set_print_power_vars(cls, array):
         nonzero_idxs = np.nonzero(array)
         if array.ndim > 1:
-            max_power = np.max(np.log(array[nonzero_idxs]))
+            max_power = np.max(cls._ufunc("log")(array[nonzero_idxs], cls.primitive_element))
             if max_power > 1:
                 cls._display_power_width = 2 + len(str(max_power))
             else:
@@ -357,7 +357,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         if element == 0:
             s = "0"
         else:
-            power = np.log(element)
+            power = cls._ufunc("log")(element, cls.primitive_element)
             if power > 1:
                 s = f"α^{power}"
             elif power == 1:
