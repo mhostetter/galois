@@ -32,9 +32,9 @@ These classes are subclasses of :obj:`galois.FieldArray` (which itself subclasse
 
 .. ipython:: python
 
-   issubclass(GF256, np.ndarray)
-   issubclass(GF256, galois.FieldArray)
    isinstance(GF256, galois.FieldClass)
+   issubclass(GF256, galois.FieldArray)
+   issubclass(GF256, np.ndarray)
 
 A Galois field array class contains attributes relating to its Galois field and methods to modify how the field
 is calculated or displayed. See the attributes and methods in :obj:`galois.FieldClass`.

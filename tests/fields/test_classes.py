@@ -45,7 +45,7 @@ ATTRIBUTES = [
     "irreducible_poly", "is_primitive_poly", "primitive_element", "primitive_elements",
     "is_prime_field", "is_extension_field", "prime_subfield",
     "dtypes", "display_mode", "properties",
-    "ufunc_mode", "ufunc_modes", "ufunc_target", "ufunc_targets",
+    "ufunc_mode", "ufunc_modes",
 ]
 
 @pytest.mark.parametrize("attribute", ATTRIBUTES)
