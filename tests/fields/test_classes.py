@@ -53,3 +53,8 @@ def test_cant_set_attribute(attribute):
     GF = galois.GF2
     with pytest.raises(AttributeError):
         setattr(GF, attribute, None)
+
+
+def test_properties():
+    GF = galois.GF(2**8)
+    assert GF.properties == "GF(2^8):\n  characteristic: 2\n  degree: 8\n  order: 256\n  irreducible_poly: Poly(x^8 + x^4 + x^3 + x^2 + 1, GF(2))\n  is_primitive_poly: True\n  primitive_element: GF(2, order=2^8)"
