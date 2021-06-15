@@ -375,41 +375,6 @@ class PropertiesMeta(type):
             return "jit-calculate"
 
     @property
-    def ufunc_target(cls):
-        """
-        str: The numba target for the JIT-compiled ufuncs, either `"cpu"`, `"parallel"`, or `"cuda"`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).ufunc_target
-            galois.GF(2**8).ufunc_target
-            galois.GF(31).ufunc_target
-            galois.GF(7**5).ufunc_target
-        """
-        return cls._ufunc_target
-
-    @property
-    def ufunc_targets(cls):
-        """
-        list: All supported ufunc targets for this Galois field array class.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            galois.GF(2).ufunc_targets
-            galois.GF(2**8).ufunc_targets
-            galois.GF(31).ufunc_targets
-            galois.GF(2**100).ufunc_targets
-        """
-        if cls.dtypes == [np.object_]:
-            return ["cpu"]
-        else:
-            return ["cpu", "parallel", "cuda"]
-
-    @property
     def properties(cls):
         """
         str: A formatted string displaying relevant properties of the Galois field.

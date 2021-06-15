@@ -16,7 +16,7 @@ class GF2Meta(FieldClass):
         cls._prime_subfield = cls
         cls._is_primitive_poly = True
 
-        cls.compile(kwargs["mode"], kwargs["target"])
+        cls.compile(kwargs["mode"])
 
     @property
     def ufunc_modes(cls):
@@ -28,9 +28,7 @@ class GF2Meta(FieldClass):
 
     def _compile_ufuncs(cls):
         super()._compile_ufuncs()
-
         assert cls.ufunc_mode == "jit-calculate"
-        assert cls.ufunc_target == "cpu"
 
         cls._ufuncs["add"] = np.bitwise_xor
         cls._ufuncs["negative"] = np.positive

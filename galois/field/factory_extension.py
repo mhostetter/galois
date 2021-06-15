@@ -16,7 +16,7 @@ from .poly_functions import primitive_element as _primitive_element  # To avoid 
 # pylint: disable=too-many-branches,too-many-statements,protected-access
 
 
-def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, mode="auto", target="cpu"):
+def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, mode="auto"):
     """
     Class factory for extension fields GF(p^m).
     """
@@ -78,7 +78,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     key = (order, primitive_element.integer, irreducible_poly.integer)
     if key in GF_extension._classes:
         cls = GF_extension._classes[key]
-        cls.compile(mode, target)
+        cls.compile(mode)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
@@ -98,7 +98,6 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "is_primitive_poly": is_primitive_poly,
             "primitive_element": primitive_element.integer,
             "prime_subfield": prime_subfield,
-            "target": target,
             "mode": mode
         })
 
@@ -112,7 +111,6 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "is_primitive_poly": is_primitive_poly,
             "primitive_element": primitive_element.integer,
             "prime_subfield": prime_subfield,
-            "target": target,
             "mode": mode
         })
 

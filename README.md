@@ -15,8 +15,7 @@ arithmetic is performed in `GF(p^m)` not **Z** or **R**.
 Internally, the Galois field arithmetic is implemented by replacing [numpy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html).
 The new ufuncs are written in python and then [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
 [numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit
-calculation (for memory savings). Numba also provides the ability to ["target"](https://numba.readthedocs.io/en/stable/user/vectorize.html?highlight=target)
-the JIT-compiled ufuncs for CPUs or GPUs.
+calculation (for memory savings).
 
 In addition to normal array arithmetic, `galois` also supports linear algebra (with `np.linalg` functions) and polynomials over Galois fields
 (with the `galois.Poly` class).
@@ -48,15 +47,16 @@ In addition to normal array arithmetic, `galois` also supports linear algebra (w
 - Seamless integration with numpy -- normal numpy functions work on Galois field arrays
 - Linear algebra over Galois fields using normal `np.linalg` functions
 - Polynomials over Galois fields with `galois.Poly`, both dense and sparse polynomials
-- Compile ufuncs to target GPUs for massive data processing
 
 ## Roadmap
 
-- Ring support
+- Forward error correction codes (BCH, Reed-Solomon, etc)
 - Linear feedback shift registers over arbitrary Galois fields
 - Number-theoretic transform, DFT over Galois fields
 - Elliptic curves over Galois fields
 - Cryptographic ciphers using Galois fields (RSA, AES, ECC, etc)
+- Group and ring arrays
+- GPU support
 
 ## Documentation
 
@@ -98,16 +98,16 @@ Galois field array classes are created using the `galois.GF()` class factory fun
 <class 'np.ndarray over GF(2^8)'>
 ```
 
-These classes are subclasses of `galois.FieldArray` (which itself subclasses `np.ndarray`) and have `galois.FieldClass` as their metaclass.
+These classes are subclasses of `galois.FieldArray` (which itself subclasses `np.ndarray`) and are instances of `galois.FieldClass`.
 
 ```python
->>> issubclass(GF256, np.ndarray)
+>>> isinstance(GF256, galois.FieldClass)
 True
 
 >>> issubclass(GF256, galois.FieldArray)
 True
 
->>> isinstance(GF256, galois.FieldClass)
+>>> issubclass(GF256, np.ndarray)
 True
 ```
 
@@ -140,9 +140,6 @@ GF(36893488147419103183):
   characteristic: 36893488147419103183
   degree: 1
   order: 36893488147419103183
-  irreducible_poly: Poly(x + 36893488147419103180, GF(36893488147419103183))
-  is_primitive_poly: True
-  primitive_element: GF(3, order=36893488147419103183)
 
 >>> GF = galois.GF(2**100); print(GF.properties)
 GF(2^100):

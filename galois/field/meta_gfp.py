@@ -19,7 +19,7 @@ class GFpMeta(FieldClass):
         super().__init__(name, bases, namespace, **kwargs)
         cls._prime_subfield = cls
 
-        cls.compile(kwargs["mode"], kwargs["target"])
+        cls.compile(kwargs["mode"])
 
     @property
     def irreducible_poly(cls):

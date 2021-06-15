@@ -7,7 +7,7 @@ __all__ = ["GF2"]
 
 
 @set_module("galois")
-class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, mode="jit-calculate", target="cpu"):
+class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, mode="jit-calculate"):
     """
     Creates an array over :math:`\\mathrm{GF}(2)`.
 

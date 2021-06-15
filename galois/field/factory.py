@@ -8,7 +8,7 @@ __all__ = ["GF", "Field"]
 
 
 @set_module("galois")
-def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="auto", target="cpu"):
+def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="auto"):
     """
     Factory function to construct a Galois field array class for :math:`\\mathrm{GF}(p^m)`.
 
@@ -45,8 +45,6 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="
         designed for large fields that cannot or should not store lookup tables in RAM. Generally, "jit-calculate" mode will
         be slower than "jit-lookup". The "auto" mode will determine whether to use "jit-lookup" or "jit-calculate" based on the field's
         size. In "auto" mode, field's with `order <= 2**20` will use the "jit-lookup" mode.
-    target : str, optional
-        The `target` keyword argument from :func:`numba.vectorize`, either `"cpu"`, `"parallel"`, or `"cuda"`.
 
     Returns
     -------
@@ -97,14 +95,14 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="
     if m == 1:
         if not irreducible_poly is None:
             raise ValueError(f"Argument `irreducible_poly` can only be specified for prime fields, not the extension field GF({p}^{m}).")
-        return GF_prime(p, primitive_element=primitive_element, verify=verify, target=target, mode=mode)
+        return GF_prime(p, primitive_element=primitive_element, verify=verify, mode=mode)
     else:
-        return GF_extension(p, m, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, target=target, mode=mode)
+        return GF_extension(p, m, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, mode=mode)
 
 
 @set_module("galois")
-def Field(order, irreducible_poly=None, primitive_element=None, verify=True, mode="auto", target="cpu"):
+def Field(order, irreducible_poly=None, primitive_element=None, verify=True, mode="auto"):
     """
     Alias of :func:`galois.GF`.
     """
-    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, mode=mode, target=target)
+    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, mode=mode)

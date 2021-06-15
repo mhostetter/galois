@@ -10,7 +10,7 @@ from .meta_gfp import GFpMeta
 # pylint: disable=protected-access
 
 
-def GF_prime(characteristic, primitive_element=None, verify=True, mode="auto", target="cpu"):
+def GF_prime(characteristic, primitive_element=None, verify=True, mode="auto"):
     """
     Class factory for prime fields GF(p).
     """
@@ -27,7 +27,7 @@ def GF_prime(characteristic, primitive_element=None, verify=True, mode="auto", t
     key = (order, primitive_element)
     if key in GF_prime._classes:
         cls = GF_prime._classes[key]
-        cls.compile(mode, target)
+        cls.compile(mode)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
@@ -40,7 +40,7 @@ def GF_prime(characteristic, primitive_element=None, verify=True, mode="auto", t
 
     if characteristic == 2:
         cls = GF2
-        cls.compile(mode, target)
+        cls.compile(mode)
     else:
         cls = types.new_class(name, bases=(FieldArray,), kwds={
             "metaclass": GFpMeta,
@@ -49,7 +49,6 @@ def GF_prime(characteristic, primitive_element=None, verify=True, mode="auto", t
             "order": characteristic**1,
             "primitive_element": primitive_element,
             "is_primitive_poly": True,
-            "target": target,
             "mode": mode
         })
 
