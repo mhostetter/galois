@@ -522,7 +522,7 @@ def poly_divmod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGR
 
 POLY_ROOTS_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
 
-def poly_roots_lookup(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, EXP, LOG, ZECH_LOG, ZECH_E):
+def poly_roots_lookup(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
     dtype = nonzero_coeffs.dtype
     ORDER = LOG.size
@@ -616,7 +616,7 @@ def poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD
 
 BERLEKAMP_MASSEY_LOOKUP_SIG = numba.types.FunctionType(int64[:](int64[:], BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, UNARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
 
-def berlekamp_massey_lookup(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, EXP, LOG, ZECH_LOG, ZECH_E):
+def berlekamp_massey_lookup(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
     dtype = sequence.dtype
 
@@ -658,7 +658,7 @@ def berlekamp_massey_lookup(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, EXP, 
 
 BERLEKAMP_MASSEY_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, UNARY_CALCULATE_SIG, int64, int64, int64))
 
-def berlekamp_massey_calculate(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+def berlekamp_massey_calculate(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
     dtype = sequence.dtype
 
