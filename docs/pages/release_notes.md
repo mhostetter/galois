@@ -14,6 +14,10 @@
 - Fix bug in creation of 0-degree polynomials.
 - Fix bug in `poly_gcd()` not returning monic GCD polynomials.
 
+### Contributors
+
+- Matt Hostetter (@mhostetter)
+
 ## v0.0.15
 
 ### Breaking Changes
@@ -53,7 +57,7 @@ Poly(1, GF(2))
 
 ### Contributors
 
-- @mhostetter
+- Matt Hostetter (@mhostetter)
 
 ## v0.0.14
 
@@ -64,11 +68,11 @@ Poly(1, GF(2))
 
 ### Changes
 
-- Lots of performance improvements
-- Additional linear algebra support
-- Various bug fixes
+- Lots of performance improvements.
+- Additional linear algebra support.
+- Various bug fixes.
 
 ### Contributors
 
-- @BK-Modding
-- @mhostetter
+- Baalateja Kataru (@BK-Modding)
+- Matt Hostetter (@mhostetter)
