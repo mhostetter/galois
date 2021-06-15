@@ -7,7 +7,8 @@ A performant numpy extension for Galois fields.
 
 Galois Fields
 -------------
-.. rubric::
+
+.. rubric:: Galois field class creation
 .. autosummary::
    :template: class.rst
    :toctree:
@@ -16,53 +17,40 @@ Galois Fields
    Field
    FieldArray
    FieldMeta
-   GF2
-   is_field
-   is_prime_field
-   is_extension_field
 
-Prime Fields
-------------
-.. rubric::
+.. rubric:: Pre-made Galois field classes
 .. autosummary::
-   :template: class.rst
+   :template: class_gf2.rst
    :toctree:
 
-   GF
-   Field
-   is_field
-   is_prime_field
-   is_prime
+   GF2
+
+.. rubric:: Prime field functions
+.. autosummary::
+   :toctree:
+
    primitive_root
    primitive_roots
    is_primitive_root
 
-Extension Fields
-----------------
-.. rubric::
+.. rubric:: Extension field functions
 .. autosummary::
-   :template: class.rst
    :toctree:
 
-   GF
-   Field
-   is_field
-   is_extension_field
-   conway_poly
    irreducible_poly
    irreducible_polys
    is_irreducible
    primitive_poly
    primitive_polys
    is_primitive
+   conway_poly
    primitive_element
    primitive_elements
    is_primitive_element
    minimal_poly
 
-Galois Fields for Cryptography
-------------------------------
-.. rubric::
+
+.. rubric:: Galois fields for cryptography
 .. autosummary::
    :template: class.rst
    :toctree:
@@ -74,21 +62,37 @@ Galois Fields for Cryptography
 
 Polynomials over Galois Fields
 ------------------------------
-.. rubric::
+
+.. rubric:: Polynomial classes
 .. autosummary::
    :template: class.rst
    :toctree:
 
    Poly
+
+.. rubric:: Polynomial functions
+.. autosummary::
+   :toctree:
+
    poly_gcd
    poly_pow
    poly_factors
-   conway_poly
+
+.. rubric:: Create specific polynomials
+.. autosummary::
+   :toctree:
+
    irreducible_poly
    irreducible_polys
    primitive_poly
    primitive_polys
+   conway_poly
    minimal_poly
+
+.. rubric:: Polynomial tests
+.. autosummary::
+   :toctree:
+
    is_monic
    is_irreducible
    is_primitive
@@ -104,7 +108,8 @@ Linear Sequences
 
 Forward Error Correcting Codes
 ------------------------------
-.. rubric::
+
+.. rubric:: BCH Codes
 .. autosummary::
    :template: class.rst
    :toctree:
@@ -144,9 +149,9 @@ Discrete Logarithms
 
 Primes
 ------
-.. rubric::
+
+.. rubric:: Prime numbers
 .. autosummary::
-   :template: class.rst
    :toctree:
 
    primes
@@ -156,8 +161,18 @@ Primes
    random_prime
    mersenne_exponents
    mersenne_primes
-   prime_factors
-   is_smooth
+
+.. rubric:: Primality tests
+.. autosummary::
+   :toctree:
+
    is_prime
    is_prime_fermat
    is_prime_miller_rabin
+
+.. rubric:: Prime factorization
+.. autosummary::
+   :toctree:
+
+   prime_factors
+   is_smooth
