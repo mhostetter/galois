@@ -244,3 +244,18 @@ def test_bch_generator_poly_diff_primitive_poly():
 
     p = galois.Poly.Degrees([6, 5, 4, 1, 0])  # galois.primitive_poly(2, 6, method="largest")
     assert galois.bch_generator_poly(63, 57, primitive_poly=p) == galois.Poly([1,1,0,0,1,1,1], order="asc")
+
+
+def test_bch_parity_check_matrix():
+    # S. Lin and D. Costello. Error Control Coding. Example 6.2, p. 202.
+    p = galois.Poly.Degrees([4,1,0])
+    GF = galois.GF(2**4, irreducible_poly=p)
+    alpha = GF.primitive_element
+    H = galois.bch_parity_check_matrix(15, 7)
+    H_truth = alpha**np.array([
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+        [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28],
+        [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42],
+        [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
+    ])
+    assert np.array_equal(H, np.fliplr(H_truth))  # NOTE: We use the convention of polynomial highest degree first, not last
