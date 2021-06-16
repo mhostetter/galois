@@ -1,3 +1,5 @@
+import math
+
 import numba
 from numba import int64
 import numpy as np
@@ -7,10 +9,273 @@ from ..field import Field, Poly, GF2, primitive_poly as primitive_poly_
 from ..field.meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG
 from ..overrides import set_module
 
-from .bch_functions import _compute_generator_poly, _convert_poly_to_matrix
+from .common import generator_poly_to_matrix, roots_to_parity_check_matrix
 
-__all__ = ["BCH"]
+__all__ = ["BCH", "bch_valid_codes", "bch_generator_poly", "bch_generator_matrix", "bch_parity_check_matrix"]
 
+
+###############################################################################
+# BCH Functions
+###############################################################################
+
+def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not isinstance(k, (int, np.integer)):
+        raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
+    if not isinstance(c, (int, np.integer)):
+        raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
+    if not isinstance(primitive_poly, (type(None), int, Poly)):
+        raise TypeError(f"Argument `primitive_poly` must be None, an int, or galois.Poly, not {type(primitive_poly)}.")
+    if not isinstance(primitive_element, (type(None), int, Poly)):
+        raise TypeError(f"Argument `primitive_element` must be None, an int, or galois.Poly, not {type(primitive_element)}.")
+
+    p, m = prime_factors(n + 1)
+    if not (len(p) == 1 and p[0] == 2):
+        raise ValueError(f"Argument `n` must have value `2^m - 1` for some positive m, not {n}.")
+    if not c >= 1:
+        raise ValueError(f"Argument `c` must be at least 1, not {c}.")
+    p, m = p[0], m[0]
+
+    if primitive_poly is None:
+        primitive_poly = primitive_poly_(2, m, method="smallest")
+
+    GF = Field(2**m, irreducible_poly=primitive_poly, primitive_element=primitive_element)
+
+    return GF
+
+
+@set_module("galois")
+def bch_valid_codes(n, t_min=1):
+    """
+    Returns a list of :math:`(n, k, t)` tuples of valid primitive binary BCH codes.
+
+    Parameters
+    ----------
+    n : int
+        The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
+    t_min : int, optional
+        The minimum error-correcting capability. The default is 1.
+
+    Returns
+    -------
+    list
+        A list of :math:`(n, k, t)` tuples of valid primitive BCH codes.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.bch_valid_codes(31)
+        galois.bch_valid_codes(31, t_min=3)
+    """
+    if not isinstance(t_min, (int, np.integer)):
+        raise TypeError(f"Argument `t_min` must be an integer, not {type(t_min)}.")
+    if not t_min >= 1:
+        raise ValueError(f"Argument `t_min` must be at least 1, not {t_min}.")
+
+    GF = _check_and_compute_field(n, 0, 1, None, None)  # NOTE: k isn't needed for generating the field
+    alpha = GF.primitive_element
+
+    codes = []
+    t = t_min
+    while True:
+        c = 1
+        roots = alpha**(c + np.arange(0, 2*t))
+        powers = GF.characteristic**np.arange(0, GF.degree)
+        conjugates = np.unique(np.power.outer(roots, powers))
+        g_degree = len(conjugates)
+        k = n - g_degree
+
+        if k <= 1:
+            # There are no more valid codes
+            break
+
+        if len(codes) > 0 and codes[-1][1] == k:
+            # If this code has the same size but more correcting power, replace it
+            codes[-1] = (n, k, t)
+        else:
+            codes.append((n, k, t))
+
+        t += 1
+
+    return codes
+
+
+@set_module("galois")
+def bch_generator_poly(n, k, c=1, primitive_poly=None, primitive_element=None, roots=False):
+    """
+    Returns the generator polynomial :math:`g(x)` for the primitive binary :math:`\\textrm{BCH}(n, k)` code.
+
+    The BCH generator polynomial :math:`g(x)` is defined as :math:`g(x) = \\textrm{LCM}(m_{c}(x), m_{c+1}(x), \\dots, m_{c+2t-2}(x))`,
+    where :math:`m_c(x)` is the minimal polynomial of :math:`\\alpha^c` where :math:`\\alpha` is a primitive element of :math:`\\mathrm{GF}(2^m)`.
+    If :math:`c = 1`, then the code is said to be *narrow-sense*.
+
+    Parameters
+    ----------
+    n : int
+        The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
+    k : int
+        The message size :math:`k`.
+    c : int, optional
+        The first consecutive power of :math:`\\alpha`. The default is 1.
+    primitive_poly : galois.Poly, optional
+        Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
+        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(2, m, method="smallest")`.
+        The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial, is most common for the
+        default in textbooks, Matlab, and Octave.
+    primitive_element : int, galois.Poly, optional
+        Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
+        The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
+        `galois.primitive_element(2, m)`.
+    roots : bool, optional
+        Indicates to optionally return the :math:`2t` roots (in :math:`\\mathrm{GF}(2^m)`) of the generator polynomial. The default is `False`.
+
+    Returns
+    -------
+    galois.Poly
+        The generator polynomial :math:`g(x)`.
+
+    Raises
+    ------
+    ValueError
+        If the :math:`\\textrm{BCH}(n, k)` code does not exist.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.bch_generator_poly(15, 7)
+        galois.bch_generator_poly(15, 7, roots=True)
+    """
+    GF = _check_and_compute_field(n, k, c, primitive_poly, primitive_element)
+    alpha = GF.primitive_element
+    m = GF.degree
+
+    t = int(math.ceil((n - k) / m))
+    while True:
+        # We want to find LCM(m_r1(x), m_r2(x), ...) with ri being an element of `roots`. Instead of computing each
+        # minimal polynomial and then doing an LCM, we will compute all the unique conjugates of all the roots
+        # and then compute (x - c1)*(x - c2)*...*(x -cn), which is equivalent.
+        roots_ = alpha**(c + np.arange(0, 2*t))
+        powers = GF.characteristic**np.arange(0, GF.degree)
+        conjugates = np.unique(np.power.outer(roots_, powers))
+        g = Poly.Roots(conjugates)
+        if g.degree < n - k:
+            t += 1
+        elif g.degree == n - k:
+            break  # This is a valid BCH code size and g(x) is its generator
+        else:
+            raise ValueError(f"The code BCH({n}, {k}) with c={c} does not exist.")
+
+    g =  Poly(g.coeffs, field=GF2)  # Convert from GF(2^m) to GF(2)
+
+    if not roots:
+        return g
+    else:
+        return g, roots_
+
+
+@set_module("galois")
+def bch_generator_matrix(n, k, c=1, primitive_poly=None, primitive_element=None, systematic=True):
+    """
+    Returns the generator matrix :math:`\\mathbf{G}` for the primitive binary :math:`\\textrm{BCH}(n, k)` code.
+
+    Parameters
+    ----------
+    n : int
+        The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
+    k : int
+        The message size :math:`k`.
+    c : int, optional
+        The first consecutive power of :math:`\\alpha`. The default is 1.
+    primitive_poly : galois.Poly, optional
+        Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
+        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(2, m, method="smallest")`.
+        The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial, is most common for the
+        default in textbooks, Matlab, and Octave.
+    primitive_element : int, galois.Poly, optional
+        Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
+        The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
+        `galois.primitive_element(2, m)`.
+    systematic : bool, optional
+        Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
+        appended. The default is `True`.
+
+    Returns
+    -------
+    galois.FieldArray
+        The :math:`(k, n)` generator matrix :math:`\\mathbf{G}`, such that given a message :math:`\\mathbf{m}`, a codeword is defined by
+        :math:`\\mathbf{c} = \\mathbf{m}\\mathbf{G}`.
+
+    Examples
+    --------
+    .. ipython :: python
+
+        galois.bch_generator_poly(15, 7)
+        galois.bch_generator_matrix(15, 7, systematic=False)
+        galois.bch_generator_matrix(15, 7)
+    """
+    g = bch_generator_poly(n, k, c=c, primitive_poly=primitive_poly, primitive_element=primitive_element)
+    G = generator_poly_to_matrix(n, g, systematic=systematic)
+    return G
+
+
+@set_module("galois")
+def bch_parity_check_matrix(n, k, c=1, primitive_poly=None, primitive_element=None):
+    """
+    Returns the parity-check matrix :math:`\\mathbf{H}` for the :math:`\\textrm{BCH}(n, k)` code.
+
+    Parameters
+    ----------
+    n : int
+        The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
+    k : int
+        The message size :math:`k`.
+    c : int, optional
+        The first consecutive power of :math:`\\alpha`. The default is 1.
+    primitive_poly : galois.Poly, optional
+        Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
+        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(2, m, method="smallest")`.
+        The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial, is most common for the
+        default in textbooks, Matlab, and Octave.
+    primitive_element : int, galois.Poly, optional
+        Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
+        The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
+        `galois.primitive_element(2, m)`.
+
+    Returns
+    -------
+    galois.FieldArray
+        The :math:`(n-k, n)` parity-check matrix :math:`\\mathbf{H}`, such that given a codeword :math:`\\mathbf{c}`, the syndrome is defined by
+        :math:`\\mathbf{s} = \\mathbf{c}\\mathbf{H}^T`.
+
+    Examples
+    --------
+    .. ipython :: python
+
+        G = galois.bch_generator_matrix(15, 7); G
+        H = galois.bch_parity_check_matrix(15, 7); H
+        GF = type(H)
+        # The message
+        m = galois.GF2.Random(7); m
+        # The codeword
+        c = m @ G; c
+        # Error pattern
+        e = galois.GF2.Zeros(15); e[0] = galois.GF2.Random(low=1); e
+        # c is a valid codeword, so the syndrome is 0
+        s = c.view(GF) @ H.T; s
+        # c + e is not a valid codeword, so the syndrome is not 0
+        s = (c + e).view(GF) @ H.T; s
+    """
+    _, roots = bch_generator_poly(n, k, c=c, primitive_poly=primitive_poly, primitive_element=primitive_element, roots=True)
+    H = roots_to_parity_check_matrix(n, roots)
+    return H
+
+
+###############################################################################
+# BCH Class
+###############################################################################
 
 @set_module("galois")
 class BCH:
@@ -56,36 +321,21 @@ class BCH:
     # pylint: disable=no-member
 
     def __new__(cls, n, k, primitive_poly=None, primitive_element=None, systematic=True):
-        if not isinstance(n, (int, np.integer)):
-            raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-        if not isinstance(k, (int, np.integer)):
-            raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
         if not isinstance(systematic, bool):
             raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
-        if not isinstance(primitive_poly, (type(None), int, Poly)):
-            raise TypeError(f"Argument `primitive_poly` must be None, an int, or galois.Poly, not {type(primitive_poly)}.")
-        if not isinstance(primitive_element, (type(None), int, Poly)):
-            raise TypeError(f"Argument `primitive_element` must be None, an int, or galois.Poly, not {type(primitive_element)}.")
-        p, e = prime_factors(n + 1)
-        if not (len(p) == 1 and p[0] == 2):
-            raise ValueError(f"Argument `n` must have value 2^m - 1 for some positive m, not {n}.")
-        m = e[0]
 
         obj = super().__new__(cls)
 
-        if primitive_poly is None:
-            primitive_poly = primitive_poly_(2, m, method="smallest")
-
-        obj._field = Field(2**m, irreducible_poly=primitive_poly, primitive_element=primitive_element)
-        alpha = obj.field.primitive_element
-
-        obj._generator_poly, obj._roots, obj._t = _compute_generator_poly(n, k, primitive_poly=primitive_poly, primitive_element=int(alpha))
         obj._n = n
         obj._k = k
         obj._systematic = systematic
 
-        obj._G = _convert_poly_to_matrix(n, k, obj.generator_poly, systematic)
-        obj._H = np.power.outer(alpha**np.arange(1, 2*obj.t + 1), np.arange(n - 1, -1, -1))
+        obj._generator_poly, obj._roots = bch_generator_poly(n, k, primitive_poly=primitive_poly, primitive_element=primitive_element, roots=True)
+        obj._field = type(obj.roots)
+        obj._t = obj.roots.size // 2
+
+        obj._G = generator_poly_to_matrix(n, obj.generator_poly, systematic)
+        obj._H = roots_to_parity_check_matrix(n, obj.roots)
 
         obj._is_primitive = True
         obj._is_narrow_sense = True
@@ -333,14 +583,14 @@ class BCH:
     @property
     def G(self):
         """
-        galois.GF2: The generator matrix :math:`G` with shape :math:`(k, n)`.
+        galois.GF2: The generator matrix :math:`\\mathbf{G}` with shape :math:`(k, n)`.
         """
         return self._G
 
     @property
     def H(self):
         """
-        galois.FieldArray: The parity-check matrix :math:`H` with shape :math:`(n-k, n)`.
+        galois.FieldArray: The parity-check matrix :math:`\\mathbf{H}` with shape :math:`(n-k, n)`.
         """
         return self._H
 

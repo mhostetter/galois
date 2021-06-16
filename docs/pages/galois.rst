@@ -49,7 +49,6 @@ Galois Fields
    is_primitive_element
    minimal_poly
 
-
 .. rubric:: Galois fields for cryptography
 .. autosummary::
    :template: class.rst
@@ -99,6 +98,7 @@ Polynomials over Galois Fields
 
 Linear Sequences
 ----------------
+
 .. rubric::
 .. autosummary::
    :template: class.rst
@@ -109,7 +109,7 @@ Linear Sequences
 Forward Error Correcting Codes
 ------------------------------
 
-.. rubric:: BCH Codes
+.. rubric:: BCH codes
 .. autosummary::
    :template: class.rst
    :toctree:
@@ -118,6 +118,15 @@ Forward Error Correcting Codes
    bch_valid_codes
    bch_generator_poly
    bch_generator_matrix
+   bch_parity_check_matrix
+
+.. rubric:: Cyclic code functions
+.. autosummary::
+   :template: class.rst
+   :toctree:
+
+   generator_poly_to_matrix
+   roots_to_parity_check_matrix
 
 Modular Arithmetic
 ------------------
