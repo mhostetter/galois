@@ -58,14 +58,6 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
     def __repr__(cls):
         return str(cls)
 
-    def __dir__(cls):
-        if isinstance(cls, FieldClass):
-            meta_dir = dir(type(cls))
-            classmethods = [attribute for attribute in super().__dir__() if attribute[0] != "_" and inspect.ismethod(getattr(cls, attribute))]
-            return sorted(meta_dir + classmethods)
-        else:
-            return super().__dir__()
-
     ###############################################################################
     # Class methods
     ###############################################################################
@@ -371,9 +363,32 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             return s
 
 
+class DirMeta(type):
+    """
+    A mixin metaclass that overrides __dir__ so that dir() and tab-completion in ipython of `FieldArray` classes
+    (which are `FieldClass` instances) include the methods and properties from the metaclass. Python does not
+    natively include metaclass properties in dir().
+
+    This is a separate class because it will be mixed in to `GF2Meta`, `GF2mMeta`, `GFpMeta`, and `GFpmMeta` separately. Otherwise, the
+    sphinx documentation of `FieldArray` is messed up.
+
+    Also, to not mess up the sphinx documentation of `GF2`, we had to create a custom sphinx template `class_gf2.rst` that
+    manually includes all the classmethods and methods. This is because there is no way to redefine __dir__ for `GF2` and not have
+    sphinx get confused when using autoclass.
+    """
+
+    def __dir__(cls):
+        if isinstance(cls, FieldClass):
+            meta_dir = dir(type(cls))
+            classmethods = [attribute for attribute in super().__dir__() if attribute[0] != "_" and inspect.ismethod(getattr(cls, attribute))]
+            return sorted(meta_dir + classmethods)
+        else:
+            return super().__dir__()
+
+
 class DisplayContext:
     """
-    Simple context manager for the :obj:`FieldArrayMeta.display` method.
+    Simple context manager for the :obj:`FieldClass.display` method.
     """
 
     def __init__(self, cls):

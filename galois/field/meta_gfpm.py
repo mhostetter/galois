@@ -2,11 +2,11 @@ import numba
 import numpy as np
 
 from .dtypes import DTYPES
-from .meta_class import FieldClass
+from .meta_class import FieldClass, DirMeta
 from .meta_ufunc import  _FUNCTION_TYPE
 
 
-class GFpmMeta(FieldClass):
+class GFpmMeta(FieldClass, DirMeta):
     """
     A metaclass for all GF(p^m) classes.
     """
