@@ -120,6 +120,16 @@ Forward Error Correcting Codes
    bch_generator_matrix
    bch_parity_check_matrix
 
+.. rubric:: Reed-Solomon codes
+.. autosummary::
+   :template: class.rst
+   :toctree:
+
+   ReedSolomon
+   rs_generator_poly
+   rs_generator_matrix
+   rs_parity_check_matrix
+
 .. rubric:: Cyclic code functions
 .. autosummary::
    :template: class.rst
