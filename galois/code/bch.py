@@ -5,7 +5,7 @@ from numba import int64
 import numpy as np
 
 from ..factor import prime_factors
-from ..field import Field, Poly, GF2, primitive_poly as primitive_poly_
+from ..field import Field, Poly, GF2, matlab_primitive_poly
 from ..field.meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG
 from ..overrides import set_module
 
@@ -17,15 +17,6 @@ __all__ = ["BCH", "bch_valid_codes", "bch_generator_poly", "bch_generator_matrix
 ###############################################################################
 # BCH Functions
 ###############################################################################
-
-def _default_primitive_poly(p, m):
-    if p == 2 and m == 7:
-        # For some reason, all textbooks and Matlab use the second-smallest (lexicographically) primitive polynomial
-        # for GF(2^7) and the lexicographically smallest primitive polynomial for all others. I can't determine why.
-        return Poly.Degrees([7, 3, 0])
-    else:
-        return primitive_poly_(p, m, method="smallest")
-
 
 def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
     if not isinstance(n, (int, np.integer)):
@@ -47,7 +38,7 @@ def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
     p, m = p[0], m[0]
 
     if primitive_poly is None:
-        primitive_poly = _default_primitive_poly(2, m)
+        primitive_poly = matlab_primitive_poly(2, m)
 
     GF = Field(2**m, irreducible_poly=primitive_poly, primitive_element=primitive_element)
 
@@ -130,17 +121,8 @@ def bch_generator_poly(n, k, c=1, primitive_poly=None, primitive_element=None, r
         The first consecutive power of :math:`\\alpha`. The default is 1.
     primitive_poly : galois.Poly, optional
         Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
-        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(2, m, method="smallest")`.
-        The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial, is most common for the
-        default in textbooks, Matlab, and Octave.
-
-        .. note::
-
-            For some reason, all textbooks and Matlab use the lexicographically second-smallest primitive polynomial for
-            :math:`\\mathrm{GF}(2^7)` which is :math:`x^7 + x^3 + 1`, not the smallest which is :math:`x^7 + x + 1`. We use the convention
-            and default to :math:`x^7 + x^3 + 1`. For all other fields, textbooks seem to use the lexicographically smallest primitive
-            polynomial as the default.
-
+        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
+        primitive polynomial as a default instead of the Conway polynomial.
     primitive_element : int, galois.Poly, optional
         Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
         The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
@@ -219,17 +201,8 @@ def bch_generator_matrix(n, k, c=1, primitive_poly=None, primitive_element=None,
         The first consecutive power of :math:`\\alpha`. The default is 1.
     primitive_poly : galois.Poly, optional
         Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
-        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(2, m, method="smallest")`.
-        The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial, is most common for the
-        default in textbooks, Matlab, and Octave.
-
-        .. note::
-
-            For some reason, all textbooks and Matlab use the lexicographically second-smallest primitive polynomial for
-            :math:`\\mathrm{GF}(2^7)` which is :math:`x^7 + x^3 + 1`, not the smallest which is :math:`x^7 + x + 1`. We use the convention
-            and default to :math:`x^7 + x^3 + 1`. For all other fields, textbooks seem to use the lexicographically smallest primitive
-            polynomial as the default.
-
+        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
+        primitive polynomial as a default instead of the Conway polynomial.
     primitive_element : int, galois.Poly, optional
         Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
         The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
@@ -272,17 +245,8 @@ def bch_parity_check_matrix(n, k, c=1, primitive_poly=None, primitive_element=No
         The first consecutive power of :math:`\\alpha`. The default is 1.
     primitive_poly : galois.Poly, optional
         Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
-        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(2, m, method="smallest")`.
-        The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial, is most common for the
-        default in textbooks, Matlab, and Octave.
-
-        .. note::
-
-            For some reason, all textbooks and Matlab use the lexicographically second-smallest primitive polynomial for
-            :math:`\\mathrm{GF}(2^7)` which is :math:`x^7 + x^3 + 1`, not the smallest which is :math:`x^7 + x + 1`. We use the convention
-            and default to :math:`x^7 + x^3 + 1`. For all other fields, textbooks seem to use the lexicographically smallest primitive
-            polynomial as the default.
-
+        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
+        primitive polynomial as a default instead of the Conway polynomial.
     primitive_element : int, galois.Poly, optional
         Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
         The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
@@ -332,19 +296,10 @@ class BCH:
         The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
     k : int
         The message size :math:`k`.
-    primitive_poly : int, galois.Poly, optional
+    primitive_poly : galois.Poly, optional
         Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
-        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(2, m, method="smallest")`.
-        The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial, is the default in textbooks,
-        Matlab, and Octave.
-
-        .. note::
-
-            For some reason, all textbooks and Matlab use the lexicographically second-smallest primitive polynomial for
-            :math:`\\mathrm{GF}(2^7)` which is :math:`x^7 + x^3 + 1`, not the smallest which is :math:`x^7 + x + 1`. We use the convention
-            and default to :math:`x^7 + x^3 + 1`. For all other fields, textbooks seem to use the lexicographically smallest primitive
-            polynomial as the default.
-
+        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
+        primitive polynomial as a default instead of the Conway polynomial.
     primitive_element : int, galois.Poly, optional
         Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
         The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.

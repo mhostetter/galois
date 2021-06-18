@@ -44,6 +44,7 @@ Galois Fields
    primitive_polys
    is_primitive
    conway_poly
+   matlab_primitive_poly
    primitive_element
    primitive_elements
    is_primitive_element
@@ -86,6 +87,7 @@ Polynomials over Galois Fields
    primitive_poly
    primitive_polys
    conway_poly
+   matlab_primitive_poly
    minimal_poly
 
 .. rubric:: Polynomial tests
