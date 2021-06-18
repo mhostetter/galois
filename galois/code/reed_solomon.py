@@ -1,8 +1,7 @@
 import numpy as np
 
 from ..factor import prime_factors
-from ..field import Field, Poly
-from ..field import primitive_poly as primitive_poly_
+from ..field import Field, Poly, matlab_primitive_poly
 from ..overrides import set_module
 
 from .common import generator_poly_to_matrix, roots_to_parity_check_matrix
@@ -34,7 +33,7 @@ def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
     p, m = p[0], m[0]
 
     if primitive_poly is None:
-        primitive_poly = primitive_poly_(p, m, method="smallest")
+        primitive_poly = matlab_primitive_poly(p, m)
 
     GF = Field(p**m, irreducible_poly=primitive_poly, primitive_element=primitive_element)
 
@@ -58,10 +57,9 @@ def rs_generator_poly(n, k, c=1, primitive_poly=None, primitive_element=None, ro
     c : int, optional
         The first consecutive power of :math:`\\alpha`. The default is 1.
     primitive_poly : galois.Poly, optional
-        Optionally specify the primitive polynomial that defines the field :math:`\\mathrm{GF}(q)`. The default is
-        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(p, m, method="smallest")`
-        where :math:`q = p^m`. The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial,
-        is most common for the default in textbooks, Matlab, and Octave.
+        Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(q)`. The default is
+        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
+        primitive polynomial as a default instead of the Conway polynomial.
     primitive_element : int, galois.Poly, optional
         Optionally specify the primitive element :math:`\\alpha` of :math:`\\mathrm{GF}(q)` whose powers are roots of the generator polynomial :math:`g(x)`.
         The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(q)`, i.e.
@@ -107,10 +105,9 @@ def rs_generator_matrix(n, k, c=1, primitive_poly=None, primitive_element=None, 
     c : int, optional
         The first consecutive power of :math:`\\alpha`. The default is 1.
     primitive_poly : galois.Poly, optional
-        Optionally specify the primitive polynomial that defines the field :math:`\\mathrm{GF}(q)`. The default is
-        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(p, m, method="smallest")`
-        where :math:`q = p^m`. The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial,
-        is most common for the default in textbooks, Matlab, and Octave.
+        Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(q)`. The default is
+        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
+        primitive polynomial as a default instead of the Conway polynomial.
     primitive_element : int, galois.Poly, optional
         Optionally specify the primitive element :math:`\\alpha` of :math:`\\mathrm{GF}(q)` whose powers are roots of the generator polynomial :math:`g(x)`.
         The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(q)`, i.e.
@@ -152,10 +149,9 @@ def rs_parity_check_matrix(n, k, c=1, primitive_poly=None, primitive_element=Non
     c : int, optional
         The first consecutive power of :math:`\\alpha`. The default is 1.
     primitive_poly : galois.Poly, optional
-        Optionally specify the primitive polynomial that defines the field :math:`\\mathrm{GF}(q)`. The default is
-        `None` which uses the lexicographically-smallest primitive polynomial, i.e. `galois.primitive_poly(p, m, method="smallest")`
-        where :math:`q = p^m`. The use of the lexicographically-smallest primitive polynomial, as opposed to a Conway polynomial,
-        is most common for the default in textbooks, Matlab, and Octave.
+        Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(q)`. The default is
+        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
+        primitive polynomial as a default instead of the Conway polynomial.
     primitive_element : int, galois.Poly, optional
         Optionally specify the primitive element :math:`\\alpha` of :math:`\\mathrm{GF}(q)` whose powers are roots of the generator polynomial :math:`g(x)`.
         The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(q)`, i.e.

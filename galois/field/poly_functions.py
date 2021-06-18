@@ -12,7 +12,7 @@ from .poly import Poly
 
 __all__ = [
     "poly_gcd", "poly_pow", "poly_factors",
-    "irreducible_poly", "irreducible_polys", "primitive_poly", "primitive_polys", "minimal_poly",
+    "irreducible_poly", "irreducible_polys", "primitive_poly", "primitive_polys", "matlab_primitive_poly", "minimal_poly",
     "is_monic", "is_irreducible", "is_primitive",
     "is_primitive_element", "primitive_element", "primitive_elements"
 ]
@@ -472,6 +472,64 @@ def primitive_polys(characteristic, degree):
             polys.append(poly)
 
     return polys
+
+
+@set_module("galois")
+def matlab_primitive_poly(characteristic, degree):
+    """
+    Returns the default primitive polynomial as used in Matlab.
+
+    Matlab uses the lexicographically-smallest primitive polynomial (equivalent to `galois.primitive_poly(p, m, method="smallest")`)
+    as the default... *mostly*. There are three notable exceptions:
+
+    1. :math:`\\mathrm{GF}(2^7)` uses :math:`x^7 + x^3 + 1`, not :math:`x^7 + x + 1`.
+    2. :math:`\\mathrm{GF}(2^{14})` uses :math:`x^{14} + x^{10} + x^6 + x + 1`, not :math:`x^{14} + x^5 + x^3 + x + 1`.
+    3. :math:`\\mathrm{GF}(2^{16})` uses :math:`x^{16} + x^{12} + x^3 + x + 1`, not :math:`x^{16} + x^5 + x^3 + x^2 + 1`.
+
+    Warning
+    -------
+    This has been tested for all the :math:`\\mathrm{GF}(2^m)` fields for :math:`2 \\le m \\le 16` (Matlab doesn't support
+    larger than 16). And it has been spot-checked for :math:`\\mathrm{GF}(p^m)`. There may exist other exceptions. Please
+    submit a GitHub issue if you discover one.
+
+    Parameters
+    ----------
+    characteristic : int
+        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
+    degree : int
+        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
+        of :math:`\\mathrm{GF}(p)`.
+
+    Returns
+    -------
+    galois.Poly
+        Matlab's default degree-:math:`m` primitive polynomial over :math:`\\mathrm{GF}(p)`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.primitive_poly(2, 6, method="smallest")
+        galois.matlab_primitive_poly(2, 6)
+
+    .. ipython:: python
+
+        galois.primitive_poly(2, 7, method="smallest")
+        galois.matlab_primitive_poly(2, 7)
+    """
+    # Textbooks and Matlab use the lexicographically-smallest primitive polynomial for the default. But for some
+    # reason, there are three exceptions. I can't determine why.
+    if characteristic == 2 and degree == 7:
+        # Not the smallest of `x^7 + x + 1`
+        return Poly.Degrees([7, 3, 0])
+    elif characteristic == 2 and degree == 14:
+        # Not the smallest of `x^14 + x^5 + x^3 + x + 1`
+        return Poly.Degrees([14, 10, 6, 1, 0])
+    elif characteristic == 2 and degree == 16:
+        # Not the smallest of `x^16 + x^5 + x^3 + x^2 + 1`
+        return Poly.Degrees([16, 12, 3, 1, 0])
+    else:
+        return primitive_poly(characteristic, degree, method="smallest")
 
 
 @set_module("galois")
