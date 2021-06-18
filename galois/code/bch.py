@@ -128,12 +128,14 @@ def bch_generator_poly(n, k, c=1, primitive_poly=None, primitive_element=None, r
         The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
         `galois.primitive_element(2, m)`.
     roots : bool, optional
-        Indicates to optionally return the :math:`2t` roots (in :math:`\\mathrm{GF}(2^m)`) of the generator polynomial. The default is `False`.
+        Indicates to optionally return the :math:`2t` roots in :math:`\\mathrm{GF}(2^m)` of the generator polynomial. The default is `False`.
 
     Returns
     -------
     galois.Poly
-        The generator polynomial :math:`g(x)`.
+        The generator polynomial :math:`g(x)` over :math:`\\mathrm{GF}(2)`.
+    galois.FieldArray
+        The :math:`2t` roots in :math:`\\mathrm{GF}(2^m)` of the generator polynomial. Only returned if `roots=True`.
 
     Raises
     ------
@@ -255,7 +257,7 @@ def bch_parity_check_matrix(n, k, c=1, primitive_poly=None, primitive_element=No
     Returns
     -------
     galois.FieldArray
-        The :math:`(n-k, n)` parity-check matrix :math:`\\mathbf{H}`, such that given a codeword :math:`\\mathbf{c}`, the syndrome is defined by
+        The :math:`(2t, n)` parity-check matrix :math:`\\mathbf{H}`, such that given a codeword :math:`\\mathbf{c}`, the syndrome is defined by
         :math:`\\mathbf{s} = \\mathbf{c}\\mathbf{H}^T`.
 
     Examples
@@ -264,13 +266,14 @@ def bch_parity_check_matrix(n, k, c=1, primitive_poly=None, primitive_element=No
 
         G = galois.bch_generator_matrix(15, 7); G
         H = galois.bch_parity_check_matrix(15, 7); H
+        GF2 = galois.GF2
         GF = type(H)
         # The message
-        m = galois.GF2.Random(7); m
+        m = GF2.Random(7); m
         # The codeword
         c = m @ G; c
         # Error pattern
-        e = galois.GF2.Zeros(15); e[0] = galois.GF2.Random(low=1); e
+        e = GF2.Zeros(15); e[0] = GF2.Random(low=1); e
         # c is a valid codeword, so the syndrome is 0
         s = c.view(GF) @ H.T; s
         # c + e is not a valid codeword, so the syndrome is not 0
@@ -374,11 +377,20 @@ class BCH:
 
     def encode(self, message, parity_only=False):
         """
-        Encodes the message into a BCH codeword.
+        Encodes the message :math:`\\mathbf{m}` into the BCH codeword :math:`\\mathbf{c}`.
+
+        The message vector :math:`\\mathbf{m}` is defined as :math:`\\mathbf{m} = [m_{k-1}, \\dots, m_1, m_0]`, which
+        corresponds to the message polynomial :math:`m(x) = m_{k-1} x^{k-1} + \\dots + m_1 x + m_0`.
+
+        The codeword vector :math:`\\mathbf{c}` is computed by :math:`\\mathbf{c} = \\mathbf{m}\\mathbf{G}`, where
+        :math:`\\mathbf{G}` is the generator matrix. The equivalent polynomial operation is :math:`c(x) = m(x)g(x)`.
+
+        For systematic codes, :math:`\\mathbf{G} = [\\mathbf{I}\\ |\\ \\mathbf{P}]` such that :math:`\\mathbf{c} = [\\mathbf{m}\\ |\\ \\mathbf{p}]`.
+        And in polynomial form, :math:`p(x) = -(m(x) x^{n-k}\\ \\textrm{mod}\\ g(x))` and :math:`c(x) = m(x)x^{n-k} + p(x)`.
 
         Parameters
         ----------
-        message : np.ndarray, galois.FieldArray
+        message : numpy.ndarray, galois.FieldArray
             The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the number
             of messages.
         parity_only : bool, optional
@@ -387,19 +399,23 @@ class BCH:
 
         Returns
         -------
-        np.ndarray, galois.FieldArray
+        numpy.ndarray, galois.FieldArray
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. The return type matches the
-            message type. If `parity_only=True`, the parity bits are either a :math:`n - k`-length vector or
+            message type. If `parity_only=True`, the parity bits are returned as either a :math:`n - k`-length vector or
             :math:`(N, n-k)` matrix.
 
         Examples
         --------
+        Encode a single codeword.
+
         .. ipython:: python
 
             bch = galois.BCH(15, 7)
             m = galois.GF2.Random(bch.k); m
             c = bch.encode(m); c
             p = bch.encode(m, parity_only=True); p
+
+        Encode a matrix of codewords.
 
         .. ipython:: python
 
@@ -419,7 +435,6 @@ class BCH:
             parity = message.view(GF2) @ self.G[:, self.k:]
             return parity.view(type(message))
         elif self.systematic:
-            # Seems faster to just matrix multiply than use hstack
             parity = message.view(GF2) @ self.G[:, self.k:]
             return np.hstack((message, parity)).view(type(message))
         else:
@@ -430,9 +445,17 @@ class BCH:
         """
         Decodes the BCH codeword into its message.
 
+        The codeword vector :math:`\\mathbf{c}` is defined as :math:`\\mathbf{c} = [c_{n-1}, \\dots, c_1, c_0]`, which
+        corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \\dots + c_1 x + c_0`.
+
+        In decoding, the syndrome is computed by :math:`\\mathbf{s} = \\mathbf{c}\\mathbf{H}^T`, where
+        :math:`\\mathbf{H}` is the generator matrix. The equivalent polynomial operation is :math:`s(x) = c(x)\\ \\textrm{mod}\\ g(x)`.
+        A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome is non-zero,
+        the decoder will find an error-locator polynomial :math:`\\sigma(x)` and the corresponding error locations and values.
+
         Parameters
         ----------
-        codeword : np.ndarray, galois.FieldArray
+        codeword : numpy.ndarray, galois.FieldArray
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
             number of codewords.
         errors : bool, optional
@@ -440,7 +463,7 @@ class BCH:
 
         Returns
         -------
-        np.ndarray, galois.FieldArray
+        numpy.ndarray, galois.FieldArray
             The decoded message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
         int, np.ndarray
             Optional return argument of the number of corrected bit errors as either a scalar or :math:`n`-length vector.
@@ -449,6 +472,8 @@ class BCH:
 
         Examples
         --------
+        Decode a single codeword.
+
         .. ipython:: python
 
             bch = galois.BCH(15, 7)
@@ -463,12 +488,14 @@ class BCH:
             dec_m, N = bch.decode(c, errors=True); dec_m, N
             np.array_equal(dec_m, m)
 
+        Decode a matrix of codewords.
+
         .. ipython:: python
 
             bch = galois.BCH(15, 7)
             m = galois.GF2.Random((5, bch.k)); m
             c = bch.encode(m); c
-            # Corrupt the first bit in the codeword
+            # Corrupt the first bit in each codeword
             c[:,0] ^= 1
             dec_m = bch.decode(c); dec_m
             np.array_equal(dec_m, m)
@@ -553,7 +580,7 @@ class BCH:
     @property
     def roots(self):
         """
-        galois.FieldArray: The roots of the generator polynomial. These are consecutive powers of :math:`\\alpha`.
+        galois.FieldArray: The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\\alpha`.
         """
         return self._roots
 
@@ -567,7 +594,7 @@ class BCH:
     @property
     def H(self):
         """
-        galois.FieldArray: The parity-check matrix :math:`\\mathbf{H}` with shape :math:`(n-k, n)`.
+        galois.FieldArray: The parity-check matrix :math:`\\mathbf{H}` with shape :math:`(2t, n)`.
         """
         return self._H
 

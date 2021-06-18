@@ -7,15 +7,15 @@ __all__ = ["generator_poly_to_matrix", "roots_to_parity_check_matrix"]
 
 
 @set_module("galois")
-def generator_poly_to_matrix(n, g, systematic=True):
+def generator_poly_to_matrix(n, generator_poly, systematic=True):
     """
-    Converts the generator polynomial :math:`g(x)` into the generator matrix :math:`\\mathbf{G}` for :math:`[n, k]` code.
+    Converts the generator polynomial :math:`g(x)` into the generator matrix :math:`\\mathbf{G}` for an :math:`[n, k]` cyclic code.
 
     Parameters
     ----------
     n : int
         The codeword size :math:`n`.
-    g : galois.Poly
+    generator_poly : galois.Poly
         The generator polynomial :math:`g(x)`.
     systematic : bool, optional
         Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
@@ -37,19 +37,19 @@ def generator_poly_to_matrix(n, g, systematic=True):
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(g, Poly):
-        raise TypeError(f"Argument `g` must be a galois.Poly, not {type(g)}.")
+    if not isinstance(generator_poly, Poly):
+        raise TypeError(f"Argument `generator_poly` must be a galois.Poly, not {type(generator_poly)}.")
     if not isinstance(systematic, bool):
         raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
 
-    # Assign the generator polynomial coefficients with highest degree starting along the diagonal
-    k = n - g.degree
-    G = g.field.Zeros((k, n))
+    # Assign the generator polynomial coefficients with highest degree starting along the diagonals
+    k = n - generator_poly.degree
+    G = generator_poly.field.Zeros((k, n))
     for i in range(k):
-        G[i, i:i + g.degree + 1] = g.coeffs
+        G[i, i:i + generator_poly.degree + 1] = generator_poly.coeffs
 
-    # Convert G to the form [I | P]
     if systematic:
+        # Convert G to the form [I | P]
         G = G.row_reduce()  # pylint: disable=no-member
 
     return G
@@ -58,19 +58,19 @@ def generator_poly_to_matrix(n, g, systematic=True):
 @set_module("galois")
 def roots_to_parity_check_matrix(n, roots):
     """
-    Converts the generator polynomial roots into the parity-check matrix :math:`\\mathbf{H}` for :math:`[n, k]` code.
+    Converts the generator polynomial roots into the parity-check matrix :math:`\\mathbf{H}` for an :math:`[n, k]` cyclic code.
 
     Parameters
     ----------
     n : int
         The codeword size :math:`n`.
     roots : galois.FieldArray
-        The generator polynomial roots.
+        The :math:`2t` roots of the generator polynomial :math:`g(x)`.
 
     Returns
     -------
     galois.FieldArray
-        The :math:`(n-k, n)` parity-check matrix :math:`\\mathbf{H}`, such that given a codeword :math:`\\mathbf{c}`, the syndrome is defined by
+        The :math:`(2t, n)` parity-check matrix :math:`\\mathbf{H}`, such that given a codeword :math:`\\mathbf{c}`, the syndrome is defined by
         :math:`\\mathbf{s} = \\mathbf{c}\\mathbf{H}^T`.
 
     Examples
