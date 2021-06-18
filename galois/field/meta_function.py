@@ -528,7 +528,7 @@ def poly_roots_lookup(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, M
     ORDER = LOG.size
 
     N = nonzero_degrees.size
-    lambda_vector = nonzero_coeffs
+    lambda_vector = np.copy(nonzero_coeffs)
     alpha_vector = np.zeros(N, dtype=dtype)
     for i in range(N):
         alpha_vector[i] = POWER(primitive_element, nonzero_degrees[i], *args)
@@ -573,7 +573,7 @@ def poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD
     ORDER = CHARACTERISTIC**DEGREE
 
     N = nonzero_degrees.size
-    lambda_vector = nonzero_coeffs
+    lambda_vector = np.copy(nonzero_coeffs)
     alpha_vector = np.zeros(N, dtype=dtype)
     for i in range(N):
         alpha_vector[i] = POWER(primitive_element, nonzero_degrees[i], *args)
