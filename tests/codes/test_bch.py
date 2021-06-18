@@ -5,6 +5,8 @@ Test vectors generated from Octave with bchpoly().
 
 References
 ----------
+* S. Lin and D. Costello. Error Control Coding. Appendix C, pp. 1231.
+* https://link.springer.com/content/pdf/bbm%3A978-1-4899-2174-1%2F1.pdf
 * https://octave.sourceforge.io/communications/function/bchpoly.html
 """
 import random
@@ -16,9 +18,6 @@ import galois
 
 
 def test_bch_valid_codes_7():
-    """
-    Generated in Octave with `bchpoly()`.
-    """
     codes = np.array([
         [7, 4, 1],
     ])
@@ -26,9 +25,6 @@ def test_bch_valid_codes_7():
 
 
 def test_bch_valid_codes_15():
-    """
-    Generated in Octave with `bchpoly()`.
-    """
     codes = np.array([
         [15, 11, 1],
         [15,  7, 2],
@@ -38,9 +34,6 @@ def test_bch_valid_codes_15():
 
 
 def test_bch_valid_codes_31():
-    """
-    Generated in Octave with `bchpoly()`.
-    """
     codes = np.array([
         [31, 26, 1],
         [31, 21, 2],
@@ -52,9 +45,6 @@ def test_bch_valid_codes_31():
 
 
 def test_bch_valid_codes_63():
-    """
-    Generated in Octave with `bchpoly()`.
-    """
     codes = np.array([
         [63, 57, 1],
         [63, 51, 2],
@@ -72,9 +62,6 @@ def test_bch_valid_codes_63():
 
 
 def test_bch_valid_codes_127():
-    """
-    Generated in Octave with `bchpoly()`.
-    """
     codes = np.array([
         [127, 120,  1],
         [127, 113,  2],
@@ -98,9 +85,6 @@ def test_bch_valid_codes_127():
 
 
 def test_bch_valid_codes_255():
-    """
-    Generated in Octave with `bchpoly()`.
-    """
     codes = np.array([
         [255, 247,  1],
         [255, 239,  2],
@@ -140,9 +124,6 @@ def test_bch_valid_codes_255():
 
 
 def test_bch_valid_codes_511():
-    """
-    Generated in Octave with `bchpoly()`.
-    """
     codes = np.array([
         [511, 502,  1],
         [511, 493,  2],
@@ -205,22 +186,25 @@ def test_bch_valid_codes_511():
     assert np.array_equal(galois.bch_valid_codes(511), codes)
 
 
-def test_bch_generator_poly():
-    """
-    S. Lin and D. Costello. Error Control Coding. Appendix C, pp. 1231.
-    """
+def test_bch_generator_poly_7():
     assert galois.bch_generator_poly(7, 4).integer == 0o13
 
+
+def test_bch_generator_poly_15():
     assert galois.bch_generator_poly(15, 11).integer == 0o23
     assert galois.bch_generator_poly(15, 7).integer == 0o721
     assert galois.bch_generator_poly(15, 5).integer == 0o2467
 
+
+def test_bch_generator_poly_31():
     assert galois.bch_generator_poly(31, 26).integer == 0o45
     assert galois.bch_generator_poly(31, 21).integer == 0o3551
     assert galois.bch_generator_poly(31, 16).integer == 0o107657
     assert galois.bch_generator_poly(31, 11).integer == 0o5423325
     assert galois.bch_generator_poly(31, 6).integer == 0o313365047
 
+
+def test_bch_generator_poly_63():
     assert galois.bch_generator_poly(63, 57).integer == 0o103
     assert galois.bch_generator_poly(63, 51).integer == 0o12471
     assert galois.bch_generator_poly(63, 45).integer == 0o1701317
@@ -233,6 +217,36 @@ def test_bch_generator_poly():
     assert galois.bch_generator_poly(63, 10).integer == 0o472622305527250155
     assert galois.bch_generator_poly(63, 7).integer == 0o5231045543503271737
 
+
+def test_bch_generator_poly_127():
+    assert galois.bch_generator_poly(127, 120).integer == 0o211
+    assert galois.bch_generator_poly(127, 113).integer == 0o41567
+    assert galois.bch_generator_poly(127, 106).integer == 0o11554_743
+    # ...
+    assert galois.bch_generator_poly(127, 57).integer == 0o33526_52525_05705_05351_7721
+    assert galois.bch_generator_poly(127, 50).integer == 0o54446_51252_33140_12421_50142_1
+    assert galois.bch_generator_poly(127, 43).integer == 0o17721_77221_36512_27521_22057_4343
+    # ...
+    assert galois.bch_generator_poly(127, 15).integer == 0o22057_04244_56045_54770_52301_37622_17604_353
+    assert galois.bch_generator_poly(127, 8).integer == 0o70472_64052_75103_06514_76224_27156_77331_30217
+    assert galois.bch_generator_poly(127, 1).integer == 0o17777_77777_77777_77777_77777_77777_77777_77777_777
+
+
+def test_bch_generator_poly_255():
+    assert galois.bch_generator_poly(255, 247).integer == 0o435
+    assert galois.bch_generator_poly(255, 239).integer == 0o26754_3
+    assert galois.bch_generator_poly(255, 231).integer == 0o15672_0665
+    # ...
+    assert galois.bch_generator_poly(255, 91).integer == 0o67502_65030_32744_41727_23631_72473_25110_75550_76272_07243_44561
+    assert galois.bch_generator_poly(255, 87).integer == 0o11013_67634_14743_23643_52316_34307_17204_62067_22545_27331_17213_17
+    assert galois.bch_generator_poly(255, 79).integer == 0o66700_03563_76575_00020_27034_42073_66174_62101_53267_11766_54134_2355
+    # ...
+    assert galois.bch_generator_poly(255, 13).integer == 0o46417_32005_05256_45444_26573_71425_00660_04330_67744_54765_61403_17467_72135_70261_34460_50054_7
+    assert galois.bch_generator_poly(255, 9).integer == 0o15726_02521_74724_63201_03104_32553_55134_61416_23672_12044_07454_51127_66115_54770_55616_77516_057
+    assert galois.bch_generator_poly(255, 1).integer == 0o77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777
+
+
+def test_bch_generator_poly_1024():
     assert galois.bch_generator_poly(1023, 1013).integer == 0o2011
     assert galois.bch_generator_poly(1023, 1003).integer == 0o4014167
     # ...
