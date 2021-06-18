@@ -152,28 +152,39 @@ def bch_generator_poly(n, k, c=1, primitive_poly=None, primitive_element=None, r
     alpha = GF.primitive_element
     m = GF.degree
 
-    t = int(math.ceil((n - k) / m))
+    t = int(math.ceil((n - k) / m))  # The minimum value of t
+    found = False
     while True:
-        # We want to find LCM(m_r1(x), m_r2(x), ...) with ri being an element of `roots`. Instead of computing each
+        # We want to find LCM(m_r1(x), m_r2(x), ...) with ri being an element of `roots_`. Instead of computing each
         # minimal polynomial and then doing an LCM, we will compute all the unique conjugates of all the roots
-        # and then compute (x - c1)*(x - c2)*...*(x -cn), which is equivalent.
+        # and then compute (x - c1)*(x - c2)*...*(x - cn), which is equivalent.
         roots_ = alpha**(c + np.arange(0, 2*t))
         powers = GF.characteristic**np.arange(0, GF.degree)
         conjugates = np.unique(np.power.outer(roots_, powers))
-        g = Poly.Roots(conjugates)
-        if g.degree < n - k:
+        g_degree = len(conjugates)
+
+        if g_degree < n - k:
+            # This t is too small to produce the BCH code
             t += 1
-        elif g.degree == n - k:
-            break  # This is a valid BCH code size and g(x) is its generator
+        elif g_degree == n - k:
+            # This t produces the correct BCH code size and g(x) is its generator, but there may be a larger t, so keep looking
+            found = True
+            largest_t_roots = roots_
+            largest_t_conjugates = conjugates
+            t += 1
+        elif found and g_degree > n - k:
+            # This t does not produce a valid code, but the previous t (which is the largest) did, use it
+            break
         else:
             raise ValueError(f"The code BCH({n}, {k}) with c={c} does not exist.")
 
-    g =  Poly(g.coeffs, field=GF2)  # Convert from GF(2^m) to GF(2)
+    g = Poly.Roots(largest_t_conjugates)  # Compute the generator polynomial in GF(2^m)
+    g = Poly(g.coeffs, field=GF2)  # Convert coefficients from GF(2^m) to GF(2)
 
     if not roots:
         return g
     else:
-        return g, roots_
+        return g, largest_t_roots
 
 
 @set_module("galois")
@@ -321,6 +332,7 @@ class BCH:
     # pylint: disable=no-member
 
     def __new__(cls, n, k, primitive_poly=None, primitive_element=None, systematic=True):
+        # NOTE: All other arguments will be verified in `bch_generator_poly()`
         if not isinstance(systematic, bool):
             raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
 
@@ -357,37 +369,6 @@ class BCH:
 
         # Pre-compile the JIT decoder
         self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(decode_calculate)
-
-    ###############################################################################
-    # Alternate constructors
-    ###############################################################################
-
-    # @classmethod
-    # def Primitive(cls, n, t, c=1, primitive_poly=None, alpha=None):
-    #     if not isinstance(n, (int, np.integer)):
-    #         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    #     if not isinstance(t, (int, np.integer)):
-    #         raise TypeError(f"Argument `t` must be an integer, not {type(t)}.")
-    #     if not isinstance(c, (int, np.integer)):
-    #         raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
-
-    #     m = int(math.ceil(math.log2(n)))
-    #     if not n == 2**m - 1:
-    #         raise ValueError(f"Argument `n` must have value 2^m - 1 for some positive m, not {n}.")
-    #     if not c >= 1:
-    #         raise ValueError(f"Argument `c` must be at least 1, not {c}.")
-
-    #     obj = super().__new__(cls)
-
-    #     if primitive_poly is None:
-    #         primitive_poly = primitive_poly_(2, m, method="smallest")
-    #     obj._field = Field(2**m, irreducible_poly=primitive_poly)
-    #     if alpha is None:
-    #         alpha = obj.field.primitive_element
-
-    #     alpha**(c + np.arange(0, 2*t - 1))
-
-    #     return obj
 
     def __str__(self):
         return f"<BCH Code: n={self.n}, k={self.k}>"
