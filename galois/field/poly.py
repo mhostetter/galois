@@ -713,15 +713,15 @@ class Poly:
         else:
             return p_prime
 
-    def __repr__(self):
-        return f"Poly({self.string}, {self.field.name})"
-
     ###############################################################################
     # Overridden dunder methods
     ###############################################################################
 
     def __str__(self):
-        return self.__repr__()
+        return f"Poly({self.string}, {self.field.name})"
+
+    def __repr__(self):
+        return str(self)
 
     def __hash__(self):
         t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())

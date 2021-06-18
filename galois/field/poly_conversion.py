@@ -146,8 +146,8 @@ def sparse_poly_to_str(degrees, coeffs, poly_var="x"):
     """
     x = []
     for degree, coeff in zip(degrees, coeffs):
-        if hasattr(coeff, "_display_mode") and getattr(coeff, "_display_mode") == "poly":
-            # This is a Galois field array coefficient using the polynomial representation
+        if hasattr(coeff, "_display_mode") and getattr(coeff, "_display_mode") in ["poly", "power"]:
+            # This is a Galois field array coefficient using the polynomial or power representation
             coeff_repr = repr(coeff)
             start = coeff_repr.find("(")
             stop = coeff_repr.find(",")

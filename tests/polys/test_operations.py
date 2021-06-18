@@ -28,16 +28,29 @@ def test_copy():
 
 
 def test_string():
+    GF = galois.GF2
     poly = galois.Poly([1,0,1,1])
     assert repr(poly) == str(poly) == "Poly(x^3 + x + 1, GF(2))"
+    with GF.display("poly"):
+        assert repr(poly) == str(poly) == "Poly(x^3 + x + (1), GF(2))"  # TODO: Clean this up
+    with GF.display("power"):
+        assert repr(poly) == str(poly) == "Poly(x^3 + x + (1), GF(2))"  # TODO: Clean this up
 
     GF = galois.GF(7)
     poly = galois.Poly([5,0,3,1], field=GF)
     assert repr(poly) == str(poly) == "Poly(5x^3 + 3x + 1, GF(7))"
+    with GF.display("poly"):
+        assert repr(poly) == str(poly) == "Poly((5)x^3 + (3)x + (1), GF(7))"  # TODO: Clean this up
+    with GF.display("power"):
+        assert repr(poly) == str(poly) == "Poly((α^5)x^3 + (α)x + (1), GF(7))"
 
     GF = galois.GF(2**3)
     poly = galois.Poly([2,0,3,1], field=GF)
     assert repr(poly) == str(poly) == "Poly(2x^3 + 3x + 1, GF(2^3))"
+    with GF.display("poly"):
+        assert repr(poly) == str(poly) == "Poly((α)x^3 + (α + 1)x + (1), GF(2^3))"
+    with GF.display("power"):
+        assert repr(poly) == str(poly) == "Poly((α)x^3 + (α^3)x + (1), GF(2^3))"
 
 
 def test_roots():
