@@ -65,12 +65,14 @@ def rs_generator_poly(n, k, c=1, primitive_poly=None, primitive_element=None, ro
         The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(q)`, i.e.
         `galois.primitive_element(p, m)`.
     roots : bool, optional
-        Indicates to optionally return the :math:`2t` roots (in :math:`\\mathrm{GF}(q)`) of the generator polynomial. The default is `False`.
+        Indicates to optionally return the :math:`2t` roots in :math:`\\mathrm{GF}(q)` of the generator polynomial. The default is `False`.
 
     Returns
     -------
     galois.Poly
         The generator polynomial :math:`g(x)` over :math:`\\mathrm{GF}(q)`.
+    galois.FieldArray
+        The :math:`2t` roots in :math:`\\mathrm{GF}(q)` of the generator polynomial. Only returned if `roots=True`.
 
     Examples
     --------
@@ -169,12 +171,13 @@ def rs_parity_check_matrix(n, k, c=1, primitive_poly=None, primitive_element=Non
 
         G = galois.rs_generator_matrix(15, 9); G
         H = galois.rs_parity_check_matrix(15, 9); H
+        GF = type(G)
         # The message
-        m = type(G).Random(9); m
+        m = GF.Random(9); m
         # The codeword
         c = m @ G; c
         # Error pattern
-        e = type(G).Zeros(15); e[0] = type(G).Random(low=1); e
+        e = GF.Zeros(15); e[0] = GF.Random(low=1); e
         # c is a valid codeword, so the syndrome is 0
         s = c @ H.T; s
         # c + e is not a valid codeword, so the syndrome is not 0
