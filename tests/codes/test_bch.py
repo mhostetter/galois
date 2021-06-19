@@ -9,9 +9,6 @@ References
 * https://link.springer.com/content/pdf/bbm%3A978-1-4899-2174-1%2F1.pdf
 * https://octave.sourceforge.io/communications/function/bchpoly.html
 """
-import random
-
-import pytest
 import numpy as np
 
 import galois
