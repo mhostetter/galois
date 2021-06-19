@@ -1,7 +1,7 @@
 galois
 ======
 
-A performant numpy extension for Galois fields.
+A performant numpy extension for Galois fields and their applications.
 
 .. currentmodule:: galois
 
