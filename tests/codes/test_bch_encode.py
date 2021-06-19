@@ -82,13 +82,8 @@ def test_non_systematic(size):
         c = bch.encode(m.view(np.ndarray), parity_only=True)
 
 
-def test_15_7():
-    """
-    g = bchpoly(15, 7)
-    bchenco(M, 15, 7, g, 'end')
-    """
+class Test_n15_k7:
     n, k = 15, 7
-    bch = galois.BCH(n, k)
     M = galois.GF2([
         [0, 1, 0, 0, 0, 0, 0],
         [0, 1, 0, 1, 0, 0, 1],
@@ -101,93 +96,81 @@ def test_15_7():
         [1, 0, 0, 0, 1, 0, 1],
         [1, 0, 0, 0, 1, 1, 0],
     ])
-    C_truth = galois.GF2([
-        [0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0],
-        [0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0],
-        [0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1],
-        [1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1],
-        [0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1],
-        [0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0],
-        [1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1],
-        [1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1],
-    ])
 
-    C = bch.encode(M)
-    assert type(C) is galois.GF2
-    assert np.array_equal(C, C_truth)
+    def test_default(self):
+        """
+        g = bchpoly(15, 7)
+        bchenco(M, 15, 7, g, 'end')
+        """
+        bch = galois.BCH(self.n, self.k)
+        C_truth = galois.GF2([
+            [0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0],
+            [0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1],
+            [1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1],
+            [0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1],
+            [0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0],
+            [1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1],
+        ])
 
-    C = bch.encode(M, parity_only=True)
-    assert type(C) is galois.GF2
-    assert np.array_equal(C, C_truth[:, k:])
+        C = bch.encode(self.M)
+        assert type(C) is galois.GF2
+        assert np.array_equal(C, C_truth)
 
-    C = bch.encode(M.view(np.ndarray))
-    assert type(C) is np.ndarray
-    assert np.array_equal(C, C_truth)
+        C = bch.encode(self.M, parity_only=True)
+        assert type(C) is galois.GF2
+        assert np.array_equal(C, C_truth[:, self.k:])
 
-    C = bch.encode(M.view(np.ndarray), parity_only=True)
-    assert type(C) is np.ndarray
-    assert np.array_equal(C, C_truth[:, k:])
+        C = bch.encode(self.M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
 
+        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, self.k:])
 
-def test_15_7_diff_primitive_poly():
-    """
-    g = bchpoly(15, 7, 25)
-    bchenco(M, 15, 7, g, 'end')
-    """
-    n, k = 15, 7
-    p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="largest")
-    bch = galois.BCH(n, k, primitive_poly=p)
-    M = galois.GF2([
-        [0, 1, 0, 0, 0, 0, 0],
-        [0, 1, 0, 1, 0, 0, 1],
-        [0, 0, 0, 1, 1, 1, 1],
-        [1, 1, 0, 1, 0, 0, 0],
-        [1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 1, 0],
-        [0, 1, 0, 1, 1, 1, 1],
-        [1, 0, 1, 0, 0, 0, 0],
-        [1, 0, 0, 0, 1, 0, 1],
-        [1, 0, 0, 0, 1, 1, 0],
-    ])
-    C_truth = galois.GF2([
-        [0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0],
-        [0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1],
-        [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
-        [1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0],
-        [0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0],
-        [1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1],
-    ])
+    def test_diff_primitive_poly(self):
+        """
+        g = bchpoly(15, 7, 25)
+        bchenco(M, 15, 7, g, 'end')
+        """
+        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="largest")
+        bch = galois.BCH(self.n, self.k, primitive_poly=p)
+        C_truth = galois.GF2([
+            [0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0],
+            [0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1],
+            [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+            [1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0],
+            [0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1],
+            [1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0],
+            [1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1],
+        ])
 
-    C = bch.encode(M)
-    assert type(C) is galois.GF2
-    assert np.array_equal(C, C_truth)
+        C = bch.encode(self.M)
+        assert type(C) is galois.GF2
+        assert np.array_equal(C, C_truth)
 
-    C = bch.encode(M, parity_only=True)
-    assert type(C) is galois.GF2
-    assert np.array_equal(C, C_truth[:, k:])
+        C = bch.encode(self.M, parity_only=True)
+        assert type(C) is galois.GF2
+        assert np.array_equal(C, C_truth[:, self.k:])
 
-    C = bch.encode(M.view(np.ndarray))
-    assert type(C) is np.ndarray
-    assert np.array_equal(C, C_truth)
+        C = bch.encode(self.M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
 
-    C = bch.encode(M.view(np.ndarray), parity_only=True)
-    assert type(C) is np.ndarray
-    assert np.array_equal(C, C_truth[:, k:])
+        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, self.k:])
 
 
-def test_31_21():
-    """
-    g = bchpoly(31, 21)
-    bchenco(M, 31, 21, g, 'end')
-    """
+class Test_n31_k21:
     n, k = 31, 21
-    bch = galois.BCH(n, k)
     M = galois.GF2([
         [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0],
         [1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -200,73 +183,74 @@ def test_31_21():
         [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0],
         [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
     ])
-    C_truth = galois.GF2([
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0],
-        [1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1],
-        [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1],
-        [0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1],
-        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1],
-        [0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0],
-        [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0],
-        [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1],
-    ])
 
-    C = bch.encode(M)
-    assert type(C) is galois.GF2
-    assert np.array_equal(C, C_truth)
+    def test_default(self):
+        """
+        g = bchpoly(31, 21)
+        bchenco(M, 31, 21, g, 'end')
+        """
+        bch = galois.BCH(self.n, self.k)
+        C_truth = galois.GF2([
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0],
+            [1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+            [0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1],
+            [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1],
+            [0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1],
+            [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1],
+            [0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0],
+            [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0],
+            [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1],
+        ])
 
-    C = bch.encode(M, parity_only=True)
-    assert type(C) is galois.GF2
-    assert np.array_equal(C, C_truth[:, k:])
+        C = bch.encode(self.M)
+        assert type(C) is galois.GF2
+        assert np.array_equal(C, C_truth)
 
-    C = bch.encode(M.view(np.ndarray))
-    assert type(C) is np.ndarray
-    assert np.array_equal(C, C_truth)
+        C = bch.encode(self.M, parity_only=True)
+        assert type(C) is galois.GF2
+        assert np.array_equal(C, C_truth[:, self.k:])
 
-    C = bch.encode(M.view(np.ndarray), parity_only=True)
-    assert type(C) is np.ndarray
-    assert np.array_equal(C, C_truth[:, k:])
+        C = bch.encode(self.M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
 
+        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, self.k:])
 
-def test_31_21_diff_primitive_poly():
-    """
-    g = bchpoly(31, 21, 61)
-    bchenco(M, 31, 21, g, 'end')
-    """
-    n, k = 31, 21
-    p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="largest")
-    bch = galois.BCH(n, k, primitive_poly=p)
-    M = galois.GF2([
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0],
-        [1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0],
-        [0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
-        [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1],
-        [0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0],
-        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1],
-        [0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1],
-        [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0],
-        [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
-    ])
-    C_truth = galois.GF2([
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0],
-        [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0],
-        [0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0],
-        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-        [0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0],
-        [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0],
-        [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1],
-    ])
+    def test_diff_primitive_poly(self):
+        """
+        g = bchpoly(31, 21, 61)
+        bchenco(M, 31, 21, g, 'end')
+        """
+        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="largest")
+        bch = galois.BCH(self.n, self.k, primitive_poly=p)
+        C_truth = galois.GF2([
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0],
+            [0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+            [0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0],
+            [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0],
+            [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+            [0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0],
+            [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0],
+            [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1],
+        ])
 
-    C = bch.encode(M)
-    assert type(C) is galois.GF2
-    assert np.array_equal(C, C_truth)
+        C = bch.encode(self.M)
+        assert type(C) is galois.GF2
+        assert np.array_equal(C, C_truth)
 
-    C = bch.encode(M.view(np.ndarray))
-    assert type(C) is np.ndarray
-    assert np.array_equal(C, C_truth)
+        C = bch.encode(self.M, parity_only=True)
+        assert type(C) is galois.GF2
+        assert np.array_equal(C, C_truth[:, self.k:])
+
+        C = bch.encode(self.M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
+
+        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, self.k:])
