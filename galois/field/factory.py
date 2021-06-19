@@ -94,7 +94,7 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="
 
     if m == 1:
         if not irreducible_poly is None:
-            raise ValueError(f"Argument `irreducible_poly` can only be specified for prime fields, not the extension field GF({p}^{m}).")
+            raise ValueError(f"Argument `irreducible_poly` can only be specified for extension fields, not the prime field GF({p}).")
         return GF_prime(p, primitive_element=primitive_element, verify=verify, mode=mode)
     else:
         return GF_extension(p, m, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, mode=mode)
