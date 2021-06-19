@@ -1,4 +1,4 @@
-# Galois: A performant numpy extension for Galois fields
+# Galois: A performant numpy extension for Galois fields and their applications
 
 [![PyPI version](https://badge.fury.io/py/galois.svg)](https://badge.fury.io/py/galois)
 [![Supported Versions](https://img.shields.io/pypi/pyversions/galois.svg)](https://pypi.org/project/galois)
@@ -17,8 +17,8 @@ The new ufuncs are written in python and then [just-in-time compiled](https://nu
 [numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit
 calculation (for memory savings).
 
-In addition to normal array arithmetic, `galois` also supports linear algebra (with `np.linalg` functions) and polynomials over Galois fields
-(with the `galois.Poly` class).
+In addition to normal array arithmetic, `galois` also supports linear algebra (with `np.linalg` functions), polynomials
+over Galois fields (with `galois.Poly`), and forward error correction codes (with `galois.BCH` and `galois.ReedSolomon`).
 
 - [Features](#features)
 - [Roadmap](#roadmap)
@@ -26,14 +26,15 @@ In addition to normal array arithmetic, `galois` also supports linear algebra (w
 - [Installation](#installation)
 - [Versioning](#versioning)
 - [Basic Usage](#basic-usage)
-  - [Class construction](#class-construction)
-  - [Array creation](#array-creation)
-  - [Field arithmetic](#field-arithmetic)
-  - [Linear algebra](#linear-algebra)
-  - [Numpy ufunc methods](#numpy-ufunc-methods)
-  - [Numpy functions](#numpy-functions)
-  - [Polynomial construction](#polynomial-construction)
-  - [Polynomial arithmetic](#polynomial-arithmetic)
+  - [Galois field arrays](#galois-field-arrays)
+    - [Class construction](#class-construction)
+    - [Array creation](#array-creation)
+    - [Field arithmetic](#field-arithmetic)
+    - [Linear algebra](#linear-algebra)
+    - [Numpy ufunc methods](#numpy-ufunc-methods)
+  - [Polynomials over Galois fields](#polynomials-over-galois-fields)
+  - [BCH codes](#bch-codes)
+  - [Reed-Solomon codes](#reed-solomon-codes)
 - [Performance](#performance)
   - [Lookup performance](#lookup-performance)
   - [Calculation performance](#calculation-performance)
@@ -45,12 +46,12 @@ In addition to normal array arithmetic, `galois` also supports linear algebra (w
 - Supports all Galois fields `GF(p^m)`, even arbitrarily-large fields!
 - **Faster** than native numpy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`
 - Seamless integration with numpy -- normal numpy functions work on Galois field arrays
-- Linear algebra over Galois fields using normal `np.linalg` functions
-- Polynomials over Galois fields with `galois.Poly`, both dense and sparse polynomials
+- Linear algebra on Galois field matrices using normal `np.linalg` functions
+- Polynomials over Galois fields with `galois.Poly`
+- Forward error correction codes with `galois.BCH` and `galois.ReedSolomon`
 
 ## Roadmap
 
-- Forward error correction codes (BCH, Reed-Solomon, etc)
 - Linear feedback shift registers over arbitrary Galois fields
 - Number-theoretic transform, DFT over Galois fields
 - Elliptic curves over Galois fields
@@ -83,7 +84,9 @@ be thought of as `0.0.alpha-major`. Beta releases are `0.beta.x` and are API com
 
 ## Basic Usage
 
-### Class construction
+### Galois field arrays
+
+#### Class construction
 
 Galois field array classes are created using the `galois.GF()` class factory function.
 
@@ -151,7 +154,7 @@ GF(2^100):
   primitive_element: GF(2, order=2^100)
 ```
 
-### Array creation
+#### Array creation
 
 Galois field arrays can be created from existing numpy arrays.
 
@@ -215,7 +218,7 @@ GF([α^191, 0, α, 1, α^194], order=2^8)
 >>> GF256.display();
 ```
 
-### Field arithmetic
+#### Field arithmetic
 
 Galois field arrays are treated like any other numpy array. Array arithmetic is performed using python operators or numpy
 functions.
@@ -249,7 +252,7 @@ GF([[191,  33,  85,  77,  88],
     [177, 172, 202, 223,   8]], order=2^8)
 ```
 
-### Linear algebra
+#### Linear algebra
 
 The `galois` package intercepts relevant calls to numpy's linear algebra functions and performs the specified
 operation in `GF(p^m)` not in **R**. Some of these functions include:
@@ -278,7 +281,7 @@ Galois field arrays also contain matrix decomposition routines not included in n
 
 - `FieldArray.row_reduce`, `FieldArray.lu_decompose`, `FieldArray.lup_decompose`
 
-### Numpy ufunc methods
+#### Numpy ufunc methods
 
 Galois field arrays support [numpy ufunc methods](https://numpy.org/devdocs/reference/ufuncs.html#methods). This allows the user to apply a ufunc in a unique way across the target
 array. The ufunc method signature is `<ufunc>.<method>(*args, **kwargs)`. All arithmetic ufuncs are supported. Below
@@ -310,13 +313,7 @@ GF([[107, 245,  37, 192,  98],
     [161,  89,  38, 116, 209]], order=2^8)
 ```
 
-### Numpy functions
-
-Many other relevant numpy functions are supported on Galois field arrays. These include:
-
-- `np.copy`, `np.concatenate`, `np.insert`, `np.reshape`
-
-### Polynomial construction
+### Polynomials over Galois fields
 
 The `galois` package supports polynomials over Galois fields with the `galois.Poly` class. `galois.Poly`
 does not subclass `np.ndarray` but instead contains a `FieldArray` of coefficients as an attribute
@@ -361,8 +358,6 @@ Poly(x^2 + 190x + 71, GF(2^8))
 >>> q.roots()
 GF([ 37, 155], order=2^8)
 ```
-
-### Polynomial arithmetic
 
 Polynomial arithmetic is performed using python operators.
 
@@ -420,6 +415,106 @@ GF(2, order=2^8)
 # Since p(x) is a primitive polynomial, alpha is one of its roots
 >>> p(alpha, field=GF256)
 GF(0, order=2^8)
+```
+
+### BCH codes
+
+See full [documentation](https://galois.readthedocs.io/en/stable/pages/galois.html#forward-error-correcting-codes).
+
+```python
+In [1]: import numpy as np
+
+In [2]: import galois
+
+In [3]: bch = galois.BCH(15, 7)
+
+# Messages can be either vectors or matrices of np.ndarray or galois.FieldArray (galois.GF2 in this case)
+In [4]: M = np.random.randint(0, 2, (5,bch.k)); M
+Out[4]:
+array([[1, 0, 0, 0, 1, 1, 1],
+       [0, 1, 1, 1, 1, 1, 1],
+       [1, 0, 0, 0, 0, 1, 0],
+       [1, 1, 0, 0, 1, 1, 1],
+       [0, 1, 1, 1, 1, 1, 1]])
+
+In [5]: C = bch.encode(M); C
+Out[5]:
+array([[1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0],
+       [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1],
+       [1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1],
+       [1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0],
+       [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1]])
+
+# Corrupt the first bit in each codeword
+In [6]: C[:,0] ^= 1; C
+Out[6]:
+array([[0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0],
+       [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1],
+       [0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1],
+       [0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0],
+       [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1]])
+
+In [7]: bch.decode(C)
+Out[7]:
+array([[1, 0, 0, 0, 1, 1, 1],
+       [0, 1, 1, 1, 1, 1, 1],
+       [1, 0, 0, 0, 0, 1, 0],
+       [1, 1, 0, 0, 1, 1, 1],
+       [0, 1, 1, 1, 1, 1, 1]])
+```
+
+### Reed-Solomon codes
+
+See full [documentation](https://galois.readthedocs.io/en/stable/pages/galois.html#forward-error-correcting-codes).
+
+```python
+In [1]: import numpy as np
+
+In [2]: import galois
+
+In [3]: rs = galois.ReedSolomon(15, 9)
+
+In [4]: (rs.n, rs.k, rs.t)
+Out[4]: (15, 9, 3)
+
+In [5]: GF = rs.field; GF
+Out[5]: <class 'numpy.ndarray over GF(2^4)'>
+
+# Messages can be either vectors or matrices of np.ndarray or galois.FieldArray
+In [6]: M = GF.Random((5,rs.k)); M
+Out[6]:
+GF([[ 0, 11, 13,  7,  9,  9,  3,  2, 12],
+    [ 0,  8, 15, 10, 13,  2,  6,  2,  6],
+    [ 1,  9, 13,  1, 13,  2,  6,  4, 12],
+    [ 5, 14, 11, 10,  9, 15,  5,  0,  0],
+    [ 6,  1,  4,  9,  9,  3, 14, 11, 13]], order=2^4)
+
+In [7]: C = rs.encode(M); C
+Out[7]:
+GF([[ 0, 11, 13,  7,  9,  9,  3,  2, 12,  6,  3, 13,  0,  8,  4],
+    [ 0,  8, 15, 10, 13,  2,  6,  2,  6,  1, 15,  8, 14,  0, 15],
+    [ 1,  9, 13,  1, 13,  2,  6,  4, 12,  8, 11,  7,  1,  5, 13],
+    [ 5, 14, 11, 10,  9, 15,  5,  0,  0,  1,  8, 13, 12, 13,  3],
+    [ 6,  1,  4,  9,  9,  3, 14, 11, 13, 10,  0, 12,  3,  0,  1]],
+   order=2^4)
+
+# Corrupt the first symbol in each codeword
+In [8]: C[:,0] += GF(13); C
+Out[8]:
+GF([[13, 11, 13,  7,  9,  9,  3,  2, 12,  6,  3, 13,  0,  8,  4],
+    [13,  8, 15, 10, 13,  2,  6,  2,  6,  1, 15,  8, 14,  0, 15],
+    [12,  9, 13,  1, 13,  2,  6,  4, 12,  8, 11,  7,  1,  5, 13],
+    [ 8, 14, 11, 10,  9, 15,  5,  0,  0,  1,  8, 13, 12, 13,  3],
+    [11,  1,  4,  9,  9,  3, 14, 11, 13, 10,  0, 12,  3,  0,  1]],
+   order=2^4)
+
+In [9]: rs.decode(C)
+Out[9]:
+GF([[ 0, 11, 13,  7,  9,  9,  3,  2, 12],
+    [ 0,  8, 15, 10, 13,  2,  6,  2,  6],
+    [ 1,  9, 13,  1, 13,  2,  6,  4, 12],
+    [ 5, 14, 11, 10,  9, 15,  5,  0,  0],
+    [ 6,  1,  4,  9,  9,  3, 14, 11, 13]], order=2^4)
 ```
 
 ## Performance

@@ -1,5 +1,5 @@
-Galois: A performant numpy extension for Galois fields
-======================================================
+Galois: A performant numpy extension for Galois fields and their applications
+=============================================================================
 
    *Ask Jacobi or Gauss publicly to give their opinion, not as to the truth, but as to the importance of these theorems. Later there
    will be, I hope, some people who will find it to their advantage to decipher all this mess.* -- Évariste Galois, two days before his death
