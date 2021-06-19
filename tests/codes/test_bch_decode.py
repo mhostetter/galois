@@ -96,6 +96,70 @@ class TestSystematic:
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
 
 
+class TestSystematicShortened:
+    @pytest.mark.parametrize("size", CODES)
+    def test_all_correctable(self, size):
+        n, k = size[0], size[1]
+        ks = k // 2  # Shorten the code in half
+        ns = n - (k - ks)
+        N = 100
+        bch = galois.BCH(n, k)
+        M = galois.GF2.Random((N, ks))
+        C = bch.encode(M)
+        E, N_errors = random_errors(N, ns, bch.t)
+        R = C + E
+
+        DEC_M = bch.decode(R)
+        assert type(DEC_M) is galois.GF2
+        assert np.array_equal(DEC_M, M)
+
+        DEC_M, N_corr = bch.decode(R, errors=True)
+        assert type(DEC_M) is galois.GF2
+        assert np.array_equal(DEC_M, M)
+        assert np.array_equal(N_corr, N_errors)
+
+        DEC_M = bch.decode(R.view(np.ndarray))
+        assert type(DEC_M) is np.ndarray
+        assert np.array_equal(DEC_M, M)
+
+        DEC_M, N_corr = bch.decode(R.view(np.ndarray), errors=True)
+        assert type(DEC_M) is np.ndarray
+        assert np.array_equal(DEC_M, M)
+        assert np.array_equal(N_corr, N_errors)
+
+    @pytest.mark.parametrize("size", CODES)
+    def test_some_uncorrectable(self, size):
+        n, k = size[0], size[1]
+        ks = k // 2  # Shorten the code in half
+        ns = n - (k - ks)
+        N = 100
+        bch = galois.BCH(n, k)
+        M = galois.GF2.Random((N, ks))
+        C = bch.encode(M)
+        E, N_errors = random_errors(N, ns, bch.t + 1)
+        R = C + E
+
+        corr_idxs = np.where(N_errors <= bch.t)[0]
+
+        DEC_M = bch.decode(R)
+        assert type(DEC_M) is galois.GF2
+        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
+
+        DEC_M, N_corr = bch.decode(R, errors=True)
+        assert type(DEC_M) is galois.GF2
+        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
+        assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
+
+        DEC_M = bch.decode(R.view(np.ndarray))
+        assert type(DEC_M) is np.ndarray
+        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
+
+        DEC_M, N_corr = bch.decode(R.view(np.ndarray), errors=True)
+        assert type(DEC_M) is np.ndarray
+        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
+        assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
+
+
 class TestNonSystematic:
     @pytest.mark.parametrize("size", CODES)
     def test_all_correctable(self, size):

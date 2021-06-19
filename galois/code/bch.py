@@ -296,6 +296,12 @@ class BCH:
     """
     Constructs a primitive, narrow-sense binary :math:`\\textrm{BCH}(n, k)` code.
 
+    A :math:`\\textrm{BCH}(n, k)` code is a :math:`[n, k, d]_2` linear block code.
+
+    To create the shortened :math:`\\textrm{BCH}(n-s, k-s)` code, construct the full-sized :math:`\\textrm{BCH}(n, k)` code
+    and then pass :math:`k-s` bits into :func:`encode` and :math:`n-s` bits into :func:`decode()`. Shortened codes are only
+    applicable for systematic codes.
+
     Parameters
     ----------
     n : int
@@ -382,8 +388,8 @@ class BCH:
         """
         Encodes the message :math:`\\mathbf{m}` into the BCH codeword :math:`\\mathbf{c}`.
 
-        The message vector :math:`\\mathbf{m}` is defined as :math:`\\mathbf{m} = [m_{k-1}, \\dots, m_1, m_0]`, which
-        corresponds to the message polynomial :math:`m(x) = m_{k-1} x^{k-1} + \\dots + m_1 x + m_0`.
+        The message vector :math:`\\mathbf{m}` is defined as :math:`\\mathbf{m} = [m_{k-1}, \\dots, m_1, m_0] \\in \\mathrm{GF}(2)^k`,
+        which corresponds to the message polynomial :math:`m(x) = m_{k-1} x^{k-1} + \\dots + m_1 x + m_0`.
 
         The codeword vector :math:`\\mathbf{c}` is computed by :math:`\\mathbf{c} = \\mathbf{m}\\mathbf{G}`, where
         :math:`\\mathbf{G}` is the generator matrix. The equivalent polynomial operation is :math:`c(x) = m(x)g(x)`.
@@ -391,11 +397,15 @@ class BCH:
         For systematic codes, :math:`\\mathbf{G} = [\\mathbf{I}\\ |\\ \\mathbf{P}]` such that :math:`\\mathbf{c} = [\\mathbf{m}\\ |\\ \\mathbf{p}]`.
         And in polynomial form, :math:`p(x) = -(m(x) x^{n-k}\\ \\textrm{mod}\\ g(x))` and :math:`c(x) = m(x)x^{n-k} + p(x)`.
 
+        For the shortened :math:`\\textrm{BCH}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`k-s` bits into
+        :func:`encode` to return the :math:`n-s`-bit codeword.
+
         Parameters
         ----------
         message : numpy.ndarray, galois.FieldArray
             The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the number
-            of messages.
+            of messages. For systematic codes, message lengths less than :math:`k` may be provided to produce
+            shortened codewords.
         parity_only : bool, optional
             Optionally specify whether to return only the parity bits. This only applies to systematic codes.
             The default is `False`.
@@ -418,6 +428,13 @@ class BCH:
             c = bch.encode(m); c
             p = bch.encode(m, parity_only=True); p
 
+        Encode a single, shortened codeword.
+
+        .. ipython:: python
+
+            m = galois.GF2.Random(bch.k - 3); m
+            c = bch.encode(m); c
+
         Encode a matrix of codewords.
 
         .. ipython:: python
@@ -430,14 +447,20 @@ class BCH:
             raise TypeError(f"Argument `message` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(message)}.")
         if parity_only and not self.systematic:
             raise ValueError("Argument `parity_only` only applies to systematic codes.")
-        if not message.shape[-1] == self.k:
-            raise ValueError(f"Argument `message` must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}.")
+        if self.systematic:
+            if not message.shape[-1] <= self.k:
+                raise ValueError(f"For a systematic code, argument `message` must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}.")
+        else:
+            if not message.shape[-1] == self.k:
+                raise ValueError(f"For a non-systematic code, argument `message` must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}.")
+
+        ks = message.shape[-1]  # The number of input message bits (could be less than self.k for shortened codes)
 
         if parity_only:
-            parity = message.view(GF2) @ self.G[:, self.k:]
+            parity = message.view(GF2) @ self.G[-ks:, self.k:]
             return parity.view(type(message))
         elif self.systematic:
-            parity = message.view(GF2) @ self.G[:, self.k:]
+            parity = message.view(GF2) @ self.G[-ks:, self.k:]
             return np.hstack((message, parity)).view(type(message))
         else:
             codeword = message.view(GF2) @ self.G
@@ -447,19 +470,23 @@ class BCH:
         """
         Decodes the BCH codeword :math:`\\mathbf{c}` into the message :math:`\\mathbf{m}`.
 
-        The codeword vector :math:`\\mathbf{c}` is defined as :math:`\\mathbf{c} = [c_{n-1}, \\dots, c_1, c_0]`, which
-        corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \\dots + c_1 x + c_0`.
+        The codeword vector :math:`\\mathbf{c}` is defined as :math:`\\mathbf{c} = [c_{n-1}, \\dots, c_1, c_0] \\in \\mathrm{GF}(2)^n`,
+        which corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \\dots + c_1 x + c_0`.
 
         In decoding, the syndrome is computed by :math:`\\mathbf{s} = \\mathbf{c}\\mathbf{H}^T`, where
         :math:`\\mathbf{H}` is the generator matrix. The equivalent polynomial operation is :math:`s(x) = c(x)\\ \\textrm{mod}\\ g(x)`.
         A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome is non-zero,
         the decoder will find an error-locator polynomial :math:`\\sigma(x)` and the corresponding error locations and values.
 
+        For the shortened :math:`\\textrm{BCH}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`n-s` bits into
+        :func:`decode` to return the :math:`k-s`-bit message.
+
         Parameters
         ----------
         codeword : numpy.ndarray, galois.FieldArray
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
-            number of codewords.
+            number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
+            shortened codewords.
         errors : bool, optional
             Optionally specify whether to return the nubmer of corrected errors.
 
@@ -490,6 +517,17 @@ class BCH:
             dec_m, N = bch.decode(c, errors=True); dec_m, N
             np.array_equal(dec_m, m)
 
+        Decode a single, shortened codeword.
+
+        .. ipython:: python
+
+            m = galois.GF2.Random(bch.k - 3); m
+            c = bch.encode(m); c
+            # Corrupt the first bit in the codeword
+            c[0] ^= 1
+            dec_m = bch.decode(c); dec_m
+            np.array_equal(dec_m, m)
+
         Decode a matrix of codewords.
 
         .. ipython:: python
@@ -506,21 +544,32 @@ class BCH:
             np.array_equal(dec_m, m)
         """
         # pylint: disable=protected-access
+        if not isinstance(codeword, np.ndarray):
+            raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
+        if self.systematic:
+            if not codeword.shape[-1] <= self.n:
+                raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")
+        else:
+            if not codeword.shape[-1] == self.n:
+                raise ValueError(f"For a non-systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension equal to {self.n}, not shape {codeword.shape}.")
+
         codeword_1d = codeword.ndim == 1
         dtype = codeword.dtype
+        ns = codeword.shape[-1]  # The number of input codeword bits (could be less than self.n for shortened codes)
+        ks = self.k - (self.n - ns)  # The equivalent number of input message bits (could be less than self.k for shortened codes)
 
         # Make codeword 2-D for array processing
         codeword = np.atleast_2d(codeword)
 
         # Compute the syndrome by matrix multiplying with the parity-check matrix
-        syndrome = codeword.view(self.field) @ self.H.T
+        syndrome = codeword.view(self.field) @ self.H[:,-ns:].T
 
         if self.field.ufunc_mode != "python-calculate":
             dec_codeword =  self._decode_jit(codeword.astype(np.int64), syndrome.astype(np.int64), self.t, int(self.field.primitive_element), self._add_jit, self._subtract_jit, self._multiply_jit, self._reciprocal_jit, self._power_jit, self._berlekamp_massey_jit, self._poly_roots_jit, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
             N_errors = dec_codeword[:, -1]
 
             if self.systematic:
-                message = dec_codeword[:, 0:self.k]
+                message = dec_codeword[:, 0:ks]
             else:
                 message, _ = GF2._poly_divmod(dec_codeword[:, 0:self.n].view(GF2), self.generator_poly.coeffs)
             message = message.astype(dtype).view(type(codeword))
@@ -639,7 +688,7 @@ def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MU
     dtype = codeword.dtype
 
     N = codeword.shape[0]  # The number of codewords
-    n = codeword.shape[1]  # The codeword size
+    n = codeword.shape[1]  # The codeword size (could be less than the design n for shortened codes)
 
     # The last column of the returned decoded codeword is the number of corrected errors
     dec_codeword = np.zeros((N, n + 1), dtype=dtype)
@@ -669,6 +718,12 @@ def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MU
             results = POLY_ROOTS(degrees, sigma_rev, primitive_element, ADD, MULTIPLY, POWER, *args)
             beta = results[0,:]  # The roots of σ(x^-v)
             error_locations = results[1,:]  # The roots as powers of the primitive element α
+
+            if np.any(error_locations > n - 1):
+                # Indicates there are "errors" in the zero-ed portion of a shortened code, which indicates there are actually
+                # more errors than alleged. Return failure to decode.
+                dec_codeword[i, -1] = -1
+                continue
 
             if beta.size != v:
                 dec_codeword[i, -1] = -1
