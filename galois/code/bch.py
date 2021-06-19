@@ -419,7 +419,6 @@ class BCH:
 
         .. ipython:: python
 
-            bch = galois.BCH(15, 7)
             m = galois.GF2.Random((5, bch.k)); m
             c = bch.encode(m); c
             p = bch.encode(m, parity_only=True); p
@@ -443,7 +442,7 @@ class BCH:
 
     def decode(self, codeword, errors=False):
         """
-        Decodes the BCH codeword into its message.
+        Decodes the BCH codeword :math:`\\mathbf{c}` into the message :math:`\\mathbf{m}`.
 
         The codeword vector :math:`\\mathbf{c}` is defined as :math:`\\mathbf{c} = [c_{n-1}, \\dots, c_1, c_0]`, which
         corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \\dots + c_1 x + c_0`.
@@ -492,7 +491,6 @@ class BCH:
 
         .. ipython:: python
 
-            bch = galois.BCH(15, 7)
             m = galois.GF2.Random((5, bch.k)); m
             c = bch.encode(m); c
             # Corrupt the first bit in each codeword
@@ -609,7 +607,7 @@ class BCH:
     def is_narrow_sense(self):
         """
         bool: Indicates if the BCH code is narrow sense, meaning the roots of the generator polynomial are consecutive
-        powers of :math:`\\alpha` starting at 1, i.e. :math:`\\alpha, \\alpha^2, \\dots, \\alpha^{2*t - 1}`.
+        powers of :math:`\\alpha` starting at 1, i.e. :math:`\\alpha, \\alpha^2, \\dots, \\alpha^{2t - 1}`.
         """
         return self._is_narrow_sense
 
@@ -621,6 +619,11 @@ class BCH:
 DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, int64, int64, int64))
 
 def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+    """
+    References
+    ----------
+    * S. Lin and D. Costello. Error Control Coding. Section 7.4.
+    """
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
     dtype = codeword.dtype
 
@@ -633,25 +636,36 @@ def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MU
 
     for i in range(N):
         if not np.all(syndrome[i,:] == 0):
-            sigma = BERLEKAMP_MASSEY(syndrome[i,:], ADD, SUBTRACT, MULTIPLY, RECIPROCAL, *args)
+            # The syndrome vector is S = [S0, S1, ..., S2t-1]
 
-            if sigma.size - 1 > t:
+            # The error pattern is defined as the polynomial e(x) = e_j1*x^j1 + e_j2*x^j2 + ... for j1 to jv,
+            # implying there are v errors. And δi = e_ji is the i-th error value and βi = α^ji is the i-th error-locator
+            # value and ji is the error location.
+
+            # The error-locator polynomial σ(x) = (1 - β1*x)(1 - β2*x)...(1 - βv*x) where βi are the inverse of the roots
+            # of σ(x).
+
+            # Compute the error-locator polynomial's v-reversal σ(x^-v), since the syndrome is passed in backwards
+            sigma_rev = BERLEKAMP_MASSEY(syndrome[i,::-1], ADD, SUBTRACT, MULTIPLY, RECIPROCAL, *args)
+            v = sigma_rev.size - 1  # The number of errors
+
+            if v > t:
                 dec_codeword[i, -1] = -1
                 continue
 
-            # Compute the roots of s(x^-1) to get r^-1, such that s(r) = 0
-            degrees = np.arange(sigma.size - 1, -1, -1)
-            results = POLY_ROOTS(degrees, sigma, primitive_element, ADD, MULTIPLY, POWER, *args)
-            inv_roots = results[0,:]  # The roots of s(x^-1)
-            error_locations = results[1,:]  # The roots as powers of the primitive element
-            N_errors = inv_roots.size
+            # Compute βi, the roots of σ(x^-v) which are the inverse roots of σ(x)
+            degrees = np.arange(sigma_rev.size - 1, -1, -1)
+            results = POLY_ROOTS(degrees, sigma_rev, primitive_element, ADD, MULTIPLY, POWER, *args)
+            beta = results[0,:]  # The roots of σ(x^-v)
+            error_locations = results[1,:]  # The roots as powers of the primitive element α
 
-            if inv_roots.size != sigma.size - 1:
+            if beta.size != v:
                 dec_codeword[i, -1] = -1
                 continue
 
-            for j in range(N_errors):
-                dec_codeword[i, error_locations[j] - 1]  ^= 1
-            dec_codeword[i, -1] = N_errors  # The number of corrected errors
+            for j in range(v):
+                # δi can only be 1
+                dec_codeword[i, n - 1 - error_locations[j]] ^= 1
+            dec_codeword[i, -1] = v  # The number of corrected errors
 
     return dec_codeword

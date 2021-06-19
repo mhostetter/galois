@@ -7,7 +7,6 @@ References
 ----------
 * https://octave.sourceforge.io/communications/function/cyclgen.html
 """
-import pytest
 import numpy as np
 
 import galois
