@@ -280,7 +280,7 @@ class ReedSolomon:
         self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(decode_calculate)
 
     def __str__(self):
-        return f"<Reed-Solomon Code: n={self.n}, k={self.k}>"
+        return f"<Reed-Solomon Code: [{self.n}, {self.k}, {self.d}] over {self.field.name}>"
 
     def __repr__(self):
         return str(self)
@@ -455,16 +455,24 @@ class ReedSolomon:
     @property
     def n(self):
         """
-        int: The codeword size :math:`n` of the :math:`\\textrm{RS}(n, k)` code.
+        int: The codeword size :math:`n` of the :math:`[n, k, d]_q` code.
         """
         return self._n
 
     @property
     def k(self):
         """
-        int: The message size :math:`k` of the :math:`\\textrm{RS}(n, k)` code.
+        int: The message size :math:`k` of the :math:`[n, k, d]_q` code.
         """
         return self._k
+
+    @property
+    def d(self):
+        """
+        int: The design distance :math:`d` of the :math:`[n, k, d]_q` code. The minimum distance of a Reed-Solomon code
+        is exactly equal to the design distance, :math:`d_{min} = d`.
+        """
+        return 2*self.t + 1
 
     @property
     def t(self):
