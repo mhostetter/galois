@@ -50,6 +50,9 @@ def bch_valid_codes(n, t_min=1):
     """
     Returns a list of :math:`(n, k, t)` tuples of valid primitive binary BCH codes.
 
+    A BCH code with parameters :math:`(n, k, t)` is represented as a :math:`[n, k, d]_2` linear block
+    code with :math:`d = 2t + 1`.
+
     Parameters
     ----------
     n : int
@@ -370,7 +373,7 @@ class BCH:
         self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(decode_calculate)
 
     def __str__(self):
-        return f"<BCH Code: n={self.n}, k={self.k}>"
+        return f"<BCH Code: [{self.n}, {self.k}, {self.d}] over GF(2)>"
 
     def __repr__(self):
         return str(self)
@@ -543,16 +546,24 @@ class BCH:
     @property
     def n(self):
         """
-        int: The codeword size :math:`n` of the :math:`\\textrm{BCH}(n, k)` code.
+        int: The codeword size :math:`n` of the :math:`[n, k, d]_2` code
         """
         return self._n
 
     @property
     def k(self):
         """
-        int: The message size :math:`k` of the :math:`\\textrm{BCH}(n, k)` code.
+        int: The message size :math:`k` of the :math:`[n, k, d]_2` code
         """
         return self._k
+
+    @property
+    def d(self):
+        """
+        int: The design distance :math:`d` of the :math:`[n, k, d]_2` code. The minimum distance of a BCH code
+        may be greater than the design distance, :math:`d_{min} \\ge d`.
+        """
+        return 2*self.t + 1
 
     @property
     def t(self):
