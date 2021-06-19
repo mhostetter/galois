@@ -75,7 +75,7 @@ class FunctionMeta(PropertiesMeta):
                     global ADD_JIT, MULTIPLY_JIT
                     ADD_JIT = cls._calculate_jit("add")
                     MULTIPLY_JIT = cls._calculate_jit("multiply")
-                    cls._gufuncs["poly_evaluate"] = numba.guvectorize("int64[:], int64[:], int64, int64, int64, int64[:]", "(m),(n),(),(),()->(n)", nopython=True)(poly_evaluate_calculate)
+                    cls._gufuncs["poly_evaluate"] = numba.guvectorize("int64[:], int64[:], int64, int64, int64, int64[:]", "(m),(n),(),(),()->(n)", nopython=True)(poly_evaluate_gufunc_calculate)
             else:
                 raise NotImplementedError
         return cls._gufuncs[name]
@@ -330,7 +330,7 @@ MULTIPLY_JIT = lambda a, b, *args: a * b
 # pylint: disable=redefined-outer-name,unused-argument
 
 
-def poly_evaluate_lookup(coeffs, values, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E, results):  # pragma: no cover
+def poly_evaluate_gufunc_lookup(coeffs, values, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E, results):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
 
     for i in range(values.size):
@@ -339,7 +339,7 @@ def poly_evaluate_lookup(coeffs, values, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH
             results[i] = ADD(coeffs[j], MULTIPLY(results[i], values[i], *args), *args)
 
 
-def poly_evaluate_calculate(coeffs, values, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY, results):  # pragma: no cover
+def poly_evaluate_gufunc_calculate(coeffs, values, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY, results):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
 
     for i in range(values.size):
@@ -608,6 +608,34 @@ def poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD
             break
 
     return np.array([roots, powers], dtype=dtype)
+
+
+###############################################################################
+# Polynomial evaluation
+###############################################################################
+
+POLY_EVALUATE_LOOKUP_SIG = numba.types.FunctionType(int64(int64[:], int64, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+
+def poly_evaluate_lookup(coeffs, value, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+    args = EXP, LOG, ZECH_LOG, ZECH_E
+
+    result = coeffs[0]
+    for j in range(1, coeffs.size):
+        result = ADD(coeffs[j], MULTIPLY(result, value, *args), *args)
+
+    return result
+
+
+POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64(int64[:], int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
+
+def poly_evaluate_calculate(coeffs, value, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+
+    result = coeffs[0]
+    for j in range(1, coeffs.size):
+        result = ADD(coeffs[j], MULTIPLY(result, value, *args), *args)
+
+    return result
 
 
 ###############################################################################
