@@ -389,13 +389,15 @@ class BCH:
         Encodes the message :math:`\\mathbf{m}` into the BCH codeword :math:`\\mathbf{c}`.
 
         The message vector :math:`\\mathbf{m}` is defined as :math:`\\mathbf{m} = [m_{k-1}, \\dots, m_1, m_0] \\in \\mathrm{GF}(2)^k`,
-        which corresponds to the message polynomial :math:`m(x) = m_{k-1} x^{k-1} + \\dots + m_1 x + m_0`.
+        which corresponds to the message polynomial :math:`m(x) = m_{k-1} x^{k-1} + \\dots + m_1 x + m_0`. The codeword vector :math:`\\mathbf{c}`
+        is defined as :math:`\\mathbf{c} = [c_{n-1}, \\dots, c_1, c_0] \\in \\mathrm{GF}(2)^n`, which corresponds to the codeword
+        polynomial :math:`c(x) = c_{n-1} x^{n-1} + \\dots + c_1 x + c_0`.
 
-        The codeword vector :math:`\\mathbf{c}` is computed by :math:`\\mathbf{c} = \\mathbf{m}\\mathbf{G}`, where
-        :math:`\\mathbf{G}` is the generator matrix. The equivalent polynomial operation is :math:`c(x) = m(x)g(x)`.
-
-        For systematic codes, :math:`\\mathbf{G} = [\\mathbf{I}\\ |\\ \\mathbf{P}]` such that :math:`\\mathbf{c} = [\\mathbf{m}\\ |\\ \\mathbf{p}]`.
-        And in polynomial form, :math:`p(x) = -(m(x) x^{n-k}\\ \\textrm{mod}\\ g(x))` and :math:`c(x) = m(x)x^{n-k} + p(x)`.
+        The codeword vector is computed from the message vector by :math:`\\mathbf{c} = \\mathbf{m}\\mathbf{G}`, where :math:`\\mathbf{G}` is the
+        generator matrix. The equivalent polynomial operation is :math:`c(x) = m(x)g(x)`. For systematic codes, :math:`\\mathbf{G} = [\\mathbf{I}\\ |\\ \\mathbf{P}]`
+        such that :math:`\\mathbf{c} = [\\mathbf{m}\\ |\\ \\mathbf{p}]`. And in polynomial form, :math:`p(x) = -(m(x) x^{n-k}\\ \\textrm{mod}\\ g(x))` with
+        :math:`c(x) = m(x)x^{n-k} + p(x)`. For systematic and non-systematic codes, each codeword is a multiple of the generator polynomial, i.e.
+        :math:`g(x)\\ |\\ c(x)`.
 
         For the shortened :math:`\\textrm{BCH}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`k-s` bits into
         :func:`encode` to return the :math:`n-s`-bit codeword.
@@ -466,15 +468,82 @@ class BCH:
             codeword = message.view(GF2) @ self.G
             return codeword.view(type(message))
 
+    def detect(self, codeword):
+        """
+        Detects if errors are present in the BCH codeword :math:`\\mathbf{c}`.
+
+        The :math:`[n, k, d]_2` BCH code has :math:`d_{min} \\ge d` minimum distance. It can detect up
+        to :math:`d_{min}-1` errors.
+
+        Parameters
+        ----------
+        codeword : numpy.ndarray, galois.FieldArray
+            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
+            number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
+            shortened codewords.
+
+        Returns
+        -------
+        bool, numpy.ndarray
+            A boolean scalar or array indicating if errors were detected in the corresponding codeword `True` or not `False`.
+
+        Examples
+        --------
+        Detect errors in a valid codeword.
+
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7)
+            # The minimum distance of the code
+            bch.d
+            m = galois.GF2.Random(bch.k); m
+            c = bch.encode(m); c
+            bch.detect(c)
+
+        Detect :math:`d_{min}-1` errors in a received codeword.
+
+        .. ipython:: python
+
+            # Corrupt the first `d - 1` bits in the codeword
+            c[0:bch.d - 1] ^= 1
+            bch.detect(c)
+        """
+        if not isinstance(codeword, np.ndarray):
+            raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
+        if self.systematic:
+            if not codeword.shape[-1] <= self.n:
+                raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")
+        else:
+            if not codeword.shape[-1] == self.n:
+                raise ValueError(f"For a non-systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension equal to {self.n}, not shape {codeword.shape}.")
+
+        codeword_1d = codeword.ndim == 1
+        ns = codeword.shape[-1]  # The number of input codeword bits (could be less than self.n for shortened codes)
+
+        # Make codeword 2-D for array processing
+        codeword = np.atleast_2d(codeword)
+
+        # Compute the syndrome by matrix multiplying with the parity-check matrix
+        syndrome = codeword.view(self.field) @ self.H[:,-ns:].T
+
+        detected = ~np.all(syndrome == 0, axis=1)
+
+        if codeword_1d:
+            detected = detected[0]
+
+        return detected
+
     def decode(self, codeword, errors=False):
         """
         Decodes the BCH codeword :math:`\\mathbf{c}` into the message :math:`\\mathbf{m}`.
 
         The codeword vector :math:`\\mathbf{c}` is defined as :math:`\\mathbf{c} = [c_{n-1}, \\dots, c_1, c_0] \\in \\mathrm{GF}(2)^n`,
-        which corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \\dots + c_1 x + c_0`.
+        which corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \\dots + c_1 x + c_0`. The message vector :math:`\\mathbf{m}`
+        is defined as :math:`\\mathbf{m} = [m_{k-1}, \\dots, m_1, m_0] \\in \\mathrm{GF}(2)^k`, which corresponds to the message
+        polynomial :math:`m(x) = m_{k-1} x^{k-1} + \\dots + m_1 x + m_0`.
 
-        In decoding, the syndrome is computed by :math:`\\mathbf{s} = \\mathbf{c}\\mathbf{H}^T`, where
-        :math:`\\mathbf{H}` is the generator matrix. The equivalent polynomial operation is :math:`s(x) = c(x)\\ \\textrm{mod}\\ g(x)`.
+        In decoding, the syndrome vector :math:`s` is computed by :math:`\\mathbf{s} = \\mathbf{c}\\mathbf{H}^T`, where
+        :math:`\\mathbf{H}` is the parity-check matrix. The equivalent polynomial operation is :math:`s(x) = c(x)\\ \\textrm{mod}\\ g(x)`.
         A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome is non-zero,
         the decoder will find an error-locator polynomial :math:`\\sigma(x)` and the corresponding error locations and values.
 
