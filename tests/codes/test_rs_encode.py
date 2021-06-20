@@ -208,6 +208,142 @@ class Test_n15_k9:
         assert np.array_equal(C, C_truth[:, self.k:])
 
 
+class Test_n15_k9_shortened:
+    n, k = 15, 9
+    ns, ks = 15-4, 9-4
+    M = np.array([
+        [ 0,  6, 15, 10,  5],
+        [ 0, 10,  0,  4, 15],
+        [ 2, 12,  3,  3,  8],
+        [13, 11,  0, 15,  3],
+        [ 2, 12,  9,  6,  8],
+        [10,  3,  8,  1,  7],
+        [ 0,  3,  3,  8,  0],
+        [ 5, 15,  5, 12, 13],
+        [14,  1,  3,  4, 15],
+        [14, 11, 15, 12,  8],
+    ])
+
+    def test_default(self):
+        """
+        NOTE: Octave produces the incorrect result for shortened RS codes (https://savannah.gnu.org/bugs/?func=detailitem&item_id=60800)
+        Z = zeros(10, 4);
+        C = rsenc(gf([Z,M], 4), 15, 9, 'end');
+        C(:,5:end)
+        """
+        rs = galois.ReedSolomon(self.n, self.k)
+        GF = rs.field
+        M = GF(self.M)
+        C_truth = GF([
+            [ 0,  6, 15, 10,  5,  4,  2,  1,  0,  9,  0],
+            [ 0, 10,  0,  4, 15,  6, 14, 15, 10,  9,  2],
+            [ 2, 12,  3,  3,  8,  6,  8,  2, 13,  9, 11],
+            [13, 11,  0, 15,  3,  6,  4,  3, 15,  3, 12],
+            [ 2, 12,  9,  6,  8,  7,  1,  8,  0,  9, 14],
+            [10,  3,  8,  1,  7,  8,  2,  8,  1, 11,  7],
+            [ 0,  3,  3,  8,  0,  8,  4,  0, 10,  2,  6],
+            [ 5, 15,  5, 12, 13, 14, 15,  2, 10, 12, 14],
+            [14,  1,  3,  4, 15,  0, 15, 15,  0, 14,  7],
+            [14, 11, 15, 12,  8,  8, 14,  3,  8,  4, 14],
+        ])
+
+        C = rs.encode(M)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M, parity_only=True)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+        C = rs.encode(M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+    def test_diff_primitive_poly(self):
+        """
+        NOTE: Octave produces the incorrect result for shortened RS codes (https://savannah.gnu.org/bugs/?func=detailitem&item_id=60800)
+        Z = zeros(10, 4);
+        C = rsenc(gf([Z,M], 4, 25), 15, 9, 'end');
+        C(:,5:end)
+        """
+        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="largest")
+        rs = galois.ReedSolomon(self.n, self.k, primitive_poly=p)
+        GF = rs.field
+        M = GF(self.M)
+        C_truth = GF([
+            [ 0,  6, 15, 10,  5,  9, 15,  2, 10, 14, 14],
+            [ 0, 10,  0,  4, 15,  0,  4, 14,  0,  5,  7],
+            [ 2, 12,  3,  3,  8,  4,  3,  1,  7,  5,  6],
+            [13, 11,  0, 15,  3,  2,  1, 10,  1, 12,  8],
+            [ 2, 12,  9,  6,  8,  8,  3,  2,  9,  8, 13],
+            [10,  3,  8,  1,  7, 10,  9, 12, 15, 11,  2],
+            [ 0,  3,  3,  8,  0, 11,  8,  5,  9, 14, 10],
+            [ 5, 15,  5, 12, 13,  7,  9,  5,  2,  5, 11],
+            [14,  1,  3,  4, 15, 11,  9, 12,  2, 11,  7],
+            [14, 11, 15, 12,  8,  1,  1, 10,  8,  9,  6],
+        ])
+
+        C = rs.encode(M)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M, parity_only=True)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+        C = rs.encode(M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+    def test_diff_c(self):
+        """
+        NOTE: Octave produces the incorrect result for shortened RS codes (https://savannah.gnu.org/bugs/?func=detailitem&item_id=60800)
+        Z = zeros(10, 4);
+        C = rsenc(gf([Z,M], 4), 15, 9, 3, 1);
+        C(:,5:end)
+        """
+        c = 3
+        rs = galois.ReedSolomon(self.n, self.k, c=c)
+        GF = rs.field
+        M = GF(self.M)
+        C_truth = GF([
+            [ 0,  6, 15, 10,  5, 14,  3,  9, 12,  4,  7],
+            [ 0, 10,  0,  4, 15,  5,  4, 15, 13,  7,  6],
+            [ 2, 12,  3,  3,  8,  3, 11, 12,  8, 14, 14],
+            [13, 11,  0, 15,  3,  5,  6, 11,  5,  2,  4],
+            [ 2, 12,  9,  6,  8, 11, 12, 11,  6,  9,  6],
+            [10,  3,  8,  1,  7, 13, 14,  9, 15,  0,  3],
+            [ 0,  3,  3,  8,  0, 11, 10,  4,  2,  2,  4],
+            [ 5, 15,  5, 12, 13, 11,  9,  9,  7, 15,  5],
+            [14,  1,  3,  4, 15,  9,  9, 10, 14,  6,  6],
+            [14, 11, 15, 12,  8, 11,  3,  4,  9,  9,  7],
+        ])
+
+        C = rs.encode(M)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M, parity_only=True)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+        C = rs.encode(M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+
 class Test_n31_k23:
     n, k = 31, 23
     M = np.array([
@@ -332,3 +468,139 @@ class Test_n31_k23:
         C = rs.encode(M.view(np.ndarray), parity_only=True)
         assert type(C) is np.ndarray
         assert np.array_equal(C, C_truth[:, self.k:])
+
+
+class Test_n31_k23_shortened:
+    n, k = 31, 23
+    ns, ks = 31-10, 23-10
+    M = np.array([
+        [ 0,  0,  7, 14, 23,  2,  9, 20, 10,  3, 25, 16, 30],
+        [17, 17, 11, 18, 16,  9, 13, 10, 24, 24, 26, 12,  8],
+        [29,  0,  0,  4, 22, 30, 20,  5, 23,  3, 16,  1,  4],
+        [ 4, 24, 21, 28, 25,  9, 27,  9, 23,  0, 22, 20, 24],
+        [26, 21,  4, 17, 15, 24, 28,  2, 28,  4, 19, 20, 26],
+        [13, 20,  5,  6,  6, 16, 31, 30, 15,  7, 10, 29,  3],
+        [31,  3, 18,  3, 15, 17, 19, 25, 27,  6, 12, 27, 28],
+        [14, 17, 11, 15,  3,  3,  1, 11,  4,  7, 10, 18,  4],
+        [ 9, 21, 17,  2,  3,  6, 24, 16, 19, 25, 10,  0, 30],
+        [17,  6, 17, 21, 15, 10, 31,  8, 27, 27, 21,  9, 15],
+    ])
+
+    def test_default(self):
+        """
+        NOTE: Octave produces the incorrect result for shortened RS codes (https://savannah.gnu.org/bugs/?func=detailitem&item_id=60800)
+        Z = zeros(10, 10);
+        C = rsenc(gf([Z,M], 5), 31, 23, 'end');
+        C(:,11:end)
+        """
+        rs = galois.ReedSolomon(self.n, self.k)
+        GF = rs.field
+        M = GF(self.M)
+        C_truth = GF([
+            [ 0,  0,  7, 14, 23,  2,  9, 20, 10,  3, 25, 16, 30, 10,  8, 24, 30,  6,  9, 18,  8],
+            [17, 17, 11, 18, 16,  9, 13, 10, 24, 24, 26, 12,  8, 16,  6, 16, 19,  4, 17,  5, 13],
+            [29,  0,  0,  4, 22, 30, 20,  5, 23,  3, 16,  1,  4,  2,  8, 19, 27, 10, 28,  9, 22],
+            [ 4, 24, 21, 28, 25,  9, 27,  9, 23,  0, 22, 20, 24,  0, 31, 22, 31, 10, 24, 14, 30],
+            [26, 21,  4, 17, 15, 24, 28,  2, 28,  4, 19, 20, 26,  4, 20, 11, 28, 30, 10, 30, 15],
+            [13, 20,  5,  6,  6, 16, 31, 30, 15,  7, 10, 29,  3, 14,  7, 27,  0, 10,  6, 23, 28],
+            [31,  3, 18,  3, 15, 17, 19, 25, 27,  6, 12, 27, 28, 18, 27, 10, 31, 18,  4,  5, 15],
+            [14, 17, 11, 15,  3,  3,  1, 11,  4,  7, 10, 18,  4,  1, 31, 21, 25, 17, 15, 11, 21],
+            [ 9, 21, 17,  2,  3,  6, 24, 16, 19, 25, 10,  0, 30,  7, 19, 30, 27, 11,  8,  4,  7],
+            [17,  6, 17, 21, 15, 10, 31,  8, 27, 27, 21,  9, 15, 12, 24, 30,  8,  7, 12, 11, 19],
+       ])
+
+        C = rs.encode(M)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M, parity_only=True)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+        C = rs.encode(M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+    def test_diff_primitive_poly(self):
+        """
+        NOTE: Octave produces the incorrect result for shortened RS codes (https://savannah.gnu.org/bugs/?func=detailitem&item_id=60800)
+        Z = zeros(10, 10);
+        C = rsenc(gf([Z,M], 5, 61), 31, 23, 'end');
+        C(:,11:end)
+        """
+        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="largest")
+        rs = galois.ReedSolomon(self.n, self.k, primitive_poly=p)
+        GF = rs.field
+        M = GF(self.M)
+        C_truth = GF([
+            [ 0,  0,  7, 14, 23,  2,  9, 20, 10,  3, 25, 16, 30,  4,  3, 23, 12, 17, 20, 21,  4],
+            [17, 17, 11, 18, 16,  9, 13, 10, 24, 24, 26, 12,  8,  9, 18, 31, 20, 19, 28, 17,  1],
+            [29,  0,  0,  4, 22, 30, 20,  5, 23,  3, 16,  1,  4, 17, 25, 11,  7, 30, 24, 13, 25],
+            [ 4, 24, 21, 28, 25,  9, 27,  9, 23,  0, 22, 20, 24, 25,  7, 29, 24,  2, 21, 10, 18],
+            [26, 21,  4, 17, 15, 24, 28,  2, 28,  4, 19, 20, 26,  4, 30,  5,  5, 31, 18, 28,  7],
+            [13, 20,  5,  6,  6, 16, 31, 30, 15,  7, 10, 29,  3, 20,  6,  3, 29, 17, 29,  7, 19],
+            [31,  3, 18,  3, 15, 17, 19, 25, 27,  6, 12, 27, 28, 24,  4, 12, 25,  2, 15, 11, 17],
+            [14, 17, 11, 15,  3,  3,  1, 11,  4,  7, 10, 18,  4, 31,  9,  6, 28, 12, 24, 24, 28],
+            [ 9, 21, 17,  2,  3,  6, 24, 16, 19, 25, 10,  0, 30, 21,  6, 25, 11, 30, 19, 13,  0],
+            [17,  6, 17, 21, 15, 10, 31,  8, 27, 27, 21,  9, 15, 18, 30, 17,  6, 17,  5, 20, 15],
+        ])
+
+        C = rs.encode(M)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M, parity_only=True)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+        C = rs.encode(M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+    def test_diff_c(self):
+        """
+        NOTE: Octave produces the incorrect result for shortened RS codes (https://savannah.gnu.org/bugs/?func=detailitem&item_id=60800)
+        Z = zeros(10, 10);
+        C = rsenc(gf([Z,M], 5), 31, 23, 3, 1);
+        C(:,11:end)
+        """
+        c = 3
+        rs = galois.ReedSolomon(self.n, self.k, c=c)
+        GF = rs.field
+        M = GF(self.M)
+        C_truth = GF([
+            [ 0,  0,  7, 14, 23,  2,  9, 20, 10,  3, 25, 16, 30, 17, 11, 25, 17,  4, 16,  8, 22],
+            [17, 17, 11, 18, 16,  9, 13, 10, 24, 24, 26, 12,  8, 31,  4, 18,  8, 22,  9, 24, 15],
+            [29,  0,  0,  4, 22, 30, 20,  5, 23,  3, 16,  1,  4, 12, 26,  8, 24,  9, 31, 27,  3],
+            [ 4, 24, 21, 28, 25,  9, 27,  9, 23,  0, 22, 20, 24,  2,  2,  5,  2,  1, 22, 14, 26],
+            [26, 21,  4, 17, 15, 24, 28,  2, 28,  4, 19, 20, 26, 25, 11, 31, 27, 14, 18, 15, 10],
+            [13, 20,  5,  6,  6, 16, 31, 30, 15,  7, 10, 29,  3,  3,  5, 29, 13, 15,  4, 25,  1],
+            [31,  3, 18,  3, 15, 17, 19, 25, 27,  6, 12, 27, 28, 13, 15, 23, 20,  2, 10, 21, 28],
+            [14, 17, 11, 15,  3,  3,  1, 11,  4,  7, 10, 18,  4, 30, 29, 18,  3, 10, 25, 26, 20],
+            [ 9, 21, 17,  2,  3,  6, 24, 16, 19, 25, 10,  0, 30,  7, 26, 15, 28, 29, 29,  6,  6],
+            [17,  6, 17, 21, 15, 10, 31,  8, 27, 27, 21,  9, 15,  8, 22,  8, 24, 11, 24, 23, 21],
+        ])
+
+        C = rs.encode(M)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M, parity_only=True)
+        assert type(C) is GF
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
+
+        C = rs.encode(M.view(np.ndarray))
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth)
+
+        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        assert type(C) is np.ndarray
+        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
