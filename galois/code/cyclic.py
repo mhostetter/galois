@@ -1,13 +1,16 @@
+"""
+A module containing common functions for cyclic codes.
+"""
 import numpy as np
 
 from ..field import FieldArray, Poly
 from ..overrides import set_module
 
-__all__ = ["generator_poly_to_matrix", "roots_to_parity_check_matrix"]
+__all__ = ["poly_to_generator_matrix", "roots_to_parity_check_matrix"]
 
 
 @set_module("galois")
-def generator_poly_to_matrix(n, generator_poly, systematic=True):
+def poly_to_generator_matrix(n, generator_poly, systematic=True):
     """
     Converts the generator polynomial :math:`g(x)` into the generator matrix :math:`\\mathbf{G}` for an :math:`[n, k]` cyclic code.
 
@@ -32,8 +35,8 @@ def generator_poly_to_matrix(n, generator_poly, systematic=True):
     .. ipython :: python
 
         g = galois.bch_generator_poly(15, 7); g
-        galois.generator_poly_to_matrix(15, g, systematic=False)
-        galois.generator_poly_to_matrix(15, g, systematic=True)
+        galois.poly_to_generator_matrix(15, g, systematic=False)
+        galois.poly_to_generator_matrix(15, g, systematic=True)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
