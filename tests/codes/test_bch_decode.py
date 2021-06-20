@@ -1,13 +1,13 @@
 """
 A pytest module to test BCH decoding.
 """
-import random
-
 import pytest
 import numpy as np
 
 import galois
 
+from .helper import random_errors
+galois.GF2, 
 CODES = [
     (15, 11),  # GF(2^4) with t=1
     (15, 7),  # GF(2^4) with t=2
@@ -27,15 +27,6 @@ CODES = [
 ]
 
 
-def random_errors(N, n, max_errors):
-    N_errors = np.random.randint(0, max_errors + 1, N)
-    N_errors[0] = max_errors  # Ensure the max number of errors is present at least once
-    E = galois.GF2.Zeros((N, n))
-    for i in range(N):
-        E[i, random.sample(list(range(n)), N_errors[i])] ^= 1
-    return E, N_errors
-
-
 class TestSystematic:
     @pytest.mark.parametrize("size", CODES)
     def test_all_correctable(self, size):
@@ -44,7 +35,7 @@ class TestSystematic:
         bch = galois.BCH(n, k)
         M = galois.GF2.Random((N, k))
         C = bch.encode(M)
-        E, N_errors = random_errors(N, n, bch.t)
+        E, N_errors = random_errors(galois.GF2, N, n, bch.t)
         R = C + E
 
         DEC_M = bch.decode(R)
@@ -72,7 +63,7 @@ class TestSystematic:
         bch = galois.BCH(n, k)
         M = galois.GF2.Random((N, k))
         C = bch.encode(M)
-        E, N_errors = random_errors(N, n, bch.t + 1)
+        E, N_errors = random_errors(galois.GF2, N, n, bch.t + 1)
         R = C + E
 
         corr_idxs = np.where(N_errors <= bch.t)[0]
@@ -106,7 +97,7 @@ class TestSystematicShortened:
         bch = galois.BCH(n, k)
         M = galois.GF2.Random((N, ks))
         C = bch.encode(M)
-        E, N_errors = random_errors(N, ns, bch.t)
+        E, N_errors = random_errors(galois.GF2, N, ns, bch.t)
         R = C + E
 
         DEC_M = bch.decode(R)
@@ -136,7 +127,7 @@ class TestSystematicShortened:
         bch = galois.BCH(n, k)
         M = galois.GF2.Random((N, ks))
         C = bch.encode(M)
-        E, N_errors = random_errors(N, ns, bch.t + 1)
+        E, N_errors = random_errors(galois.GF2, N, ns, bch.t + 1)
         R = C + E
 
         corr_idxs = np.where(N_errors <= bch.t)[0]
@@ -168,7 +159,7 @@ class TestNonSystematic:
         bch = galois.BCH(n, k, systematic=False)
         M = galois.GF2.Random((N, k))
         C = bch.encode(M)
-        E, N_errors = random_errors(N, n, bch.t)
+        E, N_errors = random_errors(galois.GF2, N, n, bch.t)
         R = C + E
 
         DEC_M = bch.decode(R)
@@ -196,7 +187,7 @@ class TestNonSystematic:
         bch = galois.BCH(n, k, systematic=False)
         M = galois.GF2.Random((N, k))
         C = bch.encode(M)
-        E, N_errors = random_errors(N, n, bch.t + 1)
+        E, N_errors = random_errors(galois.GF2, N, n, bch.t + 1)
         R = C + E
 
         corr_idxs = np.where(N_errors <= bch.t)[0]

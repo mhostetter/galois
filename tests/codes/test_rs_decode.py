@@ -1,12 +1,12 @@
 """
 A pytest module to test Reed-Solomon decoding.
 """
-import random
-
 import pytest
 import numpy as np
 
 import galois
+
+from .helper import random_errors
 
 CODES = [
     (15, 13),  # GF(2^4) with t=1
@@ -23,15 +23,6 @@ CODES = [
     (26, 22),  # GF(3^3) with t=2
     (26, 20),  # GF(3^3) with t=3
 ]
-
-
-def random_errors(GF, N, n, max_errors):
-    N_errors = np.random.randint(0, max_errors + 1, N)
-    N_errors[0] = max_errors  # Ensure the max number of errors is present at least once
-    E = GF.Zeros((N, n))
-    for i in range(N):
-        E[i, random.sample(list(range(n)), N_errors[i])] = GF.Random(N_errors[i], low=1)
-    return E, N_errors
 
 
 class TestSystematic:
