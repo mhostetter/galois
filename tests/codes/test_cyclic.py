@@ -15,7 +15,7 @@ import galois
 def test_bch_15_7():
     # [H, G] = cyclgen(15, 465)
     g = galois.Poly.Integer(465)
-    G = galois.generator_poly_to_matrix(15, g)
+    G = galois.poly_to_generator_matrix(15, g)
     G_truth = np.array([
         [1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
         [1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0],

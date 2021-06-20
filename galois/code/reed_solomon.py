@@ -7,7 +7,7 @@ from ..field import Field, Poly, matlab_primitive_poly
 from ..field.meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, POLY_EVALUATE_CALCULATE_SIG, CONVOLVE_CALCULATE_SIG
 from ..overrides import set_module
 
-from .common import generator_poly_to_matrix, roots_to_parity_check_matrix
+from .cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
 
 __all__ = ["ReedSolomon", "rs_generator_poly", "rs_generator_matrix", "rs_parity_check_matrix"]
 
@@ -136,7 +136,7 @@ def rs_generator_matrix(n, k, c=1, primitive_poly=None, primitive_element=None, 
         galois.rs_generator_matrix(15, 9)
     """
     g = rs_generator_poly(n, k, c=c, primitive_poly=primitive_poly, primitive_element=primitive_element)
-    G = generator_poly_to_matrix(n, g, systematic=systematic)
+    G = poly_to_generator_matrix(n, g, systematic=systematic)
     return G
 
 
@@ -260,7 +260,7 @@ class ReedSolomon:
         obj._field = type(obj.roots)
         obj._t = obj.roots.size // 2
 
-        obj._G = generator_poly_to_matrix(n, obj.generator_poly, systematic)
+        obj._G = poly_to_generator_matrix(n, obj.generator_poly, systematic)
         obj._H = roots_to_parity_check_matrix(n, obj.roots)
 
         obj._is_narrow_sense = c == 1

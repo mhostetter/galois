@@ -137,7 +137,7 @@ Forward Error Correcting Codes
    :template: class.rst
    :toctree:
 
-   generator_poly_to_matrix
+   poly_to_generator_matrix
    roots_to_parity_check_matrix
 
 Modular Arithmetic

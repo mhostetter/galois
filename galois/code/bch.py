@@ -9,7 +9,7 @@ from ..field import Field, Poly, GF2, matlab_primitive_poly
 from ..field.meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG
 from ..overrides import set_module
 
-from .common import generator_poly_to_matrix, roots_to_parity_check_matrix
+from .cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
 
 __all__ = ["BCH", "bch_valid_codes", "bch_generator_poly", "bch_generator_matrix", "bch_parity_check_matrix"]
 
@@ -231,7 +231,7 @@ def bch_generator_matrix(n, k, c=1, primitive_poly=None, primitive_element=None,
         galois.bch_generator_matrix(15, 7)
     """
     g = bch_generator_poly(n, k, c=c, primitive_poly=primitive_poly, primitive_element=primitive_element)
-    G = generator_poly_to_matrix(n, g, systematic=systematic)
+    G = poly_to_generator_matrix(n, g, systematic=systematic)
     return G
 
 
@@ -354,7 +354,7 @@ class BCH:
         obj._field = type(obj.roots)
         obj._t = obj.roots.size // 2
 
-        obj._G = generator_poly_to_matrix(n, obj.generator_poly, systematic)
+        obj._G = poly_to_generator_matrix(n, obj.generator_poly, systematic)
         obj._H = roots_to_parity_check_matrix(n, obj.roots)
 
         obj._is_primitive = True
