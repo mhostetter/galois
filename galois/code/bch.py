@@ -11,12 +11,8 @@ from ..overrides import set_module
 
 from .cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
 
-__all__ = ["BCH", "bch_valid_codes", "bch_generator_poly", "bch_generator_matrix", "bch_parity_check_matrix"]
+__all__ = ["BCH", "bch_valid_codes"]
 
-
-###############################################################################
-# BCH Functions
-###############################################################################
 
 def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
     if not isinstance(n, (int, np.integer)):
@@ -106,192 +102,6 @@ def bch_valid_codes(n, t_min=1):
 
 
 @set_module("galois")
-def bch_generator_poly(n, k, c=1, primitive_poly=None, primitive_element=None, roots=False):
-    """
-    Returns the generator polynomial :math:`g(x)` for the primitive binary :math:`\\textrm{BCH}(n, k)` code.
-
-    The BCH generator polynomial :math:`g(x)` is defined as :math:`g(x) = \\textrm{LCM}(m_{c}(x), m_{c+1}(x), \\dots, m_{c+2t-2}(x))`,
-    where :math:`m_c(x)` is the minimal polynomial of :math:`\\alpha^c` where :math:`\\alpha` is a primitive element of :math:`\\mathrm{GF}(2^m)`.
-    If :math:`c = 1`, then the code is said to be *narrow-sense*.
-
-    Parameters
-    ----------
-    n : int
-        The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
-    k : int
-        The message size :math:`k`.
-    c : int, optional
-        The first consecutive power of :math:`\\alpha`. The default is 1.
-    primitive_poly : galois.Poly, optional
-        Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
-        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
-        primitive polynomial as a default instead of the Conway polynomial.
-    primitive_element : int, galois.Poly, optional
-        Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
-        The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
-        `galois.primitive_element(2, m)`.
-    roots : bool, optional
-        Indicates to optionally return the :math:`2t` roots in :math:`\\mathrm{GF}(2^m)` of the generator polynomial. The default is `False`.
-
-    Returns
-    -------
-    galois.Poly
-        The generator polynomial :math:`g(x)` over :math:`\\mathrm{GF}(2)`.
-    galois.FieldArray
-        The :math:`2t` roots in :math:`\\mathrm{GF}(2^m)` of the generator polynomial. Only returned if `roots=True`.
-
-    Raises
-    ------
-    ValueError
-        If the :math:`\\textrm{BCH}(n, k)` code does not exist.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        galois.bch_generator_poly(15, 7)
-        galois.bch_generator_poly(15, 7, roots=True)
-    """
-    GF = _check_and_compute_field(n, k, c, primitive_poly, primitive_element)
-    alpha = GF.primitive_element
-    m = GF.degree
-
-    t = int(math.ceil((n - k) / m))  # The minimum value of t
-    found = False
-    while True:
-        # We want to find LCM(m_r1(x), m_r2(x), ...) with ri being an element of `roots_`. Instead of computing each
-        # minimal polynomial and then doing an LCM, we will compute all the unique conjugates of all the roots
-        # and then compute (x - c1)*(x - c2)*...*(x - cn), which is equivalent.
-        roots_ = alpha**(c + np.arange(0, 2*t))
-        powers = GF.characteristic**np.arange(0, GF.degree)
-        conjugates = np.unique(np.power.outer(roots_, powers))
-        g_degree = len(conjugates)
-
-        if g_degree < n - k:
-            # This t is too small to produce the BCH code
-            t += 1
-        elif g_degree == n - k:
-            # This t produces the correct BCH code size and g(x) is its generator, but there may be a larger t, so keep looking
-            found = True
-            largest_t_roots = roots_
-            largest_t_conjugates = conjugates
-            t += 1
-        elif found and g_degree > n - k:
-            # This t does not produce a valid code, but the previous t (which is the largest) did, use it
-            break
-        else:
-            raise ValueError(f"The code BCH({n}, {k}) with c={c} does not exist.")
-
-    g = Poly.Roots(largest_t_conjugates)  # Compute the generator polynomial in GF(2^m)
-    g = Poly(g.coeffs, field=GF2)  # Convert coefficients from GF(2^m) to GF(2)
-
-    if not roots:
-        return g
-    else:
-        return g, largest_t_roots
-
-
-@set_module("galois")
-def bch_generator_matrix(n, k, c=1, primitive_poly=None, primitive_element=None, systematic=True):
-    """
-    Returns the generator matrix :math:`\\mathbf{G}` for the primitive binary :math:`\\textrm{BCH}(n, k)` code.
-
-    Parameters
-    ----------
-    n : int
-        The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
-    k : int
-        The message size :math:`k`.
-    c : int, optional
-        The first consecutive power of :math:`\\alpha`. The default is 1.
-    primitive_poly : galois.Poly, optional
-        Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
-        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
-        primitive polynomial as a default instead of the Conway polynomial.
-    primitive_element : int, galois.Poly, optional
-        Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
-        The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
-        `galois.primitive_element(2, m)`.
-    systematic : bool, optional
-        Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
-        appended. The default is `True`.
-
-    Returns
-    -------
-    galois.FieldArray
-        The :math:`(k, n)` generator matrix :math:`\\mathbf{G}`, such that given a message :math:`\\mathbf{m}`, a codeword is defined by
-        :math:`\\mathbf{c} = \\mathbf{m}\\mathbf{G}`.
-
-    Examples
-    --------
-    .. ipython :: python
-
-        galois.bch_generator_poly(15, 7)
-        galois.bch_generator_matrix(15, 7, systematic=False)
-        galois.bch_generator_matrix(15, 7)
-    """
-    g = bch_generator_poly(n, k, c=c, primitive_poly=primitive_poly, primitive_element=primitive_element)
-    G = poly_to_generator_matrix(n, g, systematic=systematic)
-    return G
-
-
-@set_module("galois")
-def bch_parity_check_matrix(n, k, c=1, primitive_poly=None, primitive_element=None):
-    """
-    Returns the parity-check matrix :math:`\\mathbf{H}` for the :math:`\\textrm{BCH}(n, k)` code.
-
-    Parameters
-    ----------
-    n : int
-        The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
-    k : int
-        The message size :math:`k`.
-    c : int, optional
-        The first consecutive power of :math:`\\alpha`. The default is 1.
-    primitive_poly : galois.Poly, optional
-        Optionally specify the primitive polynomial that defines the extension field :math:`\\mathrm{GF}(2^m)`. The default is
-        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-smallest
-        primitive polynomial as a default instead of the Conway polynomial.
-    primitive_element : int, galois.Poly, optional
-        Optionally specify the primitive element :math:`\\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
-        The default is `None` which uses the lexicographically-smallest primitive element in :math:`\\mathrm{GF}(2^m)`, i.e.
-        `galois.primitive_element(2, m)`.
-
-    Returns
-    -------
-    galois.FieldArray
-        The :math:`(2t, n)` parity-check matrix :math:`\\mathbf{H}`, such that given a codeword :math:`\\mathbf{c}`, the syndrome is defined by
-        :math:`\\mathbf{s} = \\mathbf{c}\\mathbf{H}^T`.
-
-    Examples
-    --------
-    .. ipython :: python
-
-        G = galois.bch_generator_matrix(15, 7); G
-        H = galois.bch_parity_check_matrix(15, 7); H
-        GF2 = galois.GF2
-        GF = type(H)
-        # The message
-        m = GF2.Random(7); m
-        # The codeword
-        c = m @ G; c
-        # Error pattern
-        e = GF2.Zeros(15); e[0] = GF2.Random(low=1); e
-        # c is a valid codeword, so the syndrome is 0
-        s = c.view(GF) @ H.T; s
-        # c + e is not a valid codeword, so the syndrome is not 0
-        s = (c + e).view(GF) @ H.T; s
-    """
-    _, roots = bch_generator_poly(n, k, c=c, primitive_poly=primitive_poly, primitive_element=primitive_element, roots=True)
-    H = roots_to_parity_check_matrix(n, roots)
-    return H
-
-
-###############################################################################
-# BCH Class
-###############################################################################
-
-@set_module("galois")
 class BCH:
     """
     Constructs a primitive, narrow-sense binary :math:`\\textrm{BCH}(n, k)` code.
@@ -340,7 +150,7 @@ class BCH:
     # pylint: disable=no-member
 
     def __new__(cls, n, k, primitive_poly=None, primitive_element=None, systematic=True):
-        # NOTE: All other arguments will be verified in `bch_generator_poly()`
+        # NOTE: All other arguments will be verified in `_check_and_compute_field()`
         if not isinstance(systematic, bool):
             raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
 
@@ -350,8 +160,43 @@ class BCH:
         obj._k = k
         obj._systematic = systematic
 
-        obj._generator_poly, obj._roots = bch_generator_poly(n, k, primitive_poly=primitive_poly, primitive_element=primitive_element, roots=True)
-        obj._field = type(obj.roots)
+        c = 1
+        GF = _check_and_compute_field(n, k, c, primitive_poly, primitive_element)
+        alpha = GF.primitive_element
+        m = GF.degree
+
+        t = int(math.ceil((n - k) / m))  # The minimum value of t
+        found = False
+        while True:
+            # We want to find LCM(m_r1(x), m_r2(x), ...) with ri being an element of `roots_`. Instead of computing each
+            # minimal polynomial and then doing an LCM, we will compute all the unique conjugates of all the roots
+            # and then compute (x - c1)*(x - c2)*...*(x - cn), which is equivalent.
+            roots = alpha**(c + np.arange(0, 2*t))
+            powers = GF.characteristic**np.arange(0, GF.degree)
+            conjugates = np.unique(np.power.outer(roots, powers))
+            g_degree = len(conjugates)
+
+            if g_degree < n - k:
+                # This t is too small to produce the BCH code
+                t += 1
+            elif g_degree == n - k:
+                # This t produces the correct BCH code size and g(x) is its generator, but there may be a larger t, so keep looking
+                found = True
+                largest_t_roots = roots
+                largest_t_conjugates = conjugates
+                t += 1
+            elif found and g_degree > n - k:
+                # This t does not produce a valid code, but the previous t (which is the largest) did, use it
+                break
+            else:
+                raise ValueError(f"The code BCH({n}, {k}) with c={c} does not exist.")
+
+        g = Poly.Roots(largest_t_conjugates)  # Compute the generator polynomial in GF(2^m)
+        g = Poly(g.coeffs, field=GF2)  # Convert coefficients from GF(2^m) to GF(2)
+
+        obj._generator_poly = g
+        obj._roots = largest_t_roots
+        obj._field = GF
         obj._t = obj.roots.size // 2
 
         obj._G = poly_to_generator_matrix(n, obj.generator_poly, systematic)

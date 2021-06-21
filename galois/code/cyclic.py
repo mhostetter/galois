@@ -32,11 +32,13 @@ def poly_to_generator_matrix(n, generator_poly, systematic=True):
 
     Examples
     --------
+    Compute the generator matrix for the :math:`\\mathrm{Hamming}(7, 4)` code.
+
     .. ipython :: python
 
-        g = galois.bch_generator_poly(15, 7); g
-        galois.poly_to_generator_matrix(15, g, systematic=False)
-        galois.poly_to_generator_matrix(15, g, systematic=True)
+        g = galois.primitive_poly(2, 3); g
+        galois.poly_to_generator_matrix(7, g, systematic=False)
+        galois.poly_to_generator_matrix(7, g, systematic=True)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -78,9 +80,15 @@ def roots_to_parity_check_matrix(n, roots):
 
     Examples
     --------
+    Compute the parity-check for the :math:`\\mathrm{RS}(15, 9)` code.
+
     .. ipython :: python
 
-        g, roots = galois.bch_generator_poly(15, 7, roots=True); g, roots
+        GF = galois.GF(2**4)
+        alpha = GF.primitive_element
+        t = 3
+        roots = alpha**np.arange(1, 2*t + 1); roots
+        g = galois.Poly.Roots(roots); g
         galois.roots_to_parity_check_matrix(15, roots)
     """
     if not isinstance(n, (int, np.integer)):
