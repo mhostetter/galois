@@ -119,6 +119,14 @@ Forward Error Correcting Codes
    BCH
    ReedSolomon
 
+.. rubric:: Linear block code functions
+.. autosummary::
+   :template: class.rst
+   :toctree:
+
+   generator_to_parity_check_matrix
+   parity_check_to_generator_matrix
+
 .. rubric:: Cyclic code functions
 .. autosummary::
    :template: class.rst
