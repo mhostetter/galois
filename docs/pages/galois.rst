@@ -111,32 +111,20 @@ Linear Sequences
 Forward Error Correcting Codes
 ------------------------------
 
-.. rubric:: BCH codes
+.. rubric:: Code classes
 .. autosummary::
    :template: class.rst
    :toctree:
 
    BCH
-   bch_valid_codes
-   bch_generator_poly
-   bch_generator_matrix
-   bch_parity_check_matrix
-
-.. rubric:: Reed-Solomon codes
-.. autosummary::
-   :template: class.rst
-   :toctree:
-
    ReedSolomon
-   rs_generator_poly
-   rs_generator_matrix
-   rs_parity_check_matrix
 
 .. rubric:: Cyclic code functions
 .. autosummary::
    :template: class.rst
    :toctree:
 
+   bch_valid_codes
    poly_to_generator_matrix
    roots_to_parity_check_matrix
 
