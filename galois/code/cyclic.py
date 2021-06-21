@@ -47,15 +47,27 @@ def poly_to_generator_matrix(n, generator_poly, systematic=True):
     if not isinstance(systematic, bool):
         raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
 
-    # Assign the generator polynomial coefficients with highest degree starting along the diagonals
+    GF = generator_poly.field
     k = n - generator_poly.degree
-    G = generator_poly.field.Zeros((k, n))
-    for i in range(k):
-        G[i, i:i + generator_poly.degree + 1] = generator_poly.coeffs
 
     if systematic:
-        # Convert G to the form [I | P]
-        G = G.row_reduce()  # pylint: disable=no-member
+        # This is a more efficient Gaussian elimination of the generator matrix G that is produced
+        # in non-systematic form
+        I = GF.Identity(k)
+        P = GF.Zeros((k, n-k))
+        P[0,:] = generator_poly.coeffs[0:-1] / generator_poly.coeffs[-1]
+        for i in range(1, k):
+            P[i,0] = 0
+            P[i,1:] = P[i-1,0:-1]
+            if P[i-1,-1] > 0:
+                P[i,:] -= P[i-1,-1] * P[0,:]
+        G = np.hstack((I, P))
+    else:
+        # Assign the generator polynomial coefficients with highest degree starting along
+        # the diagonals
+        G = GF.Zeros((k, n))
+        for i in range(k):
+            G[i, i:i + generator_poly.degree + 1] = generator_poly.coeffs
 
     return G
 
