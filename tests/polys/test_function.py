@@ -208,6 +208,30 @@ def test_primitive_polys():
     assert [p.integer for p in polys] == [285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]
 
 
+def test_matlab_primitive_poly():
+    """
+    Generated with Octave:
+        gf(1, m)
+
+    TODO: Test against Matlab's `gfprimdf(m, p)`
+    """
+    assert galois.matlab_primitive_poly(2, 2) == galois.Poly.Degrees([2, 1, 0])
+    assert galois.matlab_primitive_poly(2, 3) == galois.Poly.Degrees([3, 1, 0])
+    assert galois.matlab_primitive_poly(2, 4) == galois.Poly.Degrees([4, 1, 0])
+    assert galois.matlab_primitive_poly(2, 5) == galois.Poly.Degrees([5, 2, 0])
+    assert galois.matlab_primitive_poly(2, 6) == galois.Poly.Degrees([6, 1, 0])
+    assert galois.matlab_primitive_poly(2, 7) == galois.Poly.Degrees([7, 3, 0])
+    assert galois.matlab_primitive_poly(2, 8) == galois.Poly.Degrees([8, 4, 3, 2, 0])
+    assert galois.matlab_primitive_poly(2, 9) == galois.Poly.Degrees([9, 4, 0])
+    assert galois.matlab_primitive_poly(2, 10) == galois.Poly.Degrees([10, 3, 0])
+    assert galois.matlab_primitive_poly(2, 11) == galois.Poly.Degrees([11, 2, 0])
+    assert galois.matlab_primitive_poly(2, 12) == galois.Poly.Degrees([12, 6, 4, 1, 0])
+    assert galois.matlab_primitive_poly(2, 13) == galois.Poly.Degrees([13, 4, 3, 1, 0])
+    assert galois.matlab_primitive_poly(2, 14) == galois.Poly.Degrees([14, 10, 6, 1, 0])
+    assert galois.matlab_primitive_poly(2, 15) == galois.Poly.Degrees([15, 1, 0])
+    assert galois.matlab_primitive_poly(2, 16) == galois.Poly.Degrees([16, 12, 3, 1, 0])
+
+
 def test_minimal_poly():
     GF = galois.GF(5)
     alpha = GF.primitive_element
