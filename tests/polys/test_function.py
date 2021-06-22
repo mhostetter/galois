@@ -173,6 +173,18 @@ def test_irreducible_polys():
     polys = galois.irreducible_polys(2, 8)
     assert set([p.integer for p in polys]).issuperset(set([285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]))
 
+    # https://oeis.org/A001037
+    # assert len(galois.irreducible_polys(2, 1)) == 2
+    assert len(galois.irreducible_polys(2, 2)) == 1
+    assert len(galois.irreducible_polys(2, 3)) == 2
+    assert len(galois.irreducible_polys(2, 4)) == 3
+    assert len(galois.irreducible_polys(2, 5)) == 6
+    assert len(galois.irreducible_polys(2, 6)) == 9
+    assert len(galois.irreducible_polys(2, 7)) == 18
+    assert len(galois.irreducible_polys(2, 8)) == 30
+    assert len(galois.irreducible_polys(2, 9)) == 56
+    assert len(galois.irreducible_polys(2, 10)) == 99
+
 
 def test_primitive_poly():
     p = galois.primitive_poly(2, 8)
@@ -206,6 +218,18 @@ def test_primitive_polys():
 
     polys = galois.primitive_polys(2, 8)
     assert [p.integer for p in polys] == [285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]
+
+    # https://oeis.org/A011260
+    # assert len(galois.primitive_polys(2, 1)) == 1
+    assert len(galois.primitive_polys(2, 2)) == 1
+    assert len(galois.primitive_polys(2, 3)) == 2
+    assert len(galois.primitive_polys(2, 4)) == 2
+    assert len(galois.primitive_polys(2, 5)) == 6
+    assert len(galois.primitive_polys(2, 6)) == 6
+    assert len(galois.primitive_polys(2, 7)) == 18
+    assert len(galois.primitive_polys(2, 8)) == 16
+    assert len(galois.primitive_polys(2, 9)) == 48
+    assert len(galois.primitive_polys(2, 10)) == 60
 
 
 def test_matlab_primitive_poly():
