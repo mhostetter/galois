@@ -256,7 +256,7 @@ def poly_factors(poly):
 
 
 @set_module("galois")
-def irreducible_poly(characteristic, degree, method="random"):
+def irreducible_poly(characteristic, degree, method="min"):
     """
     Returns a degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
 
@@ -268,9 +268,11 @@ def irreducible_poly(characteristic, degree, method="random"):
         The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
         of :math:`\\mathrm{GF}(p)`.
     method : str, optional
-        The search method for finding the irreducible polynomial, either `"random"` (default), `"smallest"`, or `"largest"`. The random
-        search method will randomly generate degree-:math:`m` polynomials and test for irreducibility. The smallest/largest search
-        method will produce polynomials in increasing/decreasing lexicographical order and test for irreducibility.
+        The search method for finding the irreducible polynomial.
+
+        * `"min"` (default): Returns the lexicographically-minimal irreducible polynomial.
+        * `"max"`: Returns the lexicographically-maximal irreducible polynomial.
+        * `"random"`: Returns a randomly generated degree-:math:`m` irreducible polynomial.
 
     Returns
     -------
@@ -283,25 +285,25 @@ def irreducible_poly(characteristic, degree, method="random"):
 
         p = galois.irreducible_poly(7, 5); p
         galois.is_irreducible(p)
-        p = galois.irreducible_poly(7, 5, method="smallest"); p
+        p = galois.irreducible_poly(7, 5, method="max"); p
         galois.is_irreducible(p)
-        p = galois.irreducible_poly(7, 5, method="largest"); p
+        p = galois.irreducible_poly(7, 5, method="random"); p
         galois.is_irreducible(p)
 
-    For the extension field :math:`\\mathrm{GF}(2^8)`, notice the lexicographically-smallest irreducible polynomial
-    is not primitive. The Conway polynomial :math:`C_{2,8}` is the lexicographically-smallest irreducible *and primitive*
+    For the extension field :math:`\\mathrm{GF}(2^8)`, notice the lexicographically-minimal irreducible polynomial
+    is not primitive. The Conway polynomial :math:`C_{2,8}` is the lexicographically-minimal irreducible *and primitive*
     polynomial.
 
     .. ipython:: python
 
-        p = galois.irreducible_poly(2, 8, method="smallest"); p
+        p = galois.irreducible_poly(2, 8); p
         galois.is_irreducible(p), galois.is_primitive(p)
 
         p = galois.conway_poly(2, 8); p
         galois.is_irreducible(p), galois.is_primitive(p)
     """
-    if not method in ["random", "smallest", "largest"]:
-        raise ValueError(f"Argument `method` must be in ['random', 'smallest', 'largest'], not {method}.")
+    if not method in ["min", "max", "random"]:
+        raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method}.")
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
@@ -315,7 +317,7 @@ def irreducible_poly(characteristic, degree, method="random"):
             if is_irreducible(poly):
                 break
     else:
-        if method == "smallest":
+        if method == "min":
             elements = range(min_, max_)
         else:
             elements = range(max_ - 1, min_ - 1, -1)
@@ -368,7 +370,7 @@ def irreducible_polys(characteristic, degree):
 
 
 @set_module("galois")
-def primitive_poly(characteristic, degree, method="random"):
+def primitive_poly(characteristic, degree, method="min"):
     """
     Returns a degree-:math:`m` primitive polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
 
@@ -380,9 +382,11 @@ def primitive_poly(characteristic, degree, method="random"):
         The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
         of :math:`\\mathrm{GF}(p)`.
     method : str, optional
-        The search method for finding the primitive polynomial, either `"random"` (default), `"smallest"`, or `"largest"`. The random
-        search method will randomly generate degree-:math:`m` polynomials and test for primitivity. The smallest/largest search
-        method will produce polynomials in increasing/decreasing lexicographical order and test for primitivity.
+        The search method for finding the primitive polynomial.
+
+        * `"min"` (default): Returns the lexicographically-minimal primitive polynomial.
+        * `"max"`: Returns the lexicographically-maximal primitive polynomial.
+        * `"random"`: Returns a randomly generated degree-:math:`m` primitive polynomial.
 
     Returns
     -------
@@ -391,24 +395,24 @@ def primitive_poly(characteristic, degree, method="random"):
 
     Examples
     --------
-    For the extension field :math:`\\mathrm{GF}(2^8)`, notice the lexicographically-smallest irreducible polynomial
-    is not primitive. The Conway polynomial :math:`C_{2,8}` is the lexicographically-smallest primitive *and primitive*
+    For the extension field :math:`\\mathrm{GF}(2^8)`, notice the lexicographically-minimal irreducible polynomial
+    is not primitive. The Conway polynomial :math:`C_{2,8}` is the lexicographically-minimal primitive *and primitive*
     polynomial.
 
     .. ipython:: python
 
-        p = galois.irreducible_poly(2, 8, method="smallest"); p
+        p = galois.irreducible_poly(2, 8); p
         galois.is_irreducible(p), galois.is_primitive(p)
 
-        # This is the same as the Conway polynomial C_2,8
-        p = galois.primitive_poly(2, 8, method="smallest"); p
+        # This is the same as the Conway polynomial C_2,8 (except it's calculated, not looked up)
+        p = galois.primitive_poly(2, 8); p
         galois.is_irreducible(p), galois.is_primitive(p)
 
         p = galois.conway_poly(2, 8); p
         galois.is_irreducible(p), galois.is_primitive(p)
     """
-    if not method in ["random", "smallest", "largest"]:
-        raise ValueError(f"Argument `method` must be in ['random', 'smallest', 'largest'], not {method}.")
+    if not method in ["min", "max", "random"]:
+        raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method}.")
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
@@ -422,7 +426,7 @@ def primitive_poly(characteristic, degree, method="random"):
             if is_primitive(poly):
                 break
     else:
-        if method == "smallest":
+        if method == "min":
             elements = range(min_, max_)
         else:
             elements = range(max_ - 1, min_ - 1, -1)
@@ -479,8 +483,9 @@ def matlab_primitive_poly(characteristic, degree):
     """
     Returns the default primitive polynomial as used in Matlab.
 
-    Matlab uses the lexicographically-smallest primitive polynomial (equivalent to `galois.primitive_poly(p, m, method="smallest")`)
-    as the default... *mostly*. There are three notable exceptions:
+    This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the lexicographically-minimal
+    primitive polynomial (equivalent to `galois.primitive_poly(p, m)`) as the default... *mostly*. There are three
+    notable exceptions:
 
     1. :math:`\\mathrm{GF}(2^7)` uses :math:`x^7 + x^3 + 1`, not :math:`x^7 + x + 1`.
     2. :math:`\\mathrm{GF}(2^{14})` uses :math:`x^{14} + x^{10} + x^6 + x + 1`, not :math:`x^{14} + x^5 + x^3 + x + 1`.
@@ -509,27 +514,27 @@ def matlab_primitive_poly(characteristic, degree):
     --------
     .. ipython:: python
 
-        galois.primitive_poly(2, 6, method="smallest")
+        galois.primitive_poly(2, 6)
         galois.matlab_primitive_poly(2, 6)
 
     .. ipython:: python
 
-        galois.primitive_poly(2, 7, method="smallest")
+        galois.primitive_poly(2, 7)
         galois.matlab_primitive_poly(2, 7)
     """
-    # Textbooks and Matlab use the lexicographically-smallest primitive polynomial for the default. But for some
+    # Textbooks and Matlab use the lexicographically-minimal primitive polynomial for the default. But for some
     # reason, there are three exceptions. I can't determine why.
     if characteristic == 2 and degree == 7:
-        # Not the smallest of `x^7 + x + 1`
+        # Not the lexicographically-minimal of `x^7 + x + 1`
         return Poly.Degrees([7, 3, 0])
     elif characteristic == 2 and degree == 14:
-        # Not the smallest of `x^14 + x^5 + x^3 + x + 1`
+        # Not the lexicographically-minimal of `x^14 + x^5 + x^3 + x + 1`
         return Poly.Degrees([14, 10, 6, 1, 0])
     elif characteristic == 2 and degree == 16:
-        # Not the smallest of `x^16 + x^5 + x^3 + x^2 + 1`
+        # Not the lexicographically-minimal of `x^16 + x^5 + x^3 + x^2 + 1`
         return Poly.Degrees([16, 12, 3, 1, 0])
     else:
-        return primitive_poly(characteristic, degree, method="smallest")
+        return primitive_poly(characteristic, degree)
 
 
 @set_module("galois")

@@ -57,7 +57,13 @@ def conway_poly(p, n):
     of degree :math:`n` over :math:`\\mathrm{GF}(p)` that is compatible with all :math:`C_{p,m}` for :math:`m` dividing
     :math:`n`.
 
-    This function uses Frank Luebeck's Conway polynomial database for fast lookup, not construction.
+    This function uses Frank Luebeck's Conway polynomial database for fast lookup, not construction. The equivalent construction
+    function is :func:`galois.primitive_poly`, although be warned this can be *very* slow for large characteristics or degrees.
+
+    Note
+    ----
+    If the :math:`\\mathrm{GF}(p)` field hasn't previously been created, it will be created in this function
+    since it's needed for the construction of the return polynomial.
 
     Parameters
     ----------
@@ -75,11 +81,6 @@ def conway_poly(p, n):
     ------
     LookupError
         If the Conway polynomial :math:`C_{p,n}` is not found in Frank Luebeck's database.
-
-    Warning
-    -------
-    If the :math:`\\mathrm{GF}(p)` field hasn't previously been created, it will be created in this function
-    since it's needed for the construction of the return polynomial.
 
     Examples
     --------

@@ -137,7 +137,7 @@ class Test_n15_k9:
         """
         rsenc(gf(M, 4, 25), 15, 9, 'end')
         """
-        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="largest")
+        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="max")
         rs = galois.ReedSolomon(self.n, self.k, primitive_poly=p)
         GF = rs.field
         M = GF(self.M)
@@ -270,7 +270,7 @@ class Test_n15_k9_shortened:
         C = rsenc(gf([Z,M], 4, 25), 15, 9, 'end');
         C(:,5:end)
         """
-        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="largest")
+        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="max")
         rs = galois.ReedSolomon(self.n, self.k, primitive_poly=p)
         GF = rs.field
         M = GF(self.M)
@@ -399,7 +399,7 @@ class Test_n31_k23:
         """
         rsenc(gf(M, 5, 61), 31, 23, 'end')
         """
-        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="largest")
+        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="max")
         rs = galois.ReedSolomon(self.n, self.k, primitive_poly=p)
         GF = rs.field
         M = GF(self.M)
@@ -532,7 +532,7 @@ class Test_n31_k23_shortened:
         C = rsenc(gf([Z,M], 5, 61), 31, 23, 'end');
         C(:,11:end)
         """
-        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="largest")
+        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="max")
         rs = galois.ReedSolomon(self.n, self.k, primitive_poly=p)
         GF = rs.field
         M = GF(self.M)

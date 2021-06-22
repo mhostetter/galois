@@ -137,7 +137,7 @@ class Test_n15_k7:
         g = bchpoly(15, 7, 25)
         bchenco(M, 15, 7, g, 'end')
         """
-        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="largest")
+        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="max")
         bch = galois.BCH(self.n, self.k, primitive_poly=p)
         C_truth = galois.GF2([
             [0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0],
@@ -225,7 +225,7 @@ class Test_n15_k7_shortened:
         g = bchpoly(15, 7, 25)
         bchenco(M, 15-3, 7-3, g, 'end')
         """
-        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="largest")
+        p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="max")
         bch = galois.BCH(self.n, self.k, primitive_poly=p)
         C_truth = galois.GF2([
             [1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0],
@@ -312,7 +312,7 @@ class Test_n31_k21:
         g = bchpoly(31, 21, 61)
         bchenco(M, 31, 21, g, 'end')
         """
-        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="largest")
+        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="max")
         bch = galois.BCH(self.n, self.k, primitive_poly=p)
         C_truth = galois.GF2([
             [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1],
@@ -400,7 +400,7 @@ class Test_n31_k21_shortened:
         g = bchpoly(31, 21, 61)
         bchenco(M, 31-10, 21-10, g, 'end')
         """
-        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="largest")
+        p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="max")
         bch = galois.BCH(self.n, self.k, primitive_poly=p)
         C_truth = galois.GF2([
             [0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
