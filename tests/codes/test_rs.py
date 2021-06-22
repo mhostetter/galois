@@ -14,7 +14,7 @@ import galois
 
 def test_rs_generator_poly():
     # S. Lin and D. Costello. Error Control Coding. Example 7.1, p. 238.
-    p = galois.primitive_poly(2, 6, method="smallest")
+    p = galois.primitive_poly(2, 6)
     GF = galois.GF(2**6, irreducible_poly=p)
     a = GF.primitive_element
     assert galois.ReedSolomon(63, 57).generator_poly == galois.Poly(a**np.array([0, 59, 48, 43, 55, 10, 21]), field=GF)
