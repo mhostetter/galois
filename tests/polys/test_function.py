@@ -161,20 +161,18 @@ def test_irreducible_polys():
         primpoly(7, 'all')
         primpoly(8, 'all')
     """
-    polys = galois.irreducible_polys(2, 5)
-    assert set([p.integer for p in polys]).issuperset(set([37, 41, 47, 55, 59, 61]))
-
-    polys = galois.irreducible_polys(2, 6)
-    assert set([p.integer for p in polys]).issuperset(set([67, 91, 97, 103, 109, 115]))
-
-    polys = galois.irreducible_polys(2, 7)
-    assert set([p.integer for p in polys]).issuperset(set([131, 137, 143, 145, 157, 167, 171, 185, 191, 193, 203, 211, 213, 229, 239, 241, 247, 253]))
-
-    polys = galois.irreducible_polys(2, 8)
-    assert set([p.integer for p in polys]).issuperset(set([285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]))
+    assert set([p.integer for p in galois.irreducible_polys(2, 1)]).issuperset(set([3]))
+    assert set([p.integer for p in galois.irreducible_polys(2, 2)]).issuperset(set([7]))
+    assert set([p.integer for p in galois.irreducible_polys(2, 3)]).issuperset(set([11, 13]))
+    assert set([p.integer for p in galois.irreducible_polys(2, 4)]).issuperset(set([19, 25]))
+    assert set([p.integer for p in galois.irreducible_polys(2, 5)]).issuperset(set([37, 41, 47, 55, 59, 61]))
+    assert set([p.integer for p in galois.irreducible_polys(2, 6)]).issuperset(set([67, 91, 97, 103, 109, 115]))
+    assert set([p.integer for p in galois.irreducible_polys(2, 7)]).issuperset(set([131, 137, 143, 145, 157, 167, 171, 185, 191, 193, 203, 211, 213, 229, 239, 241, 247, 253]))
+    assert set([p.integer for p in galois.irreducible_polys(2, 8)]).issuperset(set([285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]))
 
     # https://oeis.org/A001037
-    # assert len(galois.irreducible_polys(2, 1)) == 2
+    # assert len(galois.irreducible_polys(2, 0)) == 1
+    assert len(galois.irreducible_polys(2, 1)) == 2
     assert len(galois.irreducible_polys(2, 2)) == 1
     assert len(galois.irreducible_polys(2, 3)) == 2
     assert len(galois.irreducible_polys(2, 4)) == 3
@@ -184,6 +182,28 @@ def test_irreducible_polys():
     assert len(galois.irreducible_polys(2, 8)) == 30
     assert len(galois.irreducible_polys(2, 9)) == 56
     assert len(galois.irreducible_polys(2, 10)) == 99
+
+
+def test_irreducible_polys_product():
+    GF = galois.GF2
+    polys_1 = galois.irreducible_polys(2, 1)
+    polys_2 = galois.irreducible_polys(2, 2)
+    polys_4 = galois.irreducible_polys(2, 4)
+    g = galois.Poly.One(GF)
+    for p in polys_1 + polys_2 + polys_4:
+        g *= p
+    x = galois.Poly.Identity(GF)
+    assert g == x**(2**4) - x
+
+    GF = galois.GF(3)
+    polys_1 = galois.irreducible_polys(3, 1)
+    polys_2 = galois.irreducible_polys(3, 2)
+    polys_4 = galois.irreducible_polys(3, 4)
+    g = galois.Poly.One(GF)
+    for p in polys_1 + polys_2 + polys_4:
+        g *= p
+    x = galois.Poly.Identity(GF)
+    assert g == x**(3**4) - x
 
 
 def test_primitive_poly():
@@ -207,17 +227,14 @@ def test_primitive_polys():
         primpoly(7, 'all')
         primpoly(8, 'all')
     """
-    polys = galois.primitive_polys(2, 5)
-    assert [p.integer for p in polys] == [37, 41, 47, 55, 59, 61]
-
-    polys = galois.primitive_polys(2, 6)
-    assert [p.integer for p in polys] == [67, 91, 97, 103, 109, 115]
-
-    polys = galois.primitive_polys(2, 7)
-    assert [p.integer for p in polys] == [131, 137, 143, 145, 157, 167, 171, 185, 191, 193, 203, 211, 213, 229, 239, 241, 247, 253]
-
-    polys = galois.primitive_polys(2, 8)
-    assert [p.integer for p in polys] == [285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]
+    # assert [p.integer for p in galois.primitive_polys(2, 1)] == [3]
+    assert [p.integer for p in galois.primitive_polys(2, 2)] == [7]
+    assert [p.integer for p in galois.primitive_polys(2, 3)] == [11, 13]
+    assert [p.integer for p in galois.primitive_polys(2, 4)] == [19, 25]
+    assert [p.integer for p in galois.primitive_polys(2, 5)] == [37, 41, 47, 55, 59, 61]
+    assert [p.integer for p in galois.primitive_polys(2, 6)] == [67, 91, 97, 103, 109, 115]
+    assert [p.integer for p in galois.primitive_polys(2, 7)] == [131, 137, 143, 145, 157, 167, 171, 185, 191, 193, 203, 211, 213, 229, 239, 241, 247, 253]
+    assert [p.integer for p in galois.primitive_polys(2, 8)] == [285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]
 
     # https://oeis.org/A011260
     # assert len(galois.primitive_polys(2, 1)) == 1
@@ -230,6 +247,53 @@ def test_primitive_polys():
     assert len(galois.primitive_polys(2, 8)) == 16
     assert len(galois.primitive_polys(2, 9)) == 48
     assert len(galois.primitive_polys(2, 10)) == 60
+
+    # https://baylor-ir.tdl.org/bitstream/handle/2104/8793/GF3%20Polynomials.pdf?sequence=1&isAllowed=y
+    GF = galois.GF(3)
+    assert galois.primitive_polys(3, 2) == [
+        galois.Poly([1,1,2], field=GF),
+        galois.Poly([1,2,2], field=GF),
+    ]
+    assert galois.primitive_polys(3, 3) == [
+        galois.Poly([1,0,2,1], field=GF),
+        galois.Poly([1,1,2,1], field=GF),
+        galois.Poly([1,2,0,1], field=GF),
+        galois.Poly([1,2,1,1], field=GF),
+    ]
+    assert galois.primitive_polys(3, 4) == [
+        galois.Poly([1,0,0,1,2], field=GF),
+        galois.Poly([1,0,0,2,2], field=GF),
+        galois.Poly([1,1,0,0,2], field=GF),
+        galois.Poly([1,1,1,2,2], field=GF),
+        galois.Poly([1,1,2,2,2], field=GF),
+        galois.Poly([1,2,0,0,2], field=GF),
+        galois.Poly([1,2,1,1,2], field=GF),
+        galois.Poly([1,2,2,1,2], field=GF),
+    ]
+    assert galois.primitive_polys(3, 5) == [
+        galois.Poly([1,0,0,0,2,1], field=GF),
+        galois.Poly([1,0,0,2,1,1], field=GF),
+        galois.Poly([1,0,1,0,1,1], field=GF),
+        galois.Poly([1,0,1,2,0,1], field=GF),
+        galois.Poly([1,0,1,2,2,1], field=GF),
+        galois.Poly([1,0,2,1,0,1], field=GF),
+        galois.Poly([1,0,2,2,1,1], field=GF),
+        galois.Poly([1,1,0,0,2,1], field=GF),
+        galois.Poly([1,1,0,1,0,1], field=GF),
+        galois.Poly([1,1,0,1,1,1], field=GF),
+        galois.Poly([1,1,1,0,1,1], field=GF),
+        galois.Poly([1,1,1,1,2,1], field=GF),
+        galois.Poly([1,1,1,2,1,1], field=GF),
+        galois.Poly([1,1,2,0,0,1], field=GF),
+        galois.Poly([1,1,2,1,1,1], field=GF),
+        galois.Poly([1,1,2,2,0,1], field=GF),
+        galois.Poly([1,2,0,0,0,1], field=GF),
+        galois.Poly([1,2,0,0,1,1], field=GF),
+        galois.Poly([1,2,0,2,2,1], field=GF),
+        galois.Poly([1,2,1,1,1,1], field=GF),
+        galois.Poly([1,2,2,0,2,1], field=GF),
+        galois.Poly([1,2,2,1,0,1], field=GF),
+    ]
 
 
 def test_matlab_primitive_poly():
@@ -299,43 +363,58 @@ def test_is_monic_exceptions():
         galois.is_monic(p.coeffs)
 
 
-def test_is_irreducible():
-    p1 = galois.conway_poly(2, 4)
-    assert galois.is_irreducible(p1)
+def test_is_irreducible_GF2():
+    p = galois.conway_poly(2, 4)
+    assert galois.is_irreducible(p)
 
-    p2 = galois.conway_poly(2, 5)
-    assert galois.is_irreducible(p2)
+    p = galois.conway_poly(2, 5)
+    assert galois.is_irreducible(p)
 
-    p3 = p1 * p2  # Has no roots in GF(2) but is still reducible
-    assert not galois.is_irreducible(p3)
-
-    p4 = galois.conway_poly(7, 20)
-    assert galois.is_irreducible(p4)
-
-    GF = galois.GF(7)
-    p5 = galois.Poly.Roots([2, 3], field=GF)
-    assert not galois.is_irreducible(p5)
-
-    GF = galois.GF(7)
-    x = galois.Poly.Identity(GF)
-    p6 = galois.Poly.Random(20, field=GF) * x
-    assert not galois.is_irreducible(p6)
-
-    # x is not irreducible over any field
-    GF = galois.GF(5)
-    p = galois.Poly([1, 0], field=GF)
+    # Has no roots in GF(2) but is still reducible
+    p = galois.conway_poly(2, 4) * galois.conway_poly(2, 5)
     assert not galois.is_irreducible(p)
 
-    # x + 1 is irreducible over GF(5) but not primitive
-    GF = galois.GF(5)
-    p = galois.Poly([1, 1], field=GF)
+
+def test_is_irreducible_GF7():
+    GF = galois.GF(7)
+
+    p = galois.conway_poly(7, 4)
     assert galois.is_irreducible(p)
+    assert galois.is_irreducible(p * GF.Random(low=2))
+
+    p = galois.conway_poly(7, 5)
+    assert galois.is_irreducible(p)
+    assert galois.is_irreducible(p * GF.Random(low=2))
+
+    # Has no roots in GF(7) but is still reducible
+    p = galois.conway_poly(7, 4) * galois.conway_poly(7, 5)
+    assert not galois.is_irreducible(p)
+
+    p = galois.conway_poly(7, 20)
+    assert galois.is_irreducible(p)
+    assert galois.is_irreducible(p * GF.Random(low=2))
+
+    p = galois.Poly.Roots([2, 3], field=GF)
+    assert not galois.is_irreducible(p)
+
+    x = galois.Poly.Identity(GF)
+    p = galois.Poly.Random(20, field=GF) * x
+    assert not galois.is_irreducible(p)
+
+    # x + a is always irreducible over any Galois field
+    p = galois.Poly([1, 0], field=GF)
+    assert galois.is_irreducible(p)
+    assert galois.is_irreducible(p * GF.Random(low=2))
+
+    p = galois.Poly([1, GF.Random(low=1)], field=GF)
+    assert galois.is_irreducible(p)
+    assert galois.is_irreducible(p * GF.Random(low=2))
 
 
 def test_is_irreducible_exceptions():
     with pytest.raises(TypeError):
         galois.is_irreducible(galois.GF2.Random(5))
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         galois.is_irreducible(galois.Poly.Random(0))
     with pytest.raises(ValueError):
         galois.is_irreducible(galois.Poly.Random(5, field=galois.GF(2**8)))
