@@ -261,7 +261,10 @@ def poly_factors(poly):
 @set_module("galois")
 def irreducible_poly(characteristic, degree, method="min"):
     """
-    Returns a degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+    Returns a monic irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
+
+    If :math:`f(x)` is an irreducible polynomial over :math:`\\mathrm{GF}(p)` and :math:`a \\in \\mathrm{GF}(p) \\backslash \\{0\\}`,
+    then :math:`a \\cdot f(x)` is also irreducible.
 
     Parameters
     ----------
@@ -273,37 +276,37 @@ def irreducible_poly(characteristic, degree, method="min"):
     method : str, optional
         The search method for finding the irreducible polynomial.
 
-        * `"min"` (default): Returns the lexicographically-minimal irreducible polynomial.
-        * `"max"`: Returns the lexicographically-maximal irreducible polynomial.
-        * `"random"`: Returns a randomly generated degree-:math:`m` irreducible polynomial.
+        * `"min"` (default): Returns the lexicographically-minimal monic irreducible polynomial.
+        * `"max"`: Returns the lexicographically-maximal monic irreducible polynomial.
+        * `"random"`: Returns a randomly generated degree-:math:`m` monic irreducible polynomial.
 
     Returns
     -------
     galois.Poly
-        The degree-:math:`m` irreducible polynomial over :math:`\\mathrm{GF}(p)`.
+        The degree-:math:`m` monic irreducible polynomial over :math:`\\mathrm{GF}(p)`.
 
     Examples
     --------
     .. ipython:: python
 
+        # The lexicographically-minimal irreducible polynomial
         p = galois.irreducible_poly(7, 5); p
         galois.is_irreducible(p)
+        # The lexicographically-maximal irreducible polynomial
         p = galois.irreducible_poly(7, 5, method="max"); p
         galois.is_irreducible(p)
+        # A random irreducible polynomial
         p = galois.irreducible_poly(7, 5, method="random"); p
         galois.is_irreducible(p)
 
-    For the extension field :math:`\\mathrm{GF}(2^8)`, notice the lexicographically-minimal irreducible polynomial
-    is not primitive. The Conway polynomial :math:`C_{2,8}` is the lexicographically-minimal irreducible *and primitive*
-    polynomial.
+    Products with non-zero constants are also irreducible.
 
     .. ipython:: python
 
-        p = galois.irreducible_poly(2, 8); p
-        galois.is_irreducible(p), galois.is_primitive(p)
-
-        p = galois.conway_poly(2, 8); p
-        galois.is_irreducible(p), galois.is_primitive(p)
+        GF = galois.GF(7)
+        p = galois.irreducible_poly(7, 5); p
+        galois.is_irreducible(p)
+        galois.is_irreducible(p * GF(3))
     """
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method}.")
@@ -320,11 +323,7 @@ def irreducible_poly(characteristic, degree, method="min"):
             if is_irreducible(poly):
                 break
     else:
-        if method == "min":
-            elements = range(min_, max_)
-        else:
-            elements = range(max_ - 1, min_ - 1, -1)
-
+        elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
         for element in elements:
             poly = Poly.Integer(element, field=GF)
             if is_irreducible(poly):
@@ -336,7 +335,10 @@ def irreducible_poly(characteristic, degree, method="min"):
 @set_module("galois")
 def irreducible_polys(characteristic, degree):
     """
-    Returns all degree-:math:`m` irreducible polynomials :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+    Returns all monic irreducible polynomials :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
+
+    If :math:`f(x)` is an irreducible polynomial over :math:`\\mathrm{GF}(p)` and :math:`a \\in \\mathrm{GF}(p) \\backslash \\{0\\}`,
+    then :math:`a \\cdot f(x)` is also irreducible.
 
     Parameters
     ----------
@@ -349,7 +351,7 @@ def irreducible_polys(characteristic, degree):
     Returns
     -------
     list
-        All degree-:math:`m` irreducible polynomials over :math:`\\mathrm{GF}(p)`.
+        All degree-:math:`m` monic irreducible polynomials over :math:`\\mathrm{GF}(p)`.
 
     Examples
     --------
@@ -375,7 +377,7 @@ def irreducible_polys(characteristic, degree):
 @set_module("galois")
 def primitive_poly(characteristic, degree, method="min"):
     """
-    Returns a degree-:math:`m` primitive polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+    Returns a degree-:math:`m` monic primitive polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
 
     Parameters
     ----------
@@ -387,39 +389,32 @@ def primitive_poly(characteristic, degree, method="min"):
     method : str, optional
         The search method for finding the primitive polynomial.
 
-        * `"min"` (default): Returns the lexicographically-minimal primitive polynomial.
-        * `"max"`: Returns the lexicographically-maximal primitive polynomial.
-        * `"random"`: Returns a randomly generated degree-:math:`m` primitive polynomial.
+        * `"min"` (default): Returns the lexicographically-minimal monic primitive polynomial.
+        * `"max"`: Returns the lexicographically-maximal monic primitive polynomial.
+        * `"random"`: Returns a randomly generated degree-:math:`m` monic primitive polynomial.
 
     Returns
     -------
     galois.Poly
-        The degree-:math:`m` primitive polynomial over :math:`\\mathrm{GF}(p)`.
+        The degree-:math:`m` monic primitive polynomial over :math:`\\mathrm{GF}(p)`.
 
     Examples
     --------
-    For the extension field :math:`\\mathrm{GF}(2^8)`, notice the lexicographically-minimal irreducible polynomial
-    is not primitive. The Conway polynomial :math:`C_{2,8}` is the lexicographically-minimal primitive *and primitive*
-    polynomial.
+    Notice, :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
+    :func:`conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+    with smaller Conway polynomials.
 
     .. ipython:: python
 
-        p = galois.irreducible_poly(2, 8); p
-        galois.is_irreducible(p), galois.is_primitive(p)
-
-        # This is the same as the Conway polynomial C_2,8 (except it's calculated, not looked up)
-        p = galois.primitive_poly(2, 8); p
-        galois.is_irreducible(p), galois.is_primitive(p)
-
-        p = galois.conway_poly(2, 8); p
-        galois.is_irreducible(p), galois.is_primitive(p)
+        galois.primitive_poly(7, 10)
+        galois.conway_poly(7, 10)
     """
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method}.")
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
-    min_ = characteristic**degree
+    min_ = characteristic**degree + 1  # Start at f(x) = x + 1, TODO: Why isn't f(x) = x primitive?
     max_ = 2*characteristic**degree
 
     if method == "random":
@@ -429,11 +424,7 @@ def primitive_poly(characteristic, degree, method="min"):
             if is_primitive(poly):
                 break
     else:
-        if method == "min":
-            elements = range(min_, max_)
-        else:
-            elements = range(max_ - 1, min_ - 1, -1)
-
+        elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
         for element in elements:
             poly = Poly.Integer(element, field=GF)
             if is_primitive(poly):
@@ -445,7 +436,7 @@ def primitive_poly(characteristic, degree, method="min"):
 @set_module("galois")
 def primitive_polys(characteristic, degree):
     """
-    Returns all degree-:math:`m` primitive polynomials :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+    Returns all monic primitive polynomials :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
 
     Parameters
     ----------
@@ -458,7 +449,7 @@ def primitive_polys(characteristic, degree):
     Returns
     -------
     list
-        All degree-:math:`m` primitive polynomials over :math:`\\mathrm{GF}(p)`.
+        All degree-:math:`m` monic primitive polynomials over :math:`\\mathrm{GF}(p)`.
 
     Examples
     --------
@@ -469,7 +460,7 @@ def primitive_polys(characteristic, degree):
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
-    min_ = characteristic**degree
+    min_ = characteristic**degree + 1  # Start at f(x) = x + 1, TODO: Why isn't f(x) = x primitive?
     max_ = 2*characteristic**degree
 
     polys = []
@@ -484,7 +475,7 @@ def primitive_polys(characteristic, degree):
 @set_module("galois")
 def matlab_primitive_poly(characteristic, degree):
     """
-    Returns the default primitive polynomial as used in Matlab.
+    Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
 
     This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the lexicographically-minimal
     primitive polynomial (equivalent to `galois.primitive_poly(p, m)`) as the default... *mostly*. There are three
@@ -543,7 +534,7 @@ def matlab_primitive_poly(characteristic, degree):
 @set_module("galois")
 def conway_poly(characteristic, degree):
     """
-    Returns the degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\\mathrm{GF}(p)`.
+    Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
 
     A Conway polynomial is a an irreducible and primitive polynomial over :math:`\\mathrm{GF}(p)` that provides a standard
     representation of :math:`\\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
@@ -580,6 +571,15 @@ def conway_poly(characteristic, degree):
 
         galois.conway_poly(2, 100)
         galois.conway_poly(7, 13)
+
+    Notice, :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
+    :func:`conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+    with smaller Conway polynomials.
+
+    .. ipython:: python
+
+        galois.primitive_poly(7, 10)
+        galois.conway_poly(7, 10)
     """
     if not isinstance(characteristic, (int, np.integer)):
         raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}")
@@ -762,38 +762,46 @@ def is_irreducible(poly):
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
     if not poly.degree >= 1:
-        raise TypeError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
+        raise ValueError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
     if not poly.field.is_prime_field:
         raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
-    if poly.coeffs[-1] == 0:
-        # We can factor out (x), therefore it is not irreducible.
-        return False
+    # if poly.degree == 0:
+    #     # f(x) = a for a > 0 in any Galois field is irreducible
+    #     return poly.coeffs[0] > 0
 
     if poly.degree == 1:
-        # x + a in any Galois field is irreducible
+        # f(x) = x + a in any Galois field is irreducible
         return True
+
+    if poly.coeffs[-1] == 0:
+        # We can factor out x, therefore it is not irreducible
+        return False
+
+    if poly.field.order == 2 and poly.nonzero_coeffs.size % 2 == 0:
+        # Polynomials over GF(2) with degree at least 2 must have an odd number of terms
+        return False
 
     field = poly.field
     p = field.order
-    n = poly.degree
+    m = poly.degree
     zero = Poly.Zero(field)
     one = Poly.One(field)
     x = Poly.Identity(field)
 
-    primes, _ = prime_factors(n)
+    primes, _ = prime_factors(m)
     h0 = Poly.Identity(field)
     n0 = 0
-    for ni in sorted([n // pi for pi in primes]):
-        # The GCD of f(x) and (x^(p^(n/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of n
+    for ni in sorted([m // pi for pi in primes]):
+        # The GCD of f(x) and (x^(p^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
         hi = poly_pow(h0, p**(ni - n0), poly)
         g = poly_gcd(poly, hi - x)[0]
         if g != one:
             return False
         h0, n0 = hi, ni
 
-    # f(x) must divide (x^(p^n) - x) to be irreducible
-    h = poly_pow(h0, p**(n - n0), poly)
+    # f(x) must divide (x^(p^m) - x) to be irreducible
+    h = poly_pow(h0, p**(m - n0), poly)
     g = (h - x) % poly
     if g != zero:
         return False
@@ -806,13 +814,13 @@ def is_primitive(poly):
     """
     Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is primitive.
 
-    A degree-:math:`n` polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is *primitive* if it is irreducible and
-    :math:`f(x)\\ |\\ (x^k - 1)` for :math:`k = p^n - 1` and no :math:`k` less than :math:`p^n - 1`.
+    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is *primitive* if it is irreducible and
+    :math:`f(x)\\ |\\ (x^k - 1)` for :math:`k = p^m - 1` and no :math:`k` less than :math:`p^m - 1`.
 
     Parameters
     ----------
     poly : galois.Poly
-        A polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
 
     Returns
     -------
@@ -855,27 +863,18 @@ def is_primitive(poly):
 
     field = poly.field
     p = field.order
-    n = poly.degree
+    m = poly.degree
     zero = Poly.Zero(field)
     one = Poly.One(field)
 
-    primes, _ = prime_factors(p**n - 1)
-    h0 = Poly.Identity(field)
-    k0 = 1
-    for ki in sorted([(p**n - 1) // pi for pi in primes]):
-        # Multiply h0(x) by x^(ki - k0) and reduce by p(x) such that hi(x) = x^ki mod p(x)
-        hi = (h0 * Poly.Degrees([ki - k0], field=field)) % poly
-        g = hi - one  # Equivalent to g(x) = (x^ki - 1) mod p(x)
-
-        # f(x) must not divide (x^((p^n - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of p**n - 1
-        if ki < p**n - 1 and not g != zero:
+    primes, _ = prime_factors(p**m - 1)
+    x = Poly.Identity(field)
+    for ki in sorted([(p**m - 1) // pi for pi in primes]):
+        # f(x) must not divide (x^((p^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of p**m - 1
+        h = poly_pow(x, ki, poly)
+        g = (h - one) % poly
+        if g == zero:
             return False
-
-        # f(x) must divide (x^(p^n - 1) - 1) for f(x) to be primitive
-        if ki == p**n - 1 and not g == zero:
-            return False
-
-        h0, k0 = hi, ki
 
     return True
 
