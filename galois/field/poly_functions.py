@@ -2,9 +2,11 @@ import random
 
 import numpy as np
 
+from ..databases import ConwayPolyDatabase
 from ..factor import prime_factors
 from ..modular import totatives
 from ..overrides import set_module
+from ..prime import is_prime
 from ..structure import is_field
 
 from .factory_prime import GF_prime
@@ -12,7 +14,8 @@ from .poly import Poly
 
 __all__ = [
     "poly_gcd", "poly_pow", "poly_factors",
-    "irreducible_poly", "irreducible_polys", "primitive_poly", "primitive_polys", "matlab_primitive_poly", "minimal_poly",
+    "irreducible_poly", "irreducible_polys", "primitive_poly", "primitive_polys",
+    "matlab_primitive_poly", "conway_poly", "minimal_poly",
     "is_monic", "is_irreducible", "is_primitive",
     "is_primitive_element", "primitive_element", "primitive_elements"
 ]
@@ -535,6 +538,63 @@ def matlab_primitive_poly(characteristic, degree):
         return Poly.Degrees([16, 12, 3, 1, 0])
     else:
         return primitive_poly(characteristic, degree)
+
+
+@set_module("galois")
+def conway_poly(characteristic, degree):
+    """
+    Returns the degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\\mathrm{GF}(p)`.
+
+    A Conway polynomial is a an irreducible and primitive polynomial over :math:`\\mathrm{GF}(p)` that provides a standard
+    representation of :math:`\\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
+    provide compatability between fields and their subfields, and hence are the common way to represent extension
+    fields.
+
+    The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-minimal monic primitive polynomial
+    of degree :math:`m` over :math:`\\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n` dividing
+    :math:`m`.
+
+    This function uses `Frank Luebeck's Conway polynomial database <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_
+    for fast lookup, not construction.
+
+    Parameters
+    ----------
+    characteristic : int
+        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)`.
+    degree : int
+        The degree :math:`m` of the Conway polynomial and degree of the extension field :math:`\\mathrm{GF}(p^m)`.
+
+    Returns
+    -------
+    galois.Poly
+        The degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\\mathrm{GF}(p)`.
+
+    Raises
+    ------
+    LookupError
+        If the Conway polynomial :math:`C_{p,m}(x)` is not found in Frank Luebeck's database.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.conway_poly(2, 100)
+        galois.conway_poly(7, 13)
+    """
+    if not isinstance(characteristic, (int, np.integer)):
+        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}")
+    if not isinstance(degree, (int, np.integer)):
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}")
+    if not is_prime(characteristic):
+        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}")
+    if not degree >= 1:
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}")
+
+    coeffs = ConwayPolyDatabase().fetch(characteristic, degree)
+    GF = GF_prime(characteristic)
+    poly = Poly(coeffs, field=GF)
+
+    return poly
 
 
 @set_module("galois")

@@ -1,0 +1,1 @@
+from .conway import ConwayPolyDatabase

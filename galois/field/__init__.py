@@ -2,7 +2,6 @@
 A subpackage containing arrays and polynomials over Galois fields.
 """
 from .array import *
-from .conway import *
 from .factory import *
 from .gf2 import *
 from .meta_class import *
