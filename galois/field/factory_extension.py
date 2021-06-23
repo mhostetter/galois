@@ -5,12 +5,11 @@ import numpy as np
 from ..prime import is_prime
 
 from .array import FieldArray
-from .conway import conway_poly
 from .factory_prime import GF_prime
 from .meta_gf2m import GF2mMeta
 from .meta_gfpm import GFpmMeta
 from .poly import Poly
-from .poly_functions import is_irreducible, is_primitive_element
+from .poly_functions import conway_poly, is_irreducible, is_primitive_element
 from .poly_functions import primitive_element as _primitive_element  # To avoid name conflict with GF_extension() arguments
 
 # pylint: disable=too-many-branches,too-many-statements,protected-access
