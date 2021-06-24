@@ -78,6 +78,7 @@ def pollard_rho_factor(n, c=1):
 
 
 @set_module("galois")
+@functools.lru_cache(maxsize=2048)
 def prime_factors(n):
     """
     Computes the prime factors of the positive integer :math:`n`.
