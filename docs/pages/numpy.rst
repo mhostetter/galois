@@ -9,6 +9,7 @@ General
 -------
 .. rubric::
 .. autosummary::
+   :toctree:
 
    np.copy
    np.concatenate
@@ -18,6 +19,7 @@ Arithmetic
 ----------
 .. rubric::
 .. autosummary::
+   :toctree:
 
    np.add
    np.subtract
@@ -34,6 +36,7 @@ Advanced Arithmetic
 -------------------
 .. rubric::
 .. autosummary::
+   :toctree:
 
    np.convolve
 
@@ -41,6 +44,7 @@ Linear Algebra
 --------------
 .. rubric::
 .. autosummary::
+   :toctree:
 
    np.dot
    np.vdot
