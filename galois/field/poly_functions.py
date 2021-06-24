@@ -266,13 +266,15 @@ def irreducible_poly(characteristic, degree, method="min"):
     If :math:`f(x)` is an irreducible polynomial over :math:`\\mathrm{GF}(p)` and :math:`a \\in \\mathrm{GF}(p) \\backslash \\{0\\}`,
     then :math:`a \\cdot f(x)` is also irreducible.
 
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\\mathrm{GF}(p^m)`
+    of :math:`\\mathrm{GF}(p)`.
+
     Parameters
     ----------
     characteristic : int
         The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
     degree : int
-        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
-        of :math:`\\mathrm{GF}(p)`.
+        The degree :math:`m` of the desired irreducible polynomial.
     method : str, optional
         The search method for finding the irreducible polynomial.
 
@@ -340,13 +342,15 @@ def irreducible_polys(characteristic, degree):
     If :math:`f(x)` is an irreducible polynomial over :math:`\\mathrm{GF}(p)` and :math:`a \\in \\mathrm{GF}(p) \\backslash \\{0\\}`,
     then :math:`a \\cdot f(x)` is also irreducible.
 
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\\mathrm{GF}(p^m)`
+    of :math:`\\mathrm{GF}(p)`.
+
     Parameters
     ----------
     characteristic : int
         The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
     degree : int
-        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
-        of :math:`\\mathrm{GF}(p)`.
+        The degree :math:`m` of the desired irreducible polynomial.
 
     Returns
     -------
@@ -377,15 +381,18 @@ def irreducible_polys(characteristic, degree):
 @set_module("galois")
 def primitive_poly(characteristic, degree, method="min"):
     """
-    Returns a degree-:math:`m` monic primitive polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+    Returns a monic primitive polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
+
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\\mathrm{GF}(p^m)`
+    of :math:`\\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\\alpha`
+    of :math:`\\mathrm{GF}(p^m)` such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{p^m-2}\\}`.
 
     Parameters
     ----------
     characteristic : int
         The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
     degree : int
-        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
-        of :math:`\\mathrm{GF}(p)`.
+        The degree :math:`m` of the desired primitive polynomial.
     method : str, optional
         The search method for finding the primitive polynomial.
 
@@ -400,7 +407,7 @@ def primitive_poly(characteristic, degree, method="min"):
 
     Examples
     --------
-    Notice, :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
+    Notice :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
     :func:`conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
     with smaller Conway polynomials.
 
@@ -414,7 +421,7 @@ def primitive_poly(characteristic, degree, method="min"):
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
-    min_ = characteristic**degree + 1  # Start at f(x) = x + 1, TODO: Why isn't f(x) = x primitive?
+    min_ = characteristic**degree
     max_ = 2*characteristic**degree
 
     if method == "random":
@@ -438,13 +445,16 @@ def primitive_polys(characteristic, degree):
     """
     Returns all monic primitive polynomials :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
 
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\\mathrm{GF}(p^m)`
+    of :math:`\\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\\alpha`
+    of :math:`\\mathrm{GF}(p^m)` such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{p^m-2}\\}`.
+
     Parameters
     ----------
     characteristic : int
         The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
     degree : int
-        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
-        of :math:`\\mathrm{GF}(p)`.
+        The degree :math:`m` of the desired primitive polynomial.
 
     Returns
     -------
@@ -460,7 +470,7 @@ def primitive_polys(characteristic, degree):
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
-    min_ = characteristic**degree + 1  # Start at f(x) = x + 1, TODO: Why isn't f(x) = x primitive?
+    min_ = characteristic**degree
     max_ = 2*characteristic**degree
 
     polys = []
@@ -572,7 +582,7 @@ def conway_poly(characteristic, degree):
         galois.conway_poly(2, 100)
         galois.conway_poly(7, 13)
 
-    Notice, :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
+    Notice :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
     :func:`conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
     with smaller Conway polynomials.
 
@@ -715,10 +725,10 @@ def is_irreducible(poly):
     lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
     closed, such irreducible polynomials exist.
 
-    This function implements Rabin's irreducibility test. It says a degree-:math:`n` polynomial :math:`f(x)`
-    over :math:`\\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\\ |\\ (x^{p^n} - x)`
-    and :math:`\\textrm{gcd}(f(x),\\ x^{p^{m_i}} - x) = 1` for :math:`1 \\le i \\le k`, where :math:`m_i = n/p_i` for
-    the :math:`k` prime divisors :math:`p_i` of :math:`n`.
+    This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
+    over :math:`\\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\\ |\\ (x^{p^m} - x)`
+    and :math:`\\textrm{gcd}(f(x),\\ x^{p^{m_i}} - x) = 1` for :math:`1 \\le i \\le k`, where :math:`m_i = m/p_i` for
+    the :math:`k` prime divisors :math:`p_i` of :math:`m`.
 
     Parameters
     ----------
@@ -734,6 +744,7 @@ def is_irreducible(poly):
     ----------
     * M. O. Rabin. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273–280. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
     * S. Gao and D. Panarino. Tests and constructions of irreducible polynomials over finite fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
+    * Section 4.5.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
     * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
 
     Examples
@@ -743,7 +754,7 @@ def is_irreducible(poly):
         # Conway polynomials are always irreducible (and primitive)
         f = galois.conway_poly(2, 5); f
 
-        # f(x) has no roots in GF(2), a requirement of being irreducible
+        # f(x) has no roots in GF(2), a necessary but not sufficient condition of being irreducible
         f.roots()
 
         galois.is_irreducible(f)
@@ -766,20 +777,17 @@ def is_irreducible(poly):
     if not poly.field.is_prime_field:
         raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
-    # if poly.degree == 0:
-    #     # f(x) = a for a > 0 in any Galois field is irreducible
-    #     return poly.coeffs[0] > 0
-
     if poly.degree == 1:
-        # f(x) = x + a in any Galois field is irreducible
+        # f(x) = x + a (even a = 0) in any Galois field is irreducible
         return True
 
     if poly.coeffs[-1] == 0:
-        # We can factor out x, therefore it is not irreducible
+        # g(x) = x can be factored, therefore it is not irreducible
         return False
 
     if poly.field.order == 2 and poly.nonzero_coeffs.size % 2 == 0:
-        # Polynomials over GF(2) with degree at least 2 must have an odd number of terms
+        # Polynomials over GF(2) with degree at least 2 and an even number of terms satisfy f(1) = 0, hence
+        # g(x) = x + 1 can be factored. Section 4.5.2 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf.
         return False
 
     field = poly.field
@@ -857,6 +865,15 @@ def is_primitive(poly):
     if not poly.field.is_prime_field:
         raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
+    if poly.field.order == 2 and poly.degree == 1:
+        # There is only one primitive polynomial in GF(2)
+        return poly == Poly([1,1])
+
+    if poly.coeffs[-1] == 0:
+        # A primitive polynomial cannot have zero constant term
+        # TODO: Why isn't f(x) = x primitive? It's irreducible and passes the primitivity tests.
+        return False
+
     if not is_irreducible(poly):
         # A polynomial must be irreducible to be primitive
         return False
@@ -932,7 +949,7 @@ def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefine
     m = irreducible_poly.degree
     one = Poly.One(field)
 
-    order = p**m - 1  # Multiplicative order of GF(p^n)
+    order = p**m - 1  # Multiplicative order of GF(p^m)
     primes, _ = prime_factors(order)
 
     for k in sorted([order // pi for pi in primes]):

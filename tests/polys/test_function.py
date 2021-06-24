@@ -227,7 +227,7 @@ def test_primitive_polys():
         primpoly(7, 'all')
         primpoly(8, 'all')
     """
-    # assert [p.integer for p in galois.primitive_polys(2, 1)] == [3]
+    assert [p.integer for p in galois.primitive_polys(2, 1)] == [3]
     assert [p.integer for p in galois.primitive_polys(2, 2)] == [7]
     assert [p.integer for p in galois.primitive_polys(2, 3)] == [11, 13]
     assert [p.integer for p in galois.primitive_polys(2, 4)] == [19, 25]
@@ -237,7 +237,7 @@ def test_primitive_polys():
     assert [p.integer for p in galois.primitive_polys(2, 8)] == [285, 299, 301, 333, 351, 355, 357, 361, 369, 391, 397, 425, 451, 463, 487, 501]
 
     # https://oeis.org/A011260
-    # assert len(galois.primitive_polys(2, 1)) == 1
+    assert len(galois.primitive_polys(2, 1)) == 1
     assert len(galois.primitive_polys(2, 2)) == 1
     assert len(galois.primitive_polys(2, 3)) == 2
     assert len(galois.primitive_polys(2, 4)) == 2
@@ -296,28 +296,75 @@ def test_primitive_polys():
     ]
 
 
-def test_matlab_primitive_poly():
+def test_matlab_primitive_poly_GF2():
     """
-    Generated with Octave:
-        gf(1, m)
+    Generated with Matlab:
+        gfprimdf(m, 2)
+    """
+    assert galois.matlab_primitive_poly(2, 1) == galois.Poly([1,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 2) == galois.Poly([1,1,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 3) == galois.Poly([1,1,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 4) == galois.Poly([1,1,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 5) == galois.Poly([1,0,1,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 6) == galois.Poly([1,1,0,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 7) == galois.Poly([1,0,0,1,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 8) == galois.Poly([1,0,1,1,1,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 9) == galois.Poly([1,0,0,0,1,0,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 10) == galois.Poly([1,0,0,1,0,0,0,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 11) == galois.Poly([1,0,1,0,0,0,0,0,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 12) == galois.Poly([1,1,0,0,1,0,1,0,0,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 13) == galois.Poly([1,1,0,1,1,0,0,0,0,0,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 14) == galois.Poly([1,1,0,0,0,0,1,0,0,0,1,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 15) == galois.Poly([1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1], order="asc")
+    assert galois.matlab_primitive_poly(2, 16) == galois.Poly([1,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1], order="asc")
 
-    TODO: Test against Matlab's `gfprimdf(m, p)`
+
+def test_matlab_primitive_poly_GF3():
     """
-    assert galois.matlab_primitive_poly(2, 2) == galois.Poly.Degrees([2, 1, 0])
-    assert galois.matlab_primitive_poly(2, 3) == galois.Poly.Degrees([3, 1, 0])
-    assert galois.matlab_primitive_poly(2, 4) == galois.Poly.Degrees([4, 1, 0])
-    assert galois.matlab_primitive_poly(2, 5) == galois.Poly.Degrees([5, 2, 0])
-    assert galois.matlab_primitive_poly(2, 6) == galois.Poly.Degrees([6, 1, 0])
-    assert galois.matlab_primitive_poly(2, 7) == galois.Poly.Degrees([7, 3, 0])
-    assert galois.matlab_primitive_poly(2, 8) == galois.Poly.Degrees([8, 4, 3, 2, 0])
-    assert galois.matlab_primitive_poly(2, 9) == galois.Poly.Degrees([9, 4, 0])
-    assert galois.matlab_primitive_poly(2, 10) == galois.Poly.Degrees([10, 3, 0])
-    assert galois.matlab_primitive_poly(2, 11) == galois.Poly.Degrees([11, 2, 0])
-    assert galois.matlab_primitive_poly(2, 12) == galois.Poly.Degrees([12, 6, 4, 1, 0])
-    assert galois.matlab_primitive_poly(2, 13) == galois.Poly.Degrees([13, 4, 3, 1, 0])
-    assert galois.matlab_primitive_poly(2, 14) == galois.Poly.Degrees([14, 10, 6, 1, 0])
-    assert galois.matlab_primitive_poly(2, 15) == galois.Poly.Degrees([15, 1, 0])
-    assert galois.matlab_primitive_poly(2, 16) == galois.Poly.Degrees([16, 12, 3, 1, 0])
+    Generated with Matlab:
+        gfprimdf(m, 3)
+    """
+    GF = galois.GF(3)
+    assert galois.matlab_primitive_poly(3, 1) == galois.Poly([1,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(3, 2) == galois.Poly([2,1,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(3, 3) == galois.Poly([1,2,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(3, 4) == galois.Poly([2,1,0,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(3, 5) == galois.Poly([1,2,0,0,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(3, 6) == galois.Poly([2,1,0,0,0,0,1], field=GF, order="asc")
+    # assert galois.matlab_primitive_poly(3, 7) == galois.Poly([1,0,2,0,0,0,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(3, 8) == galois.Poly([2,0,0,1,0,0,0,0,1], field=GF, order="asc")
+
+
+def test_matlab_primitive_poly_GF5():
+    """
+    Generated with Matlab:
+        gfprimdf(m, 5)
+    """
+    GF = galois.GF(5)
+    assert galois.matlab_primitive_poly(5, 1) == galois.Poly([2,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(5, 2) == galois.Poly([2,1,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(5, 3) == galois.Poly([2,3,0,1], field=GF, order="asc")
+    # assert galois.matlab_primitive_poly(5, 4) == galois.Poly([2,2,1,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(5, 5) == galois.Poly([2,4,0,0,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(5, 6) == galois.Poly([2,1,0,0,0,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(5, 7) == galois.Poly([2,3,0,0,0,0,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(5, 8) == galois.Poly([3,2,1,0,0,0,0,0,1], field=GF, order="asc")
+
+
+def test_matlab_primitive_poly_GF7():
+    """
+    Generated with Matlab:
+        gfprimdf(m, 7)
+    """
+    GF = galois.GF(7)
+    assert galois.matlab_primitive_poly(7, 1) == galois.Poly([2,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(7, 2) == galois.Poly([3,1,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(7, 3) == galois.Poly([2,3,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(7, 4) == galois.Poly([5,3,1,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(7, 5) == galois.Poly([4,1,0,0,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(7, 6) == galois.Poly([5,1,3,0,0,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(7, 7) == galois.Poly([2,6,0,0,0,0,0,1], field=GF, order="asc")
+    assert galois.matlab_primitive_poly(7, 8) == galois.Poly([3,1,0,0,0,0,0,0,1], field=GF, order="asc")
 
 
 def test_minimal_poly():
@@ -421,6 +468,7 @@ def test_is_irreducible_exceptions():
 
 
 def test_is_primitive():
+    assert galois.is_primitive(galois.conway_poly(2, 1))
     assert galois.is_primitive(galois.conway_poly(2, 2))
     assert galois.is_primitive(galois.conway_poly(2, 3))
     assert galois.is_primitive(galois.conway_poly(2, 4))
@@ -436,6 +484,7 @@ def test_is_primitive():
     p = galois.Poly.Degrees([8,4,3,1,0])
     assert not galois.is_primitive(p)
 
+    assert galois.is_primitive(galois.conway_poly(3, 1))
     assert galois.is_primitive(galois.conway_poly(3, 2))
     assert galois.is_primitive(galois.conway_poly(3, 3))
     assert galois.is_primitive(galois.conway_poly(3, 4))
@@ -462,9 +511,10 @@ def test_is_primitive_exceptions():
 
 
 def test_primitive_element():
-    assert galois.primitive_element(galois.conway_poly(2, 2)) == galois.Poly.Identity()
-    assert galois.primitive_element(galois.conway_poly(2, 3)) == galois.Poly.Identity()
-    assert galois.primitive_element(galois.conway_poly(2, 4)) == galois.Poly.Identity()
+    x = galois.Poly.Identity()
+    assert galois.primitive_element(galois.conway_poly(2, 2)) == x
+    assert galois.primitive_element(galois.conway_poly(2, 3)) == x
+    assert galois.primitive_element(galois.conway_poly(2, 4)) == x
 
     assert galois.primitive_element(galois.conway_poly(2, 2), reverse=True) == galois.Poly([1, 1])
 

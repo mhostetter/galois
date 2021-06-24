@@ -25,7 +25,7 @@ class ConwayPolyDatabase:
         result = self.cursor.fetchone()
 
         if result is None:
-            raise LookupError(f"Frank Luebeck's database of Conway polynomials doesn't contain an entry for GF({characteristic}^{degree}). See here http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html for his complete list of polynomials.")
+            raise LookupError(f"Frank Luebeck's database of Conway polynomials doesn't contain an entry for GF({characteristic}^{degree}). See here http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html for his complete list of polynomials.\n\nAlternatively, you can construct irreducible polynomials with `galois.irreducible_poly(p, m)` or primitive polynomials with `galois.primitive_poly(p, m)`.")
 
         coeffs = result[0]
         coeffs = list(map(int, coeffs[1:-1].split(",")))  # List of degree-ascending coefficients
