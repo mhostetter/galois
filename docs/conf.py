@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 from galois import __version__
 
-import numpy as np
+import numpy
 
 # -- Project information -----------------------------------------------------
 
@@ -133,7 +133,7 @@ def skip_member(app, what, name, obj, skip, options):
     if hasattr(obj, '__objclass__'):
         # This is a numpy method, don't include docs
         return True
-    elif hasattr(obj, '__qualname__') and hasattr(np.ndarray, name):
+    elif hasattr(obj, '__qualname__') and hasattr(numpy.ndarray, name):
         # This is a numpy method that was overridden in one of our ndarray subclasses. Also don't include
         # these docs.
         return True
