@@ -9,7 +9,7 @@ from .overrides import set_module
 
 __all__ = [
     "gcd", "crt",
-    "totatives", "euler_phi", "carmichael", "is_cyclic",
+    "totatives", "euler_phi", "carmichael_lambda", "is_cyclic",
     "is_primitive_root", "primitive_root", "primitive_roots",
 ]
 
@@ -236,7 +236,7 @@ def euler_phi(n):
 
 
 @set_module("galois")
-def carmichael(n):
+def carmichael_lambda(n):
     """
     Finds the smallest positive integer :math:`m` such that :math:`a^m \\equiv 1\\ (\\textrm{mod}\\ n)` for
     every integer :math:`a` in :math:`1 \\le a < n` that is coprime to :math:`n`.
@@ -264,7 +264,7 @@ def carmichael(n):
     .. ipython:: python
 
         n = 20
-        lambda_ = galois.carmichael(n); lambda_
+        lambda_ = galois.carmichael_lambda(n); lambda_
 
         # Find the totatives that are relatively coprime with n
         totatives = [i for i in range(n) if math.gcd(i, n) == 1]; totatives
@@ -274,7 +274,7 @@ def carmichael(n):
             print("{:2d}^{} = {} (mod {})".format(a, lambda_, result, n))
 
         # For prime n, phi and lambda are always n-1
-        galois.euler_phi(13), galois.carmichael(13)
+        galois.euler_phi(13), galois.carmichael_lambda(13)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -378,7 +378,7 @@ def is_cyclic(n):
         roots = galois.primitive_roots(n); roots
 
         # Note the max order of any element is 4, not 8, which is Carmichael's lambda function
-        galois.carmichael(n)
+        galois.carmichael_lambda(n)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -570,7 +570,7 @@ def primitive_root(n, start=1, stop=None, reverse=False):
             print("Element: {}, Span: {:<6}, Primitive root: {}".format(a, str(span), primitive_root))
 
         # Note the max order of any element is 2, not 4, which is Carmichael's lambda function
-        galois.carmichael(n)
+        galois.carmichael_lambda(n)
     """
     try:
         return next(_primitive_roots(n, start=start, stop=stop, reverse=reverse))
