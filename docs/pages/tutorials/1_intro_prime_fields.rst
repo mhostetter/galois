@@ -95,7 +95,7 @@ Note, the GCD will always be :math:`1` because :math:`p` is prime.
 
 .. ipython:: python
 
-   galois.gcd(4, 7)
+   galois.egcd(4, 7)
 
 The :obj:`galois` package uses the Extended Euclidean Algorithm to compute multiplicative inverses (and division) in prime fields.
 The inverse of :math:`4` in :math:`\mathrm{GF}(7)` can be easily computed in the following way.
