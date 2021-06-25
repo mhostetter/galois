@@ -186,6 +186,7 @@ Primes
    is_prime
    is_prime_power
    is_composite
+   is_square_free
    is_prime_fermat
    is_prime_miller_rabin
 

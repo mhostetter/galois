@@ -4,6 +4,7 @@ A pytest module to test the functions relating to integer factorization.
 import random
 
 import pytest
+import numpy as np
 
 import galois
 
@@ -60,6 +61,24 @@ def test_divisor_sigma():
     # https://oeis.org/A001158
     sigma_3 = [1,9,28,73,126,252,344,585,757,1134,1332,2044,2198,3096,3528,4681,4914,6813,6860,9198,9632,11988,12168,16380,15751,19782,20440,25112,24390,31752,29792,37449,37296,44226,43344,55261,50654,61740,61544,73710,68922,86688]
     assert [galois.divisor_sigma(n, k=3) for n in range(1, 43)] == sigma_3
+
+
+def test_is_prime_power():
+    # https://oeis.org/A246655
+    prime_powers = np.array([2,3,4,5,7,8,9,11,13,16,17,19,23,25,27,29,31,32,37,41,43,47,49,53,59,61,64,67,71,73,79,81,83,89,97,101,103,107,109,113,121,125,127,128,131,137,139,149,151,157,163,167,169,173,179,181,191,193,197,199,211])
+    n = np.arange(1, prime_powers[-1] + 1)
+    is_prime_power = np.zeros(n.size, dtype=bool)
+    is_prime_power[prime_powers - 1] = True  # -1 for 1-indexed
+    assert [galois.is_prime_power(ni) for ni in n] == is_prime_power.tolist()
+
+
+def test_is_square_free():
+    # https://oeis.org/A005117
+    square_frees = np.array([1,2,3,5,6,7,10,11,13,14,15,17,19,21,22,23,26,29,30,31,33,34,35,37,38,39,41,42,43,46,47,51,53,55,57,58,59,61,62,65,66,67,69,70,71,73,74,77,78,79,82,83,85,86,87,89,91,93,94,95,97,101,102,103,105,106,107,109,110,111,113])
+    n = np.arange(1, square_frees[-1] + 1)
+    is_square_free = np.zeros(n.size, dtype=bool)
+    is_square_free[square_frees - 1] = True  # -1 for 1-indexed
+    assert [galois.is_square_free(ni) for ni in n] == is_square_free.tolist()
 
 
 def test_smooth():
