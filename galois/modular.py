@@ -8,10 +8,43 @@ from .math_ import lcm, prod
 from .overrides import set_module
 
 __all__ = [
-    "egcd", "crt",
+    "gcd", "egcd", "crt",
     "totatives", "euler_phi", "carmichael_lambda", "is_cyclic",
     "is_primitive_root", "primitive_root", "primitive_roots",
 ]
+
+
+@set_module("galois")
+def gcd(a, b):
+    """
+    Finds the greatest common divisor :math:`\\mathrm{gcd}(a, b)` of the integers :math:`a` and :math:`b`.
+
+    Parameters
+    ----------
+    a : int
+        Any integer.
+    b : int
+        Any integer.
+
+    Returns
+    -------
+    int
+        Greatest common divisor of :math:`a` and :math:`b`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        a = 12
+        b = 28
+        galois.gcd(a, b)
+    """
+    if not isinstance(a, (int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(b, (int, np.integer)):
+        raise TypeError(f"Argument `b` must be an integer, not {type(b)}.")
+
+    return math.gcd(a, b)
 
 
 @set_module("galois")
@@ -46,8 +79,8 @@ def egcd(a, b):
     --------
     .. ipython:: python
 
-        a = 2
-        b = 13
+        a = 12
+        b = 28
         gcd, x, y = galois.egcd(a, b)
         gcd, x, y
         a*x + b*y == gcd

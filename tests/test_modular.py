@@ -5,9 +5,19 @@ import math
 import random
 
 import pytest
-import numpy as np
 
 import galois
+
+
+def test_gcd():
+    a = random.randint(0, 1_000_000)
+    b = random.randint(0, 1_000_000)
+    assert galois.gcd(a, b) == math.gcd(a, b)
+
+    with pytest.raises(TypeError):
+        galois.gcd(10.0, 12)
+    with pytest.raises(TypeError):
+        galois.gcd(10, 12.0)
 
 
 def test_egcd():
@@ -17,8 +27,6 @@ def test_egcd():
     assert gcd == math.gcd(a, b)
     assert a*x + b*y == gcd
 
-
-def test_egcd_exceptions():
     with pytest.raises(TypeError):
         galois.egcd(10.0, 12)
     with pytest.raises(TypeError):
@@ -36,8 +44,6 @@ def test_crt():
     x = galois.crt(a, m)
     assert x == 2192
 
-
-def test_crt_exceptions():
     with pytest.raises(ValueError):
         galois.crt([0, 3, 4], [3, 4, 5, 7])
     with pytest.raises(ValueError):
@@ -51,8 +57,6 @@ def test_totatives():
     for n, phi in zip(N, PHI):
         assert len(galois.totatives(n)) == phi
 
-
-def test_totatives_exceptions():
     with pytest.raises(TypeError):
         galois.totatives(20.0)
     with pytest.raises(ValueError):
@@ -66,8 +70,6 @@ def test_euler_phi():
     for n, phi in zip(N, PHI):
         assert galois.euler_phi(n) == phi
 
-
-def test_euler_phi_exceptions():
     with pytest.raises(TypeError):
         galois.euler_phi(20.0)
     with pytest.raises(ValueError):
@@ -81,8 +83,6 @@ def test_carmichael_lambda():
     for n, lambda_ in zip(N, LAMBDA):
         assert galois.carmichael_lambda(n) == lambda_
 
-
-def test_carmichael_lambda_exceptions():
     with pytest.raises(TypeError):
         galois.carmichael_lambda(20.0)
     with pytest.raises(ValueError):
@@ -97,8 +97,6 @@ def test_is_cyclic():
     assert galois.is_cyclic(2**3) == False
     assert galois.is_cyclic(2*5*7*9) == False
 
-
-def test_is_cyclic_exceptions():
     with pytest.raises(TypeError):
         galois.is_cyclic(20.0)
     with pytest.raises(ValueError):
