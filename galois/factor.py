@@ -13,7 +13,7 @@ from .math_ import prod, isqrt, iroot, ilog
 from .overrides import set_module
 from .prime import PRIMES, is_prime
 
-__all__ = ["factors", "divisors", "divisor_sigma", "is_prime_power", "is_smooth"]
+__all__ = ["factors", "divisors", "divisor_sigma", "is_prime_power", "is_square_free", "is_smooth"]
 
 
 def perfect_power(n):
@@ -316,6 +316,46 @@ def is_prime_power(n):
         return True
 
     return False
+
+
+@set_module("galois")
+def is_square_free(n):
+    """
+    Determines if :math:`n` is square-free, such that :math:`n = p_1 p_2 \\dots p_k`.
+
+    A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
+    of a square-free integer :math:`n` is
+
+    .. math:: n = \\prod_{i=1}^{k} p_i^{e_i} = \\prod_{i=1}^{k} p_i .
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+
+    Returns
+    -------
+    bool:
+        `True` if the integer :math:`n` is square-free.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.is_square_free(10)
+        galois.is_square_free(16)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+
+    if n == 1:
+        return True
+
+    _, e = factors(n)
+
+    return e == [1,]*len(e)
 
 
 @set_module("galois")
