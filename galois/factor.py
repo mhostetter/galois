@@ -13,7 +13,7 @@ from .math_ import prod, isqrt, iroot, ilog
 from .overrides import set_module
 from .prime import PRIMES, is_prime
 
-__all__ = ["prime_factors", "divisors", "is_smooth"]
+__all__ = ["prime_factors", "divisors", "divisor_sigma", "is_smooth"]
 
 
 def perfect_power(n):
@@ -224,6 +224,48 @@ def divisors(n):
     d = sorted(list(set(d)))
 
     return d
+
+
+@set_module("galois")
+def divisor_sigma(n, k=1):
+    """
+    Returns the sum of :math:`k`-th powers of the positive divisors of :math:`n`.
+
+    This function implements the :math:`\\sigma_k(n)` function. It is defined as:
+
+    .. math:: \\sigma_k(n) = \\sum_{d\\ |\\ n} d^k
+
+    Parameters
+    ----------
+    n : int
+        Any integer.
+    k : int, optional
+        The degree of the positive divisors. The default is 1 which corresponds to :math:`\\sigma_1(n)` which is the
+        sum of positive divisors.
+
+    Returns
+    -------
+    int
+        The sum of divisors function :math:`\\sigma_k(n)`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.divisors(9)
+        galois.divisor_sigma(9, k=0)
+        galois.divisor_sigma(9, k=1)
+        galois.divisor_sigma(9, k=2)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+
+    d = divisors(n)
+
+    if n == 0:
+        return len(d)
+    else:
+        return sum([di**k for di in d])
 
 
 @set_module("galois")

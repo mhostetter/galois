@@ -193,4 +193,5 @@ Primes
 
    prime_factors
    divisors
+   divisor_sigma
    is_smooth
