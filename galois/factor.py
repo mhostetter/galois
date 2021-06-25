@@ -3,16 +3,17 @@ A module containing routines for integer factorization.
 """
 import bisect
 import functools
+import itertools
 import math
 import random
 
 import numpy as np
 
-from .math_ import isqrt, iroot, ilog
+from .math_ import prod, isqrt, iroot, ilog
 from .overrides import set_module
 from .prime import PRIMES, is_prime
 
-__all__ = ["prime_factors", "is_smooth"]
+__all__ = ["prime_factors", "divisors", "is_smooth"]
 
 
 def perfect_power(n):
@@ -95,7 +96,7 @@ def prime_factors(n):
     Parameters
     ----------
     n : int
-        The positive integer to be factored.
+        Any positive integer.
 
     Returns
     -------
@@ -166,6 +167,63 @@ def prime_factors(n):
         e.append(1)
 
     return p, e
+
+
+@set_module("galois")
+def divisors(n):
+    """
+    Computes all positive integer divisors :math:`d` of the integer :math:`n` such that :math:`d\\ |\\ n`.
+
+    Parameters
+    ----------
+    n : int
+        Any integer.
+
+    Returns
+    -------
+    list
+        Sorted list of integer divisors :math:`d`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.divisors(0)
+        galois.divisors(1)
+        galois.divisors(24)
+        galois.divisors(-24)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    n = abs(int(n))
+
+    if n == 0:
+        return []
+    if n == 1:
+        return [1]
+
+    # Factor n into its unique k prime factors and their exponents
+    p, e = prime_factors(n)
+    k = len(p)
+
+    # Enumerate all the prime powers, i.e. [p1, p1^2, p1^3, p2, p2^2, ...]
+    prime_powers = []
+    for pi, ei in zip(p, e):
+        prime_powers += [pi**j for j in range(1, ei + 1)]
+
+    d = [1, n]
+    for ki in range(1, k + 1):
+        # For all prime powers choose ki for ki in [1, 2, ..., k]
+        for pair in itertools.combinations(prime_powers, ki):
+            d1 = prod(pair)  # One possible divisor
+            if n % d1 == 0:
+                d2 = n // d1  # The other divisor
+                d += [d1, d2]
+
+    # Reduce the list to unique divisors and sort ascending
+    d = sorted(list(set(d)))
+
+    return d
 
 
 @set_module("galois")

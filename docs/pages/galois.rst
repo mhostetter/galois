@@ -192,4 +192,5 @@ Primes
    :toctree:
 
    prime_factors
+   divisors
    is_smooth
