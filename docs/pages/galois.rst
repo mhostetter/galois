@@ -184,6 +184,7 @@ Primes
    :toctree:
 
    is_prime
+   is_composite
    is_prime_fermat
    is_prime_miller_rabin
 
