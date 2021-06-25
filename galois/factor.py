@@ -13,16 +13,22 @@ from .math_ import prod, isqrt, iroot, ilog
 from .overrides import set_module
 from .prime import PRIMES, is_prime
 
-__all__ = ["factors", "divisors", "divisor_sigma", "is_smooth"]
+__all__ = ["factors", "divisors", "divisor_sigma", "is_prime_power", "is_smooth"]
 
 
 def perfect_power(n):
     max_prime_idx = bisect.bisect_right(PRIMES, ilog(n, 2))
 
-    for prime in PRIMES[0:max_prime_idx]:
-        x = iroot(n, prime)
-        if x**prime == n:
-            return x, prime
+    for k in PRIMES[0:max_prime_idx]:
+        x = iroot(n, k)
+        if x**k == n:
+            # Recursively determine if x is a perfect power
+            ret = perfect_power(x)
+            if ret is None:
+                return x, k
+            else:
+                x, kk = ret
+                return x, k * kk
 
     return None
 
@@ -266,6 +272,50 @@ def divisor_sigma(n, k=1):
         return len(d)
     else:
         return sum([di**k for di in d])
+
+
+@set_module("galois")
+def is_prime_power(n):
+    """
+    Determines if :math:`n` is a prime power :math:`n = p^k` for :math:`k \\ge 1`.
+
+    There is some controversy over whether :math:`1` is a prime power :math:`p^0`. Since :math:`1` is the :math:`0`-th power
+    of all primes, it is often regarded not as a prime power. This function returns `False` for :math:`1`.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+
+    Returns
+    -------
+    bool:
+        `True` if the integer :math:`n` is a prime power.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.is_prime_power(8)
+        galois.is_prime_power(6)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+
+    if n == 1:
+        return False
+
+    if is_prime(n):
+        return True
+
+    # Determine is n is a perfect power and then check is the base is prime or composite
+    ret = perfect_power(n)
+    if ret is not None and is_prime(ret[0]):
+        return True
+
+    return False
 
 
 @set_module("galois")

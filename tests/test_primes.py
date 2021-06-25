@@ -85,6 +85,15 @@ def test_is_composite():
     assert [galois.is_composite(ni) for ni in n] == is_composite.tolist()
 
 
+def test_is_prime_power():
+    # https://oeis.org/A246655
+    prime_powers = np.array([2,3,4,5,7,8,9,11,13,16,17,19,23,25,27,29,31,32,37,41,43,47,49,53,59,61,64,67,71,73,79,81,83,89,97,101,103,107,109,113,121,125,127,128,131,137,139,149,151,157,163,167,169,173,179,181,191,193,197,199,211])
+    n = np.arange(1, prime_powers[-1] + 1)
+    is_prime_power = np.zeros(n.size, dtype=bool)
+    is_prime_power[prime_powers - 1] = True  # -1 for 1-indexed
+    assert [galois.is_prime_power(ni) for ni in n] == is_prime_power.tolist()
+
+
 def test_is_prime_fermat_on_primes():
     primes = random.choices(galois.prime.PRIMES, k=10)
     for prime in primes:
