@@ -1,0 +1,44 @@
+Primes
+======
+
+This section contains functions for generating primes and analyzing primality.
+
+.. currentmodule:: galois
+
+Prime number generation
+-----------------------
+
+.. rubric::
+.. autosummary::
+   :toctree:
+
+   primes
+   kth_prime
+   prev_prime
+   next_prime
+   random_prime
+   mersenne_exponents
+   mersenne_primes
+
+Primality tests
+---------------
+
+.. rubric::
+.. autosummary::
+   :toctree:
+
+   is_prime
+   is_prime_power
+   is_composite
+   is_square_free
+   is_smooth
+
+Specific primality tests
+------------------------
+
+.. rubric::
+.. autosummary::
+   :toctree:
+
+   is_prime_fermat
+   is_prime_miller_rabin
