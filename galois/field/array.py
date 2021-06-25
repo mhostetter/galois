@@ -25,7 +25,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         This is an abstract base class for all Galois field array classes. :obj:`galois.FieldArray` cannot be instantiated
         directly. Instead, Galois field array classes are created using :func:`galois.GF`.
 
-        For example, one can create the :math:`\\mathrm{GF}(7)` field array class as follows:
+        For example, one can create the :math:`\\mathrm{GF}(7)` field array class as follows.
 
         .. ipython:: python
 

@@ -152,7 +152,7 @@ Modular Arithmetic
    pow
    is_cyclic
    carmichael
-   euler_totient
+   euler_phi
    totatives
 
 Discrete Logarithms

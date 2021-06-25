@@ -3,7 +3,7 @@ A module containing algorithms for computing discrete logarithms.
 """
 import math
 
-from .modular import euler_totient, is_cyclic, is_primitive_root
+from .modular import euler_phi, is_cyclic, is_primitive_root
 from .overrides import set_module
 
 __all__ = ["log_naive"]
@@ -50,7 +50,7 @@ def log_naive(beta, alpha, modulus):
     if not is_primitive_root(alpha, modulus):
         raise ValueError(f"Argument `alpha` must be a primitive root of `modulus`, {alpha} is not a primitive root of {modulus}.")
 
-    order = euler_totient(modulus)
+    order = euler_phi(modulus)
     for k in range(order):
         if pow(alpha, k, modulus) == beta:
             return k

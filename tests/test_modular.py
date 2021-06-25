@@ -59,19 +59,19 @@ def test_totatives_exceptions():
         galois.totatives(-1)
 
 
-def test_euler_totient():
+def test_euler_phi():
     # https://oeis.org/A000010
     N = list(range(1,70))
     PHI = [1,1,2,2,4,2,6,4,6,4,10,4,12,6,8,8,16,6,18,8,12,10,22,8,20,12,18,12,28,8,30,16,20,16,24,12,36,18,24,16,40,12,42,20,24,22,46,16,42,20,32,24,52,18,40,24,36,28,58,16,60,30,36,32,48,20,66,32,44]
     for n, phi in zip(N, PHI):
-        assert galois.euler_totient(n) == phi
+        assert galois.euler_phi(n) == phi
 
 
-def test_euler_totient_exceptions():
+def test_euler_phi_exceptions():
     with pytest.raises(TypeError):
-        galois.euler_totient(20.0)
+        galois.euler_phi(20.0)
     with pytest.raises(ValueError):
-        galois.euler_totient(-1)
+        galois.euler_phi(-1)
 
 
 def test_carmichael():
@@ -227,7 +227,7 @@ def test_sum_primitive_roots_of_primes():
 def test_primitive_roots_are_generators(n):
     n = int(n)
     congruences = [a for a in range(1, n) if math.gcd(n, a) == 1]
-    phi = galois.euler_totient(n)
+    phi = galois.euler_phi(n)
     assert len(congruences) == phi
 
     roots = galois.primitive_roots(n)
@@ -235,7 +235,7 @@ def test_primitive_roots_are_generators(n):
         elements = [pow(root, i, n) for i in range(1, n)]
         assert set(congruences) == set(elements)
 
-    assert len(roots) == galois.euler_totient(phi)
+    assert len(roots) == galois.euler_phi(phi)
 
 
 def test_primitive_roots_exceptions():

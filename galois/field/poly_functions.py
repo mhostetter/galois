@@ -903,7 +903,7 @@ def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefine
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
 
     The number of primitive elements of :math:`\\mathrm{GF}(p^m)` is :math:`\\phi(p^m - 1)`, where
-    :math:`\\phi(n)` is the Euler totient function, see :obj:`galois.euler_totient`.
+    :math:`\\phi(n)` is the Euler totient function, see :obj:`galois.euler_phi`.
 
     Parameters
     ----------
@@ -1048,7 +1048,7 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False): 
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
 
     The number of primitive elements of :math:`\\mathrm{GF}(p^m)` is :math:`\\phi(p^m - 1)`, where
-    :math:`\\phi(n)` is the Euler totient function. See :obj:galois.euler_totient`.
+    :math:`\\phi(n)` is the Euler totient function. See :obj:galois.euler_phi`.
 
     Parameters
     ----------
@@ -1078,7 +1078,7 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False): 
         galois.is_irreducible(f)
         galois.is_primitive(f)
         g = galois.primitive_elements(f); g
-        len(g) == galois.euler_totient(3**2 - 1)
+        len(g) == galois.euler_phi(3**2 - 1)
 
     .. ipython:: python
 
@@ -1087,7 +1087,7 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False): 
         galois.is_irreducible(f)
         galois.is_primitive(f)
         g = galois.primitive_elements(f); g
-        len(g) == galois.euler_totient(3**2 - 1)
+        len(g) == galois.euler_phi(3**2 - 1)
     """
     # NOTE: `irreducible_poly` will be verified in the call to `primitive_element()`
     if not isinstance(start, (type(None), int, np.integer)):
