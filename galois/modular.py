@@ -9,7 +9,7 @@ from .overrides import set_module
 
 __all__ = [
     "gcd", "crt",
-    "totatives", "euler_totient", "carmichael", "is_cyclic",
+    "totatives", "euler_phi", "carmichael", "is_cyclic",
     "is_primitive_root", "primitive_root", "primitive_roots",
 ]
 
@@ -165,7 +165,7 @@ def totatives(n):
 
         n = 20
         totatives = galois.totatives(n); totatives
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
         len(totatives) == phi
     """
     if not isinstance(n, (int, np.integer)):
@@ -180,7 +180,7 @@ def totatives(n):
 
 
 @set_module("galois")
-def euler_totient(n):
+def euler_phi(n):
     """
     Counts the positive integers (totatives) in :math:`1 \\le k < n` that are relatively prime to
     :math:`n`, i.e. :math:`\\mathrm{gcd}(n, k) = 1`.
@@ -207,7 +207,7 @@ def euler_totient(n):
     .. ipython:: python
 
         n = 20
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
 
         # Find the totatives that are coprime with n
         totatives = [k for k in range(n) if math.gcd(k, n) == 1]; totatives
@@ -216,7 +216,7 @@ def euler_totient(n):
         len(totatives) == phi
 
         # For prime n, phi is always n-1
-        galois.euler_totient(13)
+        galois.euler_phi(13)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -274,7 +274,7 @@ def carmichael(n):
             print("{:2d}^{} = {} (mod {})".format(a, lambda_, result, n))
 
         # For prime n, phi and lambda are always n-1
-        galois.euler_totient(13), galois.carmichael(13)
+        galois.euler_phi(13), galois.carmichael(13)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -290,9 +290,9 @@ def carmichael(n):
     for i in range(len(p)):
         # Carmichael function for prime powers
         if p[i] == 2 and e[i] > 2:
-            l = euler_totient(p[i]**e[i]) // 2
+            l = euler_phi(p[i]**e[i]) // 2
         else:
-            l = euler_totient(p[i]**e[i])
+            l = euler_phi(p[i]**e[i])
         lambdas.append(l)
 
     return lcm(*lambdas)
@@ -337,7 +337,7 @@ def is_cyclic(n):
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
 
         # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
 
         len(Znx) == phi
 
@@ -350,7 +350,7 @@ def is_cyclic(n):
         roots = galois.primitive_roots(n); roots
 
         # Euler's totient function phi(phi(n)) counts the primitive roots of n
-        len(roots) == galois.euler_totient(phi)
+        len(roots) == galois.euler_phi(phi)
 
     A counterexample is :math:`n = 15 = 3*5`, which doesn't fit the condition for cyclicness.
     :math:`(\\mathbb{Z}/15\\mathbb{Z}){^\\times} = \\{1, 2, 4, 7, 8, 11, 13, 14\\}`.
@@ -365,7 +365,7 @@ def is_cyclic(n):
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
 
         # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
 
         len(Znx) == phi
 
@@ -442,7 +442,7 @@ def is_primitive_root(g, n):
         # primitive root modulo 2 and it's 1.
         return g == 1
 
-    phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
+    phi = euler_phi(n)  # Number of non-zero elements in the multiplicative group Z/nZ
     primes, _ = prime_factors(phi)
 
     return pow(g, phi, n) == 1 and all(pow(g, phi // p, n) != 1 for p in primes)
@@ -506,7 +506,7 @@ def primitive_root(n, start=1, stop=None, reverse=False):
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
 
         # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
 
         len(Znx) == phi
 
@@ -529,7 +529,7 @@ def primitive_root(n, start=1, stop=None, reverse=False):
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
 
         # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
 
         len(Znx) == phi
 
@@ -559,7 +559,7 @@ def primitive_root(n, start=1, stop=None, reverse=False):
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
 
         # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
 
         len(Znx) == phi
 
@@ -635,7 +635,7 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
 
         # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
 
         len(Znx) == phi
 
@@ -646,7 +646,7 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
             print("Element: {}, Span: {:<6}, Primitive root: {}".format(a, str(span), primitive_root))
 
         # Euler's totient function phi(phi(n)) counts the primitive roots of n
-        len(roots) == galois.euler_totient(phi)
+        len(roots) == galois.euler_phi(phi)
 
     Here is an example with two primitive roots, :math:`n = 7 = 7^1`, which fits the definition
     of cyclicness, see :obj:`galois.is_cyclic`. Since :math:`n = 7` is prime, the primitive root
@@ -661,7 +661,7 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
 
         # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
 
         len(Znx) == phi
 
@@ -672,7 +672,7 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
             print("Element: {}, Span: {:<18}, Primitive root: {}".format(a, str(span), primitive_root))
 
         # Euler's totient function phi(phi(n)) counts the primitive roots of n
-        len(roots) == galois.euler_totient(phi)
+        len(roots) == galois.euler_phi(phi)
 
     The algorithm is also efficient for very large :math:`n`.
 
@@ -681,7 +681,7 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
         n = 1000000000000000035000061
 
         # Euler's totient function phi(phi(n)) counts the primitive roots of n
-        galois.euler_totient(galois.euler_totient(n))
+        galois.euler_phi(galois.euler_phi(n))
 
         # Only find some of the primitive roots
         galois.primitive_roots(n, stop=100)
@@ -702,7 +702,7 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
 
         # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_totient(n); phi
+        phi = galois.euler_phi(n); phi
 
         len(Znx) == phi
 
@@ -737,7 +737,7 @@ def _primitive_roots(n, start=1, stop=None, reverse=False):
         return
 
     n = int(n)  # Needed for the pow() function
-    phi = euler_totient(n)  # Number of non-zero elements in the multiplicative group Z/nZ
+    phi = euler_phi(n)  # Number of non-zero elements in the multiplicative group Z/nZ
     primes, _ = prime_factors(phi)
 
     if phi == n - 1 or n % 2 == 1:
