@@ -1,12 +1,14 @@
-numpy
-=====
+Numpy Examples
+==============
 
-Documentation of some native numpy functions when called on Galois field arrays.
+This section contains examples of some numpy functions when called on Galois field arrays. Many more functions
+are supported, just not explicitly documented here.
 
 .. currentmodule:: np
 
 General
 -------
+
 .. rubric::
 .. autosummary::
    :toctree:
@@ -17,6 +19,7 @@ General
 
 Arithmetic
 ----------
+
 .. rubric::
 .. autosummary::
    :toctree:
@@ -34,6 +37,7 @@ Arithmetic
 
 Advanced Arithmetic
 -------------------
+
 .. rubric::
 .. autosummary::
    :toctree:
