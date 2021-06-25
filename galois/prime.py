@@ -9,7 +9,7 @@ from .overrides import set_module
 
 __all__ = [
     "primes", "kth_prime", "prev_prime", "next_prime", "random_prime", "mersenne_exponents", "mersenne_primes",
-    "is_prime", "is_prime_fermat", "is_prime_miller_rabin"
+    "is_prime", "is_composite", "is_prime_fermat", "is_prime_miller_rabin"
 ]
 
 
@@ -340,6 +340,39 @@ def is_prime(n):
 
 
 @set_module("galois")
+def is_composite(n):
+    """
+    Determines if :math:`n` is composite.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+
+    Returns
+    -------
+    bool:
+        `True` if the integer :math:`n` is composite.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.is_composite(13)
+        galois.is_composite(15)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+
+    if n == 1:
+        return False
+
+    return not is_prime(n)
+
+
+@set_module("galois")
 def is_prime_fermat(n):
     """
     Determines if :math:`n` is composite.
@@ -386,6 +419,7 @@ def is_prime_fermat(n):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not n > 2:
         raise ValueError(f"Argument `n` must be greater than 2, not {n}.")
+    n = int(n)
 
     a = 2  # A value coprime with n
 
@@ -462,6 +496,7 @@ def is_prime_miller_rabin(n, a=None, rounds=1):
         raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
     if not 1 <= a < n:
         raise ValueError(f"Arguments must satisfy `1 <= a < n`, not `1 <= {a} < {n}`.")
+    n = int(n)
 
     # Factor (n - 1) by 2
     x = n -1
