@@ -151,7 +151,7 @@ Modular Arithmetic
    ilog
    pow
    is_cyclic
-   carmichael
+   carmichael_lambda
    euler_phi
    totatives
 
