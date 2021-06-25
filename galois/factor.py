@@ -13,7 +13,7 @@ from .math_ import prod, isqrt, iroot, ilog
 from .overrides import set_module
 from .prime import PRIMES, is_prime
 
-__all__ = ["prime_factors", "divisors", "divisor_sigma", "is_smooth"]
+__all__ = ["factors", "divisors", "divisor_sigma", "is_smooth"]
 
 
 def perfect_power(n):
@@ -80,7 +80,7 @@ def pollard_rho_factor(n, c=1):
 
 @set_module("galois")
 @functools.lru_cache(maxsize=2048)
-def prime_factors(n):
+def factors(n):
     """
     Computes the prime factors of the positive integer :math:`n`.
 
@@ -109,7 +109,7 @@ def prime_factors(n):
     --------
     .. ipython:: python
 
-        p, e = galois.prime_factors(120)
+        p, e = galois.factors(120)
         p, e
 
         # The product of the prime powers is the factored integer
@@ -121,7 +121,7 @@ def prime_factors(n):
 
         prime =1000000000000000035000061
         galois.is_prime(prime)
-        p, e = galois.prime_factors(prime - 1)
+        p, e = galois.factors(prime - 1)
         p, e
         np.multiply.reduce(np.array(p) ** np.array(e))
     """
@@ -139,7 +139,7 @@ def prime_factors(n):
     result = perfect_power(n)
     if result is not None:
         base, exponent = result
-        p, e = prime_factors(base)
+        p, e = factors(base)
         e = [ei * exponent for ei in e]
         return p, e
 
@@ -203,7 +203,7 @@ def divisors(n):
         return [1]
 
     # Factor n into its unique k prime factors and their exponents
-    p, e = prime_factors(n)
+    p, e = factors(n)
     k = len(p)
 
     # Enumerate all the prime powers, i.e. [p1, p1^2, p1^3, p2, p2^2, ...]
@@ -309,5 +309,5 @@ def is_smooth(n, B):
     if n == 1:
         return True
     else:
-        p, _ = prime_factors(n)
+        p, _ = factors(n)
         return p[-1] <= B

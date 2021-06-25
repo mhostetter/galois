@@ -3,7 +3,7 @@ from itertools import combinations
 
 import numpy as np
 
-from .factor import prime_factors
+from .factor import factors
 from .math_ import lcm, prod
 from .overrides import set_module
 
@@ -226,11 +226,11 @@ def euler_phi(n):
     if n == 1:
         return 1
 
-    p, k = prime_factors(n)
+    p, e = factors(n)
 
     phi = 1
-    for i in range(len(p)):
-        phi *= p[i]**(k[i] - 1) * (p[i] - 1)
+    for pi, ei in zip(p, e):
+        phi *= pi**(ei - 1) * (pi - 1)
 
     return phi
 
@@ -284,7 +284,7 @@ def carmichael_lambda(n):
     if n == 1:
         return 1
 
-    p, e = prime_factors(n)
+    p, e = factors(n)
 
     lambdas = []
     for i in range(len(p)):
@@ -385,15 +385,15 @@ def is_cyclic(n):
     if not n > 0:
         raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
-    p, k = prime_factors(n)
+    p, e = factors(n)
 
     if n in [2, 4]:
         return True
-    elif len(p) == 2 and 2 in p and k[p.index(2)] == 1:
-        # n = 2 * p^k
+    elif len(p) == 2 and 2 in p and e[p.index(2)] == 1:
+        # n = 2 * p^e
         return True
     elif len(p) == 1 and p[0] != 2:
-        # n = p^k
+        # n = p^e
         return True
     else:
         # n does not represent a cyclic group
@@ -443,7 +443,7 @@ def is_primitive_root(g, n):
         return g == 1
 
     phi = euler_phi(n)  # Number of non-zero elements in the multiplicative group Z/nZ
-    primes, _ = prime_factors(phi)
+    primes, _ = factors(phi)
 
     return pow(g, phi, n) == 1 and all(pow(g, phi // p, n) != 1 for p in primes)
 
@@ -738,7 +738,7 @@ def _primitive_roots(n, start=1, stop=None, reverse=False):
 
     n = int(n)  # Needed for the pow() function
     phi = euler_phi(n)  # Number of non-zero elements in the multiplicative group Z/nZ
-    primes, _ = prime_factors(phi)
+    primes, _ = factors(phi)
 
     if phi == n - 1 or n % 2 == 1:
         # For prime n or odd n, must test all elements

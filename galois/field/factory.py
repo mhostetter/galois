@@ -1,4 +1,4 @@
-from ..factor import prime_factors
+from ..factor import factors
 from ..overrides import set_module
 
 from .factory_extension import GF_extension
@@ -86,11 +86,11 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="
     """
     if not isinstance(order, int):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
-    p, k = prime_factors(order)
-    if not len(p) == len(k) == 1:
-        s = " + ".join([f"{pp}**{kk}" for pp, kk in zip(p, k)])
+    p, e = factors(order)
+    if not len(p) == len(e) == 1:
+        s = " + ".join([f"{pi}**{ei}" for pi, ei in zip(p, e)])
         raise ValueError(f"Argument `order` must be a prime power, not {order} = {s}.")
-    p, m = p[0], k[0]
+    p, m = p[0], e[0]
 
     if m == 1:
         if not irreducible_poly is None:

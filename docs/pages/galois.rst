@@ -191,7 +191,7 @@ Primes
 .. autosummary::
    :toctree:
 
-   prime_factors
+   factors
    divisors
    divisor_sigma
    is_smooth

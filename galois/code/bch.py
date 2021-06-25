@@ -4,7 +4,7 @@ import numba
 from numba import int64
 import numpy as np
 
-from ..factor import prime_factors
+from ..factor import factors
 from ..field import Field, Poly, GF2, matlab_primitive_poly
 from ..field.meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG
 from ..overrides import set_module
@@ -26,7 +26,7 @@ def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
     if not isinstance(primitive_element, (type(None), int, Poly)):
         raise TypeError(f"Argument `primitive_element` must be None, an int, or galois.Poly, not {type(primitive_element)}.")
 
-    p, m = prime_factors(n + 1)
+    p, m = factors(n + 1)
     if not (len(p) == 1 and p[0] == 2):
         raise ValueError(f"Argument `n` must have value `2^m - 1` for some positive m, not {n}.")
     if not c >= 1:
