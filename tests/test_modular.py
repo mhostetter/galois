@@ -10,19 +10,19 @@ import numpy as np
 import galois
 
 
-def test_gcd():
+def test_egcd():
     a = random.randint(0, 1_000_000)
     b = random.randint(0, 1_000_000)
-    gcd, x, y = galois.gcd(a, b)
+    gcd, x, y = galois.egcd(a, b)
     assert gcd == math.gcd(a, b)
     assert a*x + b*y == gcd
 
 
-def test_gcd_exceptions():
+def test_egcd_exceptions():
     with pytest.raises(TypeError):
-        galois.gcd(10.0, 12)
+        galois.egcd(10.0, 12)
     with pytest.raises(TypeError):
-        galois.gcd(10, 12.0)
+        galois.egcd(10, 12.0)
 
 
 def test_crt():

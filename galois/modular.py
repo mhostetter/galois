@@ -8,14 +8,14 @@ from .math_ import lcm, prod
 from .overrides import set_module
 
 __all__ = [
-    "gcd", "crt",
+    "egcd", "crt",
     "totatives", "euler_phi", "carmichael_lambda", "is_cyclic",
     "is_primitive_root", "primitive_root", "primitive_roots",
 ]
 
 
 @set_module("galois")
-def gcd(a, b):
+def egcd(a, b):
     """
     Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.
 
@@ -48,7 +48,7 @@ def gcd(a, b):
 
         a = 2
         b = 13
-        gcd, x, y = galois.gcd(a, b)
+        gcd, x, y = galois.egcd(a, b)
         gcd, x, y
         a*x + b*y == gcd
     """
@@ -122,7 +122,7 @@ def crt(a, m):
     for a2, m2 in zip(a[1:], m[1:]):
         # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = 1,
         # where 1 is the GCD(m1, m2) because m1 and m2 are pairwise relatively coprime
-        b1, b2 = gcd(m1, m2)[1:]
+        _, b1, b2 = egcd(m1, m2)
 
         # Compute x through explicit construction
         x = a1*b2*m2 + a2*b1*m1
