@@ -2,7 +2,7 @@ import numba
 from numba import int64
 import numpy as np
 
-from ..factor import prime_factors
+from ..factor import factors
 from ..field import Field, Poly, matlab_primitive_poly
 from ..field.meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, POLY_EVALUATE_CALCULATE_SIG, CONVOLVE_CALCULATE_SIG
 from ..overrides import set_module
@@ -76,7 +76,7 @@ class ReedSolomon:
 
         if not (n - k) % 2 == 0:
             raise ValueError("Arguments `n - k` must be even.")
-        p, m = prime_factors(n + 1)
+        p, m = factors(n + 1)
         if not (len(p) == 1 and len(m) == 1):
             raise ValueError(f"Argument `n` must have value `q - 1` for a prime power `q`, not {n}.")
         if not c >= 1:

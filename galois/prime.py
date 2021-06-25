@@ -371,7 +371,7 @@ def is_prime_fermat(n):
 
         for prime in primes:
             is_prime = galois.is_prime_fermat(prime)
-            p, k = galois.prime_factors(prime)
+            p, e = galois.factors(prime)
             print("Prime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(prime, is_prime, list(p)))
 
         # List of some strong pseudoprimes with base 2
@@ -379,7 +379,7 @@ def is_prime_fermat(n):
 
         for pseudoprime in pseudoprimes:
             is_prime = galois.is_prime_fermat(pseudoprime)
-            p, k = galois.prime_factors(pseudoprime)
+            p, e = galois.factors(pseudoprime)
             print("Pseudoprime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
     """
     if not isinstance(n, (int, np.integer)):
@@ -437,7 +437,7 @@ def is_prime_miller_rabin(n, a=None, rounds=1):
 
         for prime in primes:
             is_prime = galois.is_prime_miller_rabin(prime)
-            p, k = galois.prime_factors(prime)
+            p, e = galois.factors(prime)
             print("Prime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(prime, is_prime, list(p)))
 
         # List of some strong pseudoprimes with base 2
@@ -446,13 +446,13 @@ def is_prime_miller_rabin(n, a=None, rounds=1):
         # Single round of Miller-Rabin, sometimes fooled by pseudoprimes
         for pseudoprime in pseudoprimes:
             is_prime = galois.is_prime_miller_rabin(pseudoprime)
-            p, k = galois.prime_factors(pseudoprime)
+            p, e = galois.factors(pseudoprime)
             print("Pseudoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
 
         # 7 rounds of Miller-Rabin, never fooled by pseudoprimes
         for pseudoprime in pseudoprimes:
             is_prime = galois.is_prime_miller_rabin(pseudoprime, rounds=7)
-            p, k = galois.prime_factors(pseudoprime)
+            p, e = galois.factors(pseudoprime)
             print("Pseudoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
     """
     a = random.randint(1, n - 1) if a is None else a

@@ -3,7 +3,7 @@ import random
 import numpy as np
 
 from ..databases import ConwayPolyDatabase
-from ..factor import prime_factors
+from ..factor import factors
 from ..modular import totatives
 from ..overrides import set_module
 from ..prime import is_prime
@@ -220,11 +220,11 @@ def poly_factors(poly):
 
     L = Poly.One(field=field)
     r = 0
-    factors = []
+    factors_ = []
     multiplicities = []
 
     def square_free_factorization(c, r):
-        nonlocal L, factors, multiplicities
+        nonlocal L, factors_, multiplicities
         i = 1
         a = c.copy()
         b = c.derivative()
@@ -236,7 +236,7 @@ def poly_factors(poly):
             z = w / y
             if z != one and i % p != 0:
                 L *= z**(i * p**r)
-                factors.append(z)
+                factors_.append(z)
                 multiplicities.append(i * p**r)
             i = i + 1
             w = y
@@ -253,9 +253,9 @@ def poly_factors(poly):
         r += 1
         d = square_free_factorization(delta, r)
 
-    factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: item[1]))
+    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[1]))
 
-    return list(factors), list(multiplicities)
+    return list(factors_), list(multiplicities)
 
 
 @set_module("galois")
@@ -797,7 +797,7 @@ def is_irreducible(poly):
     one = Poly.One(field)
     x = Poly.Identity(field)
 
-    primes, _ = prime_factors(m)
+    primes, _ = factors(m)
     h0 = Poly.Identity(field)
     n0 = 0
     for ni in sorted([m // pi for pi in primes]):
@@ -884,7 +884,7 @@ def is_primitive(poly):
     zero = Poly.Zero(field)
     one = Poly.One(field)
 
-    primes, _ = prime_factors(p**m - 1)
+    primes, _ = factors(p**m - 1)
     x = Poly.Identity(field)
     for ki in sorted([(p**m - 1) // pi for pi in primes]):
         # f(x) must not divide (x^((p^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of p**m - 1
@@ -950,7 +950,7 @@ def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefine
     one = Poly.One(field)
 
     order = p**m - 1  # Multiplicative order of GF(p^m)
-    primes, _ = prime_factors(order)
+    primes, _ = factors(order)
 
     for k in sorted([order // pi for pi in primes]):
         g = poly_pow(element, k, irreducible_poly)

@@ -4,53 +4,25 @@ A pytest module to test the functions relating to integer factorization.
 import random
 
 import pytest
-import numpy as np
 
 import galois
 
 
-def test_prime_factorization_small():
-    x = 8
-    PRIMES = [2,]
-    EXPONENTS = [3,]
-    p, e = galois.prime_factors(x)
-    assert np.array_equal(p, PRIMES)
-    assert np.array_equal(e, EXPONENTS)
-
-    x = 10
-    PRIMES = [2,5]
-    EXPONENTS = [1,1]
-    p, e = galois.prime_factors(x)
-    assert np.array_equal(p, PRIMES)
-    assert np.array_equal(e, EXPONENTS)
-
-    x = 11
-    PRIMES = [11,]
-    EXPONENTS = [1,]
-    p, e = galois.prime_factors(x)
-    assert np.array_equal(p, PRIMES)
-    assert np.array_equal(e, EXPONENTS)
+def test_factors_small():
+    assert galois.factors(8) == ([2], [3])
+    assert galois.factors(10) == ([2, 5], [1, 1])
+    assert galois.factors(11) == ([11], [1])
+    assert galois.factors(24) == ([2, 3], [3, 1])
 
 
-def test_prime_factorization_large():
-    x = 3015341941
-    PRIMES = [46021,65521]
-    EXPONENTS = [1,1]
-    p, e = galois.prime_factors(x)
-    assert np.array_equal(p, PRIMES)
-    assert np.array_equal(e, EXPONENTS)
+def test_factors_large():
+    assert galois.factors(3015341941) == ([46021, 65521], [1, 1])
+    assert galois.factors(12345678) == ([2, 3, 47, 14593], [1, 2, 1, 1])
 
 
-def test_prime_factorization_extremely_large():
-    prime = 1000000000000000035000061
-    p, e = galois.prime_factors(prime)
-    assert np.array_equal(p, [prime])
-    assert np.array_equal(e, [1])
-
-    p, e = galois.prime_factors(prime - 1)
-    p = np.array(p, dtype=object)
-    e = np.array(e, dtype=object)
-    assert np.multiply.reduce(p**e) == prime - 1
+def test_factors_extremely_large():
+    assert galois.factors(1000000000000000035000061) == ([1000000000000000035000061], [1])
+    assert galois.factors(1000000000000000035000061 - 1) == ([2, 3, 5, 17, 19, 112850813, 457237177399], [2, 1, 1, 1, 1, 1, 1])
 
 
 @pytest.mark.parametrize("n", [0, 1, 2, 3, 4, 5, 31, 13*7, 120, 120*7])
