@@ -50,16 +50,6 @@ Galois Fields
    is_primitive_element
    minimal_poly
 
-.. rubric:: Galois fields for cryptography
-.. autosummary::
-   :template: class.rst
-   :toctree:
-
-   Oakley1
-   Oakley2
-   Oakley3
-   Oakley4
-
 Polynomials over Galois Fields
 ------------------------------
 

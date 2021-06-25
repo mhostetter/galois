@@ -5,7 +5,6 @@ from .array import *
 from .factory import *
 from .gf2 import *
 from .meta_class import *
-from .oakley import *
 from .poly import *
 from .poly_functions import *
 
