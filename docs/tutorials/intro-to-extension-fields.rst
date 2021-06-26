@@ -177,7 +177,7 @@ Now the entire multiplication table can be shown for completeness.
 Division, as in :math:`\mathrm{GF}(p)`, is a little more difficult. Fortunately the Extended Euclidean Algorithm, which
 was used in prime fields on integers, can be used for extension fields on polynomials. Given two polynomials :math:`a`
 and :math:`b`, the Extended Euclidean Algorithm finds the polynomials :math:`x` and :math:`y` such that
-:math:`xa + yb = \textrm{gcd}(a, b)`. This algorithm is implemented in :func:`galois.poly_gcd`.
+:math:`xa + yb = \textrm{gcd}(a, b)`. This algorithm is implemented in :func:`galois.poly_egcd`.
 
 If :math:`a` is a field element of :math:`\mathrm{GF}(3^2)` and :math:`b = p(x)`, the field's irreducible polynomial, then :math:`x = a^{-1}` in :math:`\mathrm{GF}(3^2)`.
 Note, the GCD will always be :math:`1` because :math:`p(x)` is irreducible.
@@ -186,7 +186,7 @@ Note, the GCD will always be :math:`1` because :math:`p(x)` is irreducible.
 
    p = GF9.irreducible_poly; p
    a = galois.Poly([1, 2], field=GF3); a
-   gcd, x, y = galois.poly_gcd(a, p); gcd, x, y
+   gcd, x, y = galois.poly_egcd(a, p); gcd, x, y
 
 The claim is that :math:`(x + 2)^{-1} = x` in :math:`\mathrm{GF}(3^2)` or, equivalently, :math:`(x + 2)(x)\ \equiv 1\ \textrm{mod}\ p(x)`. This
 can be easily verified with :obj:`galois`.

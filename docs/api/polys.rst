@@ -22,7 +22,7 @@ Polynomial functions
 .. autosummary::
    :toctree:
 
-   poly_gcd
+   poly_egcd
    poly_pow
    poly_factors
 

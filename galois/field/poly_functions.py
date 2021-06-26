@@ -13,7 +13,7 @@ from .factory_prime import GF_prime
 from .poly import Poly
 
 __all__ = [
-    "poly_gcd", "poly_pow", "poly_factors",
+    "poly_egcd", "poly_pow", "poly_factors",
     "irreducible_poly", "irreducible_polys", "primitive_poly", "primitive_polys",
     "matlab_primitive_poly", "conway_poly", "minimal_poly",
     "is_monic", "is_irreducible", "is_primitive",
@@ -22,7 +22,7 @@ __all__ = [
 
 
 @set_module("galois")
-def poly_gcd(a, b):
+def poly_egcd(a, b):
     """
     Finds the greatest common divisor of two polynomials :math:`a(x)` and :math:`b(x)`
     over :math:`\\mathrm{GF}(q)`.
@@ -55,7 +55,7 @@ def poly_gcd(a, b):
         # a(x) and b(x) only share the root 2 in common
         b = galois.Poly.Roots([1,2], field=GF); b
 
-        gcd, x, y = galois.poly_gcd(a, b)
+        gcd, x, y = galois.poly_egcd(a, b)
 
         # The GCD has only 2 as a root with multiplicity 1
         gcd.roots(multiplicity=True)
@@ -228,11 +228,11 @@ def poly_factors(poly):
         i = 1
         a = c.copy()
         b = c.derivative()
-        d = poly_gcd(a, b)[0]
+        d = poly_egcd(a, b)[0]
         w = a / d
 
         while w != one:
-            y = poly_gcd(w, d)[0]
+            y = poly_egcd(w, d)[0]
             z = w / y
             if z != one and i % p != 0:
                 L *= z**(i * p**r)
@@ -803,7 +803,7 @@ def is_irreducible(poly):
     for ni in sorted([m // pi for pi in primes]):
         # The GCD of f(x) and (x^(p^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
         hi = poly_pow(h0, p**(ni - n0), poly)
-        g = poly_gcd(poly, hi - x)[0]
+        g = poly_egcd(poly, hi - x)[0]
         if g != one:
             return False
         h0, n0 = hi, ni
