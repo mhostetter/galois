@@ -13,7 +13,7 @@ from .factory_prime import GF_prime
 from .poly import Poly
 
 __all__ = [
-    "poly_egcd", "poly_pow", "poly_factors",
+    "poly_gcd", "poly_egcd", "poly_pow", "poly_factors",
     "irreducible_poly", "irreducible_polys", "primitive_poly", "primitive_polys",
     "matlab_primitive_poly", "conway_poly", "minimal_poly",
     "is_monic", "is_irreducible", "is_primitive",
@@ -22,10 +22,67 @@ __all__ = [
 
 
 @set_module("galois")
-def poly_egcd(a, b):
+def poly_gcd(a, b):
     """
     Finds the greatest common divisor of two polynomials :math:`a(x)` and :math:`b(x)`
     over :math:`\\mathrm{GF}(q)`.
+
+    This implementation uses the Euclidean Algorithm.
+
+    Parameters
+    ----------
+    a : galois.Poly
+        A polynomial :math:`a(x)` over :math:`\\mathrm{GF}(q)`.
+    b : galois.Poly
+        A polynomial :math:`b(x)` over :math:`\\mathrm{GF}(q)`.
+
+    Returns
+    -------
+    galois.Poly
+        Polynomial greatest common divisor of :math:`a(x)` and :math:`b(x)`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        a = galois.Poly.Roots([2,2,2,3,6], field=GF); a
+
+        # a(x) and b(x) only share the root 2 in common
+        b = galois.Poly.Roots([1,2], field=GF); b
+
+        gcd = galois.poly_gcd(a, b); gcd
+
+        # The GCD has only 2 as a root with multiplicity 1
+        gcd.roots(multiplicity=True)
+    """
+    if not isinstance(a, Poly):
+        raise TypeError(f"Argument `a` must be of type galois.Poly, not {type(a)}.")
+    if not isinstance(b, Poly):
+        raise TypeError(f"Argument `b` must be of type galois.Poly, not {type(b)}.")
+    if not a.field == b.field:
+        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {str(a.field)} and {str(b.field)}.")
+
+    field = a.field
+    zero = Poly.Zero(field)
+
+    r2, r1 = a, b
+
+    while r1 != zero:
+        r2, r1 = r1, r2 % r1
+
+    # Make the gcd polynomial monic
+    c = r2.coeffs[0]  # The leading coefficient
+    if c > 1:
+        r2 /= c
+
+    return r2
+
+
+@set_module("galois")
+def poly_egcd(a, b):
+    """
+    Finds the polynomial multiplicands of :math:`a(x)` and :math:`b(x)` such that :math:`a(x)s(x) + b(x)t(x) = \\mathrm{gcd}(a(x), b(x))`.
 
     This implementation uses the Extended Euclidean Algorithm.
 
@@ -41,9 +98,9 @@ def poly_egcd(a, b):
     galois.Poly
         Polynomial greatest common divisor of :math:`a(x)` and :math:`b(x)`.
     galois.Poly
-        Polynomial :math:`x(x)`, such that :math:`a x + b y = \\textrm{gcd}(a, b)`.
+        Polynomial :math:`s(x)`, such that :math:`a(x)s(x) + b(x)t(x) = \\mathrm{gcd}(a(x), b(x))`.
     galois.Poly
-        Polynomial :math:`y(x)`, such that :math:`a x + b y = \\textrm{gcd}(a, b)`.
+        Polynomial :math:`t(x)`, such that :math:`a(x)s(x) + b(x)t(x) = \\mathrm{gcd}(a(x), b(x))`.
 
     Examples
     --------
@@ -55,7 +112,7 @@ def poly_egcd(a, b):
         # a(x) and b(x) only share the root 2 in common
         b = galois.Poly.Roots([1,2], field=GF); b
 
-        gcd, x, y = galois.poly_egcd(a, b)
+        gcd, x, y = galois.poly_egcd(a, b); gcd, x, y
 
         # The GCD has only 2 as a root with multiplicity 1
         gcd.roots(multiplicity=True)
@@ -228,11 +285,11 @@ def poly_factors(poly):
         i = 1
         a = c.copy()
         b = c.derivative()
-        d = poly_egcd(a, b)[0]
+        d = poly_gcd(a, b)
         w = a / d
 
         while w != one:
-            y = poly_egcd(w, d)[0]
+            y = poly_gcd(w, d)
             z = w / y
             if z != one and i % p != 0:
                 L *= z**(i * p**r)
@@ -803,7 +860,7 @@ def is_irreducible(poly):
     for ni in sorted([m // pi for pi in primes]):
         # The GCD of f(x) and (x^(p^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
         hi = poly_pow(h0, p**(ni - n0), poly)
-        g = poly_egcd(poly, hi - x)[0]
+        g = poly_gcd(poly, hi - x)
         if g != one:
             return False
         h0, n0 = hi, ni

@@ -1,11 +1,56 @@
 """
 A pytest module to test functions on Galois field polynomials.
 """
-from typing import Type
+import random
+
 import pytest
-import numpy as np
 
 import galois
+
+
+def test_poly_gcd():
+    a = galois.Poly.Random(5)
+    b = galois.Poly.Zero()
+    gcd = galois.poly_gcd(a, b)
+    assert gcd == a
+
+    a = galois.Poly.Zero()
+    b = galois.Poly.Random(5)
+    gcd = galois.poly_gcd(a, b)
+    assert gcd == b
+
+    # Example 2.223 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+    a = galois.Poly.Degrees([10, 9, 8, 6, 5, 4, 0])
+    b = galois.Poly.Degrees([9, 6, 5, 3, 2, 0])
+    gcd = galois.poly_gcd(a, b)
+    assert gcd == galois.Poly.Degrees([3, 1, 0])
+
+    # Tested against SageMath
+    GF = galois.GF(3)
+    a = galois.Poly.Degrees([11, 9, 8, 6, 5, 3, 2, 0], [1, 2, 2, 1, 1, 2, 2, 1], field=GF)
+    b = a.derivative()
+    gcd = galois.poly_gcd(a, b)
+    assert gcd == galois.Poly.Degrees([9, 6, 3, 0], [1, 2, 1, 2], field=GF)
+
+
+def test_poly_gcd_unit():
+    GF = galois.GF(7)
+    a = galois.conway_poly(7, 10)
+    b = galois.conway_poly(7, 5)
+    gcd = galois.poly_gcd(a, b)
+    assert gcd == galois.Poly([1], field=GF)  # Note, not 3
+
+
+def test_poly_gcd_exceptions():
+    a = galois.Poly.Degrees([10, 9, 8, 6, 5, 4, 0])
+    b = galois.Poly.Degrees([9, 6, 5, 3, 2, 0])
+
+    with pytest.raises(TypeError):
+        galois.poly_gcd(a.coeffs, b)
+    with pytest.raises(TypeError):
+        galois.poly_gcd(a, b.coeffs)
+    with pytest.raises(ValueError):
+        galois.poly_gcd(a, galois.Poly(b.coeffs, field=galois.GF(3)))
 
 
 def test_poly_egcd():
@@ -56,7 +101,7 @@ def test_poly_egcd_unit():
     GF = galois.GF(7)
     a = galois.conway_poly(7, 10)
     b = galois.conway_poly(7, 5)
-    gcd = galois.poly_egcd(a, b)[0]
+    gcd, _, _ = galois.poly_egcd(a, b)
     assert gcd == galois.Poly([1], field=GF)  # Note, not 3
 
 
@@ -70,6 +115,28 @@ def test_poly_egcd_exceptions():
         galois.poly_egcd(a, b.coeffs)
     with pytest.raises(ValueError):
         galois.poly_egcd(a, galois.Poly(b.coeffs, field=galois.GF(3)))
+
+
+def test_poly_gcd_vs_egcd():
+    GF = galois.GF2
+    a = galois.Poly.Random(random.randint(5, 20), field=GF)
+    b = galois.Poly.Random(random.randint(5, 20), field=GF)
+    assert galois.poly_gcd(a, b) == galois.poly_egcd(a, b)[0]
+
+    GF = galois.GF(7)
+    a = galois.Poly.Random(random.randint(5, 20), field=GF)
+    b = galois.Poly.Random(random.randint(5, 20), field=GF)
+    assert galois.poly_gcd(a, b) == galois.poly_egcd(a, b)[0]
+
+    GF = galois.GF(2**8)
+    a = galois.Poly.Random(random.randint(5, 20), field=GF)
+    b = galois.Poly.Random(random.randint(5, 20), field=GF)
+    assert galois.poly_gcd(a, b) == galois.poly_egcd(a, b)[0]
+
+    GF = galois.GF(7**3)
+    a = galois.Poly.Random(random.randint(5, 20), field=GF)
+    b = galois.Poly.Random(random.randint(5, 20), field=GF)
+    assert galois.poly_gcd(a, b) == galois.poly_egcd(a, b)[0]
 
 
 def test_poly_pow():
