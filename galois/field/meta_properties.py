@@ -173,7 +173,7 @@ class PropertiesMeta(type):
     def primitive_element(cls):
         """
         int: A primitive element :math:`\\alpha` of the Galois field :math:`\\mathrm{GF}(p^m)`. A primitive element is a multiplicative
-        generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
+        generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
 
         A primitive element is a root of the primitive polynomial :math:`f(x)`, such that :math:`f(\\alpha) = 0` over
         :math:`\\mathrm{GF}(p^m)`.
@@ -194,7 +194,7 @@ class PropertiesMeta(type):
     def primitive_elements(cls):
         """
         int: All primitive elements :math:`\\alpha` of the Galois field :math:`\\mathrm{GF}(p^m)`. A primitive element is a multiplicative
-        generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha^1, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
+        generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
 
         Examples
         --------
@@ -296,12 +296,12 @@ class PropertiesMeta(type):
         .. ipython:: python
 
             GF = galois.GF(2**8)
-            print(GF.properties)
-            a = GF.Random(); a
+            a = GF.Random()
+            print(GF.display_mode, a)
             with GF.display("poly"):
-                print(a)
-            with GF.display("power"):
-                print(a)
+                print(GF.display_mode, a)
+            # The display mode is reset after exiting the context manager
+            print(GF.display_mode, a)
 
         But when the primitive element is not :math:`x \\in \\mathrm{GF}(p)[x]`, the polynomial
         indeterminate used is `x`.
@@ -309,12 +309,22 @@ class PropertiesMeta(type):
         .. ipython:: python
 
             GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]))
-            print(GF.properties)
-            a = GF.Random(); a
+            a = GF.Random()
+            print(GF.display_mode, a)
             with GF.display("poly"):
-                print(a)
+                print(GF.display_mode, a)
+            # The display mode is reset after exiting the context manager
+            print(GF.display_mode, a)
+
+        The power representation displays elements as powers of :math:`\\alpha` the prrimitive element, see
+        :obj:`FieldClass.primitive_element`.
+
+        .. ipython:: python
+
             with GF.display("power"):
-                print(a)
+                print(GF.display_mode, a)
+            # The display mode is reset after exiting the context manager
+            print(GF.display_mode, a)
         """
         return cls._display_mode
 

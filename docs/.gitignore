@@ -1,5 +1,4 @@
 build/
-pages/galois.*
-!pages/galois.rst
-pages/np.*
+api/galois.*.rst
+api/np.*
 .ipynb_checkpoints/

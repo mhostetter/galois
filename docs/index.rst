@@ -14,17 +14,17 @@ Galois: A performant numpy extension for Galois fields and their applications
 .. toctree::
    :maxdepth: 2
 
-   pages/installation.rst
-   pages/basic_usage.rst
-   pages/tutorials.rst
-   pages/performance.rst
-   pages/development.rst
-   pages/api.rst
+   installation.rst
+   basic-usage.rst
+   tutorials.rst
+   performance.rst
+   development.rst
+   api/galois.rst
 
 .. toctree::
    :maxdepth: 1
 
-   pages/release_notes.md
+   release-notes.md
 
 Indices and tables
 ------------------

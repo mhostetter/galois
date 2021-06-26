@@ -4,11 +4,11 @@ API Reference v\ |version|
 .. toctree::
    :maxdepth: 2
 
-   galois_fields.rst
+   galois-fields.rst
    polys.rst
-   number_theory.rst
-   integer_factorization.rst
+   number-theory.rst
+   integer-factorization.rst
    primes.rst
    fec.rst
-   linear_sequences.rst
-   numpy.rst
+   linear-sequences.rst
+   numpy-examples.rst
