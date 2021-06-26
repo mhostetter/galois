@@ -4,7 +4,7 @@ import random
 
 import numpy as np
 
-from .math_ import isqrt
+from .integer import isqrt
 from .overrides import set_module
 
 __all__ = [

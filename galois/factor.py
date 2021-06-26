@@ -9,7 +9,8 @@ import random
 
 import numpy as np
 
-from .math_ import prod, isqrt, iroot, ilog
+from .integer import isqrt, iroot, ilog
+from .math_ import prod
 from .overrides import set_module
 from .prime import PRIMES, is_prime
 
