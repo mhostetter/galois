@@ -9,7 +9,7 @@ from .overrides import set_module
 
 __all__ = [
     "primes", "kth_prime", "prev_prime", "next_prime", "random_prime", "mersenne_exponents", "mersenne_primes",
-    "is_prime", "is_composite", "is_prime_fermat", "is_prime_miller_rabin"
+    "is_prime", "is_composite", "fermat_primality_test", "is_prime_miller_rabin"
 ]
 
 
@@ -290,7 +290,7 @@ def is_prime(n):
     Determines if :math:`n` is prime.
 
     This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
-    :obj:`galois.is_prime_fermat`. If it determines :math:`n` is composite, the function will quickly return.
+    :obj:`galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
     If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
     will run seven rounds of Miller-Rabin's primality test, see :obj:`galois.is_prime_miller_rabin`. With this many rounds,
     a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
@@ -328,7 +328,7 @@ def is_prime(n):
     if n == 2:
         return True
 
-    if not is_prime_fermat(n):
+    if not fermat_primality_test(n):
         # If the test returns False, then n is definitely composite
         return False
 
@@ -373,7 +373,7 @@ def is_composite(n):
 
 
 @set_module("galois")
-def is_prime_fermat(n):
+def fermat_primality_test(n):
     """
     Determines if :math:`n` is composite.
 
@@ -403,7 +403,7 @@ def is_prime_fermat(n):
         primes = [257, 24841, 65497]
 
         for prime in primes:
-            is_prime = galois.is_prime_fermat(prime)
+            is_prime = galois.fermat_primality_test(prime)
             p, e = galois.factors(prime)
             print("Prime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(prime, is_prime, list(p)))
 
@@ -411,7 +411,7 @@ def is_prime_fermat(n):
         pseudoprimes = [2047, 29341, 65281]
 
         for pseudoprime in pseudoprimes:
-            is_prime = galois.is_prime_fermat(pseudoprime)
+            is_prime = galois.fermat_primality_test(pseudoprime)
             p, e = galois.factors(pseudoprime)
             print("Pseudoprime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
     """
