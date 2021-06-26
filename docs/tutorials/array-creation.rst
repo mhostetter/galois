@@ -1,10 +1,12 @@
 Array creation
 ==============
 
+.. currentmodule:: galois
+
 Explicit construction
 ---------------------
 
-Galois field arrays can be constructed either explicitly or through `numpy` view casting. The method of array
+Galois field arrays can be constructed either explicitly or through :obj:`numpy` view casting. The method of array
 creation is the same for all Galois fields, but :math:`\mathrm{GF}(7)` is used as an example here.
 
 .. ipython:: python
@@ -46,8 +48,8 @@ View casting
 Alternate constructors
 ----------------------
 
-There are alternate constructors for convenience: :obj:`galois.FieldArray.Zeros`, :obj:`galois.FieldArray.Ones`, :obj:`galois.FieldArray.Range`,
-:obj:`galois.FieldArray.Random`, and :obj:`galois.FieldArray.Elements`.
+There are alternate constructors for convenience: :func:`FieldArray.Zeros`, :func:`FieldArray.Ones`, :func:`FieldArray.Range`,
+:func:`FieldArray.Random`, and :func:`FieldArray.Elements`.
 
 .. ipython:: python
 
@@ -87,7 +89,7 @@ Field element display modes
 The default representation of a finite field element is the integer representation. That is, for :math:`\mathrm{GF}(p^m)`
 the :math:`p^m` elements are represented as :math:`\{0,1,\dots,p^m-1\}`. For extension fields, the field elements can
 alternatively be represented as polynomials in :math:`\mathrm{GF}(p)[x]` with degree less than :math:`m`. For prime fields, the integer
-and polynomial representations are equivalent because in the polynomial representation each element is a degree-:math`0` polynomial over
+and polynomial representations are equivalent because in the polynomial representation each element is a degree-:math:`0` polynomial over
 :math:`\mathrm{GF}(p)`.
 
 For example, in :math:`\mathrm{GF}(2^3)` the integer representation of the :math:`8` field elements is :math:`\{0, 1, 2, 3, 4, 5, 6, 7\}`
@@ -110,7 +112,7 @@ and the polynomial representation is :math:`\{0,\ 1,\ x,\ x+1,\ x^2,\ x^2+1,\ x^
    # Reset the display mode to the default
    GF.display(); a
 
-The :obj:`galois.FieldArray.display` method can be called as a context manager.
+The :func:`FieldClass.display` method can be called as a context manager.
 
 .. ipython:: python
 

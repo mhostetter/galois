@@ -1,4 +1,4 @@
-Integer factorization
+Integer Factorization
 =====================
 
 This section contains functions for factoring integers and analyzing their properties.
