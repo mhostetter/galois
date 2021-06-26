@@ -17,7 +17,7 @@ __all__ = [
 @set_module("galois")
 def gcd(a, b):
     """
-    Finds the greatest common divisor :math:`\\mathrm{gcd}(a, b)` of the integers :math:`a` and :math:`b`.
+    Finds the greatest common divisor of the integers :math:`a` and :math:`b`.
 
     Parameters
     ----------
@@ -172,8 +172,7 @@ def crt(a, m):
 @set_module("galois")
 def totatives(n):
     """
-    Returns the positive integers (totatives) in :math:`1 \\le k < n` that are coprime with :math:`n`,
-    i.e. :math:`\\mathrm{gcd}(n, k) = 1`.
+    Returns the positive integers (totatives) in :math:`1 \\le k < n` that are coprime to :math:`n`.
 
     The totatives of :math:`n` form the multiplicative group :math:`\\mathbb{Z}{_n^\\times}`.
 
@@ -215,10 +214,13 @@ def totatives(n):
 @set_module("galois")
 def euler_phi(n):
     """
-    Counts the positive integers (totatives) in :math:`1 \\le k < n` that are relatively prime to
-    :math:`n`, i.e. :math:`\\mathrm{gcd}(n, k) = 1`.
+    Counts the positive integers (totatives) in :math:`1 \\le k < n` that are coprime to :math:`n`.
 
-    Implements the Euler Totient function :math:`\\phi(n)`.
+    This function implements the Euler totient function
+
+    .. math:: \\phi(n) = n \\prod_{p\\ |\\ n} \\bigg(1 - \\frac{1}{p}\\bigg) = \\prod_{i=1}^{k} p_i^{e_i-1} \\big(p_i - 1\\big)
+
+    for prime :math:`p` and the prime factorization :math:`n = p_1^{e_1} \\dots p_k^{e_k}`.
 
     Parameters
     ----------
@@ -228,7 +230,7 @@ def euler_phi(n):
     Returns
     -------
     int
-        The number of totatives that are relatively prime to :math:`n`.
+        The number of totatives that are coprime to :math:`n`.
 
     References
     ----------
