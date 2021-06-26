@@ -41,4 +41,4 @@ Specific primality tests
    :toctree:
 
    fermat_primality_test
-   is_prime_miller_rabin
+   miller_rabin_primality_test
