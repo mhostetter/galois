@@ -85,26 +85,26 @@ def test_is_composite():
     assert [galois.is_composite(ni) for ni in n] == is_composite.tolist()
 
 
-def test_is_prime_fermat_on_primes():
+def test_fermat_primality_test_on_primes():
     primes = random.choices(galois.prime.PRIMES, k=10)
     for prime in primes:
         # Fermat's primality test should never call a prime a composite
-        assert galois.is_prime_fermat(prime) == True
+        assert galois.fermat_primality_test(prime) == True
 
 
-def test_is_prime_fermat_on_pseudoprimes():
+def test_fermat_primality_test_on_pseudoprimes():
     # https://oeis.org/A001262
     pseudoprimes = [2047,3277,4033,4681,8321,15841,29341,42799,49141,52633,65281,74665,80581,85489,88357,90751,104653,130561,196093,220729,233017,252601,253241,256999,271951,280601,314821,357761,390937,458989,476971,486737]
     for pseudoprime in pseudoprimes:
         # Fermat's primality test is fooled by strong pseudoprimes
-        assert galois.is_prime_fermat(pseudoprime) == True
+        assert galois.fermat_primality_test(pseudoprime) == True
 
 
 def test_is_prime_miller_rabin_on_primes():
     primes = random.choices(galois.prime.PRIMES, k=10)
     for prime in primes:
         # Miller-Rabin's primality test should never call a prime a composite
-        assert galois.is_prime_fermat(prime) == True
+        assert galois.fermat_primality_test(prime) == True
 
 
 def test_is_prime_miller_rabin_on_pseudoprimes():

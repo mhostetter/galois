@@ -40,5 +40,5 @@ Specific primality tests
 .. autosummary::
    :toctree:
 
-   is_prime_fermat
+   fermat_primality_test
    is_prime_miller_rabin

@@ -268,8 +268,8 @@ def poly_factors(poly):
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not is_monic(poly):
-        raise ValueError(f"Argument `poly` must be monic (otherwise there's a trivial 0-degree factor), not a leading coefficient of {poly.coeffs[0]}.")
+    # if not is_monic(poly):
+    #     raise ValueError(f"Argument `poly` must be monic (otherwise there's a trivial 0-degree factor), not a leading coefficient of {poly.coeffs[0]}.")
 
     field = poly.field
     p = field.characteristic
@@ -279,6 +279,11 @@ def poly_factors(poly):
     r = 0
     factors_ = []
     multiplicities = []
+
+    if not is_monic(poly):
+        factors_.append(Poly(poly.coeffs[0], field=field))
+        multiplicities.append(1)
+        poly /= poly.coeffs[0]
 
     def square_free_factorization(c, r):
         nonlocal L, factors_, multiplicities
