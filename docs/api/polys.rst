@@ -22,6 +22,7 @@ Polynomial functions
 .. autosummary::
    :toctree:
 
+   poly_gcd
    poly_egcd
    poly_pow
    poly_factors
@@ -34,7 +35,9 @@ Special polynomial creation
    :toctree:
 
    irreducible_poly
+   irreducible_polys
    primitive_poly
+   primitive_polys
    conway_poly
    matlab_primitive_poly
    minimal_poly
