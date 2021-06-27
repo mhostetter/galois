@@ -13,6 +13,10 @@ __all__ = [
 ]
 
 
+###############################################################################
+# Prime generation
+###############################################################################
+
 @set_module("galois")
 def primes(n):
     """
@@ -284,6 +288,10 @@ def mersenne_primes(n=None):
     return [2**e - 1 for e in mersenne_exponents(n)]
 
 
+###############################################################################
+# Primality tests
+###############################################################################
+
 @set_module("galois")
 def is_prime(n):
     """
@@ -332,7 +340,6 @@ def is_prime(n):
         if n == p:
             return True
         elif n % p == 0:
-            print(p)
             return False
 
     if not fermat_primality_test(n):
@@ -380,61 +387,102 @@ def is_composite(n):
 
 
 @set_module("galois")
-def fermat_primality_test(n):
+def fermat_primality_test(n, a=None, rounds=1):
     """
-    Determines if :math:`n` is composite.
+    Determines if :math:`n` is composite using Fermat's primality test.
 
-    This function implements Fermat's primality test. The test says that for an integer :math:`n`, select an integer
-    :math:`a` coprime with :math:`n`. If :math:`a^{n-1} \\equiv 1 (\\textrm{mod}\\ n)`, then :math:`n` is prime or pseudoprime.
+    Fermat's theorem says that for prime :math:`p` and :math:`1 \\le a \\le p-1`, the congruence :math:`a^{p-1} \\equiv 1\\ (\\textrm{mod}\\ p)`
+    holds. Fermat's primality test of :math:`n` computes :math:`a^{n-1}\\ \\textrm{mod}\\ n` for some :math:`1 \\le a \\le n-1`.
+    If :math:`a` is such that :math:`a^{p-1} \\not\\equiv 1\\ (\\textrm{mod}\\ p)`, then :math:`a` is said to be a *Fermat witness* to the
+    compositeness of :math:`n`. If :math:`n` is composite and :math:`a^{p-1} \\equiv 1\\ (\\textrm{mod}\\ p)`, then :math:`a` is said to be
+    a *Fermat liar* to the primality of :math:`n`.
+
+    Since :math:`a = \\{1, n-1\\}` are Fermat liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
+    to :math:`2 \\le a \\le n - 2`.
 
     Parameters
     ----------
     n : int
-        A positive integer.
+        An odd integer :math:`n \\ge 3`.
+    a : int, optional
+        An integer in :math:`2 \\le a \\le n - 2`. The default is `None` which selects a random :math:`a`.
+    rounds : int, optional
+        The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
+        a new :math:`a`. The default is 1.
 
     Returns
     -------
     bool
-        `False` if :math:`n` is known to be composite. `True` if :math:`n` is prime or pseudoprime.
+        `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
 
     References
     ----------
-    * https://oeis.org/A001262
-    * https://oeis.org/A001567
+    * Section 4.2.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
 
     Examples
     --------
+    Fermat's primality test will never mark a true prime as composite.
+
     .. ipython:: python
 
-        # List of some primes
         primes = [257, 24841, 65497]
+        [galois.is_prime(p) for p in primes]
+        [galois.fermat_primality_test(p) for p in primes]
 
-        for prime in primes:
-            is_prime = galois.fermat_primality_test(prime)
-            p, e = galois.factors(prime)
-            print("Prime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(prime, is_prime, list(p)))
+    However, Fermat's primality test may mark a composite as probable prime. Here are pseudoprimes base 2 from
+    `A001567 <https://oeis.org/A001567>`_.
 
-        # List of some strong pseudoprimes with base 2
+    .. ipython:: python
+
+        # List of some Fermat pseudoprimes to base 2
         pseudoprimes = [2047, 29341, 65281]
+        [galois.is_prime(p) for p in pseudoprimes]
 
-        for pseudoprime in pseudoprimes:
-            is_prime = galois.fermat_primality_test(pseudoprime)
-            p, e = galois.factors(pseudoprime)
-            print("Pseudoprime = {:5d}, Fermat's Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
+        # The pseudoprimes base 2 satisfy 2^(p-1) = 1 (mod p)
+        [galois.fermat_primality_test(p, a=2) for p in pseudoprimes]
+
+        # But they may not satisfy a^(p-1) = 1 (mod p) for other a
+        [galois.fermat_primality_test(p) for p in pseudoprimes]
+
+    And the pseudoprimes base 3 from `A005935 <https://oeis.org/A005935>`_.
+
+    .. ipython:: python
+
+        # List of some Fermat pseudoprimes to base 3
+        pseudoprimes = [2465, 7381, 16531]
+        [galois.is_prime(p) for p in pseudoprimes]
+
+        # The pseudoprimes base 3 satisfy 3^(p-1) = 1 (mod p)
+        [galois.fermat_primality_test(p, a=3) for p in pseudoprimes]
+
+        # But they may not satisfy a^(p-1) = 1 (mod p) for other a
+        [galois.fermat_primality_test(p) for p in pseudoprimes]
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n > 2:
-        raise ValueError(f"Argument `n` must be greater than 2, not {n}.")
+    if not isinstance(a, (type(None), int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(rounds, (int, np.integer)):
+        raise TypeError(f"Argument `rounds` must be an integer, not {type(rounds)}.")
+
     n = int(n)
+    a = random.randint(2, n - 2) if a is None else a
+    if not (n > 2 and n % 2 == 1):
+        raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
+    if not 2 <= a <= n - 2:
+        raise ValueError(f"Argument `a` must satisfy 2 <= a <= {n - 2}, not {a}.")
+    if not rounds >= 1:
+        raise ValueError(f"Argument `rounds` must be at least 1, not {rounds}.")
 
-    a = 2  # A value coprime with n
+    for _ in range(rounds):
+        if pow(a, n - 1, n) != 1:
+            # n is definitely composite
+            return False
 
-    if pow(a, n - 1, n) != 1:
-        # n is definitely composite
-        return False
+        # Select new random a
+        a = random.randint(2, n - 2)
 
-    # n is a pseudoprime, but still may be composite
+    # n is a probable prime
     return True
 
 
