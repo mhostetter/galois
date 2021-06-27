@@ -23,7 +23,7 @@ Divisibility
 .. autosummary::
    :toctree:
 
-   is_coprime
+   are_coprime
 
 Congruences
 -----------

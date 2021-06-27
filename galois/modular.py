@@ -1,5 +1,5 @@
+import itertools
 import math
-from itertools import combinations
 
 import numpy as np
 
@@ -9,7 +9,7 @@ from .overrides import set_module
 from .prime import is_prime
 
 __all__ = [
-    "gcd", "egcd", "crt",
+    "gcd", "egcd", "are_coprime", "crt",
     "totatives", "euler_phi", "carmichael_lambda", "legendre_symbol", "jacobi_symbol", "kronecker_symbol", "is_cyclic",
     "is_primitive_root", "primitive_root", "primitive_roots",
 ]
@@ -105,6 +105,39 @@ def egcd(a, b):
 
 
 @set_module("galois")
+def are_coprime(*integers):
+    """
+    Determines if the integer arguments are pairwise coprime.
+
+    Parameters
+    ----------
+    *integers : tuple of int
+        Each argument must be an integer.
+
+    Returns
+    -------
+    bool
+        `True` if the integer arguments are pairwise coprime.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.are_coprime(3, 4, 5)
+        galois.are_coprime(3, 7, 9, 11)
+    """
+    for a in integers:
+        if not isinstance(a, (int, np.integer)):
+            raise TypeError(f"Each argument must be an integer, {a} is not.")
+
+    for pair in itertools.combinations(integers, 2):
+        if math.gcd(pair[0], pair[1]) != 1:
+            return False
+
+    return True
+
+
+@set_module("galois")
 def crt(a, m):
     """
     Solves the simultaneous system of congruences for :math:`x`.
@@ -146,9 +179,8 @@ def crt(a, m):
     """
     if not len(a) == len(m):
         raise ValueError(f"Arguments `a` and `m` are not the same length, {len(a)} != {len(m)}.")
-    for pair in combinations(m, 2):
-        if not math.gcd(pair[0], pair[1]) == 1:
-            raise ValueError(f"Elements of argument `m` must be pairwise coprime, {pair} are not.")
+    if not are_coprime(*m):
+        raise ValueError(f"Elements of argument `m` must be pairwise coprime, {m} are not.")
 
     # Iterate through the system of congruences reducing a pair of congruences into a
     # single one. The answer to the final congruence solves all the congruences.
