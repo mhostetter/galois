@@ -33,6 +33,12 @@ def test_egcd():
         galois.egcd(10, 12.0)
 
 
+def test_are_coprime():
+    assert galois.are_coprime(3, 4, 5) == True
+    assert galois.are_coprime(3, 5, 9, 11) == False
+    assert galois.are_coprime(2, 3, 7, 256) == False
+
+
 def test_crt():
     a = [0, 3, 4]
     m = [3, 4, 5]
