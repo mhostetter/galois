@@ -12,7 +12,7 @@ import numpy as np
 from .integer import isqrt, iroot, ilog
 from .math_ import prod
 from .overrides import set_module
-from .prime import PRIMES, is_prime
+from .prime import PRIMES, MAX_PRIME, is_prime
 
 __all__ = [
     "factors", "divisors", "divisor_sigma",
@@ -402,10 +402,11 @@ def is_square_free(n):
 @set_module("galois")
 def is_smooth(n, B):
     """
-    Determines if the positive integer :math:`n` is :math:`B`-smooth, i.e. all its prime factors satisfy :math:`p \\le B`.
+    Determines if the positive integer :math:`n` is :math:`B`-smooth.
 
-    The :math:`2`-smooth numbers are the powers of :math:`2`. The :math:`5`-smooth numbers are known
-    as *regular numbers*. The :math:`7`-smooth numbers are known as *humble numbers* or *highly composite numbers*.
+    An integer :math:`n` with prime factorization :math:`n = p_1^e_1 \\dots p_k^e_k` is :math:`B`-smooth
+    if :math:`p_k \\le B`. The :math:`2`-smooth numbers are the powers of :math:`2`. The :math:`5`-smooth numbers
+    are known as *regular numbers*. The :math:`7`-smooth numbers are known as *humble numbers* or *highly composite numbers*.
 
     Parameters
     ----------
@@ -439,6 +440,20 @@ def is_smooth(n, B):
 
     if n == 1:
         return True
-    else:
-        p, _ = factors(n)
-        return p[-1] <= B
+
+    # https://math.stackexchange.com/a/3150231
+    assert B <= MAX_PRIME
+    factor_base = PRIMES[0:bisect.bisect_right(PRIMES, B)]
+    k = prod(factor_base)
+
+    while True:
+        d = math.gcd(n, k)
+        if d > 1:
+            while n % d == 0:
+                n //= d
+            if n == 1:
+                return True
+        else:
+            break
+
+    return False
