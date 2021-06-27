@@ -325,8 +325,15 @@ def is_prime(n):
 
     if n == 1:
         return False
-    if n == 2:
-        return True
+
+    # Test n against the first few primes. If n is a multiple of them, it cannot be prime. This is very fast
+    # and can quickly rule out many composites.
+    for p in PRIMES[0:250]:
+        if n == p:
+            return True
+        elif n % p == 0:
+            print(p)
+            return False
 
     if not fermat_primality_test(n):
         # If the test returns False, then n is definitely composite
