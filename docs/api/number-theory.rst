@@ -38,6 +38,9 @@ Congruences
    primitive_root
    primitive_roots
    carmichael_lambda
+   legendre_symbol
+   jacobi_symbol
+   kronecker_symbol
 
 .. rubric::
 .. autosummary::
