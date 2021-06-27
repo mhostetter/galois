@@ -33,6 +33,7 @@ Integer tests
 
    is_prime
    is_prime_power
+   is_perfect_power
    is_composite
    is_square_free
    is_smooth

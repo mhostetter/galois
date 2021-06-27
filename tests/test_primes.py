@@ -85,19 +85,24 @@ def test_is_composite():
     assert [galois.is_composite(ni) for ni in n] == is_composite.tolist()
 
 
-def test_fermat_primality_test_on_primes():
+def test_fermat_primality_test():
     primes = random.choices(galois.prime.PRIMES, k=10)
-    for prime in primes:
-        # Fermat's primality test should never call a prime a composite
-        assert galois.fermat_primality_test(prime) == True
+    assert [galois.fermat_primality_test(p) for p in primes] == [True,]*len(primes)
 
+    # https://oeis.org/A001567
+    pseudoprimes = [341,561,645,1105,1387,1729,1905,2047,2465,2701,2821,3277,4033,4369,4371,4681,5461,6601,7957,8321,8481,8911,10261,10585,11305,12801,13741,13747,13981,14491,15709,15841,16705,18705,18721,19951,23001,23377,25761,29341]
+    pseudoprimes = [p for p in pseudoprimes if p % 2 == 1]  # Only test odds
+    assert [galois.fermat_primality_test(p, a=2) for p in pseudoprimes] == [True,]*len(pseudoprimes)
 
-def test_fermat_primality_test_on_pseudoprimes():
-    # https://oeis.org/A001262
-    pseudoprimes = [2047,3277,4033,4681,8321,15841,29341,42799,49141,52633,65281,74665,80581,85489,88357,90751,104653,130561,196093,220729,233017,252601,253241,256999,271951,280601,314821,357761,390937,458989,476971,486737]
-    for pseudoprime in pseudoprimes:
-        # Fermat's primality test is fooled by strong pseudoprimes
-        assert galois.fermat_primality_test(pseudoprime) == True
+    # https://oeis.org/A005935
+    pseudoprimes = [91,121,286,671,703,949,1105,1541,1729,1891,2465,2665,2701,2821,3281,3367,3751,4961,5551,6601,7381,8401,8911,10585,11011,12403,14383,15203,15457,15841,16471,16531,18721,19345,23521,24046,24661,24727,28009,29161]
+    pseudoprimes = [p for p in pseudoprimes if p % 2 == 1]  # Only test odds
+    assert [galois.fermat_primality_test(p, a=3) for p in pseudoprimes] == [True,]*len(pseudoprimes)
+
+    # https://oeis.org/A005936
+    pseudoprimes = [4,124,217,561,781,1541,1729,1891,2821,4123,5461,5611,5662,5731,6601,7449,7813,8029,8911,9881,11041,11476,12801,13021,13333,13981,14981,15751,15841,16297,17767,21361,22791,23653,24211,25327,25351,29341,29539]
+    pseudoprimes = [p for p in pseudoprimes if p % 2 == 1]  # Only test odds
+    assert [galois.fermat_primality_test(p, a=5) for p in pseudoprimes] == [True,]*len(pseudoprimes)
 
 
 def test_miller_rabin_primality_test_on_primes():
