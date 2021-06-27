@@ -14,7 +14,10 @@ from .math_ import prod
 from .overrides import set_module
 from .prime import PRIMES, is_prime
 
-__all__ = ["factors", "divisors", "divisor_sigma", "is_prime_power", "is_square_free", "is_smooth"]
+__all__ = [
+    "factors", "divisors", "divisor_sigma",
+    "is_prime_power", "is_perfect_power", "is_square_free", "is_smooth",
+]
 
 
 def perfect_power(n):
@@ -278,7 +281,7 @@ def divisor_sigma(n, k=1):
 @set_module("galois")
 def is_prime_power(n):
     """
-    Determines if :math:`n` is a prime power :math:`n = p^k` for :math:`k \\ge 1`.
+    Determines if :math:`n` is a prime power :math:`n = p^k` for prime :math:`p` and :math:`k \\ge 1`.
 
     There is some controversy over whether :math:`1` is a prime power :math:`p^0`. Since :math:`1` is the :math:`0`-th power
     of all primes, it is often regarded not as a prime power. This function returns `False` for :math:`1`.
@@ -314,6 +317,43 @@ def is_prime_power(n):
     # Determine is n is a perfect power and then check is the base is prime or composite
     ret = perfect_power(n)
     if ret is not None and is_prime(ret[0]):
+        return True
+
+    return False
+
+
+@set_module("galois")
+def is_perfect_power(n):
+    """
+    Determines if :math:`n` is a perfect power :math:`n = x^k` for :math:`x > 0` and :math:`k \\ge 2`.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+
+    Returns
+    -------
+    bool:
+        `True` if the integer :math:`n` is a perfect power.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.is_perfect_power(8)
+        galois.is_perfect_power(16)
+        galois.is_perfect_power(20)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+
+    if n == 1:
+        return True
+
+    if perfect_power(n) is not None:
         return True
 
     return False

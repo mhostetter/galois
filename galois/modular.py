@@ -414,8 +414,9 @@ def jacobi_symbol(a, n):
     Examples
     --------
     The quadratic residues modulo :math:`9` are :math:`Q_9 = \\{1, 4, 7\\}` and these all satisfy :math:`(\\frac{a}{9}) = 1`.
-    The quadratic non-residues modulo :math:`9` are :math:`\\overline{Q}_9 = \\{2, 3, 5, 6, 8\\}`, but notice :math:`\\{2, 5, 7\\}`
-    also satisfy :math:`(\\frac{a}{9}) = 1`.
+    The quadratic non-residues modulo :math:`9` are :math:`\\overline{Q}_9 = \\{2, 3, 5, 6, 8\\}`, but notice :math:`\\{2, 5, 8\\}`
+    also satisfy :math:`(\\frac{a}{9}) = 1`. The set of integers :math:`\\{3, 6\\}` not coprime to :math:`n` satisfies
+    :math:`(\\frac{a}{9}) = 0`.
 
     .. ipython:: python
 
