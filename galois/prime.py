@@ -343,14 +343,12 @@ def is_prime(n):
             return False
 
     if not fermat_primality_test(n):
-        # If the test returns False, then n is definitely composite
-        return False
+        return False  # n is definitely composite
 
-    if not miller_rabin_primality_test(n, rounds=7):
-        # If the test returns False, then n is definitely composite
-        return False
+    if not miller_rabin_primality_test(n, rounds=10):
+        return False  # n is definitely composite
 
-    return True
+    return True  # n is a probable prime with high confidence
 
 
 @set_module("galois")
@@ -476,111 +474,110 @@ def fermat_primality_test(n, a=None, rounds=1):
 
     for _ in range(rounds):
         if pow(a, n - 1, n) != 1:
-            # n is definitely composite
-            return False
-
-        # Select new random a
+            return False  # n is definitely composite
         a = random.randint(2, n - 2)
 
-    # n is a probable prime
-    return True
+    return True  # n is a probable prime
 
 
 @set_module("galois")
-def miller_rabin_primality_test(n, a=None, rounds=1):
+def miller_rabin_primality_test(n, a=2, rounds=1):
     """
-    Determines if :math:`n` is composite.
+    Determines if :math:`n` is composite using the Miller-Rabin primality test.
 
-    This function implements the Miller-Rabin primality test. The test says that for an integer :math:`n`, select an integer
-    :math:`a` such that :math:`a < n`. Factor :math:`n - 1` such that :math:`2^s d = n - 1`. Then, :math:`n` is composite,
-    if :math:`a^d \\not\\equiv 1 (\\textrm{mod}\\ n)` and :math:`a^{2^r d} \\not\\equiv n - 1 (\\textrm{mod}\\ n)` for
-    :math:`1 \\le r < s`.
+    The Miller-Rabin primality test is based on the fact that for odd :math:`n` with factorization :math:`n = 2^s r` for odd :math:`r`
+    and integer :math:`a` such that :math:`\\textrm{gcd}(a, n) = 1`, then either :math:`a^r \\equiv 1\\ (\\textrm{mod}\\ n)`
+    or :math:`a^{2^j r} \\equiv -1\\ (\\textrm{mod}\\ n)` for some :math:`j` in :math:`0 \\le j \\le s - 1`.
+
+    In the Miller-Rabin primality test, if :math:`a^r \\not\\equiv 1\\ (\\textrm{mod}\\ n)` and :math:`a^{2^j r} \\not\\equiv -1\\ (\\textrm{mod}\\ n)`
+    for all :math:`j` in :math:`0 \\le j \\le s - 1`, then :math:`a` is called a *strong witness* to the compositeness of :math:`n`. If not, namely
+    :math:`a^r \\equiv 1\\ (\\textrm{mod}\\ n)` or :math:`a^{2^j r} \\equiv -1\\ (\\textrm{mod}\\ n)` for any :math:`j` in :math:`0 \\le j \\le s - 1`,
+    then :math:`a` is called a *strong liar* to the primality of :math:`n` and :math:`n` is called a *strong pseudoprime to the base a*.
+
+    Since :math:`a = \\{1, n-1\\}` are strong liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
+    to :math:`2 \\le a \\le n - 2`.
+
+    For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than :math:`(\\frac{1}{4})^t`,
+    where :math:`t` is the number of rounds, and is often much lower.
 
     Parameters
     ----------
     n : int
-        A positive integer.
+        An odd integer :math:`n \\ge 3`.
     a : int, optional
-        Initial composite witness value, :math:`1 \\le a < n`. On subsequent rounds, :math:`a` will
-        be a different value. The default is a random value.
+        An integer in :math:`2 \\le a \\le n - 2`. The default is `2`.
     rounds : int, optional
         The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
-        new :math:`a`. Sufficient rounds have arbitrarily-high probability of detecting a composite.
+        consecutive primes for :math:`a`.
 
     Returns
     -------
     bool
-        `False` if :math:`n` is known to be composite. `True` if :math:`n` is prime or pseudoprime.
+        `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
 
     References
     ----------
+    * Section 4.2.3 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
     * https://math.dartmouth.edu/~carlp/PDF/paper25.pdf
-    * https://oeis.org/A001262
 
     Examples
     --------
+    The Miller-Rabin primality test will never mark a true prime as composite.
+
     .. ipython:: python
 
-        # List of some primes
         primes = [257, 24841, 65497]
+        [galois.is_prime(p) for p in primes]
+        [galois.miller_rabin_primality_test(p) for p in primes]
 
-        for prime in primes:
-            is_prime = galois.miller_rabin_primality_test(prime)
-            p, e = galois.factors(prime)
-            print("Prime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(prime, is_prime, list(p)))
+    However, a composite :math:`n` may have strong liars. :math:`91` has :math:`\\{9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82\\}`
+    as strong liars.
 
-        # List of some strong pseudoprimes with base 2
-        pseudoprimes = [2047, 29341, 65281]
+    .. ipython:: python
 
-        # Single round of Miller-Rabin, sometimes fooled by pseudoprimes
-        for pseudoprime in pseudoprimes:
-            is_prime = galois.miller_rabin_primality_test(pseudoprime)
-            p, e = galois.factors(pseudoprime)
-            print("Pseudoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
+        strong_liars = [9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82]
+        witnesses = [a for a in range(2, 90) if a not in strong_liars]
 
-        # 7 rounds of Miller-Rabin, never fooled by pseudoprimes
-        for pseudoprime in pseudoprimes:
-            is_prime = galois.miller_rabin_primality_test(pseudoprime, rounds=7)
-            p, e = galois.factors(pseudoprime)
-            print("Pseudoprime = {:5d}, Miller-Rabin Prime Test = {}, Prime factors = {}".format(pseudoprime, is_prime, list(p)))
+        # All strong liars falsely assert that 91 is prime
+        [galois.miller_rabin_primality_test(91, a=a) for a in strong_liars] == [True,]*len(strong_liars)
+
+        # All other a are witnesses to the compositeness of 91
+        [galois.miller_rabin_primality_test(91, a=a) for a in witnesses] == [False,]*len(witnesses)
     """
-    a = random.randint(1, n - 1) if a is None else a
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n > 1:
-        raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
-    if not 1 <= a < n:
-        raise ValueError(f"Arguments must satisfy `1 <= a < n`, not `1 <= {a} < {n}`.")
+    if not isinstance(a, (type(None), int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(rounds, (int, np.integer)):
+        raise TypeError(f"Argument `rounds` must be an integer, not {type(rounds)}.")
+
     n = int(n)
+    if not (n > 2 and n % 2 == 1):
+        raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
+    if not 2 <= a <= n - 2:
+        raise ValueError(f"Argument `a` must satisfy 2 <= a <= {n - 2}, not {a}.")
+    if not rounds >= 1:
+        raise ValueError(f"Argument `rounds` must be at least 1, not {rounds}.")
 
-    # Factor (n - 1) by 2
-    x = n -1
-    s = 0
-    while x % 2 == 0:
-        s += 1
-        x //= 2
+    # Write (n - 1) = 2^s * r, for odd r
+    r, s = n - 1, 0
+    while r % 2 == 0:
+        r, s = r // 2, s + 1
+    assert 2**s * r == n - 1
 
-    d = (n - 1) // 2**s
-    assert d % 2 != 0
+    for t in range(rounds):
+        y = pow(a, r, n)
+        if y not in [1, n - 1]:
+            j = 0
+            while j < s - 1 and y != n - 1:
+                y = pow(y, 2, n)
+                if y == 1:
+                    return False  # n is definitely composite
+                j += 1
 
-    # Write (n - 1) = 2^s * d
-    assert 2**s * d == n - 1
+            if y != n - 1:
+                return False  # a is a strong witness to the compositness of n
 
-    composite_tests = []
-    composite_tests.append(pow(a, d, n) != 1)
-    for r in range(0, s):
-        composite_tests.append(pow(a, 2**r * d, n) != n - 1)
-    composite_test = all(composite_tests)
+        a = PRIMES[t]
 
-    if composite_test:
-        # n is definitely composite
-        return False
-    else:
-        # Optionally iterate tests
-        rounds -= 1
-        if rounds > 0:
-            # On subsequent rounds, don't specify a -- we want new, different a's
-            return miller_rabin_primality_test(n, rounds=rounds)
-        else:
-            # n might be a prime
-            return True
+    return True  # n is a probable prime

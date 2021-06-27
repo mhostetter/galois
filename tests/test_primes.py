@@ -105,16 +105,20 @@ def test_fermat_primality_test():
     assert [galois.fermat_primality_test(p, a=5) for p in pseudoprimes] == [True,]*len(pseudoprimes)
 
 
-def test_miller_rabin_primality_test_on_primes():
+def test_miller_rabin_primality_test():
     primes = random.choices(galois.prime.PRIMES, k=10)
-    for prime in primes:
-        # Miller-Rabin's primality test should never call a prime a composite
-        assert galois.fermat_primality_test(prime) == True
+    assert [galois.miller_rabin_primality_test(p) for p in primes] == [True,]*len(primes)
 
+    strong_liars = [9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82]
+    witnesses = [a for a in range(2, 90) if a not in strong_liars]
+    assert [galois.miller_rabin_primality_test(91, a=a) for a in strong_liars] == [True,]*len(strong_liars)
+    assert [galois.miller_rabin_primality_test(91, a=a) for a in witnesses] == [False,]*len(witnesses)
 
-def test_miller_rabin_primality_test_on_pseudoprimes():
+    # 105 has no strong liars
+    witnesses = [a for a in range(2, 104)]
+    assert [galois.miller_rabin_primality_test(105, a=a) for a in witnesses] == [False,]*len(witnesses)
+
     # https://oeis.org/A001262
     pseudoprimes = [2047,3277,4033,4681,8321,15841,29341,42799,49141,52633,65281,74665,80581,85489,88357,90751,104653,130561,196093,220729,233017,252601,253241,256999,271951,280601,314821,357761,390937,458989,476971,486737]
-    for pseudoprime in pseudoprimes:
-        # With sufficient rounds, the Miller-Rabin primality test will detect the pseudoprimes as composite
-        assert galois.miller_rabin_primality_test(pseudoprime, rounds=7) == False
+    assert [galois.miller_rabin_primality_test(p, a=2) for p in pseudoprimes] == [True,]*len(pseudoprimes)
+    assert [galois.miller_rabin_primality_test(p, a=3) for p in pseudoprimes] == [False,]*len(pseudoprimes)
