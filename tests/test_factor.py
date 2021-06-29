@@ -158,3 +158,19 @@ def test_is_smooth():
     is_smooth = np.zeros(n.size, dtype=bool)
     is_smooth[smooths - 1] = True  # -1 for 1-indexed
     assert [galois.is_smooth(ni, 11) and galois.is_square_free(ni) for ni in n] == is_smooth.tolist()
+
+
+def test_is_powersmooth():
+    assert galois.is_powersmooth(2**4 * 3**2 * 5, 5) == False
+    assert galois.is_powersmooth(2**4 * 3**2 * 5, 9) == False
+    assert galois.is_powersmooth(2**4 * 3**2 * 5, 16) == True
+
+    assert galois.is_powersmooth(2**4 * 3**2 * 5*3, 5) == False
+    assert galois.is_powersmooth(2**4 * 3**2 * 5*3, 25) == False
+    assert galois.is_powersmooth(2**4 * 3**2 * 5*3, 125) == True
+
+    assert galois.is_powersmooth(13 * 23, 4) == False
+
+    for n in range(2, 1_000):
+        p, e = galois.factors(n)
+        assert all([pi**ei <= 50 for pi, ei in zip(p, e)]) == galois.is_powersmooth(n, 50)

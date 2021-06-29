@@ -18,7 +18,7 @@ __all__ = [
     "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
     "factors", "perfect_power",
     "divisors", "divisor_sigma",
-    "is_prime_power", "is_perfect_power", "is_square_free", "is_smooth",
+    "is_prime_power", "is_perfect_power", "is_square_free", "is_smooth", "is_powersmooth"
 ]
 
 
@@ -695,3 +695,64 @@ def is_smooth(n, B):
             break
 
     return False
+
+
+@set_module("galois")
+def is_powersmooth(n, B):
+    r"""
+    Determines if the positive integer :math:`n` is :math:`B`-powersmooth.
+
+    An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-powersmooth
+    if :math:`p_i^{e_i} \le B` for :math:`1 \le i \le k`.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+    B : int
+        The smoothness bound :math:`B \ge 2`.
+
+    Returns
+    -------
+    bool
+        `True` if :math:`n` is :math:`B`-powersmooth.
+
+    Examples
+    --------
+    Comparison of :math:`B`-smooth and :math:`B`-powersmooth. Necessarily, any :math:`n` that is
+    :math:`B`-powersmooth must be :math:`B`-smooth.
+
+    .. ipython:: python
+
+        galois.is_smooth(2**4 * 3**2 * 5, 5)
+        galois.is_powersmooth(2**4 * 3**2 * 5, 5)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not isinstance(B, (int, np.integer)):
+        raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be non-negative, not {n}.")
+    if not B >= 2:
+        raise ValueError(f"Argument `B` must be at least 2, not {B}.")
+
+    if n == 1:
+        return True
+
+    assert B <= MAX_PRIME
+    D = 1  # The product of all GCDs with the prime powers
+    for p in PRIMES[0:bisect.bisect_right(PRIMES, B)]:
+        e = ilog(B, p) + 1  # Find the exponent e of p such that p^e > B
+        d = math.gcd(p**e, n)
+        D *= d
+
+        # If the GCD is p^e, then p^e > B divides n and therefor n cannot be B-powersmooth
+        if d == p**e:
+            return False
+
+    # If the product of GCDs of n with each prime power is less than n, then n has a prime factor greater than B.
+    # Therefore, n cannot be B-powersmooth.
+    if D < n:
+        return False
+
+    return True
