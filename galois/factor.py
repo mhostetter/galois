@@ -15,78 +15,206 @@ from .overrides import set_module
 from .prime import PRIMES, MAX_PRIME, is_prime
 
 __all__ = [
-    "factors", "divisors", "divisor_sigma",
+    "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
+    "factors", "perfect_power",
+    "divisors", "divisor_sigma",
     "is_prime_power", "is_perfect_power", "is_square_free", "is_smooth",
 ]
 
 
-def perfect_power(n):
-    max_prime_idx = bisect.bisect_right(PRIMES, ilog(n, 2))
+###############################################################################
+# Legendre, Jacobi, and Kronecker symbols
+###############################################################################
 
-    for k in PRIMES[0:max_prime_idx]:
-        x = iroot(n, k)
-        if x**k == n:
-            # Recursively determine if x is a perfect power
-            ret = perfect_power(x)
-            if ret is None:
-                return x, k
-            else:
-                x, kk = ret
-                return x, k * kk
+@set_module("galois")
+def legendre_symbol(a, p):
+    r"""
+    Computes the Legendre symbol :math:`(\frac{a}{p})`.
 
-    return None
+    The Legendre symbol is useful for determining if :math:`a` is a quadratic residue modulo :math:`p`, namely
+    :math:`a \in Q_p`. A quadratic residue :math:`a` modulo :math:`p` satisfies :math:`x^2 \equiv a\ (\textrm{mod}\ p)`
+    for some :math:`x`.
 
+    .. math::
 
-def trial_division_factor(n):
-    max_factor = isqrt(n)
-    max_prime_idx = bisect.bisect_right(PRIMES, max_factor)
+        \bigg(\frac{a}{p}\bigg) =
+            \begin{cases}
+                0, & p\ |\ a
 
-    p, e = [], []
-    for prime in PRIMES[0:max_prime_idx]:
-        degree = 0
-        while n % prime == 0:
-            degree += 1
-            n //= prime
-        if degree > 0:
-            p.append(prime)
-            e.append(degree)
-            if n == 1:
-                break
+                1, & a \in Q_p
 
-    return p, e, n
+                -1, & a \in \overline{Q}_p
+            \end{cases}
 
+    Parameters
+    ----------
+    a : int
+        An integer.
+    p : int
+        An odd prime :math:`p \ge 3`.
 
-@functools.lru_cache(maxsize=1024)
-def pollard_rho_factor(n, c=1):
-    """
+    Returns
+    -------
+    int
+        The Legendre symbol :math:`(\frac{a}{p})` with value in :math:`\{0, 1, -1\}`.
+
     References
     ----------
-    * Section 3.2.2 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
+    * Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+
+    Examples
+    --------
+    The quadratic residues modulo :math:`7` are :math:`Q_7 = \{1, 2, 4\}`. The quadratic non-residues
+    modulo :math:`7` are :math:`\overline{Q}_7 = \{3, 5, 6\}`.
+
+    .. ipython:: python
+
+        [pow(x, 2, 7) for x in range(7)]
+        for a in range(7):
+            print(f"({a} / 7) = {galois.legendre_symbol(a, 7)}")
     """
-    f = lambda x: (x**2 + c) % n
+    if not is_prime(p):
+        raise ValueError(f"Argument `p` must be an odd prime greater than 2, not {p}.")
 
-    a, b, d = 2, 2, 1
-    while True:
-        a = f(a)
-        b = f(f(b))
-        b = f(f(b))
-        d = math.gcd(a - b, n)
-
-        if 1 < d < n:
-            return d
-        if d == n:
-            return None  # Failure
+    return jacobi_symbol(a, p)
 
 
-# def fermat_factors(n):
-#     a = isqrt(n) + 1
-#     b2 = a**2 - n
-#     while isqrt(b2)**2 != b2:
-#         a += 1
-#         b2 = a**2 - n
-#     b = isqrt(b2)
-#     return a - b, a + b
+@set_module("galois")
+def jacobi_symbol(a, n):
+    r"""
+    Computes the Jacobi symbol :math:`(\frac{a}{n})`.
 
+    The Jacobi symbol extends the Legendre symbol for odd :math:`n \ge 3`. Unlike the Legendre symbol, :math:`(\frac{a}{n}) = 1`
+    does not imply :math:`a` is a quadratic residue modulo :math:`n`. However, all :math:`a \in Q_n` have :math:`(\frac{a}{n}) = 1`.
+
+    Parameters
+    ----------
+    a : int
+        An integer.
+    n : int
+        An odd integer :math:`n \ge 3`.
+
+    Returns
+    -------
+    int
+        The Jacobi symbol :math:`(\frac{a}{n})` with value in :math:`\{0, 1, -1\}`.
+
+    References
+    ----------
+    * Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+
+    Examples
+    --------
+    The quadratic residues modulo :math:`9` are :math:`Q_9 = \{1, 4, 7\}` and these all satisfy :math:`(\frac{a}{9}) = 1`.
+    The quadratic non-residues modulo :math:`9` are :math:`\overline{Q}_9 = \{2, 3, 5, 6, 8\}`, but notice :math:`\{2, 5, 8\}`
+    also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime to :math:`n` satisfies
+    :math:`(\frac{a}{9}) = 0`.
+
+    .. ipython:: python
+
+        [pow(x, 2, 9) for x in range(9)]
+        for a in range(9):
+            print(f"({a} / 9) = {galois.jacobi_symbol(a, 9)}")
+    """
+    if not isinstance(a, (int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not (n > 2 and n % 2 == 1):
+        raise ValueError(f"Argument `n` must be an odd integer greater than 2, not {n}.")
+
+    a = a % n
+    if a == 0:
+        return 0
+    if a == 1:
+        return 1
+
+    # Write a = 2^e * a1
+    a1, e = a, 0
+    while a1 % 2 == 0:
+        a1, e = a1 // 2, e + 1
+    assert 2**e * a1 == a
+
+    if e % 2 == 0:
+        s = 1
+    else:
+        if n % 8 in [1, 7]:
+            s = 1
+        else:
+            s = -1
+
+    if n % 4 == 3 and a1 % 4 == 3:
+        s = -s
+
+    n1 = n % a1
+    if a1 == 1:
+        return s
+    else:
+        return s * jacobi_symbol(n1, a1)
+
+
+@set_module("galois")
+def kronecker_symbol(a, n):
+    r"""
+    Computes the Kronecker symbol :math:`(\frac{a}{n})`.
+
+    The Kronecker symbol extends the Jacobi symbol for all :math:`n`.
+
+    Parameters
+    ----------
+    a : int
+        An integer.
+    n : int
+        An integer.
+
+    Returns
+    -------
+    int
+        The Kronecker symbol :math:`(\frac{a}{n})` with value in :math:`\{0, -1, 1\}`.
+
+    References
+    ----------
+    * Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+    """
+    # pylint: disable=too-many-return-statements
+    if not isinstance(a, (int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+
+    if n == 0:
+        return 1 if a in [1, -1] else 0
+    if n == 1:
+        return 1
+    if n == -1:
+        return -1 if a < 0 else 1
+    if n == 2:
+        if a % 2 == 0:
+            return 0
+        elif a % 8 in [1, 7]:
+            return 1
+        else:
+            return -1
+
+    # Factor out the unit +/- 1
+    u = -1 if n < 0 else 1
+    n //= u
+
+    # Factor out the powers of 2 so the resulting n is odd
+    e = 0
+    while n % 2 == 0:
+        n, e = n // 2, e + 1
+
+    if n >=3 :
+        # Handle the remaining odd n using the Jacobi symbol
+        return kronecker_symbol(a, u) * kronecker_symbol(a, 2)**e * jacobi_symbol(a, n)
+    else:
+        return kronecker_symbol(a, u) * kronecker_symbol(a, 2)**e
+
+
+###############################################################################
+# Prime factorization
+###############################################################################
 
 @set_module("galois")
 @functools.lru_cache(maxsize=2048)
@@ -178,6 +306,112 @@ def factors(n):
 
     return p, e
 
+
+@set_module("galois")
+@functools.lru_cache(maxsize=512)
+def perfect_power(n):
+    r"""
+    Returns the integer base :math:`m > 1` and exponent :math:`e > 1` of :math:`n = m^e` if :math:`n` is a perfect power.
+
+    Parameters
+    ----------
+    n : int
+        A positive integer :math:`n > 1`.
+
+    Returns
+    -------
+    None, tuple
+        `None` is :math:`n` is not a perfect power. Otherwise, :math:`(c, e)` such that :math:`n = c^e`. :math:`c`
+        may be composite.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        # Primes are not perfect powers
+        galois.perfect_power(5)
+        # Products of primes are not perfect powers
+        galois.perfect_power(6)
+        # Products of prime powers were the GCD of the exponents is 1 are not perfect powers
+        galois.perfect_power(36*125)
+        galois.perfect_power(36)
+        galois.perfect_power(125)
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 1:
+        raise TypeError(f"Argument `n` must be greater than 1, not {n}.")
+    n = abs(int(n))
+    max_prime_idx = bisect.bisect_right(PRIMES, ilog(n, 2))
+
+    for k in PRIMES[0:max_prime_idx]:
+        x = iroot(n, k)
+        if x**k == n:
+            # Recursively determine if x is a perfect power
+            ret = perfect_power(x)
+            if ret is None:
+                return x, k
+            else:
+                x, kk = ret
+                return x, k * kk
+
+    return None
+
+
+def trial_division_factor(n):
+    max_factor = isqrt(n)
+    max_prime_idx = bisect.bisect_right(PRIMES, max_factor)
+
+    p, e = [], []
+    for prime in PRIMES[0:max_prime_idx]:
+        degree = 0
+        while n % prime == 0:
+            degree += 1
+            n //= prime
+        if degree > 0:
+            p.append(prime)
+            e.append(degree)
+            if n == 1:
+                break
+
+    return p, e, n
+
+
+@functools.lru_cache(maxsize=1024)
+def pollard_rho_factor(n, c=1):
+    """
+    References
+    ----------
+    * Section 3.2.2 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
+    """
+    f = lambda x: (x**2 + c) % n
+
+    a, b, d = 2, 2, 1
+    while True:
+        a = f(a)
+        b = f(f(b))
+        b = f(f(b))
+        d = math.gcd(a - b, n)
+
+        if 1 < d < n:
+            return d
+        if d == n:
+            return None  # Failure
+
+
+# def fermat_factors(n):
+#     a = isqrt(n) + 1
+#     b2 = a**2 - n
+#     while isqrt(b2)**2 != b2:
+#         a += 1
+#         b2 = a**2 - n
+#     b = isqrt(b2)
+#     return a - b, a + b
+
+
+###############################################################################
+# Compsite factorization
+###############################################################################
 
 @set_module("galois")
 def divisors(n):
@@ -277,6 +511,10 @@ def divisor_sigma(n, k=1):
     else:
         return sum([di**k for di in d])
 
+
+###############################################################################
+# Primality tests
+###############################################################################
 
 @set_module("galois")
 def is_prime_power(n):
@@ -413,7 +651,7 @@ def is_smooth(n, B):
     n : int
         A positive integer.
     B : int
-        The smoothness bound.
+        The smoothness bound :math:`B \ge 2`.
 
     Returns
     -------

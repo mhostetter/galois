@@ -25,7 +25,7 @@ def primes(n):
     Parameters
     ----------
     n : int
-        A positive integer.
+        A positive integer :math:`n \\ge 2`.
 
     Returns
     -------

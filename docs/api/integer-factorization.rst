@@ -23,6 +23,7 @@ Composite factorization
 
    divisors
    divisor_sigma
+   perfect_power
 
 Integer tests
 -------------
