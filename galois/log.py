@@ -11,17 +11,17 @@ __all__ = ["log_naive"]
 
 @set_module("galois")
 def log_naive(beta, alpha, modulus):
-    """
-    Computes the discrete logarithm :math:`x = \\textrm{log}_{\\alpha}(\\beta)\\ (\\textrm{mod}\\ m)`.
+    r"""
+    Computes the discrete logarithm :math:`x = \textrm{log}_{\alpha}(\beta)\ (\textrm{mod}\ m)`.
 
     This function implements the naive algorithm. It is included for testing and reference.
 
     Arguments
     ---------
     beta : int
-        The integer :math:`\\beta` to compute the logarithm of.
+        The integer :math:`\beta` to compute the logarithm of.
     alpha : int
-        The base :math:`\\alpha`.
+        The base :math:`\alpha`.
     modulus : int
         The modulus :math:`m`.
 

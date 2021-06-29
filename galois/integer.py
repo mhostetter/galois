@@ -13,8 +13,8 @@ __all__ = ["isqrt", "iroot", "ilog"]
 
 @set_module("galois")
 def isqrt(n):
-    """
-    Computes the integer square root of :math:`n` such that :math:`\\textrm{isqrt}(n)^2 \\le n`.
+    r"""
+    Computes the integer square root of :math:`n` such that :math:`\textrm{isqrt}(n)^2 \le n`.
 
     Note
     ----
@@ -29,7 +29,7 @@ def isqrt(n):
     Returns
     -------
     int
-        The integer square root of :math:`n` such that :math:`\\textrm{isqrt}(n)^2 \\le n`.
+        The integer square root of :math:`n` such that :math:`\textrm{isqrt}(n)^2 \le n`.
 
     Examples
     --------
@@ -61,8 +61,8 @@ def isqrt(n):
 
 @set_module("galois")
 def iroot(n, k):
-    """
-    Finds the integer :math:`k`-th root :math:`x` of :math:`n`, such that :math:`x^k \\le n`.
+    r"""
+    Finds the integer :math:`k`-th root :math:`x` of :math:`n`, such that :math:`x^k \le n`.
 
     Parameters
     ----------
@@ -74,7 +74,7 @@ def iroot(n, k):
     Returns
     -------
     int
-        The integer :math:`k`-th root :math:`x` of :math:`n`, such that :math:`x^k \\le n`
+        The integer :math:`k`-th root :math:`x` of :math:`n`, such that :math:`x^k \le n`
 
     Examples
     --------
@@ -108,8 +108,8 @@ def iroot(n, k):
 
 @set_module("galois")
 def ilog(n, b):
-    """
-    Finds the integer :math:`\\textrm{log}_b(n) = k`, such that :math:`b^k \\le n`.
+    r"""
+    Finds the integer :math:`\textrm{log}_b(n) = k`, such that :math:`b^k \le n`.
 
     Parameters
     ----------
@@ -121,7 +121,7 @@ def ilog(n, b):
     Returns
     -------
     int
-        The integer :math:`\\textrm{log}_b(n) = k`, such that :math:`b^k \\le n`.
+        The integer :math:`\textrm{log}_b(n) = k`, such that :math:`b^k \le n`.
 
     Examples
     --------

@@ -11,8 +11,8 @@ __all__ = ["pow", "lcm", "prod"]
 
 @set_module("galois")
 def pow(base, exp, mod):  # pylint: disable=redefined-builtin
-    """
-    Efficiently exponentiates an integer :math:`a^k (\\textrm{mod}\\ m)`.
+    r"""
+    Efficiently exponentiates an integer :math:`a^k (\textrm{mod}\ m)`.
 
     The algorithm is more efficient than exponentiating first and then reducing modulo :math:`m`. This
     is the integer equivalent of :func:`galois.poly_pow`.
@@ -33,7 +33,7 @@ def pow(base, exp, mod):  # pylint: disable=redefined-builtin
     Returns
     -------
     int
-        The modular exponentiation :math:`a^k (\\textrm{mod}\\ m)`.
+        The modular exponentiation :math:`a^k (\textrm{mod}\ m)`.
 
     Examples
     --------
@@ -48,7 +48,7 @@ def pow(base, exp, mod):  # pylint: disable=redefined-builtin
 
 @set_module("galois")
 def lcm(*integers):
-    """
+    r"""
     Computes the least common multiple of the integer arguments.
 
     Note
@@ -90,7 +90,7 @@ def lcm(*integers):
 
 @set_module("galois")
 def prod(iterable, start=1):
-    """
+    r"""
     Computes the product of the integer arguments.
 
     Note

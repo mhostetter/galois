@@ -9,8 +9,8 @@ __all__ = ["GF", "Field"]
 
 @set_module("galois")
 def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="auto"):
-    """
-    Factory function to construct a Galois field array class for :math:`\\mathrm{GF}(p^m)`.
+    r"""
+    Factory function to construct a Galois field array class for :math:`\mathrm{GF}(p^m)`.
 
     The created class will be a subclass of :obj:`galois.FieldArray` and instance of :obj:`galois.FieldClass`.
     The :obj:`galois.FieldArray` inheritance provides the :obj:`numpy.ndarray` functionality. The :obj:`galois.FieldClass` metaclass
@@ -19,17 +19,17 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, mode="
     Parameters
     ----------
     order : int
-        The order :math:`p^m` of the field :math:`\\mathrm{GF}(p^m)`. The order must be a prime power.
+        The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
     irreducible_poly : int, tuple, list, numpy.ndarray, galois.Poly, optional
-        Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\\mathrm{GF}(p)` that will
+        Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that will
         define the Galois field arithmetic. An integer may be provided, which is the integer representation of the
         irreducible polynomial. A tuple, list, or ndarray may be provided, which represents the polynomial coefficients in
         degree-descending order. The default is `None` which uses the Conway polynomial :math:`C_{p,m}` obtained from :func:`galois.conway_poly`.
     primitive_element : int, tuple, list, numpy.ndarray, galois.Poly, optional
-        Optionally specify a primitive element of the field :math:`\\mathrm{GF}(p^m)`. A primitive element is a generator of
-        the multiplicative group of the field. For prime fields :math:`\\mathrm{GF}(p)`, the primitive element must be an integer
-        and is a primitive root modulo :math:`p`. For extension fields :math:`\\mathrm{GF}(p^m)`, the primitive element is a polynomial
-        of degree less than :math:`m` over :math:`\\mathrm{GF}(p)`. An integer may be provided, which is the integer representation of the polynomial.
+        Optionally specify a primitive element of the field :math:`\mathrm{GF}(p^m)`. A primitive element is a generator of
+        the multiplicative group of the field. For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer
+        and is a primitive root modulo :math:`p`. For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial
+        of degree less than :math:`m` over :math:`\mathrm{GF}(p)`. An integer may be provided, which is the integer representation of the polynomial.
         A tuple, list, or ndarray may be provided, which represents the polynomial coefficients in degree-descending order. The default is `None`
         which uses :obj:`galois.primitive_root(p)` for prime fields and :obj:`galois.primitive_element(irreducible_poly)` for extension fields.
     verify : bool, optional

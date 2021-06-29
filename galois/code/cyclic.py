@@ -11,8 +11,8 @@ __all__ = ["poly_to_generator_matrix", "roots_to_parity_check_matrix"]
 
 @set_module("galois")
 def poly_to_generator_matrix(n, generator_poly, systematic=True):
-    """
-    Converts the generator polynomial :math:`g(x)` into the generator matrix :math:`\\mathbf{G}` for an :math:`[n, k]` cyclic code.
+    r"""
+    Converts the generator polynomial :math:`g(x)` into the generator matrix :math:`\mathbf{G}` for an :math:`[n, k]` cyclic code.
 
     Parameters
     ----------
@@ -27,12 +27,12 @@ def poly_to_generator_matrix(n, generator_poly, systematic=True):
     Returns
     -------
     galois.FieldArray
-        The :math:`(k, n)` generator matrix :math:`\\mathbf{G}`, such that given a message :math:`\\mathbf{m}`, a codeword is defined by
-        :math:`\\mathbf{c} = \\mathbf{m}\\mathbf{G}`.
+        The :math:`(k, n)` generator matrix :math:`\mathbf{G}`, such that given a message :math:`\mathbf{m}`, a codeword is defined by
+        :math:`\mathbf{c} = \mathbf{m}\mathbf{G}`.
 
     Examples
     --------
-    Compute the generator matrix for the :math:`\\mathrm{Hamming}(7, 4)` code.
+    Compute the generator matrix for the :math:`\mathrm{Hamming}(7, 4)` code.
 
     .. ipython :: python
 
@@ -74,8 +74,8 @@ def poly_to_generator_matrix(n, generator_poly, systematic=True):
 
 @set_module("galois")
 def roots_to_parity_check_matrix(n, roots):
-    """
-    Converts the generator polynomial roots into the parity-check matrix :math:`\\mathbf{H}` for an :math:`[n, k]` cyclic code.
+    r"""
+    Converts the generator polynomial roots into the parity-check matrix :math:`\mathbf{H}` for an :math:`[n, k]` cyclic code.
 
     Parameters
     ----------
@@ -87,12 +87,12 @@ def roots_to_parity_check_matrix(n, roots):
     Returns
     -------
     galois.FieldArray
-        The :math:`(2t, n)` parity-check matrix :math:`\\mathbf{H}`, such that given a codeword :math:`\\mathbf{c}`, the syndrome is defined by
-        :math:`\\mathbf{s} = \\mathbf{c}\\mathbf{H}^T`.
+        The :math:`(2t, n)` parity-check matrix :math:`\mathbf{H}`, such that given a codeword :math:`\mathbf{c}`, the syndrome is defined by
+        :math:`\mathbf{s} = \mathbf{c}\mathbf{H}^T`.
 
     Examples
     --------
-    Compute the parity-check for the :math:`\\mathrm{RS}(15, 9)` code.
+    Compute the parity-check for the :math:`\mathrm{RS}(15, 9)` code.
 
     .. ipython :: python
 

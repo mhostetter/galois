@@ -63,8 +63,8 @@ class PropertiesMeta(type):
 
     @property
     def characteristic(cls):
-        """
-        int: The prime characteristic :math:`p` of the Galois field :math:`\\mathrm{GF}(p^m)`. Adding
+        r"""
+        int: The prime characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)`. Adding
         :math:`p` copies of any element will always result in :math:`0`.
 
         Examples
@@ -87,8 +87,8 @@ class PropertiesMeta(type):
 
     @property
     def degree(cls):
-        """
-        int: The prime characteristic's degree :math:`m` of the Galois field :math:`\\mathrm{GF}(p^m)`. The degree
+        r"""
+        int: The prime characteristic's degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)`. The degree
         is a positive integer.
 
         Examples
@@ -104,8 +104,8 @@ class PropertiesMeta(type):
 
     @property
     def order(cls):
-        """
-        int: The order :math:`p^m` of the Galois field :math:`\\mathrm{GF}(p^m)`. The order of the field is also equal to
+        r"""
+        int: The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`. The order of the field is also equal to
         the field's size.
 
         Examples
@@ -121,9 +121,9 @@ class PropertiesMeta(type):
 
     @property
     def irreducible_poly(cls):
-        """
-        galois.Poly: The irreducible polynomial :math:`f(x)` of the Galois field :math:`\\mathrm{GF}(p^m)`. The irreducible
-        polynomial is of degree :math:`m` over :math:`\\mathrm{GF}(p)`.
+        r"""
+        galois.Poly: The irreducible polynomial :math:`f(x)` of the Galois field :math:`\mathrm{GF}(p^m)`. The irreducible
+        polynomial is of degree :math:`m` over :math:`\mathrm{GF}(p)`.
 
         Examples
         --------
@@ -171,12 +171,12 @@ class PropertiesMeta(type):
 
     @property
     def primitive_element(cls):
-        """
-        int: A primitive element :math:`\\alpha` of the Galois field :math:`\\mathrm{GF}(p^m)`. A primitive element is a multiplicative
-        generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
+        r"""
+        int: A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
+        generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
 
-        A primitive element is a root of the primitive polynomial :math:`f(x)`, such that :math:`f(\\alpha) = 0` over
-        :math:`\\mathrm{GF}(p^m)`.
+        A primitive element is a root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
+        :math:`\mathrm{GF}(p^m)`.
 
         Examples
         --------
@@ -192,9 +192,9 @@ class PropertiesMeta(type):
 
     @property
     def primitive_elements(cls):
-        """
-        int: All primitive elements :math:`\\alpha` of the Galois field :math:`\\mathrm{GF}(p^m)`. A primitive element is a multiplicative
-        generator of the field, such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{p^m - 2}\\}`.
+        r"""
+        int: All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
+        generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
 
         Examples
         --------
@@ -242,8 +242,8 @@ class PropertiesMeta(type):
 
     @property
     def prime_subfield(cls):
-        """
-        galois.FieldClass: The prime subfield :math:`\\mathrm{GF}(p)` of the extension field :math:`\\mathrm{GF}(p^m)`.
+        r"""
+        galois.FieldClass: The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
 
         Examples
         --------
@@ -284,13 +284,13 @@ class PropertiesMeta(type):
 
     @property
     def display_mode(cls):
-        """
+        r"""
         str: The representation of Galois field elements, either `"int"`, `"poly"`, or `"power"`. This can be
         changed with :func:`display`.
 
         Examples
         --------
-        For the polynomial representation, when the primitive element is :math:`x \\in \\mathrm{GF}(p)[x]` the polynomial
+        For the polynomial representation, when the primitive element is :math:`x \in \mathrm{GF}(p)[x]` the polynomial
         indeterminate used is  `α`.
 
         .. ipython:: python
@@ -303,7 +303,7 @@ class PropertiesMeta(type):
             # The display mode is reset after exiting the context manager
             print(GF.display_mode, a)
 
-        But when the primitive element is not :math:`x \\in \\mathrm{GF}(p)[x]`, the polynomial
+        But when the primitive element is not :math:`x \in \mathrm{GF}(p)[x]`, the polynomial
         indeterminate used is `x`.
 
         .. ipython:: python
@@ -316,7 +316,7 @@ class PropertiesMeta(type):
             # The display mode is reset after exiting the context manager
             print(GF.display_mode, a)
 
-        The power representation displays elements as powers of :math:`\\alpha` the prrimitive element, see
+        The power representation displays elements as powers of :math:`\alpha` the prrimitive element, see
         :obj:`FieldClass.primitive_element`.
 
         .. ipython:: python

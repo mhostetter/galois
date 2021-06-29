@@ -17,7 +17,7 @@ __all__ = [
 
 @set_module("galois")
 def gcd(a, b):
-    """
+    r"""
     Finds the greatest common divisor of the integers :math:`a` and :math:`b`.
 
     Parameters
@@ -50,8 +50,8 @@ def gcd(a, b):
 
 @set_module("galois")
 def egcd(a, b):
-    """
-    Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.
+    r"""
+    Finds the integer multiplicands of :math:`a` and :math:`b` such that :math:`a x + b y = \mathrm{gcd}(a, b)`.
 
     This function implements the Extended Euclidean Algorithm.
 
@@ -67,9 +67,9 @@ def egcd(a, b):
     int
         Greatest common divisor of :math:`a` and :math:`b`.
     int
-        Integer :math:`x`, such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.
+        Integer :math:`x`, such that :math:`a x + b y = \mathrm{gcd}(a, b)`.
     int
-        Integer :math:`y`, such that :math:`a x + b y = \\mathrm{gcd}(a, b)`.
+        Integer :math:`y`, such that :math:`a x + b y = \mathrm{gcd}(a, b)`.
 
     References
     ----------
@@ -106,7 +106,7 @@ def egcd(a, b):
 
 @set_module("galois")
 def are_coprime(*integers):
-    """
+    r"""
     Determines if the integer arguments are pairwise coprime.
 
     Parameters
@@ -139,19 +139,19 @@ def are_coprime(*integers):
 
 @set_module("galois")
 def crt(a, m):
-    """
+    r"""
     Solves the simultaneous system of congruences for :math:`x`.
 
     This function implements the Chinese Remainder Theorem.
 
     .. math::
-        x &\\equiv a_1\\ (\\textrm{mod}\\ m_1)
+        x &\equiv a_1\ (\textrm{mod}\ m_1)
 
-        x &\\equiv a_2\\ (\\textrm{mod}\\ m_2)
+        x &\equiv a_2\ (\textrm{mod}\ m_2)
 
-        x &\\equiv \\ldots
+        x &\equiv \ldots
 
-        x &\\equiv a_n\\ (\\textrm{mod}\\ m_n)
+        x &\equiv a_n\ (\textrm{mod}\ m_n)
 
     Parameters
     ----------
@@ -204,10 +204,10 @@ def crt(a, m):
 
 @set_module("galois")
 def totatives(n):
-    """
-    Returns the positive integers (totatives) in :math:`1 \\le k < n` that are coprime to :math:`n`.
+    r"""
+    Returns the positive integers (totatives) in :math:`1 \le k < n` that are coprime to :math:`n`.
 
-    The totatives of :math:`n` form the multiplicative group :math:`\\mathbb{Z}{_n^\\times}`.
+    The totatives of :math:`n` form the multiplicative group :math:`\mathbb{Z}{_n^\times}`.
 
     Parameters
     ----------
@@ -246,14 +246,14 @@ def totatives(n):
 
 @set_module("galois")
 def euler_phi(n):
-    """
-    Counts the positive integers (totatives) in :math:`1 \\le k < n` that are coprime to :math:`n`.
+    r"""
+    Counts the positive integers (totatives) in :math:`1 \le k < n` that are coprime to :math:`n`.
 
     This function implements the Euler totient function
 
-    .. math:: \\phi(n) = n \\prod_{p\\ |\\ n} \\bigg(1 - \\frac{1}{p}\\bigg) = \\prod_{i=1}^{k} p_i^{e_i-1} \\big(p_i - 1\\big)
+    .. math:: \phi(n) = n \prod_{p\ |\ n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)
 
-    for prime :math:`p` and the prime factorization :math:`n = p_1^{e_1} \\dots p_k^{e_k}`.
+    for prime :math:`p` and the prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}`.
 
     Parameters
     ----------
@@ -305,11 +305,11 @@ def euler_phi(n):
 
 @set_module("galois")
 def carmichael_lambda(n):
-    """
-    Finds the smallest positive integer :math:`m` such that :math:`a^m \\equiv 1\\ (\\textrm{mod}\\ n)` for
-    every integer :math:`a` in :math:`1 \\le a < n` that is coprime to :math:`n`.
+    r"""
+    Finds the smallest positive integer :math:`m` such that :math:`a^m \equiv 1\ (\textrm{mod}\ n)` for
+    every integer :math:`a` in :math:`1 \le a < n` that is coprime to :math:`n`.
 
-    Implements the Carmichael function :math:`\\lambda(n)`.
+    Implements the Carmichael function :math:`\lambda(n)`.
 
     Parameters
     ----------
@@ -319,8 +319,8 @@ def carmichael_lambda(n):
     Returns
     -------
     int
-        The smallest positive integer :math:`m` such that :math:`a^m \\equiv 1 (\\textrm{mod}\\ n)` for
-        every :math:`a` in :math:`1 \\le a < n` that is coprime to :math:`n`.
+        The smallest positive integer :math:`m` such that :math:`a^m \equiv 1 (\textrm{mod}\ n)` for
+        every :math:`a` in :math:`1 \le a < n` that is coprime to :math:`n`.
 
     References
     ----------
@@ -368,35 +368,35 @@ def carmichael_lambda(n):
 
 @set_module("galois")
 def legendre_symbol(a, p):
-    """
-    Computes the Legendre symbol :math:`(\\frac{a}{p})`.
+    r"""
+    Computes the Legendre symbol :math:`(\frac{a}{p})`.
 
     The Legendre symbol is useful for determining if :math:`a` is a quadratic residue modulo :math:`p`, namely
-    :math:`a \\in Q_p`. A quadratic residue :math:`a` modulo :math:`p` satisfies :math:`x^2 \\equiv a\\ (\\textrm{mod}\\ p)`
+    :math:`a \in Q_p`. A quadratic residue :math:`a` modulo :math:`p` satisfies :math:`x^2 \equiv a\ (\textrm{mod}\ p)`
     for some :math:`x`.
 
     .. math::
 
-        \\bigg(\\frac{a}{p}\\bigg) =
-            \\begin{cases}
-                0, & p\\ |\\ a
+        \bigg(\frac{a}{p}\bigg) =
+            \begin{cases}
+                0, & p\ |\ a
 
-                1, & a \\in Q_p
+                1, & a \in Q_p
 
-                -1, & a \\in \\overline{Q}_p
-            \\end{cases}
+                -1, & a \in \overline{Q}_p
+            \end{cases}
 
     Parameters
     ----------
     a : int
         An integer.
     p : int
-        An odd prime :math:`p \\ge 3`.
+        An odd prime :math:`p \ge 3`.
 
     Returns
     -------
     int
-        The Legendre symbol :math:`(\\frac{a}{p})` with value in :math:`\\{0, 1, -1\\}`.
+        The Legendre symbol :math:`(\frac{a}{p})` with value in :math:`\{0, 1, -1\}`.
 
     References
     ----------
@@ -404,8 +404,8 @@ def legendre_symbol(a, p):
 
     Examples
     --------
-    The quadratic residues modulo :math:`7` are :math:`Q_7 = \\{1, 2, 4\\}`. The quadratic non-residues
-    modulo :math:`7` are :math:`\\overline{Q}_7 = \\{3, 5, 6\\}`.
+    The quadratic residues modulo :math:`7` are :math:`Q_7 = \{1, 2, 4\}`. The quadratic non-residues
+    modulo :math:`7` are :math:`\overline{Q}_7 = \{3, 5, 6\}`.
 
     .. ipython:: python
 
@@ -421,23 +421,23 @@ def legendre_symbol(a, p):
 
 @set_module("galois")
 def jacobi_symbol(a, n):
-    """
-    Computes the Jacobi symbol :math:`(\\frac{a}{n})`.
+    r"""
+    Computes the Jacobi symbol :math:`(\frac{a}{n})`.
 
-    The Jacobi symbol extends the Legendre symbol for odd :math:`n \\ge 3`. Unlike the Legendre symbol, :math:`(\\frac{a}{n}) = 1`
-    does not imply :math:`a` is a quadratic residue modulo :math:`n`. However, all :math:`a \\in Q_n` have :math:`(\\frac{a}{n}) = 1`.
+    The Jacobi symbol extends the Legendre symbol for odd :math:`n \ge 3`. Unlike the Legendre symbol, :math:`(\frac{a}{n}) = 1`
+    does not imply :math:`a` is a quadratic residue modulo :math:`n`. However, all :math:`a \in Q_n` have :math:`(\frac{a}{n}) = 1`.
 
     Parameters
     ----------
     a : int
         An integer.
     n : int
-        An odd integer :math:`n \\ge 3`.
+        An odd integer :math:`n \ge 3`.
 
     Returns
     -------
     int
-        The Jacobi symbol :math:`(\\frac{a}{n})` with value in :math:`\\{0, 1, -1\\}`.
+        The Jacobi symbol :math:`(\frac{a}{n})` with value in :math:`\{0, 1, -1\}`.
 
     References
     ----------
@@ -445,10 +445,10 @@ def jacobi_symbol(a, n):
 
     Examples
     --------
-    The quadratic residues modulo :math:`9` are :math:`Q_9 = \\{1, 4, 7\\}` and these all satisfy :math:`(\\frac{a}{9}) = 1`.
-    The quadratic non-residues modulo :math:`9` are :math:`\\overline{Q}_9 = \\{2, 3, 5, 6, 8\\}`, but notice :math:`\\{2, 5, 8\\}`
-    also satisfy :math:`(\\frac{a}{9}) = 1`. The set of integers :math:`\\{3, 6\\}` not coprime to :math:`n` satisfies
-    :math:`(\\frac{a}{9}) = 0`.
+    The quadratic residues modulo :math:`9` are :math:`Q_9 = \{1, 4, 7\}` and these all satisfy :math:`(\frac{a}{9}) = 1`.
+    The quadratic non-residues modulo :math:`9` are :math:`\overline{Q}_9 = \{2, 3, 5, 6, 8\}`, but notice :math:`\{2, 5, 8\}`
+    also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime to :math:`n` satisfies
+    :math:`(\frac{a}{9}) = 0`.
 
     .. ipython:: python
 
@@ -495,8 +495,8 @@ def jacobi_symbol(a, n):
 
 @set_module("galois")
 def kronecker_symbol(a, n):
-    """
-    Computes the Kronecker symbol :math:`(\\frac{a}{n})`.
+    r"""
+    Computes the Kronecker symbol :math:`(\frac{a}{n})`.
 
     The Kronecker symbol extends the Jacobi symbol for all :math:`n`.
 
@@ -510,7 +510,7 @@ def kronecker_symbol(a, n):
     Returns
     -------
     int
-        The Kronecker symbol :math:`(\\frac{a}{n})` with value in :math:`\\{0, -1, 1\\}`.
+        The Kronecker symbol :math:`(\frac{a}{n})` with value in :math:`\{0, -1, 1\}`.
 
     References
     ----------
@@ -554,16 +554,16 @@ def kronecker_symbol(a, n):
 
 @set_module("galois")
 def is_cyclic(n):
-    """
-    Determines whether the multiplicative group :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is cyclic.
+    r"""
+    Determines whether the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic.
 
-    The multiplicative group :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is the set of positive integers :math:`1 \\le a < n`
-    that are coprime with :math:`n`. :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` being cyclic means that some primitive root of :math:`n`,
-    or generator, :math:`g` can generate the group :math:`\\{g^0, g^1, g^2, \\dots, g^{\\phi(n)-1}\\}`, where
-    :math:`\\phi(n)` is Euler's totient function and calculates the order of the group. If :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is cyclic,
-    the number of primitive roots is found by :math:`\\phi(\\phi(n))`.
+    The multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is the set of positive integers :math:`1 \le a < n`
+    that are coprime with :math:`n`. :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` being cyclic means that some primitive root of :math:`n`,
+    or generator, :math:`g` can generate the group :math:`\{g^0, g^1, g^2, \dots, g^{\phi(n)-1}\}`, where
+    :math:`\phi(n)` is Euler's totient function and calculates the order of the group. If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic,
+    the number of primitive roots is found by :math:`\phi(\phi(n))`.
 
-    :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is *cyclic* if and only if :math:`n` is :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`,
+    :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is *cyclic* if and only if :math:`n` is :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`,
     where :math:`p` is an odd prime and :math:`k` is a positive integer.
 
     Parameters
@@ -574,12 +574,12 @@ def is_cyclic(n):
     Returns
     -------
     bool
-        `True` if the multiplicative group :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` is cyclic.
+        `True` if the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic.
 
     Examples
     --------
-    The elements of :math:`(\\mathbb{Z}/n\\mathbb{Z}){^\\times}` are the positive integers less than :math:`n` that are coprime with :math:`n`.
-    For example, :math:`(\\mathbb{Z}/14\\mathbb{Z}){^\\times} = \\{1, 3, 5, 9, 11, 13\\}`.
+    The elements of :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` are the positive integers less than :math:`n` that are coprime with :math:`n`.
+    For example, :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}`.
 
     .. ipython:: python
 
@@ -607,7 +607,7 @@ def is_cyclic(n):
         len(roots) == galois.euler_phi(phi)
 
     A counterexample is :math:`n = 15 = 3*5`, which doesn't fit the condition for cyclicness.
-    :math:`(\\mathbb{Z}/15\\mathbb{Z}){^\\times} = \\{1, 2, 4, 7, 8, 11, 13, 14\\}`.
+    :math:`(\mathbb{Z}/15\mathbb{Z}){^\times} = \{1, 2, 4, 7, 8, 11, 13, 14\}`.
 
     .. ipython:: python
 
@@ -656,10 +656,10 @@ def is_cyclic(n):
 
 @set_module("galois")
 def is_primitive_root(g, n):
-    """
+    r"""
     Determines if :math:`g` is a primitive root modulo :math:`n`.
 
-    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \\le a < n`
+    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \le a < n`
     that are coprime with :math:`n`, can be generated by powers of :math:`g`.
 
     Parameters
@@ -704,18 +704,18 @@ def is_primitive_root(g, n):
 
 @set_module("galois")
 def primitive_root(n, start=1, stop=None, reverse=False):
-    """
+    r"""
     Finds the smallest primitive root modulo :math:`n`.
 
-    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \\le a < n`
+    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \le a < n`
     that are coprime with :math:`n`, can be generated by powers of :math:`g`.
 
     Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only
-    if :math:`g` is a generator of the multiplicative group of integers modulo :math:`n`, :math:`\\mathbb{Z}{_n^\\times}`.
-    That is, :math:`\\mathbb{Z}{_n^\\times} = \\{g, g^2, \\dots, g^k\\}`, where :math:`k` is order of the group.
-    The order of the group :math:`\\mathbb{Z}{_n^\\times}` is defined by Euler's totient function, :math:`\\phi(n) = k`.
-    If :math:`\\mathbb{Z}{_n^\\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
-    :math:`\\phi(k)` or :math:`\\phi(\\phi(n))`.
+    if :math:`g` is a generator of the multiplicative group of integers modulo :math:`n`, :math:`\mathbb{Z}{_n^\times}`.
+    That is, :math:`\mathbb{Z}{_n^\times} = \{g, g^2, \dots, g^k\}`, where :math:`k` is order of the group.
+    The order of the group :math:`\mathbb{Z}{_n^\times}` is defined by Euler's totient function, :math:`\phi(n) = k`.
+    If :math:`\mathbb{Z}{_n^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
+    :math:`\phi(k)` or :math:`\phi(\phi(n))`.
 
     See :obj:`galois.is_cyclic`.
 
@@ -725,10 +725,10 @@ def primitive_root(n, start=1, stop=None, reverse=False):
         A positive integer.
     start : int, optional
         Starting value (inclusive) in the search for a primitive root. The default is `1`. The resulting primitive
-        root, if found, will be :math:`\\textrm{start} \\le g < \\textrm{stop}`.
+        root, if found, will be :math:`\textrm{start} \le g < \textrm{stop}`.
     stop : int, optional
         Stopping value (exclusive) in the search for a primitive root. The default is `None` which corresponds to `n`.
-        The resulting primitive root, if found, will be :math:`\\textrm{start} \\le g < \\textrm{stop}`.
+        The resulting primitive root, if found, will be :math:`\textrm{start} \le g < \textrm{stop}`.
     reverse : bool, optional
         Search for a primitive root in reverse order, i.e. find the largest primitive root first. Default is `False`.
 
@@ -749,7 +749,7 @@ def primitive_root(n, start=1, stop=None, reverse=False):
     --------
     Here is an example with one primitive root, :math:`n = 6 = 2 * 3^1`, which fits the definition
     of cyclicness, see :obj:`galois.is_cyclic`. Because :math:`n = 6` is not prime, the primitive root
-    isn't a multiplicative generator of :math:`\\mathbb{Z}/\\textbf{n}\\mathbb{Z}`.
+    isn't a multiplicative generator of :math:`\mathbb{Z}/\textbf{n}\mathbb{Z}`.
 
     .. ipython:: python
 
@@ -772,7 +772,7 @@ def primitive_root(n, start=1, stop=None, reverse=False):
 
     Here is an example with two primitive roots, :math:`n = 7 = 7^1`, which fits the definition
     of cyclicness, see :obj:`galois.is_cyclic`. Since :math:`n = 7` is prime, the primitive root
-    is a multiplicative generator of :math:`\\mathbb{Z}/\\textbf{n}\\mathbb{Z}`.
+    is a multiplicative generator of :math:`\mathbb{Z}/\textbf{n}\mathbb{Z}`.
 
     .. ipython:: python
 
@@ -834,18 +834,18 @@ def primitive_root(n, start=1, stop=None, reverse=False):
 
 @set_module("galois")
 def primitive_roots(n, start=1, stop=None, reverse=False):
-    """
+    r"""
     Finds all primitive roots modulo :math:`n`.
 
-    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \\le a < n`
+    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \le a < n`
     that are coprime with :math:`n`, can be generated by powers of :math:`g`.
 
     Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only
-    if :math:`g` is a generator of the multiplicative group of integers modulo :math:`n`, :math:`\\mathbb{Z}{_n^\\times}`.
-    That is, :math:`\\mathbb{Z}{_n^\\times} = \\{g, g^2, \\dots, g^k\\}`, where :math:`k` is order of the group.
-    The order of the group :math:`\\mathbb{Z}{_n^\\times}` is defined by Euler's totient function, :math:`\\phi(n) = k`.
-    If :math:`\\mathbb{Z}{_n^\\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
-    :math:`\\phi(k)` or :math:`\\phi(\\phi(n))`.
+    if :math:`g` is a generator of the multiplicative group of integers modulo :math:`n`, :math:`\mathbb{Z}{_n^\times}`.
+    That is, :math:`\mathbb{Z}{_n^\times} = \{g, g^2, \dots, g^k\}`, where :math:`k` is order of the group.
+    The order of the group :math:`\mathbb{Z}{_n^\times}` is defined by Euler's totient function, :math:`\phi(n) = k`.
+    If :math:`\mathbb{Z}{_n^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
+    :math:`\phi(k)` or :math:`\phi(\phi(n))`.
 
     See :obj:`galois.is_cyclic`.
 
@@ -855,10 +855,10 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
         A positive integer.
     start : int, optional
         Starting value (inclusive) in the search for a primitive root. The default is 1. The resulting primitive
-        roots, if found, will be :math:`\\textrm{start} \\le x < \\textrm{stop}`.
+        roots, if found, will be :math:`\textrm{start} \le x < \textrm{stop}`.
     stop : int, optional
         Stopping value (exclusive) in the search for a primitive root. The default is `None` which corresponds to `n`.
-        The resulting primitive roots, if found, will be :math:`\\textrm{start} \\le x < \\textrm{stop}`.
+        The resulting primitive roots, if found, will be :math:`\textrm{start} \le x < \textrm{stop}`.
     reverse : bool, optional
         List all primitive roots in descending order, i.e. largest to smallest. Default is `False`.
 
@@ -878,7 +878,7 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
     --------
     Here is an example with one primitive root, :math:`n = 6 = 2 * 3^1`, which fits the definition
     of cyclicness, see :obj:`galois.is_cyclic`. Because :math:`n = 6` is not prime, the primitive root
-    isn't a multiplicative generator of :math:`\\mathbb{Z}/\\textbf{n}\\mathbb{Z}`.
+    isn't a multiplicative generator of :math:`\mathbb{Z}/\textbf{n}\mathbb{Z}`.
 
     .. ipython:: python
 
@@ -904,7 +904,7 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
 
     Here is an example with two primitive roots, :math:`n = 7 = 7^1`, which fits the definition
     of cyclicness, see :obj:`galois.is_cyclic`. Since :math:`n = 7` is prime, the primitive root
-    is a multiplicative generator of :math:`\\mathbb{Z}/\\textbf{n}\\mathbb{Z}`.
+    is a multiplicative generator of :math:`\mathbb{Z}/\textbf{n}\mathbb{Z}`.
 
     .. ipython:: python
 

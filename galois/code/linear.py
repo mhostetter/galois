@@ -11,21 +11,21 @@ __all__ = ["generator_to_parity_check_matrix", "parity_check_to_generator_matrix
 
 @set_module("galois")
 def generator_to_parity_check_matrix(G):
-    """
-    Converts the generator matrix :math:`\\mathbf{G}` of a linear :math:`[n, k]` code into its parity-check matrix :math:`\\mathbf{H}`.
+    r"""
+    Converts the generator matrix :math:`\mathbf{G}` of a linear :math:`[n, k]` code into its parity-check matrix :math:`\mathbf{H}`.
 
-    The generator and parity-check matrices satisfy the equations :math:`\\mathbf{G}\\mathbf{H}^T = \\mathbf{0}`.
+    The generator and parity-check matrices satisfy the equations :math:`\mathbf{G}\mathbf{H}^T = \mathbf{0}`.
 
     Parameters
     ----------
     G : galois.FieldArray
-        The :math:`(k, n)` generator matrix :math:`\\mathbf{G}` in systematic form
-        :math:`\\mathbf{G} = [\\mathbf{I}_{k,k}\\ |\\ \\mathbf{P}_{k,n-k}]`.
+        The :math:`(k, n)` generator matrix :math:`\mathbf{G}` in systematic form
+        :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
 
     Returns
     -------
     galois.FieldArray
-        The :math:`(n-k, n)` parity-check matrix :math:`\\mathbf{H} = [-\\mathbf{P}_{k,n-k}^T\\ |\\ \\mathbf{I}_{n-k,n-k}]``.
+        The :math:`(n-k, n)` parity-check matrix :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
 
     Examples
     --------
@@ -47,21 +47,21 @@ def generator_to_parity_check_matrix(G):
 
 @set_module("galois")
 def parity_check_to_generator_matrix(H):
-    """
-    Converts the parity-check matrix :math:`\\mathbf{H}` of a linear :math:`[n, k]` code into its generator matrix :math:`\\mathbf{G}`.
+    r"""
+    Converts the parity-check matrix :math:`\mathbf{H}` of a linear :math:`[n, k]` code into its generator matrix :math:`\mathbf{G}`.
 
-    The generator and parity-check matrices satisfy the equations :math:`\\mathbf{G}\\mathbf{H}^T = \\mathbf{0}`.
+    The generator and parity-check matrices satisfy the equations :math:`\mathbf{G}\mathbf{H}^T = \mathbf{0}`.
 
     Parameters
     ----------
     H : galois.FieldArray
-        The :math:`(n-k, n)` parity-check matrix :math:`\\mathbf{G}` in systematic form
-        :math:`\\mathbf{H} = [-\\mathbf{P}_{k,n-k}^T\\ |\\ \\mathbf{I}_{n-k,n-k}]``.
+        The :math:`(n-k, n)` parity-check matrix :math:`\mathbf{G}` in systematic form
+        :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
 
     Returns
     -------
     galois.FieldArray
-        The :math:`(k, n)` generator matrix :math:`\\mathbf{G} = [\\mathbf{I}_{k,k}\\ |\\ \\mathbf{P}_{k,n-k}]`.
+        The :math:`(k, n)` generator matrix :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
 
     Examples
     --------

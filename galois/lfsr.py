@@ -6,20 +6,20 @@ __all__ = ["berlekamp_massey"]
 
 @set_module("galois")
 def berlekamp_massey(sequence):
-    """
-    Finds the minimum-degree polynomial :math:`c(x)` that produces the sequence in :math:`\\mathrm{GF}(p^m)`.
+    r"""
+    Finds the minimum-degree polynomial :math:`c(x)` that produces the sequence in :math:`\mathrm{GF}(p^m)`.
 
     This function implements the Berlekamp-Massey algorithm.
 
     Parameters
     ----------
     sequence : galois.FieldArray
-        A sequence of Galois field elements in :math:`\\mathrm{GF}(p^m)`.
+        A sequence of Galois field elements in :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
     galois.Poly
-        The minimum-degree polynomial :math:`c(x) \\in \\mathrm{GF}(p^m)(x)` that produces
+        The minimum-degree polynomial :math:`c(x) \in \mathrm{GF}(p^m)(x)` that produces
         the input sequence.
 
     Examples

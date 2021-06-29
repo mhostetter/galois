@@ -23,18 +23,18 @@ __all__ = [
 
 @set_module("galois")
 def poly_gcd(a, b):
-    """
+    r"""
     Finds the greatest common divisor of two polynomials :math:`a(x)` and :math:`b(x)`
-    over :math:`\\mathrm{GF}(q)`.
+    over :math:`\mathrm{GF}(q)`.
 
     This implementation uses the Euclidean Algorithm.
 
     Parameters
     ----------
     a : galois.Poly
-        A polynomial :math:`a(x)` over :math:`\\mathrm{GF}(q)`.
+        A polynomial :math:`a(x)` over :math:`\mathrm{GF}(q)`.
     b : galois.Poly
-        A polynomial :math:`b(x)` over :math:`\\mathrm{GF}(q)`.
+        A polynomial :math:`b(x)` over :math:`\mathrm{GF}(q)`.
 
     Returns
     -------
@@ -81,26 +81,26 @@ def poly_gcd(a, b):
 
 @set_module("galois")
 def poly_egcd(a, b):
-    """
-    Finds the polynomial multiplicands of :math:`a(x)` and :math:`b(x)` such that :math:`a(x)s(x) + b(x)t(x) = \\mathrm{gcd}(a(x), b(x))`.
+    r"""
+    Finds the polynomial multiplicands of :math:`a(x)` and :math:`b(x)` such that :math:`a(x)s(x) + b(x)t(x) = \mathrm{gcd}(a(x), b(x))`.
 
     This implementation uses the Extended Euclidean Algorithm.
 
     Parameters
     ----------
     a : galois.Poly
-        A polynomial :math:`a(x)` over :math:`\\mathrm{GF}(q)`.
+        A polynomial :math:`a(x)` over :math:`\mathrm{GF}(q)`.
     b : galois.Poly
-        A polynomial :math:`b(x)` over :math:`\\mathrm{GF}(q)`.
+        A polynomial :math:`b(x)` over :math:`\mathrm{GF}(q)`.
 
     Returns
     -------
     galois.Poly
         Polynomial greatest common divisor of :math:`a(x)` and :math:`b(x)`.
     galois.Poly
-        Polynomial :math:`s(x)`, such that :math:`a(x)s(x) + b(x)t(x) = \\mathrm{gcd}(a(x), b(x))`.
+        Polynomial :math:`s(x)`, such that :math:`a(x)s(x) + b(x)t(x) = \mathrm{gcd}(a(x), b(x))`.
     galois.Poly
-        Polynomial :math:`t(x)`, such that :math:`a(x)s(x) + b(x)t(x) = \\mathrm{gcd}(a(x), b(x))`.
+        Polynomial :math:`t(x)`, such that :math:`a(x)s(x) + b(x)t(x) = \mathrm{gcd}(a(x), b(x))`.
 
     Examples
     --------
@@ -152,9 +152,9 @@ def poly_egcd(a, b):
 
 @set_module("galois")
 def poly_pow(poly, power, modulus):
-    """
+    r"""
     Efficiently exponentiates a polynomial :math:`f(x)` to the power :math:`k` reducing by modulo :math:`g(x)`,
-    :math:`f(x)^k\\ \\textrm{mod}\\ g(x)`.
+    :math:`f(x)^k\ \textrm{mod}\ g(x)`.
 
     The algorithm is more efficient than exponentiating first and then reducing modulo :math:`g(x)`. Instead,
     this algorithm repeatedly squares :math:`f(x)`, reducing modulo :math:`g(x)` at each step. This is the polynomial
@@ -172,7 +172,7 @@ def poly_pow(poly, power, modulus):
     Returns
     -------
     galois.Poly
-        The resulting polynomial :math:`h(x) = f^k\\ \\textrm{mod}\\ g`.
+        The resulting polynomial :math:`h(x) = f^k\ \textrm{mod}\ g`.
 
     Examples
     --------
@@ -220,23 +220,23 @@ def poly_pow(poly, power, modulus):
 
 @set_module("galois")
 def poly_factors(poly):
-    """
-    Factors the polynomial :math:`f(x)` into a product of :math:`n` irreducible factors :math:`f(x) = g_0(x)^{k_0} g_1(x)^{k_1} \\dots g_{n-1}(x)^{k_{n-1}}`
-    with :math:`k_0 \\le k_1 \\le \\dots \\le k_{n-1}`.
+    r"""
+    Factors the polynomial :math:`f(x)` into a product of :math:`n` irreducible factors :math:`f(x) = g_0(x)^{k_0} g_1(x)^{k_1} \dots g_{n-1}(x)^{k_{n-1}}`
+    with :math:`k_0 \le k_1 \le \dots \le k_{n-1}`.
 
     This function implements the Square-Free Factorization algorithm.
 
     Parameters
     ----------
     poly : galois.Poly
-        The polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p^m)` to be factored.
+        The polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` to be factored.
 
     Returns
     -------
     list
-        The list of :math:`n` polynomial factors :math:`\\{g_0(x), g_1(x), \\dots, g_{n-1}(x)\\}`.
+        The list of :math:`n` polynomial factors :math:`\{g_0(x), g_1(x), \dots, g_{n-1}(x)\}`.
     list
-        The list of :math:`n` polynomial multiplicities :math:`\\{k_0, k_1, \\dots, k_{n-1}\\}`.
+        The list of :math:`n` polynomial multiplicities :math:`\{k_0, k_1, \dots, k_{n-1}\}`.
 
     References
     ----------
@@ -322,19 +322,19 @@ def poly_factors(poly):
 
 @set_module("galois")
 def irreducible_poly(characteristic, degree, method="min"):
-    """
-    Returns a monic irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
+    r"""
+    Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    If :math:`f(x)` is an irreducible polynomial over :math:`\\mathrm{GF}(p)` and :math:`a \\in \\mathrm{GF}(p) \\backslash \\{0\\}`,
-    then :math:`a \\cdot f(x)` is also irreducible.
+    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
+    then :math:`a \cdot f(x)` is also irreducible.
 
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\\mathrm{GF}(p^m)`
-    of :math:`\\mathrm{GF}(p)`.
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
+    of :math:`\mathrm{GF}(p)`.
 
     Parameters
     ----------
     characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
+        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
     degree : int
         The degree :math:`m` of the desired irreducible polynomial.
     method : str, optional
@@ -347,7 +347,7 @@ def irreducible_poly(characteristic, degree, method="min"):
     Returns
     -------
     galois.Poly
-        The degree-:math:`m` monic irreducible polynomial over :math:`\\mathrm{GF}(p)`.
+        The degree-:math:`m` monic irreducible polynomial over :math:`\mathrm{GF}(p)`.
 
     Examples
     --------
@@ -398,26 +398,26 @@ def irreducible_poly(characteristic, degree, method="min"):
 
 @set_module("galois")
 def irreducible_polys(characteristic, degree):
-    """
-    Returns all monic irreducible polynomials :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
+    r"""
+    Returns all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    If :math:`f(x)` is an irreducible polynomial over :math:`\\mathrm{GF}(p)` and :math:`a \\in \\mathrm{GF}(p) \\backslash \\{0\\}`,
-    then :math:`a \\cdot f(x)` is also irreducible.
+    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
+    then :math:`a \cdot f(x)` is also irreducible.
 
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\\mathrm{GF}(p^m)`
-    of :math:`\\mathrm{GF}(p)`.
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
+    of :math:`\mathrm{GF}(p)`.
 
     Parameters
     ----------
     characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
+        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
     degree : int
         The degree :math:`m` of the desired irreducible polynomial.
 
     Returns
     -------
     list
-        All degree-:math:`m` monic irreducible polynomials over :math:`\\mathrm{GF}(p)`.
+        All degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(p)`.
 
     Examples
     --------
@@ -442,17 +442,17 @@ def irreducible_polys(characteristic, degree):
 
 @set_module("galois")
 def primitive_poly(characteristic, degree, method="min"):
-    """
-    Returns a monic primitive polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
+    r"""
+    Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\\mathrm{GF}(p^m)`
-    of :math:`\\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\\alpha`
-    of :math:`\\mathrm{GF}(p^m)` such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{p^m-2}\\}`.
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
+    of :math:`\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
+    of :math:`\mathrm{GF}(p^m)` such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
 
     Parameters
     ----------
     characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
+        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
     degree : int
         The degree :math:`m` of the desired primitive polynomial.
     method : str, optional
@@ -465,7 +465,7 @@ def primitive_poly(characteristic, degree, method="min"):
     Returns
     -------
     galois.Poly
-        The degree-:math:`m` monic primitive polynomial over :math:`\\mathrm{GF}(p)`.
+        The degree-:math:`m` monic primitive polynomial over :math:`\mathrm{GF}(p)`.
 
     Examples
     --------
@@ -504,24 +504,24 @@ def primitive_poly(characteristic, degree, method="min"):
 
 @set_module("galois")
 def primitive_polys(characteristic, degree):
-    """
-    Returns all monic primitive polynomials :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
+    r"""
+    Returns all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\\mathrm{GF}(p^m)`
-    of :math:`\\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\\alpha`
-    of :math:`\\mathrm{GF}(p^m)` such that :math:`\\mathrm{GF}(p^m) = \\{0, 1, \\alpha, \\alpha^2, \\dots, \\alpha^{p^m-2}\\}`.
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
+    of :math:`\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
+    of :math:`\mathrm{GF}(p^m)` such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
 
     Parameters
     ----------
     characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
+        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
     degree : int
         The degree :math:`m` of the desired primitive polynomial.
 
     Returns
     -------
     list
-        All degree-:math:`m` monic primitive polynomials over :math:`\\mathrm{GF}(p)`.
+        All degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(p)`.
 
     Examples
     --------
@@ -546,35 +546,35 @@ def primitive_polys(characteristic, degree):
 
 @set_module("galois")
 def matlab_primitive_poly(characteristic, degree):
-    """
-    Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
+    r"""
+    Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
     This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the lexicographically-minimal
     primitive polynomial (equivalent to `galois.primitive_poly(p, m)`) as the default... *mostly*. There are three
     notable exceptions:
 
-    1. :math:`\\mathrm{GF}(2^7)` uses :math:`x^7 + x^3 + 1`, not :math:`x^7 + x + 1`.
-    2. :math:`\\mathrm{GF}(2^{14})` uses :math:`x^{14} + x^{10} + x^6 + x + 1`, not :math:`x^{14} + x^5 + x^3 + x + 1`.
-    3. :math:`\\mathrm{GF}(2^{16})` uses :math:`x^{16} + x^{12} + x^3 + x + 1`, not :math:`x^{16} + x^5 + x^3 + x^2 + 1`.
+    1. :math:`\mathrm{GF}(2^7)` uses :math:`x^7 + x^3 + 1`, not :math:`x^7 + x + 1`.
+    2. :math:`\mathrm{GF}(2^{14})` uses :math:`x^{14} + x^{10} + x^6 + x + 1`, not :math:`x^{14} + x^5 + x^3 + x + 1`.
+    3. :math:`\mathrm{GF}(2^{16})` uses :math:`x^{16} + x^{12} + x^3 + x + 1`, not :math:`x^{16} + x^5 + x^3 + x^2 + 1`.
 
     Warning
     -------
-    This has been tested for all the :math:`\\mathrm{GF}(2^m)` fields for :math:`2 \\le m \\le 16` (Matlab doesn't support
-    larger than 16). And it has been spot-checked for :math:`\\mathrm{GF}(p^m)`. There may exist other exceptions. Please
+    This has been tested for all the :math:`\mathrm{GF}(2^m)` fields for :math:`2 \le m \le 16` (Matlab doesn't support
+    larger than 16). And it has been spot-checked for :math:`\mathrm{GF}(p^m)`. There may exist other exceptions. Please
     submit a GitHub issue if you discover one.
 
     Parameters
     ----------
     characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)` that the polynomial is over.
+        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
     degree : int
-        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\\mathrm{GF}(p^m)`
-        of :math:`\\mathrm{GF}(p)`.
+        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\mathrm{GF}(p^m)`
+        of :math:`\mathrm{GF}(p)`.
 
     Returns
     -------
     galois.Poly
-        Matlab's default degree-:math:`m` primitive polynomial over :math:`\\mathrm{GF}(p)`.
+        Matlab's default degree-:math:`m` primitive polynomial over :math:`\mathrm{GF}(p)`.
 
     Examples
     --------
@@ -605,16 +605,16 @@ def matlab_primitive_poly(characteristic, degree):
 
 @set_module("galois")
 def conway_poly(characteristic, degree):
-    """
-    Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\\mathrm{GF}(p)` with degree :math:`m`.
+    r"""
+    Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    A Conway polynomial is a an irreducible and primitive polynomial over :math:`\\mathrm{GF}(p)` that provides a standard
-    representation of :math:`\\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
+    A Conway polynomial is a an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a standard
+    representation of :math:`\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
     provide compatability between fields and their subfields, and hence are the common way to represent extension
     fields.
 
     The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-minimal monic primitive polynomial
-    of degree :math:`m` over :math:`\\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n` dividing
+    of degree :math:`m` over :math:`\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n` dividing
     :math:`m`.
 
     This function uses `Frank Luebeck's Conway polynomial database <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_
@@ -623,14 +623,14 @@ def conway_poly(characteristic, degree):
     Parameters
     ----------
     characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\\mathrm{GF}(p)`.
+        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)`.
     degree : int
-        The degree :math:`m` of the Conway polynomial and degree of the extension field :math:`\\mathrm{GF}(p^m)`.
+        The degree :math:`m` of the Conway polynomial and degree of the extension field :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
     galois.Poly
-        The degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\\mathrm{GF}(p)`.
+        The degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)`.
 
     Raises
     ------
@@ -671,23 +671,23 @@ def conway_poly(characteristic, degree):
 
 @set_module("galois")
 def minimal_poly(element):
-    """
-    Computes the minimal polynomial :math:`m_e(x) \\in \\mathrm{GF}(p)[x]` of a Galois field
-    element :math:`e \\in \\mathrm{GF}(p^m)`.
+    r"""
+    Computes the minimal polynomial :math:`m_e(x) \in \mathrm{GF}(p)[x]` of a Galois field
+    element :math:`e \in \mathrm{GF}(p^m)`.
 
-    The *minimal polynomial* of a Galois field element :math:`e \\in \\mathrm{GF}(p^m)` is the polynomial of
-    minimal degree over :math:`\\mathrm{GF}(p)` for which :math:`e` is a root when evaluated in :math:`\\mathrm{GF}(p^m)`.
-    Namely, :math:`m_e(x) \\in \\mathrm{GF}(p)[x] \\in \\mathrm{GF}(p^m)[x]` and :math:`m_e(e) = 0` over :math:`\\mathrm{GF}(p^m)`.
+    The *minimal polynomial* of a Galois field element :math:`e \in \mathrm{GF}(p^m)` is the polynomial of
+    minimal degree over :math:`\mathrm{GF}(p)` for which :math:`e` is a root when evaluated in :math:`\mathrm{GF}(p^m)`.
+    Namely, :math:`m_e(x) \in \mathrm{GF}(p)[x] \in \mathrm{GF}(p^m)[x]` and :math:`m_e(e) = 0` over :math:`\mathrm{GF}(p^m)`.
 
     Parameters
     ----------
     element : galois.FieldArray
-        Any element :math:`e` of the Galois field :math:`\\mathrm{GF}(p^m)`. This must be a 0-dim array.
+        Any element :math:`e` of the Galois field :math:`\mathrm{GF}(p^m)`. This must be a 0-dim array.
 
     Returns
     -------
     galois.Poly
-        The minimal polynomial :math:`m_e(x)` over :math:`\\mathrm{GF}(p)` of the element :math:`e`.
+        The minimal polynomial :math:`m_e(x)` over :math:`\mathrm{GF}(p)` of the element :math:`e`.
 
     Examples
     --------
@@ -708,7 +708,7 @@ def minimal_poly(element):
         for conjugate in conjugates:
             print(galois.minimal_poly(conjugate))
 
-    Not all elements of :math:`\\mathrm{GF}(2^4)` have minimal polynomials with degree-:math:`4`.
+    Not all elements of :math:`\mathrm{GF}(2^4)` have minimal polynomials with degree-:math:`4`.
 
     .. ipython:: python
 
@@ -746,7 +746,7 @@ def minimal_poly(element):
 
 @set_module("galois")
 def is_monic(poly):
-    """
+    r"""
     Determines whether the polynomial is monic, i.e. having leading coefficient equal to 1.
 
     Parameters
@@ -779,23 +779,23 @@ def is_monic(poly):
 
 @set_module("galois")
 def is_irreducible(poly):
-    """
-    Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is irreducible.
+    r"""
+    Checks whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is irreducible.
 
-    A polynomial :math:`f(x) \\in \\mathrm{GF}(p)[x]` is *reducible* over :math:`\\mathrm{GF}(p)` if it can
-    be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \\in \\mathrm{GF}(p)[x]` of strictly
+    A polynomial :math:`f(x) \in \mathrm{GF}(p)[x]` is *reducible* over :math:`\mathrm{GF}(p)` if it can
+    be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p)[x]` of strictly
     lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
     closed, such irreducible polynomials exist.
 
     This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
-    over :math:`\\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\\ |\\ (x^{p^m} - x)`
-    and :math:`\\textrm{gcd}(f(x),\\ x^{p^{m_i}} - x) = 1` for :math:`1 \\le i \\le k`, where :math:`m_i = m/p_i` for
+    over :math:`\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\ |\ (x^{p^m} - x)`
+    and :math:`\textrm{gcd}(f(x),\ x^{p^{m_i}} - x) = 1` for :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for
     the :math:`k` prime divisors :math:`p_i` of :math:`m`.
 
     Parameters
     ----------
     poly : galois.Poly
-        A polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+        A polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
 
     Returns
     -------
@@ -881,16 +881,16 @@ def is_irreducible(poly):
 
 @set_module("galois")
 def is_primitive(poly):
-    """
-    Checks whether the polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is primitive.
+    r"""
+    Checks whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is primitive.
 
-    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` is *primitive* if it is irreducible and
-    :math:`f(x)\\ |\\ (x^k - 1)` for :math:`k = p^m - 1` and no :math:`k` less than :math:`p^m - 1`.
+    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is *primitive* if it is irreducible and
+    :math:`f(x)\ |\ (x^k - 1)` for :math:`k = p^m - 1` and no :math:`k` less than :math:`p^m - 1`.
 
     Parameters
     ----------
     poly : galois.Poly
-        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
 
     Returns
     -------
@@ -913,7 +913,7 @@ def is_primitive(poly):
         f = galois.conway_poly(3, 5); f
         galois.is_primitive(f)
 
-    The irreducible polynomial of :math:`\\mathrm{GF}(2^8)` for AES is not primitive.
+    The irreducible polynomial of :math:`\mathrm{GF}(2^8)` for AES is not primitive.
 
     .. ipython:: python
 
@@ -960,25 +960,25 @@ def is_primitive(poly):
 
 @set_module("galois")
 def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefined-outer-name
-    """
-    Determines if :math:`g(x)` is a primitive element of the Galois field :math:`\\mathrm{GF}(p^m)` with
-    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+    r"""
+    Determines if :math:`g(x)` is a primitive element of the Galois field :math:`\mathrm{GF}(p^m)` with
+    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
 
-    The number of primitive elements of :math:`\\mathrm{GF}(p^m)` is :math:`\\phi(p^m - 1)`, where
-    :math:`\\phi(n)` is the Euler totient function, see :obj:`galois.euler_phi`.
+    The number of primitive elements of :math:`\mathrm{GF}(p^m)` is :math:`\phi(p^m - 1)`, where
+    :math:`\phi(n)` is the Euler totient function, see :obj:`galois.euler_phi`.
 
     Parameters
     ----------
     element : galois.Poly
-        An element :math:`g(x)` of :math:`\\mathrm{GF}(p^m)` as a polynomial over :math:`\\mathrm{GF}(p)` with degree
+        An element :math:`g(x)` of :math:`\mathrm{GF}(p^m)` as a polynomial over :math:`\mathrm{GF}(p)` with degree
         less than :math:`m`.
     irreducible_poly : galois.Poly
-        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` that defines the extension field :math:`\\mathrm{GF}(p^m)`.
+        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` that defines the extension field :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
     bool
-        `True` if :math:`g(x)` is a primitive element of :math:`\\mathrm{GF}(p^m)` with irreducible polynomial
+        `True` if :math:`g(x)` is a primitive element of :math:`\mathrm{GF}(p^m)` with irreducible polynomial
         :math:`f(x)`.
 
     Examples
@@ -1028,28 +1028,28 @@ def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefine
 
 @set_module("galois")
 def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):  # pylint: disable=redefined-outer-name
-    """
-    Finds the smallest primitive element :math:`g(x)` of the Galois field :math:`\\mathrm{GF}(p^m)` with
-    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+    r"""
+    Finds the smallest primitive element :math:`g(x)` of the Galois field :math:`\mathrm{GF}(p^m)` with
+    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
 
     Parameters
     ----------
     irreducible_poly : galois.Poly
-        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` that defines the extension field :math:`\\mathrm{GF}(p^m)`.
+        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` that defines the extension field :math:`\mathrm{GF}(p^m)`.
     start : int, optional
-        Starting value (inclusive, integer representation of the polynomial) in the search for a primitive element :math:`g(x)` of :math:`\\mathrm{GF}(p^m)`.
-        The default is `None` which represents :math:`p`, which corresponds to :math:`g(x) = x` over :math:`\\mathrm{GF}(p)`.
+        Starting value (inclusive, integer representation of the polynomial) in the search for a primitive element :math:`g(x)` of :math:`\mathrm{GF}(p^m)`.
+        The default is `None` which represents :math:`p`, which corresponds to :math:`g(x) = x` over :math:`\mathrm{GF}(p)`.
     stop : int, optional
-        Stopping value (exclusive, integer representation of the polynomial) in the search for a primitive element :math:`g(x)` of :math:`\\mathrm{GF}(p^m)`.
-        The default is `None` which represents :math:`p^m`, which corresponds to :math:`g(x) = x^m` over :math:`\\mathrm{GF}(p)`.
+        Stopping value (exclusive, integer representation of the polynomial) in the search for a primitive element :math:`g(x)` of :math:`\mathrm{GF}(p^m)`.
+        The default is `None` which represents :math:`p^m`, which corresponds to :math:`g(x) = x^m` over :math:`\mathrm{GF}(p)`.
     reverse : bool, optional
         Search for a primitive element in reverse order, i.e. find the largest primitive element first. Default is `False`.
 
     Returns
     -------
     galois.Poly
-        A primitive element of :math:`\\mathrm{GF}(p^m)` with irreducible polynomial :math:`f(x)`. The primitive element :math:`g(x)` is
-        a polynomial over :math:`\\mathrm{GF}(p)` with degree less than :math:`m`.
+        A primitive element of :math:`\mathrm{GF}(p^m)` with irreducible polynomial :math:`f(x)`. The primitive element :math:`g(x)` is
+        a polynomial over :math:`\mathrm{GF}(p)` with degree less than :math:`m`.
 
     Examples
     --------
@@ -1105,31 +1105,31 @@ def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):  
 
 @set_module("galois")
 def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):  # pylint: disable=redefined-outer-name
-    """
-    Finds all primitive elements :math:`g(x)` of the Galois field :math:`\\mathrm{GF}(p^m)` with
-    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)`.
+    r"""
+    Finds all primitive elements :math:`g(x)` of the Galois field :math:`\mathrm{GF}(p^m)` with
+    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
 
-    The number of primitive elements of :math:`\\mathrm{GF}(p^m)` is :math:`\\phi(p^m - 1)`, where
-    :math:`\\phi(n)` is the Euler totient function. See :obj:galois.euler_phi`.
+    The number of primitive elements of :math:`\mathrm{GF}(p^m)` is :math:`\phi(p^m - 1)`, where
+    :math:`\phi(n)` is the Euler totient function. See :obj:galois.euler_phi`.
 
     Parameters
     ----------
     irreducible_poly : galois.Poly
-        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\\mathrm{GF}(p)` that defines the extension field :math:`\\mathrm{GF}(p^m)`.
+        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` that defines the extension field :math:`\mathrm{GF}(p^m)`.
     start : int, optional
-        Starting value (inclusive, integer representation of the polynomial) in the search for primitive elements :math:`g(x)` of :math:`\\mathrm{GF}(p^m)`.
-        The default is `None` which represents :math:`p`, which corresponds to :math:`g(x) = x` over :math:`\\mathrm{GF}(p)`.
+        Starting value (inclusive, integer representation of the polynomial) in the search for primitive elements :math:`g(x)` of :math:`\mathrm{GF}(p^m)`.
+        The default is `None` which represents :math:`p`, which corresponds to :math:`g(x) = x` over :math:`\mathrm{GF}(p)`.
     stop : int, optional
-        Stopping value (exclusive, integer representation of the polynomial) in the search for primitive elements :math:`g(x)` of :math:`\\mathrm{GF}(p^m)`.
-        The default is `None` which represents :math:`p^m`, which corresponds to :math:`g(x) = x^m` over :math:`\\mathrm{GF}(p)`.
+        Stopping value (exclusive, integer representation of the polynomial) in the search for primitive elements :math:`g(x)` of :math:`\mathrm{GF}(p^m)`.
+        The default is `None` which represents :math:`p^m`, which corresponds to :math:`g(x) = x^m` over :math:`\mathrm{GF}(p)`.
     reverse : bool, optional
         Search for primitive elements in reverse order, i.e. largest to smallest. Default is `False`.
 
     Returns
     -------
     list
-        List of all primitive elements of :math:`\\mathrm{GF}(p^m)` with irreducible polynomial :math:`f(x)`. Each primitive element :math:`g(x)` is
-        a polynomial over :math:`\\mathrm{GF}(p)` with degree less than :math:`m`.
+        List of all primitive elements of :math:`\mathrm{GF}(p^m)` with irreducible polynomial :math:`f(x)`. Each primitive element :math:`g(x)` is
+        a polynomial over :math:`\mathrm{GF}(p)` with degree less than :math:`m`.
 
     Examples
     --------

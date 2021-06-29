@@ -91,10 +91,10 @@ def pollard_rho_factor(n, c=1):
 @set_module("galois")
 @functools.lru_cache(maxsize=2048)
 def factors(n):
-    """
+    r"""
     Computes the prime factors of the positive integer :math:`n`.
 
-    The integer :math:`n` can be factored into :math:`n = p_1^{e_1} p_2^{e_2} \\dots p_{k-1}^{e_{k-1}}`.
+    The integer :math:`n` can be factored into :math:`n = p_1^{e_1} p_2^{e_2} \dots p_{k-1}^{e_{k-1}}`.
 
     **Steps**:
 
@@ -111,9 +111,9 @@ def factors(n):
     Returns
     -------
     list
-        Sorted list of :math:`k` prime factors :math:`p = [p_1, p_2, \\dots, p_{k-1}]` with :math:`p_1 < p_2 < \\dots < p_{k-1}`.
+        Sorted list of :math:`k` prime factors :math:`p = [p_1, p_2, \dots, p_{k-1}]` with :math:`p_1 < p_2 < \dots < p_{k-1}`.
     list
-        List of corresponding prime powers :math:`e = [e_1, e_2, \\dots, e_{k-1}]`.
+        List of corresponding prime powers :math:`e = [e_1, e_2, \dots, e_{k-1}]`.
 
     Examples
     --------
@@ -181,8 +181,8 @@ def factors(n):
 
 @set_module("galois")
 def divisors(n):
-    """
-    Computes all positive integer divisors :math:`d` of the integer :math:`n` such that :math:`d\\ |\\ n`.
+    r"""
+    Computes all positive integer divisors :math:`d` of the integer :math:`n` such that :math:`d\ |\ n`.
 
     Parameters
     ----------
@@ -238,25 +238,25 @@ def divisors(n):
 
 @set_module("galois")
 def divisor_sigma(n, k=1):
-    """
+    r"""
     Returns the sum of :math:`k`-th powers of the positive divisors of :math:`n`.
 
-    This function implements the :math:`\\sigma_k(n)` function. It is defined as:
+    This function implements the :math:`\sigma_k(n)` function. It is defined as:
 
-    .. math:: \\sigma_k(n) = \\sum_{d\\ |\\ n} d^k
+    .. math:: \sigma_k(n) = \sum_{d\ |\ n} d^k
 
     Parameters
     ----------
     n : int
         Any integer.
     k : int, optional
-        The degree of the positive divisors. The default is 1 which corresponds to :math:`\\sigma_1(n)` which is the
+        The degree of the positive divisors. The default is 1 which corresponds to :math:`\sigma_1(n)` which is the
         sum of positive divisors.
 
     Returns
     -------
     int
-        The sum of divisors function :math:`\\sigma_k(n)`.
+        The sum of divisors function :math:`\sigma_k(n)`.
 
     Examples
     --------
@@ -280,8 +280,8 @@ def divisor_sigma(n, k=1):
 
 @set_module("galois")
 def is_prime_power(n):
-    """
-    Determines if :math:`n` is a prime power :math:`n = p^k` for prime :math:`p` and :math:`k \\ge 1`.
+    r"""
+    Determines if :math:`n` is a prime power :math:`n = p^k` for prime :math:`p` and :math:`k \ge 1`.
 
     There is some controversy over whether :math:`1` is a prime power :math:`p^0`. Since :math:`1` is the :math:`0`-th power
     of all primes, it is often regarded not as a prime power. This function returns `False` for :math:`1`.
@@ -324,8 +324,8 @@ def is_prime_power(n):
 
 @set_module("galois")
 def is_perfect_power(n):
-    """
-    Determines if :math:`n` is a perfect power :math:`n = x^k` for :math:`x > 0` and :math:`k \\ge 2`.
+    r"""
+    Determines if :math:`n` is a perfect power :math:`n = x^k` for :math:`x > 0` and :math:`k \ge 2`.
 
     Parameters
     ----------
@@ -361,13 +361,13 @@ def is_perfect_power(n):
 
 @set_module("galois")
 def is_square_free(n):
-    """
-    Determines if :math:`n` is square-free, such that :math:`n = p_1 p_2 \\dots p_k`.
+    r"""
+    Determines if :math:`n` is square-free, such that :math:`n = p_1 p_2 \dots p_k`.
 
     A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
     of a square-free integer :math:`n` is
 
-    .. math:: n = \\prod_{i=1}^{k} p_i^{e_i} = \\prod_{i=1}^{k} p_i .
+    .. math:: n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
 
     Parameters
     ----------
@@ -401,11 +401,11 @@ def is_square_free(n):
 
 @set_module("galois")
 def is_smooth(n, B):
-    """
+    r"""
     Determines if the positive integer :math:`n` is :math:`B`-smooth.
 
-    An integer :math:`n` with prime factorization :math:`n = p_1^e_1 \\dots p_k^e_k` is :math:`B`-smooth
-    if :math:`p_k \\le B`. The :math:`2`-smooth numbers are the powers of :math:`2`. The :math:`5`-smooth numbers
+    An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-smooth
+    if :math:`p_k \le B`. The :math:`2`-smooth numbers are the powers of :math:`2`. The :math:`5`-smooth numbers
     are known as *regular numbers*. The :math:`7`-smooth numbers are known as *humble numbers* or *highly composite numbers*.
 
     Parameters
