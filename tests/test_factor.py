@@ -26,6 +26,18 @@ def test_factors_extremely_large():
     assert galois.factors(1000000000000000035000061 - 1) == ([2, 3, 5, 17, 19, 112850813, 457237177399], [2, 1, 1, 1, 1, 1, 1])
 
 
+def test_perfect_power():
+    assert galois.perfect_power(5) is None
+    assert galois.perfect_power(6) is None
+    assert galois.perfect_power(6*16) is None
+    assert galois.perfect_power(16*125) is None
+
+    assert galois.perfect_power(9) == (3, 2)
+    assert galois.perfect_power(36) == (6, 2)
+    assert galois.perfect_power(125) == (5, 3)
+    assert galois.perfect_power(216) == (6, 3)
+
+
 @pytest.mark.parametrize("n", [0, 1, 2, 3, 4, 5, 31, 13*7, 120, 120*7])
 def test_divisors(n):
     assert galois.divisors(n) == [d for d in range(1, n + 1) if n % d == 0]
