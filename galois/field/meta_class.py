@@ -88,7 +88,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         cls._compile_ufuncs()
 
     def display(cls, mode="int"):
-        """
+        r"""
         Sets the display mode for all Galois field arrays of this type.
 
         The display mode can be set to either the integer representation, polynomial representation, or power
@@ -120,7 +120,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
         The :func:`display` method can also be used as a context manager, as shown below.
 
-        For the polynomial representation, when the primitive element is :math:`x \\in \\mathrm{GF}(p)[x]` the polynomial
+        For the polynomial representation, when the primitive element is :math:`x \in \mathrm{GF}(p)[x]` the polynomial
         indeterminate used is  `α`.
 
         .. ipython:: python
@@ -133,7 +133,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             with GF.display("power"):
                 print(a)
 
-        But when the primitive element is not :math:`x \\in \\mathrm{GF}(p)[x]`, the polynomial
+        But when the primitive element is not :math:`x \in \mathrm{GF}(p)[x]`, the polynomial
         indeterminate used is `x`.
 
         .. ipython:: python

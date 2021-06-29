@@ -19,8 +19,8 @@ __all__ = [
 
 @set_module("galois")
 def primes(n):
-    """
-    Returns all primes :math:`p` for :math:`p \\le n`.
+    r"""
+    Returns all primes :math:`p` for :math:`p \le n`.
 
     Parameters
     ----------
@@ -84,13 +84,13 @@ MAX_PRIME = PRIMES[-1]
 
 @set_module("galois")
 def kth_prime(k):
-    """
+    r"""
     Returns the :math:`k`-th prime.
 
     Parameters
     ----------
     k : int
-        The prime index, where :math:`k = \\{1,2,3,4,\\dots\\}` for primes :math:`p = \\{2,3,5,7,\\dots\\}`.
+        The prime index, where :math:`k = \{1,2,3,4,\dots\}` for primes :math:`p = \{2,3,5,7,\dots\}`.
 
     Returns
     -------
@@ -114,8 +114,8 @@ def kth_prime(k):
 
 @set_module("galois")
 def prev_prime(n):
-    """
-    Returns the nearest prime :math:`p`, such that :math:`p \\le n`.
+    r"""
+    Returns the nearest prime :math:`p`, such that :math:`p \le n`.
 
     Parameters
     ----------
@@ -125,7 +125,7 @@ def prev_prime(n):
     Returns
     -------
     int
-        The nearest prime :math:`p \\le n`.
+        The nearest prime :math:`p \le n`.
 
     Examples
     --------
@@ -143,7 +143,7 @@ def prev_prime(n):
 
 @set_module("galois")
 def next_prime(n):
-    """
+    r"""
     Returns the nearest prime :math:`p`, such that :math:`p > n`.
 
     Parameters
@@ -172,8 +172,8 @@ def next_prime(n):
 
 @set_module("galois")
 def random_prime(bits):
-    """
-    Returns a random prime :math:`p` with :math:`b` bits, such that :math:`2^b \\le p < 2^{b+1}`.
+    r"""
+    Returns a random prime :math:`p` with :math:`b` bits, such that :math:`2^b \le p < 2^{b+1}`.
 
     This function randomly generates integers with :math:`b` bits and uses the primality tests in
     :func:`galois.is_prime` to determine if :math:`p` is prime.
@@ -186,7 +186,7 @@ def random_prime(bits):
     Returns
     -------
     int
-        A random prime in :math:`2^b \\le p < 2^{b+1}`.
+        A random prime in :math:`2^b \le p < 2^{b+1}`.
 
     References
     ----------
@@ -220,8 +220,8 @@ MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3
 
 @set_module("galois")
 def mersenne_exponents(n=None):
-    """
-    Returns all known Mersenne exponents :math:`e` for :math:`e \\le n`.
+    r"""
+    Returns all known Mersenne exponents :math:`e` for :math:`e \le n`.
 
     A Mersenne exponent :math:`e` is an exponent of :math:`2` such that :math:`2^e - 1` is prime.
 
@@ -233,7 +233,7 @@ def mersenne_exponents(n=None):
     Returns
     -------
     list
-        The list of Mersenne exponents :math:`e` for :math:`e \\le n`.
+        The list of Mersenne exponents :math:`e` for :math:`e \le n`.
 
     References
     ----------
@@ -258,8 +258,8 @@ def mersenne_exponents(n=None):
 
 @set_module("galois")
 def mersenne_primes(n=None):
-    """
-    Returns all known Mersenne primes :math:`p` for :math:`p \\le 2^n - 1`.
+    r"""
+    Returns all known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
 
     Mersenne primes are primes that are one less than a power of 2.
 
@@ -271,7 +271,7 @@ def mersenne_primes(n=None):
     Returns
     -------
     list
-        The list of known Mersenne primes :math:`p` for :math:`p \\le 2^n - 1`.
+        The list of known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
 
     References
     ----------
@@ -294,13 +294,13 @@ def mersenne_primes(n=None):
 
 @set_module("galois")
 def is_prime(n):
-    """
+    r"""
     Determines if :math:`n` is prime.
 
     This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
-    :obj:`galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
+    :func:`galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
     If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
-    will run seven rounds of Miller-Rabin's primality test, see :obj:`galois.miller_rabin_primality_test`. With this many rounds,
+    will run seven rounds of Miller-Rabin's primality test, see :func:`galois.miller_rabin_primality_test`. With this many rounds,
     a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
 
     Parameters
@@ -353,7 +353,7 @@ def is_prime(n):
 
 @set_module("galois")
 def is_composite(n):
-    """
+    r"""
     Determines if :math:`n` is composite.
 
     Parameters
@@ -386,24 +386,24 @@ def is_composite(n):
 
 @set_module("galois")
 def fermat_primality_test(n, a=None, rounds=1):
-    """
+    r"""
     Determines if :math:`n` is composite using Fermat's primality test.
 
-    Fermat's theorem says that for prime :math:`p` and :math:`1 \\le a \\le p-1`, the congruence :math:`a^{p-1} \\equiv 1\\ (\\textrm{mod}\\ p)`
-    holds. Fermat's primality test of :math:`n` computes :math:`a^{n-1}\\ \\textrm{mod}\\ n` for some :math:`1 \\le a \\le n-1`.
-    If :math:`a` is such that :math:`a^{p-1} \\not\\equiv 1\\ (\\textrm{mod}\\ p)`, then :math:`a` is said to be a *Fermat witness* to the
-    compositeness of :math:`n`. If :math:`n` is composite and :math:`a^{p-1} \\equiv 1\\ (\\textrm{mod}\\ p)`, then :math:`a` is said to be
+    Fermat's theorem says that for prime :math:`p` and :math:`1 \le a \le p-1`, the congruence :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`
+    holds. Fermat's primality test of :math:`n` computes :math:`a^{n-1}\ \textrm{mod}\ n` for some :math:`1 \le a \le n-1`.
+    If :math:`a` is such that :math:`a^{p-1} \not\equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be a *Fermat witness* to the
+    compositeness of :math:`n`. If :math:`n` is composite and :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be
     a *Fermat liar* to the primality of :math:`n`.
 
-    Since :math:`a = \\{1, n-1\\}` are Fermat liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
-    to :math:`2 \\le a \\le n - 2`.
+    Since :math:`a = \{1, n-1\}` are Fermat liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
+    to :math:`2 \le a \le n - 2`.
 
     Parameters
     ----------
     n : int
-        An odd integer :math:`n \\ge 3`.
+        An odd integer :math:`n \ge 3`.
     a : int, optional
-        An integer in :math:`2 \\le a \\le n - 2`. The default is `None` which selects a random :math:`a`.
+        An integer in :math:`2 \le a \le n - 2`. The default is `None` which selects a random :math:`a`.
     rounds : int, optional
         The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
         a new :math:`a`. The default is 1.
@@ -482,30 +482,30 @@ def fermat_primality_test(n, a=None, rounds=1):
 
 @set_module("galois")
 def miller_rabin_primality_test(n, a=2, rounds=1):
-    """
+    r"""
     Determines if :math:`n` is composite using the Miller-Rabin primality test.
 
     The Miller-Rabin primality test is based on the fact that for odd :math:`n` with factorization :math:`n = 2^s r` for odd :math:`r`
-    and integer :math:`a` such that :math:`\\textrm{gcd}(a, n) = 1`, then either :math:`a^r \\equiv 1\\ (\\textrm{mod}\\ n)`
-    or :math:`a^{2^j r} \\equiv -1\\ (\\textrm{mod}\\ n)` for some :math:`j` in :math:`0 \\le j \\le s - 1`.
+    and integer :math:`a` such that :math:`\textrm{gcd}(a, n) = 1`, then either :math:`a^r \equiv 1\ (\textrm{mod}\ n)`
+    or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for some :math:`j` in :math:`0 \le j \le s - 1`.
 
-    In the Miller-Rabin primality test, if :math:`a^r \\not\\equiv 1\\ (\\textrm{mod}\\ n)` and :math:`a^{2^j r} \\not\\equiv -1\\ (\\textrm{mod}\\ n)`
-    for all :math:`j` in :math:`0 \\le j \\le s - 1`, then :math:`a` is called a *strong witness* to the compositeness of :math:`n`. If not, namely
-    :math:`a^r \\equiv 1\\ (\\textrm{mod}\\ n)` or :math:`a^{2^j r} \\equiv -1\\ (\\textrm{mod}\\ n)` for any :math:`j` in :math:`0 \\le j \\le s - 1`,
+    In the Miller-Rabin primality test, if :math:`a^r \not\equiv 1\ (\textrm{mod}\ n)` and :math:`a^{2^j r} \not\equiv -1\ (\textrm{mod}\ n)`
+    for all :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is called a *strong witness* to the compositeness of :math:`n`. If not, namely
+    :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for any :math:`j` in :math:`0 \le j \le s - 1`,
     then :math:`a` is called a *strong liar* to the primality of :math:`n` and :math:`n` is called a *strong pseudoprime to the base a*.
 
-    Since :math:`a = \\{1, n-1\\}` are strong liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
-    to :math:`2 \\le a \\le n - 2`.
+    Since :math:`a = \{1, n-1\}` are strong liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
+    to :math:`2 \le a \le n - 2`.
 
-    For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than :math:`(\\frac{1}{4})^t`,
+    For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than :math:`(\frac{1}{4})^t`,
     where :math:`t` is the number of rounds, and is often much lower.
 
     Parameters
     ----------
     n : int
-        An odd integer :math:`n \\ge 3`.
+        An odd integer :math:`n \ge 3`.
     a : int, optional
-        An integer in :math:`2 \\le a \\le n - 2`. The default is `2`.
+        An integer in :math:`2 \le a \le n - 2`. The default is `2`.
     rounds : int, optional
         The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
         consecutive primes for :math:`a`.
@@ -530,7 +530,7 @@ def miller_rabin_primality_test(n, a=2, rounds=1):
         [galois.is_prime(p) for p in primes]
         [galois.miller_rabin_primality_test(p) for p in primes]
 
-    However, a composite :math:`n` may have strong liars. :math:`91` has :math:`\\{9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82\\}`
+    However, a composite :math:`n` may have strong liars. :math:`91` has :math:`\{9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82\}`
     as strong liars.
 
     .. ipython:: python

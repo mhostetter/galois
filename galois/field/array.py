@@ -13,10 +13,10 @@ __all__ = ["FieldArray"]
 
 @set_module("galois")
 class FieldArray(np.ndarray, metaclass=FieldClass):
-    """
-    Creates an array over :math:`\\mathrm{GF}(p^m)`.
+    r"""
+    Creates an array over :math:`\mathrm{GF}(p^m)`.
 
-    The :obj:`galois.FieldArray` class is a parent class for all Galois field array classes. Any Galois field :math:`\\mathrm{GF}(p^m)`
+    The :obj:`galois.FieldArray` class is a parent class for all Galois field array classes. Any Galois field :math:`\mathrm{GF}(p^m)`
     with prime characteristic :math:`p` and positive integer :math:`m`, can be constructed by calling the class factory
     `galois.GF(p**m)`.
 
@@ -25,14 +25,14 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         This is an abstract base class for all Galois field array classes. :obj:`galois.FieldArray` cannot be instantiated
         directly. Instead, Galois field array classes are created using :func:`galois.GF`.
 
-        For example, one can create the :math:`\\mathrm{GF}(7)` field array class as follows.
+        For example, one can create the :math:`\mathrm{GF}(7)` field array class as follows.
 
         .. ipython:: python
 
             GF7 = galois.GF(7)
             print(GF7)
 
-        This subclass can then be used to instantiate arrays over :math:`\\mathrm{GF}(7)`.
+        This subclass can then be used to instantiate arrays over :math:`\mathrm{GF}(7)`.
 
         .. ipython:: python
 
@@ -64,7 +64,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     Returns
     -------
     galois.FieldArray
-        The copied input array as a :math:`\\mathrm{GF}(p^m)` field array.
+        The copied input array as a :math:`\mathrm{GF}(p^m)` field array.
 
     Examples
     --------
@@ -402,8 +402,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     @classmethod
     def Elements(cls, dtype=None):
-        """
-        Creates a Galois field array of the field's elements :math:`\\{0, \\dots, p^m-1\\}`.
+        r"""
+        Creates a Galois field array of the field's elements :math:`\{0, \dots, p^m-1\}`.
 
         Parameters
         ----------
@@ -427,8 +427,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     @classmethod
     def Identity(cls, size, dtype=None):
-        """
-        Creates an :math:`n \\times n` Galois field identity matrix.
+        r"""
+        Creates an :math:`n \times n` Galois field identity matrix.
 
         Parameters
         ----------
@@ -456,13 +456,13 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     @classmethod
     def Vandermonde(cls, a, m, n, dtype=None):
-        """
-        Creates a :math:`m \\times n` Vandermonde matrix of :math:`a \\in \\mathrm{GF}(p^m)`.
+        r"""
+        Creates a :math:`m \times n` Vandermonde matrix of :math:`a \in \mathrm{GF}(p^m)`.
 
         Parameters
         ----------
         a : int, galois.FieldArray
-            An element of :math:`\\mathrm{GF}(p^m)`.
+            An element of :math:`\mathrm{GF}(p^m)`.
         m : int
             The number of rows in the Vandermonde matrix.
         n : int
@@ -474,7 +474,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         Returns
         -------
         galois.FieldArray
-            The :math:`m \\times n` Vandermonde matrix.
+            The :math:`m \times n` Vandermonde matrix.
 
         Examples
         --------
@@ -509,13 +509,13 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     @classmethod
     def Vector(cls, array, dtype=None):
-        """
-        Creates a Galois field array over :math:`\\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\\mathrm{GF}(p)`.
+        r"""
+        Creates a Galois field array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
         Parameters
         ----------
         array : array_like
-            The input array with field elements in :math:`\\mathrm{GF}(p)` to be converted to a Galois field array in :math:`\\mathrm{GF}(p^m)`.
+            The input array with field elements in :math:`\mathrm{GF}(p)` to be converted to a Galois field array in :math:`\mathrm{GF}(p^m)`.
             The last dimension of the input array must be :math:`m`. An input array with shape `(n1, n2, m)` has output shape `(n1, n2)`.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest valid
@@ -524,7 +524,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         Returns
         -------
         galois.FieldArray
-            A Galois field array over :math:`\\mathrm{GF}(p^m)`.
+            A Galois field array over :math:`\mathrm{GF}(p^m)`.
 
         Examples
         --------
@@ -551,8 +551,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     ###############################################################################
 
     def vector(self, dtype=None):
-        """
-        Converts the Galois field array over :math:`\\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\\mathrm{GF}(p)`.
+        r"""
+        Converts the Galois field array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
         For an input array with shape `(n1, n2)`, the output shape is `(n1, n2, m)`.
 
@@ -565,7 +565,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         Returns
         -------
         galois.FieldArray
-            A Galois field array of length-:math:`m` vectors over :math:`\\mathrm{GF}(p)`.
+            A Galois field array of length-:math:`m` vectors over :math:`\mathrm{GF}(p)`.
 
         Examples
         --------
@@ -588,7 +588,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return type(self).prime_subfield(array, dtype=dtype)
 
     def row_reduce(self, ncols=None):
-        """
+        r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form.
 
         **Row reduction operations**
@@ -640,7 +640,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return row_reduce(self, ncols=ncols)
 
     def lu_decompose(self):
-        """
+        r"""
         Decomposes the input array into the product of lower and upper triangular matrices.
 
         Returns
@@ -668,7 +668,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return lu_decompose(self)
 
     def lup_decompose(self):
-        """
+        r"""
         Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
 
         Returns

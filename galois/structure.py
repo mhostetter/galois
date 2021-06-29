@@ -33,8 +33,8 @@ def is_field(obj):
 
 
 def is_prime_field(obj):
-    """
-    Determines if the object is a Galois field array class of type :math:`\\mathrm{GF}(p)` created from :func:`galois.GF` (or :func:`galois.Field`)
+    r"""
+    Determines if the object is a Galois field array class of type :math:`\mathrm{GF}(p)` created from :func:`galois.GF` (or :func:`galois.Field`)
     of one of its instances.
 
     Parameters
@@ -45,7 +45,7 @@ def is_prime_field(obj):
     Returns
     -------
     bool
-        `True` if `obj` is a Galois field array class of type :math:`\\mathrm{GF}(p)` generated from :func:`galois.GF` (or :func:`galois.Field`) or one of its instances.
+        `True` if `obj` is a Galois field array class of type :math:`\mathrm{GF}(p)` generated from :func:`galois.GF` (or :func:`galois.Field`) or one of its instances.
     """
     if isinstance(obj, np.ndarray):
         obj = type(obj)
@@ -53,8 +53,8 @@ def is_prime_field(obj):
 
 
 def is_extension_field(obj):
-    """
-    Determines if the object is a Galois field array class of type :math:`\\mathrm{GF}(p^m)` created from :func:`galois.GF` (or :func:`galois.Field`)
+    r"""
+    Determines if the object is a Galois field array class of type :math:`\mathrm{GF}(p^m)` created from :func:`galois.GF` (or :func:`galois.Field`)
     of one of its instances.
 
     Parameters
@@ -65,7 +65,7 @@ def is_extension_field(obj):
     Returns
     -------
     bool
-        `True` if `obj` is a Galois field array class of type :math:`\\mathrm{GF}(p^m)` generated from :func:`galois.GF` (or :func:`galois.Field`) or one of its instances.
+        `True` if `obj` is a Galois field array class of type :math:`\mathrm{GF}(p^m)` generated from :func:`galois.GF` (or :func:`galois.Field`) or one of its instances.
     """
     if isinstance(obj, np.ndarray):
         obj = type(obj)
