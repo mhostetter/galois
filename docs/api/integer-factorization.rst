@@ -38,3 +38,4 @@ Integer tests
    is_composite
    is_square_free
    is_smooth
+   is_powersmooth
