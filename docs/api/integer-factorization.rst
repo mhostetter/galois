@@ -23,7 +23,16 @@ Composite factorization
 
    divisors
    divisor_sigma
+
+Specific factorization algorithms
+---------------------------------
+
+.. rubric::
+.. autosummary::
+   :toctree:
+
    perfect_power
+   pollard_p1
 
 Integer tests
 -------------

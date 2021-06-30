@@ -16,7 +16,7 @@ from .prime import PRIMES, MAX_PRIME, is_prime
 
 __all__ = [
     "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
-    "factors", "perfect_power",
+    "factors", "perfect_power", "pollard_p1",
     "divisors", "divisor_sigma",
     "is_prime_power", "is_perfect_power", "is_square_free", "is_smooth", "is_powersmooth"
 ]
@@ -375,6 +375,126 @@ def trial_division_factor(n):
                 break
 
     return p, e, n
+
+
+@set_module("galois")
+def pollard_p1(n, B, B2=None):
+    r"""
+    Attempts to find a non-trivial factor of :math:`n` if it has a prime factor :math:`p` such that
+    :math:`p-1` is :math:`B`-smooth.
+
+    For a given odd composite :math:`n` with a prime factor :math:`p`, Pollard's :math:`p-1` algorithm can discover a non-trivial factor
+    of :math:`n` if :math:`p-1` is :math:`B`-smooth. Specifically, the prime factorization must satisfy :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}`
+    with each :math:`p_i \le B`.
+
+    A extension of Pollard's :math:`p-1` algorithm allows a prime factor :math:`p` to be :math:`B`-smooth with the exception of one
+    prime factor :math:`B < p_{k+1} \le B_2`. In this case, the prime factorization is :math:`p-1 = p_1^{e_1} \dots p_k^{e_k} p_{k+1}`.
+    Often :math:`B_2` is chosen such that :math:`B_2 \gg B`.
+
+    Parameters
+    ----------
+    n : int
+        An odd composite integer :math:`n > 2` that is not a prime power.
+    B : int
+        The smoothness bound :math:`B > 2`.
+    B2 : int, optional
+        The smoothness bound :math:`B_2` for the optional second step of the algorithm. The default is `None`, which
+        will not perform the second step.
+
+    Returns
+    -------
+    None, int
+        A non-trivial factor of :math:`n`, if found. `None` if not found.
+
+    References
+    ----------
+    * Section 3.2.3 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
+
+    Examples
+    --------
+    Here, :math:`n = pq` where :math:`p-1` is :math:`1039`-smooth and :math:`q-1` is :math:`17`-smooth.
+
+    .. ipython:: python
+
+        p, q = 1458757, 1326001
+        galois.factors(p - 1)
+        galois.factors(q - 1)
+
+    Searching with :math:`B=15` will not recover a prime factor.
+
+    .. ipython:: python
+
+        galois.pollard_p1(p*q, 15)
+
+    Searching with :math:`B=17` will recover the prime factor :math:`q`.
+
+    .. ipython:: python
+
+        galois.pollard_p1(p*q, 17)
+
+    Searching :math:`B=15` will not recover a prime factor in the first step, but will find :math:`q` in the second
+    step because :math:`p_{k+1} = 17` satisfies :math:`15 < 17 \le 100`.
+
+    .. ipython:: python
+
+        galois.pollard_p1(p*q, 15, B2=100)
+
+    Pollard's :math:`p-1` algorithm may return a composite factor.
+
+    .. ipython:: python
+
+        n = 2133861346249
+        galois.factors(n)
+        galois.pollard_p1(n, 10)
+        37*41
+    """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not isinstance(B, (int, np.integer)):
+        raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
+    if not isinstance(B2, (type(None), int, np.integer)):
+        raise TypeError(f"Argument `B2` must be an integer, not {type(B2)}.")
+    if not (n % 2 == 1 and n > 2):
+        raise ValueError(f"Argument `n` must odd and greater than 2, not {n}.")
+    if not B > 2:
+        raise ValueError(f"Argument `B` must greater than 2, not {B}.")
+    n = abs(int(n))
+
+    a = 2  # A value that is coprime to n (since n is odd)
+    check_stride = 10
+
+    assert B <= MAX_PRIME
+    for i, p in enumerate(PRIMES[0:bisect.bisect_right(PRIMES, B)]):
+        e = ilog(n, p)
+        a = pow(a, p**e, n)
+
+        # Check the GCD periodically to return early without checking all primes less than the
+        # smoothness bound
+        if i % check_stride == 0 and math.gcd(a - 1, n) not in [1, n]:
+            return math.gcd(a - 1, n)
+
+    d = math.gcd(a - 1, n)
+
+    if d not in [1, n]:
+        return d
+    if d == n:
+        return None
+
+    # Try to find p such that p - 1 has a single prime factor larger than B
+    if B2 is not None:
+        for i, p in enumerate(PRIMES[bisect.bisect_right(PRIMES, B):bisect.bisect_right(PRIMES, B2)]):
+            a = pow(a, p, n)
+
+            # Check the GCD periodically to return early without checking all primes less than the
+            # smoothness bound
+            if i % check_stride == 0 and math.gcd(a - 1, n) not in [1, n]:
+                return math.gcd(a - 1, n)
+
+        d = math.gcd(a - 1, n)
+        if d not in [1, n]:
+            return d
+
+    return None
 
 
 @functools.lru_cache(maxsize=1024)
