@@ -679,21 +679,17 @@ def is_smooth(n, B):
     if n == 1:
         return True
 
-    # https://math.stackexchange.com/a/3150231
     assert B <= MAX_PRIME
-    factor_base = PRIMES[0:bisect.bisect_right(PRIMES, B)]
-    k = prod(factor_base)
-
-    while True:
-        d = math.gcd(n, k)
+    for p in PRIMES[0:bisect.bisect_right(PRIMES, B)]:
+        e = ilog(n, p)
+        d = math.gcd(p**e, n)
         if d > 1:
-            while n % d == 0:
-                n //= d
-            if n == 1:
-                return True
-        else:
-            break
+            n //= d
+        if n == 1:
+            # n can be fully factored by the primes already test, therefore it is B-smooth
+            return True
 
+    # n has residual prime factors larger than B and therefore is not B-smooth
     return False
 
 
@@ -746,7 +742,7 @@ def is_powersmooth(n, B):
         d = math.gcd(p**e, n)
         D *= d
 
-        # If the GCD is p^e, then p^e > B divides n and therefor n cannot be B-powersmooth
+        # If the GCD is p^e, then p^e > B divides n and therefore n cannot be B-powersmooth
         if d == p**e:
             return False
 
