@@ -753,7 +753,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         return output
 
-    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):  # pylint: disable=too-many-branches
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         meta = {}
         meta["types"] = [type(inputs[i]) for i in range(len(inputs))]
         meta["operands"] = list(range(len(inputs)))

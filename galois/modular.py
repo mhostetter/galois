@@ -783,7 +783,6 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
 
 
 def _primitive_roots(n, start=1, stop=None, reverse=False):
-    # pylint: disable=too-many-branches
     if n in [1, 2]:
         yield n - 1
         return

@@ -249,7 +249,6 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             GF = galois.GF(3**2)
             print(GF.arithmetic_table("+", mode="poly"))
         """
-        # pylint: disable=too-many-branches
         if not operation in ["+", "-", "*", "/"]:
             raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation}.")
         if mode not in ["int", "poly", "power"]:

@@ -362,7 +362,7 @@ class Poly:
 
 
     @classmethod
-    def Degrees(cls, degrees, coeffs=None, field=None):  # pylint: disable=too-many-branches
+    def Degrees(cls, degrees, coeffs=None, field=None):
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its non-zero degrees.
 
