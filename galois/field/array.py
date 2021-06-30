@@ -135,6 +135,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         x_np[0] = 0; x_np
         a
     """
+    # pylint: disable=unsupported-membership-test,not-an-iterable
 
     def __new__(cls, array, dtype=None, copy=True, order="K", ndmin=0):
         if cls is FieldArray:
@@ -585,7 +586,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             q = (array[...,i] - x) // order**(degree - 1 - i)
             array[...,i] = q
             x += q*order**(degree - 1 - i)
-        return type(self).prime_subfield(array, dtype=dtype)
+        return type(self).prime_subfield(array, dtype=dtype)  # pylint: disable=unexpected-keyword-arg
 
     def row_reduce(self, ncols=None):
         r"""
