@@ -6,6 +6,8 @@ import pytest
 
 import galois
 
+DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
+
 
 class TestView:
     def test_valid_dtypes(self, field):
@@ -43,6 +45,6 @@ class TestAsType:
 
     def test_invalid_dtypes(self, field):
         a = field.Random(10)
-        for dtype in [d for d in galois.dtypes.DTYPES if d not in field.dtypes]:
+        for dtype in [d for d in DTYPES if d not in field.dtypes]:
             with pytest.raises(TypeError):
                 b = a.astype(dtype)

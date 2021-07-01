@@ -196,7 +196,7 @@ def test_largest_primitive_root():
 
 def test_smallest_primitive_root_of_primes():
     # https://oeis.org/A001918
-    primes = galois.prime.PRIMES
+    primes = galois._prime.PRIMES
     ns = list(range(1,105))
     roots = [1,2,2,3,2,2,3,2,5,2,3,2,6,3,5,2,2,2,2,7,5,3,2,3,5,2,5,2,6,3,3,2,3,2,2,6,5,2,5,2,2,2,19,5,2,3,2,3,2,6,3,7,7,6,3,5,2,6,5,3,3,2,5,17,10,2,3,10,2,2,3,7,6,2,2,5,2,5,3,21,2,2,7,5,15,2,3,13,2,3,2,13,3,2,7,5,2,3,2,2,2,2,2,3]
     for n, root in zip(ns, roots):
@@ -205,7 +205,7 @@ def test_smallest_primitive_root_of_primes():
 
 def test_largest_primitive_root_of_primes():
     # https://oeis.org/A071894
-    primes = galois.prime.PRIMES
+    primes = galois._prime.PRIMES
     ns = list(range(1,60))
     roots = [1,2,3,5,8,11,14,15,21,27,24,35,35,34,45,51,56,59,63,69,68,77,80,86,92,99,101,104,103,110,118,128,134,135,147,146,152,159,165,171,176,179,189,188,195,197,207,214,224,223,230,237,234,248,254,261,267,269,272]
     for n, root in zip(ns, roots):
@@ -280,7 +280,7 @@ def test_number_of_primitive_roots():
 
 def test_number_of_primitive_roots_of_primes():
     # https://oeis.org/A008330
-    primes = galois.prime.PRIMES
+    primes = galois._prime.PRIMES
     ns = list(range(1,71))
     num_roots = [1,1,2,2,4,4,8,6,10,12,8,12,16,12,22,24,28,16,20,24,24,24,40,40,32,40,32,52,36,48,36,48,64,44,72,40,48,54,82,84,88,48,72,64,84,60,48,72,112,72,112,96,64,100,128,130,132,72,88,96,92,144,96,120,96,156,80,96,172,112]
     for n, num in zip(ns, num_roots):
@@ -289,7 +289,7 @@ def test_number_of_primitive_roots_of_primes():
 
 def test_sum_primitive_roots_of_primes():
     # https://oeis.org/A088144
-    primes = galois.prime.PRIMES
+    primes = galois._prime.PRIMES
     ns = list(range(1,46))
     sums = [1,2,5,8,23,26,68,57,139,174,123,222,328,257,612,636,886,488,669,1064,876,1105,1744,1780,1552,2020,1853,2890,1962,2712,2413,3536,4384,3335,5364,3322,3768,4564,7683,7266,8235,4344,8021,6176,8274]
     for n, s in zip(ns, sums):
