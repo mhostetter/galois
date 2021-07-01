@@ -32,6 +32,7 @@ Specific factorization algorithms
    :toctree:
 
    perfect_power
+   trial_division
    pollard_p1
    pollard_rho
 
