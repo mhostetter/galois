@@ -16,7 +16,7 @@ from .prime import PRIMES, MAX_PRIME, is_prime
 
 __all__ = [
     "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
-    "factors", "perfect_power", "pollard_p1", "pollard_rho",
+    "factors", "perfect_power", "trial_division", "pollard_p1", "pollard_rho",
     "divisors", "divisor_sigma",
     "is_prime_power", "is_perfect_power", "is_square_free", "is_smooth", "is_powersmooth"
 ]
@@ -282,7 +282,7 @@ def factors(n):
         return p, e
 
     # Step 3
-    p, e, n = trial_division_factor(n)
+    p, e, n = trial_division(n)
 
     # Step 4
     while n > 1 and not is_prime(n):
@@ -358,12 +358,56 @@ def perfect_power(n):
     return None
 
 
-def trial_division_factor(n):
-    max_factor = isqrt(n)
-    max_prime_idx = bisect.bisect_right(PRIMES, max_factor)
+@set_module("galois")
+def trial_division(n, B=None):
+    r"""
+    Finds all the prime factors :math:`p_i^{e_i}` of :math:`n` for :math:`p_i \le B`.
+
+    The trial division factorization will find all prime factors :math:`p_i \le B` such that :math:`n` factors
+    as :math:`n = p_1^{e_1} \dots p_k^{e_k} n_r` where :math:`n_r` is a residual factor (which may be composite).
+
+    Parameters
+    ----------
+    n : int
+        A positive integer.
+    B : int, optional
+        The max divisor in the trial division. The default is `None` which corresponds to :math:`B = \sqrt{n}`.
+        If :math:`B > \sqrt{n}`, the algorithm will only search up to :math:`\sqrt{n}`, since a factor of :math:`n`
+        cannot be larger than :math:`\sqrt{n}`.
+
+    Returns
+    -------
+    list
+        The discovered prime factors :math:`\{p_1, \dots, p_k\}`.
+    list
+        The corresponding prime exponents :math:`\{e_1, \dots, e_k\}`.
+    int
+        The residual factor :math:`n_r`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        n = 2**4 * 17**3 * 113 * 15013
+        galois.trial_division(n)
+        galois.trial_division(n, B=500)
+        galois.trial_division(n, B=100)
+    """
+    B = MAX_PRIME if B is None else B
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not isinstance(B, (type(None), int, np.integer)):
+        raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
+    if not n > 1:
+        raise TypeError(f"Argument `n` must be greater than 1, not {n}.")
+    if not 2 < B <= MAX_PRIME:
+        raise TypeError(f"Argument `B` must be less than or equal to the max prime in the lookup table {MAX_PRIME}, not {B}.")
+
+    n = abs(int(n))
+    B = min(isqrt(n), B)  # There cannot be a factor greater than sqrt(n)
 
     p, e = [], []
-    for prime in PRIMES[0:max_prime_idx]:
+    for prime in PRIMES[0:bisect.bisect_right(PRIMES, B)]:
         degree = 0
         while n % prime == 0:
             degree += 1
@@ -371,6 +415,8 @@ def trial_division_factor(n):
         if degree > 0:
             p.append(prime)
             e.append(degree)
+
+            # Check if we've fully factored n and if so break early
             if n == 1:
                 break
 

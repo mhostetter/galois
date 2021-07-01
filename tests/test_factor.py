@@ -38,6 +38,13 @@ def test_perfect_power():
     assert galois.perfect_power(216) == (6, 3)
 
 
+def test_trial_division():
+    n = 2**4 * 17**3 * 113 * 15013
+    assert galois.trial_division(n) == ([2, 17, 113, 15013], [4, 3, 1, 1], 1)
+    assert galois.trial_division(n, B=500) == ([2, 17, 113], [4, 3, 1], 15013)
+    assert galois.trial_division(n, B=100) == ([2, 17], [4, 3], 113*15013)
+
+
 def test_pollard_p1():
     p = 1458757  # p - 1 factors: [2, 3, 13, 1039], [2, 3, 1, 1]
     q = 1326001  # q - 1 factors: [2, 3, 5, 13, 17], [4, 1, 3, 1, 1]
