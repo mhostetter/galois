@@ -19,12 +19,14 @@ from galois import __version__
 
 import numpy
 
+
 # -- Project information -----------------------------------------------------
 
 project = 'galois'
 copyright = '2020, Matt Hostetter'
 author = 'Matt Hostetter'
 version = __version__
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -34,8 +36,6 @@ version = __version__
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
     'sphinx.ext.intersphinx',
@@ -85,6 +85,7 @@ html_static_path = ['_static']
 # Sets the default role of `content` to :samp:`content`, which mimics inline literals ``content```
 default_role = 'samp'
 
+
 # -- Extension configuration -------------------------------------------------
 
 # Create hyperlinks to other documentation
@@ -97,9 +98,6 @@ intersphinx_mapping = {
 pygments_style = 'colorful'
 
 napoleon_use_admonition_for_examples = True
-
-# If True, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
 
 autodoc_default_options = {
     'imported-members': True,
@@ -117,6 +115,8 @@ nbsphinx_execute = 'auto'
 
 ipython_execlines = ['import math', 'import numpy as np', 'import galois']
 
+
+# -- Functions and setup -----------------------------------------------------
 
 def skip_member(app, what, name, obj, skip, options):
     """
