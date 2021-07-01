@@ -14,7 +14,7 @@ __all__ = ["isqrt", "iroot", "ilog"]
 @set_module("galois")
 def isqrt(n):
     r"""
-    Computes the integer square root of :math:`n` such that :math:`\textrm{isqrt}(n)^2 \le n`.
+    Computes :math:`x = \lfloor\sqrt{n}\rfloor` such that :math:`x^2 \le n < (x + 1)^2`.
 
     Note
     ----
@@ -29,7 +29,7 @@ def isqrt(n):
     Returns
     -------
     int
-        The integer square root of :math:`n` such that :math:`\textrm{isqrt}(n)^2 \le n`.
+        The integer square root of :math:`n`.
 
     Examples
     --------
@@ -46,35 +46,36 @@ def isqrt(n):
             raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
         if not n >= 0:
             raise ValueError(f"Argument `n` must be non-negative, not {n}.")
-
         n = int(n)
+
         if n < 2:
             return n
 
-        small_candidate = isqrt(n >> 2) << 1
-        large_candidate = small_candidate + 1
-        if large_candidate * large_candidate > n:
-            return small_candidate
+        # Recursively compute the integer square root
+        x = isqrt(n >> 2) << 1
+
+        if (x + 1)**2 > n:
+            return x
         else:
-            return large_candidate
+            return x + 1
 
 
 @set_module("galois")
 def iroot(n, k):
     r"""
-    Finds the integer :math:`k`-th root :math:`x` of :math:`n`, such that :math:`x^k \le n`.
+    Computes :math:`x = \lfloor(n)^{\frac{1}{k}}\rfloor` such that :math:`x^k \le n < (x + 1)^k`.
 
     Parameters
     ----------
     n : int
-        A positive integer.
+        A non-negative integer.
     k : int
         The root :math:`k`, must be at least 2.
 
     Returns
     -------
     int
-        The integer :math:`k`-th root :math:`x` of :math:`n`, such that :math:`x^k \le n`
+        The integer :math:`k`-th root of :math:`n`.
 
     Examples
     --------
@@ -88,11 +89,14 @@ def iroot(n, k):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not isinstance(k, (int, np.integer)):
         raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
-    if not n > 0:
-        raise ValueError(f"Argument `n` must be positive, not {n}.")
+    if not n >= 0:
+        raise ValueError(f"Argument `n` must be non-negative, not {n}.")
     if not k >= 2:
         raise ValueError(f"Argument `k` must be at least 2, not {k}.")
     n, k = int(n), int(k)
+
+    if n == 0:
+        return 0
 
     # https://stackoverflow.com/a/39191163/11694321
     u = n
@@ -109,7 +113,7 @@ def iroot(n, k):
 @set_module("galois")
 def ilog(n, b):
     r"""
-    Finds the integer :math:`\textrm{log}_b(n) = k`, such that :math:`b^k \le n`.
+    Computes :math:`x = \lfloor\textrm{log}_b(n)\rfloor` such that :math:`b^x \le n < b^{x + 1}`.
 
     Parameters
     ----------
@@ -121,7 +125,7 @@ def ilog(n, b):
     Returns
     -------
     int
-        The integer :math:`\textrm{log}_b(n) = k`, such that :math:`b^k \le n`.
+        The integer logarithm base :math:`b` of :math:`n`.
 
     Examples
     --------
