@@ -33,6 +33,7 @@ Specific factorization algorithms
 
    perfect_power
    pollard_p1
+   pollard_rho
 
 Integer tests
 -------------

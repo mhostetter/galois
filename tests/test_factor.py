@@ -59,6 +59,23 @@ def test_pollard_p1():
     assert galois.pollard_p1(n, 10) == 1517
 
 
+def test_pollard_rho():
+    p = 1458757
+    q = 1326001
+    assert galois.pollard_rho(p*q) == p
+    assert galois.pollard_rho(p*q, c=4) == q
+
+    p = 1598442007
+    q = 1316659213
+    assert galois.pollard_rho(p*q) == p
+    assert galois.pollard_rho(p*q, c=3) == q
+
+    p = 1636344139
+    q = 1476638609
+    assert galois.pollard_rho(p*q) == q
+    assert galois.pollard_rho(p*q, c=6) == p
+
+
 @pytest.mark.parametrize("n", [0, 1, 2, 3, 4, 5, 31, 13*7, 120, 120*7])
 def test_divisors(n):
     assert galois.divisors(n) == [d for d in range(1, n + 1) if n % d == 0]

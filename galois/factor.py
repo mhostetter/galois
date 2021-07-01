@@ -16,7 +16,7 @@ from .prime import PRIMES, MAX_PRIME, is_prime
 
 __all__ = [
     "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
-    "factors", "perfect_power", "pollard_p1",
+    "factors", "perfect_power", "pollard_p1", "pollard_rho",
     "divisors", "divisor_sigma",
     "is_prime_power", "is_perfect_power", "is_square_free", "is_smooth", "is_powersmooth"
 ]
@@ -286,10 +286,10 @@ def factors(n):
 
     # Step 4
     while n > 1 and not is_prime(n):
-        f = pollard_rho_factor(n)  # A non-trivial factor
+        f = pollard_rho(n)  # A non-trivial factor
         while f is None:
             # Try again with a different random function f(x)
-            f = pollard_rho_factor(n, c=random.randint(2, n // 2))
+            f = pollard_rho(n, c=random.randint(2, n // 2))
         if is_prime(f):
             degree = 0
             while n % f == 0:
@@ -497,26 +497,72 @@ def pollard_p1(n, B, B2=None):
     return None
 
 
-@functools.lru_cache(maxsize=1024)
-def pollard_rho_factor(n, c=1):
-    """
+# @functools.lru_cache(maxsize=1024)
+def pollard_rho(n, c=1):
+    r"""
+    Attempts to find a non-trivial factor of :math:`n` using cycle detection.
+
+    Pollard's :math:`\rho` algorithm seeks to find a non-trivial factor of :math:`n` by finding a cycle in a sequence
+    of integers :math:`x_0, x_1, \dots` defined by :math:`x_i = f(x_{i-1}) = x_{i-1}^2 + 1\ \textrm{mod}\ p` where :math:`p`
+    is an unknown small prime factor of :math:`n`. This happens when :math:`x_{m} \equiv x_{2m}\ (\textrm{mod}\ p)`.
+    Because :math:`p` is unknown, this is accomplished by computing the sequence modulo :math:`n` and looking for
+    :math:`\textrm{gcd}(x_m - x_{2m}, n) > 1`.
+
+    Parameters
+    ----------
+    n : int
+        An odd composite integer :math:`n > 2` that is not a prime power.
+    c : int, optional
+        The constant offset in the function :math:`f(x) = x^2 + c\ \textrm{mod}\ n`. The default is 1. A requirement
+        of the algorithm is that :math:`c \not\in \{0, -2\}`.
+
+    Returns
+    -------
+    None, int
+        A non-trivial factor :math:`m` of :math:`n`, if found. `None` if not found.
+
     References
     ----------
     * Section 3.2.2 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
+
+    Examples
+    --------
+    Pollard's :math:`\rho` is especially good at finding small factors.
+
+    .. ipython:: python
+
+        n = 503**7 * 10007 * 1000003
+        galois.pollard_rho(n)
+
+    It is also efficient for finding relatively small factors.
+
+    .. ipython:: python
+
+        n = 1182640843 * 1716279751
+        galois.pollard_rho(n)
     """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not isinstance(c, (type(None), int, np.integer)):
+        raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
+    if not n > 1:
+        raise ValueError(f"Argument `n` must greater than 1, not {n}.")
+    if not c not in [0, -2]:
+        raise ValueError("Argument `c` cannot be -2 or 0.")
+    n = abs(int(n))
+
     f = lambda x: (x**2 + c) % n
 
     a, b, d = 2, 2, 1
-    while True:
+    while d == 1:
         a = f(a)
-        b = f(f(b))
         b = f(f(b))
         d = math.gcd(a - b, n)
 
-        if 1 < d < n:
-            return d
-        if d == n:
-            return None  # Failure
+    if d == n:
+        return None
+
+    return d
 
 
 # def fermat_factors(n):
