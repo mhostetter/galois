@@ -30,7 +30,7 @@ def test_kth_prime():
     with pytest.raises(ValueError):
         galois.kth_prime(0)
     with pytest.raises(ValueError):
-        galois.kth_prime(galois.prime.MAX_K + 1)
+        galois.kth_prime(galois._prime.MAX_K + 1)
 
 
 def test_prev_prime():
@@ -42,7 +42,7 @@ def test_prev_prime():
     with pytest.raises(ValueError):
         galois.prev_prime(1)
     with pytest.raises(ValueError):
-        galois.prev_prime(galois.prime.MAX_PRIME + 1)
+        galois.prev_prime(galois._prime.MAX_PRIME + 1)
 
 
 def test_next_prime():
@@ -52,7 +52,7 @@ def test_next_prime():
     with pytest.raises(TypeError):
         galois.next_prime(20.0)
     with pytest.raises(ValueError):
-        galois.next_prime(galois.prime.MAX_PRIME)
+        galois.next_prime(galois._prime.MAX_PRIME)
 
 
 def test_mersenne_exponents():
@@ -86,7 +86,7 @@ def test_is_composite():
 
 
 def test_fermat_primality_test():
-    primes = random.choices(galois.prime.PRIMES, k=10)
+    primes = random.choices(galois._prime.PRIMES, k=10)
     assert [galois.fermat_primality_test(p) for p in primes] == [True,]*len(primes)
 
     # https://oeis.org/A001567
@@ -106,7 +106,7 @@ def test_fermat_primality_test():
 
 
 def test_miller_rabin_primality_test():
-    primes = random.choices(galois.prime.PRIMES, k=10)
+    primes = random.choices(galois._prime.PRIMES, k=10)
     assert [galois.miller_rabin_primality_test(p) for p in primes] == [True,]*len(primes)
 
     strong_liars = [9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82]
