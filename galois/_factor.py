@@ -427,13 +427,13 @@ def trial_division(n, B=None):
 def pollard_p1(n, B, B2=None):
     r"""
     Attempts to find a non-trivial factor of :math:`n` if it has a prime factor :math:`p` such that
-    :math:`p-1` is :math:`B`-smooth.
+    :math:`p-1` is :math:`B`-powersmooth.
 
     For a given odd composite :math:`n` with a prime factor :math:`p`, Pollard's :math:`p-1` algorithm can discover a non-trivial factor
-    of :math:`n` if :math:`p-1` is :math:`B`-smooth. Specifically, the prime factorization must satisfy :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}`
-    with each :math:`p_i \le B`.
+    of :math:`n` if :math:`p-1` is :math:`B`-powersmooth. Specifically, the prime factorization must satisfy :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}`
+    with each :math:`p_i^{e_i} \le B`.
 
-    A extension of Pollard's :math:`p-1` algorithm allows a prime factor :math:`p` to be :math:`B`-smooth with the exception of one
+    A extension of Pollard's :math:`p-1` algorithm allows a prime factor :math:`p` such that :math:`p-1` is :math:`B`-powersmooth with the exception of one
     prime factor :math:`B < p_{k+1} \le B_2`. In this case, the prime factorization is :math:`p-1 = p_1^{e_1} \dots p_k^{e_k} p_{k+1}`.
     Often :math:`B_2` is chosen such that :math:`B_2 \gg B`.
 
@@ -442,7 +442,7 @@ def pollard_p1(n, B, B2=None):
     n : int
         An odd composite integer :math:`n > 2` that is not a prime power.
     B : int
-        The smoothness bound :math:`B > 2`.
+        The power smoothness bound :math:`B > 2`.
     B2 : int, optional
         The smoothness bound :math:`B_2` for the optional second step of the algorithm. The default is `None`, which
         will not perform the second step.
@@ -458,7 +458,7 @@ def pollard_p1(n, B, B2=None):
 
     Examples
     --------
-    Here, :math:`n = pq` where :math:`p-1` is :math:`1039`-smooth and :math:`q-1` is :math:`17`-smooth.
+    Here, :math:`n = pq` where :math:`p-1` is :math:`1039`-powersmooth and :math:`q-1` is :math:`125`-powersmooth.
 
     .. ipython:: python
 
@@ -466,33 +466,26 @@ def pollard_p1(n, B, B2=None):
         galois.factors(p - 1)
         galois.factors(q - 1)
 
-    Searching with :math:`B=15` will not recover a prime factor.
+    Searching with :math:`B=100` will not recover a factor.
 
     .. ipython:: python
 
-        galois.pollard_p1(p*q, 15)
+        galois.pollard_p1(p*q, 100)
 
-    Searching with :math:`B=17` will recover the prime factor :math:`q`.
-
-    .. ipython:: python
-
-        galois.pollard_p1(p*q, 17)
-
-    Searching :math:`B=15` will not recover a prime factor in the first step, but will find :math:`q` in the second
-    step because :math:`p_{k+1} = 17` satisfies :math:`15 < 17 \le 100`.
+    Searching with :math:`B=125` will recover the prime factor :math:`q`.
 
     .. ipython:: python
 
-        galois.pollard_p1(p*q, 15, B2=100)
+        galois.pollard_p1(p*q, 125)
 
-    Pollard's :math:`p-1` algorithm may return a composite factor.
+    Searching :math:`B=81` will not recover a factor in the first step, but will find :math:`p` in the second
+    step because :math:`p-1` is :math:`81`-powersmooth with exception of :math:`p_{k+1} = 1039`, which satisfies
+    :math:`81 < 1039 \le 1100`.
 
     .. ipython:: python
 
-        n = 2133861346249
-        galois.factors(n)
-        galois.pollard_p1(n, 10)
-        37*41
+        galois.pollard_p1(p*q, 81)
+        galois.pollard_p1(p*q, 81, B2=1100)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -502,43 +495,51 @@ def pollard_p1(n, B, B2=None):
         raise TypeError(f"Argument `B2` must be an integer, not {type(B2)}.")
     if not (n % 2 == 1 and n > 2):
         raise ValueError(f"Argument `n` must odd and greater than 2, not {n}.")
-    if not B > 2:
-        raise ValueError(f"Argument `B` must greater than 2, not {B}.")
+    if not 2 <= B <= MAX_PRIME:
+        raise ValueError(f"Argument `B` must be in the range [2, {MAX_PRIME}], not {B}.")
+    if B2 is not None and not B < B2 <= MAX_PRIME:
+        raise ValueError(f"Argument `B2` must be in the range ({B}, {MAX_PRIME}], not {B2}.")
+
     n = abs(int(n))
-
     a = 2  # A value that is coprime to n (since n is odd)
-    check_stride = 10
 
-    assert B <= MAX_PRIME
-    for i, p in enumerate(PRIMES[0:bisect.bisect_right(PRIMES, B)]):
-        e = ilog(n, p)
+    # Step 1: Try to find a non-trivial factor of n if p | n and p - 1 is B-powersmooth
+    for p in PRIMES[0:bisect.bisect_right(PRIMES, B)]:
+        e = ilog(B, p)  # ei such that pi^ei <= B
         a = pow(a, p**e, n)
-
-        # Check the GCD periodically to return early without checking all primes less than the
-        # smoothness bound
-        if i % check_stride == 0 and math.gcd(a - 1, n) not in [1, n]:
-            return math.gcd(a - 1, n)
-
-    d = math.gcd(a - 1, n)
-
-    if d not in [1, n]:
-        return d
-    if d == n:
-        return None
-
-    # Try to find p such that p - 1 has a single prime factor larger than B
-    if B2 is not None:
-        for i, p in enumerate(PRIMES[bisect.bisect_right(PRIMES, B):bisect.bisect_right(PRIMES, B2)]):
-            a = pow(a, p, n)
-
-            # Check the GCD periodically to return early without checking all primes less than the
-            # smoothness bound
-            if i % check_stride == 0 and math.gcd(a - 1, n) not in [1, n]:
-                return math.gcd(a - 1, n)
 
         d = math.gcd(a - 1, n)
         if d not in [1, n]:
             return d
+
+    # Step 2: Try to find a non-trivial factor of n if p | n and p - 1 is B-powersmooth except one
+    # prime factor B < pi <= B2
+    if B2 is not None:
+        max_delta = int(math.log(B2)**2)
+        if max_delta % 2 == 1:
+            max_delta += 1
+
+        # Precompute a^delta mod n for several even delta values
+        H_LUT = [0,]*(max_delta // 2 + 1)
+        for delta in range(0, max_delta + 2, 2):
+            H_LUT[delta // 2] = pow(a, delta, n)
+
+        Q, H = 1, 1
+        p_prev = 0
+        for p in PRIMES[bisect.bisect_right(PRIMES, B):bisect.bisect_right(PRIMES, B2)]:
+            delta = p - p_prev  # The even delta between consecutive primes p[i] - p[i-1]
+            p_prev = p
+
+            # H[i] = H^p[i] = H[i-1] * H^(p[i] - p[i-1])
+            if delta <= max_delta:
+                H = (H * H_LUT[delta // 2]) % n
+            else:
+                H = (H * pow(a, delta, n)) % n
+            Q = (Q * (H - 1)) % n
+
+            d = math.gcd(Q, n)
+            if d not in [1, n]:
+                return d
 
     return None
 
