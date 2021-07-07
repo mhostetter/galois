@@ -196,12 +196,13 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         N_vec = max([len(str(integer_to_poly(e, cls.characteristic, degree=cls.degree-1))) for e in x] + [len("Vector")]) + 2
         N_int = max([len(cls._print_int(e)) for e in x] + [len("Integer")]) + 2
 
-        string = "╔" + "═"*N_power + "╦" + "═"*N_poly + "╦" + "═"*N_vec + "╦" + "═"*N_int + "╗"
+        # Useful characters: https://www.utf8-chartable.de/unicode-utf8-table.pl?start=9472
+        string = "╔" + "═"*N_power + "╤" + "═"*N_poly + "╤" + "═"*N_vec + "╤" + "═"*N_int + "╗"
 
         labels = "║" + "Power".center(N_power) + "│" + "Polynomial".center(N_poly) + "│" + "Vector".center(N_vec) + "│" + "Integer".center(N_int) + "║"
         string += "\n" + labels
 
-        divider = "║" + "═"*N_power + "╬" + "═"*N_poly + "╬" + "═"*N_vec + "╬" + "═"*N_int + "║"
+        divider = "║" + "═"*N_power + "╪" + "═"*N_poly + "╪" + "═"*N_vec + "╪" + "═"*N_int + "║"
         string += "\n" + divider
 
         for i in range(x.size):
@@ -216,7 +217,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
                 divider = "╟" + "─"*N_power + "┼" + "─"*N_poly + "┼" + "─"*N_vec + "┼" + "─"*N_int + "╢"
                 string += "\n" + divider
 
-        bottom = "╚" + "═"*N_power + "╩" + "═"*N_poly + "╩"+ "═"*N_vec + "╩" + "═"*N_int + "╝"
+        bottom = "╚" + "═"*N_power + "╧" + "═"*N_poly + "╧"+ "═"*N_vec + "╧" + "═"*N_int + "╝"
         string += "\n" + bottom
 
         return string
@@ -280,7 +281,8 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         N = max([len(print_element(e)) for e in x]) + 2
         N_left = max(N, len(operation_str) + 2)
 
-        string = "╔" + "═"*N_left + ("╦" + "═"*N)*y.size + "╗"
+        # Useful characters: https://www.utf8-chartable.de/unicode-utf8-table.pl?start=9472
+        string = "╔" + "═"*N_left + "╦" + ("═"*N + "╤")*(y.size - 1) + "═"*N + "╗"
 
         line = "║" + operation_str.rjust(N_left - 1) + " ║"
         for j in range(y.size):
@@ -288,7 +290,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             line += "│" if j < y.size - 1 else "║"
         string += "\n" + line
 
-        divider = "╠" + "═"*N_left + ("╬" + "═"*N)*y.size + "╣"
+        divider = "╠" + "═"*N_left + "╬" + ("═"*N + "╪")*(y.size - 1) + "═"*N + "╣"
         string += "\n" + divider
 
         for i in range(x.size):
@@ -302,7 +304,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
                 divider = "╟" + "─"*N_left + "╫" + ("─"*N + "┼")*(y.size - 1) + "─"*N + "╢"
                 string += "\n" + divider
 
-        bottom = "╚" + "═"*N_left + ("╩" + "═"*N)*y.size + "╝"
+        bottom = "╚" + "═"*N_left + "╩" + ("═"*N + "╧")*(y.size - 1) + "═"*N + "╝"
         string += "\n" + bottom
 
         return string
