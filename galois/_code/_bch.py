@@ -503,6 +503,14 @@ class BCH:
     def field(self):
         r"""
         galois.FieldClass: The Galois field :math:`\mathrm{GF}(2^m)` that defines the BCH code.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.field
+            print(bch.field.properties)
         """
         return self._field
 
@@ -510,6 +518,14 @@ class BCH:
     def n(self):
         """
         int: The codeword size :math:`n` of the :math:`[n, k, d]_2` code
+
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.n
         """
         return self._n
 
@@ -517,6 +533,13 @@ class BCH:
     def k(self):
         """
         int: The message size :math:`k` of the :math:`[n, k, d]_2` code
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.k
         """
         return self._k
 
@@ -525,6 +548,13 @@ class BCH:
         r"""
         int: The design distance :math:`d` of the :math:`[n, k, d]_2` code. The minimum distance of a BCH code
         may be greater than the design distance, :math:`d_{min} \ge d`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.d
         """
         return 2*self.t + 1
 
@@ -532,6 +562,13 @@ class BCH:
     def t(self):
         """
         int: The error-correcting capability of the code. The code can correct :math:`t` bit errors in a codeword.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.t
         """
         return self._t
 
@@ -539,6 +576,13 @@ class BCH:
     def systematic(self):
         """
         bool: Indicates if the code is configured to return codewords in systematic form.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.systematic
         """
         return self._systematic
 
@@ -546,6 +590,15 @@ class BCH:
     def generator_poly(self):
         """
         galois.Poly: The generator polynomial :math:`g(x)` whose roots are :obj:`BCH.roots`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.generator_poly
+            # Evaluate the generator polynomial at its roots in GF(2^m)
+            bch.generator_poly(bch.roots, field=bch.field)
         """
         return self._generator_poly
 
@@ -553,6 +606,15 @@ class BCH:
     def roots(self):
         r"""
         galois.FieldArray: The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.roots
+            # Evaluate the generator polynomial at its roots in GF(2^m)
+            bch.generator_poly(bch.roots, field=bch.field)
         """
         return self._roots
 
@@ -560,6 +622,13 @@ class BCH:
     def G(self):
         r"""
         galois.GF2: The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.G
         """
         return self._G
 
@@ -567,6 +636,13 @@ class BCH:
     def H(self):
         r"""
         galois.FieldArray: The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.H
         """
         return self._H
 
@@ -574,6 +650,13 @@ class BCH:
     def is_primitive(self):
         """
         bool: Indicates if the BCH code is primitive, meaning :math:`n = 2^m - 1`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.is_primitive
         """
         return self._is_primitive
 
@@ -582,6 +665,13 @@ class BCH:
         r"""
         bool: Indicates if the BCH code is narrow sense, meaning the roots of the generator polynomial are consecutive
         powers of :math:`\alpha` starting at 1, i.e. :math:`\alpha, \alpha^2, \dots, \alpha^{2t - 1}`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7); bch
+            bch.is_narrow_sense
         """
         return self._is_narrow_sense
 
