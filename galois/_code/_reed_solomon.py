@@ -412,6 +412,14 @@ class ReedSolomon:
     def field(self):
         r"""
         galois.FieldClass: The Galois field :math:`\mathrm{GF}(q)` that defines the Reed-Solomon code.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.field
+            print(rs.field.properties)
         """
         return self._field
 
@@ -419,6 +427,13 @@ class ReedSolomon:
     def n(self):
         """
         int: The codeword size :math:`n` of the :math:`[n, k, d]_q` code.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.n
         """
         return self._n
 
@@ -426,6 +441,13 @@ class ReedSolomon:
     def k(self):
         """
         int: The message size :math:`k` of the :math:`[n, k, d]_q` code.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.k
         """
         return self._k
 
@@ -434,6 +456,13 @@ class ReedSolomon:
         """
         int: The design distance :math:`d` of the :math:`[n, k, d]_q` code. The minimum distance of a Reed-Solomon code
         is exactly equal to the design distance, :math:`d_{min} = d`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.d
         """
         return 2*self.t + 1
 
@@ -441,6 +470,13 @@ class ReedSolomon:
     def t(self):
         """
         int: The error-correcting capability of the code. The code can correct :math:`t` symbol errors in a codeword.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.t
         """
         return self._t
 
@@ -448,6 +484,13 @@ class ReedSolomon:
     def systematic(self):
         """
         bool: Indicates if the code is configured to return codewords in systematic form.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.systematic
         """
         return self._systematic
 
@@ -455,6 +498,15 @@ class ReedSolomon:
     def generator_poly(self):
         """
         galois.Poly: The generator polynomial :math:`g(x)` whose roots are :obj:`ReedSolomon.roots`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.generator_poly
+            # Evaluate the generator polynomial at its roots
+            rs.generator_poly(rs.roots)
         """
         return self._generator_poly
 
@@ -462,6 +514,15 @@ class ReedSolomon:
     def roots(self):
         r"""
         galois.FieldArray: The roots of the generator polynomial. These are consecutive powers of :math:`\alpha`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.roots
+            # Evaluate the generator polynomial at its roots
+            rs.generator_poly(rs.roots)
         """
         return self._roots
 
@@ -469,6 +530,13 @@ class ReedSolomon:
     def c(self):
         """
         int: The degree of the first consecutive root.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.c
         """
         return self._c
 
@@ -476,6 +544,13 @@ class ReedSolomon:
     def G(self):
         r"""
         galois.FieldArray: The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.G
         """
         return self._G
 
@@ -483,6 +558,13 @@ class ReedSolomon:
     def H(self):
         r"""
         galois.FieldArray: The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.H
         """
         return self._H
 
@@ -491,6 +573,13 @@ class ReedSolomon:
         r"""
         bool: Indicates if the Reed-Solomon code is narrow sense, meaning the roots of the generator polynomial are consecutive
         powers of :math:`\alpha` starting at 1, i.e. :math:`\alpha, \alpha^2, \dots, \alpha^{2t - 1}`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9); rs
+            rs.is_narrow_sense
         """
         return self._is_narrow_sense
 
