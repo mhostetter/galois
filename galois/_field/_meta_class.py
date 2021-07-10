@@ -222,16 +222,14 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
         return string
 
-    def arithmetic_table(cls, operation, mode="int"):
+    def arithmetic_table(cls, operation):
         """
         Generates the specified arithmetic table for the Galois field.
 
         Parameters
         ----------
         operation : str
-            Either `"+"`, `"-"`, `"*"`, or `"/"`.
-        mode : str, optional
-            The display mode to represent the field elements, either `"int"` (default), `"poly"`, or `"power"`.
+            The arithmetic operation, either `"+"`, `"-"`, `"*"`, or `"/"`.
 
         Returns
         -------
@@ -247,15 +245,18 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
         .. ipython:: python
 
-            GF = galois.GF(3**2)
-            print(GF.arithmetic_table("+", mode="poly"))
+            with GF.display("poly"):
+                print(GF.arithmetic_table("+"))
+
+        .. ipython:: python
+
+            with GF.display("power"):
+                print(GF.arithmetic_table("+"))
         """
         if not operation in ["+", "-", "*", "/"]:
             raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation}.")
-        if mode not in ["int", "poly", "power"]:
-            raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode}.")
 
-        x = cls.Elements() if mode != "power" else np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1)))
+        x = cls.Elements() if cls.display_mode != "power" else np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1)))
         y = x if operation != "/" else x[1:]
         X, Y = np.meshgrid(x, y, indexing="ij")
 
@@ -268,9 +269,9 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         else:
             Z = X / Y
 
-        if mode == "int":
+        if cls.display_mode == "int":
             print_element = cls._print_int
-        elif mode == "poly":
+        elif cls.display_mode == "poly":
             print_element = cls._print_poly
         else:
             cls._set_print_power_vars(x)

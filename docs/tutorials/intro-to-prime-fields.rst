@@ -88,10 +88,10 @@ is :math:`1` and we'll find that :math:`4^{-1} = 2` in :math:`\mathrm{GF}(7)`, n
 
 This algorithm is terribly inefficient for large fields, however. Fortunately, Euclid came up with an efficient algorithm, now called the Extended Eulcidean
 Algorithm. Given two integers :math:`a` and :math:`b`, the Extended Euclidean Algorithm finds the integers :math:`x` and :math:`y` such that
-:math:`xa + yb = \textrm{gcd}(a, b)`. This algorithm is implemented in :func:`galois.gcd`.
+:math:`xa + yb = \textrm{gcd}(a, b)`. This algorithm is implemented in :func:`galois.egcd`.
 
-If :math:`a` is a field element of :math:`\mathrm{GF}(7)` and :math:`b = 7`, then :math:`x = a^{-1}` in :math:`\mathrm{GF}(7)`.
-Note, the GCD will always be :math:`1` because :math:`p` is prime.
+If :math:`a = 4` is a field element of :math:`\mathrm{GF}(7)` and :math:`b = 7`, the prime characteristic, then :math:`x = a^{-1}` in :math:`\mathrm{GF}(7)`.
+Note, the GCD will always be :math:`1` because :math:`b` is prime.
 
 .. ipython:: python
 
