@@ -66,7 +66,7 @@ Anytime you have a large array, you can easily view its elements in whichever mo
 
 .. ipython:: python
 
-   x = GF9.Random(10); x
+   x = GF9.Elements(); x
    # Temporarily print x using the power representation
    with GF9.display("power"):
       print(x)
@@ -131,7 +131,8 @@ the integer representation or polynomial representation.
 .. ipython:: python
 
    print(GF9.arithmetic_table("+"))
-   print(GF9.arithmetic_table("+", mode="poly"))
+   with GF9.display("poly"):
+      print(GF9.arithmetic_table("+"))
 
 Polynomial multiplication, however, often results in products of larger degree than the multiplicands.
 In this case, the result must be reduced modulo :math:`p(x)`.
@@ -172,14 +173,15 @@ Now the entire multiplication table can be shown for completeness.
 
 .. ipython:: python
 
-   print(GF9.arithmetic_table("*", mode="poly"))
+   with GF9.display("poly"):
+      print(GF9.arithmetic_table("*"))
 
 Division, as in :math:`\mathrm{GF}(p)`, is a little more difficult. Fortunately the Extended Euclidean Algorithm, which
 was used in prime fields on integers, can be used for extension fields on polynomials. Given two polynomials :math:`a`
 and :math:`b`, the Extended Euclidean Algorithm finds the polynomials :math:`x` and :math:`y` such that
 :math:`xa + yb = \textrm{gcd}(a, b)`. This algorithm is implemented in :func:`galois.poly_egcd`.
 
-If :math:`a` is a field element of :math:`\mathrm{GF}(3^2)` and :math:`b = p(x)`, the field's irreducible polynomial, then :math:`x = a^{-1}` in :math:`\mathrm{GF}(3^2)`.
+If :math:`a = x + 2` is a field element of :math:`\mathrm{GF}(3^2)` and :math:`b = p(x)`, the field's irreducible polynomial, then :math:`x = a^{-1}` in :math:`\mathrm{GF}(3^2)`.
 Note, the GCD will always be :math:`1` because :math:`p(x)` is irreducible.
 
 .. ipython:: python
@@ -213,7 +215,8 @@ is not defined for :math:`y = 0`.
 
 .. ipython:: python
 
-   print(GF9.arithmetic_table("/", mode="poly"))
+   with GF9.display("poly"):
+      print(GF9.arithmetic_table("/"))
 
 Primitive elements
 ------------------
