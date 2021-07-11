@@ -1149,7 +1149,7 @@ class DensePoly(Poly):
 
     @property
     def coeffs(self):
-        return self._coeffs
+        return self._coeffs.copy()
 
 
 class BinaryPoly(Poly):
@@ -1270,7 +1270,7 @@ class BinaryPoly(Poly):
         if self._coeffs is None:
             binstr = bin(self._integer)[2:]
             self._coeffs = GF2([int(b) for b in binstr])
-        return self._coeffs
+        return self._coeffs.copy()
 
     @property
     def integer(self):

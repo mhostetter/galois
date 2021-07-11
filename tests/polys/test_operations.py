@@ -124,3 +124,20 @@ def test_equal(field):
     p1 = galois.Poly(c)
     p2 = galois.Poly(c.tolist(), field=field)
     assert p1 == p2
+
+
+def test_cant_set_coeffs():
+    # DensePoly
+    GF = galois.GF(7)
+    coeffs = [5,0,0,4,2,0,3]
+    p = galois.Poly(coeffs, field=GF)
+    assert np.array_equal(p.coeffs, coeffs)
+    p.coeffs[-1] = 0
+    assert np.array_equal(p.coeffs, coeffs)
+
+    # BinaryPoly
+    coeffs = [1,0,0,1,1,0,1]
+    p = galois.Poly(coeffs)
+    assert np.array_equal(p.coeffs, coeffs)
+    p.coeffs[-1] = 0
+    assert np.array_equal(p.coeffs, coeffs)
