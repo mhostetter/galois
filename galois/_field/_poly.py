@@ -1062,7 +1062,7 @@ class DensePoly(Poly):
     ###############################################################################
 
     def copy(self):
-        return DensePoly(np.copy(self._coeffs))
+        return DensePoly(self._coeffs.copy())
 
     ###############################################################################
     # Arithmetic methods
@@ -1325,7 +1325,7 @@ class SparsePoly(Poly):
     ###############################################################################
 
     def copy(self):
-        return SparsePoly(np.copy(self._degrees), np.copy(self._coeffs))
+        return SparsePoly(self._degrees.copy(), self._coeffs.copy())
 
     ###############################################################################
     # Arithmetic methods

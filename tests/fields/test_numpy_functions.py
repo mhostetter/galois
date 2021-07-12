@@ -22,8 +22,12 @@ def test_copy(field):
     shape = (2,3)
     a = field.Random(shape, dtype=dtype)
     b = np.copy(a)
-    assert type(b) is field
+    assert type(b) is np.ndarray
     assert b is not a
+
+    d = a.copy()
+    assert type(d) is field
+    assert d is not a
 
 
 def test_shape(field):

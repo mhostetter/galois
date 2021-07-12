@@ -4,16 +4,27 @@ def copy(a):
 
     See: https://numpy.org/doc/stable/reference/generated/numpy.copy.html
 
+    Warning
+    -------
+    This function returns an :obj:`numpy.ndarray`, not an instance of the subclass. To return a copy of the subclass, pass
+    `subok=True` (for numpy version 1.19 and above) or use `a.copy()`.
+
     Examples
     --------
     .. ipython:: python
 
         GF = galois.GF(2**3)
         a = GF.Random(5, low=1); a
+        # NOTE: b is an ndarray
         b = np.copy(a); b
+        type(b)
         a[0] = 0; a
         # b is unmodified
         b
+
+    .. ipython:: python
+
+        a.copy()
     """
     return
 
