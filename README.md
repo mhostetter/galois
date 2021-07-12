@@ -62,8 +62,8 @@ over Galois fields (with `galois.Poly`), and forward error correction codes (wit
 ## Documentation
 
 The documentation for `galois` can be found at https://galois.readthedocs.io/en/stable/. It includes
-[installation instructions](https://galois.readthedocs.io/en/stable/pages/installation.html), [basic usage](https://galois.readthedocs.io/en/stable/pages/basic_usage.html),
-[tutorials](https://galois.readthedocs.io/en/stable/pages/tutorials.html), a [development guide](https://galois.readthedocs.io/en/stable/pages/development.html), an [API reference](https://galois.readthedocs.io/en/stable/pages/api.html), and [release notes](https://galois.readthedocs.io/en/stable/pages/release_notes.html).
+[installation instructions](https://galois.readthedocs.io/en/stable/installation.html), [basic usage](https://galois.readthedocs.io/en/stable/basic-usage.html),
+[tutorials](https://galois.readthedocs.io/en/stable/tutorials.html), a [development guide](https://galois.readthedocs.io/en/stable/development.html), an [API reference](https://galois.readthedocs.io/en/stable/api/galois.html), and [release notes](https://galois.readthedocs.io/en/stable/release-notes.html).
 
 ## Installation
 
@@ -419,7 +419,7 @@ GF(0, order=2^8)
 
 ### BCH codes
 
-See full [documentation](https://galois.readthedocs.io/en/stable/pages/galois.html#forward-error-correcting-codes).
+See full [documentation](https://galois.readthedocs.io/en/stable/api/galois.BCH.html#galois.BCH).
 
 ```python
 In [1]: import numpy as np
@@ -465,7 +465,7 @@ array([[1, 0, 0, 0, 1, 1, 1],
 
 ### Reed-Solomon codes
 
-See full [documentation](https://galois.readthedocs.io/en/stable/pages/galois.html#forward-error-correcting-codes).
+See full [documentation](https://galois.readthedocs.io/en/stable/api/galois.ReedSolomon.html).
 
 ```python
 In [1]: import numpy as np
