@@ -133,7 +133,7 @@ def row_reduce(A, ncols=None):
         raise ValueError(f"Only 2-D matrices can be converted to reduced row echelon form, not {A.ndim}-D.")
 
     ncols = A.shape[1] if ncols is None else ncols
-    A_rre = np.copy(A)
+    A_rre = A.copy()
     p = 0  # The pivot
 
     for j in range(ncols):
@@ -167,7 +167,7 @@ def lu_decompose(A):
 
     field = type(A)
     n = A.shape[0]
-    Ai = np.copy(A)
+    Ai = A.copy()
     L = field.Identity(n)
 
     for i in range(0, n-1):
@@ -187,7 +187,7 @@ def lup_decompose(A):
 
     field = type(A)
     n = A.shape[0]
-    Ai = np.copy(A)
+    Ai = A.copy()
     L = field.Zeros((n,n))
     P = field.Identity(n)
 

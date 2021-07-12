@@ -26,7 +26,7 @@ UNSUPPORTED_FUNCTIONS_BINARY = [
 ]
 
 FUNCTIONS_REQUIRING_VIEW = [
-    np.copy, np.concatenate,
+    np.concatenate,
     np.broadcast_to,
     np.trace,
 ]
@@ -481,7 +481,7 @@ def poly_divmod_lookup(a, b, SUBTRACT, MULTIPLY, DIVIDE, EXP, LOG, ZECH_LOG, ZEC
     assert a.shape[-1] >= b.shape[-1]
 
     q_degree = a.shape[1] - b.shape[-1]
-    qr = np.copy(a)
+    qr = a.copy()
 
     for k in range(a.shape[0]):
         for i in range(q_degree + 1):
@@ -503,7 +503,7 @@ def poly_divmod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGR
     assert a.shape[-1] >= b.shape[-1]
 
     q_degree = a.shape[1] - b.shape[-1]
-    qr = np.copy(a)
+    qr = a.copy()
 
     for k in range(a.shape[0]):
         for i in range(q_degree + 1):
@@ -528,7 +528,7 @@ def poly_roots_lookup(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, M
     ORDER = LOG.size
 
     N = nonzero_degrees.size
-    lambda_vector = np.copy(nonzero_coeffs)
+    lambda_vector = nonzero_coeffs.copy()
     alpha_vector = np.zeros(N, dtype=dtype)
     for i in range(N):
         alpha_vector[i] = POWER(primitive_element, nonzero_degrees[i], *args)
@@ -573,7 +573,7 @@ def poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD
     ORDER = CHARACTERISTIC**DEGREE
 
     N = nonzero_degrees.size
-    lambda_vector = np.copy(nonzero_coeffs)
+    lambda_vector = nonzero_coeffs.copy()
     alpha_vector = np.zeros(N, dtype=dtype)
     for i in range(N):
         alpha_vector[i] = POWER(primitive_element, nonzero_degrees[i], *args)
