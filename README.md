@@ -55,7 +55,6 @@ over Galois fields (with `galois.Poly`), and forward error correction codes (wit
 - Linear feedback shift registers over arbitrary Galois fields
 - Number-theoretic transform, DFT over Galois fields
 - Elliptic curves over Galois fields
-- Cryptographic ciphers using Galois fields (RSA, AES, ECC, etc)
 - Group and ring arrays
 - GPU support
 
