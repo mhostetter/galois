@@ -295,30 +295,6 @@ class FunctionMeta(PropertiesMeta):
         idxs = np.argsort(roots)
         return roots[idxs]
 
-    def _berlekamp_massey(cls, sequence):
-        assert isinstance(sequence, cls)
-        field = cls
-        dtype = sequence.dtype
-
-        if cls._ufunc_mode != "python-calculate":
-            sequence = sequence.astype(np.int64)
-            add = cls._calculate_jit("add")
-            subtract = cls._calculate_jit("subtract")
-            multiply = cls._calculate_jit("multiply")
-            reciprocal = cls._calculate_jit("reciprocal")
-            coeffs = cls._function("berlekamp_massey")(sequence, add, subtract, multiply, reciprocal, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-            coeffs = coeffs.astype(dtype)
-        else:
-            sequence = sequence.view(np.ndarray)
-            subtract = cls._python_func("subtract")
-            multiply = cls._python_func("multiply")
-            DIVIDE = cls._python_func("divide")
-            reciprocal = cls._python_func("reciprocal")
-            coeffs = cls._function("berlekamp_massey")(sequence, subtract, multiply, DIVIDE, reciprocal, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-        coeffs = coeffs.view(field)
-
-        return coeffs
-
 
 ##############################################################################
 # Individual gufuncs
@@ -638,98 +614,9 @@ def poly_evaluate_calculate(coeffs, value, ADD, MULTIPLY, CHARACTERISTIC, DEGREE
     return result
 
 
-###############################################################################
-# Berlekamp-Massey algorithm
-###############################################################################
-
-BERLEKAMP_MASSEY_LOOKUP_SIG = numba.types.FunctionType(int64[:](int64[:], BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, UNARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
-
-def berlekamp_massey_lookup(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    args = EXP, LOG, ZECH_LOG, ZECH_E
-    dtype = sequence.dtype
-
-    N = sequence.size
-
-    s = sequence
-    c = np.zeros(N, dtype=dtype)
-    b = np.zeros(N, dtype=dtype)
-    c[0] = 1  # The polynomial c(x) = 1
-    b[0] = 1  # The polynomial b(x) = 1
-    L = 0
-    m = 1
-    bb = 1
-
-    for n in range(0, N):
-        d = 0
-        for i in range(0, L + 1):
-            d = ADD(d, MULTIPLY(s[n - i], c[i], *args), *args)
-
-        if d == 0:
-            m += 1
-        elif 2*L <= n:
-            t = np.copy(c)
-            d_bb = MULTIPLY(d, RECIPROCAL(bb, *args), *args)
-            for i in range(m, N):
-                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m], *args), *args)
-            L = n + 1 - L
-            b = np.copy(t)
-            bb = d
-            m = 1
-        else:
-            d_bb = MULTIPLY(d, RECIPROCAL(bb, *args), *args)
-            for i in range(m, N):
-                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m], *args), *args)
-            m += 1
-
-    return c[0:L + 1][::-1]
-
-
-BERLEKAMP_MASSEY_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, UNARY_CALCULATE_SIG, int64, int64, int64))
-
-def berlekamp_massey_calculate(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-    dtype = sequence.dtype
-
-    N = sequence.size
-
-    s = sequence
-    c = np.zeros(N, dtype=dtype)
-    b = np.zeros(N, dtype=dtype)
-    c[0] = 1  # The polynomial c(x) = 1
-    b[0] = 1  # The polynomial b(x) = 1
-    L = 0
-    m = 1
-    bb = 1
-
-    for n in range(0, N):
-        d = 0
-        for i in range(0, L + 1):
-            d = ADD(d, MULTIPLY(s[n - i], c[i], *args), *args)
-
-        if d == 0:
-            m += 1
-        elif 2*L <= n:
-            t = np.copy(c)
-            d_bb = MULTIPLY(d, RECIPROCAL(bb, *args), *args)
-            for i in range(m, N):
-                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m], *args), *args)
-            L = n + 1 - L
-            b = np.copy(t)
-            bb = d
-            m = 1
-        else:
-            d_bb = MULTIPLY(d, RECIPROCAL(bb, *args), *args)
-            for i in range(m, N):
-                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m], *args), *args)
-            m += 1
-
-    return c[0:L + 1][::-1]
-
-
 # Set globals so that when the application-specific python functions are called they will use the
 # pure-python arithmetic routines
 MATMUL = matmul_calculate
 CONVOLVE = convolve_calculate
 POLY_DIVMOD = poly_divmod_calculate
 POLY_ROOTS = poly_roots_calculate
-BERLEKAMP_MASSEY = berlekamp_massey_calculate
