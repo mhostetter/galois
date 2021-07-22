@@ -12,7 +12,7 @@ from ._poly import Poly
 from ._poly_functions import conway_poly, is_irreducible, is_primitive_element
 from ._poly_functions import primitive_element as _primitive_element  # To avoid name conflict with GF_extension() arguments
 
-# pylint: disable=too-many-statements,protected-access
+# pylint: disable=too-many-statements
 
 
 def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, mode="auto"):
