@@ -2,9 +2,10 @@ import numba
 from numba import int64
 import numpy as np
 
+from .. import _lfsr
 from .._factor import factors
 from .._field import Field, Poly, matlab_primitive_poly
-from .._field._meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, POLY_EVALUATE_CALCULATE_SIG, CONVOLVE_CALCULATE_SIG
+from .._field._meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, POLY_EVALUATE_CALCULATE_SIG, CONVOLVE_CALCULATE_SIG
 from .._overrides import set_module
 
 from ._cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
@@ -120,7 +121,7 @@ class ReedSolomon:
         self._power_jit = self.field._calculate_jit("power")
 
         # Pre-compile the JIT functions
-        self._berlekamp_massey_jit = self.field._function("berlekamp_massey")
+        self._berlekamp_massey_jit = _lfsr.jit_calculate("berlekamp_massey")
         self._poly_divmod_jit = self.field._function("poly_divmod")
         self._poly_roots_jit = self.field._function("poly_roots")
         self._poly_eval_jit = self.field._function("poly_evaluate")
@@ -587,7 +588,7 @@ class ReedSolomon:
 # JIT-compiled implementation of the specified functions
 ###############################################################################
 
-DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BERLEKAMP_MASSEY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, POLY_EVALUATE_CALCULATE_SIG, CONVOLVE_CALCULATE_SIG, int64, int64, int64))
+DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, POLY_EVALUATE_CALCULATE_SIG, CONVOLVE_CALCULATE_SIG, int64, int64, int64))
 
 def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, POLY_EVAL, CONVOLVE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """

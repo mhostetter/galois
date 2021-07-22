@@ -5,6 +5,16 @@ This section contains classes and functions for creating and analyzing linear se
 
 .. currentmodule:: galois
 
+Linear-feedback shift registers
+-------------------------------
+
+.. rubric::
+.. autosummary::
+   :template: class.rst
+   :toctree:
+
+   LFSR
+
 Sequence analysis functions
 ---------------------------
 
