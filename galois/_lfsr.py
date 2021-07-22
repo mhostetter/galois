@@ -48,6 +48,9 @@ class LFSR:
              └─▶┃  s2  ┃──┴─▶┃  s1  ┃──┴─▶┃  s0  ┃──┴──▶ y[n]
                 ┗━━━━━━┛     ┗━━━━━━┛     ┗━━━━━━┛
 
+    In the Fibonacci configuration, at time instant :math:`i` the next :math:`n-1` outputs are the current state reversed, that is :math:`[y_i, y_{i+1}, \dots, y_{i+n-1}] = [s_0, s_1, \dots, s_{n-1}]`.
+    And the :math:`n`-th output is a linear combination of the current state and the generator polynomial :math:`y_{i+n} = (g_n s_0 + g_{n-1} s_1 + \dots + g_1 s_{n-1}) g_0`.
+
     .. code-block:: text
        :caption: Galois LFSR Configuration
 
@@ -57,6 +60,9 @@ class LFSR:
              │  ┏━━━━━━┓  ▼  ┏━━━━━━┓  ▼  ┏━━━━━━┓  |
              └─▶┃  s0  ┃──⊕─▶┃  s1  ┃──⊕─▶┃  s2  ┃──┴──▶ y[n]
                 ┗━━━━━━┛     ┗━━━━━━┛     ┗━━━━━━┛
+
+    In the Galois configuration, the next output is :math:`y = s_{n-1}` and the next state is computed by :math:`s_k = s_{n-1} g_n g_k + s_{k-1}`. In the case of
+    :math:`s_0` there is no previous state added.
     """
 
     def __init__(self, poly, state=1, config="fibonacci"):
