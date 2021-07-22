@@ -271,7 +271,15 @@ def berlekamp_massey(sequence, config="fibonacci", state=False):
 
     Examples
     --------
-    TODO: Add an LFSR example once they're added.
+    The Berlekamp-Massey algorithm requires :math:`2n` output symbols to determine the :math:`n`-degree minimum connection
+    polynomial.
+
+    .. ipython:: python
+
+        g = galois.conway_poly(2, 8); g
+        lfsr = galois.LFSR(g, state=1); lfsr
+        s = lfsr.step(16); s
+        galois.berlekamp_massey(s)
     """
     if not isinstance(sequence, FieldArray):
         raise TypeError(f"Argument `sequence` must be a Galois field array, not {type(sequence)}.")
