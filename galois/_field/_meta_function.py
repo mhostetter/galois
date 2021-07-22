@@ -144,7 +144,7 @@ class FunctionMeta(PropertiesMeta):
         dtype = A.dtype
 
         if field.is_prime_field:
-            return _linalg._lapack_linalg(A, B, np.matmul, out=out)  # pylint: disable=protected-access
+            return _linalg._lapack_linalg(A, B, np.matmul, out=out)
 
         prepend, append = False, False
         if A.ndim == 1:

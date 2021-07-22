@@ -457,7 +457,6 @@ class BCH:
             dec_m, N = bch.decode(c, errors=True); dec_m, N
             np.array_equal(dec_m, m)
         """
-        # pylint: disable=protected-access
         if not isinstance(codeword, np.ndarray):
             raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
         if self.systematic:
