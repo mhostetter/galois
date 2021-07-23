@@ -955,7 +955,7 @@ class Poly:
     def nonzero_degrees(self):
         """
         numpy.ndarray: An array of the polynomial degrees that have non-zero coefficients, in degree-descending order. The entries of
-        :obj:`galois.Poly.nonzero_degrees` are paired with :obj:`galois.Poly.nonzero_coeffs`.
+        :obj:`nonzero_degrees` are paired with :obj:`nonzero_coeffs`.
 
         Examples
         --------
@@ -970,8 +970,8 @@ class Poly:
     @property
     def nonzero_coeffs(self):
         """
-        galois.FieldArray: The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`galois.Poly.nonzero_degrees`
-        are paired with :obj:`galois.Poly.nonzero_coeffs`.
+        galois.FieldArray: The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_degrees`
+        are paired with :obj:`nonzero_coeffs`.
 
         Examples
         --------
@@ -986,8 +986,8 @@ class Poly:
     @property
     def degrees(self):
         """
-        numpy.ndarray: An array of the polynomial degrees in degree-descending order. The entries of :obj:`galois.Poly.degrees`
-        are paired with :obj:`galois.Poly.coeffs`.
+        numpy.ndarray: An array of the polynomial degrees in degree-descending order. The entries of :obj:`degrees`
+        are paired with :obj:`coeffs`.
 
         Examples
         --------
@@ -1002,8 +1002,8 @@ class Poly:
     @property
     def coeffs(self):
         """
-        galois.FieldArray: The coefficients of the polynomial in degree-descending order. The entries of :obj:`galois.Poly.degrees` are
-        paired with :obj:`galois.Poly.coeffs`.
+        galois.FieldArray: The coefficients of the polynomial in degree-descending order. The entries of :obj:`degrees` are
+        paired with :obj:`coeffs`.
 
         Examples
         --------
