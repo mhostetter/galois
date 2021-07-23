@@ -28,6 +28,20 @@ def test_copy():
     assert np.array_equal(p1.nonzero_degrees, [3000,1,0])
 
 
+def test_reverse():
+    p1 = galois.Poly([2,0,1,2], field=galois.GF(3))
+    p2 = galois.Poly([2,1,0,2], field=galois.GF(3))
+    assert p1.reverse() == p2
+
+    p1 = galois.Poly([1,0,1,1])
+    p2 = galois.Poly([1,1,0,1])
+    assert p1.reverse() == p2
+
+    p1 = galois.Poly.Degrees([3000,1,0], [1,2,1], field=galois.GF(3))
+    p2 = galois.Poly.Degrees([3000,2999,0], [1,2,1], field=galois.GF(3))
+    assert p1.reverse() == p2
+
+
 def test_string():
     GF = galois.GF2
     poly = galois.Poly([1,0,1,1])

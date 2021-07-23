@@ -501,7 +501,24 @@ class Poly:
     ###############################################################################
 
     def copy(self):
+        """
+        Deep copies the polynomial.
+        """
         raise NotImplementedError
+
+    def reverse(self):
+        r"""
+        Returns the :math:`n`-th reversal of the polynomial :math:`x^n f(\frac{1}{x})`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            f = galois.Poly([5, 0, 3, 4], field=GF); f
+            f.reverse()
+        """
+        return Poly(self.coeffs[::-1])
 
     def roots(self, multiplicity=False):
         r"""
@@ -593,7 +610,7 @@ class Poly:
             p.roots()
             p.roots(multiplicity=True)
         """
-        roots = self.field._poly_roots(self.nonzero_degrees, self.nonzero_coeffs)  # pylint: disable=protected-access
+        roots = self.field._poly_roots(self.nonzero_degrees, self.nonzero_coeffs)
 
         if not multiplicity:
             return roots
@@ -1116,7 +1133,7 @@ class DensePoly(Poly):
             return zero, a.copy()
 
         else:
-            q_coeffs, r_coeffs = field._poly_divmod(a.coeffs, b.coeffs)  # pylint: disable=protected-access
+            q_coeffs, r_coeffs = field._poly_divmod(a.coeffs, b.coeffs)
             return Poly(q_coeffs), Poly(r_coeffs)
 
     @classmethod
@@ -1325,7 +1342,10 @@ class SparsePoly(Poly):
     ###############################################################################
 
     def copy(self):
-        return SparsePoly(self._degrees.copy(), self._coeffs.copy())
+        return SparsePoly(self.degrees, self.coeffs)
+
+    def reverse(self):
+        return SparsePoly(self.degree - self.degrees, self.coeffs)
 
     ###############################################################################
     # Arithmetic methods
@@ -1460,11 +1480,11 @@ class SparsePoly(Poly):
 
     @property
     def nonzero_degrees(self):
-        return self._degrees
+        return self._degrees.copy()
 
     @property
     def nonzero_coeffs(self):
-        return self._coeffs
+        return self._coeffs.copy()
 
     @property
     def degrees(self):
