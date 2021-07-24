@@ -12,7 +12,7 @@ import numpy as np
 from ._integer import isqrt, iroot, ilog
 from ._math import prod
 from ._overrides import set_module
-from ._prime import PRIMES, MAX_N, is_prime
+from ._prime import primes, is_prime
 
 __all__ = [
     "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
@@ -282,7 +282,7 @@ def factors(n):
         return p, e
 
     # Step 3
-    p, e, n = trial_division(n)
+    p, e, n = trial_division(n, 10_000_000)
 
     # Step 4
     while n > 1 and not is_prime(n):
@@ -340,11 +340,10 @@ def perfect_power(n):
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not n > 1:
-        raise TypeError(f"Argument `n` must be greater than 1, not {n}.")
-    n = abs(int(n))
-    max_prime_idx = bisect.bisect_right(PRIMES, ilog(n, 2))
+        raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
+    n = int(n)
 
-    for k in PRIMES[0:max_prime_idx]:
+    for k in primes(ilog(n, 2)):
         x = iroot(n, k)
         if x**k == n:
             # Recursively determine if x is a perfect power
@@ -372,7 +371,7 @@ def trial_division(n, B=None):
         A positive integer.
     B : int, optional
         The max divisor in the trial division. The default is `None` which corresponds to :math:`B = \sqrt{n}`.
-        If :math:`B > \sqrt{n}`, the algorithm will only search up to :math:`\sqrt{n}`, since a factor of :math:`n`
+        If :math:`B > \sqrt{n}`, the algorithm will only search up to :math:`\sqrt{n}`, since a prime factor of :math:`n`
         cannot be larger than :math:`\sqrt{n}`.
 
     Returns
@@ -393,21 +392,20 @@ def trial_division(n, B=None):
         galois.trial_division(n, B=500)
         galois.trial_division(n, B=100)
     """
-    B = MAX_N if B is None else B
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not isinstance(B, (type(None), int, np.integer)):
         raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
+    B = isqrt(n) if B is None else B
     if not n > 1:
-        raise TypeError(f"Argument `n` must be greater than 1, not {n}.")
-    if not 2 < B <= MAX_N:
-        raise TypeError(f"Argument `B` must be less than or equal to the max prime in the lookup table {MAX_N}, not {B}.")
-
-    n = abs(int(n))
-    B = min(isqrt(n), B)  # There cannot be a factor greater than sqrt(n)
+        raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
+    if not B > 2:
+        raise ValueError(f"Argument `B` must be greater than 2, not {B}.")
+    n = int(n)
+    B = min(isqrt(n), B)  # There cannot be a prime factor greater than sqrt(n)
 
     p, e = [], []
-    for prime in PRIMES[0:bisect.bisect_right(PRIMES, B)]:
+    for prime in primes(B):
         degree = 0
         while n % prime == 0:
             degree += 1
@@ -504,13 +502,12 @@ def pollard_p1(n, B, B2=None):
         raise ValueError(f"Argument `n` must odd and greater than 2, not {n}.")
     if not B > 2:
         raise ValueError(f"Argument `B` must greater than 2, not {B}.")
-    n = abs(int(n))
+    n = int(n)
 
     a = 2  # A value that is coprime to n (since n is odd)
     check_stride = 10
 
-    assert B <= MAX_N
-    for i, p in enumerate(PRIMES[0:bisect.bisect_right(PRIMES, B)]):
+    for i, p in enumerate(primes(B)):
         e = ilog(n, p)
         a = pow(a, p**e, n)
 
@@ -528,7 +525,9 @@ def pollard_p1(n, B, B2=None):
 
     # Try to find p such that p - 1 has a single prime factor larger than B
     if B2 is not None:
-        for i, p in enumerate(PRIMES[bisect.bisect_right(PRIMES, B):bisect.bisect_right(PRIMES, B2)]):
+        P = primes(B2)
+        P = P[bisect.bisect_right(P, B):bisect.bisect_right(P, B2)]  # Only select primes between B < prime <= B2
+        for i, p in enumerate(P):
             a = pow(a, p, n)
 
             # Check the GCD periodically to return early without checking all primes less than the
@@ -891,8 +890,7 @@ def is_smooth(n, B):
     if n == 1:
         return True
 
-    assert B <= MAX_N
-    for p in PRIMES[0:bisect.bisect_right(PRIMES, B)]:
+    for p in primes(B):
         e = ilog(n, p)
         d = math.gcd(p**e, n)
         if d > 1:
@@ -947,9 +945,8 @@ def is_powersmooth(n, B):
     if n == 1:
         return True
 
-    assert B <= MAX_N
     D = 1  # The product of all GCDs with the prime powers
-    for p in PRIMES[0:bisect.bisect_right(PRIMES, B)]:
+    for p in primes(B):
         e = ilog(B, p) + 1  # Find the exponent e of p such that p^e > B
         d = math.gcd(p**e, n)
         D *= d
