@@ -92,7 +92,7 @@ def test_is_composite():
 
 
 def test_fermat_primality_test():
-    primes = random.choices(galois._prime.PRIMES, k=10)
+    primes = random.choices(galois.primes(10_000_000), k=10)
     assert [galois.fermat_primality_test(p) for p in primes] == [True,]*len(primes)
 
     # https://oeis.org/A001567
@@ -112,7 +112,7 @@ def test_fermat_primality_test():
 
 
 def test_miller_rabin_primality_test():
-    primes = random.choices(galois._prime.PRIMES, k=10)
+    primes = random.choices(galois.primes(10_000_000), k=10)
     assert [galois.miller_rabin_primality_test(p) for p in primes] == [True,]*len(primes)
 
     strong_liars = [9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82]
