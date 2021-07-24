@@ -3,39 +3,6 @@ Development
 
 For users who would like to actively develop with :obj:`galois`, these sections may prove helpful.
 
-Install for development
------------------------
-
-The the latest code from `master` can be checked out and installed locally in an "editable" fashion.
-
-.. code-block:: sh
-
-   $ git clone https://github.com/mhostetter/galois.git
-   $ python3 -m pip install -e galois
-
-
-Install for development with min dependencies
----------------------------------------------
-
-The package dependencies have minimum supported version. They are stored in `requirements-min.txt`.
-
-.. literalinclude:: ../../requirements-min.txt
-   :caption: requirements-min.txt
-   :linenos:
-
-`pip` installing :obj:`galois` will install the latest versions of the dependencies. If you'd like to test against
-the oldest supported dependencies, you can do the following:
-
-.. code-block:: sh
-
-   $ git clone https://github.com/mhostetter/galois.git
-
-   # First install the minimum version of the dependencies
-   $ python3 -m pip install -r galois/requirements-min.txt
-
-   # Then, installing the package won't upgrade the dependencies since their versions are satisfactory
-   $ python3 -m pip install -e galois
-
 Lint the package
 ----------------
 
