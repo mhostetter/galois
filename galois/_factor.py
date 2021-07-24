@@ -12,7 +12,7 @@ import numpy as np
 from ._integer import isqrt, iroot, ilog
 from ._math import prod
 from ._overrides import set_module
-from ._prime import PRIMES, MAX_PRIME, is_prime
+from ._prime import PRIMES, MAX_N, is_prime
 
 __all__ = [
     "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
@@ -393,15 +393,15 @@ def trial_division(n, B=None):
         galois.trial_division(n, B=500)
         galois.trial_division(n, B=100)
     """
-    B = MAX_PRIME if B is None else B
+    B = MAX_N if B is None else B
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not isinstance(B, (type(None), int, np.integer)):
         raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
     if not n > 1:
         raise TypeError(f"Argument `n` must be greater than 1, not {n}.")
-    if not 2 < B <= MAX_PRIME:
-        raise TypeError(f"Argument `B` must be less than or equal to the max prime in the lookup table {MAX_PRIME}, not {B}.")
+    if not 2 < B <= MAX_N:
+        raise TypeError(f"Argument `B` must be less than or equal to the max prime in the lookup table {MAX_N}, not {B}.")
 
     n = abs(int(n))
     B = min(isqrt(n), B)  # There cannot be a factor greater than sqrt(n)
@@ -509,7 +509,7 @@ def pollard_p1(n, B, B2=None):
     a = 2  # A value that is coprime to n (since n is odd)
     check_stride = 10
 
-    assert B <= MAX_PRIME
+    assert B <= MAX_N
     for i, p in enumerate(PRIMES[0:bisect.bisect_right(PRIMES, B)]):
         e = ilog(n, p)
         a = pow(a, p**e, n)
@@ -891,7 +891,7 @@ def is_smooth(n, B):
     if n == 1:
         return True
 
-    assert B <= MAX_PRIME
+    assert B <= MAX_N
     for p in PRIMES[0:bisect.bisect_right(PRIMES, B)]:
         e = ilog(n, p)
         d = math.gcd(p**e, n)
@@ -947,7 +947,7 @@ def is_powersmooth(n, B):
     if n == 1:
         return True
 
-    assert B <= MAX_PRIME
+    assert B <= MAX_N
     D = 1  # The product of all GCDs with the prime powers
     for p in PRIMES[0:bisect.bisect_right(PRIMES, B)]:
         e = ilog(B, p) + 1  # Find the exponent e of p such that p^e > B

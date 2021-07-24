@@ -12,6 +12,11 @@ __all__ = [
     "is_prime", "is_composite", "fermat_primality_test", "miller_rabin_primality_test"
 ]
 
+# Global variables to store the prime lookup table (will generate a larger list after defining the `primes()` function)
+PRIMES = [2, 3, 5, 7]
+MAX_K = len(PRIMES)  # The max prime index (1-indexed)
+MAX_N = 10  # The max value for which all primes <= N are contained in the lookup table
+
 
 ###############################################################################
 # Prime generation
@@ -22,15 +27,17 @@ def primes(n):
     r"""
     Returns all primes :math:`p` for :math:`p \le n`.
 
+    This function implements the Sieve of Eratosthenes to efficiently find the primes.
+
     Parameters
     ----------
     n : int
-        A positive integer :math:`n \\ge 2`.
+        An integer.
 
     Returns
     -------
     list
-        The primes up to and including :math:`n`.
+        All primes up to and including :math:`n`. If :math:`n < 2`, the function returns an empty list.
 
     References
     ----------
@@ -41,11 +48,15 @@ def primes(n):
     .. ipython:: python
 
         galois.primes(19)
+        galois.primes(20)
     """
+    global PRIMES, MAX_K, MAX_N
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n >= 2:
-        raise ValueError(f"Argument `n` must be at least 2, not {n}.")
+
+    if n <= MAX_N:
+        # Return a subset of the pre-computed global primes list
+        return PRIMES[0:bisect.bisect_right(PRIMES, n)]
 
     N_odd = int(math.ceil(n/2)) - 1  # Number of odd integers (including n) to check starting at 3, i.e. skip 1
     composite = np.zeros(N_odd, dtype=bool)  # Indices correspond to integers 3,5,7,9,...
@@ -73,13 +84,18 @@ def primes(n):
     p = (prime_idxs*2 + 3).tolist()  # Convert indices back to odd integers
     p.insert(0, 2)  # Add the only even prime, 2
 
+    # Replace the global primes lookup table with the newly-created, larger list
+    PRIMES = p
+    MAX_K = len(PRIMES)
+    MAX_N = n
+
     return p
 
 
 # Generate a prime lookup table for efficient lookup in other algorithms
 PRIMES = primes(10_000_000)
 MAX_K = len(PRIMES)
-MAX_PRIME = PRIMES[-1]
+MAX_N = 10_000_000
 
 
 @set_module("galois")
@@ -90,7 +106,7 @@ def kth_prime(k):
     Parameters
     ----------
     k : int
-        The prime index, where :math:`k = \{1,2,3,4,\dots\}` for primes :math:`p = \{2,3,5,7,\dots\}`.
+        The prime index (1-indexed), where :math:`k = \{1,2,3,4,\dots\}` for primes :math:`p = \{2,3,5,7,\dots\}`.
 
     Returns
     -------
@@ -108,7 +124,7 @@ def kth_prime(k):
     if not isinstance(k, (int, np.integer)):
         raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
     if not 1 <= k <= MAX_K:
-        raise ValueError(f"Argument `k` is out of range of the prime lookup table. The lookup table only stores the first {MAX_K} primes.")
+        raise ValueError(f"Argument `k` is out of range of the prime lookup table. The lookup table only contains the first {MAX_K} primes (up to {MAX_N}).")
     return PRIMES[k - 1]
 
 
@@ -120,12 +136,12 @@ def prev_prime(n):
     Parameters
     ----------
     n : int
-        A positive integer.
+        An integer.
 
     Returns
     -------
     int
-        The nearest prime :math:`p \le n`.
+        The nearest prime :math:`p \le n`. If :math:`n < 2`, the function returns `None`.
 
     Examples
     --------
@@ -136,9 +152,9 @@ def prev_prime(n):
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not 2 <= n <= MAX_PRIME:
-        raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
-    return PRIMES[bisect.bisect_right(PRIMES, n) - 1]
+    if not n < MAX_N:
+        raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_N}.")
+    return PRIMES[bisect.bisect_right(PRIMES, n) - 1] if n >= 2 else None
 
 
 @set_module("galois")
@@ -149,7 +165,7 @@ def next_prime(n):
     Parameters
     ----------
     n : int
-        A positive integer.
+        An integer.
 
     Returns
     -------
@@ -165,8 +181,8 @@ def next_prime(n):
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n < MAX_PRIME:
-        raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_PRIME}.")
+    if not n < MAX_N:
+        raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_N}.")
     return PRIMES[bisect.bisect_right(PRIMES, n)]
 
 

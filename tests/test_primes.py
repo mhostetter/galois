@@ -10,13 +10,15 @@ import galois
 
 
 def test_primes():
+    assert galois.primes(-10) == []
+    assert galois.primes(1) == []
+    assert galois.primes(2) == [2]
+    assert galois.primes(3) == [2, 3]
     assert galois.primes(19) == [2, 3, 5, 7, 11, 13, 17, 19]
     assert galois.primes(20) == [2, 3, 5, 7, 11, 13, 17, 19]
 
     with pytest.raises(TypeError):
         galois.primes(20.0)
-    with pytest.raises(ValueError):
-        galois.primes(1)
 
 
 def test_kth_prime():
@@ -34,25 +36,29 @@ def test_kth_prime():
 
 
 def test_prev_prime():
+    assert galois.prev_prime(-10) is None
+    assert galois.prev_prime(1) is None
+    assert galois.prev_prime(2) == 2
     assert galois.prev_prime(8) == 7
     assert galois.prev_prime(11) == 11
 
     with pytest.raises(TypeError):
         galois.prev_prime(20.0)
     with pytest.raises(ValueError):
-        galois.prev_prime(1)
-    with pytest.raises(ValueError):
-        galois.prev_prime(galois._prime.MAX_PRIME + 1)
+        galois.prev_prime(galois._prime.MAX_N + 1)
 
 
 def test_next_prime():
+    assert galois.next_prime(-10) == 2
+    assert galois.next_prime(1) == 2
+    assert galois.next_prime(2) == 3
     assert galois.next_prime(8) == 11
     assert galois.next_prime(11) == 13
 
     with pytest.raises(TypeError):
         galois.next_prime(20.0)
     with pytest.raises(ValueError):
-        galois.next_prime(galois._prime.MAX_PRIME)
+        galois.next_prime(galois._prime.MAX_N)
 
 
 def test_mersenne_exponents():
