@@ -72,16 +72,16 @@ class PropertiesMeta(type):
         --------
         .. ipython:: python
 
-            GF = galois.GF(2**8)
+            GF = galois.GF(2**8, display="poly")
             GF.characteristic
-            a = GF.Random(); a
+            a = GF.Random(low=1); a
             a * GF.characteristic
 
         .. ipython:: python
 
             GF = galois.GF(31)
             GF.characteristic
-            a = GF.Random(); a
+            a = GF.Random(low=1); a
             a * GF.characteristic
         """
         return cls._characteristic
@@ -141,30 +141,31 @@ class PropertiesMeta(type):
 
     @property
     def is_primitive_poly(cls):
-        """
-        bool: Indicates whether the :obj:`irreducible_poly` is a primitive polynomial.
+        r"""
+        bool: Indicates whether the :obj:`irreducible_poly` is a primitive polynomial. If so, :math:`x` is a primitive element
+        of the Galois field.
 
         Examples
         --------
-
         .. ipython:: python
 
-            GF = galois.GF(2**8)
+            GF = galois.GF(2**8, display="poly")
             GF.irreducible_poly
             GF.primitive_element
 
-            # The irreducible polynomial is a primitive polynomial is the primitive element is a root
+            # The irreducible polynomial is a primitive polynomial if the primitive element is a root
             GF.irreducible_poly(GF.primitive_element, field=GF)
             GF.is_primitive_poly
 
+        Here is an example using the :math:`\mathrm{GF}(2^8)` field from AES, which does not use a primitive polynomial.
+
         .. ipython:: python
 
-            # Field used in AES
-            GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]))
+            GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]), display="poly")
             GF.irreducible_poly
             GF.primitive_element
 
-            # The irreducible polynomial is a primitive polynomial is the primitive element is a root
+            # The irreducible polynomial is a primitive polynomial if the primitive element is a root
             GF.irreducible_poly(GF.primitive_element, field=GF)
             GF.is_primitive_poly
         """
@@ -173,7 +174,7 @@ class PropertiesMeta(type):
     @property
     def primitive_element(cls):
         r"""
-        int: A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
+        galois.FieldArray: A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
 
         A primitive element is a root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
@@ -194,7 +195,7 @@ class PropertiesMeta(type):
     @property
     def primitive_elements(cls):
         r"""
-        int: All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
+        galois.FieldArray: All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
 
         Examples
@@ -260,7 +261,8 @@ class PropertiesMeta(type):
     @property
     def dtypes(cls):
         """
-        list: List of valid integer :obj:`numpy.dtype` objects that are compatible with this Galois field.
+        list: List of valid integer :obj:`numpy.dtype` values that are compatible with this Galois field. Creating an array with an
+        unsupported dtype will throw a `TypeError` exception.
 
         Examples
         --------
@@ -317,8 +319,8 @@ class PropertiesMeta(type):
             # The display mode is reset after exiting the context manager
             print(GF.display_mode, a)
 
-        The power representation displays elements as powers of :math:`\alpha` the prrimitive element, see
-        :obj:`FieldClass.primitive_element`.
+        The power representation displays elements as powers of :math:`\alpha` the primitive element, see
+        :obj:`primitive_element`.
 
         .. ipython:: python
 
@@ -332,7 +334,7 @@ class PropertiesMeta(type):
     @property
     def ufunc_mode(cls):
         """
-        str: The mode for ufunc compilation, either `"jit-lookup"`, `"jit-calculate"`, `"python-calculate"`.
+        str: The mode for ufunc compilation, either `"jit-lookup"`, `"jit-calculate"`, or `"python-calculate"`.
 
         Examples
         --------
