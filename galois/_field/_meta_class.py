@@ -17,8 +17,8 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
     """
     Defines a metaclass for all :obj:`galois.FieldArray` classes.
 
-    This metaclass gives :obj:`galois.FieldArray` classes returned from :func:`galois.GF` class methods and properties
-    relating to its Galois field.
+    This metaclass gives :obj:`galois.FieldArray` subclasses returned from the class factory :func:`galois.GF` methods and attributes
+    related to its Galois field.
     """
     # pylint: disable=abstract-method,no-value-for-parameter,unsupported-membership-test
 
@@ -66,6 +66,8 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         """
         Recompile the just-in-time compiled numba ufuncs for a new calculation mode.
 
+        This function updates :obj:`ufunc_mode`.
+
         Parameters
         ----------
         mode : str
@@ -73,8 +75,8 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             use Zech log, log, and anti-log lookup tables for speed. The "jit-calculate" mode will not store any lookup tables, but perform field
             arithmetic on the fly. The "jit-calculate" mode is designed for large fields that cannot store lookup tables in RAM.
             Generally, "jit-calculate" is slower than "jit-lookup". The "python-calculate" mode is reserved for extremely large fields. In
-            this mode the ufuncs are not JIT-compiled, but are pur python functions operating on python ints. The list of valid
-            modes for this field is in :obj:`galois.FieldClass.ufunc_modes`.
+            this mode, the ufuncs are not JIT-compiled, but are pure python functions operating on python ints. The list of valid
+            modes for this field is contained in :obj:`ufunc_modes`.
         """
         mode = cls.default_ufunc_mode if mode == "auto" else mode
         if mode not in cls.ufunc_modes:
@@ -94,13 +96,21 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         The display mode can be set to either the integer representation, polynomial representation, or power
         representation. This function updates :obj:`display_mode`.
 
+        Warning
+        -------
         For the power representation, :func:`np.log` is computed on each element. So for large fields without lookup
-        tables, this may take longer than desired.
+        tables, displaying arrays in the power representation may take longer than expected.
 
         Parameters
         ----------
         mode : str, optional
             The field element display mode, either `"int"` (default), `"poly"`, or `"power"`.
+
+            * `"int"` (default): The element displayed as the integer representation of the polynomial. For example, :math:`2x^2 + x + 2` is an element of
+            :math:`\mathrm{GF}(3^3)` and is equivalent to the integer :math:`23 = 2 \cdot 3^2 + 3 + 2`.
+            * `"poly"`: The element as a polynomial over :math:`\mathrm{GF}(p)` of degree less than :math:`m`. For example, :math:`2x^2 + x + 2 \in \mathrm{GF}(3^3)`.
+            * `"power"`: The element as a power of the primitive element, see :obj:`primitive_element`. For example, :math:`2x^2 + x + 2 = \alpha^5` in :math:`\mathrm{GF}(3^3)`
+            with irreducible polynomial :math:`x^3 + 2x + 1` and primitive element :math:`\alpha = x`.
 
         Examples
         --------
@@ -111,11 +121,11 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             GF = galois.GF(2**8)
             a = GF.Random(); a
 
-            # Change the display mode going forward
+            # Permanently set the display mode to the polynomial representation
             GF.display("poly"); a
+            # Permanently set the display mode to the power representation
             GF.display("power"); a
-
-            # Reset to the default display mode
+            # Permanently reset the default display mode to the integer representation
             GF.display(); a
 
         The :func:`display` method can also be used as a context manager, as shown below.
@@ -132,6 +142,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
                 print(a)
             with GF.display("power"):
                 print(a)
+            a
 
         But when the primitive element is not :math:`x \in \mathrm{GF}(p)[x]`, the polynomial
         indeterminate used is `x`.
@@ -145,6 +156,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
                 print(a)
             with GF.display("power"):
                 print(a)
+            a
         """
         if mode not in ["int", "poly", "power"]:
             raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode}.")
@@ -242,10 +254,10 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         operation : str
             The arithmetic operation, either `"+"`, `"-"`, `"*"`, or `"/"`.
         x : galois.FieldArray, optional
-            Optionally specify the :math:`x` values for the arithmetic operation. The default is `None`
+            Optionally specify the :math:`x` values for the arithmetic table. The default is `None`
             which represents :math:`\{0, \dots, p^m - 1\}`.
         y : galois.FieldArray, optional
-            Optionally specify the :math:`y` values for the arithmetic operation. The default is `None`
+            Optionally specify the :math:`y` values for the arithmetic table. The default is `None`
             which represents :math:`\{0, \dots, p^m - 1\}` for addition, subtraction, and multiplication and
             :math:`\{1, \dots, p^m - 1\}` for division.
 
