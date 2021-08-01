@@ -3,6 +3,7 @@ import numpy as np
 from .._modular import totatives
 
 from ._dtypes import DTYPES
+from ._poly_conversion import integer_to_poly, poly_to_str
 
 
 class PropertiesMeta(type):
@@ -403,7 +404,7 @@ class PropertiesMeta(type):
         string += f"\n  degree: {cls.degree}"
         string += f"\n  order: {cls.order}"
         if cls.degree > 1:
-            string += f"\n  irreducible_poly: {cls.irreducible_poly}"
+            string += f"\n  irreducible_poly: {cls.irreducible_poly.string}"
             string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
-            string += f"\n  primitive_element: {cls.primitive_element!r}"
+            string += f"\n  primitive_element: {poly_to_str(integer_to_poly(cls.primitive_element, cls.characteristic))}"
         return string
