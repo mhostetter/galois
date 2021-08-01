@@ -233,14 +233,21 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
         return string
 
-    def arithmetic_table(cls, operation):
-        """
+    def arithmetic_table(cls, operation, x=None, y=None):
+        r"""
         Generates the specified arithmetic table for the Galois field.
 
         Parameters
         ----------
         operation : str
             The arithmetic operation, either `"+"`, `"-"`, `"*"`, or `"/"`.
+        x : galois.FieldArray, optional
+            Optionally specify the :math:`x` values for the arithmetic operation. The default is `None`
+            which represents :math:`\{0, \dots, p^m - 1\}`.
+        y : galois.FieldArray, optional
+            Optionally specify the :math:`y` values for the arithmetic operation. The default is `None`
+            which represents :math:`\{0, \dots, p^m - 1\}` for addition, subtraction, and multiplication and
+            :math:`\{1, \dots, p^m - 1\}` for division.
 
         Returns
         -------
@@ -256,19 +263,34 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
         .. ipython:: python
 
-            with GF.display("poly"):
-                print(GF.arithmetic_table("+"))
+            GF.display("poly");
+            print(GF.arithmetic_table("+"))
 
         .. ipython:: python
 
-            with GF.display("power"):
-                print(GF.arithmetic_table("+"))
+            GF.display("power");
+            print(GF.arithmetic_table("+"))
+
+        .. ipython:: python
+
+            GF.display("poly");
+            x = GF.Random(5); x
+            y = GF.Random(3); y
+            print(GF.arithmetic_table("+", x=x, y=y))
+            GF.display();
         """
         if not operation in ["+", "-", "*", "/"]:
             raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation}.")
 
-        x = cls.Elements() if cls.display_mode != "power" else np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1)))
-        y = x if operation != "/" else x[1:]
+        if cls.display_mode == "power":
+            # Order elements by powers of the primitive element
+            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1)))
+        else:
+            x_default = cls.Elements()
+        y_default = x_default if operation != "/" else x_default[1:]
+
+        x = x_default if x is None else cls(x)
+        y = y_default if y is None else cls(y)
         X, Y = np.meshgrid(x, y, indexing="ij")
 
         if operation == "+":
