@@ -156,15 +156,19 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
         return context
 
-    def repr_table(cls, primitive_element=None):
+    def repr_table(cls, primitive_element=None, sort="power"):
         """
-        Generates an element representation table comparing the power, polynomial, vector, and integer representations.
+        Generates a field element representation table comparing the power, polynomial, vector, and integer representations.
 
         Parameters
         ----------
         primitive_element : galois.FieldArray, optional
             The primitive element to use for the power representation. The default is `None` which uses the field's
-            default primitive element, :obj:`galois.FieldClass.primitive_element`.
+            default primitive element, :obj:`primitive_element`.
+        sort : str, optional
+            The sorting method for the table, either `"power"` (default), `"poly"`, `"vector"`, or `"int"`. Sorting by "power" will order
+            the rows of the table by ascending powers of the primitive element. Sorting by any of the others will order the rows in
+            lexicographically-increasing polynomial/vector order, which is equivalent to ascending order of the integer representation.
 
         Returns
         -------
@@ -178,17 +182,24 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
             GF = galois.GF(2**4)
             print(GF.repr_table())
+            print(GF.repr_table(sort="int"))
 
         .. ipython:: python
 
             alpha = GF.primitive_elements[-1]
             print(GF.repr_table(alpha))
         """
+        if sort not in ["power", "poly", "vector", "int"]:
+            raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort}.")
         if primitive_element is None:
             primitive_element = cls.primitive_element
 
         degrees = np.arange(0, cls.order - 1)
-        x = np.concatenate((np.atleast_1d(cls(0)), primitive_element**degrees))
+        x = primitive_element**degrees
+        if sort != "power":
+            idxs = np.argsort(x)
+            degrees, x = degrees[idxs], x[idxs]
+        x = np.concatenate((np.atleast_1d(cls(0)), x))  # Add 0 = alpha**-Inf
         prim = cls._print_poly(primitive_element)
 
         N_power = max(len("({})^{}".format(prim, str(cls.order - 1))), len("Power")) + 2
