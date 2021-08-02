@@ -14,7 +14,7 @@ class Base:
     N = -1
 
     def setup_method(self):
-        self.GF = galois.GF(self.order, mode=self.ufunc_mode)
+        self.GF = galois.GF(self.order, compile=self.ufunc_mode)
 
         np.random.seed(123456789)
         self.x = self.GF.Random(self.N)

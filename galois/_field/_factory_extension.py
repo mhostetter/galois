@@ -12,13 +12,14 @@ from ._poly import Poly
 from ._poly_functions import conway_poly, is_irreducible, is_primitive_element
 from ._poly_functions import primitive_element as _primitive_element  # To avoid name conflict with GF_extension() arguments
 
-# pylint: disable=too-many-statements
+# pylint: disable=redefined-builtin
 
 
-def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, mode="auto"):
+def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, compile="auto"):
     """
     Class factory for extension fields GF(p^m).
     """
+    # pylint: disable=too-many-statements
     if not isinstance(characteristic, int):
         raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
     if not isinstance(degree, int):
@@ -77,7 +78,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     key = (order, primitive_element.integer, irreducible_poly.integer)
     if key in GF_extension._classes:
         cls = GF_extension._classes[key]
-        cls.compile(mode)
+        cls.compile(compile)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
@@ -97,7 +98,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "is_primitive_poly": is_primitive_poly,
             "primitive_element": primitive_element.integer,
             "prime_subfield": prime_subfield,
-            "mode": mode
+            "compile": compile
         })
 
     else:
@@ -110,7 +111,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "is_primitive_poly": is_primitive_poly,
             "primitive_element": primitive_element.integer,
             "prime_subfield": prime_subfield,
-            "mode": mode
+            "compile": compile
         })
 
     cls.__module__ = "galois"
