@@ -15,7 +15,7 @@ from ._poly_functions import primitive_element as _primitive_element  # To avoid
 # pylint: disable=redefined-builtin
 
 
-def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, compile="auto"):
+def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, compile="auto", display="int"):
     """
     Class factory for extension fields GF(p^m).
     """
@@ -79,6 +79,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     if key in GF_extension._classes:
         cls = GF_extension._classes[key]
         cls.compile(compile)
+        cls.display(display)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
@@ -115,6 +116,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         })
 
     cls.__module__ = "galois"
+    cls.display(display)
 
     # Add class to dictionary of flyweights
     GF_extension._classes[key] = cls

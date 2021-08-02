@@ -10,16 +10,16 @@ from ._meta_gfp import GFpMeta
 # pylint: disable=redefined-builtin
 
 
-def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto"):
+def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto", display="int"):
     """
     Class factory for prime fields GF(p).
     """
     if not isinstance(characteristic, int):
         raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(primitive_element, (type(None), int)):
+        raise TypeError(f"Argument `primitive_element` must be an int, not {type(primitive_element)}.")
     if not is_prime(characteristic):
         raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
-    if not isinstance(primitive_element, (type(None), int)):
-        raise TypeError(f"Argument `primitive_element` must be a int, not {type(primitive_element)}.")
     degree = 1
     order = characteristic**degree
 
@@ -28,6 +28,7 @@ def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto"
     if key in GF_prime._classes:
         cls = GF_prime._classes[key]
         cls.compile(compile)
+        cls.display(display)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
@@ -53,6 +54,7 @@ def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto"
         })
 
     cls.__module__ = "galois"
+    cls.display(display)
 
     # Add class to dictionary of flyweights
     GF_prime._classes[key] = cls
