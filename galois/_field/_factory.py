@@ -10,7 +10,7 @@ __all__ = ["GF", "Field"]
 
 
 @set_module("galois")
-def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compile="auto"):
+def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compile="auto", display="int"):
     r"""
     Factory function to construct a Galois field array class for :math:`\mathrm{GF}(p^m)`.
 
@@ -58,7 +58,7 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
         generator, respectively.
 
     compile : str, optional
-        The ufunc calculation mode.
+        The ufunc calculation mode. This can be modified after class consstruction with the :func:`galois.FieldClass.compile` method.
 
         * `"auto"` (default): Selects "jit-lookup" for fields with order less than :math:`2^{20}`, "jit-calculate" for larger fields, and "python-calculate" for
           fields whose elements cannot be represented with :obj:`numpy.int64`.
@@ -68,6 +68,15 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
           or should not store lookup tables in RAM. Generally, "jit-calculate" mode will be slower than "jit-lookup".
         * `"python-calculate"`: Uses pure-python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be represented with
           :obj:`numpy.int64` and instead use :obj:`numpy.object_` with python :obj:`int` (which have arbitrary precision).
+
+    display : str, optional
+        The field element display representation. This can be modified after class consstruction with the :func:`galois.FieldClass.display` method.
+
+        * `"int"` (default): The element displayed as the integer representation of the polynomial. For example, :math:`2x^2 + x + 2` is an element of
+          :math:`\mathrm{GF}(3^3)` and is equivalent to the integer :math:`23 = 2 \cdot 3^2 + 3 + 2`.
+        * `"poly"`: The element as a polynomial over :math:`\mathrm{GF}(p)` of degree less than :math:`m`. For example, :math:`2x^2 + x + 2 \in \mathrm{GF}(3^3)`.
+        * `"power"`: The element as a power of the primitive element, see :obj:`primitive_element`. For example, :math:`2x^2 + x + 2 = \alpha^5` in :math:`\mathrm{GF}(3^3)`
+          with irreducible polynomial :math:`x^3 + 2x + 1` and primitive element :math:`\alpha = x`.
 
     Returns
     -------
@@ -103,19 +112,29 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
         GF256_AES = galois.GF(2**8, irreducible_poly=p)
         print(GF256_AES.properties)
 
-    Very large fields are also supported, but they use :obj:`numpy.object_` dtypes with python :obj:`int` and, therefore, do not have compiled ufuncs.
+    Very large fields are also supported but they use :obj:`numpy.object_` dtypes with python :obj:`int` and, therefore, do not have compiled ufuncs.
 
     .. ipython:: python
 
         # Construct a very large GF(2^m) class
         GF2m = galois.GF(2**100); print(GF2m.properties)
-        print(GF2m.dtypes, GF2m.ufunc_mode)
+        GF2m.dtypes, GF2m.ufunc_mode
 
         # Construct a very large GF(p) class
         GFp = galois.GF(36893488147419103183); print(GFp.properties)
-        print(GFp.dtypes, GFp.ufunc_mode)
+        GFp.dtypes, GFp.ufunc_mode
 
-    See :obj:`galois.FieldArray` for more examples of what Galois field arrays can do.
+    The default display mode for fields is the integer representation. This can be modified by using the `display` keyword argument. It
+    can also be changed after class construction by calling the :func:`galois.FieldClass.display` method.
+
+    .. ipython:: python
+
+        GF = galois.GF(2**8)
+        GF.Random()
+        GF = galois.GF(2**8, display="poly")
+        GF.Random()
+
+    See :obj:`galois.FieldArray` and :obj:`galois.FieldClass` for more examples of what Galois field arrays can do.
     """
     if not isinstance(order, int):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
@@ -123,27 +142,31 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
         raise TypeError(f"Argument `verify` must be a bool, not {type(verify)}.")
     if not isinstance(compile, str):
         raise TypeError(f"Argument `compile` must be a string, not {type(compile)}.")
+    if not isinstance(display, str):
+        raise TypeError(f"Argument `display` must be a string, not {type(display)}.")
 
     p, e = factors(order)
     if not len(p) == len(e) == 1:
         s = " + ".join([f"{pi}**{ei}" for pi, ei in zip(p, e)])
         raise ValueError(f"Argument `order` must be a prime power, not {order} = {s}.")
     if not compile in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
-        raise TypeError(f"Argument `compile` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {compile!r}.")
+        raise ValueError(f"Argument `compile` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {compile!r}.")
+    if not display in ["int", "poly", "power"]:
+        raise ValueError(f"Argument `display` must be in ['int', 'poly', 'power'], not {display!r}.")
 
     p, m = p[0], e[0]
 
     if m == 1:
         if not irreducible_poly is None:
             raise ValueError(f"Argument `irreducible_poly` can only be specified for extension fields, not the prime field GF({p}).")
-        return GF_prime(p, primitive_element=primitive_element, verify=verify, compile=compile)
+        return GF_prime(p, primitive_element=primitive_element, verify=verify, compile=compile, display=display)
     else:
-        return GF_extension(p, m, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile)
+        return GF_extension(p, m, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, display=display)
 
 
 @set_module("galois")
-def Field(order, irreducible_poly=None, primitive_element=None, verify=True, compile="auto"):
+def Field(order, irreducible_poly=None, primitive_element=None, verify=True, compile="auto", display="int"):
     """
     Alias of :func:`galois.GF`.
     """
-    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile)
+    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, display=display)
