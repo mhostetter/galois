@@ -16,7 +16,7 @@ class GF2Meta(FieldClass, DirMeta):
         cls._prime_subfield = cls
         cls._is_primitive_poly = True
 
-        cls.compile(kwargs["mode"])
+        cls.compile(kwargs["compile"])
 
     @property
     def ufunc_modes(cls):

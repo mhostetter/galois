@@ -17,7 +17,7 @@ class GFpmMeta(FieldClass, DirMeta):
         cls._irreducible_poly_coeffs = np.array(cls._irreducible_poly.coeffs, dtype=cls.dtypes[-1])
         cls._prime_subfield = kwargs["prime_subfield"]
 
-        cls.compile(kwargs["mode"])
+        cls.compile(kwargs["compile"])
 
         # Determine if the irreducible polynomial is primitive
         if cls._is_primitive_poly is None:

@@ -7,10 +7,10 @@ from ._array import FieldArray
 from ._gf2 import GF2
 from ._meta_gfp import GFpMeta
 
-# pylint: disable=protected-access
+# pylint: disable=redefined-builtin
 
 
-def GF_prime(characteristic, primitive_element=None, verify=True, mode="auto"):
+def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto"):
     """
     Class factory for prime fields GF(p).
     """
@@ -27,7 +27,7 @@ def GF_prime(characteristic, primitive_element=None, verify=True, mode="auto"):
     key = (order, primitive_element)
     if key in GF_prime._classes:
         cls = GF_prime._classes[key]
-        cls.compile(mode)
+        cls.compile(compile)
         return cls
 
     name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
@@ -40,7 +40,7 @@ def GF_prime(characteristic, primitive_element=None, verify=True, mode="auto"):
 
     if characteristic == 2:
         cls = GF2
-        cls.compile(mode)
+        cls.compile(compile)
     else:
         cls = types.new_class(name, bases=(FieldArray,), kwds={
             "metaclass": GFpMeta,
@@ -49,7 +49,7 @@ def GF_prime(characteristic, primitive_element=None, verify=True, mode="auto"):
             "order": characteristic**1,
             "primitive_element": primitive_element,
             "is_primitive_poly": True,
-            "mode": mode
+            "compile": compile
         })
 
     cls.__module__ = "galois"

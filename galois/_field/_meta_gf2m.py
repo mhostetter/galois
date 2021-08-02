@@ -15,7 +15,7 @@ class GF2mMeta(FieldClass, DirMeta):
         super().__init__(name, bases, namespace, **kwargs)
         cls._prime_subfield = kwargs["prime_subfield"]
 
-        cls.compile(kwargs["mode"])
+        cls.compile(kwargs["compile"])
 
         # Determine if the irreducible polynomial is primitive
         if cls._is_primitive_poly is None:

@@ -64,50 +64,50 @@ FIELDS_DIFF_MODES = [
 
 def construct_field(folder):
     if len(folder.split("-")) >= 2:
-        folder, mode = folder.split("-", maxsplit=1)
+        folder, ufunc_mode = folder.split("-", maxsplit=1)
     else:
-        mode = "auto"
+        ufunc_mode = "auto"
 
     if folder == "GF(2)":
         GF = galois.GF2
 
     elif folder == "GF(5)":
-        GF = galois.GF(5, mode=mode)
+        GF = galois.GF(5, compile=ufunc_mode)
     elif folder == "GF(7)":
-        GF = galois.GF(7, mode=mode)
+        GF = galois.GF(7, compile=ufunc_mode)
     elif folder == "GF(31)":
-        GF = galois.GF(31, mode=mode)
+        GF = galois.GF(31, compile=ufunc_mode)
     elif folder == "GF(3191)":
-        GF = galois.GF(3191, mode=mode)
+        GF = galois.GF(3191, compile=ufunc_mode)
     elif folder == "GF(2147483647)":
-        GF = galois.GF(2147483647, mode=mode)
+        GF = galois.GF(2147483647, compile=ufunc_mode)
     elif folder == "GF(36893488147419103183)":
-        GF = galois.GF(36893488147419103183, mode=mode)
+        GF = galois.GF(36893488147419103183, compile=ufunc_mode)
 
     elif folder == "GF(2^2)":
-        GF = galois.GF(2**2, mode=mode)
+        GF = galois.GF(2**2, compile=ufunc_mode)
     elif folder == "GF(2^3)":
-        GF = galois.GF(2**3, mode=mode)
+        GF = galois.GF(2**3, compile=ufunc_mode)
     elif folder == "GF(2^8)":
-        GF = galois.GF(2**8, mode=mode)
+        GF = galois.GF(2**8, compile=ufunc_mode)
     elif folder == "GF(2^8, 283, 19)":
-        GF = galois.GF(2**8, irreducible_poly=283, primitive_element=19, mode=mode)
+        GF = galois.GF(2**8, irreducible_poly=283, primitive_element=19, compile=ufunc_mode)
     elif folder == "GF(2^32)":
-        GF = galois.GF(2**32, mode=mode)
+        GF = galois.GF(2**32, compile=ufunc_mode)
     elif folder == "GF(2^100)":
-        GF = galois.GF(2**100, mode=mode)
+        GF = galois.GF(2**100, compile=ufunc_mode)
 
     elif folder == "GF(7^3)":
-        GF = galois.GF(7**3, mode=mode)
+        GF = galois.GF(7**3, compile=ufunc_mode)
     elif folder == "GF(7^3, 643, 244)":
-        GF = galois.GF(7**3, irreducible_poly=643, primitive_element=244, mode=mode)
+        GF = galois.GF(7**3, irreducible_poly=643, primitive_element=244, compile=ufunc_mode)
     elif folder == "GF(109987^4)":
-        GF = galois.GF(109987**4, mode=mode)
+        GF = galois.GF(109987**4, compile=ufunc_mode)
 
     else:
         raise AssertionError(f"Test data folder {folder} not found")
 
-    return GF, mode, os.path.join(PATH, folder)
+    return GF, ufunc_mode, os.path.join(PATH, folder)
 
 
 ###############################################################################
@@ -123,7 +123,7 @@ def field(request):
 @pytest.fixture(scope="session", params=FIELDS_DIFF_MODES)
 def field_folder(request):
     folder = request.param
-    field, mode, folder = construct_field(folder)
+    field, ufunc_mode, folder = construct_field(folder)
     return field, folder
 
 
