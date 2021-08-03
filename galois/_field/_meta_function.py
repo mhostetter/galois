@@ -198,7 +198,7 @@ class FunctionMeta(PropertiesMeta):
         if not type(a) is type(b):
             raise TypeError(f"Arguments `a` and `b` must be of the same Galois field array class, not {type(a)} and {type(b)}.")
         if not mode == "full":
-            raise ValueError(f"Operation 'convolve' currently only supports mode of 'full', not '{mode}'.")
+            raise ValueError(f"Operation 'convolve' currently only supports mode of 'full', not {mode!r}.")
         field = type(a)
         dtype = a.dtype
 

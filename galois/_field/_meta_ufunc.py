@@ -172,19 +172,19 @@ class UfuncMeta(PropertiesMeta):
 
     def _verify_unary_method_not_reduction(cls, ufunc, method):  # pylint: disable=no-self-use
         if method in ["reduce", "accumulate", "reduceat", "outer"]:
-            raise ValueError(f"Ufunc method '{method}' is not supported on '{ufunc.__name__}'. Reduction methods are only supported on binary functions.")
+            raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Reduction methods are only supported on binary functions.")
 
     def _verify_binary_method_not_reduction(cls, ufunc, method):  # pylint: disable=no-self-use
         if method in ["reduce", "accumulate", "reduceat"]:
-            raise ValueError(f"Ufunc method '{method}' is not supported on '{ufunc.__name__}' because it takes inputs with type {cls.name} array and integer array. Different types do not support reduction.")
+            raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs with type {cls.name} array and integer array. Different types do not support reduction.")
 
     def _verify_method_only_call(cls, ufunc, method):  # pylint: disable=no-self-use
         if not method == "__call__":
-            raise ValueError(f"Ufunc method '{method}' is not supported on '{ufunc.__name__}'. Only '__call__' is supported.")
+            raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Only '__call__' is supported.")
 
     def _verify_operands_in_same_field(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
         if len(meta["non_field_operands"]) > 0:
-            raise TypeError(f"Operation '{ufunc.__name__}' requires both operands to be {cls.name} arrays, not {[inputs[i] for i in meta['operands']]}.")
+            raise TypeError(f"Operation {ufunc.__name__!r} requires both operands to be {cls.name} arrays, not {[inputs[i] for i in meta['operands']]}.")
 
     def _verify_operands_in_field_or_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
         for i in meta["non_field_operands"]:
@@ -193,37 +193,37 @@ class UfuncMeta(PropertiesMeta):
             elif isinstance(inputs[i], np.ndarray):
                 if meta["field"].dtypes == [np.object_]:
                     if not (inputs[i].dtype == np.object_ or np.issubdtype(inputs[i].dtype, np.integer)):
-                        raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
+                        raise ValueError(f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {inputs[i].dtype}.")
                 else:
                     if not np.issubdtype(inputs[i].dtype, np.integer):
-                        raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{inputs[i].dtype}'.")
+                        raise ValueError(f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {inputs[i].dtype}.")
             else:
-                raise TypeError(f"Operation '{ufunc.__name__}' requires operands that are not {cls.name} arrays to be integers or an integer np.ndarray, not {type(inputs[i])}.")
+                raise TypeError(f"Operation {ufunc.__name__!r} requires operands that are not {cls.name} arrays to be integers or an integer np.ndarray, not {type(inputs[i])}.")
 
     def _verify_operands_first_field_second_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
         if len(meta["operands"]) == 1:
             return
 
         if not meta["operands"][0] == meta["field_operands"][0]:
-            raise TypeError(f"Operation '{ufunc.__name__}' requires the first operand to be a {cls.name} array, not {meta['types'][meta['operands'][0]]}.")
+            raise TypeError(f"Operation {ufunc.__name__!r} requires the first operand to be a {cls.name} array, not {meta['types'][meta['operands'][0]]}.")
         if len(meta["field_operands"]) > 1 and meta["operands"][1] == meta["field_operands"][1]:
-            raise TypeError(f"Operation '{ufunc.__name__}' requires the second operand to be an integer array, not {meta['types'][meta['operands'][1]]}.")
+            raise TypeError(f"Operation {ufunc.__name__!r} requires the second operand to be an integer array, not {meta['types'][meta['operands'][1]]}.")
 
         second = inputs[meta["operands"][1]]
         if isinstance(second, (int, np.integer)):
             return
         # elif type(second) is np.ndarray:
         #     if not np.issubdtype(second.dtype, np.integer):
-        #         raise ValueError(f"Operation '{ufunc.__name__}' requires the second operand with type np.ndarray to have integer dtype, not '{second.dtype}'.")
+        #         raise ValueError(f"Operation {ufunc.__name__!r} requires the second operand with type np.ndarray to have integer dtype, not {second.dtype}.")
         elif isinstance(second, np.ndarray):
             if meta["field"].dtypes == [np.object_]:
                 if not (second.dtype == np.object_ or np.issubdtype(second.dtype, np.integer)):
-                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{second.dtype}'.")
+                    raise ValueError(f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {second.dtype}.")
             else:
                 if not np.issubdtype(second.dtype, np.integer):
-                    raise ValueError(f"Operation '{ufunc.__name__}' requires operands with type np.ndarray to have integer dtype, not '{second.dtype}'.")
+                    raise ValueError(f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {second.dtype}.")
         else:
-            raise TypeError(f"Operation '{ufunc.__name__}' requires the second operand to be an integer or integer np.ndarray, not {type(second)}.")
+            raise TypeError(f"Operation {ufunc.__name__!r} requires the second operand to be an integer or integer np.ndarray, not {type(second)}.")
 
     def _view_inputs_as_ndarray(cls, inputs, kwargs, dtype=None):  # pylint: disable=no-self-use
         # View all inputs that are Galois field arrays as np.ndarray to avoid infinite recursion

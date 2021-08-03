@@ -57,11 +57,11 @@ def poly_gcd(a, b):
         gcd.roots(multiplicity=True)
     """
     if not isinstance(a, Poly):
-        raise TypeError(f"Argument `a` must be of type galois.Poly, not {type(a)}.")
+        raise TypeError(f"Argument `a` must be a galois.Poly, not {type(a)}.")
     if not isinstance(b, Poly):
-        raise TypeError(f"Argument `b` must be of type galois.Poly, not {type(b)}.")
-    if not a.field == b.field:
-        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {str(a.field)} and {str(b.field)}.")
+        raise TypeError(f"Argument `b` must be a galois.Poly, not {type(b)}.")
+    if not a.field is b.field:
+        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {a.field} and {b.field}.")
 
     field = a.field
     zero = Poly.Zero(field)
@@ -120,11 +120,11 @@ def poly_egcd(a, b):
         a*x + b*y == gcd
     """
     if not isinstance(a, Poly):
-        raise TypeError(f"Argument `a` must be of type galois.Poly, not {type(a)}.")
+        raise TypeError(f"Argument `a` must be a galois.Poly, not {type(a)}.")
     if not isinstance(b, Poly):
-        raise TypeError(f"Argument `b` must be of type galois.Poly, not {type(b)}.")
-    if not a.field == b.field:
-        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {str(a.field)} and {str(b.field)}.")
+        raise TypeError(f"Argument `b` must be a galois.Poly, not {type(b)}.")
+    if not a.field is b.field:
+        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {a.field} and {b.field}.")
 
     field = a.field
     zero = Poly.Zero(field)
@@ -373,7 +373,7 @@ def irreducible_poly(characteristic, degree, method="min"):
         galois.is_irreducible(p * GF(3))
     """
     if not method in ["min", "max", "random"]:
-        raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method}.")
+        raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
@@ -479,7 +479,7 @@ def primitive_poly(characteristic, degree, method="min"):
         galois.conway_poly(7, 10)
     """
     if not method in ["min", "max", "random"]:
-        raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method}.")
+        raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
@@ -654,13 +654,13 @@ def conway_poly(characteristic, degree):
         galois.conway_poly(7, 10)
     """
     if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}")
+        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
     if not isinstance(degree, (int, np.integer)):
-        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}")
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
     if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}")
+        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
     if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}")
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
 
     coeffs = ConwayPolyDatabase().fetch(characteristic, degree)
     GF = GF_prime(characteristic)
@@ -682,7 +682,7 @@ def minimal_poly(element):
     Parameters
     ----------
     element : galois.FieldArray
-        Any element :math:`e` of the Galois field :math:`\mathrm{GF}(p^m)`. This must be a 0-dim array.
+        Any element :math:`e` of the Galois field :math:`\mathrm{GF}(p^m)`. This must be a 0-D array.
 
     Returns
     -------

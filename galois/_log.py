@@ -46,7 +46,7 @@ def log_naive(beta, alpha, modulus):
     if not is_cyclic(modulus):
         raise ValueError(f"Argument `modulus` must produce a multiplicative group that is cyclic, Z({modulus})* is not cyclic.")
     if not math.gcd(beta, modulus) == 1:
-        raise ValueError(f"Argument `beta` must be coprime with `modulus`, {beta} is not coprime with {modulus}.")
+        raise ValueError(f"Argument `beta` must be coprime to `modulus`, {beta} is not coprime to {modulus}.")
     if not is_primitive_root(alpha, modulus):
         raise ValueError(f"Argument `alpha` must be a primitive root of `modulus`, {alpha} is not a primitive root of {modulus}.")
 
