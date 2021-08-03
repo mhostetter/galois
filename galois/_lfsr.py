@@ -192,7 +192,7 @@ class LFSR:
             lfsr = galois.LFSR(g); lfsr
             lfsr.initial_state
         """
-        return self._initial_state
+        return self._initial_state.copy()
 
     @property
     def state(self):
@@ -209,7 +209,7 @@ class LFSR:
             lfsr.step(10)
             lfsr.state
         """
-        return self._state
+        return self._state.copy()
 
     @property
     def config(self):
