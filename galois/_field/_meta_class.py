@@ -80,7 +80,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         """
         mode = cls.default_ufunc_mode if mode == "auto" else mode
         if mode not in cls.ufunc_modes:
-            raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls.name}, not {mode}.")
+            raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls.name}, not {mode!r}.")
 
         if mode == cls.ufunc_mode:
             # Don't need to rebuild these ufuncs
@@ -159,7 +159,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             a
         """
         if mode not in ["int", "poly", "power"]:
-            raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode}.")
+            raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode!r}.")
 
         context = DisplayContext(cls)
 
@@ -202,7 +202,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             print(GF.repr_table(alpha))
         """
         if sort not in ["power", "poly", "vector", "int"]:
-            raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort}.")
+            raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
         if primitive_element is None:
             primitive_element = cls.primitive_element
 
@@ -292,7 +292,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             GF.display();
         """
         if not operation in ["+", "-", "*", "/"]:
-            raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation}.")
+            raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation!r}.")
 
         if cls.display_mode == "power":
             # Order elements by powers of the primitive element

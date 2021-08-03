@@ -73,7 +73,7 @@ def legendre_symbol(a, p):
         for a in range(7):
             print(f"({a} / 7) = {galois.legendre_symbol(a, 7)}")
     """
-    if not is_prime(p):
+    if not (is_prime(p) and p > 2):
         raise ValueError(f"Argument `p` must be an odd prime greater than 2, not {p}.")
 
     return jacobi_symbol(a, p)
@@ -499,9 +499,9 @@ def pollard_p1(n, B, B2=None):
     if not isinstance(B2, (type(None), int, np.integer)):
         raise TypeError(f"Argument `B2` must be an integer, not {type(B2)}.")
     if not (n % 2 == 1 and n > 2):
-        raise ValueError(f"Argument `n` must odd and greater than 2, not {n}.")
+        raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
     if not B > 2:
-        raise ValueError(f"Argument `B` must greater than 2, not {B}.")
+        raise ValueError(f"Argument `B` must be greater than 2, not {B}.")
     n = int(n)
 
     a = 2  # A value that is coprime to n (since n is odd)
@@ -591,7 +591,7 @@ def pollard_rho(n, c=1):
     if not isinstance(c, (type(None), int, np.integer)):
         raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
     if not n > 1:
-        raise ValueError(f"Argument `n` must greater than 1, not {n}.")
+        raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
     if not c not in [0, -2]:
         raise ValueError("Argument `c` cannot be -2 or 0.")
     n = abs(int(n))

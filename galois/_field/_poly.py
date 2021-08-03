@@ -89,14 +89,14 @@ class Poly:
     __array_priority__ = 100
 
     def __new__(cls, coeffs, field=None, order="desc"):
+        if not isinstance(coeffs, (int, np.integer, list, tuple, np.ndarray, FieldArray)):
+            raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
         if not isinstance(field, (type(None), FieldClass)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
-        if not isinstance(coeffs, (int, np.integer, list, tuple, np.ndarray, FieldArray)):
-            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
         if isinstance(coeffs, (FieldArray, np.ndarray)) and not coeffs.ndim <= 1:
             raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
         if not order in ["desc", "asc"]:
-            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order}.")
+            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order!r}.")
 
         if isinstance(coeffs, (int, np.integer)):
             coeffs = [coeffs,]  # Ensure it's iterable
@@ -314,7 +314,7 @@ class Poly:
             galois.Poly.Integer(13*256**3 + 117, field=GF)
         """
         if not isinstance(integer, (int, np.integer)):
-            raise TypeError(f"Polynomial creation must have `integer` be an integer, not {type(integer)}")
+            raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
 
         if field is GF2:
             # Explicitly create a binary poly
@@ -356,7 +356,7 @@ class Poly:
             galois.Poly.String("13x^3 + 117", field=GF)
         """
         if not isinstance(string, str):
-            raise TypeError(f"Polynomial creation must have `string` be an str, not {type(string)}")
+            raise TypeError(f"Argument `string` be an string, not {type(string)}")
 
         return Poly.Degrees(*str_to_sparse_poly(string), field=field)
 
@@ -398,9 +398,9 @@ class Poly:
         """
         coeffs = [1,]*len(degrees) if coeffs is None else coeffs
         if not isinstance(degrees, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `degrees` must 'array-like', not {type(degrees)}.")
+            raise TypeError(f"Argument `degrees` must be array-like, not {type(degrees)}.")
         if not isinstance(coeffs, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
+            raise TypeError(f"Argument `coeffs` must be array-like, not {type(coeffs)}.")
         if not len(degrees) == len(coeffs):
             raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {len(degrees)} and {len(coeffs)}.")
         if not all(degree >= 0 for degree in degrees):
@@ -478,9 +478,9 @@ class Poly:
         if not isinstance(field, (type(None), FieldClass)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
         if not isinstance(roots, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `roots` must 'array-like', not {type(roots)}.")
+            raise TypeError(f"Argument `roots` must be array-like, not {type(roots)}.")
         if not isinstance(multiplicities, (type(None), list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `multiplicities` must 'array-like', not {type(multiplicities)}.")
+            raise TypeError(f"Argument `multiplicities` must be array-like, not {type(multiplicities)}.")
 
         roots, field = cls._convert_coeffs(roots, field)
 
@@ -751,7 +751,7 @@ class Poly:
         Parameters
         ----------
         x : galois.FieldArray
-            An array (or 0-dim array) of field element to evaluate the polynomial over.
+            An array (or 0-D scalar) of field elements to evaluate the polynomial over.
         field : galois.FieldClass, optional
             The Galois field to evaluate the polynomial over. The default is `None` which represents
             the polynomial's current field, i.e. :obj:`field`.
@@ -855,7 +855,7 @@ class Poly:
 
     def __pow__(self, other):
         if not isinstance(other, (int, np.integer)):
-            raise TypeError(f"For polynomial exponentiation, argument 1 must be of type int. Argument 1 is of type {type(other)}. Argument 1 = {other}.")
+            raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {other}.")
         if not other >= 0:
             raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {other}.")
         field, a, power = self.field, self, other
@@ -1069,7 +1069,7 @@ class DensePoly(Poly):
             else:
                 obj._coeffs = obj._coeffs[-1]
 
-        # Ensure the coefficient array isn't 0-dimension
+        # Ensure the coefficient array isn't 0-dimensional
         obj._coeffs = np.atleast_1d(obj._coeffs)
 
         return obj
@@ -1304,9 +1304,9 @@ class SparsePoly(Poly):
     def __new__(cls, degrees, coeffs=None, field=None):  # pylint: disable=signature-differs
         coeffs = [1,]*len(degrees) if coeffs is None else coeffs
         if not isinstance(degrees, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `degrees` must 'array-like', not {type(degrees)}.")
+            raise TypeError(f"Argument `degrees` must be array-like, not {type(degrees)}.")
         if not isinstance(coeffs, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `coeffs` must 'array-like', not {type(coeffs)}.")
+            raise TypeError(f"Argument `coeffs` must be array-like, not {type(coeffs)}.")
         if not len(degrees) == len(coeffs):
             raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {len(degrees)} and {len(coeffs)}.")
         if not all(degree >= 0 for degree in degrees):

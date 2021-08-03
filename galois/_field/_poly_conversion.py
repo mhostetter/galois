@@ -198,7 +198,7 @@ def str_to_sparse_poly(poly_str):
     elif len(indeterminates) == 1:
         var = list(indeterminates)[0]
     else:
-        raise ValueError(f"Found multiple polynomial indeterminates {vars} in string '{poly_str}'.")
+        raise ValueError(f"Found multiple polynomial indeterminates {vars} in string {poly_str!r}.")
 
     degrees = []
     coeffs = []
@@ -214,12 +214,12 @@ def str_to_sparse_poly(poly_str):
         elif "**" in element:
             coeff, degree = element.split(var + "**", 1)
         else:
-            raise ValueError(f"Could not parse polynomial degree {element}.")
+            raise ValueError(f"Could not parse polynomial degree in {element}.")
 
         # If the degree was negative `3*x^-2`, it was converted to `3*x^+-2` previously. When split
         # by "+" it will leave the degree empty.
         if degree == "":
-            raise ValueError(f"Cannot parse polynomials with negative exponents, '{poly_str}'.")
+            raise ValueError(f"Cannot parse polynomials with negative exponents, {poly_str!r}.")
         degree = int(degree)
 
         coeff = coeff.replace("*", "")  # Remove multiplication sign for elements like `3*x^2`

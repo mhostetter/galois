@@ -82,7 +82,7 @@ def vdot(a, b):
     https://numpy.org/doc/stable/reference/generated/numpy.vdot.html
     """
     if not type(a) is type(b):
-        raise TypeError(f"Operation 'dot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+        raise TypeError(f"Operation 'vdot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
 
     if type(a).is_prime_field:
         return _lapack_linalg(a, b, np.vdot)

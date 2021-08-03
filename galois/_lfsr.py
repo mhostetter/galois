@@ -73,7 +73,7 @@ class LFSR:
         if not isinstance(config, str):
             raise TypeError(f"Argument `config` must be a string, not {type(config)}.")
         if not config in ["fibonacci", "galois"]:
-            raise ValueError(f"Argument `config` must be in ['fibonacci', 'galois'], not {state}.")
+            raise ValueError(f"Argument `config` must be in ['fibonacci', 'galois'], not {state!r}.")
 
         # Convert integer state to vector state
         if isinstance(state, (int, np.integer)):
@@ -294,7 +294,7 @@ def berlekamp_massey(sequence, config="fibonacci", state=False):
     if not isinstance(state, bool):
         raise TypeError(f"Argument `state` must be a bool, not {type(state)}.")
     if not config in ["fibonacci", "galois"]:
-        raise ValueError(f"Argument `config` must be in ['fibonacci', 'galois'], not {state}.")
+        raise ValueError(f"Argument `config` must be in ['fibonacci', 'galois'], not {state!r}.")
 
     field = type(sequence)
     dtype = sequence.dtype

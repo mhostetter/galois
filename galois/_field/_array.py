@@ -149,7 +149,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         # For example, np.dtype(int) == np.int64 (on some systems).
         dtype = np.dtype(dtype)
         if dtype not in cls.dtypes:
-            raise TypeError(f"{cls.name} arrays only support dtypes {[np.dtype(d).name for d in cls.dtypes]}, not '{dtype.name}'.")
+            raise TypeError(f"{cls.name} arrays only support dtypes {[np.dtype(d).name for d in cls.dtypes]}, not {dtype.name!r}.")
 
         return dtype
 
@@ -216,14 +216,14 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             return array
         if array.ndim == 0:
             if not isinstance(array[()], (int, np.integer, FieldArray)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(array[()])}.")
+                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with `dtype=object`, each element must be an integer. Found type {type(array[()])}.")
             return int(array)
 
         iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
         for _ in iterator:
             a = array[iterator.multi_index]
             if not isinstance(a, (int, np.integer, FieldArray)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with dtype=object, each element must be an integer. Found type {type(a)}.")
+                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with `dtype=object`, each element must be an integer. Found type {type(a)}.")
 
             # Ensure the type is int so dtype=object classes don't get all mixed up
             array[iterator.multi_index] = int(a)
@@ -240,7 +240,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         if np.any(array < 0) or np.any(array >= cls.order):
             idxs = np.logical_or(array < 0, array >= cls.order)
             values = array if array.ndim == 0 else array[idxs]
-            raise ValueError(f"{cls.name} arrays must have elements in 0 <= x < {cls.order}, not {values}.")
+            raise ValueError(f"{cls.name} arrays must have elements in `0 <= x < {cls.order}`, not {values}.")
 
     @classmethod
     def _check_string_value(cls, string):
@@ -499,7 +499,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             with GF.display("power"):
                 print(V)
         """
-        if not isinstance(a, (int, np.integer,cls)):
+        if not isinstance(a, (int, np.integer, cls)):
             raise TypeError(f"Argument `a` must be an integer or element of {cls.name}, not {type(a)}.")
         if not isinstance(m, (int, np.integer)):
             raise TypeError(f"Argument `m` must be an integer, not {type(m)}.")
@@ -738,7 +738,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     def __getitem__(self, key):
         item = super().__getitem__(key)
         if np.isscalar(item):
-            # Return scalar array elements as 0-dimension Galois field arrays. This enables Galois field arithmetic
+            # Return scalar array elements as 0-dimensional Galois field arrays. This enables Galois field arithmetic
             # on scalars, which would otherwise be implemented using standard integer arithmetic.
             item = self.__class__(item, dtype=self.dtype)
         return item
@@ -756,7 +756,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             output = type(self)._overridden_linalg_functions[func](*args, **kwargs)
 
         elif func in type(self)._unsupported_functions:
-            raise NotImplementedError(f"The numpy function '{func.__name__}' is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array = array.view(np.ndarray)` and then call the function.")
+            raise NotImplementedError(f"The numpy function {func.__name__!r} is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array = array.view(np.ndarray)` and then call the function.")
 
         else:
             if func is np.insert:
@@ -798,7 +798,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             return getattr(type(self), type(self)._overridden_ufuncs[ufunc])(ufunc, method, inputs, kwargs, meta)
 
         elif ufunc in type(self)._unsupported_ufuncs:
-            raise NotImplementedError(f"The numpy ufunc '{ufunc.__name__}' is not supported on {type(self).name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+            raise NotImplementedError(f"The numpy ufunc {ufunc.__name__!r} is not supported on {type(self).name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         else:
             if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:

@@ -23,9 +23,9 @@ def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
     if not isinstance(c, (int, np.integer)):
         raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
     if not isinstance(primitive_poly, (type(None), int, Poly)):
-        raise TypeError(f"Argument `primitive_poly` must be None, an int, or galois.Poly, not {type(primitive_poly)}.")
+        raise TypeError(f"Argument `primitive_poly` must be an int or galois.Poly, not {type(primitive_poly)}.")
     if not isinstance(primitive_element, (type(None), int, Poly)):
-        raise TypeError(f"Argument `primitive_element` must be None, an int, or galois.Poly, not {type(primitive_element)}.")
+        raise TypeError(f"Argument `primitive_element` must be an int or galois.Poly, not {type(primitive_element)}.")
 
     p, m = factors(n + 1)
     if not (len(p) == 1 and p[0] == 2):
@@ -294,7 +294,7 @@ class BCH:
         if not isinstance(message, np.ndarray):
             raise TypeError(f"Argument `message` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(message)}.")
         if parity_only and not self.systematic:
-            raise ValueError("Argument `parity_only` only applies to systematic codes.")
+            raise ValueError("Argument `parity_only=True` only applies to systematic codes.")
         if self.systematic:
             if not message.shape[-1] <= self.k:
                 raise ValueError(f"For a systematic code, argument `message` must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}.")

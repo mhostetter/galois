@@ -21,7 +21,7 @@ def test_add():
     with pytest.raises(TypeError):
         1 + poly
 
-    # Not a 0-dim Galois field array
+    # Not a 0-D Galois field array
     with pytest.raises(ValueError):
         poly + GF.Random(3, low=1)
     with pytest.raises(ValueError):
@@ -42,7 +42,7 @@ def test_subtract():
     with pytest.raises(TypeError):
         1 - poly
 
-    # Not a 0-dim Galois field array
+    # Not a 0-D Galois field array
     with pytest.raises(ValueError):
         poly - GF.Random(3, low=1)
     with pytest.raises(ValueError):
@@ -63,7 +63,7 @@ def test_multiply():
     with pytest.raises(TypeError):
         1 * poly
 
-    # Not a 0-dim Galois field array
+    # Not a 0-D Galois field array
     with pytest.raises(ValueError):
         poly * GF.Random(3, low=1)
     with pytest.raises(ValueError):
@@ -84,7 +84,7 @@ def test_true_divide():
     with pytest.raises(TypeError):
         1 / poly
 
-    # Not a 0-dim Galois field array
+    # Not a 0-D Galois field array
     with pytest.raises(ValueError):
         poly / GF.Random(3, low=1)
     with pytest.raises(ValueError):
@@ -105,7 +105,7 @@ def test_floor_divide():
     with pytest.raises(TypeError):
         1 // poly
 
-    # Not a 0-dim Galois field array
+    # Not a 0-D Galois field array
     with pytest.raises(ValueError):
         poly // GF.Random(3, low=1)
     with pytest.raises(ValueError):
@@ -126,7 +126,7 @@ def test_mod():
     with pytest.raises(TypeError):
         1 % poly
 
-    # Not a 0-dim Galois field array
+    # Not a 0-D Galois field array
     with pytest.raises(ValueError):
         poly % GF.Random(3, low=1)
     with pytest.raises(ValueError):
