@@ -142,6 +142,8 @@ class LFSR:
 
         self.state[:] = state[:]
         y = y.view(self.field)
+        if y.size == 1:
+            y = y[0]
 
         return y
 
