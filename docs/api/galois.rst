@@ -6,9 +6,9 @@ API Reference v\ |version|
 
    galois-fields.rst
    polys.rst
+   fec.rst
+   linear-sequences.rst
    number-theory.rst
    integer-factorization.rst
    primes.rst
-   fec.rst
-   linear-sequences.rst
    numpy-examples.rst
