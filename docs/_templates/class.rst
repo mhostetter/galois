@@ -4,34 +4,51 @@
 
 .. autoclass:: {{ objname }}
 
-   {% block constructors %}
-   {% if methods %}
+   {%- if methods %}
+   {% set constructor_methods = [] %}
+   {%- for item in methods if item[0].isupper() %}
+     {{- constructor_methods.append(item)|default("", True) }}
+   {%- endfor %}
+
+   {% set regular_methods = [] %}
+   {%- for item in methods if not item[0].isupper() %}
+     {{- regular_methods.append(item)|default("", True) }}
+   {%- endfor %}
+
+   {% set special_methods = [] %}
+   {%- for item in ['__add__', '__sub__', '__mul__', '__truediv__', '__floordiv__', '__divmod__', '__mod__', '__pow__'] if item in members %}
+     {{- special_methods.append(item)|default("", True) }}
+   {%- endfor %}
+   {%- endif %}
+
+   {% block constructor_methods %}
+   {% if constructor_methods %}
    .. rubric:: {{ _('Constructors') }}
 
    .. autosummary::
-   {% for item in methods if item[0].isupper() %}
+   {% for item in constructor_methods %}
       {{ item }}
    {%- endfor %}
    {% endif %}
    {% endblock %}
 
-   {% block methods %}
-   {% if methods %}
+   {% block regular_methods %}
+   {% if regular_methods %}
    .. rubric:: {{ _('Methods') }}
 
    .. autosummary::
-   {% for item in methods if not item[0].isupper() %}
+   {% for item in regular_methods %}
       {{ item }}
    {%- endfor %}
    {% endif %}
    {% endblock %}
 
    {% block special_methods %}
-   {% if methods %}
+   {% if special_methods %}
    .. rubric:: {{ _('Special Methods') }}
 
    .. autosummary::
-   {% for item in ['__add__', '__sub__', '__mul__', '__truediv__', '__floordiv__', '__divmod__', '__mod__', '__pow__'] if item in members %}
+   {% for item in special_methods|sort %}
       {{ item }}
    {%- endfor %}
    {% endif %}
