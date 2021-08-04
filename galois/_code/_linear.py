@@ -29,6 +29,12 @@ def generator_to_parity_check_matrix(G):
 
     Examples
     --------
+    .. ipython:: python
+
+        g = galois.primitive_poly(2, 3); g
+        G = galois.poly_to_generator_matrix(7, g); G
+        H = galois.generator_to_parity_check_matrix(G); H
+        G @ H.T
     """
     if not isinstance(G, (FieldArray)):
         raise TypeError(f"Argument `G` must be an np.ndarray or galois.FieldArray, not {type(G)}.")
@@ -65,6 +71,13 @@ def parity_check_to_generator_matrix(H):
 
     Examples
     --------
+    .. ipython:: python
+
+        g = galois.primitive_poly(2, 3); g
+        G = galois.poly_to_generator_matrix(7, g); G
+        H = galois.generator_to_parity_check_matrix(G); H
+        G2 = galois.parity_check_to_generator_matrix(H); G2
+        G2 @ H.T
     """
     if not isinstance(H, (FieldArray)):
         raise TypeError(f"Argument `H` must be an np.ndarray or galois.FieldArray, not {type(H)}.")

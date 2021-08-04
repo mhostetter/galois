@@ -38,24 +38,38 @@ class ReedSolomon:
         primitive polynomial as a default instead of the Conway polynomial.
     primitive_element : int, galois.Poly, optional
         Optionally specify the primitive element :math:`\alpha` of :math:`\mathrm{GF}(q)` whose powers are roots of the generator polynomial :math:`g(x)`.
-        The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(q)`, i.e.
-        `galois.primitive_element(p, m)`.
+        The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(q)`, see
+        :func:`galois.primitive_element`.
     systematic : bool, optional
         Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
         appended. The default is `True`.
 
     Examples
     --------
+    Construct the Reed-Solomon code.
+
     .. ipython:: python
 
         rs = galois.ReedSolomon(15, 9)
         GF = rs.field
+
+    Encode a message.
+
+    .. ipython:: python
+
         m = GF.Random(rs.k); m
         c = rs.encode(m); c
+
+    Corrupt the codeword and decode the message.
+
+    .. ipython:: python
+
         # Corrupt the first symbol in the codeword
         c[0] ^= 13
         dec_m = rs.decode(c); dec_m
         np.array_equal(dec_m, m)
+
+    .. ipython:: python
 
         # Instruct the decoder to return the number of corrected symbol errors
         dec_m, N = rs.decode(c, errors=True); dec_m, N
@@ -140,20 +154,6 @@ class ReedSolomon:
         r"""
         Encodes the message :math:`\mathbf{m}` into the Reed-Solomon codeword :math:`\mathbf{c}`.
 
-        The message vector :math:`\mathbf{m}` is defined as :math:`\mathbf{m} = [m_{k-1}, \dots, m_1, m_0] \in \mathrm{GF}(q)^k`,
-        which corresponds to the message polynomial :math:`m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0`. The codeword vector :math:`\mathbf{c}`
-        is defined as :math:`\mathbf{c} = [c_{n-1}, \dots, c_1, c_0] \in \mathrm{GF}(q)^n`, which corresponds to the codeword
-        polynomial :math:`c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0`.
-
-        The codeword vector is computed from the message vector by :math:`\mathbf{c} = \mathbf{m}\mathbf{G}`, where :math:`\mathbf{G}` is the
-        generator matrix. The equivalent polynomial operation is :math:`c(x) = m(x)g(x)`. For systematic codes, :math:`\mathbf{G} = [\mathbf{I}\ |\ \mathbf{P}]`
-        such that :math:`\mathbf{c} = [\mathbf{m}\ |\ \mathbf{p}]`. And in polynomial form, :math:`p(x) = -(m(x) x^{n-k}\ \textrm{mod}\ g(x))` with
-        :math:`c(x) = m(x)x^{n-k} + p(x)`. For systematic and non-systematic codes, each codeword is a multiple of the generator polynomial, i.e.
-        :math:`g(x)\ |\ c(x)`.
-
-        For the shortened :math:`\textrm{RS}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`k-s` symbols into
-        :func:`encode` to return the :math:`n-s`-symbol codeword.
-
         Parameters
         ----------
         message : numpy.ndarray, galois.FieldArray
@@ -170,6 +170,22 @@ class ReedSolomon:
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. The return type matches the
             message type. If `parity_only=True`, the parity symbols are returned as either a :math:`n - k`-length vector or
             :math:`(N, n-k)` matrix.
+
+        Notes
+        -----
+        The message vector :math:`\mathbf{m}` is defined as :math:`\mathbf{m} = [m_{k-1}, \dots, m_1, m_0] \in \mathrm{GF}(q)^k`,
+        which corresponds to the message polynomial :math:`m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0`. The codeword vector :math:`\mathbf{c}`
+        is defined as :math:`\mathbf{c} = [c_{n-1}, \dots, c_1, c_0] \in \mathrm{GF}(q)^n`, which corresponds to the codeword
+        polynomial :math:`c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0`.
+
+        The codeword vector is computed from the message vector by :math:`\mathbf{c} = \mathbf{m}\mathbf{G}`, where :math:`\mathbf{G}` is the
+        generator matrix. The equivalent polynomial operation is :math:`c(x) = m(x)g(x)`. For systematic codes, :math:`\mathbf{G} = [\mathbf{I}\ |\ \mathbf{P}]`
+        such that :math:`\mathbf{c} = [\mathbf{m}\ |\ \mathbf{p}]`. And in polynomial form, :math:`p(x) = -(m(x) x^{n-k}\ \textrm{mod}\ g(x))` with
+        :math:`c(x) = m(x)x^{n-k} + p(x)`. For systematic and non-systematic codes, each codeword is a multiple of the generator polynomial, i.e.
+        :math:`g(x)\ |\ c(x)`.
+
+        For the shortened :math:`\textrm{RS}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`k-s` symbols into
+        :func:`encode` to return the :math:`n-s`-symbol codeword.
 
         Examples
         --------
@@ -291,19 +307,6 @@ class ReedSolomon:
         r"""
         Decodes the Reed-Solomon codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
 
-        The codeword vector :math:`\mathbf{c}` is defined as :math:`\mathbf{c} = [c_{n-1}, \dots, c_1, c_0] \in \mathrm{GF}(q)^n`,
-        which corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0`. The message vector :math:`\mathbf{m}`
-        is defined as :math:`\mathbf{m} = [m_{k-1}, \dots, m_1, m_0] \in \mathrm{GF}(q)^k`, which corresponds to the message
-        polynomial :math:`m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0`.
-
-        In decoding, the syndrome vector :math:`s` is computed by :math:`\mathbf{s} = \mathbf{c}\mathbf{H}^T`, where
-        :math:`\mathbf{H}` is the parity-check matrix. The equivalent polynomial operation is :math:`s(x) = c(x)\ \textrm{mod}\ g(x)`.
-        A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome is non-zero,
-        the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding error locations and values.
-
-        For the shortened :math:`\textrm{RS}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`n-s` symbols into
-        :func:`decode` to return the :math:`k-s`-symbol message.
-
         Parameters
         ----------
         codeword : numpy.ndarray, galois.FieldArray
@@ -321,6 +324,21 @@ class ReedSolomon:
             Optional return argument of the number of corrected symbol errors as either a scalar or :math:`n`-length vector.
             Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
             -1 will be returned.
+
+        Notes
+        -----
+        The codeword vector :math:`\mathbf{c}` is defined as :math:`\mathbf{c} = [c_{n-1}, \dots, c_1, c_0] \in \mathrm{GF}(q)^n`,
+        which corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0`. The message vector :math:`\mathbf{m}`
+        is defined as :math:`\mathbf{m} = [m_{k-1}, \dots, m_1, m_0] \in \mathrm{GF}(q)^k`, which corresponds to the message
+        polynomial :math:`m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0`.
+
+        In decoding, the syndrome vector :math:`s` is computed by :math:`\mathbf{s} = \mathbf{c}\mathbf{H}^T`, where
+        :math:`\mathbf{H}` is the parity-check matrix. The equivalent polynomial operation is :math:`s(x) = c(x)\ \textrm{mod}\ g(x)`.
+        A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome is non-zero,
+        the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding error locations and values.
+
+        For the shortened :math:`\textrm{RS}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`n-s` symbols into
+        :func:`decode` to return the :math:`k-s`-symbol message.
 
         Examples
         --------
@@ -497,7 +515,7 @@ class ReedSolomon:
     @property
     def generator_poly(self):
         """
-        galois.Poly: The generator polynomial :math:`g(x)` whose roots are :obj:`ReedSolomon.roots`.
+        galois.Poly: The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
 
         Examples
         --------
@@ -513,7 +531,8 @@ class ReedSolomon:
     @property
     def roots(self):
         r"""
-        galois.FieldArray: The roots of the generator polynomial. These are consecutive powers of :math:`\alpha`.
+        galois.FieldArray: The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
+        :math:`\alpha^c, \alpha^{c+1}, \dots, \alpha^{c+2t-1}`.
 
         Examples
         --------
@@ -580,6 +599,8 @@ class ReedSolomon:
 
             rs = galois.ReedSolomon(15, 9); rs
             rs.is_narrow_sense
+            rs.roots
+            rs.field.primitive_element**(np.arange(1, 2*rs.t + 1))
         """
         return self._is_narrow_sense
 

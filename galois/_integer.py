@@ -35,9 +35,9 @@ def isqrt(n):
     --------
     .. ipython:: python
 
-        galois.isqrt(27**2 - 1)
-        galois.isqrt(27**2)
-        galois.isqrt(27**2 + 1)
+        n = 1000
+        x = galois.isqrt(n); x
+        print(f"{x**2} <= {n} < {(x + 1)**2}")
     """
     if sys.version_info.major == 3 and sys.version_info.minor >= 8:
         return math.isqrt(n)  # pylint: disable=no-member
@@ -63,7 +63,7 @@ def isqrt(n):
 @set_module("galois")
 def iroot(n, k):
     r"""
-    Computes :math:`x = \lfloor(n)^{\frac{1}{k}}\rfloor` such that :math:`x^k \le n < (x + 1)^k`.
+    Computes :math:`x = \lfloor n^{\frac{1}{k}} \rfloor` such that :math:`x^k \le n < (x + 1)^k`.
 
     Parameters
     ----------
@@ -81,9 +81,9 @@ def iroot(n, k):
     --------
     .. ipython :: python
 
-        galois.iroot(27**5 - 1, 5)
-        galois.iroot(27**5, 5)
-        galois.iroot(27**5 + 1, 5)
+        n = 1000
+        x = galois.iroot(n, 5); x
+        print(f"{x**5} <= {n} < {(x + 1)**5}")
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -131,9 +131,9 @@ def ilog(n, b):
     --------
     .. ipython :: python
 
-        galois.ilog(27**5 - 1, 27)
-        galois.ilog(27**5, 27)
-        galois.ilog(27**5 + 1, 27)
+        n = 1000
+        x = galois.ilog(n, 5); x
+        print(f"{5**x} <= {n} < {5**(x + 1)}")
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")

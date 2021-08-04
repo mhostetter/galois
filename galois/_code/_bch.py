@@ -62,6 +62,10 @@ def bch_valid_codes(n, t_min=1):
     list
         A list of :math:`(n, k, t)` tuples of valid primitive BCH codes.
 
+    References
+    ----------
+    * https://link.springer.com/content/pdf/bbm%3A978-1-4899-2174-1%2F1.pdf
+
     Examples
     --------
     .. ipython:: python
@@ -125,24 +129,38 @@ class BCH:
         primitive polynomial as a default instead of the Conway polynomial.
     primitive_element : int, galois.Poly, optional
         Optionally specify the primitive element :math:`\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
-        The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(2^m)`, i.e.
-        `galois.primitive_element(2, m)`.
+        The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(2^m)`, see
+        :func:`galois.primitive_element`.
     systematic : bool, optional
         Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
         appended. The default is `True`.
 
     Examples
     --------
+    Construct the BCH code.
+
     .. ipython:: python
 
         galois.bch_valid_codes(15)
-        bch = galois.BCH(15, 7)
+        bch = galois.BCH(15, 7); bch
+
+    Encode a message.
+
+    .. ipython:: python
+
         m = galois.GF2.Random(bch.k); m
         c = bch.encode(m); c
+
+    Corrupt the codeword and decode the message.
+
+    .. ipython:: python
+
         # Corrupt the first bit in the codeword
         c[0] ^= 1
         dec_m = bch.decode(c); dec_m
         np.array_equal(dec_m, m)
+
+    .. ipython:: python
 
         # Instruct the decoder to return the number of corrected bit errors
         dec_m, N = bch.decode(c, errors=True); dec_m, N
@@ -234,20 +252,6 @@ class BCH:
         r"""
         Encodes the message :math:`\mathbf{m}` into the BCH codeword :math:`\mathbf{c}`.
 
-        The message vector :math:`\mathbf{m}` is defined as :math:`\mathbf{m} = [m_{k-1}, \dots, m_1, m_0] \in \mathrm{GF}(2)^k`,
-        which corresponds to the message polynomial :math:`m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0`. The codeword vector :math:`\mathbf{c}`
-        is defined as :math:`\mathbf{c} = [c_{n-1}, \dots, c_1, c_0] \in \mathrm{GF}(2)^n`, which corresponds to the codeword
-        polynomial :math:`c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0`.
-
-        The codeword vector is computed from the message vector by :math:`\mathbf{c} = \mathbf{m}\mathbf{G}`, where :math:`\mathbf{G}` is the
-        generator matrix. The equivalent polynomial operation is :math:`c(x) = m(x)g(x)`. For systematic codes, :math:`\mathbf{G} = [\mathbf{I}\ |\ \mathbf{P}]`
-        such that :math:`\mathbf{c} = [\mathbf{m}\ |\ \mathbf{p}]`. And in polynomial form, :math:`p(x) = -(m(x) x^{n-k}\ \textrm{mod}\ g(x))` with
-        :math:`c(x) = m(x)x^{n-k} + p(x)`. For systematic and non-systematic codes, each codeword is a multiple of the generator polynomial, i.e.
-        :math:`g(x)\ |\ c(x)`.
-
-        For the shortened :math:`\textrm{BCH}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`k-s` bits into
-        :func:`encode` to return the :math:`n-s`-bit codeword.
-
         Parameters
         ----------
         message : numpy.ndarray, galois.FieldArray
@@ -264,6 +268,22 @@ class BCH:
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. The return type matches the
             message type. If `parity_only=True`, the parity bits are returned as either a :math:`n - k`-length vector or
             :math:`(N, n-k)` matrix.
+
+        Notes
+        -----
+        The message vector :math:`\mathbf{m}` is defined as :math:`\mathbf{m} = [m_{k-1}, \dots, m_1, m_0] \in \mathrm{GF}(2)^k`,
+        which corresponds to the message polynomial :math:`m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0`. The codeword vector :math:`\mathbf{c}`
+        is defined as :math:`\mathbf{c} = [c_{n-1}, \dots, c_1, c_0] \in \mathrm{GF}(2)^n`, which corresponds to the codeword
+        polynomial :math:`c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0`.
+
+        The codeword vector is computed from the message vector by :math:`\mathbf{c} = \mathbf{m}\mathbf{G}`, where :math:`\mathbf{G}` is the
+        generator matrix. The equivalent polynomial operation is :math:`c(x) = m(x)g(x)`. For systematic codes, :math:`\mathbf{G} = [\mathbf{I}\ |\ \mathbf{P}]`
+        such that :math:`\mathbf{c} = [\mathbf{m}\ |\ \mathbf{p}]`. And in polynomial form, :math:`p(x) = -(m(x) x^{n-k}\ \textrm{mod}\ g(x))` with
+        :math:`c(x) = m(x)x^{n-k} + p(x)`. For systematic and non-systematic codes, each codeword is a multiple of the generator polynomial, i.e.
+        :math:`g(x)\ |\ c(x)`.
+
+        For the shortened :math:`\textrm{BCH}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`k-s` bits into
+        :func:`encode` to return the :math:`n-s`-bit codeword.
 
         Examples
         --------
@@ -383,19 +403,6 @@ class BCH:
         r"""
         Decodes the BCH codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
 
-        The codeword vector :math:`\mathbf{c}` is defined as :math:`\mathbf{c} = [c_{n-1}, \dots, c_1, c_0] \in \mathrm{GF}(2)^n`,
-        which corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0`. The message vector :math:`\mathbf{m}`
-        is defined as :math:`\mathbf{m} = [m_{k-1}, \dots, m_1, m_0] \in \mathrm{GF}(2)^k`, which corresponds to the message
-        polynomial :math:`m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0`.
-
-        In decoding, the syndrome vector :math:`s` is computed by :math:`\mathbf{s} = \mathbf{c}\mathbf{H}^T`, where
-        :math:`\mathbf{H}` is the parity-check matrix. The equivalent polynomial operation is :math:`s(x) = c(x)\ \textrm{mod}\ g(x)`.
-        A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome is non-zero,
-        the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding error locations and values.
-
-        For the shortened :math:`\textrm{BCH}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`n-s` bits into
-        :func:`decode` to return the :math:`k-s`-bit message.
-
         Parameters
         ----------
         codeword : numpy.ndarray, galois.FieldArray
@@ -413,6 +420,21 @@ class BCH:
             Optional return argument of the number of corrected bit errors as either a scalar or :math:`n`-length vector.
             Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
             -1 will be returned.
+
+        Notes
+        -----
+        The codeword vector :math:`\mathbf{c}` is defined as :math:`\mathbf{c} = [c_{n-1}, \dots, c_1, c_0] \in \mathrm{GF}(2)^n`,
+        which corresponds to the codeword polynomial :math:`c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0`. The message vector :math:`\mathbf{m}`
+        is defined as :math:`\mathbf{m} = [m_{k-1}, \dots, m_1, m_0] \in \mathrm{GF}(2)^k`, which corresponds to the message
+        polynomial :math:`m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0`.
+
+        In decoding, the syndrome vector :math:`s` is computed by :math:`\mathbf{s} = \mathbf{c}\mathbf{H}^T`, where
+        :math:`\mathbf{H}` is the parity-check matrix. The equivalent polynomial operation is :math:`s(x) = c(x)\ \textrm{mod}\ g(x)`.
+        A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome is non-zero,
+        the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding error locations and values.
+
+        For the shortened :math:`\textrm{BCH}(n-s, k-s)` code (only applicable for systematic codes), pass :math:`n-s` bits into
+        :func:`decode` to return the :math:`k-s`-bit message.
 
         Examples
         --------
@@ -589,7 +611,7 @@ class BCH:
     @property
     def generator_poly(self):
         """
-        galois.Poly: The generator polynomial :math:`g(x)` whose roots are :obj:`BCH.roots`.
+        galois.Poly: The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
 
         Examples
         --------
@@ -605,7 +627,8 @@ class BCH:
     @property
     def roots(self):
         r"""
-        galois.FieldArray: The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`.
+        galois.FieldArray: The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
+        :math:`\alpha, \alpha^2, \dots, \alpha^{2t}`.
 
         Examples
         --------
@@ -664,7 +687,7 @@ class BCH:
     def is_narrow_sense(self):
         r"""
         bool: Indicates if the BCH code is narrow sense, meaning the roots of the generator polynomial are consecutive
-        powers of :math:`\alpha` starting at 1, i.e. :math:`\alpha, \alpha^2, \dots, \alpha^{2t - 1}`.
+        powers of :math:`\alpha` starting at 1, i.e. :math:`\alpha, \alpha^2, \dots, \alpha^{2t}`.
 
         Examples
         --------
@@ -672,6 +695,8 @@ class BCH:
 
             bch = galois.BCH(15, 7); bch
             bch.is_narrow_sense
+            bch.roots
+            bch.field.primitive_element**(np.arange(1, 2*bch.t + 1))
         """
         return self._is_narrow_sense
 

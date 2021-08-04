@@ -313,12 +313,6 @@ def is_prime(n):
     r"""
     Determines if :math:`n` is prime.
 
-    This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
-    :func:`galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
-    If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
-    will run seven rounds of Miller-Rabin's primality test, see :func:`galois.miller_rabin_primality_test`. With this many rounds,
-    a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
-
     Parameters
     ----------
     n : int
@@ -328,6 +322,14 @@ def is_prime(n):
     -------
     bool:
         `True` if the integer :math:`n` is prime.
+
+    Notes
+    -----
+    This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
+    :func:`galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
+    If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
+    will run 10 rounds of Miller-Rabin's primality test, see :func:`galois.miller_rabin_primality_test`. With this many rounds,
+    a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
 
     Examples
     --------
@@ -405,15 +407,6 @@ def fermat_primality_test(n, a=None, rounds=1):
     r"""
     Determines if :math:`n` is composite using Fermat's primality test.
 
-    Fermat's theorem says that for prime :math:`p` and :math:`1 \le a \le p-1`, the congruence :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`
-    holds. Fermat's primality test of :math:`n` computes :math:`a^{n-1}\ \textrm{mod}\ n` for some :math:`1 \le a \le n-1`.
-    If :math:`a` is such that :math:`a^{p-1} \not\equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be a *Fermat witness* to the
-    compositeness of :math:`n`. If :math:`n` is composite and :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be
-    a *Fermat liar* to the primality of :math:`n`.
-
-    Since :math:`a = \{1, n-1\}` are Fermat liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
-    to :math:`2 \le a \le n - 2`.
-
     Parameters
     ----------
     n : int
@@ -428,6 +421,17 @@ def fermat_primality_test(n, a=None, rounds=1):
     -------
     bool
         `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
+
+    Notes
+    -----
+    Fermat's theorem says that for prime :math:`p` and :math:`1 \le a \le p-1`, the congruence :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`
+    holds. Fermat's primality test of :math:`n` computes :math:`a^{n-1}\ \textrm{mod}\ n` for some :math:`1 \le a \le n-1`.
+    If :math:`a` is such that :math:`a^{p-1} \not\equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be a *Fermat witness* to the
+    compositeness of :math:`n`. If :math:`n` is composite and :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be
+    a *Fermat liar* to the primality of :math:`n`.
+
+    Since :math:`a = \{1, n-1\}` are Fermat liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
+    to :math:`2 \le a \le n - 2`.
 
     References
     ----------
@@ -501,21 +505,6 @@ def miller_rabin_primality_test(n, a=2, rounds=1):
     r"""
     Determines if :math:`n` is composite using the Miller-Rabin primality test.
 
-    The Miller-Rabin primality test is based on the fact that for odd :math:`n` with factorization :math:`n = 2^s r` for odd :math:`r`
-    and integer :math:`a` such that :math:`\textrm{gcd}(a, n) = 1`, then either :math:`a^r \equiv 1\ (\textrm{mod}\ n)`
-    or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for some :math:`j` in :math:`0 \le j \le s - 1`.
-
-    In the Miller-Rabin primality test, if :math:`a^r \not\equiv 1\ (\textrm{mod}\ n)` and :math:`a^{2^j r} \not\equiv -1\ (\textrm{mod}\ n)`
-    for all :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is called a *strong witness* to the compositeness of :math:`n`. If not, namely
-    :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for any :math:`j` in :math:`0 \le j \le s - 1`,
-    then :math:`a` is called a *strong liar* to the primality of :math:`n` and :math:`n` is called a *strong pseudoprime to the base a*.
-
-    Since :math:`a = \{1, n-1\}` are strong liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
-    to :math:`2 \le a \le n - 2`.
-
-    For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than :math:`(\frac{1}{4})^t`,
-    where :math:`t` is the number of rounds, and is often much lower.
-
     Parameters
     ----------
     n : int
@@ -530,6 +519,23 @@ def miller_rabin_primality_test(n, a=2, rounds=1):
     -------
     bool
         `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
+
+    Notes
+    -----
+    The Miller-Rabin primality test is based on the fact that for odd :math:`n` with factorization :math:`n = 2^s r` for odd :math:`r`
+    and integer :math:`a` such that :math:`\textrm{gcd}(a, n) = 1`, then either :math:`a^r \equiv 1\ (\textrm{mod}\ n)`
+    or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for some :math:`j` in :math:`0 \le j \le s - 1`.
+
+    In the Miller-Rabin primality test, if :math:`a^r \not\equiv 1\ (\textrm{mod}\ n)` and :math:`a^{2^j r} \not\equiv -1\ (\textrm{mod}\ n)`
+    for all :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is called a *strong witness* to the compositeness of :math:`n`. If not, namely
+    :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for any :math:`j` in :math:`0 \le j \le s - 1`,
+    then :math:`a` is called a *strong liar* to the primality of :math:`n` and :math:`n` is called a *strong pseudoprime to the base a*.
+
+    Since :math:`a = \{1, n-1\}` are strong liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
+    to :math:`2 \le a \le n - 2`.
+
+    For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than :math:`(\frac{1}{4})^t`,
+    where :math:`t` is the number of rounds, and is often much lower.
 
     References
     ----------

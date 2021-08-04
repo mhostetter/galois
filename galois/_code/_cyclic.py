@@ -92,7 +92,7 @@ def roots_to_parity_check_matrix(n, roots):
 
     Examples
     --------
-    Compute the parity-check for the :math:`\mathrm{RS}(15, 9)` code.
+    Compute the parity-check matrix for the :math:`\mathrm{RS}(15, 9)` code.
 
     .. ipython :: python
 

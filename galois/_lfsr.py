@@ -108,6 +108,17 @@ class LFSR:
     def reset(self):
         """
         Resets the LFSR state to the initial state.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr.state
+            lfsr.step(10)
+            lfsr.state
+            lfsr.reset()
+            lfsr.state
         """
         self._state = self.initial_state.copy()
 
@@ -124,6 +135,26 @@ class LFSR:
         -------
         galois.FieldArray
             An array of output symbols of type :obj:`field` with size `steps`.
+
+        Examples
+        --------
+        Step the LFSR one output at a time.
+
+        .. ipython:: python
+
+            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr.state
+            lfsr.state, lfsr.step()
+            lfsr.state, lfsr.step()
+            lfsr.state, lfsr.step()
+            lfsr.state, lfsr.step()
+
+        Step the LFSR 10 steps.
+
+        .. ipython:: python
+
+            lfsr.reset()
+            lfsr.step(10)
         """
         if not isinstance(steps, (int, np.integer)):
             raise TypeError(f"Argument `steps` must be an integer, not {type(steps)}.")
@@ -140,7 +171,7 @@ class LFSR:
             state = self.state.view(np.ndarray)
             y = self._step(poly, state, steps, self._add, self._multiply, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
 
-        self.state[:] = state[:]
+        self._state[:] = state[:]
         y = y.view(self.field)
         if y.size == 1:
             y = y[0]
@@ -157,8 +188,7 @@ class LFSR:
         --------
         .. ipython:: python
 
-            g = galois.primitive_poly(2, 8); g
-            lfsr = galois.LFSR(g); lfsr
+            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.field
             print(lfsr.field.properties)
         """
@@ -173,8 +203,7 @@ class LFSR:
         --------
         .. ipython:: python
 
-            g = galois.primitive_poly(2, 8); g
-            lfsr = galois.LFSR(g); lfsr
+            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.poly
         """
         return self._poly
@@ -188,8 +217,7 @@ class LFSR:
         --------
         .. ipython:: python
 
-            g = galois.primitive_poly(2, 8); g
-            lfsr = galois.LFSR(g); lfsr
+            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.initial_state
         """
         return self._initial_state.copy()
@@ -203,8 +231,7 @@ class LFSR:
         --------
         .. ipython:: python
 
-            g = galois.primitive_poly(2, 8); g
-            lfsr = galois.LFSR(g); lfsr
+            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.state
             lfsr.step(10)
             lfsr.state
@@ -214,20 +241,19 @@ class LFSR:
     @property
     def config(self):
         """
-        str: The LFSR configuration, either `"fibonacci"` or `"galois"`.
+        str: The LFSR configuration, either `"fibonacci"` or `"galois"`. See the Notes section of :obj:`LFSR` for descriptions of
+        the two configurations.
 
         Examples
         --------
         .. ipython:: python
 
-            g = galois.primitive_poly(2, 8); g
-            lfsr = galois.LFSR(g); lfsr
+            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.config
 
         .. ipython:: python
 
-            g = galois.primitive_poly(2, 8); g
-            lfsr = galois.LFSR(g, config="galois"); lfsr
+            lfsr = galois.LFSR(galois.primitive_poly(2, 4), config="galois"); lfsr
             lfsr.config
         """
         return self._config
@@ -268,7 +294,7 @@ def berlekamp_massey(sequence, config="fibonacci", state=False):
     Returns
     -------
     galois.Poly
-        The minimum-degree polynomial :math:`c(x) \in \mathrm{GF}(p^m)(x)` that produces the input sequence.
+        The minimum-degree polynomial :math:`c(x) \in \mathrm{GF}(p^m)[x]` that produces the input sequence.
     galois.FieldArray
         The initial state of the LFSR such that the output will generate the input sequence. Only returned if `state=True`.
 
