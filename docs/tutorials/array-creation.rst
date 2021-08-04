@@ -11,6 +11,8 @@ creation is the same for all Galois fields, but :math:`\mathrm{GF}(7)` is used a
 
 .. ipython:: python
 
+   GF7 = galois.GF(7)
+
    # Represents an existing numpy array
    x_np = np.random.randint(0, 7, 10, dtype=int); x_np
 

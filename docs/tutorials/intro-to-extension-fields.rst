@@ -20,7 +20,7 @@ The only question is what to call each element and how to represent them.
 
 .. ipython:: python
 
-   GF9 = galois.GF(9); GF9
+   GF9 = galois.GF(3**2); GF9
    print(GF9.properties)
 
 In :obj:`galois`, the default element display mode is the integer representation. This is natural when storing and working with
