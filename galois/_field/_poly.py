@@ -838,6 +838,27 @@ class Poly:
             return DensePoly, a, b
 
     def __add__(self, other):
+        """
+        Adds two polynomials.
+
+        Parameters
+        ----------
+        other : galois.Poly
+            The polynomial :math:`b(x)`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`c(x) = a(x) + b(x)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            a = galois.Poly.Random(5); a
+            b = galois.Poly.Random(3); b
+            a + b
+        """
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._add(a, b)
 
@@ -846,6 +867,27 @@ class Poly:
         return cls._add(b, a)
 
     def __sub__(self, other):
+        """
+        Subtracts two polynomials.
+
+        Parameters
+        ----------
+        other : galois.Poly
+            The polynomial :math:`b(x)`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`c(x) = a(x) - b(x)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            a = galois.Poly.Random(5); a
+            b = galois.Poly.Random(3); b
+            a - b
+        """
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._sub(a, b)
 
@@ -854,6 +896,27 @@ class Poly:
         return cls._sub(b, a)
 
     def __mul__(self, other):
+        """
+        Multiplies two polynomials.
+
+        Parameters
+        ----------
+        other : galois.Poly
+            The polynomial :math:`b(x)`.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`c(x) = a(x) b(x)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            a = galois.Poly.Random(5); a
+            b = galois.Poly.Random(3); b
+            a * b
+        """
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._mul(a, b)
 
@@ -862,6 +925,31 @@ class Poly:
         return cls._mul(b, a)
 
     def __divmod__(self, other):
+        """
+        Divides two polynomials and returns the quotient and remainder.
+
+        Parameters
+        ----------
+        other : galois.Poly
+            The polynomial :math:`b(x)`.
+
+        Returns
+        -------
+        galois.Poly
+            The quotient polynomial :math:`q(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
+        galois.Poly
+            The remainder polynomial :math:`r(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            a = galois.Poly.Random(5); a
+            b = galois.Poly.Random(3); b
+            q, r = divmod(a, b)
+            q, r
+            b*q + r
+        """
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._divmod(a, b)
 
@@ -870,6 +958,30 @@ class Poly:
         return cls._divmod(b, a)
 
     def __truediv__(self, other):
+        """
+        Divides two polynomials and returns the quotient.
+
+        True division and floor division are equivalent.
+
+        Parameters
+        ----------
+        other : galois.Poly
+            The polynomial :math:`b(x)`.
+
+        Returns
+        -------
+        galois.Poly
+            The quotient polynomial :math:`q(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            a = galois.Poly.Random(5); a
+            b = galois.Poly.Random(3); b
+            divmod(a, b)
+            a / b
+        """
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._divmod(a, b)[0]
 
@@ -878,6 +990,30 @@ class Poly:
         return cls._divmod(b, a)[0]
 
     def __floordiv__(self, other):
+        """
+        Divides two polynomials and returns the quotient.
+
+        True division and floor division are equivalent.
+
+        Parameters
+        ----------
+        other : galois.Poly
+            The polynomial :math:`b(x)`.
+
+        Returns
+        -------
+        galois.Poly
+            The quotient polynomial :math:`q(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            a = galois.Poly.Random(5); a
+            b = galois.Poly.Random(3); b
+            divmod(a, b)
+            a // b
+        """
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._divmod(a, b)[0]
 
@@ -886,6 +1022,28 @@ class Poly:
         return cls._divmod(b, a)[0]
 
     def __mod__(self, other):
+        """
+        Divides two polynomials and returns the remainder.
+
+        Parameters
+        ----------
+        other : galois.Poly
+            The polynomial :math:`b(x)`.
+
+        Returns
+        -------
+        galois.Poly
+            The remainder polynomial :math:`r(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            a = galois.Poly.Random(5); a
+            b = galois.Poly.Random(3); b
+            divmod(a, b)
+            a % b
+        """
         cls, a, b = self._check_inputs_are_polys(self, other)
         return cls._mod(a, b)
 
@@ -894,6 +1052,27 @@ class Poly:
         return cls._mod(b, a)
 
     def __pow__(self, other):
+        """
+        Exponentiates the polynomial to an integer power.
+
+        Parameters
+        ----------
+        other : int
+            The non-negative integer exponent.
+
+        Returns
+        -------
+        galois.Poly
+            The polynomial :math:`a(x)**b`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            a = galois.Poly.Random(5); a
+            a**3
+            a * a * a
+        """
         if not isinstance(other, (int, np.integer)):
             raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {other}.")
         if not other >= 0:

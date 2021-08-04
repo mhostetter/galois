@@ -137,7 +137,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     def __new__(cls, array, dtype=None, copy=True, order="K", ndmin=0):
         if cls is FieldArray:
-            raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `galois.GF(p**m)`.")
+            raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
     @classmethod
@@ -714,6 +714,265 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             np.array_equal(P @ A, L @ U)
         """
         return lup_decompose(self)
+
+    ###############################################################################
+    # Special methods (redefined to add docstrings)
+    ###############################################################################
+
+    def __add__(self, other):  # pylint: disable=useless-super-delegation
+        """
+        Adds two Galois field arrays element-wise.
+
+        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
+        the same Galois field.
+
+        Parameters
+        ----------
+        other : galois.FieldArray
+            The other Galois field array.
+
+        Returns
+        -------
+        galois.FieldArray
+            The Galois field array `self + other`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            a = GF.Random((2,5)); a
+            b = GF.Random(5); b
+            a + b
+        """
+        return super().__add__(other)
+
+    def __sub__(self, other):  # pylint: disable=useless-super-delegation
+        """
+        Subtracts two Galois field arrays element-wise.
+
+        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
+        the same Galois field.
+
+        Parameters
+        ----------
+        other : galois.FieldArray
+            The other Galois field array.
+
+        Returns
+        -------
+        galois.FieldArray
+            The Galois field array `self - other`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            a = GF.Random((2,5)); a
+            b = GF.Random(5); b
+            a - b
+        """
+        return super().__sub__(other)
+
+    def __mul__(self, other):  # pylint: disable=useless-super-delegation
+        """
+        Multiplies two Galois field arrays element-wise.
+
+        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
+        the same Galois field.
+
+        Warning
+        -------
+        When both multiplicands are :obj:`galois.FieldArray`, that indicates a Galois field multiplication. When one
+        multiplicand is an integer or integer :obj:`numpy.ndarray`, that indicates a scalar multiplication (repeated addition).
+        Galois field multiplication and scalar multiplication are equivalent in prime fields, but not in extension fields.
+
+        Parameters
+        ----------
+        other : numpy.ndarray, galois.FieldArray
+            A :obj:`numpy.ndarray` of integers for scalar multiplication or a :obj:`galois.FieldArray` of Galois field elements
+            for finite field multiplication.
+
+        Returns
+        -------
+        galois.FieldArray
+            The Galois field array `self * other`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            a = GF.Random((2,5)); a
+            b = GF.Random(5); b
+            a * b
+
+        When both multiplicands are Galois field elements, that indicates a Galois field multiplication.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**4, display="poly")
+            a = GF(7); a
+            b = GF(2); b
+            a * b
+
+        When one multiplicand is an integer, that indicates a scalar multiplication (repeated addition).
+
+        .. ipython:: python
+
+            a * 2
+            a + a
+        """
+        return super().__mul__(other)
+
+    def __truediv__(self, other):  # pylint: disable=useless-super-delegation
+        """
+        Divides two Galois field arrays element-wise.
+
+        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
+        the same Galois field. In Galois fields, true division and floor division are equivalent.
+
+        Parameters
+        ----------
+        other : galois.FieldArray
+            The other Galois field array.
+
+        Returns
+        -------
+        galois.FieldArray
+            The Galois field array `self / other`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            a = GF.Random((2,5)); a
+            b = GF.Random(5, low=1); b
+            a / b
+        """
+        return super().__truediv__(other)
+
+    def __floordiv__(self, other):  # pylint: disable=useless-super-delegation
+        """
+        Divides two Galois field arrays element-wise.
+
+        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
+        the same Galois field. In Galois fields, true division and floor division are equivalent.
+
+        Parameters
+        ----------
+        other : galois.FieldArray
+            The other Galois field array.
+
+        Returns
+        -------
+        galois.FieldArray
+            The Galois field array `self // other`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            a = GF.Random((2,5)); a
+            b = GF.Random(5, low=1); b
+            a // b
+        """
+        return super().__floordiv__(other)  # pylint: disable=too-many-function-args
+
+    def __divmod__(self, other):  # pylint: disable=useless-super-delegation
+        """
+        Divides two Galois field arrays element-wise and returns the quotient and remainder.
+
+        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
+        the same Galois field. In Galois fields, true division and floor division are equivalent. In Galois fields, the remainder
+        is always zero.
+
+        Parameters
+        ----------
+        other : galois.FieldArray
+            The other Galois field array.
+
+        Returns
+        -------
+        galois.FieldArray
+            The Galois field array `self // other`.
+        galois.FieldArray
+            The Galois field array `self % other`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            a = GF.Random((2,5)); a
+            b = GF.Random(5, low=1); b
+            q, r = divmod(a, b)
+            q, r
+            b*q + r
+        """
+        return super().__divmod__(other)
+
+    def __mod__(self, other):  # pylint: disable=useless-super-delegation
+        """
+        Divides two Galois field arrays element-wise and returns the remainder.
+
+        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
+        the same Galois field. In Galois fields, true division and floor division are equivalent. In Galois fields, the remainder
+        is always zero.
+
+        Parameters
+        ----------
+        other : galois.FieldArray
+            The other Galois field array.
+
+        Returns
+        -------
+        galois.FieldArray
+            The Galois field array `self % other`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            a = GF.Random((2,5)); a
+            b = GF.Random(5, low=1); b
+            a % b
+        """
+        return super().__mod__(other)
+
+    def __pow__(self, other):
+        """
+        Exponentiates a Galois field array element-wise.
+
+        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. The first array must be a
+        Galois field array and the second must be an integer or integer array.
+
+        Parameters
+        ----------
+        other : int, numpy.ndarray
+            The exponent(s) as an integer or integer array.
+
+        Returns
+        -------
+        galois.FieldArray
+            The Galois field array `self ** other`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            a = GF.Random((2,5)); a
+            b = np.random.randint(0, 10, 5); b
+            a ** b
+        """
+        # NOTE: Calling power here instead of `super().__pow__(other)` because when doing so `x ** GF(2)` will invoke `np.square(x)` and not throw
+        # an error. This way `np.power(x, GF(2))` is called which correctly checks whether the second argument is an integer.
+        return np.power(self, other)
 
     ###############################################################################
     # Overridden numpy methods
