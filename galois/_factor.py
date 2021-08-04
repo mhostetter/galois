@@ -31,6 +31,20 @@ def legendre_symbol(a, p):
     r"""
     Computes the Legendre symbol :math:`(\frac{a}{p})`.
 
+    Parameters
+    ----------
+    a : int
+        An integer.
+    p : int
+        An odd prime :math:`p \ge 3`.
+
+    Returns
+    -------
+    int
+        The Legendre symbol :math:`(\frac{a}{p})` with value in :math:`\{0, 1, -1\}`.
+
+    Notes
+    -----
     The Legendre symbol is useful for determining if :math:`a` is a quadratic residue modulo :math:`p`, namely
     :math:`a \in Q_p`. A quadratic residue :math:`a` modulo :math:`p` satisfies :math:`x^2 \equiv a\ (\textrm{mod}\ p)`
     for some :math:`x`.
@@ -45,18 +59,6 @@ def legendre_symbol(a, p):
 
                 -1, & a \in \overline{Q}_p
             \end{cases}
-
-    Parameters
-    ----------
-    a : int
-        An integer.
-    p : int
-        An odd prime :math:`p \ge 3`.
-
-    Returns
-    -------
-    int
-        The Legendre symbol :math:`(\frac{a}{p})` with value in :math:`\{0, 1, -1\}`.
 
     References
     ----------
@@ -84,9 +86,6 @@ def jacobi_symbol(a, n):
     r"""
     Computes the Jacobi symbol :math:`(\frac{a}{n})`.
 
-    The Jacobi symbol extends the Legendre symbol for odd :math:`n \ge 3`. Unlike the Legendre symbol, :math:`(\frac{a}{n}) = 1`
-    does not imply :math:`a` is a quadratic residue modulo :math:`n`. However, all :math:`a \in Q_n` have :math:`(\frac{a}{n}) = 1`.
-
     Parameters
     ----------
     a : int
@@ -99,6 +98,11 @@ def jacobi_symbol(a, n):
     int
         The Jacobi symbol :math:`(\frac{a}{n})` with value in :math:`\{0, 1, -1\}`.
 
+    Notes
+    -----
+    The Jacobi symbol extends the Legendre symbol for odd :math:`n \ge 3`. Unlike the Legendre symbol, :math:`(\frac{a}{n}) = 1`
+    does not imply :math:`a` is a quadratic residue modulo :math:`n`. However, all :math:`a \in Q_n` have :math:`(\frac{a}{n}) = 1`.
+
     References
     ----------
     * Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
@@ -107,7 +111,7 @@ def jacobi_symbol(a, n):
     --------
     The quadratic residues modulo :math:`9` are :math:`Q_9 = \{1, 4, 7\}` and these all satisfy :math:`(\frac{a}{9}) = 1`.
     The quadratic non-residues modulo :math:`9` are :math:`\overline{Q}_9 = \{2, 3, 5, 6, 8\}`, but notice :math:`\{2, 5, 8\}`
-    also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime to :math:`n` satisfies
+    also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime to :math:`9` satisfies
     :math:`(\frac{a}{9}) = 0`.
 
     .. ipython:: python
@@ -220,16 +224,7 @@ def kronecker_symbol(a, n):
 @functools.lru_cache(maxsize=2048)
 def factors(n):
     r"""
-    Computes the prime factors of the positive integer :math:`n`.
-
-    The integer :math:`n` can be factored into :math:`n = p_1^{e_1} p_2^{e_2} \dots p_{k-1}^{e_{k-1}}`.
-
-    **Steps**:
-
-    1. Test if :math:`n` is prime. If so, return `[n], [1]`.
-    2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and multiply its exponents by :math:`k`.
-    3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the discovered prime factors.
-    4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are found.
+    Computes the prime factors of the positive integer :math:`n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}`.
 
     Parameters
     ----------
@@ -239,9 +234,18 @@ def factors(n):
     Returns
     -------
     list
-        Sorted list of :math:`k` prime factors :math:`p = [p_1, p_2, \dots, p_{k-1}]` with :math:`p_1 < p_2 < \dots < p_{k-1}`.
+        Sorted list of :math:`k` prime factors :math:`\{p_1, p_2, \dots, p_k\}` with :math:`p_1 < p_2 < \dots < p_k`.
     list
-        List of corresponding prime powers :math:`e = [e_1, e_2, \dots, e_{k-1}]`.
+        List of corresponding prime powers :math:`\{e_1, e_2, \dots, e_k\}`.
+
+    Notes
+    -----
+    **Steps**:
+
+    1. Test if :math:`n` is prime. If so, return `[n], [1]`.
+    2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and multiply the exponents by :math:`k`.
+    3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the discovered prime factors.
+    4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are found.
 
     Examples
     --------
@@ -249,19 +253,17 @@ def factors(n):
 
         p, e = galois.factors(120)
         p, e
+        galois.prod([pi**ei for pi, ei in zip(p, e)])
 
-        # The product of the prime powers is the factored integer
-        np.multiply.reduce(np.array(p) ** np.array(e))
-
-    Prime factorization of 1 less than a large prime.
+    Prime factorization of one less than a large prime.
 
     .. ipython:: python
 
-        prime =1000000000000000035000061
+        prime = 1000000000000000035000061
         galois.is_prime(prime)
         p, e = galois.factors(prime - 1)
         p, e
-        np.multiply.reduce(np.array(p) ** np.array(e))
+        galois.prod([pi**ei for pi, ei in zip(p, e)])
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -311,7 +313,7 @@ def factors(n):
 @functools.lru_cache(maxsize=512)
 def perfect_power(n):
     r"""
-    Returns the integer base :math:`m > 1` and exponent :math:`e > 1` of :math:`n = m^e` if :math:`n` is a perfect power.
+    Returns the integer base :math:`c > 1` and exponent :math:`e > 1` of :math:`n = c^e` if :math:`n` is a perfect power.
 
     Parameters
     ----------
@@ -331,9 +333,11 @@ def perfect_power(n):
         # Primes are not perfect powers
         galois.perfect_power(5)
         # Products of primes are not perfect powers
-        galois.perfect_power(6)
+        galois.perfect_power(2*3)
         # Products of prime powers were the GCD of the exponents is 1 are not perfect powers
-        galois.perfect_power(36*125)
+        galois.perfect_power(2 * 3 * 5**3)
+        # Products of prime powers were the GCD of the exponents is > 1 are perfect powers
+        galois.perfect_power(2**2 * 3**2 * 5**4)
         galois.perfect_power(36)
         galois.perfect_power(125)
     """
@@ -637,7 +641,12 @@ def divisors(n):
     Returns
     -------
     list
-        Sorted list of integer divisors :math:`d`.
+        Sorted list of positive integer divisors :math:`d`.
+
+    Notes
+    -----
+    :func:`galois.divisors` find *all* positive integer divisors or factors of :math:`n`, where :func:`galois.factors` only finds the prime
+    factors of :math:`n`.
 
     Examples
     --------
@@ -647,6 +656,7 @@ def divisors(n):
         galois.divisors(1)
         galois.divisors(24)
         galois.divisors(-24)
+        galois.factors(24)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -686,10 +696,6 @@ def divisor_sigma(n, k=1):
     r"""
     Returns the sum of :math:`k`-th powers of the positive divisors of :math:`n`.
 
-    This function implements the :math:`\sigma_k(n)` function. It is defined as:
-
-    .. math:: \sigma_k(n) = \sum_{d\ |\ n} d^k
-
     Parameters
     ----------
     n : int
@@ -702,6 +708,12 @@ def divisor_sigma(n, k=1):
     -------
     int
         The sum of divisors function :math:`\sigma_k(n)`.
+
+    Notes
+    -----
+    This function implements the :math:`\sigma_k(n)` function. It is defined as:
+
+    .. math:: \sigma_k(n) = \sum_{d\ |\ n} d^k
 
     Examples
     --------
@@ -732,9 +744,6 @@ def is_prime_power(n):
     r"""
     Determines if :math:`n` is a prime power :math:`n = p^k` for prime :math:`p` and :math:`k \ge 1`.
 
-    There is some controversy over whether :math:`1` is a prime power :math:`p^0`. Since :math:`1` is the :math:`0`-th power
-    of all primes, it is often regarded not as a prime power. This function returns `False` for :math:`1`.
-
     Parameters
     ----------
     n : int
@@ -745,12 +754,18 @@ def is_prime_power(n):
     bool:
         `True` if the integer :math:`n` is a prime power.
 
+    Notes
+    -----
+    There is some controversy over whether :math:`1` is a prime power :math:`p^0`. Since :math:`1` is the :math:`0`-th power
+    of all primes, it is often regarded not as a prime power. This function returns `False` for :math:`1`.
+
     Examples
     --------
     .. ipython:: python
 
         galois.is_prime_power(8)
         galois.is_prime_power(6)
+        galois.is_prime_power(1)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -813,11 +828,6 @@ def is_square_free(n):
     r"""
     Determines if :math:`n` is square-free, such that :math:`n = p_1 p_2 \dots p_k`.
 
-    A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
-    of a square-free integer :math:`n` is
-
-    .. math:: n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
-
     Parameters
     ----------
     n : int
@@ -827,6 +837,13 @@ def is_square_free(n):
     -------
     bool:
         `True` if the integer :math:`n` is square-free.
+
+    Notes
+    -----
+    A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
+    of a square-free integer :math:`n` is
+
+    .. math:: n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
 
     Examples
     --------
@@ -853,10 +870,6 @@ def is_smooth(n, B):
     r"""
     Determines if the positive integer :math:`n` is :math:`B`-smooth.
 
-    An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-smooth
-    if :math:`p_k \le B`. The :math:`2`-smooth numbers are the powers of :math:`2`. The :math:`5`-smooth numbers
-    are known as *regular numbers*. The :math:`7`-smooth numbers are known as *humble numbers* or *highly composite numbers*.
-
     Parameters
     ----------
     n : int
@@ -868,6 +881,12 @@ def is_smooth(n, B):
     -------
     bool
         `True` if :math:`n` is :math:`B`-smooth.
+
+    Notes
+    -----
+    An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-smooth
+    if :math:`p_k \le B`. The :math:`2`-smooth numbers are the powers of :math:`2`. The :math:`5`-smooth numbers
+    are known as *regular numbers*. The :math:`7`-smooth numbers are known as *humble numbers* or *highly composite numbers*.
 
     Examples
     --------
@@ -908,9 +927,6 @@ def is_powersmooth(n, B):
     r"""
     Determines if the positive integer :math:`n` is :math:`B`-powersmooth.
 
-    An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-powersmooth
-    if :math:`p_i^{e_i} \le B` for :math:`1 \le i \le k`.
-
     Parameters
     ----------
     n : int
@@ -922,6 +938,11 @@ def is_powersmooth(n, B):
     -------
     bool
         `True` if :math:`n` is :math:`B`-powersmooth.
+
+    Notes
+    -----
+    An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-powersmooth
+    if :math:`p_i^{e_i} \le B` for :math:`1 \le i \le k`.
 
     Examples
     --------

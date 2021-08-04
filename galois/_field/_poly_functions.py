@@ -25,16 +25,16 @@ __all__ = [
 def poly_gcd(a, b):
     r"""
     Finds the greatest common divisor of two polynomials :math:`a(x)` and :math:`b(x)`
-    over :math:`\mathrm{GF}(q)`.
+    over :math:`\mathrm{GF}(p^m)`.
 
     This implementation uses the Euclidean Algorithm.
 
     Parameters
     ----------
     a : galois.Poly
-        A polynomial :math:`a(x)` over :math:`\mathrm{GF}(q)`.
+        A polynomial :math:`a(x)` over :math:`\mathrm{GF}(p^m)`.
     b : galois.Poly
-        A polynomial :math:`b(x)` over :math:`\mathrm{GF}(q)`.
+        A polynomial :math:`b(x)` over :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
@@ -51,6 +51,7 @@ def poly_gcd(a, b):
         # a(x) and b(x) only share the root 2 in common
         b = galois.Poly.Roots([1,2], field=GF); b
 
+        # Therefore, their GCD is d(x) = x - 2 = x + 5
         gcd = galois.poly_gcd(a, b); gcd
 
         # The GCD has only 2 as a root with multiplicity 1
@@ -89,9 +90,9 @@ def poly_egcd(a, b):
     Parameters
     ----------
     a : galois.Poly
-        A polynomial :math:`a(x)` over :math:`\mathrm{GF}(q)`.
+        A polynomial :math:`a(x)` over :math:`\mathrm{GF}(p^m)`.
     b : galois.Poly
-        A polynomial :math:`b(x)` over :math:`\mathrm{GF}(q)`.
+        A polynomial :math:`b(x)` over :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
@@ -112,12 +113,13 @@ def poly_egcd(a, b):
         # a(x) and b(x) only share the root 2 in common
         b = galois.Poly.Roots([1,2], field=GF); b
 
-        gcd, x, y = galois.poly_egcd(a, b); gcd, x, y
+        # Therefore, their GCD is d(x) = x - 2 = x + 5
+        gcd, s, t = galois.poly_egcd(a, b); gcd, s, t
 
         # The GCD has only 2 as a root with multiplicity 1
         gcd.roots(multiplicity=True)
 
-        a*x + b*y == gcd
+        a*s + b*t == gcd
     """
     if not isinstance(a, Poly):
         raise TypeError(f"Argument `a` must be a galois.Poly, not {type(a)}.")
@@ -151,28 +153,28 @@ def poly_egcd(a, b):
 
 
 @set_module("galois")
-def poly_pow(poly, power, modulus):
+def poly_pow(base_poly, exponent, modulus_poly):
     r"""
     Efficiently exponentiates a polynomial :math:`f(x)` to the power :math:`k` reducing by modulo :math:`g(x)`,
     :math:`f(x)^k\ \textrm{mod}\ g(x)`.
 
-    The algorithm is more efficient than exponentiating first and then reducing modulo :math:`g(x)`. Instead,
-    this algorithm repeatedly squares :math:`f(x)`, reducing modulo :math:`g(x)` at each step. This is the polynomial
-    equivalent of :func:`galois.pow`.
+    The algorithm is more efficient than exponentiating first and then reducing modulo :math:`g(x)`, especially for large
+    exponents. Instead, this algorithm repeatedly squares :math:`f(x)`, reducing modulo :math:`g(x)` at each step. This function
+    is the polynomial equivalent of :func:`galois.pow`.
 
     Parameters
     ----------
-    poly : galois.Poly
+    base_poly : galois.Poly
         The polynomial to be exponentiated :math:`f(x)`.
-    power : int
+    exponent : int
         The non-negative exponent :math:`k`.
-    modulus : galois.Poly
+    modulus_poly : galois.Poly
         The reducing polynomial :math:`g(x)`.
 
     Returns
     -------
     galois.Poly
-        The resulting polynomial :math:`h(x) = f^k\ \textrm{mod}\ g`.
+        The resulting polynomial :math:`h(x) = f(x)^k\ \textrm{mod}\ g(x)`.
 
     Examples
     --------
@@ -182,38 +184,38 @@ def poly_pow(poly, power, modulus):
         f = galois.Poly.Random(10, field=GF); f
         g = galois.Poly.Random(7, field=GF); g
 
-        # %timeit f**200 % g
-        # 1.23 s ± 41.1 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
-        f**200 % g
+        # %timeit f**10_000 % g
+        # 2.61 s ± 339 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+        f**10_000 % g
 
-        # %timeit galois.poly_pow(f, 200, g)
-        # 41.7 ms ± 468 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
-        galois.poly_pow(f, 200, g)
+        # %timeit galois.poly_pow(f, 10_000, g)
+        # 9.88 ms ± 778 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+        galois.poly_pow(f, 10_000, g)
     """
-    if not isinstance(poly, Poly):
-        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not isinstance(power, (int, np.integer)):
-        raise TypeError(f"Argument `power` must be an integer, not {type(power)}.")
-    if not isinstance(modulus, Poly):
-        raise TypeError(f"Argument `modulus` must be a galois.Poly, not {type(modulus)}.")
-    if not power >= 0:
-        raise ValueError(f"Argument `power` must be non-negative, not {power}.")
+    if not isinstance(base_poly, Poly):
+        raise TypeError(f"Argument `base_poly` must be a galois.Poly, not {type(base_poly)}.")
+    if not isinstance(exponent, (int, np.integer)):
+        raise TypeError(f"Argument `exponent` must be an integer, not {type(exponent)}.")
+    if not isinstance(modulus_poly, Poly):
+        raise TypeError(f"Argument `modulus_poly` must be a galois.Poly, not {type(modulus_poly)}.")
+    if not exponent >= 0:
+        raise ValueError(f"Argument `exponent` must be non-negative, not {exponent}.")
 
-    if power == 0:
-        return Poly.One(poly.field)
+    if exponent == 0:
+        return Poly.One(base_poly.field)
 
-    result_s = poly  # The "squaring" part
-    result_m = Poly.One(poly.field)  # The "multiplicative" part
+    result_s = base_poly  # The "squaring" part
+    result_m = Poly.One(base_poly.field)  # The "multiplicative" part
 
-    while power > 1:
-        if power % 2 == 0:
-            result_s = (result_s * result_s) % modulus
-            power //= 2
+    while exponent > 1:
+        if exponent % 2 == 0:
+            result_s = (result_s * result_s) % modulus_poly
+            exponent //= 2
         else:
-            result_m = (result_m * result_s) % modulus
-            power -= 1
+            result_m = (result_m * result_s) % modulus_poly
+            exponent -= 1
 
-    result = (result_s * result_m) % modulus
+    result = (result_s * result_m) % modulus_poly
 
     return result
 
@@ -221,8 +223,8 @@ def poly_pow(poly, power, modulus):
 @set_module("galois")
 def poly_factors(poly):
     r"""
-    Factors the polynomial :math:`f(x)` into a product of :math:`n` irreducible factors :math:`f(x) = g_0(x)^{k_0} g_1(x)^{k_1} \dots g_{n-1}(x)^{k_{n-1}}`
-    with :math:`k_0 \le k_1 \le \dots \le k_{n-1}`.
+    Factors the polynomial :math:`f(x)` into a product of :math:`n` irreducible factors :math:`f(x) = g_1(x)^{k_1} g_2(x)^{k_2} \dots g_n(x)^{k_n}`
+    with :math:`k_1 \le k_2 \le \dots \le k_n`.
 
     This function implements the Square-Free Factorization algorithm.
 
@@ -234,9 +236,9 @@ def poly_factors(poly):
     Returns
     -------
     list
-        The list of :math:`n` polynomial factors :math:`\{g_0(x), g_1(x), \dots, g_{n-1}(x)\}`.
+        The list of :math:`n` polynomial factors :math:`\{g_1(x), g_2(x), \dots, g_n(x)\}`.
     list
-        The list of :math:`n` polynomial multiplicities :math:`\{k_0, k_1, \dots, k_{n-1}\}`.
+        The list of :math:`n` polynomial multiplicities :math:`\{k_1, k_2, \dots, k_n\}`.
 
     References
     ----------
@@ -248,22 +250,22 @@ def poly_factors(poly):
 
         GF = galois.GF2
         # Ensure the factors are irreducible by using Conway polynomials
-        g0, g1, g2 = galois.conway_poly(2, 3), galois.conway_poly(2, 4), galois.conway_poly(2, 5)
-        g0, g1, g2
-        k0, k1, k2 = 2, 3, 4
+        g1, g2, g3 = galois.conway_poly(2, 3), galois.conway_poly(2, 4), galois.conway_poly(2, 5)
+        g1, g2, g3
+        k1, k2, k3 = 2, 3, 4
         # Construct the composite polynomial
-        f = g0**k0 * g1**k1 * g2**k2
+        f = g1**k1 * g2**k2 * g3**k3
         galois.poly_factors(f)
 
     .. ipython:: python
 
         GF = galois.GF(3)
         # Ensure the factors are irreducible by using Conway polynomials
-        g0, g1, g2 = galois.conway_poly(3, 3), galois.conway_poly(3, 4), galois.conway_poly(3, 5)
-        g0, g1, g2
-        k0, k1, k2 = 3, 4, 6
+        g1, g2, g3 = galois.conway_poly(3, 3), galois.conway_poly(3, 4), galois.conway_poly(3, 5)
+        g1, g2, g3
+        k1, k2, k3 = 3, 4, 6
         # Construct the composite polynomial
-        f = g0**k0 * g1**k1 * g2**k2
+        f = g1**k1 * g2**k2 * g3**k3
         galois.poly_factors(f)
     """
     if not isinstance(poly, Poly):
@@ -326,10 +328,8 @@ def irreducible_poly(characteristic, degree, method="min"):
     Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
     If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
-    then :math:`a \cdot f(x)` is also irreducible.
-
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
-    of :math:`\mathrm{GF}(p)`.
+    then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
+    :math:`\mathrm{GF}(p^m)` of :math:`\mathrm{GF}(p)`.
 
     Parameters
     ----------
@@ -363,7 +363,7 @@ def irreducible_poly(characteristic, degree, method="min"):
         p = galois.irreducible_poly(7, 5, method="random"); p
         galois.is_irreducible(p)
 
-    Products with non-zero constants are also irreducible.
+    Polynomial products with non-zero constants are also irreducible.
 
     .. ipython:: python
 
@@ -402,10 +402,8 @@ def irreducible_polys(characteristic, degree):
     Returns all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
     If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
-    then :math:`a \cdot f(x)` is also irreducible.
-
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
-    of :math:`\mathrm{GF}(p)`.
+    then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
+    :math:`\mathrm{GF}(p^m)` of :math:`\mathrm{GF}(p)`.
 
     Parameters
     ----------
@@ -471,7 +469,12 @@ def primitive_poly(characteristic, degree, method="min"):
     --------
     Notice :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
     :func:`conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
-    with smaller Conway polynomials.
+    with smaller Conway polynomials, which is not *necessarily* the same.
+
+    .. ipython:: python
+
+        galois.primitive_poly(2, 4)
+        galois.conway_poly(2, 4)
 
     .. ipython:: python
 
@@ -545,6 +548,77 @@ def primitive_polys(characteristic, degree):
 
 
 @set_module("galois")
+def conway_poly(characteristic, degree):
+    r"""
+    Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
+
+    A Conway polynomial is a an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a standard
+    representation of :math:`\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
+    provide compatability between fields and their subfields, and hence are the common way to represent extension
+    fields.
+
+    The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-minimal monic primitive polynomial
+    of degree :math:`m` over :math:`\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n` dividing
+    :math:`m`.
+
+    This function uses `Frank Luebeck's Conway polynomial database <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_
+    for fast lookup, not construction.
+
+    Parameters
+    ----------
+    characteristic : int
+        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
+    degree : int
+        The degree :math:`m` of the Conway polynomial.
+
+    Returns
+    -------
+    galois.Poly
+        The degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)`.
+
+    Raises
+    ------
+    LookupError
+        If the Conway polynomial :math:`C_{p,m}(x)` is not found in Frank Luebeck's database.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        galois.conway_poly(2, 100)
+        galois.conway_poly(7, 13)
+
+    Notice :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
+    :func:`conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+    with smaller Conway polynomials, which is not *necessarily* the same.
+
+    .. ipython:: python
+
+        galois.primitive_poly(2, 4)
+        galois.conway_poly(2, 4)
+
+    .. ipython:: python
+
+        galois.primitive_poly(7, 10)
+        galois.conway_poly(7, 10)
+    """
+    if not isinstance(characteristic, (int, np.integer)):
+        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(degree, (int, np.integer)):
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    if not is_prime(characteristic):
+        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not degree >= 1:
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+
+    coeffs = ConwayPolyDatabase().fetch(characteristic, degree)
+    GF = GF_prime(characteristic)
+    poly = Poly(coeffs, field=GF)
+
+    return poly
+
+
+@set_module("galois")
 def matlab_primitive_poly(characteristic, degree):
     r"""
     Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
@@ -568,8 +642,7 @@ def matlab_primitive_poly(characteristic, degree):
     characteristic : int
         The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
     degree : int
-        The degree :math:`m` of the desired polynomial that produces the field extension :math:`\mathrm{GF}(p^m)`
-        of :math:`\mathrm{GF}(p)`.
+        The degree :math:`m` of the desired primitive polynomial.
 
     Returns
     -------
@@ -601,72 +674,6 @@ def matlab_primitive_poly(characteristic, degree):
         return Poly.Degrees([16, 12, 3, 1, 0])
     else:
         return primitive_poly(characteristic, degree)
-
-
-@set_module("galois")
-def conway_poly(characteristic, degree):
-    r"""
-    Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
-
-    A Conway polynomial is a an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a standard
-    representation of :math:`\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
-    provide compatability between fields and their subfields, and hence are the common way to represent extension
-    fields.
-
-    The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-minimal monic primitive polynomial
-    of degree :math:`m` over :math:`\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n` dividing
-    :math:`m`.
-
-    This function uses `Frank Luebeck's Conway polynomial database <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_
-    for fast lookup, not construction.
-
-    Parameters
-    ----------
-    characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)`.
-    degree : int
-        The degree :math:`m` of the Conway polynomial and degree of the extension field :math:`\mathrm{GF}(p^m)`.
-
-    Returns
-    -------
-    galois.Poly
-        The degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)`.
-
-    Raises
-    ------
-    LookupError
-        If the Conway polynomial :math:`C_{p,m}(x)` is not found in Frank Luebeck's database.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        galois.conway_poly(2, 100)
-        galois.conway_poly(7, 13)
-
-    Notice :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
-    :func:`conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
-    with smaller Conway polynomials.
-
-    .. ipython:: python
-
-        galois.primitive_poly(7, 10)
-        galois.conway_poly(7, 10)
-    """
-    if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
-    if not isinstance(degree, (int, np.integer)):
-        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
-    if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
-    if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
-
-    coeffs = ConwayPolyDatabase().fetch(characteristic, degree)
-    GF = GF_prime(characteristic)
-    poly = Poly(coeffs, field=GF)
-
-    return poly
 
 
 @set_module("galois")
@@ -782,16 +789,6 @@ def is_irreducible(poly):
     r"""
     Checks whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is irreducible.
 
-    A polynomial :math:`f(x) \in \mathrm{GF}(p)[x]` is *reducible* over :math:`\mathrm{GF}(p)` if it can
-    be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p)[x]` of strictly
-    lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
-    closed, such irreducible polynomials exist.
-
-    This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
-    over :math:`\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\ |\ (x^{p^m} - x)`
-    and :math:`\textrm{gcd}(f(x),\ x^{p^{m_i}} - x) = 1` for :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for
-    the :math:`k` prime divisors :math:`p_i` of :math:`m`.
-
     Parameters
     ----------
     poly : galois.Poly
@@ -801,6 +798,18 @@ def is_irreducible(poly):
     -------
     bool
         `True` if the polynomial is irreducible.
+
+    Notes
+    -----
+    A polynomial :math:`f(x) \in \mathrm{GF}(p)[x]` is *reducible* over :math:`\mathrm{GF}(p)` if it can
+    be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p)[x]` of strictly
+    lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
+    closed, such irreducible polynomials exist.
+
+    This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
+    over :math:`\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\ |\ (x^{p^m} - x)`
+    and :math:`\textrm{gcd}(f(x),\ x^{p^{m_i}} - x) = 1` for :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for
+    the :math:`k` prime divisors :math:`p_i` of :math:`m`.
 
     References
     ----------

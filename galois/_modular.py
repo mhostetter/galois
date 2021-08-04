@@ -137,7 +137,7 @@ def are_coprime(*integers):
 
 
 @set_module("galois")
-def crt(a, m):
+def crt(remainders, moduli):
     r"""
     Solves the simultaneous system of congruences for :math:`x`.
 
@@ -154,10 +154,10 @@ def crt(a, m):
 
     Parameters
     ----------
-    a : array_like
+    remainders : tuple, list
         The integer remainders :math:`a_i`.
-    m : array_like
-        The integer modulii :math:`m_i`.
+    moduli : tuple, list
+        The integer moduli :math:`m_i`.
 
     Returns
     -------
@@ -176,15 +176,19 @@ def crt(a, m):
             ai = x % m[i]
             print(f"{x} = {ai} (mod {m[i]}), Valid congruence: {ai == a[i]}")
     """
-    if not len(a) == len(m):
-        raise ValueError(f"Arguments `a` and `m` are not the same length, {len(a)} != {len(m)}.")
-    if not are_coprime(*m):
-        raise ValueError(f"Elements of argument `m` must be pairwise coprime, {m} are not.")
+    if not isinstance(remainders, (tuple, list)):
+        raise TypeError(f"Argument `remainders` must be a tuple or list, not {type(remainders)}.")
+    if not isinstance(moduli, (tuple, list)):
+        raise TypeError(f"Argument `moduli` must be a tuple or list, not {type(moduli)}.")
+    if not len(remainders) == len(moduli):
+        raise ValueError(f"Arguments `remainders` and `moduli` are not the same length, {len(remainders)} != {len(moduli)}.")
+    if not are_coprime(*moduli):
+        raise ValueError(f"Elements of argument `moduli` must be pairwise coprime, {moduli} are not.")
 
     # Iterate through the system of congruences reducing a pair of congruences into a
     # single one. The answer to the final congruence solves all the congruences.
-    a1, m1 = a[0], m[0]
-    for a2, m2 in zip(a[1:], m[1:]):
+    a1, m1 = remainders[0], moduli[0]
+    for a2, m2 in zip(remainders[1:], moduli[1:]):
         # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = 1,
         # where 1 is the GCD(m1, m2) because m1 and m2 are pairwise relatively coprime
         _, b1, b2 = egcd(m1, m2)
@@ -196,7 +200,7 @@ def crt(a, m):
         a1 = x % m1  # The new equivalent remainder
 
     # Align x to be within [0, prod(m))
-    x = x % prod(m)
+    x = x % prod(moduli)
 
     return x
 
@@ -206,7 +210,7 @@ def totatives(n):
     r"""
     Returns the positive integers (totatives) in :math:`1 \le k < n` that are coprime to :math:`n`.
 
-    The totatives of :math:`n` form the multiplicative group :math:`\mathbb{Z}{_n^\times}`.
+    The totatives of :math:`n` form the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
 
     Parameters
     ----------
@@ -248,12 +252,6 @@ def euler_phi(n):
     r"""
     Counts the positive integers (totatives) in :math:`1 \le k < n` that are coprime to :math:`n`.
 
-    This function implements the Euler totient function
-
-    .. math:: \phi(n) = n \prod_{p\ |\ n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)
-
-    for prime :math:`p` and the prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}`.
-
     Parameters
     ----------
     n : int
@@ -263,6 +261,14 @@ def euler_phi(n):
     -------
     int
         The number of totatives that are coprime to :math:`n`.
+
+    Notes
+    -----
+    This function implements the Euler totient function
+
+    .. math:: \phi(n) = n \prod_{p\ |\ n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)
+
+    for prime :math:`p` and the prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}`.
 
     References
     ----------
@@ -282,7 +288,7 @@ def euler_phi(n):
         # The number of totatives is phi
         len(totatives) == phi
 
-        # For prime n, phi is always n-1
+        # For prime n, ϕ(n) = n - 1
         galois.euler_phi(13)
     """
     if not isinstance(n, (int, np.integer)):
@@ -308,7 +314,7 @@ def carmichael_lambda(n):
     Finds the smallest positive integer :math:`m` such that :math:`a^m \equiv 1\ (\textrm{mod}\ n)` for
     every integer :math:`a` in :math:`1 \le a < n` that is coprime to :math:`n`.
 
-    Implements the Carmichael function :math:`\lambda(n)`.
+    This function implements the Carmichael function :math:`\lambda(n)`.
 
     Parameters
     ----------
@@ -370,15 +376,6 @@ def is_cyclic(n):
     r"""
     Determines whether the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic.
 
-    The multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is the set of positive integers :math:`1 \le a < n`
-    that are coprime with :math:`n`. :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` being cyclic means that some primitive root of :math:`n`,
-    or generator, :math:`g` can generate the group :math:`\{g^0, g^1, g^2, \dots, g^{\phi(n)-1}\}`, where
-    :math:`\phi(n)` is Euler's totient function and calculates the order of the group. If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic,
-    the number of primitive roots is found by :math:`\phi(\phi(n))`.
-
-    :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is *cyclic* if and only if :math:`n` is :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`,
-    where :math:`p` is an odd prime and :math:`k` is a positive integer.
-
     Parameters
     ----------
     n : int
@@ -388,6 +385,17 @@ def is_cyclic(n):
     -------
     bool
         `True` if the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic.
+
+    Notes
+    -----
+    The multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is the set of positive integers :math:`1 \le a < n`
+    that are coprime with :math:`n`. :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` being cyclic means that some primitive root of :math:`n`,
+    or generator, :math:`g` can generate the group :math:`\{g^0, g^1, g^2, \dots, g^{\phi(n)-1}\}`, where
+    :math:`\phi(n)` is Euler's totient function and calculates the order of the group. If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic,
+    the number of primitive roots is found by :math:`\phi(\phi(n))`.
+
+    :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is *cyclic* if and only if :math:`n` is :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`,
+    where :math:`p` is an odd prime and :math:`k` is a positive integer.
 
     Examples
     --------
@@ -416,10 +424,10 @@ def is_cyclic(n):
 
         roots = galois.primitive_roots(n); roots
 
-        # Euler's totient function phi(phi(n)) counts the primitive roots of n
+        # Euler's totient function ϕ(ϕ(n)) counts the primitive roots of n
         len(roots) == galois.euler_phi(phi)
 
-    A counterexample is :math:`n = 15 = 3*5`, which doesn't fit the condition for cyclicness.
+    A counterexample is :math:`n = 15 = 3 \cdot 5`, which doesn't fit the condition for cyclicness.
     :math:`(\mathbb{Z}/15\mathbb{Z}){^\times} = \{1, 2, 4, 7, 8, 11, 13, 14\}`.
 
     .. ipython:: python
@@ -472,9 +480,6 @@ def is_primitive_root(g, n):
     r"""
     Determines if :math:`g` is a primitive root modulo :math:`n`.
 
-    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \le a < n`
-    that are coprime with :math:`n`, can be generated by powers of :math:`g`.
-
     Parameters
     ----------
     g : int
@@ -486,6 +491,14 @@ def is_primitive_root(g, n):
     -------
     bool
         `True` if :math:`g` is a primitive root modulo :math:`n`.
+
+    Notes
+    -----
+    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \le a < n`
+    that are coprime with :math:`n`, can be generated by powers of :math:`g`. Alternatively said, :math:`g` is a primitive root
+    modulo :math:`n` if and only if :math:`g` is a generator of the multiplicative group of integers modulo :math:`n`,
+    :math:`(\mathbb{Z}/n\mathbb{Z}){^\times} = \{g^0, g^1, g^2, \dots, g^{\phi(n)-1}\}` where :math:`\phi(n)` is order of the group.
+    If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by :math:`\phi(\phi(n))`.
 
     Examples
     --------
@@ -520,27 +533,15 @@ def primitive_root(n, start=1, stop=None, reverse=False):
     r"""
     Finds the smallest primitive root modulo :math:`n`.
 
-    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \le a < n`
-    that are coprime with :math:`n`, can be generated by powers of :math:`g`.
-
-    Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only
-    if :math:`g` is a generator of the multiplicative group of integers modulo :math:`n`, :math:`\mathbb{Z}{_n^\times}`.
-    That is, :math:`\mathbb{Z}{_n^\times} = \{g, g^2, \dots, g^k\}`, where :math:`k` is order of the group.
-    The order of the group :math:`\mathbb{Z}{_n^\times}` is defined by Euler's totient function, :math:`\phi(n) = k`.
-    If :math:`\mathbb{Z}{_n^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
-    :math:`\phi(k)` or :math:`\phi(\phi(n))`.
-
-    See :obj:`galois.is_cyclic`.
-
     Parameters
     ----------
     n : int
         A positive integer.
     start : int, optional
-        Starting value (inclusive) in the search for a primitive root. The default is `1`. The resulting primitive
+        Starting value (inclusive) in the search for a primitive root. The default is 1. The resulting primitive
         root, if found, will be :math:`\textrm{start} \le g < \textrm{stop}`.
     stop : int, optional
-        Stopping value (exclusive) in the search for a primitive root. The default is `None` which corresponds to `n`.
+        Stopping value (exclusive) in the search for a primitive root. The default is `None` which corresponds to :math:`n`.
         The resulting primitive root, if found, will be :math:`\textrm{start} \le g < \textrm{stop}`.
     reverse : bool, optional
         Search for a primitive root in reverse order, i.e. find the largest primitive root first. Default is `False`.
@@ -550,24 +551,30 @@ def primitive_root(n, start=1, stop=None, reverse=False):
     int
         The smallest primitive root modulo :math:`n`. Returns `None` if no primitive roots exist.
 
+    Notes
+    -----
+    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \le a < n`
+    that are coprime with :math:`n`, can be generated by powers of :math:`g`. Alternatively said, :math:`g` is a primitive root
+    modulo :math:`n` if and only if :math:`g` is a generator of the multiplicative group of integers modulo :math:`n`,
+    :math:`(\mathbb{Z}/n\mathbb{Z}){^\times} = \{g^0, g^1, g^2, \dots, g^{\phi(n)-1}\}` where :math:`\phi(n)` is order of the group.
+    If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by :math:`\phi(\phi(n))`.
+
     References
     ----------
     * V. Shoup. Searching for primitive roots in finite fields. https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
     * L. K. Hua. On the least primitive root of a prime. https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf
-    * https://en.wikipedia.org/wiki/Finite_field#Roots_of_unity
-    * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
     * http://www.numbertheory.org/courses/MP313/lectures/lecture7/page1.html
 
     Examples
     --------
-    Here is an example with one primitive root, :math:`n = 6 = 2 * 3^1`, which fits the definition
-    of cyclicness, see :obj:`galois.is_cyclic`. Because :math:`n = 6` is not prime, the primitive root
-    isn't a multiplicative generator of :math:`\mathbb{Z}/\textbf{n}\mathbb{Z}`.
+    The elements of :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` are the positive integers less than :math:`n` that are coprime with :math:`n`.
+    For example, :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}`.
 
     .. ipython:: python
 
-        n = 6
-        root = galois.primitive_root(n); root
+        # n is of type 2*p^k, which is cyclic
+        n = 14
+        galois.is_cyclic(n)
 
         # The congruence class coprime with n
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
@@ -581,16 +588,24 @@ def primitive_root(n, start=1, stop=None, reverse=False):
         for a in Znx:
             span = set([pow(a, i, n) for i in range(1, phi + 1)])
             primitive_root = span == Znx
-            print("Element: {}, Span: {:<6}, Primitive root: {}".format(a, str(span), primitive_root))
+            print("Element: {:2d}, Span: {:<20}, Primitive root: {}".format(a, str(span), primitive_root))
 
-    Here is an example with two primitive roots, :math:`n = 7 = 7^1`, which fits the definition
-    of cyclicness, see :obj:`galois.is_cyclic`. Since :math:`n = 7` is prime, the primitive root
-    is a multiplicative generator of :math:`\mathbb{Z}/\textbf{n}\mathbb{Z}`.
+        # Find the smallest primitive root
+        galois.primitive_root(n)
+        # Find all primitive roots
+        roots = galois.primitive_roots(n); roots
+
+        # Euler's totient function ϕ(ϕ(n)) counts the primitive roots of n
+        len(roots) == galois.euler_phi(phi)
+
+    A counterexample is :math:`n = 15 = 3 \cdot 5`, which doesn't fit the condition for cyclicness.
+    :math:`(\mathbb{Z}/15\mathbb{Z}){^\times} = \{1, 2, 4, 7, 8, 11, 13, 14\}`.
 
     .. ipython:: python
 
-        n = 7
-        root = galois.primitive_root(n); root
+        # n is of type p1^k1 * p2^k2, which is not cyclic
+        n = 15
+        galois.is_cyclic(n)
 
         # The congruence class coprime with n
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
@@ -604,7 +619,15 @@ def primitive_root(n, start=1, stop=None, reverse=False):
         for a in Znx:
             span = set([pow(a, i, n) for i in range(1, phi + 1)])
             primitive_root = span == Znx
-            print("Element: {}, Span: {:<18}, Primitive root: {}".format(a, str(span), primitive_root))
+            print("Element: {:2d}, Span: {:<13}, Primitive root: {}".format(a, str(span), primitive_root))
+
+        # Find the smallest primitive root
+        galois.primitive_root(n)
+        # Find all primitive roots
+        roots = galois.primitive_roots(n); roots
+
+        # Note the max order of any element is 4, not 8, which is Carmichael's lambda function
+        galois.carmichael_lambda(n)
 
     The algorithm is also efficient for very large :math:`n`.
 
@@ -612,32 +635,6 @@ def primitive_root(n, start=1, stop=None, reverse=False):
 
         n = 1000000000000000035000061
         galois.primitive_root(n)
-        galois.primitive_root(n, reverse=True)
-
-    Here is a counterexample with no primitive roots, :math:`n = 8 = 2^3`, which does not fit the definition
-    of cyclicness, see :obj:`galois.is_cyclic`.
-
-    .. ipython:: python
-
-        n = 8
-        root = galois.primitive_root(n); root
-
-        # The congruence class coprime with n
-        Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
-
-        # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_phi(n); phi
-
-        len(Znx) == phi
-
-        # Test all elements for being primitive roots. The powers of a primitive span the congruence classes mod n.
-        for a in Znx:
-            span = set([pow(a, i, n) for i in range(1, phi + 1)])
-            primitive_root = span == Znx
-            print("Element: {}, Span: {:<6}, Primitive root: {}".format(a, str(span), primitive_root))
-
-        # Note the max order of any element is 2, not 4, which is Carmichael's lambda function
-        galois.carmichael_lambda(n)
     """
     try:
         return next(_primitive_roots(n, start=start, stop=stop, reverse=reverse))
@@ -649,18 +646,6 @@ def primitive_root(n, start=1, stop=None, reverse=False):
 def primitive_roots(n, start=1, stop=None, reverse=False):
     r"""
     Finds all primitive roots modulo :math:`n`.
-
-    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \le a < n`
-    that are coprime with :math:`n`, can be generated by powers of :math:`g`.
-
-    Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only
-    if :math:`g` is a generator of the multiplicative group of integers modulo :math:`n`, :math:`\mathbb{Z}{_n^\times}`.
-    That is, :math:`\mathbb{Z}{_n^\times} = \{g, g^2, \dots, g^k\}`, where :math:`k` is order of the group.
-    The order of the group :math:`\mathbb{Z}{_n^\times}` is defined by Euler's totient function, :math:`\phi(n) = k`.
-    If :math:`\mathbb{Z}{_n^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
-    :math:`\phi(k)` or :math:`\phi(\phi(n))`.
-
-    See :obj:`galois.is_cyclic`.
 
     Parameters
     ----------
@@ -680,23 +665,29 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
     list
         All the positive primitive :math:`n`-th roots of unity, :math:`x`.
 
+    Notes
+    -----
+    :math:`g` is a primitive root if the totatives of :math:`n`, the positive integers :math:`1 \le a < n`
+    that are coprime with :math:`n`, can be generated by powers of :math:`g`. Alternatively said, :math:`g` is a primitive root
+    modulo :math:`n` if and only if :math:`g` is a generator of the multiplicative group of integers modulo :math:`n`,
+    :math:`(\mathbb{Z}/n\mathbb{Z}){^\times} = \{g^0, g^1, g^2, \dots, g^{\phi(n)-1}\}` where :math:`\phi(n)` is order of the group.
+    If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by :math:`\phi(\phi(n))`.
+
     References
     ----------
     * V. Shoup. Searching for primitive roots in finite fields. https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
-    * https://en.wikipedia.org/wiki/Finite_field#Roots_of_unity
-    * https://en.wikipedia.org/wiki/Primitive_root_modulo_n
     * http://www.numbertheory.org/courses/MP313/lectures/lecture7/page1.html
 
     Examples
     --------
-    Here is an example with one primitive root, :math:`n = 6 = 2 * 3^1`, which fits the definition
-    of cyclicness, see :obj:`galois.is_cyclic`. Because :math:`n = 6` is not prime, the primitive root
-    isn't a multiplicative generator of :math:`\mathbb{Z}/\textbf{n}\mathbb{Z}`.
+    The elements of :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` are the positive integers less than :math:`n` that are coprime with :math:`n`.
+    For example, :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}`.
 
     .. ipython:: python
 
-        n = 6
-        roots = galois.primitive_roots(n); roots
+        # n is of type 2*p^k, which is cyclic
+        n = 14
+        galois.is_cyclic(n)
 
         # The congruence class coprime with n
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
@@ -706,23 +697,28 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
 
         len(Znx) == phi
 
-        # Test all elements for being primitive roots. The powers of a primitive span the congruence classes mod n.
+        # The primitive roots are the elements in Znx that multiplicatively generate the group
         for a in Znx:
             span = set([pow(a, i, n) for i in range(1, phi + 1)])
             primitive_root = span == Znx
-            print("Element: {}, Span: {:<6}, Primitive root: {}".format(a, str(span), primitive_root))
+            print("Element: {:2d}, Span: {:<20}, Primitive root: {}".format(a, str(span), primitive_root))
 
-        # Euler's totient function phi(phi(n)) counts the primitive roots of n
+        # Find the smallest primitive root
+        galois.primitive_root(n)
+        # Find all primitive roots
+        roots = galois.primitive_roots(n); roots
+
+        # Euler's totient function ϕ(ϕ(n)) counts the primitive roots of n
         len(roots) == galois.euler_phi(phi)
 
-    Here is an example with two primitive roots, :math:`n = 7 = 7^1`, which fits the definition
-    of cyclicness, see :obj:`galois.is_cyclic`. Since :math:`n = 7` is prime, the primitive root
-    is a multiplicative generator of :math:`\mathbb{Z}/\textbf{n}\mathbb{Z}`.
+    A counterexample is :math:`n = 15 = 3 \cdot 5`, which doesn't fit the condition for cyclicness.
+    :math:`(\mathbb{Z}/15\mathbb{Z}){^\times} = \{1, 2, 4, 7, 8, 11, 13, 14\}`.
 
     .. ipython:: python
 
-        n = 7
-        roots = galois.primitive_roots(n); roots
+        # n is of type p1^k1 * p2^k2, which is not cyclic
+        n = 15
+        galois.is_cyclic(n)
 
         # The congruence class coprime with n
         Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
@@ -732,52 +728,19 @@ def primitive_roots(n, start=1, stop=None, reverse=False):
 
         len(Znx) == phi
 
-        # Test all elements for being primitive roots. The powers of a primitive span the congruence classes mod n.
+        # The primitive roots are the elements in Znx that multiplicatively generate the group
         for a in Znx:
             span = set([pow(a, i, n) for i in range(1, phi + 1)])
             primitive_root = span == Znx
-            print("Element: {}, Span: {:<18}, Primitive root: {}".format(a, str(span), primitive_root))
+            print("Element: {:2d}, Span: {:<13}, Primitive root: {}".format(a, str(span), primitive_root))
 
-        # Euler's totient function phi(phi(n)) counts the primitive roots of n
-        len(roots) == galois.euler_phi(phi)
-
-    The algorithm is also efficient for very large :math:`n`.
-
-    .. ipython:: python
-
-        n = 1000000000000000035000061
-
-        # Euler's totient function phi(phi(n)) counts the primitive roots of n
-        galois.euler_phi(galois.euler_phi(n))
-
-        # Only find some of the primitive roots
-        galois.primitive_roots(n, stop=100)
-
-        # The generator can also be used in a for loop
-        for r in galois.primitive_roots(n, stop=100):
-            print(r, end=" ")
-
-    Here is a counterexample with no primitive roots, :math:`n = 8 = 2^3`, which does not fit the definition
-    of cyclicness, see :obj:`galois.is_cyclic`.
-
-    .. ipython:: python
-
-        n = 8
+        # Find the smallest primitive root
+        galois.primitive_root(n)
+        # Find all primitive roots
         roots = galois.primitive_roots(n); roots
 
-        # The congruence class coprime with n
-        Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
-
-        # Euler's totient function counts the "totatives", positive integers coprime with n
-        phi = galois.euler_phi(n); phi
-
-        len(Znx) == phi
-
-        # Test all elements for being primitive roots. The powers of a primitive span the congruence classes mod n.
-        for a in Znx:
-            span = set([pow(a, i, n) for i in range(1, phi + 1)])
-            primitive_root = span == Znx
-            print("Element: {}, Span: {:<6}, Primitive root: {}".format(a, str(span), primitive_root))
+        # Note the max order of any element is 4, not 8, which is Carmichael's lambda function
+        galois.carmichael_lambda(n)
     """
     return list(_primitive_roots(n, start=start, stop=stop, reverse=reverse))
 
