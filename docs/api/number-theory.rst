@@ -59,12 +59,3 @@ Integer arithmetic
    isqrt
    iroot
    ilog
-
-Discrete logarithms
--------------------
-
-.. rubric::
-.. autosummary::
-   :toctree:
-
-   log_naive

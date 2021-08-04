@@ -11,7 +11,6 @@ from ._field import *
 from ._factor import *
 from ._integer import *
 from ._lfsr import *
-from ._log import *
 from ._math import *  # pylint: disable=redefined-builtin
 from ._modular import *
 from ._prime import *
