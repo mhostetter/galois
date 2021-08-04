@@ -21,22 +21,22 @@ class Poly:
     r"""
     Create a polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
-    The polynomial :math:`f(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \dots + a_1x + a_0` has coefficients :math:`\{a_{d}, a_{d-1}, \dots, a_1, a_0\}`
+    The polynomial :math:`f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` has coefficients :math:`\{a_{d}, a_{d-1}, \dots, a_1, a_0\}`
     in :math:`\mathrm{GF}(p^m)`.
 
     Parameters
     ----------
-    coeffs : array_like
-        The polynomial coefficients :math:`\{a_{d}, a_{d-1}, \dots, a_1, a_0\}` with type :obj:`galois.FieldArray`, :obj:`numpy.ndarray`,
-        :obj:`list`, or :obj:`tuple`. The first element is the highest-degree element if `order="desc"` or the first element is
-        the 0-th degree element if `order="asc"`.
+    coeffs : tuple, list, numpy.ndarray, galois.FieldArray
+        The polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` with type :obj:`galois.FieldArray`. Alternatively, an iterable :obj:`tuple`,
+        :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from the `field` keyword argument.
     field : galois.FieldClass, optional
         The field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which represents :obj:`galois.GF2`. If `coeffs`
-        is a Galois field array, then that field is used and the `field` argument is ignored.
+        is a :obj:`galois.FieldArray`, then that field is used and the `field` argument is ignored.
     order : str, optional
-        The interpretation of the coefficient degrees, either `"desc"` (default) or `"asc"`. For `"desc"`,
-        the first element of `coeffs` is the highest degree coefficient :math:`x^{d}`) and the last element is
-        the 0-th degree element :math:`x^0`.
+        The interpretation of the coefficient degrees.
+
+        * `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
+        * `"asc"`: The first element of `coeffs` is the lowest degree coefficient, i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
 
     Returns
     -------
@@ -89,7 +89,7 @@ class Poly:
     __array_priority__ = 100
 
     def __new__(cls, coeffs, field=None, order="desc"):
-        if not isinstance(coeffs, (int, np.integer, list, tuple, np.ndarray, FieldArray)):
+        if not isinstance(coeffs, (list, tuple, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
         if not isinstance(field, (type(None), FieldClass)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
@@ -98,8 +98,6 @@ class Poly:
         if not order in ["desc", "asc"]:
             raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order!r}.")
 
-        if isinstance(coeffs, (int, np.integer)):
-            coeffs = [coeffs,]  # Ensure it's iterable
         if isinstance(coeffs, (FieldArray, np.ndarray)):
             coeffs = np.atleast_1d(coeffs)
 

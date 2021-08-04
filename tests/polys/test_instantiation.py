@@ -115,7 +115,7 @@ def test_degree_zero(field):
     assert np.array_equal(p.coeffs, coeffs)
     p = galois.Poly(field([value]))
     assert np.array_equal(p.coeffs, coeffs)
-    p = galois.Poly(value, field=field)
+    p = galois.Poly([value], field=field)
     assert np.array_equal(p.coeffs, coeffs)
 
     value = random.randint(1, field.order - 1)
@@ -124,7 +124,7 @@ def test_degree_zero(field):
     assert np.array_equal(p.coeffs, coeffs)
     p = galois.Poly(field([value]))
     assert np.array_equal(p.coeffs, coeffs)
-    p = galois.Poly(value, field=field)
+    p = galois.Poly([value], field=field)
     assert np.array_equal(p.coeffs, coeffs)
 
 
