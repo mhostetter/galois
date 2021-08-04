@@ -10,7 +10,6 @@ Galois field class creation
 
 .. rubric:: Class factory functions
 .. autosummary::
-   :template: class.rst
    :toctree:
 
    GF
