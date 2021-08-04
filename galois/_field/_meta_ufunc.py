@@ -31,7 +31,6 @@ UNSUPPORTED_UFUNCS_UNARY = [
 UNSUPPORTED_UFUNCS_BINARY = [
     np.hypot, np.arctan2,
     np.logaddexp, np.logaddexp2,
-    np.remainder,
     np.fmod, np.modf,
     np.fmin, np.fmax,
 ]
@@ -60,6 +59,8 @@ class UfuncMeta(PropertiesMeta):
         np.reciprocal: "_ufunc_routine_reciprocal",
         np.floor_divide: "_ufunc_routine_divide",
         np.true_divide: "_ufunc_routine_divide",
+        np.divmod: "_ufunc_routine_divmod",
+        np.remainder: "_ufunc_routine_remainder",
         np.power: "_ufunc_routine_power",
         np.square: "_ufunc_routine_square",
         np.log: "_ufunc_routine_log",
@@ -304,6 +305,18 @@ class UfuncMeta(PropertiesMeta):
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufunc("divide"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    def _ufunc_routine_divmod(cls, ufunc, method, inputs, kwargs, meta):
+        q = cls._ufunc_routine_divide(ufunc, method, inputs, kwargs, meta)
+        r = cls.Zeros(q.shape)
+        output = q, r
+        return output
+
+    def _ufunc_routine_remainder(cls, ufunc, method, inputs, kwargs, meta):
+        # Perform dummy addition operation to get shape of output zeros
+        x = cls._ufunc_routine_add(ufunc, method, inputs, kwargs, meta)
+        output = cls.Zeros(x.shape)
         return output
 
     def _ufunc_routine_power(cls, ufunc, method, inputs, kwargs, meta):
