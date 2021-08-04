@@ -95,9 +95,7 @@ intersphinx_mapping = {
     'numba': ('https://numba.pydata.org/numba-doc/latest/', None)
 }
 
-pygments_style = 'colorful'
-
-napoleon_use_admonition_for_examples = True
+pygments_style = 'solarized-light'
 
 autodoc_default_options = {
     'imported-members': True,
