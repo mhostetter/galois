@@ -1044,9 +1044,6 @@ def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefine
     Determines if :math:`g(x)` is a primitive element of the Galois field :math:`\mathrm{GF}(p^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
 
-    The number of primitive elements of :math:`\mathrm{GF}(p^m)` is :math:`\phi(p^m - 1)`, where
-    :math:`\phi(n)` is the Euler totient function, see :obj:`galois.euler_phi`.
-
     Parameters
     ----------
     element : galois.Poly
@@ -1060,6 +1057,11 @@ def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefine
     bool
         `True` if :math:`g(x)` is a primitive element of :math:`\mathrm{GF}(p^m)` with irreducible polynomial
         :math:`f(x)`.
+
+    Notes
+    -----
+    The number of primitive elements of :math:`\mathrm{GF}(p^m)` is :math:`\phi(p^m - 1)`, where :math:`\phi(n)` is the Euler totient function,
+    see :func:`galois.euler_phi`.
 
     Examples
     --------
@@ -1083,8 +1085,16 @@ def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefine
         g = galois.Poly.Identity(GF); g
         galois.is_primitive_element(g, f)
     """
-    assert isinstance(element, Poly) and isinstance(irreducible_poly, Poly)
-    assert element.field is irreducible_poly.field
+    if not isinstance(element, Poly):
+        raise TypeError(f"Argument `element` must be a galois.Poly, not {type(element)}.")
+    if not isinstance(irreducible_poly, Poly):
+        raise TypeError(f"Argument `irreducible_poly` must be a galois.Poly, not {type(irreducible_poly)}.")
+    if not element.field == irreducible_poly.field:
+        raise ValueError(f"Arguments `element` and `irreducible_poly` must be over the same field, not {element.field} and {irreducible_poly.field}.")
+    if not element.degree < irreducible_poly.degree:
+        raise ValueError(f"Argument `element` must have degree less than `irreducible_poly`, not {element.degree} and {irreducible_poly.degree}.")
+    if not is_irreducible(irreducible_poly):
+        raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly} is reducible over {irreducible_poly.field.name}.")
 
     field = irreducible_poly.field
     p = field.order
