@@ -18,6 +18,6 @@ def randint(low, high, shape, dtype):
         # For dtype=object
         array = np.empty(shape, dtype=dtype)
         iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
-        for i in iterator:
+        for _ in iterator:
             array[iterator.multi_index] = random.randint(low, high - 1)
     return array

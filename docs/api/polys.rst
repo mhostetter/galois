@@ -27,8 +27,8 @@ Polynomial functions
    poly_pow
    poly_factors
 
-Special polynomial creation
----------------------------
+Special polynomials
+-------------------
 
 .. rubric::
 .. autosummary::
