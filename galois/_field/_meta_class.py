@@ -107,10 +107,11 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             The field element display mode, either `"int"` (default), `"poly"`, or `"power"`.
 
             * `"int"` (default): The element displayed as the integer representation of the polynomial. For example, :math:`2x^2 + x + 2` is an element of
-            :math:`\mathrm{GF}(3^3)` and is equivalent to the integer :math:`23 = 2 \cdot 3^2 + 3 + 2`.
-            * `"poly"`: The element as a polynomial over :math:`\mathrm{GF}(p)` of degree less than :math:`m`. For example, :math:`2x^2 + x + 2 \in \mathrm{GF}(3^3)`.
-            * `"power"`: The element as a power of the primitive element, see :obj:`primitive_element`. For example, :math:`2x^2 + x + 2 = \alpha^5` in :math:`\mathrm{GF}(3^3)`
-            with irreducible polynomial :math:`x^3 + 2x + 1` and primitive element :math:`\alpha = x`.
+              :math:`\mathrm{GF}(3^3)` and is equivalent to the integer :math:`23 = 2 \cdot 3^2 + 3 + 2`.
+            * `"poly"`: The element as a polynomial over :math:`\mathrm{GF}(p)` of degree less than :math:`m`. For example, :math:`2x^2 + x + 2` is an element
+              of :math:`\mathrm{GF}(3^3)`.
+            * `"power"`: The element as a power of the primitive element, see :obj:`FieldClass.primitive_element`. For example, :math:`2x^2 + x + 2 = \alpha^5`
+              in :math:`\mathrm{GF}(3^3)` with irreducible polynomial :math:`x^3 + 2x + 1` and primitive element :math:`\alpha = x`.
 
         Examples
         --------
@@ -118,8 +119,9 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            a = GF.Random(); a
+            GF = galois.GF(3**3)
+            print(GF.properties)
+            a = GF(23); a
 
             # Permanently set the display mode to the polynomial representation
             GF.display("poly"); a
@@ -130,33 +132,37 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
         The :func:`display` method can also be used as a context manager, as shown below.
 
-        For the polynomial representation, when the primitive element is :math:`x \in \mathrm{GF}(p)[x]` the polynomial
-        indeterminate used is  `α`.
+        For the polynomial representation, when the primitive element is :math:`\alpha = x` in :math:`\mathrm{GF}(p)[x]` the polynomial
+        indeterminate used is :math:`\alpha`.
 
         .. ipython:: python
 
             GF = galois.GF(2**8)
             print(GF.properties)
-            a = GF.Random(); a
+            a = GF.Random()
+            print(GF.display_mode, a)
             with GF.display("poly"):
-                print(a)
+                print(GF.display_mode, a)
             with GF.display("power"):
-                print(a)
-            a
+                print(GF.display_mode, a)
+            # The display mode is reset after exiting the context manager
+            print(GF.display_mode, a)
 
-        But when the primitive element is not :math:`x \in \mathrm{GF}(p)[x]`, the polynomial
-        indeterminate used is `x`.
+        But when the primitive element is :math:`\alpha \ne x` in :math:`\mathrm{GF}(p)[x]`, the polynomial
+        indeterminate used is :math:`x`.
 
         .. ipython:: python
 
             GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]))
             print(GF.properties)
-            a = GF.Random(); a
+            a = GF.Random()
+            print(GF.display_mode, a)
             with GF.display("poly"):
-                print(a)
+                print(GF.display_mode, a)
             with GF.display("power"):
-                print(a)
-            a
+                print(GF.display_mode, a)
+            # The display mode is reset after exiting the context manager
+            print(GF.display_mode, a)
         """
         if mode not in ["int", "poly", "power"]:
             raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode!r}.")

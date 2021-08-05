@@ -293,34 +293,40 @@ class PropertiesMeta(type):
 
         Examples
         --------
-        For the polynomial representation, when the primitive element is :math:`x \in \mathrm{GF}(p)[x]` the polynomial
-        indeterminate used is  `α`.
+        For the polynomial representation, when the primitive element is :math:`\alpha = x` in :math:`\mathrm{GF}(p)[x]` the polynomial
+        indeterminate used is :math:`\alpha`.
 
         .. ipython:: python
 
             GF = galois.GF(2**8)
+            print(GF.properties)
             a = GF.Random()
             print(GF.display_mode, a)
             with GF.display("poly"):
                 print(GF.display_mode, a)
+            with GF.display("power"):
+                print(GF.display_mode, a)
             # The display mode is reset after exiting the context manager
             print(GF.display_mode, a)
 
-        But when the primitive element is not :math:`x \in \mathrm{GF}(p)[x]`, the polynomial
-        indeterminate used is `x`.
+        But when the primitive element is :math:`\alpha \ne x` in :math:`\mathrm{GF}(p)[x]`, the polynomial
+        indeterminate used is :math:`x`.
 
         .. ipython:: python
 
             GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]))
+            print(GF.properties)
             a = GF.Random()
             print(GF.display_mode, a)
             with GF.display("poly"):
+                print(GF.display_mode, a)
+            with GF.display("power"):
                 print(GF.display_mode, a)
             # The display mode is reset after exiting the context manager
             print(GF.display_mode, a)
 
         The power representation displays elements as powers of :math:`\alpha` the primitive element, see
-        :obj:`primitive_element`.
+        :obj:`FieldClass.primitive_element`.
 
         .. ipython:: python
 
