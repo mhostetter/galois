@@ -74,9 +74,10 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
 
         * `"int"` (default): The element displayed as the integer representation of the polynomial. For example, :math:`2x^2 + x + 2` is an element of
           :math:`\mathrm{GF}(3^3)` and is equivalent to the integer :math:`23 = 2 \cdot 3^2 + 3 + 2`.
-        * `"poly"`: The element as a polynomial over :math:`\mathrm{GF}(p)` of degree less than :math:`m`. For example, :math:`2x^2 + x + 2 \in \mathrm{GF}(3^3)`.
-        * `"power"`: The element as a power of the primitive element, see :obj:`primitive_element`. For example, :math:`2x^2 + x + 2 = \alpha^5` in :math:`\mathrm{GF}(3^3)`
-          with irreducible polynomial :math:`x^3 + 2x + 1` and primitive element :math:`\alpha = x`.
+        * `"poly"`: The element as a polynomial over :math:`\mathrm{GF}(p)` of degree less than :math:`m`. For example, :math:`2x^2 + x + 2` is an element
+          of :math:`\mathrm{GF}(3^3)`.
+        * `"power"`: The element as a power of the primitive element, see :obj:`galois.FieldClass.primitive_element`. For example, :math:`2x^2 + x + 2 = \alpha^5`
+          in :math:`\mathrm{GF}(3^3)` with irreducible polynomial :math:`x^3 + 2x + 1` and primitive element :math:`\alpha = x`.
 
     Returns
     -------
