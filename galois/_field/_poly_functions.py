@@ -327,10 +327,6 @@ def irreducible_poly(characteristic, degree, method="min"):
     r"""
     Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
-    then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
-    :math:`\mathrm{GF}(p^m)` of :math:`\mathrm{GF}(p)`.
-
     Parameters
     ----------
     characteristic : int
@@ -349,21 +345,36 @@ def irreducible_poly(characteristic, degree, method="min"):
     galois.Poly
         The degree-:math:`m` monic irreducible polynomial over :math:`\mathrm{GF}(p)`.
 
+    Notes
+    -----
+    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
+    then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
+    :math:`\mathrm{GF}(p^m)` of :math:`\mathrm{GF}(p)`.
+
     Examples
     --------
+    The lexicographically-minimal monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
+
     .. ipython:: python
 
-        # The lexicographically-minimal irreducible polynomial
         p = galois.irreducible_poly(7, 5); p
         galois.is_irreducible(p)
-        # The lexicographically-maximal irreducible polynomial
+
+    The lexicographically-maximal monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
+
+    .. ipython:: python
+
         p = galois.irreducible_poly(7, 5, method="max"); p
         galois.is_irreducible(p)
-        # A random irreducible polynomial
+
+    A random monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
+
+    .. ipython:: python
+
         p = galois.irreducible_poly(7, 5, method="random"); p
         galois.is_irreducible(p)
 
-    Polynomial products with non-zero constants are also irreducible.
+    Irreducible polynomials scaled by non-zero field elements are also irreducible.
 
     .. ipython:: python
 
@@ -372,8 +383,17 @@ def irreducible_poly(characteristic, degree, method="min"):
         galois.is_irreducible(p)
         galois.is_irreducible(p * GF(3))
     """
+    if not isinstance(characteristic, (int, np.integer)):
+        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(degree, (int, np.integer)):
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    if not is_prime(characteristic):
+        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not degree >= 1:
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
+
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
@@ -401,10 +421,6 @@ def irreducible_polys(characteristic, degree):
     r"""
     Returns all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
-    then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
-    :math:`\mathrm{GF}(p^m)` of :math:`\mathrm{GF}(p)`.
-
     Parameters
     ----------
     characteristic : int
@@ -417,12 +433,29 @@ def irreducible_polys(characteristic, degree):
     list
         All degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(p)`.
 
+    Notes
+    -----
+    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
+    then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
+    :math:`\mathrm{GF}(p^m)` of :math:`\mathrm{GF}(p)`.
+
     Examples
     --------
+    All monic irreducible polynomials over :math:`\mathrm{GF}(2)` with degree :math:`5`.
+
     .. ipython:: python
 
         galois.irreducible_polys(2, 5)
     """
+    if not isinstance(characteristic, (int, np.integer)):
+        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(degree, (int, np.integer)):
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    if not is_prime(characteristic):
+        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not degree >= 1:
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
@@ -443,10 +476,6 @@ def primitive_poly(characteristic, degree, method="min"):
     r"""
     Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
-    of :math:`\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
-    of :math:`\mathrm{GF}(p^m)` such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
-
     Parameters
     ----------
     characteristic : int
@@ -465,10 +494,16 @@ def primitive_poly(characteristic, degree, method="min"):
     galois.Poly
         The degree-:math:`m` monic primitive polynomial over :math:`\mathrm{GF}(p)`.
 
+    Notes
+    -----
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
+    of :math:`\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
+    of :math:`\mathrm{GF}(p^m)` such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
+
     Examples
     --------
-    Notice :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
-    :func:`conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial, where
+    :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
     with smaller Conway polynomials, which is not *necessarily* the same.
 
     .. ipython:: python
@@ -481,8 +516,17 @@ def primitive_poly(characteristic, degree, method="min"):
         galois.primitive_poly(7, 10)
         galois.conway_poly(7, 10)
     """
+    if not isinstance(characteristic, (int, np.integer)):
+        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(degree, (int, np.integer)):
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    if not is_prime(characteristic):
+        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not degree >= 1:
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
+
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
@@ -510,10 +554,6 @@ def primitive_polys(characteristic, degree):
     r"""
     Returns all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
-    of :math:`\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
-    of :math:`\mathrm{GF}(p^m)` such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
-
     Parameters
     ----------
     characteristic : int
@@ -526,12 +566,35 @@ def primitive_polys(characteristic, degree):
     list
         All degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(p)`.
 
+    Notes
+    -----
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
+    of :math:`\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
+    of :math:`\mathrm{GF}(p^m)` such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
+
     Examples
     --------
+    All monic primitive polynomials over :math:`\mathrm{GF}(2)` with degree :math:`5`.
+
     .. ipython:: python
 
         galois.primitive_polys(2, 5)
+
+    All monic primitive polynomials over :math:`\mathrm{GF}(3)` with degree :math:`4`.
+
+    .. ipython:: python
+
+        galois.primitive_polys(3, 4)
     """
+    if not isinstance(characteristic, (int, np.integer)):
+        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(degree, (int, np.integer)):
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    if not is_prime(characteristic):
+        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not degree >= 1:
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+
     GF = GF_prime(characteristic)
 
     # Only search monic polynomials of degree m over GF(p)
@@ -552,18 +615,6 @@ def conway_poly(characteristic, degree):
     r"""
     Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
-    A Conway polynomial is a an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a standard
-    representation of :math:`\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
-    provide compatability between fields and their subfields, and hence are the common way to represent extension
-    fields.
-
-    The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-minimal monic primitive polynomial
-    of degree :math:`m` over :math:`\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n` dividing
-    :math:`m`.
-
-    This function uses `Frank Luebeck's Conway polynomial database <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_
-    for fast lookup, not construction.
-
     Parameters
     ----------
     characteristic : int
@@ -581,15 +632,24 @@ def conway_poly(characteristic, degree):
     LookupError
         If the Conway polynomial :math:`C_{p,m}(x)` is not found in Frank Luebeck's database.
 
+    Notes
+    -----
+    A Conway polynomial is a an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a standard
+    representation of :math:`\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
+    provide compatability between fields and their subfields, and hence are the common way to represent extension
+    fields.
+
+    The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-minimal monic primitive polynomial
+    of degree :math:`m` over :math:`\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n` dividing
+    :math:`m`.
+
+    This function uses `Frank Luebeck's Conway polynomial database <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_
+    for fast lookup, not construction.
+
     Examples
     --------
-    .. ipython:: python
-
-        galois.conway_poly(2, 100)
-        galois.conway_poly(7, 13)
-
-    Notice :func:`primitive_poly` returns the lexicographically-minimal primitive polynomial, where
-    :func:`conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial, where
+    :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
     with smaller Conway polynomials, which is not *necessarily* the same.
 
     .. ipython:: python
@@ -623,6 +683,20 @@ def matlab_primitive_poly(characteristic, degree):
     r"""
     Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
+    Parameters
+    ----------
+    characteristic : int
+        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
+    degree : int
+        The degree :math:`m` of the desired primitive polynomial.
+
+    Returns
+    -------
+    galois.Poly
+        Matlab's default degree-:math:`m` primitive polynomial over :math:`\mathrm{GF}(p)`.
+
+    Notes
+    -----
     This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the lexicographically-minimal
     primitive polynomial (equivalent to `galois.primitive_poly(p, m)`) as the default... *mostly*. There are three
     notable exceptions:
@@ -637,18 +711,6 @@ def matlab_primitive_poly(characteristic, degree):
     larger than 16). And it has been spot-checked for :math:`\mathrm{GF}(p^m)`. There may exist other exceptions. Please
     submit a GitHub issue if you discover one.
 
-    Parameters
-    ----------
-    characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
-    degree : int
-        The degree :math:`m` of the desired primitive polynomial.
-
-    Returns
-    -------
-    galois.Poly
-        Matlab's default degree-:math:`m` primitive polynomial over :math:`\mathrm{GF}(p)`.
-
     Examples
     --------
     .. ipython:: python
@@ -661,6 +723,15 @@ def matlab_primitive_poly(characteristic, degree):
         galois.primitive_poly(2, 7)
         galois.matlab_primitive_poly(2, 7)
     """
+    if not isinstance(characteristic, (int, np.integer)):
+        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(degree, (int, np.integer)):
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    if not is_prime(characteristic):
+        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not degree >= 1:
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+
     # Textbooks and Matlab use the lexicographically-minimal primitive polynomial for the default. But for some
     # reason, there are three exceptions. I can't determine why.
     if characteristic == 2 and degree == 7:
@@ -932,7 +1003,7 @@ def is_primitive(poly):
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
     if not poly.degree >= 1:
-        raise TypeError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
+        raise ValueError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
     if not poly.field.is_prime_field:
         raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
