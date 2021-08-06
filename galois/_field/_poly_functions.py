@@ -259,8 +259,7 @@ def poly_pow(base_poly, exponent, modulus_poly):
 @set_module("galois")
 def poly_factors(poly):
     r"""
-    Factors the polynomial :math:`f(x)` into a product of :math:`n` irreducible factors :math:`f(x) = g_1(x)^{k_1} g_2(x)^{k_2} \dots g_n(x)^{k_n}`
-    with :math:`k_1 \le k_2 \le \dots \le k_n`.
+    Factors the polynomial :math:`f(x)` into a product of irreducible factors :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
 
     This function implements the Square-Free Factorization algorithm.
 
@@ -272,9 +271,9 @@ def poly_factors(poly):
     Returns
     -------
     list
-        The list of :math:`n` polynomial factors :math:`\{g_1(x), g_2(x), \dots, g_n(x)\}`.
+        The list of :math:`k` polynomial factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` sorted in increasing lexicographic order.
     list
-        The list of :math:`n` polynomial multiplicities :math:`\{k_1, k_2, \dots, k_n\}`.
+        The list of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
 
     References
     ----------
@@ -288,9 +287,9 @@ def poly_factors(poly):
         # Ensure the factors are irreducible by using Conway polynomials
         g1, g2, g3 = galois.conway_poly(2, 3), galois.conway_poly(2, 4), galois.conway_poly(2, 5)
         g1, g2, g3
-        k1, k2, k3 = 2, 3, 4
+        e1, e2, e3 = 4, 3, 2
         # Construct the composite polynomial
-        f = g1**k1 * g2**k2 * g3**k3
+        f = g1**e1 * g2**e2 * g3**e3
         galois.poly_factors(f)
 
     .. ipython:: python
@@ -299,15 +298,13 @@ def poly_factors(poly):
         # Ensure the factors are irreducible by using Conway polynomials
         g1, g2, g3 = galois.conway_poly(3, 3), galois.conway_poly(3, 4), galois.conway_poly(3, 5)
         g1, g2, g3
-        k1, k2, k3 = 3, 4, 6
+        e1, e2, e3 = 5, 4, 3
         # Construct the composite polynomial
-        f = g1**k1 * g2**k2 * g3**k3
+        f = g1**e1 * g2**e2 * g3**e3
         galois.poly_factors(f)
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    # if not is_monic(poly):
-    #     raise ValueError(f"Argument `poly` must be monic (otherwise there's a trivial 0-degree factor), not a leading coefficient of {poly.coeffs[0]}.")
 
     field = poly.field
     p = field.characteristic
@@ -353,7 +350,8 @@ def poly_factors(poly):
         r += 1
         d = square_free_factorization(delta, r)
 
-    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[1]))
+    # Sort the factor in lexicographically-increasing order
+    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[0].integer))
 
     return list(factors_), list(multiplicities)
 
