@@ -1,6 +1,7 @@
 # Galois: A performant numpy extension for Galois fields and their applications
 
 [![PyPI version](https://badge.fury.io/py/galois.svg)](https://badge.fury.io/py/galois)
+[![Downloads](https://pepy.tech/badge/galois/month)](https://pepy.tech/project/galois)
 [![Supported Versions](https://img.shields.io/pypi/pyversions/galois.svg)](https://pypi.org/project/galois)
 [![Documentation Status](https://readthedocs.org/projects/galois/badge/?version=stable)](https://galois.readthedocs.io/en/stable/?badge=stable)
 ![Lint](https://github.com/mhostetter/galois/workflows/Lint/badge.svg?branch=master)
@@ -101,7 +102,7 @@ Galois field array classes are created using the `galois.GF()` class factory fun
 >>> GF256 = galois.GF(2**8)
 
 >>> print(GF256)
-<class 'np.ndarray over GF(2^8)'>
+<class 'numpy.ndarray over GF(2^8)'>
 ```
 
 These classes are subclasses of `galois.FieldArray` (which itself subclasses `np.ndarray`) and are instances of `galois.FieldClass`.
