@@ -27,7 +27,7 @@ def poly_gcd(a, b):
     Finds the greatest common divisor of two polynomials :math:`a(x)` and :math:`b(x)`
     over :math:`\mathrm{GF}(p^m)`.
 
-    This implementation uses the Euclidean Algorithm.
+    This function implements the Euclidean Algorithm.
 
     Parameters
     ----------
@@ -41,20 +41,34 @@ def poly_gcd(a, b):
     galois.Poly
         Polynomial greatest common divisor of :math:`a(x)` and :math:`b(x)`.
 
+    References
+    ----------
+    * Algorithm 2.218 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+
     Examples
     --------
     .. ipython:: python
 
         GF = galois.GF(7)
         a = galois.Poly.Roots([2,2,2,3,6], field=GF); a
-
-        # a(x) and b(x) only share the root 2 in common
         b = galois.Poly.Roots([1,2], field=GF); b
 
-        # Therefore, their GCD is d(x) = x - 2 = x + 5
+        # a(x) and b(x) only share the root 2 in common, therefore their GCD is d(x) = x - 2 = x + 5
         gcd = galois.poly_gcd(a, b); gcd
 
         # The GCD has only 2 as a root with multiplicity 1
+        gcd.roots(multiplicity=True)
+
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        a = galois.Poly.Roots([2,2,2,3,6], field=GF); a
+        b = galois.Poly.Roots([1,2,2], field=GF); b
+
+        # a(x) and b(x) only share the root 2 in common (with multiplicity 2), therefore their GCD is d(x) = (x - 2)^2 = x^2 + 3x + 4
+        gcd = galois.poly_gcd(a, b); gcd
+
+        # The GCD has only 2 as a root with multiplicity 2
         gcd.roots(multiplicity=True)
     """
     if not isinstance(a, Poly):
@@ -72,7 +86,7 @@ def poly_gcd(a, b):
     while r1 != zero:
         r2, r1 = r1, r2 % r1
 
-    # Make the gcd polynomial monic
+    # Make the GCD polynomial monic
     c = r2.coeffs[0]  # The leading coefficient
     if c > 1:
         r2 /= c
@@ -85,7 +99,7 @@ def poly_egcd(a, b):
     r"""
     Finds the polynomial multiplicands of :math:`a(x)` and :math:`b(x)` such that :math:`a(x)s(x) + b(x)t(x) = \mathrm{gcd}(a(x), b(x))`.
 
-    This implementation uses the Extended Euclidean Algorithm.
+    This function implements the Extended Euclidean Algorithm.
 
     Parameters
     ----------
@@ -103,20 +117,36 @@ def poly_egcd(a, b):
     galois.Poly
         Polynomial :math:`t(x)`, such that :math:`a(x)s(x) + b(x)t(x) = \mathrm{gcd}(a(x), b(x))`.
 
+    References
+    ----------
+    * Algorithm 2.221 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+
     Examples
     --------
     .. ipython:: python
 
         GF = galois.GF(7)
         a = galois.Poly.Roots([2,2,2,3,6], field=GF); a
-
-        # a(x) and b(x) only share the root 2 in common
         b = galois.Poly.Roots([1,2], field=GF); b
 
-        # Therefore, their GCD is d(x) = x - 2 = x + 5
+        # a(x) and b(x) only share the root 2 in common, therefore their GCD is d(x) = x - 2 = x + 5
         gcd, s, t = galois.poly_egcd(a, b); gcd, s, t
 
         # The GCD has only 2 as a root with multiplicity 1
+        gcd.roots(multiplicity=True)
+
+        a*s + b*t == gcd
+
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        a = galois.Poly.Roots([2,2,2,3,6], field=GF); a
+        b = galois.Poly.Roots([1,2,2], field=GF); b
+
+        # a(x) and b(x) only share the root 2 in common (with multiplicity 2), therefore their GCD is d(x) = (x - 2)^2 = x^2 + 3x + 4
+        gcd, s, t = galois.poly_egcd(a, b); gcd, s, t
+
+        # The GCD has only 2 as a root with multiplicity 2
         gcd.roots(multiplicity=True)
 
         a*s + b*t == gcd
@@ -142,7 +172,7 @@ def poly_egcd(a, b):
         s2, s1 = s1, s2 - q*s1
         t2, t1 = t1, t2 - q*t1
 
-    # Make the gcd polynomial monic
+    # Make the GCD polynomial monic
     c = r2.coeffs[0]  # The leading coefficient
     if c > 1:
         r2 /= c
