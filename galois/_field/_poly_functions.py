@@ -188,10 +188,6 @@ def poly_pow(base_poly, exponent, modulus_poly):
     Efficiently exponentiates a polynomial :math:`f(x)` to the power :math:`k` reducing by modulo :math:`g(x)`,
     :math:`f(x)^k\ \textrm{mod}\ g(x)`.
 
-    The algorithm is more efficient than exponentiating first and then reducing modulo :math:`g(x)`, especially for large
-    exponents. Instead, this algorithm repeatedly squares :math:`f(x)`, reducing modulo :math:`g(x)` at each step. This function
-    is the polynomial equivalent of :func:`galois.pow`.
-
     Parameters
     ----------
     base_poly : galois.Poly
@@ -205,6 +201,16 @@ def poly_pow(base_poly, exponent, modulus_poly):
     -------
     galois.Poly
         The resulting polynomial :math:`h(x) = f(x)^k\ \textrm{mod}\ g(x)`.
+
+    Notes
+    -----
+    This function implements the Square-and-Multiply Algorithm for polynomials. The algorithm is more efficient than exponentiating
+    first and then reducing modulo :math:`g(x)`, especially for very large exponents. Instead, this algorithm repeatedly squares :math:`f(x)`,
+    reducing modulo :math:`g(x)` at each step. This function is the polynomial equivalent of :func:`galois.pow`.
+
+    References
+    ----------
+    * Algorithm 2.227 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
 
     Examples
     --------
