@@ -75,6 +75,10 @@ def legendre_symbol(a, p):
         for a in range(7):
             print(f"({a} / 7) = {galois.legendre_symbol(a, 7)}")
     """
+    if not isinstance(a, (int, np.integer)):
+        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
+    if not isinstance(p, (int, np.integer)):
+        raise TypeError(f"Argument `p` must be an integer, not {type(p)}.")
     if not (is_prime(p) and p > 2):
         raise ValueError(f"Argument `p` must be an odd prime greater than 2, not {p}.")
 

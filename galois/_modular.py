@@ -1,4 +1,3 @@
-import itertools
 import math
 
 import numpy as np
@@ -30,6 +29,10 @@ def gcd(a, b):
     -------
     int
         Greatest common divisor of :math:`a` and :math:`b`.
+
+    References
+    ----------
+    * Algorithm 2.104 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
 
     Examples
     --------
@@ -73,7 +76,7 @@ def egcd(a, b):
     References
     ----------
     * T. Moon, "Error Correction Coding", Section 5.2.2: The Euclidean Algorithm and Euclidean Domains, p. 181
-    * https://en.wikipedia.org/wiki/Euclidean_algorithm#Extended_Euclidean_algorithm
+    * Algorithm 2.107 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
 
     Examples
     --------
@@ -118,6 +121,10 @@ def are_coprime(*integers):
     bool
         `True` if the integer arguments are pairwise coprime.
 
+    Notes
+    -----
+    A set of integers are pairwise coprime if their LCM is equal to their product.
+
     Examples
     --------
     .. ipython:: python
@@ -125,32 +132,18 @@ def are_coprime(*integers):
         galois.are_coprime(3, 4, 5)
         galois.are_coprime(3, 7, 9, 11)
     """
-    for a in integers:
-        if not isinstance(a, (int, np.integer)):
-            raise TypeError(f"Each argument must be an integer, {a} is not.")
+    if not all(isinstance(a, (int, np.integer)) for a in integers):
+        raise TypeError(f"Each argument must be an integer, not {integers}.")
+    if not len(integers) >= 1:
+        raise ValueError("At least one argument must be provided.")
 
-    for pair in itertools.combinations(integers, 2):
-        if math.gcd(pair[0], pair[1]) != 1:
-            return False
-
-    return True
+    return lcm(*integers) == prod(integers)
 
 
 @set_module("galois")
 def crt(remainders, moduli):
     r"""
     Solves the simultaneous system of congruences for :math:`x`.
-
-    This function implements the Chinese Remainder Theorem.
-
-    .. math::
-        x &\equiv a_1\ (\textrm{mod}\ m_1)
-
-        x &\equiv a_2\ (\textrm{mod}\ m_2)
-
-        x &\equiv \ldots
-
-        x &\equiv a_n\ (\textrm{mod}\ m_n)
 
     Parameters
     ----------
@@ -164,6 +157,23 @@ def crt(remainders, moduli):
     int
         The simultaneous solution :math:`x` to the system of congruences.
 
+    Notes
+    -----
+    This function implements the Chinese Remainder Theorem.
+
+    .. math::
+        x &\equiv a_1\ (\textrm{mod}\ m_1)
+
+        x &\equiv a_2\ (\textrm{mod}\ m_2)
+
+        x &\equiv \ldots
+
+        x &\equiv a_n\ (\textrm{mod}\ m_n)
+
+    References
+    ----------
+    * Section 14.5 from https://cacr.uwaterloo.ca/hac/about/chap14.pdf
+
     Examples
     --------
     .. ipython:: python
@@ -176,10 +186,10 @@ def crt(remainders, moduli):
             ai = x % m[i]
             print(f"{x} = {ai} (mod {m[i]}), Valid congruence: {ai == a[i]}")
     """
-    if not isinstance(remainders, (tuple, list)):
-        raise TypeError(f"Argument `remainders` must be a tuple or list, not {type(remainders)}.")
-    if not isinstance(moduli, (tuple, list)):
-        raise TypeError(f"Argument `moduli` must be a tuple or list, not {type(moduli)}.")
+    if not (isinstance(remainders, (tuple, list)) and all(isinstance(x, (int, np.integer)) for x in remainders)):
+        raise TypeError(f"Argument `remainders` must be a tuple or list of integers, not {remainders}.")
+    if not (isinstance(moduli, (tuple, list)) and all(isinstance(x, (int, np.integer)) for x in moduli)):
+        raise TypeError(f"Argument `moduli` must be a tuple or list of integers, not {moduli}.")
     if not len(remainders) == len(moduli):
         raise ValueError(f"Arguments `remainders` and `moduli` are not the same length, {len(remainders)} != {len(moduli)}.")
     if not are_coprime(*moduli):
@@ -191,7 +201,8 @@ def crt(remainders, moduli):
     for a2, m2 in zip(remainders[1:], moduli[1:]):
         # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = 1,
         # where 1 is the GCD(m1, m2) because m1 and m2 are pairwise relatively coprime
-        _, b1, b2 = egcd(m1, m2)
+        d, b1, b2 = egcd(m1, m2)
+        print(d, b1, b2)
 
         # Compute x through explicit construction
         x = a1*b2*m2 + a2*b1*m1
@@ -208,7 +219,7 @@ def crt(remainders, moduli):
 @set_module("galois")
 def totatives(n):
     r"""
-    Returns the positive integers (totatives) in :math:`1 \le k < n` that are coprime to :math:`n`.
+    Returns the positive integers (totatives) in :math:`[1, n]` that are coprime to :math:`n`.
 
     The totatives of :math:`n` form the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
 
@@ -224,7 +235,7 @@ def totatives(n):
 
     References
     ----------
-    * https://en.wikipedia.org/wiki/Totative
+    * Section 2.4.3 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
     * https://oeis.org/A000010
 
     Examples
@@ -250,7 +261,7 @@ def totatives(n):
 @set_module("galois")
 def euler_phi(n):
     r"""
-    Counts the positive integers (totatives) in :math:`1 \le k < n` that are coprime to :math:`n`.
+    Counts the positive integers (totatives) in :math:`[1, n]` that are coprime to :math:`n`.
 
     Parameters
     ----------
@@ -272,7 +283,7 @@ def euler_phi(n):
 
     References
     ----------
-    * https://en.wikipedia.org/wiki/Euler%27s_totient_function
+    * Section 2.4.1 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
     * https://oeis.org/A000010
 
     Examples
@@ -312,7 +323,7 @@ def euler_phi(n):
 def carmichael_lambda(n):
     r"""
     Finds the smallest positive integer :math:`m` such that :math:`a^m \equiv 1\ (\textrm{mod}\ n)` for
-    every integer :math:`a` in :math:`1 \le a < n` that is coprime to :math:`n`.
+    every integer :math:`a` in :math:`[1, n]` that is coprime to :math:`n`.
 
     This function implements the Carmichael function :math:`\lambda(n)`.
 
@@ -325,29 +336,51 @@ def carmichael_lambda(n):
     -------
     int
         The smallest positive integer :math:`m` such that :math:`a^m \equiv 1 (\textrm{mod}\ n)` for
-        every :math:`a` in :math:`1 \le a < n` that is coprime to :math:`n`.
+        every :math:`a` in :math:`[1, n]` that is coprime to :math:`n`.
 
     References
     ----------
-    * https://en.wikipedia.org/wiki/Carmichael_function
     * https://oeis.org/A002322
 
     Examples
     --------
+    The Carmichael lambda function and Euler totient function are often equal. However, there are notable exceptions.
+
     .. ipython:: python
 
-        n = 20
+        [galois.euler_phi(n) for n in range(1, 20)]
+        [galois.carmichael_lambda(n) for n in range(1, 20)]
+
+    For prime :math:`n`, :math:`\phi(n) = \lambda(n) = n - 1`. And for most composite :math:`n`, :math:`\phi(n) = \lambda(n) < n - 1`.
+
+    .. ipython:: python
+
+        n = 9
+        phi = galois.euler_phi(n); phi
         lambda_ = galois.carmichael_lambda(n); lambda_
+        totatives = galois.totatives(n); totatives
 
-        # Find the totatives that are relatively coprime with n
-        totatives = [i for i in range(n) if math.gcd(i, n) == 1]; totatives
+        for power in range(1, phi + 1):
+            y = [pow(a, power, n) for a in totatives]
+            print("Power {}: {} (mod {})".format(power, y, n))
 
-        for a in totatives:
-            result = pow(a, lambda_, n)
-            print("{:2d}^{} = {} (mod {})".format(a, lambda_, result, n))
+        galois.is_cyclic(n)
 
-        # For prime n, phi and lambda are always n-1
-        galois.euler_phi(13), galois.carmichael_lambda(13)
+    When :math:`\phi(n) \ne \lambda(n)`, the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is not cyclic.
+    See :func:`galois.is_cyclic`.
+
+    .. ipython:: python
+
+        n = 8
+        phi = galois.euler_phi(n); phi
+        lambda_ = galois.carmichael_lambda(n); lambda_
+        totatives = galois.totatives(n); totatives
+
+        for power in range(1, phi + 1):
+            y = [pow(a, power, n) for a in totatives]
+            print("Power {}: {} (mod {})".format(power, y, n))
+
+        galois.is_cyclic(n)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -404,61 +437,86 @@ def is_cyclic(n):
 
     .. ipython:: python
 
-        # n is of type 2*p^k, which is cyclic
+        # n is of type 2*p^e, which is cyclic
         n = 14
         galois.is_cyclic(n)
-
-        # The congruence class coprime with n
-        Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
-
-        # Euler's totient function counts the "totatives", positive integers coprime with n
+        Znx = set(galois.totatives(n)); Znx
         phi = galois.euler_phi(n); phi
-
         len(Znx) == phi
 
         # The primitive roots are the elements in Znx that multiplicatively generate the group
         for a in Znx:
             span = set([pow(a, i, n) for i in range(1, phi + 1)])
-            primitive_root = span == Znx
+            primitive_root = galois.is_primitive_root(a, n)
             print("Element: {:2d}, Span: {:<20}, Primitive root: {}".format(a, str(span), primitive_root))
 
+        # Find the smallest primitive root
+        galois.primitive_root(n)
+        # Find all primitive roots
         roots = galois.primitive_roots(n); roots
 
         # Euler's totient function ϕ(ϕ(n)) counts the primitive roots of n
         len(roots) == galois.euler_phi(phi)
 
     A counterexample is :math:`n = 15 = 3 \cdot 5`, which doesn't fit the condition for cyclicness.
-    :math:`(\mathbb{Z}/15\mathbb{Z}){^\times} = \{1, 2, 4, 7, 8, 11, 13, 14\}`.
+    :math:`(\mathbb{Z}/15\mathbb{Z}){^\times} = \{1, 2, 4, 7, 8, 11, 13, 14\}`. Since the group is not cyclic, it has no primitive roots.
 
     .. ipython:: python
 
-        # n is of type p1^k1 * p2^k2, which is not cyclic
+        # n is of type p1^e1 * p2^e2, which is not cyclic
         n = 15
         galois.is_cyclic(n)
-
-        # The congruence class coprime with n
-        Znx = set([a for a in range(1, n) if math.gcd(n, a) == 1]); Znx
-
-        # Euler's totient function counts the "totatives", positive integers coprime with n
+        Znx = set(galois.totatives(n)); Znx
         phi = galois.euler_phi(n); phi
-
         len(Znx) == phi
 
         # The primitive roots are the elements in Znx that multiplicatively generate the group
         for a in Znx:
             span = set([pow(a, i, n) for i in range(1, phi + 1)])
-            primitive_root = span == Znx
+            primitive_root = galois.is_primitive_root(a, n)
             print("Element: {:2d}, Span: {:<13}, Primitive root: {}".format(a, str(span), primitive_root))
 
+        # Find the smallest primitive root
+        galois.primitive_root(n)
+        # Find all primitive roots
         roots = galois.primitive_roots(n); roots
 
         # Note the max order of any element is 4, not 8, which is Carmichael's lambda function
         galois.carmichael_lambda(n)
+
+    For prime :math:`n`, a primitive root modulo :math:`n` is also a primitive element of the Galois field :math:`\mathrm{GF}(n)`. A
+    primitive element is a generator of the multiplicative group :math:`\mathrm{GF}(p)^{\times} = \{1, 2, \dots, p-1\} = \{g^0, g^1, g^2, \dots, g^{\phi(n)-1}\}`.
+
+    .. ipython:: python
+
+        # n is of type p, which is cyclic
+        n = 7
+        galois.is_cyclic(n)
+        Znx = set(galois.totatives(n)); Znx
+        phi = galois.euler_phi(n); phi
+        len(Znx) == phi
+
+        # The primitive roots are the elements in Znx that multiplicatively generate the group
+        for a in Znx:
+            span = set([pow(a, i, n) for i in range(1, phi + 1)])
+            primitive_root = galois.is_primitive_root(a, n)
+            print("Element: {:2d}, Span: {:<18}, Primitive root: {}".format(a, str(span), primitive_root))
+
+        # Find the smallest primitive root
+        galois.primitive_root(n)
+        # Find all primitive roots
+        roots = galois.primitive_roots(n); roots
+
+        # Euler's totient function ϕ(ϕ(n)) counts the primitive roots of n
+        len(roots) == galois.euler_phi(phi)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not n > 0:
         raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+
+    if n == 1:
+        return True
 
     p, e = factors(n)
 

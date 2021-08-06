@@ -4,6 +4,8 @@ A module that contains some future features of the math stdlib for earlier Pytho
 import math
 import sys
 
+import numpy as np
+
 from ._overrides import set_module
 
 __all__ = ["pow", "lcm", "prod"]
@@ -12,7 +14,7 @@ __all__ = ["pow", "lcm", "prod"]
 @set_module("galois")
 def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
     r"""
-    Efficiently exponentiates an integer :math:`a^k \textrm{mod}\ m`.
+    Efficiently exponentiates an integer :math:`a^k\ \textrm{mod}\ m`.
 
     The algorithm is more efficient than exponentiating first and then reducing modulo :math:`m`.
 
@@ -32,7 +34,7 @@ def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
     Returns
     -------
     int
-        The modular exponentiation :math:`a^k \textrm{mod}\ m`.
+        The modular exponentiation :math:`a^k\ \textrm{mod}\ m`.
 
     Examples
     --------
@@ -54,6 +56,11 @@ def lcm(*integers):
     ----
     This function is included for Python versions before 3.9. For Python 3.9 and later, this function
     calls :func:`math.lcm` from the standard library.
+
+    Parameters
+    ----------
+    *integers : tuple of int
+        Each argument must be an integer.
 
     Returns
     -------
@@ -78,13 +85,17 @@ def lcm(*integers):
         lcm = galois.lcm(prime1, prime2); lcm
         lcm == prime1 * prime2
     """
-    if sys.version_info.major == 3 and sys.version_info.minor >= 9:
+    if sys.version_info.major == 3 and sys.version_info.minor >= 9:  # pragma: no cover
         return math.lcm(*integers)  # pylint: disable=no-member
-    else:
-        _lcm  = 1
-        for integer in integers:
-            _lcm = _lcm * integer // math.gcd(_lcm, integer)
-        return _lcm
+
+    if not all(isinstance(a, (int, np.integer)) for a in integers):
+        raise TypeError(f"Each argument must be an integer, not {integers}.")
+
+    lcm_  = 1
+    for integer in integers:
+        lcm_ = (lcm_ * integer) // math.gcd(lcm_, integer)
+
+    return lcm_
 
 
 @set_module("galois")
@@ -109,10 +120,11 @@ def prod(iterable, start=1):
         galois.prod([2, 4, 14])
         galois.prod([2, 4, 14], start=2)
     """
-    if sys.version_info.major == 3 and sys.version_info.minor >= 8:
+    if sys.version_info.major == 3 and sys.version_info.minor >= 8:  # pragma: no cover
         return math.prod(iterable, start=start)  # pylint: disable=no-member
-    else:
-        result = start
-        for integer in iterable:
-            result *= integer
-        return result
+
+    result = start
+    for integer in iterable:
+        result *= integer
+
+    return result
