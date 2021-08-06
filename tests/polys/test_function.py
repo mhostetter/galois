@@ -8,36 +8,6 @@ import pytest
 import galois
 
 
-def test_poly_pow():
-    GF = galois.GF(31)
-    f = galois.Poly.Random(10, field=GF)
-    g = galois.Poly.Random(7, field=GF)
-    power = 20
-    assert f**power % g == galois.poly_pow(f, power, g)
-
-    GF = galois.GF(31)
-    f = galois.Poly.Random(10, field=GF)
-    g = galois.Poly.Random(7, field=GF)
-    power = 0
-    assert f**power % g == galois.poly_pow(f, power, g)
-
-
-def test_poly_pow_exceptions():
-    GF = galois.GF(31)
-    f = galois.Poly.Random(10, field=GF)
-    g = galois.Poly.Random(7, field=GF)
-    power = 20
-
-    with pytest.raises(TypeError):
-        galois.poly_pow(f.coeffs, power, g)
-    with pytest.raises(TypeError):
-        galois.poly_pow(f, float(power), g)
-    with pytest.raises(TypeError):
-        galois.poly_pow(f, power, g.coeffs)
-    with pytest.raises(ValueError):
-        galois.poly_pow(f, -power, g)
-
-
 def test_poly_factors():
     GF = galois.GF2
     g0, g1, g2 = galois.conway_poly(2, 3), galois.conway_poly(2, 4), galois.conway_poly(2, 5)
