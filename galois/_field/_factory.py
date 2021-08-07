@@ -10,7 +10,7 @@ __all__ = ["GF", "Field"]
 
 
 @set_module("galois")
-def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compile="auto", display=None):
+def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compile=None, display=None):
     r"""
     Factory function to construct a Galois field array class for :math:`\mathrm{GF}(p^m)`.
 
@@ -54,10 +54,12 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
         generator, respectively.
 
     compile : str, optional
-        The ufunc calculation mode. This can be modified after class consstruction with the :func:`galois.FieldClass.compile` method.
+        The ufunc calculation mode. This can be modified after class construction with the :func:`galois.FieldClass.compile` method.
 
-        * `"auto"` (default): Selects "jit-lookup" for fields with order less than :math:`2^{20}`, "jit-calculate" for larger fields,
-          and "python-calculate" for fields whose elements cannot be represented with :obj:`numpy.int64`.
+        * `None` (default): For newly-created classes, `None` corresponds to "auto". For Galois field array classes of this type that were
+          previously created, `None` does not modify the current ufunc compilation mode.
+        * `"auto"`: Selects "jit-lookup" for fields with order less than :math:`2^{20}`, "jit-calculate" for larger fields, and "python-calculate"
+          for fields whose elements cannot be represented with :obj:`numpy.int64`.
         * `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
           In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
         * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The "jit-calculate" mode is designed for large
@@ -161,7 +163,7 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
     if not isinstance(verify, bool):
         raise TypeError(f"Argument `verify` must be a bool, not {type(verify)}.")
-    if not isinstance(compile, str):
+    if not isinstance(compile, (type(None), str)):
         raise TypeError(f"Argument `compile` must be a string, not {type(compile)}.")
     if not isinstance(display, (type(None), str)):
         raise TypeError(f"Argument `display` must be a string, not {type(display)}.")
@@ -170,7 +172,7 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
     if not len(p) == len(e) == 1:
         s = " + ".join([f"{pi}**{ei}" for pi, ei in zip(p, e)])
         raise ValueError(f"Argument `order` must be a prime power, not {order} = {s}.")
-    if not compile in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
+    if not compile in [None, "auto", "jit-lookup", "jit-calculate", "python-calculate"]:
         raise ValueError(f"Argument `compile` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {compile!r}.")
     if not display in [None, "int", "poly", "power"]:
         raise ValueError(f"Argument `display` must be in ['int', 'poly', 'power'], not {display!r}.")
@@ -186,7 +188,7 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
 
 
 @set_module("galois")
-def Field(order, irreducible_poly=None, primitive_element=None, verify=True, compile="auto", display=None):
+def Field(order, irreducible_poly=None, primitive_element=None, verify=True, compile=None, display=None):
     """
     Alias of :func:`galois.GF`.
     """

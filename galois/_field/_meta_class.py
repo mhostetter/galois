@@ -71,13 +71,21 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         Parameters
         ----------
         mode : str
-            The method of field computation, either `"jit-lookup"`, `"jit-calculate"`, `"python-calculate"`. The "jit-lookup" mode will
-            use Zech log, log, and anti-log lookup tables for speed. The "jit-calculate" mode will not store any lookup tables, but perform field
-            arithmetic on the fly. The "jit-calculate" mode is designed for large fields that cannot store lookup tables in RAM.
-            Generally, "jit-calculate" is slower than "jit-lookup". The "python-calculate" mode is reserved for extremely large fields. In
-            this mode, the ufuncs are not JIT-compiled, but are pure python functions operating on python ints. The list of valid
-            modes for this field is contained in :obj:`ufunc_modes`.
+            The ufunc calculation mode.
+
+            * `"auto"`: Selects "jit-lookup" for fields with order less than :math:`2^{20}`, "jit-calculate" for larger fields, and "python-calculate"
+              for fields whose elements cannot be represented with :obj:`numpy.int64`.
+            * `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
+              In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
+            * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The "jit-calculate" mode is designed for large
+              fields that cannot or should not store lookup tables in RAM. Generally, the "jit-calculate" mode is slower than "jit-lookup".
+            * `"python-calculate"`: Uses pure-python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
+              represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with python :obj:`int` (which has arbitrary precision).
         """
+        if not isinstance(mode, (type(None), str)):
+            raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
+        # if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
+        #     raise ValueError(f"Argument `mode` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode!r}.")
         mode = cls.default_ufunc_mode if mode == "auto" else mode
         if mode not in cls.ufunc_modes:
             raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls.name}, not {mode!r}.")
@@ -104,7 +112,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         Parameters
         ----------
         mode : str, optional
-            The field element display mode, either `"int"` (default), `"poly"`, or `"power"`.
+            The field element representation.
 
             * `"int"` (default): The element displayed as the integer representation of the polynomial. For example, :math:`2x^2 + x + 2` is an element of
               :math:`\mathrm{GF}(3^3)` and is equivalent to the integer :math:`23 = 2 \cdot 3^2 + 3 + 2`.
@@ -164,13 +172,13 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             # The display mode is reset after exiting the context manager
             print(GF.display_mode, a)
         """
+        if not isinstance(mode, (type(None), str)):
+            raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
         if mode not in ["int", "poly", "power"]:
             raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode!r}.")
 
         context = DisplayContext(cls)
-
-        # Set the new state
-        cls._display_mode = mode
+        cls._display_mode = mode  # Set the new state
 
         return context
 

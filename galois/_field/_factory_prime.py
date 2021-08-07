@@ -10,7 +10,7 @@ from ._meta_gfp import GFpMeta
 # pylint: disable=redefined-builtin
 
 
-def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto", display=None):
+def GF_prime(characteristic, primitive_element=None, verify=True, compile=None, display=None):
     """
     Class factory for prime fields GF(p).
     """
@@ -37,12 +37,15 @@ def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto"
     key = (order, primitive_element)
     if key in GF_prime._classes:
         cls = GF_prime._classes[key]
-        cls.compile(compile)
+        if compile is not None:
+            cls.compile(compile)
         if display is not None:
             cls.display(display)
         return cls
 
-    # Since this is a new class, set compile and display to default values
+    # Since this is a new class, set `compile` and `display` to their default values
+    if compile is None:
+        compile = "auto"
     if display is None:
         display = "int"
 
