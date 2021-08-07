@@ -35,6 +35,8 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             verify_element = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
     elif isinstance(irreducible_poly, int):
         irreducible_poly = Poly.Integer(irreducible_poly, field=prime_subfield)
+    elif isinstance(irreducible_poly, str):
+        irreducible_poly = Poly.String(irreducible_poly, field=prime_subfield)
     elif isinstance(irreducible_poly, (tuple, list, np.ndarray)):
         irreducible_poly = Poly(irreducible_poly, field=prime_subfield)
     elif not isinstance(irreducible_poly, Poly):
@@ -46,6 +48,8 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         verify_element = False
     elif isinstance(primitive_element, int):
         primitive_element = Poly.Integer(primitive_element, field=prime_subfield)
+    elif isinstance(primitive_element, str):
+        primitive_element = Poly.String(primitive_element, field=prime_subfield)
     elif isinstance(primitive_element, (tuple, list, np.ndarray)):
         primitive_element = Poly(primitive_element, field=prime_subfield)
     elif not isinstance(primitive_element, Poly):

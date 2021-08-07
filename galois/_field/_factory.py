@@ -19,16 +19,17 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
     order : int
         The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
 
-    irreducible_poly : int, tuple, list, numpy.ndarray, galois.Poly, optional
+    irreducible_poly : int, str, tuple, list, numpy.ndarray, galois.Poly, optional
         Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that will
         define the Galois field arithmetic.
 
         * :obj:`None` (default): Uses the Conway polynomial :math:`C_{p,m}`, see :func:`galois.conway_poly`.
         * :obj:`int`: The integer representation of the irreducible polynomial.
+        * :obj:`str`: The irreducible polynomial expressed as a string, e.g. `"x^2 + 1"`.
         * :obj:`tuple`, :obj:`list`, :obj:`numpy.ndarray`: The irreducible polynomial coefficients in degree-descending order.
         * :obj:`galois.Poly`: The irreducible polynomial as a polynomial object.
 
-    primitive_element : int, tuple, list, numpy.ndarray, galois.Poly, optional
+    primitive_element : int, str, tuple, list, numpy.ndarray, galois.Poly, optional
         Optionally specify a primitive element of the field :math:`\mathrm{GF}(p^m)`. This value is used when building the log/anti-log
         lookup tables and when computing :func:`np.log`. A primitive element is a generator of the multiplicative group of the field.
         For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`. For extension
@@ -43,6 +44,7 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
 
         * :obj:`None` (default): Uses the lexicographically-minimal primitive element, see :func:`galois.primitive_element`.
         * :obj:`int`: The integer representation of the primitive element.
+        * :obj:`str`: The primitive element expressed as a string, e.g. `"x + 1"`.
         * :obj:`tuple`, :obj:`list`, :obj:`numpy.ndarray`: The primitive element's polynomial coefficients in degree-descending order.
         * :obj:`galois.Poly`: The primitive element as a polynomial object.
 
