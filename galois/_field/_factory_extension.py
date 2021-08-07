@@ -2,8 +2,6 @@ import types
 
 import numpy as np
 
-from .._prime import is_prime
-
 from ._array import FieldArray
 from ._factory_prime import GF_prime
 from ._meta_gf2m import GF2mMeta
@@ -20,15 +18,6 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     Class factory for extension fields GF(p^m).
     """
     # pylint: disable=too-many-statements
-    if not isinstance(characteristic, int):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
-    if not isinstance(degree, int):
-        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
-    if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
-    if not degree > 1:
-        raise ValueError(f"Argument `degree` must be greater than 1, not {degree}.")
-
     order = characteristic**degree
     name = f"GF{characteristic}_{degree}"
     prime_subfield = GF_prime(characteristic)
@@ -36,18 +25,14 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     verify_poly = verify
     verify_element = verify
 
-    if irreducible_poly is None and primitive_element is None:
-        irreducible_poly = conway_poly(characteristic, degree)
-        is_primitive_poly = True
-        primitive_element = Poly.Identity(prime_subfield)
-        verify_poly = False  # We don't need to verify Conway polynomials are irreducible
-        verify_element = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
-
     # Get default irreducible polynomial
     if irreducible_poly is None:
         irreducible_poly = conway_poly(characteristic, degree)
         is_primitive_poly = True
         verify_poly = False  # We don't need to verify Conway polynomials are irreducible
+        if primitive_element is None:
+            primitive_element = Poly.Identity(prime_subfield)
+            verify_element = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
     elif isinstance(irreducible_poly, int):
         irreducible_poly = Poly.Integer(irreducible_poly, field=prime_subfield)
     elif isinstance(irreducible_poly, (tuple, list, np.ndarray)):
@@ -109,7 +94,6 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "prime_subfield": prime_subfield,
             "compile": compile
         })
-
     else:
         cls = types.new_class(name, bases=(FieldArray,), kwds={
             "metaclass": GFpmMeta,

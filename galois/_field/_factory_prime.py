@@ -1,7 +1,6 @@
 import types
 
 from .._modular import primitive_root, is_primitive_root
-from .._prime import is_prime
 
 from ._array import FieldArray
 from ._gf2 import GF2
@@ -14,13 +13,6 @@ def GF_prime(characteristic, primitive_element=None, verify=True, compile=None, 
     """
     Class factory for prime fields GF(p).
     """
-    if not isinstance(characteristic, int):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
-    if not isinstance(primitive_element, (type(None), int)):
-        raise TypeError(f"Argument `primitive_element` must be an int, not {type(primitive_element)}.")
-    if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
-
     degree = 1
     order = characteristic**degree
     name = f"GF{characteristic}"

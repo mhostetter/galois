@@ -16,14 +16,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     r"""
     Creates an array over :math:`\mathrm{GF}(p^m)`.
 
-    :obj:`galois.FieldArray` is an abstract base class and cannot be instantiated directly. Instead, the user creates a :obj:`galois.FieldArray`
-    subclass for the field :math:`\mathrm{GF}(p^m)` by calling the class factory :func:`galois.GF`, e.g. `GF = galois.GF(p**m)`. In this case,
-    `GF` is a subclass of :obj:`galois.FieldArray` and an instance of :obj:`galois.FieldClass`, a metaclass that defines special methods and attributes
-    related to the Galois field.
-
-    :obj:`galois.FieldArray`, and `GF`, is also a subclass of :obj:`numpy.ndarray` and its constructor `GF(array_like)` has the same syntax as
-    :func:`numpy.array`. The returned :obj:`galois.FieldArray` instance is a :obj:`numpy.ndarray` that is acted upon like any other
-    numpy array, except all arithmetic occurs in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{Z}` or :math:`\mathbb{R}`.
+    Warning
+    -------
+    :obj:`galois.FieldArray` is an abstract base class for all Galois field array classes and cannot be instantiated
+    directly. Instead, :obj:`galois.FieldArray` subclasses are created using the class factory :func:`galois.GF`.
 
     Parameters
     ----------
@@ -54,24 +50,16 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     galois.FieldArray
         The copied input array as a Galois field array over :math:`\mathrm{GF}(p^m)`.
 
-    Warning
-    -------
-        :obj:`galois.FieldArray` is an abstract base class for all Galois field array classes and cannot be instantiated
-        directly. Instead, Galois field array classes are created using the class factory :func:`galois.GF`.
+    Notes
+    -----
+    :obj:`galois.FieldArray` is an abstract base class and cannot be instantiated directly. Instead, the user creates a :obj:`galois.FieldArray`
+    subclass for the field :math:`\mathrm{GF}(p^m)` by calling the class factory :func:`galois.GF`, e.g. `GF = galois.GF(p**m)`. In this case,
+    `GF` is a subclass of :obj:`galois.FieldArray` and an instance of :obj:`galois.FieldClass`, a metaclass that defines special methods and attributes
+    related to the Galois field.
 
-        For example, one can create the :math:`\mathrm{GF}(7)` array class as follows.
-
-        .. ipython:: python
-
-            GF7 = galois.GF(7)
-            print(GF7)
-
-        This subclass can then be used to instantiate arrays over :math:`\mathrm{GF}(7)`.
-
-        .. ipython:: python
-
-            GF7([3,5,0,2,1])
-            GF7.Random((2,5))
+    :obj:`galois.FieldArray`, and `GF`, is a subclass of :obj:`numpy.ndarray` and its constructor `x = GF(array_like)` has the same syntax as
+    :func:`numpy.array`. The returned :obj:`galois.FieldArray` instance `x` is a :obj:`numpy.ndarray` that is acted upon like any other
+    numpy array, except all arithmetic is performed in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{Z}` or :math:`\mathbb{R}`.
 
     Examples
     --------
@@ -91,16 +79,19 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         GF256.dtypes
 
-    Newly-created arrays will use the smallest unsigned dtype, unless otherwise specified. See :func:`Random` for more details.
+    Galois field arrays can be created from existing numpy arrays.
 
     .. ipython:: python
 
-        a = GF256.Random(10); a
-        a.dtype
-        b = GF256.Random(10, dtype=np.int64); b
-        b.dtype
+        x = np.array([155, 232, 162, 159,  63,  29, 247, 141,  75, 189], dtype=int)
 
-    Arrays can also be created explicitly by converting an "array-like" object.
+        # Explicit Galois field array creation (a copy is performed)
+        GF256(x)
+
+        # Or view an existing numpy array as a Galois field array (no copy is performed)
+        x.view(GF256)
+
+    Galois field arrays can also be created explicitly by converting an "array-like" object.
 
     .. ipython:: python
 
@@ -113,25 +104,28 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         # A GF(2^8) array from a list of elements in their integer representation
         GF256([[142, 27], [92, 253]])
 
-        # A GF(2^8) array from a list of elements in their integer and polynomial representation
+        # A GF(2^8) array from a list of elements in their integer and polynomial representations
         GF256([[142, "x^5 + x^2 + 1"], [92, 253]])
 
-    Arrays can be created explicitly from existing numpy array.
+    There's also an alternate constructor :func:`Vector` (and accompanying :func:`vector` method) to convert an array of coefficients
+    over :math:`\mathrm{GF}(p)` with last dimension :math:`m` into Galois field elements in :math:`\mathrm{GF}(p^m)`.
 
     .. ipython:: python
 
-        x = np.array([[142, 27], [92, 253]], dtype=np.int64); x
+        # A scalar GF(2^8) element from its vector representation
+        GF256.Vector([0, 0, 1, 0, 0, 1, 0, 1])
 
-        # A GF(2^8) array from an existing numpy array of elements in their integer representation (a copy is performed)
-        a = GF256(x); a
+        # A GF(2^8) array from a list of elements in their vector representation
+        GF256.Vector([[[1, 0, 0, 0, 1, 1, 1, 0], [0, 0, 0, 1, 1, 0, 1, 1]], [[0, 1, 0, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 1, 0, 1]]])
 
-        # A GF(2^8) array from a view of an existing numpy array of elements in their integer representation (no copy is performed)
-        b = x.view(GF256); b
+    Newly-created arrays will use the smallest unsigned dtype, unless otherwise specified.
 
-        # Changing `x` will not change `a`, but will change `b`
-        x[0,0] = 0; x
-        a
-        b
+    .. ipython:: python
+
+        a = GF256([66, 166, 27, 182, 125]); a
+        a.dtype
+        b = GF256([66, 166, 27, 182, 125], dtype=np.int64); b
+        b.dtype
     """
     # pylint: disable=unsupported-membership-test,not-an-iterable
 

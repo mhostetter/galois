@@ -56,7 +56,7 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
     compile : str, optional
         The ufunc calculation mode. This can be modified after class construction with the :func:`galois.FieldClass.compile` method.
 
-        * `None` (default): For newly-created classes, `None` corresponds to "auto". For Galois field array classes of this type that were
+        * `None` (default): For newly-created classes, `None` corresponds to `"auto"`. For Galois field array classes of this type that were
           previously created, `None` does not modify the current ufunc compilation mode.
         * `"auto"`: Selects "jit-lookup" for fields with order less than :math:`2^{20}`, "jit-calculate" for larger fields, and "python-calculate"
           for fields whose elements cannot be represented with :obj:`numpy.int64`.
