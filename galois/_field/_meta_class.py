@@ -183,7 +183,7 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         return context
 
     def repr_table(cls, primitive_element=None, sort="power"):
-        """
+        r"""
         Generates a field element representation table comparing the power, polynomial, vector, and integer representations.
 
         Parameters
@@ -207,13 +207,30 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
         .. ipython:: python
 
             GF = galois.GF(2**4)
+            print(GF.properties)
+
+        Generate a representation table for :math:`\mathrm{GF}(2^4)`. Since :math:`x^4 + x + 1` is a primitive polynomial,
+        :math:`x` is a primitive element of the field. Notice, :math:`\textrm{ord}(x) = 15`.
+
+        .. ipython:: python
+
             print(GF.repr_table())
-            print(GF.repr_table(sort="int"))
+
+        Generate a representation table for :math:`\mathrm{GF}(2^4)` using a different primitive element :math:`x^3 + x^2 + x`.
+        Notice, :math:`\textrm{ord}(x^3 + x^2 + x) = 15`.
 
         .. ipython:: python
 
             alpha = GF.primitive_elements[-1]
             print(GF.repr_table(alpha))
+
+        Generate a representation table for :math:`\mathrm{GF}(2^4)` using a non-primitive element :math:`x^3 + x^2`. Notice,
+        :math:`\textrm{ord}(x^3 + x^2) = 5 \ne 15`.
+
+        .. ipython:: python
+
+            beta = GF("x^3 + x^2")
+            print(GF.repr_table(beta))
         """
         if sort not in ["power", "poly", "vector", "int"]:
             raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
@@ -226,36 +243,36 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
             idxs = np.argsort(x)
             degrees, x = degrees[idxs], x[idxs]
         x = np.concatenate((np.atleast_1d(cls(0)), x))  # Add 0 = alpha**-Inf
-        prim = cls._print_poly(primitive_element)
+        prim = poly_to_str(integer_to_poly(primitive_element, cls.characteristic))
 
-        N_power = max(len("({})^{}".format(prim, str(cls.order - 1))), len("Power")) + 2
-        N_poly = max([len(cls._print_poly(e)) for e in x] + [len("Polynomial")]) + 2
-        N_vec = max([len(str(integer_to_poly(e, cls.characteristic, degree=cls.degree-1))) for e in x] + [len("Vector")]) + 2
-        N_int = max([len(cls._print_int(e)) for e in x] + [len("Integer")]) + 2
+        # Define print helper functions
+        if len(prim) > 1:
+            print_power = lambda power: "0" if power is None else f"({prim})^{power}"
+        else:
+            print_power = lambda power: "0" if power is None else f"{prim}^{power}"
+        print_poly = lambda x: poly_to_str(integer_to_poly(x, cls.characteristic))
+        print_vec = lambda x: str(integer_to_poly(x, cls.characteristic, degree=cls.degree-1))
+        print_int = lambda x: str(int(x))
+
+        # Determine column widths
+        N_power = max([len(print_power(max(degrees))), len("Power")]) + 2
+        N_poly = max([len(print_poly(e)) for e in x] + [len("Polynomial")]) + 2
+        N_vec = max([len(print_vec(e)) for e in x] + [len("Vector")]) + 2
+        N_int = max([len(print_int(e)) for e in x] + [len("Integer")]) + 2
 
         # Useful characters: https://www.utf8-chartable.de/unicode-utf8-table.pl?start=9472
         string = "╔" + "═"*N_power + "╤" + "═"*N_poly + "╤" + "═"*N_vec + "╤" + "═"*N_int + "╗"
-
-        labels = "║" + "Power".center(N_power) + "│" + "Polynomial".center(N_poly) + "│" + "Vector".center(N_vec) + "│" + "Integer".center(N_int) + "║"
-        string += "\n" + labels
-
-        divider = "║" + "═"*N_power + "╪" + "═"*N_poly + "╪" + "═"*N_vec + "╪" + "═"*N_int + "║"
-        string += "\n" + divider
+        string += "\n║" + "Power".center(N_power) + "│" + "Polynomial".center(N_poly) + "│" + "Vector".center(N_vec) + "│" + "Integer".center(N_int) + "║"
+        string += "\n║" + "═"*N_power + "╪" + "═"*N_poly + "╪" + "═"*N_vec + "╪" + "═"*N_int + "║"
 
         for i in range(x.size):
-            if i  == 0:
-                power = "0"
-            else:
-                power = "({})^{}".format(prim, degrees[i - 1]) if len(prim) > 1 else "{}^{}".format(prim, degrees[i - 1])
-            line = "║" + power.center(N_power) + "│" + cls._print_poly(x[i]).center(N_poly) + "│" + str(integer_to_poly(x[i], cls.characteristic, degree=cls.degree-1)).center(N_vec) + "│" + cls._print_int(x[i]).center(N_int) + "║"
-            string += "\n" + line
+            d = None if i == 0 else degrees[i - 1]
+            string += "\n║" + print_power(d).center(N_power) + "│" + poly_to_str(integer_to_poly(x[i], cls.characteristic)).center(N_poly) + "│" + str(integer_to_poly(x[i], cls.characteristic, degree=cls.degree-1)).center(N_vec) + "│" + cls._print_int(x[i]).center(N_int) + "║"
 
             if i < x.size - 1:
-                divider = "╟" + "─"*N_power + "┼" + "─"*N_poly + "┼" + "─"*N_vec + "┼" + "─"*N_int + "╢"
-                string += "\n" + divider
+                string += "\n╟" + "─"*N_power + "┼" + "─"*N_poly + "┼" + "─"*N_vec + "┼" + "─"*N_int + "╢"
 
-        bottom = "╚" + "═"*N_power + "╧" + "═"*N_poly + "╧"+ "═"*N_vec + "╧" + "═"*N_int + "╝"
-        string += "\n" + bottom
+        string += "\n╚" + "═"*N_power + "╧" + "═"*N_poly + "╧"+ "═"*N_vec + "╧" + "═"*N_int + "╝"
 
         return string
 
@@ -343,29 +360,22 @@ class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
 
         # Useful characters: https://www.utf8-chartable.de/unicode-utf8-table.pl?start=9472
         string = "╔" + "═"*N_left + "╦" + ("═"*N + "╤")*(y.size - 1) + "═"*N + "╗"
-
-        line = "║" + operation_str.rjust(N_left - 1) + " ║"
+        string += "\n║" + operation_str.rjust(N_left - 1) + " ║"
         for j in range(y.size):
-            line += print_element(y[j]).center(N)
-            line += "│" if j < y.size - 1 else "║"
-        string += "\n" + line
-
-        divider = "╠" + "═"*N_left + "╬" + ("═"*N + "╪")*(y.size - 1) + "═"*N + "╣"
-        string += "\n" + divider
+            string += print_element(y[j]).center(N)
+            string += "│" if j < y.size - 1 else "║"
+        string += "\n╠" + "═"*N_left + "╬" + ("═"*N + "╪")*(y.size - 1) + "═"*N + "╣"
 
         for i in range(x.size):
-            line = "║" + print_element(x[i]).rjust(N_left - 1) + " ║"
+            string += "\n║" + print_element(x[i]).rjust(N_left - 1) + " ║"
             for j in range(y.size):
-                line += print_element(Z[i,j]).center(N)
-                line += "│" if j < y.size - 1 else "║"
-            string += "\n" + line
+                string += print_element(Z[i,j]).center(N)
+                string += "│" if j < y.size - 1 else "║"
 
             if i < x.size - 1:
-                divider = "╟" + "─"*N_left + "╫" + ("─"*N + "┼")*(y.size - 1) + "─"*N + "╢"
-                string += "\n" + divider
+                string += "\n╟" + "─"*N_left + "╫" + ("─"*N + "┼")*(y.size - 1) + "─"*N + "╢"
 
-        bottom = "╚" + "═"*N_left + "╩" + ("═"*N + "╧")*(y.size - 1) + "═"*N + "╝"
-        string += "\n" + bottom
+        string += "\n╚" + "═"*N_left + "╩" + ("═"*N + "╧")*(y.size - 1) + "═"*N + "╝"
 
         return string
 
