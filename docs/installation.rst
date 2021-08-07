@@ -33,7 +33,7 @@ Install for development with min dependencies
 
 The package dependencies have minimum supported versions. They are stored in `requirements-min.txt`.
 
-.. literalinclude:: ../../requirements-min.txt
+.. literalinclude:: ../requirements-min.txt
    :caption: requirements-min.txt
    :linenos:
 
