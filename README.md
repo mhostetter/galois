@@ -24,18 +24,7 @@ calculation (for memory savings).
 - [Installation](#installation)
 - [Versioning](#versioning)
 - [Basic Usage](#basic-usage)
-  - [Galois field arrays](#galois-field-arrays)
-    - [Class construction](#class-construction)
-    - [Array creation](#array-creation)
-    - [Field arithmetic](#field-arithmetic)
-    - [Linear algebra](#linear-algebra)
-    - [NumPy ufunc methods](#numpy-ufunc-methods)
-  - [Polynomials over Galois fields](#polynomials-over-galois-fields)
-  - [Forward error correction codes](#forward-error-correction-codes)
 - [Performance](#performance)
-  - [Lookup performance](#lookup-performance)
-  - [Calculation performance](#calculation-performance)
-  - [Linear algebra performance](#linear-algebra-performance)
 - [Acknowledgements](#acknowledgements)
 
 ## Features
@@ -54,8 +43,8 @@ calculation (for memory savings).
 
 ## Roadmap
 
-- Number-theoretic transform, DFT over Galois fields
 - Elliptic curves over Galois fields
+- Number-theoretic transform, DFT over Galois fields
 - Group and ring arrays
 - GPU support
 
