@@ -15,7 +15,7 @@ from ._poly_functions import primitive_element as _primitive_element  # To avoid
 # pylint: disable=redefined-builtin
 
 
-def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, compile="auto", display=None):
+def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, compile=None, display=None):
     """
     Class factory for extension fields GF(p^m).
     """
@@ -80,12 +80,15 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     key = (order, primitive_element.integer, irreducible_poly.integer)
     if key in GF_extension._classes:
         cls = GF_extension._classes[key]
-        cls.compile(compile)
+        if compile is not None:
+            cls.compile(compile)
         if display is not None:
             cls.display(display)
         return cls
 
-    # Since this is a new class build, set compile and display to default values
+    # Since this is a new class, set `compile` and `display` to their default values
+    if compile is None:
+        compile = "auto"
     if display is None:
         display = "int"
 
