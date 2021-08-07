@@ -20,5 +20,6 @@ https://colorhunt.co/palette/f0ebcc3d84b8344fa13f3697
 ## Versions
 
 * `galois-heading.png` exported with 640 pixel height
+* `galois-github-social.png` exported with 1280x640 pixels
 * `galois-logo.png` exported with 480 pixel height
 * `galois-logo-small.png` exported with 120 pixel height
