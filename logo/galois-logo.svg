@@ -9,16 +9,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="400mm"
-   height="150mm"
-   viewBox="0 0 400 150"
+   width="1279.9995mm"
+   height="364.89301mm"
+   viewBox="0 0 1279.9995 364.89301"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    sodipodi:docname="galois-logo.svg"
-   inkscape:export-filename="/home/matt/repos/galois/logo/galois-logo.png"
-   inkscape:export-xdpi="33.866665"
-   inkscape:export-ydpi="33.866665">
+   inkscape:export-filename="/home/matt/repos/galois/logo/galois-heading.png"
+   inkscape:export-xdpi="44.550045"
+   inkscape:export-ydpi="44.550045">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="857.18162"
-     inkscape:cy="169.65657"
+     inkscape:zoom="0.175"
+     inkscape:cx="1838.1664"
+     inkscape:cy="723.81042"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -39,7 +39,11 @@
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
-     showborder="false" />
+     showborder="true"
+     fit-margin-top="10"
+     fit-margin-left="10"
+     fit-margin-right="10"
+     fit-margin-bottom="10" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -48,7 +52,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -56,24 +60,25 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-147)">
+     transform="translate(-1.0728836e-6,67.893001)">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32.99677658px;line-height:1.25;font-family:'Lohit Telugu';-inkscape-font-specification:'Lohit Telugu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#6d6d6d;fill-opacity:1;stroke:none;stroke-width:0.82491958"
-       x="-140.88921"
-       y="324.97528"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64.61212158px;line-height:1.25;font-family:'Lohit Telugu';-inkscape-font-specification:'Lohit Telugu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#6d6d6d;fill-opacity:1;stroke:none;stroke-width:1.61530328"
+       x="9.3690233"
+       y="273.24469"
        id="text13"
        inkscape:export-xdpi="36.052204"
        inkscape:export-ydpi="36.052204"><tspan
          sodipodi:role="line"
          id="tspan11"
-         x="-140.88921"
-         y="324.97528"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32.99677658px;font-family:'Lohit Telugu';-inkscape-font-specification:'Lohit Telugu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#6d6d6d;fill-opacity:1;stroke-width:0.82491958">A performant NumPy extension for Galois fields</tspan></text>
+         x="9.3690233"
+         y="273.24469"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64.61212158px;font-family:'Lohit Telugu';-inkscape-font-specification:'Lohit Telugu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#6d6d6d;fill-opacity:1;stroke-width:1.61530328">A performant NumPy extension for Galois fields</tspan></text>
     <g
        id="g916"
-       inkscape:export-xdpi="36.052204"
-       inkscape:export-ydpi="36.052204">
+       inkscape:export-xdpi="46.418945"
+       inkscape:export-ydpi="46.418945"
+       transform="matrix(1.9581343,0,0,1.9581343,285.24901,-363.10056)">
       <text
          transform="scale(1.0003242,0.99967591)"
          id="text3780"
