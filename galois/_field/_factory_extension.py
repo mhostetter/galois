@@ -15,7 +15,7 @@ from ._poly_functions import primitive_element as _primitive_element  # To avoid
 # pylint: disable=redefined-builtin
 
 
-def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, compile="auto", display="int"):
+def GF_extension(characteristic, degree, irreducible_poly=None, primitive_element=None, verify=True, compile="auto", display=None):
     """
     Class factory for extension fields GF(p^m).
     """
@@ -28,7 +28,9 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
         raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
     if not degree > 1:
         raise ValueError(f"Argument `degree` must be greater than 1, not {degree}.")
+
     order = characteristic**degree
+    name = f"GF{characteristic}_{degree}"
     prime_subfield = GF_prime(characteristic)
     is_primitive_poly = None
     verify_poly = verify
@@ -79,10 +81,13 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
     if key in GF_extension._classes:
         cls = GF_extension._classes[key]
         cls.compile(compile)
-        cls.display(display)
+        if display is not None:
+            cls.display(display)
         return cls
 
-    name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
+    # Since this is a new class build, set compile and display to default values
+    if display is None:
+        display = "int"
 
     if verify_poly and not is_irreducible(irreducible_poly):
         raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly} is not.")
@@ -94,7 +99,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "metaclass": GF2mMeta,
             "characteristic": characteristic,
             "degree": degree,
-            "order": characteristic**degree,
+            "order": order,
             "irreducible_poly": irreducible_poly,
             "is_primitive_poly": is_primitive_poly,
             "primitive_element": primitive_element.integer,
@@ -107,7 +112,7 @@ def GF_extension(characteristic, degree, irreducible_poly=None, primitive_elemen
             "metaclass": GFpmMeta,
             "characteristic": characteristic,
             "degree": degree,
-            "order": characteristic**degree,
+            "order": order,
             "irreducible_poly": irreducible_poly,
             "is_primitive_poly": is_primitive_poly,
             "primitive_element": primitive_element.integer,
