@@ -7,7 +7,7 @@ import numpy as np
 import galois
 
 from .helper import random_errors
-galois.GF2, 
+
 CODES = [
     (15, 11),  # GF(2^4) with t=1
     (15, 7),  # GF(2^4) with t=2
@@ -25,6 +25,26 @@ CODES = [
     (63, 30),  # GF(2^6) with t=6
     (63, 24),  # GF(2^6) with t=7
 ]
+
+
+def test_exceptions():
+    # Systematic
+    n, k = 15, 7
+    bch = galois.BCH(n, k)
+    GF = galois.GF2
+    with pytest.raises(TypeError):
+        bch.decode(GF.Random(n).tolist())
+    with pytest.raises(ValueError):
+        bch.decode(GF.Random(n + 1))
+
+    # Non-systematic
+    n, k = 15, 7
+    bch = galois.BCH(n, k, systematic=False)
+    GF = galois.GF2
+    with pytest.raises(TypeError):
+        bch.decode(GF.Random(n).tolist())
+    with pytest.raises(ValueError):
+        bch.decode(GF.Random(n - 1))
 
 
 class TestSystematic:

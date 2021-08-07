@@ -25,6 +25,26 @@ CODES = [
 ]
 
 
+def test_exceptions():
+    # Systematic
+    n, k = 15, 11
+    rs = galois.ReedSolomon(n, k)
+    GF = rs.field
+    with pytest.raises(TypeError):
+        rs.detect(GF.Random(n).tolist())
+    with pytest.raises(ValueError):
+        rs.detect(GF.Random(n + 1))
+
+    # Non-systematic
+    n, k = 15, 11
+    rs = galois.ReedSolomon(n, k, systematic=False)
+    GF = rs.field
+    with pytest.raises(TypeError):
+        rs.detect(GF.Random(n).tolist())
+    with pytest.raises(ValueError):
+        rs.detect(GF.Random(n - 1))
+
+
 class TestSystematic:
     @pytest.mark.parametrize("size", CODES)
     def test_no_errors(self, size):

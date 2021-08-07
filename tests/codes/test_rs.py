@@ -7,9 +7,40 @@ References
 ----------
 * https://octave.sourceforge.io/communications/function/rsgenpoly.html
 """
+import pytest
 import numpy as np
 
 import galois
+
+
+def test_rs_exceptions():
+    with pytest.raises(TypeError):
+        galois.ReedSolomon(15.0, 11)
+    with pytest.raises(TypeError):
+        galois.ReedSolomon(15, 11.0)
+    with pytest.raises(TypeError):
+        galois.ReedSolomon(15, 11, c=1.0)
+    with pytest.raises(TypeError):
+        galois.ReedSolomon(15, 11, primitive_poly=19.0)
+    with pytest.raises(TypeError):
+        galois.ReedSolomon(15, 11, systematic=1)
+
+    with pytest.raises(ValueError):
+        galois.ReedSolomon(15, 12)
+    with pytest.raises(ValueError):
+        galois.ReedSolomon(14, 12)
+    with pytest.raises(ValueError):
+        galois.ReedSolomon(15, 11, c=0)
+
+
+def test_str():
+    rs = galois.ReedSolomon(15, 11)
+    assert str(rs) == "<Reed-Solomon Code: [15, 11, 5] over GF(2^4)>"
+
+
+def test_repr():
+    rs = galois.ReedSolomon(15, 11)
+    assert repr(rs) == "<Reed-Solomon Code: [15, 11, 5] over GF(2^4)>"
 
 
 def test_rs_generator_poly():
@@ -45,7 +76,7 @@ def test_rs_generator_poly():
     # assert np.array_equal(galois.ReedSolomon(2**16 - 1, 2**16 - 7).generator_poly.coeffs, [1, 126, 3224, 57024, 11322, 24786, 8566])
 
 
-def test_rs_generator_poly_diff_c():
+def test_rs_generator_poly_specify_c():
     # Octave rsgenpoly(15, k, 19, 2)
     assert np.array_equal(galois.ReedSolomon(15, 13, c=2).generator_poly.coeffs, [1, 12, 6])
     assert np.array_equal(galois.ReedSolomon(15, 11, c=2).generator_poly.coeffs, [1, 9, 5, 12, 9])
@@ -59,7 +90,7 @@ def test_rs_generator_poly_diff_c():
     assert np.array_equal(galois.ReedSolomon(15, 11, c=4).generator_poly.coeffs, [1, 2, 15, 15, 11])
 
 
-def test_rs_generator_poly_diff_primitive_poly():
+def test_rs_generator_poly_specify_primitive_poly():
     # Octave rsgenpoly(31, k, 41)
     p = galois.Poly.Degrees([5,3,0])
     assert np.array_equal(galois.ReedSolomon(31, 29, primitive_poly=p).generator_poly.coeffs, [1, 6, 8])
@@ -95,15 +126,23 @@ def test_rs_parity_check_matrix():
     assert np.array_equal(rs.H, np.fliplr(H_truth))  # NOTE: We use the convention of polynomial highest degree first, not last
 
 
-# def test_rs_properties():
-#     rs = galois.ReedSolomon(7, 4)
-#     assert (rs.n, rs.k, rs.t) == (7, 4, 1)
+def test_rs_properties():
+    rs = galois.ReedSolomon(7, 5)
+    assert (rs.n, rs.k, rs.t) == (7, 5, 1)
+    assert rs.c == 1
+    assert rs.is_narrow_sense == True
 
-#     rs = galois.ReedSolomon(15, 11)
-#     assert (rs.n, rs.k, rs.t) == (15, 11, 1)
+    rs = galois.ReedSolomon(15, 11)
+    assert (rs.n, rs.k, rs.t) == (15, 11, 2)
+    assert rs.c == 1
+    assert rs.is_narrow_sense == True
 
-#     rs = galois.ReedSolomon(15, 7)
-#     assert (rs.n, rs.k, rs.t) == (15, 7, 2)
+    rs = galois.ReedSolomon(15, 7)
+    assert (rs.n, rs.k, rs.t) == (15, 7, 4)
+    assert rs.c == 1
+    assert rs.is_narrow_sense == True
 
-#     rs = galois.ReedSolomon(15, 5)
-#     assert (rs.n, rs.k, rs.t) == (15, 5, 3)
+    rs = galois.ReedSolomon(15, 5)
+    assert (rs.n, rs.k, rs.t) == (15, 5, 5)
+    assert rs.c == 1
+    assert rs.is_narrow_sense == True
