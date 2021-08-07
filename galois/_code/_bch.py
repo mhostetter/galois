@@ -73,6 +73,8 @@ def bch_valid_codes(n, t_min=1):
         galois.bch_valid_codes(31)
         galois.bch_valid_codes(31, t_min=3)
     """
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not isinstance(t_min, (int, np.integer)):
         raise TypeError(f"Argument `t_min` must be an integer, not {type(t_min)}.")
     if not t_min >= 1:

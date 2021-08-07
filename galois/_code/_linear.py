@@ -37,7 +37,7 @@ def generator_to_parity_check_matrix(G):
         G @ H.T
     """
     if not isinstance(G, (FieldArray)):
-        raise TypeError(f"Argument `G` must be an np.ndarray or galois.FieldArray, not {type(G)}.")
+        raise TypeError(f"Argument `G` must be a galois.FieldArray, not {type(G)}.")
 
     field = type(G)
     k, n = G.shape
@@ -80,7 +80,7 @@ def parity_check_to_generator_matrix(H):
         G2 @ H.T
     """
     if not isinstance(H, (FieldArray)):
-        raise TypeError(f"Argument `H` must be an np.ndarray or galois.FieldArray, not {type(H)}.")
+        raise TypeError(f"Argument `H` must be a galois.FieldArray, not {type(H)}.")
 
     field = type(H)
     n_k, n = H.shape

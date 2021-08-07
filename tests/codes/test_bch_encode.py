@@ -31,6 +31,26 @@ CODES = [
 ]
 
 
+def test_exceptions():
+    # Systematic
+    n, k = 15, 7
+    bch = galois.BCH(n, k)
+    GF = galois.GF2
+    with pytest.raises(TypeError):
+        bch.encode(GF.Random(k).tolist())
+    with pytest.raises(ValueError):
+        bch.encode(GF.Random(k + 1))
+
+    # Non-systematic
+    n, k = 15, 7
+    bch = galois.BCH(n, k, systematic=False)
+    GF = galois.GF2
+    with pytest.raises(TypeError):
+        bch.encode(GF.Random(k).tolist())
+    with pytest.raises(ValueError):
+        bch.encode(GF.Random(k - 1))
+
+
 @pytest.mark.parametrize("size", CODES)
 def test_systematic(size):
     n, k = size[0], size[1]
