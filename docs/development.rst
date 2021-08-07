@@ -8,7 +8,7 @@ Lint the package
 
 Linting is done with `pylint <https://www.pylint.org/>`_. The linting dependencies are stored in `requirements-lint.txt`.
 
-.. literalinclude:: ../../requirements-lint.txt
+.. literalinclude:: ../requirements-lint.txt
    :caption: requirements-lint.txt
    :linenos:
 
@@ -31,7 +31,7 @@ Unit testing is done through `pytest <https://docs.pytest.org/en/stable/>`_. The
 against test vectors, stored in `tests/data/`. generated using `SageMath <https://www.sagemath.org/>`_.
 See the `scripts/generate_test_vectors.py` script. The testing dependencies are stored in `requirements-test.txt`.
 
-.. literalinclude:: ../../requirements-test.txt
+.. literalinclude:: ../requirements-test.txt
    :caption: requirements-test.txt
    :linenos:
 
@@ -53,7 +53,7 @@ Build the documentation
 The documentation is generated with `Sphinx <https://www.sphinx-doc.org/en/master/>`_. The dependencies are
 stored in `requirements-doc.txt`.
 
-.. literalinclude:: ../../requirements-doc.txt
+.. literalinclude:: ../requirements-doc.txt
    :caption: requirements-doc.txt
    :linenos:
 
