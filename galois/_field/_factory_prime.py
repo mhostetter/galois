@@ -1,6 +1,6 @@
 import types
 
-from .._modular import is_primitive_root
+from .._modular import primitive_root, is_primitive_root
 from .._prime import is_prime
 
 from ._array import FieldArray
@@ -10,7 +10,7 @@ from ._meta_gfp import GFpMeta
 # pylint: disable=redefined-builtin
 
 
-def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto", display="int"):
+def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto", display=None):
     """
     Class factory for prime fields GF(p).
     """
@@ -20,24 +20,34 @@ def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto"
         raise TypeError(f"Argument `primitive_element` must be an int, not {type(primitive_element)}.")
     if not is_prime(characteristic):
         raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+
     degree = 1
     order = characteristic**degree
+    name = f"GF{characteristic}"
+
+    # Get default primitive element
+    if primitive_element is None:
+        primitive_element = primitive_root(characteristic)
+
+    # Check primitive element range
+    if not 0 < primitive_element < order:
+        raise ValueError(f"Argument `primitive_element` must be non-zero in the field 0 < x < {order}, not {primitive_element}.")
 
     # If the requested field has already been constructed, return it
     key = (order, primitive_element)
     if key in GF_prime._classes:
         cls = GF_prime._classes[key]
         cls.compile(compile)
-        cls.display(display)
+        if display is not None:
+            cls.display(display)
         return cls
 
-    name = f"GF{characteristic}_{degree}" if degree > 1 else f"GF{characteristic}"
+    # Since this is a new class, set compile and display to default values
+    if display is None:
+        display = "int"
 
-    if primitive_element is not None:
-        if not 0 < primitive_element < order:
-            raise ValueError(f"Argument `primitive_element` must be non-zero in the field 0 < x < {order}, not {primitive_element}.")
-        if verify and not is_primitive_root(primitive_element, characteristic):
-            raise ValueError(f"Argument `primitive_element` must be a primitive root modulo {characteristic}, {primitive_element} is not.")
+    if verify and not is_primitive_root(primitive_element, characteristic):
+        raise ValueError(f"Argument `primitive_element` must be a primitive root modulo {characteristic}, {primitive_element} is not.")
 
     if characteristic == 2:
         cls = GF2
@@ -46,8 +56,8 @@ def GF_prime(characteristic, primitive_element=None, verify=True, compile="auto"
         cls = types.new_class(name, bases=(FieldArray,), kwds={
             "metaclass": GFpMeta,
             "characteristic": characteristic,
-            "degree": 1,
-            "order": characteristic**1,
+            "degree": degree,
+            "order": order,
             "primitive_element": primitive_element,
             "is_primitive_poly": True,
             "compile": compile
