@@ -376,7 +376,7 @@ def python_func(name):
 
 FIBONACCI_LFSR_STEP_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
-def fibonacci_lfsr_step_calculate(poly, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+def fibonacci_lfsr_step_calculate(poly, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
     dtype = state.dtype
 
@@ -399,7 +399,7 @@ def fibonacci_lfsr_step_calculate(poly, state, steps, ADD, MULTIPLY, CHARACTERIS
 
 GALOIS_LFSR_STEP_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
-def galois_lfsr_step_calculate(poly, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+def galois_lfsr_step_calculate(poly, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
     dtype = state.dtype
 
