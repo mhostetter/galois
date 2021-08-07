@@ -26,6 +26,7 @@ calculation (for memory savings).
 - [Basic Usage](#basic-usage)
 - [Performance](#performance)
 - [Acknowledgements](#acknowledgements)
+- [Citation](#citation)
 
 ## Features
 
@@ -645,3 +646,17 @@ In [8]: %timeit AA @ BB
 This package heavily relies on [Numba](https://numba.pydata.org/) and its just-in-time compiler for performance.
 We use Frank Luebeck's [compilation of Conway polynomials](http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html)
 for computing primitive polynomials for extension fields. We utilize [SageMath](https://www.sagemath.org/) for generating test vectors.
+
+## Citation
+
+If this library was useful to you in your research, feel free to cite us. Following other Python package
+[citation standards](https://github.com/leonoverweel/bibtex-python-package-citations), here is the recommended citation.
+
+```bibtex
+@misc{galois,
+    title={Galois: A performant NumPy extension for Galois fields},
+    author={Matt Hostetter},
+    year={2020},
+    howpublished={\url{https://galois.readthedocs.io/en/stable/}},
+}
+```

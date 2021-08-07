@@ -17,6 +17,7 @@
    :maxdepth: 1
 
    release-notes.md
+   citation.md
 
 Indices and tables
 ------------------
