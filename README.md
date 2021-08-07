@@ -10,16 +10,13 @@
 
 The main idea of the `galois` package can be summarized as follows. The user creates a "Galois field array class" using `GF = galois.GF(p**m)`.
 A Galois field array class `GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)` mimics
-the call signature of `np.array()`. A Galois field array `x` is operated on like any other numpy array, but all
+the call signature of `np.array()`. A Galois field array `x` is operated on like any other NumPy array, but all
 arithmetic is performed in `GF(p^m)` not **Z** or **R**.
 
-Internally, the Galois field arithmetic is implemented by replacing [numpy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html).
-The new ufuncs are written in python and then [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
-[numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit
+Internally, the Galois field arithmetic is implemented by replacing [NumPy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html).
+The new ufuncs are written in Python and then [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
+[Numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit
 calculation (for memory savings).
-
-In addition to normal array arithmetic, `galois` also supports linear algebra (with `np.linalg` functions), polynomials
-over Galois fields (with `galois.Poly`), and forward error correction codes (with `galois.BCH` and `galois.ReedSolomon`).
 
 - [Features](#features)
 - [Roadmap](#roadmap)
@@ -32,10 +29,9 @@ over Galois fields (with `galois.Poly`), and forward error correction codes (wit
     - [Array creation](#array-creation)
     - [Field arithmetic](#field-arithmetic)
     - [Linear algebra](#linear-algebra)
-    - [Numpy ufunc methods](#numpy-ufunc-methods)
+    - [NumPy ufunc methods](#numpy-ufunc-methods)
   - [Polynomials over Galois fields](#polynomials-over-galois-fields)
-  - [BCH codes](#bch-codes)
-  - [Reed-Solomon codes](#reed-solomon-codes)
+  - [Forward error correction codes](#forward-error-correction-codes)
 - [Performance](#performance)
   - [Lookup performance](#lookup-performance)
   - [Calculation performance](#calculation-performance)
@@ -45,8 +41,8 @@ over Galois fields (with `galois.Poly`), and forward error correction codes (wit
 ## Features
 
 - Supports all [Galois fields](https://galois.readthedocs.io/en/stable/api/galois-fields.html#) `GF(p^m)`, even arbitrarily-large fields!
-- **Faster** than native numpy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`
-- Seamless integration with numpy -- normal numpy functions work on Galois field arrays
+- **Faster** than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`
+- Seamless integration with NumPy -- normal NumPy functions work on Galois field arrays
 - [Linear algebra](https://galois.readthedocs.io/en/stable/api/numpy-examples.html#linear-algebra) on Galois field matrices using normal `np.linalg` functions
 - [Functions](https://galois.readthedocs.io/en/stable/api/polys.html#special-polynomial-creation) to generate irreducible, primitive, and Conway polynomials
 - [Polynomials](https://galois.readthedocs.io/en/stable/api/polys.html) over Galois fields with `galois.Poly`
@@ -105,7 +101,7 @@ Galois field array classes are created using the `galois.GF()` class factory fun
 <class 'numpy.ndarray over GF(2^8)'>
 ```
 
-These classes are subclasses of `galois.FieldArray` (which itself subclasses `np.ndarray`) and are instances of `galois.FieldClass`.
+These classes are subclasses of `galois.FieldArray` (which itself subclasses `np.ndarray`) and have `galois.FieldClass` as their metaclass.
 
 ```python
 >>> isinstance(GF256, galois.FieldClass)
@@ -118,7 +114,7 @@ True
 True
 ```
 
-A Galois field array class contains attributes relating to its Galois field and has methods to modify how the field
+A Galois field array class contains attributes relating to its Galois field and methods to modify how the field
 is calculated or displayed. See the attributes and methods in `galois.FieldClass`.
 
 ```python
@@ -128,18 +124,18 @@ GF(2^8):
   characteristic: 2
   degree: 8
   order: 256
-  irreducible_poly: Poly(x^8 + x^4 + x^3 + x^2 + 1, GF(2))
+  irreducible_poly: x^8 + x^4 + x^3 + x^2 + 1
   is_primitive_poly: True
-  primitive_element: GF(2, order=2^8)
+  primitive_element: x
 
 # Access each attribute individually
 >>> GF256.irreducible_poly
 Poly(x^8 + x^4 + x^3 + x^2 + 1, GF(2))
 ```
 
-The `galois` package even supports arbitrarily-large fields! This is accomplished by using numpy arrays
-with `dtype=object` and pure-python ufuncs. This comes at a performance penalty compared to smaller fields
-which use numpy integer dtypes (e.g., `np.uint32`) and have compiled ufuncs.
+The `galois` package even supports arbitrarily-large fields! This is accomplished by using NumPy arrays
+with `dtype=object` and pure-Python ufuncs. This comes at a performance penalty compared to smaller fields
+which use NumPy integer dtypes (e.g., `np.uint32`) and have compiled ufuncs.
 
 ```python
 >>> GF = galois.GF(36893488147419103183); print(GF.properties)
@@ -147,20 +143,23 @@ GF(36893488147419103183):
   characteristic: 36893488147419103183
   degree: 1
   order: 36893488147419103183
+  irreducible_poly: x + 36893488147419103180
+  is_primitive_poly: True
+  primitive_element: 3
 
 >>> GF = galois.GF(2**100); print(GF.properties)
 GF(2^100):
   characteristic: 2
   degree: 100
   order: 1267650600228229401496703205376
-  irreducible_poly: Poly(x^100 + x^57 + x^56 + x^55 + x^52 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^41 + x^37 + x^36 + x^35 + x^34 + x^31 + x^30 + x^27 + x^25 + x^24 + x^22 + x^20 + x^19 + x^16 + x^15 + x^11 + x^9 + x^8 + x^6 + x^5 + x^3 + 1, GF(2))
+  irreducible_poly: x^100 + x^57 + x^56 + x^55 + x^52 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^41 + x^37 + x^36 + x^35 + x^34 + x^31 + x^30 + x^27 + x^25 + x^24 + x^22 + x^20 + x^19 + x^16 + x^15 + x^11 + x^9 + x^8 + x^6 + x^5 + x^3 + 1
   is_primitive_poly: True
-  primitive_element: GF(2, order=2^100)
+  primitive_element: x
 ```
 
 #### Array creation
 
-Galois field arrays can be created from existing numpy arrays.
+Galois field arrays can be created from existing NumPy arrays.
 
 ```python
 # Represents an existing numpy array
@@ -203,18 +202,18 @@ power representation. Calling `FieldClass.display` will change the element repre
 manager, the display mode will only be temporarily changed.
 
 ```python
->>> x = GF256(["y**6 + 1", 0, 2, "1", "y**5 + y**4 + y"]); x
+>>> a = GF256(["x^6 + 1", 0, 2, "1", "x^5 + x^4 + x"]); a
 GF([65,  0,  2,  1, 50], order=2^8)
 
 # Set the display mode to represent GF(2^8) field elements as polynomials over GF(2) with degree less than 8
 >>> GF256.display("poly");
 
->>> x
+>>> a
 GF([α^6 + 1, 0, α, 1, α^5 + α^4 + α], order=2^8)
 
 # Temporarily set the display mode to represent GF(2^8) field elements as powers of the primitive element
 >>> with GF256.display("power"):
-...     print(x)
+...     print(a)
 
 GF([α^191, 0, α, 1, α^194], order=2^8)
 
@@ -224,11 +223,11 @@ GF([α^191, 0, α, 1, α^194], order=2^8)
 
 #### Field arithmetic
 
-Galois field arrays are treated like any other numpy array. Array arithmetic is performed using python operators or numpy
+Galois field arrays are treated like any other NumPy array. Array arithmetic is performed using Python operators or NumPy
 functions.
 
 In the list below, `GF` is a Galois field array class created by `GF = galois.GF(p**m)`, `x` and `y` are `GF` arrays, and `z` is an
-integer `np.ndarray`. All arithmetic operations follow normal numpy [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) rules.
+integer `np.ndarray`. All arithmetic operations follow normal NumPy [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) rules.
 
 - Addition: `x + y == np.add(x, y)`
 - Subtraction: `x - y == np.subtract(x, y)`
@@ -258,7 +257,7 @@ GF([[191,  33,  85,  77,  88],
 
 #### Linear algebra
 
-The `galois` package intercepts relevant calls to numpy's linear algebra functions and performs the specified
+The `galois` package intercepts relevant calls to NumPy's linear algebra functions and performs the specified
 operation in `GF(p^m)` not in **R**. Some of these functions include:
 
 - `np.dot`, `np.vdot`, `np.inner`, `np.outer`, `np.matmul`, `np.linalg.matrix_power`
@@ -281,13 +280,13 @@ GF([114, 170, 178], order=2^8)
 True
 ```
 
-Galois field arrays also contain matrix decomposition routines not included in numpy. These include:
+Galois field arrays also contain matrix decomposition routines not included in NumPy. These include:
 
 - `FieldArray.row_reduce`, `FieldArray.lu_decompose`, `FieldArray.lup_decompose`
 
-#### Numpy ufunc methods
+#### NumPy ufunc methods
 
-Galois field arrays support [numpy ufunc methods](https://numpy.org/devdocs/reference/ufuncs.html#methods). This allows the user to apply a ufunc in a unique way across the target
+Galois field arrays support [NumPy ufunc methods](https://numpy.org/devdocs/reference/ufuncs.html#methods). This allows the user to apply a ufunc in a unique way across the target
 array. The ufunc method signature is `<ufunc>.<method>(*args, **kwargs)`. All arithmetic ufuncs are supported. Below
 is a list of their ufunc methods.
 
@@ -337,7 +336,7 @@ GF([ 33,  17,   0, 225], order=2^8)
 Poly(225x^3 + 17x + 33, GF(2^8))
 ```
 
-Polynomials over Galois fields can also display the field elements as polynomials over their prime subfields.
+Polynomials over Galois fields can also display their coefficients as polynomials over their prime subfields.
 This can be quite confusing to read, so be warned!
 
 ```python
@@ -363,7 +362,7 @@ Poly(x^2 + 190x + 71, GF(2^8))
 GF([ 37, 155], order=2^8)
 ```
 
-Polynomial arithmetic is performed using python operators.
+Polynomial arithmetic is performed using Python operators.
 
 ```python
 >>> p
@@ -421,117 +420,67 @@ GF(2, order=2^8)
 GF(0, order=2^8)
 ```
 
-### BCH codes
+### Forward error correction codes
 
-See full [documentation](https://galois.readthedocs.io/en/stable/api/galois.BCH.html#galois.BCH).
+To demonstrate the FEC code API, here is an example using BCH codes. Other FEC codes have a similar API.
 
 ```python
-In [1]: import numpy as np
+>>> import numpy as np
 
-In [2]: import galois
+>>> import galois
 
-In [3]: bch = galois.BCH(15, 7)
+>>> bch = galois.BCH(15, 7); bch
+<BCH Code: [15, 7, 5] over GF(2)>
 
-# Messages can be either vectors or matrices of np.ndarray or galois.FieldArray (galois.GF2 in this case)
-In [4]: M = np.random.randint(0, 2, (5,bch.k)); M
-Out[4]:
-array([[1, 0, 0, 0, 1, 1, 1],
-       [0, 1, 1, 1, 1, 1, 1],
-       [1, 0, 0, 0, 0, 1, 0],
-       [1, 1, 0, 0, 1, 1, 1],
-       [0, 1, 1, 1, 1, 1, 1]])
+>>> bch.generator_poly
+Poly(x^8 + x^7 + x^6 + x^4 + 1, GF(2))
 
-In [5]: C = bch.encode(M); C
-Out[5]:
-array([[1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0],
-       [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1],
-       [1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1],
-       [1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0],
-       [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1]])
-
-# Corrupt the first bit in each codeword
-In [6]: C[:,0] ^= 1; C
-Out[6]:
-array([[0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0],
-       [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1],
-       [0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1],
-       [0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0],
-       [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1]])
-
-In [7]: bch.decode(C)
-Out[7]:
-array([[1, 0, 0, 0, 1, 1, 1],
-       [0, 1, 1, 1, 1, 1, 1],
-       [1, 0, 0, 0, 0, 1, 0],
-       [1, 1, 0, 0, 1, 1, 1],
-       [0, 1, 1, 1, 1, 1, 1]])
+# The error-correcting capability
+>>> bch.t
+2
 ```
 
-### Reed-Solomon codes
-
-See full [documentation](https://galois.readthedocs.io/en/stable/api/galois.ReedSolomon.html).
+A message can be either a 1-D vector or a 2-D matrix of messages. Shortened codes are also supported. See the docs for more details.
 
 ```python
-In [1]: import numpy as np
+# Create a matrix of two messages
+>>> M = galois.GF2.Random((2, bch.k)); M
+GF([[1, 1, 0, 1, 0, 1, 1],
+    [1, 1, 0, 1, 1, 1, 0]], order=2)
+```
 
-In [2]: import galois
+Encoding the message(s) is performed with `encode()`.
 
-In [3]: rs = galois.ReedSolomon(15, 9)
+```python
+>>> C = bch.encode(M); C
+GF([[1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1],
+    [1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0]], order=2)
+```
 
-In [4]: (rs.n, rs.k, rs.t)
-Out[4]: (15, 9, 3)
+Decoding the codeword(s) is performed with `decode()`.
 
-In [5]: GF = rs.field; GF
-Out[5]: <class 'numpy.ndarray over GF(2^4)'>
+```python
+# Corrupt the first bit in each codeword
+C[:,0] ^= 1; C
+GF([[0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1],
+    [0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0]], order=2)
 
-# Messages can be either vectors or matrices of np.ndarray or galois.FieldArray
-In [6]: M = GF.Random((5,rs.k)); M
-Out[6]:
-GF([[ 0, 11, 13,  7,  9,  9,  3,  2, 12],
-    [ 0,  8, 15, 10, 13,  2,  6,  2,  6],
-    [ 1,  9, 13,  1, 13,  2,  6,  4, 12],
-    [ 5, 14, 11, 10,  9, 15,  5,  0,  0],
-    [ 6,  1,  4,  9,  9,  3, 14, 11, 13]], order=2^4)
-
-In [7]: C = rs.encode(M); C
-Out[7]:
-GF([[ 0, 11, 13,  7,  9,  9,  3,  2, 12,  6,  3, 13,  0,  8,  4],
-    [ 0,  8, 15, 10, 13,  2,  6,  2,  6,  1, 15,  8, 14,  0, 15],
-    [ 1,  9, 13,  1, 13,  2,  6,  4, 12,  8, 11,  7,  1,  5, 13],
-    [ 5, 14, 11, 10,  9, 15,  5,  0,  0,  1,  8, 13, 12, 13,  3],
-    [ 6,  1,  4,  9,  9,  3, 14, 11, 13, 10,  0, 12,  3,  0,  1]],
-   order=2^4)
-
-# Corrupt the first symbol in each codeword
-In [8]: C[:,0] += GF(13); C
-Out[8]:
-GF([[13, 11, 13,  7,  9,  9,  3,  2, 12,  6,  3, 13,  0,  8,  4],
-    [13,  8, 15, 10, 13,  2,  6,  2,  6,  1, 15,  8, 14,  0, 15],
-    [12,  9, 13,  1, 13,  2,  6,  4, 12,  8, 11,  7,  1,  5, 13],
-    [ 8, 14, 11, 10,  9, 15,  5,  0,  0,  1,  8, 13, 12, 13,  3],
-    [11,  1,  4,  9,  9,  3, 14, 11, 13, 10,  0, 12,  3,  0,  1]],
-   order=2^4)
-
-In [9]: rs.decode(C)
-Out[9]:
-GF([[ 0, 11, 13,  7,  9,  9,  3,  2, 12],
-    [ 0,  8, 15, 10, 13,  2,  6,  2,  6],
-    [ 1,  9, 13,  1, 13,  2,  6,  4, 12],
-    [ 5, 14, 11, 10,  9, 15,  5,  0,  0],
-    [ 6,  1,  4,  9,  9,  3, 14, 11, 13]], order=2^4)
+bch.decode(C)
+GF([[1, 1, 0, 1, 0, 1, 1],
+    [1, 1, 0, 1, 1, 1, 0]], order=2)
 ```
 
 ## Performance
 
-To compare the performance of `galois` and native numpy, we'll use a prime field `GF(p)`. This is because
+To compare the performance of `galois` and native NumPy, we'll use a prime field `GF(p)`. This is because
 it is the simplest field. Namely, addition, subtraction, and multiplication are modulo `p`, which can
-be simply computed with numpy arrays `(x + y) % p`. For extension fields `GF(p^m)`, the arithmetic is
-computed using polynomials over `GF(p)` and can't be so tersely expressed in numpy.
+be simply computed with NumPy arrays `(x + y) % p`. For extension fields `GF(p^m)`, the arithmetic is
+computed using polynomials over `GF(p)` and can't be so tersely expressed in NumPy.
 
 ### Lookup performance
 
 For fields with order less than or equal to `2^20`, `galois` uses lookup tables for efficiency.
-Here is an example of multiplying two arrays in `GF(31)` using native numpy and `galois`
+Here is an example of multiplying two arrays in `GF(31)` using native NumPy and `galois`
 with `ufunc_mode="jit-lookup"`.
 
 ```python
@@ -559,7 +508,7 @@ In [9]: %timeit (aa * bb) % GF.order
 ```
 
 The `galois` ufunc runtime has a floor, however. This is due to a requirement to `view` the output
-array and convert its dtype with `astype()`. For example, for small array sizes numpy is faster than
+array and convert its dtype with `astype()`. For example, for small array sizes NumPy is faster than
 `galois` because it doesn't need to do these conversions.
 
 ```python
@@ -577,7 +526,7 @@ In [8]: %timeit (aa * bb) % GF.order
 1.52 µs ± 34.8 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
 ```
 
-However, for large N `galois` is strictly faster than numpy.
+However, for large N `galois` is strictly faster than NumPy.
 
 ```python
 In [10]: a = GF.Random(10_000_000, dtype=int)
@@ -597,9 +546,9 @@ In [14]: %timeit (aa * bb) % GF.order
 ### Calculation performance
 
 For fields with order greater than `2^20`, `galois` will use explicit arithmetic calculation rather
-than lookup tables. Even in these cases, `galois` is faster than numpy!
+than lookup tables. Even in these cases, `galois` is faster than NumPy!
 
-Here is an example multiplying two arrays in `GF(2097169)` using numpy and `galois` with
+Here is an example multiplying two arrays in `GF(2097169)` using NumPy and `galois` with
 `ufunc_mode="jit-calculate"`.
 
 ```python
@@ -626,9 +575,9 @@ In [9]: %timeit (aa * bb) % GF.order
 93.4 µs ± 2.12 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
 
-And again, the runtime comparison with numpy improves with large N because the time of viewing
+And again, the runtime comparison with NumPy improves with large N because the time of viewing
 and type converting the output is small compared to the computation time. `galois` achieves better
-performance than numpy because the multiplication and modulo operations are compiled together into
+performance than NumPy because the multiplication and modulo operations are compiled together into
 one ufunc rather than two.
 
 ```python
@@ -649,7 +598,7 @@ In [14]: %timeit (aa * bb) % GF.order
 ### Linear algebra performance
 
 Linear algebra over Galois fields is highly optimized. For prime fields `GF(p)`, the performance is
-comparable to the native numpy implementation (using BLAS/LAPACK).
+comparable to the native NumPy implementation (using BLAS/LAPACK).
 
 ```python
 In [1]: import numpy as np
@@ -672,12 +621,12 @@ In [8]: %timeit (AA @ BB) % GF.order
 777 µs ± 4.6 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 ```
 
-For extension fields `GF(p^m)`, the performance of `galois` is close to native numpy linear algebra
+For extension fields `GF(p^m)`, the performance of `galois` is close to native NumPy linear algebra
 (about 10x slower). However, for extension fields, each multiplication operation is equivalently
 a convolution (polynomial multiplication) of two `m`-length arrays and polynomial remainder division with the
 irreducible polynomial. So it's not an apples-to-apples comparison.
 
-Below is a comparison of `galois` computing the correct matrix multiplication over `GF(2^8)` and numpy
+Below is a comparison of `galois` computing the correct matrix multiplication over `GF(2^8)` and NumPy
 computing a normal integer matrix multiplication (which is not the correct result!). This
 comparison is just for a performance reference.
 

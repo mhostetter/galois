@@ -3,20 +3,19 @@ Basic Usage
 
 The main idea of the :obj:`galois` package can be summarized as follows. The user creates a "Galois field array class" using `GF = galois.GF(p**m)`.
 A Galois field array class `GF` is a subclass of :obj:`numpy.ndarray` and its constructor `x = GF(array_like)` mimics
-the call signature of :func:`numpy.array`. A Galois field array `x` is operated on like any other numpy array, but all
+the call signature of :func:`numpy.array`. A Galois field array `x` is operated on like any other NumPy array, but all
 arithmetic is performed in :math:`\mathrm{GF}(p^m)` not :math:`\mathbb{Z}` or :math:`\mathbb{R}`.
 
-Internally, the Galois field arithmetic is implemented by replacing `numpy ufuncs <https://numpy.org/doc/stable/reference/ufuncs.html>`_.
-The new ufuncs are written in python and then `just-in-time compiled <https://numba.pydata.org/numba-doc/dev/user/vectorize.html>`_ with
-`numba <https://numba.pydata.org/>`_. The ufuncs can be configured to use either lookup tables (for speed) or explicit
-calculation (for memory savings). Numba also provides the ability to `"target" <https://numba.readthedocs.io/en/stable/user/vectorize.html?highlight=target>`_
-the JIT-compiled ufuncs for CPUs or GPUs.
+Internally, the Galois field arithmetic is implemented by replacing `NumPy ufuncs <https://numpy.org/doc/stable/reference/ufuncs.html>`_.
+The new ufuncs are written in Python and then `just-in-time compiled <https://numba.pydata.org/numba-doc/dev/user/vectorize.html>`_ with
+`Numba <https://numba.pydata.org/>`_. The ufuncs can be configured to use either lookup tables (for speed) or explicit
+calculation (for memory savings).
 
-In addition to normal array arithmetic, :obj:`galois` also supports linear algebra (with :obj:`numpy.linalg` functions) and polynomials over Galois fields
-(with the :obj:`galois.Poly` class).
+Galois field arrays
+-------------------
 
 Class construction
-------------------
+..................
 
 Galois field array classes are created using the :func:`galois.GF` class factory function.
 
@@ -47,9 +46,9 @@ is calculated or displayed. See the attributes and methods in :obj:`galois.Field
    # Access each attribute individually
    GF256.irreducible_poly
 
-The :obj:`galois` package even supports arbitrarily-large fields! This is accomplished by using numpy arrays
-with `dtype=object` and pure-python ufuncs. This comes at a performance penalty compared to smaller fields
-which use numpy integer dtypes (e.g., :obj:`numpy.uint32`) and have compiled ufuncs.
+The :obj:`galois` package even supports arbitrarily-large fields! This is accomplished by using NumPy arrays
+with `dtype=object` and pure-Python ufuncs. This comes at a performance penalty compared to smaller fields
+which use NumPy integer dtypes (e.g., :obj:`numpy.uint32`) and have compiled ufuncs.
 
 .. ipython:: python
 
@@ -57,9 +56,9 @@ which use numpy integer dtypes (e.g., :obj:`numpy.uint32`) and have compiled ufu
    GF = galois.GF(2**100); print(GF.properties)
 
 Array creation
---------------
+..............
 
-Galois field arrays can be created from existing numpy arrays.
+Galois field arrays can be created from existing NumPy arrays.
 
 .. ipython:: python
 
@@ -96,27 +95,27 @@ manager, the display mode will only be temporarily changed.
 
 .. ipython:: python
 
-   x = GF256(["y**6 + 1", 0, 2, "1", "y**5 + y**4 + y"]); x
+   a = GF256(["x^6 + 1", 0, 2, "1", "x^5 + x^4 + x"]); a
 
    # Set the display mode to represent GF(2^8) field elements as polynomials over GF(2) with degree less than 8
    GF256.display("poly");
-   x
+   a
 
    # Temporarily set the display mode to represent GF(2^8) field elements as powers of the primitive element
    with GF256.display("power"):
-      print(x)
+      print(a)
 
    # Resets the display mode to the integer representation
    GF256.display();
 
 Field arithmetic
-----------------
+................
 
-Galois field arrays are treated like any other numpy array. Array arithmetic is performed using python operators or numpy
+Galois field arrays are treated like any other NumPy array. Array arithmetic is performed using Python operators or NumPy
 functions.
 
 In the list below, `GF` is a Galois field array class created by `GF = galois.GF(p**m)`, `x` and `y` are `GF` arrays, and `z` is an
-integer `numpy.ndarray`. All arithmetic operations follow normal numpy `broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules.
+integer :obj:`numpy.ndarray`. All arithmetic operations follow normal NumPy `broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules.
 
 - Addition: `x + y == np.add(x, y)`
 - Subtraction: `x - y == np.subtract(x, y)`
@@ -138,9 +137,9 @@ integer `numpy.ndarray`. All arithmetic operations follow normal numpy `broadcas
    x + y
 
 Linear algebra
---------------
+..............
 
-The :obj:`galois` package intercepts relevant calls to numpy's linear algebra functions and performs the specified
+The :obj:`galois` package intercepts relevant calls to NumPy's linear algebra functions and performs the specified
 operation in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{R}`. Some of these functions include:
 
 - :func:`np.dot`, :func:`np.vdot`, :func:`np.inner`, :func:`np.outer`, :func:`np.matmul`, :func:`np.linalg.matrix_power`
@@ -157,14 +156,14 @@ operation in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{R}`. Some of these f
    x = np.linalg.solve(A, b); x
    np.array_equal(A @ x, b)
 
-Galois field arrays also contain matrix decomposition routines not included in numpy. These include:
+Galois field arrays also contain matrix decomposition routines not included in NumPy. These include:
 
 - :func:`galois.FieldArray.row_reduce`, :func:`galois.FieldArray.lu_decompose`, :func:`galois.FieldArray.lup_decompose`
 
-Numpy ufunc methods
--------------------
+NumPy ufunc methods
+...................
 
-Galois field arrays support `numpy ufunc methods <https://numpy.org/devdocs/reference/ufuncs.html#methods>`_. This allows the user to apply a ufunc in a unique way across the target
+Galois field arrays support `NumPy ufunc methods <https://numpy.org/devdocs/reference/ufuncs.html#methods>`_. This allows the user to apply a ufunc in a unique way across the target
 array. The ufunc method signature is `<ufunc>.<method>(*args, **kwargs)`. All arithmetic ufuncs are supported. Below
 is a list of their ufunc methods.
 
@@ -181,15 +180,8 @@ is a list of their ufunc methods.
    y = GF256.Random(5); y
    np.multiply.outer(x, y)
 
-Numpy functions
----------------
-
-Many other relevant numpy functions are supported on Galois field arrays. These include:
-
-- :func:`np.copy`, :func:`np.concatenate`, :func:`np.insert`, :func:`np.reshape`
-
-Polynomial construction
------------------------
+Polynomials over Galois fields
+------------------------------
 
 The :obj:`galois` package supports polynomials over Galois fields with the :obj:`galois.Poly` class. :obj:`galois.Poly`
 does not subclass :obj:`numpy.ndarray` but instead contains a :obj:`galois.FieldArray` of coefficients as an attribute
@@ -205,7 +197,7 @@ object with the `field` keyword argument.
    coeffs = GF256([33, 17, 0, 225]); coeffs
    p = galois.Poly(coeffs, order="asc"); p
 
-Polynomials over Galois fields can also display the field elements as polynomials over their prime subfields.
+Polynomials over Galois fields can also display their coefficients as polynomials over their prime subfields.
 This can be quite confusing to read, so be warned!
 
 .. ipython:: python
@@ -224,10 +216,7 @@ Polynomials can also be created using a number of constructor class methods. The
    q = galois.Poly.Roots([155, 37], field=GF256); q
    q.roots()
 
-Polynomial arithmetic
----------------------
-
-Polynomial arithmetic is performed using python operators.
+Polynomial arithmetic is performed using Python operators.
 
 .. ipython:: python
 
@@ -265,3 +254,38 @@ polynomial at one of its elements.
 
    # Since p(x) is a primitive polynomial, alpha is one of its roots
    p(alpha, field=GF256)
+
+Forward error correction codes
+------------------------------
+
+To demonstrate the FEC code API, here is an example using BCH codes. Other FEC codes have a similar API.
+
+.. ipython:: python
+
+   import numpy as np
+   import galois
+   bch = galois.BCH(15, 7); bch
+   bch.generator_poly
+   # The error-correcting capability
+   bch.t
+
+A message can be either a 1-D vector or a 2-D matrix of messages. Shortened codes are also supported. See the docs for more details.
+
+.. ipython:: python
+
+   # Create a matrix of two messages
+   M = galois.GF2.Random((2, bch.k)); M
+
+Encoding the message(s) is performed with :func:`galois.BCH.encode`.
+
+.. ipython:: python
+
+   C = bch.encode(M); C
+
+Decoding the codeword(s) is performed with :func:`galois.BCH.decode`.
+
+.. ipython:: python
+
+   # Corrupt the first bit in each codeword
+   C[:,0] ^= 1; C
+   bch.decode(C)
