@@ -139,6 +139,18 @@ def test_exceptions():
         galois.Poly([1, 0, 1], order="invalid-type")
 
 
+def test_field_override():
+    coeffs = [1, 0, 1, 1]
+    p = galois.Poly(galois.GF2(coeffs))
+    assert p.field == galois.GF2
+    assert np.array_equal(p.coeffs, coeffs)
+
+    GF = galois.GF(2**8)
+    p = galois.Poly(galois.GF2(coeffs), field=GF)
+    assert p.field == GF
+    assert np.array_equal(p.coeffs, coeffs)
+
+
 def check_attributes(poly, config):
     assert isinstance(poly, galois.Poly)
     assert poly.field is config["GF"]
