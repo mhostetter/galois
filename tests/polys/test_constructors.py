@@ -255,15 +255,11 @@ def test_roots_with_multiplicity(field):
     assert p.integer == integer
 
 
-def test_roots_exceptions():
+def test_roots_field_override():
+    roots = [1, 0]
+    p = galois.Poly.Roots(galois.GF2(roots))
+    assert p.field == galois.GF2
+
     GF = galois.GF(2**8)
-    roots = [134, 212]
-    multiplicities = [1, 2]
-    with pytest.raises(TypeError):
-        galois.Poly.Roots(roots, field="invalid-type")
-    with pytest.raises(TypeError):
-        galois.Poly.Roots(134, field=GF)
-    with pytest.raises(TypeError):
-        galois.Poly.Roots(roots, multiplicities=134, field=GF)
-    with pytest.raises(ValueError):
-        galois.Poly.Roots(roots, multiplicities=multiplicities + [1], field=GF)
+    p = galois.Poly.Roots(galois.GF2(roots), field=GF)
+    assert p.field == GF

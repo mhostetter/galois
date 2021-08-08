@@ -30,8 +30,12 @@ class Poly:
         The polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` with type :obj:`galois.FieldArray`. Alternatively, an iterable :obj:`tuple`,
         :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from the `field` keyword argument.
     field : galois.FieldClass, optional
-        If `coeffs` is a :obj:`galois.FieldArray`, this argument is ignored. Otherwise, this defines the Galois field :math:`\mathrm{GF}(p^m)`
-        the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+        The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
+
+        * :obj:`None` (default): If the coefficients are a :obj:`galois.FieldArray`, they won't be modified. If the coefficients are not explicitly
+          in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(coeffs)`.
+        * :obj:`galois.FieldClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
+
     order : str, optional
         The interpretation of the coefficient degrees.
 
@@ -467,8 +471,11 @@ class Poly:
         multiplicities : tuple, list, numpy.ndarray, optional
             The corresponding root multiplicities. The default is `None` which corresponds to all ones, i.e. `[1,]*len(roots)`.
         field : galois.FieldClass, optional
-            If `roots` is a :obj:`galois.FieldArray`, this argument is ignored. Otherwise, this defines the Galois field :math:`\mathrm{GF}(p^m)`
-            the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
+
+            * :obj:`None` (default): If the roots are a :obj:`galois.FieldArray`, they won't be modified. If the roots are not explicitly
+              in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(roots)`.
+            * :obj:`galois.FieldClass`: The roots are explicitly converted to this Galois field `field(roots)`.
 
         Returns
         -------
