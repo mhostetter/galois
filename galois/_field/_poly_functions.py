@@ -7,8 +7,8 @@ from .._factor import factors
 from .._modular import totatives
 from .._overrides import set_module
 from .._prime import is_prime
-from .._structure import is_field
 
+from ._array import FieldArray
 from ._factory_prime import GF_prime
 from ._poly import Poly
 
@@ -839,7 +839,7 @@ def minimal_poly(element):
         m_e = galois.minimal_poly(e); m_e
         m_e(e)
     """
-    if not is_field(element):
+    if not isinstance(element, FieldArray):
         raise TypeError(f"Argument `element` must be an element of a Galois field, not {type(element)}.")
     if not element.ndim == 0:
         raise ValueError(f"Argument `element` must be a single array element with dimension 0, not {element.ndim}-D.")
