@@ -68,42 +68,6 @@ def test_string():
         assert repr(poly) == str(poly) == "Poly((α)x^3 + (α^3)x + (1), GF(2^3))"
 
 
-def test_derivative():
-    GF = galois.GF(3)
-    p = galois.Poly.Degrees([6,0], field=GF)
-    dp = p.derivative()
-    dp_truth = galois.Poly([0], field=GF)
-    assert dp == dp_truth
-    assert isinstance(dp, galois.Poly)
-    assert dp.field is GF
-
-    GF = galois.GF(7)
-    p = galois.Poly([3,5,0,2], field=GF)
-    dp = p.derivative()
-    dp_truth = galois.Poly(GF([3,5,0]) * np.array([3,2,1]), field=GF)
-    assert dp == dp_truth
-    assert isinstance(dp, galois.Poly)
-    assert dp.field is GF
-
-
-def test_multiple_derivatives():
-    GF = galois.GF(31)
-    p = galois.Poly.Random(5, field=GF)
-    dp = p.derivative(3)
-    assert dp == p.derivative().derivative().derivative()
-    assert isinstance(dp, galois.Poly)
-    assert dp.field is GF
-
-
-def test_derivative_exceptions():
-    GF = galois.GF(31)
-    p = galois.Poly.Random(5, field=GF)
-    with pytest.raises(TypeError):
-        p.derivative(3.0)
-    with pytest.raises(ValueError):
-        p.derivative(-3)
-
-
 def test_integer():
     poly = galois.Poly([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,1])
     assert poly.integer == 4295000729

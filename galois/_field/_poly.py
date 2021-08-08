@@ -767,12 +767,12 @@ class Poly:
         if 0 in self.nonzero_degrees:
             # Cut off the 0th degree
             degrees = self.nonzero_degrees[:-1] - 1
-            coeffs = self.nonzero_coeffs[:-1] * self.nonzero_degrees[:-1]
+            coeffs = self.nonzero_coeffs[:-1] * self.nonzero_degrees[:-1]  # Scalar multiplication
         else:
             degrees = self.nonzero_degrees - 1
-            coeffs = self.nonzero_coeffs * self.nonzero_degrees
+            coeffs = self.nonzero_coeffs * self.nonzero_degrees  # Scalar multiplication
 
-        p_prime = Poly.Degrees(degrees, coeffs)
+        p_prime = Poly.Degrees(degrees, coeffs, field=self.field)
 
         k -= 1
         if k > 0:
