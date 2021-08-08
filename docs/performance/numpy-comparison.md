@@ -11,7 +11,7 @@ For fields with order less than or equal to `2^20`, `galois` uses lookup tables 
 Here is an example of multiplying two arrays in `GF(31)` using native NumPy and `galois`
 with `ufunc_mode="jit-lookup"`.
 
-```python
+```ipython
 In [1]: import numpy as np
 
 In [2]: import galois
@@ -39,7 +39,7 @@ The `galois` ufunc runtime has a floor, however. This is due to a requirement to
 array and convert its dtype with `astype()`. For example, for small array sizes NumPy is faster than
 `galois` because it doesn't need to do these conversions.
 
-```python
+```ipython
 In [4]: a = GF.Random(10, dtype=int)
 
 In [5]: b = GF.Random(10, dtype=int)
@@ -56,7 +56,7 @@ In [8]: %timeit (aa * bb) % GF.order
 
 However, for large N `galois` is strictly faster than NumPy.
 
-```python
+```ipython
 In [10]: a = GF.Random(10_000_000, dtype=int)
 
 In [11]: b = GF.Random(10_000_000, dtype=int)
@@ -79,7 +79,7 @@ than lookup tables. Even in these cases, `galois` is faster than NumPy!
 Here is an example multiplying two arrays in `GF(2097169)` using NumPy and `galois` with
 `ufunc_mode="jit-calculate"`.
 
-```python
+```ipython
 In [1]: import numpy as np
 
 In [2]: import galois
@@ -108,7 +108,7 @@ and type converting the output is small compared to the computation time. `galoi
 performance than NumPy because the multiplication and modulo operations are compiled together into
 one ufunc rather than two.
 
-```python
+```ipython
 In [10]: a = GF.Random(10_000_000, dtype=int)
 
 In [11]: b = GF.Random(10_000_000, dtype=int)
@@ -128,7 +128,7 @@ In [14]: %timeit (aa * bb) % GF.order
 Linear algebra over Galois fields is highly optimized. For prime fields `GF(p)`, the performance is
 comparable to the native NumPy implementation (using BLAS/LAPACK).
 
-```python
+```ipython
 In [1]: import numpy as np
 
 In [2]: import galois
@@ -158,7 +158,7 @@ Below is a comparison of `galois` computing the correct matrix multiplication ov
 computing a normal integer matrix multiplication (which is not the correct result!). This
 comparison is just for a performance reference.
 
-```python
+```ipython
 In [1]: import numpy as np
 
 In [2]: import galois
