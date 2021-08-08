@@ -68,26 +68,6 @@ def test_string():
         assert repr(poly) == str(poly) == "Poly((α)x^3 + (α^3)x + (1), GF(2^3))"
 
 
-def test_roots():
-    GF = galois.GF(31)
-    roots = GF.Random(5).tolist()
-    poly = galois.Poly.Roots(roots, field=GF)
-    assert set(poly.roots().tolist()) == set(roots)
-
-
-def test_roots_with_multiplicity():
-    GF = galois.GF(31)
-    roots = [0, 3, 17, 24, 30]
-    multiplicities = [7, 5, 9, 2, 11]
-
-    poly = galois.Poly.Roots(roots, multiplicities=multiplicities, field=GF)
-    r, m = poly.roots(multiplicity=True)
-    assert np.array_equal(r, roots)
-    assert np.array_equal(m, multiplicities)
-    assert type(r) is GF
-    assert type(m) is np.ndarray
-
-
 def test_derivative():
     GF = galois.GF(3)
     p = galois.Poly.Degrees([6,0], field=GF)
