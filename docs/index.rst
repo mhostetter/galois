@@ -6,6 +6,7 @@
 .. toctree::
    :maxdepth: 2
 
+   features.rst
    installation.rst
    versioning.md
    basic-usage.rst
