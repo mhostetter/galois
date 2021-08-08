@@ -93,7 +93,7 @@ def bch_valid_codes(n, t_min=1):
         g_degree = len(conjugates)
         k = n - g_degree
 
-        if k <= 1:
+        if k < 1:
             # There are no more valid codes
             break
 
