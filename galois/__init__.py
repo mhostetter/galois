@@ -14,4 +14,3 @@ from ._lfsr import *
 from ._math import *  # pylint: disable=redefined-builtin
 from ._modular import *
 from ._prime import *
-from ._structure import *
