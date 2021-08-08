@@ -588,7 +588,7 @@ class Poly:
         Returns
         -------
         galois.FieldArray
-            Galois field array of roots of :math:`f(x)`.
+            Galois field array of roots of :math:`f(x)`. The roots are ordered in increasing order.
         np.ndarray
             The multiplicity of each root, only returned if `multiplicity=True`.
 
@@ -655,6 +655,9 @@ class Poly:
             p.roots()
             p.roots(multiplicity=True)
         """
+        if not isinstance(multiplicity, bool):
+            raise TypeError(f"Argument `multiplicity` must be a bool, not {type(multiplicity)}.")
+
         roots = self.field._poly_roots(self.nonzero_degrees, self.nonzero_coeffs)
 
         if not multiplicity:
