@@ -27,8 +27,6 @@ def primes(n):
     r"""
     Returns all primes :math:`p` for :math:`p \le n`.
 
-    This function implements the Sieve of Eratosthenes to efficiently find the primes.
-
     Parameters
     ----------
     n : int
@@ -38,6 +36,10 @@ def primes(n):
     -------
     list
         All primes up to and including :math:`n`. If :math:`n < 2`, the function returns an empty list.
+
+    Notes
+    -----
+    This function implements the Sieve of Eratosthenes to efficiently find the primes.
 
     References
     ----------
@@ -125,6 +127,7 @@ def kth_prime(k):
         raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
     if not 1 <= k <= MAX_K:
         raise ValueError(f"Argument `k` is out of range of the prime lookup table. The lookup table only contains the first {MAX_K} primes (up to {MAX_N}).")
+
     return PRIMES[k - 1]
 
 
@@ -152,8 +155,9 @@ def prev_prime(n):
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n < MAX_N:
+    if not n <= MAX_N:
         raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_N}.")
+
     return PRIMES[bisect.bisect_right(PRIMES, n) - 1] if n >= 2 else None
 
 
@@ -181,8 +185,9 @@ def next_prime(n):
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n < MAX_N:
+    if not n < PRIMES[-1]:
         raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_N}.")
+
     return PRIMES[bisect.bisect_right(PRIMES, n)]
 
 
@@ -225,10 +230,17 @@ def random_prime(bits):
         $ openssl prime 236861787926957382206996886087214592029752524078026392358936844479667423570833116126506927878773110287700754280996224768092589904231910149528080012692722763539766058401127758399272786475279348968866620857161889678512852050561604969208679095086283103827661300743342847921567132587459205365243815835763830067933
         1514D68EDB7C650F1FF713531A1A43255A4BE6D66EE1FDBD96F4EB32757C1B1BAF16A5933E24D45FAD6C6A814F3C8C14F3CB98F24FEA74C43C349D6FA3AB76EB0156811A1FBAA64EB4AC525CCEF9278AF78886DC6DBF46C4463A34C0E53B0FA2F784BB2DC5FDF076BB6E145AA15AA6D616ACC1D5F95B8BE757670B9AAF53292DD (236861787926957382206996886087214592029752524078026392358936844479667423570833116126506927878773110287700754280996224768092589904231910149528080012692722763539766058401127758399272786475279348968866620857161889678512852050561604969208679095086283103827661300743342847921567132587459205365243815835763830067933) is prime
     """
+    if not isinstance(bits, (int, np.integer)):
+        raise TypeError(f"Argument `bits` must be an integer, not {type(bits)}.")
+    if not bits > 0:
+        raise ValueError(f"Argument `bits` must be positive, not {bits}.")
+
     while True:
         p = random.randint(2**bits, 2**(bits + 1) - 1)
         if is_prime(p):
-            return p
+            break
+
+    return p
 
 
 MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3217,4253,4423,9689,9941,11213,19937,21701,23209,44497,86243,110503,132049,216091,756839,859433,1257787,1398269,2976221,3021377,6972593,13466917,20996011,24036583,25964951,30402457,32582657,37156667,42643801,43112609]
@@ -268,8 +280,12 @@ def mersenne_exponents(n=None):
     """
     if n is None:
         return MERSENNE_EXPONENTS
-    else:
-        return MERSENNE_EXPONENTS[0:bisect.bisect_right(MERSENNE_EXPONENTS, n)]
+    if not isinstance(n, (int, np.integer)):
+        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    if not n > 0:
+        raise ValueError(f"Argument `n` must be positive, not {n}.")
+
+    return MERSENNE_EXPONENTS[0:bisect.bisect_right(MERSENNE_EXPONENTS, n)]
 
 
 @set_module("galois")
