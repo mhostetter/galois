@@ -9,6 +9,11 @@ import numpy as np
 import galois
 
 
+def test_primes_exceptions():
+    with pytest.raises(TypeError):
+        galois.primes(20.0)
+
+
 def test_primes():
     assert galois.primes(-10) == []
     assert galois.primes(1) == []
@@ -16,23 +21,30 @@ def test_primes():
     assert galois.primes(3) == [2, 3]
     assert galois.primes(19) == [2, 3, 5, 7, 11, 13, 17, 19]
     assert galois.primes(20) == [2, 3, 5, 7, 11, 13, 17, 19]
-
-    with pytest.raises(TypeError):
-        galois.primes(20.0)
+    assert galois.primes(100) == [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 
 
-def test_kth_prime():
-    assert galois.kth_prime(1) == 2
-    assert galois.kth_prime(2) == 3
-    assert galois.kth_prime(100) == 541
-    assert galois.kth_prime(1000) == 7919
-
+def test_kth_prime_exceptions():
     with pytest.raises(TypeError):
         galois.kth_prime(20.0)
     with pytest.raises(ValueError):
         galois.kth_prime(0)
     with pytest.raises(ValueError):
         galois.kth_prime(galois._prime.MAX_K + 1)
+
+
+def test_kth_prime():
+    ks = [7236, 6146, 6978, 8416, 4761, 8488, 7095, 741, 5538, 3462, 487, 4121, 94, 735, 9864, 7873, 7294, 8952, 3722, 3390]
+    ns = [73243, 61001, 70429, 86539, 45989, 87433, 71671, 5641, 54421, 32297, 3469, 39139, 491, 5569, 103099, 80429, 73897, 92681, 34871, 31511]
+    for k, n in zip(ks, ns):
+        assert galois.kth_prime(k) == n
+
+
+def test_prev_prime_exceptions():
+    with pytest.raises(TypeError):
+        galois.prev_prime(20.0)
+    with pytest.raises(ValueError):
+        galois.prev_prime(galois._prime.MAX_N + 1)
 
 
 def test_prev_prime():
@@ -42,10 +54,12 @@ def test_prev_prime():
     assert galois.prev_prime(8) == 7
     assert galois.prev_prime(11) == 11
 
+
+def test_next_prime_exceptions():
     with pytest.raises(TypeError):
-        galois.prev_prime(20.0)
+        galois.next_prime(20.0)
     with pytest.raises(ValueError):
-        galois.prev_prime(galois._prime.MAX_N + 1)
+        galois.next_prime(galois._prime.MAX_N)
 
 
 def test_next_prime():
@@ -55,10 +69,30 @@ def test_next_prime():
     assert galois.next_prime(8) == 11
     assert galois.next_prime(11) == 13
 
+
+def test_random_prime_exceptions():
     with pytest.raises(TypeError):
-        galois.next_prime(20.0)
+        galois.random_prime(10.0)
     with pytest.raises(ValueError):
-        galois.next_prime(galois._prime.MAX_N)
+        galois.random_prime(0)
+    with pytest.raises(ValueError):
+        galois.random_prime(-10)
+
+
+def test_random_prime():
+    for _ in range(5):
+        bits = random.randint(1, 10)
+        n = galois.random_prime(bits)
+        assert galois.is_prime(n) == True
+
+
+def test_mersenne_exponents_exceptions():
+    with pytest.raises(TypeError):
+        galois.mersenne_exponents(10.0)
+    with pytest.raises(ValueError):
+        galois.mersenne_exponents(0)
+    with pytest.raises(ValueError):
+        galois.mersenne_exponents(-10)
 
 
 def test_mersenne_exponents():
@@ -66,11 +100,33 @@ def test_mersenne_exponents():
     exponents = [2,3,5,7,13,17,19,31,61,89,107,127]  # Up to 128 bits
     assert galois.mersenne_exponents(128) == exponents
 
+    exponents = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3217,4253,4423,9689,9941,11213,19937,21701,23209,44497,86243,110503,132049,216091,756839,859433,1257787,1398269,2976221,3021377,6972593,13466917,20996011,24036583,25964951,30402457,32582657,37156667,42643801,43112609]
+    assert galois.mersenne_exponents() == exponents
+
+
+
+def test_mersenne_primes_exceptions():
+    with pytest.raises(TypeError):
+        galois.mersenne_primes(10.0)
+    with pytest.raises(ValueError):
+        galois.mersenne_primes(0)
+    with pytest.raises(ValueError):
+        galois.mersenne_primes(-10)
+
 
 def test_mersenne_primes():
     # https://oeis.org/A000668
     primes = [3,7,31,127,8191,131071,524287,2147483647,2305843009213693951,618970019642690137449562111,162259276829213363391578010288127,170141183460469231731687303715884105727]  # Up to 128 bits
     assert galois.mersenne_primes(128) == primes
+
+
+def test_is_prime_exceptions():
+    with pytest.raises(TypeError):
+        galois.is_prime(13.0)
+    with pytest.raises(ValueError):
+        galois.is_prime(0)
+    with pytest.raises(ValueError):
+        galois.is_prime(-13)
 
 
 def test_is_prime():
@@ -82,6 +138,15 @@ def test_is_prime():
     assert [galois.is_prime(ni) for ni in n] == is_prime.tolist()
 
 
+def test_is_composite_exceptions():
+    with pytest.raises(TypeError):
+        galois.is_composite(13.0)
+    with pytest.raises(ValueError):
+        galois.is_composite(0)
+    with pytest.raises(ValueError):
+        galois.is_composite(-13)
+
+
 def test_is_composite():
     # https://oeis.org/A002808
     composites = np.array([4,6,8,9,10,12,14,15,16,18,20,21,22,24,25,26,27,28,30,32,33,34,35,36,38,39,40,42,44,45,46,48,49,50,51,52,54,55,56,57,58,60,62,63,64,65,66,68,69,70,72,74,75,76,77,78,80,81,82,84,85,86,87,88])
@@ -89,6 +154,24 @@ def test_is_composite():
     is_composite = np.zeros(n.size, dtype=bool)
     is_composite[composites - 1] = True  # -1 for 1-indexed
     assert [galois.is_composite(ni) for ni in n] == is_composite.tolist()
+
+
+def test_fermat_primality_test_exceptions():
+    with pytest.raises(TypeError):
+        galois.fermat_primality_test(13.0)
+    with pytest.raises(TypeError):
+        galois.fermat_primality_test(13, a=2.0)
+    with pytest.raises(TypeError):
+        galois.fermat_primality_test(13, rounds=1.0)
+
+    with pytest.raises(ValueError):
+        galois.fermat_primality_test(4)
+    with pytest.raises(ValueError):
+        galois.fermat_primality_test(1)
+    with pytest.raises(ValueError):
+        galois.fermat_primality_test(13, a=12)
+    with pytest.raises(ValueError):
+        galois.fermat_primality_test(13, rounds=0)
 
 
 def test_fermat_primality_test():
@@ -109,6 +192,24 @@ def test_fermat_primality_test():
     pseudoprimes = [4,124,217,561,781,1541,1729,1891,2821,4123,5461,5611,5662,5731,6601,7449,7813,8029,8911,9881,11041,11476,12801,13021,13333,13981,14981,15751,15841,16297,17767,21361,22791,23653,24211,25327,25351,29341,29539]
     pseudoprimes = [p for p in pseudoprimes if p % 2 == 1]  # Only test odds
     assert [galois.fermat_primality_test(p, a=5) for p in pseudoprimes] == [True,]*len(pseudoprimes)
+
+
+def test_miller_rabin_primality_test_exceptions():
+    with pytest.raises(TypeError):
+        galois.miller_rabin_primality_test(13.0)
+    with pytest.raises(TypeError):
+        galois.miller_rabin_primality_test(13, a=2.0)
+    with pytest.raises(TypeError):
+        galois.miller_rabin_primality_test(13, rounds=1.0)
+
+    with pytest.raises(ValueError):
+        galois.miller_rabin_primality_test(4)
+    with pytest.raises(ValueError):
+        galois.miller_rabin_primality_test(1)
+    with pytest.raises(ValueError):
+        galois.miller_rabin_primality_test(13, a=12)
+    with pytest.raises(ValueError):
+        galois.miller_rabin_primality_test(13, rounds=0)
 
 
 def test_miller_rabin_primality_test():
