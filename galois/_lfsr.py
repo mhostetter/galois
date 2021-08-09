@@ -283,7 +283,7 @@ def berlekamp_massey(sequence, config="fibonacci", state=False):
     Parameters
     ----------
     sequence : galois.FieldArray
-        A sequence of Galois field elements in :math:`\mathrm{GF}(p^m)`.
+        A 1-D sequence of Galois field elements in :math:`\mathrm{GF}(p^m)`.
     config : str, optional
         A string indicating the LFSR feedback configuration for the returned connection polynomial, either `"fibonacci"`
         (default) or `"galois"`. See the LFSR configurations in :obj:`galois.LFSR`. The LFSR configuration will indicate
@@ -321,6 +321,8 @@ def berlekamp_massey(sequence, config="fibonacci", state=False):
         raise TypeError(f"Argument `config` must be a string, not {type(config)}.")
     if not isinstance(state, bool):
         raise TypeError(f"Argument `state` must be a bool, not {type(state)}.")
+    if not sequence.ndim == 1:
+        raise ValueError(f"Argument `sequence` must be 1-D, not {sequence.ndim}-D.")
     if not config in ["fibonacci", "galois"]:
         raise ValueError(f"Argument `config` must be in ['fibonacci', 'galois'], not {state!r}.")
 
