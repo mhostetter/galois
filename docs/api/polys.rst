@@ -57,6 +57,7 @@ Polynomial functions
 
    poly_factors
    square_free_factorization
+   distinct_degree_factorization
 
 .. rubric:: Polynomial tests
 .. autosummary::

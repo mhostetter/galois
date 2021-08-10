@@ -19,6 +19,8 @@ Sage:
             print(f"    ({to_coeffs(a)}, {polys}, {exponents}),")
         print("]\n")
 """
+import random
+
 import pytest
 
 import galois
@@ -230,3 +232,47 @@ def test_square_free_factorization():
     c = galois.irreducible_poly(5, 3, method="random")
     f = a * b * c**3
     assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
+
+
+def test_distinct_degree_factorization_exceptions():
+    GF = galois.GF(5)
+    with pytest.raises(TypeError):
+        galois.distinct_degree_factorization([1,0,2,4])
+    with pytest.raises(ValueError):
+        galois.distinct_degree_factorization(galois.Poly([2,0,2,4], field=GF))
+    with pytest.raises(ValueError):
+        galois.distinct_degree_factorization(galois.Poly([2], field=GF))
+
+
+def test_distinct_degree_factorization():
+    GF = galois.GF(2)
+    factors_1 = random.sample(galois.irreducible_polys(2, 1), random.randint(1, 2))
+    factors_3 = random.sample(galois.irreducible_polys(2, 3), random.randint(1, 2))
+    factors_4 = random.sample(galois.irreducible_polys(2, 4), random.randint(1, 3))
+    f1 = galois.Poly.One(GF)
+    for f in factors_1:
+        f1 *= f
+    f3 = galois.Poly.One(GF)
+    for f in factors_3:
+        f3 *= f
+    f4 = galois.Poly.One(GF)
+    for f in factors_4:
+        f4 *= f
+    f = f1 * f3 * f4
+    assert galois.distinct_degree_factorization(f) == ([f1, f3, f4], [1, 3, 4])
+
+    GF = galois.GF(5)
+    factors_1 = random.sample(galois.irreducible_polys(5, 1), random.randint(1, 5))
+    factors_3 = random.sample(galois.irreducible_polys(5, 3), random.randint(1, 5))
+    factors_4 = random.sample(galois.irreducible_polys(5, 4), random.randint(1, 5))
+    f1 = galois.Poly.One(GF)
+    for f in factors_1:
+        f1 *= f
+    f3 = galois.Poly.One(GF)
+    for f in factors_3:
+        f3 *= f
+    f4 = galois.Poly.One(GF)
+    for f in factors_4:
+        f4 *= f
+    f = f1 * f3 * f4
+    assert galois.distinct_degree_factorization(f) == ([f1, f3, f4], [1, 3, 4])

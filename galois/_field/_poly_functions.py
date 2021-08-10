@@ -14,7 +14,7 @@ from ._poly import Poly
 
 __all__ = [
     "poly_gcd", "poly_egcd", "poly_pow",
-    "poly_factors", "square_free_factorization",
+    "poly_factors", "square_free_factorization", "distinct_degree_factorization",
     "irreducible_poly", "irreducible_polys", "primitive_poly", "primitive_polys",
     "matlab_primitive_poly", "conway_poly", "minimal_poly",
     "is_monic", "is_irreducible", "is_primitive",
@@ -360,7 +360,7 @@ def poly_factors(poly):
 @set_module("galois")
 def square_free_factorization(poly):
     r"""
-    Factors the polynomial :math:`f(x)` into a product of square-free polynomials.
+    Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
 
     Parameters
     ----------
@@ -382,7 +382,9 @@ def square_free_factorization(poly):
     .. math::
         f(x) = \prod_{j=1}^{m} h_j(x)^j
 
-    Some :math:`h_j(x) = 1` for some :math:`1 \le j \le m`. Those polynomials are not returned.
+    Some :math:`h_j(x) = 1`, but those polynomials are not returned by this function.
+
+    A complete polynomial factorization is implemented in :func:`galois.poly_factors`.
 
     References
     ----------
@@ -400,7 +402,7 @@ def square_free_factorization(poly):
         a = galois.Poly([1,0], field=GF); a, galois.is_irreducible(a)
         b = galois.Poly([1,0,2,4], field=GF); b, galois.is_irreducible(b)
         c = galois.Poly([1,4,1], field=GF); c, galois.is_irreducible(c)
-        f = a * b * c**3
+        f = a * b * c**3; f
 
     The square-free factorization is :math:`\{x(x^3 + 2x + 4), x^2 + 4x + 1\}` with multiplicities :math:`\{1, 3\}`.
 
@@ -453,6 +455,114 @@ def square_free_factorization(poly):
     factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[1]))
 
     return list(factors_), list(multiplicities)
+
+
+@set_module("galois")
+def distinct_degree_factorization(poly):
+    r"""
+    Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors all have
+    the same degree.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        A monic, square-free polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
+
+    Returns
+    -------
+    list
+        The list of polynomials :math:`f_i(x)` whose irreducible factors all have degree :math:`i`.
+    list
+        The list of corresponding distinct degrees :math:`i`.
+
+    Notes
+    -----
+    The Distinct-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`d` into a product of :math:`d` polynomials
+    :math:`f_i(x)`, where :math:`f_i(x)` is the product of all irreducible factors of :math:`f(x)` with degree :math:`i`.
+
+    .. math::
+        f(x) = \prod_{i=1}^{d} f_i(x)
+
+    For example, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`. Then the distinct-degree
+    factorization is
+
+    .. math::
+        f_1(x) &= x(x + 1) = x^2 + x
+
+        f_2(x) &= x^2 + x + 1
+
+        f_3(x) &= (x^3 + x + 1)(x^3 + x^2 + 1) = x^6 + x^5 + x^4 + x^3 + x^2 + x + 1
+
+        f_i(x) &= 1\ \textrm{for}\ i = 4, \dots, 10.
+
+    Some :math:`f_i(x) = 1`, but those polynomials are not returned by this function. In this example, the function returns
+    :math:`\{f_1(x), f_2(x), f_3(x)\}` and :math:`\{1, 2, 3\}`.
+
+    The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see :func:`galois.square_free_factorization`.
+    A complete polynomial factorization is implemented in :func:`galois.poly_factors`.
+
+    References
+    ----------
+    * D. Hachenberger, D. Jungnickel. Topics in Galois Fields. Algorithm 6.2.2.
+    * Section 2.2 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
+
+    Examples
+    --------
+    From the example in the notes, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`.
+
+    .. ipython:: python
+
+        a = galois.Poly([1,0]); a, galois.is_irreducible(a)
+        b = galois.Poly([1,1]); b, galois.is_irreducible(b)
+        c = galois.Poly([1,1,1]); c, galois.is_irreducible(c)
+        d = galois.Poly([1,0,1,1]); d, galois.is_irreducible(d)
+        e = galois.Poly([1,1,0,1]); e, galois.is_irreducible(e)
+        f = a * b * c * d * e; f
+
+    The distinct-degree factorization is :math:`\{x(x + 1), x^2 + x + 1, (x^3 + x + 1)(x^3 + x^2 + 1)\}` whose irreducible factors
+    have degrees :math:`\{1, 2, 3\}`.
+
+    .. ipython:: python
+
+        galois.distinct_degree_factorization(f)
+        [a*b, c, d*e], [1, 2, 3]
+    """
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    if not poly.degree >= 1:
+        raise ValueError(f"Argument `poly` must be non-constant, not {poly}.")
+    if not is_monic(poly):
+        raise ValueError(f"Argument `poly` must be monic, not {poly}.")
+    # TODO: Add check if the polynomial is square-free
+
+    field = poly.field
+    q = field.order
+    n = poly.degree
+    one = Poly.One(field=field)
+    x = Poly.Identity(field=field)
+
+    factors_ = []
+    degrees = []
+
+    a = poly.copy()
+    h = x.copy()
+
+    l = 1
+    while l <= n // 2 and a != one:
+        h = poly_pow(h, q, a)
+        z = poly_gcd(a, h - x)
+        if z != one:
+            factors_.append(z)
+            degrees.append(l)
+            a = a / z
+            h = h % a
+        l += 1
+
+    if a != one:
+        factors_.append(a)
+        degrees.append(a.degree)
+
+    return factors_, degrees
 
 
 @set_module("galois")
