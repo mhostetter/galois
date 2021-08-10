@@ -206,3 +206,27 @@ def test_poly_factors_old():
 #         factors, multiplicities = list(factors), list(multiplicities)
 
 #         assert galois.poly_factors(a) == (factors, multiplicities)
+
+
+def test_square_free_factorization_exceptions():
+    GF = galois.GF(5)
+    with pytest.raises(TypeError):
+        galois.square_free_factorization([1,0,2,4])
+    with pytest.raises(ValueError):
+        galois.square_free_factorization(galois.Poly([2,0,2,4], field=GF))
+    with pytest.raises(ValueError):
+        galois.square_free_factorization(galois.Poly([2], field=GF))
+
+
+def test_square_free_factorization():
+    a = galois.irreducible_poly(2, 1, method="random")
+    b = galois.irreducible_poly(2, 4, method="random")
+    c = galois.irreducible_poly(2, 3, method="random")
+    f = a * b * c**3
+    assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
+
+    a = galois.irreducible_poly(5, 1, method="random")
+    b = galois.irreducible_poly(5, 4, method="random")
+    c = galois.irreducible_poly(5, 3, method="random")
+    f = a * b * c**3
+    assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
