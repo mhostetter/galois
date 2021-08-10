@@ -13,7 +13,8 @@ from ._factory_prime import GF_prime
 from ._poly import Poly
 
 __all__ = [
-    "poly_gcd", "poly_egcd", "poly_pow", "poly_factors",
+    "poly_gcd", "poly_egcd", "poly_pow",
+    "poly_factors", "square_free_factorization",
     "irreducible_poly", "irreducible_polys", "primitive_poly", "primitive_polys",
     "matlab_primitive_poly", "conway_poly", "minimal_poly",
     "is_monic", "is_irreducible", "is_primitive",
@@ -352,6 +353,104 @@ def poly_factors(poly):
 
     # Sort the factor in lexicographically-increasing order
     factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[0].integer))
+
+    return list(factors_), list(multiplicities)
+
+
+@set_module("galois")
+def square_free_factorization(poly):
+    r"""
+    Factors the polynomial :math:`f(x)` into a product of square-free polynomials.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        A non-constant, monic polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
+
+    Returns
+    -------
+    list
+        The list of non-constant, square-free polynomials :math:`h_i(x)` in the factorization.
+    list
+        The list of corresponding multiplicities :math:`i`.
+
+    Notes
+    -----
+    The Square-Free Factorization algorithm factors :math:`f(x)` into a product of :math:`m` square-free polynomials :math:`h_j(x)`
+    with multiplicity :math:`j`.
+
+    .. math::
+        f(x) = \prod_{j=1}^{m} h_j(x)^j
+
+    Some :math:`h_j(x) = 1` for some :math:`1 \le j \le m`. Those polynomials are not returned.
+
+    References
+    ----------
+    * D. Hachenberger, D. Jungnickel. Topics in Galois Fields. Algorithm 6.1.7.
+    * Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
+
+    Examples
+    --------
+    Suppose :math:`f(x) = x(x^3 + 2x + 4)(x^2 + 4x + 1)^3` over :math:`\mathrm{GF}(5)`. Each polynomial :math:`x`, :math:`x^3 + 2x + 4`,
+    and :math:`x^2 + 4x + 1` are all irreducible over :math:`\mathrm{GF}(5)`.
+
+    .. ipython:: python
+
+        GF = galois.GF(5)
+        a = galois.Poly([1,0], field=GF); a, galois.is_irreducible(a)
+        b = galois.Poly([1,0,2,4], field=GF); b, galois.is_irreducible(b)
+        c = galois.Poly([1,4,1], field=GF); c, galois.is_irreducible(c)
+        f = a * b * c**3
+
+    The square-free factorization is :math:`\{x(x^3 + 2x + 4), x^2 + 4x + 1\}` with multiplicities :math:`\{1, 3\}`.
+
+    .. ipython:: python
+
+        galois.square_free_factorization(f)
+        [a*b, c], [1, 3]
+    """
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    if not poly.degree >= 1:
+        raise ValueError(f"Argument `poly` must be non-constant, not {poly}.")
+    if not is_monic(poly):
+        raise ValueError(f"Argument `poly` must be monic, not {poly}.")
+
+    field = poly.field
+    p = field.characteristic
+    one = Poly.One(field=field)
+
+    factors_ = []
+    multiplicities = []
+
+    # w is the product (without multiplicity) of all factors of f that have multiplicity not divisible by p
+    d = poly_gcd(poly, poly.derivative())
+    w = poly / d
+
+    # Step 1: Find all factors in w
+    i = 1
+    while w != one:
+        y = poly_gcd(w, d)
+        z = w / y
+        if z != one and i % p != 0:
+            factors_.append(z)
+            multiplicities.append(i)
+        w = y
+        d = d / y
+        i = i + 1
+    # d is now the product (with multiplicity) of the remaining factors of f
+
+    # Step 2: Find all remaining factors (their multiplicities are divisible by p)
+    if d != one:
+        degrees = [degree // p for degree in d.degrees]
+        coeffs = d.coeffs
+        delta = Poly.Degrees(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
+        f, m = square_free_factorization(delta)
+        factors_.extend(f)
+        multiplicities.extend([mi*p for mi in m])
+
+    # Sort the factors in increasing-multiplicity order
+    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[1]))
 
     return list(factors_), list(multiplicities)
 
