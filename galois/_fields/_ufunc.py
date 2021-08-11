@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from ._meta_properties import PropertiesMeta
+from ._properties import PropertiesMeta
 
 _FUNCTION_TYPE = {
     "add": "binary",

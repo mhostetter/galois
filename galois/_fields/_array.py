@@ -3,10 +3,10 @@ import random
 import numpy as np
 
 from .._overrides import set_module
+from .._poly_conversion import str_to_integer
 
+from ._class import FieldClass
 from ._linalg import row_reduce, lu_decompose, lup_decompose
-from ._meta_class import FieldClass
-from ._poly_conversion import str_to_integer
 
 __all__ = ["FieldArray"]
 

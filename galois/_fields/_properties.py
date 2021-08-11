@@ -1,9 +1,9 @@
 import numpy as np
 
 from .._modular import totatives
+from .._poly_conversion import integer_to_poly, poly_to_str
 
 from ._dtypes import DTYPES
-from ._poly_conversion import integer_to_poly, poly_to_str
 
 
 class PropertiesMeta(type):

@@ -6,11 +6,8 @@ just need to make sure the arithmetic is the same for the different implementati
 """
 import random
 
-import pytest
-import numpy as np
-
 import galois
-from galois._field._poly import DensePoly, BinaryPoly, SparsePoly
+from galois._polys._poly import DensePoly, BinaryPoly, SparsePoly
 
 
 def test_add(field):

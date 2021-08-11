@@ -1,3 +1,7 @@
+"""
+A module that contains various functions to convert between polynomial strings, coefficients, and integer representations.
+These functions are shared between the _field and _poly subpackages.
+"""
 import math
 
 import numpy as np

@@ -5,10 +5,9 @@ import numba
 from numba import int64
 import numpy as np
 
-from ._dtypes import DTYPES
-
 from . import _linalg
-from ._meta_properties import PropertiesMeta
+from ._dtypes import DTYPES
+from ._properties import PropertiesMeta
 
 # List of functions that are not valid on arrays over finite groups, rings, and fields
 UNSUPPORTED_FUNCTIONS_UNARY = [

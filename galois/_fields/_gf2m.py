@@ -1,8 +1,8 @@
 import numba
 import numpy as np
 
-from ._meta_class import FieldClass, DirMeta
-from ._meta_ufunc import  _FUNCTION_TYPE
+from ._class import FieldClass, DirMeta
+from ._ufunc import  _FUNCTION_TYPE
 
 
 class GF2mMeta(FieldClass, DirMeta):
