@@ -1,9 +1,9 @@
 import numba
 import numpy as np
 
+from ._class import FieldClass, DirMeta
 from ._dtypes import DTYPES
-from ._meta_class import FieldClass, DirMeta
-from ._meta_ufunc import  _FUNCTION_TYPE
+from ._ufunc import  _FUNCTION_TYPE
 
 
 class GFpmMeta(FieldClass, DirMeta):

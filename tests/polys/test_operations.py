@@ -1,11 +1,10 @@
 """
 A pytest module to test various Galois field polynomial operations.
 """
-import pytest
 import numpy as np
 
 import galois
-from galois._field._poly import DensePoly, BinaryPoly, SparsePoly
+from galois._polys._poly import DensePoly, BinaryPoly, SparsePoly
 
 
 def test_copy():

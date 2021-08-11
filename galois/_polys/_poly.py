@@ -1,11 +1,8 @@
 import numpy as np
 
+from .._fields import FieldClass, FieldArray, GF2
 from .._overrides import set_module
-
-from ._array import FieldArray
-from ._gf2 import GF2
-from ._meta_class import FieldClass
-from ._poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
+from .._poly_conversion import integer_to_poly, poly_to_integer, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
 
 __all__ = ["Poly"]
 

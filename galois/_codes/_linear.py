@@ -3,7 +3,7 @@ A module containing common functions for linear block codes.
 """
 import numpy as np
 
-from .._field import FieldArray
+from .._fields import FieldArray
 from .._overrides import set_module
 
 __all__ = ["generator_to_parity_check_matrix", "parity_check_to_generator_matrix"]

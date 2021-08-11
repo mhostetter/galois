@@ -71,7 +71,7 @@ def test_random(field):
 def test_random_exceptions():
     with pytest.raises(TypeError):
         p = galois.Poly.Random(2.0)
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         p = galois.Poly.Random(-1)
 
 

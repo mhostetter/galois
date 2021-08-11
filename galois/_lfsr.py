@@ -5,10 +5,11 @@ import numba
 from numba import int64
 import numpy as np
 
-from ._field import FieldArray, Poly
-from ._field._meta_function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG
-from ._field._poly_conversion import integer_to_poly
+from ._fields import FieldArray
+from ._fields._function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG
 from ._overrides import set_module
+from ._polys import Poly
+from ._poly_conversion import integer_to_poly
 
 __all__ = ["LFSR", "berlekamp_massey"]
 

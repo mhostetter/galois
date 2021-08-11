@@ -1,12 +1,9 @@
 import numba
 import numpy as np
 
-from .._modular import primitive_root
-
+from ._class import FieldClass, DirMeta
 from ._dtypes import DTYPES
-from ._meta_class import FieldClass, DirMeta
-from ._meta_ufunc import  _FUNCTION_TYPE
-from ._poly import Poly
+from ._ufunc import  _FUNCTION_TYPE
 
 
 class GFpMeta(FieldClass, DirMeta):
@@ -20,18 +17,6 @@ class GFpMeta(FieldClass, DirMeta):
         cls._prime_subfield = cls
 
         cls.compile(kwargs["compile"])
-
-    @property
-    def irreducible_poly(cls):
-        if cls._irreducible_poly is None:
-            cls._irreducible_poly = Poly([1, -cls.primitive_element], field=cls)
-        return cls._irreducible_poly
-
-    @property
-    def primitive_element(cls):
-        if cls._primitive_element is None:
-            cls._primitive_element = primitive_root(cls._characteristic)
-        return cls(cls._primitive_element)
 
     @property
     def dtypes(cls):

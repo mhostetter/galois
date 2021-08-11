@@ -3,11 +3,11 @@ import inspect
 import numpy as np
 
 from .._overrides import set_module
+from .._poly_conversion import integer_to_poly, poly_to_str
 
-from ._meta_function import FunctionMeta
-from ._meta_ufunc import UfuncMeta
-from ._meta_properties import PropertiesMeta
-from ._poly_conversion import integer_to_poly, poly_to_str
+from ._function import FunctionMeta
+from ._properties import PropertiesMeta
+from ._ufunc import UfuncMeta
 
 __all__ = ["FieldClass"]
 
