@@ -274,7 +274,7 @@ class Poly:
         if not isinstance(degree, (int, np.integer)):
             raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
         if not degree >= 0:
-            raise TypeError(f"Argument `degree` must be at least 0, not {degree}.")
+            raise ValueError(f"Argument `degree` must be non-negative, not {degree}.")
         coeffs = field.Random(degree + 1)
         coeffs[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
         return Poly(coeffs, field=field)
@@ -322,6 +322,8 @@ class Poly:
         """
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
+        if not integer >= 0:
+            raise ValueError(f"Argument `integer` must be non-negative, not {integer}.")
 
         if field is GF2:
             # Explicitly create a binary poly
@@ -392,10 +394,13 @@ class Poly:
         coeffs : tuple, list, numpy.ndarray, galois.FieldArray, optional
             The corresponding non-zero polynomial coefficients with type :obj:`galois.FieldArray`. Alternatively, an iterable :obj:`tuple`,
             :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from the `field` keyword argument. The
-            default is `None` which corresponds to all one coefficients, i.e. `[1,]*len(degrees)`.
+            default is `None` which corresponds to all ones.
         field : galois.FieldClass, optional
-            If `coeffs` is a :obj:`galois.FieldArray`, this argument is ignored. Otherwise, this defines the Galois field :math:`\mathrm{GF}(p^m)`
-            the polynomial is over. The default is `None` which represents :obj:`galois.GF2`.
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
+
+            * :obj:`None` (default): If the coefficients are a :obj:`galois.FieldArray`, they won't be modified. If the coefficients are not explicitly
+              in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(coeffs)`.
+            * :obj:`galois.FieldClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
 
         Returns
         -------
