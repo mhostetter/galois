@@ -1,3 +1,6 @@
+"""
+A module that contains a metaclass mixin that provides Galois field class properties.
+"""
 import numpy as np
 
 from .._modular import totatives
@@ -10,7 +13,6 @@ class PropertiesMeta(type):
     """
     A mixin metaclass that contains Galois field properties.
     """
-    # pylint: disable=no-value-for-parameter
 
     def __init__(cls, name, bases, namespace, **kwargs):
         cls._characteristic = kwargs.get("characteristic", None)

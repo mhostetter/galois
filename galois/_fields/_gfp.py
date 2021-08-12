@@ -1,9 +1,11 @@
+"""
+A module that contains a metaclass mixin that provides GF(p) arithmetic using explicit calculation.
+"""
 import numba
 import numpy as np
 
 from ._class import FieldClass, DirMeta
 from ._dtypes import DTYPES
-from ._ufunc import  _FUNCTION_TYPE
 
 
 class GFpMeta(FieldClass, DirMeta):
@@ -116,7 +118,7 @@ def compile_jit(name, reset=True):
             RECIPROCAL = compile_jit("reciprocal", reset=False)
 
         function = eval(f"{name}")
-        if _FUNCTION_TYPE[name] == "unary":
+        if FieldClass._UFUNC_TYPE[name] == "unary":
             compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64)"], nopython=True, cache=True)(function)
         else:
             compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64, int64)"], nopython=True, cache=True)(function)
@@ -144,7 +146,7 @@ def compile_ufunc(name, CHARACTERISTIC_, DEGREE_, IRREDUCIBLE_POLY_):
             RECIPROCAL = compile_jit("reciprocal", reset=False)
 
         function = eval(f"{name}_ufunc")
-        if _FUNCTION_TYPE[name] == "unary":
+        if FieldClass._UFUNC_TYPE[name] == "unary":
             compile_ufunc.cache[key] = numba.vectorize(["int64(int64)"], nopython=True)(function)
         else:
             compile_ufunc.cache[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(function)

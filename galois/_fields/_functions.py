@@ -1,5 +1,5 @@
 """
-A module containint a metaclass mixin abstract base class that handles overridding numpy function calls.
+A module that contains a metaclass mixin that provides NumPy function overriding for an ndarray subclass.
 """
 import numba
 from numba import int64
@@ -7,44 +7,42 @@ import numpy as np
 
 from . import _linalg
 from ._dtypes import DTYPES
-from ._properties import PropertiesMeta
-
-# List of functions that are not valid on arrays over finite groups, rings, and fields
-UNSUPPORTED_FUNCTIONS_UNARY = [
-    np.packbits, np.unpackbits,
-    np.unwrap,
-    np.around, np.round_, np.fix,
-    np.gradient, np.trapz,
-    np.i0, np.sinc,
-    np.angle, np.real, np.imag, np.conj, np.conjugate,
-]
-
-UNSUPPORTED_FUNCTIONS_BINARY = [
-    np.lib.scimath.logn,
-    np.cross,
-]
-
-FUNCTIONS_REQUIRING_VIEW = [
-    np.concatenate,
-    np.broadcast_to,
-    np.trace,
-]
+from ._ufuncs import UfuncMeta
 
 
-class FunctionMeta(PropertiesMeta):
+class FunctionMeta(UfuncMeta):
     """
     A mixin metaclass that JIT compiles general-purpose functions on Galois field arrays.
     """
-    # pylint: disable=no-value-for-parameter
+    # pylint: disable=no-value-for-parameter,abstract-method
 
-    _unsupported_functions = UNSUPPORTED_FUNCTIONS_UNARY + UNSUPPORTED_FUNCTIONS_BINARY
-    _functions_requiring_view = FUNCTIONS_REQUIRING_VIEW
+    _UNSUPPORTED_FUNCTIONS_UNARY = [
+        np.packbits, np.unpackbits,
+        np.unwrap,
+        np.around, np.round_, np.fix,
+        np.gradient, np.trapz,
+        np.i0, np.sinc,
+        np.angle, np.real, np.imag, np.conj, np.conjugate,
+    ]
 
-    _overridden_functions = {
+    _UNSUPPORTED_FUNCTIONS_BINARY = [
+        np.lib.scimath.logn,
+        np.cross,
+    ]
+
+    _UNSUPPORTED_FUNCTIONS = _UNSUPPORTED_FUNCTIONS_UNARY + _UNSUPPORTED_FUNCTIONS_BINARY
+
+    _FUNCTIONS_REQUIRING_VIEW = [
+        np.concatenate,
+        np.broadcast_to,
+        np.trace,
+    ]
+
+    _OVERRIDDEN_FUNCTIONS = {
         np.convolve: "_convolve",
     }
 
-    _overridden_linalg_functions = {
+    _OVERRIDDEN_LINALG_FUNCTIONS = {
         np.dot: _linalg.dot,
         np.vdot: _linalg.vdot,
         np.inner: _linalg.inner,
@@ -55,6 +53,17 @@ class FunctionMeta(PropertiesMeta):
         np.linalg.solve: _linalg.solve,
         np.linalg.inv: _linalg.inv,
     }
+
+    _MATMUL_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+    _MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _CONVOLVE_LOOKUP_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+    _CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _POLY_DIVMOD_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+    _POLY_DIVMOD_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _POLY_ROOTS_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+    _POLY_ROOTS_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _POLY_EVALUATE_LOOKUP_SIG = numba.types.FunctionType(int64(int64[:], int64, UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+    _POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64(int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
@@ -337,16 +346,10 @@ def poly_evaluate_python_calculate(coeffs, value, ADD, MULTIPLY, CHARACTERISTIC,
 # Compilation functions
 ###############################################################################
 
-UNARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64[:], int64[:], int64[:], int64))
-BINARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64, int64[:], int64[:], int64[:], int64))
-UNARY_CALCULATE_SIG = numba.types.FunctionType(int64(int64, int64, int64, int64))
-BINARY_CALCULATE_SIG = numba.types.FunctionType(int64(int64, int64, int64, int64, int64))
-
-
 def jit_lookup(name):
     if name not in jit_lookup.cache:
         function = eval(f"{name}_lookup")
-        sig = eval(f"{name.upper()}_LOOKUP_SIG")
+        sig = eval(f"FunctionMeta._{name.upper()}_LOOKUP_SIG")
         jit_calculate.cache[name] = numba.jit(sig.signature, nopython=True, cache=True)(function)
     return jit_lookup.cache[name]
 
@@ -356,7 +359,7 @@ jit_lookup.cache = {}
 def jit_calculate(name):
     if name not in jit_calculate.cache:
         function = eval(f"{name}_calculate")
-        sig = eval(f"{name.upper()}_CALCULATE_SIG")
+        sig = eval(f"FunctionMeta._{name.upper()}_CALCULATE_SIG")
         jit_calculate.cache[name] = numba.jit(sig.signature, nopython=True, cache=True)(function)
     return jit_calculate.cache[name]
 
@@ -370,8 +373,6 @@ def python_func(name):
 ###############################################################################
 # Matrix multiplication
 ###############################################################################
-
-MATMUL_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
 
 def matmul_lookup(A, B, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
@@ -390,8 +391,6 @@ def matmul_lookup(A, B, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: n
 
     return C
 
-
-MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def matmul_calculate(A, B, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
@@ -415,8 +414,6 @@ def matmul_calculate(A, B, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_PO
 # Convolution
 ###############################################################################
 
-CONVOLVE_LOOKUP_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
-
 def convolve_lookup(a, b, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
     dtype = a.dtype
@@ -428,8 +425,6 @@ def convolve_lookup(a, b, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma:
 
     return c
 
-
-CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def convolve_calculate(a, b, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
@@ -446,8 +441,6 @@ def convolve_calculate(a, b, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_
 ###############################################################################
 # Polynomial division with remainder
 ###############################################################################
-
-POLY_DIVMOD_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
 
 def poly_divmod_lookup(a, b, SUBTRACT, MULTIPLY, DIVIDE, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
@@ -468,8 +461,6 @@ def poly_divmod_lookup(a, b, SUBTRACT, MULTIPLY, DIVIDE, EXP, LOG, ZECH_LOG, ZEC
 
     return qr
 
-
-POLY_DIVMOD_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def poly_divmod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
@@ -494,8 +485,6 @@ def poly_divmod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGR
 ###############################################################################
 # Polynomial roots
 ###############################################################################
-
-POLY_ROOTS_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
 
 def poly_roots_lookup(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
@@ -539,8 +528,6 @@ def poly_roots_lookup(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, M
 
     return np.array([roots, powers], dtype=dtype)
 
-
-POLY_ROOTS_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
@@ -589,8 +576,6 @@ def poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD
 # Polynomial evaluation
 ###############################################################################
 
-POLY_EVALUATE_LOOKUP_SIG = numba.types.FunctionType(int64(int64[:], int64, BINARY_LOOKUP_SIG, BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
-
 def poly_evaluate_lookup(coeffs, value, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E
 
@@ -600,8 +585,6 @@ def poly_evaluate_lookup(coeffs, value, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_
 
     return result
 
-
-POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64(int64[:], int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def poly_evaluate_calculate(coeffs, value, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY

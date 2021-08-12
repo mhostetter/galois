@@ -1,15 +1,17 @@
+"""
+A module that contains a metaclass mixin that provides GF(2^m) arithmetic using explicit calculation.
+"""
 import numba
 import numpy as np
 
 from ._class import FieldClass, DirMeta
-from ._ufunc import  _FUNCTION_TYPE
 
 
 class GF2mMeta(FieldClass, DirMeta):
     """
     A metaclass for all GF(2^m) classes.
     """
-    # pylint: disable=abstract-method,no-value-for-parameter
+    # pylint: disable=no-value-for-parameter
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
@@ -22,7 +24,9 @@ class GF2mMeta(FieldClass, DirMeta):
             cls._is_primitive_poly = cls._poly_evaluate_python(cls._irreducible_poly.coeffs, cls.primitive_element) == 0
 
     def _compile_ufuncs(cls):
-        super()._compile_ufuncs()
+        cls._ufuncs = {}  # Reset the dictionary so each ufunc will get recompiled
+        if cls.ufunc_mode == "jit-lookup":
+            cls._build_lookup_tables()
 
         # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835552639.
         cls._ufuncs["add"] = np.bitwise_xor
@@ -124,7 +128,7 @@ def compile_jit(name, reset=True):
             RECIPROCAL = compile_jit("reciprocal", reset=False)
 
         function = eval(f"{name}")
-        if _FUNCTION_TYPE[name] == "unary":
+        if FieldClass._UFUNC_TYPE[name] == "unary":
             compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64)"], nopython=True, cache=True)(function)
         else:
             compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64, int64)"], nopython=True, cache=True)(function)
@@ -154,7 +158,7 @@ def compile_ufunc(name, CHARACTERISTIC_, DEGREE_, IRREDUCIBLE_POLY_):
             RECIPROCAL = compile_jit("reciprocal", reset=False)
 
         function = eval(f"{name}_ufunc")
-        if _FUNCTION_TYPE[name] == "unary":
+        if FieldClass._UFUNC_TYPE[name] == "unary":
             compile_ufunc.cache[key] = numba.vectorize(["int64(int64)"], nopython=True)(function)
         else:
             compile_ufunc.cache[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(function)

@@ -1,3 +1,6 @@
+"""
+A module that defines a polynomial class over Galois fields.
+"""
 import numpy as np
 
 from .._fields import FieldClass, FieldArray, GF2
