@@ -5,8 +5,7 @@ import numba
 from numba import int64
 import numpy as np
 
-from ._fields import FieldArray
-from ._fields._function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG
+from ._fields import FieldClass, FieldArray
 from ._overrides import set_module
 from ._polys import Poly
 from ._poly_conversion import integer_to_poly
@@ -377,7 +376,7 @@ def python_func(name):
     return eval(f"{name}_calculate")
 
 
-FIBONACCI_LFSR_STEP_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
+FIBONACCI_LFSR_STEP_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldClass._BINARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def fibonacci_lfsr_step_calculate(poly, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
@@ -400,7 +399,7 @@ def fibonacci_lfsr_step_calculate(poly, state, steps, ADD, MULTIPLY, CHARACTERIS
     return y
 
 
-GALOIS_LFSR_STEP_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, int64, int64, int64))
+GALOIS_LFSR_STEP_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldClass._BINARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def galois_lfsr_step_calculate(poly, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
@@ -427,7 +426,7 @@ def galois_lfsr_step_calculate(poly, state, steps, ADD, MULTIPLY, CHARACTERISTIC
     return y
 
 
-BERLEKAMP_MASSEY_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, UNARY_CALCULATE_SIG, int64, int64, int64))
+BERLEKAMP_MASSEY_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], FieldClass._BINARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, FieldClass._UNARY_CALCULATE_SIG, int64, int64, int64))
 
 def berlekamp_massey_calculate(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY

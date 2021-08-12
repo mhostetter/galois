@@ -5,7 +5,7 @@ import numpy as np
 from .. import _lfsr
 from .._factor import factors
 from .._factory import Field, matlab_primitive_poly
-from .._fields._function import UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, POLY_EVALUATE_CALCULATE_SIG, CONVOLVE_CALCULATE_SIG
+from .._fields import FieldClass
 from .._overrides import set_module
 from .._polys import Poly
 
@@ -610,7 +610,7 @@ class ReedSolomon:
 # JIT-compiled implementation of the specified functions
 ###############################################################################
 
-DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, UNARY_CALCULATE_SIG, BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, POLY_ROOTS_CALCULATE_SIG, POLY_EVALUATE_CALCULATE_SIG, CONVOLVE_CALCULATE_SIG, int64, int64, int64))
+DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, FieldClass._BINARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, FieldClass._UNARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldClass._POLY_ROOTS_CALCULATE_SIG, FieldClass._POLY_EVALUATE_CALCULATE_SIG, FieldClass._CONVOLVE_CALCULATE_SIG, int64, int64, int64))
 
 def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, POLY_EVAL, CONVOLVE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """

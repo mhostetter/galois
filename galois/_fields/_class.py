@@ -1,3 +1,6 @@
+"""
+A module that contains a metaclass whose instances are Galois field array classes.
+"""
 import inspect
 
 import numpy as np
@@ -5,58 +8,57 @@ import numpy as np
 from .._overrides import set_module
 from .._poly_conversion import integer_to_poly, poly_to_str
 
-from ._function import FunctionMeta
+from ._functions import FunctionMeta
 from ._properties import PropertiesMeta
-from ._ufunc import UfuncMeta
+from ._ufuncs import UfuncMeta
 
 __all__ = ["FieldClass"]
 
 
 @set_module("galois")
-class FieldClass(UfuncMeta, FunctionMeta, PropertiesMeta):
+class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
     """
     Defines a metaclass for all :obj:`galois.FieldArray` classes.
 
     This metaclass gives :obj:`galois.FieldArray` subclasses returned from the class factory :func:`galois.GF` methods and attributes
     related to its Galois field.
     """
-    # pylint: disable=abstract-method,no-value-for-parameter,unsupported-membership-test
+    # pylint: disable=no-value-for-parameter
 
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
         return super().__new__(cls, name, bases, namespace)
-
-    def __init__(cls, name, bases, namespace, **kwargs):
-        cls._characteristic = kwargs.get("characteristic", None)
-        cls._degree = kwargs.get("degree", None)
-        cls._order = kwargs.get("order", None)
-        cls._order_str = None
-        cls._ufunc_mode = None
-        cls._ufunc_target = None
-        super().__init__(name, bases, namespace, **kwargs)
-
-        if "irreducible_poly" in kwargs:
-            cls._irreducible_poly = kwargs["irreducible_poly"]
-            cls._irreducible_poly_int = cls._irreducible_poly.integer
-        else:
-            cls._irreducible_poly = None
-            cls._irreducible_poly_int = 0
-        cls._primitive_element = kwargs.get("primitive_element", None)
-
-        cls._is_primitive_poly = kwargs.get("is_primitive_poly", None)
-        cls._prime_subfield = None
-
-        cls._display_mode = "int"
-
-        if cls.degree == 1:
-            cls._order_str = "order={}".format(cls.order)
-        else:
-            cls._order_str = "order={}^{}".format(cls.characteristic, cls.degree)
 
     def __str__(cls):
         return f"<class 'numpy.ndarray over {cls.name}'>"
 
     def __repr__(cls):
         return str(cls)
+
+    ###############################################################################
+    # Individual JIT arithmetic functions, pre-compiled (cached)
+    ###############################################################################
+
+    def _calculate_jit(cls, name):
+        """
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
+        """
+        raise NotImplementedError
+
+    def _python_func(cls, name):
+        """
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
+        """
+        raise NotImplementedError
+
+    ###############################################################################
+    # Individual ufuncs, compiled on-demand
+    ###############################################################################
+
+    def _calculate_ufunc(cls, name):
+        """
+        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
+        """
+        raise NotImplementedError
 
     ###############################################################################
     # Class methods
@@ -441,7 +443,7 @@ class DirMeta(type):
     natively include metaclass properties in dir().
 
     This is a separate class because it will be mixed in to `GF2Meta`, `GF2mMeta`, `GFpMeta`, and `GFpmMeta` separately. Otherwise, the
-    sphinx documentation of `FieldArray` is messed up.
+    sphinx documentation of `FieldArray` gets messed up.
 
     Also, to not mess up the sphinx documentation of `GF2`, we had to create a custom sphinx template `class_gf2.rst` that
     manually includes all the classmethods and methods. This is because there is no way to redefine __dir__ for `GF2` and not have

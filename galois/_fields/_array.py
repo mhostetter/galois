@@ -1,3 +1,6 @@
+"""
+A module that contains a ndarray subclass for Galois field arrays.
+"""
 import random
 
 import numpy as np
@@ -1002,13 +1005,13 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         super().__setitem__(key, value)
 
     def __array_function__(self, func, types, args, kwargs):
-        if func in type(self)._overridden_functions:
-            output = getattr(type(self), type(self)._overridden_functions[func])(*args, **kwargs)
+        if func in type(self)._OVERRIDDEN_FUNCTIONS:
+            output = getattr(type(self), type(self)._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
 
-        elif func in type(self)._overridden_linalg_functions:
-            output = type(self)._overridden_linalg_functions[func](*args, **kwargs)
+        elif func in type(self)._OVERRIDDEN_LINALG_FUNCTIONS:
+            output = type(self)._OVERRIDDEN_LINALG_FUNCTIONS[func](*args, **kwargs)
 
-        elif func in type(self)._unsupported_functions:
+        elif func in type(self)._UNSUPPORTED_FUNCTIONS:
             raise NotImplementedError(f"The numpy function {func.__name__!r} is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array = array.view(np.ndarray)` and then call the function.")
 
         else:
@@ -1019,7 +1022,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
             output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
 
-            if func in type(self)._functions_requiring_view:
+            if func in type(self)._FUNCTIONS_REQUIRING_VIEW:
                 output = output.view(type(self)) if not np.isscalar(output) else type(self)(output, dtype=self.dtype)
 
         return output
@@ -1037,7 +1040,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         meta["dtype"] = self.dtype
         # meta["ufuncs"] = self._ufuncs
 
-        if ufunc in type(self)._overridden_ufuncs:
+        if ufunc in type(self)._OVERRIDDEN_UFUNCS:
             # Set all ufuncs with "casting" keyword argument to "unsafe" so we can cast unsigned integers
             # to integers. We know this is safe because we already verified the inputs.
             if method not in ["reduce", "accumulate", "at", "reduceat"]:
@@ -1048,9 +1051,9 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             if method in ["reduce"]:
                 kwargs["dtype"] = type(self).dtypes[-1]
 
-            return getattr(type(self), type(self)._overridden_ufuncs[ufunc])(ufunc, method, inputs, kwargs, meta)
+            return getattr(type(self), type(self)._OVERRIDDEN_UFUNCS[ufunc])(ufunc, method, inputs, kwargs, meta)
 
-        elif ufunc in type(self)._unsupported_ufuncs:
+        elif ufunc in type(self)._UNSUPPORTED_UFUNCS:
             raise NotImplementedError(f"The numpy ufunc {ufunc.__name__!r} is not supported on {type(self).name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         else:
@@ -1060,7 +1063,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             inputs, kwargs = type(self)._view_inputs_as_ndarray(inputs, kwargs)
             output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
 
-            if ufunc in type(self)._ufuncs_requiring_view and output is not None:
+            if ufunc in type(self)._UFUNCS_REQUIRING_VIEW and output is not None:
                 output = output.view(type(self)) if not np.isscalar(output) else type(self)(output, dtype=self.dtype)
 
             return output

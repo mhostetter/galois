@@ -1,20 +1,23 @@
+"""
+A module that contains a metaclass mixin that provides GF(2) arithmetic using explicit calculation.
+"""
 import numba
 import numpy as np
 
 from .._overrides import set_module
 
 from ._array import FieldArray
+from ._calculate import CalculateMeta
 from ._class import FieldClass, DirMeta
-from ._ufunc import  _FUNCTION_TYPE
 
 __all__ = ["GF2"]
 
 
-class GF2Meta(FieldClass, DirMeta):
+class GF2Meta(FieldClass, DirMeta, CalculateMeta):
     """
     A metaclass for the GF(2) class.
     """
-    # pylint: disable=abstract-method,no-value-for-parameter
+    # pylint: disable=no-value-for-parameter
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
@@ -97,6 +100,51 @@ class GF2Meta(FieldClass, DirMeta):
         cls._verify_unary_method_not_reduction(ufunc, method)
         return inputs[0]
 
+    ###############################################################################
+    # Pure python arithmetic methods
+    ###############################################################################
+
+    def _add_python(cls, a, b):
+        return a ^ b
+
+    def _negative_python(cls, a):
+        return a
+
+    def _subtract_python(cls, a, b):
+        return a ^ b
+
+    def _multiply_python(cls, a, b):
+        return a & b
+
+    def _reciprocal_python(cls, a):
+        if a == 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        return 1
+
+    def _divide_python(cls, a, b):
+        if b == 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        return a & b
+
+    def _power_python(cls, a, b):
+        if a == 0 and b < 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        if b == 0:
+            return 1
+        else:
+            return a
+
+    def _log_python(cls, a, b):
+        if a == 0:
+            raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
+        if b != 1:
+            raise ArithmeticError("In GF(2), 1 is the only multiplicative generator.")
+
+        return 0
+
 
 ###############################################################################
 # Compile functions
@@ -115,7 +163,7 @@ def compile_jit(name):
     """
     if name not in compile_jit.cache:
         function = eval(f"{name}")
-        if _FUNCTION_TYPE[name] == "unary":
+        if FieldClass._UFUNC_TYPE[name] == "unary":
             compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64)"], nopython=True, cache=True)(function)
         else:
             compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64, int64)"], nopython=True, cache=True)(function)
@@ -136,7 +184,7 @@ def compile_ufunc(name, CHARACTERISTIC_, DEGREE_, IRREDUCIBLE_POLY_):
         IRREDUCIBLE_POLY = IRREDUCIBLE_POLY_
 
         function = eval(f"{name}_ufunc")
-        if _FUNCTION_TYPE[name] == "unary":
+        if FieldClass._UFUNC_TYPE[name] == "unary":
             compile_ufunc.cache[key] = numba.vectorize(["int64(int64)"], nopython=True)(function)
         else:
             compile_ufunc.cache[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(function)
