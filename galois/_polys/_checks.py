@@ -145,15 +145,15 @@ def is_irreducible(poly):
 @set_module("galois")
 def is_primitive(poly):
     r"""
-    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is primitive.
+    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
 
-    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is *primitive* if it is irreducible and
-    :math:`f(x)\ |\ (x^k - 1)` for :math:`k = p^m - 1` and no :math:`k` less than :math:`p^m - 1`.
+    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
+    :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than :math:`q^m - 1`.
 
     Parameters
     ----------
     poly : galois.Poly
-        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
+        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
 
     Returns
     -------
@@ -187,12 +187,10 @@ def is_primitive(poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
     if not poly.degree >= 1:
         raise ValueError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
-    if not poly.field.is_prime_field:
-        raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
     if poly.field.order == 2 and poly.degree == 1:
         # There is only one primitive polynomial in GF(2)
-        return poly == Poly([1,1])
+        return poly == Poly([1, 1])
 
     if poly.coeffs[-1] == 0:
         # A primitive polynomial cannot have zero constant term
@@ -204,15 +202,15 @@ def is_primitive(poly):
         return False
 
     field = poly.field
-    p = field.order
+    q = field.order
     m = poly.degree
     zero = Poly.Zero(field)
     one = Poly.One(field)
 
-    primes, _ = factors(p**m - 1)
+    primes, _ = factors(q**m - 1)
     x = Poly.Identity(field)
-    for ki in sorted([(p**m - 1) // pi for pi in primes]):
-        # f(x) must not divide (x^((p^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of p**m - 1
+    for ki in sorted([(q**m - 1) // pi for pi in primes]):
+        # f(x) must not divide (x^((q^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of q**m - 1
         h = poly_pow(x, ki, poly)
         g = (h - one) % poly
         if g == zero:

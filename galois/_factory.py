@@ -541,14 +541,14 @@ def irreducible_polys(order, degree):
 
 
 @set_module("galois")
-def primitive_poly(characteristic, degree, method="min"):
+def primitive_poly(order, degree, method="min"):
     r"""
-    Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
+    Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
     Parameters
     ----------
-    characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
+    order : int
+        The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
     degree : int
         The degree :math:`m` of the desired primitive polynomial.
     method : str, optional
@@ -561,17 +561,17 @@ def primitive_poly(characteristic, degree, method="min"):
     Returns
     -------
     galois.Poly
-        The degree-:math:`m` monic primitive polynomial over :math:`\mathrm{GF}(p)`.
+        The degree-:math:`m` monic primitive polynomial over :math:`\mathrm{GF}(q)`.
 
     Notes
     -----
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
-    of :math:`\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
-    of :math:`\mathrm{GF}(p^m)` such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)`
+    of :math:`\mathrm{GF}(q)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
+    of :math:`\mathrm{GF}(q^m)` such that :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
 
     Examples
     --------
-    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial, where
+    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial, whereas
     :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
     with smaller Conway polynomials, which is not *necessarily* the same.
 
@@ -585,22 +585,22 @@ def primitive_poly(characteristic, degree, method="min"):
         galois.primitive_poly(7, 10)
         galois.conway_poly(7, 10)
     """
-    if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(order, (int, np.integer)):
+        raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
     if not isinstance(degree, (int, np.integer)):
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
-    if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not is_prime_power(order):
+        raise ValueError(f"Argument `order` must be a prime power, not {order}.")
     if not degree >= 1:
         raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
 
-    field = GF_prime(characteristic)
+    field = GF(order)
 
     # Only search monic polynomials of degree m over GF(p)
-    min_ = characteristic**degree
-    max_ = 2*characteristic**degree
+    min_ = order**degree
+    max_ = 2*order**degree
 
     if method == "random":
         while True:
@@ -619,27 +619,27 @@ def primitive_poly(characteristic, degree, method="min"):
 
 
 @set_module("galois")
-def primitive_polys(characteristic, degree):
+def primitive_polys(order, degree):
     r"""
-    Returns all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
+    Returns all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
     Parameters
     ----------
-    characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
+    order : int
+        The prime order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
     degree : int
         The degree :math:`m` of the desired primitive polynomial.
 
     Returns
     -------
     list
-        All degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(p)`.
+        All degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(q)`.
 
     Notes
     -----
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(p^m)`
-    of :math:`\mathrm{GF}(p)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
-    of :math:`\mathrm{GF}(p^m)` such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)`
+    of :math:`\mathrm{GF}(q)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
+    of :math:`\mathrm{GF}(q^m)` such that :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
 
     Examples
     --------
@@ -649,26 +649,26 @@ def primitive_polys(characteristic, degree):
 
         galois.primitive_polys(2, 5)
 
-    All monic primitive polynomials over :math:`\mathrm{GF}(3)` with degree :math:`4`.
+    All monic primitive polynomials over :math:`\mathrm{GF}(3^2)` with degree :math:`2`.
 
     .. ipython:: python
 
-        galois.primitive_polys(3, 4)
+        galois.primitive_polys(3**2, 2)
     """
-    if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(order, (int, np.integer)):
+        raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
     if not isinstance(degree, (int, np.integer)):
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
-    if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not is_prime_power(order):
+        raise ValueError(f"Argument `order` must be a prime power, not {order}.")
     if not degree >= 1:
         raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
 
-    field = GF_prime(characteristic)
+    field = GF(order)
 
     # Only search monic polynomials of degree m over GF(p)
-    min_ = characteristic**degree
-    max_ = 2*characteristic**degree
+    min_ = order**degree
+    max_ = 2*order**degree
 
     polys = []
     for element in range(min_, max_):
