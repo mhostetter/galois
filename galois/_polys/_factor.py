@@ -1,8 +1,6 @@
 """
 A module containing routines for polynomial factorization.
 """
-import random
-
 import numpy as np
 
 from .._overrides import set_module
@@ -17,25 +15,31 @@ __all__ = ["poly_factors", "square_free_factorization", "distinct_degree_factori
 @set_module("galois")
 def poly_factors(poly):
     r"""
-    Factors the polynomial :math:`f(x)` into a product of irreducible factors :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
-
-    This function implements the Square-Free Factorization algorithm.
+    Factors the non-constant, monic polynomial :math:`f(x)` into a product of :math:`k` irreducible factors
+    :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
 
     Parameters
     ----------
     poly : galois.Poly
-        The polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` to be factored.
+        A non-constant, monic polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
     list
-        The list of :math:`k` polynomial factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` sorted in increasing lexicographic order.
+        The list of :math:`k` irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` sorted in lexicographically-increasing order.
     list
         The list of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
+
+    Notes
+    -----
+    This functions implements the Square-Free, Distinct-Degree, and Equal-Degree Factorization algorithms in successive order. See
+    :func:`galois.square_free_factorization`, :func:`galois.distinct_degree_factorization`, and :func:`galois.equal_degree_factorization`
+    for details on each.
 
     References
     ----------
     * D. Hachenberger, D. Jungnickel. Topics in Galois Fields. Algorithm 6.1.7.
+    * Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
     Examples
     --------
@@ -63,55 +67,32 @@ def poly_factors(poly):
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-
-    field = poly.field
-    p = field.characteristic
-    one = Poly.One(field=field)
-
-    L = Poly.One(field=field)
-    r = 0
-    factors_ = []
-    multiplicities = []
-
+    if not poly.field.is_prime_field:
+        raise ValueError(f"Argument `poly` must be over a prime field, not {poly.field.name}.")
+    if not poly.degree >= 1:
+        raise ValueError(f"Argument `poly` must be non-constant, not {poly}.")
     if not is_monic(poly):
-        factors_.append(Poly(poly.coeffs[0], field=field))
-        multiplicities.append(1)
-        poly /= poly.coeffs[0]
+        raise ValueError(f"Argument `poly` must be monic, not {poly}.")
 
-    def SFF(c, r):
-        nonlocal L, factors_, multiplicities
-        i = 1
-        a = c.copy()
-        b = c.derivative()
-        d = poly_gcd(a, b)
-        w = a / d
+    factors, multiplicities = [], []
 
-        while w != one:
-            y = poly_gcd(w, d)
-            z = w / y
-            if z != one and i % p != 0:
-                L *= z**(i * p**r)
-                factors_.append(z)
-                multiplicities.append(i * p**r)
-            i = i + 1
-            w = y
-            d = d / y
+    # Step 1: Find all the square-free factors
+    sf_factors, sf_multiplicities = square_free_factorization(poly)
 
-        return d
+    # Step 2: Find all the factors with distinct degree
+    for sf_factor, sf_multiplicity in zip(sf_factors, sf_multiplicities):
+        df_factors, df_degrees = distinct_degree_factorization(sf_factor)
 
-    d = SFF(poly, r)
+        # Step 3: Find all the irreducible factors with degree d
+        for df_factor, df_degree in zip(df_factors, df_degrees):
+            f = equal_degree_factorization(df_factor, df_degree)
+            factors.extend(f)
+            multiplicities.extend([sf_multiplicity,]*len(f))
 
-    while d != one:
-        degrees = [degree // p for degree in d.degrees]
-        coeffs = d.coeffs
-        delta = Poly.Degrees(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
-        r += 1
-        d = SFF(delta, r)
+    # Sort the factors in increasing-multiplicity order
+    factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: item[0].integer))
 
-    # Sort the factor in lexicographically-increasing order
-    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[0].integer))
-
-    return list(factors_), list(multiplicities)
+    return list(factors), list(multiplicities)
 
 
 @set_module("galois")
