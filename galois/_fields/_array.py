@@ -813,6 +813,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             a = GF(7); a
             b = GF(2); b
             a * b
+            @suppress
+            GF.display();
 
         When one multiplicand is an integer, that indicates a scalar multiplication (repeated addition).
 
