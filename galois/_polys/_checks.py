@@ -46,12 +46,12 @@ def is_monic(poly):
 @set_module("galois")
 def is_irreducible(poly):
     r"""
-    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is irreducible.
+    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
 
     Parameters
     ----------
     poly : galois.Poly
-        A polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
+        A polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
@@ -60,14 +60,14 @@ def is_irreducible(poly):
 
     Notes
     -----
-    A polynomial :math:`f(x) \in \mathrm{GF}(p)[x]` is *reducible* over :math:`\mathrm{GF}(p)` if it can
-    be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p)[x]` of strictly
+    A polynomial :math:`f(x) \in \mathrm{GF}(p^m)[x]` is *reducible* over :math:`\mathrm{GF}(p^m)` if it can
+    be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p^m)[x]` of strictly
     lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
     closed, such irreducible polynomials exist.
 
     This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
-    over :math:`\mathrm{GF}(p)` for prime :math:`p` is irreducible if and only if :math:`f(x)\ |\ (x^{p^m} - x)`
-    and :math:`\textrm{gcd}(f(x),\ x^{p^{m_i}} - x) = 1` for :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for
+    over :math:`\mathrm{GF}(q)` for prime power :math:`q` is irreducible if and only if :math:`f(x)\ |\ (x^{q^m} - x)`
+    and :math:`\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1` for :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for
     the :math:`k` prime divisors :math:`p_i` of :math:`m`.
 
     References
@@ -91,12 +91,9 @@ def is_irreducible(poly):
 
     .. ipython:: python
 
-        g = galois.conway_poly(2, 4); g
-        h = galois.conway_poly(2, 5); h
+        g = galois.irreducible_poly(2**4, 2, method="random"); g
+        h = galois.irreducible_poly(2**4, 3, method="random"); h
         f = g * h; f
-
-        # Even though f(x) has no roots in GF(2), it is still reducible
-        f.roots()
 
         galois.is_irreducible(f)
     """
@@ -104,8 +101,6 @@ def is_irreducible(poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
     if not poly.degree >= 1:
         raise ValueError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
-    if not poly.field.is_prime_field:
-        raise ValueError(f"We can only check irreducibility of polynomials over prime fields GF(p), not {poly.field.name}.")
 
     if poly.degree == 1:
         # f(x) = x + a (even a = 0) in any Galois field is irreducible
@@ -121,7 +116,7 @@ def is_irreducible(poly):
         return False
 
     field = poly.field
-    p = field.order
+    q = field.order
     m = poly.degree
     zero = Poly.Zero(field)
     one = Poly.One(field)
@@ -131,15 +126,15 @@ def is_irreducible(poly):
     h0 = Poly.Identity(field)
     n0 = 0
     for ni in sorted([m // pi for pi in primes]):
-        # The GCD of f(x) and (x^(p^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
-        hi = poly_pow(h0, p**(ni - n0), poly)
+        # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
+        hi = poly_pow(h0, q**(ni - n0), poly)
         g = poly_gcd(poly, hi - x)
         if g != one:
             return False
         h0, n0 = hi, ni
 
-    # f(x) must divide (x^(p^m) - x) to be irreducible
-    h = poly_pow(h0, p**(m - n0), poly)
+    # f(x) must divide (x^(q^m) - x) to be irreducible
+    h = poly_pow(h0, q**(m - n0), poly)
     g = (h - x) % poly
     if g != zero:
         return False
