@@ -9,8 +9,30 @@ on:
     - master
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install linting dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r requirements-lint.txt
+    - name: Install python package
+      run: python3 -m pip install .  # Needed to guarantee dependencies are installed
+    - name: Lint with pylint
+      run: python3 -m pylint --rcfile=setup.cfg galois/
+
   test-coverage:
     name: Coverage
+    needs: lint
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -31,6 +53,7 @@ jobs:
 
   build-wheel:
     name: Build Wheel
+    needs: lint
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
