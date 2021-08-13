@@ -257,6 +257,56 @@ def test_square_free_factorization():
     f = a * b * c**3
     assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
 
+    a = galois.irreducible_poly(2**2, 1, method="random")
+    b = galois.irreducible_poly(2**2, 4, method="random")
+    c = galois.irreducible_poly(2**2, 3, method="random")
+    f = a * b * c**3
+    assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
+
+    a = galois.irreducible_poly(5**2, 1, method="random")
+    b = galois.irreducible_poly(5**2, 4, method="random")
+    c = galois.irreducible_poly(5**2, 3, method="random")
+    f = a * b * c**3
+    assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
+
+
+def test_square_free_factorization_random():
+    GF = galois.GF(2)
+    f = galois.Poly.Random(10, field=GF)
+    f /= f.coeffs[0] # Make monic
+    factors, multiplicities = galois.square_free_factorization(f)
+    g = galois.Poly.One(GF)
+    for fi, mi in zip(factors, multiplicities):
+        g *= fi**mi
+    assert f == g
+
+    GF = galois.GF(5)
+    f = galois.Poly.Random(10, field=GF)
+    f /= f.coeffs[0] # Make monic
+    factors, multiplicities = galois.square_free_factorization(f)
+    g = galois.Poly.One(GF)
+    for fi, mi in zip(factors, multiplicities):
+        g *= fi**mi
+    assert f == g
+
+    GF = galois.GF(2**2)
+    f = galois.Poly.Random(10, field=GF)
+    f /= f.coeffs[0] # Make monic
+    factors, multiplicities = galois.square_free_factorization(f)
+    g = galois.Poly.One(GF)
+    for fi, mi in zip(factors, multiplicities):
+        g *= fi**mi
+    assert f == g
+
+    GF = galois.GF(5**2)
+    f = galois.Poly.Random(10, field=GF)
+    f /= f.coeffs[0] # Make monic
+    factors, multiplicities = galois.square_free_factorization(f)
+    g = galois.Poly.One(GF)
+    for fi, mi in zip(factors, multiplicities):
+        g *= fi**mi
+    assert f == g
+
 
 def test_distinct_degree_factorization_exceptions():
     GF = galois.GF(5)
