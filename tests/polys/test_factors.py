@@ -276,3 +276,45 @@ def test_distinct_degree_factorization():
         f4 *= f
     f = f1 * f3 * f4
     assert galois.distinct_degree_factorization(f) == ([f1, f3, f4], [1, 3, 4])
+
+
+def test_equal_degree_factorization_exceptions():
+    GF = galois.GF(5)
+    a = galois.Poly([1,0,2,1], field=GF)
+    b = galois.Poly([1,4,4,4], field=GF)
+    f = a * b
+
+    with pytest.raises(TypeError):
+        galois.equal_degree_factorization(f.coeffs, 2)
+    with pytest.raises(TypeError):
+        galois.equal_degree_factorization(f, 2.0)
+    with pytest.raises(ValueError):
+        galois.equal_degree_factorization(galois.Poly([2], field=GF), 1)
+    with pytest.raises(ValueError):
+        galois.equal_degree_factorization(galois.Poly([2,0,2,4], field=GF), 2)
+    with pytest.raises(ValueError):
+        galois.equal_degree_factorization(f, 4)
+
+
+def test_equal_degree_factorization():
+    GF = galois.GF(2)
+    for d in range(1, 4):
+        polys = galois.irreducible_polys(2, d)
+        r = random.randint(1, len(polys))
+        factors = random.sample(polys, r)
+        factors = sorted(factors, key=lambda item: item.integer)
+    f = galois.Poly.One(GF)
+    for factor in factors:
+        f *= factor
+    assert galois.equal_degree_factorization(f, d) == factors
+
+    GF = galois.GF(5)
+    for d in range(1, 4):
+        polys = galois.irreducible_polys(5, d)
+        r = random.randint(1, len(polys))
+        factors = random.sample(polys, r)
+        factors = sorted(factors, key=lambda item: item.integer)
+    f = galois.Poly.One(GF)
+    for factor in factors:
+        f *= factor
+    assert galois.equal_degree_factorization(f, d) == factors
