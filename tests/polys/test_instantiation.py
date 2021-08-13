@@ -52,6 +52,17 @@ def config(request):
     return d
 
 
+def test_exceptions():
+    with pytest.raises(TypeError):
+        galois.Poly([1, 0, 1], field="invalid-type")
+    with pytest.raises(TypeError):
+        galois.Poly("invalid-type")
+    with pytest.raises(ValueError):
+        galois.Poly(np.array([[1, 0, 1], [1, 1, 1]]))
+    with pytest.raises(ValueError):
+        galois.Poly([1, 0, 1], order="invalid-type")
+
+
 @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
 def test_coeffs(type1, config):
     GF = config["GF"]
@@ -126,17 +137,6 @@ def test_degree_zero(field):
     assert np.array_equal(p.coeffs, coeffs)
     p = galois.Poly([value], field=field)
     assert np.array_equal(p.coeffs, coeffs)
-
-
-def test_exceptions():
-    with pytest.raises(TypeError):
-        galois.Poly([1, 0, 1], field="invalid-type")
-    with pytest.raises(TypeError):
-        galois.Poly("invalid-type")
-    with pytest.raises(ValueError):
-        galois.Poly(np.array([[1, 0, 1], [1, 1, 1]]))
-    with pytest.raises(ValueError):
-        galois.Poly([1, 0, 1], order="invalid-type")
 
 
 def test_field_override():

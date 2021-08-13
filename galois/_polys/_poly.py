@@ -273,10 +273,14 @@ class Poly:
         """
         if not isinstance(degree, (int, np.integer)):
             raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+        if not isinstance(field, FieldClass):
+            raise TypeError(f"Argument `field` must be a Galois field class, not {type(field)}.")
         if not degree >= 0:
             raise ValueError(f"Argument `degree` must be non-negative, not {degree}.")
+
         coeffs = field.Random(degree + 1)
         coeffs[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
+
         return Poly(coeffs, field=field)
 
     @classmethod
@@ -322,6 +326,8 @@ class Poly:
         """
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
+        if not isinstance(field, FieldClass):
+            raise TypeError(f"Argument `field` must be a Galois field class, not {type(field)}.")
         if not integer >= 0:
             raise ValueError(f"Argument `integer` must be non-negative, not {integer}.")
 
