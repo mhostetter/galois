@@ -8,7 +8,7 @@ import types
 import numpy as np
 
 from ._databases import ConwayPolyDatabase
-from ._factor import factors
+from ._factor import factors, is_prime_power
 from ._fields import FieldArray, GF2
 from ._fields._gfp import GFpMeta
 from ._fields._gf2m import GF2mMeta
@@ -395,14 +395,14 @@ GF_extension._classes = {}
 ###############################################################################
 
 @set_module("galois")
-def irreducible_poly(characteristic, degree, method="min"):
+def irreducible_poly(order, degree, method="min"):
     r"""
-    Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
+    Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
     Parameters
     ----------
-    characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
+    order : int
+        The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
     degree : int
         The degree :math:`m` of the desired irreducible polynomial.
     method : str, optional
@@ -415,35 +415,21 @@ def irreducible_poly(characteristic, degree, method="min"):
     Returns
     -------
     galois.Poly
-        The degree-:math:`m` monic irreducible polynomial over :math:`\mathrm{GF}(p)`.
+        The degree-:math:`m` monic irreducible polynomial over :math:`\mathrm{GF}(q)`.
 
     Notes
     -----
-    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
+    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
     then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
-    :math:`\mathrm{GF}(p^m)` of :math:`\mathrm{GF}(p)`.
+    :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
 
     Examples
     --------
-    The lexicographically-minimal monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
+    The lexicographically-minimal, monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
 
     .. ipython:: python
 
         p = galois.irreducible_poly(7, 5); p
-        galois.is_irreducible(p)
-
-    The lexicographically-maximal monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
-
-    .. ipython:: python
-
-        p = galois.irreducible_poly(7, 5, method="max"); p
-        galois.is_irreducible(p)
-
-    A random monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
-
-    .. ipython:: python
-
-        p = galois.irreducible_poly(7, 5, method="random"); p
         galois.is_irreducible(p)
 
     Irreducible polynomials scaled by non-zero field elements are also irreducible.
@@ -451,26 +437,31 @@ def irreducible_poly(characteristic, degree, method="min"):
     .. ipython:: python
 
         GF = galois.GF(7)
-        p = galois.irreducible_poly(7, 5); p
-        galois.is_irreducible(p)
         galois.is_irreducible(p * GF(3))
+
+    A random, monic irreducible polynomial over :math:`\mathrm{GF}(7^2)` with degree :math:`3`.
+
+    .. ipython:: python
+
+        p = galois.irreducible_poly(7**2, 3, method="random"); p
+        galois.is_irreducible(p)
     """
-    if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(order, (int, np.integer)):
+        raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
     if not isinstance(degree, (int, np.integer)):
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
-    if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not is_prime_power(order):
+        raise ValueError(f"Argument `order` must be a prime power, not {order}.")
     if not degree >= 1:
         raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
 
-    field = GF_prime(characteristic)
+    field = GF(order)
 
-    # Only search monic polynomials of degree m over GF(p)
-    min_ = characteristic**degree
-    max_ = 2*characteristic**degree
+    # Only search monic polynomials of degree m over GF(q)
+    min_ = order**degree
+    max_ = 2*order**degree
 
     if method == "random":
         while True:
@@ -489,27 +480,27 @@ def irreducible_poly(characteristic, degree, method="min"):
 
 
 @set_module("galois")
-def irreducible_polys(characteristic, degree):
+def irreducible_polys(order, degree):
     r"""
-    Returns all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
+    Returns all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
     Parameters
     ----------
-    characteristic : int
-        The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
+    order : int
+        The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
     degree : int
         The degree :math:`m` of the desired irreducible polynomial.
 
     Returns
     -------
     list
-        All degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(p)`.
+        All degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(q)`.
 
     Notes
     -----
-    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(p)` and :math:`a \in \mathrm{GF}(p) \backslash \{0\}`,
+    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
     then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
-    :math:`\mathrm{GF}(p^m)` of :math:`\mathrm{GF}(p)`.
+    :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
 
     Examples
     --------
@@ -518,21 +509,27 @@ def irreducible_polys(characteristic, degree):
     .. ipython:: python
 
         galois.irreducible_polys(2, 5)
+
+    All monic irreducible polynomials over :math:`\mathrm{GF}(3^2)` with degree :math:`2`.
+
+    .. ipython:: python
+
+        galois.irreducible_polys(3**2, 2)
     """
-    if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
+    if not isinstance(order, (int, np.integer)):
+        raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
     if not isinstance(degree, (int, np.integer)):
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
-    if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+    if not is_prime_power(order):
+        raise ValueError(f"Argument `order` must be a prime power, not {order}.")
     if not degree >= 1:
         raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
 
-    field = GF_prime(characteristic)
+    field = GF(order)
 
     # Only search monic polynomials of degree m over GF(p)
-    min_ = characteristic**degree
-    max_ = 2*characteristic**degree
+    min_ = order**degree
+    max_ = 2*order**degree
 
     polys = []
     for element in range(min_, max_):
@@ -769,13 +766,17 @@ def matlab_primitive_poly(characteristic, degree):
 
     Notes
     -----
-    This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the lexicographically-minimal
-    primitive polynomial (equivalent to `galois.primitive_poly(p, m)`) as the default... *mostly*. There are three
+    This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the primitive polynomial with minimum terms
+    (equivalent to `galois.primitive_poly(p, m, method="min-terms")`) as the default... *mostly*. There are three
     notable exceptions:
 
     1. :math:`\mathrm{GF}(2^7)` uses :math:`x^7 + x^3 + 1`, not :math:`x^7 + x + 1`.
     2. :math:`\mathrm{GF}(2^{14})` uses :math:`x^{14} + x^{10} + x^6 + x + 1`, not :math:`x^{14} + x^5 + x^3 + x + 1`.
     3. :math:`\mathrm{GF}(2^{16})` uses :math:`x^{16} + x^{12} + x^3 + x + 1`, not :math:`x^{16} + x^5 + x^3 + x^2 + 1`.
+
+    References
+    ----------
+    * S. Lin and D. Costello. Error Control Coding. Table 2.7.
 
     Warning
     -------
