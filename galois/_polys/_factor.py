@@ -179,7 +179,7 @@ def square_free_factorization(poly):
     p = field.characteristic
     one = Poly.One(field=field)
 
-    factors_ = []
+    factors = []
     multiplicities = []
 
     # w is the product (without multiplicity) of all factors of f that have multiplicity not divisible by p
@@ -192,7 +192,7 @@ def square_free_factorization(poly):
         y = poly_gcd(w, d)
         z = w / y
         if z != one and i % p != 0:
-            factors_.append(z)
+            factors.append(z)
             multiplicities.append(i)
         w = y
         d = d / y
@@ -205,13 +205,13 @@ def square_free_factorization(poly):
         coeffs = d.coeffs
         delta = Poly.Degrees(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
         f, m = square_free_factorization(delta)
-        factors_.extend(f)
+        factors.extend(f)
         multiplicities.extend([mi*p for mi in m])
 
     # Sort the factors in increasing-multiplicity order
-    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[1]))
+    factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: item[1]))
 
-    return list(factors_), list(multiplicities)
+    return list(factors), list(multiplicities)
 
 
 @set_module("galois")
@@ -298,7 +298,7 @@ def distinct_degree_factorization(poly):
     one = Poly.One(field=field)
     x = Poly.Identity(field=field)
 
-    factors_ = []
+    factors = []
     degrees = []
 
     a = poly.copy()
@@ -309,17 +309,17 @@ def distinct_degree_factorization(poly):
         h = poly_pow(h, q, a)
         z = poly_gcd(a, h - x)
         if z != one:
-            factors_.append(z)
+            factors.append(z)
             degrees.append(l)
             a = a / z
             h = h % a
         l += 1
 
     if a != one:
-        factors_.append(a)
+        factors.append(a)
         degrees.append(a.degree)
 
-    return factors_, degrees
+    return factors, degrees
 
 
 @set_module("galois")
@@ -387,24 +387,29 @@ def equal_degree_factorization(poly, d):
 
     field = poly.field
     q = field.order
-    n = poly.degree
+    # n = poly.degree
     r = poly.degree // d
     one = Poly.One(field=field)
 
-    factors_ = [poly]
-    while len(factors_) < r:
-        h = Poly.Random(random.randint(1, n - 1), field=field)
+    factors = [poly]
+    while len(factors) < r:
+        # h = Poly.Random(random.randint(1, n - 1), field=field)
+        h = Poly.Random(d, field=field)
         g = poly_gcd(poly, h)
         if g == one:
             g = poly_pow(h, (q**d - 1)//2, poly) - one
-        for u in factors_:
+        i = 0
+        for u in list(factors):
+            if u.degree <= d:
+                continue
             gcd = poly_gcd(g, u)
             if gcd not in [one, u]:
-                factors_.remove(u)
-                factors_.append(gcd)
-                factors_.append(u / gcd)
+                factors.remove(u)
+                factors.append(gcd)
+                factors.append(u / gcd)
+            i += 1
 
     # Sort the factors in lexicographically-increasing order
-    factors_ = sorted(factors_, key=lambda item: item.integer)
+    factors = sorted(factors, key=lambda item: item.integer)
 
-    return factors_
+    return factors
