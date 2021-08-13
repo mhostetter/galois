@@ -78,6 +78,8 @@ class PropertiesMeta(type):
             GF.characteristic
             a = GF.Random(low=1); a
             a * GF.characteristic
+            @suppress
+            GF.display();
 
         .. ipython:: python
 
@@ -158,6 +160,8 @@ class PropertiesMeta(type):
             # The irreducible polynomial is a primitive polynomial if the primitive element is a root
             GF.irreducible_poly(GF.primitive_element, field=GF)
             GF.is_primitive_poly
+            @suppress
+            GF.display();
 
         Here is an example using the :math:`\mathrm{GF}(2^8)` field from AES, which does not use a primitive polynomial.
 
@@ -170,6 +174,8 @@ class PropertiesMeta(type):
             # The irreducible polynomial is a primitive polynomial if the primitive element is a root
             GF.irreducible_poly(GF.primitive_element, field=GF)
             GF.is_primitive_poly
+            @suppress
+            GF.display();
         """
         return cls._is_primitive_poly
 
