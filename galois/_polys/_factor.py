@@ -67,8 +67,6 @@ def poly_factors(poly):
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not poly.field.is_prime_field:
-        raise ValueError(f"Argument `poly` must be over a prime field, not {poly.field.name}.")
     if not poly.degree >= 1:
         raise ValueError(f"Argument `poly` must be non-constant, not {poly}.")
     if not is_monic(poly):
