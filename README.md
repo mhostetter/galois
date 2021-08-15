@@ -1,3 +1,5 @@
+<meta name="keywords" content="python, galois field, finite field, numpy, numba, linear algebra, polynomial, lfsr, fec, bch, reed solomon, elliptic curve">
+
 # <img alt="Galois: A performant NumPy extension for Galois fields and their applications" align="middle" src="https://github.com/mhostetter/galois/blob/master/logo/galois-heading.png">
 
 [![PyPI version](https://badge.fury.io/py/galois.svg)](https://badge.fury.io/py/galois)
