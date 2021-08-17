@@ -94,7 +94,7 @@ polynomial is a Conway polynomial which is irreducible and *primitive*, see :fun
    p = GF9.irreducible_poly; p
    galois.is_irreducible(p)
    # Explicit polynomial factorization returns itself as a multiplicity-1 factor
-   galois.poly_factors(p)
+   galois.factors(p)
 
 Polynomial addition and subtract never result in polynomials of larger degree, so it is unnecessary to reduce them
 modulo :math:`p(x)`. Let's try an example of addition. Suppose two field elements :math:`a = x + 2` and :math:`b = x + 1`.
@@ -179,7 +179,7 @@ Now the entire multiplication table can be shown for completeness.
 Division, as in :math:`\mathrm{GF}(p)`, is a little more difficult. Fortunately the Extended Euclidean Algorithm, which
 was used in prime fields on integers, can be used for extension fields on polynomials. Given two polynomials :math:`a`
 and :math:`b`, the Extended Euclidean Algorithm finds the polynomials :math:`x` and :math:`y` such that
-:math:`xa + yb = \textrm{gcd}(a, b)`. This algorithm is implemented in :func:`galois.poly_egcd`.
+:math:`xa + yb = \textrm{gcd}(a, b)`. This algorithm is implemented in :func:`galois.egcd`.
 
 If :math:`a = x + 2` is a field element of :math:`\mathrm{GF}(3^2)` and :math:`b = p(x)`, the field's irreducible polynomial, then :math:`x = a^{-1}` in :math:`\mathrm{GF}(3^2)`.
 Note, the GCD will always be :math:`1` because :math:`p(x)` is irreducible.
@@ -188,7 +188,7 @@ Note, the GCD will always be :math:`1` because :math:`p(x)` is irreducible.
 
    p = GF9.irreducible_poly; p
    a = galois.Poly([1, 2], field=GF3); a
-   gcd, x, y = galois.poly_egcd(a, p); gcd, x, y
+   gcd, x, y = galois.egcd(a, p); gcd, x, y
 
 The claim is that :math:`(x + 2)^{-1} = x` in :math:`\mathrm{GF}(3^2)` or, equivalently, :math:`(x + 2)(x)\ \equiv 1\ \textrm{mod}\ p(x)`. This
 can be easily verified with :obj:`galois`.

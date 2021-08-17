@@ -164,24 +164,24 @@ POLY_POW_5_4 = [
 ]
 
 
-def test_poly_pow_exceptions():
+def test_pow_exceptions():
     GF = galois.GF(31)
     f = galois.Poly.Random(10, field=GF)
     g = galois.Poly.Random(7, field=GF)
     power = 20
 
     with pytest.raises(TypeError):
-        galois.poly_pow(f.coeffs, power, g)
+        galois.pow(f.coeffs, power, g)
     with pytest.raises(TypeError):
-        galois.poly_pow(f, float(power), g)
+        galois.pow(f, float(power), g)
     with pytest.raises(TypeError):
-        galois.poly_pow(f, power, g.coeffs)
+        galois.pow(f, power, g.coeffs)
     with pytest.raises(ValueError):
-        galois.poly_pow(f, -power, g)
+        galois.pow(f, -power, g)
 
 
 @pytest.mark.parametrize("characteristic,degree", PARAMS)
-def test_poly_pow(characteristic, degree):
+def test_pow(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     LUT = eval(f"POLY_POW_{characteristic}_{degree}")
     for item in LUT:
@@ -189,4 +189,4 @@ def test_poly_pow(characteristic, degree):
         exponent = item[1]
         modulus = galois.Poly(item[2], field=GF)
         result = galois.Poly(item[3], field=GF)
-        assert galois.poly_pow(base, exponent, modulus) == result
+        assert galois.pow(base, exponent, modulus) == result

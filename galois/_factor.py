@@ -9,14 +9,13 @@ import random
 
 import numpy as np
 
-from ._integer import isqrt, iroot, ilog
-from ._math import prod
+from ._math import prod, isqrt, iroot, ilog
 from ._overrides import set_module
 from ._prime import primes, is_prime
 
 __all__ = [
     "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
-    "factors", "perfect_power", "trial_division", "pollard_p1", "pollard_rho",
+    "perfect_power", "trial_division", "pollard_p1", "pollard_rho",
     "divisors", "divisor_sigma",
     "is_prime_power", "is_perfect_power", "is_square_free", "is_smooth", "is_powersmooth"
 ]
@@ -224,53 +223,11 @@ def kronecker_symbol(a, n):
 # Prime factorization
 ###############################################################################
 
-@set_module("galois")
 @functools.lru_cache(maxsize=2048)
 def factors(n):
-    r"""
-    Computes the prime factors of the positive integer :math:`n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}`.
-
-    Parameters
-    ----------
-    n : int
-        Any positive integer.
-
-    Returns
-    -------
-    list
-        Sorted list of :math:`k` prime factors :math:`\{p_1, p_2, \dots, p_k\}` with :math:`p_1 < p_2 < \dots < p_k`.
-    list
-        List of corresponding prime powers :math:`\{e_1, e_2, \dots, e_k\}`.
-
-    Notes
-    -----
-    **Steps**:
-
-    1. Test if :math:`n` is prime. If so, return `[n], [1]`.
-    2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and multiply the exponents by :math:`k`.
-    3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the discovered prime factors.
-    4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are found.
-
-    Examples
-    --------
-    .. ipython:: python
-
-        p, e = galois.factors(120)
-        p, e
-        galois.prod([pi**ei for pi, ei in zip(p, e)])
-
-    Prime factorization of one less than a large prime.
-
-    .. ipython:: python
-
-        prime = 1000000000000000035000061
-        galois.is_prime(prime)
-        p, e = galois.factors(prime - 1)
-        p, e
-        galois.prod([pi**ei for pi, ei in zip(p, e)])
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    This function is wrapped and documented in `_polymorphic.factors()`.
+    """
     if not n > 1:
         raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
     n = int(n)
@@ -683,8 +640,8 @@ def divisors(n):
     d = [1, n]
     for ki in range(1, k + 1):
         # For all prime powers choose ki for ki in [1, 2, ..., k]
-        for pair in itertools.combinations(prime_powers, ki):
-            d1 = prod(pair)  # One possible divisor
+        for items in itertools.combinations(prime_powers, ki):
+            d1 = prod(*items)  # One possible divisor
             if n % d1 == 0:
                 d2 = n // d1  # The other divisor
                 d += [d1, d2]

@@ -15,14 +15,10 @@ Divisibility
    gcd
    egcd
    lcm
+   prod
    inverse
    euler_phi
    totatives
-
-.. rubric::
-.. autosummary::
-   :toctree:
-
    are_coprime
 
 Congruences
@@ -41,11 +37,6 @@ Congruences
    legendre_symbol
    jacobi_symbol
    kronecker_symbol
-
-.. rubric::
-.. autosummary::
-   :toctree:
-
    is_primitive_root
    is_cyclic
 
