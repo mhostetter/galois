@@ -17,7 +17,7 @@ __all__ = [
     "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
     "perfect_power", "trial_division", "pollard_p1", "pollard_rho",
     "divisors", "divisor_sigma",
-    "is_prime_power", "is_perfect_power", "is_square_free", "is_smooth", "is_powersmooth"
+    "is_prime_power", "is_perfect_power", "is_smooth", "is_powersmooth"
 ]
 
 
@@ -293,10 +293,13 @@ def perfect_power(n):
 
         # Primes are not perfect powers
         galois.perfect_power(5)
+
         # Products of primes are not perfect powers
         galois.perfect_power(2*3)
+
         # Products of prime powers were the GCD of the exponents is 1 are not perfect powers
         galois.perfect_power(2 * 3 * 5**3)
+
         # Products of prime powers were the GCD of the exponents is > 1 are perfect powers
         galois.perfect_power(2**2 * 3**2 * 5**4)
         galois.perfect_power(36)
@@ -784,37 +787,7 @@ def is_perfect_power(n):
     return False
 
 
-@set_module("galois")
 def is_square_free(n):
-    r"""
-    Determines if :math:`n` is square-free, such that :math:`n = p_1 p_2 \dots p_k`.
-
-    Parameters
-    ----------
-    n : int
-        A positive integer.
-
-    Returns
-    -------
-    bool:
-        `True` if the integer :math:`n` is square-free.
-
-    Notes
-    -----
-    A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
-    of a square-free integer :math:`n` is
-
-    .. math:: n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
-
-    Examples
-    --------
-    .. ipython:: python
-
-        galois.is_square_free(10)
-        galois.is_square_free(16)
-    """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not n > 0:
         raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 

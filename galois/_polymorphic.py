@@ -15,7 +15,7 @@ from ._polys import _math as poly_math
 __all__ = [
     "gcd", "egcd", "lcm", "prod", "are_coprime",
     "pow", "crt",
-    "factors",
+    "factors", "is_square_free",
 ]
 
 
@@ -505,7 +505,6 @@ def factors(value):
     .. ipython:: python
 
         GF = galois.GF(3)
-        # Ensure the factors are irreducible by using Conway polynomials
         g1, g2, g3 = galois.irreducible_poly(3, 3), galois.irreducible_poly(3, 4), galois.irreducible_poly(3, 5)
         g1, g2, g3
         e1, e2, e3 = 5, 4, 3
@@ -517,5 +516,59 @@ def factors(value):
         return integer_factor.factors(value)
     elif isinstance(value, Poly):
         return poly_factor.factors(value)
+    else:
+        raise TypeError(f"Argument `value` must be either int or galois.Poly, not {type(value)}.")
+
+
+@set_module("galois")
+def is_square_free(value):
+    r"""
+    Determines if the positive integer or the non-constant, monic polynomial is square-free.
+
+    Parameters
+    ----------
+    value : int, galois.Poly
+        A positive integer :math:`n` or a non-constant, monic polynomial :math:`f(x)`.
+
+    Returns
+    -------
+    bool:
+        `True` if the integer or polynomial is square-free.
+
+    Notes
+    -----
+    A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
+    of a square-free integer :math:`n` is
+
+    .. math:: n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
+
+    Similarly, a square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one. Therefore,
+    its canonical factorization is
+
+    .. math:: f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
+
+    Examples
+    --------
+    Determine if an integer is square-free.
+
+    .. ipython:: python
+
+        galois.is_square_free(10)
+        galois.is_square_free(16)
+
+    Determine if a polynomial is square-free over :math:`\mathrm{GF}(3)`.
+
+    .. ipython:: python
+
+        GF = galois.GF(3)
+        g3 = galois.irreducible_poly(3, 3); g3
+        g4 = galois.irreducible_poly(3, 4); g4
+        galois.is_square_free(g3 * g4)
+        galois.is_square_free(g3**2 * g4)
+    """
+    if isinstance(value, (int, np.integer)):
+        return integer_factor.is_square_free(value)
+    elif isinstance(value, Poly):
+        return poly_factor.is_square_free(value)
     else:
         raise TypeError(f"Argument `value` must be either int or galois.Poly, not {type(value)}.")

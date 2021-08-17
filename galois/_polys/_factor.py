@@ -340,3 +340,8 @@ def equal_degree_factorization(poly, degree):
     factors_ = sorted(factors_, key=lambda item: item.integer)
 
     return factors_
+
+
+def is_square_free(poly):
+    _, multiplicities = square_free_factorization(poly)
+    return multiplicities == [1,]
