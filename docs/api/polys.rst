@@ -76,3 +76,4 @@ Polynomial functions
    is_monic
    is_irreducible
    is_primitive
+   is_square_free
