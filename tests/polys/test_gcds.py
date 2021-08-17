@@ -163,43 +163,43 @@ POLY_EGCD_5_4 = [
 ]
 
 
-def test_poly_gcd_exceptions():
+def test_gcd_exceptions():
     a = galois.Poly.Degrees([10, 9, 8, 6, 5, 4, 0])
     b = galois.Poly.Degrees([9, 6, 5, 3, 2, 0])
 
     with pytest.raises(TypeError):
-        galois.poly_gcd(a.coeffs, b)
+        galois.gcd(a.coeffs, b)
     with pytest.raises(TypeError):
-        galois.poly_gcd(a, b.coeffs)
+        galois.gcd(a, b.coeffs)
     with pytest.raises(ValueError):
-        galois.poly_gcd(a, galois.Poly(b.coeffs, field=galois.GF(3)))
+        galois.gcd(a, galois.Poly(b.coeffs, field=galois.GF(3)))
 
 
 @pytest.mark.parametrize("characteristic,degree", PARAMS)
-def test_poly_gcd(characteristic, degree):
+def test_gcd(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     LUT = eval(f"POLY_EGCD_{characteristic}_{degree}")
     for item in LUT:
         a = galois.Poly(item[0], field=GF)
         b = galois.Poly(item[1], field=GF)
         d = galois.Poly(item[2], field=GF)
-        assert galois.poly_gcd(a, b) == d
+        assert galois.gcd(a, b) == d
 
 
-def test_poly_egcd_exceptions():
+def test_egcd_exceptions():
     a = galois.Poly.Degrees([10, 9, 8, 6, 5, 4, 0])
     b = galois.Poly.Degrees([9, 6, 5, 3, 2, 0])
 
     with pytest.raises(TypeError):
-        galois.poly_egcd(a.coeffs, b)
+        galois.egcd(a.coeffs, b)
     with pytest.raises(TypeError):
-        galois.poly_egcd(a, b.coeffs)
+        galois.egcd(a, b.coeffs)
     with pytest.raises(ValueError):
-        galois.poly_egcd(a, galois.Poly(b.coeffs, field=galois.GF(3)))
+        galois.egcd(a, galois.Poly(b.coeffs, field=galois.GF(3)))
 
 
 @pytest.mark.parametrize("characteristic,degree", PARAMS)
-def test_poly_egcd(characteristic, degree):
+def test_egcd(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     LUT = eval(f"POLY_EGCD_{characteristic}_{degree}")
     for item in LUT:
@@ -208,4 +208,4 @@ def test_poly_egcd(characteristic, degree):
         d = galois.Poly(item[2], field=GF)
         s = galois.Poly(item[3], field=GF)
         t = galois.Poly(item[4], field=GF)
-        assert galois.poly_egcd(a, b) == (d, s, t)
+        assert galois.egcd(a, b) == (d, s, t)

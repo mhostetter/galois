@@ -5,74 +5,23 @@ import numpy as np
 
 from .._overrides import set_module
 
-from ._checks import is_monic
-from ._functions import poly_gcd, poly_pow
+from ._functions import is_monic
+from ._math import gcd, pow  # pylint: disable=redefined-builtin
 from ._poly import Poly
 
-__all__ = ["poly_factors", "square_free_factorization", "distinct_degree_factorization", "equal_degree_factorization"]
+__all__ = ["square_free_factorization", "distinct_degree_factorization", "equal_degree_factorization"]
 
 
-@set_module("galois")
-def poly_factors(poly):
-    r"""
-    Factors the non-constant, monic polynomial :math:`f(x)` into a product of :math:`k` irreducible factors
-    :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
-
-    Parameters
-    ----------
-    poly : galois.Poly
-        A non-constant, monic polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
-
-    Returns
-    -------
-    list
-        The list of :math:`k` irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` sorted in lexicographically-increasing order.
-    list
-        The list of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
-
-    Notes
-    -----
-    This functions implements the Square-Free, Distinct-Degree, and Equal-Degree Factorization algorithms in successive order. See
-    :func:`galois.square_free_factorization`, :func:`galois.distinct_degree_factorization`, and :func:`galois.equal_degree_factorization`
-    for details on each.
-
-    References
-    ----------
-    * D. Hachenberger, D. Jungnickel. Topics in Galois Fields. Algorithm 6.1.7.
-    * Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
-
-    Examples
-    --------
-    .. ipython:: python
-
-        GF = galois.GF2
-        # Ensure the factors are irreducible by using Conway polynomials
-        g1, g2, g3 = galois.conway_poly(2, 3), galois.conway_poly(2, 4), galois.conway_poly(2, 5)
-        g1, g2, g3
-        e1, e2, e3 = 4, 3, 2
-        # Construct the composite polynomial
-        f = g1**e1 * g2**e2 * g3**e3
-        galois.poly_factors(f)
-
-    .. ipython:: python
-
-        GF = galois.GF(3)
-        # Ensure the factors are irreducible by using Conway polynomials
-        g1, g2, g3 = galois.conway_poly(3, 3), galois.conway_poly(3, 4), galois.conway_poly(3, 5)
-        g1, g2, g3
-        e1, e2, e3 = 5, 4, 3
-        # Construct the composite polynomial
-        f = g1**e1 * g2**e2 * g3**e3
-        galois.poly_factors(f)
+def factors(poly):
     """
-    if not isinstance(poly, Poly):
-        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    This function is wrapped and documented in `_polymorphic.factors()`.
+    """
     if not poly.degree >= 1:
         raise ValueError(f"Argument `poly` must be non-constant, not {poly}.")
     if not is_monic(poly):
         raise ValueError(f"Argument `poly` must be monic, not {poly}.")
 
-    factors, multiplicities = [], []
+    factors_, multiplicities = [], []
 
     # Step 1: Find all the square-free factors
     sf_factors, sf_multiplicities = square_free_factorization(poly)
@@ -84,13 +33,13 @@ def poly_factors(poly):
         # Step 3: Find all the irreducible factors with degree d
         for df_factor, df_degree in zip(df_factors, df_degrees):
             f = equal_degree_factorization(df_factor, df_degree)
-            factors.extend(f)
+            factors_.extend(f)
             multiplicities.extend([sf_multiplicity,]*len(f))
 
     # Sort the factors in increasing-multiplicity order
-    factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: item[0].integer))
+    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[0].integer))
 
-    return list(factors), list(multiplicities)
+    return list(factors_), list(multiplicities)
 
 
 @set_module("galois")
@@ -120,7 +69,7 @@ def square_free_factorization(poly):
 
     Some :math:`h_j(x) = 1`, but those polynomials are not returned by this function.
 
-    A complete polynomial factorization is implemented in :func:`galois.poly_factors`.
+    A complete polynomial factorization is implemented in :func:`galois.factors`.
 
     References
     ----------
@@ -158,20 +107,20 @@ def square_free_factorization(poly):
     p = field.characteristic
     one = Poly.One(field=field)
 
-    factors = []
+    factors_ = []
     multiplicities = []
 
     # w is the product (without multiplicity) of all factors of f that have multiplicity not divisible by p
-    d = poly_gcd(poly, poly.derivative())
+    d = gcd(poly, poly.derivative())
     w = poly / d
 
     # Step 1: Find all factors in w
     i = 1
     while w != one:
-        y = poly_gcd(w, d)
+        y = gcd(w, d)
         z = w / y
         if z != one and i % p != 0:
-            factors.append(z)
+            factors_.append(z)
             multiplicities.append(i)
         w = y
         d = d / y
@@ -184,13 +133,13 @@ def square_free_factorization(poly):
         coeffs = d.coeffs ** (field.characteristic**(field.degree - 1))  # The inverse Frobenius automorphism of the coefficients
         delta = Poly.Degrees(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
         f, m = square_free_factorization(delta)
-        factors.extend(f)
+        factors_.extend(f)
         multiplicities.extend([mi*p for mi in m])
 
     # Sort the factors in increasing-multiplicity order
-    factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: item[1]))
+    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[1]))
 
-    return list(factors), list(multiplicities)
+    return list(factors_), list(multiplicities)
 
 
 @set_module("galois")
@@ -219,7 +168,7 @@ def distinct_degree_factorization(poly):
     .. math::
         f(x) = \prod_{i=1}^{d} f_i(x)
 
-    For example, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`. Then the distinct-degree
+    For example, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`, then the distinct-degree
     factorization is
 
     .. math::
@@ -235,7 +184,7 @@ def distinct_degree_factorization(poly):
     :math:`\{f_1(x), f_2(x), f_3(x)\}` and :math:`\{1, 2, 3\}`.
 
     The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see :func:`galois.square_free_factorization`.
-    A complete polynomial factorization is implemented in :func:`galois.poly_factors`.
+    A complete polynomial factorization is implemented in :func:`galois.factors`.
 
     References
     ----------
@@ -277,7 +226,7 @@ def distinct_degree_factorization(poly):
     one = Poly.One(field=field)
     x = Poly.Identity(field=field)
 
-    factors = []
+    factors_ = []
     degrees = []
 
     a = poly.copy()
@@ -285,24 +234,24 @@ def distinct_degree_factorization(poly):
 
     l = 1
     while l <= n // 2 and a != one:
-        h = poly_pow(h, q, a)
-        z = poly_gcd(a, h - x)
+        h = pow(h, q, a)
+        z = gcd(a, h - x)
         if z != one:
-            factors.append(z)
+            factors_.append(z)
             degrees.append(l)
             a = a / z
             h = h % a
         l += 1
 
     if a != one:
-        factors.append(a)
+        factors_.append(a)
         degrees.append(a.degree)
 
-    return factors, degrees
+    return factors_, degrees
 
 
 @set_module("galois")
-def equal_degree_factorization(poly, d):
+def equal_degree_factorization(poly, degree):
     r"""
     Factors the monic, square-free polynomial :math:`f(x)` of degree :math:`rd` into a product of :math:`r` irreducible factors with
     degree :math:`d`.
@@ -311,7 +260,7 @@ def equal_degree_factorization(poly, d):
     ----------
     poly : galois.Poly
         A monic, square-free polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
-    d : int
+    degree : int
         The degree :math:`d` of each irreducible factor of :math:`f(x)`.
 
     Returns
@@ -325,11 +274,12 @@ def equal_degree_factorization(poly, d):
     irreducible polynomials each with degree :math:`d`. This function implements the Cantor-Zassenhaus algorithm, which is probabilistic.
 
     The Equal-Degree Factorization algorithm is often applied after the Distinct-Degree Factorization algorithm, see :func:`galois.distinct_degree_factorization`.
-    A complete polynomial factorization is implemented in :func:`galois.poly_factors`.
+    A complete polynomial factorization is implemented in :func:`galois.factors`.
 
     References
     ----------
     * Section 2.3 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
+    * Section 1 from https://www.csa.iisc.ac.in/~chandan/courses/CNT/notes/lec8.pdf
 
     Examples
     --------
@@ -354,41 +304,39 @@ def equal_degree_factorization(poly, d):
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not isinstance(d, (int, np.integer)):
-        raise TypeError(f"Argument `d` must be an integer, not {type(d)}.")
+    if not isinstance(degree, (int, np.integer)):
+        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
     if not poly.degree >= 1:
         raise ValueError(f"Argument `poly` must be non-constant, not {poly}.")
     if not is_monic(poly):
         raise ValueError(f"Argument `poly` must be monic, not {poly}.")
-    if not poly.degree % d == 0:
-        raise ValueError(f"Argument `d` must be divide the degree of the polynomial, {d} does not divide {poly.degree}.")
+    if not poly.degree % degree == 0:
+        raise ValueError(f"Argument `degree` must be divide the degree of the polynomial, {degree} does not divide {poly.degree}.")
     # TODO: Add check if the polynomial is square-free
 
     field = poly.field
     q = field.order
-    # n = poly.degree
-    r = poly.degree // d
-    one = Poly.One(field=field)
+    r = poly.degree // degree
+    one = Poly.One(field)
 
-    factors = [poly]
-    while len(factors) < r:
-        # h = Poly.Random(random.randint(1, n - 1), field=field)
-        h = Poly.Random(d, field=field)
-        g = poly_gcd(poly, h)
+    factors_ = [poly]
+    while len(factors_) < r:
+        h = Poly.Random(degree, field=field)
+        g = gcd(poly, h)
         if g == one:
-            g = poly_pow(h, (q**d - 1)//2, poly) - one
+            g = pow(h, (q**degree - 1)//2, poly) - one
         i = 0
-        for u in list(factors):
-            if u.degree <= d:
+        for u in list(factors_):
+            if u.degree <= degree:
                 continue
-            gcd = poly_gcd(g, u)
-            if gcd not in [one, u]:
-                factors.remove(u)
-                factors.append(gcd)
-                factors.append(u / gcd)
+            d = gcd(g, u)
+            if d not in [one, u]:
+                factors_.remove(u)
+                factors_.append(d)
+                factors_.append(u / d)
             i += 1
 
     # Sort the factors in lexicographically-increasing order
-    factors = sorted(factors, key=lambda item: item.integer)
+    factors_ = sorted(factors_, key=lambda item: item.integer)
 
-    return factors
+    return factors_

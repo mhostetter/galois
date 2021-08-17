@@ -169,21 +169,21 @@ POLY_FACTORS_5_2 = [
 ]
 
 
-def test_poly_factors_exceptions():
+def test_factors_exceptions():
     GF = galois.GF(5)
     with pytest.raises(TypeError):
-        galois.poly_factors([1,0,2,4])
+        galois.factors([1,0,2,4])
     with pytest.raises(ValueError):
-        galois.poly_factors(galois.Poly([2,0,2,4], field=GF))
+        galois.factors(galois.Poly([2,0,2,4], field=GF))
     with pytest.raises(ValueError):
-        galois.poly_factors(galois.Poly([2], field=GF))
+        galois.factors(galois.Poly([2], field=GF))
 
 
-def test_poly_factors_old():
+def test_factors_old():
     g0, g1, g2 = galois.conway_poly(2, 3), galois.conway_poly(2, 4), galois.conway_poly(2, 5)
     k0, k1, k2 = 2, 3, 4
     f = g0**k0 * g1**k1 * g2**k2
-    factors, multiplicities = galois.poly_factors(f)
+    factors, multiplicities = galois.factors(f)
     assert factors == [g0, g1, g2]
     assert multiplicities == [k0, k1, k2]
 
@@ -191,15 +191,15 @@ def test_poly_factors_old():
     g0, g1, g2
     k0, k1, k2 = 3, 4, 6
     f = g0**k0 * g1**k1 * g2**k2
-    factors, multiplicities = galois.poly_factors(f)
+    factors, multiplicities = galois.factors(f)
     assert factors == [g0, g1, g2]
     assert multiplicities == [k0, k1, k2]
 
 
-def test_poly_factors_random():
+def test_factors_random():
     for _ in range(5):
         f = galois.Poly.Random(random.randint(10, 50))
-        factors, multiplicities = galois.poly_factors(f)
+        factors, multiplicities = galois.factors(f)
         g = galois.Poly.One()
         for fi, mi in zip(factors, multiplicities):
             g *= fi**mi
@@ -209,7 +209,7 @@ def test_poly_factors_random():
     for _ in range(5):
         f = galois.Poly.Random(random.randint(10, 50), field=GF)
         f /= f.coeffs[0]  # Make monic
-        factors, multiplicities = galois.poly_factors(f)
+        factors, multiplicities = galois.factors(f)
         g = galois.Poly.One(GF)
         for fi, mi in zip(factors, multiplicities):
             g *= fi**mi
@@ -217,7 +217,7 @@ def test_poly_factors_random():
 
 
 @pytest.mark.parametrize("characteristic,degree", PARAMS)
-def test_poly_factors(characteristic, degree):
+def test_factors(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     LUT = eval(f"POLY_FACTORS_{characteristic}_{degree}")
 
@@ -230,7 +230,7 @@ def test_poly_factors(characteristic, degree):
         factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: item[0].integer))
         factors, multiplicities = list(factors), list(multiplicities)
 
-        assert galois.poly_factors(a) == (factors, multiplicities)
+        assert galois.factors(a) == (factors, multiplicities)
 
 
 def test_square_free_factorization_exceptions():

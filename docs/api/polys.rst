@@ -43,19 +43,28 @@ Special polynomials
 Polynomial functions
 --------------------
 
-.. rubric::  Polynomial arithmetic
+.. rubric::  Divisibility
 .. autosummary::
    :toctree:
 
-   poly_gcd
-   poly_egcd
-   poly_pow
+   gcd
+   egcd
+   lcm
+   prod
+   are_coprime
+
+.. rubric::  Congruences
+.. autosummary::
+   :toctree:
+
+   pow
+   crt
 
 .. rubric::  Polynomial factorization
 .. autosummary::
    :toctree:
 
-   poly_factors
+   factors
    square_free_factorization
    distinct_degree_factorization
    equal_degree_factorization

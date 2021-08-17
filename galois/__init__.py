@@ -1,6 +1,8 @@
 """
 A performant NumPy extension for Galois fields and their applications.
 """
+# pylint: disable=redefined-builtin
+
 from ._version import __version__
 
 # Subpackages
@@ -11,10 +13,10 @@ from ._polys import *
 # Modules
 from ._factor import *
 from ._factory import *
-from ._integer import *
 from ._lfsr import *
-from ._math import *  # pylint: disable=redefined-builtin
+from ._math import *
 from ._modular import *
+from ._polymorphic import *
 from ._prime import *
 
 # Define the GF(2) primitive polynomial here, not in _fields/_gf2.py, to avoid a circular dependency with `Poly`.

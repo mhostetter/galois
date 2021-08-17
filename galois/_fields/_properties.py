@@ -1,9 +1,10 @@
 """
 A module that contains a metaclass mixin that provides Galois field class properties.
 """
+import math
+
 import numpy as np
 
-from .._modular import totatives
 from .._poly_conversion import integer_to_poly, poly_to_str
 
 from ._dtypes import DTYPES
@@ -215,7 +216,9 @@ class PropertiesMeta(type):
             galois.GF(31).primitive_elements
             galois.GF(7**5).primitive_elements
         """
-        powers = np.array(totatives(cls.order - 1))
+        n = cls.order - 1
+        totatives = [t for t in range(1, n + 1) if math.gcd(n, t) == 1]
+        powers = np.array(totatives)
         return np.sort(cls.primitive_element ** powers)
 
     @property
