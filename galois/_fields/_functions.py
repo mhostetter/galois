@@ -9,6 +9,9 @@ from . import _linalg
 from ._dtypes import DTYPES
 from ._ufuncs import UfuncMeta
 
+ADD_JIT = lambda a, b, *args: a + b
+MULTIPLY_JIT = lambda a, b, *args: a * b
+
 
 class FunctionMeta(UfuncMeta):
     """
@@ -81,8 +84,8 @@ class FunctionMeta(UfuncMeta):
                     cls._gufuncs["poly_evaluate"] = np.vectorize(poly_evaluate_python_calculate, excluded=["coeffs"], otypes=[np.object_])
                 else:
                     global ADD_JIT, MULTIPLY_JIT
-                    ADD_JIT = cls._calculate_jit("add")
-                    MULTIPLY_JIT = cls._calculate_jit("multiply")
+                    ADD_JIT = cls._func_calculate("add")
+                    MULTIPLY_JIT = cls._func_calculate("multiply")
                     cls._gufuncs["poly_evaluate"] = numba.guvectorize("int64[:], int64[:], int64, int64, int64, int64[:]", "(m),(n),(),(),()->(n)", nopython=True)(poly_evaluate_gufunc_calculate)
             else:
                 raise NotImplementedError
@@ -113,8 +116,8 @@ class FunctionMeta(UfuncMeta):
 
         if cls.ufunc_mode == "python-calculate":
             # For object dtypes, call the vectorized classmethod
-            add = cls._python_func("add")
-            multiply = cls._python_func("multiply")
+            add = cls._func_python("add")
+            multiply = cls._func_python("multiply")
             y = cls._gufunc("poly_evaluate")(coeffs=coeffs.view(np.ndarray), value=x.view(np.ndarray), ADD=add, MULTIPLY=multiply, CHARACTERISTIC=cls.characteristic, DEGREE=cls.degree, IRREDUCIBLE_POLY=cls._irreducible_poly_int, result=field.Zeros(x.shape))
         else:
             # For integer dtypes, call the JIT-compiled gufunc
@@ -129,8 +132,8 @@ class FunctionMeta(UfuncMeta):
 
     def _poly_evaluate_python(cls, coeffs, x):
         assert coeffs.ndim == 1
-        add = cls._python_func("add")
-        multiply = cls._python_func("multiply")
+        add = cls._func_python("add")
+        multiply = cls._func_python("multiply")
         coeffs = coeffs.view(np.ndarray).astype(cls.dtypes[-1])
         x = int(x)
         y = poly_evaluate_python_calculate(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int, 0)
@@ -175,15 +178,15 @@ class FunctionMeta(UfuncMeta):
         if cls.ufunc_mode != "python-calculate":
             A = A.astype(np.int64)
             B = B.astype(np.int64)
-            add = cls._calculate_jit("add")
-            multiply = cls._calculate_jit("multiply")
+            add = cls._func_calculate("add")
+            multiply = cls._func_calculate("multiply")
             C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             C = C.astype(dtype)
         else:
             A = A.view(np.ndarray)
             B = B.view(np.ndarray)
-            add = cls._python_func("add")
-            multiply = cls._python_func("multiply")
+            add = cls._func_python("add")
+            multiply = cls._func_python("multiply")
             C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
         C = C.view(field)
 
@@ -227,15 +230,15 @@ class FunctionMeta(UfuncMeta):
             if cls._ufunc_mode != "python-calculate":
                 a = a.astype(np.int64)
                 b = b.astype(np.int64)
-                add = cls._calculate_jit("add")
-                multiply = cls._calculate_jit("multiply")
+                add = cls._func_calculate("add")
+                multiply = cls._func_calculate("multiply")
                 c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
                 c = c.astype(dtype)
             else:
                 a = a.view(np.ndarray)
                 b = b.view(np.ndarray)
-                add = cls._python_func("add")
-                multiply = cls._python_func("multiply")
+                add = cls._func_python("add")
+                multiply = cls._func_python("multiply")
                 c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             c = c.view(field)
 
@@ -255,17 +258,17 @@ class FunctionMeta(UfuncMeta):
         if cls._ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             b = b.astype(np.int64)
-            subtract = cls._calculate_jit("subtract")
-            multiply = cls._calculate_jit("multiply")
-            divide = cls._calculate_jit("divide")
+            subtract = cls._func_calculate("subtract")
+            multiply = cls._func_calculate("multiply")
+            divide = cls._func_calculate("divide")
             qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             qr = qr.astype(dtype)
         else:
             a = a.view(np.ndarray)
             b = b.view(np.ndarray)
-            subtract = cls._python_func("subtract")
-            multiply = cls._python_func("multiply")
-            divide = cls._python_func("divide")
+            subtract = cls._func_python("subtract")
+            multiply = cls._func_python("multiply")
+            divide = cls._func_python("divide")
             qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
         qr = qr.view(field)
 
@@ -286,17 +289,17 @@ class FunctionMeta(UfuncMeta):
         if cls._ufunc_mode != "python-calculate":
             nonzero_degrees = nonzero_degrees.astype(np.int64)
             nonzero_coeffs = nonzero_coeffs.astype(np.int64)
-            add = cls._calculate_jit("add")
-            multiply = cls._calculate_jit("multiply")
-            power = cls._calculate_jit("power")
+            add = cls._func_calculate("add")
+            multiply = cls._func_calculate("multiply")
+            power = cls._func_calculate("power")
             roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, np.int64(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0,:]
             roots = roots.astype(dtype)
         else:
             nonzero_degrees = nonzero_degrees.view(np.ndarray)
             nonzero_coeffs = nonzero_coeffs.view(np.ndarray)
-            add = cls._python_func("add")
-            multiply = cls._python_func("multiply")
-            power = cls._python_func("power")
+            add = cls._func_python("add")
+            multiply = cls._func_python("multiply")
+            power = cls._func_python("power")
             roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, int(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0,:]
         roots = roots.view(field)
 
@@ -307,12 +310,6 @@ class FunctionMeta(UfuncMeta):
 ##############################################################################
 # Individual gufuncs
 ##############################################################################
-
-ADD_JIT = lambda a, b, *args: a + b
-MULTIPLY_JIT = lambda a, b, *args: a * b
-
-# pylint: disable=redefined-outer-name,unused-argument
-
 
 def poly_evaluate_gufunc_lookup(coeffs, values, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E, results):  # pragma: no cover
     args = EXP, LOG, ZECH_LOG, ZECH_E

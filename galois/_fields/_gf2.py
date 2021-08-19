@@ -19,6 +19,9 @@ class GF2Meta(FieldClass, DirMeta, CalculateMeta):
     """
     # pylint: disable=no-value-for-parameter
 
+    # Need to have a unique cache of "calculate" function for GF(2)
+    _FUNC_CACHE_CALCULATE = {}
+
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
         cls._prime_subfield = cls
@@ -44,23 +47,6 @@ class GF2Meta(FieldClass, DirMeta, CalculateMeta):
         cls._ufuncs["multiply"] = np.bitwise_and
         cls._ufuncs["reciprocal"] = np.positive
         cls._ufuncs["divide"] = np.bitwise_and
-
-    ###############################################################################
-    # Individual JIT arithmetic functions, pre-compiled (cached)
-    ###############################################################################
-
-    def _calculate_jit(cls, name):
-        return compile_jit(name)
-
-    def _python_func(cls, name):
-        return eval(f"{name}")
-
-    ###############################################################################
-    # Individual ufuncs, compiled on-demand
-    ###############################################################################
-
-    def _calculate_ufunc(cls, name):
-        return compile_ufunc(name, cls.characteristic, cls.degree, cls._irreducible_poly_int)
 
     ###############################################################################
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
@@ -101,34 +87,54 @@ class GF2Meta(FieldClass, DirMeta, CalculateMeta):
         return inputs[0]
 
     ###############################################################################
-    # Pure python arithmetic methods
+    # Arithmetic functions using explicit calculation
     ###############################################################################
 
-    def _add_python(cls, a, b):
+    @staticmethod
+    def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        """
+        Not actually used. `np.bitwise_xor()` is faster.
+        """
         return a ^ b
 
-    def _negative_python(cls, a):
+    @staticmethod
+    def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        """
+        Not actually used. `np.positive()` is faster.
+        """
         return a
 
-    def _subtract_python(cls, a, b):
+    @staticmethod
+    def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        """
+        Not actually used. `np.bitwise_xor()` is faster.
+        """
         return a ^ b
 
-    def _multiply_python(cls, a, b):
+    @staticmethod
+    def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        """
+        Not actually used. `np.bitwise_and()` is faster.
+        """
         return a & b
 
-    def _reciprocal_python(cls, a):
+    @staticmethod
+    def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if a == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
         return 1
 
-    def _divide_python(cls, a, b):
+    @staticmethod
+    def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
         return a & b
 
-    def _power_python(cls, a, b):
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -137,7 +143,9 @@ class GF2Meta(FieldClass, DirMeta, CalculateMeta):
         else:
             return a
 
-    def _log_python(cls, a, b):
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
         if b != 1:
@@ -145,131 +153,6 @@ class GF2Meta(FieldClass, DirMeta, CalculateMeta):
 
         return 0
 
-
-###############################################################################
-# Compile functions
-###############################################################################
-
-CHARACTERISTIC = None  # The prime characteristic `p` of the Galois field
-DEGREE = None  # The prime power `m` of the Galois field
-IRREDUCIBLE_POLY = None  # The field's primitive polynomial in integer form
-
-# pylint: disable=redefined-outer-name,unused-argument
-
-
-def compile_jit(name):
-    """
-    Compile a JIT arithmetic function. These can be cached.
-    """
-    if name not in compile_jit.cache:
-        function = eval(f"{name}")
-        if FieldClass._UFUNC_TYPE[name] == "unary":
-            compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64)"], nopython=True, cache=True)(function)
-        else:
-            compile_jit.cache[name] = numba.jit(["int64(int64, int64, int64, int64, int64)"], nopython=True, cache=True)(function)
-    return compile_jit.cache[name]
-
-compile_jit.cache = {}
-
-
-def compile_ufunc(name, CHARACTERISTIC_, DEGREE_, IRREDUCIBLE_POLY_):
-    """
-    Compile an arithmetic ufunc. These cannot be cached as the field parameters are compiled into the binary.
-    """
-    key = (name, CHARACTERISTIC_, DEGREE_, IRREDUCIBLE_POLY_)
-    if key not in compile_ufunc.cache:
-        global CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-        CHARACTERISTIC = CHARACTERISTIC_
-        DEGREE = DEGREE_
-        IRREDUCIBLE_POLY = IRREDUCIBLE_POLY_
-
-        function = eval(f"{name}_ufunc")
-        if FieldClass._UFUNC_TYPE[name] == "unary":
-            compile_ufunc.cache[key] = numba.vectorize(["int64(int64)"], nopython=True)(function)
-        else:
-            compile_ufunc.cache[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(function)
-
-    return compile_ufunc.cache[key]
-
-compile_ufunc.cache = {}
-
-
-###############################################################################
-# Arithmetic explicitly calculated
-###############################################################################
-
-def add(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    return a ^ b
-
-
-def negative(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    return a
-
-
-def subtract(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    return a ^ b
-
-
-def multiply(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    return a & b
-
-
-@numba.extending.register_jitable(inline="always")
-def reciprocal(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    if a == 0:
-        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-    return 1
-
-
-def reciprocal_ufunc(a):  # pragma: no cover
-    return reciprocal(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
-
-
-@numba.extending.register_jitable(inline="always")
-def divide(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    if b == 0:
-        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-    return a & b
-
-
-def divide_ufunc(a, b):  # pragma: no cover
-    return divide(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
-
-
-@numba.extending.register_jitable(inline="always")
-def power(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    if a == 0 and b < 0:
-        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-    if b == 0:
-        return 1
-    else:
-        return a
-
-
-def power_ufunc(a, b):  # pragma: no cover
-    return power(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
-
-
-@numba.extending.register_jitable(inline="always")
-def log(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    if a == 0:
-        raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
-    if b != 1:
-        raise ArithmeticError("In GF(2), 1 is the only multiplicative generator.")
-
-    return 0
-
-
-def log_ufunc(a, b):  # pragma: no cover
-    return log(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
-
-
-###############################################################################
-# A pre-generated FieldArray subclass for GF(2)
-###############################################################################
 
 @set_module("galois")
 class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, compile="jit-calculate"):

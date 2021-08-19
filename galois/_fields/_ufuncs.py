@@ -11,7 +11,7 @@ class UfuncMeta(LookupMeta, CalculateMeta):
     """
     A mixin class that provides the basics for compiling ufuncs.
     """
-    # pylint: disable=no-value-for-parameter
+    # pylint: disable=no-value-for-parameter,abstract-method
 
     _UNSUPPORTED_UFUNCS_UNARY = [
         np.invert, np.sqrt,
@@ -62,45 +62,26 @@ class UfuncMeta(LookupMeta, CalculateMeta):
         cls._ufuncs = {}
 
     def _compile_ufuncs(cls):
+        """
+        Compile/re-compile the ufuncs based on the `ufunc_mode`. This may be supplemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
+        """
         cls._ufuncs = {}  # Reset the dictionary so each ufunc will get recompiled
+
         if cls.ufunc_mode == "jit-lookup":
             cls._build_lookup_tables()
 
-    ###############################################################################
-    # Individual JIT arithmetic functions, pre-compiled (cached)
-    ###############################################################################
-
-    def _calculate_jit(cls, name):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
-        raise NotImplementedError
-
-    def _python_func(cls, name):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
-        raise NotImplementedError
-
-    ###############################################################################
-    # Individual ufuncs, compiled on-demand
-    ###############################################################################
-
     def _ufunc(cls, name):
+        """
+        Returns the ufunc for the specific type of arithmetic. The ufunc compilation is based on `ufunc_mode`.
+        """
         if name not in cls._ufuncs:
             if cls.ufunc_mode == "jit-lookup":
-                cls._ufuncs[name] = cls._lookup_ufunc(name)
+                cls._ufuncs[name] = cls._ufunc_lookup(name)
             elif cls.ufunc_mode == "jit-calculate":
-                cls._ufuncs[name] = cls._calculate_ufunc(name)
+                cls._ufuncs[name] = cls._ufunc_calculate(name)
             else:
-                cls._ufuncs[name] = cls._python_ufunc(name)
+                cls._ufuncs[name] = cls._ufunc_python(name)
         return cls._ufuncs[name]
-
-    def _calculate_ufunc(cls, name):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
-        raise NotImplementedError
 
     ###############################################################################
     # Input/output conversion functions
@@ -280,96 +261,3 @@ class UfuncMeta(LookupMeta, CalculateMeta):
     def _ufunc_routine_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_method_only_call(ufunc, method)
         return cls._matmul(*inputs, **kwargs)
-
-    ###############################################################################
-    # Pure-python arithmetic methods using explicit calculation
-    ###############################################################################
-
-    def _add_python(cls, a, b):
-        raise NotImplementedError
-
-    def _negative_python(cls, a):
-        raise NotImplementedError
-
-    def _subtract_python(cls, a, b):
-        raise NotImplementedError
-
-    def _multiply_python(cls, a, b):
-        raise NotImplementedError
-
-    def _reciprocal_python(cls, a):
-        raise NotImplementedError
-
-    def _divide_python(cls, a, b):
-        if b == 0:
-            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-        if a == 0:
-            return 0
-        else:
-            b_inv = cls._reciprocal_python(b)
-            return cls._multiply_python(a, b_inv)
-
-    def _power_python(cls, a, b):
-        if a == 0 and b < 0:
-            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-        if b == 0:
-            return 1
-        elif b < 0:
-            a = cls._reciprocal_python(a)
-            b = abs(b)
-
-        result_s = a  # The "squaring" part
-        result_m = 1  # The "multiplicative" part
-
-        while b > 1:
-            if b % 2 == 0:
-                result_s = cls._multiply_python(result_s, result_s)
-                b //= 2
-            else:
-                result_m = cls._multiply_python(result_m, result_s)
-                b -= 1
-
-        result = cls._multiply_python(result_m, result_s)
-
-        return result
-
-    def _log_python(cls, a, b):
-        """
-        TODO: Replace this with a more efficient algorithm
-        """
-        if a == 0:
-            raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
-
-        # Naive algorithm
-        result = 1
-        for i in range(0, cls.order - 1):
-            if result == a:
-                break
-            result = cls._multiply_python(result, b)
-
-        return i
-
-        # N = cls.order
-        # alpha = cls._primitive_element_int
-        # n = N - 1  # Multiplicative order of the group
-        # x, a, b = 1, 0, 0
-        # X, A, B = x, a, b
-
-        # def update(x, a, b):
-        #     if x % 3 == 0:
-        #         return (x*x) % N, (a*2) % n, (b*2) % n
-        #     elif x % 3 == 1:
-        #         return (x*alpha) % N, (a + 1) % n, b
-        #     else:
-        #         return (x*beta) % N, a, (b + 1) % n
-
-        # for i in range(1, n):
-        #     x, a, b = update(x, a, b)
-        #     X, A, B = update(X, A, B)
-        #     X, A, B = update(X, A, B)
-        #     if x == X:
-        #         break
-
-        # return cls(a - A) / cls(B - b)

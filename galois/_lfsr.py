@@ -63,6 +63,13 @@ class LFSR:
 
     In the Galois configuration, the next output is :math:`y = s_{n-1}` and the next state is computed by :math:`s_k = s_{n-1} g_n g_k + s_{k-1}`. In the case of
     :math:`s_0` there is no previous state added.
+
+    References
+    ----------
+    * https://core.ac.uk/download/pdf/288371609.pdf
+    * https://www.wseas.org/multimedia/journals/control/2018/a945903-022.pdf
+    * https://jhafranco.com/2014/02/15/n-ary-m-sequence-generator-in-python/
+    * https://www.cs.uky.edu/~klapper/pdf/galois.pdf
     """
 
     def __init__(self, poly, state=1, config="fibonacci"):
@@ -88,12 +95,12 @@ class LFSR:
 
         # Pre-compile the arithmetic functions and JIT routines
         if self.field._ufunc_mode != "python-calculate":
-            self._add = self.field._calculate_jit("add")
-            self._multiply = self.field._calculate_jit("multiply")
+            self._add = self.field._func_calculate("add")
+            self._multiply = self.field._func_calculate("multiply")
             self._step = jit_calculate(f"{self.config}_lfsr_step")
         else:
-            self._add = self.field._python_func("add")
-            self._multiply = self.field._python_func("multiply")
+            self._add = self.field._func_python("add")
+            self._multiply = self.field._func_python("multiply")
             self._step = python_func(f"{self.config}_lfsr_step")
 
     def __str__(self):
@@ -331,18 +338,18 @@ def berlekamp_massey(sequence, config="fibonacci", state=False):
 
     if field.ufunc_mode != "python-calculate":
         sequence = sequence.astype(np.int64)
-        add = field._calculate_jit("add")
-        subtract = field._calculate_jit("subtract")
-        multiply = field._calculate_jit("multiply")
-        reciprocal = field._calculate_jit("reciprocal")
+        add = field._func_calculate("add")
+        subtract = field._func_calculate("subtract")
+        multiply = field._func_calculate("multiply")
+        reciprocal = field._func_calculate("reciprocal")
         coeffs = jit_calculate("berlekamp_massey")(sequence, add, subtract, multiply, reciprocal, field.characteristic, field.degree, field._irreducible_poly_int)
         coeffs = coeffs.astype(dtype)
     else:
         sequence = sequence.view(np.ndarray)
-        subtract = field._python_func("subtract")
-        multiply = field._python_func("multiply")
-        divide = field._python_func("divide")
-        reciprocal = field._python_func("reciprocal")
+        subtract = field._func_python("subtract")
+        multiply = field._func_python("multiply")
+        divide = field._func_python("divide")
+        reciprocal = field._func_python("reciprocal")
         coeffs = python_func("berlekamp_massey")(sequence, subtract, multiply, divide, reciprocal, field.characteristic, field.degree, field._irreducible_poly_int)
 
     if config == "fibonacci":

@@ -23,7 +23,7 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
     This metaclass gives :obj:`galois.FieldArray` subclasses returned from the class factory :func:`galois.GF` methods and attributes
     related to its Galois field.
     """
-    # pylint: disable=no-value-for-parameter
+    # pylint: disable=no-value-for-parameter,unsupported-membership-test,abstract-method
 
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
         return super().__new__(cls, name, bases, namespace)
@@ -33,32 +33,6 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
 
     def __repr__(cls):
         return str(cls)
-
-    ###############################################################################
-    # Individual JIT arithmetic functions, pre-compiled (cached)
-    ###############################################################################
-
-    def _calculate_jit(cls, name):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
-        raise NotImplementedError
-
-    def _python_func(cls, name):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
-        raise NotImplementedError
-
-    ###############################################################################
-    # Individual ufuncs, compiled on-demand
-    ###############################################################################
-
-    def _calculate_ufunc(cls, name):
-        """
-        To be implemented in GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta.
-        """
-        raise NotImplementedError
 
     ###############################################################################
     # Class methods
