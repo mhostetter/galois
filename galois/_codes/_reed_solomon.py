@@ -129,11 +129,11 @@ class ReedSolomon:
 
     def __init__(self, *args, **kwargs):  # pylint: disable=unused-argument
         # Pre-compile the arithmetic methods
-        self._add_jit = self.field._calculate_jit("add")
-        self._subtract_jit = self.field._calculate_jit("subtract")
-        self._multiply_jit = self.field._calculate_jit("multiply")
-        self._reciprocal_jit = self.field._calculate_jit("reciprocal")
-        self._power_jit = self.field._calculate_jit("power")
+        self._add_jit = self.field._func_calculate("add")
+        self._subtract_jit = self.field._func_calculate("subtract")
+        self._multiply_jit = self.field._func_calculate("multiply")
+        self._reciprocal_jit = self.field._func_calculate("reciprocal")
+        self._power_jit = self.field._func_calculate("power")
 
         # Pre-compile the JIT functions
         self._berlekamp_massey_jit = _lfsr.jit_calculate("berlekamp_massey")

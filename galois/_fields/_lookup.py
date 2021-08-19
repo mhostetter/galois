@@ -5,29 +5,21 @@ import numba
 from numba import int64
 import numpy as np
 
-from ._properties import PropertiesMeta
+from ._calculate import CalculateMeta
 
 
-class LookupMeta(PropertiesMeta):
+class LookupMeta(CalculateMeta):
     """
     A mixin class that provides Galois field arithmetic using lookup tables.
     """
-    # pylint: disable=no-value-for-parameter
+    # pylint: disable=no-value-for-parameter,abstract-method,unused-argument
 
+    # Function signatures for JIT-compiled "lookup" arithmetic functions
     _UNARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64[:], int64[:], int64[:], int64))
     _BINARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64, int64[:], int64[:], int64[:], int64))
 
-    # Lookup table of ufuncs to unary/binary type needed for LookupMeta, CalculateMeta, etc
-    _UFUNC_TYPE = {
-        "add": "binary",
-        "negative": "unary",
-        "subtract": "binary",
-        "multiply": "binary",
-        "reciprocal": "unary",
-        "divide": "binary",
-        "power": "binary",
-        "log": "binary",
-    }
+    _FUNC_CACHE_LOOKUP = {}
+    _UFUNC_CACHE_LOOKUP = {}
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
@@ -36,17 +28,18 @@ class LookupMeta(PropertiesMeta):
         cls._ZECH_LOG = np.array([], dtype=np.int64)
         cls._ZECH_E = 0
 
-    def _compile_ufuncs(cls):
-        cls._ufuncs = {}  # Reset the dictionary so each ufunc will get recompiled
-        if cls.ufunc_mode == "jit-lookup":
-            cls._build_lookup_tables()
-
     def _build_lookup_tables(cls):
+        """
+        Construct EXP, LOG, and ZECH_LOG lookup tables to be used in the "lookup" arithmetic functions
+        """
+        # Only construct the LUTs for this field once
         if cls._EXP.size > 0:
             return
 
         order = cls.order
         primitive_element = int(cls.primitive_element)
+        add = lambda a, b: cls._func_python("add")(a, b, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        multiply = lambda a, b: cls._func_python("multiply")(a, b, cls.characteristic, cls.degree, cls._irreducible_poly_int)
 
         cls._EXP = np.zeros(2*order, dtype=np.int64)
         cls._LOG = np.zeros(order, dtype=np.int64)
@@ -61,7 +54,7 @@ class LookupMeta(PropertiesMeta):
         cls._LOG[0] = 0  # Technically -Inf
         for i in range(1, order):
             # Increment by multiplying by the primitive element, which is a multiplicative generator of the field
-            element = cls._multiply_python(element, primitive_element)
+            element = multiply(element, primitive_element)
             cls._EXP[i] = element
 
             # Assign to the log lookup table but skip indices greater than or equal to `order - 1`
@@ -71,7 +64,7 @@ class LookupMeta(PropertiesMeta):
 
         # Compute Zech log lookup table
         for i in range(0, order):
-            one_plus_element = cls._add_python(1, cls._EXP[i])
+            one_plus_element = add(1, cls._EXP[i])
             cls._ZECH_LOG[i] = cls._LOG[one_plus_element]
 
         if not cls._EXP[order - 1] == 1:
@@ -84,300 +77,238 @@ class LookupMeta(PropertiesMeta):
         # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
         cls._EXP[order:2*order] = cls._EXP[1:1 + order]
 
+    def _func_lookup(cls, name):  # pylint: disable=no-self-use
+        """
+        Returns an arithmetic function using lookup tables. These functions are once-compiled and shared for all Galois fields. The only difference
+        between Galois fields are the lookup tables that are passed in as inputs.
+        """
+        key = (name,)
+
+        if key not in cls._FUNC_CACHE_LOOKUP:
+            function = getattr(cls, f"_{name}_lookup")
+            if cls._UFUNC_TYPE[name] == "unary":
+                cls._FUNC_CACHE_LOOKUP[key] = numba.jit("int64(int64, int64[:], int64[:], int64[:], int64)", nopython=True, cache=True)(function)
+            else:
+                cls._FUNC_CACHE_LOOKUP[key] = numba.jit("int64(int64, int64, int64[:], int64[:], int64[:], int64)", nopython=True, cache=True)(function)
+
+        return cls._FUNC_CACHE_LOOKUP[key]
+
+    def _ufunc_lookup(cls, name):
+        """
+        Returns an arithmetic ufunc using lookup tables. These ufuncs are compiled for each Galois field since the lookup tables are compiled
+        into the ufuncs as constants.
+        """
+        key = (name, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+
+        if key not in cls._UFUNC_CACHE_LOOKUP:
+            EXP = cls._EXP
+            LOG = cls._LOG
+            ZECH_LOG = cls._ZECH_LOG
+            ZECH_E = cls._ZECH_E
+
+            function = getattr(cls, f"_{name}_lookup")
+            if cls._UFUNC_TYPE[name] == "unary":
+                cls._UFUNC_CACHE_LOOKUP[key] = numba.vectorize(["int64(int64)"], nopython=True)(lambda a: function(a, EXP, LOG, ZECH_LOG, ZECH_E))
+            else:
+                cls._UFUNC_CACHE_LOOKUP[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(lambda a, b: function(a, b, EXP, LOG, ZECH_LOG, ZECH_E))
+
+        return cls._UFUNC_CACHE_LOOKUP[key]
+
     ###############################################################################
-    # Individual JIT arithmetic functions, pre-compiled (cached)
+    # Arithmetic functions using lookup tables
     ###############################################################################
 
-    def _lookup_jit(cls, name):  # pylint: disable=no-self-use
-        return compile_jit(name)
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _add_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
+        b = α^n
 
-    ###############################################################################
-    # Individual ufuncs, compiled on-demand
-    ###############################################################################
+        a + b = α^m + α^n
+            = α^m * (1 + α^(n - m))  # If n is larger, factor out α^m
+            = α^m * α^ZECH_LOG(n - m)
+            = α^(m + ZECH_LOG(n - m))
+        """
+        if a == 0:
+            return b
+        elif b == 0:
+            return a
 
-    def _lookup_ufunc(cls, name):
-        return compile_ufunc(name, cls.characteristic, cls.degree, cls._irreducible_poly_int, cls._EXP, cls._LOG, cls._ZECH_LOG, cls._ZECH_E)
-
-
-###############################################################################
-# Compile arithmetic functions using lookup tables
-###############################################################################
-
-EXP = []  # EXP[i] = α^i
-LOG = []  # LOG[i] = x, such that α^x = i
-ZECH_LOG = []  # ZECH_LOG[i] = log(1 + α^i)
-ZECH_E = 0  # α^ZECH_E = -1, ZECH_LOG[ZECH_E] = -Inf
-
-# pylint: disable=redefined-outer-name,unused-argument
-
-
-def compile_jit(name):
-    """
-    Compile a JIT arithmetic function. These can be cached.
-    """
-    if name not in compile_jit.cache:
-        function = eval(f"{name}")
-        if LookupMeta._UFUNC_TYPE[name] == "unary":
-            compile_jit.cache[name] = numba.jit("int64(int64, int64[:], int64[:], int64[:], int64)", nopython=True, cache=True)(function)
-        else:
-            compile_jit.cache[name] = numba.jit("int64(int64, int64, int64[:], int64[:], int64[:], int64)", nopython=True, cache=True)(function)
-
-    return compile_jit.cache[name]
-
-compile_jit.cache = {}
-
-
-def compile_ufunc(name, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY, EXP_, LOG_, ZECH_LOG_, ZECH_E_):
-    """
-    Compile an arithmetic ufunc. These cannot be cached as the lookup tables are compiled into the binary.
-    """
-    key = (name, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
-    if key not in compile_ufunc.cache:
-        global EXP, LOG, ZECH_LOG, ZECH_E
-        EXP = EXP_
-        LOG = LOG_
-        ZECH_LOG = ZECH_LOG_
-        ZECH_E = ZECH_E_
-
-        function = eval(f"{name}_ufunc")
-        if LookupMeta._UFUNC_TYPE[name] == "unary":
-            compile_ufunc.cache[key] = numba.vectorize(["int64(int64)"], nopython=True)(function)
-        else:
-            compile_ufunc.cache[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(function)
-
-    return compile_ufunc.cache[key]
-
-compile_ufunc.cache = {}
-
-
-###############################################################################
-# Arithmetic using lookup tables
-###############################################################################
-
-@numba.extending.register_jitable(inline="always")
-def add(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    """
-    a in GF(p^m)
-    b in GF(p^m)
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
-
-    a + b = α^m + α^n
-          = α^m * (1 + α^(n - m))  # If n is larger, factor out α^m
-          = α^m * α^ZECH_LOG(n - m)
-          = α^(m + ZECH_LOG(n - m))
-    """
-    # LOG[0] = -Inf, so catch these conditions
-    if a == 0:
-        return b
-    elif b == 0:
-        return a
-
-    m = LOG[a]
-    n = LOG[b]
-
-    if m > n:
-        # We want to factor out α^m, where m is smaller than n, such that `n - m` is always positive. If
-        # m is larger than n, switch a and b in the addition.
-        m, n = n, m
-
-    if n - m == ZECH_E:
-        # ZECH_LOG[ZECH_E] = -Inf and α^(-Inf) = 0
-        return 0
-    else:
-        return EXP[m + ZECH_LOG[n - m]]
-
-
-def add_ufunc(a, b):  # pragma: no cover
-    return add(a, b, EXP, LOG, ZECH_LOG, ZECH_E)
-
-
-@numba.extending.register_jitable(inline="always")
-def negative(a, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    """
-    a in GF(p^m)
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
-
-    -a = -α^n
-       = -1 * α^n
-       = α^e * α^n
-       = α^(e + n)
-    """
-    if a == 0:  # LOG[0] = -Inf, so catch this condition
-        return 0
-    else:
-        n = LOG[a]
-        return EXP[ZECH_E + n]
-
-
-def negative_ufunc(a):  # pragma: no cover
-    return negative(a, EXP, LOG, ZECH_LOG, ZECH_E)
-
-
-@numba.extending.register_jitable(inline="always")
-def subtract(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    """
-    a in GF(p^m)
-    b in GF(p^m)
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
-
-    a - b = α^m - α^n
-          = α^m + (-α^n)
-          = α^m + (-1 * α^n)
-          = α^m + (α^e * α^n)
-          = α^m + α^(e + n)
-    """
-    ORDER = LOG.size
-
-    # Same as addition if n = LOG[b] + e
-    m = LOG[a]
-    n = LOG[b] + ZECH_E
-
-    # LOG[0] = -Inf, so catch these conditions
-    if b == 0:
-        return a
-    elif a == 0:
-        return EXP[n]
-
-    if m > n:
-        # We want to factor out α^m, where m is smaller than n, such that `n - m` is always positive. If
-        # m is larger than n, switch a and b in the addition.
-        m, n = n, m
-
-    z = n - m
-    if z == ZECH_E:
-        # ZECH_LOG[ZECH_E] = -Inf and α^(-Inf) = 0
-        return 0
-    if z >= ORDER - 1:
-        # Reduce index of ZECH_LOG by the multiplicative order of the field, i.e. `order - 1`
-        z -= ORDER - 1
-
-    return EXP[m + ZECH_LOG[z]]
-
-
-def subtract_ufunc(a, b):  # pragma: no cover
-    return subtract(a, b, EXP, LOG, ZECH_LOG, ZECH_E)
-
-
-@numba.extending.register_jitable(inline="always")
-def multiply(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    """
-    a in GF(p^m)
-    b in GF(p^m)
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
-
-    a * b = α^m * α^n
-          = α^(m + n)
-    """
-    if a == 0 or b == 0:  # LOG[0] = -Inf, so catch these conditions
-        return 0
-    else:
         m = LOG[a]
         n = LOG[b]
-        return EXP[m + n]
 
+        if m > n:
+            # We want to factor out α^m, where m is smaller than n, such that `n - m` is always positive. If m is
+            # larger than n, switch a and b in the addition.
+            m, n = n, m
 
-def multiply_ufunc(a, b):  # pragma: no cover
-    return multiply(a, b, EXP, LOG, ZECH_LOG, ZECH_E)
+        if n - m == ZECH_E:
+            # zech_log(zech_e) = -Inf and α^(-Inf) = 0
+            return 0
+        else:
+            return EXP[m + ZECH_LOG[n - m]]
 
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _negative_lookup(a, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
 
-@numba.extending.register_jitable(inline="always")
-def reciprocal(a, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    """
-    a in GF(p^m)
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
+        -a = -α^m
+        = -1 * α^m
+        = α^e * α^m
+        = α^(e + m)
+        """
+        if a == 0:
+            return 0
+        else:
+            m = LOG[a]
+            return EXP[ZECH_E + m]
 
-    1 / a = 1 / α^m
-          = α^(-m)
-          = 1 * α^(-m)
-          = α^(ORDER - 1) * α^(-m)
-          = α^(ORDER - 1 - m)
-    """
-    if a == 0:
-        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _subtract_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
+        b = α^n
 
-    ORDER = LOG.size
-    m = LOG[a]
-    return EXP[(ORDER - 1) - m]
+        a - b = α^m - α^n
+            = α^m + (-α^n)
+            = α^m + (-1 * α^n)
+            = α^m + (α^e * α^n)
+            = α^m + α^(e + n)
+        """
+        ORDER = LOG.size
 
+        # Same as addition if n = log(b) + e
+        m = LOG[a]
+        n = LOG[b] + ZECH_E
 
-def reciprocal_ufunc(a):  # pragma: no cover
-    return reciprocal(a, EXP, LOG, ZECH_LOG, ZECH_E)
+        if b == 0:
+            return a
+        elif a == 0:
+            return EXP[n]
 
+        if m > n:
+            # We want to factor out α^m, where m is smaller than n, such that `n - m` is always positive. If m is
+            # larger than n, switch a and b in the addition.
+            m, n = n, m
 
-@numba.extending.register_jitable(inline="always")
-def divide(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    """
-    a in GF(p^m)
-    b in GF(p^m)
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
+        z = n - m
+        if z == ZECH_E:
+            # zech_log(zech_e) = -Inf and α^(-Inf) = 0
+            return 0
+        if z >= ORDER - 1:
+            # Reduce index of ZECH_LOG by the multiplicative order of the field `ORDER - 1`
+            z -= ORDER - 1
 
-    a / b = α^m / α^n
-          = α^(m - n)
-          = 1 * α^(m - n)
-          = α^(ORDER - 1) * α^(m - n)
-          = α^(ORDER - 1 + m - n)
-    """
-    if b == 0:
-        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+        return EXP[m + ZECH_LOG[z]]
 
-    if a == 0:  # LOG[0] = -Inf, so catch this condition
-        return 0
-    else:
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _multiply_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
+        b = α^n
+
+        a * b = α^m * α^n
+            = α^(m + n)
+        """
+        if a == 0 or b == 0:
+            return 0
+        else:
+            m = LOG[a]
+            n = LOG[b]
+            return EXP[m + n]
+
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _reciprocal_lookup(a, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
+
+        1 / a = 1 / α^m
+            = α^(-m)
+            = 1 * α^(-m)
+            = α^(ORDER - 1) * α^(-m)
+            = α^(ORDER - 1 - m)
+        """
+        if a == 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
         ORDER = LOG.size
         m = LOG[a]
-        n = LOG[b]
-        return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
+        return EXP[(ORDER - 1) - m]
 
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _divide_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
+        b = α^n
 
-def divide_ufunc(a, b):  # pragma: no cover
-    return divide(a, b, EXP, LOG, ZECH_LOG, ZECH_E)
+        a / b = α^m / α^n
+            = α^(m - n)
+            = 1 * α^(m - n)
+            = α^(ORDER - 1) * α^(m - n)
+            = α^(ORDER - 1 + m - n)
+        """
+        if b == 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
+        if a == 0:
+            return 0
+        else:
+            ORDER = LOG.size
+            m = LOG[a]
+            n = LOG[b]
+            return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
 
-@numba.extending.register_jitable(inline="always")
-def power(a, b_int, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    """
-    a in GF(p^m)
-    b_int in Z
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _power_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
+        b in Z
 
-    a ** b_int = α^m ** b_int
-               = α^(m * b_int)
-               = α^(m * ((b_int // (ORDER - 1))*(ORDER - 1) + b_int % (ORDER - 1)))
-               = α^(m * ((b_int // (ORDER - 1))*(ORDER - 1)) * α^(m * (b_int % (ORDER - 1)))
-               = 1 * α^(m * (b_int % (ORDER - 1)))
-               = α^(m * (b_int % (ORDER - 1)))
-    """
-    if a == 0 and b_int < 0:
-        raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+        a ** b = α^m ** b
+            = α^(m * b)
+            = α^(m * ((b // (ORDER - 1))*(ORDER - 1) + b % (ORDER - 1)))
+            = α^(m * ((b // (ORDER - 1))*(ORDER - 1)) * α^(m * (b % (ORDER - 1)))
+            = 1 * α^(m * (b % (ORDER - 1)))
+            = α^(m * (b % (ORDER - 1)))
+        """
+        if a == 0 and b < 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
-    if b_int == 0:
-        return 1
-    elif a == 0:  # LOG[0] = -Inf, so catch this condition
-        return 0
-    else:
-        ORDER = LOG.size
-        m = LOG[a]
-        return EXP[(m * b_int) % (ORDER - 1)]
+        if b == 0:
+            return 1
+        elif a == 0:
+            return 0
+        else:
+            ORDER = LOG.size
+            m = LOG[a]
+            return EXP[(m * b) % (ORDER - 1)]  # TODO: Do b % (ORDER - 1) first? b could be very large and overflow int64
 
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _log_lookup(beta, alpha, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
 
-def power_ufunc(a, b_int):  # pragma: no cover
-    return power(a, b_int, EXP, LOG, ZECH_LOG, ZECH_E)
+        log(beta, α) = log(α^m, α)
+                    = m
+        """
+        if beta == 0:
+            raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
-
-@numba.extending.register_jitable(inline="always")
-def log(beta, alpha, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    """
-    a in GF(p^m)
-    α is a primitive element of GF(p^m), such that GF(p^m) = {0, 1, α^1, ..., α^(p^m - 2)}
-
-    log(beta, α) = log(α^m, α)
-                 = m
-    """
-    if beta == 0:
-        raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
-
-    return LOG[beta]
-
-
-def log_ufunc(beta, alpha):  # pragma: no cover
-    return log(beta, alpha, EXP, LOG, ZECH_LOG, ZECH_E)
+        return LOG[beta]

@@ -1076,6 +1076,12 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     def __str__(self):
         return self.__repr__()
+        # formatter = type(self)._formatter(self)
+
+        # with np.printoptions(formatter=formatter):
+        #     string = super().__str__()
+
+        # return string
 
     def __repr__(self):
         formatter = type(self)._formatter(self)
