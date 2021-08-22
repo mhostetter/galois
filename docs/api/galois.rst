@@ -1,6 +1,8 @@
 API Reference v\ |version|
 ==========================
 
+.. py:module:: galois
+
 .. toctree::
    :maxdepth: 2
 
