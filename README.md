@@ -3,11 +3,11 @@
 # <img alt="Galois: A performant NumPy extension for Galois fields and their applications" align="middle" src="https://github.com/mhostetter/galois/blob/master/logo/galois-heading.png">
 
 [![PyPI version](https://badge.fury.io/py/galois.svg)](https://badge.fury.io/py/galois)
-[![Downloads](https://pepy.tech/badge/galois/month)](https://pepy.tech/project/galois)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/galois)
 [![Supported Versions](https://img.shields.io/pypi/pyversions/galois.svg)](https://pypi.org/project/galois)
-[![Documentation Status](https://readthedocs.org/projects/galois/badge/?version=stable)](https://galois.readthedocs.io/en/latest/?badge=latest)
-![Test](https://github.com/mhostetter/galois/workflows/Test/badge.svg?branch=master)
-[![Codecov](https://codecov.io/gh/mhostetter/galois/branch/master/graph/badge.svg)](https://codecov.io/gh/mhostetter/galois)
+![Read the Docs](https://img.shields.io/readthedocs/galois)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mhostetter/galois/Test)
+![Codecov](https://img.shields.io/codecov/c/github/mhostetter/galois)
 
 The main idea of the `galois` package can be summarized as follows. The user creates a "Galois field array class" using `GF = galois.GF(p**m)`.
 A Galois field array class `GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)` mimics
