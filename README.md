@@ -3,11 +3,12 @@
 # <img alt="Galois: A performant NumPy extension for Galois fields and their applications" align="middle" src="https://github.com/mhostetter/galois/blob/master/logo/galois-heading.png">
 
 [![PyPI version](https://badge.fury.io/py/galois.svg)](https://badge.fury.io/py/galois)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/galois)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/galois)](https://pypistats.org/packages/galois)
 [![Supported Versions](https://img.shields.io/pypi/pyversions/galois.svg)](https://pypi.org/project/galois)
-![Read the Docs](https://img.shields.io/readthedocs/galois)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mhostetter/galois/Test)
-![Codecov](https://img.shields.io/codecov/c/github/mhostetter/galois)
+[![Read the Docs](https://img.shields.io/readthedocs/galois)](https://galois.readthedocs.io/en/latest/)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mhostetter/galois/Test)](https://github.com/mhostetter/galois/actions)
+[![Codecov](https://img.shields.io/codecov/c/github/mhostetter/galois)](https://codecov.io/gh/mhostetter/galois)
+[![Twitter Follow](https://img.shields.io/twitter/follow/galois_py?label=%40galois_py&style=social)](https://twitter.com/galois_py)
 
 The main idea of the `galois` package can be summarized as follows. The user creates a "Galois field array class" using `GF = galois.GF(p**m)`.
 A Galois field array class `GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)` mimics
