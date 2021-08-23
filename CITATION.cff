@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Hostetter"
+  given-names: "Matt"
+title: "Galois: A performant NumPy extension for Galois fields"
+date-released: 2020-11-15
+url: "https://github.com/mhostetter/galois"
