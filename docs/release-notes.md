@@ -1,5 +1,25 @@
 # Release Notes
 
+## v0.0.20
+
+### Breaking Changes
+
+- Move `poly_gcd()` functionality into `gcd()`.
+- Move `poly_egcd()` functionality into `egcd()`.
+- Move `poly_factors()` functionality into `factors()`.
+
+### Changes
+
+- Fix polynomial factorization algorithms. Previously only parital factorization was implemented.
+- Support generating and testing irreducible and primitive polynomials over extension fields.
+- Support polynomial input to `is_square_free()`.
+- Minor documentation improvements.
+- Pin Numba dependency to <0.54
+
+### Contributors
+
+- Matt Hostetter (@mhostetter)
+
 ## v0.0.19
 
 ### Breaking Changes
