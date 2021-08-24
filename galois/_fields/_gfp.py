@@ -16,7 +16,7 @@ class GFpMeta(FieldClass, DirMeta):
     """
     # pylint: disable=no-value-for-parameter
 
-    # Need to have a unique cache of "calculate" function for GF(p)
+    # Need to have a unique cache of "calculate" functions for GF(p)
     _FUNC_CACHE_CALCULATE = {}
 
     def __init__(cls, name, bases, namespace, **kwargs):
@@ -43,13 +43,17 @@ class GFpMeta(FieldClass, DirMeta):
         return super()._ufunc(name)
 
     def _set_globals(cls, name):
+        super()._set_globals(name)
         global RECIPROCAL
+
         if name in ["divide", "power"]:
             RECIPROCAL = cls._func_calculate("reciprocal", reset=False)
 
     def _reset_globals(cls):
+        super()._reset_globals()
         global RECIPROCAL
-        RECIPROCAL = cls._reciprocal_calculate
+
+        RECIPROCAL = cls._func_python("reciprocal")
 
     ###############################################################################
     # Arithmetic functions using explicit calculation

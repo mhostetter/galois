@@ -677,8 +677,8 @@ def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MU
             # The error value δi = -Z0(βi^-1) / σ'(βi^-1)
             for j in range(v):
                 beta_inv = RECIPROCAL(beta[j], *args)
-                Z0_i = POLY_EVAL(Z0, beta_inv, ADD, MULTIPLY, *args)
-                sigma_prime_i = POLY_EVAL(sigma_prime, beta_inv, ADD, MULTIPLY, *args)
+                Z0_i = POLY_EVAL(Z0, np.array([beta_inv], dtype=dtype), ADD, MULTIPLY, *args)[0]  # NOTE: poly_eval() expects a 1-D array of values
+                sigma_prime_i = POLY_EVAL(sigma_prime, np.array([beta_inv], dtype=dtype), ADD, MULTIPLY, *args)[0]  # NOTE: poly_eval() expects a 1-D array of values
                 delta_i = MULTIPLY(SUBTRACT(0, Z0_i, *args), RECIPROCAL(sigma_prime_i, *args), *args)
                 dec_codeword[i, n - 1 - error_locations[j]] = SUBTRACT(dec_codeword[i, n - 1 - error_locations[j]], delta_i, *args)
             dec_codeword[i, -1] = v  # The number of corrected errors

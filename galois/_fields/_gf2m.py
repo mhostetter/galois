@@ -16,7 +16,7 @@ class GF2mMeta(FieldClass, DirMeta):
     """
     # pylint: disable=no-value-for-parameter
 
-    # Need to have a unique cache of "calculate" function for GF(2^m)
+    # Need to have a unique cache of "calculate" functions for GF(2^m)
     _FUNC_CACHE_CALCULATE = {}
 
     def __init__(cls, name, bases, namespace, **kwargs):
@@ -27,7 +27,12 @@ class GF2mMeta(FieldClass, DirMeta):
 
         # Determine if the irreducible polynomial is primitive
         if cls._is_primitive_poly is None:
-            cls._is_primitive_poly = cls._poly_evaluate_python(cls._irreducible_poly.coeffs, cls.primitive_element) == 0
+            # TODO: Clean this up
+            coeffs = cls.irreducible_poly.coeffs.view(np.ndarray)
+            x = np.array(cls.primitive_element, dtype=cls.dtypes[-1], ndmin=1)
+            add = cls._func_python("add")
+            multiply = cls._func_python("multiply")
+            cls._is_primitive_poly = cls._function_python("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0] == 0
 
     def _compile_ufuncs(cls):
         super()._compile_ufuncs()
@@ -39,6 +44,7 @@ class GF2mMeta(FieldClass, DirMeta):
 
     def _set_globals(cls, name):
         global MULTIPLY, RECIPROCAL
+
         if name in ["reciprocal", "divide", "power", "log"]:
             MULTIPLY = cls._func_calculate("multiply")
         if name in ["divide", "power"]:
@@ -46,8 +52,9 @@ class GF2mMeta(FieldClass, DirMeta):
 
     def _reset_globals(cls):
         global MULTIPLY, RECIPROCAL
-        MULTIPLY = cls._multiply_calculate
-        RECIPROCAL = cls._reciprocal_calculate
+
+        MULTIPLY = cls._func_python("multiply")
+        RECIPROCAL = cls._func_python("reciprocal")
 
     ###############################################################################
     # Arithmetic functions using explicit calculation
