@@ -1,5 +1,6 @@
 """
-A module that contains a metaclass mixin that provides NumPy function overriding for an ndarray subclass.
+A module that contains a metaclass mixin that provides NumPy function overriding for an ndarray subclass. Additionally, other
+JIT functions are created for use in polynomials and error-correcting codes, such as _poly_evaluate() or _poly_divmod().
 """
 import numba
 from numba import int64
@@ -8,9 +9,6 @@ import numpy as np
 from . import _linalg
 from ._dtypes import DTYPES
 from ._ufuncs import UfuncMeta
-
-ADD_JIT = lambda a, b, *args: a + b
-MULTIPLY_JIT = lambda a, b, *args: a * b
 
 
 class FunctionMeta(UfuncMeta):
@@ -57,91 +55,56 @@ class FunctionMeta(UfuncMeta):
         np.linalg.inv: _linalg.inv,
     }
 
-    _MATMUL_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
     _MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
-    _CONVOLVE_LOOKUP_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
     _CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
-    _POLY_DIVMOD_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
+    _POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
     _POLY_DIVMOD_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
-    _POLY_ROOTS_LOOKUP_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
     _POLY_ROOTS_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
-    _POLY_EVALUATE_LOOKUP_SIG = numba.types.FunctionType(int64(int64[:], int64, UfuncMeta._BINARY_LOOKUP_SIG, UfuncMeta._BINARY_LOOKUP_SIG, int64[:], int64[:], int64[:], int64))
-    _POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64(int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+
+    _FUNCTION_CACHE_CALCULATE = {}
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._gufuncs = {}
         cls._functions = {}
-
-    ###############################################################################
-    # Individual gufuncs, compiled on-demand
-    ###############################################################################
-
-    def _gufunc(cls, name):
-        if cls._gufuncs.get(name, None) is None:
-            if name == "poly_evaluate":
-                if cls.ufunc_mode == "python-calculate":
-                    cls._gufuncs["poly_evaluate"] = np.vectorize(poly_evaluate_python_calculate, excluded=["coeffs"], otypes=[np.object_])
-                else:
-                    global ADD_JIT, MULTIPLY_JIT
-                    ADD_JIT = cls._func_calculate("add")
-                    MULTIPLY_JIT = cls._func_calculate("multiply")
-                    cls._gufuncs["poly_evaluate"] = numba.guvectorize("int64[:], int64[:], int64, int64, int64, int64[:]", "(m),(n),(),(),()->(n)", nopython=True)(poly_evaluate_gufunc_calculate)
-            else:
-                raise NotImplementedError
-        return cls._gufuncs[name]
 
     ###############################################################################
     # Individual functions, pre-compiled (cached)
     ###############################################################################
 
     def _function(cls, name):
-        if cls._functions.get(name, None) is None:
+        """
+        Returns the function for the specific routine. The function compilation is based on `ufunc_mode`.
+        """
+        if name not in cls._functions:
             if cls.ufunc_mode != "python-calculate":
-                cls._functions[name] = jit_calculate(name)
+                cls._functions[name] = cls._function_calculate(name)
             else:
-                cls._functions[name] = python_func(name)
+                cls._functions[name] = cls._function_python(name)
         return cls._functions[name]
 
-    ###############################################################################
-    # Gufunc routines
-    ###############################################################################
+    def _function_calculate(cls, name):
+        """
+        Returns a JIT-compiled function using explicit calculation. These functions are once-compiled and shared for all
+        Galois fields. The only difference between Galois fields are the arithmetic funcs, characteristic, degree, and
+        irreducible polynomial that are passed in as inputs.
+        """
+        key = (name,)
 
-    def _poly_evaluate(cls, coeffs, x):
-        assert isinstance(coeffs, cls) and isinstance(x, cls)
-        assert coeffs.ndim == 1
-        field = cls
-        dtype = x.dtype
-        x = np.atleast_1d(x)
+        if key not in cls._FUNCTION_CACHE_CALCULATE:
+            function = getattr(cls, f"_{name}_calculate")
+            sig = getattr(cls, f"_{name.upper()}_CALCULATE_SIG")
+            cls._FUNCTION_CACHE_CALCULATE[key] = numba.jit(sig.signature, nopython=True, cache=True)(function)
 
-        if cls.ufunc_mode == "python-calculate":
-            # For object dtypes, call the vectorized classmethod
-            add = cls._func_python("add")
-            multiply = cls._func_python("multiply")
-            y = cls._gufunc("poly_evaluate")(coeffs=coeffs.view(np.ndarray), value=x.view(np.ndarray), ADD=add, MULTIPLY=multiply, CHARACTERISTIC=cls.characteristic, DEGREE=cls.degree, IRREDUCIBLE_POLY=cls._irreducible_poly_int, result=field.Zeros(x.shape))
-        else:
-            # For integer dtypes, call the JIT-compiled gufunc
-            y = cls._gufunc("poly_evaluate")(coeffs, x, cls.characteristic, cls.degree, cls._irreducible_poly_int, field.Zeros(x.shape), casting="unsafe")
-            y = y.astype(dtype)
-        y = y.view(field)
+        return cls._FUNCTION_CACHE_CALCULATE[key]
 
-        if y.size == 1:
-            y = y[0]
-
-        return y
-
-    def _poly_evaluate_python(cls, coeffs, x):
-        assert coeffs.ndim == 1
-        add = cls._func_python("add")
-        multiply = cls._func_python("multiply")
-        coeffs = coeffs.view(np.ndarray).astype(cls.dtypes[-1])
-        x = int(x)
-        y = poly_evaluate_python_calculate(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int, 0)
-        y = cls(y)
-        return y
+    def _function_python(cls, name):
+        """
+        Returns a pure-python function using explicit calculation.
+        """
+        return getattr(cls, f"_{name}_calculate")
 
     ###############################################################################
-    # JIT function routines
+    # Function routines
     ###############################################################################
 
     def _matmul(cls, A, B, out=None, **kwargs):  # pylint: disable=unused-argument
@@ -227,7 +190,7 @@ class FunctionMeta(UfuncMeta):
             c = c.astype(return_dtype).view(field) if not np.isscalar(c) else field(c, dtype=return_dtype)
             return c
         else:
-            if cls._ufunc_mode != "python-calculate":
+            if cls.ufunc_mode != "python-calculate":
                 a = a.astype(np.int64)
                 b = b.astype(np.int64)
                 add = cls._func_calculate("add")
@@ -244,6 +207,30 @@ class FunctionMeta(UfuncMeta):
 
             return c
 
+    def _poly_evaluate(cls, coeffs, x):
+        field = cls
+        dtype = x.dtype
+        shape = x.shape
+        x = np.atleast_1d(x.flatten())
+
+        if cls.ufunc_mode != "python-calculate":
+            coeffs = coeffs.astype(np.int64)
+            x = x.astype(np.int64)
+            add = cls._func_calculate("add")
+            multiply = cls._func_calculate("multiply")
+            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            results = results.astype(dtype)
+        else:
+            coeffs = coeffs.view(np.ndarray)
+            x = x.view(np.ndarray)
+            add = cls._func_python("add")
+            multiply = cls._func_python("multiply")
+            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        results = results.view(field)
+        results = results.reshape(shape)
+
+        return results
+
     def _poly_divmod(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
         assert 1 <= a.ndim <= 2 and b.ndim == 1
@@ -255,7 +242,7 @@ class FunctionMeta(UfuncMeta):
         q_degree = a.shape[-1] - b.shape[-1]
         r_degree = b.shape[-1] - 1
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             b = b.astype(np.int64)
             subtract = cls._func_calculate("subtract")
@@ -286,7 +273,7 @@ class FunctionMeta(UfuncMeta):
         field = cls
         dtype = nonzero_coeffs.dtype
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             nonzero_degrees = nonzero_degrees.astype(np.int64)
             nonzero_coeffs = nonzero_coeffs.astype(np.int64)
             add = cls._func_calculate("add")
@@ -306,296 +293,117 @@ class FunctionMeta(UfuncMeta):
         idxs = np.argsort(roots)
         return roots[idxs]
 
+    ###############################################################################
+    # Function implementations using explicit calculation
+    ###############################################################################
 
-##############################################################################
-# Individual gufuncs
-##############################################################################
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _matmul_calculate(A, B, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+        dtype = A.dtype
 
-def poly_evaluate_gufunc_lookup(coeffs, values, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E, results):  # pragma: no cover
-    args = EXP, LOG, ZECH_LOG, ZECH_E
+        assert A.ndim == 2 and B.ndim == 2
+        assert A.shape[-1] == B.shape[-2]
 
-    for i in range(values.size):
-        results[i] = coeffs[0]
-        for j in range(1, coeffs.size):
-            results[i] = ADD(coeffs[j], MULTIPLY(results[i], values[i], *args), *args)
+        M, K = A.shape
+        K, N = B.shape
+        C = np.zeros((M, N), dtype=dtype)
+        for i in range(M):
+            for j in range(N):
+                for k in range(K):
+                    C[i,j] = ADD(C[i,j], MULTIPLY(A[i,k], B[k,j], *args), *args)
 
+        return C
 
-def poly_evaluate_gufunc_calculate(coeffs, values, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY, results):  # pragma: no cover
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _convolve_calculate(a, b, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+        dtype = a.dtype
 
-    for i in range(values.size):
-        results[i] = coeffs[0]
-        for j in range(1, coeffs.size):
-            results[i] = ADD_JIT(coeffs[j], MULTIPLY_JIT(results[i], values[i], *args), *args)
+        c = np.zeros(a.size + b.size - 1, dtype=dtype)
+        for i in range(a.size):
+            for j in range(b.size - 1, -1, -1):
+                c[i + j] = ADD(c[i + j], MULTIPLY(a[i], b[j], *args), *args)
 
+        return c
 
-def poly_evaluate_python_calculate(coeffs, value, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY, result):  # pragma: no cover
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _poly_evaluate_calculate(coeffs, values, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+        dtype = values.dtype
 
-    result = coeffs[0]
-    for j in range(1, coeffs.size):
-        result = ADD(coeffs[j], MULTIPLY(result, value, *args), *args)
+        results = np.zeros(values.size, dtype=dtype)
+        for i in range(values.size):
+            results[i] = coeffs[0]
+            for j in range(1, coeffs.size):
+                results[i] = ADD(coeffs[j], MULTIPLY(results[i], values[i], *args), *args)
 
-    return result
+        return results
 
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _poly_divmod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
 
-###############################################################################
-# Compilation functions
-###############################################################################
+        assert a.ndim == 2 and b.ndim == 1
+        assert a.shape[-1] >= b.shape[-1]
 
-def jit_lookup(name):
-    if name not in jit_lookup.cache:
-        function = eval(f"{name}_lookup")
-        sig = eval(f"FunctionMeta._{name.upper()}_LOOKUP_SIG")
-        jit_calculate.cache[name] = numba.jit(sig.signature, nopython=True, cache=True)(function)
-    return jit_lookup.cache[name]
+        q_degree = a.shape[1] - b.shape[-1]
+        qr = a.copy()
 
-jit_lookup.cache = {}
+        for k in range(a.shape[0]):
+            for i in range(q_degree + 1):
+                if qr[k,i] > 0:
+                    q = DIVIDE(qr[k,i], b[0], *args)
+                    for j in range(b.size):
+                        qr[k, i + j] = SUBTRACT(qr[k, i + j], MULTIPLY(q, b[j], *args), *args)
+                    qr[k,i] = q
 
+        return qr
 
-def jit_calculate(name):
-    if name not in jit_calculate.cache:
-        function = eval(f"{name}_calculate")
-        sig = eval(f"FunctionMeta._{name.upper()}_CALCULATE_SIG")
-        jit_calculate.cache[name] = numba.jit(sig.signature, nopython=True, cache=True)(function)
-    return jit_calculate.cache[name]
+    @staticmethod
+    @numba.extending.register_jitable(inline="always")
+    def _poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+        dtype = nonzero_coeffs.dtype
+        ORDER = CHARACTERISTIC**DEGREE
 
-jit_calculate.cache = {}
+        N = nonzero_degrees.size
+        lambda_vector = nonzero_coeffs.copy()
+        alpha_vector = np.zeros(N, dtype=dtype)
+        for i in range(N):
+            alpha_vector[i] = POWER(primitive_element, nonzero_degrees[i], *args)
+        degree = np.max(nonzero_degrees)
+        roots = []
+        powers = []
 
+        # Test if 0 is a root
+        if nonzero_degrees[-1] != 0:
+            roots.append(0)
+            powers.append(-1)
 
-def python_func(name):
-    return eval(f"{name}_calculate")
-
-
-###############################################################################
-# Matrix multiplication
-###############################################################################
-
-def matmul_lookup(A, B, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    args = EXP, LOG, ZECH_LOG, ZECH_E
-    dtype = A.dtype
-
-    assert A.ndim == 2 and B.ndim == 2
-    assert A.shape[-1] == B.shape[-2]
-
-    M, K = A.shape
-    K, N = B.shape
-    C = np.zeros((M, N), dtype=dtype)
-    for i in range(M):
-        for j in range(N):
-            for k in range(K):
-                C[i,j] = ADD(C[i,j], MULTIPLY(A[i,k], B[k,j], *args), *args)
-
-    return C
-
-
-def matmul_calculate(A, B, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-    dtype = A.dtype
-
-    assert A.ndim == 2 and B.ndim == 2
-    assert A.shape[-1] == B.shape[-2]
-
-    M, K = A.shape
-    K, N = B.shape
-    C = np.zeros((M, N), dtype=dtype)
-    for i in range(M):
-        for j in range(N):
-            for k in range(K):
-                C[i,j] = ADD(C[i,j], MULTIPLY(A[i,k], B[k,j], *args), *args)
-
-    return C
-
-
-###############################################################################
-# Convolution
-###############################################################################
-
-def convolve_lookup(a, b, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    args = EXP, LOG, ZECH_LOG, ZECH_E
-    dtype = a.dtype
-
-    c = np.zeros(a.size + b.size - 1, dtype=dtype)
-    for i in range(a.size):
-        for j in range(b.size - 1, -1, -1):
-            c[i + j] = ADD(c[i + j], MULTIPLY(a[i], b[j], *args), *args)
-
-    return c
-
-
-def convolve_calculate(a, b, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-    dtype = a.dtype
-
-    c = np.zeros(a.size + b.size - 1, dtype=dtype)
-    for i in range(a.size):
-        for j in range(b.size - 1, -1, -1):
-            c[i + j] = ADD(c[i + j], MULTIPLY(a[i], b[j], *args), *args)
-
-    return c
-
-
-###############################################################################
-# Polynomial division with remainder
-###############################################################################
-
-def poly_divmod_lookup(a, b, SUBTRACT, MULTIPLY, DIVIDE, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    args = EXP, LOG, ZECH_LOG, ZECH_E
-
-    assert a.ndim == 2 and b.ndim == 1
-    assert a.shape[-1] >= b.shape[-1]
-
-    q_degree = a.shape[1] - b.shape[-1]
-    qr = a.copy()
-
-    for k in range(a.shape[0]):
-        for i in range(q_degree + 1):
-            if qr[k,i] > 0:
-                q = DIVIDE(qr[k,i], b[0], *args)
-                for j in range(b.size):
-                    qr[k, i + j] = SUBTRACT(qr[k, i + j], MULTIPLY(q, b[j], *args), *args)
-                qr[k,i] = q
-
-    return qr
-
-
-def poly_divmod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-
-    assert a.ndim == 2 and b.ndim == 1
-    assert a.shape[-1] >= b.shape[-1]
-
-    q_degree = a.shape[1] - b.shape[-1]
-    qr = a.copy()
-
-    for k in range(a.shape[0]):
-        for i in range(q_degree + 1):
-            if qr[k,i] > 0:
-                q = DIVIDE(qr[k,i], b[0], *args)
-                for j in range(b.size):
-                    qr[k, i + j] = SUBTRACT(qr[k, i + j], MULTIPLY(q, b[j], *args), *args)
-                qr[k,i] = q
-
-    return qr
-
-
-###############################################################################
-# Polynomial roots
-###############################################################################
-
-def poly_roots_lookup(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    args = EXP, LOG, ZECH_LOG, ZECH_E
-    dtype = nonzero_coeffs.dtype
-    ORDER = LOG.size
-
-    N = nonzero_degrees.size
-    lambda_vector = nonzero_coeffs.copy()
-    alpha_vector = np.zeros(N, dtype=dtype)
-    for i in range(N):
-        alpha_vector[i] = POWER(primitive_element, nonzero_degrees[i], *args)
-    degree = np.max(nonzero_degrees)
-    roots = []
-    powers = []
-
-    # Test if 0 is a root
-    if nonzero_degrees[-1] != 0:
-        roots.append(0)
-        powers.append(-1)
-
-    # Test if 1 is a root
-    _sum = 0
-    for i in range(N):
-        _sum = ADD(_sum, lambda_vector[i], *args)
-    if _sum == 0:
-        roots.append(1)
-        powers.append(0)
-
-    # Test if the powers of alpha are roots
-    for i in range(1, ORDER - 1):
+        # Test if 1 is a root
         _sum = 0
-        for j in range(N):
-            lambda_vector[j] = MULTIPLY(lambda_vector[j], alpha_vector[j], *args)
-            _sum = ADD(_sum, lambda_vector[j], *args)
+        for i in range(N):
+            _sum = ADD(_sum, lambda_vector[i], *args)
         if _sum == 0:
-            root = POWER(primitive_element, i, *args)
-            roots.append(root)
-            powers.append(i)
-        if len(roots) == degree:
-            break
+            roots.append(1)
+            powers.append(0)
 
-    return np.array([roots, powers], dtype=dtype)
+        # Test if the powers of alpha are roots
+        for i in range(1, ORDER - 1):
+            _sum = 0
+            for j in range(N):
+                lambda_vector[j] = MULTIPLY(lambda_vector[j], alpha_vector[j], *args)
+                _sum = ADD(_sum, lambda_vector[j], *args)
+            if _sum == 0:
+                root = POWER(primitive_element, i, *args)
+                roots.append(root)
+                powers.append(i)
+            if len(roots) == degree:
+                break
 
-
-def poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-    dtype = nonzero_coeffs.dtype
-    ORDER = CHARACTERISTIC**DEGREE
-
-    N = nonzero_degrees.size
-    lambda_vector = nonzero_coeffs.copy()
-    alpha_vector = np.zeros(N, dtype=dtype)
-    for i in range(N):
-        alpha_vector[i] = POWER(primitive_element, nonzero_degrees[i], *args)
-    degree = np.max(nonzero_degrees)
-    roots = []
-    powers = []
-
-    # Test if 0 is a root
-    if nonzero_degrees[-1] != 0:
-        roots.append(0)
-        powers.append(-1)
-
-    # Test if 1 is a root
-    _sum = 0
-    for i in range(N):
-        _sum = ADD(_sum, lambda_vector[i], *args)
-    if _sum == 0:
-        roots.append(1)
-        powers.append(0)
-
-    # Test if the powers of alpha are roots
-    for i in range(1, ORDER - 1):
-        _sum = 0
-        for j in range(N):
-            lambda_vector[j] = MULTIPLY(lambda_vector[j], alpha_vector[j], *args)
-            _sum = ADD(_sum, lambda_vector[j], *args)
-        if _sum == 0:
-            root = POWER(primitive_element, i, *args)
-            roots.append(root)
-            powers.append(i)
-        if len(roots) == degree:
-            break
-
-    return np.array([roots, powers], dtype=dtype)
-
-
-###############################################################################
-# Polynomial evaluation
-###############################################################################
-
-def poly_evaluate_lookup(coeffs, value, ADD, MULTIPLY, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-    args = EXP, LOG, ZECH_LOG, ZECH_E
-
-    result = coeffs[0]
-    for j in range(1, coeffs.size):
-        result = ADD(coeffs[j], MULTIPLY(result, value, *args), *args)
-
-    return result
-
-
-def poly_evaluate_calculate(coeffs, value, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-
-    result = coeffs[0]
-    for j in range(1, coeffs.size):
-        result = ADD(coeffs[j], MULTIPLY(result, value, *args), *args)
-
-    return result
-
-
-# Set globals so that when the application-specific python functions are called they will use the
-# pure-python arithmetic routines
-MATMUL = matmul_calculate
-CONVOLVE = convolve_calculate
-POLY_DIVMOD = poly_divmod_calculate
-POLY_ROOTS = poly_roots_calculate
+        return np.array([roots, powers], dtype=dtype)

@@ -19,7 +19,7 @@ class GF2Meta(FieldClass, DirMeta, CalculateMeta):
     """
     # pylint: disable=no-value-for-parameter
 
-    # Need to have a unique cache of "calculate" function for GF(2)
+    # Need to have a unique cache of "calculate" functions for GF(2)
     _FUNC_CACHE_CALCULATE = {}
 
     def __init__(cls, name, bases, namespace, **kwargs):

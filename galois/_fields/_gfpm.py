@@ -20,7 +20,7 @@ class GFpmMeta(FieldClass, DirMeta):
     """
     # pylint: disable=no-value-for-parameter
 
-    # Need to have a unique cache of "calculate" function for GF(p^m)
+    # Need to have a unique cache of "calculate" functions for GF(p^m)
     _FUNC_CACHE_CALCULATE = {}
 
     def __init__(cls, name, bases, namespace, **kwargs):
@@ -32,7 +32,12 @@ class GFpmMeta(FieldClass, DirMeta):
 
         # Determine if the irreducible polynomial is primitive
         if cls._is_primitive_poly is None:
-            cls._is_primitive_poly = cls._poly_evaluate_python(cls._irreducible_poly.coeffs, cls.primitive_element) == 0
+            # TODO: Clean this up
+            coeffs = cls.irreducible_poly.coeffs.view(np.ndarray)
+            x = np.array(cls.primitive_element, dtype=cls.dtypes[-1], ndmin=1)
+            add = cls._func_python("add")
+            multiply = cls._func_python("multiply")
+            cls._is_primitive_poly = cls._function_python("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0] == 0
 
     @property
     def dtypes(cls):
@@ -47,7 +52,9 @@ class GFpmMeta(FieldClass, DirMeta):
         return d
 
     def _set_globals(cls, name):
+        super()._set_globals(name)
         global DTYPE, INT_TO_POLY, POLY_TO_INT, MULTIPLY, RECIPROCAL
+
         DTYPE = np.int64
         INT_TO_POLY = cls._func_calculate("int_to_poly", reset=False)
         POLY_TO_INT = cls._func_calculate("poly_to_int", reset=False)
@@ -57,12 +64,14 @@ class GFpmMeta(FieldClass, DirMeta):
             RECIPROCAL = cls._func_calculate("reciprocal", reset=False)
 
     def _reset_globals(cls):
+        super()._reset_globals()
         global DTYPE, INT_TO_POLY, POLY_TO_INT, MULTIPLY, RECIPROCAL
+
         DTYPE = np.object_
         INT_TO_POLY = cls._int_to_poly
         POLY_TO_INT = cls._poly_to_int
-        MULTIPLY = cls._multiply_calculate
-        RECIPROCAL = cls._reciprocal_calculate
+        MULTIPLY = cls._func_python("multiply")
+        RECIPROCAL = cls._func_python("reciprocal")
 
     def _func_calculate(cls, name, reset=True):
         key = (name,)
