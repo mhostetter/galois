@@ -6,7 +6,7 @@
 [![Read the Docs](https://img.shields.io/readthedocs/galois)](https://galois.readthedocs.io/en/latest/)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mhostetter/galois/Test)](https://github.com/mhostetter/galois/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/mhostetter/galois)](https://codecov.io/gh/mhostetter/galois)
-[![Twitter Follow](https://img.shields.io/twitter/follow/galois_py?label=%40galois_py&style=social)](https://twitter.com/galois_py)
+[![Twitter](https://img.shields.io/twitter/follow/galois_py?label=galois_py&style=flat&logo=twitter)](https://twitter.com/galois_py)
 
 The main idea of the `galois` package can be summarized as follows. The user creates a "Galois field array class" using `GF = galois.GF(p**m)`.
 A Galois field array class `GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)` mimics
