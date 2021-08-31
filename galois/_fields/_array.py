@@ -17,41 +17,12 @@ __all__ = ["FieldArray"]
 @set_module("galois")
 class FieldArray(np.ndarray, metaclass=FieldClass):
     r"""
-    Creates an array over :math:`\mathrm{GF}(p^m)`.
+    An array over :math:`\mathrm{GF}(p^m)`.
 
     Warning
     -------
     :obj:`galois.FieldArray` is an abstract base class for all Galois field array classes and cannot be instantiated
     directly. Instead, :obj:`galois.FieldArray` subclasses are created using the class factory :func:`galois.GF`.
-
-    Parameters
-    ----------
-    array : int, str, tuple, list, numpy.ndarray, galois.FieldArray
-        The input array-like object to be converted to a Galois field array. See the examples section for demonstations of array creation
-        using each input type. See see :func:`galois.FieldClass.display` and :obj:`galois.FieldClass.display_mode` for a description of the
-        "integer" and "polynomial" representation of Galois field elements.
-
-        * :obj:`int`: A single integer, which is the "integer representation" of a Galois field element, creates a 0-D array.
-        * :obj:`str`: A single string, which is the "polynomial representation" of a Galois field element, creates a 0-D array.
-        * :obj:`tuple`, :obj:`list`: A list or tuple (or nested lists/tuples) of ints or strings (which can be mix-and-matched) creates an array of
-          Galois field elements from their integer or polynomial representations.
-        * :obj:`numpy.ndarray`, :obj:`galois.FieldArray`: An array of ints creates a copy of the array over this specific field.
-
-    dtype : numpy.dtype, optional
-        The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-        dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
-    copy : bool, optional
-        The `copy` keyword argument from :func:`numpy.array`. The default is `True` which makes a copy of the input array.
-    order : str, optional
-        The `order` keyword argument from :func:`numpy.array`. Valid values are `"K"` (default), `"A"`, `"C"`, or `"F"`.
-    ndmin : int, optional
-        The `ndmin` keyword argument from :func:`numpy.array`. The minimum number of dimensions of the output.
-        The default is 0.
-
-    Returns
-    -------
-    galois.FieldArray
-        The copied input array as a Galois field array over :math:`\mathrm{GF}(p^m)`.
 
     Notes
     -----
@@ -88,10 +59,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         x = np.array([155, 232, 162, 159,  63,  29, 247, 141,  75, 189], dtype=int)
 
-        # Explicit Galois field array creation (a copy is performed)
+        # Explicit Galois field array creation -- a copy is performed
         GF256(x)
 
-        # Or view an existing numpy array as a Galois field array (no copy is performed)
+        # Or view an existing numpy array as a Galois field array -- no copy is performed
         x.view(GF256)
 
     Galois field arrays can also be created explicitly by converting an "array-like" object.
@@ -136,6 +107,42 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         if cls is FieldArray:
             raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
+
+    def __init__(self, array, dtype=None, copy=True, order="K", ndmin=0):  # pylint: disable=unused-argument
+        r"""
+        Creates an array over :math:`\mathrm{GF}(p^m)`.
+
+        Parameters
+        ----------
+        array : int, str, tuple, list, numpy.ndarray, galois.FieldArray
+            The input array-like object to be converted to a Galois field array. See the examples section for demonstations of array creation
+            using each input type. See see :func:`galois.FieldClass.display` and :obj:`galois.FieldClass.display_mode` for a description of the
+            "integer" and "polynomial" representation of Galois field elements.
+
+            * :obj:`int`: A single integer, which is the "integer representation" of a Galois field element, creates a 0-D array.
+            * :obj:`str`: A single string, which is the "polynomial representation" of a Galois field element, creates a 0-D array.
+            * :obj:`tuple`, :obj:`list`: A list or tuple (or nested lists/tuples) of ints or strings (which can be mix-and-matched) creates an array of
+            Galois field elements from their integer or polynomial representations.
+            * :obj:`numpy.ndarray`, :obj:`galois.FieldArray`: An array of ints creates a copy of the array over this specific field.
+
+        dtype : numpy.dtype, optional
+            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
+            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+        copy : bool, optional
+            The `copy` keyword argument from :func:`numpy.array`. The default is `True` which makes a copy of the input array.
+        order : str, optional
+            The `order` keyword argument from :func:`numpy.array`. Valid values are `"K"` (default), `"A"`, `"C"`, or `"F"`.
+        ndmin : int, optional
+            The `ndmin` keyword argument from :func:`numpy.array`. The minimum number of dimensions of the output.
+            The default is 0.
+
+        Returns
+        -------
+        galois.FieldArray
+            An array over :math:`\mathrm{GF}(p^m)`.
+        """
+        # pylint: disable=super-init-not-called
+        return
 
     @classmethod
     def _get_dtype(cls, dtype):

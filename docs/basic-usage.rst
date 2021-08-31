@@ -65,10 +65,10 @@ Galois field arrays can be created from existing NumPy arrays.
    # Represents an existing numpy array
    array = np.random.randint(0, GF256.order, 10, dtype=int); array
 
-   # Explicit Galois field array creation (a copy is performed)
+   # Explicit Galois field array creation -- a copy is performed
    GF256(array)
 
-   # Or view an existing numpy array as a Galois field array (no copy is performed)
+   # Or view an existing numpy array as a Galois field array -- no copy is performed
    array.view(GF256)
 
 Or they can be created from "array-like" objects. These include strings representing a Galois field element
