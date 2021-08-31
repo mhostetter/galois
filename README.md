@@ -156,11 +156,11 @@ Galois field arrays can be created from existing NumPy arrays.
 >>> array = np.random.randint(0, GF256.order, 10, dtype=int); array
 array([ 31, 254, 155, 154, 121, 185,  16, 246, 216, 244])
 
-# Explicit Galois field array creation (a copy is performed)
+# Explicit Galois field array creation -- a copy is performed
 >>> GF256(array)
 GF([ 31, 254, 155, 154, 121, 185,  16, 246, 216, 244], order=2^8)
 
-# Or view an existing numpy array as a Galois field array (no copy is performed)
+# Or view an existing numpy array as a Galois field array -- no copy is performed
 >>> array.view(GF256)
 GF([ 31, 254, 155, 154, 121, 185,  16, 246, 216, 244], order=2^8)
 ```
