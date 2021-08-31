@@ -17,33 +17,14 @@ __all__ = ["ReedSolomon"]
 @set_module("galois")
 class ReedSolomon:
     r"""
-    Constructs a :math:`\textrm{RS}(n, k)` code.
+    A general :math:`\textrm{RS}(n, k)` code.
 
-    A :math:`\textrm{RS}(n, k)` code is a :math:`[n, k, d]_q` linear block code.
+    A :math:`\textrm{RS}(n, k)` code is a :math:`[n, k, d]_q` linear block code with codeword size :math:`n`, message
+    size :math:`k`, minimum distance :math:`d`, and symbols taken from an alphabet of size :math:`q` (a prime power).
 
     To create the shortened :math:`\textrm{RS}(n-s, k-s)` code, construct the full-sized :math:`\textrm{RS}(n, k)` code
     and then pass :math:`k-s` symbols into :func:`encode` and :math:`n-s` symbols into :func:`decode()`. Shortened codes are only
     applicable for systematic codes.
-
-    Parameters
-    ----------
-    n : int
-        The codeword size :math:`n`, must be :math:`n = q - 1`.
-    k : int
-        The message size :math:`k`. The error-correcting capability :math:`t` is defined by :math:`n - k = 2t`.
-    c : int, optional
-        The first consecutive power of :math:`\alpha`. The default is 1.
-    primitive_poly : galois.Poly, optional
-        Optionally specify the primitive polynomial that defines the extension field :math:`\mathrm{GF}(q)`. The default is
-        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-minimal
-        primitive polynomial as a default instead of the Conway polynomial.
-    primitive_element : int, galois.Poly, optional
-        Optionally specify the primitive element :math:`\alpha` of :math:`\mathrm{GF}(q)` whose powers are roots of the generator polynomial :math:`g(x)`.
-        The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(q)`, see
-        :func:`galois.primitive_element`.
-    systematic : bool, optional
-        Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
-        appended. The default is `True`.
 
     Examples
     --------
@@ -78,7 +59,35 @@ class ReedSolomon:
     """
     # pylint: disable=no-member
 
-    def __new__(cls, n, k, c=1, primitive_poly=None, primitive_element=None, systematic=True):
+    def __init__(self, n, k, c=1, primitive_poly=None, primitive_element=None, systematic=True):
+        r"""
+        Constructs a general :math:`\textrm{RS}(n, k)` code.
+
+        Parameters
+        ----------
+        n : int
+            The codeword size :math:`n`, must be :math:`n = q - 1` where :math:`q` is a prime power.
+        k : int
+            The message size :math:`k`. The error-correcting capability :math:`t` is defined by :math:`n - k = 2t`.
+        c : int, optional
+            The first consecutive power of :math:`\alpha`. The default is 1.
+        primitive_poly : galois.Poly, optional
+            Optionally specify the primitive polynomial that defines the extension field :math:`\mathrm{GF}(q)`. The default is
+            `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-minimal
+            primitive polynomial as a default instead of the Conway polynomial.
+        primitive_element : int, galois.Poly, optional
+            Optionally specify the primitive element :math:`\alpha` of :math:`\mathrm{GF}(q)` whose powers are roots of the generator polynomial :math:`g(x)`.
+            The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(q)`, see
+            :func:`galois.primitive_element`.
+        systematic : bool, optional
+            Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
+            appended. The default is `True`.
+
+        Returns
+        -------
+        galois.ReedSolomon
+            A general :math:`\textrm{RS}(n, k)` code object.
+        """
         if not isinstance(n, (int, np.integer)):
             raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
         if not isinstance(k, (int, np.integer)):
@@ -102,12 +111,10 @@ class ReedSolomon:
         if primitive_poly is None and m > 1:
             primitive_poly = matlab_primitive_poly(p, m)
 
-        obj = super().__new__(cls)
-
-        obj._n = n
-        obj._k = k
-        obj._c = c
-        obj._systematic = systematic
+        self._n = n
+        self._k = k
+        self._c = c
+        self._systematic = systematic
 
         GF = Field(p**m, irreducible_poly=primitive_poly, primitive_element=primitive_element)
         alpha = GF.primitive_element
@@ -115,19 +122,16 @@ class ReedSolomon:
         roots = alpha**(c + np.arange(0, 2*t))
         g = Poly.Roots(roots)
 
-        obj._generator_poly = g
-        obj._roots = roots
-        obj._field = GF
-        obj._t = obj.roots.size // 2
+        self._generator_poly = g
+        self._roots = roots
+        self._field = GF
+        self._t = self.roots.size // 2
 
-        obj._G = poly_to_generator_matrix(n, obj.generator_poly, systematic)
-        obj._H = roots_to_parity_check_matrix(n, obj.roots)
+        self._G = poly_to_generator_matrix(n, self.generator_poly, systematic)
+        self._H = roots_to_parity_check_matrix(n, self.roots)
 
-        obj._is_narrow_sense = c == 1
+        self._is_narrow_sense = c == 1
 
-        return obj
-
-    def __init__(self, *args, **kwargs):  # pylint: disable=unused-argument
         # Pre-compile the arithmetic methods
         self._add_jit = self.field._func_calculate("add")
         self._subtract_jit = self.field._func_calculate("subtract")
