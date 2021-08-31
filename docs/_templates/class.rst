@@ -5,7 +5,7 @@
 .. autoclass:: {{ objname }}
 
    {%- if methods %}
-   {% set constructor_methods = [] %}
+   {% set constructor_methods = ['__init__'] %}
    {%- for item in methods if item[0].isupper() %}
      {{- constructor_methods.append(item)|default("", True) }}
    {%- endfor %}

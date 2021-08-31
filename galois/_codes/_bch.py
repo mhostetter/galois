@@ -112,31 +112,14 @@ def bch_valid_codes(n, t_min=1):
 @set_module("galois")
 class BCH:
     r"""
-    Constructs a primitive, narrow-sense binary :math:`\textrm{BCH}(n, k)` code.
+    A primitive, narrow-sense binary :math:`\textrm{BCH}(n, k)` code.
 
-    A :math:`\textrm{BCH}(n, k)` code is a :math:`[n, k, d]_2` linear block code.
+    A :math:`\textrm{BCH}(n, k)` code is a :math:`[n, k, d]_2` linear block code with codeword size :math:`n`, message
+    size :math:`k`, minimum distance :math:`d`, and symbols taken from an alphabet of size :math:`2`.
 
     To create the shortened :math:`\textrm{BCH}(n-s, k-s)` code, construct the full-sized :math:`\textrm{BCH}(n, k)` code
     and then pass :math:`k-s` bits into :func:`encode` and :math:`n-s` bits into :func:`decode()`. Shortened codes are only
     applicable for systematic codes.
-
-    Parameters
-    ----------
-    n : int
-        The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
-    k : int
-        The message size :math:`k`.
-    primitive_poly : galois.Poly, optional
-        Optionally specify the primitive polynomial that defines the extension field :math:`\mathrm{GF}(2^m)`. The default is
-        `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-minimal
-        primitive polynomial as a default instead of the Conway polynomial.
-    primitive_element : int, galois.Poly, optional
-        Optionally specify the primitive element :math:`\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
-        The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(2^m)`, see
-        :func:`galois.primitive_element`.
-    systematic : bool, optional
-        Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
-        appended. The default is `True`.
 
     Examples
     --------
@@ -171,16 +154,40 @@ class BCH:
     """
     # pylint: disable=no-member
 
-    def __new__(cls, n, k, primitive_poly=None, primitive_element=None, systematic=True):
+    def __init__(self, n, k, primitive_poly=None, primitive_element=None, systematic=True):
+        r"""
+        Constructs a primitive, narrow-sense binary :math:`\textrm{BCH}(n, k)` code.
+
+        Parameters
+        ----------
+        n : int
+            The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
+        k : int
+            The message size :math:`k`.
+        primitive_poly : galois.Poly, optional
+            Optionally specify the primitive polynomial that defines the extension field :math:`\mathrm{GF}(2^m)`. The default is
+            `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-minimal
+            primitive polynomial as a default instead of the Conway polynomial.
+        primitive_element : int, galois.Poly, optional
+            Optionally specify the primitive element :math:`\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
+            The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(2^m)`, see
+            :func:`galois.primitive_element`.
+        systematic : bool, optional
+            Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
+            appended. The default is `True`.
+
+        Returns
+        -------
+        galois.BCH
+            A primitive, narrow-sense binary :math:`\textrm{BCH}(n, k)` code object.
+        """
         # NOTE: All other arguments will be verified in `_check_and_compute_field()`
         if not isinstance(systematic, bool):
             raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
 
-        obj = super().__new__(cls)
-
-        obj._n = n
-        obj._k = k
-        obj._systematic = systematic
+        self._n = n
+        self._k = k
+        self._systematic = systematic
 
         c = 1
         GF = _check_and_compute_field(n, k, c, primitive_poly, primitive_element)
@@ -216,20 +223,17 @@ class BCH:
         g = Poly.Roots(largest_t_conjugates)  # Compute the generator polynomial in GF(2^m)
         g = Poly(g.coeffs, field=GF2)  # Convert coefficients from GF(2^m) to GF(2)
 
-        obj._generator_poly = g
-        obj._roots = largest_t_roots
-        obj._field = GF
-        obj._t = obj.roots.size // 2
+        self._generator_poly = g
+        self._roots = largest_t_roots
+        self._field = GF
+        self._t = self.roots.size // 2
 
-        obj._G = poly_to_generator_matrix(n, obj.generator_poly, systematic)
-        obj._H = roots_to_parity_check_matrix(n, obj.roots)
+        self._G = poly_to_generator_matrix(n, self.generator_poly, systematic)
+        self._H = roots_to_parity_check_matrix(n, self.roots)
 
-        obj._is_primitive = True
-        obj._is_narrow_sense = True
+        self._is_primitive = True
+        self._is_narrow_sense = True
 
-        return obj
-
-    def __init__(self, *args, **kwargs):  # pylint: disable=unused-argument
         # Pre-compile the arithmetic methods
         self._add_jit = self.field._func_calculate("add")
         self._subtract_jit = self.field._func_calculate("subtract")
