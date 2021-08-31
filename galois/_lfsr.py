@@ -16,27 +16,12 @@ __all__ = ["LFSR", "berlekamp_massey"]
 @set_module("galois")
 class LFSR:
     r"""
-    Implements a linear-feedback shift register (LFSR).
+    A linear-feedback shift register (LFSR).
 
-    This class implements an LFSR in either the Fibonacci or Galois configuration. An LFSR is defined
-    by its generator polynomial :math:`g(x) = g_n x^n + \dots + g_1 x + g_0` and initial state vector
-    :math:`s = [s_{n-1}, \dots, s_1, s_0]`.
-
-    Parameters
-    ----------
-    poly : galois.Poly
-        The generator polynomial :math:`g(x) = g_n x^n + \dots + g_1 x + g_0`.
-    state : int, tuple, list, numpy.ndarray, galois.FieldArray, optional
-        The initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`. If specified as an integer, then
-        :math:`s_{n-1}` is interpreted as the MSB and :math:`s_0` as the LSB. The default is 1 which corresponds to
-        :math:`s = [0, \dots, 0, 1]`.
-    config : str, optional
-        A string indicating the LFSR feedback configuration, either `"fibonacci"` (default) or `"galois"`.
-
-    Notes
-    -----
-    Below are diagrams for a degree-:math:`3` LFSR in the Fibonacci and Galois configuration. The generator
-    polynomial is :math:`g(x) = g_3x^3 + g_2x^2 + g_1x + g_0` and state vector is :math:`s = [s_2, s_1, s_0]`.
+    This class implements an LFSR in either the Fibonacci or Galois configuration. An LFSR is defined by its generator polynomial
+    :math:`g(x) = g_n x^n + \dots + g_1 x + g_0` and initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`. Below are diagrams
+    for a degree-:math:`3` LFSR in the Fibonacci and Galois configuration. The generator polynomial is :math:`g(x) = g_3x^3 + g_2x^2 + g_1x + g_0`
+    and state vector is :math:`s = [s_2, s_1, s_0]`.
 
     .. code-block:: text
        :caption: Fibonacci LFSR Configuration
@@ -48,8 +33,9 @@ class LFSR:
              └─▶┃  s2  ┃──┴─▶┃  s1  ┃──┴─▶┃  s0  ┃──┴──▶ y[n]
                 ┗━━━━━━┛     ┗━━━━━━┛     ┗━━━━━━┛
 
-    In the Fibonacci configuration, at time instant :math:`i` the next :math:`n-1` outputs are the current state reversed, that is :math:`[y_i, y_{i+1}, \dots, y_{i+n-1}] = [s_0, s_1, \dots, s_{n-1}]`.
-    And the :math:`n`-th output is a linear combination of the current state and the generator polynomial :math:`y_{i+n} = (g_n s_0 + g_{n-1} s_1 + \dots + g_1 s_{n-1}) g_0`.
+    In the Fibonacci configuration, at time instant :math:`i` the next :math:`n-1` outputs are the current state reversed, that is
+    :math:`[y_i, y_{i+1}, \dots, y_{i+n-1}] = [s_0, s_1, \dots, s_{n-1}]`. And the :math:`n`-th output is a linear combination of the current
+    state and the generator polynomial :math:`y_{i+n} = (g_n s_0 + g_{n-1} s_1 + \dots + g_1 s_{n-1}) g_0`.
 
     .. code-block:: text
        :caption: Galois LFSR Configuration
@@ -61,8 +47,8 @@ class LFSR:
              └─▶┃  s0  ┃──⊕─▶┃  s1  ┃──⊕─▶┃  s2  ┃──┴──▶ y[n]
                 ┗━━━━━━┛     ┗━━━━━━┛     ┗━━━━━━┛
 
-    In the Galois configuration, the next output is :math:`y = s_{n-1}` and the next state is computed by :math:`s_k = s_{n-1} g_n g_k + s_{k-1}`. In the case of
-    :math:`s_0` there is no previous state added.
+    In the Galois configuration, the next output is :math:`y = s_{n-1}` and the next state is computed by :math:`s_k = s_{n-1} g_n g_k + s_{k-1}`.
+    In the case of :math:`s_0` there is no previous state added.
 
     References
     ----------
@@ -73,6 +59,25 @@ class LFSR:
     """
 
     def __init__(self, poly, state=1, config="fibonacci"):
+        r"""
+        Constructs a linear-feedback shift register.
+
+        Parameters
+        ----------
+        poly : galois.Poly
+            The generator polynomial :math:`g(x) = g_n x^n + \dots + g_1 x + g_0`.
+        state : int, tuple, list, numpy.ndarray, galois.FieldArray, optional
+            The initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`. If specified as an integer, then
+            :math:`s_{n-1}` is interpreted as the MSB and :math:`s_0` as the LSB. The default is 1 which corresponds to
+            :math:`s = [0, \dots, 0, 1]`.
+        config : str, optional
+            A string indicating the LFSR feedback configuration, either `"fibonacci"` (default) or `"galois"`.
+
+        Returns
+        -------
+        galois.LFSR
+            A linear-feedback shift register object.
+        """
         if not isinstance(poly, Poly):
             raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
         if not isinstance(state, (type(None), int, np.integer, tuple, list, np.ndarray, FieldArray)):
