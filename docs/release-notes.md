@@ -1,5 +1,16 @@
 # Release Notes
 
+## v0.0.21
+
+### Changes
+
+- Fix docstrings and code completion for Python classes that weren't rendering correctly in an IDE.
+- Various documentation improvements.
+
+### Contributors
+
+- Matt Hostetter (@mhostetter)
+
 ## v0.0.20
 
 ### Breaking Changes
