@@ -20,8 +20,18 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
     """
     Defines a metaclass for all :obj:`galois.FieldArray` classes.
 
-    This metaclass gives :obj:`galois.FieldArray` subclasses returned from the class factory :func:`galois.GF` methods and attributes
-    related to its Galois field.
+    Important
+    ---------
+    :obj:`galois.FieldClass` is a metaclass for :obj:`galois.FieldArray` subclasses created with the class factory
+    :func:`galois.GF` and should not be instantiated directly. This metaclass gives :obj:`galois.FieldArray` subclasses
+    methods and attributes related to their Galois fields.
+
+    This class is included in the API to allow the user to test if a class is a Galois field array class.
+
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        isinstance(GF, galois.FieldClass)
     """
     # pylint: disable=no-value-for-parameter,unsupported-membership-test,abstract-method
 

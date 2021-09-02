@@ -19,10 +19,19 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     r"""
     An array over :math:`\mathrm{GF}(p^m)`.
 
-    Warning
-    -------
+    Important
+    ---------
     :obj:`galois.FieldArray` is an abstract base class for all Galois field array classes and cannot be instantiated
     directly. Instead, :obj:`galois.FieldArray` subclasses are created using the class factory :func:`galois.GF`.
+
+    This class is included in the API to allow the user to test if an array is a Galois field array subclass.
+
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        issubclass(GF, galois.FieldArray)
+        x = GF([1,2,3]); x
+        isinstance(x, galois.FieldArray)
 
     Notes
     -----
@@ -142,6 +151,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             An array over :math:`\mathrm{GF}(p^m)`.
         """
         # pylint: disable=super-init-not-called
+        # Adding __init__ and not doing anything is done to overwrite the superclass's __init__ docstring
         return
 
     @classmethod
