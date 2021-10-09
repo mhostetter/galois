@@ -5,5 +5,6 @@
     "python.testing.pytestEnabled": true,
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
+    "python.linting.pylintArgs": ["--rcfile=setup.cfg"],
     "markdown.extension.toc.levels": "2..2"
 }
