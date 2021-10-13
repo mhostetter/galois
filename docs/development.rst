@@ -3,22 +3,27 @@ Development
 
 For users who would like to actively develop with :obj:`galois`, these sections may prove helpful.
 
-Lint the package
-----------------
+Install the `dev` dependencies
+------------------------------
 
-Linting is done with `pylint <https://www.pylint.org/>`_. The linting dependencies are stored in `requirements-lint.txt`.
+The development dependencies include packages for linting and testing the package. These dependencies are stored
+in `requirements-dev.txt`.
 
-.. literalinclude:: ../requirements-lint.txt
-   :caption: requirements-lint.txt
+.. literalinclude:: ../requirements-dev.txt
+   :caption: requirements-dev.txt
    :linenos:
 
-Install the linter dependencies.
+Install the `dev` dependencies.
 
 .. code-block:: sh
 
-   $ python3 -m pip install -r requirements-lint.txt
+   $ python3 -m pip install -r requirements-dev.txt
 
-Run the linter.
+Lint the package
+----------------
+
+Linting is done with `pylint <https://www.pylint.org/>`_. The linter can be run from the command line as follows. There is also a
+`.vscode/` folder with appropriate settings, if using `VS Code <https://code.visualstudio.com/>`_.
 
 .. code-block:: sh
 
@@ -27,21 +32,9 @@ Run the linter.
 Run the unit tests
 ------------------
 
-Unit testing is done through `pytest <https://docs.pytest.org/en/stable/>`_. The tests themselves are stored in `tests/`. We test
-against test vectors, stored in `tests/data/`. generated using `SageMath <https://www.sagemath.org/>`_.
-See the `scripts/generate_test_vectors.py` script. The testing dependencies are stored in `requirements-test.txt`.
-
-.. literalinclude:: ../requirements-test.txt
-   :caption: requirements-test.txt
-   :linenos:
-
-Install the test dependencies.
-
-.. code-block:: sh
-
-   $ python3 -m pip install -r requirements-test.txt
-
-Run the unit tests.
+Unit testing is done with `pytest <https://docs.pytest.org/en/stable/>`_. The tests themselves are stored in `tests/`. We utilize
+test vectors stored in `tests/data/`. The tests can be run from the command line as follows. There is also a `.vscode/` folder
+with appropriate settings, if using `VS Code <https://code.visualstudio.com/>`_.
 
 .. code-block:: sh
 
@@ -50,7 +43,7 @@ Run the unit tests.
 Build the documentation
 -----------------------
 
-The documentation is generated with `Sphinx <https://www.sphinx-doc.org/en/master/>`_. The dependencies are
+The documentation is generated with `Sphinx <https://www.sphinx-doc.org/en/master/>`_. The documentation dependencies are
 stored in `docs/requirements.txt`.
 
 .. literalinclude:: requirements.txt

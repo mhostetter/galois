@@ -24,7 +24,7 @@ jobs:
     - name: Install linting dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install -r requirements-lint.txt
+        python3 -m pip install -r requirements-dev.txt
     - name: Install python package
       run: python3 -m pip install .  # Needed to guarantee dependencies are installed
     - name: Lint with pylint
@@ -43,7 +43,7 @@ jobs:
     - name: Install testing dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install -r requirements-test.txt
+        python3 -m pip install -r requirements-dev.txt
     - name: Install python package
       run: python3 -m pip install .
     - name: Test with pytest
@@ -90,7 +90,7 @@ jobs:
     - name: Install testing dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install -r requirements-test.txt
+        python3 -m pip install -r requirements-dev.txt
     - name: Install minimum package dependencies
       run: python3 -m pip install -r requirements-min.txt
     - name: Remove source code
@@ -126,7 +126,7 @@ jobs:
     - name: Install testing dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install -r requirements-test.txt
+        python3 -m pip install -r requirements-dev.txt
     - name: Remove source code
       uses: JesseTG/rm@v1.0.2
       with:
