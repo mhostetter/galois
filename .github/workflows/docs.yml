@@ -22,7 +22,7 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         sudo apt install pandoc
-        python3 -m pip install -r requirements-doc.txt
+        python3 -m pip install -r docs/requirements.txt
     - name: Install python package
       run: python3 -m pip install .
     - name: Run sphinx to build docs

@@ -51,17 +51,17 @@ Build the documentation
 -----------------------
 
 The documentation is generated with `Sphinx <https://www.sphinx-doc.org/en/master/>`_. The dependencies are
-stored in `requirements-doc.txt`.
+stored in `docs/requirements.txt`.
 
-.. literalinclude:: ../requirements-doc.txt
-   :caption: requirements-doc.txt
+.. literalinclude:: requirements.txt
+   :caption: docs/requirements.txt
    :linenos:
 
 Install the documentation dependencies.
 
 .. code-block:: sh
 
-   $ python3 -m pip install -r requirements-doc.txt
+   $ python3 -m pip install -r docs/requirements.txt
 
 Build the HTML documentation. The index page will be located at `docs/build/index.html`.
 
