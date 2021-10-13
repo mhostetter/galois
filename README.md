@@ -37,6 +37,7 @@ calculation (for memory savings).
 - [Functions](https://galois.readthedocs.io/en/stable/api/polys.html#special-polynomial-creation) to generate irreducible, primitive, and Conway polynomials
 - [Polynomials](https://galois.readthedocs.io/en/stable/api/polys.html) over Galois fields with `galois.Poly`
 - [Forward error correction codes](https://galois.readthedocs.io/en/stable/api/fec.html) with `galois.BCH` and `galois.ReedSolomon`
+- [Linear transforms](https://galois.readthedocs.io/en/stable/api/transforms.html) over finite fields, such as the NTT with `galois.ntt()` and `galois.intt()`
 - Fibonacci and Galois [linear feedback shift registers](https://galois.readthedocs.io/en/stable/api/linear-sequences.html) with `galois.LFSR`, both binary and p-ary
 - Various [number theoretic functions](https://galois.readthedocs.io/en/stable/api/number-theory.html)
 - [Integer factorization](https://galois.readthedocs.io/en/stable/api/integer-factorization.html) and accompanying algorithms
@@ -45,7 +46,7 @@ calculation (for memory savings).
 ## Roadmap
 
 - Elliptic curves over Galois fields
-- Number-theoretic transform, DFT over Galois fields
+- DFT over Galois fields
 - Group and ring arrays
 - GPU support
 

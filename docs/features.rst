@@ -8,6 +8,7 @@ Features
 - Functions to generate irreducible, primitive, and Conway polynomials
 - Polynomials over Galois fields with :obj:`galois.Poly`
 - Forward error correction codes with :obj:`galois.BCH` and :obj:`galois.ReedSolomon`
+- Linear transforms over finite fields, such as the NTT with :func:`galois.ntt` and :func:`galois.intt`
 - Fibonacci and Galois linear feedback shift registers with :obj:`galois.LFSR`, both binary and p-ary
 - Various number theoretic functions
 - Integer factorization and accompanying algorithms
