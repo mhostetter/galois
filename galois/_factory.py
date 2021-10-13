@@ -92,7 +92,7 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
           represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with python :obj:`int` (which has arbitrary precision).
 
     display : str, optional
-        The field element display representation. This can be modified after class consstruction with the :func:`galois.FieldClass.display` method.
+        The field element display representation. This can be modified after class construction with the :func:`galois.FieldClass.display` method.
 
         * `None` (default): For newly-created classes, `None` corresponds to the integer representation (`"int"`). For Galois field array classes
           of this type that were previously created, `None` does not modify the current display mode.
