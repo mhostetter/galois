@@ -384,7 +384,7 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
         return formatter
 
     def _print_int(cls, element):  # pylint: disable=no-self-use
-        return "{:d}".format(int(element))
+        return f"{int(element)}"
 
     def _print_poly(cls, element):
         poly = integer_to_poly(element, cls.characteristic)

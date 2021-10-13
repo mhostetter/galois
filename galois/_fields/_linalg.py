@@ -16,7 +16,7 @@ def _lapack_linalg(a, b, function, out=None, n_sum=None):
     characteristic = field.characteristic
 
     # Determine the return data-type which is the minimum of the two inputs' data-types
-    if a.dtype == np.object_ or b.dtype == np.object_:
+    if np.object_ in [a.dtype, b.dtype]:
         return_dtype = np.object_
     else:
         return_dtype = a.dtype if np.iinfo(a.dtype).max < np.iinfo(b.dtype).max else b.dtype

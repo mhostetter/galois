@@ -38,9 +38,9 @@ class PropertiesMeta(type):
         cls._display_mode = "int"
 
         if cls.degree == 1:
-            cls._order_str = "order={}".format(cls.order)
+            cls._order_str = f"order={cls.order}"
         else:
-            cls._order_str = "order={}^{}".format(cls.characteristic, cls.degree)
+            cls._order_str = f"order={cls.characteristic}^{cls.degree}"
 
     ###############################################################################
     # Class attributes

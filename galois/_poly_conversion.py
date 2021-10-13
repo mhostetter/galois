@@ -118,12 +118,12 @@ def poly_to_str(coeffs, poly_var="x"):
 
     x = []
     if degree >= 0 and coeffs[0] != 0:
-        x += ["{}".format(coeffs[0])]
+        x += [f"{coeffs[0]}"]
     if degree >= 1 and coeffs[1] != 0:
-        x += ["{}{}".format(coeffs[1] if coeffs[1] != 1 else "", poly_var)]
+        x += [f"{coeffs[1] if coeffs[1] != 1 else ''}{poly_var}"]
     if degree >= 2:
         idxs = np.nonzero(coeffs[2:])[0]  # Indices with non-zeros coefficients
-        x += ["{}{}^{}".format(coeffs[2+i] if coeffs[2+i] != 1 else "", poly_var, 2+i) for i in idxs]
+        x += [f"{coeffs[2 + i] if coeffs[2 + i] != 1 else ''}{poly_var}^{2 + i}" for i in idxs]
 
     poly_str = " + ".join(x[::-1]) if x else "0"
 
@@ -160,11 +160,11 @@ def sparse_poly_to_str(degrees, coeffs, poly_var="x"):
             coeff_repr = coeff
 
         if degree > 1:
-            s = "{}{}^{}".format(coeff_repr if coeff != 1 else "", poly_var, degree)
+            s = f"{coeff_repr if coeff != 1 else ''}{poly_var}^{degree}"
         elif degree == 1:
-            s = "{}{}".format(coeff_repr if coeff != 1 else "", poly_var)
+            s = f"{coeff_repr if coeff != 1 else ''}{poly_var}"
         elif coeff != 0:
-            s = "{}".format(coeff_repr)
+            s = f"{coeff_repr}"
         else:
             continue
         x.append(s)
