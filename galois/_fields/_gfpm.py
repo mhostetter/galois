@@ -33,7 +33,7 @@ class GFpmMeta(FieldClass, DirMeta):
         # Determine if the irreducible polynomial is primitive
         if cls._is_primitive_poly is None:
             # TODO: Clean this up
-            coeffs = cls.irreducible_poly.coeffs.view(np.ndarray)
+            coeffs = cls.irreducible_poly.coeffs.view(np.ndarray).astype(cls.dtypes[-1])
             x = np.array(cls.primitive_element, dtype=cls.dtypes[-1], ndmin=1)
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
