@@ -358,12 +358,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         if not stop <= cls.order:
             raise ValueError(f"The stopping value must be less than the field order of {cls.order}, not {stop}.")
         dtype = cls._get_dtype(dtype)
-
-        if dtype != np.object_:
-            array = np.arange(start, stop, step=step, dtype=dtype)
-        else:
-            array = np.array(range(start, stop, step), dtype=dtype)
-
+        array = np.arange(start, stop, step=step, dtype=dtype)
         return array.view(cls)
 
     @classmethod
