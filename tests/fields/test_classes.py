@@ -61,3 +61,29 @@ def test_properties():
 
     GF = galois.GF(2**8)
     assert GF.properties == "GF(2^8):\n  characteristic: 2\n  degree: 8\n  order: 256\n  irreducible_poly: x^8 + x^4 + x^3 + x^2 + 1\n  is_primitive_poly: True\n  primitive_element: x"
+
+
+def test_is_primitive_poly():
+    """
+    Verify the `is_primitive_poly` boolean is calculated correctly for fields constructed with explicitly-specified
+    irreducible polynomials.
+    """
+    # GF(2^m) with integer dtype
+    poly = galois.conway_poly(2, 32)
+    GF = galois.GF(2**32, irreducible_poly=poly, primitive_element="x", verify=False)
+    assert GF.is_primitive_poly == True
+
+    # GF(2^m) with object dtype
+    poly = galois.conway_poly(2, 100)
+    GF = galois.GF(2**100, irreducible_poly=poly, primitive_element="x", verify=False)
+    assert GF.is_primitive_poly == True
+
+    # GF(p^m) with integer dtype
+    poly = galois.conway_poly(3, 20)
+    GF = galois.GF(3**20, irreducible_poly=poly, primitive_element="x", verify=False)
+    assert GF.is_primitive_poly == True
+
+    # GF(p^m) with object dtype
+    poly = galois.conway_poly(3, 101)
+    GF = galois.GF(3**101, irreducible_poly=poly, primitive_element="x", verify=False)
+    assert GF.is_primitive_poly == True
