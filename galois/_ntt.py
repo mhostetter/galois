@@ -191,7 +191,7 @@ def intt(X, size=None, modulus=None, scaled=True):
         x = galois.intt(X); x
         galois.ntt(x)
 
-    The forward NTT and scaled INTT are the identity transform, i.e. :math:`\mathrm{INTT}(\mathrm{NTT}(x))`.
+    The forward NTT and scaled INTT are the identity transform, i.e. :math:`x = \mathrm{INTT}(\mathrm{NTT}(x))`.
 
     .. ipython:: python
 
@@ -199,7 +199,7 @@ def intt(X, size=None, modulus=None, scaled=True):
         x = GF([1, 2, 3, 4]); x
         galois.intt(galois.ntt(x))
 
-    This is also true in the reverse order, i.e. :math:`\mathrm{NTT}(\mathrm{INTT}(x))`.
+    This is also true in the reverse order, i.e. :math:`x = \mathrm{NTT}(\mathrm{INTT}(x))`.
 
     .. ipython:: python
 
