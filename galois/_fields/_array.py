@@ -767,6 +767,48 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         trace = np.add.reduce(conjugates, axis=-1)
         return subfield(trace)
 
+    def field_norm(self):
+        r"""
+        Computes the field norm :math:`\mathrm{N}_{L / K}(x)` of the elements of :math:`x`.
+
+        Returns
+        -------
+        galois.FieldArray
+            The field norm of :math:`x` in the prime subfield :math:`\mathrm{GF}(p)`.
+
+        Notes
+        -----
+        The `self` array :math:`x` is over the extension field :math:`L = \mathrm{GF}(p^m)`. The field norm of :math:`x` is
+        over the subfield :math:`K = \mathrm{GF}(p)`. In other words, :math:`\mathrm{N}_{L / K}(x) : L \rightarrow K`.
+
+        For finite fields, since :math:`L` is a Galois extension of :math:`K`, the field norm of :math:`x` is defined as a product
+        of the Galois conjugates of :math:`x`.
+
+        .. math:: \mathrm{N}_{L / K}(x) = \prod_{i=0}^{m-1} x^{p^i} = x^{(p^m - 1) / (p - 1)}
+
+        References
+        ----------
+        * https://en.wikipedia.org/wiki/Field_norm
+
+        Examples
+        --------
+        The field norm of the elements of :math:`\mathrm{GF}(3^2)` is shown below.
+
+        .. ipython:: python
+
+            GF = galois.GF(3**2, display="poly")
+            x = GF.Elements(); x
+            y = x.field_norm(); y
+        """
+        if not type(self).is_extension_field:
+            raise TypeError(f"The Galois field must be an extension field to compute the field norm, not {type(self)}.")
+        field = type(self)
+        subfield = field.prime_subfield
+        p = field.characteristic
+        m = field.degree
+        norm = self**((p**m - 1) // (p - 1))
+        return subfield(norm)
+
     ###############################################################################
     # Special methods (redefined to add docstrings)
     ###############################################################################
