@@ -724,6 +724,49 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         return lup_decompose(self)
 
+    def field_trace(self):
+        r"""
+        Computes the field trace :math:`\mathrm{Tr}_{L / K}(x)` of the elements of :math:`x`.
+
+        Returns
+        -------
+        galois.FieldArray
+            The field trace of :math:`x` in the prime subfield :math:`\mathrm{GF}(p)`.
+
+        Notes
+        -----
+        The `self` array :math:`x` is over the extension field :math:`L = \mathrm{GF}(p^m)`. The field trace of :math:`x` is
+        over the subfield :math:`K = \mathrm{GF}(p)`. In other words, :math:`\mathrm{Tr}_{L / K}(x) : L \rightarrow K`.
+
+        For finite fields, since :math:`L` is a Galois extension of :math:`K`, the field trace of :math:`x` is defined as a sum
+        of the Galois conjugates of :math:`x`.
+
+        .. math:: \mathrm{Tr}_{L / K}(x) = \sum_{i=0}^{m-1} x^{p^i}
+
+        References
+        ----------
+        * https://en.wikipedia.org/wiki/Field_trace
+
+        Examples
+        --------
+        The field trace of the elements of :math:`\mathrm{GF}(3^2)` is shown below.
+
+        .. ipython:: python
+
+            GF = galois.GF(3**2, display="poly")
+            x = GF.Elements(); x
+            y = x.field_trace(); y
+        """
+        if not type(self).is_extension_field:
+            raise TypeError(f"The Galois field must be an extension field to compute the field trace, not {type(self)}.")
+        field = type(self)
+        subfield = field.prime_subfield
+        p = field.characteristic
+        m = field.degree
+        conjugates = np.power.outer(self, p**np.arange(0, m, dtype=self.dtype))
+        trace = np.add.reduce(conjugates, axis=-1)
+        return subfield(trace)
+
     ###############################################################################
     # Special methods (redefined to add docstrings)
     ###############################################################################
