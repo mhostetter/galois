@@ -227,7 +227,12 @@ def str_to_sparse_poly(poly_str):
         degree = int(degree)
 
         coeff = coeff.replace("*", "")  # Remove multiplication sign for elements like `3*x^2`
-        coeff = int(coeff) if coeff != "" else 1
+        if coeff == "-":
+            coeff = -1
+        elif coeff != "":
+            coeff = int(coeff)
+        else:
+            coeff = 1
 
         degrees.append(degree)
         coeffs.append(coeff)
