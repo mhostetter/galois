@@ -70,6 +70,7 @@ def test_sparse_poly_to_str():
 def test_str_to_sparse_poly():
     # Over GF(2)
     assert galois._poly_conversion.str_to_sparse_poly("x^2 + 1") == ([2, 0], [1, 1])
+    assert galois._poly_conversion.str_to_sparse_poly("1 - x^2") == ([0, 2], [1, -1])
     assert galois._poly_conversion.str_to_sparse_poly("x**2 + 1") == ([2, 0], [1, 1])
     assert galois._poly_conversion.str_to_sparse_poly("y^2 + y + 1") == ([2, 1, 0], [1, 1, 1])
     assert galois._poly_conversion.str_to_sparse_poly("y**2 + y**1 + 1*y**0") == ([2, 1, 0], [1, 1, 1])
