@@ -1136,6 +1136,9 @@ class Poly:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __len__(self):
+        return self.degree + 1
+
     @classmethod
     def _add(cls, a, b):
         raise NotImplementedError
