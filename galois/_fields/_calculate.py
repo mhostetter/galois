@@ -83,14 +83,14 @@ class CalculateMeta(PropertiesMeta):
             function = getattr(cls, f"_{name}_calculate")
 
             # These variables must be locals and not class properties for Numba to compile them as literals
-            CHARACTERISTIC = cls.characteristic
-            DEGREE = cls.degree
-            IRREDUCIBLE_POLY = cls._irreducible_poly_int
+            characteristic = cls.characteristic
+            degree = cls.degree
+            irreducible_poly = cls._irreducible_poly_int
 
             if cls._UFUNC_TYPE[name] == "unary":
-                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64)"], nopython=True)(lambda a: function(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY))
+                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64)"], nopython=True)(lambda a: function(a, characteristic, degree, irreducible_poly))
             else:
-                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(lambda a, b: function(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY))
+                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(lambda a, b: function(a, b, characteristic, degree, irreducible_poly))
 
             cls._reset_globals()
 
@@ -112,10 +112,16 @@ class CalculateMeta(PropertiesMeta):
         Returns a pure-python arithmetic ufunc using explicit calculation.
         """
         function = getattr(cls, f"_{name}_calculate")
+
+        # Pre-fetching these values into local variables allows Python to cache them as constants in the lambda function
+        characteristic = cls.characteristic
+        degree = cls.degree
+        irreducible_poly = cls._irreducible_poly_int
+
         if cls._UFUNC_TYPE[name] == "unary":
-            return np.frompyfunc(lambda a: function(a, cls.characteristic, cls.degree, cls._irreducible_poly_int), 1, 1)
+            return np.frompyfunc(lambda a: function(a, characteristic, degree, irreducible_poly), 1, 1)
         else:
-            return np.frompyfunc(lambda a, b: function(a, b, cls.characteristic, cls.degree, cls._irreducible_poly_int), 2, 1)
+            return np.frompyfunc(lambda a, b: function(a, b, characteristic, degree, irreducible_poly), 2, 1)
 
     ###############################################################################
     # Arithmetic functions using explicit calculation

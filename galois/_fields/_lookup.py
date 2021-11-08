@@ -38,8 +38,8 @@ class LookupMeta(CalculateMeta):
 
         order = cls.order
         primitive_element = int(cls.primitive_element)
-        add = lambda a, b: cls._func_python("add")(a, b, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-        multiply = lambda a, b: cls._func_python("multiply")(a, b, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        add = cls._ufunc_python("add")
+        multiply = cls._ufunc_python("multiply")
 
         cls._EXP = np.zeros(2*order, dtype=np.int64)
         cls._LOG = np.zeros(order, dtype=np.int64)
@@ -101,6 +101,7 @@ class LookupMeta(CalculateMeta):
         key = (name, cls.characteristic, cls.degree, cls._irreducible_poly_int)
 
         if key not in cls._UFUNC_CACHE_LOOKUP:
+            # These variables must be locals for Numba to compile them as literals
             EXP = cls._EXP
             LOG = cls._LOG
             ZECH_LOG = cls._ZECH_LOG
