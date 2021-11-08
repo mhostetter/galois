@@ -39,17 +39,16 @@ class GFpmMeta(FieldClass, DirMeta):
             multiply = cls._func_python("multiply")
             cls._is_primitive_poly = cls._function_python("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0] == 0
 
-    @property
-    def dtypes(cls):
+    def _determine_dtypes(cls):
         """
         The only valid dtypes are ones that can hold x*x for x in [0, order).
         """
         # TODO: Is this correct?
         max_dtype = DTYPES[-1]
-        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1)**2]
-        if len(d) == 0:
-            d = [np.object_]
-        return d
+        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1)**2]
+        if len(dtypes) == 0:
+            dtypes = [np.object_]
+        return dtypes
 
     def _set_globals(cls, name):
         super()._set_globals(name)

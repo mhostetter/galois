@@ -14,14 +14,16 @@ class PropertiesMeta(type):
     """
     A mixin metaclass that contains Galois field properties.
     """
+    # pylint: disable=no-value-for-parameter
 
     def __init__(cls, name, bases, namespace, **kwargs):
-        cls._characteristic = kwargs.get("characteristic", None)
-        cls._degree = kwargs.get("degree", None)
-        cls._order = kwargs.get("order", None)
+        cls._characteristic = kwargs.get("characteristic", 0)
+        cls._degree = kwargs.get("degree", 0)
+        cls._order = kwargs.get("order", 0)
         cls._order_str = None
         cls._ufunc_mode = None
         cls._ufunc_target = None
+        cls._dtypes = cls._determine_dtypes()
         super().__init__(name, bases, namespace, **kwargs)
 
         if "irreducible_poly" in kwargs:
@@ -41,6 +43,19 @@ class PropertiesMeta(type):
             cls._order_str = f"order={cls.order}"
         else:
             cls._order_str = f"order={cls.characteristic}^{cls.degree}"
+
+    ###############################################################################
+    # Helper methods
+    ###############################################################################
+
+    def _determine_dtypes(cls):
+        """
+        At a minimum, valid dtypes are ones that can hold x for x in [0, order).
+        """
+        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
+        if len(dtypes) == 0:
+            dtypes = [np.object_]
+        return dtypes
 
     ###############################################################################
     # Class attributes
@@ -291,10 +306,7 @@ class PropertiesMeta(type):
             GF = galois.GF(2**100); GF.dtypes
             GF = galois.GF(36893488147419103183); GF.dtypes
         """
-        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
-        if len(d) == 0:
-            d = [np.object_]
-        return d
+        return cls._dtypes
 
     @property
     def display_mode(cls):
