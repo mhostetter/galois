@@ -25,16 +25,15 @@ class GFpMeta(FieldClass, DirMeta):
 
         cls.compile(kwargs["compile"])
 
-    @property
-    def dtypes(cls):
+    def _determine_dtypes(cls):
         """
         The only valid dtypes are ones that can hold x*x for x in [0, order).
         """
         max_dtype = DTYPES[-1]
-        d = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1)**2]
-        if len(d) == 0:
-            d = [np.object_]
-        return d
+        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1)**2]
+        if len(dtypes) == 0:
+            dtypes = [np.object_]
+        return dtypes
 
     def _ufunc(cls, name):
         # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
