@@ -195,7 +195,7 @@ object with the `field` keyword argument.
    p = galois.Poly([172, 22, 0, 0, 225], field=GF256); p
 
    coeffs = GF256([33, 17, 0, 225]); coeffs
-   p = galois.Poly(coeffs, order="asc"); p
+   p = galois.Poly(coeffs, ordering="asc"); p
 
 Polynomials over Galois fields can also display their coefficients as polynomials over their prime subfields.
 This can be quite confusing to read, so be warned!

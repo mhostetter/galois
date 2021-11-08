@@ -188,22 +188,22 @@ def test_bch_generator_poly_diff_primitive_poly():
     Test with primitive polynomial others than the default. Generated in Octave with `bchpoly()`.
     """
     p = galois.Poly.Degrees([3, 2, 0])  # galois.primitive_poly(2, 3, method="max")
-    assert galois.BCH(7, 4, primitive_poly=p).generator_poly == galois.Poly([1,0,1,1], order="asc")
+    assert galois.BCH(7, 4, primitive_poly=p).generator_poly == galois.Poly([1,0,1,1], ordering="asc")
 
     p = galois.Poly.Degrees([4, 3, 0])  # galois.primitive_poly(2, 4, method="max")
-    assert galois.BCH(15, 11, primitive_poly=p).generator_poly == galois.Poly([1,0,0,1,1], order="asc")
-    assert galois.BCH(15, 7, primitive_poly=p).generator_poly == galois.Poly([1,1,1,0,1,0,0,0,1], order="asc")
-    assert galois.BCH(15, 5, primitive_poly=p).generator_poly == galois.Poly([1,0,1,0,0,1,1,0,1,1,1], order="asc")
+    assert galois.BCH(15, 11, primitive_poly=p).generator_poly == galois.Poly([1,0,0,1,1], ordering="asc")
+    assert galois.BCH(15, 7, primitive_poly=p).generator_poly == galois.Poly([1,1,1,0,1,0,0,0,1], ordering="asc")
+    assert galois.BCH(15, 5, primitive_poly=p).generator_poly == galois.Poly([1,0,1,0,0,1,1,0,1,1,1], ordering="asc")
 
     p = galois.Poly.Degrees([5, 4, 3, 2, 0])  # galois.primitive_poly(2, 5, method="max")
-    assert galois.BCH(31, 26, primitive_poly=p).generator_poly == galois.Poly([1,0,1,1,1,1], order="asc")
-    assert galois.BCH(31, 21, primitive_poly=p).generator_poly == galois.Poly([1,1,0,0,0,0,1,1,0,0,1], order="asc")
-    assert galois.BCH(31, 16, primitive_poly=p).generator_poly == galois.Poly([1,1,0,1,1,1,0,1,0,1,0,1,1,1,0,1], order="asc")
-    assert galois.BCH(31, 11, primitive_poly=p).generator_poly == galois.Poly([1,0,1,0,0,0,1,1,0,1,1,0,0,1,1,1,0,0,0,1,1], order="asc")
-    assert galois.BCH(31, 6, primitive_poly=p).generator_poly == galois.Poly([1,0,0,0,1,1,1,0,1,0,1,0,0,1,0,1,1,1,1,0, 0,1,1,0,1,1], order="asc")
+    assert galois.BCH(31, 26, primitive_poly=p).generator_poly == galois.Poly([1,0,1,1,1,1], ordering="asc")
+    assert galois.BCH(31, 21, primitive_poly=p).generator_poly == galois.Poly([1,1,0,0,0,0,1,1,0,0,1], ordering="asc")
+    assert galois.BCH(31, 16, primitive_poly=p).generator_poly == galois.Poly([1,1,0,1,1,1,0,1,0,1,0,1,1,1,0,1], ordering="asc")
+    assert galois.BCH(31, 11, primitive_poly=p).generator_poly == galois.Poly([1,0,1,0,0,0,1,1,0,1,1,0,0,1,1,1,0,0,0,1,1], ordering="asc")
+    assert galois.BCH(31, 6, primitive_poly=p).generator_poly == galois.Poly([1,0,0,0,1,1,1,0,1,0,1,0,0,1,0,1,1,1,1,0, 0,1,1,0,1,1], ordering="asc")
 
     p = galois.Poly.Degrees([6, 5, 4, 1, 0])  # galois.primitive_poly(2, 6, method="max")
-    assert galois.BCH(63, 57, primitive_poly=p).generator_poly == galois.Poly([1,1,0,0,1,1,1], order="asc")
+    assert galois.BCH(63, 57, primitive_poly=p).generator_poly == galois.Poly([1,1,0,0,1,1,1], ordering="asc")
 
 
 def test_bch_parity_check_matrix():

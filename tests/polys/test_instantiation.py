@@ -60,7 +60,7 @@ def test_exceptions():
     with pytest.raises(ValueError):
         galois.Poly(np.array([[1, 0, 1], [1, 1, 1]]))
     with pytest.raises(ValueError):
-        galois.Poly([1, 0, 1], order="invalid-type")
+        galois.Poly([1, 0, 1], ordering="invalid-type")
 
 
 @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
@@ -87,9 +87,9 @@ def test_leading_zero_coeffs(type1, config):
 def test_ascending_coeffs(type1, config):
     GF = config["GF"]
     if type1 is not galois.FieldArray:
-        p = galois.Poly(type1(config["coeffs"][::-1]), field=GF, order="asc")
+        p = galois.Poly(type1(config["coeffs"][::-1]), field=GF, ordering="asc")
     else:
-        p = galois.Poly(GF(config["coeffs"][::-1]), order="asc")
+        p = galois.Poly(GF(config["coeffs"][::-1]), ordering="asc")
     check_attributes(p, config)
 
 

@@ -36,7 +36,7 @@ class Poly:
           in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(coeffs)`.
         * :obj:`galois.FieldClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
 
-    order : str, optional
+    ordering : str, optional
         The interpretation of the coefficient degrees.
 
         * `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
@@ -92,20 +92,20 @@ class Poly:
     # Increase my array priority so numpy will call my __radd__ instead of its own __add__
     __array_priority__ = 100
 
-    def __new__(cls, coeffs, field=None, order="desc"):
+    def __new__(cls, coeffs, field=None, ordering="desc"):
         if not isinstance(coeffs, (list, tuple, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
         if not isinstance(field, (type(None), FieldClass)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
         if isinstance(coeffs, (FieldArray, np.ndarray)) and not coeffs.ndim <= 1:
             raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
-        if not order in ["desc", "asc"]:
-            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order!r}.")
+        if ordering not in ["desc", "asc"]:
+            raise ValueError(f"Argument `ordering` must be either 'desc' or 'asc', not {ordering!r}.")
 
         if isinstance(coeffs, (FieldArray, np.ndarray)):
             coeffs = np.atleast_1d(coeffs)
 
-        if order == "asc":
+        if ordering == "asc":
             coeffs = coeffs[::-1]  # Ensure it's in descending-degree order
 
         coeffs, field = cls._convert_coeffs(coeffs, field)
