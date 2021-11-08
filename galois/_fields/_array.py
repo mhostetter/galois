@@ -117,7 +117,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
-    def __init__(self, array, dtype=None, copy=True, order="K", ndmin=0):  # pylint: disable=unused-argument
+    def __init__(self, array, dtype=None, copy=True, order="K", ndmin=0):
         r"""
         Creates an array over :math:`\mathrm{GF}(p^m)`.
 
@@ -150,7 +150,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         galois.FieldArray
             An array over :math:`\mathrm{GF}(p^m)`.
         """
-        # pylint: disable=super-init-not-called
+        # pylint: disable=unused-argument,super-init-not-called
         # Adding __init__ and not doing anything is done to overwrite the superclass's __init__ docstring
         return
 
@@ -176,26 +176,28 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     @classmethod
     def _check_array_like_object(cls, array_like):
-        if isinstance(array_like, str):
-            # Convert the string to an integer
-            array_like = cls._check_string_value(array_like)
+        if isinstance(array_like, cls):
+            # If this was a previously-created and vetted array, there's no need to reverify
+            return array_like
 
-        if isinstance(array_like, (int, np.integer)):
+        if isinstance(array_like, str):
+            # Convert the string to an integer and verify it's in range
+            array_like = cls._check_string_value(array_like)
+            cls._check_array_values(array_like)
+        elif isinstance(array_like, (int, np.integer)):
             # Just check that the single int is in range
             cls._check_array_values(array_like)
-
         elif isinstance(array_like, (list, tuple)):
             # Recursively check the items in the iterable to ensure they're of the correct type
             # and that their values are in range
             array_like = cls._check_iterable_types_and_values(array_like)
-
         elif isinstance(array_like, np.ndarray):
+            # If this a NumPy array, but not a FieldArray, verify the array
             if array_like.dtype == np.object_:
                 array_like = cls._check_array_types_dtype_object(array_like)
             elif not np.issubdtype(array_like.dtype, np.integer):
                 raise TypeError(f"{cls.name} arrays must have integer dtypes, not {array_like.dtype}.")
             cls._check_array_values(array_like)
-
         else:
             raise TypeError(f"{cls.name} arrays can be created with scalars of type int, not {type(array_like)}.")
 
