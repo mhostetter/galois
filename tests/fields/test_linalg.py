@@ -15,7 +15,13 @@ def test_dot_scalar(field):
     dtype = random.choice(field.dtypes)
     a = field.Random((3,3), dtype=dtype)
     b = field.Random(dtype=dtype)
+
     c = np.dot(a, b)
+    assert type(c) is field
+    assert c.dtype == dtype
+    assert array_equal(c, a * b)
+
+    c = a.dot(b)
     assert type(c) is field
     assert c.dtype == dtype
     assert array_equal(c, a * b)
@@ -25,7 +31,13 @@ def test_dot_vector_vector(field):
     dtype = random.choice(field.dtypes)
     a = field.Random(3, dtype=dtype)
     b = field.Random(3, dtype=dtype)
+
     c = np.dot(a, b)
+    assert type(c) is field
+    assert c.dtype == dtype
+    assert array_equal(c, np.sum(a * b))
+
+    c = a.dot(b)
     assert type(c) is field
     assert c.dtype == dtype
     assert array_equal(c, np.sum(a * b))
@@ -35,7 +47,13 @@ def test_dot_matrix_matrix(field):
     dtype = random.choice(field.dtypes)
     A = field.Random((3,3), dtype=dtype)
     B = field.Random((3,3), dtype=dtype)
+
     C = np.dot(A, B)
+    assert type(C) is field
+    assert C.dtype == dtype
+    assert array_equal(C, A @ B)
+
+    C = A.dot(B)
     assert type(C) is field
     assert C.dtype == dtype
     assert array_equal(C, A @ B)
@@ -45,7 +63,13 @@ def test_dot_tensor_vector(field):
     dtype = random.choice(field.dtypes)
     A = field.Random((3,4,5), dtype=dtype)
     b = field.Random(5, dtype=dtype)
+
     C = np.dot(A, b)
+    assert type(C) is field
+    assert C.dtype == dtype
+    assert array_equal(C, np.sum(A * b, axis=-1))
+
+    C = A.dot(b)
     assert type(C) is field
     assert C.dtype == dtype
     assert array_equal(C, np.sum(A * b, axis=-1))
