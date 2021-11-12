@@ -9,7 +9,7 @@ from .._overrides import set_module
 from .._poly_conversion import str_to_integer
 
 from ._class import FieldClass
-from ._linalg import row_reduce, lu_decompose, lup_decompose
+from ._linalg import dot, row_reduce, lu_decompose, lup_decompose
 
 __all__ = ["FieldArray"]
 
@@ -1076,11 +1076,6 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     # Overridden numpy methods
     ###############################################################################
 
-    def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
-        if dtype not in type(self).dtypes:
-            raise TypeError(f"{type(self).name} arrays can only be cast as integer dtypes in {type(self).dtypes}, not {dtype}.")
-        return super().astype(dtype, **kwargs)
-
     def __array_finalize__(self, obj):
         """
         A numpy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
@@ -1168,6 +1163,15 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
                 output = output.view(type(self)) if not np.isscalar(output) else type(self)(output, dtype=self.dtype)
 
             return output
+
+    def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
+        if dtype not in type(self).dtypes:
+            raise TypeError(f"{type(self).name} arrays can only be cast as integer dtypes in {type(self).dtypes}, not {dtype}.")
+        return super().astype(dtype, **kwargs)
+
+    def dot(self, b, out=None):
+        # `np.dot(a, b)` is also available as `a.dot(b)`. Need to override this here for proper results.
+        return dot(self, b, out=out)
 
     ###############################################################################
     # Display methods
