@@ -93,7 +93,7 @@ def test_power(poly_power):
 def test_evaluate_constant(poly_evaluate):
     GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
     for i in range(len(X)):
-        j = np.random.randint(0, Y.size)
+        j = np.random.default_rng().integers(0, Y.size)
         x = X[i]  # Polynomial
         y = Y[j]  # GF element
         z = x(y)  # GF element
