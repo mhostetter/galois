@@ -364,7 +364,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return array.view(cls)
 
     @classmethod
-    def Random(cls, shape=(), low=0, high=None, dtype=None):
+    def Random(cls, shape=(), low=0, high=None, seed=None, dtype=None):
         """
         Creates a Galois field array with random field elements.
 
@@ -379,6 +379,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         high : int, optional
             The highest value (exclusive) of a random field element in its integer representation. The default is `None`
             which represents the field's order :math:`p^m`.
+        seed: int, numpy.random.Generator, optional
+            Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
+            entropy will be pulled from the OS to be used as the seed. A numpy.random.Generator can also be passed. If so,
+            it is used directly when dtype != np.object_. Its state is used to seed random.seed(), otherwise.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
             dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
@@ -400,11 +404,29 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         if not 0 <= low < high <= cls.order:
             raise ValueError(f"Arguments must satisfy `0 <= low < high <= order`, not `0 <= {low} < {high} <= {cls.order}`.")
 
+        if seed is not None:
+            if not isinstance(seed, (int, np.integer, np.random.Generator)):
+                raise ValueError("Seed must be an integer, a numpy.random.Generator or None.")
+            if isinstance(seed, (int, np.integer)) and seed < 0:
+                raise ValueError("Seed must be non-negative.")
+
         if dtype != np.object_:
-            array = np.random.randint(low, high, shape, dtype=dtype)
+            rng = np.random.default_rng(seed)
+            array = rng.integers(low, high, shape, dtype=dtype)
         else:
             array = np.empty(shape, dtype=dtype)
             iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+            _seed = None
+            if seed is not None:
+                if isinstance(seed, np.integer):
+                    # np.integers not supported by random and seeding based on hashing deprecated since Python 3.9
+                    _seed = seed.item()
+                elif isinstance(seed, np.random.Generator):
+                    _seed = seed.bit_generator.state['state']['state']
+                    seed.bit_generator.advance(1)
+                else:  # int
+                    _seed = seed
+            random.seed(_seed)
             for _ in iterator:
                 array[iterator.multi_index] = random.randint(low, high - 1)
 

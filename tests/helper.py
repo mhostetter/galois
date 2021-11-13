@@ -13,7 +13,7 @@ def array_equal(a, b):
 
 def randint(low, high, shape, dtype):
     if np.issubdtype(dtype, np.integer):
-        array = np.random.randint(low, high, shape, dtype=np.int64)
+        array = np.random.default_rng().integers(low, high, shape, dtype=np.int64)
     else:
         # For dtype=object
         array = np.empty(shape, dtype=dtype)
