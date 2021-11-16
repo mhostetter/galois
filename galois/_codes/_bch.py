@@ -89,7 +89,7 @@ def bch_valid_codes(n, t_min=1):
     while True:
         c = 1
         roots = alpha**(c + np.arange(0, 2*t))
-        powers = GF.characteristic**np.arange(0, GF.degree)
+        powers = GF.characteristic**np.arange(0, GF.degree, dtype=GF.dtypes[-1])
         conjugates = np.unique(np.power.outer(roots, powers))
         g_degree = len(conjugates)
         k = n - g_degree
@@ -201,7 +201,7 @@ class BCH:
             # minimal polynomial and then doing an LCM, we will compute all the unique conjugates of all the roots
             # and then compute (x - c1)*(x - c2)*...*(x - cn), which is equivalent.
             roots = alpha**(c + np.arange(0, 2*t))
-            powers = GF.characteristic**np.arange(0, GF.degree)
+            powers = GF.characteristic**np.arange(0, GF.degree, dtype=GF.dtypes[-1])
             conjugates = np.unique(np.power.outer(roots, powers))
             g_degree = len(conjugates)
 

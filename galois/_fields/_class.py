@@ -313,7 +313,7 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
 
         if cls.display_mode == "power":
             # Order elements by powers of the primitive element
-            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1)))
+            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1, dtype=cls.dtypes[-1])))
         else:
             x_default = cls.Elements()
         y_default = x_default if operation != "/" else x_default[1:]
