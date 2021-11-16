@@ -113,7 +113,7 @@ def minimal_poly(element):
     if field.is_prime_field:
         return x - element
     else:
-        conjugates = np.unique(element**(field.characteristic**np.arange(0, field.degree)))
+        conjugates = np.unique(element**(field.characteristic**np.arange(0, field.degree, dtype=field.dtypes[-1])))
         poly = Poly.Roots(conjugates, field=field)
         poly = Poly(poly.coeffs, field=field.prime_subfield)
         return poly
