@@ -109,6 +109,7 @@ def roots_to_parity_check_matrix(n, roots):
     if not isinstance(roots, FieldArray):
         raise TypeError(f"Argument `roots` must be a galois.FieldArray, not {type(roots)}.")
 
-    H = np.power.outer(roots, np.arange(n - 1, -1, -1))
+    GF = type(roots)
+    H = np.power.outer(roots, np.arange(n - 1, -1, -1, dtype=GF.dtypes[-1]))
 
     return H

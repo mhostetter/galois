@@ -765,7 +765,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         subfield = field.prime_subfield
         p = field.characteristic
         m = field.degree
-        conjugates = np.power.outer(self, p**np.arange(0, m, dtype=self.dtype))
+        conjugates = np.power.outer(self, p**np.arange(0, m, dtype=field.dtypes[-1]))
         trace = np.add.reduce(conjugates, axis=-1)
         return subfield(trace)
 
