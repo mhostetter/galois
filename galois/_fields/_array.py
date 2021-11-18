@@ -1087,7 +1087,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
             GF = galois.GF(7)
             a = GF.Random((2,5)); a
-            b = np.random.randint(0, 10, 5); b
+            b = np.random.default_rng().integers(0, 10, 5); b
             a ** b
         """
         # NOTE: Calling power here instead of `super().__pow__(other)` because when doing so `x ** GF(2)` will invoke `np.square(x)` and not throw
