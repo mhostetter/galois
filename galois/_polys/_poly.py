@@ -240,7 +240,7 @@ class Poly:
         return Poly([1, 0], field=field)
 
     @classmethod
-    def Random(cls, degree, field=GF2):
+    def Random(cls, degree, seed=None, field=GF2):
         r"""
         Constructs a random polynomial over :math:`\mathrm{GF}(p^m)` with degree :math:`d`.
 
@@ -248,6 +248,10 @@ class Poly:
         ----------
         degree : int
             The degree of the polynomial.
+        seed: int, numpy.random.Generator, optional
+            Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
+            entropy will be pulled from the OS to be used as the seed. A numpy.random.Generator can also be passed. If so,
+            it is used directly when dtype != np.object_. Its state is used to seed random.seed(), otherwise.
         field : galois.FieldClass, optional
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
@@ -269,17 +273,22 @@ class Poly:
         .. ipython:: python
 
             GF = galois.GF(2**8)
-            galois.Poly.Random(5, field=GF)
+            galois.Poly.Random(5, seed=123456, field=GF)
         """
         if not isinstance(degree, (int, np.integer)):
             raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+        if seed is not None:
+            if not isinstance(seed, (int, np.integer, np.random.Generator)):
+                raise ValueError("Seed must be an integer, a numpy.random.Generator or None.")
+            if isinstance(seed, (int, np.integer)) and seed < 0:
+                raise ValueError("Seed must be non-negative.")
         if not isinstance(field, FieldClass):
             raise TypeError(f"Argument `field` must be a Galois field class, not {type(field)}.")
         if not degree >= 0:
             raise ValueError(f"Argument `degree` must be non-negative, not {degree}.")
 
-        coeffs = field.Random(degree + 1)
-        coeffs[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
+        coeffs = field.Random(degree + 1, seed=seed)
+        coeffs[0] = field.Random(low=1, seed=seed)  # Ensure leading coefficient is non-zero
 
         return Poly(coeffs, field=field)
 
