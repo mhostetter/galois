@@ -82,11 +82,16 @@ def test_random_exceptions():
         galois.Poly.Random(2, field=galois.FieldClass)
     with pytest.raises(ValueError):
         galois.Poly.Random(-1)
+    with pytest.raises(ValueError):
+        galois.Poly.Random(2, seed=-1)
+    with pytest.raises(ValueError):
+        galois.Poly.Random(2, seed=3.14)
 
 
 @pytest.mark.parametrize("field", FIELDS)
-def test_random(field):
-    p = galois.Poly.Random(2, field=field)
+@pytest.mark.parametrize("seed", [None, 42, np.int64(1337), np.ulonglong(27182818284), np.random.default_rng(123456)])
+def test_random(field, seed):
+    p = galois.Poly.Random(2, field=field, seed=seed)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 2
