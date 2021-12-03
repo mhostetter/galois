@@ -296,8 +296,10 @@ class Poly:
         if not degree >= 0:
             raise ValueError(f"Argument `degree` must be non-negative, not {degree}.")
 
-        coeffs = field.Random(degree + 1, seed=seed)
-        coeffs[0] = field.Random(low=1, seed=seed)  # Ensure leading coefficient is non-zero
+        rng = np.random.default_rng(seed)  # Make the seed a PRNG object so it can "step" its state if the below "if" statement is invoked
+        coeffs = field.Random(degree + 1, seed=rng)
+        if coeffs[0] == 0:
+            coeffs[0] = field.Random(low=1, seed=rng)  # Ensure leading coefficient is non-zero
 
         return Poly(coeffs, field=field)
 
