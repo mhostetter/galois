@@ -100,24 +100,22 @@ def test_cant_set_coeffs():
     assert np.array_equal(p.coeffs, coeffs)
 
 
-def test_len_poly():
-    # BinaryPoly
-    GF = galois.GF2
-    coeffs = [1, 0, 0, 0, 0]
-    p = galois.Poly(coeffs, field=GF)
-    assert len(p) == 5
-    p = galois.Poly(coeffs[::-1], field=GF)
-    assert len(p) == 1
-    p = galois.Poly([0, 0, 0], field=GF)
-    assert len(p) == 1
-
+def test_len():
     # DensePoly
     GF = galois.GF(7)
     coeffs = [5, 0, 0, 4, 2, 0, 3]
     p = galois.Poly(coeffs, field=GF)
     assert len(p) == 7
 
+    # BinaryPoly
+    coeffs = [1, 0, 0, 0, 0]
+    p = galois.Poly(coeffs)
+    assert len(p) == 5
+    p = galois.Poly(coeffs[::-1])
+    assert len(p) == 1
+    p = galois.Poly([0, 0, 0])
+    assert len(p) == 1
+
     # SparsePoly
-    GF = galois.GF2
-    p = galois.Poly.String("1+x^1000", field=GF)
+    p = galois.Poly.String("x^1000 + 1")
     assert len(p) == 1001

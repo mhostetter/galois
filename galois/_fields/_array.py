@@ -381,8 +381,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             which represents the field's order :math:`p^m`.
         seed: int, numpy.random.Generator, optional
             Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
-            entropy will be pulled from the OS to be used as the seed. A numpy.random.Generator can also be passed. If so,
-            it is used directly when dtype != np.object_. Its state is used to seed random.seed(), otherwise.
+            entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed. If so,
+            it is used directly when `dtype != np.object_`. Its state is used to seed `random.seed()`, otherwise.
         dtype : numpy.dtype, optional
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
             dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
@@ -394,10 +394,27 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Examples
         --------
+        Generate a random matrix with an unpredictable seed.
+
         .. ipython:: python
 
             GF = galois.GF(31)
             GF.Random((2,5))
+
+        Generate a random array with a specified seed. This produces repeatable outputs.
+
+        .. ipython:: python
+
+            GF.Random(10, seed=123456789)
+            GF.Random(10, seed=123456789)
+
+        Generate a group of random arrays with one global seed.
+
+        .. ipython:: python
+
+            rng = np.random.default_rng(123456789)
+            GF.Random(10, seed=rng)
+            GF.Random(10, seed=rng)
         """
         dtype = cls._get_dtype(dtype)
         high = cls.order if high is None else high

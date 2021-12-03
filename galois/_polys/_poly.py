@@ -250,8 +250,8 @@ class Poly:
             The degree of the polynomial.
         seed: int, numpy.random.Generator, optional
             Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
-            entropy will be pulled from the OS to be used as the seed. A numpy.random.Generator can also be passed. If so,
-            it is used directly when dtype != np.object_. Its state is used to seed random.seed(), otherwise.
+            entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed. If so,
+            it is used directly when `dtype != np.object_`. Its state is used to seed `random.seed()`, otherwise.
         field : galois.FieldClass, optional
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
@@ -268,12 +268,21 @@ class Poly:
 
             galois.Poly.Random(5)
 
-        Construct a random degree-:math:`5` polynomial over :math:`\mathrm{GF}(2^8)`.
+        Construct a random degree-:math:`5` polynomial over :math:`\mathrm{GF}(2^8)` with a given seed. This produces repeatable results.
 
         .. ipython:: python
 
             GF = galois.GF(2**8)
-            galois.Poly.Random(5, seed=123456, field=GF)
+            galois.Poly.Random(5, seed=123456789, field=GF)
+            galois.Poly.Random(5, seed=123456789, field=GF)
+
+        Construct multiple polynomials with one global seed.
+
+        .. ipython:: python
+
+            rng = np.random.default_rng(123456789)
+            galois.Poly.Random(5, seed=rng, field=GF)
+            galois.Poly.Random(5, seed=rng, field=GF)
         """
         if not isinstance(degree, (int, np.integer)):
             raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
