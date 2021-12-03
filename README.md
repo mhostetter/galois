@@ -18,16 +18,6 @@ The new ufuncs are written in Python and then [just-in-time compiled](https://nu
 [Numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit
 calculation (for memory savings).
 
-- [Features](#features)
-- [Roadmap](#roadmap)
-- [Documentation](#documentation)
-- [Installation](#installation)
-- [Versioning](#versioning)
-- [Basic Usage](#basic-usage)
-- [Performance](#performance)
-- [Acknowledgements](#acknowledgements)
-- [Citation](#citation)
-
 ## Features
 
 - Supports all [Galois fields](https://galois.readthedocs.io/en/stable/api/galois-fields.html#) `GF(p^m)`, even arbitrarily-large fields!
