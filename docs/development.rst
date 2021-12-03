@@ -60,4 +60,4 @@ Build the HTML documentation. The index page will be located at `docs/build/inde
 
 .. code-block:: sh
 
-   $ sphinx-build -b html -v docs/build/
+   $ sphinx-build -b html -v docs/ docs/build/
