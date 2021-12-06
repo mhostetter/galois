@@ -119,8 +119,8 @@ class FieldClass(FunctionMeta, UfuncMeta):
               In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
             * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The "jit-calculate" mode is designed for large
               fields that cannot or should not store lookup tables in RAM. Generally, the "jit-calculate" mode is slower than "jit-lookup".
-            * `"python-calculate"`: Uses pure-python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
-              represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with python :obj:`int` (which has arbitrary precision).
+            * `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
+              represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
         """
         if not isinstance(mode, (type(None), str)):
             raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
@@ -290,6 +290,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
         if primitive_element is None:
             primitive_element = cls.primitive_element
 
+        primitive_element = cls(primitive_element)
         degrees = np.arange(0, cls.order - 1)
         x = primitive_element**degrees
         if sort != "power":
@@ -941,16 +942,15 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
 class DirMeta(type):
     """
-    A mixin metaclass that overrides __dir__ so that dir() and tab-completion in ipython of `FieldArray` classes
+    A mixin metaclass that overrides __dir__() so that dir() and tab-completion in ipython of `FieldArray` classes
     (which are `FieldClass` instances) include the methods and properties from the metaclass. Python does not
     natively include metaclass properties in dir().
 
     This is a separate class because it will be mixed in to `GF2Meta`, `GF2mMeta`, `GFpMeta`, and `GFpmMeta` separately. Otherwise, the
     sphinx documentation of `FieldArray` gets messed up.
 
-    Also, to not mess up the sphinx documentation of `GF2`, we had to create a custom sphinx template `class_gf2.rst` that
-    manually includes all the classmethods and methods. This is because there is no way to redefine __dir__ for `GF2` and not have
-    sphinx get confused when using autoclass.
+    Since, `GF2` has this class mixed in, its docs are messed up. Because of that, we added a separate Sphinx template `class_only_init.rst`
+    to suppress all the methods except __init__() so the docs are more presentable.
     """
 
     def __dir__(cls):
@@ -1001,7 +1001,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         GF = galois.GF(7)
         issubclass(GF, galois.FieldArray)
-        x = GF([1,2,3]); x
+        x = GF([1, 2, 3]); x
         isinstance(x, galois.FieldArray)
 
     Notes
@@ -1115,8 +1115,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
             * :obj:`int`: A single integer, which is the "integer representation" of a Galois field element, creates a 0-D array.
             * :obj:`str`: A single string, which is the "polynomial representation" of a Galois field element, creates a 0-D array.
-            * :obj:`tuple`, :obj:`list`: A list or tuple (or nested lists/tuples) of ints or strings (which can be mix-and-matched) creates an array of
-            Galois field elements from their integer or polynomial representations.
+            * :obj:`tuple`, :obj:`list`: A list or tuple (or nested lists/tuples) of ints or strings (which can be mix-and-matched) creates an
+              array of Galois field elements from their integer or polynomial representations.
             * :obj:`numpy.ndarray`, :obj:`galois.FieldArray`: An array of ints creates a copy of the array over this specific field.
 
         dtype : numpy.dtype, optional
@@ -2208,7 +2208,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        Poly
+        galois.Poly
             For scalar inputs, the degree-:math:`m` characteristic polynomial :math:`p_a(x)` of :math:`a` over :math:`\mathrm{GF}(p)`.
             For square :math:`n \times n` matrix inputs, the degree-:math:`n` characteristic polynomial :math:`p_A(x)` of
             :math:`\mathbf{A}` over :math:`\mathrm{GF}(p^m)`.
@@ -2319,7 +2319,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        Poly
+        galois.Poly
             For scalar inputs, the minimal polynomial :math:`p_a(x)` of :math:`a` over :math:`\mathrm{GF}(p)`.
 
         Notes
@@ -2950,7 +2950,7 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
 
     Examples
     --------
-    This class is equivalent (and, in fact, identical) to the class returned from the Galois field class constructor.
+    This class is equivalent (and, in fact, identical) to the class returned from the class factory :func:`galois.GF`.
 
     .. ipython:: python
 
@@ -2974,10 +2974,10 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
     .. ipython:: python
 
         # Construct a Galois field array from an iterable
-        galois.GF2([1,0,1,1,0,0,0,1])
+        galois.GF2([1, 0, 1, 1])
 
         # Or an iterable of iterables
-        galois.GF2([[1,0], [1,1]])
+        galois.GF2([[1, 0], [1, 1]])
 
         # Or a single integer
         galois.GF2(1)
@@ -3695,7 +3695,7 @@ class Poly:
         -------
         galois.FieldArray
             Galois field array of roots of :math:`f(x)`. The roots are ordered in increasing order.
-        np.ndarray
+        numpy.ndarray
             The multiplicity of each root, only returned if `multiplicity=True`.
 
         Notes
@@ -3901,23 +3901,24 @@ class Poly:
 
     def __call__(self, x: FieldArray, field: Optional[FieldClass] = None, elementwise: bool = True) -> FieldArray:
         """
-        Evaluates the polynomial at :math:`x`.
+        Evaluates the polynomial :math:`f(x)` at :math:`x`.
 
         Parameters
         ----------
         x : galois.FieldArray
-            An array (or 0-D scalar) of field elements to evaluate the polynomial over.
+            An array (or 0-D scalar) :math:`x` of field elements to evaluate the polynomial at.
         field : galois.FieldClass, optional
             The Galois field to evaluate the polynomial over. The default is `None` which represents
             the polynomial's current field, i.e. :obj:`field`.
         elementwise : bool, optional
-            Indicates to evaluate arrays elementwise. The default is `True`. If `False`, the polynomial
-            indeterminate is evaluated at the square matrix :math:`X`.
+            Indicates whether to evaluate :math:`x` elementwise. The default is `True`. If `False` (only valid
+            for square matrices), the polynomial indeterminate :math:`x` is exponentiated using matrix powers
+            (repeated matrix multiplication).
 
         Returns
         -------
         galois.FieldArray
-            The result of the polynomial evaluation of the same shape as :math:`x`.
+            The result of the polynomial evaluation :math:`f(x)`. The resulting array has the same shape as `x`.
 
         Examples
         --------

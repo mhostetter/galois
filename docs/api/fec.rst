@@ -1,5 +1,5 @@
-Forward Error Correcting Codes
-==============================
+Forward Error Correction
+========================
 
 This section contains classes and functions for constructing forward error correction codes.
 

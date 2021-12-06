@@ -100,8 +100,8 @@ def GF(
           In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
         * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The "jit-calculate" mode is designed for large
           fields that cannot or should not store lookup tables in RAM. Generally, the "jit-calculate" mode is slower than "jit-lookup".
-        * `"python-calculate"`: Uses pure-python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
-          represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with python :obj:`int` (which has arbitrary precision).
+        * `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
+          represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
 
     display : str, optional
         The field element display representation. This can be modified after class construction with the :func:`galois.FieldClass.display` method.
@@ -160,7 +160,7 @@ def GF(
         GF256_AES = galois.GF(2**8, irreducible_poly=poly)
         print(GF256_AES.properties)
 
-    Very large fields are also supported but they use :obj:`numpy.object_` dtypes with python :obj:`int` and, therefore, do not have compiled ufuncs.
+    Very large fields are also supported but they use :obj:`numpy.object_` dtypes with Python :obj:`int` and, therefore, do not have compiled ufuncs.
 
     .. ipython:: python
 
@@ -714,7 +714,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
 
     Examples
     --------
-    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial, whereas
+    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
     :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
     with smaller Conway polynomials, which is not *necessarily* the same.
 
@@ -930,9 +930,9 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
 
     Notes
     -----
-    A Conway polynomial is a an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a standard
+    A Conway polynomial is an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a standard
     representation of :math:`\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
-    provide compatability between fields and their subfields, and hence are the common way to represent extension
+    provide compatability between fields and their subfields and, hence, are the common way to represent extension
     fields.
 
     The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-minimal monic primitive polynomial
@@ -944,7 +944,7 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
 
     Examples
     --------
-    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial, where
+    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
     :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
     with smaller Conway polynomials, which is not *necessarily* the same.
 

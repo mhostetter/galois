@@ -1,0 +1,20 @@
+/* Set the colors for the light theme */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #344FA1;
+}
+
+/* Set the colors for the dark theme */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #4060C1;
+}
+
+.linenos {
+  background-color: var(--md-default-bg-color--light);
+  margin-right: 0.5rem;
+}
+
+/* code,
+pre,
+kbd {
+  font-feature-settings: "";
+} */

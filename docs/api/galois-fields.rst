@@ -25,7 +25,7 @@ Galois field class creation
 
 .. rubric:: Pre-made Galois field classes
 .. autosummary::
-   :template: class_gf2.rst
+   :template: class_only_init.rst
    :toctree:
 
    GF2
@@ -69,9 +69,3 @@ Extension field functions
    primitive_element
    primitive_elements
    is_primitive_element
-
-.. rubric:: Minimal polynomials
-.. autosummary::
-   :toctree:
-
-   minimal_poly

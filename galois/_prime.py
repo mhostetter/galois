@@ -75,7 +75,7 @@ def primes(n: int) -> List[int]:
 
     # We only need to test integers for compositeness up to sqrt(n) because at that point the
     # integers above sqrt(n) have already been marked by the multiples of earlier primes
-    max_composite = isqrt(n)  # Python 3.8 has math.isqrt(). Use this until the supported python versions are bumped.
+    max_composite = isqrt(n)  # Python 3.8 has math.isqrt(). Use this until the supported Python versions are bumped.
     max_composite_idx = (max_composite - 3)//2
 
     for i in range(0, max_composite_idx + 1):

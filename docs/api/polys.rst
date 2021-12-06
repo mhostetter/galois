@@ -1,5 +1,5 @@
-Polynomials over Galois Fields
-==============================
+Polynomials
+===========
 
 This section contains classes and functions for creating polynomials over Galois fields.
 
@@ -10,7 +10,6 @@ Polynomial classes
 
 .. rubric::
 .. autosummary::
-   :template: class.rst
    :toctree:
 
    Poly

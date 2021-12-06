@@ -1,5 +1,5 @@
-NumPy Examples
-==============
+NumPy Reference
+===============
 
 This section contains examples of some numpy functions when called on Galois field arrays. Many more functions
 are supported, just not explicitly documented here.
@@ -9,7 +9,6 @@ are supported, just not explicitly documented here.
 General
 -------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -20,7 +19,6 @@ General
 Arithmetic
 ----------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -39,7 +37,6 @@ Arithmetic
 Advanced Arithmetic
 -------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -47,7 +44,7 @@ Advanced Arithmetic
 
 Linear Algebra
 --------------
-.. rubric::
+
 .. autosummary::
    :toctree:
 

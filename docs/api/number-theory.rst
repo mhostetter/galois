@@ -16,7 +16,6 @@ Divisibility
    egcd
    lcm
    prod
-   inverse
    euler_phi
    totatives
    are_coprime
@@ -29,7 +28,6 @@ Congruences
    :toctree:
 
    pow
-   order
    crt
    primitive_root
    primitive_roots
