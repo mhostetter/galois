@@ -1,4 +1,4 @@
-# ![Galois: A performant NumPy extension for Galois fields and their applications](https://github.com/mhostetter/galois/blob/master/logo/galois-heading.png)
+# ![Galois: A performant NumPy extension for Galois fields and their applications](https://raw.githubusercontent.com/mhostetter/galois/master/logo/galois-heading.png)
 
 [![PyPI version](https://badge.fury.io/py/galois.svg)](https://badge.fury.io/py/galois)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/galois)](https://pypistats.org/packages/galois)
