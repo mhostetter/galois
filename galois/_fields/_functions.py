@@ -99,7 +99,7 @@ class FunctionMeta(UfuncMeta):
 
     def _function_python(cls, name):
         """
-        Returns a pure-python function using explicit calculation.
+        Returns a pure-Python function using explicit calculation.
         """
         return getattr(cls, f"_{name}_calculate")
 

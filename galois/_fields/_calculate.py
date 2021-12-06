@@ -50,8 +50,8 @@ class CalculateMeta(type):
 
     def _reset_globals(cls):  # pylint: disable=no-self-use
         """
-        Resets the global variables in the GF*Meta metaclass mixins so when the pure-python functions/ufuncs invoke these
-        globals, they reference the correct pure-python functions and not the JIT-compiled functions/ufuncs.
+        Resets the global variables in the GF*Meta metaclass mixins so when the pure-Python functions/ufuncs invoke these
+        globals, they reference the correct pure-Python functions and not the JIT-compiled functions/ufuncs.
         """
         return
 
@@ -104,7 +104,7 @@ class CalculateMeta(type):
 
     def _func_python(cls, name):
         """
-        Returns a pure-python arithmetic function using explicit calculation. This lambda function wraps the arithmetic functions in
+        Returns a pure-Python arithmetic function using explicit calculation. This lambda function wraps the arithmetic functions in
         GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta by passing in the field's characteristic, degree, and irreducible polynomial.
         """
         return getattr(cls, f"_{name}_calculate")
@@ -115,7 +115,7 @@ class CalculateMeta(type):
 
     def _ufunc_python(cls, name):
         """
-        Returns a pure-python arithmetic ufunc using explicit calculation.
+        Returns a pure-Python arithmetic ufunc using explicit calculation.
         """
         function = getattr(cls, f"_{name}_calculate")
 

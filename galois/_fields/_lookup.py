@@ -128,9 +128,9 @@ class LookupMeta(CalculateMeta):
         b = α^n
 
         a + b = α^m + α^n
-            = α^m * (1 + α^(n - m))  # If n is larger, factor out α^m
-            = α^m * α^ZECH_LOG(n - m)
-            = α^(m + ZECH_LOG(n - m))
+              = α^m * (1 + α^(n - m))  # If n is larger, factor out α^m
+              = α^m * α^ZECH_LOG(n - m)
+              = α^(m + ZECH_LOG(n - m))
         """
         if a == 0:
             return b
@@ -159,9 +159,9 @@ class LookupMeta(CalculateMeta):
         a = α^m
 
         -a = -α^m
-        = -1 * α^m
-        = α^e * α^m
-        = α^(e + m)
+           = -1 * α^m
+           = α^e * α^m
+           = α^(e + m)
         """
         if a == 0:
             return 0
@@ -178,10 +178,10 @@ class LookupMeta(CalculateMeta):
         b = α^n
 
         a - b = α^m - α^n
-            = α^m + (-α^n)
-            = α^m + (-1 * α^n)
-            = α^m + (α^e * α^n)
-            = α^m + α^(e + n)
+              = α^m + (-α^n)
+              = α^m + (-1 * α^n)
+              = α^m + (α^e * α^n)
+              = α^m + α^(e + n)
         """
         ORDER = LOG.size
 
@@ -218,7 +218,7 @@ class LookupMeta(CalculateMeta):
         b = α^n
 
         a * b = α^m * α^n
-            = α^(m + n)
+              = α^(m + n)
         """
         if a == 0 or b == 0:
             return 0
@@ -235,10 +235,10 @@ class LookupMeta(CalculateMeta):
         a = α^m
 
         1 / a = 1 / α^m
-            = α^(-m)
-            = 1 * α^(-m)
-            = α^(ORDER - 1) * α^(-m)
-            = α^(ORDER - 1 - m)
+              = α^(-m)
+              = 1 * α^(-m)
+              = α^(ORDER - 1) * α^(-m)
+              = α^(ORDER - 1 - m)
         """
         if a == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
@@ -256,10 +256,10 @@ class LookupMeta(CalculateMeta):
         b = α^n
 
         a / b = α^m / α^n
-            = α^(m - n)
-            = 1 * α^(m - n)
-            = α^(ORDER - 1) * α^(m - n)
-            = α^(ORDER - 1 + m - n)
+              = α^(m - n)
+              = 1 * α^(m - n)
+              = α^(ORDER - 1) * α^(m - n)
+              = α^(ORDER - 1 + m - n)
         """
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
@@ -281,11 +281,11 @@ class LookupMeta(CalculateMeta):
         b in Z
 
         a ** b = α^m ** b
-            = α^(m * b)
-            = α^(m * ((b // (ORDER - 1))*(ORDER - 1) + b % (ORDER - 1)))
-            = α^(m * ((b // (ORDER - 1))*(ORDER - 1)) * α^(m * (b % (ORDER - 1)))
-            = 1 * α^(m * (b % (ORDER - 1)))
-            = α^(m * (b % (ORDER - 1)))
+               = α^(m * b)
+               = α^(m * ((b // (ORDER - 1))*(ORDER - 1) + b % (ORDER - 1)))
+               = α^(m * ((b // (ORDER - 1))*(ORDER - 1)) * α^(m * (b % (ORDER - 1)))
+               = 1 * α^(m * (b % (ORDER - 1)))
+               = α^(m * (b % (ORDER - 1)))
         """
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
@@ -307,7 +307,7 @@ class LookupMeta(CalculateMeta):
         a = α^m
 
         log(beta, α) = log(α^m, α)
-                    = m
+                     = m
         """
         if beta == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")

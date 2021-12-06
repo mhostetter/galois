@@ -1,5 +1,5 @@
-Basic Usage
-===========
+Basic Usage (Old)
+=================
 
 The main idea of the :obj:`galois` package can be summarized as follows. The user creates a "Galois field array class" using `GF = galois.GF(p**m)`.
 A Galois field array class `GF` is a subclass of :obj:`numpy.ndarray` and its constructor `x = GF(array_like)` mimics

@@ -5,7 +5,7 @@ This section contains classes and functions for various transforms using Galois 
 
 .. currentmodule:: galois
 
-Number-theoretic transform (NTT)
+Number-theoretic transform
 --------------------------
 
 .. rubric::
