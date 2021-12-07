@@ -24,3 +24,7 @@ from ._prime import *
 # The primitive polynomial is p(x) = x - alpha, where alpha = 1. Over GF(2), this is equivalent
 # to p(x) = x + 1.
 GF2._irreducible_poly = Poly([1, 1])  # pylint: disable=protected-access
+
+# Setting this private method of `FieldArray` to the function `minimal_poly()` defined in _polys/_functions.py to
+# avoid a circular dependence in _fields/_array.py.
+FieldArray._minimal_poly = minimal_poly

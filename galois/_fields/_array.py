@@ -850,6 +850,66 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         norm = self**((p**m - 1) // (p - 1))
         return subfield(norm)
 
+    def minimal_poly(self):
+        r"""
+        Computes the minimal polynomial of the Galois field element.
+
+        Note
+        ----
+        Only applicable to scalar 0-D arrays.
+
+        Returns
+        -------
+        galois.Poly
+            The minimal polynomial :math:`m_e(x)` over :math:`\mathrm{GF}(p)` of the element :math:`e`.
+
+        Notes
+        -----
+        The *minimal polynomial* of a Galois field element :math:`e \in \mathrm{GF}(p^m)` is the polynomial of
+        minimal degree over :math:`\mathrm{GF}(p)` for which :math:`e` is a root when evaluated in :math:`\mathrm{GF}(p^m)`.
+        Namely, :math:`m_e(x) \in \mathrm{GF}(p)[x] \in \mathrm{GF}(p^m)[x]` and :math:`m_e(e) = 0` over :math:`\mathrm{GF}(p^m)`.
+
+        For an element :math:`e` in a prime field (not extension field), its minimal polynomial is simply :math:`m_e(x) = x - e`.
+
+        See also :func:`galois.minimal_poly`.
+
+        Examples
+        --------
+        The minimal polynomial of the primitive element is the primitive polynomial.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**8)
+            e = GF.primitive_element; e
+            m_e = e.minimal_poly(); m_e
+            # Evaluate m_e(e) in GF(2^8)
+            m_e(e, field=GF)
+
+        Every element of an extension field has a minimal polynomial.
+
+        .. ipython:: python
+
+            e = GF(60); e
+            m_e = e.minimal_poly(); m_e
+            m_e(e, field=GF)
+
+        In prime fields, the minimal polynomial of :math:`e` is simply :math:`m_e(x) = x - e`.
+
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            e = GF(3); e
+            m_e = e.minimal_poly(); m_e
+            m_e(e)
+        """
+        if not self.ndim == 0:
+            raise ValueError(f"Input array must be scalar, not have shape {self.shape}.")
+        return self._minimal_poly()
+
+    def _minimal_poly(self):  # pylint: disable=no-self-use
+        # Will set this method equal to `galois.minimal_poly()` in `galois/__init__.py` to a avoid circular dependence here.
+        return None
+
     ###############################################################################
     # Special methods (redefined to add docstrings)
     ###############################################################################

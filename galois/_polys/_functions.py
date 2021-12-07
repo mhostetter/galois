@@ -50,19 +50,25 @@ def minimal_poly(element):
     Computes the minimal polynomial :math:`m_e(x) \in \mathrm{GF}(p)[x]` of a Galois field
     element :math:`e \in \mathrm{GF}(p^m)`.
 
-    The *minimal polynomial* of a Galois field element :math:`e \in \mathrm{GF}(p^m)` is the polynomial of
-    minimal degree over :math:`\mathrm{GF}(p)` for which :math:`e` is a root when evaluated in :math:`\mathrm{GF}(p^m)`.
-    Namely, :math:`m_e(x) \in \mathrm{GF}(p)[x] \in \mathrm{GF}(p^m)[x]` and :math:`m_e(e) = 0` over :math:`\mathrm{GF}(p^m)`.
-
     Parameters
     ----------
     element : galois.FieldArray
-        Any element :math:`e` of the Galois field :math:`\mathrm{GF}(p^m)`. This must be a 0-D array.
+        Any element :math:`e` of the Galois field :math:`\mathrm{GF}(p^m)`. This must be a scalar 0-D array.
 
     Returns
     -------
     galois.Poly
         The minimal polynomial :math:`m_e(x)` over :math:`\mathrm{GF}(p)` of the element :math:`e`.
+
+    Notes
+    -----
+    The *minimal polynomial* of a Galois field element :math:`e \in \mathrm{GF}(p^m)` is the polynomial of
+    minimal degree over :math:`\mathrm{GF}(p)` for which :math:`e` is a root when evaluated in :math:`\mathrm{GF}(p^m)`.
+    Namely, :math:`m_e(x) \in \mathrm{GF}(p)[x] \in \mathrm{GF}(p^m)[x]` and :math:`m_e(e) = 0` over :math:`\mathrm{GF}(p^m)`.
+
+    For an element :math:`e` in a prime field (not extension field), its minimal polynomial is simply :math:`m_e(x) = x - e`.
+
+    See also :func:`FieldArray.minimal_poly`.
 
     Examples
     --------
