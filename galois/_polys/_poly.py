@@ -88,6 +88,7 @@ class Poly:
         # Compute both the quotient and remainder in one pass
         divmod(a, b)
     """
+    # pylint: disable=too-many-public-methods
 
     # Increase my array priority so numpy will call my __radd__ instead of its own __add__
     __array_priority__ = 100
@@ -97,6 +98,8 @@ class Poly:
             raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
         if not isinstance(field, (type(None), FieldClass)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
+        if not isinstance(order, str):
+            raise TypeError(f"Argument `order` must be a str, not {type(order)}.")
         if isinstance(coeffs, (FieldArray, np.ndarray)) and not coeffs.ndim <= 1:
             raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
         if not order in ["desc", "asc"]:
@@ -572,6 +575,62 @@ class Poly:
     ###############################################################################
     # Methods
     ###############################################################################
+
+    def coefficients(self, size=None, order="desc"):
+        """
+        Returns the polynomial coefficients in the order and size specified.
+
+        Parameters
+        ----------
+        size : int, optional
+            The fixed size of the coefficient array. Zeros will be added for higher-order terms. This value must be
+            at least `degree + 1` or a :obj:`ValueError` will be raised. The default is `None` which corresponds
+            to `degree + 1`.
+
+        order : str, optional
+            The interpretation of the coefficient degrees.
+
+            * `"desc"` (default): The first element returned is the highest degree coefficient.
+            * `"asc"`: The first element returned is the lowest degree coefficient.
+
+        Returns
+        -------
+        galois.FieldArray
+            An array of the polynomial coefficients with length `size`, either in ascending order or descending order.
+
+        Notes
+        -----
+        This accessor is similar to :obj:`coeffs`, but it has more settings. By default, `Poly.coeffs == Poly.coefficients()`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF); p
+            p.coeffs
+            p.coefficients()
+            # Return the coefficients in ascending order
+            p.coefficients(order="asc")
+            # Return the coefficients in ascending order with size 8
+            p.coefficients(8, order="asc")
+        """
+        if not isinstance(size, (type(None), int, np.integer)):
+            raise TypeError(f"Argument `size` must be an integer, not {type(size)}.")
+        if not isinstance(order, str):
+            raise TypeError(f"Argument `order` must be a str, not {type(order)}.")
+        size = len(self) if size is None else size
+        if not size >= len(self):
+            raise ValueError(f"Argument `size` must be at least `degree + 1` which is {len(self)}, not {size}.")
+        if not order in ["desc", "asc"]:
+            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order!r}.")
+
+        coeffs = self.field.Zeros(size)
+        coeffs[-len(self):] = self.coeffs
+        if order == "asc":
+            coeffs = np.flip(coeffs)
+
+        return coeffs
 
     def copy(self):
         """
