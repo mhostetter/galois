@@ -1,10 +1,47 @@
 """
 A pytest module to test various Galois field polynomial operations.
 """
+import pytest
 import numpy as np
 
 import galois
 from galois._polys._poly import DensePoly, BinaryPoly, SparsePoly
+
+
+def test_coefficients_exceptions():
+    GF = galois.GF(7)
+    p = galois.Poly([3, 0, 5, 2], field=GF)
+
+    with pytest.raises(TypeError):
+        p.coefficients(8.0)
+    with pytest.raises(TypeError):
+        p.coefficients(order=1)
+    with pytest.raises(ValueError):
+        p.coefficients(3)
+    with pytest.raises(ValueError):
+        p.coefficients(order="ascending")
+
+
+def test_coefficients():
+    GF = galois.GF(7)
+    p = galois.Poly([3, 0, 5, 2], field=GF)
+    assert np.array_equal(p.coefficients(), p.coeffs)
+
+    coeffs = p.coefficients()
+    assert np.array_equal(coeffs, [3, 0, 5, 2])
+    assert type(coeffs) is GF
+
+    coeffs = p.coefficients(order="asc")
+    assert np.array_equal(coeffs, [2, 5, 0, 3])
+    assert type(coeffs) is GF
+
+    coeffs = p.coefficients(6)
+    assert np.array_equal(coeffs, [0, 0, 3, 0, 5, 2])
+    assert type(coeffs) is GF
+
+    coeffs = p.coefficients(6, order="asc")
+    assert np.array_equal(coeffs, [2, 5, 0, 3, 0, 0])
+    assert type(coeffs) is GF
 
 
 def test_copy():
