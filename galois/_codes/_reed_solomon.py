@@ -337,8 +337,9 @@ class ReedSolomon:
         is defined as :math:`\mathbf{m} = [m_{k-1}, \dots, m_1, m_0] \in \mathrm{GF}(q)^k`, which corresponds to the message
         polynomial :math:`m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0`.
 
-        In decoding, the syndrome vector :math:`s` is computed by :math:`\mathbf{s} = \mathbf{c}\mathbf{H}^T`, where
-        :math:`\mathbf{H}` is the parity-check matrix. The equivalent polynomial operation is :math:`s(x) = c(x)\ \textrm{mod}\ g(x)`.
+        In decoding, the syndrome vector :math:`\mathbf{s}` is computed by :math:`\mathbf{s} = \mathbf{c}\mathbf{H}^T`, where
+        :math:`\mathbf{H}` is the parity-check matrix. The equivalent polynomial operation is the codeword polynomial evaluated
+        at each root of the generator polynomial, i.e. :math:`\mathbf{s} = [c(\alpha^{c}), c(\alpha^{c+1}), \dots, c(\alpha^{c+2t-1})]`.
         A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome is non-zero,
         the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding error locations and values.
 
@@ -627,6 +628,7 @@ def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MU
 
     N = codeword.shape[0]  # The number of codewords
     n = codeword.shape[1]  # The codeword size (could be less than the design n for shortened codes)
+    design_n = CHARACTERISTIC**DEGREE - 1  # The designed codeword size
 
     # The last column of the returned decoded codeword is the number of corrected errors
     dec_codeword = np.zeros((N, n + 1), dtype=dtype)
@@ -643,29 +645,29 @@ def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MU
             # The error-locator polynomial σ(x) = (1 - β1*x)(1 - β2*x)...(1 - βv*x) where βi are the inverse of the roots
             # of σ(x).
 
-            # Compute the error-locator polynomial σ(x) its v-reversal σ(x^-v), since the syndrome is passed in backwards
+            # Compute the error-locator polynomial σ(x)
             sigma = BERLEKAMP_MASSEY(syndrome[i,:], ADD, SUBTRACT, MULTIPLY, RECIPROCAL, *args)
-            sigma_rev = BERLEKAMP_MASSEY(syndrome[i,::-1], ADD, SUBTRACT, MULTIPLY, RECIPROCAL, *args)
-            v = sigma.size - 1  # The number of errors
+            v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
 
             if v > t:
-                dec_codeword[i, -1] = -1
+                dec_codeword[i,-1] = -1
                 continue
 
-            # Compute βi, the roots of σ(x^-v) which are the inverse roots of σ(x)
-            degrees = np.arange(sigma_rev.size - 1, -1, -1)
-            results = POLY_ROOTS(degrees, sigma_rev, primitive_element, ADD, MULTIPLY, POWER, *args)
-            beta = results[0,:]  # The roots of σ(x^-v)
-            error_locations = results[1,:]  # The roots as powers of the primitive element α
+            # Compute βi^-1, the roots of σ(x)
+            degrees = np.arange(sigma.size - 1, -1, -1)
+            results = POLY_ROOTS(degrees, sigma, primitive_element, ADD, MULTIPLY, POWER, *args)
+            beta_inv = results[0,:]  # The roots βi^-1 of σ(x)
+            error_locations_inv = results[1,:]  # The roots βi^-1 as powers of the primitive element α
+            error_locations = -error_locations_inv % design_n  # The error locations as degrees of c(x)
 
             if np.any(error_locations > n - 1):
                 # Indicates there are "errors" in the zero-ed portion of a shortened code, which indicates there are actually
                 # more errors than alleged. Return failure to decode.
-                dec_codeword[i, -1] = -1
+                dec_codeword[i,-1] = -1
                 continue
 
-            if beta.size != v:
-                dec_codeword[i, -1] = -1
+            if beta_inv.size != v:
+                dec_codeword[i,-1] = -1
                 continue
 
             # Compute σ'(x)
@@ -674,17 +676,17 @@ def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MU
                 degree = v - j
                 sigma_prime[j] = MULTIPLY(degree % CHARACTERISTIC, sigma[j], *args)  # Scalar multiplication
 
-            # The error-value evalulator polynomial Z0(x) = S0*σ0 + (S1*σ0 + S0*σ1)*x + (S2*σ0 + S1*σ1 + S0*σ2)*x^2 + ...
+            # The error-value evaluator polynomial Z0(x) = S0*σ0 + (S1*σ0 + S0*σ1)*x + (S2*σ0 + S1*σ1 + S0*σ2)*x^2 + ...
             # with degree v-1
             Z0 = CONVOLVE(sigma[-v:], syndrome[i,0:v][::-1], ADD, MULTIPLY, *args)[-v:]
 
             # The error value δi = -Z0(βi^-1) / σ'(βi^-1)
             for j in range(v):
-                beta_inv = RECIPROCAL(beta[j], *args)
-                Z0_i = POLY_EVAL(Z0, np.array([beta_inv], dtype=dtype), ADD, MULTIPLY, *args)[0]  # NOTE: poly_eval() expects a 1-D array of values
-                sigma_prime_i = POLY_EVAL(sigma_prime, np.array([beta_inv], dtype=dtype), ADD, MULTIPLY, *args)[0]  # NOTE: poly_eval() expects a 1-D array of values
+                Z0_i = POLY_EVAL(Z0, np.array([beta_inv[j]], dtype=dtype), ADD, MULTIPLY, *args)[0]  # NOTE: poly_eval() expects a 1-D array of values
+                sigma_prime_i = POLY_EVAL(sigma_prime, np.array([beta_inv[j]], dtype=dtype), ADD, MULTIPLY, *args)[0]  # NOTE: poly_eval() expects a 1-D array of values
                 delta_i = MULTIPLY(SUBTRACT(0, Z0_i, *args), RECIPROCAL(sigma_prime_i, *args), *args)
                 dec_codeword[i, n - 1 - error_locations[j]] = SUBTRACT(dec_codeword[i, n - 1 - error_locations[j]], delta_i, *args)
-            dec_codeword[i, -1] = v  # The number of corrected errors
+
+            dec_codeword[i,-1] = v  # The number of corrected errors
 
     return dec_codeword
