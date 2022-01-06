@@ -181,11 +181,13 @@ def test_degrees_exceptions():
     with pytest.raises(ValueError):
         galois.Poly.Degrees(np.atleast_2d(degrees), coeffs=coeffs, field=GF)
     with pytest.raises(ValueError):
+        galois.Poly.Degrees([5, 1, 1, 0], coeffs=[1, 2, 2, 1], field=GF)
+    with pytest.raises(ValueError):
+        galois.Poly.Degrees([5, -3, 0], coeffs=coeffs, field=GF)
+    with pytest.raises(ValueError):
         galois.Poly.Degrees(degrees, coeffs=np.atleast_2d(coeffs), field=GF)
     with pytest.raises(ValueError):
         galois.Poly.Degrees([7] + degrees, coeffs=coeffs, field=GF)
-    with pytest.raises(ValueError):
-        galois.Poly.Degrees([5, -3, 0], coeffs=coeffs, field=GF)
 
 
 @pytest.mark.parametrize("field", FIELDS)

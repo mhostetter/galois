@@ -133,12 +133,13 @@ class Poly:
             # Use the field of the coefficients
             field = type(coeffs)
         else:
-            # Convert coefficients to the specified field (or GF2 if unspecified)
+            # Convert coefficients to the specified field (or GF2 if unspecified), taking into
+            # account negative coefficients
             field = GF2 if field is None else field
-            if isinstance(coeffs, np.ndarray):
-                # Ensure coeffs is an iterable
-                coeffs = coeffs.tolist()
-            coeffs = field([int(-field(abs(c))) if c < 0 else c for c in coeffs])
+            coeffs = np.array(coeffs, dtype=field.dtypes[-1])
+            idxs = coeffs < 0
+            coeffs = field(np.abs(coeffs))
+            coeffs[idxs] *= -1
 
         return coeffs, field
 
@@ -451,29 +452,31 @@ class Poly:
             GF = galois.GF(2**8)
             galois.Poly.Degrees([3,1,0], coeffs=[251,73,185], field=GF)
         """
-        coeffs = [1,]*len(degrees) if coeffs is None else coeffs
         if not isinstance(degrees, (list, tuple, np.ndarray)):
             raise TypeError(f"Argument `degrees` must array-like, not {type(degrees)}.")
-        if not isinstance(coeffs, (list, tuple, np.ndarray, FieldArray)):
+        if not isinstance(coeffs, (type(None), list, tuple, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
         if not isinstance(field, (type(None), FieldClass)):
-            raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
-        if isinstance(degrees, (np.ndarray, FieldArray)) and not degrees.ndim <= 1:
-            raise ValueError(f"Argument `degrees` can have dimension at most 1, not {degrees.ndim}.")
-        if isinstance(coeffs, (np.ndarray, FieldArray)) and not coeffs.ndim <= 1:
-            raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
-        if not all(degree >= 0 for degree in degrees):
-            raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
-        if not len(degrees) == len(coeffs):
-            raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {len(degrees)} and {len(coeffs)}.")
+            raise TypeError(f"Argument `field` must be a Galois field array class, not {type(field)}.")
 
-
-        if len(degrees) == 0:
-            degrees = [0]
-            coeffs = [0]
-        dtype = np.int64 if max(degrees) <= np.iinfo(np.int64).max else np.object_
-        degrees = np.array(degrees, dtype=dtype)
+        degrees = np.array(degrees, dtype=np.int64)
+        coeffs = [1,]*len(degrees) if coeffs is None else coeffs
         coeffs, field = cls._convert_coeffs(coeffs, field)
+
+        if not degrees.ndim <= 1:
+            raise ValueError(f"Argument `degrees` can have dimension at most 1, not {degrees.ndim}.")
+        if not degrees.size == np.unique(degrees).size:
+            raise ValueError(f"Argument `degrees` must have unique entries, not {degrees}.")
+        if not np.all(degrees >= 0):
+            raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
+        if not coeffs.ndim <= 1:
+            raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
+        if not degrees.size == coeffs.size:
+            raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {degrees.size} and {coeffs.size}.")
+
+        # No nonzero degrees means it's the zero polynomial
+        if len(degrees) == 0:
+            degrees, coeffs = np.array([0]), field([0])
 
         if field is GF2:
             if len(degrees) < SPARSE_VS_BINARY_POLY_FACTOR*max(degrees):
