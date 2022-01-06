@@ -129,8 +129,8 @@ def square_free_factorization(poly):
 
     # Step 2: Find all remaining factors (their multiplicities are divisible by p)
     if d != one:
-        degrees = [degree // p for degree in d.degrees]
-        coeffs = d.coeffs ** (field.characteristic**(field.degree - 1))  # The inverse Frobenius automorphism of the coefficients
+        degrees = [degree // p for degree in d.nonzero_degrees]
+        coeffs = d.nonzero_coeffs ** (field.characteristic**(field.degree - 1))  # The inverse Frobenius automorphism of the coefficients
         delta = Poly.Degrees(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
         f, m = square_free_factorization(delta)
         factors_.extend(f)
