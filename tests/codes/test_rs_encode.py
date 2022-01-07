@@ -13,19 +13,19 @@ import numpy as np
 import galois
 
 CODES = [
-    (15, 13),  # GF(2^4) with t=1
-    (15, 11),  # GF(2^4) with t=2
-    (15, 9),  # GF(2^4) with t=3
-    (15, 7),  # GF(2^4) with t=4
-    (15, 5),  # GF(2^4) with t=5
-    (15, 3),  # GF(2^4) with t=6
-    (15, 1),  # GF(2^4) with t=7
-    (16, 14),  # GF(17) with t=1
-    (16, 12),  # GF(17) with t=2
-    (16, 10),  # GF(17) with t=3
-    (26, 24),  # GF(3^3) with t=1
-    (26, 22),  # GF(3^3) with t=2
-    (26, 20),  # GF(3^3) with t=3
+    (15, 13, 1),  # GF(2^4) with t=1
+    (15, 11, 2),  # GF(2^4) with t=2
+    (15, 9, 1),  # GF(2^4) with t=3
+    (15, 7, 2),  # GF(2^4) with t=4
+    (15, 5, 1),  # GF(2^4) with t=5
+    (15, 3, 2),  # GF(2^4) with t=6
+    (15, 1, 1),  # GF(2^4) with t=7
+    (16, 14, 2),  # GF(17) with t=1
+    (16, 12, 1),  # GF(17) with t=2
+    (16, 10, 2),  # GF(17) with t=3
+    (26, 24, 1),  # GF(3^3) with t=1
+    (26, 22, 2),  # GF(3^3) with t=2
+    (26, 20, 3),  # GF(3^3) with t=3
 ]
 
 

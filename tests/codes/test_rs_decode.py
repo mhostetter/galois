@@ -9,19 +9,19 @@ import galois
 from .helper import random_errors
 
 CODES = [
-    (15, 13),  # GF(2^4) with t=1
-    (15, 11),  # GF(2^4) with t=2
-    (15, 9),  # GF(2^4) with t=3
-    (15, 7),  # GF(2^4) with t=4
-    (15, 5),  # GF(2^4) with t=5
-    (15, 3),  # GF(2^4) with t=6
-    (15, 1),  # GF(2^4) with t=7
-    (16, 14),  # GF(17) with t=1
-    (16, 12),  # GF(17) with t=2
-    (16, 10),  # GF(17) with t=3
-    (26, 24),  # GF(3^3) with t=1
-    (26, 22),  # GF(3^3) with t=2
-    (26, 20),  # GF(3^3) with t=3
+    (15, 13, 1),  # GF(2^4) with t=1
+    (15, 11, 2),  # GF(2^4) with t=2
+    (15, 9, 1),  # GF(2^4) with t=3
+    (15, 7, 2),  # GF(2^4) with t=4
+    (15, 5, 1),  # GF(2^4) with t=5
+    (15, 3, 2),  # GF(2^4) with t=6
+    (15, 1, 1),  # GF(2^4) with t=7
+    (16, 14, 2),  # GF(17) with t=1
+    (16, 12, 1),  # GF(17) with t=2
+    (16, 10, 2),  # GF(17) with t=3
+    (26, 24, 1),  # GF(3^3) with t=1
+    (26, 22, 2),  # GF(3^3) with t=2
+    (26, 20, 3),  # GF(3^3) with t=3
 ]
 
 
@@ -48,9 +48,9 @@ def test_exceptions():
 class TestSystematic:
     @pytest.mark.parametrize("size", CODES)
     def test_all_correctable(self, size):
-        n, k = size[0], size[1]
+        n, k, c = size[0], size[1], size[2]
         N = 100
-        rs = galois.ReedSolomon(n, k)
+        rs = galois.ReedSolomon(n, k, c=c)
         GF = rs.field
         M = GF.Random((N, k))
         C = rs.encode(M)
@@ -77,9 +77,9 @@ class TestSystematic:
 
     @pytest.mark.parametrize("size", CODES)
     def test_some_uncorrectable(self, size):
-        n, k = size[0], size[1]
+        n, k, c = size[0], size[1], size[2]
         N = 100
-        rs = galois.ReedSolomon(n, k)
+        rs = galois.ReedSolomon(n, k, c=c)
         GF = rs.field
         M = GF.Random((N, k))
         C = rs.encode(M)
@@ -110,13 +110,13 @@ class TestSystematic:
 class TestSystematicShortened:
     @pytest.mark.parametrize("size", CODES)
     def test_all_correctable(self, size):
-        n, k = size[0], size[1]
+        n, k, c = size[0], size[1], size[2]
         if k == 1:
             return
         ks = k // 2  # Shorten the code in half
         ns = n - (k - ks)
         N = 100
-        rs = galois.ReedSolomon(n, k)
+        rs = galois.ReedSolomon(n, k, c=c)
         GF = rs.field
         M = GF.Random((N, ks))
         C = rs.encode(M)
@@ -143,13 +143,13 @@ class TestSystematicShortened:
 
     @pytest.mark.parametrize("size", CODES)
     def test_some_uncorrectable(self, size):
-        n, k = size[0], size[1]
+        n, k, c = size[0], size[1], size[2]
         if k == 1:
             return
         ks = k // 2  # Shorten the code in half
         ns = n - (k - ks)
         N = 100
-        rs = galois.ReedSolomon(n, k)
+        rs = galois.ReedSolomon(n, k, c=c)
         GF = rs.field
         M = GF.Random((N, ks))
         C = rs.encode(M)
@@ -180,9 +180,9 @@ class TestSystematicShortened:
 class TestNonSystematic:
     @pytest.mark.parametrize("size", CODES)
     def test_all_correctable(self, size):
-        n, k = size[0], size[1]
+        n, k, c = size[0], size[1], size[2]
         N = 100
-        rs = galois.ReedSolomon(n, k, systematic=False)
+        rs = galois.ReedSolomon(n, k, c=c, systematic=False)
         GF = rs.field
         M = GF.Random((N, k))
         C = rs.encode(M)
@@ -209,9 +209,9 @@ class TestNonSystematic:
 
     @pytest.mark.parametrize("size", CODES)
     def test_some_uncorrectable(self, size):
-        n, k = size[0], size[1]
+        n, k, c = size[0], size[1], size[2]
         N = 100
-        rs = galois.ReedSolomon(n, k, systematic=False)
+        rs = galois.ReedSolomon(n, k, c=c, systematic=False)
         GF = rs.field
         M = GF.Random((N, k))
         C = rs.encode(M)
