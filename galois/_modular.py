@@ -1,4 +1,5 @@
 import math
+from typing import List, Optional
 
 import numpy as np
 
@@ -13,7 +14,7 @@ __all__ = [
 
 
 @set_module("galois")
-def totatives(n):
+def totatives(n: int) -> List[int]:
     r"""
     Returns the positive integers (totatives) in :math:`[1, n]` that are coprime to :math:`n`.
 
@@ -55,7 +56,7 @@ def totatives(n):
 
 
 @set_module("galois")
-def euler_phi(n):
+def euler_phi(n: int) -> int:
     r"""
     Counts the positive integers (totatives) in :math:`[1, n]` that are coprime to :math:`n`.
 
@@ -116,7 +117,7 @@ def euler_phi(n):
 
 
 @set_module("galois")
-def carmichael_lambda(n):
+def carmichael_lambda(n: int) -> int:
     r"""
     Finds the smallest positive integer :math:`m` such that :math:`a^m \equiv 1\ (\textrm{mod}\ n)` for
     every integer :math:`a` in :math:`[1, n]` that is coprime to :math:`n`.
@@ -201,7 +202,7 @@ def carmichael_lambda(n):
 
 
 @set_module("galois")
-def is_cyclic(n):
+def is_cyclic(n: int) -> bool:
     r"""
     Determines whether the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic.
 
@@ -330,7 +331,7 @@ def is_cyclic(n):
 
 
 @set_module("galois")
-def is_primitive_root(g, n):
+def is_primitive_root(g: int, n: int) -> bool:
     r"""
     Determines if :math:`g` is a primitive root modulo :math:`n`.
 
@@ -383,7 +384,7 @@ def is_primitive_root(g, n):
 
 
 @set_module("galois")
-def primitive_root(n, start=1, stop=None, reverse=False):
+def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, reverse: bool = False) -> Optional[int]:
     r"""
     Finds the smallest primitive root modulo :math:`n`.
 
@@ -402,7 +403,7 @@ def primitive_root(n, start=1, stop=None, reverse=False):
 
     Returns
     -------
-    int
+    None, int
         The smallest primitive root modulo :math:`n`. Returns `None` if no primitive roots exist.
 
     Notes
@@ -497,7 +498,7 @@ def primitive_root(n, start=1, stop=None, reverse=False):
 
 
 @set_module("galois")
-def primitive_roots(n, start=1, stop=None, reverse=False):
+def primitive_roots(n: int, start: int = 1, stop: Optional[int] = None, reverse: bool = False) -> List[int]:
     r"""
     Finds all primitive roots modulo :math:`n`.
 

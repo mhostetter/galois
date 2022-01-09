@@ -1,6 +1,7 @@
 import bisect
 import math
 import random
+from typing import List, Optional
 
 import numpy as np
 
@@ -23,7 +24,7 @@ MAX_N = 10  # The max value for which all primes <= N are contained in the looku
 ###############################################################################
 
 @set_module("galois")
-def primes(n):
+def primes(n: int) -> List[int]:
     r"""
     Returns all primes :math:`p` for :math:`p \le n`.
 
@@ -101,7 +102,7 @@ MAX_N = 10_000_000
 
 
 @set_module("galois")
-def kth_prime(k):
+def kth_prime(k: int) -> int:
     r"""
     Returns the :math:`k`-th prime.
 
@@ -132,7 +133,7 @@ def kth_prime(k):
 
 
 @set_module("galois")
-def prev_prime(n):
+def prev_prime(n: int) -> Optional[int]:
     r"""
     Returns the nearest prime :math:`p`, such that :math:`p \le n`.
 
@@ -143,7 +144,7 @@ def prev_prime(n):
 
     Returns
     -------
-    int
+    None, int
         The nearest prime :math:`p \le n`. If :math:`n < 2`, the function returns `None`.
 
     Examples
@@ -158,11 +159,14 @@ def prev_prime(n):
     if not n <= MAX_N:
         raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_N}.")
 
-    return PRIMES[bisect.bisect_right(PRIMES, n) - 1] if n >= 2 else None
+    if n < 2:
+        return None
+
+    return PRIMES[bisect.bisect_right(PRIMES, n) - 1]
 
 
 @set_module("galois")
-def next_prime(n):
+def next_prime(n: int) -> int:
     r"""
     Returns the nearest prime :math:`p`, such that :math:`p > n`.
 
@@ -192,7 +196,7 @@ def next_prime(n):
 
 
 @set_module("galois")
-def random_prime(bits):
+def random_prime(bits: int) -> int:
     r"""
     Returns a random prime :math:`p` with :math:`b` bits, such that :math:`2^b \le p < 2^{b+1}`.
 
@@ -247,7 +251,7 @@ MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3
 
 
 @set_module("galois")
-def mersenne_exponents(n=None):
+def mersenne_exponents(n: Optional[int] = None) -> List[int]:
     r"""
     Returns all known Mersenne exponents :math:`e` for :math:`e \le n`.
 
@@ -289,7 +293,7 @@ def mersenne_exponents(n=None):
 
 
 @set_module("galois")
-def mersenne_primes(n=None):
+def mersenne_primes(n: Optional[int] = None) -> List[int]:
     r"""
     Returns all known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
 
@@ -325,7 +329,7 @@ def mersenne_primes(n=None):
 ###############################################################################
 
 @set_module("galois")
-def is_prime(n):
+def is_prime(n: int) -> bool:
     r"""
     Determines if :math:`n` is prime.
 
@@ -386,7 +390,7 @@ def is_prime(n):
 
 
 @set_module("galois")
-def is_composite(n):
+def is_composite(n: int) -> bool:
     r"""
     Determines if :math:`n` is composite.
 
@@ -419,7 +423,7 @@ def is_composite(n):
 
 
 @set_module("galois")
-def fermat_primality_test(n, a=None, rounds=1):
+def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> bool:
     r"""
     Determines if :math:`n` is composite using Fermat's primality test.
 
@@ -517,7 +521,7 @@ def fermat_primality_test(n, a=None, rounds=1):
 
 
 @set_module("galois")
-def miller_rabin_primality_test(n, a=2, rounds=1):
+def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
     r"""
     Determines if :math:`n` is composite using the Miller-Rabin primality test.
 
@@ -526,7 +530,7 @@ def miller_rabin_primality_test(n, a=2, rounds=1):
     n : int
         An odd integer :math:`n \ge 3`.
     a : int, optional
-        An integer in :math:`2 \le a \le n - 2`. The default is `2`.
+        An integer in :math:`2 \le a \le n - 2`. The default is 2.
     rounds : int, optional
         The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
         consecutive primes for :math:`a`.
@@ -584,7 +588,7 @@ def miller_rabin_primality_test(n, a=2, rounds=1):
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(a, (type(None), int, np.integer)):
+    if not isinstance(a, (int, np.integer)):
         raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
     if not isinstance(rounds, (int, np.integer)):
         raise TypeError(f"Argument `rounds` must be an integer, not {type(rounds)}.")
