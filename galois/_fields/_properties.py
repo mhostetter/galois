@@ -2,6 +2,7 @@
 A module that contains a metaclass mixin that provides Galois field class properties.
 """
 import math
+from typing import List
 
 import numpy as np
 
@@ -62,7 +63,7 @@ class PropertiesMeta(type):
     ###############################################################################
 
     @property
-    def name(cls):
+    def name(cls) -> str:
         """
         str: The Galois field name.
 
@@ -81,7 +82,7 @@ class PropertiesMeta(type):
             return f"GF({cls._characteristic}^{cls._degree})"
 
     @property
-    def characteristic(cls):
+    def characteristic(cls) -> int:
         r"""
         int: The prime characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)`. Adding
         :math:`p` copies of any element will always result in :math:`0`.
@@ -107,7 +108,7 @@ class PropertiesMeta(type):
         return cls._characteristic
 
     @property
-    def degree(cls):
+    def degree(cls) -> int:
         r"""
         int: The prime characteristic's degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)`. The degree
         is a positive integer.
@@ -124,7 +125,7 @@ class PropertiesMeta(type):
         return cls._degree
 
     @property
-    def order(cls):
+    def order(cls) -> int:
         r"""
         int: The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`. The order of the field is also equal to
         the field's size.
@@ -141,7 +142,7 @@ class PropertiesMeta(type):
         return cls._order
 
     @property
-    def irreducible_poly(cls):
+    def irreducible_poly(cls) -> "Poly":
         r"""
         galois.Poly: The irreducible polynomial :math:`f(x)` of the Galois field :math:`\mathrm{GF}(p^m)`. The irreducible
         polynomial is of degree :math:`m` over :math:`\mathrm{GF}(p)`.
@@ -157,10 +158,9 @@ class PropertiesMeta(type):
         """
         # Ensure accesses of this property don't alter it
         return cls._irreducible_poly.copy()
-        # return Poly(cls._irreducible_poly, field=cls.prime_subfield)
 
     @property
-    def is_primitive_poly(cls):
+    def is_primitive_poly(cls) -> bool:
         r"""
         bool: Indicates whether the :obj:`irreducible_poly` is a primitive polynomial. If so, :math:`x` is a primitive element
         of the Galois field.
@@ -196,7 +196,7 @@ class PropertiesMeta(type):
         return cls._is_primitive_poly
 
     @property
-    def primitive_element(cls):
+    def primitive_element(cls) -> "FieldArray":
         r"""
         galois.FieldArray: A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
@@ -216,8 +216,9 @@ class PropertiesMeta(type):
         # Ensure accesses of this property doesn't alter it
         return cls(cls._primitive_element)  # pylint: disable=no-value-for-parameter
 
+    # TODO: How to annotate this with "-> FieldArray"?
     @property
-    def primitive_elements(cls):
+    def primitive_elements(cls) -> "FieldArray":
         r"""
         galois.FieldArray: All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
@@ -237,7 +238,7 @@ class PropertiesMeta(type):
         return np.sort(cls.primitive_element ** powers)
 
     @property
-    def is_prime_field(cls):
+    def is_prime_field(cls) -> bool:
         """
         bool: Indicates if the field's order is prime.
 
@@ -253,7 +254,7 @@ class PropertiesMeta(type):
         return cls._degree == 1
 
     @property
-    def is_extension_field(cls):
+    def is_extension_field(cls) -> bool:
         """
         bool: Indicates if the field's order is a prime power.
 
@@ -269,7 +270,7 @@ class PropertiesMeta(type):
         return cls._degree > 1
 
     @property
-    def prime_subfield(cls):
+    def prime_subfield(cls) -> "FieldClass":
         r"""
         galois.FieldClass: The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
 
@@ -285,7 +286,7 @@ class PropertiesMeta(type):
         return cls._prime_subfield
 
     @property
-    def dtypes(cls):
+    def dtypes(cls) -> List[np.dtype]:
         """
         list: List of valid integer :obj:`numpy.dtype` values that are compatible with this Galois field. Creating an array with an
         unsupported dtype will throw a `TypeError` exception.
@@ -309,7 +310,7 @@ class PropertiesMeta(type):
         return cls._dtypes
 
     @property
-    def display_mode(cls):
+    def display_mode(cls) -> str:
         r"""
         str: The representation of Galois field elements, either `"int"`, `"poly"`, or `"power"`. This can be
         changed with :func:`display`.
@@ -361,7 +362,7 @@ class PropertiesMeta(type):
         return cls._display_mode
 
     @property
-    def ufunc_mode(cls):
+    def ufunc_mode(cls) -> str:
         """
         str: The mode for ufunc compilation, either `"jit-lookup"`, `"jit-calculate"`, or `"python-calculate"`.
 
@@ -377,7 +378,7 @@ class PropertiesMeta(type):
         return cls._ufunc_mode
 
     @property
-    def ufunc_modes(cls):
+    def ufunc_modes(cls) -> List[str]:
         """
         list: All supported ufunc modes for this Galois field array class.
 
@@ -396,7 +397,7 @@ class PropertiesMeta(type):
             return ["jit-lookup", "jit-calculate"]
 
     @property
-    def default_ufunc_mode(cls):
+    def default_ufunc_mode(cls) -> str:
         """
         str: The default ufunc arithmetic mode for this Galois field.
 
@@ -417,7 +418,7 @@ class PropertiesMeta(type):
             return "jit-calculate"
 
     @property
-    def properties(cls):
+    def properties(cls) -> str:
         """
         str: A formatted string displaying relevant properties of the Galois field.
 

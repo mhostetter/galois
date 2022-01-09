@@ -2,6 +2,8 @@
 A module that contains a metaclass whose instances are Galois field array classes.
 """
 import inspect
+from typing import Optional, Union
+from typing_extensions import Literal
 
 import numpy as np
 
@@ -48,7 +50,7 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
     # Class methods
     ###############################################################################
 
-    def compile(cls, mode):
+    def compile(cls, mode: str):
         """
         Recompile the just-in-time compiled numba ufuncs for a new calculation mode.
 
@@ -83,7 +85,10 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
         cls._ufunc_mode = mode
         cls._compile_ufuncs()
 
-    def display(cls, mode="int"):
+    def display(
+        cls,
+        mode: Literal["int", "poly", "power"] = "int"
+    ) -> "DisplayContext":
         r"""
         Sets the display mode for all Galois field arrays of this type.
 
@@ -106,6 +111,12 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
               of :math:`\mathrm{GF}(3^3)`.
             * `"power"`: The element as a power of the primitive element, see :obj:`FieldClass.primitive_element`. For example, :math:`2x^2 + x + 2 = \alpha^5`
               in :math:`\mathrm{GF}(3^3)` with irreducible polynomial :math:`x^3 + 2x + 1` and primitive element :math:`\alpha = x`.
+
+        Returns
+        -------
+        DisplayContext
+            A context manager for use in a `with` statement. If permanently setting the display mode, disregard the
+            return value.
 
         Examples
         --------
@@ -168,15 +179,19 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
 
         return context
 
-    def repr_table(cls, primitive_element=None, sort="power"):
+    def repr_table(
+        cls,
+        primitive_element: Optional[Union[int, str, np.ndarray, "FieldArray"]] = None,
+        sort: Literal["power", "poly", "vector", "int"] = "power"
+    ) -> str:
         r"""
         Generates a field element representation table comparing the power, polynomial, vector, and integer representations.
 
         Parameters
         ----------
-        primitive_element : galois.FieldArray, optional
+        primitive_element : int, str, np.ndarray, galois.FieldArray, optional
             The primitive element to use for the power representation. The default is `None` which uses the field's
-            default primitive element, :obj:`primitive_element`.
+            default primitive element, :obj:`primitive_element`. If an array, it must be a 0-D array.
         sort : str, optional
             The sorting method for the table, either `"power"` (default), `"poly"`, `"vector"`, or `"int"`. Sorting by "power" will order
             the rows of the table by ascending powers of the primitive element. Sorting by any of the others will order the rows in
@@ -262,7 +277,12 @@ class FieldClass(FunctionMeta, UfuncMeta, PropertiesMeta):
 
         return string
 
-    def arithmetic_table(cls, operation, x=None, y=None):
+    def arithmetic_table(
+        cls,
+        operation: Literal["+", "-", "*", "/"],
+        x: Optional["FieldArray"] = None,
+        y: Optional["FieldArray"] = None
+    ) -> str:
         r"""
         Generates the specified arithmetic table for the Galois field.
 
