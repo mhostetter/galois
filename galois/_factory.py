@@ -4,12 +4,14 @@ and Conway polynomials. They are included here due to a circular dependence with
 """
 import random
 import types
+from typing import Tuple, List, Optional, Union, Type
+from typing_extensions import Literal
 
 import numpy as np
 
 from ._databases import ConwayPolyDatabase
 from ._factor import factors, is_prime_power
-from ._fields import FieldArray, GF2
+from ._fields import FieldArray, FieldClass, GF2
 from ._fields._gfp import GFpMeta
 from ._fields._gf2m import GF2mMeta
 from ._fields._gfpm import GFpmMeta
@@ -26,13 +28,22 @@ __all__ = [
     "primitive_element", "primitive_elements", "is_primitive_element",
 ]
 
+PolyLike = Union[int, str, Tuple[int], List[int], np.ndarray, FieldArray, Poly]
+
 
 ###############################################################################
 # Construct Galois field array classes
 ###############################################################################
 
 @set_module("galois")
-def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compile=None, display=None):
+def GF(
+    order: int,
+    irreducible_poly: Optional[PolyLike] = None,
+    primitive_element: Optional[PolyLike] = None,
+    verify: bool = True,
+    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
+    display: Optional[Literal["int", "poly", "power"]] = None
+) -> Type[FieldArray]:
     r"""
     Factory function to construct a Galois field array class for :math:`\mathrm{GF}(p^m)`.
 
@@ -213,7 +224,14 @@ def GF(order, irreducible_poly=None, primitive_element=None, verify=True, compil
 
 
 @set_module("galois")
-def Field(order, irreducible_poly=None, primitive_element=None, verify=True, compile=None, display=None):
+def Field(
+    order: int,
+    irreducible_poly: Optional[PolyLike] = None,
+    primitive_element: Optional[PolyLike] = None,
+    verify: bool = True,
+    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
+    display: Optional[Literal["int", "poly", "power"]] = None
+) -> FieldClass:
     """
     Alias of :func:`galois.GF`.
     """

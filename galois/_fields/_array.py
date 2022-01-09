@@ -2,6 +2,8 @@
 A module that contains a ndarray subclass for Galois field arrays.
 """
 import random
+from typing import Tuple, Iterable, Optional, Union
+from typing_extensions import Literal
 
 import numpy as np
 
@@ -112,12 +114,26 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     """
     # pylint: disable=unsupported-membership-test,not-an-iterable
 
-    def __new__(cls, array, dtype=None, copy=True, order="K", ndmin=0):
+    def __new__(
+        cls,
+        array: Union[int, str, Iterable, np.ndarray, "FieldArray"],
+        dtype: Optional[Union[np.dtype, int, object]] = None,
+        copy: bool = True,
+        order: Literal["K", "A", "C", "F"] = "K",
+        ndmin: int = 0
+    ) -> "FieldArray":
         if cls is FieldArray:
             raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
         return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
-    def __init__(self, array, dtype=None, copy=True, order="K", ndmin=0):
+    def __init__(
+        self,
+        array: Union[int, str, Iterable, np.ndarray, "FieldArray"],
+        dtype: Optional[Union[np.dtype, int, object]] = None,
+        copy: bool = True,
+        order: Literal["K", "A", "C", "F"] = "K",
+        ndmin: int = 0
+    ):
         r"""
         Creates an array over :math:`\mathrm{GF}(p^m)`.
 
@@ -267,7 +283,11 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     ###############################################################################
 
     @classmethod
-    def Zeros(cls, shape, dtype=None):
+    def Zeros(
+        cls,
+        shape: Union[int, Tuple[()], Tuple[int]],
+        dtype: Optional[Union[np.dtype, int, object]] = None
+    ) -> "FieldArray":
         """
         Creates a Galois field array with all zeros.
 
@@ -298,7 +318,11 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return array.view(cls)
 
     @classmethod
-    def Ones(cls, shape, dtype=None):
+    def Ones(
+        cls,
+        shape: Union[int, Tuple[()], Tuple[int]],
+        dtype: Optional[Union[np.dtype, int, object]] = None
+    ) -> "FieldArray":
         """
         Creates a Galois field array with all ones.
 
@@ -329,7 +353,13 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return array.view(cls)
 
     @classmethod
-    def Range(cls, start, stop, step=1, dtype=None):
+    def Range(
+        cls,
+        start: int,
+        stop: int,
+        step: Optional[int] = 1,
+        dtype: Optional[Union[np.dtype, int, object]] = None
+    ) -> "FieldArray":
         """
         Creates a 1-D Galois field array with a range of field elements.
 
@@ -364,7 +394,14 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return array.view(cls)
 
     @classmethod
-    def Random(cls, shape=(), low=0, high=None, seed=None, dtype=None):
+    def Random(
+        cls,
+        shape: Union[int, Tuple[()], Tuple[int]] = (),
+        low: Optional[int] = 0,
+        high: Optional[int] = None,
+        seed: Optional[Union[int, np.random.Generator]] = None,
+        dtype: Optional[Union[np.dtype, int, object]] = None
+    ) -> "FieldArray":
         """
         Creates a Galois field array with random field elements.
 
@@ -450,7 +487,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return array.view(cls)
 
     @classmethod
-    def Elements(cls, dtype=None):
+    def Elements(
+        cls,
+        dtype: Optional[Union[np.dtype, int, object]] = None
+    ) -> "FieldArray":
         r"""
         Creates a 1-D Galois field array of the field's elements :math:`\{0, \dots, p^m-1\}`.
 
@@ -489,7 +529,11 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return cls.Range(0, cls.order, step=1, dtype=dtype)
 
     @classmethod
-    def Identity(cls, size, dtype=None):
+    def Identity(
+        cls,
+        size: int,
+        dtype: Optional[Union[np.dtype, int, object]] = None
+    ) -> "FieldArray":
         r"""
         Creates an :math:`n \times n` Galois field identity matrix.
 
@@ -518,7 +562,13 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return array.view(cls)
 
     @classmethod
-    def Vandermonde(cls, a, m, n, dtype=None):
+    def Vandermonde(
+        cls,
+        a: Union[int, "FieldArray"],
+        m: int,
+        n: int,
+        dtype: Optional[Union[np.dtype, int, object]] = None
+    ) -> "FieldArray":
         r"""
         Creates an :math:`m \times n` Vandermonde matrix of :math:`a \in \mathrm{GF}(p^m)`.
 
@@ -571,7 +621,11 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return V
 
     @classmethod
-    def Vector(cls, array, dtype=None):
+    def Vector(
+        cls,
+        array: Union[Iterable, np.ndarray, "FieldArray"],
+        dtype: Optional[Union[np.dtype, int, object]] = None
+    ) -> "FieldArray":
         r"""
         Creates a Galois field array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
@@ -616,7 +670,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     # Instance methods
     ###############################################################################
 
-    def vector(self, dtype=None):
+    def vector(
+        self,
+        dtype: Optional[Union[np.dtype, int, object]] = None
+    ) -> "FieldArray":
         r"""
         Converts the Galois field array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
@@ -656,7 +713,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             x += q*order**(degree - 1 - i)
         return type(self).prime_subfield(array, dtype=dtype)  # pylint: disable=unexpected-keyword-arg
 
-    def row_reduce(self, ncols=None):
+    def row_reduce(
+        self,
+        ncols: Optional[int] = None
+    ) -> "FieldArray":
         r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form.
 
@@ -708,7 +768,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         return row_reduce(self, ncols=ncols)
 
-    def lu_decompose(self):
+    def lu_decompose(self) -> "FieldArray":
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices.
 
@@ -736,7 +796,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         return lu_decompose(self)
 
-    def lup_decompose(self):
+    def lup_decompose(self) -> "FieldArray":
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
 
@@ -765,7 +825,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         return lup_decompose(self)
 
-    def field_trace(self):
+    def field_trace(self) -> "FieldArray":
         r"""
         Computes the field trace :math:`\mathrm{Tr}_{L / K}(x)` of the elements of :math:`x`.
 
@@ -808,7 +868,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         trace = np.add.reduce(conjugates, axis=-1)
         return subfield(trace)
 
-    def field_norm(self):
+    def field_norm(self) -> "FieldArray":
         r"""
         Computes the field norm :math:`\mathrm{N}_{L / K}(x)` of the elements of :math:`x`.
 
