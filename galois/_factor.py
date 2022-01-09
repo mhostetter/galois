@@ -6,6 +6,7 @@ import functools
 import itertools
 import math
 import random
+from typing import Tuple, List, Optional
 
 import numpy as np
 
@@ -26,7 +27,7 @@ __all__ = [
 ###############################################################################
 
 @set_module("galois")
-def legendre_symbol(a, p):
+def legendre_symbol(a: int, p: int) -> int:
     r"""
     Computes the Legendre symbol :math:`(\frac{a}{p})`.
 
@@ -85,7 +86,7 @@ def legendre_symbol(a, p):
 
 
 @set_module("galois")
-def jacobi_symbol(a, n):
+def jacobi_symbol(a: int, n: int) -> int:
     r"""
     Computes the Jacobi symbol :math:`(\frac{a}{n})`.
 
@@ -161,7 +162,7 @@ def jacobi_symbol(a, n):
 
 
 @set_module("galois")
-def kronecker_symbol(a, n):
+def kronecker_symbol(a: int, n: int) -> int:
     r"""
     Computes the Kronecker symbol :math:`(\frac{a}{n})`.
 
@@ -224,7 +225,7 @@ def kronecker_symbol(a, n):
 ###############################################################################
 
 @functools.lru_cache(maxsize=2048)
-def factors(n):
+def factors(n: int) -> Tuple[List[int], List[int]]:
     """
     This function is wrapped and documented in `_polymorphic.factors()`.
     """
@@ -272,7 +273,7 @@ def factors(n):
 
 @set_module("galois")
 @functools.lru_cache(maxsize=512)
-def perfect_power(n):
+def perfect_power(n: int) -> Optional[Tuple[int, int]]:
     r"""
     Returns the integer base :math:`c > 1` and exponent :math:`e > 1` of :math:`n = c^e` if :math:`n` is a perfect power.
 
@@ -326,7 +327,7 @@ def perfect_power(n):
 
 
 @set_module("galois")
-def trial_division(n, B=None):
+def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int], int]:
     r"""
     Finds all the prime factors :math:`p_i^{e_i}` of :math:`n` for :math:`p_i \le B`.
 
@@ -390,7 +391,7 @@ def trial_division(n, B=None):
 
 
 @set_module("galois")
-def pollard_p1(n, B, B2=None):
+def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> Optional[int]:
     r"""
     Attempts to find a non-trivial factor of :math:`n` if it has a prime factor :math:`p` such that
     :math:`p-1` is :math:`B`-smooth.
@@ -511,7 +512,7 @@ def pollard_p1(n, B, B2=None):
 
 
 # @functools.lru_cache(maxsize=1024)
-def pollard_rho(n, c=1):
+def pollard_rho(n: int, c: int = 1) -> Optional[int]:
     r"""
     Attempts to find a non-trivial factor of :math:`n` using cycle detection.
 
@@ -593,7 +594,7 @@ def pollard_rho(n, c=1):
 ###############################################################################
 
 @set_module("galois")
-def divisors(n):
+def divisors(n: int) -> List[int]:
     r"""
     Computes all positive integer divisors :math:`d` of the integer :math:`n` such that :math:`d\ |\ n`.
 
@@ -656,7 +657,7 @@ def divisors(n):
 
 
 @set_module("galois")
-def divisor_sigma(n, k=1):
+def divisor_sigma(n: int, k: int = 1) -> int:
     r"""
     Returns the sum of :math:`k`-th powers of the positive divisors of :math:`n`.
 
@@ -704,7 +705,7 @@ def divisor_sigma(n, k=1):
 ###############################################################################
 
 @set_module("galois")
-def is_prime_power(n):
+def is_prime_power(n: int) -> bool:
     r"""
     Determines if :math:`n` is a prime power :math:`n = p^k` for prime :math:`p` and :math:`k \ge 1`.
 
@@ -751,7 +752,7 @@ def is_prime_power(n):
 
 
 @set_module("galois")
-def is_perfect_power(n):
+def is_perfect_power(n: int) -> bool:
     r"""
     Determines if :math:`n` is a perfect power :math:`n = x^k` for :math:`x > 0` and :math:`k \ge 2`.
 
@@ -787,7 +788,10 @@ def is_perfect_power(n):
     return False
 
 
-def is_square_free(n):
+def is_square_free(n: int) -> bool:
+    """
+    This function is wrapped and documented in `_polymorphic.is_square_free()`.
+    """
     if not n > 0:
         raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
@@ -800,7 +804,7 @@ def is_square_free(n):
 
 
 @set_module("galois")
-def is_smooth(n, B):
+def is_smooth(n: int, B: int) -> bool:
     r"""
     Determines if the positive integer :math:`n` is :math:`B`-smooth.
 
@@ -857,7 +861,7 @@ def is_smooth(n, B):
 
 
 @set_module("galois")
-def is_powersmooth(n, B):
+def is_powersmooth(n: int, B: int) -> bool:
     r"""
     Determines if the positive integer :math:`n` is :math:`B`-powersmooth.
 

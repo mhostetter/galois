@@ -3,6 +3,7 @@ A module containing math and arithmetic routines on integers. Some of these func
 """
 import math
 import sys
+from typing import Tuple
 
 import numpy as np
 
@@ -15,14 +16,14 @@ __all__ = ["isqrt", "iroot", "ilog"]
 # Divisibility
 ###############################################################################
 
-def gcd(a, b):
+def gcd(a: int, b: int) -> int:
     """
     This function is wrapped and documented in `_polymorphic.gcd()`.
     """
     return math.gcd(a, b)
 
 
-def egcd(a, b):
+def egcd(a: int, b: int) -> Tuple[int, int, int]:
     """
     This function is wrapped and documented in `_polymorphic.egcd()`.
     """
@@ -39,7 +40,7 @@ def egcd(a, b):
     return r2, s2, t2
 
 
-def lcm(*args):
+def lcm(*args: int) -> int:
     """
     This function is wrapped and documented in `_polymorphic.lcm()`.
     """
@@ -49,7 +50,7 @@ def lcm(*args):
     return lcm_
 
 
-def prod(*args):
+def prod(*args: int) -> int:
     """
     This function is wrapped and documented in `_polymorphic.prod()`.
     """
@@ -64,7 +65,7 @@ def prod(*args):
 ###############################################################################
 
 @set_module("galois")
-def isqrt(n):
+def isqrt(n: int) -> int:
     r"""
     Computes :math:`x = \lfloor\sqrt{n}\rfloor` such that :math:`x^2 \le n < (x + 1)^2`.
 
@@ -113,7 +114,7 @@ def isqrt(n):
 
 
 @set_module("galois")
-def iroot(n, k):
+def iroot(n: int, k: int) -> int:
     r"""
     Computes :math:`x = \lfloor n^{\frac{1}{k}} \rfloor` such that :math:`x^k \le n < (x + 1)^k`.
 
@@ -163,7 +164,7 @@ def iroot(n, k):
 
 
 @set_module("galois")
-def ilog(n, b):
+def ilog(n: int, b: int) -> int:
     r"""
     Computes :math:`x = \lfloor\textrm{log}_b(n)\rfloor` such that :math:`b^x \le n < b^{x + 1}`.
 
