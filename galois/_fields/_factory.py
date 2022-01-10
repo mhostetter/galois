@@ -1,6 +1,7 @@
 """
-A module to implement the Galois field class factory `GF()`. This module also includes functions to generate irreducible, primitive,
-and Conway polynomials. They are included here due to a circular dependence with the Galois field class factory.
+A module to implement the Galois field class factory `GF()`. This module also includes functions to generate
+irreducible, primitive, and Conway polynomials. They are included here due to a circular dependence with the
+Galois field class factory.
 """
 import random
 import types
@@ -9,22 +10,23 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from ._databases import ConwayPolyDatabase
-from ._factor import factors, is_prime_power
-from ._fields import FieldArray, FieldClass, GF2
-from ._fields._gfp import GFpMeta
-from ._fields._gf2m import GF2mMeta
-from ._fields._gfpm import GFpmMeta
-from ._modular import totatives, primitive_root, is_primitive_root
-from ._overrides import set_module
-from ._polys import Poly
-from ._polys import _math as poly_math
-from ._prime import is_prime
+from .._databases import ConwayPolyDatabase
+from .._factor import factors, is_prime_power
+from .._modular import totatives, primitive_root, is_primitive_root
+from .._overrides import set_module
+from .._prime import is_prime
+
+from . import _poly_functions as poly_functions
+from ._gfp import GFpMeta
+from ._gf2m import GF2mMeta
+from ._gfpm import GFpmMeta
+from ._main import FieldClass, FieldArray, GF2, Poly
 
 __all__ = [
     "GF", "Field",
     "irreducible_poly", "irreducible_polys", "is_irreducible",
-    "primitive_poly", "primitive_polys", "matlab_primitive_poly", "conway_poly", "is_primitive",
+    "primitive_poly", "primitive_polys", "is_primitive",
+    "matlab_primitive_poly", "conway_poly",
     "primitive_element", "primitive_elements", "is_primitive_element",
 ]
 
@@ -239,7 +241,13 @@ def Field(
     return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, display=display)
 
 
-def GF_prime(characteristic, primitive_element_=None, verify=True, compile_=None, display=None):
+def GF_prime(
+    characteristic: int,
+    primitive_element_: Optional[PolyLike] = None,
+    verify: bool = True,
+    compile_: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
+    display: Optional[Literal["int", "poly", "power"]] = None
+) -> FieldClass:
     """
     Class factory for prime fields GF(p).
     """
@@ -300,7 +308,15 @@ def GF_prime(characteristic, primitive_element_=None, verify=True, compile_=None
 GF_prime._classes = {}
 
 
-def GF_extension(characteristic, degree, irreducible_poly_=None, primitive_element_=None, verify=True, compile_=None, display=None):
+def GF_extension(
+    characteristic: int,
+    degree: int,
+    irreducible_poly_: Optional[PolyLike] = None,
+    primitive_element_: Optional[PolyLike] = None,
+    verify: bool = True,
+    compile_: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
+    display: Optional[Literal["int", "poly", "power"]] = None
+) -> FieldClass:
     """
     Class factory for extension fields GF(p^m).
     """
@@ -410,7 +426,7 @@ GF_extension._classes = {}
 
 
 ###############################################################################
-# Generate and test irreducible polynomials
+# Irreducible polynomials
 ###############################################################################
 
 @set_module("galois")
@@ -647,14 +663,14 @@ def is_irreducible(poly: Poly) -> bool:
     n0 = 0
     for ni in sorted([m // pi for pi in primes]):
         # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
-        hi = poly_math.pow(h0, q**(ni - n0), poly)
-        g = poly_math.gcd(poly, hi - x)
+        hi = poly_functions.pow(h0, q**(ni - n0), poly)
+        g = poly_functions.gcd(poly, hi - x)
         if g != one:
             return False
         h0, n0 = hi, ni
 
     # f(x) must divide (x^(q^m) - x) to be irreducible
-    h = poly_math.pow(h0, q**(m - n0), poly)
+    h = poly_functions.pow(h0, q**(m - n0), poly)
     g = (h - x) % poly
     if g != zero:
         return False
@@ -663,7 +679,7 @@ def is_irreducible(poly: Poly) -> bool:
 
 
 ###############################################################################
-# Generate and test primitive polynomials
+# Primitive polynomials
 ###############################################################################
 
 @set_module("galois")
@@ -806,6 +822,87 @@ def primitive_polys(order: int, degree: int) -> Poly:
 
 
 @set_module("galois")
+def is_primitive(poly: Poly) -> bool:
+    r"""
+    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
+
+    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
+    :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than :math:`q^m - 1`.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
+
+    Returns
+    -------
+    bool
+        `True` if the polynomial is primitive.
+
+    References
+    ----------
+    * Algorithm 4.77 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
+
+    Examples
+    --------
+    All Conway polynomials are primitive.
+
+    .. ipython:: python
+
+        f = galois.conway_poly(2, 8); f
+        galois.is_primitive(f)
+
+        f = galois.conway_poly(3, 5); f
+        galois.is_primitive(f)
+
+    The irreducible polynomial of :math:`\mathrm{GF}(2^8)` for AES is not primitive.
+
+    .. ipython:: python
+
+        f = galois.Poly.Degrees([8,4,3,1,0]); f
+        galois.is_primitive(f)
+    """
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    if not poly.degree >= 1:
+        raise ValueError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
+
+    if poly.field.order == 2 and poly.degree == 1:
+        # There is only one primitive polynomial in GF(2)
+        return poly == Poly([1, 1])
+
+    if poly.coeffs[-1] == 0:
+        # A primitive polynomial cannot have zero constant term
+        # TODO: Why isn't f(x) = x primitive? It's irreducible and passes the primitivity tests.
+        return False
+
+    if not is_irreducible(poly):
+        # A polynomial must be irreducible to be primitive
+        return False
+
+    field = poly.field
+    q = field.order
+    m = poly.degree
+    zero = Poly.Zero(field)
+    one = Poly.One(field)
+
+    primes, _ = factors(q**m - 1)
+    x = Poly.Identity(field)
+    for ki in sorted([(q**m - 1) // pi for pi in primes]):
+        # f(x) must not divide (x^((q^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of q**m - 1
+        h = poly_functions.pow(x, ki, poly)
+        g = (h - one) % poly
+        if g == zero:
+            return False
+
+    return True
+
+
+###############################################################################
+# Special primitive polynomials
+###############################################################################
+
+@set_module("galois")
 def conway_poly(characteristic: int, degree: int) -> Poly:
     r"""
     Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
@@ -944,83 +1041,6 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
         return Poly.Degrees([16, 12, 3, 1, 0])
     else:
         return primitive_poly(characteristic, degree)
-
-
-@set_module("galois")
-def is_primitive(poly: Poly) -> bool:
-    r"""
-    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
-
-    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
-    :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than :math:`q^m - 1`.
-
-    Parameters
-    ----------
-    poly : galois.Poly
-        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
-
-    Returns
-    -------
-    bool
-        `True` if the polynomial is primitive.
-
-    References
-    ----------
-    * Algorithm 4.77 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
-
-    Examples
-    --------
-    All Conway polynomials are primitive.
-
-    .. ipython:: python
-
-        f = galois.conway_poly(2, 8); f
-        galois.is_primitive(f)
-
-        f = galois.conway_poly(3, 5); f
-        galois.is_primitive(f)
-
-    The irreducible polynomial of :math:`\mathrm{GF}(2^8)` for AES is not primitive.
-
-    .. ipython:: python
-
-        f = galois.Poly.Degrees([8,4,3,1,0]); f
-        galois.is_primitive(f)
-    """
-    if not isinstance(poly, Poly):
-        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not poly.degree >= 1:
-        raise ValueError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
-
-    if poly.field.order == 2 and poly.degree == 1:
-        # There is only one primitive polynomial in GF(2)
-        return poly == Poly([1, 1])
-
-    if poly.coeffs[-1] == 0:
-        # A primitive polynomial cannot have zero constant term
-        # TODO: Why isn't f(x) = x primitive? It's irreducible and passes the primitivity tests.
-        return False
-
-    if not is_irreducible(poly):
-        # A polynomial must be irreducible to be primitive
-        return False
-
-    field = poly.field
-    q = field.order
-    m = poly.degree
-    zero = Poly.Zero(field)
-    one = Poly.One(field)
-
-    primes, _ = factors(q**m - 1)
-    x = Poly.Identity(field)
-    for ki in sorted([(q**m - 1) // pi for pi in primes]):
-        # f(x) must not divide (x^((q^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of q**m - 1
-        h = poly_math.pow(x, ki, poly)
-        g = (h - one) % poly
-        if g == zero:
-            return False
-
-    return True
 
 
 ###############################################################################
@@ -1180,7 +1200,7 @@ def primitive_elements(
 
     elements = []
     for totative in totatives(q**m - 1):
-        h = poly_math.pow(element, totative, irreducible_poly)
+        h = poly_functions.pow(element, totative, irreducible_poly)
         elements.append(h)
 
     elements = [e for e in elements if start <= e.integer < stop]  # Only return elements in the search range
@@ -1256,11 +1276,11 @@ def is_primitive_element(element: Poly, irreducible_poly: Poly) -> bool:  # pyli
     primes, _ = factors(order)
 
     for k in sorted([order // pi for pi in primes]):
-        g = poly_math.pow(element, k, irreducible_poly)
+        g = poly_functions.pow(element, k, irreducible_poly)
         if g == one:
             return False
 
-    g = poly_math.pow(element, order, irreducible_poly)
+    g = poly_functions.pow(element, order, irreducible_poly)
     if g != one:
         return False
 

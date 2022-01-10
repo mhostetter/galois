@@ -1,6 +1,6 @@
 """
 A subpackage containing arrays over Galois fields.
 """
-from ._array import *
-from ._class import *
-from ._gf2 import *
+from ._factory import *
+from ._main import *
+from ._poly_functions import *  # pylint: disable=redefined-builtin

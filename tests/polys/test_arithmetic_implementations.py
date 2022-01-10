@@ -7,7 +7,7 @@ just need to make sure the arithmetic is the same for the different implementati
 import random
 
 import galois
-from galois._polys._poly import DensePoly, BinaryPoly, SparsePoly
+from galois._fields._main import DensePoly, BinaryPoly, SparsePoly
 
 
 def test_add(field):

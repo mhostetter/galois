@@ -4,7 +4,7 @@ A module that contains a metaclass mixin that provides GF(2^m) arithmetic using 
 import numba
 import numpy as np
 
-from ._class import FieldClass, DirMeta
+from ._main import FieldClass, DirMeta
 
 MULTIPLY = lambda a, b, *args: a * b
 RECIPROCAL = lambda a, *args: 1 / a

@@ -5,10 +5,8 @@ import numba
 from numba import int64
 import numpy as np
 
-from ._properties import PropertiesMeta
 
-
-class CalculateMeta(PropertiesMeta):
+class CalculateMeta(type):
     """
     A mixin metaclass that provides Galois field arithmetic using explicit calculation.
     """
@@ -34,6 +32,14 @@ class CalculateMeta(PropertiesMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
+
+        cls._characteristic = kwargs.get("characteristic", 0)
+        cls._degree = kwargs.get("degree", 0)
+        if "irreducible_poly" in kwargs:
+            cls._irreducible_poly_int = kwargs["irreducible_poly"]
+        else:
+            cls._irreducible_poly_int = 0
+
         cls._reset_globals()
 
     def _set_globals(cls, name):  # pylint: disable=unused-argument,no-self-use
@@ -76,15 +82,15 @@ class CalculateMeta(PropertiesMeta):
         Returns a JIT-compiled arithmetic ufunc using explicit calculation. These ufuncs are compiled for each Galois field since
         the characteristic, degree, and irreducible polynomial are compiled into the ufuncs as constants.
         """
-        key = (name, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        key = (name, cls._characteristic, cls._degree, cls._irreducible_poly_int)
 
         if key not in cls._UFUNC_CACHE_CALCULATE:
             cls._set_globals(name)
             function = getattr(cls, f"_{name}_calculate")
 
             # These variables must be locals and not class properties for Numba to compile them as literals
-            characteristic = cls.characteristic
-            degree = cls.degree
+            characteristic = cls._characteristic
+            degree = cls._degree
             irreducible_poly = cls._irreducible_poly_int
 
             # NOTE: Using lambda arguments `aa` and `bb` to workaround these issues: https://github.com/mhostetter/galois/issues/178 and https://github.com/numba/numba/issues/7623
@@ -104,9 +110,9 @@ class CalculateMeta(PropertiesMeta):
         """
         return getattr(cls, f"_{name}_calculate")
         # if cls._UFUNC_TYPE[name] == "unary":
-        #     return lambda a: function(a, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        #     return lambda a: function(a, cls._characteristic, cls._degree, cls._irreducible_poly_int)
         # else:
-        #     return lambda a, b: function(a, b, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        #     return lambda a, b: function(a, b, cls._characteristic, cls._degree, cls._irreducible_poly_int)
 
     def _ufunc_python(cls, name):
         """
@@ -115,8 +121,8 @@ class CalculateMeta(PropertiesMeta):
         function = getattr(cls, f"_{name}_calculate")
 
         # Pre-fetching these values into local variables allows Python to cache them as constants in the lambda function
-        characteristic = cls.characteristic
-        degree = cls.degree
+        characteristic = cls._characteristic
+        degree = cls._degree
         irreducible_poly = cls._irreducible_poly_int
 
         if cls._UFUNC_TYPE[name] == "unary":

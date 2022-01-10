@@ -8,10 +8,8 @@ import numpy as np
 
 from .. import _lfsr
 from .._factor import factors
-from .._factory import Field, GF2, matlab_primitive_poly
-from .._fields import FieldClass, FieldArray
+from .._fields import Field, FieldClass, FieldArray, GF2, Poly, matlab_primitive_poly
 from .._overrides import set_module
-from .._polys import Poly
 
 from ._cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
 

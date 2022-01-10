@@ -5,8 +5,7 @@ from typing import Tuple, List, Optional, Union
 
 import numpy as np
 
-from ._factory import GF
-from ._fields import FieldArray
+from ._fields import Field, FieldArray
 from ._modular import primitive_root
 from ._overrides import set_module
 from ._prime import is_prime
@@ -258,7 +257,7 @@ def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
     if not modulus > np.max(x):
         raise ValueError(f"Argument `modulus` must be at least the max value of the input which is {np.max(x)}, not {modulus}.")
 
-    field = GF(modulus)  # The prime field GF(p)
+    field = Field(modulus)  # The prime field GF(p)
     xx = field.Zeros(size)
     xx[0:len(x)] = x  # Potentially zero-pad the input to length `size`
 

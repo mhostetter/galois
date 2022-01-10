@@ -1,5 +1,5 @@
 """
-A module containing routines for polynomial factorization.
+A module with functions for polynomials over Galois fields.
 """
 from typing import Tuple, List
 
@@ -7,12 +7,211 @@ import numpy as np
 
 from .._overrides import set_module
 
-from ._functions import is_monic
-from ._math import gcd, pow  # pylint: disable=redefined-builtin
-from ._poly import Poly
+from ._main import FieldArray, Poly
 
-__all__ = ["square_free_factorization", "distinct_degree_factorization", "equal_degree_factorization"]
+__all__ = [
+    "minimal_poly",
+    "square_free_factorization", "distinct_degree_factorization", "equal_degree_factorization",
+    "is_monic",
+]
 
+
+###############################################################################
+# Divisibility
+###############################################################################
+
+def gcd(a, b):
+    """
+    This function is wrapped and documented in `_polymorphic.gcd()`.
+    """
+    if not a.field is b.field:
+        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {a.field} and {b.field}.")
+
+    field = a.field
+    zero = Poly.Zero(field)
+
+    r2, r1 = a, b
+
+    while r1 != zero:
+        r2, r1 = r1, r2 % r1
+
+    # Make the GCD polynomial monic
+    c = r2.coeffs[0]  # The leading coefficient
+    if c > 1:
+        r2 /= c
+
+    return r2
+
+
+def egcd(a, b):
+    """
+    This function is wrapped and documented in `_polymorphic.egcd()`.
+    """
+    if not a.field is b.field:
+        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {a.field} and {b.field}.")
+
+    field = a.field
+    zero = Poly.Zero(field)
+    one = Poly.One(field)
+
+    r2, r1 = a, b
+    s2, s1 = one, zero
+    t2, t1 = zero, one
+
+    while r1 != zero:
+        q = r2 / r1
+        r2, r1 = r1, r2 - q*r1
+        s2, s1 = s1, s2 - q*s1
+        t2, t1 = t1, t2 - q*t1
+
+    # Make the GCD polynomial monic
+    c = r2.coeffs[0]  # The leading coefficient
+    if c > 1:
+        r2 /= c
+        s2 /= c
+        t2 /= c
+
+    return r2, s2, t2
+
+
+def lcm(*args):
+    """
+    This function is wrapped and documented in `_polymorphic.lcm()`.
+    """
+    field = args[0].field
+    lcm_  = Poly.One(field)
+    for arg in args:
+        if not arg.field == field:
+            raise ValueError(f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}.")
+        lcm_ = (lcm_ * arg) // gcd(lcm_, arg)
+    return lcm_
+
+
+def prod(*args):
+    """
+    This function is wrapped and documented in `_polymorphic.prod()`.
+    """
+    field = args[0].field
+    prod_  = Poly.One(field)
+    for arg in args:
+        if not arg.field == field:
+            raise ValueError(f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}.")
+        prod_ *= arg
+    return prod_
+
+
+###############################################################################
+# Congruences
+###############################################################################
+
+def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
+    """
+    This function is wrapped and documented in `_polymorphic.pow()`.
+    """
+    if not base.field is modulus.field:
+        raise ValueError(f"Arguments `base` and `modulus` must be polynomials over the same Galois field, not {base.field} and {modulus.field}.")
+
+    if exponent == 0:
+        return Poly.One(base.field)
+
+    result_s = base  # The "squaring" part
+    result_m = Poly.One(base.field)  # The "multiplicative" part
+
+    while exponent > 1:
+        if exponent % 2 == 0:
+            result_s = (result_s * result_s) % modulus
+            exponent //= 2
+        else:
+            result_m = (result_m * result_s) % modulus
+            exponent -= 1
+
+    result = (result_s * result_m) % modulus
+
+    return result
+
+
+###############################################################################
+# Minimal polynomials
+###############################################################################
+
+@set_module("galois")
+def minimal_poly(element: FieldArray) -> Poly:
+    r"""
+    Computes the minimal polynomial :math:`m_e(x) \in \mathrm{GF}(p)[x]` of a Galois field
+    element :math:`e \in \mathrm{GF}(p^m)`.
+
+    The *minimal polynomial* of a Galois field element :math:`e \in \mathrm{GF}(p^m)` is the polynomial of
+    minimal degree over :math:`\mathrm{GF}(p)` for which :math:`e` is a root when evaluated in :math:`\mathrm{GF}(p^m)`.
+    Namely, :math:`m_e(x) \in \mathrm{GF}(p)[x] \in \mathrm{GF}(p^m)[x]` and :math:`m_e(e) = 0` over :math:`\mathrm{GF}(p^m)`.
+
+    Parameters
+    ----------
+    element : galois.FieldArray
+        Any element :math:`e` of the Galois field :math:`\mathrm{GF}(p^m)`. This must be a 0-D array.
+
+    Returns
+    -------
+    galois.Poly
+        The minimal polynomial :math:`m_e(x)` over :math:`\mathrm{GF}(p)` of the element :math:`e`.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(2**4)
+        e = GF.primitive_element; e
+        m_e = galois.minimal_poly(e); m_e
+        # Evaluate m_e(e) in GF(2^4)
+        m_e(e, field=GF)
+
+    For a given element :math:`e`, the minimal polynomials of :math:`e` and all its conjugates are the same.
+
+    .. ipython:: python
+
+        # The conjugates of e
+        conjugates = np.unique(e**(2**np.arange(0, 4))); conjugates
+        for conjugate in conjugates:
+            print(galois.minimal_poly(conjugate))
+
+    Not all elements of :math:`\mathrm{GF}(2^4)` have minimal polynomials with degree-:math:`4`.
+
+    .. ipython:: python
+
+        e = GF.primitive_element**5; e
+        # The conjugates of e
+        conjugates = np.unique(e**(2**np.arange(0, 4))); conjugates
+        for conjugate in conjugates:
+            print(galois.minimal_poly(conjugate))
+
+    In prime fields, the minimal polynomial of :math:`e` is simply :math:`m_e(x) = x - e`.
+
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        e = GF(3); e
+        m_e = galois.minimal_poly(e); m_e
+        m_e(e)
+    """
+    if not isinstance(element, FieldArray):
+        raise TypeError(f"Argument `element` must be an element of a Galois field, not {type(element)}.")
+    if not element.ndim == 0:
+        raise ValueError(f"Argument `element` must be a single array element with dimension 0, not {element.ndim}-D.")
+
+    field = type(element)
+    x = Poly.Identity(field=field)
+
+    if field.is_prime_field:
+        return x - element
+    else:
+        conjugates = np.unique(element**(field.characteristic**np.arange(0, field.degree, dtype=field.dtypes[-1])))
+        poly = Poly.Roots(conjugates, field=field)
+        poly = Poly(poly.coeffs, field=field.prime_subfield)
+        return poly
+
+
+###############################################################################
+# Polynomial factorization
+###############################################################################
 
 def factors(poly):
     """
@@ -342,6 +541,43 @@ def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
     factors_ = sorted(factors_, key=lambda item: item.integer)
 
     return factors_
+
+
+###############################################################################
+# Polynomial tests
+###############################################################################
+
+@set_module("galois")
+def is_monic(poly: Poly) -> bool:
+    r"""
+    Determines whether the polynomial is monic, i.e. having leading coefficient equal to 1.
+
+    Parameters
+    ----------
+    poly : galois.Poly
+        A polynomial over a Galois field.
+
+    Returns
+    -------
+    bool
+        `True` if the polynomial is monic.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        p = galois.Poly([1,0,4,5], field=GF); p
+        galois.is_monic(p)
+
+    .. ipython:: python
+
+        p = galois.Poly([3,0,4,5], field=GF); p
+        galois.is_monic(p)
+    """
+    if not isinstance(poly, Poly):
+        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+    return poly.nonzero_coeffs[0] == 1
 
 
 def is_square_free(poly):

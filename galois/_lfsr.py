@@ -8,9 +8,8 @@ import numba
 import numpy as np
 from numba import int64
 
-from ._fields import FieldClass, FieldArray
+from ._fields import FieldClass, FieldArray, Poly
 from ._overrides import set_module
-from ._polys import Poly
 from ._poly_conversion import integer_to_poly
 
 __all__ = ["LFSR", "berlekamp_massey"]
