@@ -4,7 +4,7 @@ A module that contains a metaclass mixin that provides GF(p^m) arithmetic using 
 import numba
 import numpy as np
 
-from ._class import FieldClass, DirMeta
+from ._main import FieldClass, DirMeta
 from ._dtypes import DTYPES
 
 DTYPE = np.int64

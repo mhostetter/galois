@@ -4,7 +4,7 @@ A module that contains a metaclass mixin that provides GF(p) arithmetic using ex
 import numba
 import numpy as np
 
-from ._class import FieldClass, DirMeta
+from ._main import FieldClass, DirMeta
 from ._dtypes import DTYPES
 
 RECIPROCAL = lambda a, *args: 1 / a

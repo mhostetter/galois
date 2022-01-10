@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 
 import galois
-from galois._polys._poly import DensePoly, BinaryPoly, SparsePoly
+from galois._fields._main import DensePoly, BinaryPoly, SparsePoly
 
 
 def test_coefficients_exceptions():
