@@ -10,7 +10,7 @@ __all__ = ["generator_to_parity_check_matrix", "parity_check_to_generator_matrix
 
 
 @set_module("galois")
-def generator_to_parity_check_matrix(G):
+def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
     r"""
     Converts the generator matrix :math:`\mathbf{G}` of a linear :math:`[n, k]` code into its parity-check matrix :math:`\mathbf{H}`.
 
@@ -52,7 +52,7 @@ def generator_to_parity_check_matrix(G):
 
 
 @set_module("galois")
-def parity_check_to_generator_matrix(H):
+def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
     r"""
     Converts the parity-check matrix :math:`\mathbf{H}` of a linear :math:`[n, k]` code into its generator matrix :math:`\mathbf{G}`.
 

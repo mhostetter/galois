@@ -1,4 +1,6 @@
 import math
+from typing import Tuple, List, Optional, Union, overload
+from typing_extensions import Literal
 
 import numba
 from numba import int64
@@ -7,7 +9,7 @@ import numpy as np
 from .. import _lfsr
 from .._factor import factors
 from .._factory import Field, GF2, matlab_primitive_poly
-from .._fields import FieldClass
+from .._fields import FieldClass, FieldArray
 from .._overrides import set_module
 from .._polys import Poly
 
@@ -44,7 +46,7 @@ def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
 
 
 @set_module("galois")
-def bch_valid_codes(n, t_min=1):
+def bch_valid_codes(n: int, t_min: int = 1) -> List[Tuple[int, int, int]]:
     r"""
     Returns a list of :math:`(n, k, t)` tuples of valid primitive binary BCH codes.
 
@@ -154,7 +156,14 @@ class BCH:
     """
     # pylint: disable=no-member
 
-    def __init__(self, n, k, primitive_poly=None, primitive_element=None, systematic=True):
+    def __init__(
+        self,
+        n: int,
+        k: int,
+        primitive_poly: Optional[Poly] = None,
+        primitive_element: Optional[Union[int, Poly]] = None,
+        systematic: bool = True
+    ):
         r"""
         Constructs a primitive, narrow-sense binary :math:`\textrm{BCH}(n, k)` code.
 
@@ -255,13 +264,13 @@ class BCH:
     def __repr__(self):
         return str(self)
 
-    def encode(self, message, parity_only=False):
+    def encode(self, message: Union[np.ndarray, GF2], parity_only: bool = False) -> Union[np.ndarray, GF2]:
         r"""
         Encodes the message :math:`\mathbf{m}` into the BCH codeword :math:`\mathbf{c}`.
 
         Parameters
         ----------
-        message : numpy.ndarray, galois.FieldArray
+        message : numpy.ndarray, galois.GF2
             The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the number
             of messages. For systematic codes, message lengths less than :math:`k` may be provided to produce
             shortened codewords.
@@ -271,7 +280,7 @@ class BCH:
 
         Returns
         -------
-        numpy.ndarray, galois.FieldArray
+        numpy.ndarray, galois.GF2
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. The return type matches the
             message type. If `parity_only=True`, the parity bits are returned as either a :math:`n - k`-length vector or
             :math:`(N, n-k)` matrix.
@@ -318,7 +327,7 @@ class BCH:
             c = bch.encode(m); c
             p = bch.encode(m, parity_only=True); p
         """
-        if not isinstance(message, np.ndarray):
+        if not isinstance(message, (np.ndarray, GF2)):
             raise TypeError(f"Argument `message` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(message)}.")
         if parity_only and not self.systematic:
             raise ValueError("Argument `parity_only=True` only applies to systematic codes.")
@@ -341,7 +350,7 @@ class BCH:
             codeword = message.view(GF2) @ self.G
             return codeword.view(type(message))
 
-    def detect(self, codeword):
+    def detect(self, codeword: Union[np.ndarray, GF2]) -> Union[bool, np.ndarray]:
         r"""
         Detects if errors are present in the BCH codeword :math:`\mathbf{c}`.
 
@@ -350,7 +359,7 @@ class BCH:
 
         Parameters
         ----------
-        codeword : numpy.ndarray, galois.FieldArray
+        codeword : numpy.ndarray, galois.GF2
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
             number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
             shortened codewords.
@@ -406,13 +415,19 @@ class BCH:
 
         return detected
 
+    @overload
+    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[False] = False) -> Union[np.ndarray, GF2]:
+        ...
+    @overload
+    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[True] = True) -> Tuple[Union[np.ndarray, GF2], Union[int, np.ndarray]]:
+        ...
     def decode(self, codeword, errors=False):
         r"""
         Decodes the BCH codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
 
         Parameters
         ----------
-        codeword : numpy.ndarray, galois.FieldArray
+        codeword : numpy.ndarray, galois.GF2
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
             number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
             shortened codewords.
@@ -421,7 +436,7 @@ class BCH:
 
         Returns
         -------
-        numpy.ndarray, galois.FieldArray
+        numpy.ndarray, galois.GF2
             The decoded message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
         int, np.ndarray
             Optional return argument of the number of corrected bit errors as either a scalar or :math:`n`-length vector.
@@ -487,7 +502,7 @@ class BCH:
             dec_m, N = bch.decode(c, errors=True); dec_m, N
             np.array_equal(dec_m, m)
         """
-        if not isinstance(codeword, np.ndarray):
+        if not isinstance(codeword, (np.ndarray, GF2)):
             raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
         if self.systematic:
             if not codeword.shape[-1] <= self.n:
@@ -529,7 +544,7 @@ class BCH:
             return message, N_errors
 
     @property
-    def field(self):
+    def field(self) -> FieldClass:
         r"""
         galois.FieldClass: The Galois field :math:`\mathrm{GF}(2^m)` that defines the BCH code.
 
@@ -544,7 +559,7 @@ class BCH:
         return self._field
 
     @property
-    def n(self):
+    def n(self) -> int:
         """
         int: The codeword size :math:`n` of the :math:`[n, k, d]_2` code
 
@@ -559,7 +574,7 @@ class BCH:
         return self._n
 
     @property
-    def k(self):
+    def k(self) -> int:
         """
         int: The message size :math:`k` of the :math:`[n, k, d]_2` code
 
@@ -573,7 +588,7 @@ class BCH:
         return self._k
 
     @property
-    def d(self):
+    def d(self) -> int:
         r"""
         int: The design distance :math:`d` of the :math:`[n, k, d]_2` code. The minimum distance of a BCH code
         may be greater than the design distance, :math:`d_{min} \ge d`.
@@ -588,7 +603,7 @@ class BCH:
         return 2*self.t + 1
 
     @property
-    def t(self):
+    def t(self) -> int:
         """
         int: The error-correcting capability of the code. The code can correct :math:`t` bit errors in a codeword.
 
@@ -602,7 +617,7 @@ class BCH:
         return self._t
 
     @property
-    def systematic(self):
+    def systematic(self) -> bool:
         """
         bool: Indicates if the code is configured to return codewords in systematic form.
 
@@ -616,7 +631,7 @@ class BCH:
         return self._systematic
 
     @property
-    def generator_poly(self):
+    def generator_poly(self) -> Poly:
         """
         galois.Poly: The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
 
@@ -632,7 +647,7 @@ class BCH:
         return self._generator_poly
 
     @property
-    def roots(self):
+    def roots(self) -> FieldArray:
         r"""
         galois.FieldArray: The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
         :math:`\alpha, \alpha^2, \dots, \alpha^{2t}`.
@@ -649,7 +664,7 @@ class BCH:
         return self._roots
 
     @property
-    def G(self):
+    def G(self) -> GF2:
         r"""
         galois.GF2: The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
 
@@ -663,7 +678,7 @@ class BCH:
         return self._G
 
     @property
-    def H(self):
+    def H(self) -> FieldArray:
         r"""
         galois.FieldArray: The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
 
@@ -677,7 +692,7 @@ class BCH:
         return self._H
 
     @property
-    def is_primitive(self):
+    def is_primitive(self) -> bool:
         """
         bool: Indicates if the BCH code is primitive, meaning :math:`n = 2^m - 1`.
 
@@ -691,7 +706,7 @@ class BCH:
         return self._is_primitive
 
     @property
-    def is_narrow_sense(self):
+    def is_narrow_sense(self) -> bool:
         r"""
         bool: Indicates if the BCH code is narrow sense, meaning the roots of the generator polynomial are consecutive
         powers of :math:`\alpha` starting at 1, i.e. :math:`\alpha, \alpha^2, \dots, \alpha^{2t}`.
