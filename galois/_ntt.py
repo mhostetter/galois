@@ -1,6 +1,8 @@
 """
 A module that contains functions to perform the forward and reverse Number-Theoretic Transform (NTT).
 """
+from typing import Tuple, List, Optional, Union
+
 import numpy as np
 
 from ._factory import GF
@@ -13,7 +15,11 @@ __all__ = ["ntt", "intt"]
 
 
 @set_module("galois")
-def ntt(x, size=None, modulus=None):
+def ntt(
+    x: Union[Tuple[int], List[int], np.ndarray, FieldArray],
+    size: Optional[int] = None,
+    modulus: Optional[int] = None
+) -> FieldArray:
     r"""
     Computes the Number-Theoretic Transform (NTT) of :math:`x`.
 
@@ -109,7 +115,12 @@ def ntt(x, size=None, modulus=None):
 
 
 @set_module("galois")
-def intt(X, size=None, modulus=None, scaled=True):
+def intt(
+    X: Union[Tuple[int], List[int], np.ndarray, FieldArray],
+    size: Optional[int] = None,
+    modulus: Optional[int] = None,
+    scaled: bool = True
+) -> FieldArray:
     r"""
     Computes the Inverse Number-Theoretic Transform (INTT) of :math:`X`.
 
@@ -205,7 +216,7 @@ def intt(X, size=None, modulus=None, scaled=True):
 
         galois.ntt(galois.intt(x))
     """
-    if not isinstance(X, (tuple, list, np.ndarray)):
+    if not isinstance(X, (tuple, list, np.ndarray, FieldArray)):
         raise TypeError(f"Argument `X` must be array-like, not {type(X)}.")
     if isinstance(X, FieldArray) and not type(X).is_prime_field:
         raise ValueError(f"If argument `X` is a Galois field array, it must be a prime field, not {type(X)}.")
