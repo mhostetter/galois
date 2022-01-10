@@ -414,7 +414,11 @@ GF_extension._classes = {}
 ###############################################################################
 
 @set_module("galois")
-def irreducible_poly(order, degree, method="min"):
+def irreducible_poly(
+    order: int,
+    degree: int,
+    method: Literal["min", "max", "random"] = "min"
+) -> Poly:
     r"""
     Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
@@ -499,7 +503,7 @@ def irreducible_poly(order, degree, method="min"):
 
 
 @set_module("galois")
-def irreducible_polys(order, degree):
+def irreducible_polys(order: int, degree: int) -> List[Poly]:
     r"""
     Returns all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
@@ -560,7 +564,7 @@ def irreducible_polys(order, degree):
 
 
 @set_module("galois")
-def is_irreducible(poly):
+def is_irreducible(poly: Poly) -> bool:
     r"""
     Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
 
@@ -663,7 +667,7 @@ def is_irreducible(poly):
 ###############################################################################
 
 @set_module("galois")
-def primitive_poly(order, degree, method="min"):
+def primitive_poly(order: int, degree: int, method: Literal["min", "max", "random"] = "min") -> Poly:
     r"""
     Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
@@ -741,7 +745,7 @@ def primitive_poly(order, degree, method="min"):
 
 
 @set_module("galois")
-def primitive_polys(order, degree):
+def primitive_polys(order: int, degree: int) -> Poly:
     r"""
     Returns all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
@@ -802,7 +806,7 @@ def primitive_polys(order, degree):
 
 
 @set_module("galois")
-def conway_poly(characteristic, degree):
+def conway_poly(characteristic: int, degree: int) -> Poly:
     r"""
     Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
@@ -870,7 +874,7 @@ def conway_poly(characteristic, degree):
 
 
 @set_module("galois")
-def matlab_primitive_poly(characteristic, degree):
+def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     r"""
     Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
@@ -943,7 +947,7 @@ def matlab_primitive_poly(characteristic, degree):
 
 
 @set_module("galois")
-def is_primitive(poly):
+def is_primitive(poly: Poly) -> bool:
     r"""
     Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
 
@@ -1024,7 +1028,12 @@ def is_primitive(poly):
 ###############################################################################
 
 @set_module("galois")
-def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):  # pylint: disable=redefined-outer-name
+def primitive_element(
+    irreducible_poly: Poly,  # pylint: disable=redefined-outer-name
+    start: Optional[int] = None,
+    stop: Optional[int] = None,
+    reverse: bool = False
+) -> Poly:
     r"""
     Finds the smallest primitive element :math:`g(x)` of the Galois field :math:`\mathrm{GF}(p^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
@@ -1100,7 +1109,12 @@ def primitive_element(irreducible_poly, start=None, stop=None, reverse=False):  
 
 
 @set_module("galois")
-def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False):  # pylint: disable=redefined-outer-name
+def primitive_elements(
+    irreducible_poly: Poly,  # pylint: disable=redefined-outer-name
+    start: Optional[int] = None,
+    stop: Optional[int] = None,
+    reverse: bool = False
+) -> List[Poly]:
     r"""
     Finds all primitive elements :math:`g(x)` of the Galois field :math:`\mathrm{GF}(p^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
@@ -1176,7 +1190,7 @@ def primitive_elements(irreducible_poly, start=None, stop=None, reverse=False): 
 
 
 @set_module("galois")
-def is_primitive_element(element, irreducible_poly):  # pylint: disable=redefined-outer-name
+def is_primitive_element(element: Poly, irreducible_poly: Poly) -> bool:  # pylint: disable=redefined-outer-name
     r"""
     Determines if :math:`g(x)` is a primitive element of the Galois field :math:`\mathrm{GF}(p^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)`.
