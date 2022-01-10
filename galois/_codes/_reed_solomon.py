@@ -1,3 +1,6 @@
+from typing import Tuple, Optional, Union, overload
+from typing_extensions import Literal
+
 import numba
 from numba import int64
 import numpy as np
@@ -5,7 +8,7 @@ import numpy as np
 from .. import _lfsr
 from .._factor import factors
 from .._factory import Field, matlab_primitive_poly
-from .._fields import FieldClass
+from .._fields import FieldClass, FieldArray
 from .._overrides import set_module
 from .._polys import Poly
 
@@ -59,7 +62,15 @@ class ReedSolomon:
     """
     # pylint: disable=no-member
 
-    def __init__(self, n, k, c=1, primitive_poly=None, primitive_element=None, systematic=True):
+    def __init__(
+        self,
+        n: int,
+        k: int,
+        c: Optional[int] = 1,
+        primitive_poly: Optional[Poly] = None,
+        primitive_element: Optional[Union[int, Poly]] = None,
+        systematic: bool = True
+    ):
         r"""
         Constructs a general :math:`\textrm{RS}(n, k)` code.
 
@@ -155,7 +166,7 @@ class ReedSolomon:
     def __repr__(self):
         return str(self)
 
-    def encode(self, message, parity_only=False):
+    def encode(self, message: Union[np.ndarray, FieldArray], parity_only: bool = False) -> Union[np.ndarray, FieldArray]:
         r"""
         Encodes the message :math:`\mathbf{m}` into the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -242,7 +253,7 @@ class ReedSolomon:
             codeword = message.view(self.field) @ self.G
             return codeword.view(type(message))
 
-    def detect(self, codeword):
+    def detect(self, codeword: Union[np.ndarray, FieldArray]) -> Union[bool, np.ndarray]:
         r"""
         Detects if errors are present in the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -308,6 +319,12 @@ class ReedSolomon:
 
         return detected
 
+    @overload
+    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[False] = False) -> Union[np.ndarray, FieldArray]:
+        ...
+    @overload
+    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[True] = True) -> Tuple[Union[np.ndarray, FieldArray], Union[int, np.ndarray]]:
+        ...
     def decode(self, codeword, errors=False):
         r"""
         Decodes the Reed-Solomon codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
@@ -433,7 +450,7 @@ class ReedSolomon:
             return message, N_errors
 
     @property
-    def field(self):
+    def field(self) -> FieldClass:
         r"""
         galois.FieldClass: The Galois field :math:`\mathrm{GF}(q)` that defines the Reed-Solomon code.
 
@@ -448,7 +465,7 @@ class ReedSolomon:
         return self._field
 
     @property
-    def n(self):
+    def n(self) -> int:
         """
         int: The codeword size :math:`n` of the :math:`[n, k, d]_q` code.
 
@@ -462,7 +479,7 @@ class ReedSolomon:
         return self._n
 
     @property
-    def k(self):
+    def k(self) -> int:
         """
         int: The message size :math:`k` of the :math:`[n, k, d]_q` code.
 
@@ -476,7 +493,7 @@ class ReedSolomon:
         return self._k
 
     @property
-    def d(self):
+    def d(self) -> int:
         """
         int: The design distance :math:`d` of the :math:`[n, k, d]_q` code. The minimum distance of a Reed-Solomon code
         is exactly equal to the design distance, :math:`d_{min} = d`.
@@ -491,7 +508,7 @@ class ReedSolomon:
         return 2*self.t + 1
 
     @property
-    def t(self):
+    def t(self) -> int:
         """
         int: The error-correcting capability of the code. The code can correct :math:`t` symbol errors in a codeword.
 
@@ -505,7 +522,7 @@ class ReedSolomon:
         return self._t
 
     @property
-    def systematic(self):
+    def systematic(self) -> bool:
         """
         bool: Indicates if the code is configured to return codewords in systematic form.
 
@@ -519,7 +536,7 @@ class ReedSolomon:
         return self._systematic
 
     @property
-    def generator_poly(self):
+    def generator_poly(self) -> Poly:
         """
         galois.Poly: The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
 
@@ -535,7 +552,7 @@ class ReedSolomon:
         return self._generator_poly
 
     @property
-    def roots(self):
+    def roots(self) -> FieldArray:
         r"""
         galois.FieldArray: The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
         :math:`\alpha^c, \alpha^{c+1}, \dots, \alpha^{c+2t-1}`.
@@ -552,7 +569,7 @@ class ReedSolomon:
         return self._roots
 
     @property
-    def c(self):
+    def c(self) -> int:
         """
         int: The degree of the first consecutive root.
 
@@ -566,7 +583,7 @@ class ReedSolomon:
         return self._c
 
     @property
-    def G(self):
+    def G(self) -> FieldArray:
         r"""
         galois.FieldArray: The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
 
@@ -580,7 +597,7 @@ class ReedSolomon:
         return self._G
 
     @property
-    def H(self):
+    def H(self) -> FieldArray:
         r"""
         galois.FieldArray: The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
 
@@ -594,7 +611,7 @@ class ReedSolomon:
         return self._H
 
     @property
-    def is_narrow_sense(self):
+    def is_narrow_sense(self) -> bool:
         r"""
         bool: Indicates if the Reed-Solomon code is narrow sense, meaning the roots of the generator polynomial are consecutive
         powers of :math:`\alpha` starting at 1, i.e. :math:`\alpha, \alpha^2, \dots, \alpha^{2t - 1}`.
