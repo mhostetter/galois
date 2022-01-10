@@ -1,6 +1,8 @@
 """
 A module containing routines for polynomial factorization.
 """
+from typing import Tuple, List
+
 import numpy as np
 
 from .._overrides import set_module
@@ -43,7 +45,7 @@ def factors(poly):
 
 
 @set_module("galois")
-def square_free_factorization(poly):
+def square_free_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
     r"""
     Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
 
@@ -143,7 +145,7 @@ def square_free_factorization(poly):
 
 
 @set_module("galois")
-def distinct_degree_factorization(poly):
+def distinct_degree_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
     r"""
     Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors all have
     the same degree.
@@ -251,7 +253,7 @@ def distinct_degree_factorization(poly):
 
 
 @set_module("galois")
-def equal_degree_factorization(poly, degree):
+def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
     r"""
     Factors the monic, square-free polynomial :math:`f(x)` of degree :math:`rd` into a product of :math:`r` irreducible factors with
     degree :math:`d`.

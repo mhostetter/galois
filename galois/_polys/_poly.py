@@ -1,6 +1,9 @@
 """
 A module that defines a polynomial class over Galois fields.
 """
+from typing import Tuple, List, Optional, Union
+from typing_extensions import Literal
+
 import numpy as np
 
 from .._fields import FieldClass, FieldArray, GF2
@@ -93,7 +96,12 @@ class Poly:
     # Increase my array priority so numpy will call my __radd__ instead of its own __add__
     __array_priority__ = 100
 
-    def __new__(cls, coeffs, field=None, order="desc"):
+    def __new__(
+        cls,
+        coeffs: Union[Tuple[int], List[int], np.ndarray, FieldArray],
+        field: Optional[FieldClass] = None,
+        order: Literal["desc", "asc"] = "desc"
+    ) -> "Poly":
         if not isinstance(coeffs, (list, tuple, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
         if not isinstance(field, (type(None), FieldClass)):
@@ -148,7 +156,7 @@ class Poly:
     ###############################################################################
 
     @classmethod
-    def Zero(cls, field=GF2):
+    def Zero(cls, field: Optional[FieldClass] = GF2) -> "Poly":
         r"""
         Constructs the polynomial :math:`f(x) = 0` over :math:`\mathrm{GF}(p^m)`.
 
@@ -180,7 +188,7 @@ class Poly:
         return Poly([0], field=field)
 
     @classmethod
-    def One(cls, field=GF2):
+    def One(cls, field: Optional[FieldClass] = GF2) -> "Poly":
         r"""
         Constructs the polynomial :math:`f(x) = 1` over :math:`\mathrm{GF}(p^m)`.
 
@@ -212,7 +220,7 @@ class Poly:
         return Poly([1], field=field)
 
     @classmethod
-    def Identity(cls, field=GF2):
+    def Identity(cls, field: Optional[FieldClass] = GF2) -> "Poly":
         r"""
         Constructs the polynomial :math:`f(x) = x` over :math:`\mathrm{GF}(p^m)`.
 
@@ -244,7 +252,12 @@ class Poly:
         return Poly([1, 0], field=field)
 
     @classmethod
-    def Random(cls, degree, seed=None, field=GF2):
+    def Random(
+        cls,
+        degree: int,
+        seed: Optional[Union[int, np.random.Generator]] = None,
+        field: Optional[FieldClass] = GF2
+    ) -> "Poly":
         r"""
         Constructs a random polynomial over :math:`\mathrm{GF}(p^m)` with degree :math:`d`.
 
@@ -308,7 +321,7 @@ class Poly:
         return Poly(coeffs, field=field)
 
     @classmethod
-    def Integer(cls, integer, field=GF2):
+    def Integer(cls, integer: int, field: Optional[FieldClass] = GF2) -> "Poly":
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its integer representation.
 
@@ -363,7 +376,7 @@ class Poly:
             return Poly(coeffs, field=field)
 
     @classmethod
-    def String(cls, string, field=GF2):
+    def String(cls, string: str, field: Optional[FieldClass] = GF2) -> "Poly":
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its string representation.
 
@@ -413,7 +426,12 @@ class Poly:
 
 
     @classmethod
-    def Degrees(cls, degrees, coeffs=None, field=None):
+    def Degrees(
+        cls,
+        degrees: Union[Tuple[int], List[int], np.ndarray],
+        coeffs: Optional[Union[Tuple[int], List[int], np.ndarray, FieldArray]] = None,
+        field: Optional[FieldClass] = None
+    ) -> "Poly":
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its non-zero degrees.
 
@@ -496,7 +514,12 @@ class Poly:
                 return DensePoly(all_coeffs)
 
     @classmethod
-    def Roots(cls, roots, multiplicities=None, field=None):
+    def Roots(
+        cls,
+        roots: Union[Tuple[int], List[int], np.ndarray, FieldArray],
+        multiplicities: Optional[Union[Tuple[int], List[int], np.ndarray]] = None,
+        field: Optional[FieldClass] = None
+    ) -> "Poly":
         r"""
         Constructs a monic polynomial over :math:`\mathrm{GF}(p^m)` from its roots.
 
@@ -579,7 +602,11 @@ class Poly:
     # Methods
     ###############################################################################
 
-    def coefficients(self, size=None, order="desc"):
+    def coefficients(
+        self,
+        size: Optional[int] = None,
+        order: Literal["desc", "asc"] = "desc"
+    ) -> FieldArray:
         """
         Returns the polynomial coefficients in the order and size specified.
 
@@ -635,13 +662,18 @@ class Poly:
 
         return coeffs
 
-    def copy(self):
+    def copy(self) -> "Poly":
         """
         Deep copies the polynomial.
+
+        Returns
+        -------
+        galois.Poly
+            A copy of the original polynomial.
         """
         raise NotImplementedError
 
-    def reverse(self):
+    def reverse(self) -> "Poly":
         r"""
         Returns the :math:`d`-th reversal :math:`x^d f(\frac{1}{x})` of the polynomial :math:`f(x)` with degree :math:`d`.
 
@@ -668,7 +700,7 @@ class Poly:
         """
         return Poly(self.coeffs[::-1])
 
-    def roots(self, multiplicity=False):
+    def roots(self, multiplicity: bool = False) -> FieldArray:
         r"""
         Calculates the roots :math:`r` of the polynomial :math:`f(x)`, such that :math:`f(r) = 0`.
 
@@ -782,7 +814,7 @@ class Poly:
 
         return multiplicity
 
-    def derivative(self, k=1):
+    def derivative(self, k: int = 1) -> "Poly":
         r"""
         Computes the :math:`k`-th formal derivative :math:`\frac{d^k}{dx^k} f(x)` of the polynomial :math:`f(x)`.
 
@@ -887,7 +919,7 @@ class Poly:
         t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
         return hash(t)
 
-    def __call__(self, x, field=None):
+    def __call__(self, x: FieldArray, field: Optional[FieldClass] = None) -> FieldArray:
         """
         Evaluate the polynomial.
 
@@ -1246,7 +1278,7 @@ class Poly:
     ###############################################################################
 
     @property
-    def field(self):
+    def field(self) -> FieldClass:
         """
         galois.FieldClass: The Galois field array class to which the coefficients belong.
 
@@ -1266,7 +1298,7 @@ class Poly:
         raise NotImplementedError
 
     @property
-    def degree(self):
+    def degree(self) -> int:
         """
         int: The degree of the polynomial, i.e. the highest degree with non-zero coefficient.
 
@@ -1281,7 +1313,7 @@ class Poly:
         raise NotImplementedError
 
     @property
-    def nonzero_degrees(self):
+    def nonzero_degrees(self) -> np.ndarray:
         """
         numpy.ndarray: An array of the polynomial degrees that have non-zero coefficients, in degree-descending order. The entries of
         :obj:`nonzero_degrees` are paired with :obj:`nonzero_coeffs`.
@@ -1297,7 +1329,7 @@ class Poly:
         raise NotImplementedError
 
     @property
-    def nonzero_coeffs(self):
+    def nonzero_coeffs(self) -> FieldArray:
         """
         galois.FieldArray: The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_degrees`
         are paired with :obj:`nonzero_coeffs`.
@@ -1313,7 +1345,7 @@ class Poly:
         raise NotImplementedError
 
     @property
-    def degrees(self):
+    def degrees(self) -> np.ndarray:
         """
         numpy.ndarray: An array of the polynomial degrees in degree-descending order. The entries of :obj:`degrees`
         are paired with :obj:`coeffs`.
@@ -1329,7 +1361,7 @@ class Poly:
         raise NotImplementedError
 
     @property
-    def coeffs(self):
+    def coeffs(self) -> FieldArray:
         """
         galois.FieldArray: The coefficients of the polynomial in degree-descending order. The entries of :obj:`degrees` are
         paired with :obj:`coeffs`.
@@ -1345,7 +1377,7 @@ class Poly:
         raise NotImplementedError
 
     @property
-    def integer(self):
+    def integer(self) -> int:
         r"""
         int: The integer representation of the polynomial. For the polynomial :math:`f(x) =  a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0`
         over the field :math:`\mathrm{GF}(p^m)`, the integer representation is :math:`i = a_d (p^m)^{d} + a_{d-1} (p^m)^{d-1} + \dots + a_1 (p^m) + a_0`
@@ -1366,7 +1398,7 @@ class Poly:
         return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
 
     @property
-    def string(self):
+    def string(self) -> str:
         """
         str: The string representation of the polynomial, without specifying the Galois field.
 

@@ -12,7 +12,7 @@ __all__ = ["is_monic", "minimal_poly"]
 
 
 @set_module("galois")
-def is_monic(poly):
+def is_monic(poly: Poly) -> bool:
     r"""
     Determines whether the polynomial is monic, i.e. having leading coefficient equal to 1.
 
@@ -45,7 +45,7 @@ def is_monic(poly):
 
 
 @set_module("galois")
-def minimal_poly(element):
+def minimal_poly(element: FieldArray) -> Poly:
     r"""
     Computes the minimal polynomial :math:`m_e(x) \in \mathrm{GF}(p)[x]` of a Galois field
     element :math:`e \in \mathrm{GF}(p^m)`.

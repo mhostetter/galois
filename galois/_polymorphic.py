@@ -2,6 +2,7 @@
 A module that contains polymorphic math functions that work on integers and polynomials.
 """
 import builtins
+from typing import Tuple, List, Iterable, overload
 
 import numpy as np
 
@@ -23,6 +24,12 @@ __all__ = [
 # Divisibility
 ###############################################################################
 
+@overload
+def gcd(a: int, b: int) -> int:
+    ...
+@overload
+def gcd(a: Poly, b: Poly) -> Poly:
+    ...
 @set_module("galois")
 def gcd(a, b):
     r"""
@@ -78,6 +85,12 @@ def gcd(a, b):
         raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
 
+@overload
+def egcd(a: int, b: int) -> Tuple[int, int, int]:
+    ...
+@overload
+def egcd(a: Poly, b: Poly) -> Tuple[Poly, Poly, Poly]:
+    ...
 @set_module("galois")
 def egcd(a, b):
     r"""
@@ -143,6 +156,12 @@ def egcd(a, b):
         raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
 
+@overload
+def lcm(*values: int) -> int:
+    ...
+@overload
+def lcm(*values: Poly) -> Poly:
+    ...
 @set_module("galois")
 def lcm(*values):
     r"""
@@ -192,6 +211,12 @@ def lcm(*values):
         raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
 
 
+@overload
+def prod(*values: int) -> int:
+    ...
+@overload
+def prod(*values: Poly) -> Poly:
+    ...
 @set_module("galois")
 def prod(*values):
     r"""
@@ -237,6 +262,12 @@ def prod(*values):
         raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
 
 
+@overload
+def are_coprime(*values: int) -> bool:
+    ...
+@overload
+def are_coprime(*values: Poly) -> bool:
+    ...
 @set_module("galois")
 def are_coprime(*values):
     r"""
@@ -289,6 +320,12 @@ def are_coprime(*values):
 # Congruences
 ###############################################################################
 
+@overload
+def pow(base: int, exponent: int, modulus: int) -> int:  # pylint: disable=redefined-builtin
+    ...
+@overload
+def pow(base: Poly, exponent: int, modulus: Poly) -> Poly:  # pylint: disable=redefined-builtin
+    ...
 @set_module("galois")
 def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
     r"""
@@ -351,6 +388,12 @@ def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
         raise TypeError(f"Arguments `base` and `modulus` must both be either int or galois.Poly, not {type(base)} and {type(modulus)}.")
 
 
+@overload
+def crt(remainders: Iterable[int], moduli: Iterable[int]) -> int:
+    ...
+@overload
+def crt(remainders: Iterable[Poly], moduli: Iterable[Poly]) -> Poly:
+    ...
 @set_module("galois")
 def crt(remainders, moduli):
     r"""
@@ -446,6 +489,12 @@ def crt(remainders, moduli):
 # Factorization
 ###############################################################################
 
+@overload
+def factors(value: int) -> Tuple[List[int], List[int]]:
+    ...
+@overload
+def factors(value: Poly) -> Tuple[List[Poly], List[int]]:
+    ...
 @set_module("galois")
 def factors(value):
     r"""
@@ -520,6 +569,12 @@ def factors(value):
         raise TypeError(f"Argument `value` must be either int or galois.Poly, not {type(value)}.")
 
 
+@overload
+def is_square_free(value: int) -> bool:
+    ...
+@overload
+def is_square_free(value: Poly) -> bool:
+    ...
 @set_module("galois")
 def is_square_free(value):
     r"""
