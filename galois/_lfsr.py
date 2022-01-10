@@ -1,9 +1,12 @@
 """
 A module containing classes and functions for generating and analyzing linear feedback shift registers and their sequences.
 """
+from typing import Tuple, List, Union, overload
+from typing_extensions import Literal
+
 import numba
-from numba import int64
 import numpy as np
+from numba import int64
 
 from ._fields import FieldClass, FieldArray
 from ._overrides import set_module
@@ -58,7 +61,12 @@ class LFSR:
     * https://www.cs.uky.edu/~klapper/pdf/galois.pdf
     """
 
-    def __init__(self, poly, state=1, config="fibonacci"):
+    def __init__(
+        self,
+        poly: Poly,
+        state: Union[int, Tuple[int], List[int], np.ndarray, FieldArray] = 1,
+        config: Literal["fibonacci", "galois"] = "fibonacci"
+    ):
         r"""
         Constructs a linear-feedback shift register.
 
@@ -80,7 +88,7 @@ class LFSR:
         """
         if not isinstance(poly, Poly):
             raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-        if not isinstance(state, (type(None), int, np.integer, tuple, list, np.ndarray, FieldArray)):
+        if not isinstance(state, (int, np.integer, tuple, list, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `state` must be an int or array-like, not {type(state)}.")
         if not isinstance(config, str):
             raise TypeError(f"Argument `config` must be a string, not {type(config)}.")
@@ -94,7 +102,7 @@ class LFSR:
         self._field = poly.field
         self._poly = poly
         self._initial_state = self.field(state)
-        self._state = None
+        self._state = self.field(state)
         self._config = config
         self.reset()
 
@@ -134,7 +142,7 @@ class LFSR:
         """
         self._state = self.initial_state.copy()
 
-    def step(self, steps=1):
+    def step(self, steps: int = 1) -> FieldArray:
         """
         Steps the LFSR and produces `steps` output symbols.
 
@@ -191,7 +199,7 @@ class LFSR:
         return y
 
     @property
-    def field(self):
+    def field(self) -> FieldClass:
         """
         galois.FieldClass: The Galois field that defines the LFSR arithmetic. The generator polynomial :math:`g(x)` is over this
         field and the state vector contains values in this field.
@@ -207,7 +215,7 @@ class LFSR:
         return self._field
 
     @property
-    def poly(self):
+    def poly(self) -> Poly:
         r"""
         galois.Poly: The generator polynomial :math:`g(x) = g_n x^n + \dots + g_1 x + g_0`.
 
@@ -221,7 +229,7 @@ class LFSR:
         return self._poly
 
     @property
-    def initial_state(self):
+    def initial_state(self) -> FieldArray:
         r"""
         galois.FieldArray: The initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`.
 
@@ -235,7 +243,7 @@ class LFSR:
         return self._initial_state.copy()
 
     @property
-    def state(self):
+    def state(self) -> FieldArray:
         r"""
         galois.FieldArray: The current state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`.
 
@@ -251,7 +259,7 @@ class LFSR:
         return self._state.copy()
 
     @property
-    def config(self):
+    def config(self) -> str:
         """
         str: The LFSR configuration, either `"fibonacci"` or `"galois"`. See the Notes section of :obj:`LFSR` for descriptions of
         the two configurations.
@@ -285,6 +293,12 @@ class LFSR:
 #     return Poly(coeffs, field=field)
 
 
+@overload
+def berlekamp_massey(sequence: FieldArray, config: Literal["fibonacci", "galois"] = "fibonacci", state: Literal[False] = False) -> Poly:
+    ...
+@overload
+def berlekamp_massey(sequence: FieldArray, config: Literal["fibonacci", "galois"] = "fibonacci", state: Literal[True] = True) -> Tuple[Poly, FieldArray]:
+    ...
 @set_module("galois")
 def berlekamp_massey(sequence, config="fibonacci", state=False):
     r"""
