@@ -104,6 +104,7 @@ autodoc_default_options = {
     'member-order': 'groupwise',
     'inherited-members': 'ndarray'  # Inherit from all classes except np.ndarray
 }
+autodoc_typehints = "none"
 
 autosummary_generate = True
 autosummary_generate_overwrite = True
