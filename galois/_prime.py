@@ -593,6 +593,10 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
     if not isinstance(rounds, (int, np.integer)):
         raise TypeError(f"Argument `rounds` must be an integer, not {type(rounds)}.")
 
+    # To avoid this test `2 <= a <= n - 2` which doesn't apply for n=3
+    if n == 3:
+        return True
+
     n = int(n)
     if not (n > 2 and n % 2 == 1):
         raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
