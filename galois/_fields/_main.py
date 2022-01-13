@@ -1812,6 +1812,80 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         norm = self**((p**m - 1) // (p - 1))
         return subfield(norm)
 
+    def characteristic_poly(self) -> "Poly":
+        r"""
+        Computes the characteristic polynomial of the square :math:`n \times n` matrix :math:`\mathbf{A}`.
+
+        Returns
+        -------
+        Poly
+            The degree-:math:`n` characteristic polynomial :math:`p_A(x)` of :math:`\mathbf{A}`.
+
+        Notes
+        -----
+        An :math:`n \times n` matrix :math:`\mathbf{A}` has characteristic polynomial
+        :math:`p_A(x) = \textrm{det}(x\mathbf{I} - \mathbf{A})`.
+
+        Special properties of the characteristic polynomial are the constant coefficient is
+        :math:`\textrm{det}(-\mathbf{A})` and the :math:`x^{n-1}` coefficient is :math:`-\textrm{Tr}(\mathbf{A})`.
+
+        References
+        ----------
+        * https://en.wikipedia.org/wiki/Characteristic_polynomial
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(3**5)
+            A = GF.Random((3,3)); A
+            poly = A.characteristic_poly(); poly
+
+        .. ipython:: python
+
+            # The x^0 coefficient is det(-A)
+            poly.coeffs[-1] == np.linalg.det(-A)
+            # The x^n-1 coefficient is -Tr(A)
+            poly.coeffs[1] == -np.trace(A)
+        """
+        if not self.ndim == 2:
+            raise ValueError(f"The array must be 2-D to compute its characteristic poly, not have shape {self.shape}.")
+        if not self.shape[0] == self.shape[1]:
+            raise ValueError(f"The array must be square to compute its characteristic poly, not have shape {self.shape}.")
+
+        field = type(self)
+        A = self
+
+        # Compute P = xI - A
+        P = np.zeros(self.shape, dtype=object)
+        for i in range(self.shape[0]):
+            for j in range(self.shape[0]):
+                if i == j:
+                    P[i,j] = Poly([1, -A[i,j]], field=field)
+                else:
+                    P[i,j] = Poly([-A[i,j]], field=field)
+
+        # Compute det(P)
+        return self._compute_poly_det(P)
+
+    def _compute_poly_det(self, A):
+        if A.shape == (2,2):
+            return A[0,0]*A[1,1] - A[0,1]*A[1,0]
+
+        field = type(self)
+        n = A.shape[0]  # Size of the nxn matrix
+        scalar = Poly.One(field)
+
+        det = Poly.Zero(field)
+        for i in range(n):
+            idxs = np.delete(np.arange(0, n), i)
+            if i % 2 == 0:
+                det += scalar * A[0,i] * self._compute_poly_det(A[1:,idxs])
+            else:
+                det -= scalar * A[0,i] * self._compute_poly_det(A[1:,idxs])
+
+        return det
+
     ###############################################################################
     # Special methods (redefined to add docstrings)
     ###############################################################################
