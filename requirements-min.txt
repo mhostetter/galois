@@ -1,2 +1,10 @@
-numpy==1.18.4
-numba==0.53
+numpy==1.21.3; python_version=="3.10"
+numpy==1.20.0; python_version=="3.9"
+numpy==1.20.0; python_version=="3.8"
+numpy==1.20.0; python_version=="3.7"
+numpy==1.18.4; python_version=="3.6"
+numba==0.55; python_version=="3.10"
+numba==0.53; python_version=="3.9"
+numba==0.53; python_version=="3.8"
+numba==0.53; python_version=="3.7"
+numba==0.53; python_version=="3.6"
