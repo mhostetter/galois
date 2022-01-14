@@ -1,5 +1,23 @@
 # Release Notes
 
+## v0.0.23
+
+### Changes
+
+- Add support for Python 3.10.
+- Add support for NumPy 1.21.
+- Add support for Numba 0.55.
+- Add type hints to library API.
+- Add `FieldArray.characteristic_poly()` method to return the characteristic polynomial of a square matrix.
+- Add `Poly.coefficients()` method to return the coefficient array with fixed size and order.
+- Fix bug in `Poly.Degrees()` when duplicate degrees were present.
+- Fix bug in Reed-Solomon decode when `c != 1`.
+- Various other bug fixes.
+
+### Contributors
+
+- Matt Hostetter (@mhostetter)
+
 ## v0.0.22
 
 ### Breaking Changes
