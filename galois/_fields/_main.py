@@ -1874,15 +1874,14 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         field = type(self)
         n = A.shape[0]  # Size of the nxn matrix
-        scalar = Poly.One(field)
 
         det = Poly.Zero(field)
         for i in range(n):
             idxs = np.delete(np.arange(0, n), i)
             if i % 2 == 0:
-                det += scalar * A[0,i] * self._compute_poly_det(A[1:,idxs])
+                det += A[0,i] * self._compute_poly_det(A[1:,idxs])
             else:
-                det -= scalar * A[0,i] * self._compute_poly_det(A[1:,idxs])
+                det -= A[0,i] * self._compute_poly_det(A[1:,idxs])
 
         return det
 
