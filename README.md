@@ -18,6 +18,10 @@ The new ufuncs are written in Python and then [just-in-time compiled](https://nu
 [Numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit
 calculation (for memory savings).
 
+| :warning: Disclaimer    |
+|:------------------------|
+| The algorithms implemented in the NumPy ufuncs aren't constant-time, but were instead designed for performance. As such, the library could be vulnerable to a [side-channel timing attack](https://en.wikipedia.org/wiki/Timing_attack). This library isn't intended for production security, but instead for research & development, reverse engineering, cryptanalysis, experimentation, and general education. |
+
 ## Features
 
 - Supports all [Galois fields](https://galois.readthedocs.io/en/stable/api/galois-fields.html#) `GF(p^m)`, even arbitrarily-large fields!
