@@ -40,6 +40,12 @@ Special polynomials
 
    minimal_poly
 
+.. rubric:: Interpolating polynomials
+.. autosummary::
+   :toctree:
+
+   lagrange_poly
+
 Polynomial functions
 --------------------
 
