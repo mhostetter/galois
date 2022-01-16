@@ -10,7 +10,7 @@ from .._overrides import set_module
 from ._main import FieldArray, Poly
 
 __all__ = [
-    "minimal_poly",
+    "minimal_poly", "lagrange_poly",
     "square_free_factorization", "distinct_degree_factorization", "equal_degree_factorization",
     "is_monic",
 ]
@@ -207,6 +207,81 @@ def minimal_poly(element: FieldArray) -> Poly:
         poly = Poly.Roots(conjugates, field=field)
         poly = Poly(poly.coeffs, field=field.prime_subfield)
         return poly
+
+
+@set_module("galois")
+def lagrange_poly(x: FieldArray, y: FieldArray) -> Poly:
+    r"""
+    Computes the Lagrange interpolating polynomial :math:`L(x)` such that :math:`L(x_i) = y_i`.
+
+    Parameters
+    ----------
+    x : galois.FieldArray
+        An array of :math:`x_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must have no
+        duplicate entries.
+    y : galois.FieldArray
+        An array of :math:`y_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must be the same
+        size as :math:`x`.
+
+    Returns
+    -------
+    galois.Poly
+        The Lagrange polynomial :math:`L(x)`.
+
+    Notes
+    -----
+    The Lagrange interpolating polynomial is defined as
+
+    .. math::
+
+        L(x) = \sum_{j=0}^{k-1} y_j \ell_j(x)
+
+        \ell_j(x) = \prod_{\substack{0 \le m < k \\ m \ne j}} \frac{x - x_m}{x_j - x_m} .
+
+    It is the polynomial of minimal degree that satisfies :math:`L(x_i) = y_i`.
+
+    References
+    ----------
+    * https://en.wikipedia.org/wiki/Lagrange_polynomial
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(2**4)
+        x = GF.Elements(); x
+        y = GF.Random(GF.order); y
+        L = galois.lagrange_poly(x, y); L
+        np.array_equal(L(x), y)
+    """
+    if not isinstance(x, FieldArray):
+        raise TypeError(f"Argument `x` must be a Galois field array, not {type(x)}.")
+    if not isinstance(y, FieldArray):
+        raise TypeError(f"Argument `y` must be a Galois field array, not {type(y)}.")
+    if not type(x) == type(y):  # pylint: disable=unidiomatic-typecheck
+        raise TypeError(f"Arguments `x` and `y` must be over the same Galois field, not {type(x)} and {type(y)}.")
+    if not x.ndim == 1:
+        raise ValueError(f"Argument `x` must be 1-D, not have shape {x.shape}.")
+    if not y.ndim == 1:
+        raise ValueError(f"Argument `y` must be 1-D, not have shape {y.shape}.")
+    if not x.size == y.size:
+        raise ValueError(f"Arguments `x` and `y` must be the same size, not {x.size} and {y.size}.")
+    if not x.size == np.unique(x).size:
+        raise ValueError(f"Argument `x` must have unique entries, not {x}.")
+
+    field = type(x)
+    L = Poly.Zero(field)  # The Lagrange polynomial L(x)
+    k = x.size  # The number of coordinates
+
+    for j in range(k):
+        lj = Poly.One(field)
+        for m in range(k):
+            if m == j:
+                continue
+            lj *= Poly([1, -x[m]], field=field) / (x[j] - x[m])
+        L += y[j] * lj
+
+    return L
 
 
 ###############################################################################
