@@ -360,7 +360,7 @@ MINIMAL_POLYS_5_3 = [
 ]
 
 
-def test_minimal_poly_exceptions():
+def test_exceptions():
     GF = galois.GF(5)
 
     with pytest.raises(TypeError):
@@ -372,7 +372,7 @@ def test_minimal_poly_exceptions():
 
 
 @pytest.mark.parametrize("characteristic,degree", PARAMS)
-def test_minimal_poly(characteristic, degree):
+def test_fields(characteristic, degree):
     GFp = galois.GF(characteristic)
     GFpm = galois.GF(characteristic**degree)
     LUT = eval(f"MINIMAL_POLYS_{characteristic}_{degree}")
@@ -382,7 +382,7 @@ def test_minimal_poly(characteristic, degree):
         assert galois.minimal_poly(e) == poly
 
 
-def test_minimal_poly_large_field():
+def test_large_field():
     # Test vectors generated with SageMath
     GF = galois.GF(2**100)
     galois.minimal_poly(GF(2)) == galois.Poly.String("x^100 + x^57 + x^56 + x^55 + x^52 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^41 + x^37 + x^36 + x^35 + x^34 + x^31 + x^30 + x^27 + x^25 + x^24 + x^22 + x^20 + x^19 + x^16 + x^15 + x^11 + x^9 + x^8 + x^6 + x^5 + x^3 + 1")
