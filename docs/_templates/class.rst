@@ -19,7 +19,7 @@
    {%- endfor %}
 
    {% set special_methods = [] %}
-   {%- for item in ['__add__', '__sub__', '__mul__', '__truediv__', '__floordiv__', '__divmod__', '__mod__', '__pow__'] if item in members %}
+   {%- for item in ['__call__', '__add__', '__sub__', '__mul__', '__truediv__', '__floordiv__', '__divmod__', '__mod__', '__pow__'] if item in members %}
      {{- special_methods.append(item)|default("", True) }}
    {%- endfor %}
    {%- endif %}
