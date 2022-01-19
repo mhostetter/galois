@@ -3406,6 +3406,27 @@ class Poly:
         if not isinstance(x, field):
             x = field(x)
         return field._poly_evaluate(coeffs, x)
+    def __len__(self) -> int:
+        """
+        Returns the length of the coefficient array.
+
+        The length of the coefficient array is `Poly.degree + 1`.
+
+        Returns
+        -------
+        int
+            The length of the coefficient array.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            a = galois.Poly.Random(5); a
+            a.coeffs
+            len(a)
+            a.degree + 1
+        """
+        return self.degree + 1
 
     def _check_inputs_are_polys(self, a, b):
         if not isinstance(a, (Poly, self.field)):
@@ -3659,7 +3680,7 @@ class Poly:
         Returns
         -------
         galois.Poly
-            The polynomial :math:`a(x)**b`.
+            The polynomial :math:`a(x)^b`.
 
         Examples
         --------
@@ -3710,9 +3731,6 @@ class Poly:
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    def __len__(self):
-        return self.degree + 1
 
     @classmethod
     def _add(cls, a, b):
