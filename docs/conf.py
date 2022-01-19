@@ -100,7 +100,7 @@ autodoc_default_options = {
     'imported-members': True,
     'members': True,
     'undoc-members': True,
-    'special-members': '__init__, __call__, __add__, __sub__, __mul__, __truediv__, __floordiv__, __divmod__, __mod__, __pow__',
+    'special-members': '__init__, __call__, __len__, __add__, __sub__, __mul__, __truediv__, __floordiv__, __divmod__, __mod__, __pow__',
     'member-order': 'groupwise',
     'inherited-members': 'ndarray'  # Inherit from all classes except np.ndarray
 }
