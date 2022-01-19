@@ -231,6 +231,17 @@ class FunctionMeta(UfuncMeta):
 
         return results
 
+    def _poly_evaluate_matrix(cls, coeffs, X):
+        field = cls
+        assert X.ndim == 2 and X.shape[0] == X.shape[1]
+        I = field.Identity(X.shape[0])
+
+        results = coeffs[0]*I
+        for j in range(1, coeffs.size):
+            results = coeffs[j]*I + results @ X
+
+        return results
+
     def _poly_divmod(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
         assert 1 <= a.ndim <= 2 and b.ndim == 1

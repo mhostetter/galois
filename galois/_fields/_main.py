@@ -1826,8 +1826,9 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         An :math:`n \times n` matrix :math:`\mathbf{A}` has characteristic polynomial
         :math:`p_A(x) = \textrm{det}(x\mathbf{I} - \mathbf{A})`.
 
-        Special properties of the characteristic polynomial are the constant coefficient is
-        :math:`\textrm{det}(-\mathbf{A})` and the :math:`x^{n-1}` coefficient is :math:`-\textrm{Tr}(\mathbf{A})`.
+        Special properties of the characteristic polynomial are: the constant coefficient is
+        :math:`\textrm{det}(-\mathbf{A})`, the :math:`x^{n-1}` coefficient is :math:`-\textrm{Tr}(\mathbf{A})`,
+        and :math:`p_A(\mathbf{A}) = \mathbf{0}`.
 
         References
         ----------
@@ -1847,6 +1848,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             poly.coeffs[-1] == np.linalg.det(-A)
             # The x^n-1 coefficient is -Tr(A)
             poly.coeffs[1] == -np.trace(A)
+            # The characteristic polynomial annihilates the matrix A
+            poly(A, elementwise=False)
         """
         if not self.ndim == 2:
             raise ValueError(f"The array must be 2-D to compute its characteristic poly, not have shape {self.shape}.")
@@ -3380,9 +3383,9 @@ class Poly:
         t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
         return hash(t)
 
-    def __call__(self, x: FieldArray, field: Optional[FieldClass] = None) -> FieldArray:
+    def __call__(self, x: FieldArray, field: Optional[FieldClass] = None, elementwise: bool = True) -> FieldArray:
         """
-        Evaluate the polynomial.
+        Evaluates the polynomial at :math:`x`.
 
         Parameters
         ----------
@@ -3391,21 +3394,52 @@ class Poly:
         field : galois.FieldClass, optional
             The Galois field to evaluate the polynomial over. The default is `None` which represents
             the polynomial's current field, i.e. :obj:`field`.
+        elementwise : bool, optional
+            Indicates to evaluate arrays elementwise. The default is `True`. If `False`, the polynomial
+            indeterminate is evaluated at the square matrix :math:`X`.
 
         Returns
         -------
         galois.FieldArray
-            The result of the polynomial evaluation of the same shape as `x`.
+            The result of the polynomial evaluation of the same shape as :math:`x`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(2**8)
+            p = galois.Poly([37, 123, 0, 201], field=GF); p
+
+        Evaluate the polynomial elementwise at :math:`x`.
+
+        .. ipython:: python
+
+            x = GF.Random(4); x
+            p(x)
+            GF(37)*x**3 + GF(123)*x**2 + GF(201)
+
+        Evaluate the polynomial at the matrix :math:`X`.
+
+        .. ipython:: python
+
+            X = GF.Random((2,2)); X
+            p(X, elementwise=False)
+            GF(37)*np.linalg.matrix_power(X,3) + GF(123)*np.linalg.matrix_power(X,2) + GF(201)*GF.Identity(2)
         """
-        if field is None:
-            field = self.field
-            coeffs = self.coeffs
+        if not isinstance(field, (type(None), FieldClass)):
+            raise TypeError(f"Argument `field` must be a Galois field array class, not {type(field)}.")
+
+        field = self.field if field is None else field
+        coeffs = field(self.coeffs)
+        x = field(x)
+
+        if elementwise:
+            return field._poly_evaluate(coeffs, x)
         else:
-            assert isinstance(field, FieldClass)
-            coeffs = field(self.coeffs)
-        if not isinstance(x, field):
-            x = field(x)
-        return field._poly_evaluate(coeffs, x)
+            if not (x.ndim == 2 and x.shape[0] == x.shape[1]):
+                raise ValueError(f"Argument `x` must be a square matrix when evaluating the polynomial not elementwise, not have shape {x.shape}.")
+            return field._poly_evaluate_matrix(coeffs, x)
+
     def __len__(self) -> int:
         """
         Returns the length of the coefficient array.
