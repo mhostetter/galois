@@ -1814,21 +1814,25 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     def characteristic_poly(self) -> "Poly":
         r"""
-        Computes the characteristic polynomial of the square :math:`n \times n` matrix :math:`\mathbf{A}`.
+        Computes the characteristic polynomial of a finite field element :math:`a` or a square matrix :math:`\mathbf{A}`.
 
         Returns
         -------
         Poly
-            The degree-:math:`n` characteristic polynomial :math:`p_A(x)` of :math:`\mathbf{A}`.
+            For scalar inputs, the degree-:math:`m` characteristic polynomial :math:`p_a(x)` of :math:`a` over :math:`\mathrm{GF}(p)`.
+            For square :math:`n \times n` matrix inputs, the degree-:math:`n` characteristic polynomial :math:`p_A(x)` of
+            :math:`\mathbf{A}` over :math:`\mathrm{GF}(p^m)`.
 
         Notes
         -----
-        An :math:`n \times n` matrix :math:`\mathbf{A}` has characteristic polynomial
-        :math:`p_A(x) = \textrm{det}(x\mathbf{I} - \mathbf{A})`.
+        An element :math:`a` of :math:`\mathrm{GF}(p^m)` has characteristic polynomial :math:`p_a(x)` over :math:`\mathrm{GF}(p)`.
+        The characteristic polynomial when evaluated in :math:`\mathrm{GF}(p^m)` annihilates :math:`a`, i.e. :math:`p_a(a) = 0`.
 
-        Special properties of the characteristic polynomial are: the constant coefficient is
-        :math:`\textrm{det}(-\mathbf{A})`, the :math:`x^{n-1}` coefficient is :math:`-\textrm{Tr}(\mathbf{A})`,
-        and :math:`p_A(\mathbf{A}) = \mathbf{0}`.
+        An :math:`n \times n` matrix :math:`\mathbf{A}` has characteristic polynomial
+        :math:`p_A(x) = \textrm{det}(x\mathbf{I} - \mathbf{A})` over :math:`\mathrm{GF}(p^m)`. The constant coefficient of the
+        characteristic polynomial is :math:`\textrm{det}(-\mathbf{A})`. The :math:`x^{n-1}` coefficient of the characteristic
+        polynomial is :math:`-\textrm{Tr}(\mathbf{A})`. The characteristic polynomial annihilates :math:`\mathbf{A}`, i.e.
+        :math:`p_A(\mathbf{A}) = \mathbf{0}`.
 
         References
         ----------
@@ -1836,14 +1840,23 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Examples
         --------
+        The characteristic polynomial of the element :math:`a`.
+
+        .. ipython:: python
+
+            GF = galois.GF(3**5)
+            a = GF.Random(); a
+            poly = a.characteristic_poly(); poly
+            # The characteristic polynomial annihilates a
+            poly(a, field=GF)
+
+        The characteristic polynomial of the square matrix :math:`\mathbf{A}`.
+
         .. ipython:: python
 
             GF = galois.GF(3**5)
             A = GF.Random((3,3)); A
             poly = A.characteristic_poly(); poly
-
-        .. ipython:: python
-
             # The x^0 coefficient is det(-A)
             poly.coeffs[-1] == np.linalg.det(-A)
             # The x^n-1 coefficient is -Tr(A)
@@ -1851,10 +1864,29 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             # The characteristic polynomial annihilates the matrix A
             poly(A, elementwise=False)
         """
-        if not self.ndim == 2:
-            raise ValueError(f"The array must be 2-D to compute its characteristic poly, not have shape {self.shape}.")
+        if self.ndim == 0:
+            return self._characteristic_poly_element()
+        elif self.ndim == 2:
+            return self._characteristic_poly_matrix()
+        else:
+            raise ValueError(f"The array must be either 0-D to return the characteristic polynomial of a single element or 2-D to return the characteristic polynomial of a square matrix, not have shape {self.shape}.")
+
+    def _characteristic_poly_element(self):
+        field = type(self)
+        a = self
+        x = Poly.Identity(field=field)
+
+        if field.is_prime_field:
+            return x - a
+        else:
+            conjugates = a**(field.characteristic**np.arange(0, field.degree, dtype=field.dtypes[-1]))
+            poly = Poly.Roots(conjugates, field=field)
+            poly = Poly(poly.coeffs, field=field.prime_subfield)
+            return poly
+
+    def _characteristic_poly_matrix(self):
         if not self.shape[0] == self.shape[1]:
-            raise ValueError(f"The array must be square to compute its characteristic poly, not have shape {self.shape}.")
+            raise ValueError(f"The 2-D array must be square to compute its characteristic poly, not have shape {self.shape}.")
 
         field = type(self)
         A = self
