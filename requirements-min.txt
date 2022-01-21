@@ -8,3 +8,4 @@ numba==0.53; python_version=="3.9"
 numba==0.53; python_version=="3.8"
 numba==0.53; python_version=="3.7"
 numba==0.53; python_version=="3.6"
+typing_extensions
