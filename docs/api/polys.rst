@@ -34,12 +34,6 @@ Special polynomials
    conway_poly
    matlab_primitive_poly
 
-.. rubric:: Minimal polynomials
-.. autosummary::
-   :toctree:
-
-   minimal_poly
-
 .. rubric:: Interpolating polynomials
 .. autosummary::
    :toctree:

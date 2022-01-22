@@ -1816,6 +1816,9 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         r"""
         Computes the characteristic polynomial of a finite field element :math:`a` or a square matrix :math:`\mathbf{A}`.
 
+        This function can be invoked on single finite field elements (scalar 0-D arrays) or square :math:`n \times n`
+        matrices (2-D arrays).
+
         Returns
         -------
         Poly
@@ -1827,6 +1830,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         -----
         An element :math:`a` of :math:`\mathrm{GF}(p^m)` has characteristic polynomial :math:`p_a(x)` over :math:`\mathrm{GF}(p)`.
         The characteristic polynomial when evaluated in :math:`\mathrm{GF}(p^m)` annihilates :math:`a`, i.e. :math:`p_a(a) = 0`.
+        In prime fields :math:`\mathrm{GF}(p)`, the characteristic polynomial of :math:`a` is simply :math:`p_a(x) = x - a`.
 
         An :math:`n \times n` matrix :math:`\mathbf{A}` has characteristic polynomial
         :math:`p_A(x) = \textrm{det}(x\mathbf{I} - \mathbf{A})` over :math:`\mathrm{GF}(p^m)`. The constant coefficient of the
@@ -1874,19 +1878,19 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     def _characteristic_poly_element(self):
         field = type(self)
         a = self
-        x = Poly.Identity(field=field)
+        x = Poly.Identity(field)
 
         if field.is_prime_field:
             return x - a
         else:
-            conjugates = a**(field.characteristic**np.arange(0, field.degree, dtype=field.dtypes[-1]))
-            poly = Poly.Roots(conjugates, field=field)
+            powers = a**(field.characteristic**np.arange(0, field.degree, dtype=field.dtypes[-1]))
+            poly = Poly.Roots(powers, field=field)
             poly = Poly(poly.coeffs, field=field.prime_subfield)
             return poly
 
     def _characteristic_poly_matrix(self):
         if not self.shape[0] == self.shape[1]:
-            raise ValueError(f"The 2-D array must be square to compute its characteristic poly, not have shape {self.shape}.")
+            raise ValueError(f"The 2-D array must be square to compute its characteristic polynomial, not have shape {self.shape}.")
 
         field = type(self)
         A = self
@@ -1919,6 +1923,63 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
                 det -= A[0,i] * self._compute_poly_det(A[1:,idxs])
 
         return det
+
+    def minimal_poly(self) -> "Poly":
+        r"""
+        Computes the minimal polynomial of a finite field element :math:`a`.
+
+        This function can be invoked only on single finite field elements (scalar 0-D arrays).
+
+        Returns
+        -------
+        Poly
+            For scalar inputs, the minimal polynomial :math:`p_a(x)` of :math:`a` over :math:`\mathrm{GF}(p)`.
+
+        Notes
+        -----
+        An element :math:`a` of :math:`\mathrm{GF}(p^m)` has minimal polynomial :math:`p_a(x)` over :math:`\mathrm{GF}(p)`.
+        The minimal polynomial when evaluated in :math:`\mathrm{GF}(p^m)` annihilates :math:`a`, i.e. :math:`p_a(a) = 0`.
+        The minimal polynomial always divides the characteristic polynomial. In prime fields :math:`\mathrm{GF}(p)`, the
+        minimal polynomial of :math:`a` is simply :math:`p_a(x) = x - a`.
+
+        References
+        ----------
+        * https://en.wikipedia.org/wiki/Minimal_polynomial_(field_theory)
+        * https://en.wikipedia.org/wiki/Minimal_polynomial_(linear_algebra)
+
+        Examples
+        --------
+        The characteristic polynomial of the element :math:`a`.
+
+        .. ipython:: python
+
+            GF = galois.GF(3**5)
+            a = GF.Random(); a
+            poly = a.minimal_poly(); poly
+            # The minimal polynomial annihilates a
+            poly(a, field=GF)
+            # The minimal polynomial always divides the characteristic polynomial
+            a.characteristic_poly() / poly
+        """
+        if self.ndim == 0:
+            return self._minimal_poly_element()
+        # elif self.ndim == 2:
+        #     return self._minimal_poly_matrix()
+        else:
+            raise ValueError(f"The array must be either 0-D to return the minimal polynomial of a single element or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}.")
+
+    def _minimal_poly_element(self):
+        field = type(self)
+        a = self
+        x = Poly.Identity(field)
+
+        if field.is_prime_field:
+            return x - a
+        else:
+            conjugates = np.unique(a**(field.characteristic**np.arange(0, field.degree, dtype=field.dtypes[-1])))
+            poly = Poly.Roots(conjugates, field=field)
+            poly = Poly(poly.coeffs, field=field.prime_subfield)
+            return poly
 
     ###############################################################################
     # Special methods (redefined to add docstrings)
