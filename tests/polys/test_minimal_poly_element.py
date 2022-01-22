@@ -1,5 +1,5 @@
 """
-A pytest module to test generating minimal polynomials.
+A pytest module to test generating minimal polynomials of finite field elements.
 
 Sage:
     PARAMS = [(2,1), (2,2), (2,3), (2,4), (3,1), (3,2), (3,3), (3,4), (5,1), (5,2), (5,3)]
@@ -361,14 +361,10 @@ MINIMAL_POLYS_5_3 = [
 
 
 def test_exceptions():
-    GF = galois.GF(5)
-
-    with pytest.raises(TypeError):
-        galois.minimal_poly(4)
-    with pytest.raises(TypeError):
-        galois.minimal_poly(np.array(4))
+    GF = galois.GF(2**8)
     with pytest.raises(ValueError):
-        galois.minimal_poly(GF([4, 3]))
+        A = GF.Random(5)
+        A.minimal_poly()
 
 
 @pytest.mark.parametrize("characteristic,degree", PARAMS)
@@ -377,14 +373,14 @@ def test_fields(characteristic, degree):
     GFpm = galois.GF(characteristic**degree)
     LUT = eval(f"MINIMAL_POLYS_{characteristic}_{degree}")
     for item in LUT:
-        e = GFpm(item[0])
+        a = GFpm(item[0])
         poly = galois.Poly(item[1], field=GFp)
-        assert galois.minimal_poly(e) == poly
+        assert a.minimal_poly() == poly
 
 
 def test_large_field():
     # Test vectors generated with SageMath
     GF = galois.GF(2**100)
-    galois.minimal_poly(GF(2)) == galois.Poly.String("x^100 + x^57 + x^56 + x^55 + x^52 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^41 + x^37 + x^36 + x^35 + x^34 + x^31 + x^30 + x^27 + x^25 + x^24 + x^22 + x^20 + x^19 + x^16 + x^15 + x^11 + x^9 + x^8 + x^6 + x^5 + x^3 + 1")
-    galois.minimal_poly(GF(3)) == galois.Poly.String("x^100 + x^96 + x^68 + x^64 + x^57 + x^55 + x^54 + x^53 + x^51 + x^50 + x^48 + x^47 + x^42 + x^41 + x^38 + x^36 + x^31 + x^29 + x^26 + x^24 + x^15 + x^14 + x^12 + x^9 + x^8 + x^5 + x^2 + x + 1")
-    galois.minimal_poly(GF(6)) == galois.Poly.String("x^100 + x^78 + x^76 + x^74 + x^73 + x^71 + x^67 + x^66 + x^65 + x^62 + x^60 + x^55 + x^52 + x^51 + x^50 + x^48 + x^47 + x^45 + x^42 + x^41 + x^35 + x^34 + x^33 + x^31 + x^30 + x^29 + x^28 + x^27 + x^26 + x^23 + x^22 + x^21 + x^20 + x^19 + x^16 + x^14 + x^13 + x^12 + x^10 + x^9 + x^8 + x^6 + x^3 + x + 1")
+    GF(2).minimal_poly() == galois.Poly.String("x^100 + x^57 + x^56 + x^55 + x^52 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^41 + x^37 + x^36 + x^35 + x^34 + x^31 + x^30 + x^27 + x^25 + x^24 + x^22 + x^20 + x^19 + x^16 + x^15 + x^11 + x^9 + x^8 + x^6 + x^5 + x^3 + 1")
+    GF(3).minimal_poly() == galois.Poly.String("x^100 + x^96 + x^68 + x^64 + x^57 + x^55 + x^54 + x^53 + x^51 + x^50 + x^48 + x^47 + x^42 + x^41 + x^38 + x^36 + x^31 + x^29 + x^26 + x^24 + x^15 + x^14 + x^12 + x^9 + x^8 + x^5 + x^2 + x + 1")
+    GF(6).minimal_poly() == galois.Poly.String("x^100 + x^78 + x^76 + x^74 + x^73 + x^71 + x^67 + x^66 + x^65 + x^62 + x^60 + x^55 + x^52 + x^51 + x^50 + x^48 + x^47 + x^45 + x^42 + x^41 + x^35 + x^34 + x^33 + x^31 + x^30 + x^29 + x^28 + x^27 + x^26 + x^23 + x^22 + x^21 + x^20 + x^19 + x^16 + x^14 + x^13 + x^12 + x^10 + x^9 + x^8 + x^6 + x^3 + x + 1")
