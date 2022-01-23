@@ -36,7 +36,7 @@ def test_shapes():
     # N-D
     y = x.reshape((3,3,3)).field_norm()
     assert np.array_equal(y, np.array(y_truth).reshape(3,3,3))
-    assert isinstance(y0, GF.prime_subfield)
+    assert isinstance(y, GF.prime_subfield)
 
 
 def test_binary_extension_1():
