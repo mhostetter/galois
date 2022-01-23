@@ -12,6 +12,7 @@ from typing_extensions import Literal
 import numba
 import numpy as np
 
+from .._factor import divisors
 from .._overrides import set_module
 from .._poly_conversion import integer_to_poly, poly_to_integer, str_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
 
@@ -1571,6 +1572,57 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     ###############################################################################
     # Instance methods
     ###############################################################################
+
+    def multiplicative_order(self) -> Union[np.integer, np.ndarray]:
+        r"""
+        Computes the multiplicative order :math:`\textrm{ord}(x)` of each element in :math:`x`.
+
+        Returns
+        -------
+        numpy.integer, numpy.ndarray
+            An integer array of the multiplicative order of each element in :math:`x`. The return value is a single integer if the
+            input array :math:`x` is a scalar.
+
+        Notes
+        -----
+        The multiplicative order :math:`\textrm{ord}(x) = a` of :math:`x` in :math:`\mathrm{GF}(p^m)` is the smallest power :math:`a`
+        such that :math:`x^a = 1`. If :math:`a = p^m - 1`, :math:`a` is said to be a generator of the multiplicative group
+        :math:`\mathrm{GF}(p^m)^\times`.
+
+        The multiplicative order of :math:`0` is not defined and will raise an :obj:`ArithmeticError`.
+
+        :func:`FieldArray.multiplicative_order` should not be confused with :obj:`FieldClass.order`. The former is a method on a
+        Galois field array that returns the multiplicative order of elements. The latter is a property of the field, namely
+        the finite field's order or size.
+
+        Examples
+        --------
+        Below is the multiplicative order of each non-zero element of :math:`\mathrm{GF}(2^4)`. The elements with
+        :math:`\textrm{ord}(x) = 15` are multiplicative generators of :math:`\mathrm{GF}(2^4)^\times`
+
+        .. ipython:: python
+
+            GF = galois.GF(2**4)
+            # The multiplicative order of 0 is not defined
+            x = GF.Range(1, GF.order); x
+            order = x.multiplicative_order(); order
+            # Elements with order of 15 are the primitive elements (generators) of the field
+            GF.primitive_elements
+            x**order
+        """
+        if not np.count_nonzero(self) == self.size:
+            raise ArithmeticError("The multiplicative order of 0 is not defined.")
+
+        x = self
+        field = type(self)
+
+        # TODO: Implement a better algorithm
+        d = np.array(divisors(field.order - 1))  # Divisors d such that d | p^m - 1
+        y = np.power.outer(x, d)  # x^d -- the first divisor d for which x^d == 1 is the order of x
+        idxs = np.argmin(np.abs(y.view(np.ndarray) - 1), axis=-1)  # First index of divisors, which is the order of x
+        order = d[idxs]  # The order of each element of x
+
+        return order
 
     def vector(
         self,
