@@ -417,7 +417,7 @@ class BCH:
     def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[False] = False) -> Union[np.ndarray, GF2]:
         ...
     @overload
-    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[True] = True) -> Tuple[Union[np.ndarray, GF2], Union[int, np.ndarray]]:
+    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[True] = True) -> Tuple[Union[np.ndarray, GF2], Union[np.integer, np.ndarray]]:
         ...
     def decode(self, codeword, errors=False):
         r"""
@@ -436,7 +436,7 @@ class BCH:
         -------
         numpy.ndarray, galois.GF2
             The decoded message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
-        int, np.ndarray
+        numpy.integer, numpy.ndarray
             Optional return argument of the number of corrected bit errors as either a scalar or :math:`n`-length vector.
             Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
             -1 will be returned.
