@@ -1573,6 +1573,44 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     # Instance methods
     ###############################################################################
 
+    def additive_order(self) -> Union[np.integer, np.ndarray]:
+        r"""
+        Computes the additive order of each element in :math:`x`.
+
+        Returns
+        -------
+        numpy.integer, numpy.ndarray
+            An integer array of the additive order of each element in :math:`x`. The return value is a single integer if the
+            input array :math:`x` is a scalar.
+
+        Notes
+        -----
+        The additive order :math:`a` of :math:`x` in :math:`\mathrm{GF}(p^m)` is the smallest integer :math:`a`
+        such that :math:`x a = 0`. With the exception of :math:`0`, the additive order of every element is
+        the finite field's characteristic.
+
+        Examples
+        --------
+        Below is the additive order of each element of :math:`\mathrm{GF}(2^4)`.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**4)
+            x = GF.Elements(); x
+            order = x.additive_order(); order
+            x*order
+        """
+        x = self
+        field = type(self)
+
+        if x.ndim == 0:
+            order = np.int64(1) if x == 0 else np.int64(field.characteristic)
+        else:
+            order = field.characteristic * np.ones(x.shape, dtype=np.int64)
+            order[np.where(x == 0)] = 1
+
+        return order
+
     def multiplicative_order(self) -> Union[np.integer, np.ndarray]:
         r"""
         Computes the multiplicative order :math:`\textrm{ord}(x)` of each element in :math:`x`.
