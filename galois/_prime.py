@@ -153,16 +153,26 @@ def prev_prime(n: int) -> Optional[int]:
 
         galois.prev_prime(13)
         galois.prev_prime(15)
+        galois.prev_prime(6298891201241929548477199440981228280038)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n <= MAX_N:
-        raise ValueError(f"Argument `n` is out of range of the prime lookup table. The lookup table only stores primes <= {MAX_N}.")
 
     if n < 2:
         return None
 
-    return PRIMES[bisect.bisect_right(PRIMES, n) - 1]
+    # Directly use lookup table
+    if n <= MAX_N:
+        return PRIMES[bisect.bisect_right(PRIMES, n) - 1]
+
+    # TODO: Make this faster using wheel factorization
+    n = n - 1 if n % 2 == 0 else n  # The next possible prime (which is odd)
+    while True:
+        n -= 2  # Only check odds
+        if is_prime(n):
+            break
+
+    return n
 
 
 @set_module("galois")
