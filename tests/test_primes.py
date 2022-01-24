@@ -58,16 +58,25 @@ def test_prev_prime():
 def test_next_prime_exceptions():
     with pytest.raises(TypeError):
         galois.next_prime(20.0)
-    with pytest.raises(ValueError):
-        galois.next_prime(galois._prime.MAX_N)
 
 
 def test_next_prime():
+    """
+    Sage:
+        n = randint(1e20, 1e40)
+        p = next_prime(n)
+        print(n, p)
+    """
     assert galois.next_prime(-10) == 2
     assert galois.next_prime(1) == 2
     assert galois.next_prime(2) == 3
     assert galois.next_prime(8) == 11
     assert galois.next_prime(11) == 13
+
+    assert galois.next_prime(6852976918500265458318414454675831645298) == 6852976918500265458318414454675831645343
+    assert galois.next_prime(3572414920255490866338499919876578953336) == 3572414920255490866338499919876578953521
+    assert galois.next_prime(2586430993484535570784866034349245707842) == 2586430993484535570784866034349245708081
+    assert galois.next_prime(5854185879525630749384072249732042426759) == 5854185879525630749384072249732042426801
 
 
 def test_random_prime_exceptions():
