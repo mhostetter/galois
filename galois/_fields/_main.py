@@ -670,6 +670,35 @@ class FieldClass(FunctionMeta, UfuncMeta):
         return np.sort(cls.primitive_element ** powers)
 
     @property
+    def quadratic_residues(cls) -> "FieldArray":
+        r"""
+        galois.FieldArray: All quadratic residues in the Galois field.
+
+        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic residue* if there exists a :math:`y` such that
+        :math:`y^2 = x` in the field.
+
+        In fields with characteristic 2, every element is a quadratic residue. In fields with characteristic greater than 2,
+        exactly half of the nonzero elements are quadratic residues (and they have two unique square roots).
+
+        See also :func:`FieldArray.is_quadratic_residue`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(11)
+            GF.quadratic_residues
+
+        .. ipython:: python
+
+            GF = galois.GF(2**4)
+            GF.quadratic_residues
+        """
+        x = cls.Elements()
+        is_quadratic_residue = x.is_quadratic_residue()
+        return x[is_quadratic_residue]
+
+    @property
     def is_prime_field(cls) -> bool:
         """
         bool: Indicates if the field's order is prime.
