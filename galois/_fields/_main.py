@@ -6,7 +6,7 @@ FieldClass is also included.
 import inspect
 import math
 import random
-from typing import Tuple, List, Iterable, Optional, Union
+from typing import Tuple, List, Sequence, Iterable, Optional, Union
 from typing_extensions import Literal
 
 import numba
@@ -1188,7 +1188,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     @classmethod
     def Zeros(
         cls,
-        shape: Union[int, Tuple[()], Tuple[int]],
+        shape: Union[int, Sequence[int]],
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         """
