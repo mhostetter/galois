@@ -1015,7 +1015,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         b = GF256([66, 166, 27, 182, 125], dtype=np.int64); b
         b.dtype
     """
-    # pylint: disable=unsupported-membership-test,not-an-iterable
+    # pylint: disable=unsupported-membership-test,not-an-iterable,too-many-public-methods
 
     def __new__(
         cls,
@@ -1668,6 +1668,58 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             order = d[idxs]  # The order of each element of x
 
         return order
+
+    def is_quadratic_residue(self) -> Union[np.bool_, np.ndarray]:
+        r"""
+        Determines if the elements of :math:`x` are quadratic residues in the Galois field.
+
+        Returns
+        -------
+        numpy.bool_, numpy.ndarray
+            An boolean array indicating if each element in :math:`x` is a quadratic residue. The return value is a single boolean if the
+            input array :math:`x` is a scalar.
+
+        Notes
+        -----
+        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic residue* if there exists a :math:`y` such that
+        :math:`y^2 = x` in the field.
+
+        In fields with characteristic 2, every element is a quadratic residue. In fields with characteristic greater than 2,
+        exactly half of the nonzero elements are quadratic residues (and they have two unique square roots).
+
+        References
+        ----------
+        * Section 3.5.1 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(11)
+            x = GF.Elements(); x
+            x.is_quadratic_residue()
+
+        .. ipython:: python
+
+            GF = galois.GF(2**4)
+            x = GF.Elements(); x
+            x.is_quadratic_residue()
+
+        .. ipython:: python
+
+            GF = galois.GF(3**3)
+            x = GF.Elements(); x
+            x.is_quadratic_residue()
+        """
+        x = self
+        field = type(self)
+
+        if field.characteristic == 2:
+            # All elements are quadratic residues if the field's characteristic is 2
+            return np.ones(x.shape, dtype=bool) if x.ndim > 0 else np.bool_(True)
+        else:
+            # Compute the Legendre symbol on each element
+            return x ** ((field.order - 1)//2) != field.characteristic - 1
 
     def vector(
         self,
