@@ -1281,7 +1281,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     @classmethod
     def Ones(
         cls,
-        shape: Union[int, Tuple[()], Tuple[int]],
+        shape: Union[int, Sequence[int]],
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         """
@@ -1357,7 +1357,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     @classmethod
     def Random(
         cls,
-        shape: Union[int, Tuple[()], Tuple[int]] = (),
+        shape: Union[int, Sequence[int]] = (),
         low: Optional[int] = 0,
         high: Optional[int] = None,
         seed: Optional[Union[int, np.random.Generator]] = None,
