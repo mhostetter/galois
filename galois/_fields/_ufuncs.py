@@ -272,7 +272,7 @@ class UfuncMeta(LookupMeta, CalculateMeta):
         x = inputs[0]
         b = x.is_quadratic_residue()  # Boolean indicating if the inputs are quadratic residues
         if not np.all(b):
-            raise ValueError(f"Input array has elements that are quadratic non-residues (do not have a square root). Use `x.is_quadratic_residue()` to determine if elements have square roots in {cls.name}.\n{x[~b]}")
+            raise ArithmeticError(f"Input array has elements that are quadratic non-residues (do not have a square root). Use `x.is_quadratic_residue()` to determine if elements have square roots in {cls.name}.\n{x[~b]}")
         return cls._sqrt(*inputs)
 
     def _ufunc_routine_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
