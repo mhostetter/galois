@@ -687,12 +687,20 @@ class FieldClass(FunctionMeta, UfuncMeta):
         .. ipython:: python
 
             GF = galois.GF(11)
-            GF.quadratic_residues
+            x = GF.quadratic_residues; x
+            r = np.sqrt(x)
+            r, -r
+            r**2
+            (-r)**2
 
         .. ipython:: python
 
             GF = galois.GF(2**4)
-            GF.quadratic_residues
+            x = GF.quadratic_residues; x
+            r = np.sqrt(x)
+            r, -r
+            r**2
+            (-r)**2
         """
         x = cls.Elements()
         is_quadratic_residue = x.is_quadratic_residue()
@@ -2726,6 +2734,14 @@ class GF2Meta(FieldClass, DirMeta):
             raise ArithmeticError("In GF(2), 1 is the only multiplicative generator.")
 
         return 0
+
+    ###############################################################################
+    # Ufuncs written in NumPy operations (not JIT compiled)
+    ###############################################################################
+
+    @staticmethod
+    def _sqrt(a):
+        return a.copy()
 
 
 @set_module("galois")

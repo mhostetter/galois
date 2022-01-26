@@ -14,7 +14,7 @@ class UfuncMeta(LookupMeta, CalculateMeta):
     # pylint: disable=no-value-for-parameter,abstract-method
 
     _UNSUPPORTED_UFUNCS_UNARY = [
-        np.invert, np.sqrt,
+        np.invert,
         np.log2, np.log10,
         np.exp, np.expm1, np.exp2,
         np.sin, np.cos, np.tan,
@@ -54,6 +54,7 @@ class UfuncMeta(LookupMeta, CalculateMeta):
         np.power: "_ufunc_routine_power",
         np.square: "_ufunc_routine_square",
         np.log: "_ufunc_routine_log",
+        np.sqrt: "_ufunc_routine_sqrt",
         np.matmul: "_ufunc_routine_matmul",
     }
 
@@ -82,6 +83,14 @@ class UfuncMeta(LookupMeta, CalculateMeta):
             else:
                 cls._ufuncs[name] = cls._ufunc_python(name)
         return cls._ufuncs[name]
+
+    ###############################################################################
+    # Ufuncs written in NumPy operations (not JIT compiled)
+    ###############################################################################
+
+    @staticmethod
+    def _sqrt(a):
+        raise NotImplementedError
 
     ###############################################################################
     # Input/output conversion functions
@@ -257,6 +266,14 @@ class UfuncMeta(LookupMeta, CalculateMeta):
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufunc("log"), method)(*inputs, **kwargs)
         return output
+
+    def _ufunc_routine_sqrt(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        cls._verify_method_only_call(ufunc, method)
+        x = inputs[0]
+        b = x.is_quadratic_residue()  # Boolean indicating if the inputs are quadratic residues
+        if not np.all(b):
+            raise ValueError(f"Input array has elements that are quadratic non-residues (do not have a square root). Use `x.is_quadratic_residue()` to determine if elements have square roots in {cls.name}.\n{x[~b]}")
+        return cls._sqrt(*inputs)
 
     def _ufunc_routine_matmul(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         cls._verify_method_only_call(ufunc, method)

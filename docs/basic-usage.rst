@@ -127,6 +127,7 @@ integer :obj:`numpy.ndarray`. All arithmetic operations follow normal NumPy `bro
 - Exponentiation: `x ** z == np.power(x, z)`, e.g. `x ** 3 == x * x * x`
 - Logarithm: `np.log(x)`, e.g. `GF.primitive_element ** np.log(x) == x`
 - **COMING SOON:** Logarithm base `b`: `GF.log(x, b)`, where `b` is any field element
+- Square root: `r = np.sqrt(x)`, e.g. `r ** 2 == (-r) ** 2 == x`
 - Matrix multiplication: `A @ B == np.matmul(A, B)`
 
 .. ipython:: python

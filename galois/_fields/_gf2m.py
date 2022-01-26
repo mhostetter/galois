@@ -217,3 +217,15 @@ class GF2mMeta(FieldClass, DirMeta):
             result = MULTIPLY(result, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
 
         return i
+
+    ###############################################################################
+    # Ufuncs written in NumPy operations (not JIT compiled)
+    ###############################################################################
+
+    @staticmethod
+    def _sqrt(a):
+        """
+        Fact 3.42 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
+        """
+        field = type(a)
+        return a ** (field.characteristic**(field.degree - 1))
