@@ -185,3 +185,62 @@ class GFpMeta(FieldClass, DirMeta):
             result = (result * b) % CHARACTERISTIC
 
         return i
+
+    ###############################################################################
+    # Ufuncs written in NumPy operations (not JIT compiled)
+    ###############################################################################
+
+    @staticmethod
+    def _sqrt(a):
+        """
+        Algorithm 3.34 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
+        Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
+        """
+        field = type(a)
+        p = field.characteristic
+
+        if p % 4 == 3:
+            roots = a ** ((field.order + 1)//4)
+
+        elif p % 8 == 5:
+            d = a ** ((field.order - 1)//4)
+            roots = field.Zeros(a.shape)
+
+            idxs = np.where(d == 1)
+            roots[idxs] = a[idxs] ** ((field.order + 3)//8)
+
+            idxs = np.where(d == p - 1)
+            roots[idxs] = 2*a[idxs] * (4*a[idxs]) ** ((field.order - 5)//8)
+
+        else:
+            # Find a quadratic non-residue element `b`
+            while True:
+                b = field.Random(low=1)
+                if not b.is_quadratic_residue():
+                    break
+
+            # Write p - 1 = 2^s * t
+            n = field.order - 1
+            s = 0
+            while n % 2 == 0:
+                n >>= 1
+                s += 1
+            t = n
+            assert field.order - 1 == 2**s * t
+
+            roots = field.Zeros(a.shape)  # Empty array of roots
+
+            # Compute a root `r` for the non-zero elements
+            idxs = np.where(a > 0)  # Indices where a has a reciprocal
+            a_inv = np.reciprocal(a[idxs])
+            c = b ** t
+            r = a[idxs] ** ((t + 1)//2)
+            for i in range(1, s):
+                d = (r**2 * a_inv) ** (2**(s - i - 1))
+                r[np.where(d == p - 1)] *= c
+                c = c**2
+            roots[idxs] = r  # Assign non-zero roots to the original array
+
+        roots = np.minimum(roots, -roots).view(field)  # Return only the smaller root
+
+        return roots

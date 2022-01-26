@@ -230,6 +230,35 @@ def log(x):
     return
 
 
+def sqrt(x):
+    """
+    Computes the square root a Galois field array element-wise.
+
+    References
+    ----------
+    * https://numpy.org/doc/stable/reference/generated/numpy.sqrt.html
+
+    Notes
+    -----
+    This function returns the lexicographically-minimal root :math:`r` (the root whose integer representation is smallest).
+    In addition to :math:`r`, :math:`-r` is also a root.
+
+    Examples
+    --------
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        # Only the "quadratic residues" have square roots
+        x = GF.quadratic_residues; x
+        r = np.sqrt(x)
+        # Both roots in the finite field
+        r, -r
+        r**2
+        (-r)**2
+    """
+    return
+
+
 def matmul(x1, x2):
     """
     Computes the matrix multiplication of two Galois field arrays.

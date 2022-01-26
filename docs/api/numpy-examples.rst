@@ -1,4 +1,4 @@
-Numpy Examples
+NumPy Examples
 ==============
 
 This section contains examples of some numpy functions when called on Galois field arrays. Many more functions
@@ -33,6 +33,7 @@ Arithmetic
    np.power
    np.square
    np.log
+   np.sqrt
    np.matmul
 
 Advanced Arithmetic
