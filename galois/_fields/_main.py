@@ -4068,16 +4068,22 @@ class Poly:
         raise NotImplementedError
 
     def __eq__(self, other):
-        if not isinstance(other, Poly):
-            if other == 0:
-                addendum = " If you are trying to compare against 0, use `galois.Poly.Zero(GF)` or `galois.Poly([0], field=GF)`."
-            elif other == 1:
-                addendum = " If you are trying to compare against 1, use `galois.Poly.One(GF)` or `galois.Poly([1], field=GF)`."
-            else:
-                addendum = ""
-            raise TypeError(f"Can't compare Poly and non-Poly objects, {other} is not a Poly object.{addendum}")
+        if isinstance(other, (int, np.integer)):
+            # Compare poly to a integer scalar (assumed to be from the same field)
+            return self.degree == 0 and np.array_equal(self.coeffs, [other])
 
-        return self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
+        elif isinstance(other, FieldArray):
+            # Compare poly to a finite field scalar (may or may not be from the same field)
+            if not other.ndim == 0:
+                raise ValueError(f"Can only compare Poly to a 0-D FieldArray scalar, not shape {other.shape}.")
+            return self.field is type(other) and self.degree == 0 and np.array_equal(self.coeffs, np.atleast_1d(other))
+
+        elif not isinstance(other, Poly):
+            raise TypeError(f"Can only compare Poly and Poly / int / FieldArray scalar objects, not {type(other)}.")
+
+        else:
+            # Compare two poly objects to each other
+            return self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
 
     def __ne__(self, other):
         return not self.__eq__(other)
