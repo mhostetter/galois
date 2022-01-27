@@ -1,6 +1,8 @@
 """
 A pytest module to test polynomial and non-polynomial arithmetic.
 """
+import random
+
 import pytest
 import numpy as np
 
@@ -133,13 +135,49 @@ def test_mod():
         GF.Random(3, low=1) % poly
 
 
-def test_equal():
-    GF = galois.GF(3)
-    poly = galois.Poly([2], field=GF)
-    assert poly == galois.Poly([2], field=GF)
+def test_equal_with_scalar(field):
+    # NOTE: GF(11) is not included in the `field` pytest fixture
+    scalar = 0
+    p = galois.Poly([scalar], field=field)
+    assert p == scalar
+    assert p == field(scalar)
+    assert p == galois.Poly([scalar], field=field)
+    assert p != galois.Poly([scalar], field=galois.GF(11))
+    assert scalar == p
+    assert field(scalar) == p
+    assert galois.Poly([scalar], field=field) == p
+    assert galois.Poly([scalar], field=galois.GF(11)) != p
 
-    # Not a polynomial
-    with pytest.raises(TypeError):
-        assert poly == GF(2)
-    with pytest.raises(TypeError):
-        poly == 2
+    scalar = 1
+    p = galois.Poly([scalar], field=field)
+    assert p == scalar
+    assert p == field(scalar)
+    assert p == galois.Poly([scalar], field=field)
+    assert p != galois.Poly([scalar], field=galois.GF(11))
+    assert scalar == p
+    assert field(scalar) == p
+    assert galois.Poly([scalar], field=field) == p
+    assert galois.Poly([scalar], field=galois.GF(11)) != p
+
+    scalar = random.randint(1, field.order - 1)
+    p = galois.Poly([scalar], field=field)
+    assert p == scalar
+    assert p == field(scalar)
+    assert p == galois.Poly([scalar], field=field)
+    assert scalar == p
+    assert field(scalar) == p
+    assert galois.Poly([scalar], field=field) == p
+
+
+def test_equal_with_vector(field):
+    # NOTE: GF(11) is not included in the `field` pytest fixture
+    c = field.Random(6)
+    c[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
+    with pytest.raises(ValueError):
+        # Comparing polynomials against FieldArrays (non-scalars) isn't supported
+        galois.Poly(c) == c
+
+    c = field.Ones(6)
+    with pytest.raises(ValueError):
+        # Comparing polynomials against FieldArrays (non-scalars) isn't supported
+        galois.Poly(c) == c

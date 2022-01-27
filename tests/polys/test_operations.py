@@ -113,11 +113,19 @@ def test_integer():
 
 
 def test_equal(field):
+    # NOTE: GF(11) is not included in the `field` pytest fixture
     c = field.Random(6)
     c[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
     p1 = galois.Poly(c)
     p2 = galois.Poly(c.tolist(), field=field)
     assert p1 == p2
+    assert p2 == p1
+
+    c = field.Ones(6)
+    p1 = galois.Poly(c)
+    p2 = galois.Poly(c.tolist(), field=galois.GF(11))
+    assert p1 != p2
+    assert p2 != p1
 
 
 def test_cant_set_coeffs():
