@@ -654,8 +654,6 @@ def is_irreducible(poly: Poly) -> bool:
     field = poly.field
     q = field.order
     m = poly.degree
-    zero = Poly.Zero(field)
-    one = Poly.One(field)
     x = Poly.Identity(field)
 
     primes, _ = factors(m)
@@ -665,14 +663,14 @@ def is_irreducible(poly: Poly) -> bool:
         # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
         hi = poly_functions.pow(h0, q**(ni - n0), poly)
         g = poly_functions.gcd(poly, hi - x)
-        if g != one:
+        if g != 1:
             return False
         h0, n0 = hi, ni
 
     # f(x) must divide (x^(q^m) - x) to be irreducible
     h = poly_functions.pow(h0, q**(m - n0), poly)
     g = (h - x) % poly
-    if g != zero:
+    if g != 0:
         return False
 
     return True
@@ -883,7 +881,6 @@ def is_primitive(poly: Poly) -> bool:
     field = poly.field
     q = field.order
     m = poly.degree
-    zero = Poly.Zero(field)
     one = Poly.One(field)
 
     primes, _ = factors(q**m - 1)
@@ -892,7 +889,7 @@ def is_primitive(poly: Poly) -> bool:
         # f(x) must not divide (x^((q^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of q**m - 1
         h = poly_functions.pow(x, ki, poly)
         g = (h - one) % poly
-        if g == zero:
+        if g == 0:
             return False
 
     return True

@@ -3572,7 +3572,6 @@ class Poly:
             return roots, multiplicities
 
     def _root_multiplicity(self, root):
-        zero = Poly.Zero(self.field)
         poly = self.copy()
         multiplicity = 1
 
@@ -3580,7 +3579,7 @@ class Poly:
             # If the root is also a root of the derivative, then its a multiple root.
             poly = poly.derivative()
 
-            if poly == zero:
+            if poly == 0:
                 # Cannot test whether p'(root) = 0 because p'(x) = 0. We've exhausted the non-zero derivatives. For
                 # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
                 # greater than the field's characteristic, we need factor to the polynomial. Here we factor out (x - root)^m,
@@ -4325,7 +4324,7 @@ class DensePoly(Poly):
         if b.degree == 0:
             return Poly(a.coeffs // b.coeffs), zero
 
-        elif a == zero:
+        elif a == 0:
             return zero, zero
 
         elif a.degree < b.degree:
@@ -4598,7 +4597,7 @@ class SparsePoly(Poly):
             q_coeffs = [a_coeff // b.coeffs[0] for a_coeff in a.nonzero_coeffs]
             return Poly.Degrees(q_degrees, q_coeffs, field=field), zero
 
-        elif a == zero:
+        elif a == 0:
             return zero, zero
 
         elif a.degree < b.degree:
@@ -4637,7 +4636,7 @@ class SparsePoly(Poly):
         if b.degree == 0:
             return zero
 
-        elif a == zero:
+        elif a == 0:
             return zero
 
         elif a.degree < b.degree:

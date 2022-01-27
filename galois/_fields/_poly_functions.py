@@ -27,12 +27,8 @@ def gcd(a, b):
     if not a.field is b.field:
         raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {a.field} and {b.field}.")
 
-    field = a.field
-    zero = Poly.Zero(field)
-
     r2, r1 = a, b
-
-    while r1 != zero:
+    while r1 != 0:
         r2, r1 = r1, r2 % r1
 
     # Make the GCD polynomial monic
@@ -58,7 +54,7 @@ def egcd(a, b):
     s2, s1 = one, zero
     t2, t1 = zero, one
 
-    while r1 != zero:
+    while r1 != 0:
         q = r2 / r1
         r2, r1 = r1, r2 - q*r1
         s2, s1 = s1, s2 - q*s1
