@@ -132,7 +132,7 @@ def field_folder(request):
 ###############################################################################
 
 @pytest.fixture(scope="session")
-def properties(field_folder):
+def field_properties(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "properties.json"), "rb") as f:
         d = json.load(f)
@@ -146,7 +146,7 @@ def properties(field_folder):
 
 
 @pytest.fixture(scope="session")
-def add(field_folder):
+def field_add(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "add.pkl"), "rb") as f:
         print(f"Loading {f}...")
@@ -160,7 +160,7 @@ def add(field_folder):
 
 
 @pytest.fixture(scope="session")
-def subtract(field_folder):
+def field_subtract(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "subtract.pkl"), "rb") as f:
         print(f"Loading {f}...")
@@ -174,7 +174,7 @@ def subtract(field_folder):
 
 
 @pytest.fixture(scope="session")
-def multiply(field_folder):
+def field_multiply(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "multiply.pkl"), "rb") as f:
         print(f"Loading {f}...")
@@ -188,7 +188,7 @@ def multiply(field_folder):
 
 
 @pytest.fixture(scope="session")
-def divide(field_folder):
+def field_divide(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "divide.pkl"), "rb") as f:
         print(f"Loading {f}...")
@@ -202,7 +202,7 @@ def divide(field_folder):
 
 
 @pytest.fixture(scope="session")
-def additive_inverse(field_folder):
+def field_additive_inverse(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "additive_inverse.pkl"), "rb") as f:
         print(f"Loading {f}...")
@@ -214,7 +214,7 @@ def additive_inverse(field_folder):
 
 
 @pytest.fixture(scope="session")
-def multiplicative_inverse(field_folder):
+def field_multiplicative_inverse(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "multiplicative_inverse.pkl"), "rb") as f:
         print(f"Loading {f}...")
@@ -224,8 +224,9 @@ def multiplicative_inverse(field_folder):
     d["Z"] = GF(d["Z"])
     return d
 
+
 @pytest.fixture(scope="session")
-def scalar_multiply(field_folder):
+def field_scalar_multiply(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "scalar_multiply.pkl"), "rb") as f:
         print(f"Loading {f}...")
@@ -239,7 +240,7 @@ def scalar_multiply(field_folder):
 
 
 @pytest.fixture(scope="session")
-def power(field_folder):
+def field_power(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "power.pkl"), "rb") as f:
         print(f"Loading {f}...")
@@ -253,7 +254,7 @@ def power(field_folder):
 
 
 @pytest.fixture(scope="session")
-def log(field_folder):
+def field_log(field_folder):
     GF, folder = field_folder
     with open(os.path.join(folder, "log.pkl"), "rb") as f:
         print(f"Loading {f}...")
