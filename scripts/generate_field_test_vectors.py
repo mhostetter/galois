@@ -20,6 +20,12 @@ FIELD = None
 SPARSE_SIZE = 20
 
 
+def set_seed(seed):
+    """Update the RNG seeds so the LUT is reproducible"""
+    np.random.seed(seed)
+    random.seed(seed)
+
+
 def I(element):
     """Convert from various finite field elements to an integer"""
     if isinstance(element, sage.rings.finite_rings.element_pari_ffelt.FiniteFieldElement_pari_ffelt):
@@ -119,7 +125,7 @@ def save_json(d, folder, name, indent=False):
         json.dump(d, f, indent=indent)
 
 
-def make_luts(field, folder, sparse=False):
+def make_luts(field, folder, seed, sparse=False):
     global FIELD
 
     print(f"Making LUTs for {field}")
@@ -144,6 +150,11 @@ def make_luts(field, folder, sparse=False):
     }
     save_json(d, folder, "properties.json", indent=True)
 
+    ###############################################################################
+    # Finite field arithmetic
+    ###############################################################################
+
+    set_seed(seed + 1)
     X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
@@ -151,6 +162,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "add.pkl")
 
+    set_seed(seed + 2)
     X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
@@ -158,6 +170,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "subtract.pkl")
 
+    set_seed(seed + 3)
     X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
@@ -165,6 +178,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "multiply.pkl")
 
+    set_seed(seed + 4)
     X, Y, XX, YY, ZZ = io_2d(0, order, -order-2, order+3, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
@@ -172,6 +186,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "scalar_multiply.pkl")
 
+    set_seed(seed + 5)
     X, Y, XX, YY, ZZ = io_2d(0, order, 1, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
@@ -179,18 +194,21 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "divide.pkl")
 
+    set_seed(seed + 6)
     X, Z = io_1d(0, order, sparse=sparse)
     for i in range(X.shape[0]):
         Z[i] = I(-F(X[i]))
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "additive_inverse.pkl")
 
+    set_seed(seed + 7)
     X, Z = io_1d(1, order, sparse=sparse)
     for i in range(X.shape[0]):
         Z[i] = I(1 / F(X[i]))
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "multiplicative_inverse.pkl")
 
+    set_seed(seed + 8)
     X, Y, XX, YY, ZZ = io_2d(1, order, -order-2, order+3, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
@@ -198,6 +216,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "power.pkl")
 
+    set_seed(seed + 9)
     X, Z = io_1d(1, order, sparse=sparse)
     for i in range(Z.shape[0]):
         try:
@@ -207,9 +226,14 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "log.pkl")
 
+    ###############################################################################
+    # Polynomial arithmetic
+    ###############################################################################
+
     MIN_COEFFS = 1
     MAX_COEFFS = 12
 
+    set_seed(seed + 101)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Z = []
@@ -223,6 +247,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "poly_add.pkl")
 
+    set_seed(seed + 102)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Z = []
@@ -236,6 +261,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "poly_subtract.pkl")
 
+    set_seed(seed + 103)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Z = []
@@ -249,6 +275,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "poly_multiply.pkl")
 
+    set_seed(seed + 104)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = [random.randint(1, 2*characteristic) for i in range(20)]
     Z = []
@@ -262,6 +289,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "poly_scalar_multiply.pkl")
 
+    set_seed(seed + 105)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     # Add some specific polynomial types
@@ -284,6 +312,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Q": Q, "R": R}
     save_pickle(d, folder, "poly_divmod.pkl")
 
+    set_seed(seed + 106)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(4)]
     X.append(random_coeffs(0, order, 1, 2))
     Y = [0, 1, 2, 3]
@@ -301,6 +330,7 @@ def make_luts(field, folder, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "poly_power.pkl")
 
+    set_seed(seed + 107)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = arange(0, order, sparse=sparse)
     Z = np.array(np.zeros((len(X),len(Y))), dtype=dtype)
@@ -317,84 +347,68 @@ def make_luts(field, folder, sparse=False):
 if __name__ == "__main__":
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "data", "fields")
 
-    np.random.seed(123456789 + 1), random.seed(123456789 + 1)
     field = GF(2, modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(2)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 1000)
 
-    np.random.seed(123456789 + 2), random.seed(123456789 + 2)
     field = GF(5, modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(5)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 2000)
 
-    np.random.seed(123456789 + 3), random.seed(123456789 + 3)
     field = GF(7, modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(7)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 3000)
 
-    np.random.seed(123456789 + 4), random.seed(123456789 + 4)
     field = GF(31, modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(31)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 4000)
 
-    np.random.seed(123456789 + 5), random.seed(123456789 + 5)
     field = GF(3191, modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(3191)")
-    make_luts(field, folder, sparse=True)
+    make_luts(field, folder, 123456789 + 5000, sparse=True)
 
-    np.random.seed(123456789 + 6), random.seed(123456789 + 6)
     # prime = 2**31 - 1, small enough to fit in np.int64
     field = GF(2147483647, modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(2147483647)")
-    make_luts(field, folder, sparse=True)
+    make_luts(field, folder, 123456789 + 6000, sparse=True)
 
-    np.random.seed(123456789 + 7), random.seed(123456789 + 7)
     # prime = 2**65 - 49, large enough to not fit in np.int64 and require np.object_
     field = GF(36893488147419103183, modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(36893488147419103183)")
-    make_luts(field, folder, sparse=True)
+    make_luts(field, folder, 123456789 + 7000, sparse=True)
 
-    np.random.seed(123456789 + 8), random.seed(123456789 + 8)
     field = GF(2**2, "x", modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(2^2)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 8000)
 
-    np.random.seed(123456789 + 9), random.seed(123456789 + 9)
     field = GF(2**3, "x", modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(2^3)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 9000)
 
-    np.random.seed(123456789 + 10), random.seed(123456789 + 10)
     field = GF(2**8, "x", modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(2^8)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 10000)
 
-    np.random.seed(123456789 + 100), random.seed(123456789 + 100)
     field = GF(2**8, "x", modulus=[1,1,0,1,1,0,0,0,1], repr="int")
     folder = os.path.join(path, "GF(2^8, 283, 19)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 11000)
 
-    np.random.seed(123456789 + 11), random.seed(123456789 + 11)
     field = GF(2**32, "x", modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(2^32)")
-    make_luts(field, folder, sparse=True)
+    make_luts(field, folder, 123456789 + 12000, sparse=True)
 
-    np.random.seed(123456789 + 12), random.seed(123456789 + 12)
     field = GF(2**100, "x", modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(2^100)")
-    make_luts(field, folder, sparse=True)
+    make_luts(field, folder, 123456789 + 13000, sparse=True)
 
-    np.random.seed(123456789 + 13), random.seed(123456789 + 13)
     field = GF(7**3, "x", modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(7^3)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 14000)
 
-    np.random.seed(123456789 + 14), random.seed(123456789 + 14)
     field = GF(7**3, "x", modulus=[6,0,6,1], repr="int")
     folder = os.path.join(path, "GF(7^3, 643, 244)")
-    make_luts(field, folder)
+    make_luts(field, folder, 123456789 + 15000)
 
-    np.random.seed(123456789 + 15), random.seed(123456789 + 15)
     field = GF(109987**4, "x", modulus="primitive", repr="int")
     folder = os.path.join(path, "GF(109987^4)")
-    make_luts(field, folder, sparse=True)
+    make_luts(field, folder, 123456789 + 16000, sparse=True)
