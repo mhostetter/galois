@@ -9,6 +9,15 @@ import numpy as np
 import galois
 
 
+def test_properties(properties):
+    GF = properties["GF"]
+    assert GF.characteristic == properties["characteristic"]
+    assert GF.degree == properties["degree"]
+    assert GF.order == properties["order"]
+    assert GF.primitive_element == properties["primitive_element"]
+    assert GF.irreducible_poly == properties["irreducible_poly"]
+
+
 def test_characteristic(field):
     if field.order < 2**16:
         a = field.Elements()
