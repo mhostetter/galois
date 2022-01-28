@@ -2,8 +2,8 @@
     "characteristic": 36893488147419103183,
     "degree": 1,
     "order": 36893488147419103183,
-    "alpha": 3,
-    "prim_poly": [
+    "primitive_element": 3,
+    "irreducible_poly": [
         1,
         36893488147419103180
     ]

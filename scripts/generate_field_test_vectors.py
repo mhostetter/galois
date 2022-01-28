@@ -138,8 +138,8 @@ def make_luts(field, folder, sparse=False):
         "characteristic": int(field.characteristic()),
         "degree": int(field.degree()),
         "order": int(field.order()),
-        "alpha": I(field.primitive_element()),
-        "prim_poly": [int(c) for c in field.modulus().list()[::-1]]
+        "primitive_element": I(field.primitive_element()),
+        "irreducible_poly": [int(c) for c in field.modulus().list()[::-1]]
     }
     save_json(d, folder, "properties.json", indent=True)
 
