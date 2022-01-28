@@ -7,7 +7,7 @@ import numpy as np
 
 import galois
 
-PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "fields")
+PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 FIELDS = [
     pytest.param("GF(2)", marks=[pytest.mark.GF2]),
