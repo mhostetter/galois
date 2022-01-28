@@ -46,6 +46,25 @@ def test_multiply(poly_multiply):
         assert type(z.coeffs) is GF
 
 
+def test_scalar_multiply(poly_scalar_multiply):
+    GF, X, Y, Z = poly_scalar_multiply["GF"], poly_scalar_multiply["X"], poly_scalar_multiply["Y"], poly_scalar_multiply["Z"]
+    for i in range(len(X)):
+        x = X[i]
+        y = Y[i]
+
+        z = x * y
+        assert z == Z[i]
+        assert isinstance(z, galois.Poly)
+        assert z.field is GF
+        assert type(z.coeffs) is GF
+
+        z = y * x
+        assert z == Z[i]
+        assert isinstance(z, galois.Poly)
+        assert z.field is GF
+        assert type(z.coeffs) is GF
+
+
 def test_divmod(poly_divmod):
     GF, X, Y, Q, R = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["Q"], poly_divmod["R"]
     for i in range(len(X)):

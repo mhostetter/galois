@@ -3778,30 +3778,54 @@ class Poly:
         return self.degree + 1
 
     def _check_inputs_are_polys(self, a, b):
+        """
+        Verify polynomial arithmetic operands are either galois.Poly or scalars in a finite field.
+        """
         if not isinstance(a, (Poly, self.field)):
-            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {b.field.name}, not {type(a)}.")
+            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field.name}, not {type(a)}.")
         if not isinstance(b, (Poly, self.field)):
-            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {a.field.name}, not {type(b)}.")
+            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field.name}, not {type(b)}.")
+        if (isinstance(a, Poly) and isinstance(b, Poly)) and not a.field is b.field:
+            raise TypeError(f"Both polynomial operands must be over the same field, not {a.field.name} and {b.field.name}.")
 
+    def _check_inputs_are_polys_or_ints(self, a, b):
+        """
+        Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or an integer (scalar multiplication).
+        """
+        if not isinstance(a, (Poly, self.field, int, np.integer)):
+            raise TypeError(f"Both operands must be a galois.Poly, a single element of its field {self.field.name}, or an integer, not {type(a)}.")
+        if not isinstance(b, (Poly, self.field, int, np.integer)):
+            raise TypeError(f"Both operands must be a galois.Poly, a single element of its field {self.field.name}, or an integer, not {type(b)}.")
+        if (isinstance(a, Poly) and isinstance(b, Poly)) and not a.field is b.field:
+            raise TypeError(f"Both polynomial operands must be over the same field, not {a.field.name} and {b.field.name}.")
+
+    def _convert_field_scalars_to_polys(self, a, b):
+        """
+        Convert finite field scalars to 0-degree polynomials in that field.
+        """
         # Promote a single field element to a 0-degree polynomial
-        if not isinstance(a, Poly):
+        if isinstance(a, self.field):
             if not a.size == 1:
                 raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {a.size}.")
             a = Poly(np.atleast_1d(a))
-        if not isinstance(b, Poly):
+        if isinstance(b, self.field):
             if not b.size == 1:
                 raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {b.size}.")
             b = Poly(np.atleast_1d(b))
 
-        if not a.field is b.field:
-            raise TypeError(f"Both polynomial operands must be over the same field, not {str(a.field)} and {str(b.field)}.")
+        return a, b
 
+    @staticmethod
+    def _determine_poly_class(a, b):
+        """
+        Determine the type of polynomial arithmetic to perform.
+        """
         if isinstance(a, SparsePoly) or isinstance(b, SparsePoly):
-            return SparsePoly, a, b
+            return SparsePoly
         elif isinstance(a, BinaryPoly) or isinstance(b, BinaryPoly):
-            return BinaryPoly, a, b
+            return BinaryPoly
         else:
-            return DensePoly, a, b
+            return DensePoly
 
     def __add__(self, other):
         """
@@ -3825,11 +3849,15 @@ class Poly:
             b = galois.Poly.Random(3); b
             a + b
         """
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._add(a, b)
 
     def __radd__(self, other):
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._add(b, a)
 
     def __sub__(self, other):
@@ -3854,11 +3882,15 @@ class Poly:
             b = galois.Poly.Random(3); b
             a - b
         """
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._sub(a, b)
 
     def __rsub__(self, other):
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._sub(b, a)
 
     def __mul__(self, other):
@@ -3883,11 +3915,21 @@ class Poly:
             b = galois.Poly.Random(3); b
             a * b
         """
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys_or_ints(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        if isinstance(a, (int, np.integer)):
+            # Ensure the integer is in the second operand for scalar multiplication
+            a, b = b, a
+        cls = self._determine_poly_class(a, b)
         return cls._mul(a, b)
 
     def __rmul__(self, other):
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys_or_ints(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        if isinstance(b, (int, np.integer)):
+            # Ensure the integer is in the second operand for scalar multiplication
+            b, a = a, b
+        cls = self._determine_poly_class(a, b)
         return cls._mul(b, a)
 
     def __divmod__(self, other):
@@ -3916,11 +3958,15 @@ class Poly:
             q, r
             b*q + r
         """
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._divmod(a, b)
 
     def __rdivmod__(self, other):
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._divmod(b, a)
 
     def __truediv__(self, other):
@@ -3948,11 +3994,15 @@ class Poly:
             divmod(a, b)
             a / b
         """
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._divmod(a, b)[0]
 
     def __rtruediv__(self, other):
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._divmod(b, a)[0]
 
     def __floordiv__(self, other):
@@ -3980,11 +4030,15 @@ class Poly:
             divmod(a, b)
             a // b
         """
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._divmod(a, b)[0]
 
     def __rfloordiv__(self, other):
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._divmod(b, a)[0]
 
     def __mod__(self, other):
@@ -4010,11 +4064,15 @@ class Poly:
             divmod(a, b)
             a % b
         """
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._mod(a, b)
 
     def __rmod__(self, other):
-        cls, a, b = self._check_inputs_are_polys(self, other)
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+        cls = self._determine_poly_class(a, b)
         return cls._mod(b, a)
 
     def __pow__(self, other):
@@ -4043,7 +4101,8 @@ class Poly:
             raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {other}.")
         if not other >= 0:
             raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {other}.")
-        field, a, power = self.field, self, other
+        a, power = self, other
+        field = self.field
 
         # c(x) = a(x) ** power
         if power == 0:
@@ -4074,11 +4133,11 @@ class Poly:
         elif isinstance(other, FieldArray):
             # Compare poly to a finite field scalar (may or may not be from the same field)
             if not other.ndim == 0:
-                raise ValueError(f"Can only compare Poly to a 0-D FieldArray scalar, not shape {other.shape}.")
+                raise ValueError(f"Can only compare galois.Poly to a 0-D galois.FieldArray scalar, not shape {other.shape}.")
             return self.field is type(other) and self.degree == 0 and np.array_equal(self.coeffs, np.atleast_1d(other))
 
         elif not isinstance(other, Poly):
-            raise TypeError(f"Can only compare Poly and Poly / int / FieldArray scalar objects, not {type(other)}.")
+            raise TypeError(f"Can only compare galois.Poly and galois.Poly / int / galois.FieldArray scalar objects, not {type(other)}.")
 
         else:
             # Compare two poly objects to each other
@@ -4310,8 +4369,12 @@ class DensePoly(Poly):
 
     @classmethod
     def _mul(cls, a, b):
-        # c(x) = a(x) * b(x)
-        c_coeffs = np.convolve(a.coeffs, b.coeffs)
+        if isinstance(b, (int, np.integer)):
+            # Scalar multiplication  (p * 3 = p + p + p)
+            c_coeffs = a.coeffs * b
+        else:
+            # c(x) = a(x) * b(x)
+            c_coeffs = np.convolve(a.coeffs, b.coeffs)
 
         return Poly(c_coeffs)
 
@@ -4410,20 +4473,25 @@ class BinaryPoly(Poly):
 
     @classmethod
     def _mul(cls, a, b):
-        # Re-order operands such that a > b so the while loop has less loops
-        a = a.integer
-        b = b.integer
-        if b > a:
-            a, b = b, a
+        if isinstance(b, (int, np.integer)):
+            # Scalar multiplication  (p * 3 = p + p + p)
+            return BinaryPoly(a.integer) if b % 2 == 1 else BinaryPoly(0)
 
-        c = 0
-        while b > 0:
-            if b & 0b1:
-                c ^= a  # Add a(x) to c(x)
-            b >>= 1  # Divide b(x) by x
-            a <<= 1  # Multiply a(x) by x
+        else:
+            # Re-order operands such that a > b so the while loop has less loops
+            a = a.integer
+            b = b.integer
+            if b > a:
+                a, b = b, a
 
-        return BinaryPoly(c)
+            c = 0
+            while b > 0:
+                if b & 0b1:
+                    c ^= a  # Add a(x) to c(x)
+                b >>= 1  # Divide b(x) by x
+                a <<= 1  # Multiply a(x) by x
+
+            return BinaryPoly(c)
 
     @classmethod
     def _divmod(cls, a, b):
@@ -4578,13 +4646,18 @@ class SparsePoly(Poly):
     def _mul(cls, a, b):
         field = a.field
 
-        # c(x) = a(x) * b(x)
-        cc = {}
-        for a_degree, a_coeff in zip(a.nonzero_degrees, a.nonzero_coeffs):
-            for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
-                cc[a_degree + b_degree] = cc.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
+        if isinstance(b, (int, np.integer)):
+            # Scalar multiplication  (p * 3 = p + p + p)
+            return Poly.Degrees(a.nonzero_degrees, a.nonzero_coeffs * b)
 
-        return Poly.Degrees(list(cc.keys()), list(cc.values()), field=field)
+        else:
+            # c(x) = a(x) * b(x)
+            cc = {}
+            for a_degree, a_coeff in zip(a.nonzero_degrees, a.nonzero_coeffs):
+                for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
+                    cc[a_degree + b_degree] = cc.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
+
+            return Poly.Degrees(list(cc.keys()), list(cc.values()), field=field)
 
     @classmethod
     def _divmod(cls, a, b):

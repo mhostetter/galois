@@ -128,6 +128,7 @@ def make_luts(field, folder, sparse=False):
     os.mkdir(folder)
 
     FIELD = field
+    characteristic = int(field.characteristic())
     order = int(field.order())
     dtype = np.int64 if order <= np.iinfo(np.int64).max else object
     alpha = field.primitive_element()
@@ -247,6 +248,19 @@ def make_luts(field, folder, sparse=False):
         Z.append(z)
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "poly_multiply.pkl")
+
+    X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
+    Y = [random.randint(1, 2*characteristic) for i in range(20)]
+    Z = []
+    for i in range(len(X)):
+        x = ring([F(e) for e in X[i][::-1]])
+        y = Y[i]
+        z = x * y
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=dtype).tolist()
+        z = z if z != [] else [0]
+        Z.append(z)
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "poly_scalar_multiply.pkl")
 
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]

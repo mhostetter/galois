@@ -26,19 +26,53 @@ def load_poly_luts(name, GF, folder):
 @pytest.fixture(scope="session")
 def poly_add(field_folder):
     GF, folder = field_folder
-    return load_poly_luts("poly_add.pkl", GF, folder)
+    with open(os.path.join(folder, "poly_add.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d
 
 
 @pytest.fixture(scope="session")
 def poly_subtract(field_folder):
     GF, folder = field_folder
-    return load_poly_luts("poly_subtract.pkl", GF, folder)
+    with open(os.path.join(folder, "poly_subtract.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d
 
 
 @pytest.fixture(scope="session")
 def poly_multiply(field_folder):
     GF, folder = field_folder
-    return load_poly_luts("poly_multiply.pkl", GF, folder)
+    with open(os.path.join(folder, "poly_multiply.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d
+
+
+@pytest.fixture(scope="session")
+def poly_scalar_multiply(field_folder):
+    GF, folder = field_folder
+    with open(os.path.join(folder, "poly_scalar_multiply.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Y"] = d["Y"]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d
 
 
 @pytest.fixture(scope="session")
