@@ -9,13 +9,13 @@ import numpy as np
 import galois
 
 
-def test_properties(properties):
-    GF = properties["GF"]
-    assert GF.characteristic == properties["characteristic"]
-    assert GF.degree == properties["degree"]
-    assert GF.order == properties["order"]
-    assert GF.primitive_element == properties["primitive_element"]
-    assert GF.irreducible_poly == properties["irreducible_poly"]
+def test_properties(field_properties):
+    GF = field_properties["GF"]
+    assert GF.characteristic == field_properties["characteristic"]
+    assert GF.degree == field_properties["degree"]
+    assert GF.order == field_properties["order"]
+    assert GF.primitive_element == field_properties["primitive_element"]
+    assert GF.irreducible_poly == field_properties["irreducible_poly"]
 
 
 def test_characteristic(field):

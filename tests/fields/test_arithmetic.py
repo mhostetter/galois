@@ -14,8 +14,8 @@ from ..helper import randint
 # TODO: Add scalar arithmetic and array/scalar and radd, etc
 
 
-def test_add(add):
-    GF, X, Y, Z = add["GF"], add["X"], add["Y"], add["Z"]
+def test_add(field_add):
+    GF, X, Y, Z = field_add["GF"], field_add["X"], field_add["Y"], field_add["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
     y = Y.astype(dtype)
@@ -26,8 +26,8 @@ def test_add(add):
     assert z.dtype == dtype
 
 
-def test_subtract(subtract):
-    GF, X, Y, Z = subtract["GF"], subtract["X"], subtract["Y"], subtract["Z"]
+def test_subtract(field_subtract):
+    GF, X, Y, Z = field_subtract["GF"], field_subtract["X"], field_subtract["Y"], field_subtract["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
     y = Y.astype(dtype)
@@ -38,8 +38,8 @@ def test_subtract(subtract):
     assert z.dtype == dtype
 
 
-def test_multiply(multiply):
-    GF, X, Y, Z = multiply["GF"], multiply["X"], multiply["Y"], multiply["Z"]
+def test_multiply(field_multiply):
+    GF, X, Y, Z = field_multiply["GF"], field_multiply["X"], field_multiply["Y"], field_multiply["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
     y = Y.astype(dtype)
@@ -50,8 +50,8 @@ def test_multiply(multiply):
     assert z.dtype == dtype
 
 
-def test_divide(divide):
-    GF, X, Y, Z = divide["GF"], divide["X"], divide["Y"], divide["Z"]
+def test_divide(field_divide):
+    GF, X, Y, Z = field_divide["GF"], field_divide["X"], field_divide["Y"], field_divide["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
     y = Y.astype(dtype)
@@ -67,8 +67,8 @@ def test_divide(divide):
     assert z.dtype == dtype
 
 
-def test_additive_inverse(additive_inverse):
-    GF, X, Z = additive_inverse["GF"], additive_inverse["X"], additive_inverse["Z"]
+def test_additive_inverse(field_additive_inverse):
+    GF, X, Z = field_additive_inverse["GF"], field_additive_inverse["X"], field_additive_inverse["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
 
@@ -78,8 +78,8 @@ def test_additive_inverse(additive_inverse):
     assert z.dtype == dtype
 
 
-def test_multiplicative_inverse(multiplicative_inverse):
-    GF, X, Z = multiplicative_inverse["GF"], multiplicative_inverse["X"], multiplicative_inverse["Z"]
+def test_multiplicative_inverse(field_multiplicative_inverse):
+    GF, X, Z = field_multiplicative_inverse["GF"], field_multiplicative_inverse["X"], field_multiplicative_inverse["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
 
@@ -99,8 +99,8 @@ def test_multiplicative_inverse(multiplicative_inverse):
     assert z.dtype == dtype
 
 
-def test_scalar_multiply(scalar_multiply):
-    GF, X, Y, Z = scalar_multiply["GF"], scalar_multiply["X"], scalar_multiply["Y"], scalar_multiply["Z"]
+def test_scalar_multiply(field_scalar_multiply):
+    GF, X, Y, Z = field_scalar_multiply["GF"], field_scalar_multiply["X"], field_scalar_multiply["Y"], field_scalar_multiply["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
     y = Y  # Don't convert this, it's not a field element
@@ -116,8 +116,8 @@ def test_scalar_multiply(scalar_multiply):
     assert z.dtype == dtype
 
 
-def test_power(power):
-    GF, X, Y, Z = power["GF"], power["X"], power["Y"], power["Z"]
+def test_power(field_power):
+    GF, X, Y, Z = field_power["GF"], field_power["X"], field_power["Y"], field_power["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
     y = Y  # Don't convert this, it's not a field element
@@ -128,8 +128,8 @@ def test_power(power):
     assert z.dtype == dtype
 
 
-def test_power_zero_to_zero(power):
-    GF = power["GF"]
+def test_power_zero_to_zero(field_power):
+    GF = field_power["GF"]
     dtype = random.choice(GF.dtypes)
     x = GF.Zeros(10, dtype=dtype)
     y = np.zeros(10, GF.dtypes[-1])
@@ -140,8 +140,8 @@ def test_power_zero_to_zero(power):
     assert z.dtype == dtype
 
 
-def test_power_zero_to_positive_integer(power):
-    GF = power["GF"]
+def test_power_zero_to_positive_integer(field_power):
+    GF = field_power["GF"]
     dtype = random.choice(GF.dtypes)
     x = GF.Zeros(10, dtype=dtype)
     y = randint(1, 2*GF.order, 10, GF.dtypes[-1])
@@ -152,8 +152,8 @@ def test_power_zero_to_positive_integer(power):
     assert z.dtype == dtype
 
 
-def test_square(power):
-    GF, X, Y, Z = power["GF"], power["X"], power["Y"], power["Z"]
+def test_square(field_power):
+    GF, X, Y, Z = field_power["GF"], field_power["X"], field_power["Y"], field_power["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
     y = Y  # Don't convert this, it's not a field element
@@ -168,8 +168,8 @@ def test_square(power):
         assert z.dtype == dtype
 
 
-def test_log(log):
-    GF, X, Z = log["GF"], log["X"], log["Z"]
+def test_log(field_log):
+    GF, X, Z = field_log["GF"], field_log["X"], field_log["Z"]
     dtype = random.choice(GF.dtypes)
     if GF.order > 2**16:  # TODO: Skip slow log() for very large fields
         return
