@@ -331,3 +331,14 @@ def test_matrix_multiply(field_matrix_multiply):
         zi = xi @ yi
         assert np.array_equal(zi ,Z[i])
         assert type(zi) is GF
+
+
+def test_row_reduce(field_row_reduce):
+    GF, X, Z = field_row_reduce["GF"], field_row_reduce["X"], field_row_reduce["Z"]
+
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        xi = X[i].astype(dtype)
+        zi = xi.row_reduce()
+        assert np.array_equal(zi, Z[i])
+        assert type(zi) is GF
