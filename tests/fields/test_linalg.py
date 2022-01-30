@@ -223,28 +223,6 @@ def test_matmul_2d_2d(field):
 #     assert array_equal(A @ B, np.matmul(A, B))
 
 
-def test_solve_2d_1d(field):
-    dtype = random.choice(field.dtypes)
-    A = full_rank_matrix(field, 3, dtype)
-    b = field.Random(3, dtype=dtype)
-    x = np.linalg.solve(A, b)
-    assert type(x) is field
-    assert x.dtype == dtype
-    assert array_equal(A @ x, b)
-    assert x.shape == b.shape
-
-
-def test_solve_2d_2d(field):
-    dtype = random.choice(field.dtypes)
-    A = full_rank_matrix(field, 3, dtype)
-    b = field.Random((3,5), dtype=dtype)
-    x = np.linalg.solve(A, b)
-    assert type(x) is field
-    assert x.dtype == dtype
-    assert array_equal(A @ x, b)
-    assert x.shape == b.shape
-
-
 def full_rank_matrix(field, n, dtype):
     A = field.Identity(n, dtype=dtype)
     while True:
@@ -328,4 +306,17 @@ def test_matrix_determinant(field_matrix_determinant):
         x = X[i].astype(dtype)
         z = np.linalg.det(x)
         assert z == Z[i]
+        assert type(z) is GF
+
+
+def test_matrix_solve(field_matrix_solve):
+    GF, X, Y, Z = field_matrix_solve["GF"], field_matrix_solve["X"], field_matrix_solve["Y"], field_matrix_solve["Z"]
+
+    # np.linalg.solve(x, y) = z corresponds to X @ z = y
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        x = X[i].astype(dtype)
+        y = Y[i].astype(dtype)
+        z = np.linalg.solve(x, y)
+        assert np.array_equal(z, Z[i])
         assert type(z) is GF

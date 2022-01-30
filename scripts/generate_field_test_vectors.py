@@ -14,7 +14,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import GF, PolynomialRing, log, matrix
+from sage.all import GF, PolynomialRing, log, matrix, vector
 
 FIELD = None
 SPARSE_SIZE = 20
@@ -438,6 +438,29 @@ def make_luts(field, sub_folder, seed, sparse=False):
         Z.append(z)
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "matrix_determinant.pkl")
+
+    set_seed(seed + 207)
+    shapes = [(2,2), (2,2), (2,2), (3,3), (3,3), (3,3), (4,4), (4,4), (4,4), (5,5), (5,5), (5,5), (6,6), (6,6), (6,6)]
+    X = []
+    Y = []
+    Z = []
+    for i in range(len(shapes)):
+        while True:
+            x = randint_matrix(0, order, shapes[i])
+            x_orig = x.copy()
+            dtype = x.dtype
+            x = matrix(FIELD, [[F(e) for e in row] for row in x])
+            if x.rank() == shapes[i][0]:
+                break
+        X.append(x_orig)
+        y = randint_matrix(0, order, shapes[i][1])  # 1-D vector
+        Y.append(y)
+        y = vector(FIELD, [F(e) for e in y])
+        z = x.solve_right(y)
+        z = np.array([I(e) for e in z], dtype)
+        Z.append(z)
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "matrix_solve.pkl")
 
     ###############################################################################
     # Polynomial arithmetic
