@@ -34,3 +34,18 @@ def test_multiplicative_order(field_multiplicative_order):
         GF(0).multiplicative_order()
     with pytest.raises(ArithmeticError):
         GF.Range(0, 2).multiplicative_order()
+
+
+def test_characteristic_poly_element(field_characteristic_poly_element):
+    GF, X, Z = field_characteristic_poly_element["GF"], field_characteristic_poly_element["X"], field_characteristic_poly_element["Z"]
+    dtype = random.choice(GF.dtypes)
+    x = X.astype(dtype)
+
+    for i in range(x.size):
+        zi = x[i].characteristic_poly()
+        assert zi == Z[i]
+
+    # Only 0-D or 2-D arrays are allowed
+    with pytest.raises(ValueError):
+        A = GF.Random(5)
+        A.characteristic_poly()
