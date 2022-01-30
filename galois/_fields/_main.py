@@ -1975,15 +1975,18 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             x = GF.Elements(); x
             y = x.field_trace(); y
         """
-        if not type(self).is_extension_field:
-            raise TypeError(f"The Galois field must be an extension field to compute the field trace, not {type(self)}.")
         field = type(self)
-        subfield = field.prime_subfield
-        p = field.characteristic
-        m = field.degree
-        conjugates = np.power.outer(self, p**np.arange(0, m, dtype=field.dtypes[-1]))
-        trace = np.add.reduce(conjugates, axis=-1)
-        return subfield(trace)
+        x = self
+
+        if field.is_prime_field:
+            return x.copy()
+        else:
+            subfield = field.prime_subfield
+            p = field.characteristic
+            m = field.degree
+            conjugates = np.power.outer(x, p**np.arange(0, m, dtype=field.dtypes[-1]))
+            trace = np.add.reduce(conjugates, axis=-1)
+            return subfield(trace)
 
     def field_norm(self) -> "FieldArray":
         r"""

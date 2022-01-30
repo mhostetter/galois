@@ -82,3 +82,30 @@ def test_minimal_poly_element(field_minimal_poly_element):
     with pytest.raises(ValueError):
         A = GF.Random(5)
         A.minimal_poly()
+
+
+# def test_minimal_poly_matrix(field_minimal_poly_matrix):
+#     GF, X, Z = field_minimal_poly_matrix["GF"], field_minimal_poly_matrix["X"], field_minimal_poly_matrix["Z"]
+
+#     for i in range(len(X)):
+#         dtype = random.choice(GF.dtypes)
+#         xi = X[i].astype(dtype)
+#         zi = xi.minimal_poly()
+#         assert zi == Z[i]
+
+#     # Only 2-D square arrays are allowed
+#     with pytest.raises(ValueError):
+#         A = GF.Random(5)
+#         A.minimal_poly()
+#     with pytest.raises(ValueError):
+#         A = GF.Random((2,3))
+#         A.minimal_poly()
+
+
+def test_field_trace(field_trace):
+    GF, X, Z = field_trace["GF"], field_trace["X"], field_trace["Z"]
+    dtype = random.choice(GF.dtypes)
+    x = X.astype(dtype)
+    z = x.field_trace()
+    assert np.array_equal(z, Z)
+    assert type(z) is GF.prime_subfield
