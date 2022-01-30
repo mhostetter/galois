@@ -351,3 +351,15 @@ def field_trace(field_folder):
     d["X"] = GF(d["X"])
     d["Z"] = GF.prime_subfield(d["Z"])
     return d
+
+
+@pytest.fixture(scope="session")
+def field_norm(field_folder):
+    GF, folder = field_folder
+    with open(os.path.join(folder, "field_norm.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = GF(d["X"])
+    d["Z"] = GF.prime_subfield(d["Z"])
+    return d

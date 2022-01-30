@@ -2021,14 +2021,17 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             x = GF.Elements(); x
             y = x.field_norm(); y
         """
-        if not type(self).is_extension_field:
-            raise TypeError(f"The Galois field must be an extension field to compute the field norm, not {type(self)}.")
         field = type(self)
-        subfield = field.prime_subfield
-        p = field.characteristic
-        m = field.degree
-        norm = self**((p**m - 1) // (p - 1))
-        return subfield(norm)
+        x = self
+
+        if field.is_prime_field:
+            return x.copy()
+        else:
+            subfield = field.prime_subfield
+            p = field.characteristic
+            m = field.degree
+            norm = x**((p**m - 1) // (p - 1))
+            return subfield(norm)
 
     def characteristic_poly(self) -> "Poly":
         r"""
