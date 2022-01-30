@@ -266,6 +266,23 @@ def field_log(field_folder):
 
 
 ###############################################################################
+# Fixtures for linear algebra over finite fields
+###############################################################################
+
+@pytest.fixture(scope="session")
+def field_matrix_multiply(field_folder):
+    GF, folder = field_folder
+    with open(os.path.join(folder, "matrix_multiply.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [GF(x) for x in d["X"]]
+    d["Y"] = [GF(y) for y in d["Y"]]
+    d["Z"] = [GF(z) for z in d["Z"]]
+    return d
+
+
+###############################################################################
 # Fixtures for arithmetic methods over finite fields
 ###############################################################################
 
