@@ -348,3 +348,15 @@ def test_plu_decompose(field_plu_decompose):
         assert type(p) is GF
         assert type(l) is GF
         assert type(u) is GF
+
+
+def test_matrix_inverse(field_matrix_inverse):
+    GF, X, Z = field_matrix_inverse["GF"], field_matrix_inverse["X"], field_matrix_inverse["Z"]
+
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        x = X[i].astype(dtype)
+        z = np.linalg.inv(x)
+        assert np.array_equal(z, Z[i])
+        assert type(z) is GF
+

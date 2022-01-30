@@ -406,6 +406,25 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "P": P, "L": L, "U": U}
     save_pickle(d, folder, "plu_decompose.pkl")
 
+    set_seed(seed + 205)
+    shapes = [(2,2), (3,3), (4,4), (5,5), (6,6)]
+    X = []
+    Z = []
+    for i in range(len(shapes)):
+        while True:
+            x = randint_matrix(0, order, shapes[i])
+            dtype = x.dtype
+            x_orig = x.copy()
+            x = matrix(FIELD, [[F(e) for e in row] for row in x])
+            if x.rank() == shapes[i][0]:
+                break
+        X.append(x_orig)
+        z = x.inverse()
+        z = np.array([[I(e) for e in row] for row in z], dtype)
+        Z.append(z)
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "matrix_inverse.pkl")
+
     ###############################################################################
     # Polynomial arithmetic
     ###############################################################################
