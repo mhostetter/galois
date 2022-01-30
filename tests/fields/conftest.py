@@ -282,6 +282,18 @@ def field_matrix_multiply(field_folder):
     return d
 
 
+@pytest.fixture(scope="session")
+def field_row_reduce(field_folder):
+    GF, folder = field_folder
+    with open(os.path.join(folder, "row_reduce.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [GF(x) for x in d["X"]]
+    d["Z"] = [GF(z) for z in d["Z"]]
+    return d
+
+
 ###############################################################################
 # Fixtures for arithmetic methods over finite fields
 ###############################################################################
