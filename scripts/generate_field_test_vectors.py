@@ -292,6 +292,29 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "minimal_poly_element.pkl")
 
+    # set_seed(seed + 15)
+    # shapes = [(2,2), (3,3), (4,4), (5,5), (6,6)]
+    # X = []
+    # Z = []
+    # for i in range(len(shapes)):
+    #     x = randint_matrix(0, order, shapes[i])
+    #     X.append(x)
+    #     x = matrix(FIELD, [[F(e) for e in row] for row in x])
+    #     p = x.minpoly()
+    #     z = np.array([I(e) for e in p.list()[::-1]], dtype=dtype).tolist()
+    #     z = z if z != [] else [0]
+    #     Z.append(z)
+    # d = {"X": X, "Z": Z}
+    # save_pickle(d, folder, "minimal_poly_matrix.pkl")
+
+    set_seed(seed + 16)
+    X, Z = io_1d(0, order, sparse=sparse)
+    for i in range(X.shape[0]):
+        z = F(X[i]).trace()
+        Z[i] = int(z)
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "field_trace.pkl")
+
     ###############################################################################
     # Polynomial arithmetic
     ###############################################################################

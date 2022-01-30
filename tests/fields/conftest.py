@@ -327,3 +327,27 @@ def field_minimal_poly_element(field_folder):
     d["X"] = GF(d["X"])
     d["Z"] = [galois.Poly(p, field=GF.prime_subfield) for p in d["Z"]]
     return d
+
+
+# @pytest.fixture(scope="session")
+# def field_minimal_poly_matrix(field_folder):
+#     GF, folder = field_folder
+#     with open(os.path.join(folder, "minimal_poly_matrix.pkl"), "rb") as f:
+#         print(f"Loading {f}...")
+#         d = pickle.load(f)
+#     d["GF"] = GF
+#     d["X"] = [GF(x) for x in d["X"]]
+#     d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+#     return d
+
+
+@pytest.fixture(scope="session")
+def field_trace(field_folder):
+    GF, folder = field_folder
+    with open(os.path.join(folder, "field_trace.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = GF(d["X"])
+    d["Z"] = GF.prime_subfield(d["Z"])
+    return d
