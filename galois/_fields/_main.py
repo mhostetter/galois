@@ -1896,6 +1896,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         galois.FieldArray
             The upper triangular matrix.
 
+        Notes
+        -----
+        The LU decomposition of :math:`\mathbf{A}` is defined as :math:`\mathbf{A} = \mathbf{L} \mathbf{U}`.
+
         Examples
         --------
         .. ipython:: python

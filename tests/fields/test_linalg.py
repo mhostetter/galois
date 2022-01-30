@@ -223,19 +223,6 @@ def test_matmul_2d_2d(field):
 #     assert array_equal(A @ B, np.matmul(A, B))
 
 
-def test_lu_decomposition():
-    GF = galois.GF(3)
-    for trial in range(100):
-        A = GF.Random((3,3))
-        try:
-            L, U = A.lu_decompose()
-        except ValueError:
-            # The LU decomposition isn't guaranteed to exist
-            continue
-        # For those decompositions that exist, confirm they are correct
-        assert array_equal(L @ U, A)
-
-
 def test_lup_decomposition():
     GF = galois.GF(3)
     I = GF.Identity(3)
@@ -326,11 +313,11 @@ def test_matrix_multiply(field_matrix_multiply):
 
     for i in range(len(X)):
         dtype = random.choice(GF.dtypes)
-        xi = X[i].astype(dtype)
-        yi = Y[i].astype(dtype)
-        zi = xi @ yi
-        assert np.array_equal(zi ,Z[i])
-        assert type(zi) is GF
+        x = X[i].astype(dtype)
+        y = Y[i].astype(dtype)
+        z = x @ y
+        assert np.array_equal(z ,Z[i])
+        assert type(z) is GF
 
 
 def test_row_reduce(field_row_reduce):
@@ -338,7 +325,20 @@ def test_row_reduce(field_row_reduce):
 
     for i in range(len(X)):
         dtype = random.choice(GF.dtypes)
-        xi = X[i].astype(dtype)
-        zi = xi.row_reduce()
-        assert np.array_equal(zi, Z[i])
-        assert type(zi) is GF
+        x = X[i].astype(dtype)
+        z = x.row_reduce()
+        assert np.array_equal(z, Z[i])
+        assert type(z) is GF
+
+
+def test_lu_decompose(field_lu_decompose):
+    GF, X, L, U = field_lu_decompose["GF"], field_lu_decompose["X"], field_lu_decompose["L"], field_lu_decompose["U"]
+
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        x = X[i].astype(dtype)
+        l, u = x.lu_decompose()
+        assert np.array_equal(l, L[i])
+        assert np.array_equal(u, U[i])
+        assert type(l) is GF
+        assert type(u) is GF
