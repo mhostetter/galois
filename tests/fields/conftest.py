@@ -345,6 +345,19 @@ def field_matrix_determinant(field_folder):
     return d
 
 
+@pytest.fixture(scope="session")
+def field_matrix_solve(field_folder):
+    GF, folder = field_folder
+    with open(os.path.join(folder, "matrix_solve.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [GF(x) for x in d["X"]]
+    d["Y"] = [GF(y) for y in d["Y"]]
+    d["Z"] = [GF(z) for z in d["Z"]]
+    return d
+
+
 ###############################################################################
 # Fixtures for arithmetic methods over finite fields
 ###############################################################################
