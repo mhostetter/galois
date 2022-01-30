@@ -45,7 +45,25 @@ def test_characteristic_poly_element(field_characteristic_poly_element):
         zi = x[i].characteristic_poly()
         assert zi == Z[i]
 
-    # Only 0-D or 2-D arrays are allowed
+    # Only 0-D arrays are allowed
     with pytest.raises(ValueError):
         A = GF.Random(5)
+        A.characteristic_poly()
+
+
+def test_characteristic_poly_matrix(field_characteristic_poly_matrix):
+    GF, X, Z = field_characteristic_poly_matrix["GF"], field_characteristic_poly_matrix["X"], field_characteristic_poly_matrix["Z"]
+
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        xi = X[i].astype(dtype)
+        zi = xi.characteristic_poly()
+        assert zi == Z[i]
+
+    # Only 2-D square arrays are allowed
+    with pytest.raises(ValueError):
+        A = GF.Random(5)
+        A.characteristic_poly()
+    with pytest.raises(ValueError):
+        A = GF.Random((2,3))
         A.characteristic_poly()

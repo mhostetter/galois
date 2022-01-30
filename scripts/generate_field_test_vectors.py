@@ -14,7 +14,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import GF, PolynomialRing, log
+from sage.all import GF, PolynomialRing, log, matrix
 
 FIELD = None
 SPARSE_SIZE = 20
@@ -72,6 +72,18 @@ def arange(low, high, sparse=False):
         # Set a random element to the max (needed for testing for overflows)
         idx = random.randint(0, X.size - 2)
         X[idx] = high - 1
+
+    return X
+
+
+def randint_matrix(low, high, shape):
+    if high <= np.iinfo(np.int64).max:
+        X = np.random.randint(low, high, shape, dtype=np.int64)
+    else:
+        X = np.empty(shape, dtype=object)
+        iterator = np.nditer(X, flags=["multi_index", "refs_ok"])
+        for i in iterator:
+            X[iterator.multi_index] = random.randint(low, high - 1)
 
     return X
 
@@ -252,6 +264,21 @@ def make_luts(field, sub_folder, seed, sparse=False):
         Z.append(z)
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "characteristic_poly_element.pkl")
+
+    set_seed(seed + 13)
+    shapes = [(2,2), (3,3), (4,4), (5,5), (6,6)]
+    X = []
+    Z = []
+    for i in range(len(shapes)):
+        x = randint_matrix(0, order, shapes[i])
+        X.append(x)
+        x = matrix(FIELD, [[F(e) for e in row] for row in x])
+        p = x.charpoly()
+        z = np.array([I(e) for e in p.list()[::-1]], dtype=dtype).tolist()
+        z = z if z != [] else [0]
+        Z.append(z)
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "characteristic_poly_matrix.pkl")
 
     ###############################################################################
     # Polynomial arithmetic
