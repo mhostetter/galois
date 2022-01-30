@@ -324,6 +324,30 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "field_norm.pkl")
 
     ###############################################################################
+    # Linear algebra
+    ###############################################################################
+
+    set_seed(seed + 201)
+    X_shapes = [(2,2), (2,3), (3,2), (3,3), (3,4)]
+    Y_shapes = [(2,2), (3,3), (2,4), (3,3), (4,5)]
+    X = []
+    Y = []
+    Z = []
+    for i in range(len(shapes)):
+        x = randint_matrix(0, order, X_shapes[i])
+        y = randint_matrix(0, order, Y_shapes[i])
+        X.append(x)
+        Y.append(y)
+        dtype = x.dtype
+        x = matrix(FIELD, [[F(e) for e in row] for row in x])
+        y = matrix(FIELD, [[F(e) for e in row] for row in y])
+        z = x * y
+        z = np.array([[I(e) for e in row] for row in z], dtype)
+        Z.append(z)
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "matrix_multiply.pkl")
+
+    ###############################################################################
     # Polynomial arithmetic
     ###############################################################################
     folder = os.path.join(PATH, "polys", "data", sub_folder)

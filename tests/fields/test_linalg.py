@@ -315,3 +315,19 @@ def full_rank_matrix(field, n, dtype):
         if np.linalg.matrix_rank(A) == n:
             break
     return A
+
+
+###############################################################################
+# Tests against Sage test vectors
+###############################################################################
+
+def test_matrix_multiply(field_matrix_multiply):
+    GF, X, Y, Z = field_matrix_multiply["GF"], field_matrix_multiply["X"], field_matrix_multiply["Y"], field_matrix_multiply["Z"]
+
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        xi = X[i].astype(dtype)
+        yi = Y[i].astype(dtype)
+        zi = xi @ yi
+        assert np.array_equal(zi ,Z[i])
+        assert type(zi) is GF
