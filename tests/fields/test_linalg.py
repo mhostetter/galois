@@ -223,47 +223,6 @@ def test_matmul_2d_2d(field):
 #     assert array_equal(A @ B, np.matmul(A, B))
 
 
-def test_det_2x2(field):
-    dtype = random.choice(field.dtypes)
-    a = field.Random(dtype=dtype)
-    b = field.Random(dtype=dtype)
-    c = field.Random(dtype=dtype)
-    d = field.Random(dtype=dtype)
-    A = field([[a, b], [c, d]])
-    assert np.linalg.det(A) == a*d - b*c
-
-
-def test_det_3x3(field):
-    dtype = random.choice(field.dtypes)
-    a = field.Random(dtype=dtype)
-    b = field.Random(dtype=dtype)
-    c = field.Random(dtype=dtype)
-    d = field.Random(dtype=dtype)
-    e = field.Random(dtype=dtype)
-    f = field.Random(dtype=dtype)
-    g = field.Random(dtype=dtype)
-    h = field.Random(dtype=dtype)
-    i = field.Random(dtype=dtype)
-    A = field([[a, b, c], [d, e, f], [g, h, i]])
-    assert np.linalg.det(A) == a*e*i + b*f*g + c*d*h - c*e*g - b*d*i - a*f*h
-
-
-def test_det_3x3_repeated():
-    GF = galois.GF(3)
-    for trial in range(100):
-        a = GF.Random()
-        b = GF.Random()
-        c = GF.Random()
-        d = GF.Random()
-        e = GF.Random()
-        f = GF.Random()
-        g = GF.Random()
-        h = GF.Random()
-        i = GF.Random()
-        A = GF([[a, b, c], [d, e, f], [g, h, i]])
-        assert np.linalg.det(A) == a*e*i + b*f*g + c*d*h - c*e*g - b*d*i - a*f*h
-
-
 def test_solve_2d_1d(field):
     dtype = random.choice(field.dtypes)
     A = full_rank_matrix(field, 3, dtype)
@@ -360,3 +319,13 @@ def test_matrix_inverse(field_matrix_inverse):
         assert np.array_equal(z, Z[i])
         assert type(z) is GF
 
+
+def test_matrix_determinant(field_matrix_determinant):
+    GF, X, Z = field_matrix_determinant["GF"], field_matrix_determinant["X"], field_matrix_determinant["Z"]
+
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        x = X[i].astype(dtype)
+        z = np.linalg.det(x)
+        assert z == Z[i]
+        assert type(z) is GF
