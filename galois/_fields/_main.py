@@ -17,7 +17,7 @@ from .._overrides import set_module
 from .._poly_conversion import integer_to_poly, poly_to_integer, str_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
 
 from ._dtypes import DTYPES
-from ._linalg import dot, row_reduce, lu_decompose, lup_decompose
+from ._linalg import dot, row_reduce, lu_decompose, plu_decompose
 from ._functions import FunctionMeta
 from ._ufuncs import UfuncMeta
 
@@ -1917,18 +1917,23 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         return lu_decompose(self)
 
-    def lup_decompose(self) -> "FieldArray":
+    def plu_decompose(self) -> "FieldArray":
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
 
         Returns
         -------
         galois.FieldArray
+            The column permutation matrix.
+        galois.FieldArray
             The lower triangular matrix.
         galois.FieldArray
             The upper triangular matrix.
-        galois.FieldArray
-            The permutation matrix.
+
+        Notes
+        -----
+        The PLU decomposition of :math:`\mathbf{A}` is defined as :math:`\mathbf{A} = \mathbf{P} \mathbf{L} \mathbf{U}`. This is equivalent to
+        :math:`\mathbf{P}^T \mathbf{A} = \mathbf{L} \mathbf{U}`.
 
         Examples
         --------
@@ -1936,15 +1941,17 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
             GF = galois.GF(5)
             A = GF([[1, 3, 2, 0], [3, 4, 2, 3], [0, 2, 1, 4], [4, 3, 3, 1]])
-            L, U, P = A.lup_decompose()
+            P, L, U = A.plu_decompose()
+            P
             L
             U
-            P
 
-            # P A = L U
-            np.array_equal(P @ A, L @ U)
+            # A = P L U
+            np.array_equal(A, P @ L @ U)
+            # P.T A = L U
+            np.array_equal(P.T @ A, L @ U)
         """
-        return lup_decompose(self)
+        return plu_decompose(self)
 
     def field_trace(self) -> "FieldArray":
         r"""
