@@ -1915,7 +1915,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             # A = L U
             np.array_equal(A, L @ U)
         """
-        return lu_decompose(self)
+        L, U = lu_decompose(self)
+        return L, U
 
     def plu_decompose(self) -> "FieldArray":
         r"""
@@ -1951,7 +1952,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             # P.T A = L U
             np.array_equal(P.T @ A, L @ U)
         """
-        return plu_decompose(self)
+        P, L, U, _ = plu_decompose(self)
+        return P, L, U
 
     def field_trace(self) -> "FieldArray":
         r"""

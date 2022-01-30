@@ -197,6 +197,7 @@ def plu_decompose(A):
     Ai = A.copy()
     L = field.Zeros((n,n))
     P = field.Identity(n)  # Row permutation matrix
+    N_permutations = 0  # Number of permutations
 
     for i in range(0, n-1):
         if Ai[i,i] == 0:
@@ -210,6 +211,7 @@ def plu_decompose(A):
             P[[i,j],:] = P[[j,i],:]
             Ai[[i,j],:] = Ai[[j,i],:]
             L[[i,j],:] = L[[j,i],:]
+            N_permutations += 1
 
         l = Ai[i+1:,i] / Ai[i,i]
         Ai[i+1:,:] -= np.multiply.outer(l, Ai[i,:])  # Zero out rows below row `i`
@@ -220,7 +222,7 @@ def plu_decompose(A):
     U = Ai
 
     # NOTE: Return column permutation matrix
-    return P.T, L, U
+    return P.T, L, U, N_permutations
 
 
 ###############################################################################
@@ -265,6 +267,8 @@ def triangular_det(A):
 def det(A):
     if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
         raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
+
+    field = type(A)
     n = A.shape[0]
 
     if n == 2:
@@ -272,12 +276,12 @@ def det(A):
     elif n == 3:
         return A[0,0]*(A[1,1]*A[2,2] - A[1,2]*A[2,1]) - A[0,1]*(A[1,0]*A[2,2] - A[1,2]*A[2,0]) + A[0,2]*(A[1,0]*A[2,1] - A[1,1]*A[2,0])
     else:
-        P, L, U = plu_decompose(A)
+        P, L, U, N_permutations = plu_decompose(A)
         P = P.T  # Convert row permutation matrix into column permutation matrix
-        idxs = np.arange(0, n)
-        nrows = n - np.count_nonzero(P[idxs,idxs]) # The number of moved rows
-        S = max(nrows - 1, 0)  # The number of row swaps
-        return (-1)**S * triangular_det(L) * triangular_det(U)
+        det_P = (-field(1)) ** N_permutations
+        det_L = triangular_det(L)
+        det_U = triangular_det(U)
+        return det_P * det_L * det_U
 
 
 def solve(A, b):
