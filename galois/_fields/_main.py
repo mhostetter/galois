@@ -1730,7 +1730,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         else:
             d = np.array(divisors(field.order - 1))  # Divisors d such that d | p^m - 1
             y = np.power.outer(x, d)  # x^d -- the first divisor d for which x^d == 1 is the order of x
-            idxs = np.argmin(np.abs(y.view(np.ndarray) - 1), axis=-1)  # First index of divisors, which is the order of x
+            idxs = np.argmin(y, axis=-1)  # First index of divisors, which is the order of x
             order = d[idxs]  # The order of each element of x
 
         return order

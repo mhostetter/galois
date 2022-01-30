@@ -234,6 +234,13 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "additive_order.pkl")
 
+    set_seed(seed + 11)
+    X, Z = io_1d(1, order, sparse=sparse)
+    for i in range(X.shape[0]):
+        Z[i] = int(F(X[i]).multiplicative_order())
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "multiplicative_order.pkl")
+
     ###############################################################################
     # Polynomial arithmetic
     ###############################################################################
