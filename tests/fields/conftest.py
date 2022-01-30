@@ -294,6 +294,19 @@ def field_row_reduce(field_folder):
     return d
 
 
+@pytest.fixture(scope="session")
+def field_lu_decompose(field_folder):
+    GF, folder = field_folder
+    with open(os.path.join(folder, "lu_decompose.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [GF(x) for x in d["X"]]
+    d["L"] = [GF(l) for l in d["L"]]
+    d["U"] = [GF(u) for u in d["U"]]
+    return d
+
+
 ###############################################################################
 # Fixtures for arithmetic methods over finite fields
 ###############################################################################

@@ -362,6 +362,29 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "row_reduce.pkl")
 
+    set_seed(seed + 203)
+    shapes = [(2,2), (3,3), (4,4), (5,5), (6,6)]
+    X = []
+    L = []
+    U = []
+    for i in range(len(shapes)):
+        while True:
+            # Ensure X has a PLU decomposition with P = I, which means it has an LU decomposition
+            x = randint_matrix(0, order, shapes[i])
+            x_orig = x.copy()
+            dtype = x.dtype
+            x = matrix(FIELD, [[F(e) for e in row] for row in x])
+            p, l, u = x.LU()
+            if p == matrix.identity(FIELD, shapes[i][0]):
+                break
+        X.append(x_orig)
+        l = np.array([[I(e) for e in row] for row in l], dtype)
+        u = np.array([[I(e) for e in row] for row in u], dtype)
+        L.append(l)
+        U.append(u)
+    d = {"X": X, "L": L, "U": U}
+    save_pickle(d, folder, "lu_decompose.pkl")
+
     ###############################################################################
     # Polynomial arithmetic
     ###############################################################################

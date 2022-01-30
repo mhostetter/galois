@@ -172,10 +172,17 @@ def lu_decompose(A):
 
     for i in range(0, n-1):
         if Ai[i,i] == 0:
-            raise ValueError("The LU decomposition of `A` does not exist. Use the LUP decomposition instead.")
+            idxs = np.nonzero(Ai[i:,i])[0]  # The first non-zero entry in column `i` below row `i`
+            if idxs.size == 0:  # pylint: disable=no-else-continue
+                L[i,i] = 1
+                continue
+            else:
+                raise ValueError("The LU decomposition of `A` does not exist. Use the LUP decomposition instead.")
+
         l = Ai[i+1:,i] / Ai[i,i]
         Ai[i+1:,:] -= np.multiply.outer(l, Ai[i,:])
         L[i+1:,i] = l
+
     U = Ai
 
     return L, U
