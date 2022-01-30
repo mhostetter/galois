@@ -280,6 +280,18 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "characteristic_poly_matrix.pkl")
 
+    set_seed(seed + 14)
+    X, _ = io_1d(0, order, sparse=sparse)
+    Z = []
+    for i in range(len(X)):
+        x = F(X[i])
+        p = x.minpoly()
+        z = np.array([I(e) for e in p.list()[::-1]], dtype=dtype).tolist()
+        z = z if z != [] else [0]
+        Z.append(z)
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "minimal_poly_element.pkl")
+
     ###############################################################################
     # Polynomial arithmetic
     ###############################################################################

@@ -67,3 +67,18 @@ def test_characteristic_poly_matrix(field_characteristic_poly_matrix):
     with pytest.raises(ValueError):
         A = GF.Random((2,3))
         A.characteristic_poly()
+
+
+def test_minimal_poly_element(field_minimal_poly_element):
+    GF, X, Z = field_minimal_poly_element["GF"], field_minimal_poly_element["X"], field_minimal_poly_element["Z"]
+    dtype = random.choice(GF.dtypes)
+    x = X.astype(dtype)
+
+    for i in range(x.size):
+        zi = x[i].minimal_poly()
+        assert zi == Z[i]
+
+    # Only 0-D arrays are allowed
+    with pytest.raises(ValueError):
+        A = GF.Random(5)
+        A.minimal_poly()
