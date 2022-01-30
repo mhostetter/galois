@@ -188,7 +188,7 @@ def lu_decompose(A):
     return L, U
 
 
-def lup_decompose(A):
+def plu_decompose(A):
     if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
         raise ValueError(f"Argument `A` must be a square matrix, not {A.shape}.")
 
@@ -196,7 +196,7 @@ def lup_decompose(A):
     n = A.shape[0]
     Ai = A.copy()
     L = field.Zeros((n,n))
-    P = field.Identity(n)
+    P = field.Identity(n)  # Row permutation matrix
 
     for i in range(0, n-1):
         if Ai[i,i] == 0:
@@ -219,7 +219,8 @@ def lup_decompose(A):
     L[-1,-1] = 1  # Set the final diagonal to 1
     U = Ai
 
-    return L, U, P
+    # NOTE: Return column permutation matrix
+    return P.T, L, U
 
 
 ###############################################################################
@@ -271,7 +272,8 @@ def det(A):
     elif n == 3:
         return A[0,0]*(A[1,1]*A[2,2] - A[1,2]*A[2,1]) - A[0,1]*(A[1,0]*A[2,2] - A[1,2]*A[2,0]) + A[0,2]*(A[1,0]*A[2,1] - A[1,1]*A[2,0])
     else:
-        L, U, P = lup_decompose(A)
+        P, L, U = plu_decompose(A)
+        P = P.T  # Convert row permutation matrix into column permutation matrix
         idxs = np.arange(0, n)
         nrows = n - np.count_nonzero(P[idxs,idxs]) # The number of moved rows
         S = max(nrows - 1, 0)  # The number of row swaps

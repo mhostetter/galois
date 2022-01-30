@@ -223,15 +223,6 @@ def test_matmul_2d_2d(field):
 #     assert array_equal(A @ B, np.matmul(A, B))
 
 
-def test_lup_decomposition():
-    GF = galois.GF(3)
-    I = GF.Identity(3)
-    for trial in range(100):
-        A = GF.Random((3,3))
-        L, U, P = A.lup_decompose()
-        assert array_equal(L @ U, P @ A)
-
-
 def test_det_2x2(field):
     dtype = random.choice(field.dtypes)
     a = field.Random(dtype=dtype)
@@ -340,5 +331,20 @@ def test_lu_decompose(field_lu_decompose):
         l, u = x.lu_decompose()
         assert np.array_equal(l, L[i])
         assert np.array_equal(u, U[i])
+        assert type(l) is GF
+        assert type(u) is GF
+
+
+def test_plu_decompose(field_plu_decompose):
+    GF, X, P, L, U = field_plu_decompose["GF"], field_plu_decompose["X"], field_plu_decompose["P"], field_plu_decompose["L"], field_plu_decompose["U"]
+
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        x = X[i].astype(dtype)
+        p, l, u = x.plu_decompose()
+        assert np.array_equal(p, P[i])
+        assert np.array_equal(l, L[i])
+        assert np.array_equal(u, U[i])
+        assert type(p) is GF
         assert type(l) is GF
         assert type(u) is GF
