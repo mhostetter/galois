@@ -109,3 +109,12 @@ def test_field_trace(field_trace):
     z = x.field_trace()
     assert np.array_equal(z, Z)
     assert type(z) is GF.prime_subfield
+
+
+def test_field_norm(field_norm):
+    GF, X, Z = field_norm["GF"], field_norm["X"], field_norm["Z"]
+    dtype = random.choice(GF.dtypes)
+    x = X.astype(dtype)
+    z = x.field_norm()
+    assert np.array_equal(z, Z)
+    assert type(z) is GF.prime_subfield
