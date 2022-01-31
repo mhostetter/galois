@@ -162,8 +162,8 @@ def row_reduce(A, ncols=None):
 
 
 def lu_decompose(A):
-    if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
-        raise ValueError(f"Argument `A` must be a square matrix, not {A.shape}.")
+    if not A.ndim == 2:
+        raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")
 
     field = type(A)
     n = A.shape[0]
@@ -189,8 +189,8 @@ def lu_decompose(A):
 
 
 def plu_decompose(A):
-    if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
-        raise ValueError(f"Argument `A` must be a square matrix, not {A.shape}.")
+    if not A.ndim == 2:
+        raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")
 
     field = type(A)
     n = A.shape[0]
