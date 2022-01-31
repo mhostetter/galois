@@ -11,6 +11,13 @@ import galois
 from ..helper import array_equal
 
 
+def test_dot_exceptions():
+    with pytest.raises(TypeError):
+        a = galois.GF(2**4).Random(5)
+        b = galois.GF(2**5).Random(5)
+        np.dot(a, b)
+
+
 def test_dot_scalar(field):
     dtype = random.choice(field.dtypes)
     a = field.Random((3,3), dtype=dtype)
@@ -75,6 +82,13 @@ def test_dot_tensor_vector(field):
     assert array_equal(C, np.sum(A * b, axis=-1))
 
 
+def test_vdot_exceptions():
+    with pytest.raises(TypeError):
+        a = galois.GF(2**4).Random(5)
+        b = galois.GF(2**5).Random(5)
+        np.vdot(a, b)
+
+
 def test_vdot_scalar(field):
     dtype = random.choice(field.dtypes)
     a = field.Random(dtype=dtype)
@@ -105,6 +119,17 @@ def test_vdot_matrix_matrix(field):
     assert array_equal(C, np.sum(A.flatten() * B.flatten()))
 
 
+def test_inner_exceptions():
+    with pytest.raises(TypeError):
+        a = galois.GF(2**4).Random(5)
+        b = galois.GF(2**5).Random(5)
+        np.inner(a, b)
+    with pytest.raises(ValueError):
+        a = galois.GF(2**4).Random((3,4))
+        b = galois.GF(2**4).Random((3,5))
+        np.inner(a, b)
+
+
 def test_inner_scalar_scalar(field):
     dtype = random.choice(field.dtypes)
     a = field.Random(dtype=dtype)
@@ -123,6 +148,13 @@ def test_inner_vector_vector(field):
     assert type(c) is field
     assert c.dtype == dtype
     assert array_equal(c, np.sum(a * b))
+
+
+def test_outer_exceptions():
+    with pytest.raises(TypeError):
+        a = galois.GF(2**4).Random(5)
+        b = galois.GF(2**5).Random(5)
+        np.outer(a, b)
 
 
 def test_outer_vector_vector(field):
@@ -248,6 +280,16 @@ def test_matrix_multiply(field_matrix_multiply):
         assert type(z) is GF
 
 
+def test_row_reduce_exceptions():
+    GF = galois.GF(2**8)
+    with pytest.raises(ValueError):
+        A = GF.Random(5)
+        A.row_reduce()
+    with pytest.raises(ValueError):
+        A = GF.Random((2,2,2))
+        A.row_reduce()
+
+
 def test_row_reduce(field_row_reduce):
     GF, X, Z = field_row_reduce["GF"], field_row_reduce["X"], field_row_reduce["Z"]
 
@@ -307,6 +349,16 @@ def test_plu_decompose(field_plu_decompose):
         assert type(u) is GF
 
 
+def test_matrix_inverse_exceptions():
+    GF = galois.GF(2**8)
+    with pytest.raises(np.linalg.LinAlgError):
+        A = GF.Random(5)
+        np.linalg.inv(A)
+    with pytest.raises(np.linalg.LinAlgError):
+        A = GF.Random((2,2,2))
+        np.linalg.inv(A)
+
+
 def test_matrix_inverse(field_matrix_inverse):
     GF, X, Z = field_matrix_inverse["GF"], field_matrix_inverse["X"], field_matrix_inverse["Z"]
 
@@ -318,6 +370,16 @@ def test_matrix_inverse(field_matrix_inverse):
         assert type(z) is GF
 
 
+def test_matrix_determinant_exceptions():
+    GF = galois.GF(2**8)
+    with pytest.raises(np.linalg.LinAlgError):
+        A = GF.Random(5)
+        np.linalg.det(A)
+    with pytest.raises(np.linalg.LinAlgError):
+        A = GF.Random((2,2,2))
+        np.linalg.det(A)
+
+
 def test_matrix_determinant(field_matrix_determinant):
     GF, X, Z = field_matrix_determinant["GF"], field_matrix_determinant["X"], field_matrix_determinant["Z"]
 
@@ -327,6 +389,30 @@ def test_matrix_determinant(field_matrix_determinant):
         z = np.linalg.det(x)
         assert z == Z[i]
         assert type(z) is GF
+
+
+def test_matrix_solve_exceptions():
+    GF = galois.GF(2**8)
+    with pytest.raises(TypeError):
+        A = galois.GF(2**4).Random((3,3))
+        b = galois.GF(2**5).Random(3)
+        np.linalg.solve(A, b)
+    with pytest.raises(np.linalg.LinAlgError):
+        A = GF.Random((2,3))
+        b = GF.Random(3)
+        np.linalg.solve(A, b)
+    with pytest.raises(np.linalg.LinAlgError):
+        A = GF.Random((2,2))
+        b = GF.Random((2,2,2))
+        np.linalg.solve(A, b)
+    with pytest.raises(np.linalg.LinAlgError):
+        A = GF.Random((2,2))
+        b = GF.Random()
+        np.linalg.solve(A, b)
+    with pytest.raises(np.linalg.LinAlgError):
+        A = GF.Random((2,2))
+        b = GF.Random(3)
+        np.linalg.solve(A, b)
 
 
 def test_matrix_solve(field_matrix_solve):

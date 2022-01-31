@@ -290,9 +290,9 @@ def solve(A, b):
     if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
         raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
     if not b.ndim in [1, 2]:
-        raise ValueError(f"Argument `b` must have dimension equal to A or one less, not {b.ndim}.")
+        raise np.linalg.LinAlgError(f"Argument `b` must have dimension equal to A or one less, not {b.ndim}.")
     if not A.shape[-1] == b.shape[0]:
-        raise ValueError(f"The last dimension of `A` must equal the first dimension of `b`, not {A.shape} and {b.shape}.")
+        raise np.linalg.LinAlgError(f"The last dimension of `A` must equal the first dimension of `b`, not {A.shape} and {b.shape}.")
 
     A_inv = inv(A)
     x = A_inv @ b
