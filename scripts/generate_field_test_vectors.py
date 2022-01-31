@@ -363,7 +363,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "row_reduce.pkl")
 
     set_seed(seed + 203)
-    shapes = [(2,2), (3,3), (4,4), (5,5), (6,6)]
+    shapes = [(2,2), (2,3), (3,2), (3,3), (3,4), (4,3), (4,4), (4,5), (5,4), (5,5), (5,6), (6,5), (6,6)]
     X = []
     L = []
     U = []
@@ -386,7 +386,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "lu_decompose.pkl")
 
     set_seed(seed + 204)
-    shapes = [(2,2), (3,3), (4,4), (5,5), (6,6)]
+    shapes = [(2,2), (2,3), (3,2), (3,3), (3,4), (4,3), (4,4), (4,5), (5,4), (5,5), (5,6), (6,5), (6,6)]
     X = []
     L = []
     U = []

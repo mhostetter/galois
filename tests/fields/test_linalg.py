@@ -259,6 +259,16 @@ def test_row_reduce(field_row_reduce):
         assert type(z) is GF
 
 
+def test_lu_decompose_exceptions():
+    GF = galois.GF(2**8)
+    with pytest.raises(ValueError):
+        A = GF.Random(5)
+        A.lu_decompose()
+    with pytest.raises(ValueError):
+        A = GF.Random((2,2,2))
+        A.lu_decompose()
+
+
 def test_lu_decompose(field_lu_decompose):
     GF, X, L, U = field_lu_decompose["GF"], field_lu_decompose["X"], field_lu_decompose["L"], field_lu_decompose["U"]
 
@@ -270,6 +280,16 @@ def test_lu_decompose(field_lu_decompose):
         assert np.array_equal(u, U[i])
         assert type(l) is GF
         assert type(u) is GF
+
+
+def test_plu_decompose_exceptions():
+    GF = galois.GF(2**8)
+    with pytest.raises(ValueError):
+        A = GF.Random(5)
+        A.plu_decompose()
+    with pytest.raises(ValueError):
+        A = GF.Random((2,2,2))
+        A.plu_decompose()
 
 
 def test_plu_decompose(field_plu_decompose):
@@ -312,7 +332,7 @@ def test_matrix_determinant(field_matrix_determinant):
 def test_matrix_solve(field_matrix_solve):
     GF, X, Y, Z = field_matrix_solve["GF"], field_matrix_solve["X"], field_matrix_solve["Y"], field_matrix_solve["Z"]
 
-    # np.linalg.solve(x, y) = z corresponds to X @ z = y
+    # np.linalg.solve(x, y) = z corresponds to x @ z = y
     for i in range(len(X)):
         dtype = random.choice(GF.dtypes)
         x = X[i].astype(dtype)
