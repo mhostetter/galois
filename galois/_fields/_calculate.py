@@ -93,11 +93,10 @@ class CalculateMeta(type):
             degree = cls._degree
             irreducible_poly = cls._irreducible_poly_int
 
-            # NOTE: Using lambda arguments `aa` and `bb` to workaround these issues: https://github.com/mhostetter/galois/issues/178 and https://github.com/numba/numba/issues/7623
             if cls._UFUNC_TYPE[name] == "unary":
-                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64)"], nopython=True)(lambda aa: function(aa, characteristic, degree, irreducible_poly))
+                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64)"], nopython=True)(lambda a: function(a, characteristic, degree, irreducible_poly))
             else:
-                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(lambda aa, bb: function(aa, bb, characteristic, degree, irreducible_poly))
+                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(lambda a, b: function(a, b, characteristic, degree, irreducible_poly))
 
             cls._reset_globals()
 

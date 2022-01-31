@@ -2715,7 +2715,7 @@ class GF2Meta(FieldClass, DirMeta):
         return a & b
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
@@ -2726,7 +2726,7 @@ class GF2Meta(FieldClass, DirMeta):
             return a
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")

@@ -82,7 +82,7 @@ class GF2mMeta(FieldClass, DirMeta):
         return a ^ b
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         a in GF(2^m), can be represented as a degree m-1 polynomial a(x) in GF(2)[x]
@@ -113,7 +113,7 @@ class GF2mMeta(FieldClass, DirMeta):
         return c
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         From Fermat's Little Theorem:
@@ -145,7 +145,7 @@ class GF2mMeta(FieldClass, DirMeta):
         return result
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
@@ -157,7 +157,7 @@ class GF2mMeta(FieldClass, DirMeta):
             return MULTIPLY(a, b_inv, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         Square and Multiply Algorithm
@@ -195,7 +195,7 @@ class GF2mMeta(FieldClass, DirMeta):
         return result
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         TODO: Replace this with more efficient algorithm

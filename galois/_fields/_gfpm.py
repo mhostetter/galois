@@ -157,7 +157,7 @@ class GFpmMeta(FieldClass, DirMeta):
     ###############################################################################
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _int_to_poly(a, CHARACTERISTIC, DEGREE):
         """
         Convert the integer representation to vector/polynomial representation
@@ -170,7 +170,7 @@ class GFpmMeta(FieldClass, DirMeta):
         return a_vec
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _poly_to_int(a_vec, CHARACTERISTIC, DEGREE):
         """
         Convert the integer representation to vector/polynomial representation
@@ -181,7 +181,7 @@ class GFpmMeta(FieldClass, DirMeta):
         return a
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
@@ -189,14 +189,14 @@ class GFpmMeta(FieldClass, DirMeta):
         return POLY_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         a_vec = (-a_vec) % CHARACTERISTIC
         return POLY_TO_INT(a_vec, CHARACTERISTIC, DEGREE)
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
@@ -204,7 +204,7 @@ class GFpmMeta(FieldClass, DirMeta):
         return POLY_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
@@ -233,7 +233,7 @@ class GFpmMeta(FieldClass, DirMeta):
         return POLY_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         From Fermat's Little Theorem:
@@ -264,7 +264,7 @@ class GFpmMeta(FieldClass, DirMeta):
         return result
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
@@ -276,7 +276,7 @@ class GFpmMeta(FieldClass, DirMeta):
             return MULTIPLY(a, b_inv, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         Square and Multiply Algorithm
@@ -314,7 +314,7 @@ class GFpmMeta(FieldClass, DirMeta):
         return result
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         TODO: Replace this with more efficient algorithm

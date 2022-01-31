@@ -309,7 +309,7 @@ class FunctionMeta(UfuncMeta):
     ###############################################################################
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _matmul_calculate(A, B, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
         dtype = A.dtype
@@ -328,7 +328,7 @@ class FunctionMeta(UfuncMeta):
         return C
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _convolve_calculate(a, b, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
         dtype = a.dtype
@@ -341,7 +341,7 @@ class FunctionMeta(UfuncMeta):
         return c
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _poly_evaluate_calculate(coeffs, values, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
         args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
         dtype = values.dtype
@@ -355,7 +355,7 @@ class FunctionMeta(UfuncMeta):
         return results
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _poly_divmod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
 
@@ -376,7 +376,7 @@ class FunctionMeta(UfuncMeta):
         return qr
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _poly_roots_calculate(nonzero_degrees, nonzero_coeffs, primitive_element, ADD, MULTIPLY, POWER, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
         dtype = nonzero_coeffs.dtype

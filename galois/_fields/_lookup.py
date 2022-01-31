@@ -120,7 +120,7 @@ class LookupMeta(CalculateMeta):
     ###############################################################################
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _add_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
@@ -152,7 +152,7 @@ class LookupMeta(CalculateMeta):
             return EXP[m + ZECH_LOG[n - m]]
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _negative_lookup(a, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
@@ -170,7 +170,7 @@ class LookupMeta(CalculateMeta):
             return EXP[ZECH_E + m]
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _subtract_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
@@ -210,7 +210,7 @@ class LookupMeta(CalculateMeta):
         return EXP[m + ZECH_LOG[z]]
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _multiply_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
@@ -228,7 +228,7 @@ class LookupMeta(CalculateMeta):
             return EXP[m + n]
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _reciprocal_lookup(a, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
@@ -248,7 +248,7 @@ class LookupMeta(CalculateMeta):
         return EXP[(ORDER - 1) - m]
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _divide_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
@@ -273,7 +273,7 @@ class LookupMeta(CalculateMeta):
             return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _power_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
@@ -300,7 +300,7 @@ class LookupMeta(CalculateMeta):
             return EXP[(m * b) % (ORDER - 1)]  # TODO: Do b % (ORDER - 1) first? b could be very large and overflow int64
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _log_lookup(beta, alpha, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
