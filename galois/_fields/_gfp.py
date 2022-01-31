@@ -59,7 +59,7 @@ class GFpMeta(FieldClass, DirMeta):
     ###############################################################################
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         c = a + b
         if c >= CHARACTERISTIC:
@@ -67,7 +67,7 @@ class GFpMeta(FieldClass, DirMeta):
         return c
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if a == 0:
             return 0
@@ -75,7 +75,7 @@ class GFpMeta(FieldClass, DirMeta):
             return CHARACTERISTIC - a
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if a >= b:
             return a - b
@@ -83,12 +83,12 @@ class GFpMeta(FieldClass, DirMeta):
             return CHARACTERISTIC + a - b
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         return (a * b) % CHARACTERISTIC
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         s*x + t*y = gcd(x, y) = 1
@@ -113,7 +113,7 @@ class GFpMeta(FieldClass, DirMeta):
         return t2
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
@@ -125,7 +125,7 @@ class GFpMeta(FieldClass, DirMeta):
             return (a * b_inv) % CHARACTERISTIC
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         Square and Multiply Algorithm
@@ -163,7 +163,7 @@ class GFpMeta(FieldClass, DirMeta):
         return result
 
     @staticmethod
-    @numba.extending.register_jitable(inline="always")
+    @numba.extending.register_jitable
     def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         """
         TODO: Replace this with more efficient algorithm
