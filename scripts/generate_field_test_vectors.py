@@ -583,6 +583,20 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "evaluate.pkl")
 
+    set_seed(seed + 108)
+    X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
+    Y = [randint_matrix(0, order, (2,2)) for i in range(20)]
+    Z = []
+    for i in range(len(X)):
+        dtype = Y[i].dtype
+        x = ring([F(e) for e in X[i][::-1]])
+        y = matrix(FIELD, [[F(e) for e in row] for row in Y[i]])
+        z = x(y)
+        z = np.array([[I(e) for e in row] for row in z], dtype)
+        Z.append(z)
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "evaluate_matrix.pkl")
+
 
 if __name__ == "__main__":
     field = GF(2, modulus="primitive", repr="int")

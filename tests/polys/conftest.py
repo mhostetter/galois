@@ -114,3 +114,17 @@ def poly_evaluate(field_folder):
     d["Y"] = GF(d["Y"])
     d["Z"] = GF(d["Z"])
     return d
+
+
+@pytest.fixture(scope="session")
+def poly_evaluate_matrix(field_folder):
+    GF, folder = field_folder
+    folder = convert_folder(folder)
+    with open(os.path.join(folder, "evaluate_matrix.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Y"] = [GF(y) for y in d["Y"]]
+    d["Z"] = [GF(z) for z in d["Z"]]
+    return d
