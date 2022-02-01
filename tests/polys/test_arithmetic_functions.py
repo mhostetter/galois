@@ -73,3 +73,21 @@ def test_lcm(poly_lcm):
 
         assert z == Z[i]
         assert isinstance(z, galois.Poly)
+
+
+def test_prod_exceptions():
+    with pytest.raises(ValueError):
+        a = galois.Poly.Random(5)
+        b = galois.Poly.Random(4, field=galois.GF(3))
+        c = galois.Poly.Random(3)
+        galois.prod(a, b, c)
+
+
+def test_prod(poly_prod):
+    GF, X, Z = poly_prod["GF"], poly_prod["X"], poly_prod["Z"]
+    for i in range(len(X)):
+        x = X[i]
+        z = galois.prod(*x)
+
+        assert z == Z[i]
+        assert isinstance(z, galois.Poly)

@@ -14,7 +14,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import GF, PolynomialRing, log, matrix, vector, xgcd, lcm
+from sage.all import GF, PolynomialRing, log, matrix, vector, xgcd, lcm, prod
 
 FIELD = None
 RING = None
@@ -683,6 +683,19 @@ def make_luts(field, sub_folder, seed, sparse=False):
         Z.append(z)
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "lcm.pkl")
+
+    set_seed(seed + 403)
+    X = []
+    Z = []
+    for i in range(20):
+        XX = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(random.randint(2, 5))]
+        X.append(XX)
+        xx = [list_to_poly(XXi) for XXi in XX]
+        z = prod(xx)
+        z = poly_to_list(z)
+        Z.append(z)
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "prod.pkl")
 
 
 if __name__ == "__main__":
