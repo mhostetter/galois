@@ -613,6 +613,28 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "reverse.pkl")
 
+    set_seed(seed + 302)
+    X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
+    R = []
+    M = []
+    dtype = randint_matrix(0, order, 1).dtype
+    for i in range(len(X)):
+        x = ring([F(e) for e in X[i][::-1]])
+        roots = x.roots()
+        RR, MM = [], []
+        for root in roots:
+            r = root[0]
+            m = root[1]
+            RR.append(I(r))
+            MM.append(int(m))
+        idxs = np.argsort(RR)  # Sort by ascending roots
+        RR = (np.array(RR, dtype=dtype)[idxs]).tolist()
+        MM = (np.array(MM, dtype=dtype)[idxs]).tolist()
+        R.append(RR)
+        M.append(MM)
+    d = {"X": X, "R": R, "M": M}
+    save_pickle(d, folder, "roots.pkl")
+
 
 if __name__ == "__main__":
     field = GF(2, modulus="primitive", repr="int")

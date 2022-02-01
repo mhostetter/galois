@@ -6,7 +6,7 @@ FieldClass is also included.
 import inspect
 import math
 import random
-from typing import Tuple, List, Sequence, Iterable, Optional, Union
+from typing import Tuple, List, Sequence, Iterable, Optional, Union, overload
 from typing_extensions import Literal
 
 import numba
@@ -3498,7 +3498,13 @@ class Poly:
         """
         return Poly(self.coeffs[::-1])
 
-    def roots(self, multiplicity: bool = False) -> FieldArray:
+    @overload
+    def roots(self, multiplicity: Literal[False] = False) -> FieldArray:
+        ...
+    @overload
+    def roots(self, multiplicity: Literal[True] = True) -> Tuple[FieldArray, np.ndarray]:
+        ...
+    def roots(self, multiplicity=False):
         r"""
         Calculates the roots :math:`r` of the polynomial :math:`f(x)`, such that :math:`f(r) = 0`.
 
