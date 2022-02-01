@@ -65,6 +65,38 @@ def test_scalar_multiply(poly_scalar_multiply):
         assert type(z.coeffs) is GF
 
 
+def test_divide(poly_divmod):
+    GF, X, Y, Q = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["Q"]
+    for i in range(len(X)):
+        x = X[i]
+        y = Y[i]
+
+        q = x / y
+        assert q == Q[i]
+        assert isinstance(q, galois.Poly)
+        assert q.field is GF
+        assert type(q.coeffs) is GF
+
+        q = x // y
+        assert q == Q[i]
+        assert isinstance(q, galois.Poly)
+        assert q.field is GF
+        assert type(q.coeffs) is GF
+
+
+def test_mod(poly_divmod):
+    # NOTE: Test modulo separately because there's a separate method to compute it without the quotient for space spacings
+    GF, X, Y, R = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["R"]
+    for i in range(len(X)):
+        x = X[i]
+        y = Y[i]
+        r = x % y
+        assert r == R[i]
+        assert isinstance(r, galois.Poly)
+        assert r.field is GF
+        assert type(r.coeffs) is GF
+
+
 def test_divmod(poly_divmod):
     GF, X, Y, Q, R = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["Q"], poly_divmod["R"]
     for i in range(len(X)):
@@ -77,19 +109,6 @@ def test_divmod(poly_divmod):
         assert q.field is GF
         assert type(q.coeffs) is GF
 
-        assert r == R[i]
-        assert isinstance(r, galois.Poly)
-        assert r.field is GF
-        assert type(r.coeffs) is GF
-
-
-def test_mod(poly_divmod):
-    # NOTE: Test modulo separately because there's a separate method to compute it without the quotient for space spacings
-    GF, X, Y, R = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["R"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
-        r = x % y
         assert r == R[i]
         assert isinstance(r, galois.Poly)
         assert r.field is GF
@@ -126,5 +145,15 @@ def test_evaluate_vector(poly_evaluate):
         x = X[i]  # Polynomial
         y = Y  # GF array
         z = x(y)  # GF array
-        assert np.all(z == Z[i,:])
+        assert np.array_equal(z, Z[i,:])
+        assert type(z) is GF
+
+
+def test_evaluate_matrix(poly_evaluate_matrix):
+    GF, X, Y, Z = poly_evaluate_matrix["GF"], poly_evaluate_matrix["X"], poly_evaluate_matrix["Y"], poly_evaluate_matrix["Z"]
+    for i in range(len(X)):
+        x = X[i]  # Polynomial
+        y = Y[i]  # GF square matrix
+        z = x(y, elementwise=False)  # GF square matrix
+        assert np.array_equal(z, Z[i])
         assert type(z) is GF
