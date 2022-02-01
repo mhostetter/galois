@@ -163,3 +163,17 @@ def poly_roots(field_folder):
     d["R"] = [GF(r) for r in d["R"]]
     d["M"] = [np.array(m) for m in d["M"]]
     return d
+
+
+@pytest.fixture(scope="session")
+def poly_derivative(field_folder):
+    GF, folder = field_folder
+    folder = convert_folder(folder)
+    with open(os.path.join(folder, "derivative.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Y"] = d["Y"]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d

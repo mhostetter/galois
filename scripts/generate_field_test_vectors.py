@@ -635,6 +635,19 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "R": R, "M": M}
     save_pickle(d, folder, "roots.pkl")
 
+    set_seed(seed + 303)
+    X = [random_coeffs(0, order, 2*FIELD.degree(), 6*FIELD.degree()) for i in range(20)]
+    Y = [1,]*10 + [random.randint(2, FIELD.degree() + 1) for i in range(10)]
+    Z = []
+    for i in range(len(X)):
+        x = ring([F(e) for e in X[i][::-1]])
+        z = x.derivative(Y[i])
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=dtype).tolist()
+        z = z if z != [] else [0]
+        Z.append(z)
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "derivative.pkl")
+
 
 if __name__ == "__main__":
     field = GF(2, modulus="primitive", repr="int")
