@@ -597,6 +597,22 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "evaluate_matrix.pkl")
 
+    ###############################################################################
+    # Polynomial arithmetic methods
+    ###############################################################################
+
+    set_seed(seed + 301)
+    X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
+    Z = []
+    for i in range(len(X)):
+        x = ring([F(e) for e in X[i][::-1]])
+        z = x.reverse()
+        z = np.array([I(e) for e in z.list()[::-1]], dtype=dtype).tolist()
+        z = z if z != [] else [0]
+        Z.append(z)
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "reverse.pkl")
+
 
 if __name__ == "__main__":
     field = GF(2, modulus="primitive", repr="int")
