@@ -135,7 +135,7 @@ def poly_evaluate_matrix(field_folder):
 
 
 ###############################################################################
-# Fixtures for polynomial arithmetic methods over finite fields
+# Fixtures for polynomial arithmetic methods
 ###############################################################################
 
 @pytest.fixture(scope="session")
@@ -176,4 +176,24 @@ def poly_derivative(field_folder):
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = d["Y"]
     d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d
+
+
+###############################################################################
+# Fixtures for polynomial arithmetic functions
+###############################################################################
+
+@pytest.fixture(scope="session")
+def poly_egcd(field_folder):
+    GF, folder = field_folder
+    folder = convert_folder(folder)
+    with open(os.path.join(folder, "egcd.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
+    d["D"] = [galois.Poly(p, field=GF) for p in d["D"]]
+    d["S"] = [galois.Poly(p, field=GF) for p in d["S"]]
+    d["T"] = [galois.Poly(p, field=GF) for p in d["T"]]
     return d
