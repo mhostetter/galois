@@ -648,6 +648,29 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "derivative.pkl")
 
+    ###############################################################################
+    # Polynomial arithmetic functions
+    ###############################################################################
+
+    set_seed(seed + 401)
+    X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
+    Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
+    D = []
+    S = []
+    T = []
+    for i in range(len(X)):
+        x = list_to_poly(X[i])
+        y = list_to_poly(Y[i])
+        d, s, t = xgcd(x, y)
+        d = poly_to_list(d)
+        s = poly_to_list(s)
+        t = poly_to_list(t)
+        D.append(d)
+        S.append(s)
+        T.append(t)
+    d = {"X": X, "Y": Y, "D": D, "S": S, "T": T}
+    save_pickle(d, folder, "egcd.pkl")
+
 
 if __name__ == "__main__":
     field = GF(2, modulus="primitive", repr="int")
