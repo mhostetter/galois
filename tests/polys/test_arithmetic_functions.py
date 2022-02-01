@@ -55,3 +55,21 @@ def test_egcd(poly_egcd):
         assert isinstance(s, galois.Poly)
         assert t == T[i]
         assert isinstance(t, galois.Poly)
+
+
+def test_lcm_exceptions():
+    with pytest.raises(ValueError):
+        a = galois.Poly.Random(5)
+        b = galois.Poly.Random(4, field=galois.GF(3))
+        c = galois.Poly.Random(3)
+        galois.lcm(a, b, c)
+
+
+def test_lcm(poly_lcm):
+    GF, X, Z = poly_lcm["GF"], poly_lcm["X"], poly_lcm["Z"]
+    for i in range(len(X)):
+        x = X[i]
+        z = galois.lcm(*x)
+
+        assert z == Z[i]
+        assert isinstance(z, galois.Poly)

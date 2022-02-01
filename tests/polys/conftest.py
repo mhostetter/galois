@@ -197,3 +197,16 @@ def poly_egcd(field_folder):
     d["S"] = [galois.Poly(p, field=GF) for p in d["S"]]
     d["T"] = [galois.Poly(p, field=GF) for p in d["T"]]
     return d
+
+
+@pytest.fixture(scope="session")
+def poly_lcm(field_folder):
+    GF, folder = field_folder
+    folder = convert_folder(folder)
+    with open(os.path.join(folder, "lcm.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [[galois.Poly(p, field=GF) for p in X] for X in d["X"]]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d
