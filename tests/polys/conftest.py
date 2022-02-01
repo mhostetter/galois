@@ -223,3 +223,18 @@ def poly_prod(field_folder):
     d["X"] = [[galois.Poly(p, field=GF) for p in X] for X in d["X"]]
     d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
     return d
+
+
+@pytest.fixture(scope="session")
+def poly_modular_power(field_folder):
+    GF, folder = field_folder
+    folder = convert_folder(folder)
+    with open(os.path.join(folder, "modular_power.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["E"] = d["E"]
+    d["M"] = [galois.Poly(p, field=GF) for p in d["M"]]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d

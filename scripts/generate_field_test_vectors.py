@@ -697,6 +697,21 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "prod.pkl")
 
+    set_seed(seed + 404)
+    X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
+    E = [random.randint(2, 10) for i in range(20)]
+    M = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
+    Z = []
+    for i in range(20):
+        x = list_to_poly(X[i])
+        e = E[i]
+        m = list_to_poly(M[i])
+        z = (x ** e) % m
+        z = poly_to_list(z)
+        Z.append(z)
+    d = {"X": X, "E": E, "M": M, "Z": Z}
+    save_pickle(d, folder, "modular_power.pkl")
+
 
 if __name__ == "__main__":
     field = GF(2, modulus="primitive", repr="int")

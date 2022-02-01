@@ -91,3 +91,33 @@ def test_prod(poly_prod):
 
         assert z == Z[i]
         assert isinstance(z, galois.Poly)
+
+
+def test_modular_power_exceptions():
+    GF = galois.GF(7)
+    f = galois.Poly.Random(10, field=GF)
+    g = galois.Poly.Random(7, field=GF)
+    power = 20
+
+    with pytest.raises(TypeError):
+        galois.pow(f.coeffs, power, g)
+    with pytest.raises(TypeError):
+        galois.pow(f, float(power), g)
+    with pytest.raises(TypeError):
+        galois.pow(f, power, g.coeffs)
+    with pytest.raises(ValueError):
+        galois.pow(f, -power, g)
+    with pytest.raises(ValueError):
+        galois.pow(f, -power, galois.Poly(g.coeffs, field=galois.GF(31)))
+
+
+def test_modular_power(poly_modular_power):
+    GF, X, E, M, Z = poly_modular_power["GF"], poly_modular_power["X"], poly_modular_power["E"], poly_modular_power["M"], poly_modular_power["Z"]
+    for i in range(len(X)):
+        x = X[i]
+        e = E[i]
+        m = M[i]
+        z = galois.pow(x, e, m)
+
+        assert z == Z[i]
+        assert isinstance(z, galois.Poly)
