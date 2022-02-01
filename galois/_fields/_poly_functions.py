@@ -75,11 +75,16 @@ def lcm(*args):
     This function is wrapped and documented in `_polymorphic.lcm()`.
     """
     field = args[0].field
+
     lcm_  = Poly.One(field)
     for arg in args:
         if not arg.field == field:
             raise ValueError(f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}.")
         lcm_ = (lcm_ * arg) // gcd(lcm_, arg)
+
+    # Make the LCM monic
+    lcm_ /= lcm_.coeffs[0]
+
     return lcm_
 
 
@@ -88,11 +93,13 @@ def prod(*args):
     This function is wrapped and documented in `_polymorphic.prod()`.
     """
     field = args[0].field
+
     prod_  = Poly.One(field)
     for arg in args:
         if not arg.field == field:
             raise ValueError(f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}.")
         prod_ *= arg
+
     return prod_
 
 
