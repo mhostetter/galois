@@ -128,3 +128,20 @@ def poly_evaluate_matrix(field_folder):
     d["Y"] = [GF(y) for y in d["Y"]]
     d["Z"] = [GF(z) for z in d["Z"]]
     return d
+
+
+###############################################################################
+# Fixtures for polynomial arithmetic methods over finite fields
+###############################################################################
+
+@pytest.fixture(scope="session")
+def poly_reverse(field_folder):
+    GF, folder = field_folder
+    folder = convert_folder(folder)
+    with open(os.path.join(folder, "reverse.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d

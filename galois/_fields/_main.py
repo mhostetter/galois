@@ -3223,7 +3223,6 @@ class Poly:
 
         return Poly.Degrees(*str_to_sparse_poly(string), field=field)
 
-
     @classmethod
     def Degrees(
         cls,
