@@ -255,3 +255,16 @@ def poly_is_irreducible(field_folder):
     d["IS"] = [galois.Poly(p, field=GF) for p in d["IS"]]
     d["IS_NOT"] = [galois.Poly(p, field=GF) for p in d["IS_NOT"]]
     return d
+
+
+@pytest.fixture(scope="session")
+def poly_is_primitive(field_folder):
+    GF, folder = field_folder
+    folder = convert_folder(folder)
+    with open(os.path.join(folder, "is_primitive.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    d["GF"] = GF
+    d["IS"] = [galois.Poly(p, field=GF) for p in d["IS"]]
+    d["IS_NOT"] = [galois.Poly(p, field=GF) for p in d["IS_NOT"]]
+    return d
