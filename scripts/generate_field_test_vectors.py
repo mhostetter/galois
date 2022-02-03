@@ -732,6 +732,34 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"IS": IS, "IS_NOT": IS_NOT}
     save_pickle(d, folder, "is_irreducible.pkl")
 
+    set_seed(seed + 502)
+    IS = []
+    IS_NOT = []
+    while len(IS) < 10:
+        x = random_coeffs(0, order, 1, 6)
+        f = list_to_poly(x)
+        # f = f / f.coefficients()[-1]  # Make monic
+        # assert f.is_monic()
+        if f.degree() == 1 and f.coefficients(sparse=False)[0] == 0:
+            continue  # For some reason `is_primitive()` crashes on f(x) = a*x
+        if not f.is_irreducible():
+            continue  # Want to find an irreducible polynomial that is also primitive
+        if f.is_primitive():
+            IS.append(x)
+    while len(IS_NOT) < 10:
+        x = random_coeffs(0, order, 1, 6)
+        f = list_to_poly(x)
+        # f = f / f.coefficients()[-1]  # Make monic
+        # assert f.is_monic()
+        if f.degree() == 1 and f.coefficients(sparse=False)[0] == 0:
+            continue  # For some reason `is_primitive()` crashes on f(x) = a*x
+        if not f.is_irreducible():
+            continue  # Want to find an irreducible polynomial that is not primitive
+        if not f.is_primitive():
+            IS_NOT.append(x)
+    d = {"IS": IS, "IS_NOT": IS_NOT}
+    save_pickle(d, folder, "is_primitive.pkl")
+
 
 if __name__ == "__main__":
     field = GF(2, modulus="primitive", repr="int")

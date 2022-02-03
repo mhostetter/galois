@@ -202,30 +202,3 @@ def test_matlab_primitive_poly():
     assert galois.matlab_primitive_poly(7, 6).coeffs.tolist()[::-1] == [5, 1, 3, 0, 0, 0, 1]
     assert galois.matlab_primitive_poly(7, 7).coeffs.tolist()[::-1] == [2, 6, 0, 0, 0, 0, 0, 1]
     assert galois.matlab_primitive_poly(7, 8).coeffs.tolist()[::-1] == [3, 1, 0, 0, 0, 0, 0, 0, 1]
-
-
-def test_is_primitive_exceptions():
-    with pytest.raises(TypeError):
-        galois.is_primitive([1, 0, 1, 1])
-    with pytest.raises(ValueError):
-        galois.is_primitive(galois.Poly([1]))
-
-
-# NOTE: Commenting out because this function is already invoked in `primitive_polys()`
-
-# @pytest.mark.parametrize("order,degree", PARAMS)
-# def test_is_primitive(order, degree):
-#     GF = galois.GF(order)
-#     LUT = eval(f"PRIMITIVE_POLYS_{order}_{degree}")
-#     assert all(galois.is_primitive(galois.Poly(f, field=GF)) for f in LUT)
-
-
-# @pytest.mark.parametrize("order,degree", PARAMS)
-# def test_is_not_primitive(order, degree):
-#     LUT = eval(f"PRIMITIVE_POLYS_{order}_{degree}")
-#     while True:
-#         f = galois.Poly.Random(degree, field=galois.GF(order))
-#         f /= f.coeffs[0]  # Make monic
-#         if f.coeffs.tolist() not in LUT:
-#             break
-#     assert not galois.is_primitive(f)
