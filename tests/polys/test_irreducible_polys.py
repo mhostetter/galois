@@ -1,5 +1,5 @@
 """
-A pytest module to test generating irreducible polynomials and testing irreducibility.
+A pytest module to test generating irreducible polynomials over finite fields.
 
 Sage:
     def integer(coeffs, order):
@@ -71,7 +71,7 @@ def test_irreducible_poly_exceptions():
     with pytest.raises(ValueError):
         galois.irreducible_poly(2**2 * 3**2, 3)
     with pytest.raises(ValueError):
-        galois.irreducible_poly(2, 0)
+        galois.irreducible_poly(2, -1)
     with pytest.raises(ValueError):
         galois.irreducible_poly(2, 3, method="invalid-argument")
 
@@ -102,41 +102,10 @@ def test_irreducible_polys_exceptions():
     with pytest.raises(ValueError):
         galois.irreducible_polys(2**2 * 3**2, 3)
     with pytest.raises(ValueError):
-        galois.irreducible_polys(2, 0)
+        galois.irreducible_polys(2, -1)
 
 
 @pytest.mark.parametrize("order,degree", PARAMS)
 def test_irreducible_polys(order, degree):
     LUT = eval(f"IRREDUCIBLE_POLYS_{order}_{degree}")
     assert [f.coeffs.tolist() for f in galois.irreducible_polys(order, degree)] == LUT
-
-
-def test_is_irreducible_exceptions():
-    with pytest.raises(TypeError):
-        galois.is_irreducible([1, 0, 1, 1])
-    with pytest.raises(ValueError):
-        galois.is_irreducible(galois.Poly([1]))
-
-
-# NOTE: Commenting out because this function is already invoked in `irreducible_polys()`
-
-# @pytest.mark.parametrize("order,degree", PARAMS)
-# def test_is_irreducible(order, degree):
-#     GF = galois.GF(order)
-#     LUT = eval(f"IRREDUCIBLE_POLYS_{order}_{degree}")
-#     assert all(galois.is_irreducible(galois.Poly(f, field=GF)) for f in LUT)
-
-
-# @pytest.mark.parametrize("order,degree", PARAMS)
-# def test_is_not_irreducible(order, degree):
-#     if degree == 1:
-#         # Every degree-1 polynomial is irreducible
-#         return
-
-#     LUT = eval(f"IRREDUCIBLE_POLYS_{order}_{degree}")
-#     while True:
-#         f = galois.Poly.Random(degree, field=galois.GF(order))
-#         f /= f.coeffs[0]  # Make monic
-#         if f.coeffs.tolist() not in LUT:
-#             break
-#     assert not galois.is_irreducible(f)

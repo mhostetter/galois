@@ -712,6 +712,26 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "E": E, "M": M, "Z": Z}
     save_pickle(d, folder, "modular_power.pkl")
 
+    ###############################################################################
+    # Special polynomials
+    ###############################################################################
+
+    set_seed(seed + 501)
+    IS = []
+    IS_NOT = []
+    while len(IS) < 10:
+        x = random_coeffs(0, order, 1, 6)
+        f = list_to_poly(x)
+        if f.is_irreducible():
+            IS.append(x)
+    while len(IS_NOT) < 10:
+        x = random_coeffs(0, order, 1, 6)
+        f = list_to_poly(x)
+        if not f.is_irreducible():
+            IS_NOT.append(x)
+    d = {"IS": IS, "IS_NOT": IS_NOT}
+    save_pickle(d, folder, "is_irreducible.pkl")
+
 
 if __name__ == "__main__":
     field = GF(2, modulus="primitive", repr="int")

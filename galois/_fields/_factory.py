@@ -491,8 +491,8 @@ def irreducible_poly(
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
     if not is_prime_power(order):
         raise ValueError(f"Argument `order` must be a prime power, not {order}.")
-    if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+    if not degree >= 0:
+        raise ValueError(f"Argument `degree` must be at least 0, not {degree}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
 
@@ -561,8 +561,8 @@ def irreducible_polys(order: int, degree: int) -> List[Poly]:
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
     if not is_prime_power(order):
         raise ValueError(f"Argument `order` must be a prime power, not {order}.")
-    if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+    if not degree >= 0:
+        raise ValueError(f"Argument `degree` must be at least 0, not {degree}.")
 
     field = GF(order)
 
@@ -633,10 +633,14 @@ def is_irreducible(poly: Poly) -> bool:
 
         galois.is_irreducible(f)
     """
+    # pylint: disable=too-many-return-statements
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not poly.degree >= 1:
-        raise ValueError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
+
+    if poly.degree == 0:
+        # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x]. Both the
+        # zero element and the units are not irreducible of the polynomial ring GF(p^m)[x].
+        return False
 
     if poly.degree == 1:
         # f(x) = x + a (even a = 0) in any Galois field is irreducible
