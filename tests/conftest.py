@@ -44,3 +44,11 @@ def power():
         print(f"Loading {f}...")
         d = pickle.load(f)
     return d
+
+
+@pytest.fixture(scope="session")
+def isqrt():
+    with open(os.path.join(FOLDER, "isqrt.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    return d

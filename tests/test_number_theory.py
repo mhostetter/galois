@@ -209,27 +209,6 @@ def test_is_cyclic():
 # Integer arithmetic
 ###############################################################################
 
-def test_isqrt_exceptions():
-    with pytest.raises(TypeError):
-        galois.isqrt(3.0)
-    with pytest.raises(ValueError):
-        galois.isqrt(-3)
-
-
-def test_isqrt():
-    """
-    Sage:
-        N = 20
-        n = [randint(0, 1_000_000) for _ in range(N)]
-        lut = [(ni, isqrt(ni)) for ni in n]
-        print(lut)
-    """
-    LUT = [(681987, 825), (533875, 730), (743346, 862), (966298, 983), (983657, 991), (208532, 456), (658520, 811), (735666, 857), (155024, 393), (470463, 685), (71083, 266), (706821, 840), (628141, 792), (45582, 213), (460761, 678), (511644, 715), (719018, 847), (596428, 772), (821551, 906), (27234, 165)]
-    for item in LUT:
-        n, x = item
-        assert galois.isqrt(n) == x
-
-
 def test_iroot_exceptions():
     with pytest.raises(TypeError):
         galois.iroot(9.0, 3)
