@@ -52,3 +52,11 @@ def isqrt():
         print(f"Loading {f}...")
         d = pickle.load(f)
     return d
+
+
+@pytest.fixture(scope="session")
+def iroot():
+    with open(os.path.join(FOLDER, "iroot.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    return d

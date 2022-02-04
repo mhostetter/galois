@@ -107,3 +107,21 @@ def test_isqrt(isqrt):
     X, Z = isqrt["X"], isqrt["Z"]
     for i in range(len(X)):
         assert galois.isqrt(X[i]) == Z[i]
+
+
+def test_iroot_exceptions():
+    with pytest.raises(TypeError):
+        galois.iroot(9.0, 3)
+    with pytest.raises(TypeError):
+        galois.iroot(9, 3.0)
+    with pytest.raises(ValueError):
+        galois.iroot(-9, 3)
+
+
+def test_iroot(iroot):
+    X, R, Z = iroot["X"], iroot["R"], iroot["Z"]
+    for i in range(len(X)):
+        assert galois.iroot(X[i], R[i]) == Z[i]
+
+    galois.iroot(10, 1) == 10
+    assert galois.iroot(0, 2) == 0

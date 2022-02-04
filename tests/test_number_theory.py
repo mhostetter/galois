@@ -209,37 +209,6 @@ def test_is_cyclic():
 # Integer arithmetic
 ###############################################################################
 
-def test_iroot_exceptions():
-    with pytest.raises(TypeError):
-        galois.iroot(9.0, 3)
-    with pytest.raises(TypeError):
-        galois.iroot(9, 3.0)
-    with pytest.raises(ValueError):
-        galois.iroot(-9, 3)
-    with pytest.raises(ValueError):
-        galois.iroot(9, 1)
-
-
-def test_iroot():
-    """
-    Sage:
-        N = 20
-        lut = []
-        for _ in range(N):
-            n = Integer(randint(0, 1_000_000))
-            k = randint(2, 6)
-            x = n.nth_root(k, truncate_mode=True)[0]
-            lut.append((n, k, x))
-        print(lut)
-    """
-    LUT = [(779174, 4, 29), (867742, 4, 30), (709111, 2, 842), (616365, 6, 9), (615576, 2, 784), (259784, 2, 509), (862570, 2, 928), (553097, 2, 743), (929919, 4, 31), (841722, 6, 9), (658636, 3, 87), (326492, 5, 12), (195217, 4, 21), (969412, 3, 98), (95064, 3, 45), (550943, 3, 81), (171374, 3, 55), (881656, 3, 95), (915960, 6, 9), (810062, 2, 900)]
-    for item in LUT:
-        n, k, x = item
-        assert galois.iroot(n, k) == x
-
-    assert galois.iroot(0, 2) == 0
-
-
 def test_ilog_exceptions():
     with pytest.raises(TypeError):
         galois.ilog(9.0, 2)

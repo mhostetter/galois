@@ -133,7 +133,7 @@ def iroot(n: int, k: int) -> int:
     n : int
         A non-negative integer.
     k : int
-        The root :math:`k`, must be at least 2.
+        The positive root :math:`k`.
 
     Returns
     -------
@@ -154,12 +154,14 @@ def iroot(n: int, k: int) -> int:
         raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
     if not n >= 0:
         raise ValueError(f"Argument `n` must be non-negative, not {n}.")
-    if not k >= 2:
-        raise ValueError(f"Argument `k` must be at least 2, not {k}.")
+    if not k >= 1:
+        raise ValueError(f"Argument `k` must be at least 1, not {k}.")
     n, k = int(n), int(k)
 
     if n == 0:
         return 0
+    if k == 1:
+        return n
 
     # https://stackoverflow.com/a/39191163/11694321
     u = n
