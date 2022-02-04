@@ -44,12 +44,29 @@ def test_lcm_exceptions():
         galois.lcm(1, 2.0, 3)
     with pytest.raises(TypeError):
         galois.lcm(1, 2, 3.0)
+    with pytest.raises(ValueError):
+        galois.lcm()
 
 
 def test_lcm(lcm):
     X, Z = lcm["X"], lcm["Z"]
     for i in range(len(X)):
         assert galois.lcm(*X[i]) == Z[i]
+
+
+def test_prod_exceptions():
+    with pytest.raises(TypeError):
+        galois.prod(1, 2.0, 3)
+    with pytest.raises(TypeError):
+        galois.prod(1, 2, 3.0)
+    with pytest.raises(ValueError):
+        galois.prod()
+
+
+def test_prod(prod):
+    X, Z = prod["X"], prod["Z"]
+    for i in range(len(X)):
+        assert galois.prod(*X[i]) == Z[i]
 
 
 def test_euler_phi_exceptions():
