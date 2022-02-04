@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import xgcd, lcm
+from sage.all import xgcd, lcm, prod
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
 FOLDER = os.path.join(PATH, "data")
@@ -62,3 +62,13 @@ for i in range(len(X)):
     Z[i] = int(z)
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "lcm.pkl")
+
+set_seed(SEED + 103)
+X = [[random.randint(-1000, 1000) for _ in range(random.randint(2, 6))] for _ in range(20)] + [[random.randint(-1000, 1_000_000) for _ in range(random.randint(2, 6))] for _ in range(20)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = prod(x)
+    Z[i] = int(z)
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "prod.pkl")
