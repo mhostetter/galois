@@ -7,68 +7,6 @@ import numpy as np
 import galois
 
 
-###############################################################################
-# Divisibility
-###############################################################################
-
-def test_gcd_exceptions():
-    with pytest.raises(TypeError):
-        galois.gcd(10.0, 12)
-    with pytest.raises(TypeError):
-        galois.gcd(10, 12.0)
-
-
-def test_gcd(egcd):
-    X, Y, D = egcd["X"], egcd["Y"], egcd["D"]
-    for i in range(len(X)):
-        assert galois.gcd(X[i], Y[i]) == D[i]
-
-
-def test_egcd_exceptions():
-    with pytest.raises(TypeError):
-        galois.egcd(10.0, 12)
-    with pytest.raises(TypeError):
-        galois.egcd(10, 12.0)
-
-
-def test_egcd(egcd):
-    X, Y, D, S, T = egcd["X"], egcd["Y"], egcd["D"], egcd["S"], egcd["T"]
-    for i in range(len(X)):
-        assert galois.egcd(X[i], Y[i]) == (D[i], S[i], T[i])
-
-
-def test_lcm_exceptions():
-    with pytest.raises(TypeError):
-        galois.lcm(1.0, 2, 3)
-    with pytest.raises(TypeError):
-        galois.lcm(1, 2.0, 3)
-    with pytest.raises(TypeError):
-        galois.lcm(1, 2, 3.0)
-    with pytest.raises(ValueError):
-        galois.lcm()
-
-
-def test_lcm(lcm):
-    X, Z = lcm["X"], lcm["Z"]
-    for i in range(len(X)):
-        assert galois.lcm(*X[i]) == Z[i]
-
-
-def test_prod_exceptions():
-    with pytest.raises(TypeError):
-        galois.prod(1, 2.0, 3)
-    with pytest.raises(TypeError):
-        galois.prod(1, 2, 3.0)
-    with pytest.raises(ValueError):
-        galois.prod()
-
-
-def test_prod(prod):
-    X, Z = prod["X"], prod["Z"]
-    for i in range(len(X)):
-        assert galois.prod(*X[i]) == Z[i]
-
-
 def test_euler_phi_exceptions():
     with pytest.raises(TypeError):
         galois.euler_phi(20.0)
@@ -97,55 +35,6 @@ def test_totatives():
     PHI = [1,1,2,2,4,2,6,4,6,4,10,4,12,6,8,8,16,6,18,8,12,10,22,8,20,12,18,12,28,8,30,16,20,16,24,12,36,18,24,16,40,12,42,20,24,22,46,16,42,20,32,24,52,18,40,24,36,28,58,16,60,30,36,32,48,20,66,32,44]
     for n, phi in zip(N, PHI):
         assert len(galois.totatives(n)) == phi
-
-
-def test_are_coprime_exceptions():
-    with pytest.raises(TypeError):
-        galois.are_coprime(3.0, 4, 5)
-    with pytest.raises(TypeError):
-        galois.are_coprime(3, 4.0, 5)
-    with pytest.raises(TypeError):
-        galois.are_coprime(3, 4, 5.0)
-    with pytest.raises(ValueError):
-        galois.are_coprime()
-
-
-def test_are_coprime():
-    assert galois.are_coprime(3, 4, 5) == True
-    assert galois.are_coprime(3, 5, 9, 11) == False
-    assert galois.are_coprime(2, 3, 7, 256) == False
-
-
-###############################################################################
-# Congruences
-###############################################################################
-
-def test_pow_exceptions():
-    with pytest.raises(TypeError):
-        galois.pow(1.0, 2, 3)
-    with pytest.raises(TypeError):
-        galois.pow(1, 2.0, 3)
-    with pytest.raises(TypeError):
-        galois.pow(1, 2, 3.0)
-
-
-def test_pow():
-    """
-    Sage:
-        lut = []
-        for _ in range(20):
-            base = randint(0, 1_000_000)
-            exponent = randint(0, 1_000_000)
-            modulus = randint(0, 1_000_000)
-            result = pow(base, exponent, modulus)
-            lut.append((base, exponent, modulus, result))
-        print(lut)
-    """
-    LUT = [(323434, 327726, 742438, 162670), (841205, 251699, 237735, 93650), (271693, 58834, 905805, 872344), (834391, 494506, 577332, 217513), (424309, 133637, 715490, 51069), (213728, 778789, 346929, 71384), (134584, 118281, 161814, 3850), (387825, 382708, 743837, 72495), (617165, 759526, 997656, 10033), (372370, 792424, 309363, 216235), (98499, 489843, 965820, 24279), (899638, 732171, 888788, 233020), (939745, 576108, 981125, 383250), (623885, 605949, 128282, 105517), (447582, 848997, 724778, 200148), (360331, 355674, 472506, 469429), (85386, 299738, 228229, 40864), (95024, 360241, 488753, 11851), (471190, 788675, 314450, 291400), (49670, 61752, 755248, 57552)]
-    for item in LUT:
-        base, exponent, modulus = item[0:3]
-        result = item[-1]
-        assert galois.pow(base, exponent, modulus) == result
 
 
 def test_crt_exceptions():

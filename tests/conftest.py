@@ -36,3 +36,11 @@ def prod():
         print(f"Loading {f}...")
         d = pickle.load(f)
     return d
+
+
+@pytest.fixture(scope="session")
+def power():
+    with open(os.path.join(FOLDER, "power.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    return d
