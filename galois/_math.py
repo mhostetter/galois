@@ -185,7 +185,7 @@ def ilog(n: int, b: int) -> int:
     n : int
         A positive integer.
     b : int
-        The logarithm base :math:`b`.
+        The logarithm base :math:`b`, must be at least 2.
 
     Returns
     -------

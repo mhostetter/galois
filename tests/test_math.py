@@ -125,3 +125,24 @@ def test_iroot(iroot):
 
     galois.iroot(10, 1) == 10
     assert galois.iroot(0, 2) == 0
+
+
+def test_ilog_exceptions():
+    with pytest.raises(TypeError):
+        galois.ilog(9.0, 2)
+    with pytest.raises(TypeError):
+        galois.ilog(9, 2.0)
+    with pytest.raises(ValueError):
+        galois.ilog(0, 2)
+    with pytest.raises(ValueError):
+        galois.ilog(-9, 2)
+    with pytest.raises(ValueError):
+        galois.ilog(9, 1)
+
+
+def test_ilog(ilog):
+    X, B, Z = ilog["X"], ilog["B"], ilog["Z"]
+    for i in range(len(X)):
+        assert galois.ilog(X[i], B[i]) == Z[i]
+
+    assert galois.ilog(10, 10) == 1
