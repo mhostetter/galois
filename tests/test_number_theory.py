@@ -203,36 +203,3 @@ def test_is_cyclic():
     assert galois.is_cyclic(2*5*7*9) == False
 
     assert all(galois.is_cyclic(n) == (galois.euler_phi(n) == galois.carmichael_lambda(n)) for n in range(1, 100))
-
-
-###############################################################################
-# Integer arithmetic
-###############################################################################
-
-def test_ilog_exceptions():
-    with pytest.raises(TypeError):
-        galois.ilog(9.0, 2)
-    with pytest.raises(TypeError):
-        galois.ilog(9, 2.0)
-    with pytest.raises(ValueError):
-        galois.ilog(-9, 2)
-    with pytest.raises(ValueError):
-        galois.ilog(9, 1)
-
-
-# TODO: Find a way to generate test vectors with Sage
-def test_ilog():
-    p = galois.mersenne_primes(2000)[-1]
-    exponent = galois.ilog(p, 17)
-    assert isinstance(exponent, int)
-    assert 17**exponent <= p and not 17**(exponent + 1) <= p
-
-    p = galois.mersenne_primes(2000)[-1] - 1
-    exponent = galois.ilog(p, 17)
-    assert isinstance(exponent, int)
-    assert 17**exponent <= p and not 17**(exponent + 1) <= p
-
-    p = galois.mersenne_primes(2000)[-1] + 1
-    exponent = galois.ilog(p, 17)
-    assert isinstance(exponent, int)
-    assert 17**exponent <= p and not 17**(exponent + 1) <= p

@@ -60,3 +60,11 @@ def iroot():
         print(f"Loading {f}...")
         d = pickle.load(f)
     return d
+
+
+@pytest.fixture(scope="session")
+def ilog():
+    with open(os.path.join(FOLDER, "ilog.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    return d

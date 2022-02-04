@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import Integer, xgcd, lcm, prod, isqrt
+from sage.all import Integer, xgcd, lcm, prod, isqrt, log
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
 FOLDER = os.path.join(PATH, "data")
@@ -108,3 +108,15 @@ for i in range(len(X)):
     Z[i] = int(z)
 d = {"X": X, "R": R, "Z": Z}
 save_pickle(d, FOLDER, "iroot.pkl")
+
+set_seed(SEED + 107)
+X = [random.randint(1, 1000) for _ in range(20)] + [random.randint(1000, 1_000_000_000) for _ in range(20)]
+B = [random.randint(2, 6) for _ in range(40)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    b = B[i]
+    z = log(Integer(x), b)
+    Z[i] = int(z)
+d = {"X": X, "B": B, "Z": Z}
+save_pickle(d, FOLDER, "ilog.pkl")
