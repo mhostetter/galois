@@ -20,3 +20,11 @@ def egcd():
         print(f"Loading {f}...")
         d = pickle.load(f)
     return d
+
+
+@pytest.fixture(scope="session")
+def lcm():
+    with open(os.path.join(FOLDER, "lcm.pkl"), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    return d

@@ -53,6 +53,10 @@ def lcm(*args: int) -> int:
     lcm_  = 1
     for arg in args:
         lcm_ = (lcm_ * arg) // gcd(lcm_, arg)
+
+    # Ensure the LCM is positive
+    lcm_ = abs(lcm_)
+
     return lcm_
 
 
