@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import xgcd, lcm, prod
+from sage.all import xgcd, lcm, prod, isqrt
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
 FOLDER = os.path.join(PATH, "data")
@@ -86,3 +86,13 @@ for i in range(len(X)):
     Z[i] = int(z)
 d = {"X": X, "E": E, "M": M, "Z": Z}
 save_pickle(d, FOLDER, "power.pkl")
+
+set_seed(SEED + 105)
+X = [random.randint(0, 1000) for _ in range(20)] + [random.randint(1000, 1_000_000_000) for _ in range(20)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = isqrt(x)
+    Z[i] = int(z)
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "isqrt.pkl")

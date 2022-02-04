@@ -94,3 +94,16 @@ def test_pow(power):
     X, E, M, Z = power["X"], power["E"], power["M"], power["Z"]
     for i in range(len(X)):
         assert galois.pow(X[i], E[i], M[i]) == Z[i]
+
+
+def test_isqrt_exceptions():
+    with pytest.raises(TypeError):
+        galois.isqrt(3.0)
+    with pytest.raises(ValueError):
+        galois.isqrt(-3)
+
+
+def test_isqrt(isqrt):
+    X, Z = isqrt["X"], isqrt["Z"]
+    for i in range(len(X)):
+        assert galois.isqrt(X[i]) == Z[i]
