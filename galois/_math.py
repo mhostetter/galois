@@ -37,6 +37,12 @@ def egcd(a: int, b: int) -> Tuple[int, int, int]:
         s2, s1 = s1, s2 - q*s1
         t2, t1 = t1, t2 - q*t1
 
+    # Ensure the GCD is positive
+    if r2 < 0:
+        r2 *= -1
+        s2 *= -1
+        t2 *= -1
+
     return r2, s2, t2
 
 
