@@ -1,3 +1,6 @@
+"""
+A pytest conftest module that provides pytest fixtures for galois/fields/ tests.
+"""
 import json
 import os
 import pickle
@@ -10,55 +13,55 @@ import galois
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 FIELDS = [
-    pytest.param("GF(2)", marks=[pytest.mark.GF2]),
+    pytest.param("GF(2)"),
 
-    pytest.param("GF(2^2)", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
-    pytest.param("GF(2^3)", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
-    pytest.param("GF(2^8)", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^32)", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
-    pytest.param("GF(2^100)", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
+    pytest.param("GF(2^2)"),
+    pytest.param("GF(2^3)"),
+    pytest.param("GF(2^8)"),
+    pytest.param("GF(2^32)"),
+    pytest.param("GF(2^100)"),
 
-    pytest.param("GF(5)", marks=[pytest.mark.GFp, pytest.mark.GF5]),
-    pytest.param("GF(7)", marks=[pytest.mark.GFp, pytest.mark.GF7]),
-    pytest.param("GF(31)", marks=[pytest.mark.GFp, pytest.mark.GF31]),
-    pytest.param("GF(3191)", marks=[pytest.mark.GFp, pytest.mark.GF31]),
-    pytest.param("GF(2147483647)", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
-    pytest.param("GF(36893488147419103183)", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
+    pytest.param("GF(5)"),
+    pytest.param("GF(7)"),
+    pytest.param("GF(31)"),
+    pytest.param("GF(3191)"),
+    pytest.param("GF(2147483647)"),
+    pytest.param("GF(36893488147419103183)"),
 
-    pytest.param("GF(7^3)", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
-    pytest.param("GF(109987^4)", marks=[pytest.mark.GFpm, pytest.mark.GF109987_4]),
+    pytest.param("GF(7^3)"),
+    pytest.param("GF(109987^4)"),
 ]
 
 FIELDS_DIFF_MODES = [
-    pytest.param("GF(2)-jit-calculate", marks=[pytest.mark.GF2]),
+    pytest.param("GF(2)-jit-calculate"),
 
-    pytest.param("GF(2^2)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
-    pytest.param("GF(2^2)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF4]),
-    pytest.param("GF(2^3)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
-    pytest.param("GF(2^3)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF8]),
-    pytest.param("GF(2^8)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^8)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^8, 283, 19)-jit-lookup", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^8, 283, 19)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF256]),
-    pytest.param("GF(2^32)-jit-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_32]),
-    pytest.param("GF(2^100)-python-calculate", marks=[pytest.mark.GF2m, pytest.mark.GF2_100]),
+    pytest.param("GF(2^2)-jit-lookup"),
+    pytest.param("GF(2^2)-jit-calculate"),
+    pytest.param("GF(2^3)-jit-lookup"),
+    pytest.param("GF(2^3)-jit-calculate"),
+    pytest.param("GF(2^8)-jit-lookup"),
+    pytest.param("GF(2^8)-jit-calculate"),
+    pytest.param("GF(2^8, 283, 19)-jit-lookup"),
+    pytest.param("GF(2^8, 283, 19)-jit-calculate"),
+    pytest.param("GF(2^32)-jit-calculate"),
+    pytest.param("GF(2^100)-python-calculate"),
 
-    pytest.param("GF(5)-jit-lookup", marks=[pytest.mark.GFp, pytest.mark.GF5]),
-    pytest.param("GF(5)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF5]),
-    pytest.param("GF(7)-jit-lookup", marks=[pytest.mark.GFp, pytest.mark.GF7]),
-    pytest.param("GF(7)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF7]),
-    pytest.param("GF(31)-jit-lookup", marks=[pytest.mark.GFp, pytest.mark.GF31]),
-    pytest.param("GF(31)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF31]),
-    pytest.param("GF(3191)-jit-lookup", marks=[pytest.mark.GFp, pytest.mark.GF31]),
-    pytest.param("GF(3191)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF3191]),
-    pytest.param("GF(2147483647)-jit-calculate", marks=[pytest.mark.GFp, pytest.mark.GF2147483647]),
-    pytest.param("GF(36893488147419103183)-python-calculate", marks=[pytest.mark.GFp, pytest.mark.GF36893488147419103183]),
+    pytest.param("GF(5)-jit-lookup"),
+    pytest.param("GF(5)-jit-calculate"),
+    pytest.param("GF(7)-jit-lookup"),
+    pytest.param("GF(7)-jit-calculate"),
+    pytest.param("GF(31)-jit-lookup"),
+    pytest.param("GF(31)-jit-calculate"),
+    pytest.param("GF(3191)-jit-lookup"),
+    pytest.param("GF(3191)-jit-calculate"),
+    pytest.param("GF(2147483647)-jit-calculate"),
+    pytest.param("GF(36893488147419103183)-python-calculate"),
 
-    pytest.param("GF(7^3)-jit-lookup", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
-    pytest.param("GF(7^3)-jit-calculate", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
-    pytest.param("GF(7^3, 643, 244)-jit-lookup", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
-    pytest.param("GF(7^3, 643, 244)-jit-calculate", marks=[pytest.mark.GFpm, pytest.mark.GF7_3]),
-    pytest.param("GF(109987^4)-python-calculate", marks=[pytest.mark.GFpm, pytest.mark.GF109987_4]),
+    pytest.param("GF(7^3)-jit-lookup"),
+    pytest.param("GF(7^3)-jit-calculate"),
+    pytest.param("GF(7^3, 643, 244)-jit-lookup"),
+    pytest.param("GF(7^3, 643, 244)-jit-calculate"),
+    pytest.param("GF(109987^4)-python-calculate"),
 ]
 
 
@@ -110,6 +113,21 @@ def construct_field(folder):
     return GF, ufunc_mode, os.path.join(PATH, folder)
 
 
+def read_json(field_folder, filename):
+    GF, folder = field_folder
+    with open(os.path.join(folder, filename), "rb") as f:
+        d = json.load(f)
+    return GF, d
+
+
+def read_pickle(field_folder, filename):
+    GF, folder = field_folder
+    with open(os.path.join(folder, filename), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    return GF, d
+
+
 ###############################################################################
 # Fixtures for iterating over each finite field
 ###############################################################################
@@ -133,9 +151,7 @@ def field_folder(request):
 
 @pytest.fixture(scope="session")
 def field_properties(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "properties.json"), "rb") as f:
-        d = json.load(f)
+    GF, d = read_json(field_folder, "properties.json")
     d["GF"] = GF
     d["characteristic"] = d["characteristic"]
     d["degree"] = d["degree"]
@@ -147,10 +163,7 @@ def field_properties(field_folder):
 
 @pytest.fixture(scope="session")
 def field_add(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "add.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "add.pkl")
     d["GF"] = GF
     X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
     d["X"] = GF(X)
@@ -161,10 +174,7 @@ def field_add(field_folder):
 
 @pytest.fixture(scope="session")
 def field_subtract(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "subtract.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "subtract.pkl")
     d["GF"] = GF
     X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
     d["X"] = GF(X)
@@ -175,10 +185,7 @@ def field_subtract(field_folder):
 
 @pytest.fixture(scope="session")
 def field_multiply(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "multiply.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "multiply.pkl")
     d["GF"] = GF
     X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
     d["X"] = GF(X)
@@ -189,10 +196,7 @@ def field_multiply(field_folder):
 
 @pytest.fixture(scope="session")
 def field_divide(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "divide.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "divide.pkl")
     d["GF"] = GF
     X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
     d["X"] = GF(X)
@@ -203,10 +207,7 @@ def field_divide(field_folder):
 
 @pytest.fixture(scope="session")
 def field_additive_inverse(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "additive_inverse.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "additive_inverse.pkl")
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = GF(d["Z"])
@@ -215,10 +216,7 @@ def field_additive_inverse(field_folder):
 
 @pytest.fixture(scope="session")
 def field_multiplicative_inverse(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "multiplicative_inverse.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "multiplicative_inverse.pkl")
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = GF(d["Z"])
@@ -227,10 +225,7 @@ def field_multiplicative_inverse(field_folder):
 
 @pytest.fixture(scope="session")
 def field_scalar_multiply(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "scalar_multiply.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "scalar_multiply.pkl")
     d["GF"] = GF
     X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
     d["X"] = GF(X)
@@ -241,10 +236,7 @@ def field_scalar_multiply(field_folder):
 
 @pytest.fixture(scope="session")
 def field_power(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "power.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "power.pkl")
     d["GF"] = GF
     X, Y = np.meshgrid(d["X"], d["Y"], indexing="ij")
     d["X"] = GF(X)
@@ -255,10 +247,7 @@ def field_power(field_folder):
 
 @pytest.fixture(scope="session")
 def field_log(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "log.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "log.pkl")
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = d["Z"]
@@ -271,10 +260,7 @@ def field_log(field_folder):
 
 @pytest.fixture(scope="session")
 def field_matrix_multiply(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "matrix_multiply.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "matrix_multiply.pkl")
     d["GF"] = GF
     d["X"] = [GF(x) for x in d["X"]]
     d["Y"] = [GF(y) for y in d["Y"]]
@@ -284,10 +270,7 @@ def field_matrix_multiply(field_folder):
 
 @pytest.fixture(scope="session")
 def field_row_reduce(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "row_reduce.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "row_reduce.pkl")
     d["GF"] = GF
     d["X"] = [GF(x) for x in d["X"]]
     d["Z"] = [GF(z) for z in d["Z"]]
@@ -296,10 +279,7 @@ def field_row_reduce(field_folder):
 
 @pytest.fixture(scope="session")
 def field_lu_decompose(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "lu_decompose.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "lu_decompose.pkl")
     d["GF"] = GF
     d["X"] = [GF(x) for x in d["X"]]
     d["L"] = [GF(l) for l in d["L"]]
@@ -309,10 +289,7 @@ def field_lu_decompose(field_folder):
 
 @pytest.fixture(scope="session")
 def field_plu_decompose(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "plu_decompose.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "plu_decompose.pkl")
     d["GF"] = GF
     d["X"] = [GF(x) for x in d["X"]]
     d["P"] = [GF(p) for p in d["P"]]
@@ -323,10 +300,7 @@ def field_plu_decompose(field_folder):
 
 @pytest.fixture(scope="session")
 def field_matrix_inverse(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "matrix_inverse.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "matrix_inverse.pkl")
     d["GF"] = GF
     d["X"] = [GF(x) for x in d["X"]]
     d["Z"] = [GF(z) for z in d["Z"]]
@@ -335,10 +309,7 @@ def field_matrix_inverse(field_folder):
 
 @pytest.fixture(scope="session")
 def field_matrix_determinant(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "matrix_determinant.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "matrix_determinant.pkl")
     d["GF"] = GF
     d["X"] = [GF(x) for x in d["X"]]
     d["Z"] = GF(d["Z"])
@@ -347,10 +318,7 @@ def field_matrix_determinant(field_folder):
 
 @pytest.fixture(scope="session")
 def field_matrix_solve(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "matrix_solve.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "matrix_solve.pkl")
     d["GF"] = GF
     d["X"] = [GF(x) for x in d["X"]]
     d["Y"] = [GF(y) for y in d["Y"]]
@@ -364,10 +332,7 @@ def field_matrix_solve(field_folder):
 
 @pytest.fixture(scope="session")
 def field_additive_order(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "additive_order.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "additive_order.pkl")
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = d["Z"]
@@ -376,10 +341,7 @@ def field_additive_order(field_folder):
 
 @pytest.fixture(scope="session")
 def field_multiplicative_order(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "multiplicative_order.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "multiplicative_order.pkl")
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = d["Z"]
@@ -388,10 +350,7 @@ def field_multiplicative_order(field_folder):
 
 @pytest.fixture(scope="session")
 def field_characteristic_poly_element(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "characteristic_poly_element.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "characteristic_poly_element.pkl")
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = [galois.Poly(p, field=GF.prime_subfield) for p in d["Z"]]
@@ -400,10 +359,7 @@ def field_characteristic_poly_element(field_folder):
 
 @pytest.fixture(scope="session")
 def field_characteristic_poly_matrix(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "characteristic_poly_matrix.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "characteristic_poly_matrix.pkl")
     d["GF"] = GF
     d["X"] = [GF(x) for x in d["X"]]
     d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
@@ -412,10 +368,7 @@ def field_characteristic_poly_matrix(field_folder):
 
 @pytest.fixture(scope="session")
 def field_minimal_poly_element(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "minimal_poly_element.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "minimal_poly_element.pkl")
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = [galois.Poly(p, field=GF.prime_subfield) for p in d["Z"]]
@@ -424,10 +377,7 @@ def field_minimal_poly_element(field_folder):
 
 # @pytest.fixture(scope="session")
 # def field_minimal_poly_matrix(field_folder):
-#     GF, folder = field_folder
-#     with open(os.path.join(folder, "minimal_poly_matrix.pkl"), "rb") as f:
-#         print(f"Loading {f}...")
-#         d = pickle.load(f)
+#     GF, d = read_pickle(field_folder, "minimal_poly_matrix.pkl")
 #     d["GF"] = GF
 #     d["X"] = [GF(x) for x in d["X"]]
 #     d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
@@ -436,10 +386,7 @@ def field_minimal_poly_element(field_folder):
 
 @pytest.fixture(scope="session")
 def field_trace(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "field_trace.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "field_trace.pkl")
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = GF.prime_subfield(d["Z"])
@@ -448,10 +395,7 @@ def field_trace(field_folder):
 
 @pytest.fixture(scope="session")
 def field_norm(field_folder):
-    GF, folder = field_folder
-    with open(os.path.join(folder, "field_norm.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "field_norm.pkl")
     d["GF"] = GF
     d["X"] = GF(d["X"])
     d["Z"] = GF.prime_subfield(d["Z"])

@@ -464,7 +464,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
         return poly_to_str(poly, poly_var=poly_var)
 
     def _set_print_power_vars(cls, array):
-        nonzero_idxs = np.nonzero(array)
+        nonzero_idxs = np.atleast_1d(array).nonzero()
         if array.ndim > 1:
             max_power = np.max(cls._ufunc("log")(array[nonzero_idxs], cls.primitive_element))
             if max_power > 1:
