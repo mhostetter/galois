@@ -12,9 +12,17 @@ import galois
 from ..fields.conftest import field, field_folder
 
 
-def convert_folder(folder):
-    sub_folder = os.path.basename(folder)
-    return os.path.join(folder, "..", "..", "..", "polys", "data", sub_folder)
+###############################################################################
+# Helper functions
+###############################################################################
+
+def read_pickle(field_folder, filename):
+    GF, folder = field_folder
+    folder = os.path.join(folder, "..", "..", "..", "polys", "data", os.path.basename(folder))  # Convert from folder in fields/data/ to polys/data/
+    with open(os.path.join(folder, filename), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    return GF, d
 
 
 ###############################################################################
@@ -23,11 +31,7 @@ def convert_folder(folder):
 
 @pytest.fixture(scope="session")
 def poly_add(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "add.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "add.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
@@ -37,11 +41,7 @@ def poly_add(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_subtract(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "subtract.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "subtract.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
@@ -51,11 +51,7 @@ def poly_subtract(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_multiply(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "multiply.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "multiply.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
@@ -65,11 +61,7 @@ def poly_multiply(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_scalar_multiply(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "scalar_multiply.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "scalar_multiply.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = d["Y"]
@@ -79,11 +71,7 @@ def poly_scalar_multiply(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_divmod(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "divmod.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "divmod.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
@@ -94,11 +82,7 @@ def poly_divmod(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_power(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "power.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "power.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = d["Y"]
@@ -108,11 +92,7 @@ def poly_power(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_evaluate(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "evaluate.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "evaluate.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = GF(d["Y"])
@@ -122,11 +102,7 @@ def poly_evaluate(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_evaluate_matrix(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "evaluate_matrix.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "evaluate_matrix.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = [GF(y) for y in d["Y"]]
@@ -140,11 +116,7 @@ def poly_evaluate_matrix(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_reverse(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "reverse.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "reverse.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
@@ -153,11 +125,7 @@ def poly_reverse(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_roots(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "roots.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "roots.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["R"] = [GF(r) for r in d["R"]]
@@ -167,11 +135,7 @@ def poly_roots(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_derivative(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "derivative.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "derivative.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = d["Y"]
@@ -185,11 +149,7 @@ def poly_derivative(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_egcd(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "egcd.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "egcd.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
@@ -201,11 +161,7 @@ def poly_egcd(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_lcm(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "lcm.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "lcm.pkl")
     d["GF"] = GF
     d["X"] = [[galois.Poly(p, field=GF) for p in X] for X in d["X"]]
     d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
@@ -214,11 +170,7 @@ def poly_lcm(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_prod(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "prod.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "prod.pkl")
     d["GF"] = GF
     d["X"] = [[galois.Poly(p, field=GF) for p in X] for X in d["X"]]
     d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
@@ -227,11 +179,7 @@ def poly_prod(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_modular_power(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "modular_power.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "modular_power.pkl")
     d["GF"] = GF
     d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
     d["E"] = d["E"]
@@ -246,11 +194,7 @@ def poly_modular_power(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_is_irreducible(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "is_irreducible.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "is_irreducible.pkl")
     d["GF"] = GF
     d["IS"] = [galois.Poly(p, field=GF) for p in d["IS"]]
     d["IS_NOT"] = [galois.Poly(p, field=GF) for p in d["IS_NOT"]]
@@ -259,11 +203,7 @@ def poly_is_irreducible(field_folder):
 
 @pytest.fixture(scope="session")
 def poly_is_primitive(field_folder):
-    GF, folder = field_folder
-    folder = convert_folder(folder)
-    with open(os.path.join(folder, "is_primitive.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
+    GF, d = read_pickle(field_folder, "is_primitive.pkl")
     d["GF"] = GF
     d["IS"] = [galois.Poly(p, field=GF) for p in d["IS"]]
     d["IS_NOT"] = [galois.Poly(p, field=GF) for p in d["IS_NOT"]]

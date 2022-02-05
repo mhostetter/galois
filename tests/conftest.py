@@ -11,60 +11,50 @@ FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 
 ###############################################################################
+# Helper functions
+###############################################################################
+
+def read_pickle(filename):
+    with open(os.path.join(FOLDER, filename), "rb") as f:
+        print(f"Loading {f}...")
+        d = pickle.load(f)
+    return d
+
+
+###############################################################################
 # Fixtures for integer math functions
 ###############################################################################
 
 @pytest.fixture(scope="session")
 def egcd():
-    with open(os.path.join(FOLDER, "egcd.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    return d
+    return read_pickle("egcd.pkl")
 
 
 @pytest.fixture(scope="session")
 def lcm():
-    with open(os.path.join(FOLDER, "lcm.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    return d
+    return read_pickle("lcm.pkl")
 
 
 @pytest.fixture(scope="session")
 def prod():
-    with open(os.path.join(FOLDER, "prod.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    return d
+    return read_pickle("prod.pkl")
 
 
 @pytest.fixture(scope="session")
 def power():
-    with open(os.path.join(FOLDER, "power.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    return d
+    return read_pickle("power.pkl")
 
 
 @pytest.fixture(scope="session")
 def isqrt():
-    with open(os.path.join(FOLDER, "isqrt.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    return d
+    return read_pickle("isqrt.pkl")
 
 
 @pytest.fixture(scope="session")
 def iroot():
-    with open(os.path.join(FOLDER, "iroot.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    return d
+    return read_pickle("iroot.pkl")
 
 
 @pytest.fixture(scope="session")
 def ilog():
-    with open(os.path.join(FOLDER, "ilog.pkl"), "rb") as f:
-        print(f"Loading {f}...")
-        d = pickle.load(f)
-    return d
+    return read_pickle("ilog.pkl")
