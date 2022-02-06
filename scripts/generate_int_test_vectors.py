@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import Integer, xgcd, lcm, prod, isqrt, log
+from sage.all import Integer, xgcd, lcm, prod, isqrt, log, crt
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
 FOLDER = os.path.join(PATH, "data")
@@ -120,3 +120,18 @@ for i in range(len(X)):
     Z[i] = int(z)
 d = {"X": X, "B": B, "Z": Z}
 save_pickle(d, FOLDER, "ilog.pkl")
+
+set_seed(SEED + 108)
+N = [random.randint(2, 6) for _ in range(40)]
+X = [[random.randint(0, 1000) for _ in range(N[i])] for i in range(20)] + [[random.randint(0, 1_000_000) for _ in range(N[20 + i])] for i in range(20)]  # Remainder
+Y = [[random.randint(10, 1000) for _ in range(N[i])] for i in range(20)] + [[random.randint(1000, 1_000_000) for _ in range(N[20 + i])] for i in range(20)]  # Modulus
+Z = [0,]*len(X)  # The solution
+for i in range(len(X)):
+    X[i] = [X[i][j] % Y[i][j] for j in range(len(X[i]))]  # Ensure a is within [0, m)
+    try:
+        z = crt(X[i], Y[i])
+        Z[i] = int(z)
+    except:
+        Z[i] = None
+d = {"X": X, "Y": Y, "Z": Z}
+save_pickle(d, FOLDER, "crt.pkl")
