@@ -46,6 +46,11 @@ def power():
 
 
 @pytest.fixture(scope="session")
+def crt():
+    return read_pickle("crt.pkl")
+
+
+@pytest.fixture(scope="session")
 def isqrt():
     return read_pickle("isqrt.pkl")
 

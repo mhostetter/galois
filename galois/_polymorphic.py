@@ -461,27 +461,32 @@ def crt(remainders, moduli):
         raise TypeError(f"Argument `moduli` must be a tuple or list of int or galois.Poly, not {moduli}.")
     if not len(remainders) == len(moduli) >= 2:
         raise ValueError(f"Arguments `remainders` and `moduli` must be the same length of at least 2, not {len(remainders)} and {len(moduli)}.")
-    if not are_coprime(*moduli):
-        raise ValueError(f"Elements of argument `moduli` must be pairwise coprime, {moduli} are not.")
 
     # Iterate through the system of congruences reducing a pair of congruences into a
     # single one. The answer to the final congruence solves all the congruences.
     a1, m1 = remainders[0], moduli[0]
     for a2, m2 in zip(remainders[1:], moduli[1:]):
-        # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = 1,
-        # where 1 is the GCD(m1, m2) because m1 and m2 are pairwise relatively coprime
-        _, b1, b2 = egcd(m1, m2)
+        # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = gcd(m1, m2).
+        d, b1, b2 = egcd(m1, m2)
 
-        # Compute x through explicit construction
-        x = a1*b2*m2 + a2*b1*m1
+        if d == 1:
+            # The moduli (m1, m2) are coprime
+            x = a1*b2*m2 + a2*b1*m1  # Compute x through explicit construction
+            m1 = m1 * m2  # The new modulus
+        else:
+            # The moduli (m1, m2) are not coprime, however if a1 == b2 (mod d)
+            # then a unique solution still exists.
+            if not (a1 % d) == (a2 % d):
+                raise ValueError(f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, therefore a unique solution does not exist.")
+            x = (a1*b2*m2 + a2*b1*m1) // d  # Compute x through explicit construction
+            m1 = (m1 * m2) // d  # The new modulus
 
-        m1 = m1 * m2  # The new modulus
         a1 = x % m1  # The new equivalent remainder
 
-    # Align x to be within [0, prod(m))
-    x = x % prod(*moduli)
+    # At the end of the process x == a1 (mod m1) where a1 and m1 are the new/modified residual
+    # and remainder.
 
-    return x
+    return a1
 
 
 ###############################################################################

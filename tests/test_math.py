@@ -2,6 +2,7 @@
 A pytest module to test the functions in _math.py.
 """
 import pytest
+import numpy as np
 
 import galois
 
@@ -94,6 +95,31 @@ def test_pow(power):
     X, E, M, Z = power["X"], power["E"], power["M"], power["Z"]
     for i in range(len(X)):
         assert galois.pow(X[i], E[i], M[i]) == Z[i]
+
+
+def test_crt_exceptions():
+    with pytest.raises(TypeError):
+        galois.crt(np.array([0, 3, 4]), [3, 4, 5])
+    with pytest.raises(TypeError):
+        galois.crt([0, 3, 4], np.array([3, 4, 5]))
+    with pytest.raises(TypeError):
+        galois.crt([0, 3.0, 4], [3, 4, 5])
+    with pytest.raises(TypeError):
+        galois.crt([0, 3, 4], [3, 4.0, 5])
+    with pytest.raises(ValueError):
+        galois.crt([0, 3, 4], [3, 4, 5, 7])
+    with pytest.raises(ValueError):
+        galois.crt([0, 3, 4], [3, 4, 6])
+
+
+def test_crt(crt):
+    X, Y, Z = crt["X"], crt["Y"], crt["Z"]
+    for i in range(len(X)):
+        if Z[i] is not None:
+            assert galois.crt(X[i], Y[i]) == Z[i]
+        else:
+            with pytest.raises(ValueError):
+                galois.crt(X[i], Y[i])
 
 
 def test_isqrt_exceptions():
