@@ -121,3 +121,39 @@ def test_modular_power(poly_modular_power):
 
         assert z == Z[i]
         assert isinstance(z, galois.Poly)
+
+
+def test_crt_exceptions():
+    a = [galois.Poly([1,1]), galois.Poly([1,1,1])]
+    m = [galois.Poly([1,0,1]), galois.Poly([1,1,0,1])]
+
+    with pytest.raises(TypeError):
+        galois.crt(np.array(a, dtype=object), m)
+    with pytest.raises(TypeError):
+        galois.crt(a, np.array(m, dtype=object))
+    with pytest.raises(TypeError):
+        aa = a.copy()
+        aa[0] = a[0].coeffs
+        galois.crt(aa, m)
+    with pytest.raises(TypeError):
+        mm = m.copy()
+        mm[0] = m[0].coeffs
+        galois.crt(a, mm)
+    with pytest.raises(ValueError):
+        aa = a.copy()
+        aa.append(galois.Poly([1,1,1]))
+        galois.crt(aa, m)
+    with pytest.raises(ValueError):
+        mm = m.copy()
+        mm.append(galois.Poly([1,1,0,1]))
+        galois.crt(a, mm)
+
+
+def test_crt(poly_crt):
+    X, Y, Z = poly_crt["X"], poly_crt["Y"], poly_crt["Z"]
+    for i in range(len(X)):
+        if Z[i] is not None:
+            assert galois.crt(X[i], Y[i]) == Z[i]
+        else:
+            with pytest.raises(ValueError):
+                galois.crt(X[i], Y[i])

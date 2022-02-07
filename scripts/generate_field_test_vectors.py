@@ -1,10 +1,8 @@
 """
-Script to generate unit test vectors for the galois package using SageMath.
+Script to generate unit test vectors for finite field arithmetic.
 
-Install SageMath with:
-```
-sudo apt install sagemath
-```
+Install SageMath:
+* `sudo apt install sagemath`
 """
 import json
 import os
@@ -14,7 +12,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import GF, PolynomialRing, log, matrix, vector, xgcd, lcm, prod
+from sage.all import GF, PolynomialRing, log, matrix, vector, xgcd, lcm, prod, crt
 
 FIELD = None
 RING = None
@@ -711,6 +709,29 @@ def make_luts(field, sub_folder, seed, sparse=False):
         Z.append(z)
     d = {"X": X, "E": E, "M": M, "Z": Z}
     save_pickle(d, folder, "modular_power.pkl")
+
+    set_seed(seed + 405)
+    X = [0,]*20  # The remainder
+    Y = [0,]*20  # The modulus
+    Z = [0,]*20  # The solution
+    for i in range(20):
+        n = random.randint(2, 4) # The number of polynomials
+        x, y = [], []
+        for j in range(n):
+            d = random.randint(3, 5)
+            x.append(random_coeffs(0, order, d, d + 1))
+            y.append(random_coeffs(0, order, d + 1, d + 2))  # Ensure modulus degree is greater than remainder degree
+        X[i] = x
+        Y[i] = y
+        try:
+            x = [list_to_poly(xx) for xx in x]
+            y = [list_to_poly(yy) for yy in y]
+            z = crt(x, y)
+            Z[i] = poly_to_list(z)
+        except:
+            Z[i] = None
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "crt.pkl")
 
     ###############################################################################
     # Special polynomials
