@@ -2,7 +2,7 @@
 A module that contains polymorphic math functions that work on integers and polynomials.
 """
 import builtins
-from typing import Tuple, List, Iterable, overload
+from typing import Tuple, List, Sequence, overload
 
 import numpy as np
 
@@ -388,10 +388,10 @@ def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
 
 
 @overload
-def crt(remainders: Iterable[int], moduli: Iterable[int]) -> int:
+def crt(remainders: Sequence[int], moduli: Sequence[int]) -> int:
     ...
 @overload
-def crt(remainders: Iterable[Poly], moduli: Iterable[Poly]) -> Poly:
+def crt(remainders: Sequence[Poly], moduli: Sequence[Poly]) -> Poly:
     ...
 @set_module("galois")
 def crt(remainders, moduli):
@@ -446,9 +446,9 @@ def crt(remainders, moduli):
     .. ipython:: python
 
         GF = galois.GF(7)
-        x_truth = galois.Poly.Random(10, field=GF); x_truth
-        m = [galois.irreducible_poly(7, 2), galois.irreducible_poly(7, 3), galois.irreducible_poly(7, 4)]; m
-        a = [x_truth % mi for mi in m]; a
+        rng = np.random.default_rng(572186432)
+        a = [galois.Poly.Random(2, seed=rng, field=GF), galois.Poly.Random(3, seed=rng, field=GF), galois.Poly.Random(4, seed=rng, field=GF)]; a
+        m = [galois.Poly.Random(3, seed=rng, field=GF), galois.Poly.Random(4, seed=rng, field=GF), galois.Poly.Random(5, seed=rng, field=GF)]; m
         x = galois.crt(a, m); x
 
         for i in range(len(a)):
@@ -461,6 +461,12 @@ def crt(remainders, moduli):
         raise TypeError(f"Argument `moduli` must be a tuple or list of int or galois.Poly, not {moduli}.")
     if not len(remainders) == len(moduli) >= 2:
         raise ValueError(f"Arguments `remainders` and `moduli` must be the same length of at least 2, not {len(remainders)} and {len(moduli)}.")
+
+    # Ensure polynomial arguments have each remainder have degree less than its modulus
+    if isinstance(remainders[0], Poly):
+        for i in range(len(remainders)):
+            if not (remainders[i] == 0 or remainders[i].degree < moduli[i].degree):
+                raise ValueError(f"Each remainder have degree strictly less than its modulus, remainder {remainders[i]} with modulus {moduli[i]} does not satisfy that condition.")
 
     # Iterate through the system of congruences reducing a pair of congruences into a
     # single one. The answer to the final congruence solves all the congruences.
