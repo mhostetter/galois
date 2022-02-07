@@ -178,6 +178,16 @@ def poly_prod(field_folder):
 
 
 @pytest.fixture(scope="session")
+def poly_crt(field_folder):
+    GF, d = read_pickle(field_folder, "crt.pkl")
+    d["GF"] = GF
+    d["X"] = [[galois.Poly(p, field=GF) for p in X] for X in d["X"]]
+    d["Y"] = [[galois.Poly(p, field=GF) for p in Y] for Y in d["Y"]]
+    d["Z"] = [galois.Poly(p, field=GF) if p is not None else None for p in d["Z"]]
+    return d
+
+
+@pytest.fixture(scope="session")
 def poly_modular_power(field_folder):
     GF, d = read_pickle(field_folder, "modular_power.pkl")
     d["GF"] = GF
