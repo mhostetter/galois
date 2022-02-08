@@ -72,3 +72,8 @@ def ilog():
 @pytest.fixture(scope="session")
 def euler_phi():
     return read_pickle("euler_phi.pkl")
+
+
+@pytest.fixture(scope="session")
+def carmichael_lambda():
+    return read_pickle("carmichael_lambda.pkl")
