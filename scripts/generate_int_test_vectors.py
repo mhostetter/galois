@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi, prime_range, nth_prime, previous_prime, next_prime, is_prime
+from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi, prime_range, nth_prime, previous_prime, next_prime, is_prime, is_prime_power
 from sage.crypto.util import carmichael_lambda
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
@@ -230,3 +230,23 @@ for i in range(len(X)):
     Z[i] = bool(z)
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "is_prime.pkl")
+
+# set_seed(SEED + 306)
+# X = [random.randint(-100, 100) for _ in range(20)] + [random.randint(100, 1_000_000_000) for _ in range(20)]
+# Z = [0,]*len(X)
+# for i in range(len(X)):
+#     x = X[i]
+#     z = is_prime(x)
+#     Z[i] = bool(z)
+# d = {"X": X, "Z": Z}
+# save_pickle(d, FOLDER, "is_composite.pkl")
+
+set_seed(SEED + 307)
+X = [random.randint(-100, 100) for _ in range(20)] + [random.randint(100, 1_000_000_000) for _ in range(20)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = is_prime_power(x)
+    Z[i] = bool(z)
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "is_prime_power.pkl")
