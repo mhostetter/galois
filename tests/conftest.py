@@ -91,3 +91,8 @@ def is_cyclic():
 @pytest.fixture(scope="session")
 def primes():
     return read_pickle("primes.pkl")
+
+
+@pytest.fixture(scope="session")
+def kth_prime():
+    return read_pickle("kth_prime.pkl")

@@ -95,6 +95,7 @@ def primes(n: int) -> List[int]:
     return p
 
 
+# TODO: Don't build a large lookup table at import time. Instead, use the progressively-growing nature of PRIMES.
 # Generate a prime lookup table for efficient lookup in other algorithms
 PRIMES = primes(10_000_000)
 MAX_K = len(PRIMES)

@@ -29,11 +29,10 @@ def test_kth_prime_exceptions():
         galois.kth_prime(galois._prime.MAX_K + 1)
 
 
-def test_kth_prime():
-    ks = [7236, 6146, 6978, 8416, 4761, 8488, 7095, 741, 5538, 3462, 487, 4121, 94, 735, 9864, 7873, 7294, 8952, 3722, 3390]
-    ns = [73243, 61001, 70429, 86539, 45989, 87433, 71671, 5641, 54421, 32297, 3469, 39139, 491, 5569, 103099, 80429, 73897, 92681, 34871, 31511]
-    for k, n in zip(ks, ns):
-        assert galois.kth_prime(k) == n
+def test_kth_prime(kth_prime):
+    X, Z = kth_prime["X"], kth_prime["Z"]
+    for i in range(len(X)):
+        assert galois.kth_prime(X[i]) == Z[i]
 
 
 def test_prev_prime_exceptions():
