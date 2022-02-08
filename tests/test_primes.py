@@ -38,6 +38,8 @@ def test_kth_prime(kth_prime):
 def test_prev_prime_exceptions():
     with pytest.raises(TypeError):
         galois.prev_prime(20.0)
+    with pytest.raises(ValueError):
+        galois.prev_prime(1)
 
 
 def test_prev_prime():
