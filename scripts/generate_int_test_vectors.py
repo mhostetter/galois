@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import Integer, xgcd, lcm, prod, isqrt, log, crt
+from sage.all import Integer, xgcd, lcm, prod, isqrt, log, crt, euler_phi
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
 FOLDER = os.path.join(PATH, "data")
@@ -135,3 +135,18 @@ for i in range(len(X)):
         Z[i] = None
 d = {"X": X, "Y": Y, "Z": Z}
 save_pickle(d, FOLDER, "crt.pkl")
+
+
+###############################################################################
+# Number theory functions
+###############################################################################
+
+set_seed(SEED + 201)
+X = [random.randint(1, 1_000_000_000) for _ in range(20)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = euler_phi(x)
+    Z[i] = int(z)
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "euler_phi.pkl")

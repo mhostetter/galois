@@ -16,7 +16,7 @@ __all__ = [
 @set_module("galois")
 def totatives(n: int) -> List[int]:
     r"""
-    Returns the positive integers (totatives) in :math:`[1, n]` that are coprime to :math:`n`.
+    Returns the positive integers (totatives) in :math:`[1, n)` that are coprime to :math:`n`.
 
     The totatives of :math:`n` form the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
 
@@ -58,7 +58,7 @@ def totatives(n: int) -> List[int]:
 @set_module("galois")
 def euler_phi(n: int) -> int:
     r"""
-    Counts the positive integers (totatives) in :math:`[1, n]` that are coprime to :math:`n`.
+    Counts the positive integers (totatives) in :math:`[1, n)` that are coprime to :math:`n`.
 
     Parameters
     ----------
