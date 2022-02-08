@@ -64,6 +64,19 @@ def test_carmichael_lambda(carmichael_lambda):
         assert galois.carmichael_lambda(X[i]) == Z[i]
 
 
+def test_is_cyclic_exceptions():
+    with pytest.raises(TypeError):
+        galois.is_cyclic(20.0)
+    with pytest.raises(ValueError):
+        galois.is_cyclic(-1)
+
+
+def test_is_cyclic(is_cyclic):
+    X, Z = is_cyclic["X"], is_cyclic["Z"]
+    for i in range(len(X)):
+        assert galois.is_cyclic(X[i]) == Z[i]
+
+
 def test_legendre_symbol_exceptions():
     with pytest.raises(TypeError):
         galois.legendre_symbol(3.0, 7)
@@ -160,21 +173,3 @@ def test_kronecker_symbol():
     assert [galois.kronecker_symbol(6, n) for n in range(0, 85)] == [0,1,0,0,0,1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,1,0,0,0,1,0,1,0,0,0,1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,1,0,0,0,1,0,1,0,0,0,1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,1,0,0,0,1,0,1,0,0,0,1,0,-1,0,0,0,-1,0]
     # https://oeis.org/A089509
     assert [galois.kronecker_symbol(7, n) for n in range(1, 107)] == [1,1,1,1,-1,1,0,1,1,-1,-1,1,-1,0,-1,1,-1,1,1,-1,0,-1,-1,1,1,-1,1,0,1,-1,1,1,-1,-1,0,1,1,1,-1,-1,-1,0,-1,-1,-1,-1,1,1,0,1,-1,-1,1,1,1,0,1,1,1,-1,-1,1,0,1,1,-1,-1,-1,-1,0,-1,1,-1,1,1,1,0,-1,-1,-1,1,-1,1,0,1,-1,1,-1,-1,-1,0,-1,1,1,-1,1,-1,0,-1,1,-1,-1,1,-1,0,1]
-
-
-def test_is_cyclic_exceptions():
-    with pytest.raises(TypeError):
-        galois.is_cyclic(20.0)
-    with pytest.raises(ValueError):
-        galois.is_cyclic(-1)
-
-
-def test_is_cyclic():
-    assert galois.is_cyclic(2) == True
-    assert galois.is_cyclic(4) == True
-    assert galois.is_cyclic(2 * 3**3) == True
-    assert galois.is_cyclic(5**7) == True
-    assert galois.is_cyclic(2**3) == False
-    assert galois.is_cyclic(2*5*7*9) == False
-
-    assert all(galois.is_cyclic(n) == (galois.euler_phi(n) == galois.carmichael_lambda(n)) for n in range(1, 100))

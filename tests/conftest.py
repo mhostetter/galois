@@ -77,3 +77,8 @@ def euler_phi():
 @pytest.fixture(scope="session")
 def carmichael_lambda():
     return read_pickle("carmichael_lambda.pkl")
+
+
+@pytest.fixture(scope="session")
+def is_cyclic():
+    return read_pickle("is_cyclic.pkl")

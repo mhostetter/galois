@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import Integer, xgcd, lcm, prod, isqrt, log, crt, euler_phi
+from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi
 from sage.crypto.util import carmichael_lambda
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
@@ -161,3 +161,13 @@ for i in range(len(X)):
     Z[i] = int(z)
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "carmichael_lambda.pkl")
+
+set_seed(SEED + 203)
+X = list(range(1, 257)) + [random.randint(1, 1_000_000_000) for _ in range(20)]
+Z = [False,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = Integers(X[i]).multiplicative_group_is_cyclic()
+    Z[i] = bool(z)
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "is_cyclic.pkl")
