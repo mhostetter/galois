@@ -415,7 +415,7 @@ def is_composite(n: int) -> bool:
     Parameters
     ----------
     n : int
-        A positive integer.
+        An integer.
 
     Returns
     -------
@@ -431,10 +431,8 @@ def is_composite(n: int) -> bool:
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n > 0:
-        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
-    if n == 1:
+    if n < 2:
         return False
 
     return not is_prime(n)
