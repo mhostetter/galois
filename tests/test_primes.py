@@ -132,10 +132,6 @@ def test_is_prime(is_prime):
 def test_is_composite_exceptions():
     with pytest.raises(TypeError):
         galois.is_composite(13.0)
-    with pytest.raises(ValueError):
-        galois.is_composite(0)
-    with pytest.raises(ValueError):
-        galois.is_composite(-13)
 
 
 def test_is_composite():
