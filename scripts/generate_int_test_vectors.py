@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi, prime_range, is_prime
+from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi, prime_range, nth_prime, is_prime
 from sage.crypto.util import carmichael_lambda
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
@@ -188,3 +188,13 @@ for i in range(len(X)):
     Z[i] = [int(zz) for zz in z]
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "primes.pkl")
+
+set_seed(SEED + 302)
+X = [random.randint(1, 1000) for _ in range(10)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = nth_prime(x)
+    Z[i] = int(z)
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "kth_prime.pkl")
