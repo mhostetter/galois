@@ -82,3 +82,12 @@ def carmichael_lambda():
 @pytest.fixture(scope="session")
 def is_cyclic():
     return read_pickle("is_cyclic.pkl")
+
+
+###############################################################################
+# Fixtures for Number Theory functions
+###############################################################################
+
+@pytest.fixture(scope="session")
+def primes():
+    return read_pickle("primes.pkl")

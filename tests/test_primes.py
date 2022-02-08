@@ -14,14 +14,10 @@ def test_primes_exceptions():
         galois.primes(20.0)
 
 
-def test_primes():
-    assert galois.primes(-10) == []
-    assert galois.primes(1) == []
-    assert galois.primes(2) == [2]
-    assert galois.primes(3) == [2, 3]
-    assert galois.primes(19) == [2, 3, 5, 7, 11, 13, 17, 19]
-    assert galois.primes(20) == [2, 3, 5, 7, 11, 13, 17, 19]
-    assert galois.primes(100) == [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+def test_primes(primes):
+    X, Z = primes["X"], primes["Z"]
+    for i in range(len(X)):
+        assert galois.primes(X[i]) == Z[i]
 
 
 def test_kth_prime_exceptions():
