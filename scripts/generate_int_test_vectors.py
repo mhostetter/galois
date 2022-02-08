@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi, prime_range, nth_prime, is_prime
+from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi, prime_range, nth_prime, previous_prime, is_prime
 from sage.crypto.util import carmichael_lambda
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
@@ -183,14 +183,14 @@ Z = [0,]*len(X)
 for i in range(len(X)):
     x = X[i]
     z = prime_range(x)  # Returns primes 0 <= p < x
-    if is_prime(X[i]):  # galois.primes() returns 0 <= p <= x
-        z.append(X[i])
+    if is_prime(x):  # galois.primes() returns 0 <= p <= x
+        z.append(x)
     Z[i] = [int(zz) for zz in z]
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "primes.pkl")
 
 set_seed(SEED + 302)
-X = [random.randint(1, 1000) for _ in range(10)]
+X = [random.randint(1, 1000) for _ in range(20)]
 Z = [0,]*len(X)
 for i in range(len(X)):
     x = X[i]
@@ -198,3 +198,15 @@ for i in range(len(X)):
     Z[i] = int(z)
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "kth_prime.pkl")
+
+set_seed(SEED + 303)
+X = [random.randint(1, 100) for _ in range(20)] + [random.randint(100, 1_000_000) for _ in range(20)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = previous_prime(x)  # Returns z < x
+    if is_prime(x):  # galois.prev_prime() returns z <= x
+        z = x
+    Z[i] = int(z)
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "prev_prime.pkl")

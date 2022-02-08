@@ -42,23 +42,10 @@ def test_prev_prime_exceptions():
         galois.prev_prime(1)
 
 
-def test_prev_prime():
-    """
-    Sage:
-        n = randint(1e20, 1e40)
-        p = previous_prime(n)
-        print(n, p)
-    """
-    assert galois.prev_prime(-10) is None
-    assert galois.prev_prime(1) is None
-    assert galois.prev_prime(2) == 2
-    assert galois.prev_prime(8) == 7
-    assert galois.prev_prime(11) == 11
-
-    assert galois.prev_prime(6298891201241929548477199440981228280038) == 6298891201241929548477199440981228279991
-    assert galois.prev_prime(2245986882959070275565383172237929066361) == 2245986882959070275565383172237929066273
-    assert galois.prev_prime(9259519322042859167754950040306622329138) == 9259519322042859167754950040306622328867
-    assert galois.prev_prime(8385429707258740720790261449080131360283) == 8385429707258740720790261449080131360143
+def test_prev_prime(prev_prime):
+    X, Z = prev_prime["X"], prev_prime["Z"]
+    for i in range(len(X)):
+        assert galois.prev_prime(X[i]) == Z[i]
 
 
 def test_next_prime_exceptions():
