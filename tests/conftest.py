@@ -101,3 +101,8 @@ def kth_prime():
 @pytest.fixture(scope="session")
 def prev_prime():
     return read_pickle("prev_prime.pkl")
+
+
+@pytest.fixture(scope="session")
+def next_prime():
+    return read_pickle("next_prime.pkl")
