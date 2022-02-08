@@ -11,7 +11,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi
+from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi, prime_range, is_prime
 from sage.crypto.util import carmichael_lambda
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests")
@@ -171,3 +171,20 @@ for i in range(len(X)):
     Z[i] = bool(z)
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "is_cyclic.pkl")
+
+
+###############################################################################
+# Prime number functions
+###############################################################################
+
+set_seed(SEED + 301)
+X = [random.randint(1, 1000) for _ in range(10)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = prime_range(x)  # Returns primes 0 <= p < x
+    if is_prime(X[i]):  # galois.primes() returns 0 <= p <= x
+        z.append(X[i])
+    Z[i] = [int(zz) for zz in z]
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "primes.pkl")
