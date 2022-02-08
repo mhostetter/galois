@@ -356,7 +356,7 @@ def is_prime(n: int) -> bool:
     Parameters
     ----------
     n : int
-        A positive integer.
+        An integer.
 
     Returns
     -------
@@ -386,10 +386,8 @@ def is_prime(n: int) -> bool:
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n > 0:
-        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
-    if n == 1:
+    if n < 2:
         return False
 
     # Test n against the first few primes. If n is a multiple of them, it cannot be prime. This is very fast

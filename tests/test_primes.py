@@ -112,10 +112,6 @@ def test_mersenne_primes():
 def test_is_prime_exceptions():
     with pytest.raises(TypeError):
         galois.is_prime(13.0)
-    with pytest.raises(ValueError):
-        galois.is_prime(0)
-    with pytest.raises(ValueError):
-        galois.is_prime(-13)
 
 
 def test_is_prime():
