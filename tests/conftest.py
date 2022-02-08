@@ -63,3 +63,12 @@ def iroot():
 @pytest.fixture(scope="session")
 def ilog():
     return read_pickle("ilog.pkl")
+
+
+###############################################################################
+# Fixtures for Number Theory functions
+###############################################################################
+
+@pytest.fixture(scope="session")
+def euler_phi():
+    return read_pickle("euler_phi.pkl")
