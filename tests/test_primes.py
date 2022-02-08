@@ -114,13 +114,19 @@ def test_is_prime_exceptions():
         galois.is_prime(13.0)
 
 
-def test_is_prime():
+def test_is_prime_oeis():
     # https://oeis.org/A000040
     primes = np.array([2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271])
     n = np.arange(1, primes[-1] + 1)
     is_prime = np.zeros(n.size, dtype=bool)
     is_prime[primes - 1] = True  # -1 for 1-indexed
     assert [galois.is_prime(ni) for ni in n] == is_prime.tolist()
+
+
+def test_is_prime(is_prime):
+    X, Z = is_prime["X"], is_prime["Z"]
+    for i in range(len(X)):
+        assert galois.is_prime(X[i]) == Z[i]
 
 
 def test_is_composite_exceptions():

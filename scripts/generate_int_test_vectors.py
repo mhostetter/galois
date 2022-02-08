@@ -220,3 +220,13 @@ for i in range(len(X)):
     Z[i] = int(z)
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "next_prime.pkl")
+
+set_seed(SEED + 305)
+X = [random.randint(-100, 100) for _ in range(20)] + [random.randint(100, 1_000_000_000) for _ in range(20)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = is_prime(x)
+    Z[i] = bool(z)
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "is_prime.pkl")
