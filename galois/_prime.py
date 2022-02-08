@@ -134,19 +134,19 @@ def kth_prime(k: int) -> int:
 
 
 @set_module("galois")
-def prev_prime(n: int) -> Optional[int]:
+def prev_prime(n: int) -> int:
     r"""
     Returns the nearest prime :math:`p`, such that :math:`p \le n`.
 
     Parameters
     ----------
     n : int
-        An integer.
+        An integer :math:`n \ge 2`.
 
     Returns
     -------
-    None, int
-        The nearest prime :math:`p \le n`. If :math:`n < 2`, the function returns `None`.
+    int
+        The nearest prime :math:`p \le n`.
 
     Examples
     --------
@@ -158,9 +158,8 @@ def prev_prime(n: int) -> Optional[int]:
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-
-    if n < 2:
-        return None
+    if not n >= 2:
+        raise ValueError("There are no primes less than 2.")
 
     # Directly use lookup table
     if n <= MAX_N:
