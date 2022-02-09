@@ -246,64 +246,6 @@ def test_divisor_sigma():
     assert [galois.divisor_sigma(n, k=3) for n in range(1, 43)] == sigma_3
 
 
-def test_is_smooth():
-    # https://oeis.org/A000079
-    smooths = np.array([1,2,4,8,16,32,64,128,256,512,1024])
-    n = np.arange(1, smooths[-1] + 1)
-    is_smooth = np.zeros(n.size, dtype=bool)
-    is_smooth[smooths - 1] = True  # -1 for 1-indexed
-    assert [galois.is_smooth(ni, 2) for ni in n] == is_smooth.tolist()
-
-    # https://oeis.org/A003586
-    smooths = np.array([1,2,3,4,6,8,9,12,16,18,24,27,32,36,48,54,64,72,81,96,108,128,144,162,192,216,243,256,288,324,384,432,486,512,576,648,729,768,864,972,1024])
-    n = np.arange(1, smooths[-1] + 1)
-    is_smooth = np.zeros(n.size, dtype=bool)
-    is_smooth[smooths - 1] = True  # -1 for 1-indexed
-    assert [galois.is_smooth(ni, 3) for ni in n] == is_smooth.tolist()
-
-    # https://oeis.org/A051037
-    smooths = np.array([1,2,3,4,5,6,8,9,10,12,15,16,18,20,24,25,27,30,32,36,40,45,48,50,54,60,64,72,75,80,81,90,96,100,108,120,125,128,135,144,150,160,162,180,192,200,216,225,240,243,250,256,270,288,300,320,324,360,375,384,400,405])
-    n = np.arange(1, smooths[-1] + 1)
-    is_smooth = np.zeros(n.size, dtype=bool)
-    is_smooth[smooths - 1] = True  # -1 for 1-indexed
-    assert [galois.is_smooth(ni, 5) for ni in n] == is_smooth.tolist()
-
-    # https://oeis.org/A002473
-    smooths = np.array([1,2,3,4,5,6,7,8,9,10,12,14,15,16,18,20,21,24,25,27,28,30,32,35,36,40,42,45,48,49,50,54,56,60,63,64,70,72,75,80,81,84,90,96,98,100,105,108,112,120,125,126,128,135,140,144,147,150,160,162,168,175,180,189,192])
-    n = np.arange(1, smooths[-1] + 1)
-    is_smooth = np.zeros(n.size, dtype=bool)
-    is_smooth[smooths - 1] = True  # -1 for 1-indexed
-    assert [galois.is_smooth(ni, 7) for ni in n] == is_smooth.tolist()
-
-    # https://oeis.org/A018336
-    smooths = np.array([1,2,3,5,6,7,10,14,15,21,30,35,42,70,105,210])
-    n = np.arange(1, smooths[-1] + 1)
-    is_smooth = np.zeros(n.size, dtype=bool)
-    is_smooth[smooths - 1] = True  # -1 for 1-indexed
-    assert [galois.is_smooth(ni, 7) and galois.is_square_free(ni) for ni in n] == is_smooth.tolist()
-
-    # https://oeis.org/A051038
-    smooths = np.array([1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,18,20,21,22,24,25,27,28,30,32,33,35,36,40,42,44,45,48,49,50,54,55,56,60,63,64,66,70,72,75,77,80,81,84,88,90,96,98,99,100,105,108,110,112,120,121,125,126,128,132,135,140])
-    n = np.arange(1, smooths[-1] + 1)
-    is_smooth = np.zeros(n.size, dtype=bool)
-    is_smooth[smooths - 1] = True  # -1 for 1-indexed
-    assert [galois.is_smooth(ni, 11) for ni in n] == is_smooth.tolist()
-
-    # https://oeis.org/A051038
-    smooths = np.array([1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,18,20,21,22,24,25,27,28,30,32,33,35,36,40,42,44,45,48,49,50,54,55,56,60,63,64,66,70,72,75,77,80,81,84,88,90,96,98,99,100,105,108,110,112,120,121,125,126,128,132,135,140])
-    n = np.arange(1, smooths[-1] + 1)
-    is_smooth = np.zeros(n.size, dtype=bool)
-    is_smooth[smooths - 1] = True  # -1 for 1-indexed
-    assert [galois.is_smooth(ni, 11) for ni in n] == is_smooth.tolist()
-
-    # https://oeis.org/A087005
-    smooths = np.array([1,2,3,5,6,7,10,11,14,15,21,22,30,33,35,42,55,66,70,77,105,110,154,165,210,231,330,385,462,770,1155,2310])
-    n = np.arange(1, smooths[-1] + 1)
-    is_smooth = np.zeros(n.size, dtype=bool)
-    is_smooth[smooths - 1] = True  # -1 for 1-indexed
-    assert [galois.is_smooth(ni, 11) and galois.is_square_free(ni) for ni in n] == is_smooth.tolist()
-
-
 def test_is_powersmooth():
     assert galois.is_powersmooth(2**4 * 3**2 * 5, 5) == False
     assert galois.is_powersmooth(2**4 * 3**2 * 5, 9) == False

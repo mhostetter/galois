@@ -126,3 +126,8 @@ def is_perfect_power():
 @pytest.fixture(scope="session")
 def is_square_free():
     return read_pickle("is_square_free.pkl")
+
+
+@pytest.fixture(scope="session")
+def is_smooth():
+    return read_pickle("is_smooth.pkl")

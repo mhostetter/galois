@@ -9,7 +9,7 @@ import pickle
 import random
 import shutil
 
-import sage
+import sympy
 import numpy as np
 from sage.all import Integer, Integers, xgcd, lcm, prod, isqrt, log, crt, euler_phi, prime_range, nth_prime, previous_prime, next_prime, is_prime, is_prime_power
 from sage.crypto.util import carmichael_lambda
@@ -270,3 +270,33 @@ for i in range(len(X)):
     Z[i] = bool(z)
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "is_square_free.pkl")
+
+set_seed(SEED + 310)
+X = list(range(-256, 257)) + [random.randint(100, 1_000_000) for _ in range(20)]
+N = []
+B = []
+Z = []
+for i in range(len(X)):
+    x = X[i]
+    if x == 0:
+        N.append(x)
+        B.append(2)
+        Z.append(False)
+        continue
+    if x in [-1, 1]:
+        N.append(x)
+        B.append(2)
+        Z.append(True)
+        continue
+    b, _ = sympy.ntheory.factor_.smoothness(x)  # smoothness bound
+    # Add a valid is_smooth() condition
+    N.append(int(x))
+    B.append(int(b))
+    Z.append(True)
+    if b > 2:
+        # Add an invalid is_smooth() condition
+        N.append(int(x))
+        B.append(int(b - 1))
+        Z.append(False)
+d = {"N": N, "B": B, "Z": Z}
+save_pickle(d, FOLDER, "is_smooth.pkl")

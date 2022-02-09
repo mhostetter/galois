@@ -1513,12 +1513,12 @@ def is_square_free(n: int) -> bool:
 @set_module("galois")
 def is_smooth(n: int, B: int) -> bool:
     r"""
-    Determines if the positive integer :math:`n` is :math:`B`-smooth.
+    Determines if the integer :math:`n` is :math:`B`-smooth.
 
     Parameters
     ----------
     n : int
-        A positive integer.
+        An integer.
     B : int
         The smoothness bound :math:`B \ge 2`.
 
@@ -1546,11 +1546,14 @@ def is_smooth(n: int, B: int) -> bool:
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not isinstance(B, (int, np.integer)):
         raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
-    if not n > 0:
-        raise ValueError(f"Argument `n` must be non-negative, not {n}.")
     if not B >= 2:
         raise ValueError(f"Argument `B` must be at least 2, not {B}.")
 
+    # Since -1 can factored out of the prime factorization is_square_free(-n) == is_square_free(n)
+    n = abs(n)
+
+    if n == 0:
+        return False
     if n == 1:
         return True
 
@@ -1560,10 +1563,10 @@ def is_smooth(n: int, B: int) -> bool:
         if d > 1:
             n //= d
         if n == 1:
-            # n can be fully factored by the primes already test, therefore it is B-smooth
+            # n can be fully factored by the primes already tested, therefore it is B-smooth
             return True
 
-    # n has residual prime factors larger than B and therefore is not B-smooth
+    # n has residual prime factors larger than B, therefore it is not B-smooth
     return False
 
 
