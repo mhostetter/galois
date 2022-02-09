@@ -121,3 +121,8 @@ def is_prime_power():
 @pytest.fixture(scope="session")
 def is_perfect_power():
     return read_pickle("is_perfect_power.pkl")
+
+
+@pytest.fixture(scope="session")
+def is_square_free():
+    return read_pickle("is_square_free.pkl")
