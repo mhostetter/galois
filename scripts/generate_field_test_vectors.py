@@ -738,6 +738,18 @@ def make_luts(field, sub_folder, seed, sparse=False):
     # Special polynomials
     ###############################################################################
 
+    set_seed(seed + 501)
+    X = [random_coeffs(0, order, 1, 6) for _ in range(20)]
+    Z = [False,]*len(X)
+    for i in range(len(X)):
+        if random.choice(["one", "other"]) == "one":
+            X[i][0] = 1
+        x = list_to_poly(X[i])
+        z = x.is_monic()
+        Z[i] = bool(z)
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "is_monic.pkl")
+
     set_seed(seed + 502)
     IS = []
     IS_NOT = []

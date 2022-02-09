@@ -553,7 +553,9 @@ def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
 @set_module("galois")
 def is_monic(poly: Poly) -> bool:
     r"""
-    Determines whether the polynomial is monic, i.e. having leading coefficient equal to 1.
+    Determines whether the polynomial is monic.
+
+    A monic polynomial has a highest-degree coefficient of 1.
 
     Parameters
     ----------
@@ -580,6 +582,7 @@ def is_monic(poly: Poly) -> bool:
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+
     return poly.nonzero_coeffs[0] == 1
 
 
