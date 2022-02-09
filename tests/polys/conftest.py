@@ -218,3 +218,11 @@ def poly_is_primitive(field_folder):
     d["IS"] = [galois.Poly(p, field=GF) for p in d["IS"]]
     d["IS_NOT"] = [galois.Poly(p, field=GF) for p in d["IS_NOT"]]
     return d
+
+@pytest.fixture(scope="session")
+def poly_is_square_free(field_folder):
+    GF, d = read_pickle(field_folder, "is_square_free.pkl")
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Z"] = d["Z"]
+    return d
