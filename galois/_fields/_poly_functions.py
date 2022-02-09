@@ -583,6 +583,17 @@ def is_monic(poly: Poly) -> bool:
     return poly.nonzero_coeffs[0] == 1
 
 
-def is_square_free(poly):
+def is_square_free(poly: Poly) -> bool:
+    """
+    This function is wrapped and documented in `_polymorphic.is_square_free()`.
+    """
+    if not is_monic(poly):
+        poly /= poly.coeffs[0]
+
+    # Constant polynomials are square-free
+    if poly.degree == 0:
+        return True
+
     _, multiplicities = square_free_factorization(poly)
+
     return multiplicities == [1,]

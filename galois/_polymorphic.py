@@ -588,12 +588,12 @@ def is_square_free(value: Poly) -> bool:
 @set_module("galois")
 def is_square_free(value):
     r"""
-    Determines if an integer or non-constant, monic polynomial is square-free.
+    Determines if an integer or polynomial is square-free.
 
     Parameters
     ----------
     value : int, galois.Poly
-        An integer :math:`n` or non-constant, monic polynomial :math:`f(x)`.
+        An integer :math:`n` or polynomial :math:`f(x)`.
 
     Returns
     -------

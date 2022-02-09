@@ -147,6 +147,7 @@ def poly_to_list(poly):
 
 
 def save_pickle(d, folder, name):
+    print(f"  Saving {name}...")
     with open(os.path.join(folder, name), "wb") as f:
         pickle.dump(d, f)
 
@@ -737,49 +738,65 @@ def make_luts(field, sub_folder, seed, sparse=False):
     # Special polynomials
     ###############################################################################
 
-    set_seed(seed + 501)
-    IS = []
-    IS_NOT = []
-    while len(IS) < 10:
-        x = random_coeffs(0, order, 1, 6)
-        f = list_to_poly(x)
-        if f.is_irreducible():
-            IS.append(x)
-    while len(IS_NOT) < 10:
-        x = random_coeffs(0, order, 1, 6)
-        f = list_to_poly(x)
-        if not f.is_irreducible():
-            IS_NOT.append(x)
-    d = {"IS": IS, "IS_NOT": IS_NOT}
-    save_pickle(d, folder, "is_irreducible.pkl")
-
     set_seed(seed + 502)
     IS = []
     IS_NOT = []
-    while len(IS) < 10:
-        x = random_coeffs(0, order, 1, 6)
-        f = list_to_poly(x)
-        # f = f / f.coefficients()[-1]  # Make monic
-        # assert f.is_monic()
-        if f.degree() == 1 and f.coefficients(sparse=False)[0] == 0:
-            continue  # For some reason `is_primitive()` crashes on f(x) = a*x
-        if not f.is_irreducible():
-            continue  # Want to find an irreducible polynomial that is also primitive
-        if f.is_primitive():
-            IS.append(x)
-    while len(IS_NOT) < 10:
-        x = random_coeffs(0, order, 1, 6)
-        f = list_to_poly(x)
-        # f = f / f.coefficients()[-1]  # Make monic
-        # assert f.is_monic()
-        if f.degree() == 1 and f.coefficients(sparse=False)[0] == 0:
-            continue  # For some reason `is_primitive()` crashes on f(x) = a*x
-        if not f.is_irreducible():
-            continue  # Want to find an irreducible polynomial that is not primitive
-        if not f.is_primitive():
-            IS_NOT.append(x)
+    if order <= 2**16:
+        while len(IS) < 10:
+            x = random_coeffs(0, order, 1, 6)
+            f = list_to_poly(x)
+            if f.is_irreducible():
+                IS.append(x)
+        while len(IS_NOT) < 10:
+            x = random_coeffs(0, order, 1, 6)
+            f = list_to_poly(x)
+            if not f.is_irreducible():
+                IS_NOT.append(x)
+    d = {"IS": IS, "IS_NOT": IS_NOT}
+    save_pickle(d, folder, "is_irreducible.pkl")
+
+    set_seed(seed + 503)
+    IS = []
+    IS_NOT = []
+    if order <= 2**16:
+        while len(IS) < 10:
+            x = random_coeffs(0, order, 1, 6)
+            f = list_to_poly(x)
+            # f = f / f.coefficients()[-1]  # Make monic
+            # assert f.is_monic()
+            if f.degree() == 1 and f.coefficients(sparse=False)[0] == 0:
+                continue  # For some reason `is_primitive()` crashes on f(x) = a*x
+            if not f.is_irreducible():
+                continue  # Want to find an irreducible polynomial that is also primitive
+            if f.is_primitive():
+                IS.append(x)
+        while len(IS_NOT) < 10:
+            x = random_coeffs(0, order, 1, 6)
+            f = list_to_poly(x)
+            # f = f / f.coefficients()[-1]  # Make monic
+            # assert f.is_monic()
+            if f.degree() == 1 and f.coefficients(sparse=False)[0] == 0:
+                continue  # For some reason `is_primitive()` crashes on f(x) = a*x
+            if not f.is_irreducible():
+                continue  # Want to find an irreducible polynomial that is not primitive
+            if not f.is_primitive():
+                IS_NOT.append(x)
     d = {"IS": IS, "IS_NOT": IS_NOT}
     save_pickle(d, folder, "is_primitive.pkl")
+
+    set_seed(seed + 504)
+    if order <= 2**16:
+        X = [random_coeffs(0, order, 1, 6) for _ in range(20)]
+        Z = [False,]*len(X)
+        for i in range(len(X)):
+            x = list_to_poly(X[i])
+            z = x.is_squarefree()
+            Z[i] = bool(z)
+    else:
+        X = []
+        Z = []
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "is_square_free.pkl")
 
 
 if __name__ == "__main__":
