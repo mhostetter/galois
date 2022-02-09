@@ -191,6 +191,21 @@ def test_is_smooth(is_smooth):
         assert galois.is_smooth(N[i], B[i]) == Z[i]
 
 
+def test_is_powersmooth_exceptions():
+    with pytest.raises(TypeError):
+        galois.is_powersmooth(10.0, 2)
+    with pytest.raises(TypeError):
+        galois.is_powersmooth(10, 2.0)
+    with pytest.raises(ValueError):
+        galois.is_powersmooth(10, 1)
+
+
+def test_is_powersmooth(is_powersmooth):
+    N, B, Z = is_powersmooth["N"], is_powersmooth["B"], is_powersmooth["Z"]
+    for i in range(len(N)):
+        assert galois.is_powersmooth(N[i], B[i]) == Z[i]
+
+
 def test_fermat_primality_test_exceptions():
     with pytest.raises(TypeError):
         galois.fermat_primality_test(13.0)
