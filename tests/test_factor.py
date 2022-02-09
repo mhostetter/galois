@@ -153,10 +153,10 @@ def test_factors_extremely_large():
 
 
 def test_perfect_power():
-    assert galois.perfect_power(5) is None
-    assert galois.perfect_power(6) is None
-    assert galois.perfect_power(6*16) is None
-    assert galois.perfect_power(16*125) is None
+    assert galois.perfect_power(5) == (5, 1)
+    assert galois.perfect_power(6) == (6, 1)
+    assert galois.perfect_power(6*16) == (6*16, 1)
+    assert galois.perfect_power(16*125) == (16*125, 1)
 
     assert galois.perfect_power(9) == (3, 2)
     assert galois.perfect_power(36) == (6, 2)

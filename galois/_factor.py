@@ -238,9 +238,8 @@ def factors(n: int) -> Tuple[List[int], List[int]]:
         return [n], [1]
 
     # Step 2
-    result = perfect_power(n)
-    if result is not None:
-        base, exponent = result
+    base, exponent = perfect_power(n)
+    if base != n:
         p, e = factors(base)
         e = [ei * exponent for ei in e]
         return p, e
@@ -273,57 +272,100 @@ def factors(n: int) -> Tuple[List[int], List[int]]:
 
 @set_module("galois")
 @functools.lru_cache(maxsize=512)
-def perfect_power(n: int) -> Optional[Tuple[int, int]]:
+def perfect_power(n: int) -> Tuple[int, int]:
     r"""
-    Returns the integer base :math:`c > 1` and exponent :math:`e > 1` of :math:`n = c^e` if :math:`n` is a perfect power.
+    Returns the integer base :math:`c` and exponent :math:`e` of :math:`n = c^e`.
+
+    If :math:`n` is a *not* perfect power, then :math:`c = n` and :math:`e = 1`.
 
     Parameters
     ----------
     n : int
-        A positive integer :math:`n > 1`.
+        An integer.
 
     Returns
     -------
-    None, tuple
-        `None` is :math:`n` is not a perfect power. Otherwise, :math:`(c, e)` such that :math:`n = c^e`. :math:`c`
-        may be composite.
+    int
+        The *potentially* composite base :math:`c`.
+    int
+        The exponent :math:`e`.
 
     Examples
     --------
+    Primes are not perfect powers because their exponent is 1.
+
     .. ipython:: python
 
-        # Primes are not perfect powers
-        galois.perfect_power(5)
+        galois.perfect_power(13)
+        galois.is_perfect_power(13)
 
-        # Products of primes are not perfect powers
-        galois.perfect_power(2*3)
+    Products of primes are not perfect powers.
 
-        # Products of prime powers were the GCD of the exponents is 1 are not perfect powers
+    .. ipython:: python
+
+        galois.perfect_power(5*7)
+        galois.is_perfect_power(5*7)
+
+    Products of prime powers where the GCD of the exponents is 1 are not perfect powers.
+
+    .. ipython:: python
+
         galois.perfect_power(2 * 3 * 5**3)
+        galois.is_perfect_power(2 * 3 * 5**3)
 
-        # Products of prime powers were the GCD of the exponents is > 1 are perfect powers
+    Products of prime powers where the GCD of the exponents is greater than 1 are perfect powers.
+
+    .. ipython:: python
+
         galois.perfect_power(2**2 * 3**2 * 5**4)
-        galois.perfect_power(36)
-        galois.perfect_power(125)
+        galois.is_perfect_power(2**2 * 3**2 * 5**4)
+
+    Negative integers can be perfect powers if they can be factored with an odd exponent.
+
+    .. ipython:: python
+
+        galois.perfect_power(-64)
+        galois.is_perfect_power(-64)
+
+    Negative integers that are only factored with an even exponent are not perfect powers.
+
+    .. ipython:: python
+
+        galois.perfect_power(-100)
+        galois.is_perfect_power(-100)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n > 1:
-        raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
+
+    if n == 0:
+        return 0, 1
+
     n = int(n)
+    abs_n = abs(n)
 
-    for k in primes(ilog(n, 2)):
-        x = iroot(n, k)
-        if x**k == n:
+    for k in primes(ilog(abs_n, 2)):
+        x = iroot(abs_n, k)
+        if x**k == abs_n:
             # Recursively determine if x is a perfect power
-            ret = perfect_power(x)
-            if ret is None:
-                return x, k
-            else:
-                x, kk = ret
-                return x, k * kk
+            c, e = perfect_power(x)
+            e *= k  # Multiply the exponent of c by the exponent of x
 
-    return None
+            if n < 0:
+                # Try to convert the even exponent of a factored negative number into the next largest odd power
+                while e > 2:
+                    if e % 2 == 0:
+                        c *= 2
+                        e //= 2
+                    else:
+                        return -c, e
+
+                # Failed to convert the even exponent to and odd one, therefore there is no real factorization of this negative integer
+                return n, 1
+
+            return c, e
+
+    # n is composite and cannot be factored into a perfect power
+    return n, 1
 
 
 @set_module("galois")
@@ -742,48 +784,80 @@ def is_prime_power(n: int) -> bool:
         return True
 
     # Determine is n is a perfect power and then check is the base is prime or composite
-    ret = perfect_power(n)
-    if ret is not None and is_prime(ret[0]):
-        return True
+    c, _ = perfect_power(n)
 
-    return False
+    return is_prime(c)
 
 
 @set_module("galois")
 def is_perfect_power(n: int) -> bool:
     r"""
-    Determines if :math:`n` is a perfect power :math:`n = x^k` for :math:`x > 0` and :math:`k \ge 2`.
+    Determines if :math:`n` is a perfect power :math:`n = c^e` with :math:`e > 1`.
 
     Parameters
     ----------
     n : int
-        A positive integer.
+        An integer.
 
     Returns
     -------
-    bool:
+    bool
         `True` if the integer :math:`n` is a perfect power.
 
     Examples
     --------
+    Primes are not perfect powers because their exponent is 1.
+
     .. ipython:: python
 
-        galois.is_perfect_power(8)
-        galois.is_perfect_power(16)
-        galois.is_perfect_power(20)
+        galois.perfect_power(13)
+        galois.is_perfect_power(13)
+
+    Products of primes are not perfect powers.
+
+    .. ipython:: python
+
+        galois.perfect_power(5*7)
+        galois.is_perfect_power(5*7)
+
+    Products of prime powers where the GCD of the exponents is 1 are not perfect powers.
+
+    .. ipython:: python
+
+        galois.perfect_power(2 * 3 * 5**3)
+        galois.is_perfect_power(2 * 3 * 5**3)
+
+    Products of prime powers where the GCD of the exponents is greater than 1 are perfect powers.
+
+    .. ipython:: python
+
+        galois.perfect_power(2**2 * 3**2 * 5**4)
+        galois.is_perfect_power(2**2 * 3**2 * 5**4)
+
+    Negative integers can be perfect powers if they can be factored with an odd exponent.
+
+    .. ipython:: python
+
+        galois.perfect_power(-64)
+        galois.is_perfect_power(-64)
+
+    Negative integers that are only factored with an even exponent are not perfect powers.
+
+    .. ipython:: python
+
+        galois.perfect_power(-100)
+        galois.is_perfect_power(-100)
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not n > 0:
-        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
-    if n == 1:
+    # Special cases: -1 = -1^3, 0 = 0^2, 1 = 1^3
+    if n in [-1, 0, 1]:
         return True
 
-    if perfect_power(n) is not None:
-        return True
+    c, _ = perfect_power(n)
 
-    return False
+    return n != c
 
 
 def is_square_free(n: int) -> bool:
