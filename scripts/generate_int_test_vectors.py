@@ -260,3 +260,13 @@ for i in range(len(X)):
     Z[i] = bool(z)
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "is_perfect_power.pkl")
+
+set_seed(SEED + 309)
+X = list(range(-256, 257)) + [random.randint(100, 1_000_000_000) for _ in range(20)]
+Z = [0,]*len(X)
+for i in range(len(X)):
+    x = X[i]
+    z = Integer(x).is_squarefree()
+    Z[i] = bool(z)
+d = {"X": X, "Z": Z}
+save_pickle(d, FOLDER, "is_square_free.pkl")

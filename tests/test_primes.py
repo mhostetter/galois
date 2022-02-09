@@ -165,6 +165,17 @@ def test_is_perfect_power(is_perfect_power):
         assert galois.is_perfect_power(X[i]) == Z[i]
 
 
+def test_is_square_free_exceptions():
+    with pytest.raises(TypeError):
+        galois.is_square_free(13.0)
+
+
+def test_is_square_free(is_square_free):
+    X, Z = is_square_free["X"], is_square_free["Z"]
+    for i in range(len(X)):
+        assert galois.is_square_free(X[i]) == Z[i]
+
+
 def test_fermat_primality_test_exceptions():
     with pytest.raises(TypeError):
         galois.fermat_primality_test(13.0)

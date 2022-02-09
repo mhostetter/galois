@@ -864,12 +864,15 @@ def is_square_free(n: int) -> bool:
     """
     This function is wrapped and documented in `_polymorphic.is_square_free()`.
     """
-    if not n > 0:
-        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+    # Since -1 can factored out of the prime factorization is_square_free(-n) == is_square_free(n)
+    n = abs(n)
 
+    if n == 0:
+        return False
     if n == 1:
         return True
 
+    # For n to be square-free it must have no prime factors with exponent greater than 1
     _, e = factors(n)
 
     return e == [1,]*len(e)

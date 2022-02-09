@@ -246,15 +246,6 @@ def test_divisor_sigma():
     assert [galois.divisor_sigma(n, k=3) for n in range(1, 43)] == sigma_3
 
 
-def test_is_square_free():
-    # https://oeis.org/A005117
-    square_frees = np.array([1,2,3,5,6,7,10,11,13,14,15,17,19,21,22,23,26,29,30,31,33,34,35,37,38,39,41,42,43,46,47,51,53,55,57,58,59,61,62,65,66,67,69,70,71,73,74,77,78,79,82,83,85,86,87,89,91,93,94,95,97,101,102,103,105,106,107,109,110,111,113])
-    n = np.arange(1, square_frees[-1] + 1)
-    is_square_free = np.zeros(n.size, dtype=bool)
-    is_square_free[square_frees - 1] = True  # -1 for 1-indexed
-    assert [galois.is_square_free(ni) for ni in n] == is_square_free.tolist()
-
-
 def test_is_smooth():
     # https://oeis.org/A000079
     smooths = np.array([1,2,4,8,16,32,64,128,256,512,1024])
