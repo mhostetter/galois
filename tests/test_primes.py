@@ -176,6 +176,21 @@ def test_is_square_free(is_square_free):
         assert galois.is_square_free(X[i]) == Z[i]
 
 
+def test_is_smooth_exceptions():
+    with pytest.raises(TypeError):
+        galois.is_smooth(10.0, 2)
+    with pytest.raises(TypeError):
+        galois.is_smooth(10, 2.0)
+    with pytest.raises(ValueError):
+        galois.is_smooth(10, 1)
+
+
+def test_is_smooth(is_smooth):
+    N, B, Z = is_smooth["N"], is_smooth["B"], is_smooth["Z"]
+    for i in range(len(N)):
+        assert galois.is_smooth(N[i], B[i]) == Z[i]
+
+
 def test_fermat_primality_test_exceptions():
     with pytest.raises(TypeError):
         galois.fermat_primality_test(13.0)
