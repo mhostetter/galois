@@ -116,3 +116,8 @@ def is_prime():
 @pytest.fixture(scope="session")
 def is_prime_power():
     return read_pickle("is_prime_power.pkl")
+
+
+@pytest.fixture(scope="session")
+def is_perfect_power():
+    return read_pickle("is_perfect_power.pkl")

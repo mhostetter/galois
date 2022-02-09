@@ -154,6 +154,17 @@ def test_is_prime_power(is_prime_power):
         assert galois.is_prime_power(X[i]) == Z[i]
 
 
+def test_is_perfect_power_exceptions():
+    with pytest.raises(TypeError):
+        galois.is_perfect_power(13.0)
+
+
+def test_is_perfect_power(is_perfect_power):
+    X, Z = is_perfect_power["X"], is_perfect_power["Z"]
+    for i in range(len(X)):
+        assert galois.is_perfect_power(X[i]) == Z[i]
+
+
 def test_fermat_primality_test_exceptions():
     with pytest.raises(TypeError):
         galois.fermat_primality_test(13.0)

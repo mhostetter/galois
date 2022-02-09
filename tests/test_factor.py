@@ -246,15 +246,6 @@ def test_divisor_sigma():
     assert [galois.divisor_sigma(n, k=3) for n in range(1, 43)] == sigma_3
 
 
-def test_is_perfect_power():
-    # https://oeis.org/A001597
-    perfect_powers = np.array([1,4,8,9,16,25,27,32,36,49,64,81,100,121,125,128,144,169,196,216,225,243,256,289,324,343,361,400,441,484,512,529,576,625,676,729,784,841,900,961,1000,1024,1089,1156,1225,1296,1331,1369,1444,1521,1600,1681,1728,1764])
-    n = np.arange(1, perfect_powers[-1] + 1)
-    is_perfect_power = np.zeros(n.size, dtype=bool)
-    is_perfect_power[perfect_powers - 1] = True  # -1 for 1-indexed
-    assert [galois.is_perfect_power(ni) for ni in n] == is_perfect_power.tolist()
-
-
 def test_is_square_free():
     # https://oeis.org/A005117
     square_frees = np.array([1,2,3,5,6,7,10,11,13,14,15,17,19,21,22,23,26,29,30,31,33,34,35,37,38,39,41,42,43,46,47,51,53,55,57,58,59,61,62,65,66,67,69,70,71,73,74,77,78,79,82,83,85,86,87,89,91,93,94,95,97,101,102,103,105,106,107,109,110,111,113])
