@@ -6,11 +6,21 @@ from typing import Tuple, List, Sequence, overload
 
 import numpy as np
 
-from . import _factor as integer_factor
-from . import _math as integer_math
-from ._overrides import set_module
 from ._fields import Poly
-from ._fields import _poly_functions as poly_functions
+from ._fields._poly_functions import gcd as poly_gcd
+from ._fields._poly_functions import egcd as poly_egcd
+from ._fields._poly_functions import lcm as poly_lcm
+from ._fields._poly_functions import prod as poly_prod
+from ._fields._poly_functions import pow as poly_pow
+from ._fields._poly_functions import factors as poly_factors
+from ._fields._poly_functions import is_square_free as poly_is_square_free
+from ._math import gcd as int_gcd
+from ._math import egcd as int_egcd
+from ._math import lcm as int_lcm
+from ._math import prod as int_prod
+from ._overrides import set_module
+from ._prime import factors as int_factors
+from ._prime import is_square_free as int_is_square_free
 
 __all__ = [
     "gcd", "egcd", "lcm", "prod", "are_coprime",
@@ -77,9 +87,9 @@ def gcd(a, b):
         gcd = galois.gcd(a, b); gcd
     """
     if isinstance(a, (int, np.integer)) and isinstance(b, (int, np.integer)):
-        return integer_math.gcd(a, b)
+        return int_gcd(a, b)
     elif isinstance(a, Poly) and isinstance(b, Poly):
-        return poly_functions.gcd(a, b)
+        return poly_gcd(a, b)
     else:
         raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
@@ -148,9 +158,9 @@ def egcd(a, b):
         a*s + b*t == gcd
     """
     if isinstance(a, (int, np.integer)) and isinstance(b, (int, np.integer)):
-        return integer_math.egcd(a, b)
+        return int_egcd(a, b)
     elif isinstance(a, Poly) and isinstance(b, Poly):
-        return poly_functions.egcd(a, b)
+        return poly_egcd(a, b)
     else:
         raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
@@ -203,9 +213,9 @@ def lcm(*values):
         raise ValueError("At least one argument must be provided.")
 
     if all(isinstance(value, (int, np.integer)) for value in values):
-        return integer_math.lcm(*values)
+        return int_lcm(*values)
     elif all(isinstance(value, Poly) for value in values):
-        return poly_functions.lcm(*values)
+        return poly_lcm(*values)
     else:
         raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
 
@@ -254,9 +264,9 @@ def prod(*values):
         raise ValueError("At least one argument must be provided.")
 
     if all(isinstance(value, (int, np.integer)) for value in values):
-        return integer_math.prod(*values)
+        return int_prod(*values)
     elif all(isinstance(value, Poly) for value in values):
-        return poly_functions.prod(*values)
+        return poly_prod(*values)
     else:
         raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
 
@@ -382,7 +392,7 @@ def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
     if isinstance(base, (int, np.integer)) and isinstance(modulus, (int, np.integer)):
         return builtins.pow(base, exponent, modulus)
     elif isinstance(base, Poly) and isinstance(modulus, Poly):
-        return poly_functions.pow(base, exponent, modulus)
+        return poly_pow(base, exponent, modulus)
     else:
         raise TypeError(f"Arguments `base` and `modulus` must both be either int or galois.Poly, not {type(base)} and {type(modulus)}.")
 
@@ -572,9 +582,9 @@ def factors(value):
         galois.factors(f)
     """
     if isinstance(value, (int, np.integer)):
-        return integer_factor.factors(value)
+        return int_factors(value)
     elif isinstance(value, Poly):
-        return poly_functions.factors(value)
+        return poly_factors(value)
     else:
         raise TypeError(f"Argument `value` must be either int or galois.Poly, not {type(value)}.")
 
@@ -632,8 +642,8 @@ def is_square_free(value):
         galois.is_square_free(g3**2 * g4)
     """
     if isinstance(value, (int, np.integer)):
-        return integer_factor.is_square_free(value)
+        return int_is_square_free(value)
     elif isinstance(value, Poly):
-        return poly_functions.is_square_free(value)
+        return poly_is_square_free(value)
     else:
         raise TypeError(f"Argument `value` must be either int or galois.Poly, not {type(value)}.")

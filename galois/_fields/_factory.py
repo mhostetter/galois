@@ -11,10 +11,9 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._databases import ConwayPolyDatabase
-from .._factor import factors, is_prime_power
 from .._modular import totatives, primitive_root, is_primitive_root
 from .._overrides import set_module
-from .._prime import is_prime
+from .._prime import factors, is_prime, is_prime_power
 
 from . import _poly_functions as poly_functions
 from ._gfp import GFpMeta
