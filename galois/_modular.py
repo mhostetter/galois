@@ -3,9 +3,9 @@ from typing import List, Optional
 
 import numpy as np
 
-from ._factor import factors
 from ._math import lcm
 from ._overrides import set_module
+from ._prime import factors
 
 __all__ = [
     "totatives", "euler_phi", "carmichael_lambda", "is_cyclic",

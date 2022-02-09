@@ -12,9 +12,9 @@ from typing_extensions import Literal
 import numba
 import numpy as np
 
-from .._factor import divisors
 from .._overrides import set_module
 from .._poly_conversion import integer_to_poly, poly_to_integer, str_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
+from .._prime import divisors
 
 from ._dtypes import DTYPES
 from ._linalg import dot, row_reduce, lu_decompose, plu_decompose

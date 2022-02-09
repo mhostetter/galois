@@ -10,7 +10,6 @@ from ._codes import *
 from ._fields import *
 
 # Modules
-from ._factor import *
 from ._lfsr import *
 from ._math import *
 from ._modular import *
