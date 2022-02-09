@@ -1573,12 +1573,12 @@ def is_smooth(n: int, B: int) -> bool:
 @set_module("galois")
 def is_powersmooth(n: int, B: int) -> bool:
     r"""
-    Determines if the positive integer :math:`n` is :math:`B`-powersmooth.
+    Determines if the integer :math:`n` is :math:`B`-powersmooth.
 
     Parameters
     ----------
     n : int
-        A positive integer.
+        An integer.
     B : int
         The smoothness bound :math:`B \ge 2`.
 
@@ -1606,11 +1606,14 @@ def is_powersmooth(n: int, B: int) -> bool:
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not isinstance(B, (int, np.integer)):
         raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
-    if not n > 0:
-        raise ValueError(f"Argument `n` must be non-negative, not {n}.")
     if not B >= 2:
         raise ValueError(f"Argument `B` must be at least 2, not {B}.")
 
+    # Since -1 can factored out of the prime factorization is_square_free(-n) == is_square_free(n)
+    n = abs(n)
+
+    if n == 0:
+        return False
     if n == 1:
         return True
 

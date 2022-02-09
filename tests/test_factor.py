@@ -244,19 +244,3 @@ def test_divisor_sigma():
     # https://oeis.org/A001158
     sigma_3 = [1,9,28,73,126,252,344,585,757,1134,1332,2044,2198,3096,3528,4681,4914,6813,6860,9198,9632,11988,12168,16380,15751,19782,20440,25112,24390,31752,29792,37449,37296,44226,43344,55261,50654,61740,61544,73710,68922,86688]
     assert [galois.divisor_sigma(n, k=3) for n in range(1, 43)] == sigma_3
-
-
-def test_is_powersmooth():
-    assert galois.is_powersmooth(2**4 * 3**2 * 5, 5) == False
-    assert galois.is_powersmooth(2**4 * 3**2 * 5, 9) == False
-    assert galois.is_powersmooth(2**4 * 3**2 * 5, 16) == True
-
-    assert galois.is_powersmooth(2**4 * 3**2 * 5*3, 5) == False
-    assert galois.is_powersmooth(2**4 * 3**2 * 5*3, 25) == False
-    assert galois.is_powersmooth(2**4 * 3**2 * 5*3, 125) == True
-
-    assert galois.is_powersmooth(13 * 23, 4) == False
-
-    for n in range(2, 1_000):
-        p, e = galois.factors(n)
-        assert all([pi**ei <= 50 for pi, ei in zip(p, e)]) == galois.is_powersmooth(n, 50)

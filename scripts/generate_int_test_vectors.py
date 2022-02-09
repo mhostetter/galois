@@ -300,3 +300,33 @@ for i in range(len(X)):
         Z.append(False)
 d = {"N": N, "B": B, "Z": Z}
 save_pickle(d, FOLDER, "is_smooth.pkl")
+
+set_seed(SEED + 311)
+X = list(range(-256, 257)) + [random.randint(100, 1_000_000) for _ in range(20)]
+N = []
+B = []
+Z = []
+for i in range(len(X)):
+    x = X[i]
+    if x == 0:
+        N.append(x)
+        B.append(2)
+        Z.append(False)
+        continue
+    if x in [-1, 1]:
+        N.append(x)
+        B.append(2)
+        Z.append(True)
+        continue
+    _, b = sympy.ntheory.factor_.smoothness(x)  # powersmoothness bound
+    # Add a valid is_powersmooth() condition
+    N.append(int(x))
+    B.append(int(b))
+    Z.append(True)
+    if b > 2:
+        # Add an invalid is_powersmooth() condition
+        N.append(int(x))
+        B.append(int(b - 1))
+        Z.append(False)
+d = {"N": N, "B": B, "Z": Z}
+save_pickle(d, FOLDER, "is_powersmooth.pkl")
