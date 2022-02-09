@@ -203,6 +203,15 @@ def poly_modular_power(field_folder):
 ###############################################################################
 
 @pytest.fixture(scope="session")
+def poly_is_monic(field_folder):
+    GF, d = read_pickle(field_folder, "is_monic.pkl")
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Z"] = d["Z"]
+    return d
+
+
+@pytest.fixture(scope="session")
 def poly_is_irreducible(field_folder):
     GF, d = read_pickle(field_folder, "is_irreducible.pkl")
     d["GF"] = GF
