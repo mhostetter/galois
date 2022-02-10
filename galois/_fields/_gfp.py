@@ -56,36 +56,61 @@ class GFpMeta(FieldClass, DirMeta):
 
     ###############################################################################
     # Arithmetic functions using explicit calculation
+    #
+    # NOTE: The ufunc inputs a and b are cast to integers at the beginning of each
+    #       ufunc to prevent the non-JIT-compiled invocations (used in "large"
+    #       fields with dtype=object) from performing infintely recursive
+    #       arithmetic. Instead, the intended arithmetic inside the ufuncs is
+    #       integer arithmetic.
+    #       See https://github.com/mhostetter/galois/issues/253.
     ###############################################################################
 
     @staticmethod
     @numba.extending.register_jitable
     def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        a = int(a)
+        b = int(b)
+
         c = a + b
         if c >= CHARACTERISTIC:
             c -= CHARACTERISTIC
+
         return c
 
     @staticmethod
     @numba.extending.register_jitable
     def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        a = int(a)
+
         if a == 0:
-            return 0
+            c = 0
         else:
-            return CHARACTERISTIC - a
+            c = CHARACTERISTIC - a
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
     def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        a = int(a)
+        b = int(b)
+
         if a >= b:
-            return a - b
+            c = a - b
         else:
-            return CHARACTERISTIC + a - b
+            c = CHARACTERISTIC + a - b
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
     def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        return (a * b) % CHARACTERISTIC
+        a = int(a)
+        b = int(b)
+
+        c = (a * b) % CHARACTERISTIC
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
@@ -98,6 +123,8 @@ class GFpMeta(FieldClass, DirMeta):
         """
         if a == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        a = int(a)
 
         r2, r1 = CHARACTERISTIC, a
         t2, t1 = 0, 1
@@ -118,11 +145,16 @@ class GFpMeta(FieldClass, DirMeta):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
+        a = int(a)
+        b = int(b)
+
         if a == 0:
-            return 0
+            c = 0
         else:
             b_inv = RECIPROCAL(b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
-            return (a * b_inv) % CHARACTERISTIC
+            c = (a * b_inv) % CHARACTERISTIC
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
@@ -140,6 +172,9 @@ class GFpMeta(FieldClass, DirMeta):
         """
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        a = int(a)
+        b = int(b)
 
         if b == 0:
             return 1
@@ -176,8 +211,11 @@ class GFpMeta(FieldClass, DirMeta):
         if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
-        # Naive algorithm
         ORDER = CHARACTERISTIC**DEGREE
+        a = int(a)
+        b = int(b)
+
+        # Naive algorithm
         result = 1
         for i in range(0, ORDER - 1):
             if result == a:

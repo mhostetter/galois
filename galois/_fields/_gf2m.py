@@ -58,6 +58,13 @@ class GF2mMeta(FieldClass, DirMeta):
 
     ###############################################################################
     # Arithmetic functions using explicit calculation
+    #
+    # NOTE: The ufunc inputs a and b are cast to integers at the beginning of each
+    #       ufunc to prevent the non-JIT-compiled invocations (used in "large"
+    #       fields with dtype=object) from performing infintely recursive
+    #       arithmetic. Instead, the intended arithmetic inside the ufuncs is
+    #       integer arithmetic.
+    #       See https://github.com/mhostetter/galois/issues/253.
     ###############################################################################
 
     @staticmethod
@@ -65,6 +72,9 @@ class GF2mMeta(FieldClass, DirMeta):
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
+        a = int(a)
+        b = int(b)
+
         return a ^ b
 
     @staticmethod
@@ -72,6 +82,8 @@ class GF2mMeta(FieldClass, DirMeta):
         """
         Not actually used. `np.positive()` is faster.
         """
+        a = int(a)
+
         return a
 
     @staticmethod
@@ -79,6 +91,9 @@ class GF2mMeta(FieldClass, DirMeta):
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
+        a = int(a)
+        b = int(b)
+
         return a ^ b
 
     @staticmethod
@@ -95,6 +110,8 @@ class GF2mMeta(FieldClass, DirMeta):
             = c
         """
         ORDER = CHARACTERISTIC**DEGREE
+        a = int(a)
+        b = int(b)
 
         # Re-order operands such that a > b so the while loop has less loops
         if b > a:
@@ -128,6 +145,8 @@ class GF2mMeta(FieldClass, DirMeta):
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
         ORDER = CHARACTERISTIC**DEGREE
+        a = int(a)
+
         exponent = ORDER - 2
         result_s = a  # The "squaring" part
         result_m = 1  # The "multiplicative" part
@@ -150,11 +169,16 @@ class GF2mMeta(FieldClass, DirMeta):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
+        a = int(a)
+        b = int(b)
+
         if a == 0:
-            return 0
+            c = 0
         else:
             b_inv = RECIPROCAL(b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
-            return MULTIPLY(a, b_inv, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+            c = MULTIPLY(a, b_inv, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
@@ -172,6 +196,9 @@ class GF2mMeta(FieldClass, DirMeta):
         """
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        a = int(a)
+        b = int(b)
 
         if b == 0:
             return 1
@@ -208,8 +235,11 @@ class GF2mMeta(FieldClass, DirMeta):
         if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
-        # Naive algorithm
         ORDER = CHARACTERISTIC**DEGREE
+        a = int(a)
+        b = int(b)
+
+        # Naive algorithm
         result = 1
         for i in range(0, ORDER - 1):
             if result == a:

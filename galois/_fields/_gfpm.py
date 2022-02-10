@@ -154,6 +154,13 @@ class GFpmMeta(FieldClass, DirMeta):
 
     ###############################################################################
     # Arithmetic functions using explicit calculation
+    #
+    # NOTE: The ufunc inputs a and b are cast to integers at the beginning of each
+    #       ufunc to prevent the non-JIT-compiled invocations (used in "large"
+    #       fields with dtype=object) from performing infintely recursive
+    #       arithmetic. Instead, the intended arithmetic inside the ufuncs is
+    #       integer arithmetic.
+    #       See https://github.com/mhostetter/galois/issues/253.
     ###############################################################################
 
     @staticmethod
@@ -162,11 +169,14 @@ class GFpmMeta(FieldClass, DirMeta):
         """
         Convert the integer representation to vector/polynomial representation
         """
+        a = int(a)
+
         a_vec = np.zeros(DEGREE, dtype=DTYPE)
         for i in range(0, DEGREE):
             q = a // CHARACTERISTIC**(DEGREE - 1 - i)
             a -= q*CHARACTERISTIC**(DEGREE - 1 - i)
             a_vec[i] = q
+
         return a_vec
 
     @staticmethod
@@ -178,34 +188,52 @@ class GFpmMeta(FieldClass, DirMeta):
         a = 0
         for i in range(0, DEGREE):
             a += a_vec[i]*CHARACTERISTIC**(DEGREE - 1 - i)
+
         return a
 
     @staticmethod
     @numba.extending.register_jitable
     def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        a = int(a)
+        b = int(b)
+
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec + b_vec) % CHARACTERISTIC
-        return POLY_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
+        c = POLY_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
     def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        a = int(a)
+
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         a_vec = (-a_vec) % CHARACTERISTIC
-        return POLY_TO_INT(a_vec, CHARACTERISTIC, DEGREE)
+        c = POLY_TO_INT(a_vec, CHARACTERISTIC, DEGREE)
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
     def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        a = int(a)
+        b = int(b)
+
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec - b_vec) % CHARACTERISTIC
-        return POLY_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
+        c = POLY_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
     def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        a = int(a)
+        b = int(b)
+
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
 
@@ -230,7 +258,9 @@ class GFpmMeta(FieldClass, DirMeta):
             b_vec[1:] = b_vec[:-1]
             b_vec[0] = 0
 
-        return POLY_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
+        c = POLY_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
@@ -247,6 +277,8 @@ class GFpmMeta(FieldClass, DirMeta):
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
         ORDER = CHARACTERISTIC**DEGREE
+        a = int(a)
+
         exponent = ORDER - 2
         result_s = a  # The "squaring" part
         result_m = 1  # The "multiplicative" part
@@ -269,11 +301,16 @@ class GFpmMeta(FieldClass, DirMeta):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
+        a = int(a)
+        b = int(b)
+
         if a == 0:
-            return 0
+            c = 0
         else:
             b_inv = RECIPROCAL(b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
-            return MULTIPLY(a, b_inv, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+            c = MULTIPLY(a, b_inv, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY)
+
+        return c
 
     @staticmethod
     @numba.extending.register_jitable
@@ -291,6 +328,9 @@ class GFpmMeta(FieldClass, DirMeta):
         """
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        a = int(a)
+        b = int(b)
 
         if b == 0:
             return 1
@@ -327,8 +367,11 @@ class GFpmMeta(FieldClass, DirMeta):
         if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
-        # Naive algorithm
         ORDER = CHARACTERISTIC**DEGREE
+        a = int(a)
+        b = int(b)
+
+        # Naive algorithm
         result = 1
         for i in range(0, ORDER - 1):
             if result == a:
