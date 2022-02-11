@@ -426,3 +426,24 @@ def test_matrix_solve(field_matrix_solve):
         z = np.linalg.solve(x, y)
         assert np.array_equal(z, Z[i])
         assert type(z) is GF
+
+
+def test_row_space_exceptions():
+    GF = galois.GF(2**8)
+    with pytest.raises(ValueError):
+        A = GF.Random(5)
+        A.row_space()
+    with pytest.raises(ValueError):
+        A = GF.Random((2,2,2))
+        A.row_space()
+
+
+def test_row_space(field_row_space):
+    GF, X, Z = field_row_space["GF"], field_row_space["X"], field_row_space["Z"]
+
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        x = X[i].astype(dtype)
+        z = x.row_space()
+        assert np.array_equal(z, Z[i])
+        assert type(z) is GF
