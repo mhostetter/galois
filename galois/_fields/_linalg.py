@@ -308,3 +308,13 @@ def row_space(A):
     rank = np.sum(~np.all(A_rre == 0, axis=1))
 
     return A_rre[0:rank,:]
+
+
+def column_space(A):
+    if not A.ndim == 2:
+        raise ValueError(f"Only 2-D matrices have a column space, not {A.ndim}-D.")
+
+    A_rre = row_reduce(A.T)
+    rank = np.sum(~np.all(A_rre == 0, axis=1))
+
+    return A_rre[0:rank,:]

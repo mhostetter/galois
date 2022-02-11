@@ -266,9 +266,9 @@ GF([114, 170, 178], order=2^8)
 True
 ```
 
-Galois field arrays also contain matrix decomposition routines not included in NumPy. These include:
+Galois field arrays also contain matrix decomposition routines and matrix vector spaces not included in NumPy. These include:
 
-- `FieldArray.row_reduce`, `FieldArray.lu_decompose`, `FieldArray.plu_decompose`, `FieldArray.row_space()`
+- `FieldArray.row_reduce`, `FieldArray.lu_decompose`, `FieldArray.plu_decompose`, `FieldArray.row_space()`, `FieldArray.column_space()`
 
 #### NumPy ufunc methods
 
