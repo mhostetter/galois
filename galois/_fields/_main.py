@@ -17,7 +17,7 @@ from .._poly_conversion import integer_to_poly, poly_to_integer, str_to_integer,
 from .._prime import divisors
 
 from ._dtypes import DTYPES
-from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space
+from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space, column_space
 from ._functions import FunctionMeta
 from ._ufuncs import UfuncMeta
 
@@ -1962,7 +1962,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         Returns
         -------
         galois.FieldArray
-            The row space basis matrix. The number of rows of the basis matrix is the dimension of the row space.
+            The row space basis matrix. The rows of the basis matrix are the basis vectors that span the row space.
+            The number of rows of the basis matrix is the dimension of the row space.
 
         Notes
         -----
@@ -1998,6 +1999,53 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             A.row_space()
         """
         return row_space(self)
+
+    def column_space(self) -> "FieldArray":
+        r"""
+        Computes the column space of the matrix :math:`\mathbf{A}`.
+
+        Returns
+        -------
+        galois.FieldArray
+            The column space basis matrix. The rows of the basis matrix are the basis vectors that span the column space.
+            The number of rows of the basis matrix is the dimension of the column space.
+
+        Notes
+        -----
+        Given a :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *column space* of :math:`\mathbf{A}`
+        is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^m\}` defined by all linear combinations of the columns
+        of :math:`\mathbf{A}`. The column space has at most dimension :math:`n`.
+
+        The column space has properties :math:`C(\mathbf{A}) = R(\mathbf{A}^T)`.
+
+        Examples
+        --------
+        The :func:`column_space` method defines basis vectors (its rows) that span the column space :math:`\mathbf{A}`.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**8)
+            A = GF.Random((2,3)); A
+            A.column_space()
+
+        If all of the columns are linearly dependent, then the column space has dimension 1.
+
+        .. ipython:: python
+
+            # Column 2 is a multiple of Column 1
+            A[:,1] = GF.Random() * A[:,0]
+            # Column 3 is a multiple of Column 1
+            A[:,2] = GF.Random() * A[:,0]
+            A.column_space()
+
+        Zero matrices have an empty column space with dimension 0.
+
+        .. ipython:: python
+
+            A = GF.Zeros((2,3)); A
+            A.column_space()
+        """
+        return column_space(self)
 
     def field_trace(self) -> "FieldArray":
         r"""
