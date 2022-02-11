@@ -49,7 +49,10 @@ jobs:
     - name: Test with pytest
       run: python3 -m pytest --cov=galois/ --cov-report=xml tests/
     - name: Upload coverage report
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
+      with:
+        fail_ci_if_error: true
+        verbose: true
 
   build-wheel:
     name: Build Wheel
