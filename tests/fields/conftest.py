@@ -335,6 +335,15 @@ def field_row_space(field_folder):
     return d
 
 
+@pytest.fixture(scope="session")
+def field_column_space(field_folder):
+    GF, d = read_pickle(field_folder, "column_space.pkl")
+    d["GF"] = GF
+    d["X"] = [GF(x) for x in d["X"]]
+    d["Z"] = [GF(z) for z in d["Z"]]
+    return d
+
+
 ###############################################################################
 # Fixtures for arithmetic methods over finite fields
 ###############################################################################
