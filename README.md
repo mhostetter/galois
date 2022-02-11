@@ -268,7 +268,7 @@ True
 
 Galois field arrays also contain matrix decomposition routines not included in NumPy. These include:
 
-- `FieldArray.row_reduce`, `FieldArray.lu_decompose`, `FieldArray.plu_decompose`
+- `FieldArray.row_reduce`, `FieldArray.lu_decompose`, `FieldArray.plu_decompose`, `FieldArray.row_space()`
 
 #### NumPy ufunc methods
 

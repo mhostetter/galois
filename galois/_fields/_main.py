@@ -17,7 +17,7 @@ from .._poly_conversion import integer_to_poly, poly_to_integer, str_to_integer,
 from .._prime import divisors
 
 from ._dtypes import DTYPES
-from ._linalg import dot, row_reduce, lu_decompose, plu_decompose
+from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space
 from ._functions import FunctionMeta
 from ._ufuncs import UfuncMeta
 
@@ -1954,6 +1954,50 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         P, L, U, _ = plu_decompose(self)
         return P, L, U
+
+    def row_space(self) -> "FieldArray":
+        r"""
+        Computes the row space of the matrix :math:`\mathbf{A}`.
+
+        Returns
+        -------
+        galois.FieldArray
+            The row space basis matrix. The number of rows of the basis matrix is the dimension of the row space.
+
+        Notes
+        -----
+        Given a :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *row space* of :math:`\mathbf{A}`
+        is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^n\}` defined by all linear combinations of the rows
+        of :math:`\mathbf{A}`. The row space has at most dimension :math:`m`.
+
+        The row space has properties :math:`R(\mathbf{A}) = C(\mathbf{A}^T)` and :math:`\textrm{dim}(R(\mathbf{A})) + \textrm{dim}(N(\mathbf{A})) = n`.
+
+        Examples
+        --------
+        The :func:`row_space` method defines basis vectors (its rows) that span the row space :math:`\mathbf{A}`.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**8)
+            A = GF.Random((2,3)); A
+            A.row_space()
+
+        If all of the rows are linearly dependent, then the row space has dimension 1.
+
+        .. ipython:: python
+
+            # Row 2 is a multiple of Row 1
+            A[1,:] = GF.Random() * A[0,:]
+            A.row_space()
+
+        Zero matrices have an empty row space with dimension 0.
+
+        .. ipython:: python
+
+            A = GF.Zeros((2,3)); A
+            A.row_space()
+        """
+        return row_space(self)
 
     def field_trace(self) -> "FieldArray":
         r"""
