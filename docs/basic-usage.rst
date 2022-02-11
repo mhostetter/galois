@@ -159,7 +159,7 @@ operation in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{R}`. Some of these f
 
 Galois field arrays also contain matrix decomposition routines not included in NumPy. These include:
 
-- :func:`galois.FieldArray.row_reduce`, :func:`galois.FieldArray.lu_decompose`, :func:`galois.FieldArray.plu_decompose`
+- :func:`galois.FieldArray.row_reduce`, :func:`galois.FieldArray.lu_decompose`, :func:`galois.FieldArray.plu_decompose`, :func:`galois.FieldArray.row_space`
 
 NumPy ufunc methods
 ...................

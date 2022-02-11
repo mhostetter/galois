@@ -298,3 +298,13 @@ def solve(A, b):
     x = A_inv @ b
 
     return x
+
+
+def row_space(A):
+    if not A.ndim == 2:
+        raise ValueError(f"Only 2-D matrices have a row space, not {A.ndim}-D.")
+
+    A_rre = row_reduce(A)
+    rank = np.sum(~np.all(A_rre == 0, axis=1))
+
+    return A_rre[0:rank,:]
