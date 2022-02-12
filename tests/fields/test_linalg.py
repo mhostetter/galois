@@ -489,3 +489,24 @@ def test_left_null_space(field_left_null_space):
         z = x.left_null_space()
         assert np.array_equal(z, Z[i])
         assert type(z) is GF
+
+
+def test_null_space_exceptions():
+    GF = galois.GF(2**8)
+    with pytest.raises(ValueError):
+        A = GF.Random(5)
+        A.null_space()
+    with pytest.raises(ValueError):
+        A = GF.Random((2,2,2))
+        A.null_space()
+
+
+def test_null_space(field_null_space):
+    GF, X, Z = field_null_space["GF"], field_null_space["X"], field_null_space["Z"]
+
+    for i in range(len(X)):
+        dtype = random.choice(GF.dtypes)
+        x = X[i].astype(dtype)
+        z = x.null_space()
+        assert np.array_equal(z, Z[i])
+        assert type(z) is GF
