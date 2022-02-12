@@ -180,10 +180,10 @@ GF(81, order=2^8)
 
 Galois field arrays also have constructor class methods for convenience. They include:
 
-- `FieldArray.Zeros`, `FieldArray.Ones`, `FieldArray.Identity`, `FieldArray.Range`, `FieldArray.Random`, `FieldArray.Elements`
+- `FieldArray.Zeros()`, `FieldArray.Ones()`, `FieldArray.Identity()`, `FieldArray.Range()`, `FieldArray.Random()`, `FieldArray.Elements()`
 
 Galois field elements can either be displayed using their integer representation, polynomial representation, or
-power representation. Calling `FieldClass.display` will change the element representation. If called as a context
+power representation. Calling `FieldClass.display()` will change the element representation. If called as a context
 manager, the display mode will only be temporarily changed.
 
 ```python
@@ -338,7 +338,7 @@ Poly((α^7 + α^6 + α^5 + 1)x^3 + (α^4 + 1)x + (α^5 + 1), GF(2^8))
 
 Polynomials can also be created using a number of constructor class methods. They include:
 
-- `Poly.Zero`, `Poly.One`, `Poly.Identity`, `Poly.Random`, `Poly.Integer`, `Poly.String`, `Poly.Degrees`, `Poly.Roots`
+- `Poly.Zero()`, `Poly.One()`, `Poly.Identity()`, `Poly.Random()`, `Poly.Integer()`, `Poly.String()`, `Poly.Degrees()`, `Poly.Roots()`
 
 ```python
 # Construct a polynomial by specifying its roots
