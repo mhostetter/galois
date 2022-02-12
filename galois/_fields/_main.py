@@ -17,7 +17,7 @@ from .._poly_conversion import integer_to_poly, poly_to_integer, str_to_integer,
 from .._prime import divisors
 
 from ._dtypes import DTYPES
-from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space, column_space
+from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space, column_space, left_null_space
 from ._functions import FunctionMeta
 from ._ufuncs import UfuncMeta
 
@@ -1883,7 +1883,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             A.row_reduce()
             np.linalg.matrix_rank(A)
         """
-        return row_reduce(self, ncols=ncols)
+        A_rre, _ = row_reduce(self, ncols=ncols)
+        return A_rre
 
     def lu_decompose(self) -> "FieldArray":
         r"""
@@ -1967,36 +1968,26 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Notes
         -----
-        Given a :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *row space* of :math:`\mathbf{A}`
+        Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *row space* of :math:`\mathbf{A}`
         is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^n\}` defined by all linear combinations of the rows
-        of :math:`\mathbf{A}`. The row space has at most dimension :math:`m`.
+        of :math:`\mathbf{A}`. The row space has at most dimension :math:`\textrm{min}(m, n)`.
 
-        The row space has properties :math:`R(\mathbf{A}) = C(\mathbf{A}^T)` and :math:`\textrm{dim}(R(\mathbf{A})) + \textrm{dim}(N(\mathbf{A})) = n`.
+        The row space has properties :math:`\mathcal{R}(\mathbf{A}) = \mathcal{C}(\mathbf{A}^T)` and
+        :math:`\textrm{dim}(\mathcal{R}(\mathbf{A})) + \textrm{dim}(\mathcal{LN}(\mathbf{A})) = m`.
 
         Examples
         --------
-        The :func:`row_space` method defines basis vectors (its rows) that span the row space :math:`\mathbf{A}`.
+        The :func:`row_space` method defines basis vectors (its rows) that span the row space of :math:`\mathbf{A}`.
+        The dimension of the row space and left null space sum to :math:`m`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            A = GF.Random((2,3)); A
-            A.row_space()
-
-        If all of the rows are linearly dependent, then the row space has dimension 1.
-
-        .. ipython:: python
-
-            # Row 2 is a multiple of Row 1
-            A[1,:] = GF.Random() * A[0,:]
-            A.row_space()
-
-        Zero matrices have an empty row space with dimension 0.
-
-        .. ipython:: python
-
-            A = GF.Zeros((2,3)); A
-            A.row_space()
+            m, n = 5, 3
+            GF = galois.GF(31)
+            A = GF.Random((m, n)); A
+            R = A.row_space(); R
+            LN = A.left_null_space(); LN
+            R.shape[0] + LN.shape[0] == m
         """
         return row_space(self)
 
@@ -2046,6 +2037,47 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             A.column_space()
         """
         return column_space(self)
+
+    def left_null_space(self) -> "FieldArray":
+        r"""
+        Computes the left null space of the matrix :math:`\mathbf{A}`.
+
+        Returns
+        -------
+        galois.FieldArray
+            The left null space basis matrix. The rows of the basis matrix are the basis vectors that span the left null space.
+            The number of rows of the basis matrix is the dimension of the left null space.
+
+        Notes
+        -----
+        Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *left null space* of :math:`\mathbf{A}`
+        is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^m\}` that annihilate the rows of :math:`\mathbf{A}`, i.e.
+        :math:`\mathbf{x}\mathbf{A} = \mathbf{0}`.
+
+        The left null space has properties :math:`\mathcal{LN}(\mathbf{A}) = \mathcal{N}(\mathbf{A}^T)` and
+        :math:`\textrm{dim}(\mathcal{R}(\mathbf{A})) + \textrm{dim}(\mathcal{LN}(\mathbf{A})) = m`.
+
+        Examples
+        --------
+        The :func:`left_null_space` method defines basis vectors (its rows) that span the left null space of :math:`\mathbf{A}`.
+        The dimension of the row space and left null space sum to :math:`m`.
+
+        .. ipython:: python
+
+            m, n = 5, 3
+            GF = galois.GF(31)
+            A = GF.Random((m, n)); A
+            R = A.row_space(); R
+            LN = A.left_null_space(); LN
+            R.shape[0] + LN.shape[0] == m
+
+        The left null space is the set of vectors that sum the rows to 0.
+
+        .. ipython:: python
+
+            LN @ A
+        """
+        return left_null_space(self)
 
     def field_trace(self) -> "FieldArray":
         r"""

@@ -158,7 +158,7 @@ def row_reduce(A, ncols=None):
         if p == A_rre.shape[0]:
             break
 
-    return A_rre
+    return A_rre, p
 
 
 def lu_decompose(A):
@@ -230,8 +230,10 @@ def plu_decompose(A):
 ###############################################################################
 
 def matrix_rank(A):
-    A_rre = row_reduce(A)
-    return np.sum(~np.all(A_rre == 0, axis=1))
+    A_rre, _ = row_reduce(A)
+    rank = np.sum(~np.all(A_rre == 0, axis=1))
+
+    return rank
 
 
 def inv(A):
@@ -245,7 +247,7 @@ def inv(A):
     AI = np.concatenate((A, I), axis=-1)
 
     # Perform Gaussian elimination to get the reduced row echelon form AI_rre = [I | A^-1]
-    AI_rre = row_reduce(AI, ncols=n)
+    AI_rre, _ = row_reduce(AI, ncols=n)
 
     # The rank is the number of non-zero rows of the row reduced echelon form
     rank = np.sum(~np.all(AI_rre[:,0:n] == 0, axis=1))
@@ -301,20 +303,49 @@ def solve(A, b):
 
 
 def row_space(A):
+    """
+    R(A) = C(A^T)
+    """
     if not A.ndim == 2:
         raise ValueError(f"Only 2-D matrices have a row space, not {A.ndim}-D.")
 
-    A_rre = row_reduce(A)
+    A_rre, _ = row_reduce(A)
     rank = np.sum(~np.all(A_rre == 0, axis=1))
+    R = A_rre[0:rank,:]
 
-    return A_rre[0:rank,:]
+    return R
 
 
 def column_space(A):
+    """
+    C(A) = R(A^T)
+    """
     if not A.ndim == 2:
         raise ValueError(f"Only 2-D matrices have a column space, not {A.ndim}-D.")
 
-    A_rre = row_reduce(A.T)
-    rank = np.sum(~np.all(A_rre == 0, axis=1))
+    return row_space(A.T)
 
-    return A_rre[0:rank,:]
+
+def left_null_space(A):
+    """
+    x = LN(A) = N(A^T)
+    x A = 0
+    """
+    if not A.ndim == 2:
+        raise ValueError(f"Only 2-D matrices have a left null space, not {A.ndim}-D.")
+
+    field = type(A)
+    m, n = A.shape
+    I = field.Identity(m, dtype=A.dtype)
+
+    # Concatenate A and I to get the matrix AI = [A | I]
+    AI = np.concatenate((A, I), axis=-1)
+
+    # Perform Gaussian elimination to get the reduced row echelon form AI_rre = [I | A^-1]
+    AI_rre, p = row_reduce(AI, ncols=n)
+
+    # Row reduce the left null space so that it begins with an I
+    LN = AI_rre[p:,n:]
+    LN, _ = row_reduce(LN)
+
+    return LN
