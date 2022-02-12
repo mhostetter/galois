@@ -246,9 +246,9 @@ GF([[191,  33,  85,  77,  88],
 The `galois` package intercepts relevant calls to NumPy's linear algebra functions and performs the specified
 operation in `GF(p^m)` not in **R**. Some of these functions include:
 
-- `np.dot`, `np.vdot`, `np.inner`, `np.outer`, `np.matmul`, `np.linalg.matrix_power`
-- `np.linalg.det`, `np.linalg.matrix_rank`, `np.trace`
-- `np.linalg.solve`, `np.linalg.inv`
+- `np.dot()`, `np.vdot()`, `np.inner()`, `np.outer()`, `np.matmul()`, `np.linalg.matrix_power()`
+- `np.linalg.det()`, `np.linalg.matrix_rank()`, `np.trace()`
+- `np.linalg.solve()`, `np.linalg.inv()`
 
 ```python
 >>> A = GF256.Random((3,3)); A
@@ -268,7 +268,8 @@ True
 
 Galois field arrays also contain matrix decomposition routines and matrix vector spaces not included in NumPy. These include:
 
-- `FieldArray.row_reduce`, `FieldArray.lu_decompose`, `FieldArray.plu_decompose`, `FieldArray.row_space()`, `FieldArray.column_space()`, `FieldArray.left_null_space()`
+- `FieldArray.row_reduce()`, `FieldArray.lu_decompose()`, `FieldArray.plu_decompose()`
+- `FieldArray.row_space()`, `FieldArray.column_space()`, `FieldArray.left_null_space()`, `FieldArray.null_space()`
 
 #### NumPy ufunc methods
 
