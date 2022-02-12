@@ -71,7 +71,7 @@ def test_irreducible_poly_exceptions():
     with pytest.raises(ValueError):
         galois.irreducible_poly(2**2 * 3**2, 3)
     with pytest.raises(ValueError):
-        galois.irreducible_poly(2, -1)
+        galois.irreducible_poly(2, 0)
     with pytest.raises(ValueError):
         galois.irreducible_poly(2, 3, method="invalid-argument")
 
