@@ -494,7 +494,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
         # Reduce the row space by 1 by copying the 0th row to the jth row
         for j in range(1, shapes[i][0]):
             x = copy(x)
-            x[j,:] = FIELD.random_element() * x[0,:]
+            x[j,:] = F(random.randint(0, order-1)) * x[0,:]
 
             z = x.row_space()
             if z.dimension() == 0:
@@ -542,7 +542,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
         # Reduce the column space by 1 by copying the 0th column to the jth column
         for j in range(1, shapes[i][1]):
             x = copy(x)
-            x[:,j] = FIELD.random_element() * x[:,0]
+            x[:,j] = F(random.randint(0, order-1)) * x[:,0]
 
             z = x.column_space()
             if z.dimension() == 0:
@@ -567,6 +567,55 @@ def make_luts(field, sub_folder, seed, sparse=False):
 
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "column_space.pkl")
+
+    set_seed(seed + 210)
+    shapes = [(2,2), (2,3), (2,4), (3,2), (4,2), (3,3)]
+    X = []
+    Z = []
+    for i in range(len(shapes)):
+        deg = shapes[i][0]  # The degree of the vector space
+
+        # Random matrix
+        x = randint_matrix(0, order, shapes[i])
+        X.append(x)
+        x = matrix(FIELD, [[F(e) for e in row] for row in x])
+        z = x.left_kernel()
+        if z.dimension() == 0:
+            z = randint_matrix(0, 1, (0, deg))
+        else:
+            z = z.basis_matrix()
+            z = np.array([[I(e) for e in row] for row in z], dtype)
+        Z.append(z)
+
+        # Reduce the row space by 1 by copying the 0th row to the jth row
+        for j in range(1, shapes[i][0]):
+            x = copy(x)
+            x[j,:] = F(random.randint(0, order-1)) * x[0,:]
+
+            z = x.left_kernel()
+            if z.dimension() == 0:
+                z = randint_matrix(0, 1, (0, deg))
+            else:
+                z = z.basis_matrix()
+                z = np.array([[I(e) for e in row] for row in z], dtype)
+            X.append(np.array([[I(e) for e in row] for row in x], dtype))
+            Z.append(z)
+
+        # Zero matrix
+        x = copy(x)
+        x[:] = F(0)
+        z = x.left_kernel()
+        if z.dimension() == 0:
+            z = randint_matrix(0, 1, (0, deg))
+        else:
+            z = z.basis_matrix()
+            z = np.array([[I(e) for e in row] for row in z], dtype)
+        X.append(np.array([[I(e) for e in row] for row in x], dtype))
+        Z.append(z)
+
+    d = {"X": X, "Z": Z}
+    save_pickle(d, folder, "left_null_space.pkl")
+
 
     ###############################################################################
     # Polynomial arithmetic
