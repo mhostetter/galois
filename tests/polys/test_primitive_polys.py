@@ -109,7 +109,7 @@ def test_primitive_polys_exceptions():
     with pytest.raises(ValueError):
         galois.primitive_polys(2**2 * 3**2, 3)
     with pytest.raises(ValueError):
-        galois.primitive_polys(2, 0)
+        galois.primitive_polys(2, -1)
 
 
 @pytest.mark.parametrize("order,degree", PARAMS)

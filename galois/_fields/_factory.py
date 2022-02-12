@@ -490,8 +490,8 @@ def irreducible_poly(
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
     if not is_prime_power(order):
         raise ValueError(f"Argument `order` must be a prime power, not {order}.")
-    if not degree >= 0:
-        raise ValueError(f"Argument `degree` must be at least 0, not {degree}.")
+    if not degree >= 1:
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}. There are no irreducible polynomials with degree 0.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
 
@@ -638,7 +638,7 @@ def is_irreducible(poly: Poly) -> bool:
 
     if poly.degree == 0:
         # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x]. Both the
-        # zero element and the units are not irreducible of the polynomial ring GF(p^m)[x].
+        # zero element and the units are not irreducible over the polynomial ring GF(p^m)[x].
         return False
 
     if poly.degree == 1:
@@ -735,7 +735,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     if not is_prime_power(order):
         raise ValueError(f"Argument `order` must be a prime power, not {order}.")
     if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
 
@@ -804,8 +804,8 @@ def primitive_polys(order: int, degree: int) -> Poly:
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
     if not is_prime_power(order):
         raise ValueError(f"Argument `order` must be a prime power, not {order}.")
-    if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+    if not degree >= 0:
+        raise ValueError(f"Argument `degree` must be at least 0, not {degree}.")
 
     field = GF(order)
 
@@ -865,8 +865,12 @@ def is_primitive(poly: Poly) -> bool:
     """
     if not isinstance(poly, Poly):
         raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-    if not poly.degree >= 1:
-        raise ValueError(f"Argument `poly` must have degree at least 1, not {poly.degree}.")
+
+    if poly.degree == 0:
+        # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x]. Both the
+        # zero element and the units are not irreducible over the polynomial ring GF(p^m)[x], and therefore cannot
+        # be primitive.
+        return False
 
     if poly.field.order == 2 and poly.degree == 1:
         # There is only one primitive polynomial in GF(2)
@@ -961,7 +965,7 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     if not is_prime(characteristic):
         raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
     if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
 
     coeffs = ConwayPolyDatabase().fetch(characteristic, degree)
     field = GF_prime(characteristic)
@@ -1026,7 +1030,7 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     if not is_prime(characteristic):
         raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
     if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}.")
+        raise ValueError(f"Argument `degree` must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
 
     # Textbooks and Matlab use the lexicographically-minimal primitive polynomial for the default. But for some
     # reason, there are three exceptions. I can't determine why.
