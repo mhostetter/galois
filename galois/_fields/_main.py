@@ -17,7 +17,7 @@ from .._poly_conversion import integer_to_poly, poly_to_integer, str_to_integer,
 from .._prime import divisors
 
 from ._dtypes import DTYPES
-from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space, column_space, left_null_space
+from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space, column_space, left_null_space, null_space
 from ._functions import FunctionMeta
 from ._ufuncs import UfuncMeta
 
@@ -2003,38 +2003,26 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Notes
         -----
-        Given a :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *column space* of :math:`\mathbf{A}`
+        Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *column space* of :math:`\mathbf{A}`
         is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^m\}` defined by all linear combinations of the columns
-        of :math:`\mathbf{A}`. The column space has at most dimension :math:`n`.
+        of :math:`\mathbf{A}`. The column space has at most dimension :math:`\textrm{min}(m, n)`.
 
-        The column space has properties :math:`C(\mathbf{A}) = R(\mathbf{A}^T)`.
+        The column space has properties :math:`\mathcal{C}(\mathbf{A}) = \mathcal{R}(\mathbf{A}^T)`  and
+        :math:`\textrm{dim}(\mathcal{C}(\mathbf{A})) + \textrm{dim}(\mathcal{N}(\mathbf{A})) = n`.
 
         Examples
         --------
-        The :func:`column_space` method defines basis vectors (its rows) that span the column space :math:`\mathbf{A}`.
+        The :func:`column_space` method defines basis vectors (its rows) that span the column space of :math:`\mathbf{A}`.
+        The dimension of the column space and null space sum to :math:`n`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            A = GF.Random((2,3)); A
-            A.column_space()
-
-        If all of the columns are linearly dependent, then the column space has dimension 1.
-
-        .. ipython:: python
-
-            # Column 2 is a multiple of Column 1
-            A[:,1] = GF.Random() * A[:,0]
-            # Column 3 is a multiple of Column 1
-            A[:,2] = GF.Random() * A[:,0]
-            A.column_space()
-
-        Zero matrices have an empty column space with dimension 0.
-
-        .. ipython:: python
-
-            A = GF.Zeros((2,3)); A
-            A.column_space()
+            m, n = 3, 5
+            GF = galois.GF(31)
+            A = GF.Random((m, n)); A
+            C = A.column_space(); C
+            N = A.null_space(); N
+            C.shape[0] + N.shape[0] == n
         """
         return column_space(self)
 
@@ -2051,7 +2039,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         Notes
         -----
         Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *left null space* of :math:`\mathbf{A}`
-        is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^m\}` that annihilate the rows of :math:`\mathbf{A}`, i.e.
+        is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^m\}` that annihilates the rows of :math:`\mathbf{A}`, i.e.
         :math:`\mathbf{x}\mathbf{A} = \mathbf{0}`.
 
         The left null space has properties :math:`\mathcal{LN}(\mathbf{A}) = \mathcal{N}(\mathbf{A}^T)` and
@@ -2078,6 +2066,47 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             LN @ A
         """
         return left_null_space(self)
+
+    def null_space(self) -> "FieldArray":
+        r"""
+        Computes the null space of the matrix :math:`\mathbf{A}`.
+
+        Returns
+        -------
+        galois.FieldArray
+            The null space basis matrix. The rows of the basis matrix are the basis vectors that span the null space.
+            The number of rows of the basis matrix is the dimension of the null space.
+
+        Notes
+        -----
+        Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *null space* of :math:`\mathbf{A}`
+        is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^n\}` that annihilates the columns of :math:`\mathbf{A}`, i.e.
+        :math:`\mathbf{A}\mathbf{x} = \mathbf{0}`.
+
+        The null space has properties :math:`\mathcal{N}(\mathbf{A}) = \mathcal{LN}(\mathbf{A}^T)` and
+        :math:`\textrm{dim}(\mathcal{C}(\mathbf{A})) + \textrm{dim}(\mathcal{N}(\mathbf{A})) = n`.
+
+        Examples
+        --------
+        The :func:`null_space` method defines basis vectors (its rows) that span the null space of :math:`\mathbf{A}`.
+        The dimension of the column space and null space sum to :math:`n`.
+
+        .. ipython:: python
+
+            m, n = 3, 5
+            GF = galois.GF(31)
+            A = GF.Random((m, n)); A
+            C = A.column_space(); C
+            N = A.null_space(); N
+            C.shape[0] + N.shape[0] == n
+
+        The null space is the set of vectors that sum the columns to 0.
+
+        .. ipython:: python
+
+            A @ N.T
+        """
+        return null_space(self)
 
     def field_trace(self) -> "FieldArray":
         r"""

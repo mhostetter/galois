@@ -349,3 +349,14 @@ def left_null_space(A):
     LN, _ = row_reduce(LN)
 
     return LN
+
+
+def null_space(A):
+    """
+    x = N(A) = LN(A^T)
+    A x = 0
+    """
+    if not A.ndim == 2:
+        raise ValueError(f"Only 2-D matrices have a null space, not {A.ndim}-D.")
+
+    return left_null_space(A.T)
