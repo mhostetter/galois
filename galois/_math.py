@@ -5,7 +5,7 @@ import math
 import sys
 from typing import Tuple
 
-import numpy as np
+import typeguard
 
 from ._overrides import set_module
 
@@ -75,6 +75,7 @@ def prod(*args: int) -> int:
 ###############################################################################
 
 @set_module("galois")
+@typeguard.typechecked
 def isqrt(n: int) -> int:
     r"""
     Computes :math:`x = \lfloor\sqrt{n}\rfloor` such that :math:`x^2 \le n < (x + 1)^2`.
@@ -105,8 +106,6 @@ def isqrt(n: int) -> int:
     if sys.version_info.major == 3 and sys.version_info.minor >= 8:
         return math.isqrt(n)  # pylint: disable=no-member
     else:
-        if not isinstance(n, (int, np.integer)):
-            raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
         if not n >= 0:
             raise ValueError(f"Argument `n` must be non-negative, not {n}.")
         n = int(n)
@@ -124,6 +123,7 @@ def isqrt(n: int) -> int:
 
 
 @set_module("galois")
+@typeguard.typechecked
 def iroot(n: int, k: int) -> int:
     r"""
     Computes :math:`x = \lfloor n^{\frac{1}{k}} \rfloor` such that :math:`x^k \le n < (x + 1)^k`.
@@ -148,10 +148,6 @@ def iroot(n: int, k: int) -> int:
         x = galois.iroot(n, 5); x
         print(f"{x**5} <= {n} < {(x + 1)**5}")
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(k, (int, np.integer)):
-        raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
     if not n >= 0:
         raise ValueError(f"Argument `n` must be non-negative, not {n}.")
     if not k >= 1:
@@ -176,6 +172,7 @@ def iroot(n: int, k: int) -> int:
 
 
 @set_module("galois")
+@typeguard.typechecked
 def ilog(n: int, b: int) -> int:
     r"""
     Computes :math:`x = \lfloor\textrm{log}_b(n)\rfloor` such that :math:`b^x \le n < b^{x + 1}`.
@@ -200,10 +197,6 @@ def ilog(n: int, b: int) -> int:
         x = galois.ilog(n, 5); x
         print(f"{5**x} <= {n} < {5**(x + 1)}")
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(b, (int, np.integer)):
-        raise TypeError(f"Argument `b` must be an integer, not {type(b)}.")
     if not n > 0:
         raise ValueError(f"Argument `n` must be positive, not {n}.")
     if not b >= 2:
