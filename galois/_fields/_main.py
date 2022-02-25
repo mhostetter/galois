@@ -3024,33 +3024,7 @@ SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
 @set_module("galois")
 class Poly:
     r"""
-    Create a polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
-
-    The polynomial :math:`f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` has coefficients :math:`\{a_{d}, a_{d-1}, \dots, a_1, a_0\}`
-    in :math:`\mathrm{GF}(p^m)`.
-
-    Parameters
-    ----------
-    coeffs : tuple, list, numpy.ndarray, galois.FieldArray
-        The polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` with type :obj:`galois.FieldArray`. Alternatively, an iterable :obj:`tuple`,
-        :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from the `field` keyword argument.
-    field : galois.FieldClass, optional
-        The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
-
-        * :obj:`None` (default): If the coefficients are a :obj:`galois.FieldArray`, they won't be modified. If the coefficients are not explicitly
-          in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(coeffs)`.
-        * :obj:`galois.FieldClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
-
-    order : str, optional
-        The interpretation of the coefficient degrees.
-
-        * `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
-        * `"asc"`: The first element of `coeffs` is the lowest degree coefficient, i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
-
-    Returns
-    -------
-    galois.Poly
-        The polynomial :math:`f(x)`.
+    A polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
     Examples
     --------
@@ -3058,40 +3032,16 @@ class Poly:
 
     .. ipython:: python
 
-        galois.Poly([1,0,1,1])
-        galois.Poly.Degrees([3,1,0])
+        galois.Poly([1, 0, 1, 1])
 
     Create a polynomial over :math:`\mathrm{GF}(2^8)`.
 
     .. ipython:: python
 
         GF = galois.GF(2**8)
-        galois.Poly([124,0,223,0,0,15], field=GF)
+        galois.Poly([124, 0, 223, 0, 0, 15], field=GF)
 
-        # Alternate way of constructing the same polynomial
-        galois.Poly.Degrees([5,3,0], coeffs=[124,223,15], field=GF)
-
-    Polynomial arithmetic using binary operators.
-
-    .. ipython:: python
-
-        a = galois.Poly([117,0,63,37], field=GF); a
-        b = galois.Poly([224,0,21], field=GF); b
-
-        a + b
-        a - b
-
-        # Compute the quotient of the polynomial division
-        a / b
-
-        # True division and floor division are equivalent
-        a / b == a // b
-
-        # Compute the remainder of the polynomial division
-        a % b
-
-        # Compute both the quotient and remainder in one pass
-        divmod(a, b)
+    See :ref:`Polynomial Creation` and :ref:`Polynomial Arithmetic` for more examples.
     """
     # pylint: disable=too-many-public-methods
 
@@ -3136,6 +3086,40 @@ class Poly:
                 return SparsePoly(degrees, coeffs, field=field)
             else:
                 return DensePoly(coeffs, field=field)
+
+    def __init__(
+        self,
+        coeffs: Union[Tuple[int], List[int], np.ndarray, FieldArray],  # pylint: disable=unused-argument
+        field: Optional[FieldClass] = None,  # pylint: disable=unused-argument
+        order: Literal["desc", "asc"] = "desc"  # pylint: disable=unused-argument
+    ):
+        r"""
+        Create a polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
+
+        The polynomial :math:`f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` with degree :math:`d` has coefficients
+        :math:`\{a_{d}, a_{d-1}, \dots, a_1, a_0\}` in :math:`\mathrm{GF}(p^m)`.
+
+        Parameters
+        ----------
+        coeffs
+            The polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` with type :obj:`galois.FieldArray`. Alternatively,
+            an iterable :obj:`tuple`, :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from
+            the `field` keyword argument.
+        field
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
+
+            * :obj:`None` (default): If the coefficients are a :obj:`galois.FieldArray`, they won't be modified. If the coefficients
+              are not explicitly in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using
+              `galois.GF2(coeffs)`.
+            * :obj:`galois.FieldClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
+
+        order
+            The interpretation of the coefficient degrees.
+
+            * `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
+            * `"asc"`: The first element of `coeffs` is the lowest degree coefficient, i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
+        """
+        return
 
     @classmethod
     def _convert_coeffs(cls, coeffs, field):
