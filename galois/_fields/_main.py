@@ -407,6 +407,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
         if cls.display_mode == "int":
             print_element = cls._print_int
         elif cls.display_mode == "poly":
+            cls._set_print_poly_width(x)
             print_element = cls._print_poly
         else:
             cls._set_print_power_width(x)
@@ -446,10 +447,11 @@ class FieldClass(FunctionMeta, UfuncMeta):
         """
         Returns a NumPy printoptions "formatter" dictionary.
         """
-        # pylint: disable=attribute-defined-outside-init
         formatter = {}
 
         if cls.display_mode == "poly" and cls.is_extension_field:
+            # The "poly" display mode for prime field's is the same as the integer representation
+            cls._set_print_poly_width(array)
             formatter["int"] = cls._print_poly
             formatter["object"] = cls._print_poly
         elif cls.display_mode == "power":
@@ -462,12 +464,42 @@ class FieldClass(FunctionMeta, UfuncMeta):
         return formatter
 
     def _print_int(cls, element):  # pylint: disable=no-self-use
+        """
+        Prints a single element in the integer representation. This is only needed for dtype=object arrays.
+        """
         return f"{int(element)}"
 
+    def _set_print_poly_width(cls, array):
+        """
+        Determines the display width of elements in the polynomial representation.
+        """
+        # Set it to None initially so _print_poly() does not right-adjust it with the last value
+        cls._print_poly_width = None
+
+        # Don't need to align scalars
+        if array.ndim == 0:
+            return
+
+        width = 0
+        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+        for _ in iterator:
+            a = array[iterator.multi_index]
+            width = max(width, len(cls._print_poly(a)))
+
+        cls._print_poly_width = width
+
     def _print_poly(cls, element):
+        """
+        Prints a single element in the polynomial representation.
+        """
         poly = integer_to_poly(element, cls.characteristic)
         poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
-        return poly_to_str(poly, poly_var=poly_var)
+        s = poly_to_str(poly, poly_var=poly_var)
+
+        if cls._print_poly_width:
+            return s.rjust(cls._print_poly_width)
+        else:
+            return s
 
     def _set_print_power_width(cls, array):
         """
@@ -503,7 +535,10 @@ class FieldClass(FunctionMeta, UfuncMeta):
             else:
                 s = "1"
 
-        return s.rjust(cls._print_power_width)
+        if cls._print_power_width:
+            return s.rjust(cls._print_power_width)
+        else:
+            return s
 
     ###############################################################################
     # Class attributes
