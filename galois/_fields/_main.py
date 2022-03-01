@@ -409,7 +409,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
         elif cls.display_mode == "poly":
             print_element = cls._print_poly
         else:
-            cls._set_print_power_vars(x)
+            cls._set_print_power_width(x)
             print_element = cls._print_power
 
         operation_str = f"x {operation} y"
@@ -449,7 +449,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
             formatter["int"] = cls._print_poly
             formatter["object"] = cls._print_poly
         elif cls.display_mode == "power":
-            cls._set_print_power_vars(array)
+            cls._set_print_power_width(array)
             formatter["int"] = cls._print_power
             formatter["object"] = cls._print_power
         elif array.dtype == np.object_:
@@ -464,18 +464,29 @@ class FieldClass(FunctionMeta, UfuncMeta):
         poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
         return poly_to_str(poly, poly_var=poly_var)
 
-    def _set_print_power_vars(cls, array):
-        nonzero_idxs = np.atleast_1d(array).nonzero()
-        if array.ndim > 1:
-            max_power = np.max(cls._ufunc("log")(array[nonzero_idxs], cls.primitive_element))
-            if max_power > 1:
-                cls._display_power_width = 2 + len(str(max_power))
-            else:
-                cls._display_power_width = 1
-        else:
-            cls._display_power_width = None
+    def _set_print_power_width(cls, array):
+        """
+        Determines the display width of elements in the power representation.
+        """
+        # Set it to None initially so _print_power() does not right-adjust it with the last value
+        cls._print_power_width = None
+
+        # Don't need to align scalars
+        if array.ndim == 0:
+            return
+
+        width = 0
+        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+        for _ in iterator:
+            a = array[iterator.multi_index]
+            width = max(width, len(cls._print_power(a)))
+
+        cls._print_power_width = width
 
     def _print_power(cls, element):
+        """
+        Prints a single element in the power representation.
+        """
         if element == 0:
             s = "0"
         else:
@@ -487,10 +498,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
             else:
                 s = "1"
 
-        if cls._display_power_width:
-            return s.rjust(cls._display_power_width)
-        else:
-            return s
+        return s.rjust(cls._print_power_width)
 
     ###############################################################################
     # Class attributes
