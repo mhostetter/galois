@@ -2736,31 +2736,28 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     def __str__(self):
         return self.__repr__()
-        # formatter = type(self)._formatter(self)
-
-        # with np.printoptions(formatter=formatter):
-        #     string = super().__str__()
-
-        # return string
 
     def __repr__(self):
+        # View the array as an ndarray so that the scalar -> 0-D array conversion in __array_finalize__() for Galois field
+        # arrays isn't continually invoked. This improves performance slightly.
+        x = self.view(np.ndarray)
+
+        separator = ", "
+        prefix = "GF("
+        order = type(self)._order_str
+        suffix = ")"
         formatter = type(self)._formatter(self)
 
-        cls = type(self)
-        class_name = cls.__name__
-        with np.printoptions(formatter=formatter):
-            cls.__name__ = "GF"  # Rename the class so very large fields don't create large indenting
-            string = super().__repr__()
-        cls.__name__ = class_name
+        string = np.array2string(x, separator=separator, prefix=prefix, suffix=suffix, formatter=formatter)
 
-        # Remove the dtype from the repr and add the Galois field order
-        dtype_idx = string.find("dtype")
-        if dtype_idx == -1:
-            string = string[:-1] + f", {cls._order_str})"
+        # Determine the width of the last line in the string
+        idx = string.rfind("\n") + 1
+        last_line_width = len(string[idx:] + ", " + order + suffix)
+
+        if last_line_width <= np.get_printoptions()["linewidth"]:
+            return prefix + string + ", " + order + suffix
         else:
-            string = string[:dtype_idx] + f"{cls._order_str})"
-
-        return string
+            return prefix + string + ",\n" + " "*len(prefix) + order + suffix
 
 
 ###############################################################################
