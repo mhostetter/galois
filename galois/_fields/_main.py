@@ -443,9 +443,13 @@ class FieldClass(FunctionMeta, UfuncMeta):
     ###############################################################################
 
     def _formatter(cls, array):
+        """
+        Returns a NumPy printoptions "formatter" dictionary.
+        """
         # pylint: disable=attribute-defined-outside-init
         formatter = {}
-        if cls.display_mode == "poly":
+
+        if cls.display_mode == "poly" and cls.is_extension_field:
             formatter["int"] = cls._print_poly
             formatter["object"] = cls._print_poly
         elif cls.display_mode == "power":
@@ -454,6 +458,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
             formatter["object"] = cls._print_power
         elif array.dtype == np.object_:
             formatter["object"] = cls._print_int
+
         return formatter
 
     def _print_int(cls, element):  # pylint: disable=no-self-use
