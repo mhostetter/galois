@@ -111,8 +111,8 @@ Next, create a new [Galois field array](https://galois.readthedocs.io/en/latest/
 *Galois field array class* `GF`.
 
 ```python
-In [7]: x = GF([7, 36, 45, 74, 135]); x
-Out[7]: GF([  7,  36,  45,  74, 135], order=2^8)
+In [7]: x = GF([45, 36, 7, 74, 135]); x
+Out[7]: GF([ 45,  36,   7,  74, 135], order=2^8)
 ```
 
 Create a second *Galois field array* `y` by converting an existing NumPy array (without copying it) by invoking `.view()`. When finished
@@ -142,24 +142,24 @@ See [Array Creation](https://galois.readthedocs.io/en/latest/basic-usage/array-c
 ### Change the element representation
 
 The display representation of finite field elements can be set to either the integer (`"int"`), polynomial (`"poly"`),
-or power (`"power"`) representation. The default representation is the integer representation, since that is natural when
+or power (`"power"`) representation. The default representation is the integer representation since that is natural when
 working with integer NumPy arrays.
 
 Set the display mode by passing the `display` keyword argument to `galois.GF()` or by calling the `galois.FieldClass.display()` method.
-Choose whichever is most convenient for you.
+Choose whichever element representation is most convenient for you.
 
 ```python
 # The default representation is the integer representation
 In [12]: x
-Out[12]: GF([  7,  36,  45,  74, 135], order=2^8)
+Out[12]: GF([ 45,  36,   7,  74, 135], order=2^8)
 
 In [13]: GF.display("poly"); x
 Out[13]: 
-GF([α^2 + α + 1, α^5 + α^2, α^5 + α^3 + α^2 + 1, α^6 + α^3 + α,
-    α^7 + α^2 + α + 1], order=2^8)
+GF([α^5 + α^3 + α^2 + 1,           α^5 + α^2,         α^2 + α + 1,
+          α^6 + α^3 + α,   α^7 + α^2 + α + 1], order=2^8)
 
 In [14]: GF.display("power"); x
-Out[14]: GF([α^198, α^225, α^18, α^37, α^13], order=2^8)
+Out[14]: GF([ α^18, α^225, α^198,  α^37,  α^13], order=2^8)
 
 # Reset to the integer representation
 In [15]: GF.display("int");
@@ -176,26 +176,26 @@ Standard element-wise array arithmetic -- like addition, subtraction, multiplica
 
 ```python
 In [16]: x + y
-Out[16]: GF([ 96, 182, 151,  25, 247], order=2^8)
+Out[16]: GF([ 74, 182, 189,  25, 247], order=2^8)
 
 In [17]: x - y
-Out[17]: GF([ 96, 182, 151,  25, 247], order=2^8)
+Out[17]: GF([ 74, 182, 189,  25, 247], order=2^8)
 
 In [18]: x * y
-Out[18]: GF([ 40, 197,  15, 125, 239], order=2^8)
+Out[18]: GF([133, 197,   1, 125, 239], order=2^8)
 
 In [19]: x / y
-Out[19]: GF([254, 101, 195, 177,  97], order=2^8)
+Out[19]: GF([ 99, 101,  21, 177,  97], order=2^8)
 ```
 
 More complicated arithmetic, like square root and logarithm base alpha, are also supported.
 
 ```python
 In [20]: np.sqrt(x)
-Out[20]: GF([134,  44,  58, 154, 218], order=2^8)
+Out[20]: GF([ 58,  44, 134, 154, 218], order=2^8)
 
 In [21]: np.log(x)
-Out[21]: array([198, 225,  18,  37,  13])
+Out[21]: array([ 18, 225, 198,  37,  13])
 ```
 
 See [Array Arithmetic](https://galois.readthedocs.io/en/latest/basic-usage/array-arithmetic.html) for more details.
