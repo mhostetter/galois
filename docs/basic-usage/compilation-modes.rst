@@ -6,15 +6,18 @@ The :obj:`galois` library supports finite field arithmetic on NumPy arrays by ju
 compile ufuncs written in pure Python. The created :ref:`Galois field array class` `GF` intercepts NumPy calls to a
 given ufunc, JIT compiles the finite field ufunc (if not already cached), and then invokes the new ufunc on the input array(s).
 
-There are two primary compilation modes: `"jit-lookup"` and `"jit-calculate"`. Large finite fields, which
-have `dtype=np.object_`, use `"python-calculate"` which utilizes non-compiled, pure-Python ufuncs.
-
-The supported ufunc compilation modes of a given finite field are listed in :obj:`galois.FieldClass.ufunc_modes`.
+There are two primary compilation modes: `"jit-lookup"` and `"jit-calculate"`. The supported ufunc compilation modes of a given finite
+field are listed in :obj:`galois.FieldClass.ufunc_modes`.
 
 .. ipython:: python
 
     GF = galois.GF(3**5)
     GF.ufunc_modes
+
+Large finite fields, which have `dtype=np.object_`, use `"python-calculate"` which utilizes non-compiled, pure-Python ufuncs.
+
+.. ipython:: python
+
     GF = galois.GF(2**100)
     GF.ufunc_modes
 

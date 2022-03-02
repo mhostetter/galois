@@ -170,7 +170,7 @@ A primitive element has multiplicative order :math:`\textrm{ord}(g) = p - 1`.
 In prime fields :math:`\mathrm{GF}(p)`, the generators or primitive elements of :math:`\mathrm{GF}(p)` are *primitive roots mod p*.
 
 Primitive roots mod :math:`p`
-............................
+.............................
 
 An integer :math:`g` is a *primitive root mod p* if every number coprime to :math:`p` can be represented as a power of :math:`g`
 mod :math:`p`. Namely, every :math:`a` coprime to :math:`p` can be represented as :math:`g^k \equiv a\ (\textrm{mod}\ p)` for some :math:`k`.

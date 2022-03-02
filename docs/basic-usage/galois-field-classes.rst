@@ -44,13 +44,13 @@ Class singletons
 *Galois field array classes* of the same order with the same irreducible polynomial are singletons.
 
 Here is the creation (twice) of the field :math:`\mathrm{GF}(3^5)` defined with the default irreducible
-polynomial :math:`x^5 + 2x + 1`. They *are* the same class (a singleton), not just equivalent.
+polynomial :math:`x^5 + 2x + 1`. They *are* the same class (a singleton), not just equivalent classes.
 
 .. ipython:: python
 
     galois.GF(3**5) is galois.GF(3**5)
 
-The expense of class creation is only incurred once. So, subsequent calls of `galois.GF(3**5)` are extremely inexpensive.
+The expense of class creation is incurred only once. So, subsequent calls of `galois.GF(3**5)` are extremely inexpensive.
 
 However, the field :math:`\mathrm{GF}(3^5)` defined with irreducible polynomial :math:`x^5 + x^2 + x + 2`, while isomorphic to the
 first field, has different arithmetic. As such, :func:`galois.GF` returns a unique *Galois field array class*.

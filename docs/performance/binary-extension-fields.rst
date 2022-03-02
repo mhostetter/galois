@@ -15,8 +15,8 @@ multiplication followed by integer remainder division.
 These are *not* fair comparisons because NumPy is not computing the correct product. However, they are included here to
 provide a performance reference point with native NumPy.
 
-Lookup tables
--------------
+Lookup table performance
+------------------------
 
 This section tests :obj:`galois` when using the `"jit-lookup"` compilation mode. For finite fields with order less
 than or equal to :math:`2^{20}`, :obj:`galois` uses lookup tables by default for efficient arithmetic.
@@ -58,8 +58,8 @@ tables instead of explicitly performing the polynomial multiplication and divisi
     In [11]: %timeit (aa * bb) % pp
     64.5 ms ± 1.11 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
-Explicit calculation
---------------------
+Explicit calculation performance
+--------------------------------
 
 This section tests :obj:`galois` when using the `"jit-calculate"` compilation mode. For finite fields with order greater
 than :math:`2^{20}`, :obj:`galois` will use explicit arithmetic calculation by default rather than lookup tables.
@@ -103,8 +103,8 @@ the correct product.
     In [11]: %timeit (aa * bb) % pp
     102 ms ± 2.23 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
-Linear algebra
---------------
+Linear algebra performance
+--------------------------
 
 Linear algebra performance in extension fields is definitely slower than native NumPy. This is because, unlike
 with prime fields, it is not possible to use the BLAS/LAPACK implementations. Instead, entirely new JIT-compiled
