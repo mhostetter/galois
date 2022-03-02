@@ -50,7 +50,7 @@ Next, create a new :ref:`Galois field array` `x` by passing an :ref:`array-like 
 
 .. ipython:: python
 
-    x = GF([7, 36, 45, 74, 135]); x
+    x = GF([45, 36, 7, 74, 135]); x
 
 Create a second *Galois field array* `y` by converting an existing NumPy array (without copying it) by invoking `.view()`. When finished
 working in the finite field, view it back as a NumPy array with `.view(np.ndarray)`.
@@ -74,11 +74,11 @@ Change the element representation
 ---------------------------------
 
 The display representation of finite field elements can be set to either the integer (`"int"`), polynomial (`"poly"`),
-or power (`"power"`) representation. The default representation is the integer representation, since that is natural when
+or power (`"power"`) representation. The default representation is the integer representation since that is natural when
 working with integer NumPy arrays.
 
 Set the display mode by passing the `display` keyword argument to :func:`galois.GF` or by calling the :func:`galois.FieldClass.display` method.
-Choose whichever is most convenient for you.
+Choose whichever element representation is most convenient for you.
 
 .. ipython:: python
 
