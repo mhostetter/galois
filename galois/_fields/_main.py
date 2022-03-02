@@ -79,6 +79,9 @@ class FieldClass(FunctionMeta, UfuncMeta):
         else:
             cls._order_str = f"order={cls.characteristic}^{cls.degree}"
 
+        cls._element_fixed_width = None
+        cls._element_fixed_width_counter = 0
+
     def __str__(cls):
         return f"<class 'numpy.ndarray over {cls.name}'>"
 
@@ -407,10 +410,8 @@ class FieldClass(FunctionMeta, UfuncMeta):
         if cls.display_mode == "int":
             print_element = cls._print_int
         elif cls.display_mode == "poly":
-            cls._set_print_poly_width(x)
             print_element = cls._print_poly
         else:
-            cls._set_print_power_width(x)
             print_element = cls._print_power
 
         operation_str = f"x {operation} y"
@@ -422,14 +423,14 @@ class FieldClass(FunctionMeta, UfuncMeta):
         string = "╔" + "═"*N_left + "╦" + ("═"*N + "╤")*(y.size - 1) + "═"*N + "╗"
         string += "\n║" + operation_str.rjust(N_left - 1) + " ║"
         for j in range(y.size):
-            string += print_element(y[j]).center(N)
+            string += print_element(y[j]).rjust(N - 1) + " "
             string += "│" if j < y.size - 1 else "║"
         string += "\n╠" + "═"*N_left + "╬" + ("═"*N + "╪")*(y.size - 1) + "═"*N + "╣"
 
         for i in range(x.size):
             string += "\n║" + print_element(x[i]).rjust(N_left - 1) + " ║"
             for j in range(y.size):
-                string += print_element(Z[i,j]).center(N)
+                string += print_element(Z[i,j]).rjust(N - 1) + " "
                 string += "│" if j < y.size - 1 else "║"
 
             if i < x.size - 1:
@@ -451,11 +452,9 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
         if cls.display_mode == "poly" and cls.is_extension_field:
             # The "poly" display mode for prime field's is the same as the integer representation
-            cls._set_print_poly_width(array)
             formatter["int"] = cls._print_poly
             formatter["object"] = cls._print_poly
         elif cls.display_mode == "power":
-            cls._set_print_power_width(array)
             formatter["int"] = cls._print_power
             formatter["object"] = cls._print_power
         elif array.dtype == np.object_:
@@ -467,26 +466,14 @@ class FieldClass(FunctionMeta, UfuncMeta):
         """
         Prints a single element in the integer representation. This is only needed for dtype=object arrays.
         """
-        return f"{int(element)}"
+        s = f"{int(element)}"
 
-    def _set_print_poly_width(cls, array):
-        """
-        Determines the display width of elements in the polynomial representation.
-        """
-        # Set it to None initially so _print_poly() does not right-adjust it with the last value
-        cls._print_poly_width = None
+        if cls._element_fixed_width:
+            s = s.rjust(cls._element_fixed_width)
+        else:
+            cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
 
-        # Don't need to align scalars
-        if array.ndim == 0:
-            return
-
-        width = 0
-        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
-        for _ in iterator:
-            a = array[iterator.multi_index]
-            width = max(width, len(cls._print_poly(a)))
-
-        cls._print_poly_width = width
+        return s
 
     def _print_poly(cls, element):
         """
@@ -496,49 +483,31 @@ class FieldClass(FunctionMeta, UfuncMeta):
         poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
         s = poly_to_str(poly, poly_var=poly_var)
 
-        if cls._print_poly_width:
-            return s.rjust(cls._print_poly_width)
+        if cls._element_fixed_width:
+            s = s.rjust(cls._element_fixed_width)
         else:
-            return s
+            cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
 
-    def _set_print_power_width(cls, array):
-        """
-        Determines the display width of elements in the power representation.
-        """
-        # Set it to None initially so _print_power() does not right-adjust it with the last value
-        cls._print_power_width = None
-
-        # Don't need to align scalars
-        if array.ndim == 0:
-            return
-
-        width = 0
-        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
-        for _ in iterator:
-            a = array[iterator.multi_index]
-            width = max(width, len(cls._print_power(a)))
-
-        cls._print_power_width = width
+        return s
 
     def _print_power(cls, element):
         """
         Prints a single element in the power representation.
         """
-        if element == 0:
-            s = "0"
+        if element in [0, 1]:
+            s = f"{int(element)}"
+        elif element == cls.primitive_element:
+            s = "α"
         else:
             power = cls._ufunc("log")(element, cls.primitive_element)
-            if power > 1:
-                s = f"α^{power}"
-            elif power == 1:
-                s = "α"
-            else:
-                s = "1"
+            s = f"α^{power}"
 
-        if cls._print_power_width:
-            return s.rjust(cls._print_power_width)
+        if cls._element_fixed_width:
+            s = s.rjust(cls._element_fixed_width)
         else:
-            return s
+            cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
+
+        return s
 
     ###############################################################################
     # Class attributes
@@ -2789,14 +2758,28 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         # View the array as an ndarray so that the scalar -> 0-D array conversion in __array_finalize__() for Galois field
         # arrays isn't continually invoked. This improves performance slightly.
         x = self.view(np.ndarray)
+        field = type(self)
 
         separator = ", "
         prefix = "GF("
-        order = type(self)._order_str
+        order = field._order_str
         suffix = ")"
-        formatter = type(self)._formatter(self)
+        formatter = field._formatter(self)
+
+        field._element_fixed_width = None  # Do not print with fixed-width
+        field._element_fixed_width_counter = 0  # Reset element width counter
 
         string = np.array2string(x, separator=separator, prefix=prefix, suffix=suffix, formatter=formatter)
+
+        if formatter != {}:
+            # We are using special print methods and must perform element alignment ourselves. We will print each element
+            # a second time use the max width of any element observed on the first array2string() call.
+            field._element_fixed_width = field._element_fixed_width_counter
+
+            string = np.array2string(x, separator=separator, prefix=prefix, suffix=suffix, formatter=formatter)
+
+        field._element_fixed_width = None
+        field._element_fixed_width_counter = 0
 
         # Determine the width of the last line in the string
         idx = string.rfind("\n") + 1
