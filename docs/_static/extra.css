@@ -8,13 +8,18 @@
   --md-primary-fg-color: #4060C1;
 }
 
+/* Fix line numbers in code blocks */
 .linenos {
   background-color: var(--md-default-bg-color--light);
   margin-right: 0.5rem;
 }
 
-/* code,
-pre,
-kbd {
-  font-feature-settings: "";
-} */
+/* Fix autosummary table column widths. See https://github.com/jbms/sphinx-immaterial/issues/35 */
+.longtable.docutils.data.align-default colgroup col {
+  width: auto !important;
+}
+
+/* Fix autosummary table column widths. See https://github.com/jbms/sphinx-immaterial/issues/35 */
+.reference.internal .xref.py.py-obj.docutils.literal.notranslate {
+  word-break: normal;
+}
