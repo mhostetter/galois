@@ -27,8 +27,6 @@ Expand any section for more details.
         b = GF([23, 5, 15, 12]); b
         np.dot(a, b)
 
-    See :func:`np.dot` for more details.
-
 .. details:: Vector dot product: `np.vdot(a, b)`
 
     .. ipython:: python
@@ -36,8 +34,6 @@ Expand any section for more details.
         a = GF([29, 0, 2, 21]); a
         b = GF([23, 5, 15, 12]); b
         np.vdot(a, b)
-
-    See :func:`np.vdot` for more details.
 
 .. details:: Inner product: `np.inner(a, b)`
 
@@ -47,8 +43,6 @@ Expand any section for more details.
         b = GF([23, 5, 15, 12]); b
         np.inner(a, b)
 
-    See :func:`np.inner` for more details.
-
 .. details:: Outer product: `np.outer(a, b)`
 
     .. ipython:: python
@@ -56,8 +50,6 @@ Expand any section for more details.
         a = GF([29, 0, 2, 21]); a
         b = GF([23, 5, 15, 12]); b
         np.outer(a, b)
-
-    See :func:`np.outer` for more details.
 
 .. details:: Matrix multiplication: `A @ B == np.matmul(A, B)`
 
@@ -68,8 +60,6 @@ Expand any section for more details.
         A @ B
         np.matmul(A, B)
 
-    See :func:`np.matmul` for more details.
-
 .. details:: Matrix exponentiation: `np.linalg.matrix_power(A, z)`
 
     .. ipython:: python
@@ -78,16 +68,12 @@ Expand any section for more details.
         np.linalg.matrix_power(A, 3)
         A @ A @ A
 
-    See :func:`np.linalg.matrix_power` for more details.
-
 .. details:: Matrix determinant: `np.linalg.det(A)`
 
     .. ipython:: python
 
         A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
         np.linalg.det(A)
-
-    See :func:`np.linalg.det` for more details.
 
 .. details:: Matrix rank: `np.linalg.matrix_rank(A, z)`
 
@@ -97,8 +83,6 @@ Expand any section for more details.
         np.linalg.matrix_rank(A)
         A.row_reduce()
 
-    See :func:`np.linalg.matrix_power` for more details.
-
 .. details:: Matrix trace: `np.trace(A)`
 
     .. ipython:: python
@@ -106,8 +90,6 @@ Expand any section for more details.
         A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
         np.trace(A)
         A[0,0] + A[1,1] + A[2,2] + A[3,3]
-
-    See :func:`np.trace` for more details.
 
 .. details:: Solve a system of equations: `np.linalg.solve(A, b)`
 
@@ -118,8 +100,6 @@ Expand any section for more details.
         x = np.linalg.solve(A, b)
         A @ x == b
 
-    See :func:`np.linalg.solve` for more details.
-
 .. details:: Matrix inverse: `np.linalg.inv(A)`
 
     .. ipython:: python
@@ -127,8 +107,6 @@ Expand any section for more details.
         A = GF([[14, 21, 14, 28], [24, 22, 23, 23], [16, 30, 26, 18], [4, 23, 18, 3]]); A
         A_inv = np.linalg.inv(A); A_inv
         A @ A_inv
-
-    See :func:`np.linalg.inv` for more details.
 
 Additional routines
 -------------------

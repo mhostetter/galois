@@ -65,7 +65,7 @@ def GF(
 
     primitive_element : int, str, tuple, list, numpy.ndarray, galois.Poly, optional
         Optionally specify a primitive element of the field :math:`\mathrm{GF}(p^m)`. This value is used when building the log/anti-log
-        lookup tables and when computing :func:`np.log`. A primitive element is a generator of the multiplicative group of the field.
+        lookup tables and when computing :func:`numpy.log`. A primitive element is a generator of the multiplicative group of the field.
         For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`. For extension
         fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over :math:`\mathrm{GF}(p)`.
 

@@ -152,7 +152,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
         Warning
         -------
-        For the power representation, :func:`np.log` is computed on each element. So for large fields without lookup
+        For the power representation, :func:`numpy.log` is computed on each element. So for large fields without lookup
         tables, displaying arrays in the power representation may take longer than expected.
 
         Parameters
