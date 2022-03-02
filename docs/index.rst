@@ -135,6 +135,7 @@ APA
    :hidden:
    :maxdepth: 2
 
+   api/galois.rst
    api/galois-fields.rst
    api/polys.rst
    api/fec.rst
@@ -143,8 +144,6 @@ APA
    api/number-theory.rst
    api/integer-factorization.rst
    api/primes.rst
-   api/galois.rst
-   api/numpy.rst
 
 .. toctree::
    :caption: Release Notes

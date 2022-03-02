@@ -28,8 +28,6 @@ Expand any section for more details.
         x + y
         np.add(x, y)
 
-    See :func:`np.add` for more details.
-
 .. details:: Additive inverse: `-x == np.negative(x)`
 
     .. ipython:: python
@@ -43,8 +41,6 @@ Expand any section for more details.
 
         x + np.negative(x)
 
-    See :func:`np.negative` for more details.
-
 .. details:: Subtraction: `x - y == np.subtract(x, y)`
 
     .. ipython:: python
@@ -52,16 +48,12 @@ Expand any section for more details.
         x - y
         np.subtract(x, y)
 
-    See :func:`np.subtract` for more details.
-
 .. details:: Multiplication: `x * y == np.multiply(x, y)`
 
     .. ipython:: python
 
         x * y
         np.multiply(x, y)
-
-    See :func:`np.multiply` for more details.
 
 .. details:: Scalar multiplication: `x * z == np.multiply(x, z)`
 
@@ -82,8 +74,6 @@ Expand any section for more details.
         p = GF.characteristic; p
         x * p
 
-    See :func:`np.multiply` for more details.
-
 .. details:: Multiplicative inverse: `y ** -1 == np.reciprocal(y)`
 
     .. ipython:: python
@@ -98,8 +88,6 @@ Expand any section for more details.
 
         y * np.reciprocal(y)
 
-    See :func:`np.reciprocal` for more details.
-
 .. details:: Division: `x / y == x // y == np.divide(x, y)`
 
     .. ipython:: python
@@ -108,16 +96,12 @@ Expand any section for more details.
         x // y
         np.divide(x, y)
 
-    See :func:`np.divide` for more details.
-
 .. details:: Remainder: `x % y == np.remainder(x, y)`
 
     .. ipython:: python
 
         x % y
         np.remainder(x, y)
-
-    See :func:`np.remainder` for more details.
 
 .. details:: Divmod: `divmod(x, y) == np.divmod(x, y)`
 
@@ -132,8 +116,6 @@ Expand any section for more details.
         q, r = divmod(x, y)
         q*y + r == x
 
-    See :func:`np.divmod` for more details.
-
 .. details:: Exponentiation: `x ** z == np.power(x, z)`
 
     .. ipython:: python
@@ -141,8 +123,6 @@ Expand any section for more details.
         x ** 3
         np.power(x, 3)
         x * x * x
-
-    See :func:`np.power` for more details.
 
 .. details:: Square root: `np.sqrt(x)`
 
@@ -153,8 +133,6 @@ Expand any section for more details.
         z = np.sqrt(x); z
         z ** 2 == x
 
-    See :func:`np.sqrt` for more details.
-
 .. details:: Logarithm: `np.log(x)`
 
     .. ipython:: python
@@ -162,8 +140,6 @@ Expand any section for more details.
         z = np.log(y); z
         α = GF.primitive_element; α
         α ** z == y
-
-    See :func:`np.log` for more details.
 
 Ufunc methods
 -------------
@@ -238,3 +214,12 @@ Expand any section for more details.
         # Negate indices 0 and 1 in-place
         np.negative.at(x, [0, 1]); x
         z[0:1] *= -1; z
+
+Advanced arithmetic
+-------------------
+
+.. details:: Convolution: `np.convolve(x, y)`
+
+    .. ipython:: python
+
+        np.convolve(x, y)

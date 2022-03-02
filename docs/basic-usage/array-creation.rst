@@ -189,7 +189,7 @@ For small finite fields, like :math:`\mathrm{GF}(2^4)`, every NumPy integer data
     GF.dtypes
 
 For medium finite fields, like :math:`\mathrm{GF}(2^{10})`, some NumPy integer data types are not supported. Here,
-:obj:`np.uint8` and :obj:`np.int8` are not supported.
+:obj:`numpy.uint8` and :obj:`numpy.int8` are not supported.
 
 .. ipython:: python
 
