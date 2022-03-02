@@ -317,19 +317,18 @@ class FieldClass(FunctionMeta, UfuncMeta):
         N_vec = max([len(print_vec(e)) for e in x] + [len("Vector")]) + 2
         N_int = max([len(print_int(e)) for e in x] + [len("Integer")]) + 2
 
-        # Useful characters: https://www.utf8-chartable.de/unicode-utf8-table.pl?start=9472
-        string = "╔" + "═"*N_power + "╤" + "═"*N_poly + "╤" + "═"*N_vec + "╤" + "═"*N_int + "╗"
-        string += "\n║" + "Power".center(N_power) + "│" + "Polynomial".center(N_poly) + "│" + "Vector".center(N_vec) + "│" + "Integer".center(N_int) + "║"
-        string += "\n║" + "═"*N_power + "╪" + "═"*N_poly + "╪" + "═"*N_vec + "╪" + "═"*N_int + "║"
+        string = "+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
+        string += "\n|" + "Power".center(N_power) + "|" + "Polynomial".center(N_poly) + "|" + "Vector".center(N_vec) + "|" + "Integer".center(N_int) + "|"
+        string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
 
         for i in range(x.size):
             d = None if i == 0 else degrees[i - 1]
-            string += "\n║" + print_power(d).center(N_power) + "│" + poly_to_str(integer_to_poly(x[i], cls.characteristic)).center(N_poly) + "│" + str(integer_to_poly(x[i], cls.characteristic, degree=cls.degree-1)).center(N_vec) + "│" + cls._print_int(x[i]).center(N_int) + "║"
+            string += "\n|" + print_power(d).center(N_power) + "|" + poly_to_str(integer_to_poly(x[i], cls.characteristic)).center(N_poly) + "|" + str(integer_to_poly(x[i], cls.characteristic, degree=cls.degree-1)).center(N_vec) + "|" + cls._print_int(x[i]).center(N_int) + "|"
 
             if i < x.size - 1:
-                string += "\n╟" + "─"*N_power + "┼" + "─"*N_poly + "┼" + "─"*N_vec + "┼" + "─"*N_int + "╢"
+                string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
 
-        string += "\n╚" + "═"*N_power + "╧" + "═"*N_poly + "╧"+ "═"*N_vec + "╧" + "═"*N_int + "╝"
+        string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+"+ "-"*N_vec + "+" + "-"*N_int + "+"
 
         return string
 
@@ -419,24 +418,23 @@ class FieldClass(FunctionMeta, UfuncMeta):
         N = max([len(print_element(e)) for e in x]) + 2
         N_left = max(N, len(operation_str) + 2)
 
-        # Useful characters: https://www.utf8-chartable.de/unicode-utf8-table.pl?start=9472
-        string = "╔" + "═"*N_left + "╦" + ("═"*N + "╤")*(y.size - 1) + "═"*N + "╗"
-        string += "\n║" + operation_str.rjust(N_left - 1) + " ║"
+        string = "+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
+        string += "\n|" + operation_str.rjust(N_left - 1) + " |"
         for j in range(y.size):
             string += print_element(y[j]).rjust(N - 1) + " "
-            string += "│" if j < y.size - 1 else "║"
-        string += "\n╠" + "═"*N_left + "╬" + ("═"*N + "╪")*(y.size - 1) + "═"*N + "╣"
+            string += "|" if j < y.size - 1 else "|"
+        string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
 
         for i in range(x.size):
-            string += "\n║" + print_element(x[i]).rjust(N_left - 1) + " ║"
+            string += "\n|" + print_element(x[i]).rjust(N_left - 1) + " |"
             for j in range(y.size):
                 string += print_element(Z[i,j]).rjust(N - 1) + " "
-                string += "│" if j < y.size - 1 else "║"
+                string += "|" if j < y.size - 1 else "|"
 
             if i < x.size - 1:
-                string += "\n╟" + "─"*N_left + "╫" + ("─"*N + "┼")*(y.size - 1) + "─"*N + "╢"
+                string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
 
-        string += "\n╚" + "═"*N_left + "╩" + ("═"*N + "╧")*(y.size - 1) + "═"*N + "╝"
+        string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
 
         return string
 
