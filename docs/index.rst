@@ -82,7 +82,7 @@ BibTeX
 APA
 ...
 
-.. code-block:: txt
+.. code-block:: text
 
    Hostetter, M. (2020). Galois: A performant NumPy extension for Galois fields [Computer software]. https://github.com/mhostetter/galois
 

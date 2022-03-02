@@ -5,8 +5,8 @@ This page compares the performance of :obj:`galois` to native NumPy when perform
 multiplication in :math:`\mathrm{GF}(p)`. Native NumPy can perform finite field multiplication in :math:`\mathrm{GF}(p)`
 because prime fields are very simple. Multiplication is simply :math:`xy\ \textrm{mod}\ p`.
 
-Lookup tables
--------------
+Lookup table performance
+------------------------
 
 This section tests :obj:`galois` when using the `"jit-lookup"` compilation mode. For finite fields with order less
 than or equal to :math:`2^{20}`, :obj:`galois` uses lookup tables by default for efficient arithmetic.
@@ -44,8 +44,8 @@ The equivalent operation using native NumPy ufuncs takes more computation time.
     In [10]: %timeit (aa * bb) % GF.order
     65.7 ms ± 2.15 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
-Explicit calculation
---------------------
+Explicit calculation performance
+--------------------------------
 
 This section tests :obj:`galois` when using the `"jit-calculate"` compilation mode. For finite fields with order greater
 than :math:`2^{20}`, :obj:`galois` will use explicit arithmetic calculation by default rather than lookup tables. *Even in these cases*,
@@ -128,8 +128,8 @@ difference is only 20 µs.
     In [10]: %timeit (aa * bb) % GF.order
     1.28 µs ± 8.76 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
 
-Linear algebra
---------------
+Linear algebra performance
+--------------------------
 
 Linear algebra performance in prime fields is comparable to the native NumPy implementations, which use BLAS/LAPACK. This is
 because :obj:`galois` uses the native NumPy ufuncs when possible.
