@@ -122,7 +122,7 @@ html_theme_options = {
             "scheme": "default",
             "accent": "deep-orange",
             "toggle": {
-                "icon": "material/weather-sunny",
+                "icon": "material/weather-night",
                 "name": "Switch to dark mode",
             },
         },
@@ -131,7 +131,7 @@ html_theme_options = {
             "scheme": "slate",
             "accent": "deep-orange",
             "toggle": {
-                "icon": "material/weather-night",
+                "icon": "material/weather-sunny",
                 "name": "Switch to light mode",
             },
         },
