@@ -223,7 +223,7 @@ If this library was useful to you in your research, please cite us. Following th
 ### Bibtex
 
 ```bibtex
-@misc{Hostetter_Galois_2020,
+@software{Hostetter_Galois_2020,
     title = {{Galois: A performant NumPy extension for Galois fields}},
     author = {Hostetter, Matt},
     month = {11},
