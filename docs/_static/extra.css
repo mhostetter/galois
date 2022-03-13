@@ -13,13 +13,3 @@
   background-color: var(--md-default-bg-color--light);
   margin-right: 0.5rem;
 }
-
-/* Fix autosummary table column widths. See https://github.com/jbms/sphinx-immaterial/issues/35 */
-.longtable.docutils.data.align-default colgroup col {
-  width: auto !important;
-}
-
-/* Fix autosummary table column widths. See https://github.com/jbms/sphinx-immaterial/issues/35 */
-.reference.internal .xref.py.py-obj.docutils.literal.notranslate {
-  word-break: normal;
-}
