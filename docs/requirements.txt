@@ -1,9 +1,6 @@
 sphinx>=3
 recommonmark>=0.5
-sphinx_rtd_theme>=0.5
-# readthedocs-sphinx-ext>=1.1
 git+https://github.com/jbms/sphinx-immaterial
 ipykernel
 sphinxcontrib-details-directive
-pandoc
 numpy
