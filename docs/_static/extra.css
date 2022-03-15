@@ -13,3 +13,16 @@
   background-color: var(--md-default-bg-color--light);
   margin-right: 0.5rem;
 }
+
+/* Override sphinx-design tab-set CSS rules, see https://github.com/jbms/sphinx-immaterial/issues/43 */
+.sd-tab-set>input:checked+label {
+  border-color: var(--md-primary-fg-color);
+  color: var(--md-primary-fg-color);
+}
+.sd-tab-set>input+label {
+  font: var(--md-text-font-family);
+  font-size: 0.64rem;
+}
+.sd-tab-set>input:not(:checked)+label:hover {
+  color: var(--md-primary-fg-color);
+}
