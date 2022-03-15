@@ -40,9 +40,10 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.intersphinx",
     "sphinx.ext.autosectionlabel",
-    "sphinxcontrib.details.directive",
-    "recommonmark",
     "sphinx_immaterial",
+    "recommonmark",
+    "sphinx_design",
+    "sphinxcontrib.details.directive",
     "IPython.sphinxext.ipython_console_highlighting",
     "IPython.sphinxext.ipython_directive"
 ]

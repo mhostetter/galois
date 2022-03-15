@@ -1,6 +1,7 @@
 sphinx>=3
-recommonmark>=0.5
 git+https://github.com/jbms/sphinx-immaterial
-ipykernel
+recommonmark>=0.5
+sphinx-design
 sphinxcontrib-details-directive
+ipykernel
 numpy
