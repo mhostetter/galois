@@ -14,17 +14,43 @@ Extension field
 In this tutorial, we will consider the extension field :math:`\mathrm{GF}(3^2)`. Using the :obj:`galois` library, the :ref:`Galois field array class`
 `GF9` is created using the class factory :func:`galois.GF`.
 
-.. ipython:: python
+.. tab-set::
 
-   GF9 = galois.GF(3**2, display="poly")
-   print(GF9)
-   print(GF9.properties)
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         GF9 = galois.GF(3**2)
+         print(GF9)
+         print(GF9.properties)
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         GF9 = galois.GF(3**2, display="poly")
+         print(GF9)
+         print(GF9.properties)
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         GF9 = galois.GF(3**2, display="power")
+         print(GF9)
+         print(GF9.properties)
 
 .. note::
 
    In this tutorial, we use `display="poly"` to display the elements in their polynomial form. Although, it is common to use the default
-   integer representation :math:`\{0, 1, \dots, p^m - 1\}` to display the arrays more compactly. See :ref:`Field Element Representation` for
-   more details.
+   integer representation :math:`\{0, 1, \dots, p^m - 1\}` to display the arrays more compactly. Switch the display between the three
+   representations using the tabbed sections.
+
+   See :ref:`Field Element Representation` for more details.
 
 Elements
 --------
@@ -35,9 +61,35 @@ exactly :math:`p^m` elements.
 
 The elements of the finite field are retrieved in a 1-D array using the :func:`galois.FieldArray.Elements` classmethod.
 
-.. ipython:: python
+.. tab-set::
 
-   GF9.Elements()
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         GF9.Elements()
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         GF9.Elements()
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         GF9.Elements()
 
 Irreducible polynomial
 ----------------------
@@ -83,10 +135,38 @@ Here are :math:`a` and :math:`b` represented using :obj:`galois.Poly` objects.
 Here are :math:`a` and :math:`b` represented as extension field elements. Extension field elements can be specified as integers
 or polynomial strings. See :ref:`Array Creation` for more details.
 
-.. ipython:: python
+.. tab-set::
 
-   a = GF9("x + 2"); a
-   b = GF9("x + 1"); b
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         a = GF9("x + 2"); a
+         b = GF9("x + 1"); b
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         a = GF9("x + 2"); a
+         b = GF9("x + 1"); b
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         a = GF9("x + 2"); a
+         b = GF9("x + 1"); b
 
 Addition
 ........
@@ -97,18 +177,72 @@ the degree-:math:`m` polynomial :math:`f(x)`, since the quotient will always be 
 
 We can see that :math:`a + b = (1 + 1)x + (2 + 1) = 2x`.
 
-.. ipython:: python
+.. tab-set::
 
-   a_poly + b_poly
-   a + b
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         a_poly + b_poly
+         a + b
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         a_poly + b_poly
+         a + b
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         a_poly + b_poly
+         a + b
 
 The :obj:`galois` library includes the ability to display the arithmetic tables for any finite field. The table is only readable
 for small fields, but nonetheless the capability is provided. Select a few computations at random and convince yourself the
 answers are correct.
 
-.. ipython:: python
+.. tab-set::
 
-   print(GF9.arithmetic_table("+"))
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         print(GF9.arithmetic_table("+"))
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         print(GF9.arithmetic_table("+"))
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         print(GF9.arithmetic_table("+"))
 
 Subtraction
 ...........
@@ -117,16 +251,70 @@ Subtraction, like addition, is performed on coefficients degree-wise and will ne
 
 We can see that :math:`a - b = (1 - 1)x + (2 - 1) = 1`.
 
-.. ipython:: python
+.. tab-set::
 
-   a_poly - b_poly
-   a - b
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         a_poly - b_poly
+         a - b
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         a_poly - b_poly
+         a - b
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         a_poly - b_poly
+         a - b
 
 Here is the entire subtraction table for completeness.
 
-.. ipython:: python
+.. tab-set::
 
-   print(GF9.arithmetic_table("-"))
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         print(GF9.arithmetic_table("-"))
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         print(GF9.arithmetic_table("-"))
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         print(GF9.arithmetic_table("-"))
 
 Multiplication
 ..............
@@ -138,18 +326,76 @@ First compute :math:`ab = (x + 2)(x + 1) = x^2 + 2`. Notice that :math:`x^2 + 2`
 :math:`\mathrm{GF}(3^2)` can have degree at most :math:`1`. Therefore, reduction modulo :math:`f(x)` is required. After remainder
 division, we see that :math:`ab\ \equiv x\ \textrm{mod}\ f(x)`.
 
-.. ipython:: python
+.. tab-set::
 
-   # Note the degree is greater than 1
-   a_poly * b_poly
-   (a_poly * b_poly) % f
-   a * b
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         # Note the degree is greater than 1
+         a_poly * b_poly
+         (a_poly * b_poly) % f
+         a * b
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         # Note the degree is greater than 1
+         a_poly * b_poly
+         (a_poly * b_poly) % f
+         a * b
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         # Note the degree is greater than 1
+         a_poly * b_poly
+         (a_poly * b_poly) % f
+         a * b
 
 Here is the entire multiplication table for completeness.
 
-.. ipython:: python
+.. tab-set::
 
-   print(GF9.arithmetic_table("*"))
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         print(GF9.arithmetic_table("*"))
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         print(GF9.arithmetic_table("*"))
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         print(GF9.arithmetic_table("*"))
 
 Multiplicative inverse
 ......................
@@ -173,10 +419,38 @@ If :math:`a(x) = x + 1` is a field element of :math:`\mathrm{GF}(3^2)` and :math
 The :obj:`galois` library uses the Extended Euclidean Algorithm to compute multiplicative inverses (and division) in extension fields.
 The inverse of :math:`x + 1` in :math:`\mathrm{GF}(3^2)` can be easily computed in the following way.
 
-.. ipython:: python
+.. tab-set::
 
-   b ** -1
-   np.reciprocal(b)
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         b ** -1
+         np.reciprocal(b)
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         b ** -1
+         np.reciprocal(b)
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         b ** -1
+         np.reciprocal(b)
 
 Division
 ........
@@ -186,18 +460,76 @@ already learned multiplication and multiplicative inversion in finite fields.
 
 Let's compute :math:`a / b = (x + 2)(x + 1)^{-1}` in :math:`\mathrm{GF}(3^2)`.
 
-.. ipython:: python
+.. tab-set::
 
-   _, b_inv_poly, _ = galois.egcd(b_poly, f)
-   (a_poly * b_inv_poly) % f
-   a * b**-1
-   a / b
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         _, b_inv_poly, _ = galois.egcd(b_poly, f)
+         (a_poly * b_inv_poly) % f
+         a * b**-1
+         a / b
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         _, b_inv_poly, _ = galois.egcd(b_poly, f)
+         (a_poly * b_inv_poly) % f
+         a * b**-1
+         a / b
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         _, b_inv_poly, _ = galois.egcd(b_poly, f)
+         (a_poly * b_inv_poly) % f
+         a * b**-1
+         a / b
 
 Here is the division table for completeness. Notice that division is not defined for :math:`y = 0`.
 
-.. ipython:: python
+.. tab-set::
 
-   print(GF9.arithmetic_table("/"))
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         print(GF9.arithmetic_table("/"))
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         print(GF9.arithmetic_table("/"))
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         print(GF9.arithmetic_table("/"))
 
 Primitive elements
 ------------------
@@ -214,10 +546,38 @@ A primitive element
 In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`galois.FieldClass.primitive_element`
 property.
 
-.. ipython:: python
+.. tab-set::
 
-   print(GF9.properties)
-   g = GF9.primitive_element; g
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         print(GF9.properties)
+         g = GF9.primitive_element; g
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         print(GF9.properties)
+         g = GF9.primitive_element; g
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         print(GF9.properties)
+         g = GF9.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer
 representations using :func:`galois.FieldClass.repr_table`.
@@ -235,9 +595,38 @@ Other primitive elements
 There are multiple primitive elements of any finite field. All primitive elements are provided in the
 :obj:`galois.FieldClass.primitive_elements` property.
 
-.. ipython:: python
+.. tab-set::
 
-   GF9.primitive_elements
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         GF9.primitive_elements
+         g = GF9("2x + 1"); g
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         GF9.primitive_elements
+         g = GF9("2x + 1"); g
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         GF9.primitive_elements
+         g = GF9("2x + 1"); g
 
 This means that :math:`x`, :math:`x + 2`, :math:`2x`, and :math:`2x + 1` all generate the multiplicative
 group :math:`\mathrm{GF}(3^2)^\times`. We can examine this by viewing the representation table using
@@ -248,7 +637,6 @@ multiplicative order :math:`p^m - 1`.
 
 .. ipython:: python
 
-   g = GF9("2x + 1"); g
    g.multiplicative_order()
    print(GF9.repr_table(g))
 
@@ -261,8 +649,44 @@ orders less than :math:`p^m - 1`.
 For example, the element :math:`e = x + 1` is not a primitive element. It has :math:`\textrm{ord}(e) = 4`.
 Notice elements :math:`x`, :math:`x + 2`, :math:`2x`, and :math:`2x + 1` are not represented by the powers of :math:`e`.
 
+.. tab-set::
+
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("int")
+         e = GF9("x + 1"); e
+
+   .. tab-item:: Polynomial
+      :sync: poly
+      :selected:
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("poly")
+         e = GF9("x + 1"); e
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF9.display("power")
+         e = GF9("x + 1"); e
+
 .. ipython:: python
 
-   e = GF9("x + 1"); e
    e.multiplicative_order()
    print(GF9.repr_table(e))
+
+..
+   Reset the display mode to the integer representation so other pages aren't affected
+.. ipython:: python
+   :suppress:
+
+   GF9.display("int")
