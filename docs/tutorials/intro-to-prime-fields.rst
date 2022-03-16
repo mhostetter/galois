@@ -36,6 +36,15 @@ In this tutorial, we will consider the prime field :math:`\mathrm{GF}(7)`. Using
          print(GF7)
          print(GF7.properties)
 
+.. note::
+
+   In this tutorial, we use the `display="int"` default to display the elements. However, sometimes it is useful to view elements
+   in their power representation :math:`\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`. Switch the display between these two
+   representations using the tabbed sections. Note, the polynomial representation is not shown because it is identical to the integer
+   representation for prime fields.
+
+   See :ref:`Field Element Representation` for more details.
+
 Elements
 --------
 
@@ -361,8 +370,8 @@ Primitive elements
 
 A property of finite fields is that some elements produce the non-zero elements of the field by their powers.
 
-A *primitive element* :math:`g` of :math:`\mathrm{GF}(p)` is an element such that :math:`\mathrm{GF}(p) = \{0, g^0, g^1, \dots, g^{p - 2}\}`.
-The non-zero elements :math:`\{g^0, g^1, \dots, g^{p - 2}\}` form the cyclic multiplicative group :math:`\mathrm{GF}(p)^{\times}`.
+A *primitive element* :math:`g` of :math:`\mathrm{GF}(p)` is an element such that :math:`\mathrm{GF}(p) = \{0, 1, g, g^2, \dots, g^{p - 2}\}`.
+The non-zero elements :math:`\{1, g, g^2, \dots, g^{p - 2}\}` form the cyclic multiplicative group :math:`\mathrm{GF}(p)^{\times}`.
 A primitive element has multiplicative order :math:`\textrm{ord}(g) = p - 1`.
 
 In prime fields :math:`\mathrm{GF}(p)`, the generators or primitive elements of :math:`\mathrm{GF}(p)` are *primitive roots mod p*.
@@ -449,7 +458,7 @@ There are multiple primitive elements of any finite field. All primitive element
          GF7.primitive_elements
          g = GF7(5); g
 
-This means that :math:`3` and :math:`7` generate the multiplicative group :math:`\mathrm{GF}(7)^\times`.
+This means that :math:`3` and :math:`5` generate the multiplicative group :math:`\mathrm{GF}(7)^\times`.
 We can examine this by viewing the representation table using different generators.
 
 Here is the representation table using a different generator :math:`g = 5`. Notice it also has
@@ -466,8 +475,7 @@ Non-primitive elements
 All other elements of the field cannot generate the multiplicative group. They have multiplicative
 orders less than :math:`p - 1`.
 
-For example, the element :math:`e = 2` is not a primitive element. It has :math:`\textrm{ord}(e) = 3`.
-Notice elements :math:`3`, :math:`5`, and :math:`6` are not represented by the powers of :math:`e`.
+For example, the element :math:`e = 2` is not a primitive element.
 
 .. tab-set::
 
@@ -488,6 +496,8 @@ Notice elements :math:`3`, :math:`5`, and :math:`6` are not represented by the p
          @suppress
          GF7.display("power")
          e = GF7(2); e
+
+It has :math:`\textrm{ord}(e) = 3`. Notice elements :math:`3`, :math:`5`, and :math:`6` are not represented by the powers of :math:`e`.
 
 .. ipython:: python
 
