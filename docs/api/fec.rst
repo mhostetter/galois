@@ -8,7 +8,6 @@ This section contains classes and functions for constructing forward error corre
 FEC classes
 -----------
 
-.. rubric::
 .. autosummary::
    :template: class.rst
    :toctree:
@@ -19,7 +18,6 @@ FEC classes
 Linear block code functions
 ---------------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -29,7 +27,6 @@ Linear block code functions
 Cyclic code functions
 ---------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 

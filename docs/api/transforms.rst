@@ -8,7 +8,6 @@ This section contains classes and functions for various transforms using Galois 
 Number-theoretic transform
 --------------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 

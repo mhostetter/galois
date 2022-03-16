@@ -5,7 +5,7 @@ Galois field class factory.
 """
 import random
 import types
-from typing import Tuple, List, Optional, Union, Type
+from typing import Sequence, List, Optional, Union, Type
 from typing_extensions import Literal
 
 import numpy as np
@@ -29,8 +29,7 @@ __all__ = [
     "primitive_element", "primitive_elements", "is_primitive_element",
 ]
 
-PolyLike = Union[int, str, Tuple[int], List[int], np.ndarray, FieldArray, Poly]
-
+PolyLike = Union[int, str, Sequence[int], np.ndarray, FieldArray, Poly]
 
 ###############################################################################
 # Construct Galois field array classes
@@ -46,154 +45,197 @@ def GF(
     display: Optional[Literal["int", "poly", "power"]] = None
 ) -> Type[FieldArray]:
     r"""
-    Factory function to construct a Galois field array class for :math:`\mathrm{GF}(p^m)`.
+    Creates a :ref:`Galois field array class` for :math:`\mathrm{GF}(p^m)`.
+
+    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldClass` and
+    :obj:`galois.FieldArray`.
 
     Parameters
     ----------
-    order : int
+    order
         The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
 
-    irreducible_poly : int, str, tuple, list, numpy.ndarray, galois.Poly, optional
+    irreducible_poly
         Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that will
         define the Galois field arithmetic.
 
-        * :obj:`None` (default): Uses the Conway polynomial :math:`C_{p,m}`, see :func:`galois.conway_poly`.
+        * :obj:`None` (default): Uses the Conway polynomial :math:`C_{p,m}`. See :func:`galois.conway_poly`.
         * :obj:`int`: The integer representation of the irreducible polynomial.
         * :obj:`str`: The irreducible polynomial expressed as a string, e.g. `"x^2 + 1"`.
         * :obj:`tuple`, :obj:`list`, :obj:`numpy.ndarray`: The irreducible polynomial coefficients in degree-descending order.
         * :obj:`galois.Poly`: The irreducible polynomial as a polynomial object.
 
-    primitive_element : int, str, tuple, list, numpy.ndarray, galois.Poly, optional
-        Optionally specify a primitive element of the field :math:`\mathrm{GF}(p^m)`. This value is used when building the log/anti-log
-        lookup tables and when computing :func:`numpy.log`. A primitive element is a generator of the multiplicative group of the field.
-        For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`. For extension
-        fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over :math:`\mathrm{GF}(p)`.
+    primitive_element
+        Optionally specify a primitive element of the field. This value is used when building the exponential and logarithm
+        lookup tables and when computing :obj:`numpy.log`. A primitive element is a generator of the multiplicative group of the
+        field.
 
-        **For prime fields:**
+        **Prime fields:**
 
-        * :obj:`None` (default): Uses the minimal primitive root modulo :math:`p`, see :func:`galois.primitive_root`.
+        For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`.
+
+        * :obj:`None` (default): Uses the minimal primitive root modulo :math:`p`. See :func:`galois.primitive_root`.
         * :obj:`int`: A primitive root modulo :math:`p`.
 
-        **For extension fields:**
+        **Extension fields:**
 
-        * :obj:`None` (default): Uses the lexicographically-minimal primitive element, see :func:`galois.primitive_element`.
+        For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over
+        :math:`\mathrm{GF}(p)`.
+
+        * :obj:`None` (default): Uses the lexicographically-minimal primitive element. See :func:`galois.primitive_element`.
         * :obj:`int`: The integer representation of the primitive element.
         * :obj:`str`: The primitive element expressed as a string, e.g. `"x + 1"`.
         * :obj:`tuple`, :obj:`list`, :obj:`numpy.ndarray`: The primitive element's polynomial coefficients in degree-descending order.
         * :obj:`galois.Poly`: The primitive element as a polynomial object.
 
-    verify : bool, optional
-        Indicates whether to verify that the specified irreducible polynomial is in fact irreducible and whether the specified primitive element
-        is in fact a generator of the multiplicative group. The default is `True`. For large fields and irreducible polynomials that are already
-        known to be irreducible (which may take a long time to verify), this argument can be set to `False`. If the default irreducible polynomial
-        and primitive element are used, no verification is performed because the defaults are guaranteed to be irreducible and a multiplicative
-        generator, respectively.
+    verify
+        Indicates whether to verify that the user-specified irreducible polynomial is in fact irreducible and that the user-specified
+        primitive element is in fact a generator of the multiplicative group. The default is `True`.
 
-    compile : str, optional
+        For large fields and irreducible polynomials that are already known to be irreducible (which may take a while to verify),
+        this argument may be set to `False`.
+
+        The default irreducible polynomial and primitive element are never verified because they are known to be irreducible and
+        a multiplicative generator.
+
+    compile
         The ufunc calculation mode. This can be modified after class construction with the :func:`galois.FieldClass.compile` method.
+        See :ref:`Compilation Modes` for a further discussion.
 
-        * `None` (default): For newly-created classes, `None` corresponds to `"auto"`. For Galois field array classes of this type that were
+        * `None` (default): For newly-created classes, `None` corresponds to `"auto"`. For *Galois field array classes* of this type that were
           previously created, `None` does not modify the current ufunc compilation mode.
-        * `"auto"`: Selects "jit-lookup" for fields with order less than :math:`2^{20}`, "jit-calculate" for larger fields, and "python-calculate"
+        * `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
           for fields whose elements cannot be represented with :obj:`numpy.int64`.
         * `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
           In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
-        * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The "jit-calculate" mode is designed for large
-          fields that cannot or should not store lookup tables in RAM. Generally, the "jit-calculate" mode is slower than "jit-lookup".
+        * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
+          fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower than `"jit-lookup"`.
         * `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
           represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
 
-    display : str, optional
+    display
         The field element display representation. This can be modified after class construction with the :func:`galois.FieldClass.display` method.
+        See :ref:`Field Element Representation` for a further discussion.
 
-        * `None` (default): For newly-created classes, `None` corresponds to the integer representation (`"int"`). For Galois field array classes
+        * `None` (default): For newly-created classes, `None` corresponds to `"int"`. For *Galois field array classes*
           of this type that were previously created, `None` does not modify the current display mode.
-        * `"int"`: The element displayed as the integer representation of the polynomial. For example, :math:`2x^2 + x + 2` is an element of
-          :math:`\mathrm{GF}(3^3)` and is equivalent to the integer :math:`23 = 2 \cdot 3^2 + 3 + 2`.
-        * `"poly"`: The element as a polynomial over :math:`\mathrm{GF}(p)` of degree less than :math:`m`. For example, :math:`2x^2 + x + 2` is an element
-          of :math:`\mathrm{GF}(3^3)`.
-        * `"power"`: The element as a power of the primitive element, see :obj:`galois.FieldClass.primitive_element`. For example, :math:`2x^2 + x + 2 = \alpha^5`
-          in :math:`\mathrm{GF}(3^3)` with irreducible polynomial :math:`x^3 + 2x + 1` and primitive element :math:`\alpha = x`.
+        * `"int"`: Sets the display mode to the :ref:`integer representation <Integer representation>`.
+        * `"poly"`: Sets the display mode to the :ref:`polynomial representation <Polynomial representation>`.
+        * `"power"`: Sets the display mode to the :ref:`power representation <Power representation>`.
 
     Returns
     -------
-    galois.FieldClass
-        A Galois field array class for :math:`\mathrm{GF}(p^m)`. If this class has already been created, a reference to that class is returned.
+    :
+        A *Galois field array class* for :math:`\mathrm{GF}(p^m)`. If this class has already been created, a reference to that class is returned.
 
     Notes
     -----
-    The created class is a subclass of :obj:`galois.FieldArray` and an instance of :obj:`galois.FieldClass`.
+    The created *Galois field array class* is a subclass of :obj:`galois.FieldArray` and an instance of :obj:`galois.FieldClass`.
     The :obj:`galois.FieldArray` inheritance provides the :obj:`numpy.ndarray` functionality and some additional methods on
-    Galois field arrays, such as :func:`galois.FieldArray.row_reduce`. The :obj:`galois.FieldClass` metaclass provides a variety
-    of class attributes and methods relating to the finite field, such as the :func:`galois.FieldClass.display` method to
-    change the field element display representation.
+    *Galois field arrays*. The :obj:`galois.FieldClass` metaclass provides a variety of class attributes and methods relating to the
+    finite field.
 
-    Galois field array classes of the same type (order, irreducible polynomial, and primitive element) are singletons. So, calling this
+    *Galois field array classes* of the same type (order, irreducible polynomial, and primitive element) are singletons. So, calling this
     class factory with arguments that correspond to the same class will return the same class object.
 
     Examples
     --------
-    Construct various Galois field array class for :math:`\mathrm{GF}(2)`, :math:`\mathrm{GF}(2^m)`, :math:`\mathrm{GF}(p)`, and :math:`\mathrm{GF}(p^m)`
-    with the default irreducible polynomials and primitive elements. For the extension fields, notice the irreducible polynomials are primitive and
-    :math:`x` is a primitive element.
+    Create a *Galois field array class* for each type of finite field.
 
-    .. ipython:: python
+    .. tab-set::
 
-        # Construct a GF(2) class
-        GF2 = galois.GF(2); print(GF2.properties)
+        .. tab-item:: GF(2)
 
-        # Construct a GF(2^m) class
-        GF256 = galois.GF(2**8); print(GF256.properties)
+            Construct the binary field.
 
-        # Construct a GF(p) class
-        GF3 = galois.GF(3); print(GF3.properties)
+            .. ipython:: python
 
-        # Construct a GF(p^m) class
-        GF243 = galois.GF(3**5); print(GF243.properties)
+                GF = galois.GF(2)
+                print(GF.properties)
 
-    Or construct a Galois field array class and specify the irreducible polynomial. Here is an example using the :math:`\mathrm{GF}(2^8)`
-    field from AES. Notice the irreducible polynomial is not primitive and :math:`x` is not a primitive element.
+        .. tab-item:: GF(p)
 
-    .. ipython:: python
+            Construct a prime field.
 
-        poly = galois.Poly.Degrees([8,4,3,1,0]); poly
-        GF256_AES = galois.GF(2**8, irreducible_poly=poly)
-        print(GF256_AES.properties)
+            .. ipython:: python
 
-    Very large fields are also supported but they use :obj:`numpy.object_` dtypes with Python :obj:`int` and, therefore, do not have compiled ufuncs.
+                GF = galois.GF(31)
+                print(GF.properties)
 
-    .. ipython:: python
+        .. tab-item:: GF(2^m)
 
-        # Construct a very large GF(2^m) class
-        GF2m = galois.GF(2**100); print(GF2m.properties)
-        GF2m.dtypes, GF2m.ufunc_mode
+            Construct a binary extension field. Notice the default irreducible polynomial is primitive and :math:`x`
+            is a primitive element.
 
-        # Construct a very large GF(p) class
-        GFp = galois.GF(36893488147419103183); print(GFp.properties)
-        GFp.dtypes, GFp.ufunc_mode
+            .. ipython:: python
 
-    The default display mode for field elements is the integer representation. This can be modified by using the `display` keyword argument. It
-    can also be changed after class construction by calling the :func:`galois.FieldClass.display` method.
+                GF = galois.GF(2**8)
+                print(GF.properties)
 
-    .. ipython:: python
+        .. tab-item:: GF(p^m)
 
-        GF = galois.GF(2**8)
-        GF.Random()
-        GF = galois.GF(2**8, display="poly")
-        GF.Random()
-        @suppress
-        GF.display();
+            Construct a prime extension field. Notice the default irreducible polynomial is primitive and :math:`x`
+            is a primitive element.
 
-    Galois field array classes of the same type (order, irreducible polynomial, and primitive element) are singletons. So, calling this
-    class factory with arguments that correspond to the same class will return the same field class object.
+            .. ipython:: python
 
-    .. ipython:: python
+                GF = galois.GF(3**5)
+                print(GF.properties)
 
-        poly1 = galois.Poly([1, 0, 0, 0, 1, 1, 0, 1, 1])
-        poly2 = poly1.integer
-        galois.GF(2**8, irreducible_poly=poly1) is galois.GF(2**8, irreducible_poly=poly2)
+    Create a *Galois field array class* for extension fields and specify their irreducible polynomial.
 
-    See :obj:`galois.FieldArray` and :obj:`galois.FieldClass` for more examples of what Galois field arrays can do.
+    .. tab-set::
+
+        .. tab-item:: GF(2^m)
+
+            Construct the :math:`\mathrm{GF}(2^8)` field that is used in AES. Notice the irreducible polynomial is not primitive and
+            :math:`x` is not a primitive element.
+
+            .. ipython:: python
+
+                GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+                print(GF.properties)
+
+        .. tab-item:: GF(p^m)
+
+            Construct :math:`\mathrm{GF}(3^5)` with an irreducible, but not primitive, polynomial. Notice that :math:`x` is not a
+            primitive element.
+
+            .. ipython:: python
+
+                GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 2")
+                print(GF.properties)
+
+    Arbitrarily-large finite fields are also supported.
+
+    .. tab-set::
+
+        .. tab-item:: GF(p)
+
+            Construct an arbitrarily-large prime field.
+
+            .. ipython:: python
+
+                GF = galois.GF(36893488147419103183)
+                print(GF.properties)
+
+        .. tab-item:: GF(2^m)
+
+            Construct an arbitrarily-large binary extension field.
+
+            .. ipython:: python
+
+                GF = galois.GF(2**100)
+                print(GF.properties)
+
+        .. tab-item:: GF(p^m)
+
+            Construct an arbitrarily-large prime extension field.
+
+            .. ipython:: python
+
+                GF = galois.GF(109987**4)
+                print(GF.properties)
     """
     # pylint: disable=redefined-outer-name,redefined-builtin
     if not isinstance(order, int):
@@ -232,7 +274,7 @@ def Field(
     verify: bool = True,
     compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
     display: Optional[Literal["int", "poly", "power"]] = None
-) -> FieldClass:
+) -> Type[FieldArray]:
     """
     Alias of :func:`galois.GF`.
     """
@@ -246,7 +288,7 @@ def GF_prime(
     verify: bool = True,
     compile_: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
     display: Optional[Literal["int", "poly", "power"]] = None
-) -> FieldClass:
+) -> Type[FieldArray]:
     """
     Class factory for prime fields GF(p).
     """
@@ -315,7 +357,7 @@ def GF_extension(
     verify: bool = True,
     compile_: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
     display: Optional[Literal["int", "poly", "power"]] = None
-) -> FieldClass:
+) -> Type[FieldArray]:
     """
     Class factory for extension fields GF(p^m).
     """
@@ -439,11 +481,11 @@ def irreducible_poly(
 
     Parameters
     ----------
-    order : int
+    order
         The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-    degree : int
+    degree
         The degree :math:`m` of the desired irreducible polynomial.
-    method : str, optional
+    method
         The search method for finding the irreducible polynomial.
 
         * `"min"` (default): Returns the lexicographically-minimal monic irreducible polynomial.
@@ -452,7 +494,7 @@ def irreducible_poly(
 
     Returns
     -------
-    galois.Poly
+    :
         The degree-:math:`m` monic irreducible polynomial over :math:`\mathrm{GF}(q)`.
 
     Notes
@@ -524,14 +566,14 @@ def irreducible_polys(order: int, degree: int) -> List[Poly]:
 
     Parameters
     ----------
-    order : int
+    order
         The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-    degree : int
+    degree
         The degree :math:`m` of the desired irreducible polynomial.
 
     Returns
     -------
-    list
+    :
         All degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(q)`.
 
     Notes
@@ -585,12 +627,12 @@ def is_irreducible(poly: Poly) -> bool:
 
     Parameters
     ----------
-    poly : galois.Poly
+    poly
         A polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
-    bool
+    :
         `True` if the polynomial is irreducible.
 
     Notes
@@ -690,11 +732,11 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
 
     Parameters
     ----------
-    order : int
+    order
         The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-    degree : int
+    degree
         The degree :math:`m` of the desired primitive polynomial.
-    method : str, optional
+    method
         The search method for finding the primitive polynomial.
 
         * `"min"` (default): Returns the lexicographically-minimal monic primitive polynomial.
@@ -703,7 +745,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
 
     Returns
     -------
-    galois.Poly
+    :
         The degree-:math:`m` monic primitive polynomial over :math:`\mathrm{GF}(q)`.
 
     Notes
@@ -768,14 +810,14 @@ def primitive_polys(order: int, degree: int) -> Poly:
 
     Parameters
     ----------
-    order : int
+    order
         The prime order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-    degree : int
+    degree
         The degree :math:`m` of the desired primitive polynomial.
 
     Returns
     -------
-    list
+    :
         All degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(q)`.
 
     Notes
@@ -827,18 +869,20 @@ def is_primitive(poly: Poly) -> bool:
     r"""
     Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
 
-    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
-    :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than :math:`q^m - 1`.
-
     Parameters
     ----------
-    poly : galois.Poly
+    poly
         A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
 
     Returns
     -------
-    bool
+    :
         `True` if the polynomial is primitive.
+
+    Notes
+    -----
+    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
+    :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than :math:`q^m - 1`.
 
     References
     ----------
@@ -860,7 +904,8 @@ def is_primitive(poly: Poly) -> bool:
 
     .. ipython:: python
 
-        f = galois.Poly.Degrees([8,4,3,1,0]); f
+        f = galois.Poly.Degrees([8, 4, 3, 1, 0]); f
+        galois.is_irreducible(f)
         galois.is_primitive(f)
     """
     if not isinstance(poly, Poly):
@@ -913,14 +958,14 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
 
     Parameters
     ----------
-    characteristic : int
+    characteristic
         The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
-    degree : int
+    degree
         The degree :math:`m` of the Conway polynomial.
 
     Returns
     -------
-    galois.Poly
+    :
         The degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)`.
 
     Raises
@@ -981,14 +1026,14 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
 
     Parameters
     ----------
-    characteristic : int
+    characteristic
         The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
-    degree : int
+    degree
         The degree :math:`m` of the desired primitive polynomial.
 
     Returns
     -------
-    galois.Poly
+    :
         Matlab's default degree-:math:`m` primitive polynomial over :math:`\mathrm{GF}(p)`.
 
     Notes
@@ -1001,15 +1046,15 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     2. :math:`\mathrm{GF}(2^{14})` uses :math:`x^{14} + x^{10} + x^6 + x + 1`, not :math:`x^{14} + x^5 + x^3 + x + 1`.
     3. :math:`\mathrm{GF}(2^{16})` uses :math:`x^{16} + x^{12} + x^3 + x + 1`, not :math:`x^{16} + x^5 + x^3 + x^2 + 1`.
 
-    References
-    ----------
-    * S. Lin and D. Costello. Error Control Coding. Table 2.7.
-
     Warning
     -------
     This has been tested for all the :math:`\mathrm{GF}(2^m)` fields for :math:`2 \le m \le 16` (Matlab doesn't support
     larger than 16). And it has been spot-checked for :math:`\mathrm{GF}(p^m)`. There may exist other exceptions. Please
     submit a GitHub issue if you discover one.
+
+    References
+    ----------
+    * S. Lin and D. Costello. Error Control Coding. Table 2.7.
 
     Examples
     --------
@@ -1064,20 +1109,20 @@ def primitive_element(
 
     Parameters
     ----------
-    irreducible_poly : galois.Poly
+    irreducible_poly
         The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` that defines the extension field :math:`\mathrm{GF}(p^m)`.
-    start : int, optional
+    start
         Starting value (inclusive, integer representation of the polynomial) in the search for a primitive element :math:`g(x)` of :math:`\mathrm{GF}(p^m)`.
         The default is `None` which represents :math:`p`, which corresponds to :math:`g(x) = x` over :math:`\mathrm{GF}(p)`.
-    stop : int, optional
+    stop
         Stopping value (exclusive, integer representation of the polynomial) in the search for a primitive element :math:`g(x)` of :math:`\mathrm{GF}(p^m)`.
         The default is `None` which represents :math:`p^m`, which corresponds to :math:`g(x) = x^m` over :math:`\mathrm{GF}(p)`.
-    reverse : bool, optional
+    reverse
         Search for a primitive element in reverse order, i.e. find the largest primitive element first. Default is `False`.
 
     Returns
     -------
-    galois.Poly
+    :
         A primitive element of :math:`\mathrm{GF}(p^m)` with irreducible polynomial :math:`f(x)`. The primitive element :math:`g(x)` is
         a polynomial over :math:`\mathrm{GF}(p)` with degree less than :math:`m`.
 
@@ -1148,20 +1193,20 @@ def primitive_elements(
 
     Parameters
     ----------
-    irreducible_poly : galois.Poly
+    irreducible_poly
         The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` that defines the extension field :math:`\mathrm{GF}(p^m)`.
-    start : int, optional
+    start
         Starting value (inclusive, integer representation of the polynomial) in the search for primitive elements :math:`g(x)` of :math:`\mathrm{GF}(p^m)`.
         The default is `None` which represents :math:`p`, which corresponds to :math:`g(x) = x` over :math:`\mathrm{GF}(p)`.
-    stop : int, optional
+    stop
         Stopping value (exclusive, integer representation of the polynomial) in the search for primitive elements :math:`g(x)` of :math:`\mathrm{GF}(p^m)`.
         The default is `None` which represents :math:`p^m`, which corresponds to :math:`g(x) = x^m` over :math:`\mathrm{GF}(p)`.
-    reverse : bool, optional
+    reverse
         Search for primitive elements in reverse order, i.e. largest to smallest. Default is `False`.
 
     Returns
     -------
-    list
+    :
         List of all primitive elements of :math:`\mathrm{GF}(p^m)` with irreducible polynomial :math:`f(x)`. Each primitive element :math:`g(x)` is
         a polynomial over :math:`\mathrm{GF}(p)` with degree less than :math:`m`.
 
@@ -1221,15 +1266,15 @@ def is_primitive_element(element: Poly, irreducible_poly: Poly) -> bool:  # pyli
 
     Parameters
     ----------
-    element : galois.Poly
+    element
         An element :math:`g(x)` of :math:`\mathrm{GF}(p^m)` as a polynomial over :math:`\mathrm{GF}(p)` with degree
         less than :math:`m`.
-    irreducible_poly : galois.Poly
+    irreducible_poly
         The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` that defines the extension field :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
-    bool
+    :
         `True` if :math:`g(x)` is a primitive element of :math:`\mathrm{GF}(p^m)` with irreducible polynomial
         :math:`f(x)`.
 

@@ -1,7 +1,7 @@
 """
 A module that contains functions to perform the forward and reverse Number-Theoretic Transform (NTT).
 """
-from typing import Tuple, List, Optional, Union
+from typing import Sequence, Optional, Union
 
 import numpy as np
 
@@ -15,7 +15,7 @@ __all__ = ["ntt", "intt"]
 
 @set_module("galois")
 def ntt(
-    x: Union[Tuple[int], List[int], np.ndarray, FieldArray],
+    x: Union[Sequence[int],  np.ndarray, FieldArray],
     size: Optional[int] = None,
     modulus: Optional[int] = None
 ) -> FieldArray:
@@ -24,12 +24,12 @@ def ntt(
 
     Parameters
     ----------
-    x : tuple, list, numpy.ndarray, galois.FieldArray
+    x
         The input sequence of integers :math:`x`.
-    size : int, optional
+    size
         The size :math:`N` of the NTT transform, must be at least the length of :math:`x`. The default is `None` which corresponds to `len(x)`.
         If `size` is larger than the length of :math:`x`, :math:`x` is zero-padded.
-    modulus : int, optional
+    modulus
         The prime modulus :math:`p` that defines the field :math:`\mathrm{GF}(p)`. The prime modulus must satisfy :math:`p > \textrm{max}(x)`
         and :math:`p = mN + 1` (i.e., the size of the transform :math:`N` must divide :math:`p - 1`). The default is `None` which corresponds
         to the smallest :math:`p` that satisfies the criteria. However, if :math:`x` is a :math:`\mathrm{GF}(p)` array, then `None` corresponds
@@ -37,7 +37,7 @@ def ntt(
 
     Returns
     -------
-    galois.FieldArray
+    :
         The NTT :math:`X` of the input :math:`x`, with length :math:`N`. The output is a :math:`\mathrm{GF}(p)` array. It can be viewed
         as a normal NumPy array with `.view(np.ndarray)` or converted to a Python list with `.tolist()`.
 
@@ -115,7 +115,7 @@ def ntt(
 
 @set_module("galois")
 def intt(
-    X: Union[Tuple[int], List[int], np.ndarray, FieldArray],
+    X: Union[Sequence[int], np.ndarray, FieldArray],
     size: Optional[int] = None,
     modulus: Optional[int] = None,
     scaled: bool = True
@@ -125,23 +125,23 @@ def intt(
 
     Parameters
     ----------
-    X : tuple, list, numpy.ndarray, galois.FieldArray
+    X
         The input sequence of integers :math:`X`.
-    size : int, optional
+    size
         The size :math:`N` of the INTT transform, must be at least the length of :math:`X`. The default is `None` which corresponds to `len(X)`.
         If `size` is larger than the length of :math:`X`, :math:`X` is zero-padded.
-    modulus : int, optional
+    modulus
         The prime modulus :math:`p` that defines the field :math:`\mathrm{GF}(p)`. The prime modulus must satisfy :math:`p > \textrm{max}(X)`
         and :math:`p = mN + 1` (i.e., the size of the transform :math:`N` must divide :math:`p - 1`).The default is `None` which corresponds
         to the smallest :math:`p` that satisfies the criteria. However, if :math:`x` is a :math:`\mathrm{GF}(p)` array, then `None` corresponds
         to :math:`p` from the specified field.
-    scaled : bool, optional
+    scaled
         Indicates to scale the INTT output by :math:`N`. The default is `True`. If true, :math:`x = \mathrm{INTT}(\mathrm{NTT}(x))`. If false,
         :math:`Nx = \mathrm{INTT}(\mathrm{NTT}(x))`.
 
     Returns
     -------
-    galois.FieldArray
+    :
         The INTT :math:`x` of the input :math:`X`, with length :math:`N`. The output is a :math:`\mathrm{GF}(p)` array. It can be viewed
         as a normal NumPy array with `.view(np.ndarray)` or converted to a Python list with `.tolist()`.
 

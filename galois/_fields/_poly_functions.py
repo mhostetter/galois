@@ -144,16 +144,16 @@ def lagrange_poly(x: FieldArray, y: FieldArray) -> Poly:
 
     Parameters
     ----------
-    x : galois.FieldArray
+    x
         An array of :math:`x_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must have no
         duplicate entries.
-    y : galois.FieldArray
+    y
         An array of :math:`y_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must be the same
         size as :math:`x`.
 
     Returns
     -------
-    galois.Poly
+    :
         The Lagrange polynomial :math:`L(x)`.
 
     Notes
@@ -174,12 +174,24 @@ def lagrange_poly(x: FieldArray, y: FieldArray) -> Poly:
 
     Examples
     --------
+    Create random :math:`(x, y)` pairs in :math:`\mathrm{GF}(3^2)`.
+
     .. ipython:: python
 
-        GF = galois.GF(2**4)
+        GF = galois.GF(3**2)
         x = GF.Elements(); x
-        y = GF.Random(GF.order); y
+        y = GF.Random(x.size); y
+
+    Find the Lagrange polynomial that interpolates the coordinates.
+
+    .. ipython:: python
+
         L = galois.lagrange_poly(x, y); L
+
+    Show that the polynomial evaluated at :math:`x` is :math:`y`.
+
+    .. ipython:: python
+
         np.array_equal(L(x), y)
     """
     if not isinstance(x, FieldArray):
@@ -253,14 +265,14 @@ def square_free_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
 
     Parameters
     ----------
-    poly : galois.Poly
+    poly
         A non-constant, monic polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
-    list
+    :
         The list of non-constant, square-free polynomials :math:`h_i(x)` in the factorization.
-    list
+    :
         The list of corresponding multiplicities :math:`i`.
 
     Notes
@@ -354,14 +366,14 @@ def distinct_degree_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
 
     Parameters
     ----------
-    poly : galois.Poly
+    poly
         A monic, square-free polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
     Returns
     -------
-    list
+    :
         The list of polynomials :math:`f_i(x)` whose irreducible factors all have degree :math:`i`.
-    list
+    :
         The list of corresponding distinct degrees :math:`i`.
 
     Notes
@@ -401,11 +413,11 @@ def distinct_degree_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
 
     .. ipython:: python
 
-        a = galois.Poly([1,0]); a, galois.is_irreducible(a)
-        b = galois.Poly([1,1]); b, galois.is_irreducible(b)
-        c = galois.Poly([1,1,1]); c, galois.is_irreducible(c)
-        d = galois.Poly([1,0,1,1]); d, galois.is_irreducible(d)
-        e = galois.Poly([1,1,0,1]); e, galois.is_irreducible(e)
+        a = galois.Poly([1, 0]); a, galois.is_irreducible(a)
+        b = galois.Poly([1, 1]); b, galois.is_irreducible(b)
+        c = galois.Poly([1, 1, 1]); c, galois.is_irreducible(c)
+        d = galois.Poly([1, 0, 1, 1]); d, galois.is_irreducible(d)
+        e = galois.Poly([1, 1, 0, 1]); e, galois.is_irreducible(e)
         f = a * b * c * d * e; f
 
     The distinct-degree factorization is :math:`\{x(x + 1), x^2 + x + 1, (x^3 + x + 1)(x^3 + x^2 + 1)\}` whose irreducible factors
@@ -462,14 +474,14 @@ def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
 
     Parameters
     ----------
-    poly : galois.Poly
+    poly
         A monic, square-free polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
-    degree : int
+    degree
         The degree :math:`d` of each irreducible factor of :math:`f(x)`.
 
     Returns
     -------
-    list
+    :
         The list of :math:`r` irreducible factors :math:`\{g_1(x), \dots, g_r(x)\}` in lexicographically-increasing order.
 
     Notes
@@ -491,8 +503,8 @@ def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
 
     .. ipython:: python
 
-        a = galois.Poly([1,0]); a, galois.is_irreducible(a)
-        b = galois.Poly([1,1]); b, galois.is_irreducible(b)
+        a = galois.Poly([1, 0]); a, galois.is_irreducible(a)
+        b = galois.Poly([1, 1]); b, galois.is_irreducible(b)
         f = a * b; f
         galois.equal_degree_factorization(f, 1)
 
@@ -501,8 +513,8 @@ def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
     .. ipython:: python
 
         GF = galois.GF(5)
-        a = galois.Poly([1,0,2,1], field=GF); a, galois.is_irreducible(a)
-        b = galois.Poly([1,4,4,4], field=GF); b, galois.is_irreducible(b)
+        a = galois.Poly([1, 0, 2, 1], field=GF); a, galois.is_irreducible(a)
+        b = galois.Poly([1, 4, 4, 4], field=GF); b, galois.is_irreducible(b)
         f = a * b; f
         galois.equal_degree_factorization(f, 3)
     """
@@ -559,25 +571,30 @@ def is_monic(poly: Poly) -> bool:
 
     Parameters
     ----------
-    poly : galois.Poly
+    poly
         A polynomial over a Galois field.
 
     Returns
     -------
-    bool
+    :
         `True` if the polynomial is monic.
 
     Examples
     --------
+    A monic polynomial over :math:`\mathrm{GF}(7)`.
+
     .. ipython:: python
 
         GF = galois.GF(7)
-        p = galois.Poly([1,0,4,5], field=GF); p
+        p = galois.Poly([1, 0, 4, 5], field=GF); p
         galois.is_monic(p)
+
+    A non-monic polynomial over :math:`\mathrm{GF}(7)`.
 
     .. ipython:: python
 
-        p = galois.Poly([3,0,4,5], field=GF); p
+        GF = galois.GF(7)
+        p = galois.Poly([3, 0, 4, 5], field=GF); p
         galois.is_monic(p)
     """
     if not isinstance(poly, Poly):

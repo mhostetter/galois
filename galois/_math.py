@@ -86,12 +86,12 @@ def isqrt(n: int) -> int:
 
     Parameters
     ----------
-    n : int
+    n
         A non-negative integer.
 
     Returns
     -------
-    int
+    :
         The integer square root of :math:`n`.
 
     Examples
@@ -130,14 +130,14 @@ def iroot(n: int, k: int) -> int:
 
     Parameters
     ----------
-    n : int
+    n
         A non-negative integer.
-    k : int
+    k
         The positive root :math:`k`.
 
     Returns
     -------
-    int
+    :
         The integer :math:`k`-th root of :math:`n`.
 
     Examples
@@ -182,14 +182,14 @@ def ilog(n: int, b: int) -> int:
 
     Parameters
     ----------
-    n : int
+    n
         A positive integer.
-    b : int
+    b
         The logarithm base :math:`b`, must be at least 2.
 
     Returns
     -------
-    int
+    :
         The integer logarithm base :math:`b` of :math:`n`.
 
     Examples

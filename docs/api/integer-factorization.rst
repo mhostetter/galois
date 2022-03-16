@@ -8,7 +8,6 @@ This section contains functions for factoring integers and analyzing their prope
 Prime factorization
 -------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -17,7 +16,6 @@ Prime factorization
 Composite factorization
 -----------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -27,7 +25,6 @@ Composite factorization
 Specific factorization algorithms
 ---------------------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -36,10 +33,9 @@ Specific factorization algorithms
    pollard_p1
    pollard_rho
 
-Integer tests
--------------
+Tests
+-----
 
-.. rubric::
 .. autosummary::
    :toctree:
 

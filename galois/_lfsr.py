@@ -1,7 +1,7 @@
 """
 A module containing classes and functions for generating and analyzing linear feedback shift registers and their sequences.
 """
-from typing import Tuple, List, Union, overload
+from typing import Tuple, Sequence, Union, overload
 from typing_extensions import Literal
 
 import numba
@@ -63,7 +63,7 @@ class LFSR:
     def __init__(
         self,
         poly: Poly,
-        state: Union[int, Tuple[int], List[int], np.ndarray, FieldArray] = 1,
+        state: Union[int, Sequence[int], np.ndarray, FieldArray] = 1,
         config: Literal["fibonacci", "galois"] = "fibonacci"
     ):
         r"""
@@ -71,19 +71,14 @@ class LFSR:
 
         Parameters
         ----------
-        poly : galois.Poly
+        poly
             The generator polynomial :math:`g(x) = g_n x^n + \dots + g_1 x + g_0`.
-        state : int, tuple, list, numpy.ndarray, galois.FieldArray, optional
+        state
             The initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`. If specified as an integer, then
             :math:`s_{n-1}` is interpreted as the MSB and :math:`s_0` as the LSB. The default is 1 which corresponds to
             :math:`s = [0, \dots, 0, 1]`.
-        config : str, optional
-            A string indicating the LFSR feedback configuration, either `"fibonacci"` (default) or `"galois"`.
-
-        Returns
-        -------
-        galois.LFSR
-            A linear-feedback shift register object.
+        config
+            A string indicating the LFSR feedback configuration. The default is `"fibonacci"`.
         """
         if not isinstance(poly, Poly):
             raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
@@ -147,12 +142,12 @@ class LFSR:
 
         Parameters
         ----------
-        steps : int, optional
+        steps
             The number of output symbols to produce. The default is 1.
 
         Returns
         -------
-        galois.FieldArray
+        :
             An array of output symbols of type :obj:`field` with size `steps`.
 
         Examples
@@ -200,7 +195,7 @@ class LFSR:
     @property
     def field(self) -> FieldClass:
         """
-        galois.FieldClass: The Galois field that defines the LFSR arithmetic. The generator polynomial :math:`g(x)` is over this
+        The finite field that defines the LFSR arithmetic. The generator polynomial :math:`g(x)` is over this
         field and the state vector contains values in this field.
 
         Examples
@@ -216,7 +211,7 @@ class LFSR:
     @property
     def poly(self) -> Poly:
         r"""
-        galois.Poly: The generator polynomial :math:`g(x) = g_n x^n + \dots + g_1 x + g_0`.
+        The generator polynomial :math:`g(x) = g_n x^n + \dots + g_1 x + g_0`.
 
         Examples
         --------
@@ -230,7 +225,7 @@ class LFSR:
     @property
     def initial_state(self) -> FieldArray:
         r"""
-        galois.FieldArray: The initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`.
+        The initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`.
 
         Examples
         --------
@@ -244,7 +239,7 @@ class LFSR:
     @property
     def state(self) -> FieldArray:
         r"""
-        galois.FieldArray: The current state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`.
+        The current state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`.
 
         Examples
         --------
@@ -258,10 +253,9 @@ class LFSR:
         return self._state.copy()
 
     @property
-    def config(self) -> str:
+    def config(self) -> Literal["fibonacci", "galois"]:
         """
-        str: The LFSR configuration, either `"fibonacci"` or `"galois"`. See the Notes section of :obj:`LFSR` for descriptions of
-        the two configurations.
+        The LFSR configuration. See the Notes section of :obj:`LFSR` for descriptions of the two configurations.
 
         Examples
         --------

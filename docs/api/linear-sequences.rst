@@ -8,7 +8,6 @@ This section contains classes and functions for creating and analyzing linear se
 Linear-feedback shift registers
 -------------------------------
 
-.. rubric::
 .. autosummary::
    :template: class.rst
    :toctree:
@@ -18,7 +17,6 @@ Linear-feedback shift registers
 Sequence analysis functions
 ---------------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 

@@ -95,7 +95,7 @@ html_title = "galois"
 html_favicon = "../logo/galois-favicon-color.png"
 html_logo = "../logo/galois-favicon-white.png"
 
-# material theme options (see theme.conf for more information)
+# Sphinx Immaterial theme options
 html_theme_options = {
     "icon": {
         "repo": "fontawesome/brands/github",
@@ -168,8 +168,6 @@ intersphinx_mapping = {
     "numba": ("https://numba.pydata.org/numba-doc/latest/", None)
 }
 
-# pygments_style = "solarized-light"
-
 autodoc_default_options = {
     "imported-members": True,
     "members": True,
@@ -178,7 +176,8 @@ autodoc_default_options = {
     "member-order": "groupwise",
     "inherited-members": "ndarray"  # Inherit from all classes except np.ndarray
 }
-autodoc_typehints = "none"
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "documented"
 
 autosummary_generate = True
 autosummary_generate_overwrite = True
