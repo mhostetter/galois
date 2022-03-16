@@ -3,6 +3,7 @@ A module that contains the main classes for Galois fields -- FieldClass, FieldAr
 and Poly. They're all in one file because they have circular dependencies. The specific GF2
 FieldClass is also included.
 """
+import contextlib
 import inspect
 import math
 import random
@@ -94,7 +95,8 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
     def _determine_dtypes(cls):
         """
-        At a minimum, valid dtypes are ones that can hold x for x in [0, order).
+        Determine which NumPy integer data types are valid for this finite field. At a minimum, valid dtypes are ones that
+        can hold x for x in [0, order).
         """
         dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1]
         if len(dtypes) == 0:
@@ -105,30 +107,30 @@ class FieldClass(FunctionMeta, UfuncMeta):
     # Class methods
     ###############################################################################
 
-    def compile(cls, mode: str):
+    def compile(cls, mode: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]):
         """
-        Recompile the just-in-time compiled numba ufuncs for a new calculation mode.
+        Recompile the just-in-time compiled ufuncs for a new calculation mode.
 
         This function updates :obj:`ufunc_mode`.
 
         Parameters
         ----------
-        mode : str
+        mode
             The ufunc calculation mode.
 
-            * `"auto"`: Selects "jit-lookup" for fields with order less than :math:`2^{20}`, "jit-calculate" for larger fields, and "python-calculate"
+            * `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
               for fields whose elements cannot be represented with :obj:`numpy.int64`.
             * `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
               In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
-            * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The "jit-calculate" mode is designed for large
-              fields that cannot or should not store lookup tables in RAM. Generally, the "jit-calculate" mode is slower than "jit-lookup".
+            * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
+              fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower than `"jit-lookup"`.
             * `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
               represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
         """
-        if not isinstance(mode, (type(None), str)):
+        if not isinstance(mode, str):
             raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
-        # if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
-        #     raise ValueError(f"Argument `mode` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode!r}.")
+        if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
+            raise ValueError(f"Argument `mode` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode!r}.")
         mode = cls.default_ufunc_mode if mode == "auto" else mode
         if mode not in cls.ufunc_modes:
             raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls.name}, not {mode!r}.")
@@ -143,12 +145,14 @@ class FieldClass(FunctionMeta, UfuncMeta):
     def display(
         cls,
         mode: Literal["int", "poly", "power"] = "int"
-    ) -> "DisplayContext":
+    ) -> contextlib.AbstractContextManager:
         r"""
-        Sets the display mode for all Galois field arrays of this type.
+        Sets the display mode for all *Galois field arrays* from this field.
 
         The display mode can be set to either the integer representation, polynomial representation, or power
-        representation. This function updates :obj:`display_mode`.
+        representation. See :ref:`Field Element Representation` for a further discussion.
+
+        This function updates :obj:`display_mode`.
 
         Warning
         -------
@@ -157,72 +161,98 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
         Parameters
         ----------
-        mode : str, optional
+        mode
             The field element representation.
 
-            * `"int"` (default): The element displayed as the integer representation of the polynomial. For example, :math:`2x^2 + x + 2` is an element of
-              :math:`\mathrm{GF}(3^3)` and is equivalent to the integer :math:`23 = 2 \cdot 3^2 + 3 + 2`.
-            * `"poly"`: The element as a polynomial over :math:`\mathrm{GF}(p)` of degree less than :math:`m`. For example, :math:`2x^2 + x + 2` is an element
-              of :math:`\mathrm{GF}(3^3)`.
-            * `"power"`: The element as a power of the primitive element, see :obj:`FieldClass.primitive_element`. For example, :math:`2x^2 + x + 2 = \alpha^5`
-              in :math:`\mathrm{GF}(3^3)` with irreducible polynomial :math:`x^3 + 2x + 1` and primitive element :math:`\alpha = x`.
+            * `"int"`: Sets the display mode to the :ref:`integer representation <Integer representation>`.
+            * `"poly"`: Sets the display mode to the :ref:`polynomial representation <Polynomial representation>`.
+            * `"power"`: Sets the display mode to the :ref:`power representation <Power representation>`.
 
         Returns
         -------
-        DisplayContext
+        :
             A context manager for use in a `with` statement. If permanently setting the display mode, disregard the
             return value.
 
         Examples
         --------
-        Change the display mode by calling the :func:`display` method.
+        The default display mode is the integer representation.
 
         .. ipython:: python
 
-            GF = galois.GF(3**3)
-            print(GF.properties)
-            a = GF(23); a
+            GF = galois.GF(3**2)
+            x = GF.Elements(); x
 
-            # Permanently set the display mode to the polynomial representation
-            GF.display("poly"); a
-            # Permanently set the display mode to the power representation
-            GF.display("power"); a
-            # Permanently reset the default display mode to the integer representation
-            GF.display(); a
+        Permanently set the display mode by calling :func:`display`.
 
-        The :func:`display` method can also be used as a context manager, as shown below.
+        .. tab-set::
 
-        For the polynomial representation, when the primitive element is :math:`\alpha = x` in :math:`\mathrm{GF}(p)[x]` the polynomial
-        indeterminate used is :math:`\alpha`.
+            .. tab-item:: Integer
+
+                .. ipython:: python
+
+                    GF.display("int");
+                    x
+
+            .. tab-item:: Polynomial
+               :selected:
+
+                .. ipython:: python
+
+                    GF.display("poly");
+                    x
+
+            .. tab-item:: Power
+
+                .. ipython:: python
+
+                    GF.display("power");
+                    x
+
+        Temporarily modify the display mode by using :func:`display` as a context manager.
 
         .. ipython:: python
+            :suppress:
 
-            GF = galois.GF(2**8)
-            print(GF.properties)
-            a = GF.Random()
-            print(GF.display_mode, a)
-            with GF.display("poly"):
-                print(GF.display_mode, a)
-            with GF.display("power"):
-                print(GF.display_mode, a)
-            # The display mode is reset after exiting the context manager
-            print(GF.display_mode, a)
+            GF.display()
 
-        But when the primitive element is :math:`\alpha \ne x` in :math:`\mathrm{GF}(p)[x]`, the polynomial
-        indeterminate used is :math:`x`.
+        .. tab-set::
+
+            .. tab-item:: Integer
+
+                .. ipython:: python
+
+                    print(x)
+                    with GF.display("int"):
+                        print(x)
+                    # Outside the context manager, the display mode reverts to its previous value
+                    print(x)
+
+            .. tab-item:: Polynomial
+               :selected:
+
+                .. ipython:: python
+
+                    print(x)
+                    with GF.display("poly"):
+                        print(x)
+                    # Outside the context manager, the display mode reverts to its previous value
+                    print(x)
+
+            .. tab-item:: Power
+
+                .. ipython:: python
+
+                    print(x)
+                    with GF.display("power"):
+                        print(x)
+                    # Outside the context manager, the display mode reverts to its previous value
+                    print(x)
 
         .. ipython:: python
+            :suppress:
 
-            GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]))
-            print(GF.properties)
-            a = GF.Random()
-            print(GF.display_mode, a)
-            with GF.display("poly"):
-                print(GF.display_mode, a)
-            with GF.display("power"):
-                print(GF.display_mode, a)
-            # The display mode is reset after exiting the context manager
-            print(GF.display_mode, a)
+            GF.display()
         """
         if not isinstance(mode, (type(None), str)):
             raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
@@ -240,53 +270,61 @@ class FieldClass(FunctionMeta, UfuncMeta):
         sort: Literal["power", "poly", "vector", "int"] = "power"
     ) -> str:
         r"""
-        Generates a field element representation table comparing the power, polynomial, vector, and integer representations.
+        Generates a finite field element representation table comparing the power, polynomial, vector, and integer representations.
 
         Parameters
         ----------
-        primitive_element : int, str, np.ndarray, galois.FieldArray, optional
+        primitive_element
             The primitive element to use for the power representation. The default is `None` which uses the field's
-            default primitive element, :obj:`primitive_element`. If an array, it must be a 0-D array.
-        sort : str, optional
-            The sorting method for the table, either `"power"` (default), `"poly"`, `"vector"`, or `"int"`. Sorting by "power" will order
-            the rows of the table by ascending powers of the primitive element. Sorting by any of the others will order the rows in
-            lexicographically-increasing polynomial/vector order, which is equivalent to ascending order of the integer representation.
+            default primitive element, :obj:`FieldClass.primitive_element`. If an array, it must be a 0-D array.
+        sort
+            The sorting method for the table. The default is `"power"`. Sorting by `"power"` will order the rows of the table by ascending
+            powers of the primitive element. Sorting by any of the others will order the rows in lexicographically-increasing polynomial/vector
+            order, which is equivalent to ascending order of the integer representation.
 
         Returns
         -------
-        str
+        :
             A UTF-8 formatted table comparing the power, polynomial, vector, and integer representations of each
             field element.
 
         Examples
         --------
+        Create a *Galois field array class* for :math:`\mathrm{GF}(2^4)`.
+
         .. ipython:: python
 
             GF = galois.GF(2**4)
             print(GF.properties)
 
-        Generate a representation table for :math:`\mathrm{GF}(2^4)`. Since :math:`x^4 + x + 1` is a primitive polynomial,
-        :math:`x` is a primitive element of the field. Notice, :math:`\textrm{ord}(x) = 15`.
+        .. tab-set::
 
-        .. ipython:: python
+            .. tab-item:: Default
 
-            print(GF.repr_table())
+                Generate a representation table for :math:`\mathrm{GF}(2^4)`. Since :math:`x^4 + x + 1` is a primitive polynomial,
+                :math:`x` is a primitive element of the field. Notice, :math:`\textrm{ord}(x) = 15`.
 
-        Generate a representation table for :math:`\mathrm{GF}(2^4)` using a different primitive element :math:`x^3 + x^2 + x`.
-        Notice, :math:`\textrm{ord}(x^3 + x^2 + x) = 15`.
+                .. ipython:: python
 
-        .. ipython:: python
+                    print(GF.repr_table())
 
-            alpha = GF.primitive_elements[-1]
-            print(GF.repr_table(alpha))
+            .. tab-item:: Primitive element
 
-        Generate a representation table for :math:`\mathrm{GF}(2^4)` using a non-primitive element :math:`x^3 + x^2`. Notice,
-        :math:`\textrm{ord}(x^3 + x^2) = 5 \ne 15`.
+                Generate a representation table for :math:`\mathrm{GF}(2^4)` using a different primitive element :math:`x^3 + x^2 + x`.
+                Notice, :math:`\textrm{ord}(x^3 + x^2 + x) = 15`.
 
-        .. ipython:: python
+                .. ipython:: python
 
-            beta = GF("x^3 + x^2")
-            print(GF.repr_table(beta))
+                    print(GF.repr_table("x^3 + x^2 + x"))
+
+            .. tab-item:: Non-primitive element
+
+                Generate a representation table for :math:`\mathrm{GF}(2^4)` using a non-primitive element :math:`x^3 + x^2`. Notice,
+                :math:`\textrm{ord}(x^3 + x^2) = 5 \ne 15`.
+
+                .. ipython:: python
+
+                    print(GF.repr_table("x^3 + x^2"))
         """
         if sort not in ["power", "poly", "vector", "int"]:
             raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
@@ -339,49 +377,87 @@ class FieldClass(FunctionMeta, UfuncMeta):
         y: Optional["FieldArray"] = None
     ) -> str:
         r"""
-        Generates the specified arithmetic table for the Galois field.
+        Generates the specified arithmetic table for the finite field.
 
         Parameters
         ----------
-        operation : str
-            The arithmetic operation, either `"+"`, `"-"`, `"*"`, or `"/"`.
-        x : galois.FieldArray, optional
+        operation
+            The arithmetic operation.
+        x
             Optionally specify the :math:`x` values for the arithmetic table. The default is `None`
             which represents :math:`\{0, \dots, p^m - 1\}`.
-        y : galois.FieldArray, optional
+        y
             Optionally specify the :math:`y` values for the arithmetic table. The default is `None`
             which represents :math:`\{0, \dots, p^m - 1\}` for addition, subtraction, and multiplication and
             :math:`\{1, \dots, p^m - 1\}` for division.
 
         Returns
         -------
-        str
+        :
             A UTF-8 formatted arithmetic table.
 
         Examples
         --------
+        Arithmetic tables can be displayed using the :ref:`integer representation <Integer representation>`.
+
+        .. tab-set::
+
+            .. tab-item:: Integer
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2)
+                    print(GF.arithmetic_table("+"))
+
+            .. tab-item:: Polynomial
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="poly")
+                    print(GF.arithmetic_table("+"))
+
+            .. tab-item:: Power
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="power")
+                    print(GF.arithmetic_table("+"))
+
+        An arithmetic table may also be constructed from arbitrary :math:`x` and :math:`y`.
+
+        .. tab-set::
+
+            .. tab-item:: Integer
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2)
+                    x = GF([7, 2, 8]); x
+                    y = GF([1, 4]); y
+                    print(GF.arithmetic_table("+", x=x, y=y))
+
+            .. tab-item:: Polynomial
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="poly")
+                    x = GF([7, 2, 8]); x
+                    y = GF([1, 4]); y
+                    print(GF.arithmetic_table("+", x=x, y=y))
+
+            .. tab-item:: Power
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="power")
+                    x = GF([7, 2, 8]); x
+                    y = GF([1, 4]); y
+                    print(GF.arithmetic_table("+", x=x, y=y))
+
         .. ipython:: python
+            :suppress:
 
-            GF = galois.GF(3**2)
-            print(GF.arithmetic_table("+"))
-
-        .. ipython:: python
-
-            GF.display("poly");
-            print(GF.arithmetic_table("+"))
-
-        .. ipython:: python
-
-            GF.display("power");
-            print(GF.arithmetic_table("+"))
-
-        .. ipython:: python
-
-            GF.display("poly");
-            x = GF.Random(5); x
-            y = GF.Random(3); y
-            print(GF.arithmetic_table("+", x=x, y=y))
-            GF.display();
+            GF.display()
         """
         if not operation in ["+", "-", "*", "/"]:
             raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation!r}.")
@@ -514,7 +590,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def name(cls) -> str:
         """
-        str: The Galois field name.
+        The finite field's name as a string `GF(p)` or `GF(p^m)`.
 
         Examples
         --------
@@ -533,34 +609,25 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def characteristic(cls) -> int:
         r"""
-        int: The prime characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)`. Adding
+        The prime characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)`. Adding
         :math:`p` copies of any element will always result in :math:`0`.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF(2**8, display="poly")
-            GF.characteristic
-            a = GF.Random(low=1); a
-            a * GF.characteristic
-            @suppress
-            GF.display();
+            galois.GF(2).characteristic
+            galois.GF(2**8).characteristic
+            galois.GF(31).characteristic
+            galois.GF(7**5).characteristic
 
-        .. ipython:: python
-
-            GF = galois.GF(31)
-            GF.characteristic
-            a = GF.Random(low=1); a
-            a * GF.characteristic
         """
         return cls._characteristic
 
     @property
     def degree(cls) -> int:
         r"""
-        int: The prime characteristic's degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)`. The degree
-        is a positive integer.
+        The extension degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)`. The degree is a positive integer.
 
         Examples
         --------
@@ -576,8 +643,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def order(cls) -> int:
         r"""
-        int: The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`. The order of the field is also equal to
-        the field's size.
+        The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`. The order of the field is equal to the field's size.
 
         Examples
         --------
@@ -593,7 +659,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def irreducible_poly(cls) -> "Poly":
         r"""
-        galois.Poly: The irreducible polynomial :math:`f(x)` of the Galois field :math:`\mathrm{GF}(p^m)`. The irreducible
+        The irreducible polynomial :math:`f(x)` of the Galois field :math:`\mathrm{GF}(p^m)`. The irreducible
         polynomial is of degree :math:`m` over :math:`\mathrm{GF}(p)`.
 
         Examples
@@ -611,43 +677,36 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def is_primitive_poly(cls) -> bool:
         r"""
-        bool: Indicates whether the :obj:`irreducible_poly` is a primitive polynomial. If so, :math:`x` is a primitive element
-        of the Galois field.
+        Indicates whether the :obj:`FieldClass.irreducible_poly` is a primitive polynomial. If so, :math:`x` is a primitive element
+        of the finite field.
+
+        The default irreducible polynomial is a Conway polynomial, see :func:`galois.conway_poly`, which is a primitive
+        polynomial. However, finite fields may be constructed from non-primitive, irreducible polynomials.
 
         Examples
         --------
-        .. ipython:: python
-
-            GF = galois.GF(2**8, display="poly")
-            GF.irreducible_poly
-            GF.primitive_element
-
-            # The irreducible polynomial is a primitive polynomial if the primitive element is a root
-            GF.irreducible_poly(GF.primitive_element, field=GF)
-            GF.is_primitive_poly
-            @suppress
-            GF.display();
-
-        Here is an example using the :math:`\mathrm{GF}(2^8)` field from AES, which does not use a primitive polynomial.
+        The default :math:`\mathrm{GF}(2^8)` field uses a primitive polynomial.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]), display="poly")
-            GF.irreducible_poly
-            GF.primitive_element
-
-            # The irreducible polynomial is a primitive polynomial if the primitive element is a root
-            GF.irreducible_poly(GF.primitive_element, field=GF)
+            GF = galois.GF(2**8)
+            print(GF.properties)
             GF.is_primitive_poly
-            @suppress
-            GF.display();
+
+        The :math:`\mathrm{GF}(2^8)` field from AES uses a non-primitive polynomial.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+            print(GF.properties)
+            GF.is_primitive_poly
         """
         return cls._is_primitive_poly
 
     @property
     def primitive_element(cls) -> "FieldArray":
         r"""
-        galois.FieldArray: A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
+        A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
 
         A primitive element is a root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
@@ -668,7 +727,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def primitive_elements(cls) -> "FieldArray":
         r"""
-        galois.FieldArray: All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
+        All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
 
         Examples
@@ -688,7 +747,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def quadratic_residues(cls) -> "FieldArray":
         r"""
-        galois.FieldArray: All quadratic residues in the Galois field.
+        All quadratic residues in the finite field.
 
         An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic residue* if there exists a :math:`y` such that
         :math:`y^2 = x` in the field.
@@ -704,19 +763,17 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
             GF = galois.GF(11)
             x = GF.quadratic_residues; x
-            r = np.sqrt(x)
-            r, -r
-            r**2
-            (-r)**2
+            r = np.sqrt(x); r
+            r ** 2
+            (-r) ** 2
 
         .. ipython:: python
 
             GF = galois.GF(2**4)
             x = GF.quadratic_residues; x
-            r = np.sqrt(x)
-            r, -r
-            r**2
-            (-r)**2
+            r = np.sqrt(x); r
+            r ** 2
+            (-r) ** 2
         """
         x = cls.Elements()
         is_quadratic_residue = x.is_quadratic_residue()
@@ -725,7 +782,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def quadratic_non_residues(cls) -> "FieldArray":
         r"""
-        galois.FieldArray: All quadratic non-residues in the Galois field.
+        All quadratic non-residues in the Galois field.
 
         An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic non-residue* if there does not exist a :math:`y` such that
         :math:`y^2 = x` in the field.
@@ -754,7 +811,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def is_prime_field(cls) -> bool:
         """
-        bool: Indicates if the field's order is prime.
+        Indicates if the finite field is a prime field, not an extension field. This is true when the field's order is prime.
 
         Examples
         --------
@@ -770,7 +827,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def is_extension_field(cls) -> bool:
         """
-        bool: Indicates if the field's order is a prime power.
+        Indicates if the finite field is an extension field. This is true when the field's order is a prime power.
 
         Examples
         --------
@@ -786,35 +843,37 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def prime_subfield(cls) -> "FieldClass":
         r"""
-        galois.FieldClass: The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
+        The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
 
         Examples
         --------
         .. ipython:: python
 
-            print(galois.GF(2).prime_subfield.properties)
-            print(galois.GF(2**8).prime_subfield.properties)
-            print(galois.GF(31).prime_subfield.properties)
-            print(galois.GF(7**5).prime_subfield.properties)
+            galois.GF(2).prime_subfield
+            galois.GF(2**8).prime_subfield
+            galois.GF(31).prime_subfield
+            galois.GF(7**5).prime_subfield
         """
         return cls._prime_subfield
 
     @property
     def dtypes(cls) -> List[np.dtype]:
-        """
-        list: List of valid integer :obj:`numpy.dtype` values that are compatible with this Galois field. Creating an array with an
-        unsupported dtype will throw a `TypeError` exception.
+        r"""
+        List of valid integer :obj:`numpy.dtype` values that are compatible with this finite field. Creating an array with an
+        unsupported dtype will raise a `TypeError` exception.
+
+        For finite fields whose elements cannot be represented with :obj:`numpy.int64`, the only valid data type is :obj:`numpy.object_`.
 
         Examples
         --------
+        Some data types are too small for certain finite fields, such as :obj:`numpy.int16` for :math:`\mathrm{GF}(7^5)`.
+
         .. ipython:: python
 
-            GF = galois.GF(2); GF.dtypes
-            GF = galois.GF(2**8); GF.dtypes
             GF = galois.GF(31); GF.dtypes
             GF = galois.GF(7**5); GF.dtypes
 
-        For Galois fields that cannot be represented by :obj:`numpy.int64`, the only valid dtype is :obj:`numpy.object_`.
+        Large fields must use :obj:`numpy.object_` which uses Python :obj:`int` for its unlimited size.
 
         .. ipython:: python
 
@@ -824,61 +883,38 @@ class FieldClass(FunctionMeta, UfuncMeta):
         return cls._dtypes
 
     @property
-    def display_mode(cls) -> str:
+    def display_mode(cls) -> Literal["int", "poly", "power"]:
         r"""
-        str: The representation of Galois field elements, either `"int"`, `"poly"`, or `"power"`. This can be
-        changed with :func:`display`.
+        The current finite field element representation. This can be changed with :func:`display`.
+
+        See :ref:`Field Element Representation` for a further discussion.
 
         Examples
         --------
-        For the polynomial representation, when the primitive element is :math:`\alpha = x` in :math:`\mathrm{GF}(p)[x]` the polynomial
-        indeterminate used is :math:`\alpha`.
+        The default display mode is the integer representation.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            print(GF.properties)
-            a = GF.Random()
-            print(GF.display_mode, a)
-            with GF.display("poly"):
-                print(GF.display_mode, a)
-            with GF.display("power"):
-                print(GF.display_mode, a)
-            # The display mode is reset after exiting the context manager
-            print(GF.display_mode, a)
+            GF = galois.GF(3**2)
+            x = GF.Elements(); x
+            GF.display_mode
 
-        But when the primitive element is :math:`\alpha \ne x` in :math:`\mathrm{GF}(p)[x]`, the polynomial
-        indeterminate used is :math:`x`.
+        Permanently modify the display mode by calling :func:`display`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8, irreducible_poly=galois.Poly.Degrees([8,4,3,1,0]))
-            print(GF.properties)
-            a = GF.Random()
-            print(GF.display_mode, a)
-            with GF.display("poly"):
-                print(GF.display_mode, a)
-            with GF.display("power"):
-                print(GF.display_mode, a)
-            # The display mode is reset after exiting the context manager
-            print(GF.display_mode, a)
-
-        The power representation displays elements as powers of :math:`\alpha` the primitive element, see
-        :obj:`FieldClass.primitive_element`.
-
-        .. ipython:: python
-
-            with GF.display("power"):
-                print(GF.display_mode, a)
-            # The display mode is reset after exiting the context manager
-            print(GF.display_mode, a)
+            GF.display("poly");
+            x
+            GF.display_mode
+            @suppress
+            GF.display()
         """
         return cls._display_mode
 
     @property
-    def ufunc_mode(cls) -> str:
+    def ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
         """
-        str: The mode for ufunc compilation, either `"jit-lookup"`, `"jit-calculate"`, or `"python-calculate"`.
+        The current ufunc compilation mode. The ufuncs can be recompiled with :func:`compile`.
 
         Examples
         --------
@@ -894,7 +930,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def ufunc_modes(cls) -> List[str]:
         """
-        list: All supported ufunc modes for this Galois field array class.
+        All supported ufunc compilation modes for this *Galois field array class*.
 
         Examples
         --------
@@ -911,9 +947,9 @@ class FieldClass(FunctionMeta, UfuncMeta):
             return ["jit-lookup", "jit-calculate"]
 
     @property
-    def default_ufunc_mode(cls) -> str:
+    def default_ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
         """
-        str: The default ufunc arithmetic mode for this Galois field.
+        The default ufunc compilation mode for this *Galois field array class*.
 
         Examples
         --------
@@ -934,7 +970,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
     @property
     def properties(cls) -> str:
         """
-        str: A formatted string displaying relevant properties of the Galois field.
+        A formatted string displaying relevant properties of the finite field.
 
         Examples
         --------
@@ -977,7 +1013,7 @@ class DirMeta(type):
             return super().__dir__()
 
 
-class DisplayContext:
+class DisplayContext(contextlib.AbstractContextManager):
     """
     Simple context manager for the :obj:`FieldClass.display` method.
     """
@@ -1003,98 +1039,56 @@ class DisplayContext:
 @set_module("galois")
 class FieldArray(np.ndarray, metaclass=FieldClass):
     r"""
-    An array over :math:`\mathrm{GF}(p^m)`.
+    A :ref:`Galois field array` over :math:`\mathrm{GF}(p^m)`.
 
     Important
     ---------
-    :obj:`galois.FieldArray` is an abstract base class for all Galois field array classes and cannot be instantiated
-    directly. Instead, :obj:`galois.FieldArray` subclasses are created using the class factory :func:`galois.GF`.
+        :obj:`galois.FieldArray` is an abstract base class for all :ref:`Galois field array classes <Galois field array class>` and cannot
+        be instantiated directly. Instead, :obj:`galois.FieldArray` subclasses are created using the class factory :func:`galois.GF`.
 
-    This class is included in the API to allow the user to test if an array is a Galois field array subclass.
+        This class is included in the API to allow the user to test if an array is a Galois field array subclass.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        GF = galois.GF(7)
-        issubclass(GF, galois.FieldArray)
-        x = GF([1, 2, 3]); x
-        isinstance(x, galois.FieldArray)
+            GF = galois.GF(7)
+            issubclass(GF, galois.FieldArray)
+            x = GF([1, 2, 3]); x
+            isinstance(x, galois.FieldArray)
 
-    Notes
-    -----
-    :obj:`galois.FieldArray` is an abstract base class and cannot be instantiated directly. Instead, the user creates a :obj:`galois.FieldArray`
-    subclass for the field :math:`\mathrm{GF}(p^m)` by calling the class factory :func:`galois.GF`, e.g. `GF = galois.GF(p**m)`. In this case,
-    `GF` is a subclass of :obj:`galois.FieldArray` and an instance of :obj:`galois.FieldClass`, a metaclass that defines special methods and attributes
-    related to the Galois field.
+    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldClass` and
+    :obj:`galois.FieldArray`.
 
-    :obj:`galois.FieldArray`, and `GF`, is a subclass of :obj:`numpy.ndarray` and its constructor `x = GF(array_like)` has the same syntax as
-    :func:`numpy.array`. The returned :obj:`galois.FieldArray` instance `x` is a :obj:`numpy.ndarray` that is acted upon like any other
-    numpy array, except all arithmetic is performed in :math:`\mathrm{GF}(p^m)` not in :math:`\mathbb{Z}` or :math:`\mathbb{R}`.
+    See :ref:`Array Creation` for a detailed discussion on creating arrays (with and without copying) from array-like
+    objects, valid NumPy data types, and other :obj:`galois.FieldArray` classmethods.
 
     Examples
     --------
-    Construct the Galois field class for :math:`\mathrm{GF}(2^8)` using the class factory :func:`galois.GF` and then display
-    some relevant properties of the field. See :obj:`galois.FieldClass` for a complete list of Galois field array class
-    methods and attributes.
+    Create a :ref:`Galois field array class` using the class factory :func:`galois.GF`.
 
     .. ipython:: python
 
-        GF256 = galois.GF(2**8)
-        GF256
-        print(GF256.properties)
+        GF = galois.GF(3**5)
+        print(GF.properties)
 
-    Depending on the field's order, only certain numpy dtypes are supported. See :obj:`galois.FieldClass.dtypes` for more details.
-
-    .. ipython:: python
-
-        GF256.dtypes
-
-    Galois field arrays can be created from existing numpy arrays.
+    The *Galois field array class* `GF` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldClass` as its
+    metaclass.
 
     .. ipython:: python
 
-        x = np.array([155, 232, 162, 159,  63,  29, 247, 141,  75, 189], dtype=int)
+        isinstance(GF, galois.FieldClass)
+        issubclass(GF, galois.FieldArray)
 
-        # Explicit Galois field array creation -- a copy is performed
-        GF256(x)
-
-        # Or view an existing numpy array as a Galois field array -- no copy is performed
-        x.view(GF256)
-
-    Galois field arrays can also be created explicitly by converting an "array-like" object.
+    Create a :ref:`Galois field array` using `GF`'s constructor.
 
     .. ipython:: python
 
-        # A scalar GF(2^8) element from its integer representation
-        GF256(37)
+        x = GF([44, 236, 206, 138]); x
 
-        # A scalar GF(2^8) element from its polynomial representation
-        GF256("x^5 + x^2 + 1")
-
-        # A GF(2^8) array from a list of elements in their integer representation
-        GF256([[142, 27], [92, 253]])
-
-        # A GF(2^8) array from a list of elements in their integer and polynomial representations
-        GF256([[142, "x^5 + x^2 + 1"], [92, 253]])
-
-    There's also an alternate constructor :func:`Vector` (and accompanying :func:`vector` method) to convert an array of coefficients
-    over :math:`\mathrm{GF}(p)` with last dimension :math:`m` into Galois field elements in :math:`\mathrm{GF}(p^m)`.
+    The *Galois field array* `x` is an instance of the *Galois field array class* `GF`.
 
     .. ipython:: python
 
-        # A scalar GF(2^8) element from its vector representation
-        GF256.Vector([0, 0, 1, 0, 0, 1, 0, 1])
-
-        # A GF(2^8) array from a list of elements in their vector representation
-        GF256.Vector([[[1, 0, 0, 0, 1, 1, 1, 0], [0, 0, 0, 1, 1, 0, 1, 1]], [[0, 1, 0, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 1, 0, 1]]])
-
-    Newly-created arrays will use the smallest unsigned dtype, unless otherwise specified.
-
-    .. ipython:: python
-
-        a = GF256([66, 166, 27, 182, 125]); a
-        a.dtype
-        b = GF256([66, 166, 27, 182, 125], dtype=np.int64); b
-        b.dtype
+        isinstance(x, GF)
     """
     # pylint: disable=unsupported-membership-test,not-an-iterable,too-many-public-methods
 
@@ -1119,36 +1113,32 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         ndmin: int = 0
     ):
         r"""
-        Creates an array over :math:`\mathrm{GF}(p^m)`.
+        Creates a :ref:`Galois field array` over :math:`\mathrm{GF}(p^m)`.
 
         Parameters
         ----------
-        array : int, str, tuple, list, numpy.ndarray, galois.FieldArray
-            The input array-like object to be converted to a Galois field array. See the examples section for demonstations of array creation
-            using each input type. See see :func:`galois.FieldClass.display` and :obj:`galois.FieldClass.display_mode` for a description of the
-            "integer" and "polynomial" representation of Galois field elements.
+        array
+            The input array-like object to be converted to a *Galois field array*. See :ref:`Array Creation` for a detailed discussion
+            about creating new arrays and array-like objects.
 
-            * :obj:`int`: A single integer, which is the "integer representation" of a Galois field element, creates a 0-D array.
-            * :obj:`str`: A single string, which is the "polynomial representation" of a Galois field element, creates a 0-D array.
-            * :obj:`tuple`, :obj:`list`: A list or tuple (or nested lists/tuples) of ints or strings (which can be mix-and-matched) creates an
-              array of Galois field elements from their integer or polynomial representations.
-            * :obj:`numpy.ndarray`, :obj:`galois.FieldArray`: An array of ints creates a copy of the array over this specific field.
+            * :obj:`int`: A single integer, which is the :ref:`integer representation <Integer representation>` of a finite field element,
+              creates a 0-D array (scalar).
+            * :obj:`str`: A single string, which is the :ref:`polynomial representation <Polynomial representation>` of a finite field element,
+              creates a 0-D array (scalar).
+            * :obj:`tuple`, :obj:`list`: A list or tuple (or nested lists/tuples) of integers or strings (which can be mixed and matched) creates
+              an array of finite field elements from their integer or polynomial representations.
+            * :obj:`numpy.ndarray`, :obj:`galois.FieldArray`: A NumPy array of integers creates a copy of the array over this specific field.
 
-        dtype : numpy.dtype, optional
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
-        copy : bool, optional
+            data type for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+        copy
             The `copy` keyword argument from :func:`numpy.array`. The default is `True` which makes a copy of the input array.
-        order : str, optional
+        order
             The `order` keyword argument from :func:`numpy.array`. Valid values are `"K"` (default), `"A"`, `"C"`, or `"F"`.
-        ndmin : int, optional
+        ndmin
             The `ndmin` keyword argument from :func:`numpy.array`. The minimum number of dimensions of the output.
             The default is 0.
-
-        Returns
-        -------
-        galois.FieldArray
-            An array over :math:`\mathrm{GF}(p^m)`.
         """
         # pylint: disable=unused-argument,super-init-not-called
         # Adding __init__ and not doing anything is done to overwrite the superclass's __init__ docstring
@@ -1273,29 +1263,29 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         """
-        Creates a Galois field array with all zeros.
+        Creates an array of all zeros.
 
         Parameters
         ----------
-        shape : int, tuple
-            A numpy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+        shape
+            A NumPy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
             A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
-            `(M,N)`, represents a 2-D array with each element indicating the size in each dimension.
-        dtype : numpy.dtype, optional
+            `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
 
         Returns
         -------
-        galois.FieldArray
-            A Galois field array of zeros.
+        :
+            An array of zeros.
 
         Examples
         --------
         .. ipython:: python
 
             GF = galois.GF(31)
-            GF.Zeros((2,5))
+            GF.Zeros((2, 5))
         """
         dtype = cls._get_dtype(dtype)
         array = np.zeros(shape, dtype=dtype)
@@ -1308,29 +1298,29 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         """
-        Creates a Galois field array with all ones.
+        Creates an array of all ones.
 
         Parameters
         ----------
-        shape : int, tuple
-            A numpy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+        shape
+            A NumPy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
             A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
-            `(M,N)`, represents a 2-D array with each element indicating the size in each dimension.
-        dtype : numpy.dtype, optional
+            `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
 
         Returns
         -------
-        galois.FieldArray
-            A Galois field array of ones.
+        :
+            An array of ones.
 
         Examples
         --------
         .. ipython:: python
 
             GF = galois.GF(31)
-            GF.Ones((2,5))
+            GF.Ones((2, 5))
         """
         dtype = cls._get_dtype(dtype)
         array = np.ones(shape, dtype=dtype)
@@ -1345,31 +1335,44 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         """
-        Creates a 1-D Galois field array with a range of field elements.
+        Creates a 1-D array with a range of field elements.
 
         Parameters
         ----------
-        start : int
-            The starting Galois field value (inclusive) in its integer representation.
-        stop : int
-            The stopping Galois field value (exclusive) in its integer representation.
-        step : int, optional
-            The space between values. The default is 1.
-        dtype : numpy.dtype, optional
+        start
+            The starting finite field element (inclusive) in its :ref:`integer representation <Integer representation>`.
+        stop
+            The stopping finite field element (exclusive) in its :ref:`integer representation <Integer representation>`.
+        step
+            The increment between finite field element. The default is 1.
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
 
         Returns
         -------
-        galois.FieldArray
-            A 1-D Galois field array of a range of field elements.
+        :
+            A 1-D array of a range of finite field elements.
 
         Examples
         --------
+        For prime fields, the increment is simply a finite field element, since all elements are integers.
+
         .. ipython:: python
 
             GF = galois.GF(31)
-            GF.Range(10,20)
+            GF.Range(10, 20)
+            GF.Range(10, 20, 2)
+
+        For extension fields, the increment is the integer increment between finite field elements in their :ref:`integer representation <Integer representation>`.
+
+        .. ipython:: python
+
+            GF = galois.GF(3**3, display="poly")
+            GF.Range(10, 20)
+            GF.Range(10, 20, 2)
+            @suppress
+            GF.display()
         """
         if not stop <= cls.order:
             raise ValueError(f"The stopping value must be less than the field order of {cls.order}, not {stop}.")
@@ -1387,31 +1390,31 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         """
-        Creates a Galois field array with random field elements.
+        Creates an array with random field elements.
 
         Parameters
         ----------
-        shape : int, tuple
-            A numpy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+        shape
+            A NumPy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
             A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
-            `(M,N)`, represents a 2-D array with each element indicating the size in each dimension.
-        low : int, optional
-            The lowest value (inclusive) of a random field element in its integer representation. The default is 0.
-        high : int, optional
-            The highest value (exclusive) of a random field element in its integer representation. The default is `None`
-            which represents the field's order :math:`p^m`.
-        seed: int, numpy.random.Generator, optional
+            `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
+        low
+            The smallest finite field element (inclusive) in its :ref:`integer representation <Integer representation>`.
+            The default is 0.
+        high
+            The largest finite field element (exclusive) in its :ref:`integer representation <Integer representation>`.
+            The default is `None` which represents the field's order :math:`p^m`.
+        seed
             Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
-            entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed. If so,
-            it is used directly when `dtype != np.object_`. Its state is used to seed `random.seed()`, otherwise.
-        dtype : numpy.dtype, optional
+            entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
 
         Returns
         -------
-        galois.FieldArray
-            A Galois field array of random field elements.
+        :
+            An array of random finite field elements.
 
         Examples
         --------
@@ -1420,7 +1423,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         .. ipython:: python
 
             GF = galois.GF(31)
-            GF.Random((2,5))
+            GF.Random((2, 5))
 
         Generate a random array with a specified seed. This produces repeatable outputs.
 
@@ -1429,7 +1432,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             GF.Random(10, seed=123456789)
             GF.Random(10, seed=123456789)
 
-        Generate a group of random arrays with one global seed.
+        Generate a group of random arrays using a single global seed.
 
         .. ipython:: python
 
@@ -1476,39 +1479,32 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         r"""
-        Creates a 1-D Galois field array of the field's elements :math:`\{0, \dots, p^m-1\}`.
+        Creates a 1-D array of the finite field's elements :math:`\{0, \dots, p^m-1\}`.
 
         Parameters
         ----------
-        dtype : numpy.dtype, optional
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
 
         Returns
         -------
-        galois.FieldArray
-            A 1-D Galois field array of all the field's elements.
+        :
+            A 1-D array of all the finite field's elements.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF(2**4)
+            GF = galois.GF(31)
             GF.Elements()
-
-        As usual, Galois field elements can be displayed in either the "integer" (default), "polynomial", or "power" representation.
-        This can be changed by calling :func:`galois.FieldClass.display`.
 
         .. ipython:: python
 
-            # Permanently set the display mode to "poly"
-            GF.display("poly");
+            GF = galois.GF(3**2, display="poly")
             GF.Elements()
-            # Temporarily set the display mode to "power"
-            with GF.display("power"):
-                print(GF.Elements())
-            # Reset the display mode to "int"
-            GF.display();
+            @suppress
+            GF.display()
         """
         return cls.Range(0, cls.order, step=1, dtype=dtype)
 
@@ -1519,20 +1515,20 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         r"""
-        Creates an :math:`n \times n` Galois field identity matrix.
+        Creates an :math:`n \times n` identity matrix.
 
         Parameters
         ----------
-        size : int
+        size
             The size :math:`n` along one axis of the matrix. The resulting array has shape `(size, size)`.
-        dtype : numpy.dtype, optional
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
 
         Returns
         -------
-        galois.FieldArray
-            A Galois field identity matrix of shape `(size, size)`.
+        :
+            A 2-D identity matrix with shape `(size, size)`.
 
         Examples
         --------
@@ -1554,34 +1550,34 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         r"""
-        Creates an :math:`m \times n` Vandermonde matrix of :math:`a \in \mathrm{GF}(p^m)`.
+        Creates an :math:`m \times n` Vandermonde matrix of :math:`a \in \mathrm{GF}(q)`.
 
         Parameters
         ----------
-        a : int, galois.FieldArray
-            An element of :math:`\mathrm{GF}(p^m)`.
-        m : int
+        a
+            An element of :math:`\mathrm{GF}(q)`.
+        m
             The number of rows in the Vandermonde matrix.
-        n : int
+        n
             The number of columns in the Vandermonde matrix.
-        dtype : numpy.dtype, optional
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
 
         Returns
         -------
-        galois.FieldArray
-            The :math:`m \times n` Vandermonde matrix.
+        :
+            A :math:`m \times n` Vandermonde matrix.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF(2**3)
-            a = GF.primitive_element
-            V = GF.Vandermonde(a, 7, 7)
-            with GF.display("power"):
-                print(V)
+            GF = galois.GF(2**3, display="power")
+            a = GF.primitive_element; a
+            V = GF.Vandermonde(a, 7, 7); V
+            @suppress
+            GF.display()
         """
         if not isinstance(a, (int, np.integer, cls)):
             raise TypeError(f"Argument `a` must be an integer or element of {cls.name}, not {type(a)}.")
@@ -1611,35 +1607,33 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         r"""
-        Creates a Galois field array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
+        Creates an array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
         This function is the inverse operation of the :func:`vector` method.
 
         Parameters
         ----------
-        array : array_like
-            The input array with field elements in :math:`\mathrm{GF}(p)` to be converted to a Galois field array in :math:`\mathrm{GF}(p^m)`.
-            The last dimension of the input array must be :math:`m`. An input array with shape `(n1, n2, m)` has output shape `(n1, n2)`. By convention,
-            the vectors are ordered from highest degree to 0-th degree.
-        dtype : numpy.dtype, optional
+        array
+            An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`. An array with shape `(n1, n2, m)` has output shape
+            `(n1, n2)`. By convention, the vectors are ordered from highest degree to 0-th degree.
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
 
         Returns
         -------
-        galois.FieldArray
-            A Galois field array over :math:`\mathrm{GF}(p^m)`.
+        :
+            An array over :math:`\mathrm{GF}(p^m)`.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF(2**6)
-            vec = galois.GF2.Random((3,6)); vec
-            a = GF.Vector(vec); a
-            with GF.display("poly"):
-                print(a)
+            GF = galois.GF(3**3, display="poly")
+            a = GF.Vector([[1, 0, 2], [0, 2, 1]]); a
             a.vector()
+            @suppress
+            GF.display()
         """
         order = cls.prime_subfield.order
         degree = cls.degree
@@ -1660,7 +1654,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        numpy.integer, numpy.ndarray
+        :
             An integer array of the additive order of each element in :math:`x`. The return value is a single integer if the
             input array :math:`x` is a scalar.
 
@@ -1672,14 +1666,16 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Examples
         --------
-        Below is the additive order of each element of :math:`\mathrm{GF}(2^4)`.
+        Below is the additive order of each element of :math:`\mathrm{GF}(3^2)`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**4)
+            GF = galois.GF(3**2, display="poly")
             x = GF.Elements(); x
             order = x.additive_order(); order
-            x*order
+            x * order
+            @suppress
+            GF.display()
         """
         x = self
         field = type(self)
@@ -1698,7 +1694,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        numpy.integer, numpy.ndarray
+        :
             An integer array of the multiplicative order of each element in :math:`x`. The return value is a single integer if the
             input array :math:`x` is a scalar.
 
@@ -1711,23 +1707,28 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         The multiplicative order of :math:`0` is not defined and will raise an :obj:`ArithmeticError`.
 
         :func:`FieldArray.multiplicative_order` should not be confused with :obj:`FieldClass.order`. The former is a method on a
-        Galois field array that returns the multiplicative order of elements. The latter is a property of the field, namely
+        *Galois field array* that returns the multiplicative order of elements. The latter is a property of the field, namely
         the finite field's order or size.
 
         Examples
         --------
-        Below is the multiplicative order of each non-zero element of :math:`\mathrm{GF}(2^4)`. The elements with
-        :math:`\textrm{ord}(x) = 15` are multiplicative generators of :math:`\mathrm{GF}(2^4)^\times`
+        Below is the multiplicative order of each non-zero element of :math:`\mathrm{GF}(3^2)`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**4)
+            GF = galois.GF(3**2, display="poly")
             # The multiplicative order of 0 is not defined
             x = GF.Range(1, GF.order); x
             order = x.multiplicative_order(); order
-            # Elements with order of 15 are the primitive elements (generators) of the field
+            x ** order
+
+        The elements with :math:`\textrm{ord}(x) = 8` are multiplicative generators of :math:`\mathrm{GF}(3^2)^\times`.
+
+        .. ipython:: python
+
             GF.primitive_elements
-            x**order
+            @suppress
+            GF.display()
         """
         if not np.count_nonzero(self) == self.size:
             raise ArithmeticError("The multiplicative order of 0 is not defined.")
@@ -1752,12 +1753,12 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     def is_quadratic_residue(self) -> Union[np.bool_, np.ndarray]:
         r"""
-        Determines if the elements of :math:`x` are quadratic residues in the Galois field.
+        Determines if the elements of :math:`x` are quadratic residues in the finite field.
 
         Returns
         -------
-        numpy.bool_, numpy.ndarray
-            An boolean array indicating if each element in :math:`x` is a quadratic residue. The return value is a single boolean if the
+        :
+            A boolean array indicating if each element in :math:`x` is a quadratic residue. The return value is a single boolean if the
             input array :math:`x` is a scalar.
 
         Notes
@@ -1774,21 +1775,22 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Examples
         --------
+        Since :math:`\mathrm{GF}(2^3)` has characteristic :math:`2`, every element has a square root.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**3, display="poly")
+            x = GF.Elements(); x
+            x.is_quadratic_residue()
+            @suppress
+            GF.display()
+
+        In :math:`\mathrm{GF}(11)`, the characteristic is greater than :math:`2` so only half of the elements have square
+        roots.
+
         .. ipython:: python
 
             GF = galois.GF(11)
-            x = GF.Elements(); x
-            x.is_quadratic_residue()
-
-        .. ipython:: python
-
-            GF = galois.GF(2**4)
-            x = GF.Elements(); x
-            x.is_quadratic_residue()
-
-        .. ipython:: python
-
-            GF = galois.GF(3**3)
             x = GF.Elements(); x
             x.is_quadratic_residue()
         """
@@ -1807,32 +1809,32 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         dtype: Optional[Union[np.dtype, int, object]] = None
     ) -> "FieldArray":
         r"""
-        Converts the Galois field array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
+        Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
         This function is the inverse operation of the :func:`Vector` constructor. For an array with shape `(n1, n2)`, the output shape
         is `(n1, n2, m)`. By convention, the vectors are ordered from highest degree to 0-th degree.
 
         Parameters
         ----------
-        dtype : numpy.dtype, optional
+        dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class, i.e. the first element in :obj:`galois.FieldClass.dtypes`.
+            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
 
         Returns
         -------
-        galois.FieldArray
-            A Galois field array of length-:math:`m` vectors over :math:`\mathrm{GF}(p)`.
+        :
+            An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`.
 
         Examples
         --------
         .. ipython:: python
 
-            GF = galois.GF(2**6)
-            a = GF.Random(3); a
-            with GF.display("poly"):
-                print(a)
+            GF = galois.GF(3**3, display="poly")
+            a = GF([11, 7]); a
             vec = a.vector(); vec
             GF.Vector(vec)
+            @suppress
+            GF.display()
         """
         order = type(self).prime_subfield.order
         degree = type(self).degree
@@ -1852,64 +1854,44 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form.
 
-        **Row reduction operations**
-
-        1. Swap the position of any two rows.
-        2. Multiply a row by a non-zero scalar.
-        3. Add one row to a scalar multiple of another row.
-
         Parameters
         ----------
-        ncols : int, optional
+        ncols
             The number of columns to perform Gaussian elimination over. The default is `None` which represents
-            the number of columns of the input array.
+            the number of columns of the matrix.
 
         Returns
         -------
-        galois.FieldArray
-            The reduced row echelon form of the input array.
+        :
+            The reduced row echelon form of the input matrix.
+
+        Notes
+        -----
+
+        The elementary row operations in Gaussian elimination are: swap the position of any two rows, multiply any row by
+        a non-zero scalar, and add any row to a scalar multiple of another row.
 
         Examples
         --------
         .. ipython:: python
 
             GF = galois.GF(31)
-            A = GF.Random((4,4)); A
-            A.row_reduce()
-            np.linalg.matrix_rank(A)
-
-        One column is a linear combination of another.
-
-        .. ipython:: python
-
-            GF = galois.GF(31)
-            A = GF.Random((4,4)); A
-            A[:,2] = A[:,1] * GF(17); A
-            A.row_reduce()
-            np.linalg.matrix_rank(A)
-
-        One row is a linear combination of another.
-
-        .. ipython:: python
-
-            GF = galois.GF(31)
-            A = GF.Random((4,4)); A
-            A[3,:] = A[2,:] * GF(8); A
+            A = GF([[16, 12, 1, 25], [1, 10, 27, 29], [1, 0, 3, 19]]); A
             A.row_reduce()
             np.linalg.matrix_rank(A)
         """
         A_rre, _ = row_reduce(self, ncols=ncols)
         return A_rre
 
-    def lu_decompose(self) -> "FieldArray":
+    def lu_decompose(self) -> Tuple["FieldArray", "FieldArray"]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices.
 
         Returns
         -------
-        galois.FieldArray
+        L :
             The lower triangular matrix.
-        galois.FieldArray
+        U :
             The upper triangular matrix.
 
         Notes
@@ -1920,31 +1902,28 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         --------
         .. ipython:: python
 
-            GF = galois.GF(5)
-
+            GF = galois.GF(31)
             # Not every square matrix has an LU decomposition
-            A = GF([[2, 4, 4, 1], [3, 3, 1, 4], [4, 3, 4, 2], [4, 4, 3, 1]])
+            A = GF([[22, 11, 25, 11], [30, 27, 10, 3], [21, 16, 29, 7]]); A
             L, U = A.lu_decompose()
             L
             U
-
-            # A = L U
             np.array_equal(A, L @ U)
         """
         L, U = lu_decompose(self)
         return L, U
 
-    def plu_decompose(self) -> "FieldArray":
+    def plu_decompose(self) -> Tuple["FieldArray", "FieldArray", "FieldArray"]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
 
         Returns
         -------
-        galois.FieldArray
+        P :
             The column permutation matrix.
-        galois.FieldArray
+        L :
             The lower triangular matrix.
-        galois.FieldArray
+        U :
             The upper triangular matrix.
 
         Notes
@@ -1956,16 +1935,13 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         --------
         .. ipython:: python
 
-            GF = galois.GF(5)
-            A = GF([[1, 3, 2, 0], [3, 4, 2, 3], [0, 2, 1, 4], [4, 3, 3, 1]])
+            GF = galois.GF(31)
+            A = GF([[0, 29, 2, 9], [20, 24, 5, 1], [2, 24, 1, 7]]); A
             P, L, U = A.plu_decompose()
             P
             L
             U
-
-            # A = P L U
             np.array_equal(A, P @ L @ U)
-            # P.T A = L U
             np.array_equal(P.T @ A, L @ U)
         """
         P, L, U, _ = plu_decompose(self)
@@ -1977,7 +1953,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        galois.FieldArray
+        :
             The row space basis matrix. The rows of the basis matrix are the basis vectors that span the row space.
             The number of rows of the basis matrix is the dimension of the row space.
 
@@ -2012,7 +1988,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        galois.FieldArray
+        :
             The column space basis matrix. The rows of the basis matrix are the basis vectors that span the column space.
             The number of rows of the basis matrix is the dimension of the column space.
 
@@ -2047,7 +2023,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        galois.FieldArray
+        :
             The left null space basis matrix. The rows of the basis matrix are the basis vectors that span the left null space.
             The number of rows of the basis matrix is the dimension of the left null space.
 
@@ -2088,7 +2064,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        galois.FieldArray
+        :
             The null space basis matrix. The rows of the basis matrix are the basis vectors that span the null space.
             The number of rows of the basis matrix is the dimension of the null space.
 
@@ -2129,7 +2105,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        galois.FieldArray
+        :
             The field trace of :math:`x` in the prime subfield :math:`\mathrm{GF}(p)`.
 
         Notes
@@ -2155,6 +2131,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             GF = galois.GF(3**2, display="poly")
             x = GF.Elements(); x
             y = x.field_trace(); y
+            @suppress
+            GF.display()
         """
         field = type(self)
         x = self
@@ -2167,7 +2145,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             m = field.degree
             conjugates = np.power.outer(x, p**np.arange(0, m, dtype=field.dtypes[-1]))
             trace = np.add.reduce(conjugates, axis=-1)
-            return subfield(trace)
+            return trace.view(subfield)
 
     def field_norm(self) -> "FieldArray":
         r"""
@@ -2175,7 +2153,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        galois.FieldArray
+        :
             The field norm of :math:`x` in the prime subfield :math:`\mathrm{GF}(p)`.
 
         Notes
@@ -2201,6 +2179,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             GF = galois.GF(3**2, display="poly")
             x = GF.Elements(); x
             y = x.field_norm(); y
+            @suppress
+            GF.display()
         """
         field = type(self)
         x = self
@@ -2212,7 +2192,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             p = field.characteristic
             m = field.degree
             norm = x**((p**m - 1) // (p - 1))
-            return subfield(norm)
+            return norm.view(subfield)
 
     def characteristic_poly(self) -> "Poly":
         r"""
@@ -2223,7 +2203,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        galois.Poly
+        :
             For scalar inputs, the degree-:math:`m` characteristic polynomial :math:`p_a(x)` of :math:`a` over :math:`\mathrm{GF}(p)`.
             For square :math:`n \times n` matrix inputs, the degree-:math:`n` characteristic polynomial :math:`p_A(x)` of
             :math:`\mathbf{A}` over :math:`\mathrm{GF}(p^m)`.
@@ -2334,7 +2314,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         Returns
         -------
-        galois.Poly
+        :
             For scalar inputs, the minimal polynomial :math:`p_a(x)` of :math:`a` over :math:`\mathrm{GF}(p)`.
 
         Notes
@@ -2384,273 +2364,34 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             return poly
 
     ###############################################################################
-    # Special methods (redefined to add docstrings)
+    # NumPy getter/setter functions that need redefined
     ###############################################################################
 
-    def __add__(self, other):  # pylint: disable=useless-super-delegation
+    def __getitem__(self, key):
         """
-        Adds two Galois field arrays element-wise.
-
-        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
-        the same Galois field.
-
-        Parameters
-        ----------
-        other : galois.FieldArray
-            The other Galois field array.
-
-        Returns
-        -------
-        galois.FieldArray
-            The Galois field array `self + other`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            a = GF.Random((2,5)); a
-            b = GF.Random(5); b
-            a + b
+        Ensure that slices that return a single value return a 0-D Galois field array and not a single integer. This
+        ensures subsequent arithmetic with the finite field scalar works properly.
         """
-        return super().__add__(other)
+        item = super().__getitem__(key)
+        if np.isscalar(item):
+            item = self.__class__(item, dtype=self.dtype)
+        return item
 
-    def __sub__(self, other):  # pylint: disable=useless-super-delegation
+    def __setitem__(self, key, value):
         """
-        Subtracts two Galois field arrays element-wise.
-
-        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
-        the same Galois field.
-
-        Parameters
-        ----------
-        other : galois.FieldArray
-            The other Galois field array.
-
-        Returns
-        -------
-        galois.FieldArray
-            The Galois field array `self - other`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            a = GF.Random((2,5)); a
-            b = GF.Random(5); b
-            a - b
+        Before assigning new values to a Galois field array, ensure the values are valid finite field elements. That is,
+        they are within [0, p^m).
         """
-        return super().__sub__(other)
-
-    def __mul__(self, other):  # pylint: disable=useless-super-delegation
-        """
-        Multiplies two Galois field arrays element-wise.
-
-        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
-        the same Galois field.
-
-        Warning
-        -------
-        When both multiplicands are :obj:`galois.FieldArray`, that indicates a Galois field multiplication. When one
-        multiplicand is an integer or integer :obj:`numpy.ndarray`, that indicates a scalar multiplication (repeated addition).
-        Galois field multiplication and scalar multiplication are equivalent in prime fields, but not in extension fields.
-
-        Parameters
-        ----------
-        other : numpy.ndarray, galois.FieldArray
-            A :obj:`numpy.ndarray` of integers for scalar multiplication or a :obj:`galois.FieldArray` of Galois field elements
-            for finite field multiplication.
-
-        Returns
-        -------
-        galois.FieldArray
-            The Galois field array `self * other`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            a = GF.Random((2,5)); a
-            b = GF.Random(5); b
-            a * b
-
-        When both multiplicands are Galois field elements, that indicates a Galois field multiplication.
-
-        .. ipython:: python
-
-            GF = galois.GF(2**4, display="poly")
-            a = GF(7); a
-            b = GF(2); b
-            a * b
-            @suppress
-            GF.display();
-
-        When one multiplicand is an integer, that indicates a scalar multiplication (repeated addition).
-
-        .. ipython:: python
-
-            a * 2
-            a + a
-        """
-        return super().__mul__(other)
-
-    def __truediv__(self, other):  # pylint: disable=useless-super-delegation
-        """
-        Divides two Galois field arrays element-wise.
-
-        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
-        the same Galois field. In Galois fields, true division and floor division are equivalent.
-
-        Parameters
-        ----------
-        other : galois.FieldArray
-            The other Galois field array.
-
-        Returns
-        -------
-        galois.FieldArray
-            The Galois field array `self / other`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            a = GF.Random((2,5)); a
-            b = GF.Random(5, low=1); b
-            a / b
-        """
-        return super().__truediv__(other)
-
-    def __floordiv__(self, other):  # pylint: disable=useless-super-delegation
-        """
-        Divides two Galois field arrays element-wise.
-
-        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
-        the same Galois field. In Galois fields, true division and floor division are equivalent.
-
-        Parameters
-        ----------
-        other : galois.FieldArray
-            The other Galois field array.
-
-        Returns
-        -------
-        galois.FieldArray
-            The Galois field array `self // other`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            a = GF.Random((2,5)); a
-            b = GF.Random(5, low=1); b
-            a // b
-        """
-        return super().__floordiv__(other)  # pylint: disable=too-many-function-args
-
-    def __divmod__(self, other):  # pylint: disable=useless-super-delegation
-        """
-        Divides two Galois field arrays element-wise and returns the quotient and remainder.
-
-        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
-        the same Galois field. In Galois fields, true division and floor division are equivalent. In Galois fields, the remainder
-        is always zero.
-
-        Parameters
-        ----------
-        other : galois.FieldArray
-            The other Galois field array.
-
-        Returns
-        -------
-        galois.FieldArray
-            The Galois field array `self // other`.
-        galois.FieldArray
-            The Galois field array `self % other`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            a = GF.Random((2,5)); a
-            b = GF.Random(5, low=1); b
-            q, r = divmod(a, b)
-            q, r
-            b*q + r
-        """
-        return super().__divmod__(other)
-
-    def __mod__(self, other):  # pylint: disable=useless-super-delegation
-        """
-        Divides two Galois field arrays element-wise and returns the remainder.
-
-        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. Both arrays must be over
-        the same Galois field. In Galois fields, true division and floor division are equivalent. In Galois fields, the remainder
-        is always zero.
-
-        Parameters
-        ----------
-        other : galois.FieldArray
-            The other Galois field array.
-
-        Returns
-        -------
-        galois.FieldArray
-            The Galois field array `self % other`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            a = GF.Random((2,5)); a
-            b = GF.Random(5, low=1); b
-            a % b
-        """
-        return super().__mod__(other)
-
-    def __pow__(self, other):
-        """
-        Exponentiates a Galois field array element-wise.
-
-        `Broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ rules apply. The first array must be a
-        Galois field array and the second must be an integer or integer array.
-
-        Parameters
-        ----------
-        other : int, numpy.ndarray
-            The exponent(s) as an integer or integer array.
-
-        Returns
-        -------
-        galois.FieldArray
-            The Galois field array `self ** other`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            a = GF.Random((2,5)); a
-            b = np.random.default_rng().integers(0, 10, 5); b
-            a ** b
-        """
-        # NOTE: Calling power here instead of `super().__pow__(other)` because when doing so `x ** GF(2)` will invoke `np.square(x)` and not throw
-        # an error. This way `np.power(x, GF(2))` is called which correctly checks whether the second argument is an integer.
-        return np.power(self, other)
+        value = self._check_array_like_object(value)
+        super().__setitem__(key, value)
 
     ###############################################################################
-    # Overridden numpy methods
+    # Array creation functions that need redefined
     ###############################################################################
 
     def __array_finalize__(self, obj):
         """
-        A numpy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
+        A NumPy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
         that view casting to a Galois field array has the appropriate dtype and that the values are in the field.
         """
         if obj is not None and not isinstance(obj, FieldArray):
@@ -2659,43 +2400,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
                 raise TypeError(f"{type(self).name} can only have integer dtypes {type(self).dtypes}, not {obj.dtype}.")
             self._check_array_values(obj)
 
-    def __getitem__(self, key):
-        item = super().__getitem__(key)
-        if np.isscalar(item):
-            # Return scalar array elements as 0-dimensional Galois field arrays. This enables Galois field arithmetic
-            # on scalars, which would otherwise be implemented using standard integer arithmetic.
-            item = self.__class__(item, dtype=self.dtype)
-        return item
-
-    def __setitem__(self, key, value):
-        # Verify the values to be written to the Galois field array are in the field
-        value = self._check_array_like_object(value)
-        super().__setitem__(key, value)
-
-    def __array_function__(self, func, types, args, kwargs):
-        if func in type(self)._OVERRIDDEN_FUNCTIONS:
-            output = getattr(type(self), type(self)._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
-
-        elif func in type(self)._OVERRIDDEN_LINALG_FUNCTIONS:
-            output = type(self)._OVERRIDDEN_LINALG_FUNCTIONS[func](*args, **kwargs)
-
-        elif func in type(self)._UNSUPPORTED_FUNCTIONS:
-            raise NotImplementedError(f"The numpy function {func.__name__!r} is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array = array.view(np.ndarray)` and then call the function.")
-
-        else:
-            if func is np.insert:
-                args = list(args)
-                args[2] = self._check_array_like_object(args[2])
-                args = tuple(args)
-
-            output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
-
-            if func in type(self)._FUNCTIONS_REQUIRING_VIEW:
-                output = output.view(type(self)) if not np.isscalar(output) else type(self)(output, dtype=self.dtype)
-
-        return output
-
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        """
+        Override the standard NumPy ufunc calls with the new finite field ufuncs.
+        """
         meta = {}
         meta["types"] = [type(inputs[i]) for i in range(len(inputs))]
         meta["operands"] = list(range(len(inputs)))
@@ -2736,13 +2444,58 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
             return output
 
+    def __array_function__(self, func, types, args, kwargs):
+        """
+        Override the standard NumPy function calls with the new finite field functions.
+        """
+        if func in type(self)._OVERRIDDEN_FUNCTIONS:
+            output = getattr(type(self), type(self)._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
+
+        elif func in type(self)._OVERRIDDEN_LINALG_FUNCTIONS:
+            output = type(self)._OVERRIDDEN_LINALG_FUNCTIONS[func](*args, **kwargs)
+
+        elif func in type(self)._UNSUPPORTED_FUNCTIONS:
+            raise NotImplementedError(f"The numpy function {func.__name__!r} is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array = array.view(np.ndarray)` and then call the function.")
+
+        else:
+            if func is np.insert:
+                args = list(args)
+                args[2] = self._check_array_like_object(args[2])
+                args = tuple(args)
+
+            output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
+
+            if func in type(self)._FUNCTIONS_REQUIRING_VIEW:
+                output = output.view(type(self)) if not np.isscalar(output) else type(self)(output, dtype=self.dtype)
+
+        return output
+
+    ###############################################################################
+    # Arithmetic functions that need redefiend
+    ###############################################################################
+
+    def __pow__(self, other):
+        # We call power here instead of `super().__pow__(other)` because when doing so `x ** GF(2)` will invoke `np.square(x)`
+        # and not throw a TypeError. This way `np.power(x, GF(2))` is called which correctly checks whether the second argument
+        # is an integer.
+        return np.power(self, other)
+
+    ###############################################################################
+    # Miscellaneous functions that need redefined
+    ###############################################################################
+
     def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
+        """
+        Before changing the array's data type, ensure it is a supported data type for this finite field.
+        """
         if dtype not in type(self).dtypes:
             raise TypeError(f"{type(self).name} arrays can only be cast as integer dtypes in {type(self).dtypes}, not {dtype}.")
         return super().astype(dtype, **kwargs)
 
     def dot(self, b, out=None):
-        # `np.dot(a, b)` is also available as `a.dot(b)`. Need to override this here for proper results.
+        """
+        The `np.dot(a, b)` ufunc is also available as `a.dot(b)`. Need to override this method for consistent results.
+        """
         return dot(self, b, out=out)
 
     ###############################################################################
@@ -2969,44 +2722,50 @@ class GF2Meta(FieldClass, DirMeta):
 @set_module("galois")
 class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, compile="jit-calculate"):
     r"""
-    An array over :math:`\mathrm{GF}(2)`.
+    A :ref:`Galois field array` over :math:`\mathrm{GF}(2)`.
 
-    This class is a pre-generated :obj:`galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
-    for convenience. See :obj:`galois.FieldArray` and :obj:`galois.FieldClass` for more complete documentation and examples.
+    Important
+    ---------
+        This class is a pre-generated :obj:`galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
+        for convenience.
+
+        Only the constructor is documented on this page. See :obj:`galois.FieldArray` for all other classmethods and methods
+        for :obj:`galois.GF2`.
+
+    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldClass` and
+    :obj:`galois.FieldArray`.
+
+    See :ref:`Array Creation` for a detailed discussion on creating arrays (with and without copying) from array-like
+    objects, valid NumPy data types, and other :obj:`galois.FieldArray` classmethods.
 
     Examples
     --------
-    This class is equivalent (and, in fact, identical) to the class returned from the class factory :func:`galois.GF`.
+    This class is equivalent, and in fact identical, to the subclass returned from the class factory :func:`galois.GF`.
 
     .. ipython:: python
 
-        print(galois.GF2)
-        GF2 = galois.GF(2); print(GF2)
-        GF2 is galois.GF2
-
-    The Galois field properties can be viewed by class attributes, see :obj:`galois.FieldClass`.
-
-    .. ipython:: python
-
-        # View a summary of the field's properties
+        galois.GF2 is galois.GF(2)
         print(galois.GF2.properties)
 
-        # Or access each attribute individually
-        galois.GF2.irreducible_poly
-        galois.GF2.is_prime_field
-
-    The class's constructor mimics the call signature of :func:`numpy.array`.
+    The *Galois field array class* :obj:`galois.GF2` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldClass` as its
+    metaclass.
 
     .. ipython:: python
 
-        # Construct a Galois field array from an iterable
-        galois.GF2([1, 0, 1, 1])
+        isinstance(galois.GF2, galois.FieldClass)
+        issubclass(galois.GF2, galois.FieldArray)
 
-        # Or an iterable of iterables
-        galois.GF2([[1, 0], [1, 1]])
+    Create a :ref:`Galois field array` using :obj:`galois.GF2`'s constructor.
 
-        # Or a single integer
-        galois.GF2(1)
+    .. ipython:: python
+
+        x = galois.GF2([1, 0, 1, 1]); x
+
+    The *Galois field array* `x` is an instance of the *Galois field array class* :obj:`galois.GF2`.
+
+    .. ipython:: python
+
+        isinstance(x, galois.GF2)
     """
 
 
@@ -3024,7 +2783,7 @@ SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
 @set_module("galois")
 class Poly:
     r"""
-    A polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
+    A univariate polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
     Examples
     --------
@@ -3034,11 +2793,11 @@ class Poly:
 
         galois.Poly([1, 0, 1, 1])
 
-    Create a polynomial over :math:`\mathrm{GF}(2^8)`.
+    Create a polynomial over :math:`\mathrm{GF}(3^5)`.
 
     .. ipython:: python
 
-        GF = galois.GF(2**8)
+        GF = galois.GF(3**5)
         galois.Poly([124, 0, 223, 0, 0, 15], field=GF)
 
     See :ref:`Polynomial Creation` and :ref:`Polynomial Arithmetic` for more examples.
@@ -3050,7 +2809,7 @@ class Poly:
 
     def __new__(
         cls,
-        coeffs: Union[Tuple[int], List[int], np.ndarray, FieldArray],
+        coeffs: Union[Sequence[int], np.ndarray, FieldArray],
         field: Optional[FieldClass] = None,
         order: Literal["desc", "asc"] = "desc"
     ) -> "Poly":
@@ -3089,12 +2848,12 @@ class Poly:
 
     def __init__(
         self,
-        coeffs: Union[Tuple[int], List[int], np.ndarray, FieldArray],  # pylint: disable=unused-argument
-        field: Optional[FieldClass] = None,  # pylint: disable=unused-argument
-        order: Literal["desc", "asc"] = "desc"  # pylint: disable=unused-argument
+        coeffs: Union[Sequence[int], np.ndarray, FieldArray],
+        field: Optional[FieldClass] = None,
+        order: Literal["desc", "asc"] = "desc"
     ):
         r"""
-        Create a polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
+        Creates a polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
         The polynomial :math:`f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` with degree :math:`d` has coefficients
         :math:`\{a_{d}, a_{d-1}, \dots, a_1, a_0\}` in :math:`\mathrm{GF}(p^m)`.
@@ -3119,6 +2878,7 @@ class Poly:
             * `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
             * `"asc"`: The first element of `coeffs` is the lowest degree coefficient, i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
         """
+        # pylint: disable=unused-argument,super-init-not-called
         return
 
     @classmethod
@@ -3148,12 +2908,12 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.FieldClass, optional
+        field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
-        galois.Poly
+        :
             The polynomial :math:`f(x) = 0`.
 
         Examples
@@ -3164,12 +2924,12 @@ class Poly:
 
             galois.Poly.Zero()
 
-        Construct the zero polynomial over :math:`\mathrm{GF}(2^8)`.
+        Construct the zero polynomial over :math:`\mathrm{GF}(3^5)`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            galois.Poly.Zero(field=GF)
+            GF = galois.GF(3**5)
+            galois.Poly.Zero(GF)
         """
         return Poly([0], field=field)
 
@@ -3180,12 +2940,12 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.FieldClass, optional
+        field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
-        galois.Poly
+        :
             The polynomial :math:`f(x) = 1`.
 
         Examples
@@ -3196,12 +2956,12 @@ class Poly:
 
             galois.Poly.One()
 
-        Construct the one polynomial over :math:`\mathrm{GF}(2^8)`.
+        Construct the one polynomial over :math:`\mathrm{GF}(3^5)`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            galois.Poly.One(field=GF)
+            GF = galois.GF(3**5)
+            galois.Poly.One(GF)
         """
         return Poly([1], field=field)
 
@@ -3212,12 +2972,12 @@ class Poly:
 
         Parameters
         ----------
-        field : galois.FieldClass, optional
+        field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
-        galois.Poly
+        :
             The polynomial :math:`f(x) = x`.
 
         Examples
@@ -3228,12 +2988,12 @@ class Poly:
 
             galois.Poly.Identity()
 
-        Construct the identity polynomial over :math:`\mathrm{GF}(2^8)`.
+        Construct the identity polynomial over :math:`\mathrm{GF}(3^5)`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            galois.Poly.Identity(field=GF)
+            GF = galois.GF(3**5)
+            galois.Poly.Identity(GF)
         """
         return Poly([1, 0], field=field)
 
@@ -3249,18 +3009,17 @@ class Poly:
 
         Parameters
         ----------
-        degree : int
+        degree
             The degree of the polynomial.
-        seed: int, numpy.random.Generator, optional
+        seed
             Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
-            entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed. If so,
-            it is used directly when `dtype != np.object_`. Its state is used to seed `random.seed()`, otherwise.
-        field : galois.FieldClass, optional
+            entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
+        field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
-        galois.Poly
+        :
             The polynomial :math:`f(x)`.
 
         Examples
@@ -3271,11 +3030,11 @@ class Poly:
 
             galois.Poly.Random(5)
 
-        Construct a random degree-:math:`5` polynomial over :math:`\mathrm{GF}(2^8)` with a given seed. This produces repeatable results.
+        Construct a random degree-:math:`5` polynomial over :math:`\mathrm{GF}(3^5)` with a given seed. This produces repeatable results.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
+            GF = galois.GF(3**5)
             galois.Poly.Random(5, seed=123456789, field=GF)
             galois.Poly.Random(5, seed=123456789, field=GF)
 
@@ -3313,24 +3072,15 @@ class Poly:
 
         Parameters
         ----------
-        integer : int
-            The integer representation of the polynomial :math:`f(x)`.
-        field : galois.FieldClass, optional
+        integer
+            The :ref:`integer representation <Integer representation>` of the polynomial :math:`f(x)`.
+        field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
-        galois.Poly
+        :
             The polynomial :math:`f(x)`.
-
-        Notes
-        -----
-        The integer value :math:`i` represents the polynomial :math:`f(x) = a_d x^{d} + a_{d-1} x^{d-1} + \dots + a_1 x + a_0`
-        over the field :math:`\mathrm{GF}(p^m)` if :math:`i = a_{d}(p^m)^{d} + a_{d-1}(p^m)^{d-1} + \dots + a_1(p^m) + a_0` using integer arithmetic,
-        not finite field arithmetic.
-
-        Said differently, if the polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` are considered as the "digits" of a radix-:math:`p^m`
-        value, the polynomial's integer representation is the decimal value (radix-:math:`10`).
 
         Examples
         --------
@@ -3340,12 +3090,14 @@ class Poly:
 
             galois.Poly.Integer(5)
 
-        Construct a polynomial over :math:`\mathrm{GF}(2^8)` from its integer representation.
+        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its integer representation.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            galois.Poly.Integer(13*256**3 + 117, field=GF)
+            GF = galois.GF(3**5)
+            galois.Poly.Integer(186535908, field=GF)
+            # The polynomial/integer equivalence
+            13*GF.order**3 + 117
         """
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
@@ -3368,14 +3120,14 @@ class Poly:
 
         Parameters
         ----------
-        string : str
+        string
             The string representation of the polynomial :math:`f(x)`.
-        field : galois.FieldClass, optional
+        field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
 
         Returns
         -------
-        galois.Poly
+        :
             The polynomial :math:`f(x)`.
 
         Notes
@@ -3398,11 +3150,11 @@ class Poly:
 
             galois.Poly.String("x^2 + 1")
 
-        Construct a polynomial over :math:`\mathrm{GF}(2^8)` from its string representation.
+        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its string representation.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
+            GF = galois.GF(3**5)
             galois.Poly.String("13x^3 + 117", field=GF)
         """
         if not isinstance(string, str):
@@ -3413,8 +3165,8 @@ class Poly:
     @classmethod
     def Degrees(
         cls,
-        degrees: Union[Tuple[int], List[int], np.ndarray],
-        coeffs: Optional[Union[Tuple[int], List[int], np.ndarray, FieldArray]] = None,
+        degrees: Union[Sequence[int], np.ndarray],
+        coeffs: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None,
         field: Optional[FieldClass] = None
     ) -> "Poly":
         r"""
@@ -3422,13 +3174,13 @@ class Poly:
 
         Parameters
         ----------
-        degrees : tuple, list, numpy.ndarray
+        degrees
             The polynomial degrees with non-zero coefficients.
-        coeffs : tuple, list, numpy.ndarray, galois.FieldArray, optional
+        coeffs
             The corresponding non-zero polynomial coefficients with type :obj:`galois.FieldArray`. Alternatively, an iterable :obj:`tuple`,
             :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from the `field` keyword argument. The
             default is `None` which corresponds to all ones.
-        field : galois.FieldClass, optional
+        field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
             * :obj:`None` (default): If the coefficients are a :obj:`galois.FieldArray`, they won't be modified. If the coefficients are not explicitly
@@ -3437,7 +3189,7 @@ class Poly:
 
         Returns
         -------
-        galois.Poly
+        :
             The polynomial :math:`f(x)`.
 
         Examples
@@ -3446,14 +3198,14 @@ class Poly:
 
         .. ipython:: python
 
-            galois.Poly.Degrees([3,1,0])
+            galois.Poly.Degrees([3, 1, 0])
 
-        Construct a polynomial over :math:`\mathrm{GF}(2^8)` by specifying the degrees with non-zero coefficients.
+        Construct a polynomial over :math:`\mathrm{GF}(3^5)` by specifying the degrees with non-zero coefficients.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            galois.Poly.Degrees([3,1,0], coeffs=[251,73,185], field=GF)
+            GF = galois.GF(3**5)
+            galois.Poly.Degrees([3, 1, 0], coeffs=[214, 73, 185], field=GF)
         """
         if not isinstance(degrees, (list, tuple, np.ndarray)):
             raise TypeError(f"Argument `degrees` must array-like, not {type(degrees)}.")
@@ -3501,8 +3253,8 @@ class Poly:
     @classmethod
     def Roots(
         cls,
-        roots: Union[Tuple[int], List[int], np.ndarray, FieldArray],
-        multiplicities: Optional[Union[Tuple[int], List[int], np.ndarray]] = None,
+        roots: Union[Sequence[int], np.ndarray, FieldArray],
+        multiplicities: Optional[Union[Sequence[int], np.ndarray]] = None,
         field: Optional[FieldClass] = None
     ) -> "Poly":
         r"""
@@ -3510,12 +3262,12 @@ class Poly:
 
         Parameters
         ----------
-        roots : tuple, list, numpy.ndarray, galois.FieldArray
+        roots
             The roots of the desired polynomial with type :obj:`galois.FieldArray`. Alternatively, an iterable :obj:`tuple`,
             :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from the `field` keyword argument.
-        multiplicities : tuple, list, numpy.ndarray, optional
-            The corresponding root multiplicities. The default is `None` which corresponds to all ones, i.e. `[1,]*len(roots)`.
-        field : galois.FieldClass, optional
+        multiplicities
+            The corresponding root multiplicities. The default is `None` which corresponds to all ones.
+        field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
             * :obj:`None` (default): If the roots are a :obj:`galois.FieldArray`, they won't be modified. If the roots are not explicitly
@@ -3524,7 +3276,7 @@ class Poly:
 
         Returns
         -------
-        galois.Poly
+        :
             The polynomial :math:`f(x)`.
 
         Notes
@@ -3534,9 +3286,8 @@ class Poly:
 
         .. math::
 
-            f(x) &= (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k}
-
-            f(x) &= a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
+            f(x) &= (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k} \\
+                 &= a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
 
         with degree :math:`d = \sum_{i=1}^{k} m_i`.
 
@@ -3547,20 +3298,19 @@ class Poly:
         .. ipython:: python
 
             roots = [0, 0, 1]
-            p = galois.Poly.Roots(roots); p
+            f = galois.Poly.Roots(roots); f
             # Evaluate the polynomial at its roots
-            p(roots)
+            f(roots)
 
-        Construct a polynomial over :math:`\mathrm{GF}(2^8)` from a list of its roots with specific multiplicities.
+        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from a list of its roots with specific multiplicities.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
+            GF = galois.GF(3**5)
             roots = [121, 198, 225]
-            multiplicities = [1, 2, 1]
-            p = galois.Poly.Roots(roots, multiplicities=multiplicities, field=GF); p
+            f = galois.Poly.Roots(roots, multiplicities=[1, 2, 1], field=GF); f
             # Evaluate the polynomial at its roots
-            p(roots)
+            f(roots)
         """
         multiplicities = [1,]*len(roots) if multiplicities is None else multiplicities
         if not isinstance(roots, (tuple, list, np.ndarray, FieldArray)):
@@ -3597,38 +3347,35 @@ class Poly:
 
         Parameters
         ----------
-        size : int, optional
+        size
             The fixed size of the coefficient array. Zeros will be added for higher-order terms. This value must be
             at least `degree + 1` or a :obj:`ValueError` will be raised. The default is `None` which corresponds
             to `degree + 1`.
 
-        order : str, optional
-            The interpretation of the coefficient degrees.
-
-            * `"desc"` (default): The first element returned is the highest degree coefficient.
-            * `"asc"`: The first element returned is the lowest degree coefficient.
+        order
+            The order of the coefficient degrees, either descending (default) or ascending.
 
         Returns
         -------
-        galois.FieldArray
-            An array of the polynomial coefficients with length `size`, either in ascending order or descending order.
+        :
+            An array of the polynomial coefficients with length `size`, either in descending order or ascending order.
 
         Notes
         -----
-        This accessor is similar to :obj:`coeffs`, but it has more settings. By default, `Poly.coeffs == Poly.coefficients()`.
+        This accessor is similar to the :obj:`coeffs` property, but it has more settings. By default, `Poly.coeffs == Poly.coefficients()`.
 
         Examples
         --------
         .. ipython:: python
 
             GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.coeffs
-            p.coefficients()
+            f = galois.Poly([3, 0, 5, 2], field=GF); f
+            f.coeffs
+            f.coefficients()
             # Return the coefficients in ascending order
-            p.coefficients(order="asc")
+            f.coefficients(order="asc")
             # Return the coefficients in ascending order with size 8
-            p.coefficients(8, order="asc")
+            f.coefficients(8, order="asc")
         """
         if not isinstance(size, (type(None), int, np.integer)):
             raise TypeError(f"Argument `size` must be an integer, not {type(size)}.")
@@ -3664,7 +3411,7 @@ class Poly:
 
         Returns
         -------
-        galois.Poly
+        :
             The :math:`n`-th reversal :math:`x^n f(\frac{1}{x})`.
 
         Notes
@@ -3706,7 +3453,7 @@ class Poly:
         galois.FieldArray
             Galois field array of roots of :math:`f(x)`. The roots are ordered in increasing order.
         numpy.ndarray
-            The multiplicity of each root, only returned if `multiplicity=True`.
+            The multiplicity of each root. This is only returned if `multiplicity=True`.
 
         Notes
         -----
@@ -3731,22 +3478,17 @@ class Poly:
         where :math:`\alpha^i` is a root of :math:`f(x)` if :math:`f(\alpha^i) = 0`.
 
         .. math::
-            f(\alpha^i) &= a_{d}(\alpha^i)^{d} + a_{d-1}(\alpha^i)^{d-1} + \dots + a_1(\alpha^i) + a_0
-
-            f(\alpha^i) &\overset{\Delta}{=} \lambda_{i,d} + \lambda_{i,d-1} + \dots + \lambda_{i,1} + \lambda_{i,0}
-
-            f(\alpha^i) &= \sum_{j=0}^{d} \lambda_{i,j}
+            f(\alpha^i) &= a_{d}(\alpha^i)^{d} + a_{d-1}(\alpha^i)^{d-1} + \dots + a_1(\alpha^i) + a_0 \\
+                        &\overset{\Delta}{=} \lambda_{i,d} + \lambda_{i,d-1} + \dots + \lambda_{i,1} + \lambda_{i,0} \\
+                        &= \sum_{j=0}^{d} \lambda_{i,j}
 
         The next power of :math:`\alpha` can be easily calculated from the previous calculation.
 
         .. math::
-            f(\alpha^{i+1}) &= a_{d}(\alpha^{i+1})^{d} + a_{d-1}(\alpha^{i+1})^{d-1} + \dots + a_1(\alpha^{i+1}) + a_0
-
-            f(\alpha^{i+1}) &= a_{d}(\alpha^i)^{d}\alpha^d + a_{d-1}(\alpha^i)^{d-1}\alpha^{d-1} + \dots + a_1(\alpha^i)\alpha + a_0
-
-            f(\alpha^{i+1}) &= \lambda_{i,d}\alpha^d + \lambda_{i,d-1}\alpha^{d-1} + \dots + \lambda_{i,1}\alpha + \lambda_{i,0}
-
-            f(\alpha^{i+1}) &= \sum_{j=0}^{d} \lambda_{i,j}\alpha^j
+            f(\alpha^{i+1}) &= a_{d}(\alpha^{i+1})^{d} + a_{d-1}(\alpha^{i+1})^{d-1} + \dots + a_1(\alpha^{i+1}) + a_0 \\
+                            &= a_{d}(\alpha^i)^{d}\alpha^d + a_{d-1}(\alpha^i)^{d-1}\alpha^{d-1} + \dots + a_1(\alpha^i)\alpha + a_0 \\
+                            &= \lambda_{i,d}\alpha^d + \lambda_{i,d-1}\alpha^{d-1} + \dots + \lambda_{i,1}\alpha + \lambda_{i,0} \\
+                            &= \sum_{j=0}^{d} \lambda_{i,j}\alpha^j
 
         References
         ----------
@@ -3758,18 +3500,18 @@ class Poly:
 
         .. ipython:: python
 
-            p = galois.Poly.Roots([0,]*7 + [1,]*13); p
-            p.roots()
-            p.roots(multiplicity=True)
+            f = galois.Poly.Roots([1, 0], multiplicities=[7, 3]); f
+            f.roots()
+            f.roots(multiplicity=True)
 
-        Find the roots of a polynomial over :math:`\mathrm{GF}(2^8)`.
+        Find the roots of a polynomial over :math:`\mathrm{GF}(3^5)`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            p = galois.Poly.Roots([18,]*7 + [155,]*13 + [227,]*9, field=GF); p
-            p.roots()
-            p.roots(multiplicity=True)
+            GF = galois.GF(3**5)
+            f = galois.Poly.Roots([18, 227, 153], multiplicities=[5, 7, 3], field=GF); f
+            f.roots()
+            f.roots(multiplicity=True)
         """
         if not isinstance(multiplicity, bool):
             raise TypeError(f"Argument `multiplicity` must be a bool, not {type(multiplicity)}.")
@@ -3810,13 +3552,13 @@ class Poly:
 
         Parameters
         ----------
-        k : int, optional
+        k
             The number of derivatives to compute. 1 corresponds to :math:`p'(x)`, 2 corresponds to :math:`p''(x)`, etc.
             The default is 1.
 
         Returns
         -------
-        galois.Poly
+        :
             The :math:`k`-th formal derivative of the polynomial :math:`f(x)`.
 
         Notes
@@ -3832,6 +3574,7 @@ class Poly:
             f'(x) = (d) \cdot a_{d} x^{d-1} + (d-1) \cdot a_{d-1} x^{d-2} + \dots + (2) \cdot a_{2} x + a_1
 
         where :math:`\cdot` represents scalar multiplication (repeated addition), not finite field multiplication.
+        The exponent that is "brought down" and multiplied by the coefficient is an integer, not a finite field element.
         For example, :math:`3 \cdot a = a + a + a`.
 
         References
@@ -3844,35 +3587,33 @@ class Poly:
 
         .. ipython:: python
 
-            p = galois.Poly.Random(7); p
-            p.derivative()
-
-            # k derivatives of a polynomial where k is the Galois field's characteristic will always result in 0
-            p.derivative(2)
+            f = galois.Poly.Random(7); f
+            f.derivative()
+            # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
+            f.derivative(GF.characteristic)
 
         Compute the derivatives of a polynomial over :math:`\mathrm{GF}(7)`.
 
         .. ipython:: python
 
             GF = galois.GF(7)
-            p = galois.Poly.Random(11, field=GF); p
-            p.derivative()
-            p.derivative(2)
-            p.derivative(3)
+            f = galois.Poly.Random(11, field=GF); f
+            f.derivative()
+            f.derivative(2)
+            f.derivative(3)
+            # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
+            f.derivative(GF.characteristic)
 
-            # k derivatives of a polynomial where k is the Galois field's characteristic will always result in 0
-            p.derivative(7)
-
-        Compute the derivatives of a polynomial over :math:`\mathrm{GF}(2^8)`.
+        Compute the derivatives of a polynomial over :math:`\mathrm{GF}(3^5)`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            p = galois.Poly.Random(7, field=GF); p
-            p.derivative()
-
-            # k derivatives of a polynomial where k is the Galois field's characteristic will always result in 0
-            p.derivative(2)
+            GF = galois.GF(3**5)
+            f = galois.Poly.Random(7, field=GF); f
+            f.derivative()
+            f.derivative(2)
+            # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
+            f.derivative(GF.characteristic)
         """
         if not isinstance(k, (int, np.integer)):
             raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
@@ -3900,58 +3641,70 @@ class Poly:
     ###############################################################################
 
     def __str__(self):
-        return f"Poly({self.string}, {self.field.name})"
+        # TODO: Change this to self.string
+        return repr(self)
 
     def __repr__(self):
-        return str(self)
+        return f"Poly({self.string}, {self.field.name})"
 
     def __hash__(self):
         t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
         return hash(t)
 
-    def __call__(self, x: FieldArray, field: Optional[FieldClass] = None, elementwise: bool = True) -> FieldArray:
-        """
-        Evaluates the polynomial :math:`f(x)` at :math:`x`.
+    def __call__(
+        self,
+        x: Union[int, Sequence[int], np.ndarray, FieldArray],
+        field: Optional[FieldClass] = None,
+        elementwise: bool = True
+    ) -> FieldArray:
+        r"""
+        Evaluates the polynomial :math:`f(x)` at `x`.
 
         Parameters
         ----------
-        x : galois.FieldArray
-            An array (or 0-D scalar) :math:`x` of field elements to evaluate the polynomial at.
-        field : galois.FieldClass, optional
+        x
+            An array (or 0-D scalar) :math:`x` of finite field elements to evaluate the polynomial at.
+        field
             The Galois field to evaluate the polynomial over. The default is `None` which represents
             the polynomial's current field, i.e. :obj:`field`.
-        elementwise : bool, optional
+        elementwise
             Indicates whether to evaluate :math:`x` elementwise. The default is `True`. If `False` (only valid
             for square matrices), the polynomial indeterminate :math:`x` is exponentiated using matrix powers
             (repeated matrix multiplication).
 
         Returns
         -------
-        galois.FieldArray
+        :
             The result of the polynomial evaluation :math:`f(x)`. The resulting array has the same shape as `x`.
 
         Examples
         --------
+        Create a polynomial over :math:`\mathrm{GF}(3^5)`.
+
         .. ipython:: python
 
-            GF = galois.GF(2**8)
-            p = galois.Poly([37, 123, 0, 201], field=GF); p
+            GF = galois.GF(3**5)
+            f = galois.Poly([37, 123, 0, 201], field=GF); f
 
         Evaluate the polynomial elementwise at :math:`x`.
 
         .. ipython:: python
 
-            x = GF.Random(4); x
-            p(x)
+            x = GF([185, 218, 84, 163]); x
+            f(x)
+            # The equivalent calculation
             GF(37)*x**3 + GF(123)*x**2 + GF(201)
 
-        Evaluate the polynomial at the matrix :math:`X`.
+        Evaluate the polynomial at the square matrix :math:`X`.
 
         .. ipython:: python
 
-            X = GF.Random((2,2)); X
-            p(X, elementwise=False)
+            X = GF([[185, 218], [84, 163]]); X
+            f(X, elementwise=False)
+            # The equivalent calculation
             GF(37)*np.linalg.matrix_power(X,3) + GF(123)*np.linalg.matrix_power(X,2) + GF(201)*GF.Identity(2)
+
+        :meta public:
         """
         if not isinstance(field, (type(None), FieldClass)):
             raise TypeError(f"Argument `field` must be a Galois field array class, not {type(field)}.")
@@ -3969,23 +3722,22 @@ class Poly:
 
     def __len__(self) -> int:
         """
-        Returns the length of the coefficient array.
-
-        The length of the coefficient array is `Poly.degree + 1`.
+        Returns the length of the coefficient array `Poly.degree + 1`.
 
         Returns
         -------
-        int
+        :
             The length of the coefficient array.
 
         Examples
         --------
         .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            a.coeffs
-            len(a)
-            a.degree + 1
+            GF = galois.GF(3**5)
+            f = galois.Poly([37, 123, 0, 201], field=GF); f
+            f.coeffs
+            len(f)
+            f.degree + 1
         """
         return self.degree + 1
 
@@ -4039,93 +3791,175 @@ class Poly:
         else:
             return DensePoly
 
-    def __add__(self, other):
-        """
-        Adds two polynomials.
+    def __add__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
+        r"""
+        Adds two polynomials in :math:`\mathrm{GF}(p^m)`.
 
         Parameters
         ----------
-        other : galois.Poly
-            The polynomial :math:`b(x)`.
+        other
+            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
 
         Returns
         -------
-        galois.Poly
-            The polynomial :math:`c(x) = a(x) + b(x)`.
+        :
+            The polynomial :math:`a(x) + b(x)`.
 
         Examples
         --------
+        Add two polynomials over :math:`\mathrm{GF}(3^5)`.
+
         .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            b = galois.Poly.Random(3); b
+            GF = galois.GF(3**5)
+            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+            b = galois.Poly([47, 200, 75], field=GF); b
             a + b
+
+        Add a polynomial and scalar over :math:`\mathrm{GF}(3^5)`.
+
+        .. ipython:: python
+
+            a + GF(75)
         """
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
         return cls._add(a, b)
 
-    def __radd__(self, other):
+    def __radd__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
         return cls._add(b, a)
 
-    def __sub__(self, other):
-        """
-        Subtracts two polynomials.
-
-        Parameters
-        ----------
-        other : galois.Poly
-            The polynomial :math:`b(x)`.
+    def __neg__(self):
+        r"""
+        Returns the additive inverse of the polynomial :math:`f(x)`.
 
         Returns
         -------
-        galois.Poly
-            The polynomial :math:`c(x) = a(x) - b(x)`.
+        :
+            The polynomial :math:`-f(x)`.
 
         Examples
         --------
+        Compute the additive inverse of a polynomial over :math:`\mathrm{GF}(3^5)`.
+
         .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            b = galois.Poly.Random(3); b
+            GF = galois.GF(3**5)
+            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+            -a
+
+        A polynomial added to its additive inverse is always zero.
+
+        .. ipython:: python
+
+            a + -a
+        """
+        raise NotImplementedError
+
+    def __sub__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
+        r"""
+        Subtracts two polynomials in :math:`\mathrm{GF}(p^m)`.
+
+        Parameters
+        ----------
+        other
+            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
+
+        Returns
+        -------
+        :
+            The polynomial :math:`a(x) - b(x)`.
+
+        Examples
+        --------
+        Subtract two polynomials over :math:`\mathrm{GF}(3^5)`.
+
+        .. ipython:: python
+
+            GF = galois.GF(3**5)
+            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+            b = galois.Poly([47, 200, 75], field=GF); b
             a - b
+
+        Subtract a polynomial and scalar over :math:`\mathrm{GF}(3^5)`.
+
+        .. ipython:: python
+
+            a - GF(75)
         """
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
         return cls._sub(a, b)
 
-    def __rsub__(self, other):
+    def __rsub__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
         return cls._sub(b, a)
 
-    def __mul__(self, other):
-        """
-        Multiplies two polynomials.
+    def __mul__(
+        self,
+        other: Union["Poly", FieldArray, int]
+    ) -> "Poly":
+        r"""
+        Multiplies two polynomials in :math:`\mathrm{GF}(p^m)`.
 
         Parameters
         ----------
-        other : galois.Poly
-            The polynomial :math:`b(x)`.
+        other
+            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial). An integer
+            :math:`b` may be passed, which performs scalar multiplication (repeated addition).
 
         Returns
         -------
-        galois.Poly
-            The polynomial :math:`c(x) = a(x) b(x)`.
+        :
+            The polynomial :math:`a(x)b(x)` or :math:`a(x) \cdot b`.
+
+        Notes
+        -----
+        When the second argument is an integer, scalar multiplication is performed, which is equivalent to repeated addition.
+        For example, :math:`b(x) \cdot 3 = b(x) + b(x) + b(x)`.
 
         Examples
         --------
+        Multiply two polynomials over :math:`\mathrm{GF}(3^5)`.
+
         .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            b = galois.Poly.Random(3); b
+            GF = galois.GF(3**5)
+            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+            b = galois.Poly([47, 200, 75], field=GF); b
             a * b
+
+        Multiply a polynomial and finite field scalar over :math:`\mathrm{GF}(3^5)`.
+
+        .. ipython:: python
+
+            a * GF(4)
+
+        Multiply a polynomial and integer scalar over :math:`\mathrm{GF}(3^5)`.
+
+        .. ipython:: python
+
+            a * 4
+            a + a + a + a
         """
         self._check_inputs_are_polys_or_ints(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
@@ -4135,7 +3969,10 @@ class Poly:
         cls = self._determine_poly_class(a, b)
         return cls._mul(a, b)
 
-    def __rmul__(self, other):
+    def __rmul__(
+        self,
+        other: Union["Poly", FieldArray, int]
+    ) -> "Poly":
         self._check_inputs_are_polys_or_ints(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         if isinstance(b, (int, np.integer)):
@@ -4144,66 +3981,98 @@ class Poly:
         cls = self._determine_poly_class(a, b)
         return cls._mul(b, a)
 
-    def __divmod__(self, other):
-        """
-        Divides two polynomials and returns the quotient and remainder.
+    def __divmod__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> Tuple["Poly", "Poly"]:
+        r"""
+        Divides two polynomials over :math:`\mathrm{GF}(p^m)` and returns the quotient and remainder.
 
         Parameters
         ----------
-        other : galois.Poly
-            The polynomial :math:`b(x)`.
+        other
+            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
 
         Returns
         -------
-        galois.Poly
+        :
             The quotient polynomial :math:`q(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
-        galois.Poly
+        :
             The remainder polynomial :math:`r(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
 
         Examples
         --------
+        Divide two polynomials over :math:`\mathrm{GF}(3^5)` and return the quotient and remainder.
+
         .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            b = galois.Poly.Random(3); b
+            GF = galois.GF(3**5)
+            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+            b = galois.Poly([47, 200, 75], field=GF); b
             q, r = divmod(a, b)
-            q, r
-            b*q + r
+            q
+            r
+            b*q + r == a
+
+        Divide a polynomial and scalar over :math:`\mathrm{GF}(3^5)` and return the quotient and remainder.
+
+        .. ipython:: python
+
+            b = GF(75); b
+            q, r = divmod(a, b)
+            q
+            r
+            b*q + r == a
         """
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
         return cls._divmod(a, b)
 
-    def __rdivmod__(self, other):
+    def __rdivmod__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> Tuple["Poly", "Poly"]:
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
         return cls._divmod(b, a)
 
-    def __truediv__(self, other):
-        """
-        Divides two polynomials and returns the quotient.
+    def __truediv__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
+        r"""
+        Divides two polynomials over :math:`\mathrm{GF}(p^m)` and returns the quotient.
 
         True division and floor division are equivalent.
 
         Parameters
         ----------
-        other : galois.Poly
-            The polynomial :math:`b(x)`.
+        other
+            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
 
         Returns
         -------
-        galois.Poly
+        :
             The quotient polynomial :math:`q(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
 
         Examples
         --------
+        Divide two polynomials over :math:`\mathrm{GF}(3^5)` and return the quotient.
+
         .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            b = galois.Poly.Random(3); b
-            divmod(a, b)
+            GF = galois.GF(3**5)
+            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+            b = galois.Poly([47, 200, 75], field=GF); b
+            a / b
+
+        Divide a polynomial and scalar over :math:`\mathrm{GF}(3^5)` and return the quotient.
+
+        .. ipython:: python
+
+            b = GF(75); b
             a / b
         """
         self._check_inputs_are_polys(self, other)
@@ -4211,35 +4080,50 @@ class Poly:
         cls = self._determine_poly_class(a, b)
         return cls._divmod(a, b)[0]
 
-    def __rtruediv__(self, other):
+    def __rtruediv__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
         return cls._divmod(b, a)[0]
 
-    def __floordiv__(self, other):
-        """
-        Divides two polynomials and returns the quotient.
+    def __floordiv__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
+        r"""
+        Divides two polynomials over :math:`\mathrm{GF}(p^m)` and returns the quotient.
 
         True division and floor division are equivalent.
 
         Parameters
         ----------
-        other : galois.Poly
-            The polynomial :math:`b(x)`.
+        other
+            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
 
         Returns
         -------
-        galois.Poly
+        :
             The quotient polynomial :math:`q(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
 
         Examples
         --------
+        Divide two polynomials over :math:`\mathrm{GF}(3^5)` and return the quotient.
+
         .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            b = galois.Poly.Random(3); b
-            divmod(a, b)
+            GF = galois.GF(3**5)
+            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+            b = galois.Poly([47, 200, 75], field=GF); b
+            a // b
+
+        Divide a polynomial and scalar over :math:`\mathrm{GF}(3^5)` and return the quotient.
+
+        .. ipython:: python
+
+            b = GF(75); b
             a // b
         """
         self._check_inputs_are_polys(self, other)
@@ -4247,33 +4131,48 @@ class Poly:
         cls = self._determine_poly_class(a, b)
         return cls._divmod(a, b)[0]
 
-    def __rfloordiv__(self, other):
+    def __rfloordiv__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
         return cls._divmod(b, a)[0]
 
-    def __mod__(self, other):
-        """
-        Divides two polynomials and returns the remainder.
+    def __mod__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
+        r"""
+        Divides two polynomials over :math:`\mathrm{GF}(p^m)` and returns the remainder.
 
         Parameters
         ----------
-        other : galois.Poly
-            The polynomial :math:`b(x)`.
+        other
+            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
 
         Returns
         -------
-        galois.Poly
+        :
             The remainder polynomial :math:`r(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
 
         Examples
         --------
+        Divide two polynomials over :math:`\mathrm{GF}(3^5)` and return the remainder.
+
         .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            b = galois.Poly.Random(3); b
-            divmod(a, b)
+            GF = galois.GF(3**5)
+            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+            b = galois.Poly([47, 200, 75], field=GF); b
+            a % b
+
+        Divide a polynomial and scalar over :math:`\mathrm{GF}(3^5)` and return the remainder.
+
+        .. ipython:: python
+
+            b = GF(75); b
             a % b
         """
         self._check_inputs_are_polys(self, other)
@@ -4281,32 +4180,41 @@ class Poly:
         cls = self._determine_poly_class(a, b)
         return cls._mod(a, b)
 
-    def __rmod__(self, other):
+    def __rmod__(
+        self,
+        other: Union["Poly", FieldArray]
+    ) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
         return cls._mod(b, a)
 
-    def __pow__(self, other):
-        """
-        Exponentiates the polynomial to an integer power.
+    def __pow__(
+        self,
+        other: int,
+    ) -> "Poly":
+        r"""
+        Exponentiates the polynomial over :math:`\mathrm{GF}(p^m)` to an integer power.
 
         Parameters
         ----------
-        other : int
-            The non-negative integer exponent.
+        other
+            The non-negative integer exponent :math:`b`.
 
         Returns
         -------
-        galois.Poly
+        :
             The polynomial :math:`a(x)^b`.
 
         Examples
         --------
+        Exponentiate a polynomial over :math:`\mathrm{GF}(3^5)`.
+
         .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            a**3
+            GF = galois.GF(3**5)
+            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+            a ** 3
             a * a * a
         """
         if not isinstance(other, (int, np.integer)):
@@ -4334,10 +4242,53 @@ class Poly:
 
         return c
 
-    def __neg__(self):
-        raise NotImplementedError
+    def __eq__(
+        self,
+        other: Union["Poly", FieldArray, int]
+    ) -> bool:
+        r"""
+        Determines if two polynomials over :math:`\mathrm{GF}(p^m)` are equal.
 
-    def __eq__(self, other):
+        Parameters
+        ----------
+        other
+            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial). An integer
+            may be passed and is interpreted as a degree-:math:`0` polynomial in the field :math:`a(x)` is over.
+
+        Returns
+        -------
+        :
+            `True` if the two polynomials have the same coefficients and are over the same finite field.
+
+        Examples
+        --------
+        Compare two polynomials over the same field.
+
+        .. ipython:: python
+
+            a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
+            b = galois.Poly([3, 0, 5], field=galois.GF(7)); b
+            a == b
+            # They are still two distinct objects, however
+            a is b
+
+        Compare two polynomials with the same coefficients but over different fields.
+
+        .. ipython:: python
+
+            a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
+            b = galois.Poly([3, 0, 5], field=galois.GF(7**2)); b
+            a == b
+
+        Comparison with scalars is allowed for convenience.
+
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            a = galois.Poly([0], field=GF); a
+            a == GF(0)
+            a == 0
+        """
         if isinstance(other, (int, np.integer)):
             # Compare poly to a integer scalar (assumed to be from the same field)
             return self.degree == 0 and np.array_equal(self.coeffs, [other])
@@ -4385,7 +4336,7 @@ class Poly:
     @property
     def field(self) -> FieldClass:
         """
-        galois.FieldClass: The Galois field array class to which the coefficients belong.
+        The *Galois field array class* for the finite field the coefficients are over.
 
         Examples
         --------
@@ -4405,7 +4356,7 @@ class Poly:
     @property
     def degree(self) -> int:
         """
-        int: The degree of the polynomial, i.e. the highest degree with non-zero coefficient.
+        The degree of the polynomial. The degree of a polynomial is the highest degree with a non-zero coefficient.
 
         Examples
         --------
@@ -4420,7 +4371,7 @@ class Poly:
     @property
     def nonzero_degrees(self) -> np.ndarray:
         """
-        numpy.ndarray: An array of the polynomial degrees that have non-zero coefficients, in degree-descending order. The entries of
+        An array of the polynomial degrees that have non-zero coefficients in descending order. The entries of
         :obj:`nonzero_degrees` are paired with :obj:`nonzero_coeffs`.
 
         Examples
@@ -4436,7 +4387,7 @@ class Poly:
     @property
     def nonzero_coeffs(self) -> FieldArray:
         """
-        galois.FieldArray: The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_degrees`
+        The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_degrees`
         are paired with :obj:`nonzero_coeffs`.
 
         Examples
@@ -4452,8 +4403,7 @@ class Poly:
     @property
     def degrees(self) -> np.ndarray:
         """
-        numpy.ndarray: An array of the polynomial degrees in degree-descending order. The entries of :obj:`degrees`
-        are paired with :obj:`coeffs`.
+        An array of the polynomial degrees in descending order. The entries of :obj:`degrees` are paired with :obj:`coeffs`.
 
         Examples
         --------
@@ -4468,8 +4418,7 @@ class Poly:
     @property
     def coeffs(self) -> FieldArray:
         """
-        galois.FieldArray: The coefficients of the polynomial in degree-descending order. The entries of :obj:`degrees` are
-        paired with :obj:`coeffs`.
+        The coefficients of the polynomial in degree-descending order. The entries of :obj:`degrees` are paired with :obj:`coeffs`.
 
         Examples
         --------
@@ -4484,7 +4433,7 @@ class Poly:
     @property
     def integer(self) -> int:
         r"""
-        int: The integer representation of the polynomial. For the polynomial :math:`f(x) =  a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0`
+        The integer representation of the polynomial. For the polynomial :math:`f(x) =  a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0`
         over the field :math:`\mathrm{GF}(p^m)`, the integer representation is :math:`i = a_d (p^m)^{d} + a_{d-1} (p^m)^{d-1} + \dots + a_1 (p^m) + a_0`
         using integer arithmetic, not finite field arithmetic.
 
@@ -4498,14 +4447,14 @@ class Poly:
             GF = galois.GF(7)
             p = galois.Poly([3, 0, 5, 2], field=GF); p
             p.integer
-            p.integer == 3*7**3 + 5*7**1 + 2*7**0
+            p.integer == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
         """
         return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
 
     @property
     def string(self) -> str:
         """
-        str: The string representation of the polynomial, without specifying the Galois field.
+        The string representation of the polynomial, without specifying the finite field it's over.
 
         Examples
         --------
@@ -4542,6 +4491,10 @@ class DensePoly(Poly):
         obj._coeffs = np.atleast_1d(obj._coeffs)
 
         return obj
+
+    def __init__(self, *args, **kwargs):  # pylint: disable=signature-differs
+        # pylint: disable=unused-argument,super-init-not-called
+        return
 
     ###############################################################################
     # Methods
@@ -4660,6 +4613,10 @@ class BinaryPoly(Poly):
         obj._coeffs = None  # Only compute these if requested
 
         return obj
+
+    def __init__(self, *args, **kwargs):  # pylint: disable=signature-differs
+        # pylint: disable=unused-argument,super-init-not-called
+        return
 
     ###############################################################################
     # Methods
@@ -4814,6 +4771,10 @@ class SparsePoly(Poly):
         obj._coeffs = obj._coeffs[idxs]
 
         return obj
+
+    def __init__(self, *args, **kwargs):  # pylint: disable=signature-differs
+        # pylint: disable=unused-argument,super-init-not-called
+        return
 
     ###############################################################################
     # Methods

@@ -39,12 +39,12 @@ def primes(n: int) -> List[int]:
 
     Parameters
     ----------
-    n : int
+    n
         An integer.
 
     Returns
     -------
-    list
+    :
         All primes up to and including :math:`n`. If :math:`n < 2`, the function returns an empty list.
 
     Notes
@@ -118,12 +118,12 @@ def kth_prime(k: int) -> int:
 
     Parameters
     ----------
-    k : int
+    k
         The prime index (1-indexed), where :math:`k = \{1,2,3,4,\dots\}` for primes :math:`p = \{2,3,5,7,\dots\}`.
 
     Returns
     -------
-    int
+    :
         The :math:`k`-th prime.
 
     Examples
@@ -149,12 +149,12 @@ def prev_prime(n: int) -> int:
 
     Parameters
     ----------
-    n : int
+    n
         An integer :math:`n \ge 2`.
 
     Returns
     -------
-    int
+    :
         The nearest prime :math:`p \le n`.
 
     Examples
@@ -191,12 +191,12 @@ def next_prime(n: int) -> int:
 
     Parameters
     ----------
-    n : int
+    n:
         An integer.
 
     Returns
     -------
-    int
+    :
         The nearest prime :math:`p > n`.
 
     Examples
@@ -234,12 +234,12 @@ def random_prime(bits: int) -> int:
 
     Parameters
     ----------
-    bits : int
+    bits
         The number of bits in the prime :math:`p`.
 
     Returns
     -------
-    int
+    :
         A random prime in :math:`2^b \le p < 2^{b+1}`.
 
     References
@@ -288,12 +288,12 @@ def mersenne_exponents(n: Optional[int] = None) -> List[int]:
 
     Parameters
     ----------
-    n : int, optional
+    n
         The max exponent of 2. The default is `None` which returns all known Mersenne exponents.
 
     Returns
     -------
-    list
+    :
         The list of Mersenne exponents :math:`e` for :math:`e \le n`.
 
     References
@@ -330,12 +330,12 @@ def mersenne_primes(n: Optional[int] = None) -> List[int]:
 
     Parameters
     ----------
-    n : int, optional
+    n
         The max power of 2. The default is `None` which returns all known Mersenne exponents.
 
     Returns
     -------
-    list
+    :
         The list of known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
 
     References
@@ -364,17 +364,17 @@ def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> b
 
     Parameters
     ----------
-    n : int
+    n
         An odd integer :math:`n \ge 3`.
-    a : int, optional
+    a
         An integer in :math:`2 \le a \le n - 2`. The default is `None` which selects a random :math:`a`.
-    rounds : int, optional
+    rounds
         The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
         a new :math:`a`. The default is 1.
 
     Returns
     -------
-    bool
+    :
         `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
 
     Notes
@@ -462,17 +462,17 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
 
     Parameters
     ----------
-    n : int
+    n
         An odd integer :math:`n \ge 3`.
-    a : int, optional
+    a
         An integer in :math:`2 \le a \le n - 2`. The default is 2.
-    rounds : int, optional
+    rounds
         The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
-        consecutive primes for :math:`a`.
+        consecutive primes for :math:`a`. The default is 1.
 
     Returns
     -------
-    bool
+    :
         `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
 
     Notes
@@ -575,14 +575,14 @@ def legendre_symbol(a: int, p: int) -> int:
 
     Parameters
     ----------
-    a : int
+    a
         An integer.
-    p : int
+    p
         An odd prime :math:`p \ge 3`.
 
     Returns
     -------
-    int
+    :
         The Legendre symbol :math:`(\frac{a}{p})` with value in :math:`\{0, 1, -1\}`.
 
     Notes
@@ -634,14 +634,14 @@ def jacobi_symbol(a: int, n: int) -> int:
 
     Parameters
     ----------
-    a : int
+    a
         An integer.
-    n : int
+    n
         An odd integer :math:`n \ge 3`.
 
     Returns
     -------
-    int
+    :
         The Jacobi symbol :math:`(\frac{a}{n})` with value in :math:`\{0, 1, -1\}`.
 
     Notes
@@ -712,14 +712,14 @@ def kronecker_symbol(a: int, n: int) -> int:
 
     Parameters
     ----------
-    a : int
+    a
         An integer.
-    n : int
+    n
         An integer.
 
     Returns
     -------
-    int
+    :
         The Kronecker symbol :math:`(\frac{a}{n})` with value in :math:`\{0, -1, 1\}`.
 
     References
@@ -822,14 +822,14 @@ def perfect_power(n: int) -> Tuple[int, int]:
 
     Parameters
     ----------
-    n : int
+    n
         An integer.
 
     Returns
     -------
-    int
+    :
         The *potentially* composite base :math:`c`.
-    int
+    :
         The exponent :math:`e`.
 
     Examples
@@ -920,20 +920,20 @@ def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int
 
     Parameters
     ----------
-    n : int
+    n
         A positive integer.
-    B : int, optional
+    B
         The max divisor in the trial division. The default is `None` which corresponds to :math:`B = \sqrt{n}`.
         If :math:`B > \sqrt{n}`, the algorithm will only search up to :math:`\sqrt{n}`, since a prime factor of :math:`n`
         cannot be larger than :math:`\sqrt{n}`.
 
     Returns
     -------
-    list
+    :
         The discovered prime factors :math:`\{p_1, \dots, p_k\}`.
-    list
+    :
         The corresponding prime exponents :math:`\{e_1, \dots, e_k\}`.
-    int
+    :
         The residual factor :math:`n_r`.
 
     Examples
@@ -980,6 +980,23 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> Optional[int]:
     Attempts to find a non-trivial factor of :math:`n` if it has a prime factor :math:`p` such that
     :math:`p-1` is :math:`B`-smooth.
 
+    Parameters
+    ----------
+    n
+        An odd composite integer :math:`n > 2` that is not a prime power.
+    B
+        The smoothness bound :math:`B > 2`.
+    B2
+        The smoothness bound :math:`B_2` for the optional second step of the algorithm. The default is `None` which
+        will not perform the second step.
+
+    Returns
+    -------
+    :
+        A non-trivial factor of :math:`n`, if found. `None` if not found.
+
+    Notes
+    -----
     For a given odd composite :math:`n` with a prime factor :math:`p`, Pollard's :math:`p-1` algorithm can discover a non-trivial factor
     of :math:`n` if :math:`p-1` is :math:`B`-smooth. Specifically, the prime factorization must satisfy :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}`
     with each :math:`p_i \le B`.
@@ -987,21 +1004,6 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> Optional[int]:
     A extension of Pollard's :math:`p-1` algorithm allows a prime factor :math:`p` to be :math:`B`-smooth with the exception of one
     prime factor :math:`B < p_{k+1} \le B_2`. In this case, the prime factorization is :math:`p-1 = p_1^{e_1} \dots p_k^{e_k} p_{k+1}`.
     Often :math:`B_2` is chosen such that :math:`B_2 \gg B`.
-
-    Parameters
-    ----------
-    n : int
-        An odd composite integer :math:`n > 2` that is not a prime power.
-    B : int
-        The smoothness bound :math:`B > 2`.
-    B2 : int, optional
-        The smoothness bound :math:`B_2` for the optional second step of the algorithm. The default is `None`, which
-        will not perform the second step.
-
-    Returns
-    -------
-    None, int
-        A non-trivial factor of :math:`n`, if found. `None` if not found.
 
     References
     ----------
@@ -1100,24 +1102,26 @@ def pollard_rho(n: int, c: int = 1) -> Optional[int]:
     r"""
     Attempts to find a non-trivial factor of :math:`n` using cycle detection.
 
-    Pollard's :math:`\rho` algorithm seeks to find a non-trivial factor of :math:`n` by finding a cycle in a sequence
-    of integers :math:`x_0, x_1, \dots` defined by :math:`x_i = f(x_{i-1}) = x_{i-1}^2 + 1\ \textrm{mod}\ p` where :math:`p`
-    is an unknown small prime factor of :math:`n`. This happens when :math:`x_{m} \equiv x_{2m}\ (\textrm{mod}\ p)`.
-    Because :math:`p` is unknown, this is accomplished by computing the sequence modulo :math:`n` and looking for
-    :math:`\textrm{gcd}(x_m - x_{2m}, n) > 1`.
-
     Parameters
     ----------
-    n : int
+    n
         An odd composite integer :math:`n > 2` that is not a prime power.
-    c : int, optional
+    c
         The constant offset in the function :math:`f(x) = x^2 + c\ \textrm{mod}\ n`. The default is 1. A requirement
         of the algorithm is that :math:`c \not\in \{0, -2\}`.
 
     Returns
     -------
-    None, int
+    :
         A non-trivial factor :math:`m` of :math:`n`, if found. `None` if not found.
+
+    Notes
+    -----
+    Pollard's :math:`\rho` algorithm seeks to find a non-trivial factor of :math:`n` by finding a cycle in a sequence
+    of integers :math:`x_0, x_1, \dots` defined by :math:`x_i = f(x_{i-1}) = x_{i-1}^2 + 1\ \textrm{mod}\ p` where :math:`p`
+    is an unknown small prime factor of :math:`n`. This happens when :math:`x_{m} \equiv x_{2m}\ (\textrm{mod}\ p)`.
+    Because :math:`p` is unknown, this is accomplished by computing the sequence modulo :math:`n` and looking for
+    :math:`\textrm{gcd}(x_m - x_{2m}, n) > 1`.
 
     References
     ----------
@@ -1184,18 +1188,18 @@ def divisors(n: int) -> List[int]:
 
     Parameters
     ----------
-    n : int
+    n
         Any integer.
 
     Returns
     -------
-    list
+    :
         Sorted list of positive integer divisors :math:`d`.
 
     Notes
     -----
-    :func:`galois.divisors` find *all* positive integer divisors or factors of :math:`n`, where :func:`galois.factors` only finds the prime
-    factors of :math:`n`.
+    The :func:`galois.divisors` function finds *all* positive integer divisors or factors of :math:`n`, where the :func:`galois.factors`
+    function only finds the prime factors of :math:`n`.
 
     Examples
     --------
@@ -1247,15 +1251,15 @@ def divisor_sigma(n: int, k: int = 1) -> int:
 
     Parameters
     ----------
-    n : int
+    n
         Any integer.
-    k : int, optional
+    k
         The degree of the positive divisors. The default is 1 which corresponds to :math:`\sigma_1(n)` which is the
         sum of positive divisors.
 
     Returns
     -------
-    int
+    :
         The sum of divisors function :math:`\sigma_k(n)`.
 
     Notes
@@ -1295,18 +1299,19 @@ def is_prime(n: int) -> bool:
 
     Parameters
     ----------
-    n : int
+    n
         An integer.
 
     Returns
     -------
-    bool:
+    :
         `True` if the integer :math:`n` is prime.
 
     Notes
     -----
     This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
     :func:`galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
+
     If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
     will run 10 rounds of Miller-Rabin's primality test, see :func:`galois.miller_rabin_primality_test`. With this many rounds,
     a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
@@ -1354,12 +1359,12 @@ def is_composite(n: int) -> bool:
 
     Parameters
     ----------
-    n : int
+    n
         An integer.
 
     Returns
     -------
-    bool:
+    :
         `True` if the integer :math:`n` is composite.
 
     Examples
@@ -1385,12 +1390,12 @@ def is_prime_power(n: int) -> bool:
 
     Parameters
     ----------
-    n : int
+    n
         An integer.
 
     Returns
     -------
-    bool:
+    :
         `True` if the integer :math:`n` is a prime power.
 
     Notes
@@ -1428,12 +1433,12 @@ def is_perfect_power(n: int) -> bool:
 
     Parameters
     ----------
-    n : int
+    n
         An integer.
 
     Returns
     -------
-    bool
+    :
         `True` if the integer :math:`n` is a perfect power.
 
     Examples
@@ -1517,14 +1522,14 @@ def is_smooth(n: int, B: int) -> bool:
 
     Parameters
     ----------
-    n : int
+    n
         An integer.
-    B : int
+    B
         The smoothness bound :math:`B \ge 2`.
 
     Returns
     -------
-    bool
+    :
         `True` if :math:`n` is :math:`B`-smooth.
 
     Notes
@@ -1577,14 +1582,14 @@ def is_powersmooth(n: int, B: int) -> bool:
 
     Parameters
     ----------
-    n : int
+    n
         An integer.
-    B : int
+    B
         The smoothness bound :math:`B \ge 2`.
 
     Returns
     -------
-    bool
+    :
         `True` if :math:`n` is :math:`B`-powersmooth.
 
     Notes

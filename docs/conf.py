@@ -95,7 +95,7 @@ html_title = "galois"
 html_favicon = "../logo/galois-favicon-color.png"
 html_logo = "../logo/galois-favicon-white.png"
 
-# material theme options (see theme.conf for more information)
+# Sphinx Immaterial theme options
 html_theme_options = {
     "icon": {
         "repo": "fontawesome/brands/github",
@@ -168,17 +168,14 @@ intersphinx_mapping = {
     "numba": ("https://numba.pydata.org/numba-doc/latest/", None)
 }
 
-# pygments_style = "solarized-light"
-
 autodoc_default_options = {
     "imported-members": True,
     "members": True,
-    "undoc-members": True,
-    "special-members": "__call__, __len__",
+    "special-members": True,
     "member-order": "groupwise",
-    "inherited-members": "ndarray"  # Inherit from all classes except np.ndarray
 }
-autodoc_typehints = "none"
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "documented"
 
 autosummary_generate = True
 autosummary_generate_overwrite = True
@@ -189,28 +186,30 @@ ipython_execlines = ["import math", "import numpy as np", "import galois"]
 
 # -- Functions and setup -----------------------------------------------------
 
+SPECIAL_MEMBERS = ["__call__", "__len__", "__eq__", "__add__", "__neg__", "__sub__", "__mul__", "__truediv__", "__floordiv__", "__divmod__", "__mod__", "__pow__"]
+
 def skip_member(app, what, name, obj, skip, options):
     """
     Instruct autosummary to skip members that are inherited from np.ndarray
     """
     if skip:
-        # Continue skipping things sphinx already wants to skip
+        # Continue skipping things Sphinx already wants to skip
         return skip
 
-    if "special-members" in options and name in options["special-members"]:
+    if hasattr(obj, "__objclass__"):
+        # This is a NumPy method, don't include docs
+        return True
+    elif hasattr(obj, "__qualname__") and getattr(obj, "__qualname__").split(".")[0] == "FieldArray" and hasattr(numpy.ndarray, name):
+        # This is a NumPy method that was overridden in one of our ndarray subclasses. Also don't include
+        # these docs.
+        return True
+
+    if name in SPECIAL_MEMBERS:
         # Don"t skip members in "special-members"
         return False
 
     if name[0] == "_":
         # For some reason we need to tell sphinx to hide private members
-        return True
-
-    if hasattr(obj, "__objclass__"):
-        # This is a numpy method, don't include docs
-        return True
-    elif hasattr(obj, "__qualname__") and hasattr(numpy.ndarray, name):
-        # This is a numpy method that was overridden in one of our ndarray subclasses. Also don't include
-        # these docs.
         return True
 
     return skip

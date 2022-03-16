@@ -8,8 +8,8 @@ This section contains classes and functions for creating polynomials over Galois
 Polynomial classes
 ------------------
 
-.. rubric::
 .. autosummary::
+   :template: class.rst
    :toctree:
 
    Poly
@@ -17,14 +17,18 @@ Polynomial classes
 Special polynomials
 -------------------
 
-.. rubric:: Irreducible polynomials
+Irreducible polynomials
+.......................
+
 .. autosummary::
    :toctree:
 
    irreducible_poly
    irreducible_polys
 
-.. rubric:: Primitive polynomials
+Primitive polynomials
+.....................
+
 .. autosummary::
    :toctree:
 
@@ -33,7 +37,9 @@ Special polynomials
    conway_poly
    matlab_primitive_poly
 
-.. rubric:: Interpolating polynomials
+Interpolating polynomials
+.........................
+
 .. autosummary::
    :toctree:
 
@@ -42,7 +48,9 @@ Special polynomials
 Polynomial functions
 --------------------
 
-.. rubric::  Divisibility
+Divisibility
+............
+
 .. autosummary::
    :toctree:
 
@@ -52,14 +60,18 @@ Polynomial functions
    prod
    are_coprime
 
-.. rubric::  Congruences
+Congruences
+...........
+
 .. autosummary::
    :toctree:
 
    pow
    crt
 
-.. rubric::  Polynomial factorization
+Factorization
+..............
+
 .. autosummary::
    :toctree:
 
@@ -68,7 +80,9 @@ Polynomial functions
    distinct_degree_factorization
    equal_degree_factorization
 
-.. rubric:: Polynomial tests
+Tests
+.....
+
 .. autosummary::
    :toctree:
 

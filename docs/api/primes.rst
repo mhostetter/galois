@@ -8,7 +8,6 @@ This section contains functions for generating primes and analyzing primality.
 Prime number generation
 -----------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -23,7 +22,6 @@ Prime number generation
 Primality tests
 ---------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -38,7 +36,6 @@ Primality tests
 Specific primality tests
 ------------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 

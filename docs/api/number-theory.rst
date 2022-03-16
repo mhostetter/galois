@@ -8,7 +8,6 @@ This section contains functions for performing modular arithmetic and other numb
 Divisibility
 ------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -23,7 +22,6 @@ Divisibility
 Congruences
 -----------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
@@ -41,7 +39,6 @@ Congruences
 Integer arithmetic
 ------------------
 
-.. rubric::
 .. autosummary::
    :toctree:
 
