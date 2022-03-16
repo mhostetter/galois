@@ -536,8 +536,8 @@ Primitive elements
 
 A property of finite fields is that some elements produce the non-zero elements of the field by their powers.
 
-A *primitive element* :math:`g` of :math:`\mathrm{GF}(p^m)` is an element such that :math:`\mathrm{GF}(p^m) = \{0, g^0, g^1, \dots, g^{p^m - 2}\}`.
-The non-zero elements :math:`\{g^0, g^1, \dots, g^{p^m - 2}\}` form the cyclic multiplicative group :math:`\mathrm{GF}(p^m)^{\times}`.
+A *primitive element* :math:`g` of :math:`\mathrm{GF}(p^m)` is an element such that :math:`\mathrm{GF}(p^m) = \{0, 1, g, g^2, \dots, g^{p^m - 2}\}`.
+The non-zero elements :math:`\{1, g, g^2, \dots, g^{p^m - 2}\}` form the cyclic multiplicative group :math:`\mathrm{GF}(p^m)^{\times}`.
 A primitive element has multiplicative order :math:`\textrm{ord}(g) = p^m - 1`.
 
 A primitive element
