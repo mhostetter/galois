@@ -31,7 +31,7 @@ Features
 - Functions to generate irreducible, primitive, and Conway polynomials.
 - Polynomials over finite fields with :obj:`galois.Poly`.
 - Forward error correction codes with :obj:`galois.BCH` and :obj:`galois.ReedSolomon`.
-- Fibonacci and Galois linear feedback shift registers with :obj:`galois.LFSR`, both binary and p-ary.
+- Fibonacci and Galois linear feedback shift registers with :obj:`galois.FLFSR` and :obj:`galois.GLFSR`, both binary and p-ary.
 - Various number theoretic functions.
 - Integer factorization and accompanying algorithms.
 - Prime number generation and primality testing.

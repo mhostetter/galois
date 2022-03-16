@@ -33,7 +33,7 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 - [Polynomials](https://galois.readthedocs.io/en/stable/api/polys.html) over Galois fields with `galois.Poly`
 - [Forward error correction codes](https://galois.readthedocs.io/en/stable/api/fec.html) with `galois.BCH` and `galois.ReedSolomon`
 - [Linear transforms](https://galois.readthedocs.io/en/stable/api/transforms.html) over finite fields, such as the NTT with `galois.ntt()` and `galois.intt()`
-- Fibonacci and Galois [linear feedback shift registers](https://galois.readthedocs.io/en/stable/api/linear-sequences.html) with `galois.LFSR`, both binary and p-ary
+- Fibonacci and Galois [linear feedback shift registers](https://galois.readthedocs.io/en/stable/api/linear-sequences.html) with `galois.FLFSR` and `galois.GLFSR`, both binary and p-ary
 - Various [number theoretic functions](https://galois.readthedocs.io/en/stable/api/number-theory.html)
 - [Integer factorization](https://galois.readthedocs.io/en/stable/api/integer-factorization.html) and accompanying algorithms
 - [Prime number generation](https://galois.readthedocs.io/en/stable/api/primes.html#prime-number-generation) and [primality testing](https://galois.readthedocs.io/en/stable/api/primes.html#primality-tests)

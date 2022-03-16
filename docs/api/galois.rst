@@ -22,10 +22,11 @@ Classes
    :toctree:
 
     BCH
+    FLFSR
     FieldArray
     FieldClass
     GF2
-    LFSR
+    GLFSR
     Poly
     ReedSolomon
 
