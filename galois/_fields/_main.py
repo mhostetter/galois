@@ -981,13 +981,17 @@ class FieldClass(FunctionMeta, UfuncMeta):
             GF = galois.GF(31); print(GF.properties)
             GF = galois.GF(7**5); print(GF.properties)
         """
+        with cls.prime_subfield.display("int"):
+            irreducible_poly_str = cls.irreducible_poly.string
+
         string = f"{cls.name}:"
         string += f"\n  characteristic: {cls.characteristic}"
         string += f"\n  degree: {cls.degree}"
         string += f"\n  order: {cls.order}"
-        string += f"\n  irreducible_poly: {cls.irreducible_poly.string}"
+        string += f"\n  irreducible_poly: {irreducible_poly_str}"
         string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
         string += f"\n  primitive_element: {poly_to_str(integer_to_poly(cls.primitive_element, cls.characteristic))}"
+
         return string
 
 
