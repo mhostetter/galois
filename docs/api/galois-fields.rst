@@ -5,17 +5,21 @@ This section contains classes and functions for creating Galois field arrays.
 
 .. currentmodule:: galois
 
-Galois field class creation
----------------------------
+Galois field classes
+--------------------
 
-.. rubric:: Class factory functions
+Class factory functions
+.......................
+
 .. autosummary::
    :toctree:
 
    GF
    Field
 
-.. rubric:: Abstract base classes
+Abstract base classes
+.....................
+
 .. autosummary::
    :template: class.rst
    :toctree:
@@ -23,7 +27,9 @@ Galois field class creation
    FieldArray
    FieldClass
 
-.. rubric:: Pre-made Galois field classes
+Pre-made Galois field array classes
+...................................
+
 .. autosummary::
    :template: class_only_init.rst
    :toctree:
@@ -33,7 +39,9 @@ Galois field class creation
 Prime field functions
 ---------------------
 
-.. rubric:: Primitive roots
+Primitive roots
+...............
+
 .. autosummary::
    :toctree:
 
@@ -44,7 +52,9 @@ Prime field functions
 Extension field functions
 -------------------------
 
-.. rubric:: Irreducible polynomials
+Irreducible polynomials
+.......................
+
 .. autosummary::
    :toctree:
 
@@ -52,7 +62,9 @@ Extension field functions
    irreducible_polys
    is_irreducible
 
-.. rubric:: Primitive polynomials
+Primitive polynomials
+.....................
+
 .. autosummary::
    :toctree:
 
@@ -62,7 +74,9 @@ Extension field functions
    matlab_primitive_poly
    is_primitive
 
-.. rubric:: Primitive elements
+Primitive elements
+..................
+
 .. autosummary::
    :toctree:
 

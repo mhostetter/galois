@@ -53,14 +53,14 @@ def bch_valid_codes(n: int, t_min: int = 1) -> List[Tuple[int, int, int]]:
 
     Parameters
     ----------
-    n : int
+    n
         The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
-    t_min : int, optional
+    t_min
         The minimum error-correcting capability. The default is 1.
 
     Returns
     -------
-    list
+    :
         A list of :math:`(n, k, t)` tuples of valid primitive BCH codes.
 
     References
@@ -167,26 +167,21 @@ class BCH:
 
         Parameters
         ----------
-        n : int
+        n
             The codeword size :math:`n`, must be :math:`n = 2^m - 1`.
-        k : int
+        k
             The message size :math:`k`.
-        primitive_poly : galois.Poly, optional
+        primitive_poly
             Optionally specify the primitive polynomial that defines the extension field :math:`\mathrm{GF}(2^m)`. The default is
             `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-minimal
             primitive polynomial as a default instead of the Conway polynomial.
-        primitive_element : int, galois.Poly, optional
+        primitive_element
             Optionally specify the primitive element :math:`\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
             The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(2^m)`, see
             :func:`galois.primitive_element`.
-        systematic : bool, optional
+        systematic
             Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
             appended. The default is `True`.
-
-        Returns
-        -------
-        galois.BCH
-            A primitive, narrow-sense binary :math:`\textrm{BCH}(n, k)` code object.
         """
         # NOTE: All other arguments will be verified in `_check_and_compute_field()`
         if not isinstance(systematic, bool):
@@ -268,17 +263,17 @@ class BCH:
 
         Parameters
         ----------
-        message : numpy.ndarray, galois.GF2
+        message
             The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the number
             of messages. For systematic codes, message lengths less than :math:`k` may be provided to produce
             shortened codewords.
-        parity_only : bool, optional
+        parity_only
             Optionally specify whether to return only the parity bits. This only applies to systematic codes.
             The default is `False`.
 
         Returns
         -------
-        numpy.ndarray, galois.GF2
+        :
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. The return type matches the
             message type. If `parity_only=True`, the parity bits are returned as either a :math:`n - k`-length vector or
             :math:`(N, n-k)` matrix.
@@ -301,29 +296,75 @@ class BCH:
 
         Examples
         --------
-        Encode a single codeword.
+        .. tab-set::
 
-        .. ipython:: python
+            .. tab-item:: Vector
 
-            bch = galois.BCH(15, 7)
-            m = galois.GF2.Random(bch.k); m
-            c = bch.encode(m); c
-            p = bch.encode(m, parity_only=True); p
+                Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
 
-        Encode a single, shortened codeword.
+                .. ipython:: python
 
-        .. ipython:: python
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random(bch.k); m
+                    c = bch.encode(m); c
 
-            m = galois.GF2.Random(bch.k - 3); m
-            c = bch.encode(m); c
+                Compute the parity bits only.
 
-        Encode a matrix of codewords.
+                .. ipython:: python
 
-        .. ipython:: python
+                    p = bch.encode(m, parity_only=True); p
 
-            m = galois.GF2.Random((5, bch.k)); m
-            c = bch.encode(m); c
-            p = bch.encode(m, parity_only=True); p
+            .. tab-item:: Vector (shortened)
+
+                Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
+
+                .. ipython:: python
+
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random(bch.k - 3); m
+                    c = bch.encode(m); c
+
+                Compute the parity bits only.
+
+                .. ipython:: python
+
+                    p = bch.encode(m, parity_only=True); p
+
+            .. tab-item:: Matrix
+
+                Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
+
+                .. ipython:: python
+
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random((3, bch.k)); m
+                    c = bch.encode(m); c
+
+                Compute the parity bits only.
+
+                .. ipython:: python
+
+                    p = bch.encode(m, parity_only=True); p
+
+            .. tab-item:: Matrix (shortened)
+
+                Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
+
+                .. ipython:: python
+
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random((3, bch.k - 3)); m
+                    c = bch.encode(m); c
+
+                Compute the parity bits only.
+
+                .. ipython:: python
+
+                    p = bch.encode(m, parity_only=True); p
         """
         if not isinstance(message, (np.ndarray, GF2)):
             raise TypeError(f"Argument `message` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(message)}.")
@@ -348,7 +389,7 @@ class BCH:
             codeword = message.view(GF2) @ self.G
             return codeword.view(type(message))
 
-    def detect(self, codeword: Union[np.ndarray, GF2]) -> Union[bool, np.ndarray]:
+    def detect(self, codeword: Union[np.ndarray, GF2]) -> Union[np.bool_, np.ndarray]:
         r"""
         Detects if errors are present in the BCH codeword :math:`\mathbf{c}`.
 
@@ -357,36 +398,125 @@ class BCH:
 
         Parameters
         ----------
-        codeword : numpy.ndarray, galois.GF2
+        codeword
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
             number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
             shortened codewords.
 
         Returns
         -------
-        bool, numpy.ndarray
+        :
             A boolean scalar or array indicating if errors were detected in the corresponding codeword `True` or not `False`.
 
         Examples
         --------
-        Detect errors in a valid codeword.
+        .. tab-set::
 
-        .. ipython:: python
+            .. tab-item:: Vector
 
-            bch = galois.BCH(15, 7)
-            # The minimum distance of the code
-            bch.d
-            m = galois.GF2.Random(bch.k); m
-            c = bch.encode(m); c
-            bch.detect(c)
+                Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
 
-        Detect :math:`d_{min}-1` errors in a received codeword.
+                .. ipython:: python
 
-        .. ipython:: python
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random(bch.k); m
+                    c = bch.encode(m); c
 
-            # Corrupt the first `d - 1` bits in the codeword
-            c[0:bch.d - 1] ^= 1
-            bch.detect(c)
+                Detect no errors in the valid codeword.
+
+                .. ipython:: python
+
+                    bch.detect(c)
+
+                Detect :math:`d_{min}-1` errors in the codeword.
+
+                .. ipython:: python
+
+                    bch.d
+                    c[0:bch.d - 1] ^= 1; c
+                    bch.detect(c)
+
+            .. tab-item:: Vector (shortened)
+
+                Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
+
+                .. ipython:: python
+
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random(bch.k - 3); m
+                    c = bch.encode(m); c
+
+                Detect no errors in the valid codeword.
+
+                .. ipython:: python
+
+                    bch.detect(c)
+
+                Detect :math:`d_{min}-1` errors in the codeword.
+
+                .. ipython:: python
+
+                    bch.d
+                    c[0:bch.d - 1] ^= 1; c
+                    bch.detect(c)
+
+            .. tab-item:: Matrix
+
+                Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
+
+                .. ipython:: python
+
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random((3, bch.k)); m
+                    c = bch.encode(m); c
+
+                Detect no errors in the valid codewords.
+
+                .. ipython:: python
+
+                    bch.detect(c)
+
+                Detect one, two, and :math:`d_{min}-1` errors in the codewords.
+
+                .. ipython:: python
+
+                    bch.d
+                    c[0,0:1] ^= 1
+                    c[1,0:2] ^= 1
+                    c[2, 0:bch.d - 1] ^= 1
+                    c
+                    bch.detect(c)
+
+            .. tab-item:: Matrix (shortened)
+
+                Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
+
+                .. ipython:: python
+
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random((3, bch.k - 3)); m
+                    c = bch.encode(m); c
+
+                Detect no errors in the valid codewords.
+
+                .. ipython:: python
+
+                    bch.detect(c)
+
+                Detect one, two, and :math:`d_{min}-1` errors in the codewords.
+
+                .. ipython:: python
+
+                    bch.d
+                    c[0,0:1] ^= 1
+                    c[1,0:2] ^= 1
+                    c[2, 0:bch.d - 1] ^= 1
+                    c
+                    bch.detect(c)
         """
         if not isinstance(codeword, np.ndarray):
             raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
@@ -458,47 +588,137 @@ class BCH:
 
         Examples
         --------
-        Decode a single codeword.
+        .. tab-set::
 
-        .. ipython:: python
+            .. tab-item:: Vector
 
-            bch = galois.BCH(15, 7)
-            m = galois.GF2.Random(bch.k); m
-            c = bch.encode(m); c
-            # Corrupt the first bit in the codeword
-            c[0] ^= 1
-            dec_m = bch.decode(c); dec_m
-            np.array_equal(dec_m, m)
+                Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
 
-            # Instruct the decoder to return the number of corrected bit errors
-            dec_m, N = bch.decode(c, errors=True); dec_m, N
-            np.array_equal(dec_m, m)
+                .. ipython:: python
 
-        Decode a single, shortened codeword.
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random(bch.k); m
+                    c = bch.encode(m); c
 
-        .. ipython:: python
+                Corrupt :math:`t` bits of the codeword.
 
-            m = galois.GF2.Random(bch.k - 3); m
-            c = bch.encode(m); c
-            # Corrupt the first bit in the codeword
-            c[0] ^= 1
-            dec_m = bch.decode(c); dec_m
-            np.array_equal(dec_m, m)
+                .. ipython:: python
 
-        Decode a matrix of codewords.
+                    bch.t
+                    c[0:bch.t] ^= 1; c
 
-        .. ipython:: python
+                Decode the codeword and recover the message.
 
-            m = galois.GF2.Random((5, bch.k)); m
-            c = bch.encode(m); c
-            # Corrupt the first bit in each codeword
-            c[:,0] ^= 1
-            dec_m = bch.decode(c); dec_m
-            np.array_equal(dec_m, m)
+                .. ipython:: python
 
-            # Instruct the decoder to return the number of corrected bit errors
-            dec_m, N = bch.decode(c, errors=True); dec_m, N
-            np.array_equal(dec_m, m)
+                    d = bch.decode(c); d
+                    np.array_equal(d, m)
+
+                Decode the codeword, specifying the number of corrected errors, and recover the message.
+
+                .. ipython:: python
+
+                    d, e = bch.decode(c, errors=True); d, e
+                    np.array_equal(d, m)
+
+            .. tab-item:: Vector (shortened)
+
+                Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
+
+                .. ipython:: python
+
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random(bch.k - 3); m
+                    c = bch.encode(m); c
+
+                Corrupt :math:`t` bits of the codeword.
+
+                .. ipython:: python
+
+                    bch.t
+                    c[0:bch.t] ^= 1; c
+
+                Decode the codeword and recover the message.
+
+                .. ipython:: python
+
+                    d = bch.decode(c); d
+                    np.array_equal(d, m)
+
+                Decode the codeword, specifying the number of corrected errors, and recover the message.
+
+                .. ipython:: python
+
+                    d, e = bch.decode(c, errors=True); d, e
+                    np.array_equal(d, m)
+
+            .. tab-item:: Matrix
+
+                Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
+
+                .. ipython:: python
+
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random((3, bch.k)); m
+                    c = bch.encode(m); c
+
+                Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.
+
+                .. ipython:: python
+
+                    c[1,0:1] ^= 1
+                    c[2,0:2] ^= 1
+                    c
+
+                Decode the codeword and recover the message.
+
+                .. ipython:: python
+
+                    d = bch.decode(c); d
+                    np.array_equal(d, m)
+
+                Decode the codeword, specifying the number of corrected errors, and recover the message.
+
+                .. ipython:: python
+
+                    d, e = bch.decode(c, errors=True); d, e
+                    np.array_equal(d, m)
+
+            .. tab-item:: Matrix (shortened)
+
+                Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
+
+                .. ipython:: python
+
+                    bch = galois.BCH(15, 7)
+                    GF = galois.GF(2)
+                    m = GF.Random((3, bch.k - 3)); m
+                    c = bch.encode(m); c
+
+                Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.
+
+                .. ipython:: python
+
+                    c[1,0:1] ^= 1
+                    c[2,0:2] ^= 1
+                    c
+
+                Decode the codeword and recover the message.
+
+                .. ipython:: python
+
+                    d = bch.decode(c); d
+                    np.array_equal(d, m)
+
+                Decode the codeword, specifying the number of corrected errors, and recover the message.
+
+                .. ipython:: python
+
+                    d, e = bch.decode(c, errors=True); d, e
+                    np.array_equal(d, m)
         """
         if not isinstance(codeword, (np.ndarray, GF2)):
             raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
@@ -544,7 +764,7 @@ class BCH:
     @property
     def field(self) -> FieldClass:
         r"""
-        galois.FieldClass: The Galois field :math:`\mathrm{GF}(2^m)` that defines the BCH code.
+        The *Galois field array class* for the :math:`\mathrm{GF}(2^m)` field that defines the BCH code.
 
         Examples
         --------
@@ -559,7 +779,7 @@ class BCH:
     @property
     def n(self) -> int:
         """
-        int: The codeword size :math:`n` of the :math:`[n, k, d]_2` code
+        The codeword size :math:`n` of the :math:`[n, k, d]_2` code
 
 
         Examples
@@ -574,7 +794,7 @@ class BCH:
     @property
     def k(self) -> int:
         """
-        int: The message size :math:`k` of the :math:`[n, k, d]_2` code
+        The message size :math:`k` of the :math:`[n, k, d]_2` code
 
         Examples
         --------
@@ -588,7 +808,7 @@ class BCH:
     @property
     def d(self) -> int:
         r"""
-        int: The design distance :math:`d` of the :math:`[n, k, d]_2` code. The minimum distance of a BCH code
+        The design distance :math:`d` of the :math:`[n, k, d]_2` code. The minimum distance of a BCH code
         may be greater than the design distance, :math:`d_{min} \ge d`.
 
         Examples
@@ -603,7 +823,7 @@ class BCH:
     @property
     def t(self) -> int:
         """
-        int: The error-correcting capability of the code. The code can correct :math:`t` bit errors in a codeword.
+        The error-correcting capability of the code. The code can correct :math:`t` bit errors in a codeword.
 
         Examples
         --------
@@ -617,7 +837,7 @@ class BCH:
     @property
     def systematic(self) -> bool:
         """
-        bool: Indicates if the code is configured to return codewords in systematic form.
+        Indicates if the code is configured to return codewords in systematic form.
 
         Examples
         --------
@@ -631,7 +851,7 @@ class BCH:
     @property
     def generator_poly(self) -> Poly:
         """
-        galois.Poly: The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
+        The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
 
         Examples
         --------
@@ -647,7 +867,7 @@ class BCH:
     @property
     def roots(self) -> FieldArray:
         r"""
-        galois.FieldArray: The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
+        The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
         :math:`\alpha, \alpha^2, \dots, \alpha^{2t}`.
 
         Examples
@@ -664,7 +884,7 @@ class BCH:
     @property
     def G(self) -> GF2:
         r"""
-        galois.GF2: The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
+        The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
 
         Examples
         --------
@@ -678,7 +898,7 @@ class BCH:
     @property
     def H(self) -> FieldArray:
         r"""
-        galois.FieldArray: The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
+        The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
 
         Examples
         --------
@@ -692,7 +912,7 @@ class BCH:
     @property
     def is_primitive(self) -> bool:
         """
-        bool: Indicates if the BCH code is primitive, meaning :math:`n = 2^m - 1`.
+        Indicates if the BCH code is primitive, meaning :math:`n = 2^m - 1`.
 
         Examples
         --------
@@ -706,7 +926,7 @@ class BCH:
     @property
     def is_narrow_sense(self) -> bool:
         r"""
-        bool: Indicates if the BCH code is narrow sense, meaning the roots of the generator polynomial are consecutive
+        Indicates if the BCH code is narrow sense, meaning the roots of the generator polynomial are consecutive
         powers of :math:`\alpha` starting at 1, i.e. :math:`\alpha, \alpha^2, \dots, \alpha^{2t}`.
 
         Examples

@@ -18,13 +18,13 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
 
     Parameters
     ----------
-    G : galois.FieldArray
+    G
         The :math:`(k, n)` generator matrix :math:`\mathbf{G}` in systematic form
         :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
 
     Returns
     -------
-    galois.FieldArray
+    :
         The :math:`(n-k, n)` parity-check matrix :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
 
     Examples
@@ -60,13 +60,13 @@ def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
 
     Parameters
     ----------
-    H : galois.FieldArray
+    H
         The :math:`(n-k, n)` parity-check matrix :math:`\mathbf{G}` in systematic form
         :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
 
     Returns
     -------
-    galois.FieldArray
+    :
         The :math:`(k, n)` generator matrix :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
 
     Examples

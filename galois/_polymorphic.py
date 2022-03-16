@@ -46,14 +46,14 @@ def gcd(a, b):
 
     Parameters
     ----------
-    a : int, galois.Poly
+    a : int or galois.Poly
         The first integer or polynomial argument.
-    b : int, galois.Poly
+    b : int or galois.Poly
         The second integer or polynomial argument.
 
     Returns
     -------
-    int, galois.Poly
+    int or galois.Poly
         Greatest common divisor of :math:`a` and :math:`b`.
 
     Notes
@@ -67,24 +67,34 @@ def gcd(a, b):
 
     Examples
     --------
-    Compute the GCD of two integers.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Integers
 
-        galois.gcd(12, 16)
+            Compute the GCD of two integers.
 
-    Compute the GCD of two polynomials.
+            .. ipython:: python
 
-    .. ipython:: python
+                galois.gcd(12, 16)
 
-        GF = galois.GF(7)
-        p1 = galois.irreducible_poly(7, 1); p1
-        p2 = galois.irreducible_poly(7, 2); p2
-        p3 = galois.irreducible_poly(7, 3); p3
+        .. tab-item:: Polynomials
 
-        a = p1**2 * p2; a
-        b = p1 * p3; b
-        gcd = galois.gcd(a, b); gcd
+            Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
+
+            .. ipython:: python
+
+                GF = galois.GF(7)
+                p1 = galois.irreducible_poly(7, 1); p1
+                p2 = galois.irreducible_poly(7, 2); p2
+                p3 = galois.irreducible_poly(7, 3); p3
+
+            Compute the GCD of two polynomials.
+
+            .. ipython:: python
+
+                a = p1**2 * p2; a
+                b = p1 * p3; b
+                gcd = galois.gcd(a, b); gcd
     """
     if isinstance(a, (int, np.integer)) and isinstance(b, (int, np.integer)):
         return int_gcd(a, b)
@@ -107,18 +117,18 @@ def egcd(a, b):
 
     Parameters
     ----------
-    a : int, galois.Poly
+    a : int or galois.Poly
         The first integer or polynomial argument.
-    b : int, galois.Poly
+    b : int or galois.Poly
         The second integer or polynomial argument.
 
     Returns
     -------
-    int, galois.Poly
+    int or galois.Poly
         Greatest common divisor of :math:`a` and :math:`b`.
-    int, galois.Poly
+    int or galois.Poly
         The multiplicand :math:`s` of :math:`a`, such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
-    int, galois.Poly
+    int or galois.Poly
         The multiplicand :math:`t` of :math:`b`, such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
 
     Notes
@@ -133,29 +143,39 @@ def egcd(a, b):
 
     Examples
     --------
-    Compute the extended GCD of two integers.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Integers
 
-        a, b = 12, 16
-        gcd, s, t = galois.egcd(a, b)
-        gcd, s, t
-        a*s + b*t == gcd
+            Compute the extended GCD of two integers.
 
-    Compute the extended GCD of two polynomials.
+            .. ipython:: python
 
-    .. ipython:: python
+                a, b = 12, 16
+                gcd, s, t = galois.egcd(a, b)
+                gcd, s, t
+                a*s + b*t == gcd
 
-        GF = galois.GF(7)
-        p1 = galois.irreducible_poly(7, 1); p1
-        p2 = galois.irreducible_poly(7, 2); p2
-        p3 = galois.irreducible_poly(7, 3); p3
+        .. tab-item:: Polynomials
 
-        a = p1**2 * p2; a
-        b = p1 * p3; b
-        gcd, s, t = galois.egcd(a, b)
-        gcd, s, t
-        a*s + b*t == gcd
+            Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
+
+            .. ipython:: python
+
+                GF = galois.GF(7)
+                p1 = galois.irreducible_poly(7, 1); p1
+                p2 = galois.irreducible_poly(7, 2); p2
+                p3 = galois.irreducible_poly(7, 3); p3
+
+            Compute the extended GCD of two polynomials.
+
+            .. ipython:: python
+
+                a = p1**2 * p2; a
+                b = p1 * p3; b
+                gcd, s, t = galois.egcd(a, b)
+                gcd, s, t
+                a*s + b*t == gcd
     """
     if isinstance(a, (int, np.integer)) and isinstance(b, (int, np.integer)):
         return int_egcd(a, b)
@@ -178,36 +198,46 @@ def lcm(*values):
 
     Parameters
     ----------
-    *values : int, galois.Poly
+    *values : int or galois.Poly
         Each argument must be an integer or polynomial.
 
     Returns
     -------
-    int, galois.Poly
+    int or galois.Poly
         The least common multiple of the arguments.
 
     Examples
     --------
-    Compute the LCM of three integers.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Integers
 
-        galois.lcm(2, 4, 14)
+            Compute the LCM of three integers.
 
-    Compute the LCM of three polynomials.
+            .. ipython:: python
 
-    .. ipython:: python
+                galois.lcm(2, 4, 14)
 
-        GF = galois.GF(7)
-        p1 = galois.irreducible_poly(7, 1); p1
-        p2 = galois.irreducible_poly(7, 2); p2
-        p3 = galois.irreducible_poly(7, 3); p3
+        .. tab-item:: Polynomials
 
-        a = p1**2 * p2; a
-        b = p1 * p3; b
-        c = p2 * p3; c
-        galois.lcm(a, b, c)
-        p1**2 * p2 * p3
+            Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
+
+            .. ipython:: python
+
+                GF = galois.GF(7)
+                p1 = galois.irreducible_poly(7, 1); p1
+                p2 = galois.irreducible_poly(7, 2); p2
+                p3 = galois.irreducible_poly(7, 3); p3
+
+            Compute the LCM of three polynomials.
+
+            .. ipython:: python
+
+                a = p1**2 * p2; a
+                b = p1 * p3; b
+                c = p2 * p3; c
+                galois.lcm(a, b, c)
+                p1**2 * p2 * p3
     """
     if not len(values) > 0:
         raise ValueError("At least one argument must be provided.")
@@ -233,32 +263,43 @@ def prod(*values):
 
     Parameters
     ----------
-    *values : int, galois.Poly
+    *values : int or galois.Poly
         Each argument must be an integer or polynomial.
 
     Returns
     -------
-    int, galois.Poly
+    int or galois.Poly
         The product of the arguments.
 
     Examples
     --------
-    Compute the product of three integers.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Integers
 
-        galois.prod(2, 4, 14)
+            Compute the product of three integers.
 
-    Compute the product of three polynomials.
+            .. ipython:: python
 
-    .. ipython:: python
+                galois.prod(2, 4, 14)
 
-        GF = galois.GF(7)
-        a = galois.Poly.Random(2, field=GF)
-        b = galois.Poly.Random(3, field=GF)
-        c = galois.Poly.Random(4, field=GF)
-        galois.prod(a, b, c)
-        a * b * c
+        .. tab-item:: Polynomials
+
+            Generate random polynomials over :math:`\mathrm{GF}(7)`.
+
+            .. ipython:: python
+
+                GF = galois.GF(7)
+                a = galois.Poly.Random(2, field=GF); a
+                b = galois.Poly.Random(3, field=GF); b
+                c = galois.Poly.Random(4, field=GF); c
+
+            Compute the product of three polynomials.
+
+            .. ipython:: python
+
+                galois.prod(a, b, c)
+                a * b * c
     """
     if not len(values) > 0:
         raise ValueError("At least one argument must be provided.")
@@ -284,7 +325,7 @@ def are_coprime(*values):
 
     Parameters
     ----------
-    *values : int, galois.Poly
+    *values : int or galois.Poly
         Each argument must be an integer or polynomial.
 
     Returns
@@ -298,24 +339,34 @@ def are_coprime(*values):
 
     Examples
     --------
-    Determine if a set of integers are pairwise coprime.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Integers
 
-        galois.are_coprime(3, 4, 5)
-        galois.are_coprime(3, 7, 9, 11)
+            Determine if a set of integers are pairwise coprime.
 
-    Determine if a set of polynomials are pairwise coprime.
+            .. ipython:: python
 
-    .. ipython:: python
+                galois.are_coprime(3, 4, 5)
+                galois.are_coprime(3, 7, 9, 11)
 
-        GF = galois.GF(7)
-        p1 = galois.irreducible_poly(7, 1); p1
-        p2 = galois.irreducible_poly(7, 2); p2
-        p3 = galois.irreducible_poly(7, 3); p3
+        .. tab-item:: Polynomials
 
-        galois.are_coprime(p1, p2, p3)
-        galois.are_coprime(p1*p2, p2, p3)
+            Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
+
+            .. ipython:: python
+
+                GF = galois.GF(7)
+                p1 = galois.irreducible_poly(7, 1); p1
+                p2 = galois.irreducible_poly(7, 2); p2
+                p3 = galois.irreducible_poly(7, 3); p3
+
+            Determine if combinations of the irreducible polynomials are pairwise coprime.
+
+            .. ipython:: python
+
+                galois.are_coprime(p1, p2, p3)
+                galois.are_coprime(p1*p2, p2, p3)
     """
     if not (all(isinstance(value, (int, np.integer)) for value in values) or all(isinstance(value, Poly) for value in values)):
         raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
@@ -342,16 +393,16 @@ def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
 
     Parameters
     ----------
-    base : int, galois.Poly
+    base : int or galois.Poly
         The integer or polynomial base :math:`a`.
     exponent : int
         The non-negative integer exponent :math:`k`.
-    modulus : int, galois.Poly
+    modulus : int or galois.Poly
         The integer or polynomial modulus :math:`m`.
 
     Returns
     -------
-    int, galois.Poly
+    int or galois.Poly
         The modular exponentiation :math:`a^k\ \textrm{mod}\ m`.
 
     Notes
@@ -367,22 +418,43 @@ def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
 
     Examples
     --------
-    Compute the modular exponentiation of an integer.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Integers
 
-        galois.pow(3, 100, 7)
-        3**100 % 7
+            Compute the modular exponentiation of an integer.
 
-    Compute the modular exponentiation of a polynomial.
+            .. ipython:: python
 
-    .. ipython:: python
+                galois.pow(3, 100, 7)
 
-        GF = galois.GF(7)
-        a = galois.Poly.Random(3, field=GF)
-        m = galois.Poly.Random(10, field=GF)
-        galois.pow(a, 100, m)
-        a**100 % m
+            The equivalent (less efficient) calculation.
+
+            .. ipython:: python
+
+                3**100 % 7
+
+        .. tab-item:: Polynomials
+
+            Generate random polynomials over :math:`\mathrm{GF}(7)`.
+
+            .. ipython:: python
+
+                GF = galois.GF(7)
+                a = galois.Poly.Random(3, field=GF); a
+                m = galois.Poly.Random(10, field=GF); b
+
+            Compute the modular exponentiation of the polynomial :math:`a(x)`.
+
+            .. ipython:: python
+
+                galois.pow(a, 100, m)
+
+            The equivalent (less efficient) calculation.
+
+            .. ipython:: python
+
+                a**100 % m
     """
     if not isinstance(exponent, (int, np.integer)):
         raise TypeError(f"Argument `exponent` must be an integer, not {exponent}.")
@@ -410,14 +482,14 @@ def crt(remainders, moduli):
 
     Parameters
     ----------
-    remainders : tuple, list
+    remainders : typing.Sequence[int] or typing.Sequence[galois.Poly]
         The integer or polynomial remainders :math:`a_i`.
-    moduli : tuple, list
+    moduli : typing.Sequence[int] or typing.Sequence[galois.Poly]
         The integer or polynomial moduli :math:`m_i`.
 
     Returns
     -------
-    int
+    int or galois.Poly
         The simultaneous solution :math:`x` to the system of congruences.
 
     Notes
@@ -425,12 +497,9 @@ def crt(remainders, moduli):
     This function implements the Chinese Remainder Theorem.
 
     .. math::
-        x &\equiv a_1\ (\textrm{mod}\ m_1)
-
-        x &\equiv a_2\ (\textrm{mod}\ m_2)
-
-        x &\equiv \ldots
-
+        x &\equiv a_1\ (\textrm{mod}\ m_1) \\
+        x &\equiv a_2\ (\textrm{mod}\ m_2) \\
+        x &\equiv \ldots \\
         x &\equiv a_n\ (\textrm{mod}\ m_n)
 
     References
@@ -439,31 +508,55 @@ def crt(remainders, moduli):
 
     Examples
     --------
-    Solve a system of integer congruences.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Integers
 
-        a = [0, 3, 4]
-        m = [3, 4, 5]
-        x = galois.crt(a, m); x
+            Define a system of integer congruences.
 
-        for i in range(len(a)):
-            ai = x % m[i]
-            print(f"{x} = {ai} (mod {m[i]}), Valid congruence: {ai == a[i]}")
+            .. ipython:: python
 
-    Solve a system of polynomial congruences.
+                a = [0, 3, 4]
+                m = [3, 4, 5]
 
-    .. ipython:: python
+            Solve the system of congruences.
 
-        GF = galois.GF(7)
-        rng = np.random.default_rng(572186432)
-        a = [galois.Poly.Random(2, seed=rng, field=GF), galois.Poly.Random(3, seed=rng, field=GF), galois.Poly.Random(4, seed=rng, field=GF)]; a
-        m = [galois.Poly.Random(3, seed=rng, field=GF), galois.Poly.Random(4, seed=rng, field=GF), galois.Poly.Random(5, seed=rng, field=GF)]; m
-        x = galois.crt(a, m); x
+            .. ipython:: python
 
-        for i in range(len(a)):
-            ai = x % m[i]
-            print(f"{x} = {ai} (mod {m[i]}), Valid congruence: {ai == a[i]}")
+                x = galois.crt(a, m); x
+
+            Show that the solution satisfies each congruence.
+
+            .. ipython:: python
+
+                for i in range(len(a)):
+                    ai = x % m[i]
+                    print(ai, ai == a[i])
+
+        .. tab-item:: Polynomials
+
+            Define a system of polynomial congruences over :math:`\mathrm{GF}(7)`.
+
+            .. ipython:: python
+
+                GF = galois.GF(7)
+                x_truth = galois.Poly.Random(6, field=GF); x_truth
+                m = [galois.Poly.Random(3, field=GF), galois.Poly.Random(4, field=GF), galois.Poly.Random(5, field=GF)]; m
+                a = [x_truth % mi for mi in m]; a
+
+            Solve the system of congruences.
+
+            .. ipython:: python
+
+                x = galois.crt(a, m); x
+
+            Show that the solution satisfies each congruence.
+
+            .. ipython:: python
+
+                for i in range(len(a)):
+                    ai = x % m[i]
+                    print(ai, ai == a[i])
     """
     if not (isinstance(remainders, (tuple, list)) and (all(isinstance(x, (int, np.integer)) for x in remainders) or all(isinstance(x, Poly) for x in remainders))):
         raise TypeError(f"Argument `remainders` must be a tuple or list of int or galois.Poly, not {remainders}.")
@@ -522,39 +615,43 @@ def factors(value):
 
     Parameters
     ----------
-    value : int, galois.Poly
+    value : int or galois.Poly
         A positive integer :math:`n` or a non-constant, monic polynomial :math:`f(x)`.
 
     Returns
     -------
-    list
+    typing.List[int] or typing.List[galois.Poly]
         Sorted list of prime factors :math:`\{p_1, p_2, \dots, p_k\}` of :math:`n` with :math:`p_1 < p_2 < \dots < p_k` or
         irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of :math:`f(x)` sorted in lexicographically-increasing order.
-    list
+    typing.List[int]
         List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
 
     Notes
     -----
-    **Integer Factorization**
+    .. tab-set::
 
-    This function factors a positive integer :math:`n` into its :math:`k` prime factors such that :math:`n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}`.
+        .. tab-item:: Integers
+            :sync: integers
 
-    Steps:
+            This function factors a positive integer :math:`n` into its :math:`k` prime factors such that :math:`n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}`.
 
-    1. Test if :math:`n` is prime. If so, return `[n], [1]`.
-    2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and multiply the exponents by :math:`k`.
-    3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the discovered prime factors.
-    4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are found.
+            Steps:
 
-    **Polynomial Factorization**
+            1. Test if :math:`n` is prime. If so, return `[n], [1]`.
+            2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and multiply the exponents by :math:`k`.
+            3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the discovered prime factors.
+            4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are found.
 
-    This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
+        .. tab-item:: Polynomials
+            :sync: polynomials
 
-    Steps:
+            This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
 
-    1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free polynomials.
-    2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors with the same degree.
-    3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible factors.
+            Steps:
+
+            1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free polynomials.
+            2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors with the same degree.
+            3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible factors.
 
     References
     ----------
@@ -563,23 +660,47 @@ def factors(value):
 
     Examples
     --------
-    Factor a positive integer.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Integers
+            :sync: integers
 
-        galois.factors(120)
+            Construct a composite integer from prime factors.
 
-    Factor a polynomial over :math:`\mathrm{GF}(3)`.
+            .. ipython:: python
 
-    .. ipython:: python
+                n = 2**3 * 3 * 5; n
 
-        GF = galois.GF(3)
-        g1, g2, g3 = galois.irreducible_poly(3, 3), galois.irreducible_poly(3, 4), galois.irreducible_poly(3, 5)
-        g1, g2, g3
-        e1, e2, e3 = 5, 4, 3
-        # Construct the composite polynomial
-        f = g1**e1 * g2**e2 * g3**e3
-        galois.factors(f)
+            Factor the integer into its prime factors.
+
+            .. ipython:: python
+
+                galois.factors(n)
+
+        .. tab-item:: Polynomials
+            :sync: polynomials
+
+            Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+
+            .. ipython:: python
+
+                GF = galois.GF(3)
+                g1 = galois.irreducible_poly(3, 3); g1
+                g2 = galois.irreducible_poly(3, 4); g2
+                g3 = galois.irreducible_poly(3, 5); g3
+
+            Construct a composite polynomial.
+
+            .. ipython:: python
+
+                e1, e2, e3 = 5, 4, 3
+                f = g1**e1 * g2**e2 * g3**e3; f
+
+            Factor the polynomial into its irreducible factors over :math:`\mathrm{GF}(3)`.
+
+            .. ipython:: python
+
+                galois.factors(f)
     """
     if isinstance(value, (int, np.integer)):
         return int_factors(value)
@@ -602,44 +723,65 @@ def is_square_free(value):
 
     Parameters
     ----------
-    value : int, galois.Poly
+    value : int or galois.Poly
         An integer :math:`n` or polynomial :math:`f(x)`.
 
     Returns
     -------
-    bool:
+    bool
         `True` if the integer or polynomial is square-free.
 
     Notes
     -----
-    A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
-    of a square-free integer :math:`n` is
+    .. tab-set::
 
-    .. math:: n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
+        .. tab-item:: Integers
+            :sync: integers
 
-    Similarly, a square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one. Therefore,
-    its canonical factorization is
+            A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
+            of a square-free integer :math:`n` is
 
-    .. math:: f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
+            .. math:: n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
+
+        .. tab-item:: Polynomials
+            :sync: polynomials
+
+            A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one. Therefore,
+            its canonical factorization is
+
+            .. math:: f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
 
     Examples
     --------
-    Determine if an integer is square-free.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Integers
+            :sync: integers
 
-        galois.is_square_free(10)
-        galois.is_square_free(16)
+            Determine if integers are square-free.
 
-    Determine if a polynomial is square-free over :math:`\mathrm{GF}(3)`.
+            .. ipython:: python
 
-    .. ipython:: python
+                galois.is_square_free(10)
+                galois.is_square_free(18)
 
-        GF = galois.GF(3)
-        g3 = galois.irreducible_poly(3, 3); g3
-        g4 = galois.irreducible_poly(3, 4); g4
-        galois.is_square_free(g3 * g4)
-        galois.is_square_free(g3**2 * g4)
+        .. tab-item:: Polynomials
+            :sync: polynomials
+
+            Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+
+            .. ipython:: python
+
+                GF = galois.GF(3)
+                g3 = galois.irreducible_poly(3, 3); g3
+                g4 = galois.irreducible_poly(3, 4); g4
+
+            Determine if composite polynomials are square-free over :math:`\mathrm{GF}(3)`.
+
+            .. ipython:: python
+
+                galois.is_square_free(g3 * g4)
+                galois.is_square_free(g3**2 * g4)
     """
     if isinstance(value, (int, np.integer)):
         return int_is_square_free(value)

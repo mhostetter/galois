@@ -1,8 +1,8 @@
 Polynomial Arithmetic
 =====================
 
-Polynomial arithmetic
----------------------
+Standard arithmetic
+-------------------
 
 After creating a :ref:`polynomial over a finite field <Polynomial Creation>`, nearly any polynomial arithmetic operation can be
 performed using Python operators.
@@ -24,6 +24,8 @@ Expand any section for more details.
         print(f"({f.string}) + ({g.string})")
         f + g
 
+    See :func:`galois.Poly.__add__` for more details.
+
 .. details:: Additive inverse: `-f`
 
     .. ipython:: python
@@ -37,6 +39,8 @@ Expand any section for more details.
 
         f + -f
 
+    See :func:`galois.Poly.__neg__` for more details.
+
 .. details:: Subtraction: `f - g`
 
     .. ipython:: python
@@ -44,12 +48,16 @@ Expand any section for more details.
         print(f"({f.string}) - ({g.string})")
         f - g
 
+    See :func:`galois.Poly.__sub__` for more details.
+
 .. details:: Multiplication: `f * g`
 
     .. ipython:: python
 
         print(f"({f.string}) * ({g.string})")
         f * g
+
+    See :func:`galois.Poly.__mul__` for more details.
 
 .. details:: Scalar multiplication: `f * 3`
 
@@ -70,6 +78,8 @@ Expand any section for more details.
         p = GF.characteristic; p
         f * p
 
+    See :func:`galois.Poly.__mul__` for more details.
+
 .. details:: Division: `f / g == f // g`
 
     .. ipython:: python
@@ -78,12 +88,16 @@ Expand any section for more details.
         f / g
         f // g
 
+    See :func:`galois.Poly.__truediv__` and :func:`galois.Poly.__floordiv__` for more details.
+
 .. details:: Remainder: `f % g`
 
     .. ipython:: python
 
         print(f"({f.string}) % ({g.string})")
         f % g
+
+    See :func:`galois.Poly.__mod__` for more details.
 
 .. details:: Divmod: `divmod(f, g)`
 
@@ -93,6 +107,8 @@ Expand any section for more details.
         f / g, f % g
         divmod(f, g)
 
+    See :func:`galois.Poly.__divmod__` for more details.
+
 .. details:: Exponentiation: `f ** 3`
 
     .. ipython:: python
@@ -100,6 +116,39 @@ Expand any section for more details.
         f
         f ** 3
         f * f * f
+
+    See :func:`galois.Poly.__pow__` for more details.
+
+Special arithmetic
+------------------
+
+Polynomial objects also work on several special arithmetic operations. Below are some examples.
+
+.. ipython:: python
+
+    GF = galois.GF(31)
+    f = galois.Poly([1, 30, 0, 26, 6], field=GF); f
+    g = galois.Poly([4, 17, 3], field=GF); g
+
+Compute the polynomial greatest common divisor using :func:`galois.gcd` and :func:`galois.egcd`.
+
+.. ipython:: python
+
+    galois.gcd(f, g)
+    galois.egcd(f, g)
+
+Perform efficient modular exponentiation using :func:`galois.pow`.
+
+.. ipython:: python
+
+    # Computes (f ** 127) % g
+    galois.pow(f, 127, g)
+
+Factor a polynomial into its irreducible polynomial factors using :func:`galois.factors`.
+
+.. ipython:: python
+
+    galois.factors(f)
 
 Polynomial evaluation
 ---------------------
@@ -144,34 +193,3 @@ at the square matrix `X` equals `X @ X @ X`.
 
     # The equivalent matrix operation
     np.linalg.matrix_power(X, 3) + GF(15)*GF.Identity(X.shape[0])
-
-Special arithmetic
-------------------
-
-Polynomial objects also work on several special arithmetic operations. Below are some examples.
-
-.. ipython:: python
-
-    GF = galois.GF(31)
-    f = galois.Poly([1, 30, 0, 26, 6], field=GF); f
-    g = galois.Poly([4, 17, 3], field=GF); g
-
-Compute the polynomial greatest common divisor using :func:`galois.gcd` and :func:`galois.egcd`.
-
-.. ipython:: python
-
-    galois.gcd(f, g)
-    galois.egcd(f, g)
-
-Perform efficient modular exponentiation using :func:`galois.pow`.
-
-.. ipython:: python
-
-    # Computes (f ** 127) % g
-    galois.pow(f, 127, g)
-
-Factor a polynomial into its irreducible polynomial factors using :func:`galois.factors`.
-
-.. ipython:: python
-
-    galois.factors(f)
