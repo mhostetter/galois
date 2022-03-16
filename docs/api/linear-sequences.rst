@@ -12,7 +12,8 @@ Linear-feedback shift registers
    :template: class.rst
    :toctree:
 
-   LFSR
+   FLFSR
+   GLFSR
 
 Sequence analysis functions
 ---------------------------

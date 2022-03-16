@@ -11,41 +11,36 @@ def test_exceptions():
     poly = galois.Poly.Degrees([7,1,0])
 
     with pytest.raises(TypeError):
-        galois.LFSR(poly.coeffs)
+        galois.GLFSR(poly.coeffs)
     with pytest.raises(TypeError):
-        galois.LFSR(poly, state=float(poly.integer))
-    with pytest.raises(TypeError):
-        galois.LFSR(poly.coeffs, config=1)
-
-    with pytest.raises(ValueError):
-        galois.LFSR(poly, config="invalid-argument")
+        galois.GLFSR(poly, state=float(poly.integer))
 
 
 def test_state():
     poly = galois.Poly.Degrees([7,1,0])
 
-    lfsr = galois.LFSR(poly, state=1, config="galois")
+    lfsr = galois.GLFSR(poly, state=1)
     assert np.array_equal(lfsr.state, [0, 0, 0, 0, 0, 0, 1])
 
-    lfsr = galois.LFSR(poly, state=4, config="galois")
+    lfsr = galois.GLFSR(poly, state=4)
     assert np.array_equal(lfsr.state, [0, 0, 0, 0, 1, 0, 0])
 
 
 def test_str():
     poly = galois.Poly.Degrees([7,1,0])
-    lfsr = galois.LFSR(poly, config="galois")
+    lfsr = galois.GLFSR(poly)
     assert str(lfsr) == "<Galois LFSR: poly=Poly(x^7 + x + 1, GF(2))>"
 
 
 def test_repr():
     poly = galois.Poly.Degrees([7,1,0])
-    lfsr = galois.LFSR(poly, config="galois")
+    lfsr = galois.GLFSR(poly)
     assert repr(lfsr) == "<Galois LFSR: poly=Poly(x^7 + x + 1, GF(2))>"
 
 
 def test_step_exceptions():
     poly = galois.Poly.Degrees([7,1,0])
-    lfsr = galois.LFSR(poly, config="galois")
+    lfsr = galois.GLFSR(poly)
 
     with pytest.raises(TypeError):
         lfsr.step(10.0)
@@ -63,7 +58,7 @@ def test_gf2_output_1():
     GF = galois.GF2
     poly = galois.conway_poly(2, 4)
     state = GF([0,0,0,1])
-    lfsr = galois.LFSR(poly, state=state, config="galois")
+    lfsr = galois.GLFSR(poly, state=state)
 
     GFE = galois.GF(2**4, irreducible_poly=poly)
     alpha = GFE.primitive_element
@@ -81,7 +76,7 @@ def test_gf2_output_2():
     GF = galois.GF2
     poly = galois.conway_poly(2, 8)
     state = GF([0,0,0,0,0,0,0,1])
-    lfsr = galois.LFSR(poly, state=state, config="galois")
+    lfsr = galois.GLFSR(poly, state=state)
 
     GFE = galois.GF(2**8, irreducible_poly=poly)
     alpha = GFE.primitive_element

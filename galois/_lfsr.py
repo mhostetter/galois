@@ -12,17 +12,20 @@ from ._fields import FieldClass, FieldArray, Poly
 from ._overrides import set_module
 from ._poly_conversion import integer_to_poly
 
-__all__ = ["LFSR", "berlekamp_massey"]
+__all__ = [
+    "FLFSR", "GLFSR",
+    "berlekamp_massey"
+]
 
 
 @set_module("galois")
-class LFSR:
+class FLFSR:
     r"""
-    A linear-feedback shift register (LFSR).
+    A Fibonacci linear-feedback shift register (F-LFSR).
 
-    This class implements an LFSR in either the Fibonacci or Galois configuration. An LFSR is defined by its generator polynomial
-    :math:`g(x) = g_n x^n + \dots + g_1 x + g_0` and initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`. Below are diagrams
-    for a degree-:math:`3` LFSR in the Fibonacci and Galois configuration. The generator polynomial is :math:`g(x) = g_3x^3 + g_2x^2 + g_1x + g_0`
+    This class implements an LFSR in either the Fibonacci configuration. An LFSR is defined by its generator polynomial
+    :math:`g(x) = g_n x^n + \dots + g_1 x + g_0` and initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`. Below is the diagram
+    for a degree-:math:`3` Fibonacci LFSR. The generator polynomial is :math:`g(x) = g_3x^3 + g_2x^2 + g_1x + g_0`
     and state vector is :math:`s = [s_2, s_1, s_0]`.
 
     .. code-block:: text
@@ -39,19 +42,6 @@ class LFSR:
     :math:`[y_i, y_{i+1}, \dots, y_{i+n-1}] = [s_0, s_1, \dots, s_{n-1}]`. And the :math:`n`-th output is a linear combination of the current
     state and the generator polynomial :math:`y_{i+n} = (g_n s_0 + g_{n-1} s_1 + \dots + g_1 s_{n-1}) g_0`.
 
-    .. code-block:: text
-       :caption: Galois LFSR Configuration
-
-             ┌────────────┬────────────┬────────────┐
-        g0 ⊗─┤       g1 ⊗─┤       g2 ⊗─┤       g3 ⊗─┤
-             │            |            |            |
-             │  ┏━━━━━━┓  ▼  ┏━━━━━━┓  ▼  ┏━━━━━━┓  |
-             └─▶┃  s0  ┃──⊕─▶┃  s1  ┃──⊕─▶┃  s2  ┃──┴──▶ y[n]
-                ┗━━━━━━┛     ┗━━━━━━┛     ┗━━━━━━┛
-
-    In the Galois configuration, the next output is :math:`y = s_{n-1}` and the next state is computed by :math:`s_k = s_{n-1} g_n g_k + s_{k-1}`.
-    In the case of :math:`s_0` there is no previous state added.
-
     References
     ----------
     * https://core.ac.uk/download/pdf/288371609.pdf
@@ -64,10 +54,9 @@ class LFSR:
         self,
         poly: Poly,
         state: Union[int, Sequence[int], np.ndarray, FieldArray] = 1,
-        config: Literal["fibonacci", "galois"] = "fibonacci"
     ):
         r"""
-        Constructs a linear-feedback shift register.
+        Constructs a Fibonacci linear-feedback shift register.
 
         Parameters
         ----------
@@ -77,17 +66,11 @@ class LFSR:
             The initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`. If specified as an integer, then
             :math:`s_{n-1}` is interpreted as the MSB and :math:`s_0` as the LSB. The default is 1 which corresponds to
             :math:`s = [0, \dots, 0, 1]`.
-        config
-            A string indicating the LFSR feedback configuration. The default is `"fibonacci"`.
         """
         if not isinstance(poly, Poly):
             raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
         if not isinstance(state, (int, np.integer, tuple, list, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `state` must be an int or array-like, not {type(state)}.")
-        if not isinstance(config, str):
-            raise TypeError(f"Argument `config` must be a string, not {type(config)}.")
-        if not config in ["fibonacci", "galois"]:
-            raise ValueError(f"Argument `config` must be in ['fibonacci', 'galois'], not {state!r}.")
 
         # Convert integer state to vector state
         if isinstance(state, (int, np.integer)):
@@ -97,37 +80,33 @@ class LFSR:
         self._poly = poly
         self._initial_state = self.field(state)
         self._state = self.field(state)
-        self._config = config
         self.reset()
 
         # Pre-compile the arithmetic functions and JIT routines
         if self.field._ufunc_mode != "python-calculate":
             self._add = self.field._func_calculate("add")
             self._multiply = self.field._func_calculate("multiply")
-            self._step = jit_calculate(f"{self.config}_lfsr_step")
+            self._step = jit_calculate("fibonacci_lfsr_step")
         else:
             self._add = self.field._func_python("add")
             self._multiply = self.field._func_python("multiply")
-            self._step = python_func(f"{self.config}_lfsr_step")
+            self._step = python_func("fibonacci_lfsr_step")
 
     def __str__(self):
-        if self.config == "fibonacci":
-            return f"<Fibonacci LFSR: poly={self.poly}>"
-        else:
-            return f"<Galois LFSR: poly={self.poly}>"
+        return f"<Fibonacci LFSR: poly={self.poly}>"
 
     def __repr__(self):
         return str(self)
 
     def reset(self):
         """
-        Resets the LFSR state to the initial state.
+        Resets the Fibonacci LFSR state to the initial state.
 
         Examples
         --------
         .. ipython:: python
 
-            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr = galois.FLFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.state
             lfsr.step(10)
             lfsr.state
@@ -138,7 +117,7 @@ class LFSR:
 
     def step(self, steps: int = 1) -> FieldArray:
         """
-        Steps the LFSR and produces `steps` output symbols.
+        Steps the Fibonacci LFSR and produces `steps` output symbols.
 
         Parameters
         ----------
@@ -156,7 +135,7 @@ class LFSR:
 
         .. ipython:: python
 
-            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr = galois.FLFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.state
             lfsr.state, lfsr.step()
             lfsr.state, lfsr.step()
@@ -202,7 +181,7 @@ class LFSR:
         --------
         .. ipython:: python
 
-            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr = galois.FLFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.field
             print(lfsr.field.properties)
         """
@@ -217,7 +196,7 @@ class LFSR:
         --------
         .. ipython:: python
 
-            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr = galois.FLFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.poly
         """
         return self._poly
@@ -231,7 +210,7 @@ class LFSR:
         --------
         .. ipython:: python
 
-            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr = galois.FLFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.initial_state
         """
         return self._initial_state.copy()
@@ -245,31 +224,225 @@ class LFSR:
         --------
         .. ipython:: python
 
-            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr = galois.FLFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.state
             lfsr.step(10)
             lfsr.state
         """
         return self._state.copy()
 
-    @property
-    def config(self) -> Literal["fibonacci", "galois"]:
+
+@set_module("galois")
+class GLFSR:
+    r"""
+    A Galois linear-feedback shift register (G-LFSR).
+
+    This class implements a LFSR in the Galois configuration. An LFSR is defined by its generator polynomial
+    :math:`g(x) = g_n x^n + \dots + g_1 x + g_0` and initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`. Below is the diagram
+    for a degree-:math:`3` Galois LFSR. The generator polynomial is :math:`g(x) = g_3x^3 + g_2x^2 + g_1x + g_0`
+    and state vector is :math:`s = [s_2, s_1, s_0]`.
+
+    .. code-block:: text
+       :caption: Galois LFSR Configuration
+
+             ┌────────────┬────────────┬────────────┐
+        g0 ⊗─┤       g1 ⊗─┤       g2 ⊗─┤       g3 ⊗─┤
+             │            |            |            |
+             │  ┏━━━━━━┓  ▼  ┏━━━━━━┓  ▼  ┏━━━━━━┓  |
+             └─▶┃  s0  ┃──⊕─▶┃  s1  ┃──⊕─▶┃  s2  ┃──┴──▶ y[n]
+                ┗━━━━━━┛     ┗━━━━━━┛     ┗━━━━━━┛
+
+    In the Galois configuration, the next output is :math:`y = s_{n-1}` and the next state is computed by :math:`s_k = s_{n-1} g_n g_k + s_{k-1}`.
+    In the case of :math:`s_0` there is no previous state added.
+
+    References
+    ----------
+    * https://core.ac.uk/download/pdf/288371609.pdf
+    * https://www.wseas.org/multimedia/journals/control/2018/a945903-022.pdf
+    * https://jhafranco.com/2014/02/15/n-ary-m-sequence-generator-in-python/
+    * https://www.cs.uky.edu/~klapper/pdf/galois.pdf
+    """
+
+    def __init__(
+        self,
+        poly: Poly,
+        state: Union[int, Sequence[int], np.ndarray, FieldArray] = 1,
+    ):
+        r"""
+        Constructs a Galois linear-feedback shift register.
+
+        Parameters
+        ----------
+        poly
+            The generator polynomial :math:`g(x) = g_n x^n + \dots + g_1 x + g_0`.
+        state
+            The initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`. If specified as an integer, then
+            :math:`s_{n-1}` is interpreted as the MSB and :math:`s_0` as the LSB. The default is 1 which corresponds to
+            :math:`s = [0, \dots, 0, 1]`.
         """
-        The LFSR configuration. See the Notes section of :obj:`LFSR` for descriptions of the two configurations.
+        if not isinstance(poly, Poly):
+            raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
+        if not isinstance(state, (int, np.integer, tuple, list, np.ndarray, FieldArray)):
+            raise TypeError(f"Argument `state` must be an int or array-like, not {type(state)}.")
+
+        # Convert integer state to vector state
+        if isinstance(state, (int, np.integer)):
+            state = integer_to_poly(state, poly.field.order, degree=poly.degree - 1)
+
+        self._field = poly.field
+        self._poly = poly
+        self._initial_state = self.field(state)
+        self._state = self.field(state)
+        self.reset()
+
+        # Pre-compile the arithmetic functions and JIT routines
+        if self.field._ufunc_mode != "python-calculate":
+            self._add = self.field._func_calculate("add")
+            self._multiply = self.field._func_calculate("multiply")
+            self._step = jit_calculate("galois_lfsr_step")
+        else:
+            self._add = self.field._func_python("add")
+            self._multiply = self.field._func_python("multiply")
+            self._step = python_func("galois_lfsr_step")
+
+    def __str__(self):
+        return f"<Galois LFSR: poly={self.poly}>"
+
+    def __repr__(self):
+        return str(self)
+
+    def reset(self):
+        """
+        Resets the Galois LFSR state to the initial state.
 
         Examples
         --------
         .. ipython:: python
 
-            lfsr = galois.LFSR(galois.primitive_poly(2, 4)); lfsr
-            lfsr.config
+            lfsr = galois.GLFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr.state
+            lfsr.step(10)
+            lfsr.state
+            lfsr.reset()
+            lfsr.state
+        """
+        self._state = self.initial_state.copy()
+
+    def step(self, steps: int = 1) -> FieldArray:
+        """
+        Steps the Galois LFSR and produces `steps` output symbols.
+
+        Parameters
+        ----------
+        steps
+            The number of output symbols to produce. The default is 1.
+
+        Returns
+        -------
+        :
+            An array of output symbols of type :obj:`field` with size `steps`.
+
+        Examples
+        --------
+        Step the LFSR one output at a time.
 
         .. ipython:: python
 
-            lfsr = galois.LFSR(galois.primitive_poly(2, 4), config="galois"); lfsr
-            lfsr.config
+            lfsr = galois.GLFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr.state
+            lfsr.state, lfsr.step()
+            lfsr.state, lfsr.step()
+            lfsr.state, lfsr.step()
+            lfsr.state, lfsr.step()
+
+        Step the LFSR 10 steps.
+
+        .. ipython:: python
+
+            lfsr.reset()
+            lfsr.step(10)
         """
-        return self._config
+        if not isinstance(steps, (int, np.integer)):
+            raise TypeError(f"Argument `steps` must be an integer, not {type(steps)}.")
+        if not steps >= 1:
+            raise ValueError(f"Argument `steps` must be at least 1, not {steps}.")
+
+        if self.field.ufunc_mode != "python-calculate":
+            poly = self.poly.coeffs.astype(np.int64)
+            state = self.state.astype(np.int64)
+            y = self._step(poly, state, steps, self._add, self._multiply, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
+            y = y.astype(self.state.dtype)
+        else:
+            poly = self.poly.coeffs.view(np.ndarray)
+            state = self.state.view(np.ndarray)
+            y = self._step(poly, state, steps, self._add, self._multiply, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
+
+        self._state[:] = state[:]
+        y = y.view(self.field)
+        if y.size == 1:
+            y = y[0]
+
+        return y
+
+    @property
+    def field(self) -> FieldClass:
+        """
+        The finite field that defines the LFSR arithmetic. The generator polynomial :math:`g(x)` is over this
+        field and the state vector contains values in this field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            lfsr = galois.GLFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr.field
+            print(lfsr.field.properties)
+        """
+        return self._field
+
+    @property
+    def poly(self) -> Poly:
+        r"""
+        The generator polynomial :math:`g(x) = g_n x^n + \dots + g_1 x + g_0`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            lfsr = galois.GLFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr.poly
+        """
+        return self._poly
+
+    @property
+    def initial_state(self) -> FieldArray:
+        r"""
+        The initial state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            lfsr = galois.GLFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr.initial_state
+        """
+        return self._initial_state.copy()
+
+    @property
+    def state(self) -> FieldArray:
+        r"""
+        The current state vector :math:`s = [s_{n-1}, \dots, s_1, s_0]`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            lfsr = galois.GLFSR(galois.primitive_poly(2, 4)); lfsr
+            lfsr.state
+            lfsr.step(10)
+            lfsr.state
+        """
+        return self._state.copy()
 
 
 # @set_module("galois")
@@ -330,7 +503,7 @@ def berlekamp_massey(sequence, config="fibonacci", state=False):
     .. ipython:: python
 
         g = galois.conway_poly(2, 8); g
-        lfsr = galois.LFSR(g, state=1); lfsr
+        lfsr = galois.FLFSR(g, state=1); lfsr
         s = lfsr.step(16); s
         galois.berlekamp_massey(s)
     """
