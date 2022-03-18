@@ -187,7 +187,7 @@ ipython_execlines = ["import math", "import numpy as np", "import galois"]
 # -- Functions and setup -----------------------------------------------------
 
 SPECIAL_MEMBERS = [
-    "__str__", "__call__", "__len__", "__eq__",
+    "__repr__", "__str__", "__call__", "__len__", "__eq__",
     "__add__", "__neg__", "__sub__", "__mul__", "__truediv__", "__floordiv__", "__divmod__", "__mod__", "__pow__"
 ]
 
@@ -203,9 +203,13 @@ def skip_member(app, what, name, obj, skip, options):
         # This is a NumPy method, don't include docs
         return True
     elif hasattr(obj, "__qualname__") and getattr(obj, "__qualname__").split(".")[0] == "FieldArray" and hasattr(numpy.ndarray, name):
-        # This is a NumPy method that was overridden in one of our ndarray subclasses. Also don't include
-        # these docs.
-        return True
+        if name in ["__repr__", "__str__"]:
+            # Specially allow these methods to be displayed
+            return False
+        else:
+            # This is a NumPy method that was overridden in one of our ndarray subclasses. Also don't include
+            # these docs.
+            return True
 
     if name in SPECIAL_MEMBERS:
         # Don"t skip members in "special-members"

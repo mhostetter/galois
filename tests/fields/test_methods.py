@@ -6,51 +6,91 @@ import pytest
 import galois
 
 
-def test_display_method():
+def test_repr():
     GF = galois.GF(2**3)
 
-    assert str(GF(1)) == "GF(1, order=2^3)"
-    assert str(GF(0)) == "GF(0, order=2^3)"
-    assert str(GF(5)) == "GF(5, order=2^3)"
-    assert str(GF(2)) == "GF(2, order=2^3)"
-    assert str(GF([1, 0, 5, 2])) == "GF([1, 0, 5, 2], order=2^3)"
+    assert repr(GF(1)) == "GF(1, order=2^3)"
+    assert repr(GF(0)) == "GF(0, order=2^3)"
+    assert repr(GF(5)) == "GF(5, order=2^3)"
+    assert repr(GF(2)) == "GF(2, order=2^3)"
+    assert repr(GF([1, 0, 5, 2])) == "GF([1, 0, 5, 2], order=2^3)"
 
     GF.display("poly")
-    assert str(GF(1)) == "GF(1, order=2^3)"
-    assert str(GF(0)) == "GF(0, order=2^3)"
-    assert str(GF(5)) == "GF(α^2 + 1, order=2^3)"
-    assert str(GF(2)) == "GF(α, order=2^3)"
-    assert str(GF([1, 0, 5, 2])) == "GF([      1,       0, α^2 + 1,       α], order=2^3)"
+    assert repr(GF(1)) == "GF(1, order=2^3)"
+    assert repr(GF(0)) == "GF(0, order=2^3)"
+    assert repr(GF(5)) == "GF(α^2 + 1, order=2^3)"
+    assert repr(GF(2)) == "GF(α, order=2^3)"
+    assert repr(GF([1, 0, 5, 2])) == "GF([      1,       0, α^2 + 1,       α], order=2^3)"
 
     GF.display("power")
-    assert str(GF(1)) == "GF(1, order=2^3)"
-    assert str(GF(0)) == "GF(0, order=2^3)"
-    assert str(GF(5)) == "GF(α^6, order=2^3)"
-    assert str(GF(2)) == "GF(α, order=2^3)"
-    assert str(GF([1, 0, 5, 2])) == "GF([  1,   0, α^6,   α], order=2^3)"
+    assert repr(GF(1)) == "GF(1, order=2^3)"
+    assert repr(GF(0)) == "GF(0, order=2^3)"
+    assert repr(GF(5)) == "GF(α^6, order=2^3)"
+    assert repr(GF(2)) == "GF(α, order=2^3)"
+    assert repr(GF([1, 0, 5, 2])) == "GF([  1,   0, α^6,   α], order=2^3)"
 
     GF.display()
-    assert str(GF(1)) == "GF(1, order=2^3)"
-    assert str(GF(0)) == "GF(0, order=2^3)"
-    assert str(GF(5)) == "GF(5, order=2^3)"
-    assert str(GF(2)) == "GF(2, order=2^3)"
-    assert str(GF([1, 0, 5, 2])) == "GF([1, 0, 5, 2], order=2^3)"
+    assert repr(GF(1)) == "GF(1, order=2^3)"
+    assert repr(GF(0)) == "GF(0, order=2^3)"
+    assert repr(GF(5)) == "GF(5, order=2^3)"
+    assert repr(GF(2)) == "GF(2, order=2^3)"
+    assert repr(GF([1, 0, 5, 2])) == "GF([1, 0, 5, 2], order=2^3)"
+
+
+def test_str():
+    GF = galois.GF(2**3)
+
+    assert str(GF(1)) == "1"
+    assert str(GF(0)) == "0"
+    assert str(GF(5)) == "5"
+    assert str(GF(2)) == "2"
+    assert str(GF([1, 0, 5, 2])) == "[1, 0, 5, 2]"
+
+    GF.display("poly")
+    assert str(GF(1)) == "1"
+    assert str(GF(0)) == "0"
+    assert str(GF(5)) == "α^2 + 1"
+    assert str(GF(2)) == "α"
+    assert str(GF([1, 0, 5, 2])) == "[      1,       0, α^2 + 1,       α]"
+
+    GF.display("power")
+    assert str(GF(1)) == "1"
+    assert str(GF(0)) == "0"
+    assert str(GF(5)) == "α^6"
+    assert str(GF(2)) == "α"
+    assert str(GF([1, 0, 5, 2])) == "[  1,   0, α^6,   α]"
+
+    GF.display()
+    assert str(GF(1)) == "1"
+    assert str(GF(0)) == "0"
+    assert str(GF(5)) == "5"
+    assert str(GF(2)) == "2"
+    assert str(GF([1, 0, 5, 2])) == "[1, 0, 5, 2]"
 
 
 def test_display_context_manager():
     GF = galois.GF(2**3)
     a = GF([1, 0, 5, 2])
-    assert str(a) == "GF([1, 0, 5, 2], order=2^3)"
+
+    assert repr(a) == "GF([1, 0, 5, 2], order=2^3)"
+    assert str(a) == "[1, 0, 5, 2]"
+
     with GF.display("poly"):
-        assert str(a) == "GF([      1,       0, α^2 + 1,       α], order=2^3)"
+        assert repr(a) == "GF([      1,       0, α^2 + 1,       α], order=2^3)"
+        assert str(a) == "[      1,       0, α^2 + 1,       α]"
+
     with GF.display("power"):
-        assert str(a) == "GF([  1,   0, α^6,   α], order=2^3)"
-    assert str(a) == "GF([1, 0, 5, 2], order=2^3)"
+        assert repr(a) == "GF([  1,   0, α^6,   α], order=2^3)"
+        assert str(a) == "[  1,   0, α^6,   α]"
+
+    assert repr(a) == "GF([1, 0, 5, 2], order=2^3)"
+    assert str(a) == "[1, 0, 5, 2]"
 
 
 def test_display_exceptions():
     GF = galois.GF(2**3)
     a = GF([1, 0, 5, 2])
+
     with pytest.raises(ValueError):
         GF.display("invalid-display-type")
 

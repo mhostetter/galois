@@ -227,13 +227,10 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
                     GF.display("power");
                     x
+                    @suppress
+                    GF.display()
 
         Temporarily modify the display mode by using :func:`display` as a context manager.
-
-        .. ipython:: python
-            :suppress:
-
-            GF.display()
 
         .. tab-set::
 
@@ -256,11 +253,8 @@ class FieldClass(FunctionMeta, UfuncMeta):
                         print(x)
                     # Outside the context manager, the display mode reverts to its previous value
                     print(x)
-
-        .. ipython:: python
-            :suppress:
-
-            GF.display()
+                    @suppress
+                    GF.display()
         """
         if not isinstance(mode, (type(None), str)):
             raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
@@ -461,11 +455,8 @@ class FieldClass(FunctionMeta, UfuncMeta):
                     x = GF([7, 2, 8]); x
                     y = GF([1, 4]); y
                     print(GF.arithmetic_table("+", x=x, y=y))
-
-        .. ipython:: python
-            :suppress:
-
-            GF.display()
+                    @suppress
+                    GF.display()
         """
         if not operation in ["+", "-", "*", "/"]:
             raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation!r}.")
@@ -2487,19 +2478,90 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     # Display methods
     ###############################################################################
 
-    def __str__(self):
-        return self.__repr__()
+    def __repr__(self) -> str:
+        """
+        Displays the array specifying the class and finite field order.
 
-    def __repr__(self):
+        This function prepends `GF(` and appends `, order=p^m)`.
+
+        Examples
+        --------
+        .. tab-set::
+
+            .. tab-item:: Integer
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2)
+                    x = GF([4, 2, 7, 5])
+                    x
+
+            .. tab-item:: Polynomial
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="poly")
+                    x = GF([4, 2, 7, 5])
+                    x
+
+            .. tab-item:: Power
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="power")
+                    x = GF([4, 2, 7, 5])
+                    x
+                    @suppress
+                    GF.display()
+        """
+        return self._display("repr")
+
+    def __str__(self) -> str:
+        """
+        Displays the array without specifying the class or finite field order.
+
+        This function does not prepend `GF(` and or append `, order=p^m)`.
+
+        Examples
+        --------
+        .. tab-set::
+
+            .. tab-item:: Integer
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2)
+                    x = GF([4, 2, 7, 5])
+                    print(x)
+
+            .. tab-item:: Polynomial
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="poly")
+                    x = GF([4, 2, 7, 5])
+                    print(x)
+
+            .. tab-item:: Power
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="power")
+                    x = GF([4, 2, 7, 5])
+                    print(x)
+        """
+        return self._display("str")
+
+    def _display(self, mode: Literal["repr", "str"]) -> str:
         # View the array as an ndarray so that the scalar -> 0-D array conversion in __array_finalize__() for Galois field
         # arrays isn't continually invoked. This improves performance slightly.
         x = self.view(np.ndarray)
         field = type(self)
 
         separator = ", "
-        prefix = "GF("
-        order = field._order_str
-        suffix = ")"
+        prefix = "GF(" if mode == "repr" else ""
+        order = field._order_str if mode == "repr" else ""
+        suffix = ")" if mode == "repr" else ""
         formatter = field._formatter(self)
 
         field._element_fixed_width = None  # Do not print with fixed-width
@@ -2518,13 +2580,16 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         field._element_fixed_width_counter = 0
 
         # Determine the width of the last line in the string
-        idx = string.rfind("\n") + 1
-        last_line_width = len(string[idx:] + ", " + order + suffix)
+        if mode == "repr":
+            idx = string.rfind("\n") + 1
+            last_line_width = len(string[idx:] + ", " + order + suffix)
 
-        if last_line_width <= np.get_printoptions()["linewidth"]:
-            return prefix + string + ", " + order + suffix
+            if last_line_width <= np.get_printoptions()["linewidth"]:
+                return prefix + string + ", " + order + suffix
+            else:
+                return prefix + string + ",\n" + " "*len(prefix) + order + suffix
         else:
-            return prefix + string + ",\n" + " "*len(prefix) + order + suffix
+            return prefix + string + suffix
 
 
 ###############################################################################
