@@ -214,15 +214,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
         .. tab-set::
 
-            .. tab-item:: Integer
-
-                .. ipython:: python
-
-                    GF.display("int");
-                    x
-
             .. tab-item:: Polynomial
-               :selected:
 
                 .. ipython:: python
 
@@ -245,18 +237,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
         .. tab-set::
 
-            .. tab-item:: Integer
-
-                .. ipython:: python
-
-                    print(x)
-                    with GF.display("int"):
-                        print(x)
-                    # Outside the context manager, the display mode reverts to its previous value
-                    print(x)
-
             .. tab-item:: Polynomial
-               :selected:
 
                 .. ipython:: python
 
