@@ -3,6 +3,7 @@ A module to implement the Galois field class factory `GF()`. This module also in
 irreducible, primitive, and Conway polynomials. They are included here due to a circular dependence with the
 Galois field class factory.
 """
+import functools
 import random
 import types
 from typing import Sequence, List, Optional, Union, Type
@@ -550,13 +551,25 @@ def irreducible_poly(
             if is_irreducible(poly):
                 break
     else:
-        elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
-        for element in elements:
-            poly = Poly.Integer(element, field=field)
-            if is_irreducible(poly):
-                break
+        # The search produces a deterministic result, so we can memoize the output
+        poly = _irreducible_poly_search(min_, max_, method, field)
 
     return poly
+
+
+@functools.lru_cache(maxsize=128)
+def _irreducible_poly_search(min_, max_, method, field):
+    """
+    Searches for an irreducible polynomial in the range using the specified deterministic method.
+    """
+    elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
+
+    for element in elements:
+        poly = Poly.Integer(element, field=field)
+        if is_irreducible(poly):
+            return poly
+
+    raise RuntimeError(f"No irreducible polynomials exist in {field.name} between {Poly.Integer(min_, field=field)} and {Poly.Integer(max_ - 1, field=field)}.")
 
 
 @set_module("galois")
@@ -794,13 +807,25 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
             if is_primitive(poly):
                 break
     else:
-        elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
-        for element in elements:
-            poly = Poly.Integer(element, field=field)
-            if is_primitive(poly):
-                break
+        # The search produces a deterministic result, so we can memoize the output
+        poly = _primitive_poly_search(min_, max_, method, field)
 
     return poly
+
+
+@functools.lru_cache(maxsize=128)
+def _primitive_poly_search(min_, max_, method, field):
+    """
+    Searches for an primitive polynomial in the range using the specified deterministic method.
+    """
+    elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
+
+    for element in elements:
+        poly = Poly.Integer(element, field=field)
+        if is_primitive(poly):
+            return poly
+
+    raise RuntimeError(f"No primitive polynomials exist in {field.name} between {Poly.Integer(min_, field=field)} and {Poly.Integer(max_ - 1, field=field)}.")
 
 
 @set_module("galois")
