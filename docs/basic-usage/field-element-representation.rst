@@ -20,7 +20,14 @@ argument to the :func:`galois.GF` class factory.
 .. ipython:: python
 
     GF = galois.GF(3**5, display="poly")
-    x = GF([17, 4]); x
+    x = GF([17, 4])
+    x
+    print(x)
+
+.. note::
+
+    A :obj:`galois.FieldArray`'s :func:`repr` displays `GF([...], order=p^m)` where :func:`str` only displays `[...]`. This is designed to be
+    consistent with NumPy's use of :func:`repr` and :func:`str`.
 
 The current display mode is accessed with the :obj:`galois.FieldClass.display_mode` property.
 
