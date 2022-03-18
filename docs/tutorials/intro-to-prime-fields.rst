@@ -24,8 +24,8 @@ In this tutorial, we will consider the prime field :math:`\mathrm{GF}(7)`. Using
       .. ipython:: python
 
          GF7 = galois.GF(7)
+         GF7
          print(GF7)
-         print(GF7.properties)
 
    .. tab-item:: Power
       :sync: power
@@ -33,8 +33,8 @@ In this tutorial, we will consider the prime field :math:`\mathrm{GF}(7)`. Using
       .. ipython:: python
 
          GF7 = galois.GF(7, display="power")
+         GF7
          print(GF7)
-         print(GF7.properties)
 
 .. note::
 
@@ -404,7 +404,7 @@ property.
 
          @suppress
          GF7.display("int")
-         print(GF7.properties)
+         print(GF7)
          g = GF7.primitive_element; g
 
    .. tab-item:: Power
@@ -414,7 +414,7 @@ property.
 
          @suppress
          GF7.display("power")
-         print(GF7.properties)
+         print(GF7)
          g = GF7.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer

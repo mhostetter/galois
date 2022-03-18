@@ -183,7 +183,7 @@ class FLFSR:
 
             lfsr = galois.FLFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.field
-            print(lfsr.field.properties)
+            print(lfsr.field)
         """
         return self._field
 
@@ -396,7 +396,7 @@ class GLFSR:
 
             lfsr = galois.GLFSR(galois.primitive_poly(2, 4)); lfsr
             lfsr.field
-            print(lfsr.field.properties)
+            print(lfsr.field)
         """
         return self._field
 

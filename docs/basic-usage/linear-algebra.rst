@@ -9,7 +9,7 @@ In the sections below, the prime field :math:`\mathrm{GF}(31)` is used.
 .. ipython:: python
 
     GF = galois.GF(31)
-    print(GF.properties)
+    print(GF)
 
 NumPy routines
 --------------
