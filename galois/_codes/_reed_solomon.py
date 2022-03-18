@@ -679,7 +679,7 @@ class ReedSolomon:
 
             rs = galois.ReedSolomon(15, 9); rs
             rs.field
-            print(rs.field.properties)
+            print(rs.field)
         """
         return self._field
 

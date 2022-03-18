@@ -16,8 +16,8 @@ A *Galois field array class* is created using the class factory function :func:`
 .. ipython:: python
 
     GF = galois.GF(3**5)
+    GF
     print(GF)
-    print(GF.properties)
 
 The *Galois field array class* `GF` is a subclass of :obj:`galois.FieldArray` (which itself subclasses :obj:`numpy.ndarray`) and
 has :obj:`galois.FieldClass` as its metaclass.

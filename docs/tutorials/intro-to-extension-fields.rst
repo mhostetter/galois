@@ -22,8 +22,8 @@ In this tutorial, we will consider the extension field :math:`\mathrm{GF}(3^2)`.
       .. ipython:: python
 
          GF9 = galois.GF(3**2)
+         GF9
          print(GF9)
-         print(GF9.properties)
 
    .. tab-item:: Polynomial
       :sync: poly
@@ -32,8 +32,8 @@ In this tutorial, we will consider the extension field :math:`\mathrm{GF}(3^2)`.
       .. ipython:: python
 
          GF9 = galois.GF(3**2, display="poly")
+         GF9
          print(GF9)
-         print(GF9.properties)
 
    .. tab-item:: Power
       :sync: power
@@ -41,8 +41,8 @@ In this tutorial, we will consider the extension field :math:`\mathrm{GF}(3^2)`.
       .. ipython:: python
 
          GF9 = galois.GF(3**2, display="power")
+         GF9
          print(GF9)
-         print(GF9.properties)
 
 .. note::
 
@@ -555,7 +555,7 @@ property.
 
          @suppress
          GF9.display("int")
-         print(GF9.properties)
+         print(GF9)
          g = GF9.primitive_element; g
 
    .. tab-item:: Polynomial
@@ -566,7 +566,7 @@ property.
 
          @suppress
          GF9.display("poly")
-         print(GF9.properties)
+         print(GF9)
          g = GF9.primitive_element; g
 
    .. tab-item:: Power
@@ -576,7 +576,7 @@ property.
 
          @suppress
          GF9.display("power")
-         print(GF9.properties)
+         print(GF9)
          g = GF9.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer

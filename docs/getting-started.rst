@@ -18,8 +18,8 @@ Import the :obj:`galois` package in Python.
 
 .. ipython:: python
 
-    import galois
-    galois.__version__
+   import galois
+   galois.__version__
 
 Create a Galois field array class
 ---------------------------------
@@ -29,16 +29,16 @@ the :func:`galois.GF` class factory. In this example, we are working in :math:`\
 
 .. ipython:: python
 
-    GF = galois.GF(2**8)
-    print(GF)
-    print(GF.properties)
+   GF = galois.GF(2**8)
+   GF
+   print(GF)
 
 The *Galois field array class* `GF` is a subclass of :obj:`numpy.ndarray` that performs all arithmetic in the Galois field
 :math:`\mathrm{GF}(2^8)`, not in :math:`\mathbb{R}`.
 
 .. ipython:: python
 
-    issubclass(GF, np.ndarray)
+   issubclass(GF, np.ndarray)
 
 See :ref:`Galois Field Classes` for more details.
 
@@ -50,23 +50,23 @@ Next, create a new :ref:`Galois field array` `x` by passing an :ref:`array-like 
 
 .. ipython:: python
 
-    x = GF([45, 36, 7, 74, 135]); x
+   x = GF([45, 36, 7, 74, 135]); x
 
 Create a second *Galois field array* `y` by converting an existing NumPy array (without copying it) by invoking `.view()`. When finished
 working in the finite field, view it back as a NumPy array with `.view(np.ndarray)`.
 
 .. ipython:: python
 
-    # y represents an array created elsewhere in the code
-    y = np.array([103, 146, 186, 83, 112], dtype=int); y
-    y = y.view(GF); y
+   # y represents an array created elsewhere in the code
+   y = np.array([103, 146, 186, 83, 112], dtype=int); y
+   y = y.view(GF); y
 
 The *Galois field array* `x` is an instance of the *Galois field array class* `GF` (and also an instance of :obj:`numpy.ndarray`).
 
 .. ipython:: python
 
-    isinstance(x, GF)
-    isinstance(x, np.ndarray)
+   isinstance(x, GF)
+   isinstance(x, np.ndarray)
 
 See :ref:`Array Creation` for more details.
 
@@ -82,12 +82,12 @@ Choose whichever element representation is most convenient for you.
 
 .. ipython:: python
 
-    # The default representation is the integer representation
-    x
-    GF.display("poly"); x
-    GF.display("power"); x
-    # Reset to the integer representation
-    GF.display("int");
+   # The default representation is the integer representation
+   x
+   GF.display("poly"); x
+   GF.display("power"); x
+   # Reset to the integer representation
+   GF.display("int");
 
 See :ref:`Field Element Representation` for more details.
 
@@ -101,16 +101,16 @@ Standard element-wise array arithmetic -- like addition, subtraction, multiplica
 
 .. ipython:: python
 
-    x + y
-    x - y
-    x * y
-    x / y
+   x + y
+   x - y
+   x * y
+   x / y
 
 More complicated arithmetic, like square root and logarithm base :math:`\alpha`, are also supported.
 
 .. ipython:: python
 
-    np.sqrt(x)
-    np.log(x)
+   np.sqrt(x)
+   np.log(x)
 
 See :ref:`Array Arithmetic` for more details.

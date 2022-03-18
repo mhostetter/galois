@@ -7,6 +7,22 @@ import numpy as np
 import galois
 
 
+def test_repr():
+    GF = galois.GF(7)
+    assert repr(GF) == "<class 'numpy.ndarray over GF(7)'>"
+
+    GF = galois.GF(2**8)
+    assert repr(GF) == "<class 'numpy.ndarray over GF(2^8)'>"
+
+
+def test_str():
+    GF = galois.GF(7)
+    assert str(GF) == "Galois Field:\n  name: GF(7)\n  characteristic: 7\n  degree: 1\n  order: 7\n  irreducible_poly: x + 4\n  is_primitive_poly: True\n  primitive_element: 3"
+
+    GF = galois.GF(2**8)
+    assert str(GF) == "Galois Field:\n  name: GF(2^8)\n  characteristic: 2\n  degree: 8\n  order: 256\n  irreducible_poly: x^8 + x^4 + x^3 + x^2 + 1\n  is_primitive_poly: True\n  primitive_element: x"
+
+
 def test_dtypes(field):
     if field.order == 2:
         assert field.dtypes == [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
@@ -44,7 +60,7 @@ ATTRIBUTES = [
     "name", "characteristic", "degree", "order",
     "irreducible_poly", "is_primitive_poly", "primitive_element", "primitive_elements",
     "is_prime_field", "is_extension_field", "prime_subfield",
-    "dtypes", "display_mode", "properties",
+    "dtypes", "display_mode",
     "ufunc_mode", "ufunc_modes",
 ]
 
@@ -53,14 +69,6 @@ def test_cant_set_attribute(attribute):
     GF = galois.GF2
     with pytest.raises(AttributeError):
         setattr(GF, attribute, None)
-
-
-def test_properties():
-    GF = galois.GF(7)
-    assert GF.properties == "GF(7):\n  characteristic: 7\n  degree: 1\n  order: 7\n  irreducible_poly: x + 4\n  is_primitive_poly: True\n  primitive_element: 3"
-
-    GF = galois.GF(2**8)
-    assert GF.properties == "GF(2^8):\n  characteristic: 2\n  degree: 8\n  order: 256\n  irreducible_poly: x^8 + x^4 + x^3 + x^2 + 1\n  is_primitive_poly: True\n  primitive_element: x"
 
 
 def test_is_primitive_poly():

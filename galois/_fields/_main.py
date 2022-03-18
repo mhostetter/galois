@@ -83,11 +83,38 @@ class FieldClass(FunctionMeta, UfuncMeta):
         cls._element_fixed_width = None
         cls._element_fixed_width_counter = 0
 
-    def __str__(cls):
-        return f"<class 'numpy.ndarray over {cls.name}'>"
+    def __str__(cls) -> str:
+        """
+        A formatted string displaying relevant properties of the finite field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(2); print(GF)
+            GF = galois.GF(2**8); print(GF)
+            GF = galois.GF(31); print(GF)
+            GF = galois.GF(7**5); print(GF)
+        """
+        if cls.prime_subfield is None:
+            return repr(cls)
+
+        with cls.prime_subfield.display("int"):
+            irreducible_poly_str = cls.irreducible_poly.string
+
+        string = "Galois Field:"
+        string += f"\n  name: {cls.name}"
+        string += f"\n  characteristic: {cls.characteristic}"
+        string += f"\n  degree: {cls.degree}"
+        string += f"\n  order: {cls.order}"
+        string += f"\n  irreducible_poly: {irreducible_poly_str}"
+        string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
+        string += f"\n  primitive_element: {poly_to_str(integer_to_poly(cls.primitive_element, cls.characteristic))}"
+
+        return string
 
     def __repr__(cls):
-        return str(cls)
+        return f"<class 'numpy.ndarray over {cls.name}'>"
 
     ###############################################################################
     # Helper methods
@@ -295,7 +322,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
         .. ipython:: python
 
             GF = galois.GF(2**4)
-            print(GF.properties)
+            print(GF)
 
         .. tab-set::
 
@@ -690,7 +717,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
         .. ipython:: python
 
             GF = galois.GF(2**8)
-            print(GF.properties)
+            print(GF)
             GF.is_primitive_poly
 
         The :math:`\mathrm{GF}(2^8)` field from AES uses a non-primitive polynomial.
@@ -698,7 +725,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
         .. ipython:: python
 
             GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
-            print(GF.properties)
+            print(GF)
             GF.is_primitive_poly
         """
         return cls._is_primitive_poly
@@ -967,33 +994,6 @@ class FieldClass(FunctionMeta, UfuncMeta):
         else:
             return "jit-calculate"
 
-    @property
-    def properties(cls) -> str:
-        """
-        A formatted string displaying relevant properties of the finite field.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(2); print(GF.properties)
-            GF = galois.GF(2**8); print(GF.properties)
-            GF = galois.GF(31); print(GF.properties)
-            GF = galois.GF(7**5); print(GF.properties)
-        """
-        with cls.prime_subfield.display("int"):
-            irreducible_poly_str = cls.irreducible_poly.string
-
-        string = f"{cls.name}:"
-        string += f"\n  characteristic: {cls.characteristic}"
-        string += f"\n  degree: {cls.degree}"
-        string += f"\n  order: {cls.order}"
-        string += f"\n  irreducible_poly: {irreducible_poly_str}"
-        string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
-        string += f"\n  primitive_element: {poly_to_str(integer_to_poly(cls.primitive_element, cls.characteristic))}"
-
-        return string
-
 
 class DirMeta(type):
     """
@@ -1072,7 +1072,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     .. ipython:: python
 
         GF = galois.GF(3**5)
-        print(GF.properties)
+        print(GF)
 
     The *Galois field array class* `GF` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldClass` as its
     metaclass.
@@ -2749,7 +2749,7 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
     .. ipython:: python
 
         galois.GF2 is galois.GF(2)
-        print(galois.GF2.properties)
+        print(galois.GF2)
 
     The *Galois field array class* :obj:`galois.GF2` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldClass` as its
     metaclass.

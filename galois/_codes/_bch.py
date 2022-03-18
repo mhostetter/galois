@@ -772,7 +772,7 @@ class BCH:
 
             bch = galois.BCH(15, 7); bch
             bch.field
-            print(bch.field.properties)
+            print(bch.field)
         """
         return self._field
 

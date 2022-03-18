@@ -151,7 +151,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(2)
-                print(GF.properties)
+                print(GF)
 
         .. tab-item:: GF(p)
 
@@ -160,7 +160,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(31)
-                print(GF.properties)
+                print(GF)
 
         .. tab-item:: GF(2^m)
 
@@ -170,7 +170,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(2**8)
-                print(GF.properties)
+                print(GF)
 
         .. tab-item:: GF(p^m)
 
@@ -180,7 +180,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(3**5)
-                print(GF.properties)
+                print(GF)
 
     Create a *Galois field array class* for extension fields and specify their irreducible polynomial.
 
@@ -194,7 +194,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
-                print(GF.properties)
+                print(GF)
 
         .. tab-item:: GF(p^m)
 
@@ -204,7 +204,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 2")
-                print(GF.properties)
+                print(GF)
 
     Arbitrarily-large finite fields are also supported.
 
@@ -217,7 +217,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(36893488147419103183)
-                print(GF.properties)
+                print(GF)
 
         .. tab-item:: GF(2^m)
 
@@ -226,7 +226,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(2**100)
-                print(GF.properties)
+                print(GF)
 
         .. tab-item:: GF(p^m)
 
@@ -235,7 +235,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(109987**4)
-                print(GF.properties)
+                print(GF)
     """
     # pylint: disable=redefined-outer-name,redefined-builtin
     if not isinstance(order, int):

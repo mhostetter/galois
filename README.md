@@ -81,11 +81,12 @@ working in `GF(2^8)`.
 ```python
 In [3]: GF = galois.GF(2**8)
 
-In [4]: print(GF)
-<class 'numpy.ndarray over GF(2^8)'>
+In [4]: GF
+Out[4]: <class 'numpy.ndarray over GF(2^8)'>
 
-In [5]: print(GF.properties)
-GF(2^8):
+In [5]: print(GF)
+Galois Field:
+  name: GF(2^8)
   characteristic: 2
   degree: 8
   order: 256
