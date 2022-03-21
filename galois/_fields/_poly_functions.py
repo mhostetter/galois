@@ -253,7 +253,7 @@ def factors(poly):
             multiplicities.extend([sf_multiplicity,]*len(f))
 
     # Sort the factors in increasing-multiplicity order
-    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[0].integer))
+    factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: int(item[0])))
 
     return list(factors_), list(multiplicities)
 
@@ -553,7 +553,7 @@ def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
             i += 1
 
     # Sort the factors in lexicographically-increasing order
-    factors_ = sorted(factors_, key=lambda item: item.integer)
+    factors_ = sorted(factors_, key=int)
 
     return factors_
 

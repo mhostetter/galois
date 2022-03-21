@@ -187,7 +187,8 @@ ipython_execlines = ["import math", "import numpy as np", "import galois"]
 # -- Functions and setup -----------------------------------------------------
 
 SPECIAL_MEMBERS = [
-    "__repr__", "__str__", "__call__", "__len__", "__eq__",
+    "__repr__", "__str__", "__int__",
+    "__call__", "__len__", "__eq__",
     "__add__", "__neg__", "__sub__", "__mul__", "__truediv__", "__floordiv__", "__divmod__", "__mod__", "__pow__"
 ]
 

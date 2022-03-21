@@ -227,7 +227,7 @@ def test_factors(characteristic, degree):
         multiplicities = item[2]
 
         # Sort the Sage output to be ordered similarly to `galois`
-        factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: item[0].integer))
+        factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: int(item[0])))
         factors, multiplicities = list(factors), list(multiplicities)
 
         assert galois.factors(a) == (factors, multiplicities)
@@ -435,7 +435,7 @@ def test_equal_degree_factorization():
         if fi not in factors:
             factors.append(fi)
             f *= fi
-    factors = sorted(factors, key=lambda item: item.integer)
+    factors = sorted(factors, key=int)
     assert galois.equal_degree_factorization(f, d) == factors
 
     GF = galois.GF(5)
@@ -447,7 +447,7 @@ def test_equal_degree_factorization():
         if fi not in factors:
             factors.append(fi)
             f *= fi
-    factors = sorted(factors, key=lambda item: item.integer)
+    factors = sorted(factors, key=int)
     assert galois.equal_degree_factorization(f, d) == factors
 
     GF = galois.GF(2**2)
@@ -459,7 +459,7 @@ def test_equal_degree_factorization():
         if fi not in factors:
             factors.append(fi)
             f *= fi
-    factors = sorted(factors, key=lambda item: item.integer)
+    factors = sorted(factors, key=int)
     assert galois.equal_degree_factorization(f, d) == factors
 
     GF = galois.GF(5**2)
@@ -471,5 +471,5 @@ def test_equal_degree_factorization():
         if fi not in factors:
             factors.append(fi)
             f *= fi
-    factors = sorted(factors, key=lambda item: item.integer)
+    factors = sorted(factors, key=int)
     assert galois.equal_degree_factorization(f, d) == factors

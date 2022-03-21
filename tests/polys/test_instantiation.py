@@ -115,7 +115,7 @@ def test_zero(type1, field):
     assert np.array_equal(p.nonzero_coeffs, [])
     assert np.array_equal(p.degrees, [0])
     assert np.array_equal(p.coeffs, [0])
-    assert p.integer == 0
+    assert int(p) == 0
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -159,5 +159,5 @@ def check_attributes(poly, config):
     assert np.array_equal(poly.nonzero_coeffs, config["nonzero_coeffs"])
     assert np.array_equal(poly.degrees, config["degrees"])
     assert np.array_equal(poly.coeffs, config["coeffs"])
-    assert poly.integer == config["integer"]
+    assert int(poly) == config["integer"]
     assert str(poly) == config["string"]
