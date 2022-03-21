@@ -71,23 +71,25 @@ def GF(
         lookup tables and when computing :obj:`numpy.log`. A primitive element is a generator of the multiplicative group of the
         field.
 
-        **Prime fields:**
+        .. tab-set::
 
-        For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`.
+            .. tab-item:: Prime fields
 
-        * :obj:`None` (default): Uses the minimal primitive root modulo :math:`p`. See :func:`galois.primitive_root`.
-        * :obj:`int`: A primitive root modulo :math:`p`.
+                For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`.
 
-        **Extension fields:**
+                * :obj:`None` (default): Uses the minimal primitive root modulo :math:`p`. See :func:`galois.primitive_root`.
+                * :obj:`int`: A primitive root modulo :math:`p`.
 
-        For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over
-        :math:`\mathrm{GF}(p)`.
+            .. tab-item:: Extension fields
 
-        * :obj:`None` (default): Uses the lexicographically-minimal primitive element. See :func:`galois.primitive_element`.
-        * :obj:`int`: The integer representation of the primitive element.
-        * :obj:`str`: The primitive element expressed as a string, e.g. `"x + 1"`.
-        * :obj:`tuple`, :obj:`list`, :obj:`numpy.ndarray`: The primitive element's polynomial coefficients in degree-descending order.
-        * :obj:`galois.Poly`: The primitive element as a polynomial object.
+                For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over
+                :math:`\mathrm{GF}(p)`.
+
+                * :obj:`None` (default): Uses the lexicographically-minimal primitive element. See :func:`galois.primitive_element`.
+                * :obj:`int`: The integer representation of the primitive element.
+                * :obj:`str`: The primitive element expressed as a string, e.g. `"x + 1"`.
+                * :obj:`tuple`, :obj:`list`, :obj:`numpy.ndarray`: The primitive element's polynomial coefficients in degree-descending order.
+                * :obj:`galois.Poly`: The primitive element as a polynomial object.
 
     verify
         Indicates whether to verify that the user-specified irreducible polynomial is in fact irreducible and that the user-specified
