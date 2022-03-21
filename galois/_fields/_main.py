@@ -3940,36 +3940,6 @@ class Poly:
         self,
         other: Union["Poly", FieldArray]
     ) -> "Poly":
-        r"""
-        Adds two polynomials in :math:`\mathrm{GF}(p^m)`.
-
-        Parameters
-        ----------
-        other
-            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
-
-        Returns
-        -------
-        :
-            The polynomial :math:`a(x) + b(x)`.
-
-        Examples
-        --------
-        Add two polynomials over :math:`\mathrm{GF}(3^5)`.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**5)
-            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-            b = galois.Poly([47, 200, 75], field=GF); b
-            a + b
-
-        Add a polynomial and scalar over :math:`\mathrm{GF}(3^5)`.
-
-        .. ipython:: python
-
-            a + GF(75)
-        """
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
@@ -3985,66 +3955,12 @@ class Poly:
         return cls._add(b, a)
 
     def __neg__(self):
-        r"""
-        Returns the additive inverse of the polynomial :math:`f(x)`.
-
-        Returns
-        -------
-        :
-            The polynomial :math:`-f(x)`.
-
-        Examples
-        --------
-        Compute the additive inverse of a polynomial over :math:`\mathrm{GF}(3^5)`.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**5)
-            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-            -a
-
-        A polynomial added to its additive inverse is always zero.
-
-        .. ipython:: python
-
-            a + -a
-        """
         raise NotImplementedError
 
     def __sub__(
         self,
         other: Union["Poly", FieldArray]
     ) -> "Poly":
-        r"""
-        Subtracts two polynomials in :math:`\mathrm{GF}(p^m)`.
-
-        Parameters
-        ----------
-        other
-            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
-
-        Returns
-        -------
-        :
-            The polynomial :math:`a(x) - b(x)`.
-
-        Examples
-        --------
-        Subtract two polynomials over :math:`\mathrm{GF}(3^5)`.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**5)
-            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-            b = galois.Poly([47, 200, 75], field=GF); b
-            a - b
-
-        Subtract a polynomial and scalar over :math:`\mathrm{GF}(3^5)`.
-
-        .. ipython:: python
-
-            a - GF(75)
-        """
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
@@ -4063,49 +3979,6 @@ class Poly:
         self,
         other: Union["Poly", FieldArray, int]
     ) -> "Poly":
-        r"""
-        Multiplies two polynomials in :math:`\mathrm{GF}(p^m)`.
-
-        Parameters
-        ----------
-        other
-            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial). An integer
-            :math:`b` may be passed, which performs scalar multiplication (repeated addition).
-
-        Returns
-        -------
-        :
-            The polynomial :math:`a(x)b(x)` or :math:`a(x) \cdot b`.
-
-        Notes
-        -----
-        When the second argument is an integer, scalar multiplication is performed, which is equivalent to repeated addition.
-        For example, :math:`b(x) \cdot 3 = b(x) + b(x) + b(x)`.
-
-        Examples
-        --------
-        Multiply two polynomials over :math:`\mathrm{GF}(3^5)`.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**5)
-            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-            b = galois.Poly([47, 200, 75], field=GF); b
-            a * b
-
-        Multiply a polynomial and finite field scalar over :math:`\mathrm{GF}(3^5)`.
-
-        .. ipython:: python
-
-            a * GF(4)
-
-        Multiply a polynomial and integer scalar over :math:`\mathrm{GF}(3^5)`.
-
-        .. ipython:: python
-
-            a * 4
-            a + a + a + a
-        """
         self._check_inputs_are_polys_or_ints(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         if isinstance(a, (int, np.integer)):
@@ -4130,45 +4003,6 @@ class Poly:
         self,
         other: Union["Poly", FieldArray]
     ) -> Tuple["Poly", "Poly"]:
-        r"""
-        Divides two polynomials over :math:`\mathrm{GF}(p^m)` and returns the quotient and remainder.
-
-        Parameters
-        ----------
-        other
-            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
-
-        Returns
-        -------
-        :
-            The quotient polynomial :math:`q(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
-        :
-            The remainder polynomial :math:`r(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
-
-        Examples
-        --------
-        Divide two polynomials over :math:`\mathrm{GF}(3^5)` and return the quotient and remainder.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**5)
-            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-            b = galois.Poly([47, 200, 75], field=GF); b
-            q, r = divmod(a, b)
-            q
-            r
-            b*q + r == a
-
-        Divide a polynomial and scalar over :math:`\mathrm{GF}(3^5)` and return the quotient and remainder.
-
-        .. ipython:: python
-
-            b = GF(75); b
-            q, r = divmod(a, b)
-            q
-            r
-            b*q + r == a
-        """
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
@@ -4187,39 +4021,6 @@ class Poly:
         self,
         other: Union["Poly", FieldArray]
     ) -> "Poly":
-        r"""
-        Divides two polynomials over :math:`\mathrm{GF}(p^m)` and returns the quotient.
-
-        True division and floor division are equivalent.
-
-        Parameters
-        ----------
-        other
-            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
-
-        Returns
-        -------
-        :
-            The quotient polynomial :math:`q(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
-
-        Examples
-        --------
-        Divide two polynomials over :math:`\mathrm{GF}(3^5)` and return the quotient.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**5)
-            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-            b = galois.Poly([47, 200, 75], field=GF); b
-            a / b
-
-        Divide a polynomial and scalar over :math:`\mathrm{GF}(3^5)` and return the quotient.
-
-        .. ipython:: python
-
-            b = GF(75); b
-            a / b
-        """
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
@@ -4238,39 +4039,6 @@ class Poly:
         self,
         other: Union["Poly", FieldArray]
     ) -> "Poly":
-        r"""
-        Divides two polynomials over :math:`\mathrm{GF}(p^m)` and returns the quotient.
-
-        True division and floor division are equivalent.
-
-        Parameters
-        ----------
-        other
-            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
-
-        Returns
-        -------
-        :
-            The quotient polynomial :math:`q(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
-
-        Examples
-        --------
-        Divide two polynomials over :math:`\mathrm{GF}(3^5)` and return the quotient.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**5)
-            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-            b = galois.Poly([47, 200, 75], field=GF); b
-            a // b
-
-        Divide a polynomial and scalar over :math:`\mathrm{GF}(3^5)` and return the quotient.
-
-        .. ipython:: python
-
-            b = GF(75); b
-            a // b
-        """
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
@@ -4289,37 +4057,6 @@ class Poly:
         self,
         other: Union["Poly", FieldArray]
     ) -> "Poly":
-        r"""
-        Divides two polynomials over :math:`\mathrm{GF}(p^m)` and returns the remainder.
-
-        Parameters
-        ----------
-        other
-            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial).
-
-        Returns
-        -------
-        :
-            The remainder polynomial :math:`r(x)` such that :math:`a(x) = b(x)q(x) + r(x)`.
-
-        Examples
-        --------
-        Divide two polynomials over :math:`\mathrm{GF}(3^5)` and return the remainder.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**5)
-            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-            b = galois.Poly([47, 200, 75], field=GF); b
-            a % b
-
-        Divide a polynomial and scalar over :math:`\mathrm{GF}(3^5)` and return the remainder.
-
-        .. ipython:: python
-
-            b = GF(75); b
-            a % b
-        """
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
@@ -4339,69 +4076,6 @@ class Poly:
         exponent: int,
         modulus: Optional["Poly"] = None
     ) -> "Poly":
-        r"""
-        Exponentiates the polynomial over :math:`\mathrm{GF}(p^m)` to an integer power, optionally reduce modulo another
-        polynomial.
-
-        Parameters
-        ----------
-        exponent
-            The non-negative integer exponent :math:`b`.
-        modulus
-            The polynomial modulus :math:`m(x)`.
-
-        Returns
-        -------
-        :
-            The polynomial :math:`a(x)^b\ \textrm{mod}\ m(x)`.
-
-        Notes
-        -----
-        This function implements the Square-and-Multiply Algorithm. The algorithm is more efficient than exponentiating
-        first and then reducing modulo :math:`m(x)`, especially for very large exponents. Instead, this algorithm repeatedly squares
-        :math:`a(x)`, reducing modulo :math:`m` at each step.
-
-        References
-        ----------
-        * Algorithm 2.227 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
-
-        Examples
-        --------
-        .. tab-set::
-
-            .. tab-item:: Exponentiation
-
-                Exponentiate a polynomial over :math:`\mathrm{GF}(3^5)`.
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**5)
-                    a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-                    a ** 3
-                    a * a * a
-
-            .. tab-item:: Modular exponentiation
-
-                Generate random polynomials over :math:`\mathrm{GF}(7)`.
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**5)
-                    a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-                    m = galois.Poly([47, 0, 22, 111], field=GF); m
-
-                Compute the modular exponentiation of the polynomial :math:`a(x)`.
-
-                .. ipython:: python
-
-                    pow(a, 100, m)
-
-                The equivalent (less efficient) calculation.
-
-                .. ipython:: python
-
-                    a**100 % m
-        """
         if not isinstance(exponent, (int, np.integer)):
             raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {exponent}.")
         if not isinstance(modulus, (type(None), Poly)):
