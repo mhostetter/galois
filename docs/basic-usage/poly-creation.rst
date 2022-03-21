@@ -64,11 +64,11 @@ Create a polynomial from its integer representation using :func:`galois.Poly.Int
 
     galois.Poly.Integer(268, field=GF)
 
-Create a polynomial from its string representation using :func:`galois.Poly.String`.
+Create a polynomial from its string representation using :func:`galois.Poly.Str`.
 
 .. ipython:: python
 
-    galois.Poly.String("x^5 + 143", field=GF)
+    galois.Poly.Str("x^5 + 143", field=GF)
 
 Create a polynomial from its roots using :func:`galois.Poly.Roots`.
 

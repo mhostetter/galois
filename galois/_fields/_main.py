@@ -3164,9 +3164,11 @@ class Poly:
             return Poly(coeffs, field=field)
 
     @classmethod
-    def String(cls, string: str, field: Optional[FieldClass] = GF2) -> "Poly":
+    def Str(cls, string: str, field: Optional[FieldClass] = GF2) -> "Poly":
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its string representation.
+
+        :func:`galois.Poly.Str` and `str(poly)` are inverse operations.
 
         Parameters
         ----------
@@ -3198,14 +3200,16 @@ class Poly:
 
         .. ipython:: python
 
-            galois.Poly.String("x^2 + 1")
+            f = galois.Poly.Str("x^2 + 1"); f
+            str(f)
 
         Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its string representation.
 
         .. ipython:: python
 
             GF = galois.GF(3**5)
-            galois.Poly.String("13x^3 + 117", field=GF)
+            f = galois.Poly.Str("13x^3 + 117", field=GF); f
+            str(f)
         """
         if not isinstance(string, str):
             raise TypeError(f"Argument `string` be an string, not {type(string)}")
@@ -3707,6 +3711,8 @@ class Poly:
     def __str__(self) -> str:
         """
         The string representation of the polynomial, without specifying the finite field it's over.
+
+        :func:`galois.Poly.Str` and `str(poly)` are inverse operations.
 
         Examples
         --------

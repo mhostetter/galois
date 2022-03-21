@@ -188,5 +188,5 @@ def test_len():
     assert len(p) == 1
 
     # SparsePoly
-    p = galois.Poly.String("x^1000 + 1")
+    p = galois.Poly.Str("x^1000 + 1")
     assert len(p) == 1001

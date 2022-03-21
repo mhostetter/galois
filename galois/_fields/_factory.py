@@ -381,7 +381,7 @@ def GF_extension(
     elif isinstance(irreducible_poly_, int):
         irreducible_poly_ = Poly.Integer(irreducible_poly_, field=prime_subfield)
     elif isinstance(irreducible_poly_, str):
-        irreducible_poly_ = Poly.String(irreducible_poly_, field=prime_subfield)
+        irreducible_poly_ = Poly.Str(irreducible_poly_, field=prime_subfield)
     elif isinstance(irreducible_poly_, (tuple, list, np.ndarray)):
         irreducible_poly_ = Poly(irreducible_poly_, field=prime_subfield)
     elif not isinstance(irreducible_poly_, Poly):
@@ -394,7 +394,7 @@ def GF_extension(
     elif isinstance(primitive_element_, int):
         primitive_element_ = Poly.Integer(primitive_element_, field=prime_subfield)
     elif isinstance(primitive_element_, str):
-        primitive_element_ = Poly.String(primitive_element_, field=prime_subfield)
+        primitive_element_ = Poly.Str(primitive_element_, field=prime_subfield)
     elif isinstance(primitive_element_, (tuple, list, np.ndarray)):
         primitive_element_ = Poly(primitive_element_, field=prime_subfield)
     elif not isinstance(primitive_element_, Poly):
