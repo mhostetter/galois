@@ -34,7 +34,7 @@ def test_zero(field):
     assert np.array_equal(p.degrees, [0])
     assert np.array_equal(p.coeffs, [0])
     assert p.integer == 0
-    assert p.string == "0"
+    assert str(p) == "0"
 
 
 def test_one_exceptions():
@@ -53,7 +53,7 @@ def test_one(field):
     assert np.array_equal(p.degrees, [0])
     assert np.array_equal(p.coeffs, [1])
     assert p.integer == 1
-    assert p.string == "1"
+    assert str(p) == "1"
 
 
 def test_identity_exceptions():
@@ -72,7 +72,7 @@ def test_identity(field):
     assert np.array_equal(p.degrees, [1,0])
     assert np.array_equal(p.coeffs, [1,0])
     assert p.integer == field.order
-    assert p.string == "x"
+    assert str(p) == "x"
 
 
 def test_random_exceptions():
@@ -141,7 +141,7 @@ def test_string(field):
     assert p.degree == max(degrees)
     assert np.array_equal(p.nonzero_degrees, degrees)
     assert np.array_equal(p.nonzero_coeffs, coeffs)
-    assert p.string == string
+    assert str(p) == string
 
     degrees = [105, 97, 48, 1, 0]
     coeffs = [field.Random(low=1), field.Random(low=1), field.Random(low=1), field.Random(low=1), field.Random(low=1)]
@@ -155,7 +155,7 @@ def test_string(field):
     assert p.degree == max(degrees)
     assert np.array_equal(p.nonzero_degrees, degrees)
     assert np.array_equal(p.nonzero_coeffs, coeffs)
-    assert p.string == string
+    assert str(p) == string
 
 
 def test_string_large():
@@ -163,7 +163,7 @@ def test_string_large():
     p = galois.Poly.String(string)
     assert isinstance(p, galois.Poly)
     assert p.field is galois.GF2
-    assert str(p) == "Poly(" + string + ", GF(2))"
+    assert str(p) == string
 
 
 def test_degrees_exceptions():
@@ -205,7 +205,7 @@ def test_degrees(field):
     assert np.array_equal(p.degrees, [2,1,0])
     assert np.array_equal(p.coeffs, [1,0,1])
     assert p.integer == field.order**2 + 1
-    assert p.string == "x^2 + 1"
+    assert str(p) == "x^2 + 1"
 
     p = galois.Poly.Degrees(degrees, field(coeffs))
     assert isinstance(p, galois.Poly)
@@ -216,7 +216,7 @@ def test_degrees(field):
     assert np.array_equal(p.degrees, [2,1,0])
     assert np.array_equal(p.coeffs, [1,0,1])
     assert p.integer == field.order**2 + 1
-    assert p.string == "x^2 + 1"
+    assert str(p) == "x^2 + 1"
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -230,7 +230,7 @@ def test_degrees_empty(field):
     assert np.array_equal(p.degrees, [0])
     assert np.array_equal(p.coeffs, [0])
     assert p.integer == 0
-    assert p.string == "0"
+    assert str(p) == "0"
 
 
 def test_roots_exceptions():

@@ -141,7 +141,7 @@ class _LFSR:
         assert steps > 0
 
         if not self.characteristic_poly.coeffs[-1] > 0:
-            raise ValueError(f"Can only step the shift register backwards if the c_0 tap is non-zero, not c(x) = {self.characteristic_poly.string}.")
+            raise ValueError(f"Can only step the shift register backwards if the c_0 tap is non-zero, not c(x) = {self.characteristic_poly}.")
 
         if self.field.ufunc_mode != "python-calculate":
             # Retrieve JIT arithmetic functions using explicit calculation
@@ -391,7 +391,7 @@ class FLFSR(_LFSR):
             lfsr = galois.FLFSR(c.reverse())
             lfsr
         """
-        return f"<Fibonacci LFSR: f(x) = {self.feedback_poly.string} over {self.field.name}>"
+        return f"<Fibonacci LFSR: f(x) = {self.feedback_poly} over {self.field.name}>"
 
     def __str__(self) -> str:
         """
@@ -407,8 +407,8 @@ class FLFSR(_LFSR):
         """
         string = "Fibonacci LFSR:"
         string += f"\n  field: {self.field.name}"
-        string += f"\n  feedback_poly: {self.feedback_poly.string}"
-        string += f"\n  characteristic_poly: {self.characteristic_poly.string}"
+        string += f"\n  feedback_poly: {self.feedback_poly}"
+        string += f"\n  characteristic_poly: {self.characteristic_poly}"
         string += f"\n  taps: {self.taps}"
         string += f"\n  order: {self.order}"
         string += f"\n  state: {self.state}"
@@ -904,7 +904,7 @@ class GLFSR(_LFSR):
             lfsr = galois.GLFSR(c.reverse())
             lfsr
         """
-        return f"<Galois LFSR: f(x) = {self.feedback_poly.string} over {self.field.name}>"
+        return f"<Galois LFSR: f(x) = {self.feedback_poly} over {self.field.name}>"
 
     def __str__(self) -> str:
         """
@@ -920,8 +920,8 @@ class GLFSR(_LFSR):
         """
         string = "Galois LFSR:"
         string += f"\n  field: {self.field.name}"
-        string += f"\n  feedback_poly: {self.feedback_poly.string}"
-        string += f"\n  characteristic_poly: {self.characteristic_poly.string}"
+        string += f"\n  feedback_poly: {self.feedback_poly}"
+        string += f"\n  characteristic_poly: {self.characteristic_poly}"
         string += f"\n  taps: {self.taps}"
         string += f"\n  order: {self.order}"
         string += f"\n  state: {self.state}"
