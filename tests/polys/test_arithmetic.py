@@ -128,6 +128,18 @@ def test_power(poly_power):
             assert type(z.coeffs) is GF
 
 
+def test_modular_power(poly_modular_power):
+    GF, X, E, M, Z = poly_modular_power["GF"], poly_modular_power["X"], poly_modular_power["E"], poly_modular_power["M"], poly_modular_power["Z"]
+    for i in range(len(X)):
+        x = X[i]
+        e = E[i]
+        m = M[i]
+        z = pow(x, e, m)
+
+        assert z == Z[i]
+        assert isinstance(z, galois.Poly)
+
+
 def test_evaluate_constant(poly_evaluate):
     GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
     for i in range(len(X)):

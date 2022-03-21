@@ -74,19 +74,19 @@ for i in range(len(X)):
 d = {"X": X, "Z": Z}
 save_pickle(d, FOLDER, "prod.pkl")
 
-set_seed(SEED + 104)
-X = [random.randint(-1000, 1000) for _ in range(20)] + [random.randint(-1000, 1_000_000) for _ in range(20)]
-E = [random.randint(0, 1_000) for _ in range(40)]
-M = [random.randint(-1000, 1000) for _ in range(20)] + [random.randint(-1000, 1_000_000) for _ in range(20)]
-Z = [0,]*len(X)
-for i in range(len(X)):
-    x = X[i]
-    e = E[i]
-    m = M[i]
-    z = pow(x, e, m)
-    Z[i] = int(z)
-d = {"X": X, "E": E, "M": M, "Z": Z}
-save_pickle(d, FOLDER, "power.pkl")
+# set_seed(SEED + 104)
+# X = [random.randint(-1000, 1000) for _ in range(20)] + [random.randint(-1000, 1_000_000) for _ in range(20)]
+# E = [random.randint(0, 1_000) for _ in range(40)]
+# M = [random.randint(-1000, 1000) for _ in range(20)] + [random.randint(-1000, 1_000_000) for _ in range(20)]
+# Z = [0,]*len(X)
+# for i in range(len(X)):
+#     x = X[i]
+#     e = E[i]
+#     m = M[i]
+#     z = pow(x, e, m)
+#     Z[i] = int(z)
+# d = {"X": X, "E": E, "M": M, "Z": Z}
+# save_pickle(d, FOLDER, "power.pkl")
 
 set_seed(SEED + 105)
 X = [random.randint(0, 1000) for _ in range(20)] + [random.randint(1000, 1_000_000_000) for _ in range(20)]

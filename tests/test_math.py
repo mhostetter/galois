@@ -82,21 +82,6 @@ def test_are_coprime():
     assert galois.are_coprime(2, 3, 7, 256) == False
 
 
-def test_pow_exceptions():
-    with pytest.raises(TypeError):
-        galois.pow(1.0, 2, 3)
-    with pytest.raises(TypeError):
-        galois.pow(1, 2.0, 3)
-    with pytest.raises(TypeError):
-        galois.pow(1, 2, 3.0)
-
-
-def test_pow(power):
-    X, E, M, Z = power["X"], power["E"], power["M"], power["Z"]
-    for i in range(len(X)):
-        assert galois.pow(X[i], E[i], M[i]) == Z[i]
-
-
 def test_crt_exceptions():
     with pytest.raises(TypeError):
         galois.crt(np.array([0, 3, 4]), [3, 4, 5])

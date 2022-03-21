@@ -104,36 +104,6 @@ def prod(*args):
 
 
 ###############################################################################
-# Congruences
-###############################################################################
-
-def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
-    """
-    This function is wrapped and documented in `_polymorphic.pow()`.
-    """
-    if not base.field is modulus.field:
-        raise ValueError(f"Arguments `base` and `modulus` must be polynomials over the same Galois field, not {base.field} and {modulus.field}.")
-
-    if exponent == 0:
-        return Poly.One(base.field)
-
-    result_s = base  # The "squaring" part
-    result_m = Poly.One(base.field)  # The "multiplicative" part
-
-    while exponent > 1:
-        if exponent % 2 == 0:
-            result_s = (result_s * result_s) % modulus
-            exponent //= 2
-        else:
-            result_m = (result_m * result_s) % modulus
-            exponent -= 1
-
-    result = (result_s * result_m) % modulus
-
-    return result
-
-
-###############################################################################
 # Special polynomials
 ###############################################################################
 

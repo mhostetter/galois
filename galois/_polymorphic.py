@@ -1,7 +1,6 @@
 """
 A module that contains polymorphic math functions that work on integers and polynomials.
 """
-import builtins
 from typing import Tuple, List, Sequence, overload
 
 import numpy as np
@@ -11,7 +10,6 @@ from ._fields._poly_functions import gcd as poly_gcd
 from ._fields._poly_functions import egcd as poly_egcd
 from ._fields._poly_functions import lcm as poly_lcm
 from ._fields._poly_functions import prod as poly_prod
-from ._fields._poly_functions import pow as poly_pow
 from ._fields._poly_functions import factors as poly_factors
 from ._fields._poly_functions import is_square_free as poly_is_square_free
 from ._math import gcd as int_gcd
@@ -24,7 +22,7 @@ from ._prime import is_square_free as int_is_square_free
 
 __all__ = [
     "gcd", "egcd", "lcm", "prod", "are_coprime",
-    "pow", "crt",
+    "crt",
     "factors", "is_square_free",
 ]
 
@@ -379,95 +377,6 @@ def are_coprime(*values):
 ###############################################################################
 # Congruences
 ###############################################################################
-
-@overload
-def pow(base: int, exponent: int, modulus: int) -> int:  # pylint: disable=redefined-builtin
-    ...
-@overload
-def pow(base: Poly, exponent: int, modulus: Poly) -> Poly:  # pylint: disable=redefined-builtin
-    ...
-@set_module("galois")
-def pow(base, exponent, modulus):  # pylint: disable=redefined-builtin
-    r"""
-    Efficiently performs modular exponentiation.
-
-    Parameters
-    ----------
-    base : int or galois.Poly
-        The integer or polynomial base :math:`a`.
-    exponent : int
-        The non-negative integer exponent :math:`k`.
-    modulus : int or galois.Poly
-        The integer or polynomial modulus :math:`m`.
-
-    Returns
-    -------
-    int or galois.Poly
-        The modular exponentiation :math:`a^k\ \textrm{mod}\ m`.
-
-    Notes
-    -----
-    This function implements the Square-and-Multiply Algorithm. The algorithm is more efficient than exponentiating
-    first and then reducing modulo :math:`m`, especially for very large exponents. Instead, this algorithm repeatedly squares :math:`a`,
-    reducing modulo :math:`m` at each step.
-
-    References
-    ----------
-    * Algorithm 2.143 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
-    * Algorithm 2.227 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
-
-    Examples
-    --------
-    .. tab-set::
-
-        .. tab-item:: Integers
-
-            Compute the modular exponentiation of an integer.
-
-            .. ipython:: python
-
-                galois.pow(3, 100, 7)
-
-            The equivalent (less efficient) calculation.
-
-            .. ipython:: python
-
-                3**100 % 7
-
-        .. tab-item:: Polynomials
-
-            Generate random polynomials over :math:`\mathrm{GF}(7)`.
-
-            .. ipython:: python
-
-                GF = galois.GF(7)
-                a = galois.Poly.Random(3, field=GF); a
-                m = galois.Poly.Random(10, field=GF); b
-
-            Compute the modular exponentiation of the polynomial :math:`a(x)`.
-
-            .. ipython:: python
-
-                galois.pow(a, 100, m)
-
-            The equivalent (less efficient) calculation.
-
-            .. ipython:: python
-
-                a**100 % m
-    """
-    if not isinstance(exponent, (int, np.integer)):
-        raise TypeError(f"Argument `exponent` must be an integer, not {exponent}.")
-    if not exponent >= 0:
-        raise ValueError(f"Argument `exponent` must be non-negative, not {exponent}.")
-
-    if isinstance(base, (int, np.integer)) and isinstance(modulus, (int, np.integer)):
-        return builtins.pow(base, exponent, modulus)
-    elif isinstance(base, Poly) and isinstance(modulus, Poly):
-        return poly_pow(base, exponent, modulus)
-    else:
-        raise TypeError(f"Arguments `base` and `modulus` must both be either int or galois.Poly, not {type(base)} and {type(modulus)}.")
-
 
 @overload
 def crt(remainders: Sequence[int], moduli: Sequence[int]) -> int:

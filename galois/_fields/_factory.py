@@ -719,14 +719,14 @@ def is_irreducible(poly: Poly) -> bool:
     n0 = 0
     for ni in sorted([m // pi for pi in primes]):
         # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
-        hi = poly_functions.pow(h0, q**(ni - n0), poly)
+        hi = pow(h0, q**(ni - n0), poly)
         g = poly_functions.gcd(poly, hi - x)
         if g != 1:
             return False
         h0, n0 = hi, ni
 
     # f(x) must divide (x^(q^m) - x) to be irreducible
-    h = poly_functions.pow(h0, q**(m - n0), poly)
+    h = pow(h0, q**(m - n0), poly)
     g = (h - x) % poly
     if g != 0:
         return False
@@ -964,7 +964,7 @@ def is_primitive(poly: Poly) -> bool:
     x = Poly.Identity(field)
     for ki in sorted([(q**m - 1) // pi for pi in primes]):
         # f(x) must not divide (x^((q^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of q**m - 1
-        h = poly_functions.pow(x, ki, poly)
+        h = pow(x, ki, poly)
         g = (h - one) % poly
         if g == 0:
             return False
@@ -1274,7 +1274,7 @@ def primitive_elements(
 
     elements = []
     for totative in totatives(q**m - 1):
-        h = poly_functions.pow(element, totative, irreducible_poly)
+        h = pow(element, totative, irreducible_poly)
         elements.append(h)
 
     elements = [e for e in elements if start <= int(e) < stop]  # Only return elements in the search range
@@ -1350,11 +1350,11 @@ def is_primitive_element(element: Poly, irreducible_poly: Poly) -> bool:  # pyli
     primes, _ = factors(order)
 
     for k in sorted([order // pi for pi in primes]):
-        g = poly_functions.pow(element, k, irreducible_poly)
+        g = pow(element, k, irreducible_poly)
         if g == one:
             return False
 
-    g = poly_functions.pow(element, order, irreducible_poly)
+    g = pow(element, order, irreducible_poly)
     if g != one:
         return False
 
