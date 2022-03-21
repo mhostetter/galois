@@ -130,12 +130,12 @@ def test_str():
         assert str(poly) == "(α)x^3 + (α^3)x + (1)"
 
 
-def test_integer():
+def test_int():
     poly = galois.Poly([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,1])
-    assert poly.integer == 4295000729
+    assert int(poly) == 4295000729
 
     poly = galois.Poly.Degrees([32,15,9,7,4,3,0])
-    assert poly.integer == 4295000729
+    assert int(poly) == 4295000729
 
 
 def test_equal(field):

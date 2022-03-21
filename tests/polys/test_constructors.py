@@ -33,7 +33,7 @@ def test_zero(field):
     assert np.array_equal(p.nonzero_coeffs, [])
     assert np.array_equal(p.degrees, [0])
     assert np.array_equal(p.coeffs, [0])
-    assert p.integer == 0
+    assert int(p) == 0
     assert str(p) == "0"
 
 
@@ -52,7 +52,7 @@ def test_one(field):
     assert np.array_equal(p.nonzero_coeffs, [1])
     assert np.array_equal(p.degrees, [0])
     assert np.array_equal(p.coeffs, [1])
-    assert p.integer == 1
+    assert int(p) == 1
     assert str(p) == "1"
 
 
@@ -71,7 +71,7 @@ def test_identity(field):
     assert np.array_equal(p.nonzero_coeffs, [1])
     assert np.array_equal(p.degrees, [1,0])
     assert np.array_equal(p.coeffs, [1,0])
-    assert p.integer == field.order
+    assert int(p) == field.order
     assert str(p) == "x"
 
 
@@ -117,7 +117,7 @@ def test_integer(field):
     assert np.array_equal(p.nonzero_coeffs, [1,1])
     assert np.array_equal(p.degrees, [1,0])
     assert np.array_equal(p.coeffs, [1,1])
-    assert p.integer == integer
+    assert int(p) == integer
 
 
 def test_string_exceptions():
@@ -204,7 +204,7 @@ def test_degrees(field):
     assert np.array_equal(p.nonzero_coeffs, [1,1])
     assert np.array_equal(p.degrees, [2,1,0])
     assert np.array_equal(p.coeffs, [1,0,1])
-    assert p.integer == field.order**2 + 1
+    assert int(p) == field.order**2 + 1
     assert str(p) == "x^2 + 1"
 
     p = galois.Poly.Degrees(degrees, field(coeffs))
@@ -215,7 +215,7 @@ def test_degrees(field):
     assert np.array_equal(p.nonzero_coeffs, [1,1])
     assert np.array_equal(p.degrees, [2,1,0])
     assert np.array_equal(p.coeffs, [1,0,1])
-    assert p.integer == field.order**2 + 1
+    assert int(p) == field.order**2 + 1
     assert str(p) == "x^2 + 1"
 
 
@@ -229,7 +229,7 @@ def test_degrees_empty(field):
     assert np.array_equal(p.nonzero_coeffs, [])
     assert np.array_equal(p.degrees, [0])
     assert np.array_equal(p.coeffs, [0])
-    assert p.integer == 0
+    assert int(p) == 0
     assert str(p) == "0"
 
 
@@ -268,7 +268,7 @@ def test_roots(field):
     assert np.array_equal(p.nonzero_coeffs, nonzero_coeffs)
     assert np.array_equal(p.degrees, degrees)
     assert np.array_equal(p.coeffs, coeffs)
-    assert p.integer == integer
+    assert int(p) == integer
 
     p = galois.Poly.Roots(field(roots))
     assert isinstance(p, galois.Poly)
@@ -278,7 +278,7 @@ def test_roots(field):
     assert np.array_equal(p.nonzero_coeffs, nonzero_coeffs)
     assert np.array_equal(p.degrees, degrees)
     assert np.array_equal(p.coeffs, coeffs)
-    assert p.integer == integer
+    assert int(p) == integer
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -301,7 +301,7 @@ def test_roots_with_multiplicity(field):
     assert np.array_equal(p.nonzero_coeffs, nonzero_coeffs)
     assert np.array_equal(p.degrees, degrees)
     assert np.array_equal(p.coeffs, coeffs)
-    assert p.integer == integer
+    assert int(p) == integer
 
     p = galois.Poly.Roots(field(roots), multiplicities=multiplicities)
     assert isinstance(p, galois.Poly)
@@ -311,7 +311,7 @@ def test_roots_with_multiplicity(field):
     assert np.array_equal(p.nonzero_coeffs, nonzero_coeffs)
     assert np.array_equal(p.degrees, degrees)
     assert np.array_equal(p.coeffs, coeffs)
-    assert p.integer == integer
+    assert int(p) == integer
 
 
 def test_roots_field_override():

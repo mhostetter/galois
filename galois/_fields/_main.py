@@ -64,7 +64,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
         if "irreducible_poly" in kwargs:
             cls._irreducible_poly = kwargs["irreducible_poly"]
-            cls._irreducible_poly_int = cls._irreducible_poly.integer
+            cls._irreducible_poly_int = int(cls._irreducible_poly)
         else:
             cls._irreducible_poly = None
             cls._irreducible_poly_int = 0
@@ -3725,6 +3725,30 @@ class Poly:
         """
         return sparse_poly_to_str(self.nonzero_degrees, self.nonzero_coeffs)
 
+    def __int__(self) -> int:
+        r"""
+        The integer representation of the polynomial.
+
+        Notes
+        -----
+        For the polynomial :math:`f(x) =  a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` over the field :math:`\mathrm{GF}(p^m)`,
+        the integer representation is :math:`i = a_d (p^m)^{d} + a_{d-1} (p^m)^{d-1} + \dots + a_1 (p^m) + a_0` using integer arithmetic,
+        not finite field arithmetic.
+
+        Said differently, the polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` are considered as the :math:`d` "digits" of a radix-:math:`p^m`
+        value. The polynomial's integer representation is that value in decimal (radix-:math:`10`).
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            f = galois.Poly([3, 0, 5, 2], field=GF); f
+            int(f)
+            int(f) == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
+        """
+        return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
+
     def __hash__(self):
         t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
         return hash(t)
@@ -4508,27 +4532,6 @@ class Poly:
         """
         raise NotImplementedError
 
-    @property
-    def integer(self) -> int:
-        r"""
-        The integer representation of the polynomial. For the polynomial :math:`f(x) =  a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0`
-        over the field :math:`\mathrm{GF}(p^m)`, the integer representation is :math:`i = a_d (p^m)^{d} + a_{d-1} (p^m)^{d-1} + \dots + a_1 (p^m) + a_0`
-        using integer arithmetic, not finite field arithmetic.
-
-        Said differently, if the polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` are considered as the "digits" of a radix-:math:`p^m`
-        value, the polynomial's integer representation is the decimal value (radix-:math:`10`).
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.integer
-            p.integer == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
-        """
-        return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
-
 
 class DensePoly(Poly):
     """
@@ -4697,22 +4700,22 @@ class BinaryPoly(Poly):
 
     @classmethod
     def _add(cls, a, b):
-        return BinaryPoly(a.integer ^ b.integer)
+        return BinaryPoly(int(a) ^ int(b))
 
     @classmethod
     def _sub(cls, a, b):
-        return BinaryPoly(a.integer ^ b.integer)
+        return BinaryPoly(int(a) ^ int(b))
 
     @classmethod
     def _mul(cls, a, b):
         if isinstance(b, (int, np.integer)):
             # Scalar multiplication  (p * 3 = p + p + p)
-            return BinaryPoly(a.integer) if b % 2 == 1 else BinaryPoly(0)
+            return BinaryPoly(int(a)) if b % 2 == 1 else BinaryPoly(0)
 
         else:
             # Re-order operands such that a > b so the while loop has less loops
-            a = a.integer
-            b = b.integer
+            a = int(a)
+            b = int(b)
             if b > a:
                 a, b = b, a
 
@@ -4730,8 +4733,8 @@ class BinaryPoly(Poly):
         deg_a = a.degree
         deg_q = a.degree - b.degree
         deg_r = b.degree - 1
-        a = a.integer
-        b = b.integer
+        a = int(a)
+        b = int(b)
 
         q = 0
         mask = 1 << deg_a

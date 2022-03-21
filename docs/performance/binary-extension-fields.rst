@@ -52,7 +52,7 @@ tables instead of explicitly performing the polynomial multiplication and divisi
 
     In [9]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
-    In [10]: pp = GF.irreducible_poly.integer
+    In [10]: pp = int(GF.irreducible_poly)
 
     # This does not produce the correct result!
     In [11]: %timeit (aa * bb) % pp
@@ -97,7 +97,7 @@ the correct product.
 
     In [9]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
-    In [10]: pp = GF.irreducible_poly.integer
+    In [10]: pp = int(GF.irreducible_poly)
 
     # This does not produce the correct result!
     In [11]: %timeit (aa * bb) % pp
@@ -154,7 +154,7 @@ The :obj:`galois` library is about 60x slower than native NumPy (which isn't com
 
     In [9]: AA, BB = A.view(np.ndarray), B.view(np.ndarray)
 
-    In [10]: pp = GF.irreducible_poly.integer
+    In [10]: pp = int(GF.irreducible_poly)
 
     # This does not produce the correct result!
     In [11]: %timeit (AA @ BB) % pp

@@ -80,7 +80,7 @@ def test_basic_exceptions():
 def test_specify_irreducible_poly(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     poly = GF.irreducible_poly
-    assert galois.GF(characteristic**degree, irreducible_poly=poly.integer) is GF
+    assert galois.GF(characteristic**degree, irreducible_poly=int(poly)) is GF
     assert galois.GF(characteristic**degree, irreducible_poly=str(poly)) is GF
     assert galois.GF(characteristic**degree, irreducible_poly=tuple(poly.coeffs)) is GF
     assert galois.GF(characteristic**degree, irreducible_poly=list(poly.coeffs)) is GF
@@ -115,7 +115,7 @@ def test_specify_primitive_element_prime(characteristic, degree):
 def test_specify_primitive_element_extension(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     poly = galois.Poly(GF.primitive_element.vector())
-    assert galois.GF(characteristic**degree, primitive_element=poly.integer) is GF
+    assert galois.GF(characteristic**degree, primitive_element=int(poly)) is GF
     assert galois.GF(characteristic**degree, primitive_element=str(poly)) is GF
     assert galois.GF(characteristic**degree, primitive_element=tuple(poly.coeffs)) is GF
     assert galois.GF(characteristic**degree, primitive_element=list(poly.coeffs)) is GF

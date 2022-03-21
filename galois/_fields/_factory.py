@@ -411,7 +411,7 @@ def GF_extension(
         raise ValueError(f"Argument `primitive_element` must have degree strictly less than {degree}, not {primitive_element_.degree}.")
 
     # If the requested field has already been constructed, return it
-    key = (order, primitive_element_.integer, irreducible_poly_.integer)
+    key = (order, int(primitive_element_), int(irreducible_poly_))
     if key in GF_extension._classes:
         cls = GF_extension._classes[key]
         if compile_ is not None:
@@ -439,7 +439,7 @@ def GF_extension(
             "order": order,
             "irreducible_poly": irreducible_poly_,
             "is_primitive_poly": is_primitive_poly,
-            "primitive_element": primitive_element_.integer,
+            "primitive_element": int(primitive_element_),
             "prime_subfield": prime_subfield,
             "compile": compile_
         })
@@ -451,7 +451,7 @@ def GF_extension(
             "order": order,
             "irreducible_poly": irreducible_poly_,
             "is_primitive_poly": is_primitive_poly,
-            "primitive_element": primitive_element_.integer,
+            "primitive_element": int(primitive_element_),
             "prime_subfield": prime_subfield,
             "compile": compile_
         })
@@ -1277,8 +1277,8 @@ def primitive_elements(
         h = poly_functions.pow(element, totative, irreducible_poly)
         elements.append(h)
 
-    elements = [e for e in elements if start <= e.integer < stop]  # Only return elements in the search range
-    elements = sorted(elements, key=lambda e: e.integer, reverse=reverse)  # Sort element lexicographically
+    elements = [e for e in elements if start <= int(e) < stop]  # Only return elements in the search range
+    elements = sorted(elements, key=int, reverse=reverse)  # Sort element lexicographically
 
     return elements
 

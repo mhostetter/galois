@@ -48,73 +48,73 @@ def test_repr():
 
 
 def test_bch_generator_poly_7():
-    assert galois.BCH(7, 4).generator_poly.integer == 0o13
-    assert galois.BCH(7, 1).generator_poly.integer == 0o177
+    assert int(galois.BCH(7, 4).generator_poly) == 0o13
+    assert int(galois.BCH(7, 1).generator_poly) == 0o177
 
 
 def test_bch_generator_poly_15():
-    assert galois.BCH(15, 11).generator_poly.integer == 0o23
-    assert galois.BCH(15, 7).generator_poly.integer == 0o721
-    assert galois.BCH(15, 5).generator_poly.integer == 0o2467
-    assert galois.BCH(15, 1).generator_poly.integer == 0o77777
+    assert int(galois.BCH(15, 11).generator_poly) == 0o23
+    assert int(galois.BCH(15, 7).generator_poly) == 0o721
+    assert int(galois.BCH(15, 5).generator_poly) == 0o2467
+    assert int(galois.BCH(15, 1).generator_poly) == 0o77777
 
 
 def test_bch_generator_poly_31():
-    assert galois.BCH(31, 26).generator_poly.integer == 0o45
-    assert galois.BCH(31, 21).generator_poly.integer == 0o3551
-    assert galois.BCH(31, 16).generator_poly.integer == 0o107657
-    assert galois.BCH(31, 11).generator_poly.integer == 0o5423325
-    assert galois.BCH(31, 1).generator_poly.integer == 0o17777777777
+    assert int(galois.BCH(31, 26).generator_poly) == 0o45
+    assert int(galois.BCH(31, 21).generator_poly) == 0o3551
+    assert int(galois.BCH(31, 16).generator_poly) == 0o107657
+    assert int(galois.BCH(31, 11).generator_poly) == 0o5423325
+    assert int(galois.BCH(31, 1).generator_poly) == 0o17777777777
 
 
 def test_bch_generator_poly_63():
-    assert galois.BCH(63, 57).generator_poly.integer == 0o103
-    assert galois.BCH(63, 51).generator_poly.integer == 0o12471
-    assert galois.BCH(63, 45).generator_poly.integer == 0o1701317
-    assert galois.BCH(63, 39).generator_poly.integer == 0o166623567
-    assert galois.BCH(63, 36).generator_poly.integer == 0o1033500423
-    assert galois.BCH(63, 30).generator_poly.integer == 0o157464165547
-    assert galois.BCH(63, 24).generator_poly.integer == 0o17323260404441
-    assert galois.BCH(63, 18).generator_poly.integer == 0o1363026512351725
-    assert galois.BCH(63, 16).generator_poly.integer == 0o6331141367235453
-    assert galois.BCH(63, 10).generator_poly.integer == 0o472622305527250155
-    assert galois.BCH(63, 7).generator_poly.integer == 0o5231045543503271737
-    assert galois.BCH(63, 1).generator_poly.integer == 0o777777777777777777777
+    assert int(galois.BCH(63, 57).generator_poly) == 0o103
+    assert int(galois.BCH(63, 51).generator_poly) == 0o12471
+    assert int(galois.BCH(63, 45).generator_poly) == 0o1701317
+    assert int(galois.BCH(63, 39).generator_poly) == 0o166623567
+    assert int(galois.BCH(63, 36).generator_poly) == 0o1033500423
+    assert int(galois.BCH(63, 30).generator_poly) == 0o157464165547
+    assert int(galois.BCH(63, 24).generator_poly) == 0o17323260404441
+    assert int(galois.BCH(63, 18).generator_poly) == 0o1363026512351725
+    assert int(galois.BCH(63, 16).generator_poly) == 0o6331141367235453
+    assert int(galois.BCH(63, 10).generator_poly) == 0o472622305527250155
+    assert int(galois.BCH(63, 7).generator_poly) == 0o5231045543503271737
+    assert int(galois.BCH(63, 1).generator_poly) == 0o777777777777777777777
 
 
 def test_bch_generator_poly_127():
-    assert galois.BCH(127, 120).generator_poly.integer == 0o211
-    assert galois.BCH(127, 113).generator_poly.integer == 0o41567
-    assert galois.BCH(127, 106).generator_poly.integer == 0o11554_743
+    assert int(galois.BCH(127, 120).generator_poly) == 0o211
+    assert int(galois.BCH(127, 113).generator_poly) == 0o41567
+    assert int(galois.BCH(127, 106).generator_poly) == 0o11554_743
     # ...
-    assert galois.BCH(127, 57).generator_poly.integer == 0o33526_52525_05705_05351_7721
-    assert galois.BCH(127, 50).generator_poly.integer == 0o54446_51252_33140_12421_50142_1
-    assert galois.BCH(127, 43).generator_poly.integer == 0o17721_77221_36512_27521_22057_4343
+    assert int(galois.BCH(127, 57).generator_poly) == 0o33526_52525_05705_05351_7721
+    assert int(galois.BCH(127, 50).generator_poly) == 0o54446_51252_33140_12421_50142_1
+    assert int(galois.BCH(127, 43).generator_poly) == 0o17721_77221_36512_27521_22057_4343
     # ...
-    assert galois.BCH(127, 15).generator_poly.integer == 0o22057_04244_56045_54770_52301_37622_17604_353
-    assert galois.BCH(127, 8).generator_poly.integer == 0o70472_64052_75103_06514_76224_27156_77331_30217
-    assert galois.BCH(127, 1).generator_poly.integer == 0o17777_77777_77777_77777_77777_77777_77777_77777_777
+    assert int(galois.BCH(127, 15).generator_poly) == 0o22057_04244_56045_54770_52301_37622_17604_353
+    assert int(galois.BCH(127, 8).generator_poly) == 0o70472_64052_75103_06514_76224_27156_77331_30217
+    assert int(galois.BCH(127, 1).generator_poly) == 0o17777_77777_77777_77777_77777_77777_77777_77777_777
 
 
 def test_bch_generator_poly_255():
-    assert galois.BCH(255, 247).generator_poly.integer == 0o435
-    assert galois.BCH(255, 239).generator_poly.integer == 0o26754_3
-    assert galois.BCH(255, 231).generator_poly.integer == 0o15672_0665
+    assert int(galois.BCH(255, 247).generator_poly) == 0o435
+    assert int(galois.BCH(255, 239).generator_poly) == 0o26754_3
+    assert int(galois.BCH(255, 231).generator_poly) == 0o15672_0665
     # ...
-    assert galois.BCH(255, 91).generator_poly.integer == 0o67502_65030_32744_41727_23631_72473_25110_75550_76272_07243_44561
-    assert galois.BCH(255, 87).generator_poly.integer == 0o11013_67634_14743_23643_52316_34307_17204_62067_22545_27331_17213_17
-    assert galois.BCH(255, 79).generator_poly.integer == 0o66700_03563_76575_00020_27034_42073_66174_62101_53267_11766_54134_2355
+    assert int(galois.BCH(255, 91).generator_poly) == 0o67502_65030_32744_41727_23631_72473_25110_75550_76272_07243_44561
+    assert int(galois.BCH(255, 87).generator_poly) == 0o11013_67634_14743_23643_52316_34307_17204_62067_22545_27331_17213_17
+    assert int(galois.BCH(255, 79).generator_poly) == 0o66700_03563_76575_00020_27034_42073_66174_62101_53267_11766_54134_2355
     # ...
-    assert galois.BCH(255, 13).generator_poly.integer == 0o46417_32005_05256_45444_26573_71425_00660_04330_67744_54765_61403_17467_72135_70261_34460_50054_7
-    assert galois.BCH(255, 9).generator_poly.integer == 0o15726_02521_74724_63201_03104_32553_55134_61416_23672_12044_07454_51127_66115_54770_55616_77516_057
-    assert galois.BCH(255, 1).generator_poly.integer == 0o77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777
+    assert int(galois.BCH(255, 13).generator_poly) == 0o46417_32005_05256_45444_26573_71425_00660_04330_67744_54765_61403_17467_72135_70261_34460_50054_7
+    assert int(galois.BCH(255, 9).generator_poly) == 0o15726_02521_74724_63201_03104_32553_55134_61416_23672_12044_07454_51127_66115_54770_55616_77516_057
+    assert int(galois.BCH(255, 1).generator_poly) == 0o77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777
 
 
 def test_bch_generator_poly_1024():
-    assert galois.BCH(1023, 1013).generator_poly.integer == 0o2011
-    assert galois.BCH(1023, 1003).generator_poly.integer == 0o4014167
+    assert int(galois.BCH(1023, 1013).generator_poly) == 0o2011
+    assert int(galois.BCH(1023, 1003).generator_poly) == 0o4014167
     # ...
-    # assert galois.BCH(1023, 11).generator_poly.integer == 0o3435423242053413257500125205705563224605
+    # asserint(t galois.BCH(1023, 11).generator_poly) == 0o3435423242053413257500125205705563224605
 
 
 def test_bch_properties():

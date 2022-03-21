@@ -132,11 +132,11 @@ and :obj:`galois.Poly.nonzero_coeffs`.
     f.nonzero_degrees
     f.nonzero_coeffs
 
-Find the integer equivalent of the polynomial using :obj:`galois.Poly.integer`.
+Find the integer equivalent of the polynomial using :func:`galois.Poly.__int__`.
 
 .. ipython:: python
 
-    f.integer
+    int(f)
 
 Get the string representation of the polynomial using :func:`str`.
 
