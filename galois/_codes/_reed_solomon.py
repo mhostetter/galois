@@ -890,7 +890,8 @@ def decode_calculate(codeword, syndrome, c, t, primitive_element, ADD, SUBTRACT,
             # of σ(x).
 
             # Compute the error-locator polynomial σ(x)
-            sigma = BERLEKAMP_MASSEY(syndrome[i,:], ADD, SUBTRACT, MULTIPLY, RECIPROCAL, *args)
+            # TODO: Re-evaluate these equations since changing BMA to return characteristic polynomial, not feedback polynomial
+            sigma = BERLEKAMP_MASSEY(syndrome[i,:], ADD, SUBTRACT, MULTIPLY, RECIPROCAL, *args)[::-1]
             v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
 
             if v > t:
