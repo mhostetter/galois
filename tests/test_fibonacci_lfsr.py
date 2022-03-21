@@ -8,240 +8,414 @@ import galois
 
 
 def test_exceptions():
-    poly = galois.Poly.Degrees([7,1,0])
+    c = galois.primitive_poly(7, 4)
 
     with pytest.raises(TypeError):
-        galois.FLFSR(poly.coeffs)
+        galois.FLFSR(c.reverse().coeffs)
     with pytest.raises(TypeError):
-        galois.FLFSR(poly, state=float(poly.integer))
-
-
-def test_state():
-    poly = galois.Poly.Degrees([7,1,0])
-
-    lfsr = galois.FLFSR(poly, state=1)
-    assert np.array_equal(lfsr.state, [0, 0, 0, 0, 0, 0, 1])
-
-    lfsr = galois.FLFSR(poly, state=4)
-    assert np.array_equal(lfsr.state, [0, 0, 0, 0, 1, 0, 0])
-
-
-def test_str():
-    poly = galois.Poly.Degrees([7,1,0])
-    lfsr = galois.FLFSR(poly)
-    assert str(lfsr) == "<Fibonacci LFSR: poly=Poly(x^7 + x + 1, GF(2))>"
+        galois.FLFSR(c.reverse(), state=1)
 
 
 def test_repr():
-    poly = galois.Poly.Degrees([7,1,0])
-    lfsr = galois.FLFSR(poly)
-    assert repr(lfsr) == "<Fibonacci LFSR: poly=Poly(x^7 + x + 1, GF(2))>"
+    c = galois.primitive_poly(7, 4)
+    lfsr = galois.FLFSR(c.reverse())
+    assert repr(lfsr) == "<Fibonacci LFSR: f(x) = 5x^4 + 3x^3 + x^2 + 1 over GF(7)>"
+
+
+def test_str():
+    c = galois.primitive_poly(7, 4)
+    lfsr = galois.FLFSR(c.reverse())
+    assert str(lfsr) == "Fibonacci LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [0, 6, 4, 2]\n  order: 4\n  state: [1, 1, 1, 1]\n  initial_state: [1, 1, 1, 1]"
+
+
+def test_initial_state():
+    c = galois.primitive_poly(7, 4)
+
+    default_state = [1, 1, 1, 1]
+    lfsr = galois.FLFSR(c.reverse())
+    assert np.array_equal(lfsr.initial_state, default_state)
+    assert np.array_equal(lfsr.state, default_state)
+
+    state = [1, 2, 3, 4]
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+    assert np.array_equal(lfsr.initial_state, state)
+    assert np.array_equal(lfsr.state, state)
+
+
+def test_feedback_and_characteristic_poly():
+    c = galois.primitive_poly(7, 4)
+    f = c.reverse()
+    lfsr = galois.FLFSR(f)
+    assert lfsr.feedback_poly == f
+    assert lfsr.characteristic_poly == c
+    assert lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
+
+
+def test_reset_exceptions():
+    c = galois.primitive_poly(7, 4)
+    lfsr = galois.FLFSR(c.reverse())
+
+    with pytest.raises(TypeError):
+        lfsr.reset(1)
+
+
+def test_reset_initial_state():
+    c = galois.primitive_poly(7, 4)
+    lfsr = galois.FLFSR(c.reverse())
+
+    assert np.array_equal(lfsr.state, lfsr.initial_state)
+    lfsr.step(10)
+    assert not np.array_equal(lfsr.state, lfsr.initial_state)
+    lfsr.reset()
+    assert np.array_equal(lfsr.state, lfsr.initial_state)
+
+
+def test_reset_specific_state():
+    c = galois.primitive_poly(7, 4)
+    lfsr = galois.FLFSR(c.reverse())
+    state = [1, 2, 3, 4]
+
+    assert not np.array_equal(lfsr.state, state)
+    lfsr.reset(state)
+    assert np.array_equal(lfsr.state, state)
 
 
 def test_step_exceptions():
-    poly = galois.Poly.Degrees([7,1,0])
-    lfsr = galois.FLFSR(poly)
+    c = galois.primitive_poly(7, 4)
+    lfsr = galois.FLFSR(c.reverse())
 
     with pytest.raises(TypeError):
         lfsr.step(10.0)
-    with pytest.raises(ValueError):
-        lfsr.step(0)
-    with pytest.raises(ValueError):
-        lfsr.step(-1)
 
 
-def test_output_is_reversed_state():
-    poly = galois.Poly.Degrees([7,1,0])
-    state = galois.GF2.Zeros(7)
-    state[-1] = 1
-    lfsr = galois.FLFSR(poly, state=state)
-    y = lfsr.step(7)
+def test_step_zero():
+    c = galois.primitive_poly(7, 4)
+    lfsr = galois.FLFSR(c.reverse())
+
+    y = lfsr.step(0)
+    assert y.size == 0
+    assert type(y) is lfsr.field
+
+
+def test_step_forwards_backwards():
+    c = galois.primitive_poly(7, 4)
+    lfsr = galois.FLFSR(c.reverse())
+
+    y_forward = lfsr.step(10)
+    y_reverse = lfsr.step(-10)
+
+    assert np.array_equal(y_forward, y_reverse[::-1])
+    assert np.array_equal(lfsr.state, lfsr.initial_state)
+
+
+def test_step_backwards_forwards():
+    c = galois.primitive_poly(7, 4)
+    lfsr = galois.FLFSR(c.reverse())
+
+    y_reverse = lfsr.step(-10)
+    y_forward = lfsr.step(10)
+
+    assert np.array_equal(y_reverse, y_forward[::-1])
+    assert np.array_equal(lfsr.state, lfsr.initial_state)
+
+
+def test_step_output_reversed_state():
+    c = galois.primitive_poly(7, 4)
+    state = [1, 2, 3, 4]
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+
+    y = lfsr.step(4)
     assert np.array_equal(y, state[::-1])
 
 
-def test_gf2_output_1():
+def test_step_gf2_primitive():
     """
+    Python:
+        c = galois.primitive_poly(2, 4); c
+        key = -c.coeffs[1:][::-1]; key
+
     Sage:
         F = GF(2)
-        o = F(0); l = F(1)
-        key = [l,o,o,l]
-        fill = [l,l,o,l]
-        n = 20
-        s = lfsr_sequence(key,fill,n); s
+        key = [1, 1, 0, 0]  # c(x) = x^4 + x + 1
+        fill = [1, 1, 1, 1]
+        key = [F(k) for k in key]
+        fill = [F(f) for f in fill]
+        s = lfsr_sequence(key, fill, 50)
+        print(s)
     """
-    GF = galois.GF2
-    poly = galois.Poly([1,0,0,1,1], field=GF)
-    state = GF([1,0,1,1])
-    y_truth = GF([1,1,0,1,0,1,1,0,0,1,0,0,0,1,1,1,1,0,1,0])
-    lfsr = galois.FLFSR(poly, state=state)
-    y = lfsr.step(y_truth.size)
+    GF = galois.GF(2)
+    key = GF([1, 1, 0, 0])
+    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    c = galois.Poly(key)
+    state = GF([1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0])
+
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+    y = lfsr.step(50)
+
     assert np.array_equal(y, y_truth)
+    assert type(y) is lfsr.field
 
 
-def test_gf2_output_2():
+def test_step_gf3_primitive():
     """
-    Sage:
-        F = GF(2)
-        o = F(0); l = F(1)
-        key = [l,l,o,l]
-        fill = [l,l,o,l]
-        n = 20
-        s = lfsr_sequence(key,fill,n); s
-    """
-    GF = galois.GF2
-    poly = galois.Poly([1,1,0,1,1], field=GF)
-    state = GF([1,0,1,1])
-    y_truth = GF([1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1])
-    lfsr = galois.FLFSR(poly, state=state)
-    y = lfsr.step(y_truth.size)
-    assert np.array_equal(y, y_truth)
+    Python:
+        c = galois.primitive_poly(3, 4); c
+        key = -c.coeffs[1:][::-1]; key
 
-
-def test_gf2_output_3():
-    """
-    Sage:
-        F = GF(2)
-        o = F(0); l = F(1)
-        key = [l,o,o,o,l,l,l,o]
-        fill = [l,o,o,o,o,o,o,o]
-        n = 600
-        s = lfsr_sequence(key,fill,n); np.array(s)
-    """
-    GF = galois.GF2
-    poly = galois.Poly([1,0,0,0,1,1,1,0,1], field=GF)
-    state = GF([0,0,0,0,0,0,0,1])
-    y_truth = GF([1,0,0,0,0,0,0,0,1,0,1,1,0,0,0,1,1,1,1,0,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,1,0,0,1,1,0,0,1,0,1,1,1,1,1,1,0,1,1,1,1,0,0,1,1,0,1,1,1,0,1,1,1,0,0,1,0,1,0,1,0,0,1,0,1,0,0,0,1,0,0,1,0,1,1,0,1,0,0,0,1,1,0,0,1,1,1,0,0,1,1,1,1,0,0,0,1,1,0,1,1,0,0,0,0,1,0,0,0,1,0,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,0,0,0,0,1,1,0,1,0,0,1,1,0,1,0,1,1,0,1,1,0,1,0,1,0,0,0,0,0,1,0,0,1,1,1,0,1,1,0,0,1,0,0,1,0,0,1,1,0,0,0,0,0,0,1,1,1,0,1,0,0,1,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,1,1,0,0,0,1,1,1,1,0,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,1,0,0,1,1,0,0,1,0,1,1,1,1,1,1,0,1,1,1,1,0,0,1,1,0,1,1,1,0,1,1,1,0,0,1,0,1,0,1,0,0,1,0,1,0,0,0,1,0,0,1,0,1,1,0,1,0,0,0,1,1,0,0,1,1,1,0,0,1,1,1,1,0,0,0,1,1,0,1,1,0,0,0,0,1,0,0,0,1,0,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,0,0,0,0,1,1,0,1,0,0,1,1,0,1,0,1,1,0,1,1,0,1,0,1,0,0,0,0,0,1,0,0,1,1,1,0,1,1,0,0,1,0,0,1,0,0,1,1,0,0,0,0,0,0,1,1,1,0,1,0,0,1,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,1,1,0,0,0,1,1,1,1,0,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,1,0,0,1,1,0,0,1,0,1,1,1,1,1,1])
-    lfsr = galois.FLFSR(poly, state=state)
-    y = lfsr.step(y_truth.size)
-    assert np.array_equal(y, y_truth)
-
-
-def test_gf3_output():
-    """
     Sage:
         F = GF(3)
-        key = [F(2),F(0),F(0),F(2)]
-        fill = [F(1),F(0),F(0),F(0)]
-        n = 200
-        s = lfsr_sequence(key,fill,n); np.array(s)
+        key = [1, 2, 0, 0]  # c(x) = x^4 + x + 2
+        fill = [1, 1, 1, 1]
+        key = [F(k) for k in key]
+        fill = [F(f) for f in fill]
+        s = lfsr_sequence(key, fill, 50)
+        print(s)
     """
     GF = galois.GF(3)
-    poly = galois.Poly([2,0,0,2,1], field=GF)  # galois.conway_poly(3, 4) / GF(2)
-    state = GF([0,0,0,1])
-    y_truth = GF([1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2,1,2,1,0,2,2,0,0,1,0,0,0,2])
-    lfsr = galois.FLFSR(poly, state=state)
-    y = lfsr.step(y_truth.size)
+    key = GF([1, 2, 0, 0])
+    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    c = galois.Poly(key)
+    state = GF([1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 2, 1, 0, 1, 1, 1, 2, 0, 0, 2, 2, 0, 1, 0, 2, 2, 1, 1, 0, 1, 0, 1, 2, 1, 2, 2, 1, 2, 0, 1, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0])
+
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+    y = lfsr.step(50)
+
     assert np.array_equal(y, y_truth)
+    assert type(y) is lfsr.field
 
 
-def test_gf5_output():
+def test_step_gf2_3_primitive():
     """
+    Python:
+        c = galois.primitive_poly(2**3, 4); c
+        key = -c.coeffs[1:][::-1]; key
+
     Sage:
-        F = GF(5)
-        key = [F(3),F(0),F(3),F(1)]
-        fill = [F(1),F(0),F(0),F(0)]
-        n = 800
-        s = lfsr_sequence(key,fill,n); np.array(s)
+        F = GF(2^3, repr="int")
+        key = [3, 1, 0, 0]  # c(x) = x^4 + x + 3
+        fill = [1, 1, 1, 1]
+        key = [F.fetch_int(k) for k in key]
+        fill = [F.fetch_int(f) for f in fill]
+        s = lfsr_sequence(key, fill, 50)
+        print(s)
     """
-    GF = galois.GF(5)
-    poly = galois.Poly([3,0,3,1,1], field=GF)  # galois.conway_poly(5, 4) / GF(2)
-    state = GF([0,0,0,1])
-    y_truth = GF([1,0,0,0,3,3,2,1,1,3,2,4,3,4,4,3,4,0,4,3,2,1,4,1,4,0,4,2,1,2,2,4,3,1,1,1,3,4,1,1,3,3,0,2,1,1,4,3,3,0,1,0,2,2,1,2,1,3,4,4,4,0,4,1,0,3,0,2,2,2,3,0,0,1,0,3,3,0,4,3,4,3,2,0,3,2,2,3,3,3,3,1,4,1,2,3,1,3,2,0,4,3,1,0,0,4,2,4,0,4,0,4,4,3,0,1,3,0,4,2,3,4,0,3,2,3,4,2,0,0,2,3,4,3,1,4,4,0,0,2,4,0,2,3,1,0,4,3,3,2,3,3,1,1,3,0,2,0,0,0,1,1,4,2,2,1,4,3,1,3,3,1,3,0,3,1,4,2,3,2,3,0,3,4,2,4,4,3,1,2,2,2,1,3,2,2,1,1,0,4,2,2,3,1,1,0,2,0,4,4,2,4,2,1,3,3,3,0,3,2,0,1,0,4,4,4,1,0,0,2,0,1,1,0,3,1,3,1,4,0,1,4,4,1,1,1,1,2,3,2,4,1,2,1,4,0,3,1,2,0,0,3,4,3,0,3,0,3,3,1,0,2,1,0,3,4,1,3,0,1,4,1,3,4,0,0,4,1,3,1,2,3,3,0,0,4,3,0,4,1,2,0,3,1,1,4,1,1,2,2,1,0,4,0,0,0,2,2,3,4,4,2,3,1,2,1,1,2,1,0,1,2,3,4,1,4,1,0,1,3,4,3,3,1,2,4,4,4,2,1,4,4,2,2,0,3,4,4,1,2,2,0,4,0,3,3,4,3,4,2,1,1,1,0,1,4,0,2,0,3,3,3,2,0,0,4,0,2,2,0,1,2,1,2,3,0,2,3,3,2,2,2,2,4,1,4,3,2,4,2,3,0,1,2,4,0,0,1,3,1,0,1,0,1,1,2,0,4,2,0,1,3,2,1,0,2,3,2,1,3,0,0,3,2,1,2,4,1,1,0,0,3,1,0,3,2,4,0,1,2,2,3,2,2,4,4,2,0,3,0,0,0,4,4,1,3,3,4,1,2,4,2,2,4,2,0,2,4,1,3,2,3,2,0,2,1,3,1,1,2,4,3,3,3,4,2,3,3,4,4,0,1,3,3,2,4,4,0,3,0,1,1,3,1,3,4,2,2,2,0,2,3,0,4,0,1,1,1,4,0,0,3,0,4,4,0,2,4,2,4,1,0,4,1,1,4,4,4,4,3,2,3,1,4,3,4,1,0,2,4,3,0,0,2,1,2,0,2,0,2,2,4,0,3,4,0,2,1,4,2,0,4,1,4,2,1,0,0,1,4,2,4,3,2,2,0,0,1,2,0,1,4,3,0,2,4,4,1,4,4,3,3,4,0,1,0,0,0,3,3,2,1,1,3,2,4,3,4,4,3,4,0,4,3,2,1,4,1,4,0,4,2,1,2,2,4,3,1,1,1,3,4,1,1,3,3,0,2,1,1,4,3,3,0,1,0,2,2,1,2,1,3,4,4,4,0,4,1,0,3,0,2,2,2,3,0,0,1,0,3,3,0,4,3,4,3,2,0,3,2,2,3,3,3,3,1,4,1,2,3,1,3,2,0,4,3,1,0,0,4,2,4,0,4,0,4,4,3,0,1,3,0,4,2,3,4,0,3,2,3,4,2,0,0,2,3,4,3,1,4,4,0,0,2,4,0,2,3,1,0,4,3,3,2,3,3,1,1,3,0,2,0,0,0,1,1,4,2,2,1,4,3,1,3,3,1,3,0,3,1])
-    lfsr = galois.FLFSR(poly, state=state)
-    y = lfsr.step(y_truth.size)
+    GF = galois.GF(2**3)
+    key = GF([3, 1, 0, 0])
+    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    c = galois.Poly(key)
+    state = GF([1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 2, 2, 2, 1, 4, 4, 7, 7, 3, 0, 5, 1, 5, 5, 5, 6, 1, 1, 2, 0, 2, 1, 6, 2, 7, 5, 3, 1, 7, 7, 4, 4, 5, 6, 3, 2, 2, 2, 7, 4, 4, 1, 6, 3, 6, 5])
+
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+    y = lfsr.step(50)
+
     assert np.array_equal(y, y_truth)
+    assert type(y) is lfsr.field
 
 
-def test_gfp_large_output():
+def test_step_gf3_3_primitive():
     """
+    Python:
+        c = galois.primitive_poly(3**3, 4); c
+        key = -c.coeffs[1:][::-1]; key
+
     Sage:
-        F = GF(36893488147419103183)
-        key = [F(3),F(0),F(3),F(1)]
-        fill = [F(1),F(0),F(0),F(0)]
-        n = 20
-        s = lfsr_sequence(key,fill,n); np.array(s)
+        F = GF(3^3, repr="int")
+        key = [20, 2, 0, 0]  # c(x) = x^4 + x + 10
+        fill = [1, 1, 1, 1]
+        key = [F.fetch_int(k) for k in key]
+        fill = [F.fetch_int(f) for f in fill]
+        s = lfsr_sequence(key, fill, 50)
+        print(s)
     """
-    GF = galois.GF(36893488147419103183)
-    poly = galois.Poly([3,0,3,1,1], field=GF)  # Not a primitive polynomial...
-    state = GF([0,0,0,1])
-    y_truth = GF([1, 0, 0, 0, 3, 3, 12, 21, 66, 138, 372, 849, 2163, 5124, 12729, 30648, 75324, 182640, 446799, 1086663, 2653032, 6460941, 15760434, 38403246, 93643644, 228236205, 556448439, 1356366792, 3306643041, 8060452032, 19649726472, 47900182944, 116769291483, 284651196411, 693908250276, 1691562388341, 4123595013618, 10052235767874, 24504745559556, 59736140028201])
-    lfsr = galois.FLFSR(poly, state=state)
-    y = lfsr.step(y_truth.size)
+    GF = galois.GF(3**3)
+    key = GF([20, 2, 0, 0])
+    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    c = galois.Poly(key)
+    state = GF([1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 19, 19, 19, 1, 25, 25, 16, 4, 24, 6, 6, 6, 26, 2, 2, 9, 4, 11, 1, 11, 13, 21, 9, 9, 12, 10, 3, 0, 6, 2, 4, 3, 6, 15, 18, 7, 20, 20, 20, 8, 17, 17, 2, 1, 13, 19])
+
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+    y = lfsr.step(50)
+
     assert np.array_equal(y, y_truth)
+    assert type(y) is lfsr.field
 
 
-def test_berlekamp_massey_exceptions():
-    GF = galois.GF2
-    s = GF([0,0,1,1,0,1,1,1,0,1])
-
-    with pytest.raises(TypeError):
-        galois.berlekamp_massey(s.view(np.ndarray))
-    with pytest.raises(TypeError):
-        galois.berlekamp_massey(s, config=1)
-    with pytest.raises(TypeError):
-        galois.berlekamp_massey(s, state=1)
-
-    with pytest.raises(ValueError):
-        galois.berlekamp_massey(np.atleast_2d(s))
-    with pytest.raises(ValueError):
-        galois.berlekamp_massey(s, config="invalid-argument")
-
-
-def test_berlekamp_massey_gf2_1():
+def test_step_gf2_reducible():
     """
+    Python:
+        GF = galois.GF(2)
+        coeffs = GF.Random(5)
+        coeffs[0] = 1
+        coeffs[-1] = GF.Random(low=1)
+        c = galois.Poly(coeffs)
+        assert not galois.is_irreducible(c)
+        key = -coeffs[1:][::-1]
+        c
+        key
+
     Sage:
         F = GF(2)
-        s = [0,0,1,1,0,1,1,1,0,1]
-        s = [F(si) for si in s]
-        berlekamp_massey(s).reverse()  # Sage defines polynomial backwards
+        key = [1, 0, 0, 0]  # c(x) = x^4 + 1
+        fill = [1, 1, 1, 1]
+        key = [F(k) for k in key]
+        fill = [F(f) for f in fill]
+        s = lfsr_sequence(key, fill, 50)
+        print(s)
     """
-    GF = galois.GF2
-    s = GF([0,0,1,1,0,1,1,1,0,1])
-    c_truth = galois.Poly.Degrees([5,3,0])
-    c = galois.berlekamp_massey(s)
-    assert c == c_truth
+    GF = galois.GF(2)
+    key = GF([1, 0, 0, 0])
+    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    c = galois.Poly(key)
+    state = GF([1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+    y = lfsr.step(50)
+
+    assert np.array_equal(y, y_truth)
+    assert type(y) is lfsr.field
 
 
-def test_berlekamp_massey_gf2_2():
+def test_step_gf3_reducible():
     """
+    Python:
+        GF = galois.GF(3)
+        coeffs = GF.Random(5)
+        coeffs[0] = 1
+        coeffs[-1] = GF.Random(low=1)
+        c = galois.Poly(coeffs)
+        assert not galois.is_irreducible(c)
+        key = -coeffs[1:][::-1]
+        c
+        key
+
     Sage:
-        F = GF(2)
-        s = [1,0,0,0,0,0,0,0,1,0,1,1,0,0,0,1,1,1,1,0]
-        s = [F(si) for si in s]
-        berlekamp_massey(s).reverse()  # Sage defines polynomial backwards
+        F = GF(3)
+        key = [1, 2, 2, 1]  # c(x) = x^4 + x^3 + 2x^2 + 2x + 1
+        fill = [1, 1, 1, 1]
+        key = [F(k) for k in key]
+        fill = [F(f) for f in fill]
+        s = lfsr_sequence(key, fill, 50)
+        print(s)
     """
-    GF = galois.GF2
-    s = GF([1,0,0,0,0,0,0,0,1,0,1,1,0,0,0,1,1,1,1,0])
-    c_truth = galois.Poly.Degrees([8,4,3,2,0])
-    c = galois.berlekamp_massey(s)
-    assert c == c_truth
+    GF = galois.GF(3)
+    key = GF([1, 2, 2, 1])
+    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    c = galois.Poly(key)
+    state = GF([1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 0, 2, 2, 1, 0, 2, 0, 2, 0, 0, 1, 0, 2, 1, 0, 0, 1, 2, 1, 1, 2, 2, 0, 0, 0, 2, 2, 0, 2, 2, 2, 1, 2, 1, 0, 1, 2, 2, 2, 2, 0, 1, 1, 2, 0, 1])
+
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+    y = lfsr.step(50)
+
+    assert np.array_equal(y, y_truth)
+    assert type(y) is lfsr.field
 
 
-def test_berlekamp_massey_gf2_3():
+def test_step_gf2_3_reducible():
     """
+    Python:
+        GF = galois.GF(2**3)
+        coeffs = GF.Random(5)
+        coeffs[0] = 1
+        coeffs[-1] = GF.Random(low=1)
+        c = galois.Poly(coeffs)
+        assert not galois.is_irreducible(c)
+        key = -coeffs[1:][::-1]
+        c
+        key
+
     Sage:
-        F = GF(2)
-        s = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,1,0,0,1,0,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,0,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,0,1,1,1,1,0,0,0,1,0,1,0,1,0,0,0,0,1,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0,1,0,0,0,1,0,0,1,1,1,1,0,0,0,0,1,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,1,1,1,0,1,0,1,0,0,0,1,0,0,1,0,1,0,0,1,0,1,1,1,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,1,0,1,1,0,0,0,1,0,0,1,1,1,0,0,1,1,0,1,1,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,1,1,1,1,1,1,0,1,1]
-        s = [F(si) for si in s]
-        berlekamp_massey(s).reverse()  # Sage defines polynomial backwards
+        F = GF(2^3, repr="int")
+        key = [4, 1, 1, 5]  # c(x) = x^4 + 5x^3 + x^2 + x + 4
+        fill = [1, 1, 1, 1]
+        key = [F.fetch_int(k) for k in key]
+        fill = [F.fetch_int(f) for f in fill]
+        s = lfsr_sequence(key, fill, 50)
+        print(s)
     """
-    GF = galois.GF2
-    s = GF([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,1,0,0,1,0,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,0,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,0,1,1,1,1,0,0,0,1,0,1,0,1,0,0,0,0,1,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0,1,0,0,0,1,0,0,1,1,1,1,0,0,0,0,1,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,1,1,1,0,1,0,1,0,0,0,1,0,0,1,0,1,0,0,1,0,1,1,1,1,1,1,1,1,0,0,0,1,1,0,1,0,1,1,1,0,1,1,0,0,0,1,0,0,1,1,1,0,0,1,1,0,1,1,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,1,1,1,1,1,1,0,1,1])
-    c_truth = galois.Poly.Degrees([100,57,56,55,52,48,47,46,45,44,43,41,37,36,35,34,31,30,27,25,24,22,20,19,16,15,11,9,8,6,5,3,0])
-    c = galois.berlekamp_massey(s)
-    assert c == c_truth
+    GF = galois.GF(2**3)
+    key = GF([4, 1, 1, 5])
+    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    c = galois.Poly(key)
+    state = GF([1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+    y = lfsr.step(50)
+
+    assert np.array_equal(y, y_truth)
+    assert type(y) is lfsr.field
 
 
-# def test_berlekamp_massey_gfp_large():
-#     """
-#     Sage:
-#         F = GF(36893488147419103183)
-#         s = [1, 0, 0, 0, 3, 3, 12, 21, 66, 138, 372, 849, 2163, 5124, 12729, 30648, 75324, 182640, 446799, 1086663, 2653032, 6460941, 15760434, 38403246, 93643644, 228236205, 556448439, 1356366792, 3306643041, 8060452032, 19649726472, 47900182944, 116769291483, 284651196411, 693908250276, 1691562388341, 4123595013618, 10052235767874, 24504745559556, 59736140028201]
-#         s = [F(si) for si in s]
-#         berlekamp_massey(s).reverse()  # Sage defines polynomial backwards
-#     """
-#     GF = galois.GF(36893488147419103183)
-#     s = GF([1, 0, 0, 0, 3, 3, 12, 21, 66, 138, 372, 849, 2163, 5124, 12729, 30648, 75324, 182640, 446799, 1086663, 2653032, 6460941, 15760434, 38403246, 93643644, 228236205, 556448439, 1356366792, 3306643041, 8060452032, 19649726472, 47900182944, 116769291483, 284651196411, 693908250276, 1691562388341, 4123595013618, 10052235767874, 24504745559556, 59736140028201])
-#     c_truth = galois.Poly([36893488147419103180, 0, 36893488147419103180, 36893488147419103182, 1], field=GF)
-#     c = galois.berlekamp_massey(s)
-#     assert c == c_truth
+def test_step_gf3_3_reducible():
+    """
+    Python:
+        GF = galois.GF(3**3)
+        coeffs = GF.Random(5)
+        coeffs[0] = 1
+        coeffs[-1] = GF.Random(low=1)
+        c = galois.Poly(coeffs)
+        assert not galois.is_irreducible(c)
+        key = -coeffs[1:][::-1]
+        c
+        key
+
+    Sage:
+        F = GF(3^3, repr="int")
+        key = [5, 20, 23, 5]  # c(x) = x^4 + 5x^3 + 23x^2 + 20x + 5
+        fill = [1, 1, 1, 1]
+        key = [F.fetch_int(k) for k in key]
+        fill = [F.fetch_int(f) for f in fill]
+        s = lfsr_sequence(key, fill, 50)
+        print(s)
+    """
+    GF = galois.GF(3**3)
+    key = GF([5, 20, 23, 5])
+    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    c = galois.Poly(key)
+    state = GF([1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 11, 6, 1, 16, 20, 13, 6, 13, 2, 9, 18, 8, 21, 6, 12, 6, 3, 3, 26, 7, 22, 16, 23, 13, 5, 6, 1, 7, 19, 3, 12, 16, 14, 16, 17, 6, 0, 24, 9, 26, 6, 23, 3, 22, 21, 8])
+
+    lfsr = galois.FLFSR(c.reverse(), state=state)
+    y = lfsr.step(50)
+
+    assert np.array_equal(y, y_truth)
+    assert type(y) is lfsr.field
+
+
+@pytest.mark.parametrize("order", [2, 3, 2**3, 3**3])
+def test_to_galois_lfsr_primitive(order):
+    c = galois.primitive_poly(order, 4)
+
+    fibonacci_lfsr = galois.FLFSR(c.reverse())
+    galois_lfsr = fibonacci_lfsr.to_galois_lfsr()
+
+    y1 = fibonacci_lfsr.step(100)
+    y2 = galois_lfsr.step(100)
+
+    assert np.array_equal(y1, y2)
+
+
+@pytest.mark.parametrize("order", [2, 3, 2**3, 3**3])
+def test_to_galois_lfsr_reducible(order):
+    GF = galois.GF(order)
+    while True:
+        coeffs = GF.Random(5)
+        coeffs[0] = 1
+        coeffs[-1] = GF.Random(low=1)
+        c = galois.Poly(coeffs)
+        if not galois.is_irreducible(c):
+            break
+
+    fibonacci_lfsr = galois.FLFSR(c.reverse())
+    galois_lfsr = fibonacci_lfsr.to_galois_lfsr()
+
+    y1 = fibonacci_lfsr.step(100)
+    y2 = galois_lfsr.step(100)
+
+    assert np.array_equal(y1, y2)

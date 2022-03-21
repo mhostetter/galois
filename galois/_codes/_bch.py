@@ -975,7 +975,8 @@ def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MU
             # of σ(x).
 
             # Compute the error-locator polynomial's v-reversal σ(x^-v), since the syndrome is passed in backwards
-            sigma_rev = BERLEKAMP_MASSEY(syndrome[i,::-1], ADD, SUBTRACT, MULTIPLY, RECIPROCAL, *args)
+            # TODO: Re-evaluate these equations since changing BMA to return characteristic polynomial, not feedback polynomial
+            sigma_rev = BERLEKAMP_MASSEY(syndrome[i,::-1], ADD, SUBTRACT, MULTIPLY, RECIPROCAL, *args)[::-1]
             v = sigma_rev.size - 1  # The number of errors
 
             if v > t:
