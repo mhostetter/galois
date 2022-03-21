@@ -138,11 +138,11 @@ Find the integer equivalent of the polynomial using :obj:`galois.Poly.integer`.
 
     f.integer
 
-Get the string representation of the polynomial using :obj:`galois.Poly.string`.
+Get the string representation of the polynomial using :func:`str`.
 
 .. ipython:: python
 
-    f.string
+    str(f)
 
 Special polynomials
 -------------------

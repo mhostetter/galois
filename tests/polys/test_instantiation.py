@@ -160,4 +160,4 @@ def check_attributes(poly, config):
     assert np.array_equal(poly.degrees, config["degrees"])
     assert np.array_equal(poly.coeffs, config["coeffs"])
     assert poly.integer == config["integer"]
-    assert poly.string == config["string"]
+    assert str(poly) == config["string"]

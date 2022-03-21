@@ -100,7 +100,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
             return repr(cls)
 
         with cls.prime_subfield.display("int"):
-            irreducible_poly_str = cls.irreducible_poly.string
+            irreducible_poly_str = str(cls.irreducible_poly)
 
         string = "Galois Field:"
         string += f"\n  name: {cls.name}"
@@ -3690,12 +3690,34 @@ class Poly:
     # Overridden dunder methods
     ###############################################################################
 
-    def __str__(self):
-        # TODO: Change this to self.string
-        return repr(self)
+    def __repr__(self) -> str:
+        """
+        A representation of the polynomial and the finite field it's over.
 
-    def __repr__(self):
-        return f"Poly({self.string}, {self.field.name})"
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            f = galois.Poly([3, 0, 5, 2], field=GF); f
+            f
+        """
+        return f"Poly({self}, {self.field.name})"
+
+    def __str__(self) -> str:
+        """
+        The string representation of the polynomial, without specifying the finite field it's over.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            f = galois.Poly([3, 0, 5, 2], field=GF); f
+            str(f)
+            print(f)
+        """
+        return sparse_poly_to_str(self.nonzero_degrees, self.nonzero_coeffs)
 
     def __hash__(self):
         t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
@@ -4500,21 +4522,6 @@ class Poly:
             p.integer == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
         """
         return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
-
-    @property
-    def string(self) -> str:
-        """
-        The string representation of the polynomial, without specifying the finite field it's over.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.string
-        """
-        return sparse_poly_to_str(self.nonzero_degrees, self.nonzero_coeffs)
 
 
 class DensePoly(Poly):

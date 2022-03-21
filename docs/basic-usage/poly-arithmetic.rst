@@ -21,7 +21,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        print(f"({f.string}) + ({g.string})")
+        print(f"({f}) + ({g})")
         f + g
 
     See :func:`galois.Poly.__add__` for more details.
@@ -30,7 +30,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        print(f"-({f.string})")
+        print(f"-({f})")
         -f
 
     Any polynomial added to its additive inverse results in zero.
@@ -45,7 +45,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        print(f"({f.string}) - ({g.string})")
+        print(f"({f}) - ({g})")
         f - g
 
     See :func:`galois.Poly.__sub__` for more details.
@@ -54,7 +54,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        print(f"({f.string}) * ({g.string})")
+        print(f"({f}) * ({g})")
         f * g
 
     See :func:`galois.Poly.__mul__` for more details.
@@ -84,7 +84,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        print(f"({f.string}) / ({g.string})")
+        print(f"({f}) / ({g})")
         f / g
         f // g
 
@@ -94,7 +94,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        print(f"({f.string}) % ({g.string})")
+        print(f"({f}) % ({g})")
         f % g
 
     See :func:`galois.Poly.__mod__` for more details.
@@ -103,7 +103,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        print(f"({f.string}) / ({g.string})")
+        print(f"({f}) / ({g})")
         f / g, f % g
         divmod(f, g)
 
