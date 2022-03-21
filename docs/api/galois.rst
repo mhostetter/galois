@@ -103,11 +103,3 @@ Functions
     square_free_factorization
     totatives
     trial_division
-
-Types
------
-
-.. autosummary::
-   :toctree:
-
-    PolyLike
