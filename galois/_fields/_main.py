@@ -4336,56 +4336,108 @@ class Poly:
 
     def __pow__(
         self,
-        other: int,
+        exponent: int,
+        modulus: Optional["Poly"] = None
     ) -> "Poly":
         r"""
-        Exponentiates the polynomial over :math:`\mathrm{GF}(p^m)` to an integer power.
+        Exponentiates the polynomial over :math:`\mathrm{GF}(p^m)` to an integer power, optionally reduce modulo another
+        polynomial.
 
         Parameters
         ----------
-        other
+        exponent
             The non-negative integer exponent :math:`b`.
+        modulus
+            The polynomial modulus :math:`m(x)`.
 
         Returns
         -------
         :
-            The polynomial :math:`a(x)^b`.
+            The polynomial :math:`a(x)^b\ \textrm{mod}\ m(x)`.
+
+        Notes
+        -----
+        This function implements the Square-and-Multiply Algorithm. The algorithm is more efficient than exponentiating
+        first and then reducing modulo :math:`m(x)`, especially for very large exponents. Instead, this algorithm repeatedly squares
+        :math:`a(x)`, reducing modulo :math:`m` at each step.
+
+        References
+        ----------
+        * Algorithm 2.227 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
 
         Examples
         --------
-        Exponentiate a polynomial over :math:`\mathrm{GF}(3^5)`.
+        .. tab-set::
 
-        .. ipython:: python
+            .. tab-item:: Exponentiation
 
-            GF = galois.GF(3**5)
-            a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
-            a ** 3
-            a * a * a
+                Exponentiate a polynomial over :math:`\mathrm{GF}(3^5)`.
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**5)
+                    a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+                    a ** 3
+                    a * a * a
+
+            .. tab-item:: Modular exponentiation
+
+                Generate random polynomials over :math:`\mathrm{GF}(7)`.
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**5)
+                    a = galois.Poly([163, 13, 0, 0, 0, 228], field=GF); a
+                    m = galois.Poly([47, 0, 22, 111], field=GF); m
+
+                Compute the modular exponentiation of the polynomial :math:`a(x)`.
+
+                .. ipython:: python
+
+                    pow(a, 100, m)
+
+                The equivalent (less efficient) calculation.
+
+                .. ipython:: python
+
+                    a**100 % m
         """
-        if not isinstance(other, (int, np.integer)):
-            raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {other}.")
-        if not other >= 0:
-            raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {other}.")
-        a, power = self, other
-        field = self.field
+        if not isinstance(exponent, (int, np.integer)):
+            raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {exponent}.")
+        if not isinstance(modulus, (type(None), Poly)):
+            raise TypeError(f"For polynomial modular exponentiation, the third argument must be a galois.Poly, not {modulus}.")
+        if not exponent >= 0:
+            raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {exponent}.")
+        base = self
 
-        # c(x) = a(x) ** power
-        if power == 0:
-            return Poly.One(field)
+        if exponent == 0:
+            return Poly.One(base.field)
 
-        c_square = a  # The "squaring" part
-        c_mult = Poly.One(field)  # The "multiplicative" part
+        result_s = base  # The "squaring" part
+        result_m = Poly.One(base.field)  # The "multiplicative" part
 
-        while power > 1:
-            if power % 2 == 0:
-                c_square *= c_square
-                power //= 2
-            else:
-                c_mult *= c_square
-                power -= 1
-        c = c_mult * c_square
+        if modulus:
+            while exponent > 1:
+                if exponent % 2 == 0:
+                    result_s = (result_s * result_s) % modulus
+                    exponent //= 2
+                else:
+                    result_m = (result_m * result_s) % modulus
+                    exponent -= 1
 
-        return c
+            result = (result_s * result_m) % modulus
+        else:
+            while exponent > 1:
+                if exponent % 2 == 0:
+                    result_s = result_s * result_s
+                    exponent //= 2
+                else:
+                    result_m = result_m * result_s
+                    exponent -= 1
+
+            result = result_s * result_m
+
+        return result
 
     def __eq__(
         self,

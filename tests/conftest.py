@@ -41,11 +41,6 @@ def prod():
 
 
 @pytest.fixture(scope="session")
-def power():
-    return read_pickle("power.pkl")
-
-
-@pytest.fixture(scope="session")
 def crt():
     return read_pickle("crt.pkl")
 

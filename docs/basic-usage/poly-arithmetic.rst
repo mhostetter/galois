@@ -13,7 +13,7 @@ In the sections below, the finite field :math:`\mathrm{GF}(7)` and polynomials :
 
     GF = galois.GF(7)
     f = galois.Poly([1, 0, 4, 3], field=GF); f
-    g = galois.Poly([3, 1, 3], field=GF); g
+    g = galois.Poly([2, 1, 3], field=GF); g
 
 Expand any section for more details.
 
@@ -113,9 +113,19 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        print(f"({f})^3")
         f
         f ** 3
         f * f * f
+
+    See :func:`galois.Poly.__pow__` for more details.
+
+.. details:: Modular exponentiation: `(f ** 123456789) % g`
+
+    .. ipython:: python
+
+        print(f"({f})^123456789 % {g}")
+        pow(f, 123456789, g)
 
     See :func:`galois.Poly.__pow__` for more details.
 
@@ -137,12 +147,12 @@ Compute the polynomial greatest common divisor using :func:`galois.gcd` and :fun
     galois.gcd(f, g)
     galois.egcd(f, g)
 
-Perform efficient modular exponentiation using :func:`galois.pow`.
+Perform efficient modular exponentiation using the built-in :func:`pow`.
 
 .. ipython:: python
 
     # Computes (f ** 127) % g
-    galois.pow(f, 127, g)
+    pow(f, 127, g)
 
 Factor a polynomial into its irreducible polynomial factors using :func:`galois.factors`.
 

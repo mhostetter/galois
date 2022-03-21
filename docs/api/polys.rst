@@ -66,7 +66,6 @@ Congruences
 .. autosummary::
    :toctree:
 
-   pow
    crt
 
 Factorization
