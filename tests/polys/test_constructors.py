@@ -122,9 +122,9 @@ def test_integer(field):
 
 def test_string_exceptions():
     with pytest.raises(TypeError):
-        galois.Poly.String(b"x + 5")
+        galois.Poly.Str(b"x + 5")
     with pytest.raises(TypeError):
-        galois.Poly.String("x + 5", field=galois.FieldClass)
+        galois.Poly.Str("x + 5", field=galois.FieldClass)
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -135,7 +135,7 @@ def test_string(field):
     string += " + {}x".format(coeffs[-2] if coeffs[-2] > 1 else "")
     string += " + {}".format(coeffs[-1] if coeffs[-1] > 0 else "")
 
-    p = galois.Poly.String(string, field=field)
+    p = galois.Poly.Str(string, field=field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == max(degrees)
@@ -149,7 +149,7 @@ def test_string(field):
     string += " + {}x".format(coeffs[-2] if coeffs[-2] > 1 else "")
     string += " + {}".format(coeffs[-1] if coeffs[-1] > 0 else "")
 
-    p = galois.Poly.String(string, field=field)
+    p = galois.Poly.Str(string, field=field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == max(degrees)
@@ -160,7 +160,7 @@ def test_string(field):
 
 def test_string_large():
     string = "x^106 + x^105 + x^104 + x^103 + x^102 + x^101 + x^100 + x^99 + x^98 + x^97 + x^96 + x^95 + x^94 + x^93 + x^92 + x^91 + x^90 + x^89 + x^88 + x^87 + x^86 + x^85 + x^84 + x^83 + x^82 + x^81 + x^80 + x^79 + x^78 + x^77 + x^76 + x^75 + x^74 + x^73 + x^72 + x^71 + x^70 + x^69 + x^68 + x^67 + x^66 + x^65 + x^64 + x^63 + x^62 + x^61 + x^60 + x^59 + x^58 + x^57 + x^56 + x^55 + x^54 + x^53 + x^52 + x^51 + x^50 + x^49 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^42 + x^41 + x^40 + x^39 + x^38 + x^37 + x^36 + x^35 + x^34 + x^33 + x^32 + x^31 + x^30 + x^29 + x^28 + x^27 + x^26 + x^25 + x^24 + x^23 + x^22 + x^21 + x^20 + x^19 + x^18 + x^17 + x^16 + x^15 + x^14 + x^13 + x^12 + x^11 + x^10 + x^9 + x^8 + x^7 + x^6 + x^5 + x^4 + x^3 + x^2"
-    p = galois.Poly.String(string)
+    p = galois.Poly.Str(string)
     assert isinstance(p, galois.Poly)
     assert p.field is galois.GF2
     assert str(p) == string
