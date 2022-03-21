@@ -19,18 +19,23 @@ Expand any section for more details.
 
 .. details:: Addition: `f + g`
 
+    Add two polynomials.
+
     .. ipython:: python
 
-        print(f"({f}) + ({g})")
         f + g
 
-    See :func:`galois.Poly.__add__` for more details.
+    Add a polynomial and a finite field scalar. The scalar is treated as a 0-degree polynomial.
+
+    .. ipython:: python
+
+        f + GF(3)
+        GF(3) + f
 
 .. details:: Additive inverse: `-f`
 
     .. ipython:: python
 
-        print(f"-({f})")
         -f
 
     Any polynomial added to its additive inverse results in zero.
@@ -39,25 +44,35 @@ Expand any section for more details.
 
         f + -f
 
-    See :func:`galois.Poly.__neg__` for more details.
-
 .. details:: Subtraction: `f - g`
+
+    Subtract one polynomial from another.
 
     .. ipython:: python
 
-        print(f"({f}) - ({g})")
         f - g
 
-    See :func:`galois.Poly.__sub__` for more details.
+    Subtract finite field scalar from a polynomial, or vice versa. The scalar is treated as a 0-degree polynomial.
+
+    .. ipython:: python
+
+        f - GF(3)
+        GF(3) - f
 
 .. details:: Multiplication: `f * g`
 
+    Multiply two polynomials.
+
     .. ipython:: python
 
-        print(f"({f}) * ({g})")
         f * g
 
-    See :func:`galois.Poly.__mul__` for more details.
+    Multiply a polynomial and a finite field scalar. The scalar is treated as a 0-degree polynomial.
+
+    .. ipython:: python
+
+        f * GF(3)
+        GF(3) * f
 
 .. details:: Scalar multiplication: `f * 3`
 
@@ -66,68 +81,81 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        f
         f * 4
         f + f + f + f
 
     In finite fields :math:`\mathrm{GF}(p^m)`, the characteristic :math:`p` is the smallest value when multiplied by
-    any non-zero field element that results in :math:`0`.
+    any non-zero field element that always results in :math:`0`.
 
     .. ipython:: python
 
         p = GF.characteristic; p
         f * p
 
-    See :func:`galois.Poly.__mul__` for more details.
-
 .. details:: Division: `f / g == f // g`
+
+    Divide one polynomial by another. True division and floor division are equivalent.
 
     .. ipython:: python
 
-        print(f"({f}) / ({g})")
         f / g
         f // g
 
-    See :func:`galois.Poly.__truediv__` and :func:`galois.Poly.__floordiv__` for more details.
+    Divide a polynomial by a finite field scalar, or vice versa. The scalar is treated as a 0-degree polynomial.
+
+    .. ipython:: python
+
+        f // GF(3)
+        GF(3) // g
 
 .. details:: Remainder: `f % g`
 
+    Divide one polynomial by another and keep the remainder.
+
     .. ipython:: python
 
-        print(f"({f}) % ({g})")
         f % g
 
-    See :func:`galois.Poly.__mod__` for more details.
+    Divide a polynomial by a finite field scalar, or vice versa, and keep the remainder. The scalar is treated as a 0-degree polynomial.
+
+    .. ipython:: python
+
+        f % GF(3)
+        GF(3) % g
 
 .. details:: Divmod: `divmod(f, g)`
 
+    Divide one polynomial by another and return the quotient and remainder.
+
     .. ipython:: python
 
-        print(f"({f}) / ({g})")
-        f / g, f % g
         divmod(f, g)
 
-    See :func:`galois.Poly.__divmod__` for more details.
+    Divide a polynomial by a finite field scalar, or vice versa, and keep the remainder. The scalar is treated as a 0-degree polynomial.
+
+    .. ipython:: python
+
+        divmod(f, GF(3))
+        divmod(GF(3), g)
 
 .. details:: Exponentiation: `f ** 3`
 
+    Exponentiate a polynomial to a non-negative exponent.
+
     .. ipython:: python
 
-        print(f"({f})^3")
-        f
         f ** 3
+        pow(f, 3)
         f * f * f
 
-    See :func:`galois.Poly.__pow__` for more details.
+.. details:: Modular exponentiation: `pow(f, 123456789, g)`
 
-.. details:: Modular exponentiation: `(f ** 123456789) % g`
+    Exponentiate a polynomial to a non-negative exponent and reduce modulo another polynomial. This performs efficient modular exponentiation.
 
     .. ipython:: python
 
-        print(f"({f})^123456789 % {g}")
+        # Efficiently computes (f ** 123456789) % g
         pow(f, 123456789, g)
-
-    See :func:`galois.Poly.__pow__` for more details.
 
 Special arithmetic
 ------------------
