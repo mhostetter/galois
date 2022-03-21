@@ -138,6 +138,23 @@ def test_int():
     assert int(poly) == 4295000729
 
 
+def test_bin():
+    poly = galois.Poly([1, 0, 1, 1])
+    assert bin(poly) == "0b1011"
+
+
+def test_oct():
+    GF = galois.GF(2**3)
+    poly = galois.Poly([5, 0, 3, 4], field=GF)
+    assert oct(poly) == "0o5034"
+
+
+def test_hex():
+    GF = galois.GF(2**8)
+    poly = galois.Poly([0xf7, 0x00, 0xa2, 0x75], field=GF)
+    assert hex(poly) == "0xf700a275"
+
+
 def test_equal(field):
     # NOTE: GF(11) is not included in the `field` pytest fixture
     c = field.Random(6)
