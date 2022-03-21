@@ -379,7 +379,7 @@ def GF_extension(
             primitive_element_ = Poly.Identity(prime_subfield)
             verify_element = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
     elif isinstance(irreducible_poly_, int):
-        irreducible_poly_ = Poly.Integer(irreducible_poly_, field=prime_subfield)
+        irreducible_poly_ = Poly.Int(irreducible_poly_, field=prime_subfield)
     elif isinstance(irreducible_poly_, str):
         irreducible_poly_ = Poly.Str(irreducible_poly_, field=prime_subfield)
     elif isinstance(irreducible_poly_, (tuple, list, np.ndarray)):
@@ -392,7 +392,7 @@ def GF_extension(
         primitive_element_ = primitive_element(irreducible_poly_)
         verify_element = False
     elif isinstance(primitive_element_, int):
-        primitive_element_ = Poly.Integer(primitive_element_, field=prime_subfield)
+        primitive_element_ = Poly.Int(primitive_element_, field=prime_subfield)
     elif isinstance(primitive_element_, str):
         primitive_element_ = Poly.Str(primitive_element_, field=prime_subfield)
     elif isinstance(primitive_element_, (tuple, list, np.ndarray)):
@@ -547,7 +547,7 @@ def irreducible_poly(
     if method == "random":
         while True:
             integer = random.randint(min_, max_ - 1)
-            poly = Poly.Integer(integer, field=field)
+            poly = Poly.Int(integer, field=field)
             if is_irreducible(poly):
                 break
     else:
@@ -565,11 +565,11 @@ def _irreducible_poly_search(min_, max_, method, field):
     elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
 
     for element in elements:
-        poly = Poly.Integer(element, field=field)
+        poly = Poly.Int(element, field=field)
         if is_irreducible(poly):
             return poly
 
-    raise RuntimeError(f"No irreducible polynomials exist in {field.name} between {Poly.Integer(min_, field=field)} and {Poly.Integer(max_ - 1, field=field)}.")
+    raise RuntimeError(f"No irreducible polynomials exist in {field.name} between {Poly.Int(min_, field=field)} and {Poly.Int(max_ - 1, field=field)}.")
 
 
 @set_module("galois")
@@ -626,7 +626,7 @@ def irreducible_polys(order: int, degree: int) -> List[Poly]:
 
     polys = []
     for element in range(min_, max_):
-        poly = Poly.Integer(element, field=field)
+        poly = Poly.Int(element, field=field)
         if is_irreducible(poly):
             polys.append(poly)
 
@@ -803,7 +803,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     if method == "random":
         while True:
             integer = random.randint(min_, max_ - 1)
-            poly = Poly.Integer(integer, field=field)
+            poly = Poly.Int(integer, field=field)
             if is_primitive(poly):
                 break
     else:
@@ -821,11 +821,11 @@ def _primitive_poly_search(min_, max_, method, field):
     elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
 
     for element in elements:
-        poly = Poly.Integer(element, field=field)
+        poly = Poly.Int(element, field=field)
         if is_primitive(poly):
             return poly
 
-    raise RuntimeError(f"No primitive polynomials exist in {field.name} between {Poly.Integer(min_, field=field)} and {Poly.Integer(max_ - 1, field=field)}.")
+    raise RuntimeError(f"No primitive polynomials exist in {field.name} between {Poly.Int(min_, field=field)} and {Poly.Int(max_ - 1, field=field)}.")
 
 
 @set_module("galois")
@@ -882,7 +882,7 @@ def primitive_polys(order: int, degree: int) -> Poly:
 
     polys = []
     for element in range(min_, max_):
-        poly = Poly.Integer(element, field=field)
+        poly = Poly.Int(element, field=field)
         if is_primitive(poly):
             polys.append(poly)
 
@@ -1195,7 +1195,7 @@ def primitive_element(
         possible_elements = reversed(possible_elements)
 
     for integer in possible_elements:
-        element = Poly.Integer(integer, field=field)
+        element = Poly.Int(integer, field=field)
         if is_primitive_element(element, irreducible_poly):
             return element
 

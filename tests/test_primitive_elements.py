@@ -529,7 +529,7 @@ def test_is_not_primitive_element(characteristic, degree):
     LUT = eval(f"PRIMITIVE_ELEMENTS_{characteristic}_{degree}")
     p = galois.GF(characteristic**degree).irreducible_poly
     while True:
-        e = galois.Poly.Integer(random.randint(0, characteristic**degree - 1), field=galois.GF(characteristic))
+        e = galois.Poly.Int(random.randint(0, characteristic**degree - 1), field=galois.GF(characteristic))
         if e not in LUT:
             break
     assert not galois.is_primitive_element(e, p)

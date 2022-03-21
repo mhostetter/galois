@@ -15,7 +15,7 @@ import numpy as np
 
 import galois
 
-GENERATOR_POLY = galois.Poly.Integer(465)
+GENERATOR_POLY = galois.Poly.Int(465)
 
 G_TRUTH = galois.GF2([
     [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0],

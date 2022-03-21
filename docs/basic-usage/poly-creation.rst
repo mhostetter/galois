@@ -58,11 +58,11 @@ Create a polynomial by specifying its non-zero degrees and coefficients using :f
 
     galois.Poly.Degrees([8, 1], coeffs=[1, 179], field=GF)
 
-Create a polynomial from its integer representation using :func:`galois.Poly.Integer`.
+Create a polynomial from its integer representation using :func:`galois.Poly.Int`.
 
 .. ipython:: python
 
-    galois.Poly.Integer(268, field=GF)
+    galois.Poly.Int(268, field=GF)
 
 Create a polynomial from its string representation using :func:`galois.Poly.Str`.
 
