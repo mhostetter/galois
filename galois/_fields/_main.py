@@ -3116,59 +3116,11 @@ class Poly:
         return Poly(coeffs, field=field)
 
     @classmethod
-    def Integer(cls, integer: int, field: Optional[FieldClass] = GF2) -> "Poly":
-        r"""
-        Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its integer representation.
-
-        Parameters
-        ----------
-        integer
-            The :ref:`integer representation <Integer representation>` of the polynomial :math:`f(x)`.
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
-
-        Returns
-        -------
-        :
-            The polynomial :math:`f(x)`.
-
-        Examples
-        --------
-        Construct a polynomial over :math:`\mathrm{GF}(2)` from its integer representation.
-
-        .. ipython:: python
-
-            galois.Poly.Integer(5)
-
-        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its integer representation.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**5)
-            galois.Poly.Integer(186535908, field=GF)
-            # The polynomial/integer equivalence
-            13*GF.order**3 + 117
-        """
-        if not isinstance(integer, (int, np.integer)):
-            raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
-        if not isinstance(field, FieldClass):
-            raise TypeError(f"Argument `field` must be a Galois field class, not {type(field)}.")
-        if not integer >= 0:
-            raise ValueError(f"Argument `integer` must be non-negative, not {integer}.")
-
-        if field is GF2:
-            # Explicitly create a binary poly
-            return BinaryPoly(integer)
-        else:
-            coeffs = integer_to_poly(integer, field.order)
-            return Poly(coeffs, field=field)
-
-    @classmethod
     def Str(cls, string: str, field: Optional[FieldClass] = GF2) -> "Poly":
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its string representation.
 
-        :func:`galois.Poly.Str` and `str(poly)` are inverse operations.
+        :func:`galois.Poly.Str` and :func:`galois.Poly.__str__` are inverse operations.
 
         Parameters
         ----------
@@ -3215,6 +3167,58 @@ class Poly:
             raise TypeError(f"Argument `string` be an string, not {type(string)}")
 
         return Poly.Degrees(*str_to_sparse_poly(string), field=field)
+
+    @classmethod
+    def Int(cls, integer: int, field: Optional[FieldClass] = GF2) -> "Poly":
+        r"""
+        Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its integer representation.
+
+        :func:`galois.Poly.Int` and :func:`galois.Poly.__int__` are inverse operations.
+
+        Parameters
+        ----------
+        integer
+            The integer representation of the polynomial :math:`f(x)`.
+        field
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is :obj:`galois.GF2`.
+
+        Returns
+        -------
+        :
+            The polynomial :math:`f(x)`.
+
+        Examples
+        --------
+        Construct a polynomial over :math:`\mathrm{GF}(2)` from its integer representation.
+
+        .. ipython:: python
+
+            f = galois.Poly.Int(5); f
+            int(f)
+
+        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its integer representation.
+
+        .. ipython:: python
+
+            GF = galois.GF(3**5)
+            f = galois.Poly.Int(186535908, field=GF); f
+            int(f)
+            # The polynomial/integer equivalence
+            int(f) == 13*GF.order**3 + 117
+        """
+        if not isinstance(integer, (int, np.integer)):
+            raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
+        if not isinstance(field, FieldClass):
+            raise TypeError(f"Argument `field` must be a Galois field class, not {type(field)}.")
+        if not integer >= 0:
+            raise ValueError(f"Argument `integer` must be non-negative, not {integer}.")
+
+        if field is GF2:
+            # Explicitly create a binary poly
+            return BinaryPoly(integer)
+        else:
+            coeffs = integer_to_poly(integer, field.order)
+            return Poly(coeffs, field=field)
 
     @classmethod
     def Degrees(
@@ -3712,7 +3716,7 @@ class Poly:
         """
         The string representation of the polynomial, without specifying the finite field it's over.
 
-        :func:`galois.Poly.Str` and `str(poly)` are inverse operations.
+        :func:`galois.Poly.Str` and :func:`galois.Poly.__str__` are inverse operations.
 
         Examples
         --------
@@ -3728,6 +3732,8 @@ class Poly:
     def __int__(self) -> int:
         r"""
         The integer representation of the polynomial.
+
+        :func:`galois.Poly.Int` and :func:`galois.Poly.__int__` are inverse operations.
 
         Notes
         -----

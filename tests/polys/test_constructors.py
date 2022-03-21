@@ -99,17 +99,17 @@ def test_random(field, seed):
 
 def test_integer_exceptions():
     with pytest.raises(TypeError):
-        galois.Poly.Integer(5.0)
+        galois.Poly.Int(5.0)
     with pytest.raises(TypeError):
-        galois.Poly.Integer(5, field=galois.FieldClass)
+        galois.Poly.Int(5, field=galois.FieldClass)
     with pytest.raises(ValueError):
-        galois.Poly.Integer(-1)
+        galois.Poly.Int(-1)
 
 
 @pytest.mark.parametrize("field", FIELDS)
 def test_integer(field):
     integer = field.order + 1  # Corresponds to p(x) = x + 1
-    p = galois.Poly.Integer(integer, field=field)
+    p = galois.Poly.Int(integer, field=field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 1
