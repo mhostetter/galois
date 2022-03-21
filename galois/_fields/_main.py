@@ -3164,7 +3164,7 @@ class Poly:
             str(f)
         """
         if not isinstance(string, str):
-            raise TypeError(f"Argument `string` be an string, not {type(string)}")
+            raise TypeError(f"Argument `string` be a string, not {type(string)}")
 
         return Poly.Degrees(*str_to_sparse_poly(string), field=field)
 
@@ -3189,22 +3189,55 @@ class Poly:
 
         Examples
         --------
-        Construct a polynomial over :math:`\mathrm{GF}(2)` from its integer representation.
+        .. tab-set::
 
-        .. ipython:: python
+            .. tab-item:: Integer
 
-            f = galois.Poly.Int(5); f
-            int(f)
+                Construct a polynomial over :math:`\mathrm{GF}(2)` from its integer representation.
 
-        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its integer representation.
+                .. ipython:: python
 
-        .. ipython:: python
+                    f = galois.Poly.Int(5); f
+                    int(f)
 
-            GF = galois.GF(3**5)
-            f = galois.Poly.Int(186535908, field=GF); f
-            int(f)
-            # The polynomial/integer equivalence
-            int(f) == 13*GF.order**3 + 117
+                Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its integer representation.
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**5)
+                    f = galois.Poly.Int(186535908, field=GF); f
+                    int(f)
+                    # The polynomial/integer equivalence
+                    int(f) == 13*GF.order**3 + 117
+
+            .. tab-item:: Binary string
+
+                Construct a polynomial over :math:`\mathrm{GF}(2)` from its binary string.
+
+                .. ipython:: python
+
+                    f = galois.Poly.Int(int("0b1011", 2)); f
+                    bin(f)
+
+            .. tab-item:: Octal string
+
+                Construct a polynomial over :math:`\mathrm{GF}(2^3)` from its octal string.
+
+                .. ipython:: python
+
+                    GF = galois.GF(2**3)
+                    f = galois.Poly.Int(int("0o5034", 8), field=GF); f
+                    oct(f)
+
+            .. tab-item:: Hex string
+
+                Construct a polynomial over :math:`\mathrm{GF}(2^8)` from its hexadecimal string.
+
+                .. ipython:: python
+
+                    GF = galois.GF(2**8)
+                    f = galois.Poly.Int(int("0xf700a275", 16), field=GF); f
+                    hex(f)
         """
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
@@ -3729,6 +3762,10 @@ class Poly:
         """
         return sparse_poly_to_str(self.nonzero_degrees, self.nonzero_coeffs)
 
+    def __index__(self) -> int:
+        # Define __index__ to enable use of bin(), oct(), and hex()
+        return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
+
     def __int__(self) -> int:
         r"""
         The integer representation of the polynomial.
@@ -3753,7 +3790,7 @@ class Poly:
             int(f)
             int(f) == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
         """
-        return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
+        return self.__index__()
 
     def __hash__(self):
         t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
