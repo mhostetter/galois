@@ -4414,9 +4414,6 @@ class Poly:
             # Compare two poly objects to each other
             return self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     @classmethod
     def _add(cls, a, b):
         raise NotImplementedError
