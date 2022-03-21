@@ -25,18 +25,18 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 ## Features
 
-- Supports all [Galois fields](https://galois.readthedocs.io/en/stable/api/galois-fields.html#) `GF(p^m)`, even arbitrarily-large fields!
-- **Faster** than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`
-- Seamless integration with NumPy -- normal NumPy functions work on Galois field arrays
-- [Linear algebra](https://galois.readthedocs.io/en/stable/api/numpy-examples.html#linear-algebra) on Galois field matrices using normal `np.linalg` functions
-- [Functions](https://galois.readthedocs.io/en/stable/api/polys.html#special-polynomial-creation) to generate irreducible, primitive, and Conway polynomials
-- [Polynomials](https://galois.readthedocs.io/en/stable/api/polys.html) over Galois fields with `galois.Poly`
-- [Forward error correction codes](https://galois.readthedocs.io/en/stable/api/fec.html) with `galois.BCH` and `galois.ReedSolomon`
-- [Linear transforms](https://galois.readthedocs.io/en/stable/api/transforms.html) over finite fields, such as the NTT with `galois.ntt()` and `galois.intt()`
-- Fibonacci and Galois [linear feedback shift registers](https://galois.readthedocs.io/en/stable/api/linear-sequences.html) with `galois.FLFSR` and `galois.GLFSR`, both binary and p-ary
-- Various [number theoretic functions](https://galois.readthedocs.io/en/stable/api/number-theory.html)
-- [Integer factorization](https://galois.readthedocs.io/en/stable/api/integer-factorization.html) and accompanying algorithms
-- [Prime number generation](https://galois.readthedocs.io/en/stable/api/primes.html#prime-number-generation) and [primality testing](https://galois.readthedocs.io/en/stable/api/primes.html#primality-tests)
+- Supports all [Galois fields](https://galois.readthedocs.io/en/latest/api/galois.GF.html) `GF(p^m)`, even arbitrarily-large fields!
+- [**Faster**](https://galois.readthedocs.io/en/latest/performance/prime-fields.html) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`.
+- Seamless integration with NumPy -- normal NumPy functions work on *Galois field arrays*.
+- [Linear algebra](https://galois.readthedocs.io/en/latest/basic-usage/linear-algebra.html) over finite fields using normal `np.linalg` functions.
+- [Linear transforms](https://galois.readthedocs.io/en/stable/api/transforms.html) over finite fields, such as the NTT with `galois.ntt()` and `galois.intt()`.
+- Functions to generate [irreducible](https://galois.readthedocs.io/en/latest/api/polys.html#irreducible-polynomials), [primitive](https://galois.readthedocs.io/en/latest/api/polys.html#primitive-polynomials), and [Conway](https://galois.readthedocs.io/en/latest/api/galois.conway_poly.html) polynomials.
+- [Univariate polynomials](https://galois.readthedocs.io/en/latest/api/polys.html) over finite fields with `galois.Poly`.
+- [Forward error correction codes](https://galois.readthedocs.io/en/latest/api/fec.html) with `galois.BCH` and `galois.ReedSolomon`.
+- [Fibonacci](https://galois.readthedocs.io/en/latest/api/galois.FLFSR.html) and [Galois](https://galois.readthedocs.io/en/latest/api/galois.GLFSR.html) linear-feedback shift registers over any finite field with `galois.FLFSR` and `galois.GLFSR`.
+- Various [number theoretic functions](https://galois.readthedocs.io/en/latest/api/number-theory.html).
+- [Integer factorization](https://galois.readthedocs.io/en/latest/api/integer-factorization.html) and accompanying algorithms.
+- [Prime number generation](https://galois.readthedocs.io/en/latest/api/primes.html#prime-number-generation) and [primality testing](https://galois.readthedocs.io/en/latest/api/primes.html#primality-tests).
 
 ## Roadmap
 

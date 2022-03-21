@@ -25,13 +25,13 @@ Features
 
 - Supports all Galois fields :math:`\mathrm{GF}(p^m)`, even arbitrarily-large fields!
 - **Faster** than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for :math:`\mathrm{GF}(p)`.
-- Seamless integration with NumPy -- normal NumPy functions work on Galois field arrays.
+- Seamless integration with NumPy -- normal NumPy functions work on *Galois field arrays*.
 - Linear algebra over finite fields using normal :obj:`numpy.linalg` functions.
 - Linear transforms over finite fields, such as the NTT with :func:`galois.ntt` and :func:`galois.intt`.
 - Functions to generate irreducible, primitive, and Conway polynomials.
-- Polynomials over finite fields with :obj:`galois.Poly`.
+- Univariate polynomials over finite fields with :obj:`galois.Poly`.
 - Forward error correction codes with :obj:`galois.BCH` and :obj:`galois.ReedSolomon`.
-- Fibonacci and Galois linear feedback shift registers with :obj:`galois.FLFSR` and :obj:`galois.GLFSR`, both binary and p-ary.
+- Fibonacci and Galois linear-feedback shift registers over any finite field with :obj:`galois.FLFSR` and :obj:`galois.GLFSR`.
 - Various number theoretic functions.
 - Integer factorization and accompanying algorithms.
 - Prime number generation and primality testing.
