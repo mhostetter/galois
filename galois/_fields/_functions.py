@@ -369,7 +369,7 @@ class FunctionMeta(UfuncMeta):
             for i in range(q_degree + 1):
                 if qr[k,i] > 0:
                     q = DIVIDE(qr[k,i], b[0], *args)
-                    for j in range(b.size):
+                    for j in range(1, b.size):
                         qr[k, i + j] = SUBTRACT(qr[k, i + j], MULTIPLY(q, b[j], *args), *args)
                     qr[k,i] = q
 
