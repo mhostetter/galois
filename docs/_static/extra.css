@@ -15,14 +15,23 @@
 }
 
 /* Override sphinx-design tab-set CSS rules, see https://github.com/jbms/sphinx-immaterial/issues/43 */
-.sd-tab-set>input:checked+label {
-  border-color: var(--md-primary-fg-color);
-  color: var(--md-primary-fg-color);
-}
 .sd-tab-set>input+label {
   font: var(--md-text-font-family);
   font-size: 0.64rem;
+  font-weight: bolder;
+  border-bottom: .13rem solid transparent;
+}
+.sd-tab-set>input:checked+label {
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+}
+.sd-tab-set>input:not(checked)+label {
+  color: var(--md-default-fg-color--light);
 }
 .sd-tab-set>input:not(:checked)+label:hover {
-  color: var(--md-primary-fg-color);
+  border-bottom: .0rem solid transparent;
+  color: var(--md-accent-fg-color);
+}
+.sd-tab-content {
+  box-shadow: 0 -0.05rem var(--md-default-fg-color--lightest), 0 0.05rem var(--md-default-fg-color--lightest);
 }
