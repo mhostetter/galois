@@ -323,6 +323,37 @@ class FunctionMeta(UfuncMeta):
 
         return r
 
+    def _poly_pow(cls, a, b, c=None):
+        assert isinstance(a, cls) and isinstance(b, (int, np.integer)) and isinstance(c, (type(None), cls))
+        assert a.ndim == 1 and c.ndim == 1 if c is not None else True
+        field = type(a)
+        dtype = a.dtype
+
+        if cls.ufunc_mode != "python-calculate":
+            a = a.astype(np.int64)
+            c = np.array([], dtype=np.int64) if c is None else c.astype(np.int64)
+            add = cls._func_calculate("add")
+            subtract = cls._func_calculate("subtract")
+            multiply = cls._func_calculate("multiply")
+            divide = cls._func_calculate("divide")
+            convolve = cls._function("convolve")
+            poly_mod = cls._function("poly_mod")
+            z = cls._function("poly_pow")(a, b, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            z = z.astype(dtype)
+        else:
+            a = a.view(np.ndarray)
+            c = np.array([], dtype=dtype) if c is None else c.view(np.ndarray)
+            add = cls._func_python("add")
+            subtract = cls._func_python("subtract")
+            multiply = cls._func_python("multiply")
+            divide = cls._func_python("divide")
+            convolve = cls._function("convolve")
+            poly_mod = cls._function("poly_mod")
+            z = cls._function("poly_pow")(a, b, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        z = z.view(field)
+
+        return z
+
     def _poly_roots(cls, nonzero_degrees, nonzero_coeffs):
         assert isinstance(nonzero_coeffs, cls)
         field = cls
@@ -496,6 +527,43 @@ class FunctionMeta(UfuncMeta):
                 r = r[-1:]
 
         return r
+
+    _POLY_POW_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64, int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, _CONVOLVE_CALCULATE_SIG, _POLY_MOD_CALCULATE_SIG, int64, int64, int64))
+
+    @staticmethod
+    @numba.extending.register_jitable
+    def _poly_pow_calculate(a, b, c, ADD, SUBTRACT, MULTIPLY, DIVIDE, POLY_MULTIPLY, POLY_MOD, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+        dtype = a.dtype
+
+        if b == 0:
+            return np.array([1], dtype=dtype)
+
+        result_s = a.copy()  # The "squaring" part
+        result_m = np.array([1], dtype=dtype)  # The "multiplicative" part
+
+        if c.size > 0:
+            while b > 1:
+                if b % 2 == 0:
+                    result_s = POLY_MOD(POLY_MULTIPLY(result_s, result_s, ADD, MULTIPLY, *args), c, SUBTRACT, MULTIPLY, DIVIDE, *args)
+                    b //= 2
+                else:
+                    result_m = POLY_MOD(POLY_MULTIPLY(result_m, result_s, ADD, MULTIPLY, *args), c, SUBTRACT, MULTIPLY, DIVIDE, *args)
+                    b -= 1
+
+            result = POLY_MOD(POLY_MULTIPLY(result_s, result_m, ADD, MULTIPLY, *args), c, SUBTRACT, MULTIPLY, DIVIDE, *args)
+        else:
+            while b > 1:
+                if b % 2 == 0:
+                    result_s = POLY_MULTIPLY(result_s, result_s, ADD, MULTIPLY, *args)
+                    b //= 2
+                else:
+                    result_m = POLY_MULTIPLY(result_m, result_s, ADD, MULTIPLY, *args)
+                    b -= 1
+
+            result = POLY_MULTIPLY(result_s, result_m, ADD, MULTIPLY, *args)
+
+        return result
 
     _POLY_ROOTS_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
 

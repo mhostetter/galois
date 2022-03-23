@@ -3897,6 +3897,18 @@ class Poly:
         if (isinstance(a, Poly) and isinstance(b, Poly)) and not a.field is b.field:
             raise TypeError(f"Both polynomial operands must be over the same field, not {a.field.name} and {b.field.name}.")
 
+    def _check_inputs_are_polys_or_none(self, a, b):
+        """
+        Verify polynomial arithmetic operands are either galois.Poly or None.
+        """
+        if not isinstance(a, (Poly, self.field)):
+            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field.name}, not {type(a)}.")
+        if b is not None:
+            if not isinstance(b, (Poly, self.field)):
+                raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field.name}, not {type(b)}.")
+            if (isinstance(a, Poly) and isinstance(b, Poly)) and not a.field is b.field:
+                raise TypeError(f"Both polynomial operands must be over the same field, not {a.field.name} and {b.field.name}.")
+
     def _check_inputs_are_polys_or_ints(self, a, b):
         """
         Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or an integer (scalar multiplication).
@@ -4076,42 +4088,16 @@ class Poly:
         exponent: int,
         modulus: Optional["Poly"] = None
     ) -> "Poly":
+        self._check_inputs_are_polys_or_none(self, modulus)
+        a, c = self._convert_field_scalars_to_polys(self, modulus)
+        cls = self._determine_poly_class(a, c)
+
         if not isinstance(exponent, (int, np.integer)):
             raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {exponent}.")
-        if not isinstance(modulus, (type(None), Poly)):
-            raise TypeError(f"For polynomial modular exponentiation, the third argument must be a galois.Poly, not {modulus}.")
         if not exponent >= 0:
             raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {exponent}.")
-        base = self
 
-        if exponent == 0:
-            return Poly.One(base.field)
-
-        result_s = base  # The "squaring" part
-        result_m = Poly.One(base.field)  # The "multiplicative" part
-
-        if modulus:
-            while exponent > 1:
-                if exponent % 2 == 0:
-                    result_s = (result_s * result_s) % modulus
-                    exponent //= 2
-                else:
-                    result_m = (result_m * result_s) % modulus
-                    exponent -= 1
-
-            result = (result_s * result_m) % modulus
-        else:
-            while exponent > 1:
-                if exponent % 2 == 0:
-                    result_s = result_s * result_s
-                    exponent //= 2
-                else:
-                    result_m = result_m * result_s
-                    exponent -= 1
-
-            result = result_s * result_m
-
-        return result
+        return cls._pow(a, exponent, c)
 
     def __eq__(
         self,
@@ -4200,6 +4186,38 @@ class Poly:
     @classmethod
     def _mod(cls, a, b):
         raise NotImplementedError
+
+    @classmethod
+    def _pow(cls, a, b, c=None):
+        field = a.field
+        if b == 0:
+            return Poly.One(field)
+
+        result_s = a  # The "squaring" part
+        result_m = Poly.One(field)  # The "multiplicative" part
+
+        if c:
+            while b > 1:
+                if b % 2 == 0:
+                    result_s = (result_s * result_s) % c
+                    b //= 2
+                else:
+                    result_m = (result_m * result_s) % c
+                    b -= 1
+
+            result = (result_s * result_m) % c
+        else:
+            while b > 1:
+                if b % 2 == 0:
+                    result_s = result_s * result_s
+                    b //= 2
+                else:
+                    result_m = result_m * result_s
+                    b -= 1
+
+            result = result_s * result_m
+
+        return result
 
     ###############################################################################
     # Instance properties
@@ -4409,6 +4427,12 @@ class DensePoly(Poly):
         field = a.field
         r_coeffs = field._poly_mod(a.coeffs, b.coeffs)
         return Poly(r_coeffs)
+
+    @classmethod
+    def _pow(cls, a, b, c=None):
+        field = a.field
+        z_coeffs = field._poly_pow(a.coeffs, b, c.coeffs if c is not None else None)
+        return Poly(z_coeffs)
 
     ###############################################################################
     # Instance properties
