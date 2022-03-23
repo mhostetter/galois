@@ -55,12 +55,6 @@ class FunctionMeta(UfuncMeta):
         np.linalg.inv: _linalg.inv,
     }
 
-    _MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
-    _CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
-    _POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
-    _POLY_DIVMOD_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
-    _POLY_ROOTS_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
-
     _FUNCTION_CACHE_CALCULATE = {}
 
     def __init__(cls, name, bases, namespace, **kwargs):
@@ -279,6 +273,56 @@ class FunctionMeta(UfuncMeta):
 
         return q, r
 
+    def _poly_divide(cls, a, b):
+        assert isinstance(a, cls) and isinstance(b, cls)
+        assert a.ndim == 1 and b.ndim == 1
+        field = type(a)
+        dtype = a.dtype
+
+        if cls.ufunc_mode != "python-calculate":
+            a = a.astype(np.int64)
+            b = b.astype(np.int64)
+            subtract = cls._func_calculate("subtract")
+            multiply = cls._func_calculate("multiply")
+            divide = cls._func_calculate("divide")
+            q = cls._function("poly_divide")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            q = q.astype(dtype)
+        else:
+            a = a.view(np.ndarray)
+            b = b.view(np.ndarray)
+            subtract = cls._func_python("subtract")
+            multiply = cls._func_python("multiply")
+            divide = cls._func_python("divide")
+            q = cls._function("poly_divide")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        q = q.view(field)
+
+        return q
+
+    def _poly_mod(cls, a, b):
+        assert isinstance(a, cls) and isinstance(b, cls)
+        assert a.ndim == 1 and b.ndim == 1
+        field = type(a)
+        dtype = a.dtype
+
+        if cls.ufunc_mode != "python-calculate":
+            a = a.astype(np.int64)
+            b = b.astype(np.int64)
+            subtract = cls._func_calculate("subtract")
+            multiply = cls._func_calculate("multiply")
+            divide = cls._func_calculate("divide")
+            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            r = r.astype(dtype)
+        else:
+            a = a.view(np.ndarray)
+            b = b.view(np.ndarray)
+            subtract = cls._func_python("subtract")
+            multiply = cls._func_python("multiply")
+            divide = cls._func_python("divide")
+            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        r = r.view(field)
+
+        return r
+
     def _poly_roots(cls, nonzero_degrees, nonzero_coeffs):
         assert isinstance(nonzero_coeffs, cls)
         field = cls
@@ -308,6 +352,8 @@ class FunctionMeta(UfuncMeta):
     # Function implementations using explicit calculation
     ###############################################################################
 
+    _MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+
     @staticmethod
     @numba.extending.register_jitable
     def _matmul_calculate(A, B, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
@@ -327,6 +373,8 @@ class FunctionMeta(UfuncMeta):
 
         return C
 
+    _CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+
     @staticmethod
     @numba.extending.register_jitable
     def _convolve_calculate(a, b, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
@@ -339,6 +387,8 @@ class FunctionMeta(UfuncMeta):
                 c[i + j] = ADD(c[i + j], MULTIPLY(a[i], b[j], *args), *args)
 
         return c
+
+    _POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
@@ -353,6 +403,8 @@ class FunctionMeta(UfuncMeta):
                 results[i] = ADD(coeffs[j], MULTIPLY(results[i], values[i], *args), *args)
 
         return results
+
+    _POLY_DIVMOD_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
@@ -374,6 +426,78 @@ class FunctionMeta(UfuncMeta):
                     qr[k,i] = q
 
         return qr
+
+    _POLY_DIVIDE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+
+    @staticmethod
+    @numba.extending.register_jitable
+    def _poly_divide_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+        dtype = a.dtype
+
+        if b.size == 1 and b[0] == 0:
+            raise ZeroDivisionError("Cannot divide a polynomial by zero.")
+
+        if a.size < b.size:
+            return np.array([0], dtype=dtype)
+
+        q_degree = a.size - b.size
+        q = np.zeros(q_degree + 1, dtype=dtype)
+        aa = a[0:q_degree + 1].copy()
+
+        for i in range(q_degree + 1):
+            if aa[i] > 0:
+                q[i] = DIVIDE(aa[i], b[0], *args)
+                N = min(b.size, q_degree + 1 - i)  # We don't need to subtract in the "remainder" range
+                for j in range(1, N):
+                    aa[i + j] = SUBTRACT(aa[i + j], MULTIPLY(q[i], b[j], *args), *args)
+
+        return q
+
+    _POLY_MOD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+
+    @staticmethod
+    @numba.extending.register_jitable
+    def _poly_mod_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+        dtype = a.dtype
+
+        if b.size == 1 and b[0] == 0:
+            raise ZeroDivisionError("Cannot divide a polynomial by zero.")
+
+        if a.size < b.size:
+            return a.copy()
+
+        if b.size == 1:
+            return np.array([0], dtype=dtype)
+
+        q_degree = a.size - b.size
+        r_degree = b.size - 1
+        r = np.zeros(r_degree + 1, dtype=dtype)
+        r[1:] = a[0:r_degree]
+
+        for i in range(q_degree + 1):
+            r = np.roll(r, -1)
+            r[-1] = a[i + r_degree]
+
+            if r[0] > 0:
+                q = DIVIDE(r[0], b[0], *args)
+                for j in range(1, b.size):
+                    r[j] = SUBTRACT(r[j], MULTIPLY(q, b[j], *args), *args)
+
+        r = r[1:]
+
+        # Trim leading zeros to reduce computations in future calls
+        if r.size > 1:
+            idxs = np.nonzero(r)[0]
+            if idxs.size > 0:
+                r = r[idxs[0]:]
+            else:
+                r = r[-1:]
+
+        return r
+
+    _POLY_ROOTS_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
