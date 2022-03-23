@@ -16,9 +16,11 @@ def test_modular_power_exceptions():
         pow(f.coeffs, power, g)
     with pytest.raises(TypeError):
         pow(f, float(power), g)
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
+        # TODO: Should this be a TypeError or ValueError?
         pow(f, power, g.coeffs)
     with pytest.raises(ValueError):
         pow(f, -power, g)
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
+        # TODO: Should this be a TypeError or ValueError?
         pow(f, -power, galois.Poly(g.coeffs, field=galois.GF(31)))
