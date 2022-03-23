@@ -1005,8 +1005,7 @@ class GLFSR(_LFSR):
 
             .. tab-item:: Scalar output
 
-                Step the Galois LFSR one output at a time. Notice the first :math:`n` outputs of a Galois LFSR are its
-                state reversed.
+                Step the Galois LFSR one output at a time.
 
                 .. ipython:: python
 
