@@ -4024,7 +4024,7 @@ class Poly:
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
-        return cls._divmod(a, b)[0]
+        return cls._div(a, b)
 
     def __rtruediv__(
         self,
@@ -4033,7 +4033,7 @@ class Poly:
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
-        return cls._divmod(b, a)[0]
+        return cls._div(b, a)
 
     def __floordiv__(
         self,
@@ -4042,7 +4042,7 @@ class Poly:
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
-        return cls._divmod(a, b)[0]
+        return cls._div(a, b)
 
     def __rfloordiv__(
         self,
@@ -4051,7 +4051,7 @@ class Poly:
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         cls = self._determine_poly_class(a, b)
-        return cls._divmod(b, a)[0]
+        return cls._div(b, a)
 
     def __mod__(
         self,
@@ -4191,6 +4191,10 @@ class Poly:
 
     @classmethod
     def _divmod(cls, a, b):
+        raise NotImplementedError
+
+    @classmethod
+    def _div(cls, a, b):
         raise NotImplementedError
 
     @classmethod
@@ -4395,8 +4399,16 @@ class DensePoly(Poly):
             return Poly(q_coeffs), Poly(r_coeffs)
 
     @classmethod
+    def _div(cls, a, b):
+        field = a.field
+        q_coeffs = field._poly_divide(a.coeffs, b.coeffs)
+        return Poly(q_coeffs)
+
+    @classmethod
     def _mod(cls, a, b):
-        return cls._divmod(a, b)[1]
+        field = a.field
+        r_coeffs = field._poly_mod(a.coeffs, b.coeffs)
+        return Poly(r_coeffs)
 
     ###############################################################################
     # Instance properties
@@ -4517,6 +4529,10 @@ class BinaryPoly(Poly):
         r = a & mask
 
         return BinaryPoly(q), BinaryPoly(r)
+
+    @classmethod
+    def _div(cls, a, b):
+        return cls._divmod(a, b)[0]
 
     @classmethod
     def _mod(cls, a, b):
@@ -4704,6 +4720,10 @@ class SparsePoly(Poly):
                     qq[q_degree - i] = q
 
             return Poly.Degrees(list(qq.keys()), list(qq.values()), field=field), Poly(r_coeffs[1:])
+
+    @classmethod
+    def _div(cls, a, b):
+        return cls._divmod(a, b)[0]
 
     @classmethod
     def _mod(cls, a, b):
