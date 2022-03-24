@@ -25,7 +25,6 @@ Congruences
 .. autosummary::
    :toctree:
 
-   pow
    crt
    primitive_root
    primitive_roots
