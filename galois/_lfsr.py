@@ -131,7 +131,7 @@ class _LFSR:
             y = step(taps, state, steps, add, multiply, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
 
         self._state[:] = state[:]
-        y = y.view(self.field)
+        y = self.field._view(y)
         if y.size == 1:
             y = y[0]
 
@@ -168,7 +168,7 @@ class _LFSR:
             y = step(taps, state, steps, subtract, multiply, divide, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
 
         self._state[:] = state[:]
-        y = y.view(self.field)
+        y = self.field._view(y)
         if y.size == 1:
             y = y[0]
 
@@ -1331,6 +1331,7 @@ def berlekamp_massey(y, output="minimal"):
         divide = field._func_python("divide")
         reciprocal = field._func_python("reciprocal")
         coeffs = python_func("berlekamp_massey")(y, subtract, multiply, divide, reciprocal, field.characteristic, field.degree, field._irreducible_poly_int)
+    coeffs = field._view(coeffs)
 
     characteristic_poly = Poly(coeffs, field=field)
 

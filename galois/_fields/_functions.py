@@ -145,7 +145,7 @@ class FunctionMeta(UfuncMeta):
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
             C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-        C = C.view(field)
+        C = field._view(C)
 
         shape = list(C.shape)
         if prepend:
@@ -181,8 +181,7 @@ class FunctionMeta(UfuncMeta):
             b = b.view(np.ndarray).astype(dtype)
             c = np.convolve(a, b)  # Compute result using native numpy LAPACK/BLAS implementation
             c = c % field.characteristic  # Reduce the result mod p
-            c = c.astype(return_dtype).view(field) if not np.isscalar(c) else field(c, dtype=return_dtype)
-            return c
+            c = field._view(c.astype(return_dtype)) if not np.isscalar(c) else field(c, dtype=return_dtype)
         else:
             if cls.ufunc_mode != "python-calculate":
                 a = a.astype(np.int64)
@@ -197,9 +196,9 @@ class FunctionMeta(UfuncMeta):
                 add = cls._func_python("add")
                 multiply = cls._func_python("multiply")
                 c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-            c = c.view(field)
+            c = field._view(c)
 
-            return c
+        return c
 
     def _poly_evaluate(cls, coeffs, x):
         field = cls
@@ -220,7 +219,7 @@ class FunctionMeta(UfuncMeta):
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
             results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-        results = results.view(field)
+        results = field._view(results)
         results = results.reshape(shape)
 
         return results
@@ -262,7 +261,7 @@ class FunctionMeta(UfuncMeta):
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
             qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-        qr = qr.view(field)
+        qr = field._view(qr)
 
         q = qr[:, 0:q_degree + 1]
         r = qr[:, q_degree + 1:q_degree + 1 + r_degree + 1]
@@ -294,7 +293,7 @@ class FunctionMeta(UfuncMeta):
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
             q = cls._function("poly_divide")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-        q = q.view(field)
+        q = field._view(q)
 
         return q
 
@@ -319,7 +318,7 @@ class FunctionMeta(UfuncMeta):
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
             r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-        r = r.view(field)
+        r = field._view(r)
 
         return r
 
@@ -350,7 +349,7 @@ class FunctionMeta(UfuncMeta):
             convolve = cls._function("convolve")
             poly_mod = cls._function("poly_mod")
             z = cls._function("poly_pow")(a, b, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-        z = z.view(field)
+        z = field._view(z)
 
         return z
 
@@ -374,7 +373,7 @@ class FunctionMeta(UfuncMeta):
             multiply = cls._func_python("multiply")
             power = cls._func_python("power")
             roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, int(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0,:]
-        roots = roots.view(field)
+        roots = field._view(roots)
 
         idxs = np.argsort(roots)
         return roots[idxs]

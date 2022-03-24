@@ -279,6 +279,6 @@ class GFpMeta(FieldClass, DirMeta):
                 c = c**2
             roots[idxs] = r  # Assign non-zero roots to the original array
 
-        roots = np.minimum(roots, -roots).view(field)  # Return only the smaller root
+        roots = field._view(np.minimum(roots, -roots))  # Return only the smaller root
 
         return roots

@@ -45,7 +45,7 @@ def _lapack_linalg(a, b, function, out=None, n_sum=None):
         # TODO: Sometimes the scalar c is a float?
         c = field(int(c), dtype=return_dtype)
     else:
-        c = c.astype(return_dtype).view(field)
+        c = field._view(c.astype(return_dtype))
 
     return c
 
