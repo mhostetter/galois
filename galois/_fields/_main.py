@@ -2338,7 +2338,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             # The minimal polynomial annihilates a
             poly(a, field=GF)
             # The minimal polynomial always divides the characteristic polynomial
-            a.characteristic_poly() / poly
+            a.characteristic_poly() // poly
         """
         if self.ndim == 0:
             return self._minimal_poly_element()
@@ -4055,23 +4055,11 @@ class Poly:
         cls = self._determine_poly_class(a, b)
         return cls._divmod(b, a)
 
-    def __truediv__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._div(a, b)
+    def __truediv__(self, other):
+        raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
 
-    def __rtruediv__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._div(b, a)
+    def __rtruediv__(self, other):
+        raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
 
     def __floordiv__(
         self,
@@ -4351,6 +4339,7 @@ class DensePoly(Poly):
     """
     Implementation of dense polynomials over Galois fields.
     """
+    # pylint: disable=abstract-method
 
     __slots__ = ["_coeffs"]
 
@@ -4493,6 +4482,7 @@ class BinaryPoly(Poly):
     """
     Implementation of polynomials over GF(2).
     """
+    # pylint: disable=abstract-method
 
     __slots__ = ["_integer", "_coeffs"]
 
@@ -4631,6 +4621,7 @@ class SparsePoly(Poly):
     """
     Implementation of sparse polynomials over Galois fields.
     """
+    # pylint: disable=abstract-method
 
     __slots__ = ["_degrees", "_coeffs"]
 

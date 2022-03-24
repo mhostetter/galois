@@ -71,12 +71,6 @@ def test_divide(poly_divmod):
         x = X[i]
         y = Y[i]
 
-        q = x / y
-        assert q == Q[i]
-        assert isinstance(q, galois.Poly)
-        assert q.field is GF
-        assert type(q.coeffs) is GF
-
         q = x // y
         assert q == Q[i]
         assert isinstance(q, galois.Poly)

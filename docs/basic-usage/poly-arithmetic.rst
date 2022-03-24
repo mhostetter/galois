@@ -92,13 +92,13 @@ Expand any section for more details.
         p = GF.characteristic; p
         f * p
 
-.. details:: Division: `f / g == f // g`
+.. details:: Division: `f // g`
 
-    Divide one polynomial by another. True division and floor division are equivalent.
+    Divide one polynomial by another. Floor division is supported. True division is not supported since fractional polynomials are not
+    currently supported.
 
     .. ipython:: python
 
-        f / g
         f // g
 
     Divide a polynomial by a finite field scalar, or vice versa. The scalar is treated as a 0-degree polynomial.

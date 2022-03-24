@@ -208,7 +208,7 @@ def test_factors_random():
     GF = galois.GF(5)
     for _ in range(5):
         f = galois.Poly.Random(random.randint(10, 50), field=GF)
-        f /= f.coeffs[0]  # Make monic
+        f //= f.coeffs[0]  # Make monic
         factors, multiplicities = galois.factors(f)
         g = galois.Poly.One(GF)
         for fi, mi in zip(factors, multiplicities):
@@ -272,7 +272,7 @@ def test_square_free_factorization():
 def test_square_free_factorization_random():
     GF = galois.GF(2)
     f = galois.Poly.Random(10, field=GF)
-    f /= f.coeffs[0] # Make monic
+    f //= f.coeffs[0] # Make monic
     factors, multiplicities = galois.square_free_factorization(f)
     g = galois.Poly.One(GF)
     for fi, mi in zip(factors, multiplicities):
@@ -281,7 +281,7 @@ def test_square_free_factorization_random():
 
     GF = galois.GF(5)
     f = galois.Poly.Random(10, field=GF)
-    f /= f.coeffs[0] # Make monic
+    f //= f.coeffs[0] # Make monic
     factors, multiplicities = galois.square_free_factorization(f)
     g = galois.Poly.One(GF)
     for fi, mi in zip(factors, multiplicities):
@@ -290,7 +290,7 @@ def test_square_free_factorization_random():
 
     GF = galois.GF(2**2)
     f = galois.Poly.Random(10, field=GF)
-    f /= f.coeffs[0] # Make monic
+    f //= f.coeffs[0] # Make monic
     factors, multiplicities = galois.square_free_factorization(f)
     g = galois.Poly.One(GF)
     for fi, mi in zip(factors, multiplicities):
@@ -299,7 +299,7 @@ def test_square_free_factorization_random():
 
     GF = galois.GF(5**2)
     f = galois.Poly.Random(10, field=GF)
-    f /= f.coeffs[0] # Make monic
+    f //= f.coeffs[0] # Make monic
     factors, multiplicities = galois.square_free_factorization(f)
     g = galois.Poly.One(GF)
     for fi, mi in zip(factors, multiplicities):
