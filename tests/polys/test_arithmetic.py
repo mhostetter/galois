@@ -140,6 +140,54 @@ def test_modular_power(poly_modular_power):
         assert isinstance(z, galois.Poly)
 
 
+def test_modular_power_large_exponent_jit():
+    """
+    Sage:
+        F = GF(2^8, repr="int")
+        R = PolynomialRing(F, names="x")
+        f_coeffs = [255, 228, 34, 121, 243, 189, 6, 131, 102, 168, 82]
+        g_coeffs = [193, 88, 107, 214, 72, 3]
+        f = R([F.fetch_int(fi) for fi in f_coeffs[::-1]])
+        g = R([F.fetch_int(gi) for gi in g_coeffs[::-1]])
+        print(pow(f, 2**70 + 0, g))
+        print(pow(f, 2**70 + 1234, g))
+        print(pow(f, 2**70 + 7654, g))
+        print(pow(f, 2**70 + 105030405, g))
+    """
+    GF = galois.GF(2**8)
+    f = galois.Poly([255, 228, 34, 121, 243, 189, 6, 131, 102, 168, 82], field=GF)
+    g = galois.Poly([193, 88, 107, 214, 72, 3], field=GF)
+
+    assert pow(f, 2**70 + 0, g) == galois.Poly.Str("178*x^4 + 228*x^3 + 198*x^2 + 191*x + 211", field=GF)
+    assert pow(f, 2**70 + 1234, g) == galois.Poly.Str("100*x^4 + 242*x^3 + 235*x^2 + 171*x + 43", field=GF)
+    assert pow(f, 2**70 + 7654, g) == galois.Poly.Str("203*x^4 + 203*x^3 + 155*x^2 + 221*x + 151", field=GF)
+    assert pow(f, 2**70 + 105030405, g) == galois.Poly.Str("180*x^4 + 206*x^3 + 223*x^2 + 126*x + 175", field=GF)
+
+
+def test_modular_power_large_exponent_python():
+    """
+    Sage:
+        F = GF(2^100, repr="int")
+        R = PolynomialRing(F, names="x")
+        f_coeffs = [255, 228, 34, 121, 243, 189, 6, 131, 102, 168, 82]
+        g_coeffs = [193, 88, 107, 214, 72, 3]
+        f = R([F.fetch_int(fi) for fi in f_coeffs[::-1]])
+        g = R([F.fetch_int(gi) for gi in g_coeffs[::-1]])
+        print([fi.integer_representation() for fi in pow(f, 2**70 + 0, g).list()[::-1]])
+        print([fi.integer_representation() for fi in pow(f, 2**70 + 1234, g).list()[::-1]])
+        print([fi.integer_representation() for fi in pow(f, 2**70 + 7654, g).list()[::-1]])
+        print([fi.integer_representation() for fi in pow(f, 2**70 + 105030405, g).list()[::-1]])
+    """
+    GF = galois.GF(2**100)
+    f = galois.Poly([255, 228, 34, 121, 243, 189, 6, 131, 102, 168, 82], field=GF)
+    g = galois.Poly([193, 88, 107, 214, 72, 3], field=GF)
+
+    assert pow(f, 2**70 + 0, g) == galois.Poly([420013998870488935594333531316, 467166943839280220379055289966, 186006824455335245843600812277, 96771878479768144633356244863, 157326613576996636293122695271], field=GF)
+    assert pow(f, 2**70 + 1234, g) == galois.Poly([22570526373096432759079317290, 1022650052301719787915054353024, 36488930895254982134146321994, 232103113155652429788397015469, 602929380923609768536867742066], field=GF)
+    assert pow(f, 2**70 + 7654, g) == galois.Poly([1157532413047205128638237902356, 731431734000747876200385228646, 311313764490655270029408542359, 81825181444198002714338087143, 68173155813012544552855134791], field=GF)
+    assert pow(f, 2**70 + 105030405, g) == galois.Poly([795758922378672681775973344546, 1221486083569158504745962352000, 474560121964431239726873721828, 1008821918134362696532498449793, 664177063731066580685161724661], field=GF)
+
+
 def test_evaluate_constant(poly_evaluate):
     GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
     for i in range(len(X)):
