@@ -49,6 +49,8 @@ class FieldClass(FunctionMeta, UfuncMeta):
     """
     # pylint: disable=no-value-for-parameter,unsupported-membership-test,abstract-method,too-many-public-methods
 
+    _verify_on_view = True  # By default, verify array elements are within the valid range when `.view()` casting
+
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
         return super().__new__(cls, name, bases, namespace)
 
@@ -594,6 +596,29 @@ class FieldClass(FunctionMeta, UfuncMeta):
             cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
 
         return s
+
+    ###############################################################################
+    # Array helper methods
+    ###############################################################################
+
+    @contextlib.contextmanager
+    def _view_without_verification(cls):
+        """
+        A context manager to disable verifying array element values are within [0, p^m). For internal library use only.
+        """
+        prev_value = cls._verify_on_view
+        cls._verify_on_view = False
+        yield
+        cls._verify_on_view = prev_value
+
+    def _view(cls, array: np.ndarray) -> "FieldArray":
+        """
+        View the input array to the FieldArray subclass using the `_view_without_verification()` context manager. This disables
+        bounds checking on the array elements. Instead of `x.view(field)` use `field._view(x)`.
+        """
+        with cls._view_without_verification():
+            array = array.view(cls)
+        return array
 
     ###############################################################################
     # Class attributes
@@ -1259,7 +1284,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         dtype = cls._get_dtype(dtype)
         array = np.zeros(shape, dtype=dtype)
-        return array.view(cls)
+        return cls._view(array)
 
     @classmethod
     def Ones(
@@ -1294,7 +1319,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         dtype = cls._get_dtype(dtype)
         array = np.ones(shape, dtype=dtype)
-        return array.view(cls)
+        return cls._view(array)
 
     @classmethod
     def Range(
@@ -1344,11 +1369,13 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             @suppress
             GF.display()
         """
-        if not stop <= cls.order:
-            raise ValueError(f"The stopping value must be less than the field order of {cls.order}, not {stop}.")
+        if not 0 <= start <= cls.order:
+            raise ValueError(f"Argument `start` must be within the field's order {cls.order}, not {start}.")
+        if not 0 <= stop <= cls.order:
+            raise ValueError(f"Argument `stop` must be within the field's order {cls.order}, not {stop}.")
         dtype = cls._get_dtype(dtype)
         array = np.arange(start, stop, step=step, dtype=dtype)
-        return array.view(cls)
+        return cls._view(array)
 
     @classmethod
     def Random(
@@ -1441,7 +1468,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             for _ in iterator:
                 array[iterator.multi_index] = random.randint(low, high - 1)
 
-        return array.view(cls)
+        return cls._view(array)
 
     @classmethod
     def Elements(
@@ -1509,7 +1536,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         dtype = cls._get_dtype(dtype)
         array = np.identity(size, dtype=dtype)
-        return array.view(cls)
+        return cls._view(array)
 
     @classmethod
     def Vandermonde(
@@ -2115,7 +2142,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             m = field.degree
             conjugates = np.power.outer(x, p**np.arange(0, m, dtype=field.dtypes[-1]))
             trace = np.add.reduce(conjugates, axis=-1)
-            return trace.view(subfield)
+            return subfield._view(trace)
 
     def field_norm(self) -> "FieldArray":
         r"""
@@ -2162,7 +2189,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             p = field.characteristic
             m = field.degree
             norm = x**((p**m - 1) // (p - 1))
-            return norm.view(subfield)
+            return subfield._view(norm)
 
     def characteristic_poly(self) -> "Poly":
         r"""
@@ -2368,12 +2395,15 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             # Only invoked on view casting
             if obj.dtype not in type(self).dtypes:
                 raise TypeError(f"{type(self).name} can only have integer dtypes {type(self).dtypes}, not {obj.dtype}.")
-            self._check_array_values(obj)
+            if type(self)._verify_on_view:
+                self._check_array_values(obj)
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         """
         Override the standard NumPy ufunc calls with the new finite field ufuncs.
         """
+        field = type(self)
+
         meta = {}
         meta["types"] = [type(inputs[i]) for i in range(len(inputs))]
         meta["operands"] = list(range(len(inputs)))
@@ -2386,7 +2416,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         meta["dtype"] = self.dtype
         # meta["ufuncs"] = self._ufuncs
 
-        if ufunc in type(self)._OVERRIDDEN_UFUNCS:
+        if ufunc in field._OVERRIDDEN_UFUNCS:
             # Set all ufuncs with "casting" keyword argument to "unsafe" so we can cast unsigned integers
             # to integers. We know this is safe because we already verified the inputs.
             if method not in ["reduce", "accumulate", "at", "reduceat"]:
@@ -2395,22 +2425,22 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             # Need to set the intermediate dtype for reduction operations or an error will be thrown. We
             # use the largest valid dtype for this field.
             if method in ["reduce"]:
-                kwargs["dtype"] = type(self).dtypes[-1]
+                kwargs["dtype"] = field.dtypes[-1]
 
-            return getattr(type(self), type(self)._OVERRIDDEN_UFUNCS[ufunc])(ufunc, method, inputs, kwargs, meta)
+            return getattr(field, field._OVERRIDDEN_UFUNCS[ufunc])(ufunc, method, inputs, kwargs, meta)
 
-        elif ufunc in type(self)._UNSUPPORTED_UFUNCS:
-            raise NotImplementedError(f"The numpy ufunc {ufunc.__name__!r} is not supported on {type(self).name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+        elif ufunc in field._UNSUPPORTED_UFUNCS:
+            raise NotImplementedError(f"The numpy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         else:
             if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:
                 kwargs["casting"] = "unsafe"
 
-            inputs, kwargs = type(self)._view_inputs_as_ndarray(inputs, kwargs)
+            inputs, kwargs = field._view_inputs_as_ndarray(inputs, kwargs)
             output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
 
-            if ufunc in type(self)._UFUNCS_REQUIRING_VIEW and output is not None:
-                output = output.view(type(self)) if not np.isscalar(output) else type(self)(output, dtype=self.dtype)
+            if ufunc in field._UFUNCS_REQUIRING_VIEW and output is not None:
+                output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
 
             return output
 
@@ -2418,14 +2448,16 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         Override the standard NumPy function calls with the new finite field functions.
         """
-        if func in type(self)._OVERRIDDEN_FUNCTIONS:
-            output = getattr(type(self), type(self)._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
+        field = type(self)
 
-        elif func in type(self)._OVERRIDDEN_LINALG_FUNCTIONS:
-            output = type(self)._OVERRIDDEN_LINALG_FUNCTIONS[func](*args, **kwargs)
+        if func in field._OVERRIDDEN_FUNCTIONS:
+            output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
 
-        elif func in type(self)._UNSUPPORTED_FUNCTIONS:
-            raise NotImplementedError(f"The numpy function {func.__name__!r} is not supported on Galois field arrays. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data (but not necessarily a Galois field array), you should first call `array = array.view(np.ndarray)` and then call the function.")
+        elif func in field._OVERRIDDEN_LINALG_FUNCTIONS:
+            output = field._OVERRIDDEN_LINALG_FUNCTIONS[func](*args, **kwargs)
+
+        elif func in field._UNSUPPORTED_FUNCTIONS:
+            raise NotImplementedError(f"The NumPy function {func.__name__!r} is not supported on FieldArray. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data, you should first call `array = array.view(np.ndarray)` and then call the function.")
 
         else:
             if func is np.insert:
@@ -2435,8 +2467,8 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
             output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
 
-            if func in type(self)._FUNCTIONS_REQUIRING_VIEW:
-                output = output.view(type(self)) if not np.isscalar(output) else type(self)(output, dtype=self.dtype)
+            if func in field._FUNCTIONS_REQUIRING_VIEW:
+                output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
 
         return output
 

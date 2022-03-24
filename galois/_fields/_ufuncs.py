@@ -176,7 +176,7 @@ class UfuncMeta(LookupMeta, CalculateMeta):
         if isinstance(type(output), field):
             return output
         elif isinstance(output, np.ndarray):
-            return output.astype(dtype).view(field)
+            return field._view(output.astype(dtype))
         elif output is None:
             return None
         else:
