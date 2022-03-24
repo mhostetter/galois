@@ -1144,7 +1144,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         if dtype is None:
             return cls.dtypes[0]
 
-        # Convert "dtype" to a numpy dtype. This does platform specific conversion, if necessary.
+        # Convert "dtype" to a NumPy dtype. This does platform specific conversion, if necessary.
         # For example, np.dtype(int) == np.int64 (on some systems).
         dtype = np.dtype(dtype)
         if dtype not in cls.dtypes:
@@ -1217,14 +1217,14 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             return array
         if array.ndim == 0:
             if not isinstance(array[()], (int, np.integer, FieldArray)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with `dtype=object`, each element must be an integer. Found type {type(array[()])}.")
+                raise TypeError(f"When {cls.name} arrays are created/assigned with a NumPy array with `dtype=object`, each element must be an integer. Found type {type(array[()])}.")
             return int(array)
 
         iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
         for _ in iterator:
             a = array[iterator.multi_index]
             if not isinstance(a, (int, np.integer, FieldArray)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with a numpy array with `dtype=object`, each element must be an integer. Found type {type(a)}.")
+                raise TypeError(f"When {cls.name} arrays are created/assigned with a NumPy array with `dtype=object`, each element must be an integer. Found type {type(a)}.")
 
             # Ensure the type is int so dtype=object classes don't get all mixed up
             array[iterator.multi_index] = int(a)
@@ -2430,7 +2430,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             return getattr(field, field._OVERRIDDEN_UFUNCS[ufunc])(ufunc, method, inputs, kwargs, meta)
 
         elif ufunc in field._UNSUPPORTED_UFUNCS:
-            raise NotImplementedError(f"The numpy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+            raise NotImplementedError(f"The NumPy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         else:
             if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:

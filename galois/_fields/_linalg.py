@@ -33,7 +33,7 @@ def _lapack_linalg(a, b, function, out=None, n_sum=None):
     a = a.astype(dtype)
     b = b.astype(dtype)
 
-    # Compute result using native numpy LAPACK/BLAS implementation
+    # Compute result using native NumPy LAPACK/BLAS implementation
     if function in [np.inner, np.vdot]:
         # These functions don't have and `out` keyword argument
         c = function(a, b)
@@ -88,7 +88,7 @@ def vdot(a, b):
         return _lapack_linalg(a, b, np.vdot)
 
     a = a.flatten()
-    b = b.flatten().reshape(a.shape)  # This is done to mimic numpy's error scenarios
+    b = b.flatten().reshape(a.shape)  # This is done to mimic NumPy's error scenarios
 
     return np.sum(a * b)
 
