@@ -3,7 +3,7 @@ A module that contains a metaclass mixin that provides NumPy function overriding
 JIT functions are created for use in polynomials and error-correcting codes, such as _poly_evaluate() or _poly_divmod().
 """
 import numba
-from numba import int64
+from numba import int64, uint64
 import numpy as np
 
 from . import _linalg
@@ -328,6 +328,16 @@ class FunctionMeta(UfuncMeta):
         field = type(a)
         dtype = a.dtype
 
+        # Convert the integer b into a vector of uint64 [MSWord, ..., LSWord] so arbitrarily-large exponents may be
+        # passed into the JIT-compiled version
+        b_vec = []  # Pop on LSWord -> MSWord
+        while b > 2**64:
+            q, r = divmod(b, 2**64)
+            b_vec.append(r)
+            b = q
+        b_vec.append(b)
+        b_vec = np.array(b_vec[::-1], dtype=np.uint64)  # Make vector MSWord -> LSWord
+
         if cls.ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             c = np.array([], dtype=np.int64) if c is None else c.astype(np.int64)
@@ -337,7 +347,7 @@ class FunctionMeta(UfuncMeta):
             divide = cls._func_calculate("divide")
             convolve = cls._function("convolve")
             poly_mod = cls._function("poly_mod")
-            z = cls._function("poly_pow")(a, b, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             z = z.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -348,7 +358,7 @@ class FunctionMeta(UfuncMeta):
             divide = cls._func_python("divide")
             convolve = cls._function("convolve")
             poly_mod = cls._function("poly_mod")
-            z = cls._function("poly_pow")(a, b, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, cls._irreducible_poly_int)
         z = field._view(z)
 
         return z
@@ -527,40 +537,46 @@ class FunctionMeta(UfuncMeta):
 
         return r
 
-    _POLY_POW_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64, int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, _CONVOLVE_CALCULATE_SIG, _POLY_MOD_CALCULATE_SIG, int64, int64, int64))
+    _POLY_POW_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], uint64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, _CONVOLVE_CALCULATE_SIG, _POLY_MOD_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
-    def _poly_pow_calculate(a, b, c, ADD, SUBTRACT, MULTIPLY, DIVIDE, POLY_MULTIPLY, POLY_MOD, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _poly_pow_calculate(a, b_vec, c, ADD, SUBTRACT, MULTIPLY, DIVIDE, POLY_MULTIPLY, POLY_MOD, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        """
+        b is a vector of uint64 [MSWord, ..., LSWord] so that arbitrarily-large exponents may be passed
+        """
         args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
         dtype = a.dtype
 
-        if b == 0:
+        if b_vec.size == 1 and b_vec[0] == 0:
             return np.array([1], dtype=dtype)
 
         result_s = a.copy()  # The "squaring" part
         result_m = np.array([1], dtype=dtype)  # The "multiplicative" part
 
-        if c.size > 0:
-            while b > 1:
-                if b % 2 == 0:
-                    result_s = POLY_MOD(POLY_MULTIPLY(result_s, result_s, ADD, MULTIPLY, *args), c, SUBTRACT, MULTIPLY, DIVIDE, *args)
-                    b //= 2
-                else:
-                    result_m = POLY_MOD(POLY_MULTIPLY(result_m, result_s, ADD, MULTIPLY, *args), c, SUBTRACT, MULTIPLY, DIVIDE, *args)
-                    b -= 1
+        # Loop from LSWord to MSWord
+        for i in range(b_vec.size - 1, -1, -1):
+            j = 0  # Bit counter -- make sure we interate through 64 bits on all but the most-significant word
+            while j < 64:
+                if i == 0 and b_vec[i] <= 1:
+                    # This is the MSB and we already accounted for the most-significant bit -- can exit now
+                    break
 
-            result = POLY_MOD(POLY_MULTIPLY(result_s, result_m, ADD, MULTIPLY, *args), c, SUBTRACT, MULTIPLY, DIVIDE, *args)
-        else:
-            while b > 1:
-                if b % 2 == 0:
+                if b_vec[i] % 2 == 0:
                     result_s = POLY_MULTIPLY(result_s, result_s, ADD, MULTIPLY, *args)
-                    b //= 2
+                    if c.size > 0:
+                        result_s = POLY_MOD(result_s, c, SUBTRACT, MULTIPLY, DIVIDE, *args)
+                    b_vec[i] //= 2
+                    j += 1
                 else:
                     result_m = POLY_MULTIPLY(result_m, result_s, ADD, MULTIPLY, *args)
-                    b -= 1
+                    if c.size > 0:
+                        result_m = POLY_MOD(result_m, c, SUBTRACT, MULTIPLY, DIVIDE, *args)
+                    b_vec[i] -= 1
 
-            result = POLY_MULTIPLY(result_s, result_m, ADD, MULTIPLY, *args)
+        result = POLY_MULTIPLY(result_s, result_m, ADD, MULTIPLY, *args)
+        if c.size > 0:
+            result = POLY_MOD(result, c, SUBTRACT, MULTIPLY, DIVIDE, *args)
 
         return result
 
