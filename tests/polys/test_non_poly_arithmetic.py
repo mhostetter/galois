@@ -66,27 +66,6 @@ def test_multiply():
         GF.Random(3, low=1) * poly
 
 
-def test_true_divide():
-    GF = galois.GF(3)
-    poly = galois.Poly.Random(5, field=GF)
-    e = GF.Random(low=1)  # Random field element
-    e_poly = galois.Poly(e)
-    assert poly / e == poly / e_poly
-    assert e / poly == e_poly / poly
-
-    # Not a Galois field array
-    with pytest.raises(TypeError):
-        poly / 1
-    with pytest.raises(TypeError):
-        1 / poly
-
-    # Not a 0-D Galois field array
-    with pytest.raises(ValueError):
-        poly / GF.Random(3, low=1)
-    with pytest.raises(ValueError):
-        GF.Random(3, low=1) / poly
-
-
 def test_floor_divide():
     GF = galois.GF(3)
     poly = galois.Poly.Random(5, field=GF)

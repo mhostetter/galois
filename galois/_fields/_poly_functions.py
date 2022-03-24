@@ -34,7 +34,7 @@ def gcd(a, b):
     # Make the GCD polynomial monic
     c = r2.coeffs[0]  # The leading coefficient
     if c > 1:
-        r2 /= c
+        r2 //= c
 
     return r2
 
@@ -55,7 +55,7 @@ def egcd(a, b):
     t2, t1 = zero, one
 
     while r1 != 0:
-        q = r2 / r1
+        q = r2 // r1
         r2, r1 = r1, r2 - q*r1
         s2, s1 = s1, s2 - q*s1
         t2, t1 = t1, t2 - q*t1
@@ -63,9 +63,9 @@ def egcd(a, b):
     # Make the GCD polynomial monic
     c = r2.coeffs[0]  # The leading coefficient
     if c > 1:
-        r2 /= c
-        s2 /= c
-        t2 /= c
+        r2 //= c
+        s2 //= c
+        t2 //= c
 
     return r2, s2, t2
 
@@ -83,7 +83,7 @@ def lcm(*args):
         lcm_ = (lcm_ * arg) // gcd(lcm_, arg)
 
     # Make the LCM monic
-    lcm_ /= lcm_.coeffs[0]
+    lcm_ //= lcm_.coeffs[0]
 
     return lcm_
 
@@ -188,7 +188,7 @@ def lagrange_poly(x: FieldArray, y: FieldArray) -> Poly:
         for m in range(k):
             if m == j:
                 continue
-            lj *= Poly([1, -x[m]], field=field) / (x[j] - x[m])
+            lj *= Poly([1, -x[m]], field=field) // (x[j] - x[m])
         L += y[j] * lj
 
     return L
@@ -298,18 +298,18 @@ def square_free_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
 
     # w is the product (without multiplicity) of all factors of f that have multiplicity not divisible by p
     d = gcd(poly, poly.derivative())
-    w = poly / d
+    w = poly // d
 
     # Step 1: Find all factors in w
     i = 1
     while w != one:
         y = gcd(w, d)
-        z = w / y
+        z = w // y
         if z != one and i % p != 0:
             factors_.append(z)
             multiplicities.append(i)
         w = y
-        d = d / y
+        d = d // y
         i = i + 1
     # d is now the product (with multiplicity) of the remaining factors of f
 
@@ -425,7 +425,7 @@ def distinct_degree_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
         if z != one:
             factors_.append(z)
             degrees.append(l)
-            a = a / z
+            a = a // z
             h = h % a
         l += 1
 
@@ -519,7 +519,7 @@ def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
             if d not in [one, u]:
                 factors_.remove(u)
                 factors_.append(d)
-                factors_.append(u / d)
+                factors_.append(u // d)
             i += 1
 
     # Sort the factors in lexicographically-increasing order
@@ -578,7 +578,7 @@ def is_square_free(poly: Poly) -> bool:
     This function is wrapped and documented in `_polymorphic.is_square_free()`.
     """
     if not is_monic(poly):
-        poly /= poly.coeffs[0]
+        poly //= poly.coeffs[0]
 
     # Constant polynomials are square-free
     if poly.degree == 0:

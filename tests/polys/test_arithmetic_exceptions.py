@@ -6,6 +6,15 @@ import pytest
 import galois
 
 
+def test_true_division_exceptions():
+    GF = galois.GF(7)
+    f = galois.Poly.Random(10, field=GF)
+    g = galois.Poly.Random(7, field=GF)
+
+    with pytest.raises(NotImplementedError):
+        f / g
+
+
 def test_modular_power_exceptions():
     GF = galois.GF(7)
     f = galois.Poly.Random(10, field=GF)
