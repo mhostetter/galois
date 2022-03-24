@@ -261,10 +261,23 @@ class FieldClass(FunctionMeta, UfuncMeta):
         if mode not in ["int", "poly", "power"]:
             raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode!r}.")
 
-        context = DisplayContext(cls)
-        cls._display_mode = mode  # Set the new state
+        prev_mode = cls._display_mode
+        cls._display_mode = mode
 
-        return context
+        @set_module("galois")
+        class context(contextlib.AbstractContextManager):
+            """Simple display_mode context manager."""
+            def __init__(self, mode):
+                self.mode = mode
+
+            def __enter__(self):
+                # Don't need to do anything, we already set the new mode in the display() method
+                pass
+
+            def __exit__(self, exc_type, exc_value, traceback):
+                cls._display_mode = self.mode
+
+        return context(prev_mode)
 
     def repr_table(
         cls,
@@ -987,25 +1000,6 @@ class DirMeta(type):
             return sorted(meta_dir + classmethods)
         else:
             return super().__dir__()
-
-
-class DisplayContext(contextlib.AbstractContextManager):
-    """
-    Simple context manager for the :obj:`FieldClass.display` method.
-    """
-
-    def __init__(self, cls):
-        # Save the previous state
-        self.cls = cls
-        self.mode = cls.display_mode
-
-    def __enter__(self):
-        # Don't need to do anything, we already set the new mode in the display() method
-        pass
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        # Reset mode and upon exiting the context
-        self.cls._display_mode = self.mode
 
 
 ###############################################################################
