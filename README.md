@@ -69,7 +69,7 @@ Import the `galois` package in Python.
 In [1]: import galois
 
 In [2]: galois.__version__
-Out[2]: '0.0.24'
+Out[2]: '0.0.25'
 ```
 
 ### Create a Galois field array class
@@ -213,7 +213,7 @@ for efficient polynomial lookup, when possible.
 
 [Sage](https://www.sagemath.org/) is used extensively for generating test vectors for finite field arithmetic and polynomial arithmetic.
 [SymPy](https://www.sympy.org/en/index.html) is used to generate some test vectors. [Octave](https://www.gnu.org/software/octave/index)
-is used to generator test vectors for forward error correction codes.
+is used to generate test vectors for forward error correction codes.
 
 This library would not be possible without all of the other libraries mentioned. Thank you to all their developers!
 
