@@ -1,5 +1,5 @@
 """
-A pytest module to test numpy methods, both supported and unsupported.
+A pytest module to test NumPy methods, both supported and unsupported.
 Numpy methods are selected from this API reference:
 https://numpy.org/doc/stable/reference/routines.array-manipulation.html
 """
