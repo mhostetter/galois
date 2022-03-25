@@ -708,8 +708,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
             galois.GF(31).irreducible_poly
             galois.GF(7**5).irreducible_poly
         """
-        # Ensure accesses of this property don't alter it
-        return cls._irreducible_poly.copy()
+        return cls._irreducible_poly
 
     @property
     def is_primitive_poly(cls) -> bool:
@@ -3524,17 +3523,6 @@ class Poly:
 
         return coeffs
 
-    def copy(self) -> "Poly":
-        """
-        Deep copies the polynomial.
-
-        Returns
-        -------
-        galois.Poly
-            A copy of the original polynomial.
-        """
-        raise NotImplementedError
-
     def reverse(self) -> "Poly":
         r"""
         Returns the :math:`d`-th reversal :math:`x^d f(\frac{1}{x})` of the polynomial :math:`f(x)` with degree :math:`d`.
@@ -3655,7 +3643,7 @@ class Poly:
             return roots, multiplicities
 
     def _root_multiplicity(self, root):
-        poly = self.copy()
+        poly = self
         multiplicity = 1
 
         while True:
@@ -3667,7 +3655,7 @@ class Poly:
                 # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
                 # greater than the field's characteristic, we need factor to the polynomial. Here we factor out (x - root)^m,
                 # where m is the current multiplicity.
-                poly = self.copy() // (Poly([1, -root], field=self.field)**multiplicity)
+                poly = self // (Poly([1, -root], field=self.field)**multiplicity)
 
             if poly(root) == 0:
                 multiplicity += 1
@@ -4379,13 +4367,6 @@ class DensePoly(Poly):
         return
 
     ###############################################################################
-    # Methods
-    ###############################################################################
-
-    def copy(self):
-        return DensePoly(self._coeffs.copy())
-
-    ###############################################################################
     # Arithmetic methods
     ###############################################################################
 
@@ -4438,7 +4419,7 @@ class DensePoly(Poly):
             return zero, zero
 
         elif a.degree < b.degree:
-            return zero, a.copy()
+            return zero, a
 
         else:
             q_coeffs, r_coeffs = field._poly_divmod(a.coeffs, b.coeffs)
@@ -4516,18 +4497,11 @@ class BinaryPoly(Poly):
         return
 
     ###############################################################################
-    # Methods
-    ###############################################################################
-
-    def copy(self):
-        return BinaryPoly(self._integer)
-
-    ###############################################################################
     # Arithmetic methods
     ###############################################################################
 
     def __neg__(self):
-        return self.copy()
+        return self
 
     @classmethod
     def _add(cls, a, b):
@@ -4682,9 +4656,6 @@ class SparsePoly(Poly):
     # Methods
     ###############################################################################
 
-    def copy(self):
-        return SparsePoly(self.degrees, self.coeffs)
-
     def reverse(self):
         return SparsePoly(self.degree - self.degrees, self.coeffs)
 
@@ -4749,7 +4720,7 @@ class SparsePoly(Poly):
             return zero, zero
 
         elif a.degree < b.degree:
-            return zero, a.copy()
+            return zero, a
 
         else:
             aa = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))
@@ -4792,7 +4763,7 @@ class SparsePoly(Poly):
             return zero
 
         elif a.degree < b.degree:
-            return a.copy()
+            return a
 
         else:
             aa = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))

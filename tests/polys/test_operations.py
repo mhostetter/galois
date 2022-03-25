@@ -44,26 +44,6 @@ def test_coefficients():
     assert type(coeffs) is GF
 
 
-def test_copy():
-    p1 = galois.Poly([2,0,1,2], field=galois.GF(3))
-    assert isinstance(p1, DensePoly)
-    p2 = p1.copy()
-    p2._coeffs[0] = 0
-    assert np.array_equal(p1.coeffs, [2,0,1,2])
-
-    p1 = galois.Poly([1,0,1,1])
-    assert isinstance(p1, BinaryPoly)
-    p2 = p1.copy()
-    p2._integer = 27
-    assert np.array_equal(p1.coeffs, [1,0,1,1])
-
-    p1 = galois.Poly.Degrees([3000,1,0], [1,2,1], field=galois.GF(3))
-    assert isinstance(p1, SparsePoly)
-    p2 = p1.copy()
-    p2._degrees[0] = 4000
-    assert np.array_equal(p1.nonzero_degrees, [3000,1,0])
-
-
 def test_reverse():
     p1 = galois.Poly([2,0,1,2], field=galois.GF(3))
     p2 = galois.Poly([2,1,0,2], field=galois.GF(3))
@@ -207,3 +187,12 @@ def test_len():
     # SparsePoly
     p = galois.Poly.Str("x^1000 + 1")
     assert len(p) == 1001
+
+
+def test_immutable():
+    GF = galois.GF(7)
+    f = galois.Poly([1, 2, 3], field=GF)
+    h = f
+    f += GF(1)
+    assert f == galois.Poly([1, 2, 4], field=GF)
+    assert h == galois.Poly([1, 2, 3], field=GF)

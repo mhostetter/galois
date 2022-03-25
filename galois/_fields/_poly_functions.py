@@ -415,8 +415,8 @@ def distinct_degree_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
     factors_ = []
     degrees = []
 
-    a = poly.copy()
-    h = x.copy()
+    a = poly
+    h = x
 
     l = 1
     while l <= n // 2 and a != one:
