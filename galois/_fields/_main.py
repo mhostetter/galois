@@ -1089,7 +1089,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
     def __new__(
         cls,
-        array: Union[int, str, Iterable, np.ndarray, "FieldArray"],
+        array_like: Union[int, str, Iterable, np.ndarray, "FieldArray"],
         dtype: Optional[Union[np.dtype, int, object]] = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
@@ -1097,7 +1097,14 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
     ) -> "FieldArray":
         if cls is FieldArray:
             raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
-        return cls._array(array, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
+
+        dtype = cls._get_dtype(dtype)
+
+        array_like = cls._verify_array_like_types_and_values(array_like)
+        array = np.array(array_like, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
+
+        # Perform view without verification since the elements were verified in _verify_array_like_types_and_values
+        return cls._view(array)
 
     def __init__(
         self,
@@ -1140,7 +1147,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         return
 
     @classmethod
-    def _get_dtype(cls, dtype):
+    def _get_dtype(cls, dtype: Optional[Union[np.dtype, int, object]]) -> np.dtype:
         if dtype is None:
             return cls.dtypes[0]
 
@@ -1152,100 +1159,106 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
 
         return dtype
 
-    @classmethod
-    def _array(cls, array_like, dtype=None, copy=True, order="K", ndmin=0):
-        dtype = cls._get_dtype(dtype)
-        array_like = cls._check_array_like_object(array_like)
-        array = np.array(array_like, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
-        return array.view(cls)
+    ###############################################################################
+    # Verification routines
+    ###############################################################################
 
     @classmethod
-    def _check_array_like_object(cls, array_like):
-        if isinstance(array_like, cls):
-            # If this was a previously-created and vetted array, there's no need to reverify
-            return array_like
-
-        if isinstance(array_like, str):
-            # Convert the string to an integer and verify it's in range
-            array_like = cls._check_string_value(array_like)
-            cls._check_array_values(array_like)
-        elif isinstance(array_like, (int, np.integer)):
-            # Just check that the single int is in range
-            cls._check_array_values(array_like)
+    def _verify_array_like_types_and_values(cls, array_like: Union[int, str, Iterable, np.ndarray, "FieldArray"]):
+        """
+        Verify the types of the array-like object. Also verify the values of the array are within the range [0, order).
+        """
+        if isinstance(array_like, (int, np.integer)):
+            cls._verify_scalar_value(array_like)
+        elif isinstance(array_like, cls):
+            # This was a previously-created and vetted array -- there's no need to re-verify
+            pass
+        elif isinstance(array_like, str):
+            array_like = cls._convert_to_element(array_like)
+            cls._verify_scalar_value(array_like)
         elif isinstance(array_like, (list, tuple)):
-            # Recursively check the items in the iterable to ensure they're of the correct type
-            # and that their values are in range
-            array_like = cls._check_iterable_types_and_values(array_like)
+            array_like = cls._convert_iterable_to_elements(array_like)
+            cls._verify_array_values(array_like)
         elif isinstance(array_like, np.ndarray):
             # If this a NumPy array, but not a FieldArray, verify the array
             if array_like.dtype == np.object_:
-                array_like = cls._check_array_types_dtype_object(array_like)
+                array_like = cls._verify_element_types_and_convert(array_like, object_=True)
             elif not np.issubdtype(array_like.dtype, np.integer):
                 raise TypeError(f"{cls.name} arrays must have integer dtypes, not {array_like.dtype}.")
-            cls._check_array_values(array_like)
+            cls._verify_array_values(array_like)
         else:
-            raise TypeError(f"{cls.name} arrays can be created with scalars of type int, not {type(array_like)}.")
+            raise TypeError(f"{cls.name} arrays can be created with scalars of type int/str, lists/tuples, or ndarrays, not {type(array_like)}.")
 
         return array_like
 
     @classmethod
-    def _check_iterable_types_and_values(cls, iterable):
-        new_iterable = []
-        for item in iterable:
-            if isinstance(item, (list, tuple)):
-                item = cls._check_iterable_types_and_values(item)
-                new_iterable.append(item)
-                continue
-
-            if isinstance(item, str):
-                item = cls._check_string_value(item)
-            elif not isinstance(item, (int, np.integer, FieldArray)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with an iterable, each element must be an integer. Found type {type(item)}.")
-
-            cls._check_array_values(item)
-            # if not 0 <= item < cls.order:
-            #     raise ValueError(f"{cls.name} arrays must have elements in 0 <= x < {cls.order}, not {item}.")
-
-            # Ensure the type is int so dtype=object classes don't get all mixed up
-            new_iterable.append(int(item))
-
-        return new_iterable
-
-    @classmethod
-    def _check_array_types_dtype_object(cls, array):
+    def _verify_element_types_and_convert(cls, array: np.ndarray, object_=False) -> np.ndarray:
+        """
+        Iterate across each element and verify it's a valid type. Also, convert strings to integers along the way.
+        """
         if array.size == 0:
             return array
-        if array.ndim == 0:
-            if not isinstance(array[()], (int, np.integer, FieldArray)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with a NumPy array with `dtype=object`, each element must be an integer. Found type {type(array[()])}.")
-            return int(array)
-
-        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
-        for _ in iterator:
-            a = array[iterator.multi_index]
-            if not isinstance(a, (int, np.integer, FieldArray)):
-                raise TypeError(f"When {cls.name} arrays are created/assigned with a NumPy array with `dtype=object`, each element must be an integer. Found type {type(a)}.")
-
-            # Ensure the type is int so dtype=object classes don't get all mixed up
-            array[iterator.multi_index] = int(a)
-
-        return array
+        elif object_:
+            return np.vectorize(cls._convert_to_element, otypes=[object])(array)
+        else:
+            return np.vectorize(cls._convert_to_element)(array)
 
     @classmethod
-    def _check_array_values(cls, array):
-        if not isinstance(array, np.ndarray):
-            # Convert single integer to array so next step doesn't fail
-            array = np.array(array)
+    def _verify_scalar_value(cls, scalar: np.ndarray):
+        """
+        Verify the single integer element is within the valid range [0, order).
+        """
+        if not 0 <= scalar < cls.order:
+            raise ValueError(f"{cls.name} scalars must be in `0 <= x < {cls.order}`, not {scalar}.")
 
-        # Check the value of the "field elements" and make sure they are valid
+    @classmethod
+    def _verify_array_values(cls, array: np.ndarray):
+        """
+        Verify all the elements of the integer array are within the valid range [0, order).
+        """
         if np.any(array < 0) or np.any(array >= cls.order):
             idxs = np.logical_or(array < 0, array >= cls.order)
             values = array if array.ndim == 0 else array[idxs]
             raise ValueError(f"{cls.name} arrays must have elements in `0 <= x < {cls.order}`, not {values}.")
 
+    ###############################################################################
+    # Element conversion routines
+    ###############################################################################
+
     @classmethod
-    def _check_string_value(cls, string):
-        return str_to_integer(string, cls.prime_subfield)
+    def _convert_to_element(cls, element) -> int:
+        """
+        Convert any element-like value to an integer.
+        """
+        if isinstance(element, (int, np.integer)):
+            element = int(element)
+        elif isinstance(element, str):
+            element = str_to_integer(element, cls.prime_subfield)
+        elif isinstance(element, FieldArray):
+            element = int(element)
+        else:
+            raise TypeError(f"Valid element-like values are integers and string, not {type(element)}.")
+
+        return element
+
+    @classmethod
+    def _convert_iterable_to_elements(cls, iterable: Iterable) -> np.ndarray:
+        """
+        Convert an iterable (recursive) to a NumPy integer array. Convert any strings to integers along the way.
+        """
+        if cls.dtypes == [np.object_]:
+            array = np.array(iterable, dtype=object)
+            array = cls._verify_element_types_and_convert(array, object_=True)
+        else:
+            # Try to convert to an integer array in one shot
+            array = np.array(iterable)
+
+            if not np.issubdtype(array.dtype, np.integer):
+                # There are strings in the array, try again and manually convert each element
+                array = np.array(iterable, dtype=object)
+                array = cls._verify_element_types_and_convert(array)
+
+        return array
 
     ###############################################################################
     # Alternate constructors
@@ -2379,7 +2392,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         Before assigning new values to a Galois field array, ensure the values are valid finite field elements. That is,
         they are within [0, p^m).
         """
-        value = self._check_array_like_object(value)
+        value = self._verify_array_like_types_and_values(value)
         super().__setitem__(key, value)
 
     ###############################################################################
@@ -2462,7 +2475,7 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         else:
             if func is np.insert:
                 args = list(args)
-                args[2] = self._check_array_like_object(args[2])
+                args[2] = self._verify_array_like_types_and_values(args[2])
                 args = tuple(args)
 
             output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
