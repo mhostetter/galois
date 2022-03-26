@@ -2393,10 +2393,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
         """
         if obj is not None and not isinstance(obj, FieldArray):
             # Only invoked on view casting
-            if obj.dtype not in type(self).dtypes:
-                raise TypeError(f"{type(self).name} can only have integer dtypes {type(self).dtypes}, not {obj.dtype}.")
             if type(self)._verify_on_view:
-                self._check_array_values(obj)
+                if obj.dtype not in type(self).dtypes:
+                    raise TypeError(f"{type(self).name} can only have integer dtypes {type(self).dtypes}, not {obj.dtype}.")
+                self._verify_array_values(obj)
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         """
