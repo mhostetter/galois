@@ -2,97 +2,78 @@
 A module that contains various functions to convert between polynomial strings, coefficients, and integer representations.
 These functions are shared between the _field and _poly subpackages.
 """
-import math
 from typing import Tuple, List, Optional
 
 import numpy as np
 
+from ._math import ilog
 
-def integer_to_poly(decimal: int, order: int, degree: Optional[int] = None) -> List[int]:
+
+def integer_to_degree(integer: int, order: int) -> int:
     """
-    Convert decimal value into polynomial representation.
-
-    Parameters
-    ----------
-    decimal : int
-        Any non-negative integer.
-    order : int
-        The order of coefficient field.
-    degree : int, optional
-        The degree of the polynomial coefficients to return.
-
-    Returns
-    -------
-    list
-        List of polynomial coefficients in descending order.
+    Converts the integer representation of the polynomial to its degree.
     """
-    decimal = int(decimal)
-    if degree is None:
-        if decimal > 0:
-            degree = int(math.floor(math.log(decimal, order)))
-            # math.log() is notoriously wrong, need to manually check that it isn't wrong
-            if decimal < order**degree:
-                degree -= 1
-            if decimal >= order**(degree + 1):
-                degree += 1
-        else:
-            degree = 0
+    if order == 2:
+        return max(integer.bit_length() - 1, 0)
+    else:
+        return ilog(integer, order)
 
-    c = []  # Coefficients in descending order
-    for d in range(degree, -1, -1):
-        c += [decimal // order**d]
-        decimal = decimal % order**d
+
+def integer_to_poly(integer: int, order: int, degree: Optional[int] = None) -> List[int]:
+    """
+    Converts the integer representation of the polynomial to its coefficients in descending order.
+    """
+    integer = int(integer)
+
+    if order == 2:
+        c = [int(bit) for bit in bin(integer)[2:]]
+    else:
+        c = []  # Coefficients in ascending order
+        while integer > 0:
+            q, r = divmod(integer, order)
+            c.append(r)
+            integer = q
+
+        # Ensure the coefficient list is not empty
+        if not c:
+            c = [0]
+
+        c = c[::-1]  # Coefficients in descending order
+
+    # Set to a fixed degree if requested
+    if degree is not None:
+        assert degree >= len(c) - 1
+        c = [0,]*(degree - len(c) + 1) + c
 
     return c
 
 
 def poly_to_integer(coeffs: List[int], order: int) -> int:
     """
-    Converts polynomial to decimal representation.
-
-    Parameters
-    ----------
-    coeffs : array_like
-        List of polynomial coefficients in descending order.
-    order : int
-        The coefficient's field order.
-
-    Returns
-    -------
-    int
-        The decimal representation.
+    Converts the polynomial coefficients (descending order) to its integer representation.
     """
-    decimal = 0
+    integer = 0
     coeffs = coeffs[::-1]  # Coefficients in ascending order
-    for i in range(len(coeffs)):
-        decimal += int(coeffs[i]) * order**i
-    return decimal
+    factor = 1
+
+    for coeff in coeffs:
+        integer += int(coeff) * factor
+        factor *= order
+
+    return integer
 
 
 def sparse_poly_to_integer(degrees: List[int], coeffs: List[int], order: int) -> int:
     """
-    Converts polynomial to decimal representation.
-
-    Parameters
-    ----------
-    degrees : array_like
-        List of degrees of non-zero coefficients.
-    coeffs : array_like
-        List of non-zero coefficients.
-    order : int
-        The coefficient's field order.
-
-    Returns
-    -------
-    int
-        The decimal representation.
+    Converts the polynomial non-zero degrees and coefficients to its integer representation.
     """
     assert len(degrees) == len(coeffs)
-    order = int(order)
-    decimal = 0
+
+    integer = 0
     for d, c in zip(degrees, coeffs):
-        decimal += int(c) * order**int(d)
-    return decimal
+        integer += int(c) * order**int(d)
+
+    return integer
 
 
 def poly_to_str(coeffs: List[int], poly_var: str = "x") -> str:
