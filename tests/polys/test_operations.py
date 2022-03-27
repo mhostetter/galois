@@ -60,54 +60,54 @@ def test_reverse():
 
 def test_repr():
     GF = galois.GF2
-    poly = galois.Poly([1,0,1,1])
+    poly = galois.Poly([1, 0, 1, 1])
     assert repr(poly) == "Poly(x^3 + x + 1, GF(2))"
     with GF.display("poly"):
-        assert repr(poly) == "Poly(x^3 + x + (1), GF(2))"  # TODO: Clean this up
+        assert repr(poly) == "Poly(x^3 + x + 1, GF(2))"
     with GF.display("power"):
-        assert repr(poly) == "Poly(x^3 + x + (1), GF(2))"  # TODO: Clean this up
+        assert repr(poly) == "Poly(x^3 + x + 1, GF(2))"
 
     GF = galois.GF(7)
-    poly = galois.Poly([5,0,3,1], field=GF)
+    poly = galois.Poly([5, 0, 3, 1], field=GF)
     assert repr(poly) == "Poly(5x^3 + 3x + 1, GF(7))"
     with GF.display("poly"):
-        assert repr(poly) == "Poly((5)x^3 + (3)x + (1), GF(7))"  # TODO: Clean this up
+        assert repr(poly) == "Poly((5)x^3 + (3)x + 1, GF(7))"
     with GF.display("power"):
-        assert repr(poly) == "Poly((α^5)x^3 + (α)x + (1), GF(7))"
+        assert repr(poly) == "Poly((α^5)x^3 + (α)x + 1, GF(7))"
 
     GF = galois.GF(2**3)
-    poly = galois.Poly([2,0,3,1], field=GF)
+    poly = galois.Poly([2, 0, 3, 1], field=GF)
     assert repr(poly) == "Poly(2x^3 + 3x + 1, GF(2^3))"
     with GF.display("poly"):
-        assert repr(poly) == "Poly((α)x^3 + (α + 1)x + (1), GF(2^3))"
+        assert repr(poly) == "Poly((α)x^3 + (α + 1)x + 1, GF(2^3))"
     with GF.display("power"):
-        assert repr(poly) == "Poly((α)x^3 + (α^3)x + (1), GF(2^3))"
+        assert repr(poly) == "Poly((α)x^3 + (α^3)x + 1, GF(2^3))"
 
 
 def test_str():
     GF = galois.GF2
-    poly = galois.Poly([1,0,1,1])
+    poly = galois.Poly([1, 0, 1, 1])
     assert str(poly) == "x^3 + x + 1"
     with GF.display("poly"):
-        assert str(poly) == "x^3 + x + (1)"  # TODO: Clean this up
+        assert str(poly) == "x^3 + x + 1"
     with GF.display("power"):
-        assert str(poly) == "x^3 + x + (1)"  # TODO: Clean this up
+        assert str(poly) == "x^3 + x + 1"
 
     GF = galois.GF(7)
-    poly = galois.Poly([5,0,3,1], field=GF)
+    poly = galois.Poly([5, 0, 3, 1], field=GF)
     assert str(poly) == "5x^3 + 3x + 1"
     with GF.display("poly"):
-        assert str(poly) == "(5)x^3 + (3)x + (1)"  # TODO: Clean this up
+        assert str(poly) == "(5)x^3 + (3)x + 1"
     with GF.display("power"):
-        assert str(poly) == "(α^5)x^3 + (α)x + (1)"
+        assert str(poly) == "(α^5)x^3 + (α)x + 1"
 
     GF = galois.GF(2**3)
-    poly = galois.Poly([2,0,3,1], field=GF)
+    poly = galois.Poly([2, 0, 3, 1], field=GF)
     assert str(poly) == "2x^3 + 3x + 1"
     with GF.display("poly"):
-        assert str(poly) == "(α)x^3 + (α + 1)x + (1)"
+        assert str(poly) == "(α)x^3 + (α + 1)x + 1"
     with GF.display("power"):
-        assert str(poly) == "(α)x^3 + (α^3)x + (1)"
+        assert str(poly) == "(α)x^3 + (α^3)x + 1"
 
 
 def test_int():

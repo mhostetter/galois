@@ -78,79 +78,46 @@ def sparse_poly_to_integer(degrees: List[int], coeffs: List[int], order: int) ->
 
 def poly_to_str(coeffs: List[int], poly_var: str = "x") -> str:
     """
-    Convert list of polynomial coefficients into polynomial string representation.
-
-    Parameters
-    ----------
-    coeffs : array_like
-        List of exponent-descending coefficients.
-    poly_var : str, optional
-        The variable to use in the polynomial string. The default is `"x"`.
-
-    Returns
-    -------
-    str
-        The polynomial string representation.
+    Converts the polynomial coefficients (descending order) into its string representation.
     """
-    coeffs = coeffs[::-1]  # Coefficients in ascending order
+    degrees = np.arange(len(coeffs) - 1, -1, -1)
 
-    idxs = np.nonzero(coeffs)[0]
-    if idxs.size == 0:
-        degree = 0
-    else:
-        degree = idxs[-1]
-
-    x = []
-    if degree >= 0 and coeffs[0] != 0:
-        x += [f"{coeffs[0]}"]
-    if degree >= 1 and coeffs[1] != 0:
-        x += [f"{coeffs[1] if coeffs[1] != 1 else ''}{poly_var}"]
-    if degree >= 2:
-        idxs = np.nonzero(coeffs[2:])[0]  # Indices with non-zeros coefficients
-        x += [f"{coeffs[2 + i] if coeffs[2 + i] != 1 else ''}{poly_var}^{2 + i}" for i in idxs]
-
-    poly_str = " + ".join(x[::-1]) if x else "0"
-
-    return poly_str
+    return sparse_poly_to_str(degrees, coeffs, poly_var=poly_var)
 
 
 def sparse_poly_to_str(degrees: List[int], coeffs: List[int], poly_var: str = "x") -> str:
     """
-    Convert list of polynomial degrees and coefficients into polynomial string representation.
-
-    Parameters
-    ----------
-    degrees : array_like
-        List of degrees.
-    coeffs : array_like
-        List of coefficients.
-    poly_var : str, optional
-        The variable to use in the polynomial string. The default is `"x"`.
-
-    Returns
-    -------
-    str
-        The polynomial string representation.
+    Converts the polynomial non-zero degrees and coefficients into its string representation.
     """
     x = []
-    for degree, coeff in zip(degrees, coeffs):
-        if hasattr(coeff, "_display_mode") and getattr(coeff, "_display_mode") in ["poly", "power"]:
-            # This is a Galois field array coefficient using the polynomial or power representation
-            coeff_repr = repr(coeff)
-            start = coeff_repr.find("(")
-            stop = coeff_repr.find(",")
-            coeff_repr = coeff_repr[start:stop] + ")"
-        else:
-            coeff_repr = coeff
 
-        if degree > 1:
-            s = f"{coeff_repr if coeff != 1 else ''}{poly_var}^{degree}"
-        elif degree == 1:
-            s = f"{coeff_repr if coeff != 1 else ''}{poly_var}"
-        elif coeff != 0:
-            s = f"{coeff_repr}"
-        else:
+    # Use brackets around coefficients only when using the "poly" or "power" display mode
+    brackets = hasattr(type(coeffs), "_display_mode") and getattr(type(coeffs), "_display_mode") in ["poly", "power"]
+
+    for degree, coeff in zip(degrees, coeffs):
+        if coeff == 0:
             continue
+
+        # Use () around elements, except the 0-th degree term
+        if degree > 1:
+            if coeff == 1:
+                c = ""
+            elif brackets:
+                c = f"({coeff!s})"
+            else:
+                c = f"{coeff!s}"
+            s = f"{c}{poly_var}^{degree}"
+        elif degree == 1:
+            if coeff == 1:
+                c = ""
+            elif brackets:
+                c = f"({coeff!s})"
+            else:
+                c = f"{coeff!s}"
+            s = f"{c}{poly_var}"
+        else:
+            s = f"{coeff!s}"
+
         x.append(s)
 
     poly_str = " + ".join(x) if x else "0"
@@ -160,19 +127,7 @@ def sparse_poly_to_str(degrees: List[int], coeffs: List[int], poly_var: str = "x
 
 def str_to_sparse_poly(poly_str: str) -> Tuple[List[int], List[int]]:
     """
-    Convert a polynomial string to its non-zero degrees and coefficients.
-
-    Parameters
-    ----------
-    poly_str : str
-        A polynomial representation of the string.
-
-    Returns
-    -------
-    list
-        The polynomial non-zero degrees.
-    list
-        The polynomial non-zero coefficients.
+    Converts the polynomial string into its non-zero degrees and coefficients.
     """
     s = poly_str.replace(" ", "")  # Strip whitespace for easier processing
     s = s.replace("-", "+-")  # Convert `x^2 - x` into `x^2 + -x`
@@ -226,19 +181,7 @@ def str_to_sparse_poly(poly_str: str) -> Tuple[List[int], List[int]]:
 
 def str_to_integer(poly_str: str, prime_subfield) -> int:
     """
-    Convert a polynomial string to its integer representation.
-
-    Parameters
-    ----------
-    poly_str : str
-        A polynomial representation of the string.
-    prime_subfield : galois.FieldClass
-        The Galois field the polynomial is over.
-
-    Returns
-    -------
-    int
-        The polynomial integer representation.
+    Converts the polynomial string to its integer representation.
     """
     degrees, coeffs = str_to_sparse_poly(poly_str)
 
