@@ -14,7 +14,7 @@ import numba
 import numpy as np
 
 from .._overrides import set_module
-from .._poly_conversion import integer_to_poly, poly_to_integer, str_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
+from .._poly_conversion import integer_to_poly, integer_to_degree, poly_to_integer, str_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
 from .._prime import divisors
 
 from ._dtypes import DTYPES
@@ -2892,47 +2892,23 @@ class Poly:
     """
     # pylint: disable=too-many-public-methods
 
+    __slots__ = ["_field", "_degrees", "_coeffs", "_nonzero_degrees", "_nonzero_coeffs", "_integer", "_degree", "_type"]
+
+
+    # Special private attributes that are once computed. There are three arithmetic types for polynomials: "dense", "binary",
+    # and "sparse". All types define _field, "dense" defines _coeffs, "binary" defines "_integer", and "sparse" defines
+    # _nonzero_degrees and _nonzero_coeffs. The other properties are created when needed.
+    _field: FieldClass
+    _degrees: np.ndarray
+    _coeffs: FieldArray
+    _nonzero_degrees: np.ndarray
+    _nonzero_coeffs: FieldArray
+    _integer: int
+    _degree: int
+    _type: Literal["dense", "binary", "sparse"]
+
     # Increase my array priority so numpy will call my __radd__ instead of its own __add__
     __array_priority__ = 100
-
-    def __new__(
-        cls,
-        coeffs: Union[Sequence[int], np.ndarray, FieldArray],
-        field: Optional[FieldClass] = None,
-        order: Literal["desc", "asc"] = "desc"
-    ) -> "Poly":
-        if not isinstance(coeffs, (list, tuple, np.ndarray, FieldArray)):
-            raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
-        if not isinstance(field, (type(None), FieldClass)):
-            raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
-        if not isinstance(order, str):
-            raise TypeError(f"Argument `order` must be a str, not {type(order)}.")
-        if isinstance(coeffs, (FieldArray, np.ndarray)) and not coeffs.ndim <= 1:
-            raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
-        if not order in ["desc", "asc"]:
-            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order!r}.")
-
-        if isinstance(coeffs, (FieldArray, np.ndarray)):
-            coeffs = np.atleast_1d(coeffs)
-
-        if order == "asc":
-            coeffs = coeffs[::-1]  # Ensure it's in descending-degree order
-
-        coeffs, field = cls._convert_coeffs(coeffs, field)
-
-        if field is GF2:
-            if len(coeffs) >= SPARSE_VS_BINARY_POLY_MIN_COEFFS and np.count_nonzero(coeffs) <= SPARSE_VS_BINARY_POLY_FACTOR*len(coeffs):
-                degrees = np.arange(coeffs.size - 1, -1, -1)
-                return SparsePoly(degrees, coeffs, field=field)
-            else:
-                integer = poly_to_integer(coeffs, 2)
-                return BinaryPoly(integer)
-        else:
-            if len(coeffs) >= SPARSE_VS_DENSE_POLY_MIN_COEFFS and np.count_nonzero(coeffs) <= SPARSE_VS_DENSE_POLY_FACTOR*len(coeffs):
-                degrees = np.arange(coeffs.size - 1, -1, -1)
-                return SparsePoly(degrees, coeffs, field=field)
-            else:
-                return DensePoly(coeffs, field=field)
 
     def __init__(
         self,
@@ -2966,22 +2942,56 @@ class Poly:
             * `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
             * `"asc"`: The first element of `coeffs` is the lowest degree coefficient, i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
         """
-        # pylint: disable=unused-argument,super-init-not-called
-        return
+        if not isinstance(coeffs, (list, tuple, np.ndarray, FieldArray)):
+            raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
+        if not isinstance(field, (type(None), FieldClass)):
+            raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
+        if not isinstance(order, str):
+            raise TypeError(f"Argument `order` must be a str, not {type(order)}.")
+        if isinstance(coeffs, (FieldArray, np.ndarray)) and not coeffs.ndim <= 1:
+            raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
+        if not order in ["desc", "asc"]:
+            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order!r}.")
+
+        self._coeffs, self._field = self._convert_coeffs(coeffs, field)
+
+        if self._coeffs.ndim == 0:
+            self._coeffs = np.atleast_1d(self._coeffs)
+        if order == "asc":
+            self._coeffs = np.flip(self._coeffs)  # Ensure it's in descending-degree order
+        if self._coeffs[0] == 0:
+            self._coeffs = np.trim_zeros(self._coeffs, "f")  # Remove leading zeros
+        if self._coeffs.size == 0:
+            self._coeffs = self._field([0])
+
+        if self._field == GF2:
+            # Binary arithmetic is always faster than dense arithmetic
+            self._type = "binary"
+            # Compute the integer value so we're ready for arithmetic computations
+            int(self)
+        else:
+            self._type = "dense"
 
     @classmethod
-    def _convert_coeffs(cls, coeffs, field):
-        if isinstance(coeffs, FieldArray) and field is None:
-            # Use the field of the coefficients
-            field = type(coeffs)
+    def _convert_coeffs(
+        cls,
+        coeffs: Union[Sequence[int], np.ndarray, FieldArray],
+        field: Optional[FieldClass] = None,
+    ) -> Tuple[FieldArray, FieldClass]:
+        if isinstance(coeffs, FieldArray):
+            if field is None:
+                # Infer the field from the coefficients provided
+                field = type(coeffs)
+            elif type(coeffs) is not field:  # pylint: disable=unidiomatic-typecheck
+                # Convert coefficients into the specified field
+                coeffs = field(coeffs)
         else:
-            # Convert coefficients to the specified field (or GF2 if unspecified), taking into
-            # account negative coefficients
-            field = GF2 if field is None else field
+            # Convert coefficients into the specified field (or GF2 if unspecified)
+            if field is None:
+                field = GF2
             coeffs = np.array(coeffs, dtype=field.dtypes[-1])
-            idxs = coeffs < 0
-            coeffs = field(np.abs(coeffs))
-            coeffs[idxs] *= -1
+            sign = np.sign(coeffs)
+            coeffs = sign * field(np.abs(coeffs))
 
         return coeffs, field
 
@@ -3151,7 +3161,7 @@ class Poly:
         if coeffs[0] == 0:
             coeffs[0] = field.Random(low=1, seed=rng)  # Ensure leading coefficient is non-zero
 
-        return Poly(coeffs, field=field)
+        return Poly(coeffs)
 
     @classmethod
     def Str(cls, string: str, field: Optional[FieldClass] = GF2) -> "Poly":
@@ -3204,7 +3214,9 @@ class Poly:
         if not isinstance(string, str):
             raise TypeError(f"Argument `string` be a string, not {type(string)}")
 
-        return Poly.Degrees(*str_to_sparse_poly(string), field=field)
+        degrees, coeffs = str_to_sparse_poly(string)
+
+        return Poly.Degrees(degrees, coeffs, field=field)
 
     @classmethod
     def Int(cls, integer: int, field: Optional[FieldClass] = GF2) -> "Poly":
@@ -3284,12 +3296,18 @@ class Poly:
         if not integer >= 0:
             raise ValueError(f"Argument `integer` must be non-negative, not {integer}.")
 
-        if field is GF2:
-            # Explicitly create a binary poly
-            return BinaryPoly(integer)
+        obj = object.__new__(cls)
+        obj._integer = integer
+        obj._field = field
+
+        if field == GF2:
+            obj._type = "binary"
         else:
-            coeffs = integer_to_poly(integer, field.order)
-            return Poly(coeffs, field=field)
+            obj._type = "dense"
+            # Compute the _coeffs value so we're ready for arithmetic computations
+            obj.coeffs  # pylint: disable=pointless-statement
+
+        return obj
 
     @classmethod
     def Degrees(
@@ -3358,26 +3376,34 @@ class Poly:
         if not degrees.size == coeffs.size:
             raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {degrees.size} and {coeffs.size}.")
 
-        # No nonzero degrees means it's the zero polynomial
-        if len(degrees) == 0:
-            degrees, coeffs = np.array([0]), field([0])
+        # Only keep non-zero coefficients
+        idxs = np.nonzero(coeffs)
+        degrees = degrees[idxs]
+        coeffs = coeffs[idxs]
 
-        if field is GF2:
-            if len(degrees) < SPARSE_VS_BINARY_POLY_FACTOR*max(degrees):
-                # Explicitly create a sparse poly over GF(2)
-                return SparsePoly(degrees, coeffs=coeffs, field=field)
-            else:
-                integer = sparse_poly_to_integer(degrees, coeffs, 2)
-                return BinaryPoly(integer)
+        # Sort by descending degrees
+        idxs = np.argsort(degrees)[::-1]
+        degrees = degrees[idxs]
+        coeffs = coeffs[idxs]
+
+        obj = object.__new__(cls)
+        obj._nonzero_degrees = degrees
+        obj._nonzero_coeffs = coeffs
+        obj._field = field
+
+        if obj._field == GF2:
+            # Binary arithmetic is always faster than dense arithmetic
+            obj._type = "binary"
+            # Compute the integer value so we're ready for arithmetic computations
+            int(obj)
+        elif len(degrees) > 0 and len(degrees) < SPARSE_VS_DENSE_POLY_FACTOR*max(degrees):
+            obj._type = "sparse"
         else:
-            if len(degrees) < SPARSE_VS_DENSE_POLY_FACTOR*max(degrees):
-                # Explicitly create a sparse poly over GF(p^m)
-                return SparsePoly(degrees, coeffs=coeffs, field=field)
-            else:
-                degree = max(degrees)  # The degree of the polynomial
-                all_coeffs = type(coeffs).Zeros(degree + 1)
-                all_coeffs[degree - degrees] = coeffs
-                return DensePoly(all_coeffs)
+            obj._type = "dense"
+            # Compute the _coeffs value so we're ready for arithmetic computations
+            obj.coeffs  # pylint: disable=pointless-statement
+
+        return obj
 
     @classmethod
     def Roots(
@@ -3548,7 +3574,10 @@ class Poly:
             f = galois.Poly([5, 0, 3, 4], field=GF); f
             f.reverse()
         """
-        return Poly(self.coeffs[::-1])
+        if self._type == "sparse":
+            return Poly.Degrees(self.degree - self._nonzero_degrees, self._nonzero_coeffs)
+        else:
+            return Poly(self.coeffs[::-1])
 
     @overload
     def roots(self, multiplicity: Literal[False] = False) -> FieldArray:
@@ -3770,7 +3799,7 @@ class Poly:
             f = galois.Poly([3, 0, 5, 2], field=GF); f
             f
         """
-        return f"Poly({self}, {self.field.name})"
+        return f"Poly({self!s}, {self.field.name})"
 
     def __str__(self) -> str:
         """
@@ -3787,11 +3816,20 @@ class Poly:
             str(f)
             print(f)
         """
-        return sparse_poly_to_str(self.nonzero_degrees, self.nonzero_coeffs)
+        if self._type == "sparse":
+            return sparse_poly_to_str(self._nonzero_degrees, self._nonzero_coeffs)
+        else:
+            return poly_to_str(self.coeffs)
 
     def __index__(self) -> int:
         # Define __index__ to enable use of bin(), oct(), and hex()
-        return sparse_poly_to_integer(self.nonzero_degrees, self.nonzero_coeffs, self.field.order)
+        if not hasattr(self, "_integer"):
+            if hasattr(self, "_coeffs"):
+                self._integer = poly_to_integer(self._coeffs.tolist(), self._field.order)
+            elif hasattr(self, "_nonzero_coeffs"):
+                self._integer = sparse_poly_to_integer(self._nonzero_degrees.tolist(), self._nonzero_coeffs.tolist(), self._field.order)
+
+        return self._integer
 
     def __int__(self) -> int:
         r"""
@@ -3947,7 +3985,7 @@ class Poly:
         if (isinstance(a, Poly) and isinstance(b, Poly)) and not a.field is b.field:
             raise TypeError(f"Both polynomial operands must be over the same field, not {a.field.name} and {b.field.name}.")
 
-    def _convert_field_scalars_to_polys(self, a, b):
+    def _convert_field_scalars_to_polys(self, a: Union["Poly", FieldArray], b: Union["Poly", FieldArray]) -> Tuple["Poly", "Poly"]:
         """
         Convert finite field scalars to 0-degree polynomials in that field.
         """
@@ -3963,98 +4001,129 @@ class Poly:
 
         return a, b
 
-    @staticmethod
-    def _determine_poly_class(a, b):
-        """
-        Determine the type of polynomial arithmetic to perform.
-        """
-        if isinstance(a, SparsePoly) or isinstance(b, SparsePoly):
-            return SparsePoly
-        elif isinstance(a, BinaryPoly) or isinstance(b, BinaryPoly):
-            return BinaryPoly
+    def __add__(self, other: Union["Poly", FieldArray]) -> "Poly":
+        self._check_inputs_are_polys(self, other)
+        a, b = self._convert_field_scalars_to_polys(self, other)
+
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_add(a, b)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_add(a, b)
+        elif a._type == "sparse" or b._type == "sparse":
+            return self._sparse_add(a, b)
         else:
-            return DensePoly
+            return self._dense_add(a, b)
 
-    def __add__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
+    def __radd__(self, other: Union["Poly", FieldArray]) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._add(a, b)
 
-    def __radd__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._add(b, a)
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_add(b, a)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_add(b, a)
+        elif a._type == "sparse" or b._type == "sparse":
+            return self._sparse_add(b, a)
+        else:
+            return self._dense_add(b, a)
 
     def __neg__(self):
-        raise NotImplementedError
+        if self._type == "dense":
+            return self._dense_neg(self)
+        elif self._type == "binary":
+            return self._binary_neg(self)
+        else:
+            return self._sparse_neg(self)
 
-    def __sub__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
+    def __sub__(self, other: Union["Poly", FieldArray]) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._sub(a, b)
 
-    def __rsub__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_sub(a, b)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_sub(a, b)
+        elif a._type == "sparse" or b._type == "sparse":
+            return self._sparse_sub(a, b)
+        else:
+            return self._dense_sub(a, b)
+
+    def __rsub__(self, other: Union["Poly", FieldArray]) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._sub(b, a)
 
-    def __mul__(
-        self,
-        other: Union["Poly", FieldArray, int]
-    ) -> "Poly":
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_sub(b, a)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_sub(b, a)
+        elif a._type == "sparse" or b._type == "sparse":
+            return self._sparse_sub(b, a)
+        else:
+            return self._dense_sub(b, a)
+
+    def __mul__(self, other: Union["Poly", FieldArray, int]) -> "Poly":
         self._check_inputs_are_polys_or_ints(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         if isinstance(a, (int, np.integer)):
             # Ensure the integer is in the second operand for scalar multiplication
             a, b = b, a
-        cls = self._determine_poly_class(a, b)
-        return cls._mul(a, b)
 
-    def __rmul__(
-        self,
-        other: Union["Poly", FieldArray, int]
-    ) -> "Poly":
+        if a._type == "dense":
+            return self._dense_mul(a, b)
+        elif a._type == "binary":
+            return self._binary_mul(a, b)
+        elif a._type == "sparse":
+            return self._sparse_mul(a, b)
+        else:
+            return self._dense_mul(a, b)
+
+    def __rmul__(self, other: Union["Poly", FieldArray, int]) -> "Poly":
         self._check_inputs_are_polys_or_ints(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
         if isinstance(b, (int, np.integer)):
             # Ensure the integer is in the second operand for scalar multiplication
             b, a = a, b
-        cls = self._determine_poly_class(a, b)
-        return cls._mul(b, a)
 
-    def __divmod__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> Tuple["Poly", "Poly"]:
+        if b._type == "dense":
+            return self._dense_mul(b, a)
+        elif b._type == "binary":
+            return self._binary_mul(b, a)
+        elif b._type == "sparse":
+            return self._sparse_mul(b, a)
+        else:
+            return self._dense_mul(b, a)
+
+    def __divmod__(self, other: Union["Poly", FieldArray]) -> Tuple["Poly", "Poly"]:
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._divmod(a, b)
 
-    def __rdivmod__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> Tuple["Poly", "Poly"]:
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_divmod(a, b)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_divmod(a, b)
+        elif a._type == "sparse" or b._type == "sparse":
+            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
+            a.coeffs  # pylint: disable=pointless-statement
+            b.coeffs  # pylint: disable=pointless-statement
+            return self._dense_divmod(a, b)
+        else:
+            return self._dense_divmod(a, b)
+
+    def __rdivmod__(self, other: Union["Poly", FieldArray]) -> Tuple["Poly", "Poly"]:
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._divmod(b, a)
+
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_divmod(b, a)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_divmod(b, a)
+        elif a._type == "sparse" or b._type == "sparse":
+            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
+            a.coeffs  # pylint: disable=pointless-statement
+            b.coeffs  # pylint: disable=pointless-statement
+            return self._dense_divmod(b, a)
+        else:
+            return self._dense_divmod(b, a)
 
     def __truediv__(self, other):
         raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
@@ -4062,62 +4131,92 @@ class Poly:
     def __rtruediv__(self, other):
         raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
 
-    def __floordiv__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
+    def __floordiv__(self, other: Union["Poly", FieldArray]) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._div(a, b)
 
-    def __rfloordiv__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_floordiv(a, b)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_floordiv(a, b)
+        elif a._type == "sparse" or b._type == "sparse":
+            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
+            a.coeffs  # pylint: disable=pointless-statement
+            b.coeffs  # pylint: disable=pointless-statement
+            return self._dense_floordiv(a, b)
+        else:
+            return self._dense_floordiv(a, b)
+
+    def __rfloordiv__(self, other: Union["Poly", FieldArray]) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._div(b, a)
 
-    def __mod__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_floordiv(b, a)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_floordiv(b, a)
+        elif a._type == "sparse" or b._type == "sparse":
+            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
+            a.coeffs  # pylint: disable=pointless-statement
+            b.coeffs  # pylint: disable=pointless-statement
+            return self._dense_floordiv(b, a)
+        else:
+            return self._dense_floordiv(b, a)
+
+    def __mod__(self, other: Union["Poly", FieldArray]) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._mod(a, b)
 
-    def __rmod__(
-        self,
-        other: Union["Poly", FieldArray]
-    ) -> "Poly":
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_mod(a, b)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_mod(a, b)
+        elif a._type == "sparse" or b._type == "sparse":
+            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
+            a.coeffs  # pylint: disable=pointless-statement
+            b.coeffs  # pylint: disable=pointless-statement
+            return self._dense_mod(a, b)
+        else:
+            return self._dense_mod(a, b)
+
+    def __rmod__(self, other: Union["Poly", FieldArray]) -> "Poly":
         self._check_inputs_are_polys(self, other)
         a, b = self._convert_field_scalars_to_polys(self, other)
-        cls = self._determine_poly_class(a, b)
-        return cls._mod(b, a)
 
-    def __pow__(
-        self,
-        exponent: int,
-        modulus: Optional["Poly"] = None
-    ) -> "Poly":
+        if a._type == "dense" and b._type == "dense":
+            return self._dense_mod(b, a)
+        elif a._type == "binary" or b._type == "binary":
+            return self._binary_mod(b, a)
+        elif a._type == "sparse" or b._type == "sparse":
+            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
+            a.coeffs  # pylint: disable=pointless-statement
+            b.coeffs  # pylint: disable=pointless-statement
+            return self._dense_mod(b, a)
+        else:
+            return self._dense_mod(b, a)
+
+    def __pow__(self, exponent: int, modulus: Optional["Poly"] = None) -> "Poly":
         self._check_inputs_are_polys_or_none(self, modulus)
         a, c = self._convert_field_scalars_to_polys(self, modulus)
-        cls = self._determine_poly_class(a, c)
 
         if not isinstance(exponent, (int, np.integer)):
             raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {exponent}.")
         if not exponent >= 0:
             raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {exponent}.")
 
-        return cls._pow(a, exponent, c)
+        if a._type == "dense":
+            return self._dense_pow(a, exponent, c)
+        elif a._type == "binary":
+            return self._binary_pow(a, exponent, c)
+        elif a._type == "sparse":
+            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
+            a.coeffs  # pylint: disable=pointless-statement
+            c.coeffs  # pylint: disable=pointless-statement
+            return self._dense_pow(a, exponent, c)
+        else:
+            return self._dense_pow(a, exponent, c)
 
-    def __eq__(
-        self,
-        other: Union["Poly", FieldArray, int]
-    ) -> bool:
+    def __eq__(self, other: Union["Poly", FieldArray, int]) -> bool:
         r"""
         Determines if two polynomials over :math:`\mathrm{GF}(p^m)` are equal.
 
@@ -4178,61 +4277,245 @@ class Poly:
             # Compare two poly objects to each other
             return self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
 
-    @classmethod
-    def _add(cls, a, b):
-        raise NotImplementedError
+    ###############################################################################
+    # Arithmetic methods for dense polynomials
+    ###############################################################################
 
     @classmethod
-    def _sub(cls, a, b):
-        raise NotImplementedError
+    def _dense_add(cls, a, b):
+        field = a.field
+
+        # c(x) = a(x) + b(x)
+        c_coeffs = field.Zeros(max(a._coeffs.size, b._coeffs.size))
+        c_coeffs[-a._coeffs.size:] = a._coeffs
+        c_coeffs[-b._coeffs.size:] += b._coeffs
+
+        return cls(c_coeffs)
 
     @classmethod
-    def _mul(cls, a, b):
-        raise NotImplementedError
+    def _dense_neg(cls, a):
+        return cls(-a.coeffs)
 
     @classmethod
-    def _divmod(cls, a, b):
-        raise NotImplementedError
+    def _dense_sub(cls, a, b):
+        field = a.field
+
+        # c(x) = a(x) + b(x)
+        c_coeffs = field.Zeros(max(a.coeffs.size, b.coeffs.size))
+        c_coeffs[-a.coeffs.size:] = a.coeffs
+        c_coeffs[-b.coeffs.size:] -= b.coeffs
+
+        return cls(c_coeffs)
 
     @classmethod
-    def _div(cls, a, b):
-        raise NotImplementedError
+    def _dense_mul(cls, a, b):
+        if isinstance(b, (int, np.integer)):
+            # Scalar multiplication  (p * 3 = p + p + p)
+            c_coeffs = a.coeffs * b
+        else:
+            # c(x) = a(x) * b(x)
+            c_coeffs = np.convolve(a.coeffs, b.coeffs)
+
+        return cls(c_coeffs)
 
     @classmethod
-    def _mod(cls, a, b):
-        raise NotImplementedError
+    def _dense_divmod(cls, a, b):
+        field = a.field
+        zero = cls([0], field)
+
+        # q(x)*b(x) + r(x) = a(x)
+        if b.degree == 0:
+            return cls(a.coeffs // b.coeffs), zero
+
+        elif a == 0:
+            return zero, zero
+
+        elif a.degree < b.degree:
+            return zero, a
+
+        else:
+            q_coeffs, r_coeffs = field._poly_divmod(a.coeffs, b.coeffs)
+            return cls(q_coeffs), cls(r_coeffs)
 
     @classmethod
-    def _pow(cls, a, b, c=None):
+    def _dense_floordiv(cls, a, b):
+        field = a.field
+        q_coeffs = field._poly_floordiv(a.coeffs, b.coeffs)
+        return cls(q_coeffs)
+
+    @classmethod
+    def _dense_mod(cls, a, b):
+        field = a.field
+        r_coeffs = field._poly_mod(a.coeffs, b.coeffs)
+        return cls(r_coeffs)
+
+    @classmethod
+    def _dense_pow(cls, a, b, c=None):
+        field = a.field
+        if c is not None:
+            z_coeffs = field._poly_pow(a.coeffs, b, c.coeffs)
+        else:
+            z_coeffs = field._poly_pow(a.coeffs, b, None)
+        return cls(z_coeffs)
+
+    ###############################################################################
+    # Arithmetic methods for binary polynomials (over GF(2))
+    ###############################################################################
+
+    @classmethod
+    def _binary_add(cls, a, b):
+        a = a._integer
+        b = b._integer
+        return cls.Int(a ^ b)
+
+    @classmethod
+    def _binary_neg(cls, a):
+        return a
+
+    @classmethod
+    def _binary_sub(cls, a, b):
+        a = a._integer
+        b = b._integer
+        return cls.Int(a ^ b)
+
+    @classmethod
+    def _binary_mul(cls, a, b):
+        if isinstance(b, (int, np.integer)):
+            # Scalar multiplication  (p * 3 = p + p + p)
+            if b % 2 == 1:
+                return a
+            else:
+                return cls.Int(0)
+        else:
+            a = a._integer
+            b = b._integer
+
+            # Re-order operands such that a > b so the while loop has less loops
+            if b > a:
+                a, b = b, a
+
+            c = 0
+            while b > 0:
+                if b & 0b1:
+                    c ^= a  # Add a(x) to c(x)
+                b >>= 1  # Divide b(x) by x
+                a <<= 1  # Multiply a(x) by x
+
+            return cls.Int(c)
+
+    @classmethod
+    def _binary_divmod(cls, a, b):
+        a = a._integer
+        b = b._integer
+
+        deg_a = max(a.bit_length() - 1, 0)
+        deg_b = max(b.bit_length() - 1, 0)
+        deg_q = deg_a - deg_b
+        deg_r = deg_b - 1
+
+        q = 0
+        mask = 1 << deg_a
+        for i in range(deg_q, -1, -1):
+            q <<= 1
+            if a & mask:
+                a ^= b << i
+                q ^= 1  # Set the LSB then left shift
+            assert a & mask == 0
+            mask >>= 1
+
+        # q = a >> deg_r
+        mask = (1 << (deg_r + 1)) - 1  # The last deg_r + 1 bits of a
+        r = a & mask
+
+        return cls.Int(q), cls.Int(r)
+
+    @classmethod
+    def _binary_floordiv(cls, a, b):
+        # TODO: Make more efficient?
+        return cls._binary_divmod(a, b)[0]
+
+    @classmethod
+    def _binary_mod(cls, a, b):
+        # TODO: Make more efficient?
+        return cls._binary_divmod(a, b)[1]
+
+    @classmethod
+    def _binary_pow(cls, a, b, c=None):
         field = a.field
         if b == 0:
-            return Poly.One(field)
+            return Poly.Int(1, field=field)
 
         result_s = a  # The "squaring" part
-        result_m = Poly.One(field)  # The "multiplicative" part
+        result_m = Poly.Int(1, field=field)  # The "multiplicative" part
 
         if c:
             while b > 1:
                 if b % 2 == 0:
-                    result_s = (result_s * result_s) % c
+                    result_s = cls._binary_mod(cls._binary_mul(result_s, result_s), c)
                     b //= 2
                 else:
-                    result_m = (result_m * result_s) % c
+                    result_m = cls._binary_mod(cls._binary_mul(result_m, result_s), c)
                     b -= 1
 
-            result = (result_s * result_m) % c
+            result = cls._binary_mod(cls._binary_mul(result_s, result_m), c)
         else:
             while b > 1:
                 if b % 2 == 0:
-                    result_s = result_s * result_s
+                    result_s = cls._binary_mul(result_s, result_s)
                     b //= 2
                 else:
-                    result_m = result_m * result_s
+                    result_m = cls._binary_mul(result_m, result_s)
                     b -= 1
 
-            result = result_s * result_m
+            result = cls._binary_mul(result_s, result_m)
 
         return result
+
+    ###############################################################################
+    # Arithmetic methods for sparse polynomials
+    ###############################################################################
+
+    @classmethod
+    def _sparse_add(cls, a, b):
+        field = a.field
+
+        # c(x) = a(x) + b(x)
+        cc = dict(zip(a._nonzero_degrees, a._nonzero_coeffs))
+        for b_degree, b_coeff in zip(b._nonzero_degrees, b._nonzero_coeffs):
+            cc[b_degree] = cc.get(b_degree, field(0)) + b_coeff
+
+        return cls.Degrees(list(cc.keys()), list(cc.values()), field=field)
+
+    @classmethod
+    def _sparse_neg(cls, a):
+        return cls.Degrees(a._nonzero_degrees, -a._nonzero_coeffs)
+
+    @classmethod
+    def _sparse_sub(cls, a, b):
+        field = a.field
+
+        # c(x) = a(x) - b(x)
+        cc = dict(zip(a._nonzero_degrees, a._nonzero_coeffs))
+        for b_degree, b_coeff in zip(b._nonzero_degrees, b._nonzero_coeffs):
+            cc[b_degree] = cc.get(b_degree, field(0)) - b_coeff
+
+        return cls.Degrees(list(cc.keys()), list(cc.values()), field=field)
+
+    @classmethod
+    def _sparse_mul(cls, a, b):
+        field = a.field
+
+        if isinstance(b, (int, np.integer)):
+            # Scalar multiplication  (p * 3 = p + p + p)
+            return cls.Degrees(a._nonzero_degrees, a._nonzero_coeffs * b)
+        else:
+            # c(x) = a(x) * b(x)
+            cc = {}
+            for a_degree, a_coeff in zip(a._nonzero_degrees, a._nonzero_coeffs):
+                for b_degree, b_coeff in zip(b._nonzero_degrees, b._nonzero_coeffs):
+                    cc[a_degree + b_degree] = cc.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
+
+            return cls.Degrees(list(cc.keys()), list(cc.values()), field=field)
 
     ###############################################################################
     # Instance properties
@@ -4256,7 +4539,7 @@ class Poly:
             b = galois.Poly.Random(5, field=GF); b
             b.field
         """
-        raise NotImplementedError
+        return self._field
 
     @property
     def degree(self) -> int:
@@ -4271,59 +4554,23 @@ class Poly:
             p = galois.Poly([3, 0, 5, 2], field=GF); p
             p.degree
         """
-        raise NotImplementedError
+        if not hasattr(self, "_degree"):
+            if hasattr(self, "_coeffs"):
+                self._degree = self._coeffs.size - 1
+            elif hasattr(self, "_nonzero_degrees"):
+                if self._nonzero_degrees.size == 0:
+                    self._degree = 0
+                else:
+                    self._degree = max(self._nonzero_degrees)
+            elif hasattr(self, "_integer"):
+                self._degree = integer_to_degree(self._integer, self._field.order)
 
-    @property
-    def nonzero_degrees(self) -> np.ndarray:
-        """
-        An array of the polynomial degrees that have non-zero coefficients in descending order. The entries of
-        :obj:`nonzero_degrees` are paired with :obj:`nonzero_coeffs`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.nonzero_degrees
-        """
-        raise NotImplementedError
-
-    @property
-    def nonzero_coeffs(self) -> FieldArray:
-        """
-        The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_degrees`
-        are paired with :obj:`nonzero_coeffs`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.nonzero_coeffs
-        """
-        raise NotImplementedError
-
-    @property
-    def degrees(self) -> np.ndarray:
-        """
-        An array of the polynomial degrees in descending order. The entries of :obj:`degrees` are paired with :obj:`coeffs`.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.degrees
-        """
-        raise NotImplementedError
+        return self._degree
 
     @property
     def coeffs(self) -> FieldArray:
         """
-        The coefficients of the polynomial in degree-descending order. The entries of :obj:`degrees` are paired with :obj:`coeffs`.
+        The coefficients of the polynomial in degree-descending order. The entries of :obj:`coeffs` are paired with :obj:`degrees`.
 
         Examples
         --------
@@ -4333,491 +4580,74 @@ class Poly:
             p = galois.Poly([3, 0, 5, 2], field=GF); p
             p.coeffs
         """
-        raise NotImplementedError
+        if not hasattr(self, "_coeffs"):
+            if hasattr(self, "_nonzero_coeffs"):
+                degree = self.degree
+                self._coeffs = self._field.Zeros(degree + 1)
+                self._coeffs[degree - self._nonzero_degrees] = self._nonzero_coeffs
+            elif hasattr(self, "_integer"):
+                self._coeffs = self._field(integer_to_poly(self._integer, self._field.order))
 
-
-class DensePoly(Poly):
-    """
-    Implementation of dense polynomials over Galois fields.
-    """
-    # pylint: disable=abstract-method
-
-    __slots__ = ["_coeffs"]
-
-    def __new__(cls, coeffs, field=None):  # pylint: disable=signature-differs
-        # Arguments aren't verified in Poly.__new__()
-        obj = object.__new__(cls)
-        obj._coeffs = coeffs
-
-        if obj._coeffs.size > 1:
-            # Remove leading zero coefficients
-            idxs = np.nonzero(obj._coeffs)[0]
-            if idxs.size > 0:
-                obj._coeffs = obj._coeffs[idxs[0]:]
-            else:
-                obj._coeffs = obj._coeffs[-1]
-
-        # Ensure the coefficient array isn't 0-dimensional
-        obj._coeffs = np.atleast_1d(obj._coeffs)
-
-        return obj
-
-    def __init__(self, *args, **kwargs):  # pylint: disable=signature-differs
-        # pylint: disable=unused-argument,super-init-not-called
-        return
-
-    ###############################################################################
-    # Arithmetic methods
-    ###############################################################################
-
-    def __neg__(self):
-        return DensePoly(-self._coeffs)
-
-    @classmethod
-    def _add(cls, a, b):
-        field = a.field
-
-        # c(x) = a(x) + b(x)
-        c_coeffs = field.Zeros(max(a.coeffs.size, b.coeffs.size))
-        c_coeffs[-a.coeffs.size:] = a.coeffs
-        c_coeffs[-b.coeffs.size:] += b.coeffs
-
-        return Poly(c_coeffs)
-
-    @classmethod
-    def _sub(cls, a, b):
-        field = a.field
-
-        # c(x) = a(x) + b(x)
-        c_coeffs = field.Zeros(max(a.coeffs.size, b.coeffs.size))
-        c_coeffs[-a.coeffs.size:] = a.coeffs
-        c_coeffs[-b.coeffs.size:] -= b.coeffs
-
-        return Poly(c_coeffs)
-
-    @classmethod
-    def _mul(cls, a, b):
-        if isinstance(b, (int, np.integer)):
-            # Scalar multiplication  (p * 3 = p + p + p)
-            c_coeffs = a.coeffs * b
-        else:
-            # c(x) = a(x) * b(x)
-            c_coeffs = np.convolve(a.coeffs, b.coeffs)
-
-        return Poly(c_coeffs)
-
-    @classmethod
-    def _divmod(cls, a, b):
-        field = a.field
-        zero = Poly.Zero(field)
-
-        # q(x)*b(x) + r(x) = a(x)
-        if b.degree == 0:
-            return Poly(a.coeffs // b.coeffs), zero
-
-        elif a == 0:
-            return zero, zero
-
-        elif a.degree < b.degree:
-            return zero, a
-
-        else:
-            q_coeffs, r_coeffs = field._poly_divmod(a.coeffs, b.coeffs)
-            return Poly(q_coeffs), Poly(r_coeffs)
-
-    @classmethod
-    def _div(cls, a, b):
-        field = a.field
-        q_coeffs = field._poly_divide(a.coeffs, b.coeffs)
-        return Poly(q_coeffs)
-
-    @classmethod
-    def _mod(cls, a, b):
-        field = a.field
-        r_coeffs = field._poly_mod(a.coeffs, b.coeffs)
-        return Poly(r_coeffs)
-
-    @classmethod
-    def _pow(cls, a, b, c=None):
-        field = a.field
-        z_coeffs = field._poly_pow(a.coeffs, b, c.coeffs if c is not None else None)
-        return Poly(z_coeffs)
-
-    ###############################################################################
-    # Instance properties
-    ###############################################################################
-
-    @property
-    def field(self):
-        return type(self._coeffs)
-
-    @property
-    def degree(self):
-        return self._coeffs.size - 1
-
-    @property
-    def nonzero_degrees(self):
-        return self.degree - np.nonzero(self._coeffs)[0]
-
-    @property
-    def nonzero_coeffs(self):
-        return self._coeffs[np.nonzero(self._coeffs)[0]]
-
-    @property
-    def degrees(self):
-        return np.arange(self.degree, -1, -1)
-
-    @property
-    def coeffs(self):
-        return self._coeffs.copy()
-
-
-class BinaryPoly(Poly):
-    """
-    Implementation of polynomials over GF(2).
-    """
-    # pylint: disable=abstract-method
-
-    __slots__ = ["_integer", "_coeffs"]
-
-    def __new__(cls, integer):  # pylint: disable=signature-differs
-        if not isinstance(integer, (int, np.integer)):
-            raise TypeError(f"Argument `integer` must be an integer, not {type(integer)}.")
-        if not integer >= 0:
-            raise ValueError(f"Argument `integer` must be non-negative, not {integer}.")
-
-        obj = object.__new__(cls)
-        obj._integer = integer
-        obj._coeffs = None  # Only compute these if requested
-
-        return obj
-
-    def __init__(self, *args, **kwargs):  # pylint: disable=signature-differs
-        # pylint: disable=unused-argument,super-init-not-called
-        return
-
-    ###############################################################################
-    # Arithmetic methods
-    ###############################################################################
-
-    def __neg__(self):
-        return self
-
-    @classmethod
-    def _add(cls, a, b):
-        return BinaryPoly(int(a) ^ int(b))
-
-    @classmethod
-    def _sub(cls, a, b):
-        return BinaryPoly(int(a) ^ int(b))
-
-    @classmethod
-    def _mul(cls, a, b):
-        if isinstance(b, (int, np.integer)):
-            # Scalar multiplication  (p * 3 = p + p + p)
-            return BinaryPoly(int(a)) if b % 2 == 1 else BinaryPoly(0)
-
-        else:
-            # Re-order operands such that a > b so the while loop has less loops
-            a = int(a)
-            b = int(b)
-            if b > a:
-                a, b = b, a
-
-            c = 0
-            while b > 0:
-                if b & 0b1:
-                    c ^= a  # Add a(x) to c(x)
-                b >>= 1  # Divide b(x) by x
-                a <<= 1  # Multiply a(x) by x
-
-            return BinaryPoly(c)
-
-    @classmethod
-    def _divmod(cls, a, b):
-        deg_a = a.degree
-        deg_q = a.degree - b.degree
-        deg_r = b.degree - 1
-        a = int(a)
-        b = int(b)
-
-        q = 0
-        mask = 1 << deg_a
-        for i in range(deg_q, -1, -1):
-            q <<= 1
-            if a & mask:
-                a ^= b << i
-                q ^= 1  # Set the LSB then left shift
-            assert a & mask == 0
-            mask >>= 1
-
-        # q = a >> deg_r
-        mask = (1 << (deg_r + 1)) - 1  # The last deg_r + 1 bits of a
-        r = a & mask
-
-        return BinaryPoly(q), BinaryPoly(r)
-
-    @classmethod
-    def _div(cls, a, b):
-        return cls._divmod(a, b)[0]
-
-    @classmethod
-    def _mod(cls, a, b):
-        return cls._divmod(a, b)[1]
-
-    ###############################################################################
-    # Instance properties
-    ###############################################################################
-
-    @property
-    def field(self):
-        return GF2
-
-    @property
-    def degree(self):
-        if self._integer == 0:
-            return 0
-        else:
-            return len(bin(self._integer)[2:]) - 1
-
-    @property
-    def nonzero_degrees(self):
-        return self.degree - np.nonzero(self.coeffs)[0]
-
-    @property
-    def nonzero_coeffs(self):
-        return self.coeffs[np.nonzero(self.coeffs)[0]]
-
-    @property
-    def degrees(self):
-        return np.arange(self.degree, -1, -1)
-
-    @property
-    def coeffs(self):
-        if self._coeffs is None:
-            binstr = bin(self._integer)[2:]
-            self._coeffs = GF2([int(b) for b in binstr])
         return self._coeffs.copy()
 
     @property
-    def integer(self):
-        return self._integer
+    def degrees(self) -> np.ndarray:
+        """
+        An array of the polynomial degrees in descending order. The entries of :obj:`coeffs` are paired with :obj:`degrees`.
 
+        Examples
+        --------
+        .. ipython:: python
 
-class SparsePoly(Poly):
-    """
-    Implementation of sparse polynomials over Galois fields.
-    """
-    # pylint: disable=abstract-method
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF); p
+            p.degrees
+        """
+        if not hasattr(self, "_degrees"):
+            self._degrees = np.arange(self.degree, -1, -1, dtype=int)
 
-    __slots__ = ["_degrees", "_coeffs"]
-
-    def __new__(cls, degrees, coeffs=None, field=None):  # pylint: disable=signature-differs
-        coeffs = [1,]*len(degrees) if coeffs is None else coeffs
-        if not isinstance(degrees, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `degrees` must be array-like, not {type(degrees)}.")
-        if not isinstance(coeffs, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `coeffs` must be array-like, not {type(coeffs)}.")
-        if not len(degrees) == len(coeffs):
-            raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {len(degrees)} and {len(coeffs)}.")
-        if not all(degree >= 0 for degree in degrees):
-            raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
-
-        obj = object.__new__(cls)
-
-        if isinstance(coeffs, FieldArray) and field is None:
-            obj._degrees = np.array(degrees)
-            obj._coeffs = coeffs
-        else:
-            field = GF2 if field is None else field
-            if isinstance(coeffs, np.ndarray):
-                # Ensure coeffs is an iterable
-                coeffs = coeffs.tolist()
-            obj._degrees = np.array(degrees)
-            obj._coeffs = field([-field(abs(c)) if c < 0 else field(c) for c in coeffs])
-
-        # Sort the degrees and coefficients in descending order
-        idxs = np.argsort(degrees)[::-1]
-        obj._degrees = obj._degrees[idxs]
-        obj._coeffs = obj._coeffs[idxs]
-
-        # Remove zero coefficients
-        idxs = np.nonzero(obj._coeffs)[0]
-        obj._degrees = obj._degrees[idxs]
-        obj._coeffs = obj._coeffs[idxs]
-
-        return obj
-
-    def __init__(self, *args, **kwargs):  # pylint: disable=signature-differs
-        # pylint: disable=unused-argument,super-init-not-called
-        return
-
-    ###############################################################################
-    # Methods
-    ###############################################################################
-
-    def reverse(self):
-        return SparsePoly(self.degree - self.degrees, self.coeffs)
-
-    ###############################################################################
-    # Arithmetic methods
-    ###############################################################################
-
-    def __neg__(self):
-        return SparsePoly(self._degrees, -self._coeffs)
-
-    @classmethod
-    def _add(cls, a, b):
-        field = a.field
-
-        # c(x) = a(x) + b(x)
-        cc = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))
-        for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
-            cc[b_degree] = cc.get(b_degree, field(0)) + b_coeff
-
-        return Poly.Degrees(list(cc.keys()), list(cc.values()), field=field)
-
-    @classmethod
-    def _sub(cls, a, b):
-        field = a.field
-
-        # c(x) = a(x) - b(x)
-        cc = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))
-        for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
-            cc[b_degree] = cc.get(b_degree, field(0)) - b_coeff
-
-        return Poly.Degrees(list(cc.keys()), list(cc.values()), field=field)
-
-    @classmethod
-    def _mul(cls, a, b):
-        field = a.field
-
-        if isinstance(b, (int, np.integer)):
-            # Scalar multiplication  (p * 3 = p + p + p)
-            return Poly.Degrees(a.nonzero_degrees, a.nonzero_coeffs * b)
-
-        else:
-            # c(x) = a(x) * b(x)
-            cc = {}
-            for a_degree, a_coeff in zip(a.nonzero_degrees, a.nonzero_coeffs):
-                for b_degree, b_coeff in zip(b.nonzero_degrees, b.nonzero_coeffs):
-                    cc[a_degree + b_degree] = cc.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
-
-            return Poly.Degrees(list(cc.keys()), list(cc.values()), field=field)
-
-    @classmethod
-    def _divmod(cls, a, b):
-        field = a.field
-        zero = Poly.Zero(field)
-
-        # q(x)*b(x) + r(x) = a(x)
-        if b.degree == 0:
-            q_degrees = a.nonzero_degrees
-            q_coeffs = [a_coeff // b.coeffs[0] for a_coeff in a.nonzero_coeffs]
-            return Poly.Degrees(q_degrees, q_coeffs, field=field), zero
-
-        elif a == 0:
-            return zero, zero
-
-        elif a.degree < b.degree:
-            return zero, a
-
-        else:
-            aa = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))
-            b_coeffs = b.coeffs
-
-            q_degree = a.degree - b.degree
-            r_degree = b.degree  # One larger than final remainder
-            qq = {}
-            r_coeffs = field.Zeros(r_degree + 1)
-
-            # Preset remainder so we can rotate at the start of loop
-            for i in range(0, b.degree):
-                r_coeffs[1 + i] = aa.get(a.degree - i, 0)
-
-            for i in range(0, q_degree + 1):
-                r_coeffs = np.roll(r_coeffs, -1)
-                r_coeffs[-1] = aa.get(a.degree - (i + b.degree), 0)
-
-                if r_coeffs[0] > 0:
-                    q = r_coeffs[0] // b_coeffs[0]
-                    r_coeffs -= q*b_coeffs
-                    qq[q_degree - i] = q
-
-            return Poly.Degrees(list(qq.keys()), list(qq.values()), field=field), Poly(r_coeffs[1:])
-
-    @classmethod
-    def _div(cls, a, b):
-        return cls._divmod(a, b)[0]
-
-    @classmethod
-    def _mod(cls, a, b):
-        field = a.field
-        zero = Poly.Zero(field)
-
-        # q(x)*b(x) + r(x) = a(x)
-        if b.degree == 0:
-            return zero
-
-        elif a == 0:
-            return zero
-
-        elif a.degree < b.degree:
-            return a
-
-        else:
-            aa = dict(zip(a.nonzero_degrees, a.nonzero_coeffs))
-            b_coeffs = b.coeffs
-
-            q_degree = a.degree - b.degree
-            r_degree = b.degree  # One larger than final remainder
-            r_coeffs = field.Zeros(r_degree + 1)
-
-            # Preset remainder so we can rotate at the start of loop
-            for i in range(0, b.degree):
-                r_coeffs[1 + i] = aa.get(a.degree - i, 0)
-
-            for i in range(0, q_degree + 1):
-                r_coeffs = np.roll(r_coeffs, -1)
-                r_coeffs[-1] = aa.get(a.degree - (i + b.degree), 0)
-
-                if r_coeffs[0] > 0:
-                    q = r_coeffs[0] // b_coeffs[0]
-                    r_coeffs -= q*b_coeffs
-
-            return Poly(r_coeffs[1:])
-
-    ###############################################################################
-    # Instance properties
-    ###############################################################################
-
-    @property
-    def field(self):
-        return type(self._coeffs)
-
-    @property
-    def degree(self):
-        return 0 if self._degrees.size == 0 else int(np.max(self._degrees))
-
-    @property
-    def nonzero_degrees(self):
         return self._degrees.copy()
 
     @property
-    def nonzero_coeffs(self):
-        return self._coeffs.copy()
+    def nonzero_coeffs(self) -> FieldArray:
+        """
+        The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_coeffs`
+        are paired with :obj:`nonzero_degrees`.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF); p
+            p.nonzero_coeffs
+        """
+        if not hasattr(self, "_nonzero_coeffs"):
+            coeffs = self.coeffs
+            self._nonzero_coeffs = coeffs[np.nonzero(coeffs)]
+
+        return self._nonzero_coeffs.copy()
 
     @property
-    def degrees(self):
-        return np.arange(self.degree, -1, -1)
+    def nonzero_degrees(self) -> np.ndarray:
+        """
+        An array of the polynomial degrees that have non-zero coefficients in descending order. The entries of
+        :obj:`nonzero_coeffs` are paired with :obj:`nonzero_degrees`.
 
-    @property
-    def coeffs(self):
-        # Assemble a full list of coefficients, including zeros
-        coeffs = self.field.Zeros(self.degree + 1)
-        if self.nonzero_degrees.size > 0:
-            coeffs[self.degree - self.nonzero_degrees] = self.nonzero_coeffs
-        return coeffs
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 5, 2], field=GF); p
+            p.nonzero_degrees
+        """
+        if not hasattr(self, "_nonzero_degrees"):
+            degrees = self.degrees
+            coeffs = self.coeffs
+            self._nonzero_degrees = degrees[np.nonzero(coeffs)]
+
+        return self._nonzero_degrees.copy()
 
 
 # Define the GF(2) primitive polynomial here, not in _fields/_gf2.py, to avoid a circular dependency with `Poly`.

@@ -1,5 +1,5 @@
 """
-A pytest module to test polynomial arithmetic implemented with DensePoly, BinaryPoly, and SparsePoly.
+A pytest module to test polynomial arithmetic using the "binary" and "sparse" implementations.
 
 We don't need to verify the arithmetic is correct (that was already done in test_arithmetic.py). We
 just need to make sure the arithmetic is the same for the different implementations.
@@ -7,49 +7,137 @@ just need to make sure the arithmetic is the same for the different implementati
 import random
 
 import galois
-from galois._fields._main import DensePoly, BinaryPoly, SparsePoly
 
 
 def test_add(field):
     a = galois.Poly.Random(random.randint(0, 5))
     b = galois.Poly.Random(random.randint(0, 5))
+
+    f_dense = a + b
+
+    # Ensure the nonzero properties are created
+    a.nonzero_degrees, a.nonzero_coeffs, b.nonzero_degrees, b.nonzero_coeffs
+    a._type = "sparse"; b._type = "sparse"
+    f_sparse = a + b
+    assert f_sparse == f_dense
+
     if field is galois.GF2:
-        assert BinaryPoly._add(a, b) == DensePoly._add(a, b) == SparsePoly._add(a, b)
-    else:
-        assert DensePoly._add(a, b) == SparsePoly._add(a, b)
+        int(a), int(b)
+        a._type = "binary"; b._type = "binary"
+        f_binary = a + b
+        assert f_binary == f_dense
+
+
+def test_neg(field):
+    a = galois.Poly.Random(random.randint(0, 5))
+
+    f_dense = -a
+
+    # Ensure the nonzero properties are created
+    a.nonzero_degrees, a.nonzero_coeffs
+    a._type = "sparse"
+    f_sparse = -a
+    assert f_sparse == f_dense
+
+    if field is galois.GF2:
+        int(a)
+        a._type = "binary"
+        f_binary = -a
+        assert f_binary == f_dense
 
 
 def test_subtract(field):
     a = galois.Poly.Random(random.randint(0, 5))
     b = galois.Poly.Random(random.randint(0, 5))
+
+    f_dense = a - b
+
+    # Ensure the nonzero properties are created
+    a.nonzero_degrees, a.nonzero_coeffs, b.nonzero_degrees, b.nonzero_coeffs
+    a._type = "sparse"; b._type = "sparse"
+    f_sparse = a - b
+    assert f_sparse == f_dense
+
     if field is galois.GF2:
-        assert BinaryPoly._sub(a, b) == DensePoly._sub(a, b) == SparsePoly._sub(a, b)
-    else:
-        assert DensePoly._sub(a, b) == SparsePoly._sub(a, b)
+        int(a), int(b)
+        a._type = "binary"; b._type = "binary"
+        f_binary = a - b
+        assert f_binary == f_dense
 
 
 def test_multiply(field):
     a = galois.Poly.Random(random.randint(0, 5))
     b = galois.Poly.Random(random.randint(0, 5))
+
+    f_dense = a * b
+
+    # Ensure the nonzero properties are created
+    a.nonzero_degrees, a.nonzero_coeffs, b.nonzero_degrees, b.nonzero_coeffs
+    a._type = "sparse"; b._type = "sparse"
+    f_sparse = a * b
+    assert f_sparse == f_dense
+
     if field is galois.GF2:
-        assert BinaryPoly._mul(a, b) == DensePoly._mul(a, b) == SparsePoly._mul(a, b)
-    else:
-        assert DensePoly._mul(a, b) == SparsePoly._mul(a, b)
+        int(a), int(b)
+        a._type = "binary"; b._type = "binary"
+        f_binary = a * b
+        assert f_binary == f_dense
 
 
 def test_divmod(field):
     a = galois.Poly.Random(random.randint(0, 5))
     b = galois.Poly.Random(random.randint(0, 5))
+
+    q_dense, r_dense = divmod(a, b)
+
+    # Ensure the nonzero properties are created
+    a.nonzero_degrees, a.nonzero_coeffs, b.nonzero_degrees, b.nonzero_coeffs
+    a._type = "sparse"; b._type = "sparse"
+    q_sparse, r_sparse = divmod(a, b)
+    assert q_sparse == q_dense
+    assert r_sparse == r_dense
+
     if field is galois.GF2:
-        assert BinaryPoly._divmod(a, b) == DensePoly._divmod(a, b) == SparsePoly._divmod(a, b)
-    else:
-        assert DensePoly._divmod(a, b) == SparsePoly._divmod(a, b)
+        int(a), int(b)
+        a._type = "binary"; b._type = "binary"
+        q_binary, r_binary = divmod(a, b)
+        assert q_binary == q_dense
+        assert r_binary == r_dense
+
+
+def test_floordiv(field):
+    a = galois.Poly.Random(random.randint(0, 5))
+    b = galois.Poly.Random(random.randint(0, 5))
+
+    f_dense = a // b
+
+    # Ensure the nonzero properties are created
+    a.nonzero_degrees, a.nonzero_coeffs, b.nonzero_degrees, b.nonzero_coeffs
+    a._type = "sparse"; b._type = "sparse"
+    f_sparse = a // b
+    assert f_sparse == f_dense
+
+    if field is galois.GF2:
+        int(a), int(b)
+        a._type = "binary"; b._type = "binary"
+        f_binary = a // b
+        assert f_binary == f_dense
 
 
 def test_mod(field):
     a = galois.Poly.Random(random.randint(0, 5))
     b = galois.Poly.Random(random.randint(0, 5))
+
+    f_dense = a % b
+
+    # Ensure the nonzero properties are created
+    a.nonzero_degrees, a.nonzero_coeffs, b.nonzero_degrees, b.nonzero_coeffs
+    a._type = "sparse"; b._type = "sparse"
+    f_sparse = a % b
+    assert f_sparse == f_dense
+
     if field is galois.GF2:
-        assert BinaryPoly._mod(a, b) == DensePoly._mod(a, b) == SparsePoly._mod(a, b)
-    else:
-        assert DensePoly._mod(a, b) == SparsePoly._mod(a, b)
+        int(a), int(b)
+        a._type = "binary"; b._type = "binary"
+        f_binary = a % b
+        assert f_binary == f_dense
