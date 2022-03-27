@@ -5,7 +5,6 @@ import pytest
 import numpy as np
 
 import galois
-from galois._fields._main import DensePoly, BinaryPoly, SparsePoly
 
 
 def test_coefficients_exceptions():
@@ -45,16 +44,21 @@ def test_coefficients():
 
 
 def test_reverse():
-    p1 = galois.Poly([2,0,1,2], field=galois.GF(3))
-    p2 = galois.Poly([2,1,0,2], field=galois.GF(3))
+    GF = galois.GF(3)
+    p1 = galois.Poly([2, 0, 1, 2], field=GF)
+    p2 = galois.Poly([2, 1, 0, 2], field=GF)
+    assert p1._type == p2._type == "dense"
     assert p1.reverse() == p2
 
-    p1 = galois.Poly([1,0,1,1])
-    p2 = galois.Poly([1,1,0,1])
+    p1 = galois.Poly([1, 0, 1, 1])
+    p2 = galois.Poly([1, 1, 0, 1])
+    assert p1._type == p2._type == "binary"
     assert p1.reverse() == p2
 
-    p1 = galois.Poly.Degrees([3000,1,0], [1,2,1], field=galois.GF(3))
-    p2 = galois.Poly.Degrees([3000,2999,0], [1,2,1], field=galois.GF(3))
+    GF = galois.GF(3)
+    p1 = galois.Poly.Degrees([3000, 1, 0], [1, 2, 1], field=GF)
+    p2 = galois.Poly.Degrees([3000, 2999, 0], [1, 2, 1], field=GF)
+    assert p1._type == p2._type == "sparse"
     assert p1.reverse() == p2
 
 
@@ -114,7 +118,7 @@ def test_int():
     poly = galois.Poly([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,1])
     assert int(poly) == 4295000729
 
-    poly = galois.Poly.Degrees([32,15,9,7,4,3,0])
+    poly = galois.Poly.Degrees([32, 15, 9, 7, 4, 3, 0])
     assert int(poly) == 4295000729
 
 
@@ -136,7 +140,6 @@ def test_hex():
 
 
 def test_equal(field):
-    # NOTE: GF(11) is not included in the `field` pytest fixture
     c = field.Random(6)
     c[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
     p1 = galois.Poly(c)
@@ -144,6 +147,9 @@ def test_equal(field):
     assert p1 == p2
     assert p2 == p1
 
+
+def test_equal_coeffs_diff_field(field):
+    # NOTE: GF(11) is not included in the `field` pytest fixture
     c = field.Ones(6)
     p1 = galois.Poly(c)
     p2 = galois.Poly(c.tolist(), field=galois.GF(11))
@@ -152,16 +158,14 @@ def test_equal(field):
 
 
 def test_cant_set_coeffs():
-    # DensePoly
     GF = galois.GF(7)
-    coeffs = [5,0,0,4,2,0,3]
+    coeffs = [5, 0, 0, 4, 2, 0, 3]
     p = galois.Poly(coeffs, field=GF)
     assert np.array_equal(p.coeffs, coeffs)
     p.coeffs[-1] = 0
     assert np.array_equal(p.coeffs, coeffs)
 
-    # BinaryPoly
-    coeffs = [1,0,0,1,1,0,1]
+    coeffs = [1, 0, 0, 1, 1, 0, 1]
     p = galois.Poly(coeffs)
     assert np.array_equal(p.coeffs, coeffs)
     p.coeffs[-1] = 0
@@ -169,23 +173,31 @@ def test_cant_set_coeffs():
 
 
 def test_len():
-    # DensePoly
     GF = galois.GF(7)
-    coeffs = [5, 0, 0, 4, 2, 0, 3]
+    coeffs = [1, 0, 0, 0, 0]
     p = galois.Poly(coeffs, field=GF)
-    assert len(p) == 7
+    assert p._type == "dense"
+    assert len(p) == 5
+    p = galois.Poly(coeffs[::-1], field=GF)
+    assert p._type == "dense"
+    assert len(p) == 1
+    p = galois.Poly([0, 0, 0], field=GF)
+    assert p._type == "dense"
+    assert len(p) == 1
 
-    # BinaryPoly
     coeffs = [1, 0, 0, 0, 0]
     p = galois.Poly(coeffs)
+    assert p._type == "binary"
     assert len(p) == 5
     p = galois.Poly(coeffs[::-1])
+    assert p._type == "binary"
     assert len(p) == 1
     p = galois.Poly([0, 0, 0])
+    assert p._type == "binary"
     assert len(p) == 1
 
-    # SparsePoly
-    p = galois.Poly.Str("x^1000 + 1")
+    p = galois.Poly.Str("x^1000 + 1", field=GF)
+    assert p._type == "sparse"
     assert len(p) == 1001
 
 

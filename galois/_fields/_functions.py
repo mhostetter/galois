@@ -272,7 +272,7 @@ class FunctionMeta(UfuncMeta):
 
         return q, r
 
-    def _poly_divide(cls, a, b):
+    def _poly_floordiv(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
         assert a.ndim == 1 and b.ndim == 1
         field = type(a)
@@ -284,7 +284,7 @@ class FunctionMeta(UfuncMeta):
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
             divide = cls._func_calculate("divide")
-            q = cls._function("poly_divide")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             q = q.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -292,7 +292,7 @@ class FunctionMeta(UfuncMeta):
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
-            q = cls._function("poly_divide")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
         q = field._view(q)
 
         return q
@@ -467,11 +467,11 @@ class FunctionMeta(UfuncMeta):
 
         return qr
 
-    _POLY_DIVIDE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _POLY_FLOORDIV_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
-    def _poly_divide_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _poly_floordiv_calculate(a, b, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
         dtype = a.dtype
 
