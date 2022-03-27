@@ -2862,9 +2862,7 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
 ###############################################################################
 
 # Values were obtained by running scripts/sparse_poly_performance_test.py
-SPARSE_VS_BINARY_POLY_FACTOR = 0.00_05
-SPARSE_VS_BINARY_POLY_MIN_COEFFS = int(1 / SPARSE_VS_BINARY_POLY_FACTOR)
-SPARSE_VS_DENSE_POLY_FACTOR = 0.00_5
+SPARSE_VS_DENSE_POLY_FACTOR = 0.00_125  # 1.25% density
 SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
 
 
