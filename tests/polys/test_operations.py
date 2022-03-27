@@ -196,9 +196,9 @@ def test_len():
     assert p._type == "binary"
     assert len(p) == 1
 
-    p = galois.Poly.Str("x^1000 + 1", field=GF)
+    p = galois.Poly.Str("x^2000 + 1", field=GF)
     assert p._type == "sparse"
-    assert len(p) == 1001
+    assert len(p) == 2001
 
 
 def test_immutable():
