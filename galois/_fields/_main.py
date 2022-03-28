@@ -1171,7 +1171,10 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             cls._verify_scalar_value(array_like)
         elif isinstance(array_like, cls):
             # This was a previously-created and vetted array -- there's no need to re-verify
-            pass
+            if array_like.ndim == 0:
+                # Ensure that in "large" fields with dtype=object that FieldArray objects aren't assigned to the array. The arithmetic
+                # functions are designed to operate on Python ints.
+                array_like = int(array_like)
         elif isinstance(array_like, str):
             array_like = cls._convert_to_element(array_like)
             cls._verify_scalar_value(array_like)
@@ -2731,13 +2734,6 @@ class GF2Meta(FieldClass, DirMeta):
 
     ###############################################################################
     # Arithmetic functions using explicit calculation
-    #
-    # NOTE: The ufunc inputs a and b are cast to integers at the beginning of each
-    #       ufunc to prevent the non-JIT-compiled invocations (used in "large"
-    #       fields with dtype=object) from performing infintely recursive
-    #       arithmetic. Instead, the intended arithmetic inside the ufuncs is
-    #       integer arithmetic.
-    #       See https://github.com/mhostetter/galois/issues/253.
     ###############################################################################
 
     @staticmethod
@@ -2745,9 +2741,6 @@ class GF2Meta(FieldClass, DirMeta):
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
-        a = int(a)
-        b = int(b)
-
         return a ^ b
 
     @staticmethod
@@ -2755,8 +2748,6 @@ class GF2Meta(FieldClass, DirMeta):
         """
         Not actually used. `np.positive()` is faster.
         """
-        a = int(a)
-
         return a
 
     @staticmethod
@@ -2764,9 +2755,6 @@ class GF2Meta(FieldClass, DirMeta):
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
-        a = int(a)
-        b = int(b)
-
         return a ^ b
 
     @staticmethod
@@ -2774,9 +2762,6 @@ class GF2Meta(FieldClass, DirMeta):
         """
         Not actually used. `np.bitwise_and()` is faster.
         """
-        a = int(a)
-        b = int(b)
-
         return a & b
 
     @staticmethod
@@ -2791,9 +2776,6 @@ class GF2Meta(FieldClass, DirMeta):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
-        a = int(a)
-        b = int(b)
-
         return a & b
 
     @staticmethod
@@ -2801,9 +2783,6 @@ class GF2Meta(FieldClass, DirMeta):
     def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-        a = int(a)
-        b = int(b)
 
         if b == 0:
             return 1
