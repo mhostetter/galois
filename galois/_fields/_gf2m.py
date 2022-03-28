@@ -58,13 +58,6 @@ class GF2mMeta(FieldClass, DirMeta):
 
     ###############################################################################
     # Arithmetic functions using explicit calculation
-    #
-    # NOTE: The ufunc inputs a and b are cast to integers at the beginning of each
-    #       ufunc to prevent the non-JIT-compiled invocations (used in "large"
-    #       fields with dtype=object) from performing infintely recursive
-    #       arithmetic. Instead, the intended arithmetic inside the ufuncs is
-    #       integer arithmetic.
-    #       See https://github.com/mhostetter/galois/issues/253.
     ###############################################################################
 
     @staticmethod
@@ -72,9 +65,6 @@ class GF2mMeta(FieldClass, DirMeta):
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
-        a = int(a)
-        b = int(b)
-
         return a ^ b
 
     @staticmethod
@@ -82,8 +72,6 @@ class GF2mMeta(FieldClass, DirMeta):
         """
         Not actually used. `np.positive()` is faster.
         """
-        a = int(a)
-
         return a
 
     @staticmethod
@@ -91,9 +79,6 @@ class GF2mMeta(FieldClass, DirMeta):
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
-        a = int(a)
-        b = int(b)
-
         return a ^ b
 
     @staticmethod
@@ -105,13 +90,11 @@ class GF2mMeta(FieldClass, DirMeta):
         p(x) in GF(2)[x] with degree m is the irreducible polynomial of GF(2^m)
 
         a * b = c
-            = (a(x) * b(x)) % p(x) in GF(2)
-            = c(x)
-            = c
+              = (a(x) * b(x)) % p(x) in GF(2)
+              = c(x)
+              = c
         """
         ORDER = CHARACTERISTIC**DEGREE
-        a = int(a)
-        b = int(b)
 
         # Re-order operands such that a > b so the while loop has less loops
         if b > a:
@@ -145,7 +128,6 @@ class GF2mMeta(FieldClass, DirMeta):
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
         ORDER = CHARACTERISTIC**DEGREE
-        a = int(a)
 
         exponent = ORDER - 2
         result_s = a  # The "squaring" part
@@ -168,9 +150,6 @@ class GF2mMeta(FieldClass, DirMeta):
     def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-        a = int(a)
-        b = int(b)
 
         if a == 0:
             c = 0
@@ -196,9 +175,6 @@ class GF2mMeta(FieldClass, DirMeta):
         """
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-        a = int(a)
-        b = int(b)
 
         if b == 0:
             return 1
@@ -236,8 +212,6 @@ class GF2mMeta(FieldClass, DirMeta):
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
         ORDER = CHARACTERISTIC**DEGREE
-        a = int(a)
-        b = int(b)
 
         # Naive algorithm
         result = 1

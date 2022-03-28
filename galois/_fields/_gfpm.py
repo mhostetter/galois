@@ -154,13 +154,6 @@ class GFpmMeta(FieldClass, DirMeta):
 
     ###############################################################################
     # Arithmetic functions using explicit calculation
-    #
-    # NOTE: The ufunc inputs a and b are cast to integers at the beginning of each
-    #       ufunc to prevent the non-JIT-compiled invocations (used in "large"
-    #       fields with dtype=object) from performing infintely recursive
-    #       arithmetic. Instead, the intended arithmetic inside the ufuncs is
-    #       integer arithmetic.
-    #       See https://github.com/mhostetter/galois/issues/253.
     ###############################################################################
 
     @staticmethod
@@ -169,8 +162,6 @@ class GFpmMeta(FieldClass, DirMeta):
         """
         Convert the integer representation to vector/polynomial representation
         """
-        a = int(a)
-
         a_vec = np.zeros(DEGREE, dtype=DTYPE)
         for i in range(DEGREE - 1, -1, -1):
             q, r = divmod(a, CHARACTERISTIC)
@@ -196,9 +187,6 @@ class GFpmMeta(FieldClass, DirMeta):
     @staticmethod
     @numba.extending.register_jitable
     def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        a = int(a)
-        b = int(b)
-
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec + b_vec) % CHARACTERISTIC
@@ -209,8 +197,6 @@ class GFpmMeta(FieldClass, DirMeta):
     @staticmethod
     @numba.extending.register_jitable
     def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        a = int(a)
-
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         a_vec = (-a_vec) % CHARACTERISTIC
         c = POLY_TO_INT(a_vec, CHARACTERISTIC, DEGREE)
@@ -220,9 +206,6 @@ class GFpmMeta(FieldClass, DirMeta):
     @staticmethod
     @numba.extending.register_jitable
     def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        a = int(a)
-        b = int(b)
-
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec - b_vec) % CHARACTERISTIC
@@ -233,9 +216,6 @@ class GFpmMeta(FieldClass, DirMeta):
     @staticmethod
     @numba.extending.register_jitable
     def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        a = int(a)
-        b = int(b)
-
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
 
@@ -279,7 +259,6 @@ class GFpmMeta(FieldClass, DirMeta):
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
         ORDER = CHARACTERISTIC**DEGREE
-        a = int(a)
 
         exponent = ORDER - 2
         result_s = a  # The "squaring" part
@@ -303,9 +282,6 @@ class GFpmMeta(FieldClass, DirMeta):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
-        a = int(a)
-        b = int(b)
-
         if a == 0:
             c = 0
         else:
@@ -321,18 +297,15 @@ class GFpmMeta(FieldClass, DirMeta):
         Square and Multiply Algorithm
 
         a^13 = (1) * (a)^13
-            = (a) * (a)^12
-            = (a) * (a^2)^6
-            = (a) * (a^4)^3
-            = (a * a^4) * (a^4)^2
-            = (a * a^4) * (a^8)
-            = result_m * result_s
+             = (a) * (a)^12
+             = (a) * (a^2)^6
+             = (a) * (a^4)^3
+             = (a * a^4) * (a^4)^2
+             = (a * a^4) * (a^8)
+             = result_m * result_s
         """
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-        a = int(a)
-        b = int(b)
 
         if b == 0:
             return 1
@@ -370,8 +343,6 @@ class GFpmMeta(FieldClass, DirMeta):
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
         ORDER = CHARACTERISTIC**DEGREE
-        a = int(a)
-        b = int(b)
 
         # Naive algorithm
         result = 1
