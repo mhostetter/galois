@@ -791,10 +791,15 @@ def factors(n: int) -> Tuple[List[int], List[int]]:
 
     # Step 4
     while n > 1 and not is_prime(n):
-        f = pollard_rho(n)  # A non-trivial factor
-        while f is None:
-            # Try again with a different random function f(x)
-            f = pollard_rho(n, c=random.randint(2, n // 2))
+        while True:
+            c = 1
+            try:
+                f = pollard_rho(n, c=c)  # A non-trivial factor
+                break  # Found a factor
+            except RuntimeError:
+                # Could not find one -- keep searching
+                c = random.randint(2, n // 2)
+
         if is_prime(f):
             degree = 0
             while n % f == 0:
@@ -1104,7 +1109,7 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
 
 
 # @functools.lru_cache(maxsize=1024)
-def pollard_rho(n: int, c: int = 1) -> Optional[int]:
+def pollard_rho(n: int, c: int = 1) -> int:
     r"""
     Attempts to find a non-trivial factor of :math:`n` using cycle detection.
 
@@ -1120,6 +1125,11 @@ def pollard_rho(n: int, c: int = 1) -> Optional[int]:
     -------
     :
         A non-trivial factor :math:`m` of :math:`n`, if found. `None` if not found.
+
+    Raises
+    ------
+    RuntimeError
+        If a non-trivial factor cannot be found.
 
     Notes
     -----
@@ -1168,7 +1178,7 @@ def pollard_rho(n: int, c: int = 1) -> Optional[int]:
         d = math.gcd(a - b, n)
 
     if d == n:
-        return None
+        raise RuntimeError(f"A non-trivial factor of {n} could not be found using the Pollard Rho algorithm with f(x) = x^2 + {c}.")
 
     return d
 
