@@ -172,10 +172,10 @@ class GFpmMeta(FieldClass, DirMeta):
         a = int(a)
 
         a_vec = np.zeros(DEGREE, dtype=DTYPE)
-        for i in range(0, DEGREE):
-            q = a // CHARACTERISTIC**(DEGREE - 1 - i)
-            a -= q*CHARACTERISTIC**(DEGREE - 1 - i)
-            a_vec[i] = q
+        for i in range(DEGREE - 1, -1, -1):
+            q, r = divmod(a, CHARACTERISTIC)
+            a_vec[i] = r
+            a = q
 
         return a_vec
 
@@ -186,8 +186,10 @@ class GFpmMeta(FieldClass, DirMeta):
         Convert the integer representation to vector/polynomial representation
         """
         a = 0
-        for i in range(0, DEGREE):
-            a += a_vec[i]*CHARACTERISTIC**(DEGREE - 1 - i)
+        factor = 1
+        for i in range(DEGREE - 1, -1, -1):
+            a += a_vec[i] * factor
+            factor *= CHARACTERISTIC
 
         return a
 
