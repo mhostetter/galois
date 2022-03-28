@@ -2,8 +2,11 @@
 A pytest module to test methods of Galois field array classes.
 """
 import pytest
+import numpy as np
 
 import galois
+
+from .helper import valid_dtype, invalid_dtype
 
 
 def test_repr():
@@ -122,3 +125,31 @@ def test_repr_table():
     alpha = GF.primitive_elements[-1]
     assert GF.repr_table(alpha) == "+-----------------+-------------+-----------+---------+\n|      Power      |  Polynomial |   Vector  | Integer |\n+-----------------+-------------+-----------+---------+\n|        0        |      0      | [0, 0, 0] |    0    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^0 |      1      | [0, 0, 1] |    1    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^1 | x^2 + x + 1 | [1, 1, 1] |    7    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^2 |    x + 1    | [0, 1, 1] |    3    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^3 |      x      | [0, 1, 0] |    2    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^4 |   x^2 + 1   | [1, 0, 1] |    5    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^5 |   x^2 + x   | [1, 1, 0] |    6    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^6 |     x^2     | [1, 0, 0] |    4    |\n+-----------------+-------------+-----------+---------+"
     assert GF.repr_table(alpha, sort="int") == "+-----------------+-------------+-----------+---------+\n|      Power      |  Polynomial |   Vector  | Integer |\n+-----------------+-------------+-----------+---------+\n|        0        |      0      | [0, 0, 0] |    0    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^0 |      1      | [0, 0, 1] |    1    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^3 |      x      | [0, 1, 0] |    2    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^2 |    x + 1    | [0, 1, 1] |    3    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^6 |     x^2     | [1, 0, 0] |    4    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^4 |   x^2 + 1   | [1, 0, 1] |    5    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^5 |   x^2 + x   | [1, 1, 0] |    6    |\n+-----------------+-------------+-----------+---------+\n| (x^2 + x + 1)^1 | x^2 + x + 1 | [1, 1, 1] |    7    |\n+-----------------+-------------+-----------+---------+"
+
+
+@pytest.mark.parametrize("shape", [(), (4,), (4,4)])
+def test_vector_valid_dtype(field, shape):
+    dtype = valid_dtype(field)
+    a = field.Random(shape, dtype=dtype)
+
+    v_dtype = valid_dtype(field.prime_subfield)
+    v_shape = tuple(list(shape) + [field.degree])
+    v = a.vector(dtype=v_dtype)
+
+    assert np.all(v >= 0) and np.all(v < field.prime_subfield.order)
+    assert type(v) is field.prime_subfield
+    assert v.dtype == v_dtype
+    assert v.shape == v_shape
+
+    # Confirm the inverse operation reverts to the original array
+    assert np.array_equal(field.Vector(v), a)
+
+
+@pytest.mark.parametrize("shape", [(), (4,), (4,4)])
+def test_vector_invalid_dtype(field, shape):
+    dtype = valid_dtype(field)
+    a = field.Random(shape, dtype=dtype)
+
+    v_dtype = invalid_dtype(field.prime_subfield)
+    with pytest.raises(TypeError):
+        v = a.vector(dtype=v_dtype)

@@ -6,7 +6,7 @@ import pytest
 
 import galois
 
-DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
+from .helper import DTYPES
 
 
 class TestView:

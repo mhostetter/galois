@@ -1644,14 +1644,24 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             @suppress
             GF.display()
         """
+        dtype = cls._get_dtype(dtype)
         order = cls.prime_subfield.order
         degree = cls.degree
-        array = cls.prime_subfield(array).view(np.ndarray).astype(cls.dtypes[-1])  # Use the largest dtype so computation doesn't overflow
-        if not array.shape[-1] == degree:
-            raise ValueError(f"The last dimension of `array` must be the field extension dimension {cls.degree}, not {array.shape[-1]}.")
-        degrees = np.arange(degree - 1, -1, -1, dtype=cls.dtypes[-1])
-        array = np.sum(array * order**degrees, axis=-1)
-        return cls(array, dtype=dtype)
+
+        x = cls.prime_subfield(array)  # Convert element-like objects into the prime subfield
+        x = x.view(np.ndarray)  # Convert into an integer array
+        if not x.shape[-1] == degree:
+            raise ValueError(f"The last dimension of `array` must be the field extension dimension {cls.degree}, not {x.shape[-1]}.")
+
+        degrees = np.arange(degree - 1, -1, -1, dtype=dtype)
+        y = np.sum(x * order**degrees, axis=-1, dtype=dtype)
+
+        if np.isscalar(y):
+            y = cls(y, dtype=dtype)
+        else:
+            y = cls._view(y)
+
+        return y
 
     ###############################################################################
     # Instance methods
@@ -1845,16 +1855,28 @@ class FieldArray(np.ndarray, metaclass=FieldClass):
             @suppress
             GF.display()
         """
-        order = type(self).prime_subfield.order
-        degree = type(self).degree
-        array = self.view(np.ndarray)
-        array = np.repeat(array, degree).reshape(*array.shape, degree)
-        x = 0
-        for i in range(degree):
-            q = (array[...,i] - x) // order**(degree - 1 - i)
-            array[...,i] = q
-            x += q*order**(degree - 1 - i)
-        return type(self).prime_subfield(array, dtype=dtype)  # pylint: disable=unexpected-keyword-arg
+        field = type(self)
+        subfield = field.prime_subfield
+        order = subfield.order
+        degree = field.degree
+
+        x = np.array(self)  # The original array as an integer array
+        shape = list(self.shape) + [degree,]  # The new shape
+        y = subfield.Zeros(shape, dtype=dtype)
+
+        if self.dtype == np.object_:
+            # Need a separate "if" statement because divmod() does not work with dtype=object input and integer dtype outputs
+            for i in range(degree - 1, -1, -1):
+                q, r = x // order, x % order
+                y[..., i] = r
+                x = q
+        else:
+            for i in range(degree - 1, -1, -1):
+                q, r = divmod(x, order)
+                y[..., i] = r
+                x = q
+
+        return y
 
     def row_reduce(
         self,
