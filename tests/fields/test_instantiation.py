@@ -1,16 +1,13 @@
 """
 A pytest module to test instantiation of new Galois field arrays.
 """
-import random
-
 import pytest
 import numpy as np
 
 import galois
 
 from ..helper import array_equal
-
-DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64, np.object_]
+from .helper import DTYPES, valid_dtype, invalid_dtype
 
 
 def test_cant_instantiate_GF():
@@ -347,11 +344,3 @@ def convert_2d(v, type1, field):
     else:
         raise NotImplementedError
     return vt
-
-
-def valid_dtype(field):
-    return random.choice(field.dtypes)
-
-
-def invalid_dtype(field):
-    return random.choice([dtype for dtype in DTYPES if dtype not in field.dtypes])

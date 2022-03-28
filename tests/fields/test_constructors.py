@@ -1,16 +1,14 @@
 """
 A pytest module to test instantiation of new Galois field arrays through alternate constructors.
 """
-import random
-
 import pytest
 import numpy as np
 
 import galois
 
 from ..helper import randint
+from .helper import valid_dtype, invalid_dtype
 
-DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64, np.object_]
 
 RANDOM_REPRODUCIBLE = {
     'GF(2)-42': galois.GF2([1, 0, 1, 0]),
@@ -110,7 +108,7 @@ def test_ones_invalid_dtype(field, shape):
         a = field.Ones(shape, dtype=dtype)
 
 
-def test_eye(field):
+def test_identity(field):
     size = 4
     a = field.Identity(size)
     for i in range(size):
@@ -121,7 +119,7 @@ def test_eye(field):
     assert a.shape == (size,size)
 
 
-def test_eye_valid_dtype(field):
+def test_identity_valid_dtype(field):
     dtype = valid_dtype(field)
     size = 4
     a = field.Identity(size, dtype=dtype)
@@ -133,7 +131,7 @@ def test_eye_valid_dtype(field):
     assert a.shape == (size,size)
 
 
-def test_eye_invalid_dtype(field):
+def test_identity_invalid_dtype(field):
     dtype = invalid_dtype(field)
     size = 4
     with pytest.raises(TypeError):
@@ -212,6 +210,9 @@ def test_vector_valid_dtype(field, shape):
     assert a.dtype == dtype
     assert a.shape == shape
 
+    # Confirm the inverse operation reverts to the original array
+    assert np.array_equal(a.vector(), v)
+
 
 @pytest.mark.parametrize("shape", [(), (4,), (4,4)])
 def test_vector_invalid_dtype(field, shape):
@@ -221,11 +222,3 @@ def test_vector_invalid_dtype(field, shape):
     dtype = invalid_dtype(field)
     with pytest.raises(TypeError):
         a = field.Vector(v, dtype=dtype)
-
-
-def valid_dtype(field):
-    return random.choice(field.dtypes)
-
-
-def invalid_dtype(field):
-    return random.choice([dtype for dtype in DTYPES if dtype not in field.dtypes])

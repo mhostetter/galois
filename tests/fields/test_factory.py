@@ -1,8 +1,8 @@
 """
 A pytest module to test the Galois field array class factory function :obj:`galois.GF`.
 """
-import numpy as np
 import pytest
+import numpy as np
 
 import galois
 
