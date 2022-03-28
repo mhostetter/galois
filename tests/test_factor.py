@@ -174,19 +174,23 @@ def test_trial_division():
 def test_pollard_p1():
     p = 1458757  # p - 1 factors: [2, 3, 13, 1039], [2, 3, 1, 1]
     q = 1326001  # q - 1 factors: [2, 3, 5, 13, 17], [4, 1, 3, 1, 1]
-    assert galois.pollard_p1(p*q, 15) is None
+    with pytest.raises(RuntimeError):
+        assert galois.pollard_p1(p*q, 15)
     assert galois.pollard_p1(p*q, 19) == q
     assert galois.pollard_p1(p*q, 15, B2=100) == q
 
     p = 1598442007  # p - 1 factors: [2, 3, 7, 38058143], [1, 1, 1, 1]
     q = 1316659213  # q - 1 factors: [2, 3, 11, 83, 4451], [2, 4, 1, 1, 1]
-    assert galois.pollard_p1(p*q, 31) is None
+    with pytest.raises(RuntimeError):
+        assert galois.pollard_p1(p*q, 31)
     assert galois.pollard_p1(p*q, 31, B2=5000) == q
 
     p = 1636344139  # p - 1 factors: [2, 3, 11, 13, 1381], [1, 1, 1, 1, 2]
     q = 1476638609  # q - 1 factors: [2, 137, 673649], [4, 1, 1]
-    assert galois.pollard_p1(p*q, 100) is None
-    assert galois.pollard_p1(p*q, 100, B2=10_000) is None
+    with pytest.raises(RuntimeError):
+        assert galois.pollard_p1(p*q, 100)
+    with pytest.raises(RuntimeError):
+        assert galois.pollard_p1(p*q, 100, B2=10_000)
 
     n = 2133861346249  # n factors: [37, 41, 5471, 257107], [1, 1, 1, 1]
     assert galois.pollard_p1(n, 10) == 1517

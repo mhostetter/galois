@@ -975,7 +975,7 @@ def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int
 
 
 @set_module("galois")
-def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> Optional[int]:
+def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
     r"""
     Attempts to find a non-trivial factor of :math:`n` if it has a prime factor :math:`p` such that
     :math:`p-1` is :math:`B`-smooth.
@@ -994,6 +994,11 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> Optional[int]:
     -------
     :
         A non-trivial factor of :math:`n`, if found. `None` if not found.
+
+    Raises
+    ------
+    RuntimeError
+        If a non-trivial factor cannot be found.
 
     Notes
     -----
@@ -1022,6 +1027,7 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> Optional[int]:
     Searching with :math:`B=15` will not recover a prime factor.
 
     .. ipython:: python
+        :okexcept:
 
         galois.pollard_p1(p*q, 15)
 
@@ -1076,7 +1082,7 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> Optional[int]:
     if d not in [1, n]:
         return d
     if d == n:
-        return None
+        raise RuntimeError(f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}.")
 
     # Try to find p such that p - 1 has a single prime factor larger than B
     if B2 is not None:
@@ -1094,7 +1100,7 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> Optional[int]:
         if d not in [1, n]:
             return d
 
-    return None
+    raise RuntimeError(f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}.")
 
 
 # @functools.lru_cache(maxsize=1024)
