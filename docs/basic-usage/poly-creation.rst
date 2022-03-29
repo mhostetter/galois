@@ -210,7 +210,7 @@ Find one or all primitive polynomials with :func:`galois.primitive_poly` and :fu
 .. ipython:: python
 
    galois.primitive_poly(3, 3)
-   galois.primitive_polys(3, 3)
+   list(galois.primitive_polys(3, 3))
 
 Find the Conway polynomial using :func:`galois.conway_poly`.
 

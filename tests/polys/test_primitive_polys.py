@@ -103,13 +103,15 @@ def test_primitive_poly_random(order, degree):
 
 def test_primitive_polys_exceptions():
     with pytest.raises(TypeError):
-        galois.primitive_polys(2.0, 3)
+        next(galois.primitive_polys(2.0, 3))
     with pytest.raises(TypeError):
-        galois.primitive_polys(2, 3.0)
+        next(galois.primitive_polys(2, 3.0))
+    with pytest.raises(TypeError):
+        next(galois.primitive_polys(2, 3, reverse=1))
     with pytest.raises(ValueError):
-        galois.primitive_polys(2**2 * 3**2, 3)
+        next(galois.primitive_polys(2**2 * 3**2, 3))
     with pytest.raises(ValueError):
-        galois.primitive_polys(2, -1)
+        next(galois.primitive_polys(2, -1))
 
 
 @pytest.mark.parametrize("order,degree", PARAMS)
