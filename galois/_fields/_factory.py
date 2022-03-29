@@ -815,25 +815,73 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
 
     Notes
     -----
+    If :math:`f(x)` is a primitive polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
+    then :math:`a \cdot f(x)` is also primitive.
+
     In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)`
     of :math:`\mathrm{GF}(q)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
     of :math:`\mathrm{GF}(q^m)` such that :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
 
     Examples
     --------
-    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
-    :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
-    with smaller Conway polynomials, which is not *necessarily* the same.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Search methods
 
-        galois.primitive_poly(2, 4)
-        galois.conway_poly(2, 4)
+            Find the lexicographically-minimal monic primitive polynomial.
 
-    .. ipython:: python
+            .. ipython:: python
 
-        galois.primitive_poly(7, 10)
-        galois.conway_poly(7, 10)
+                galois.primitive_poly(7, 3)
+
+            Find the lexicographically-maximal monic primitive polynomial.
+
+            .. ipython:: python
+
+                galois.primitive_poly(7, 3, method="max")
+
+            Find a random monic primitive polynomial.
+
+            .. ipython:: python
+
+                galois.primitive_poly(7, 3, method="random")
+
+        .. tab-item:: Primitive vs. Conway
+
+            Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
+            :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+            with smaller Conway polynomials.
+
+            This is sometimes the same polynomial.
+
+            .. ipython:: python
+
+                galois.primitive_poly(2, 4)
+                galois.conway_poly(2, 4)
+
+            However, it is not always.
+
+            .. ipython:: python
+
+                galois.primitive_poly(7, 10)
+                galois.conway_poly(7, 10)
+
+        .. tab-item:: Properties
+
+            Find a random monic primitive polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
+
+            .. ipython:: python
+
+                f = galois.primitive_poly(7, 5, method="random"); f
+                galois.is_primitive(f)
+
+            Monic primitive polynomials scaled by non-zero field elements (now non-monic) are also primitive.
+
+            .. ipython:: python
+
+                GF = galois.GF(7)
+                g = f * GF(3); g
+                galois.is_primitive(g)
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
@@ -846,81 +894,84 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
 
-    field = GF(order)
-
-    # Only search monic polynomials of degree m over GF(p)
-    min_ = order**degree
-    max_ = 2*order**degree
-
-    if method == "random":
-        while True:
-            integer = random.randint(min_, max_ - 1)
-            poly = Poly.Int(integer, field=field)
-            if is_primitive(poly):
-                break
+    if method == "min":
+        return next(primitive_polys(order, degree))
+    elif method == "max":
+        return next(primitive_polys(order, degree, reverse=True))
     else:
-        # The search produces a deterministic result, so we can memoize the output
-        poly = _primitive_poly_search(min_, max_, method, field)
-
-    return poly
-
-
-@functools.lru_cache(maxsize=128)
-def _primitive_poly_search(min_, max_, method, field):
-    """
-    Searches for an primitive polynomial in the range using the specified deterministic method.
-    """
-    elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
-
-    for element in elements:
-        poly = Poly.Int(element, field=field)
-        if is_primitive(poly):
-            return poly
-
-    raise RuntimeError(f"No primitive polynomials exist in {field.name} between {Poly.Int(min_, field=field)} and {Poly.Int(max_ - 1, field=field)}.")
+        return _primitive_poly_random_search(order, degree)
 
 
 @set_module("galois")
-def primitive_polys(order: int, degree: int) -> Poly:
+def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[Poly]:
     r"""
-    Returns all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
+    Iterates through all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
     Parameters
     ----------
     order
-        The prime order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
+        The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
     degree
         The degree :math:`m` of the desired primitive polynomial.
+    reverse
+        Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is `False`.
 
     Returns
     -------
     :
-        All degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(q)`.
+        An iterator over all degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(q)`.
 
     Notes
     -----
+    If :math:`f(x)` is a primitive polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
+    then :math:`a \cdot f(x)` is also primitive.
+
     In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)`
     of :math:`\mathrm{GF}(q)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
     of :math:`\mathrm{GF}(q^m)` such that :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
 
     Examples
     --------
-    All monic primitive polynomials over :math:`\mathrm{GF}(2)` with degree :math:`5`.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Return full list
 
-        galois.primitive_polys(2, 5)
+            All monic primitive polynomials over :math:`\mathrm{GF}(3)` with degree :math:`4`. You may also use :func:`tuple` on
+            the returned generator.
 
-    All monic primitive polynomials over :math:`\mathrm{GF}(3^2)` with degree :math:`2`.
+            .. ipython:: python
 
-    .. ipython:: python
+                list(galois.primitive_polys(3, 4))
 
-        galois.primitive_polys(3**2, 2)
+        .. tab-item:: For loop
+
+            Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
+            have been found after the `break` condition is never incurred.
+
+            .. ipython:: python
+
+                for poly in galois.primitive_polys(3, 4, reverse=True):
+                    if poly.coeffs[1] < 2:  # Early exit condition
+                        break
+                    print(poly)
+
+        .. tab-item:: Manual iteration
+
+            Or, manually iterate over the generator.
+
+            .. ipython:: python
+
+                generator = galois.primitive_polys(3, 4, reverse=True); generator
+                next(generator)
+                next(generator)
+                next(generator)
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
     if not isinstance(degree, (int, np.integer)):
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    if not isinstance(reverse, bool):
+        raise TypeError(f"Argument `reverse` must be a bool, not {type(reverse)}.")
     if not is_prime_power(order):
         raise ValueError(f"Argument `order` must be a prime power, not {order}.")
     if not degree >= 0:
@@ -928,17 +979,51 @@ def primitive_polys(order: int, degree: int) -> Poly:
 
     field = GF(order)
 
-    # Only search monic polynomials of degree m over GF(p)
-    min_ = order**degree
-    max_ = 2*order**degree
+    # Only search monic polynomials of degree m over GF(q)
+    start = order**degree
+    stop = 2*order**degree
+    step = 1
 
-    polys = []
-    for element in range(min_, max_):
+    if reverse:
+        start, stop, step = stop - 1, start - 1, -1
+
+    while True:
+        poly = _primitive_poly_deterministic_search(field, start, stop, step)
+        if poly is not None:
+            start = int(poly) + step
+            yield poly
+        else:
+            break
+
+
+@functools.lru_cache(maxsize=4096)
+def _primitive_poly_deterministic_search(field, start, stop, step) -> Optional[Poly]:
+    """
+    Searches for an primitive polynomial in the range using the specified deterministic method.
+    """
+    for element in range(start, stop, step):
         poly = Poly.Int(element, field=field)
         if is_primitive(poly):
-            polys.append(poly)
+            return poly
 
-    return polys
+    return None
+
+
+def _primitive_poly_random_search(order, degree) -> Poly:
+    """
+    Searches for a random primitive polynomial.
+    """
+    field = GF(order)
+
+    # Only search monic polynomials of degree m over GF(p)
+    start = order**degree
+    stop = 2*order**degree
+
+    while True:
+        integer = random.randint(start, stop - 1)
+        poly = Poly.Int(integer, field=field)
+        if is_primitive(poly):
+            return poly
 
 
 @set_module("galois")
@@ -1068,12 +1153,16 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     --------
     Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
     :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
-    with smaller Conway polynomials, which is not *necessarily* the same.
+    with smaller Conway polynomials.
+
+    This is sometimes the same polynomial.
 
     .. ipython:: python
 
         galois.primitive_poly(2, 4)
         galois.conway_poly(2, 4)
+
+    However, it is not always.
 
     .. ipython:: python
 
