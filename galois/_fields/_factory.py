@@ -6,7 +6,7 @@ Galois field class factory.
 import functools
 import random
 import types
-from typing import Sequence, List, Optional, Union, Type
+from typing import Sequence, List, Optional, Union, Iterator, Type
 from typing_extensions import Literal
 
 import numpy as np
@@ -474,11 +474,7 @@ GF_extension._classes = {}
 ###############################################################################
 
 @set_module("galois")
-def irreducible_poly(
-    order: int,
-    degree: int,
-    method: Literal["min", "max", "random"] = "min"
-) -> Poly:
+def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "random"] = "min") -> Poly:
     r"""
     Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
@@ -503,31 +499,50 @@ def irreducible_poly(
     Notes
     -----
     If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
-    then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
-    :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
+    then :math:`a \cdot f(x)` is also irreducible.
+
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
 
     Examples
     --------
-    The lexicographically-minimal, monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Search methods
 
-        p = galois.irreducible_poly(7, 5); p
-        galois.is_irreducible(p)
+            Find the lexicographically-minimal monic irreducible polynomial.
 
-    Irreducible polynomials scaled by non-zero field elements are also irreducible.
+            .. ipython:: python
 
-    .. ipython:: python
+                galois.irreducible_poly(7, 3)
 
-        GF = galois.GF(7)
-        galois.is_irreducible(p * GF(3))
+            Find the lexicographically-maximal monic irreducible polynomial.
 
-    A random, monic irreducible polynomial over :math:`\mathrm{GF}(7^2)` with degree :math:`3`.
+            .. ipython:: python
 
-    .. ipython:: python
+                galois.irreducible_poly(7, 3, method="max")
 
-        p = galois.irreducible_poly(7**2, 3, method="random"); p
-        galois.is_irreducible(p)
+            Find a random monic irreducible polynomial.
+
+            .. ipython:: python
+
+                galois.irreducible_poly(7, 3, method="random")
+
+        .. tab-item:: Properties
+
+            Find a random monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
+
+            .. ipython:: python
+
+                f = galois.irreducible_poly(7, 5, method="random"); f
+                galois.is_irreducible(f)
+
+            Monic irreducible polynomials scaled by non-zero field elements (now non-monic) are also irreducible.
+
+            .. ipython:: python
+
+                GF = galois.GF(7)
+                g = f * GF(3); g
+                galois.is_irreducible(g)
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
@@ -540,44 +555,18 @@ def irreducible_poly(
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
 
-    field = GF(order)
-
-    # Only search monic polynomials of degree m over GF(q)
-    min_ = order**degree
-    max_ = 2*order**degree
-
-    if method == "random":
-        while True:
-            integer = random.randint(min_, max_ - 1)
-            poly = Poly.Int(integer, field=field)
-            if is_irreducible(poly):
-                break
+    if method == "min":
+        return next(irreducible_polys(order, degree))
+    elif method == "max":
+        return next(irreducible_polys(order, degree, reverse=True))
     else:
-        # The search produces a deterministic result, so we can memoize the output
-        poly = _irreducible_poly_search(min_, max_, method, field)
-
-    return poly
-
-
-@functools.lru_cache(maxsize=128)
-def _irreducible_poly_search(min_, max_, method, field):
-    """
-    Searches for an irreducible polynomial in the range using the specified deterministic method.
-    """
-    elements = range(min_, max_) if method == "min" else range(max_ - 1, min_ - 1, -1)
-
-    for element in elements:
-        poly = Poly.Int(element, field=field)
-        if is_irreducible(poly):
-            return poly
-
-    raise RuntimeError(f"No irreducible polynomials exist in {field.name} between {Poly.Int(min_, field=field)} and {Poly.Int(max_ - 1, field=field)}.")
+        return _irreducible_poly_random_search(order, degree)
 
 
 @set_module("galois")
-def irreducible_polys(order: int, degree: int) -> List[Poly]:
+def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterator[Poly]:
     r"""
-    Returns all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
+    Iterates through all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
     Parameters
     ----------
@@ -585,36 +574,63 @@ def irreducible_polys(order: int, degree: int) -> List[Poly]:
         The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
     degree
         The degree :math:`m` of the desired irreducible polynomial.
+    reverse
+        Indicates to return the irreducible polynomials from lexicographically maximal to minimal. The default is `False`.
 
     Returns
     -------
     :
-        All degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(q)`.
+        An iterator over all degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(q)`.
 
     Notes
     -----
     If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
-    then :math:`a \cdot f(x)` is also irreducible. In addition to other applications, :math:`f(x)` produces the field extension
-    :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
+    then :math:`a \cdot f(x)` is also irreducible.
+
+    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
 
     Examples
     --------
-    All monic irreducible polynomials over :math:`\mathrm{GF}(2)` with degree :math:`5`.
+    .. tab-set::
 
-    .. ipython:: python
+        .. tab-item:: Return full list
 
-        galois.irreducible_polys(2, 5)
+            All monic irreducible polynomials over :math:`\mathrm{GF}(3)` with degree :math:`4`. You may also use :func:`tuple` on
+            the returned generator.
 
-    All monic irreducible polynomials over :math:`\mathrm{GF}(3^2)` with degree :math:`2`.
+            .. ipython:: python
 
-    .. ipython:: python
+                list(galois.irreducible_polys(3, 4))
 
-        galois.irreducible_polys(3**2, 2)
+        .. tab-item:: For loop
+
+            Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
+            have been found after the `break` condition is never incurred.
+
+            .. ipython:: python
+
+                for poly in galois.irreducible_polys(3, 4, reverse=True):
+                    if poly.coeffs[1] < 2:  # Early exit condition
+                        break
+                    print(poly)
+
+        .. tab-item:: Manual iteration
+
+            Or, manually iterate over the generator.
+
+            .. ipython:: python
+
+                generator = galois.irreducible_polys(3, 4, reverse=True); generator
+                next(generator)
+                next(generator)
+                next(generator)
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
     if not isinstance(degree, (int, np.integer)):
         raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    if not isinstance(reverse, bool):
+        raise TypeError(f"Argument `reverse` must be a bool, not {type(reverse)}.")
     if not is_prime_power(order):
         raise ValueError(f"Argument `order` must be a prime power, not {order}.")
     if not degree >= 0:
@@ -622,17 +638,51 @@ def irreducible_polys(order: int, degree: int) -> List[Poly]:
 
     field = GF(order)
 
-    # Only search monic polynomials of degree m over GF(p)
-    min_ = order**degree
-    max_ = 2*order**degree
+    # Only search monic polynomials of degree m over GF(q)
+    start = order**degree
+    stop = 2*order**degree
+    step = 1
 
-    polys = []
-    for element in range(min_, max_):
+    if reverse:
+        start, stop, step = stop - 1, start - 1, -1
+
+    while True:
+        poly = _irreducible_poly_deterministic_search(field, start, stop, step)
+        if poly is not None:
+            start = int(poly) + step
+            yield poly
+        else:
+            break
+
+
+@functools.lru_cache(maxsize=4096)
+def _irreducible_poly_deterministic_search(field, start, stop, step) -> Optional[Poly]:
+    """
+    Searches for an irreducible polynomial in the range using the specified deterministic method.
+    """
+    for element in range(start, stop, step):
         poly = Poly.Int(element, field=field)
         if is_irreducible(poly):
-            polys.append(poly)
+            return poly
 
-    return polys
+    return None
+
+
+def _irreducible_poly_random_search(order, degree) -> Poly:
+    """
+    Searches for a random irreducible polynomial.
+    """
+    field = GF(order)
+
+    # Only search monic polynomials of degree m over GF(p)
+    start = order**degree
+    stop = 2*order**degree
+
+    while True:
+        integer = random.randint(start, stop - 1)
+        poly = Poly.Int(integer, field=field)
+        if is_irreducible(poly):
+            return poly
 
 
 @set_module("galois")

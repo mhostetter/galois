@@ -203,7 +203,7 @@ Find one or all irreducible polynomials with :func:`galois.irreducible_poly` and
 .. ipython:: python
 
    galois.irreducible_poly(3, 3)
-   galois.irreducible_polys(3, 3)
+   list(galois.irreducible_polys(3, 3))
 
 Find one or all primitive polynomials with :func:`galois.primitive_poly` and :func:`galois.primitive_polys`.
 
