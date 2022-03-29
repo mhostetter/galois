@@ -96,13 +96,15 @@ def test_irreducible_poly_random(order, degree):
 
 def test_irreducible_polys_exceptions():
     with pytest.raises(TypeError):
-        galois.irreducible_polys(2.0, 3)
+        next(galois.irreducible_polys(2.0, 3))
     with pytest.raises(TypeError):
-        galois.irreducible_polys(2, 3.0)
+        next(galois.irreducible_polys(2, 3.0))
+    with pytest.raises(TypeError):
+        next(galois.irreducible_polys(2, 3, reverse=1))
     with pytest.raises(ValueError):
-        galois.irreducible_polys(2**2 * 3**2, 3)
+        next(galois.irreducible_polys(2**2 * 3**2, 3))
     with pytest.raises(ValueError):
-        galois.irreducible_polys(2, -1)
+        next(galois.irreducible_polys(2, -1))
 
 
 @pytest.mark.parametrize("order,degree", PARAMS)
