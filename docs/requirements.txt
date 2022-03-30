@@ -1,5 +1,4 @@
 sphinx>=3
-jinja2<3.1.0  # Avoid https://github.com/jbms/sphinx-immaterial/issues/49 for now
 git+https://github.com/jbms/sphinx-immaterial
 recommonmark>=0.5
 sphinx-design
