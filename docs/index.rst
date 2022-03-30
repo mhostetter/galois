@@ -150,6 +150,7 @@ APA
    :hidden:
 
    release-notes/versioning.rst
+   release-notes/v0.0.26.md
    release-notes/v0.0.25.md
    release-notes/v0.0.24.md
    release-notes/v0.0.23.md
