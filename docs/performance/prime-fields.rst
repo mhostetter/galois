@@ -15,34 +15,34 @@ Below are examples computing 10 million multiplications in the prime field :math
 
 .. code-block:: ipython
 
-    In [1]: import numpy as np
+    In [1]: import galois
 
-    In [2]: import galois
+    In [2]: GF = galois.GF(31)
 
-    In [3]: GF = galois.GF(31)
+    In [3]: GF.ufunc_mode
+    Out[3]: 'jit-lookup'
 
-    In [4]: GF.ufunc_mode
-    Out[4]: 'jit-lookup'
+    In [4]: a = GF.Random(10_000_000, seed=1, dtype=int)
 
-    In [5]: a = GF.Random(10_000_000, dtype=int)
-
-    In [6]: b = GF.Random(10_000_000, dtype=int)
+    In [5]: b = GF.Random(10_000_000, seed=2, dtype=int)
 
     # Invoke the ufunc once to JIT compile it, if necessary
-    In [7]: a * b
-    Out[7]: GF([ 9,  8, 19, ..., 16, 14,  9], order=31)
+    In [6]: a * b
+    Out[6]: GF([ 9, 27,  7, ..., 14, 21, 15], order=31)
 
-    In [8]: %timeit a * b
-    47 ms ± 328 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    In [7]: %timeit a * b
+    36 ms ± 1.07 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
-The equivalent operation using native NumPy ufuncs takes more computation time.
+The equivalent operation using native NumPy ufuncs is ~1.8x slower.
 
 .. code-block:: ipython
+
+    In [8]: import numpy as np
 
     In [9]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
     In [10]: %timeit (aa * bb) % GF.order
-    65.7 ms ± 2.15 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    65.3 ms ± 1.26 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 Explicit calculation performance
 --------------------------------
@@ -55,34 +55,34 @@ Below are examples computing 10 million multiplications in the prime field :math
 
 .. code-block:: ipython
 
-    In [1]: import numpy as np
+    In [1]: import galois
 
-    In [2]: import galois
+    In [2]: GF = galois.GF(2097169)
 
-    In [3]: GF = galois.GF(2097169)
+    In [3]: GF.ufunc_mode
+    Out[3]: 'jit-calculate'
 
-    In [4]: GF.ufunc_mode
-    Out[4]: 'jit-calculate'
+    In [4]: a = GF.Random(10_000_000, seed=1, dtype=int)
 
-    In [5]: a = GF.Random(10_000_000, dtype=int)
-
-    In [6]: b = GF.Random(10_000_000, dtype=int)
+    In [5]: b = GF.Random(10_000_000, seed=2, dtype=int)
 
     # Invoke the ufunc once to JIT compile it, if necessary
-    In [7]: a * b
-    Out[7]: GF([2013483,  988560, 1779867, ..., 1545467, 1632526, 1255802], order=2097169)
+    In [6]: a * b
+    Out[6]: GF([1879104, 1566761,  967164, ...,  744769,  975853, 1142138], order=2097169)
 
-    In [8]: %timeit a * b
-    44.3 ms ± 1.77 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    In [7]: %timeit a * b
+    32.7 ms ± 1.44 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
-The equivalent operation using native NumPy ufuncs takes more computation time.
+The equivalent operation using native NumPy ufuncs is ~2.5x slower.
 
 .. code-block:: ipython
+
+    In [8]: import numpy as np
 
     In [9]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
     In [10]: %timeit (aa * bb) % GF.order
-    78.6 ms ± 1.66 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    78.8 ms ± 1.6 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 Runtime floor
 -------------
@@ -96,37 +96,37 @@ or explicit calculation.
 
 .. code-block:: ipython
 
-    In [1]: import numpy as np
+    In [1]: import galois
 
-    In [2]: import galois
+    In [2]: GF = galois.GF(2097169)
 
-    In [3]: GF = galois.GF(2097169)
+    In [3]: GF.ufunc_mode
+    Out[3]: 'jit-calculate'
 
-    In [4]: GF.ufunc_mode
-    Out[4]: 'jit-calculate'
+    In [4]: a = GF.Random(10, seed=1, dtype=int)
 
-    In [5]: a = GF.Random(10, dtype=int)
-
-    In [6]: b = GF.Random(10, dtype=int)
+    In [5]: b = GF.Random(10, seed=2, dtype=int)
 
     # Invoke the ufunc once to JIT compile it, if necessary
-    In [7]: a * b
-    Out[7]:
-    GF([ 896129,  872169,  350032, 1469502,  405310,  676818,  810199,
-        1716238, 1906063,  734877], order=2097169)
+    In [6]: a * b
+    Out[6]:
+    GF([1879104, 1566761,  967164, 1403108,  100593,  595358,  852783,
+        1035698, 1207498,  989189], order=2097169)
 
-    In [8]: %timeit a * b
-    22.7 µs ± 12.5 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+    In [7]: %timeit a * b
+    7.62 µs ± 390 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 
-The equivalent operation using native NumPy ufuncs is much faster. However, in absolute terms, the
-difference is only 20 µs.
+The equivalent operation using native NumPy ufuncs is ~6x faster. However, in absolute terms, the
+difference is only ~6 µs.
 
 .. code-block:: ipython
+
+    In [8]: import numpy as np
 
     In [9]: aa, bb = a.view(np.ndarray), b.view(np.ndarray)
 
     In [10]: %timeit (aa * bb) % GF.order
-    1.28 µs ± 8.76 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
+    1.29 µs ± 12.6 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
 
 Linear algebra performance
 --------------------------
@@ -142,35 +142,40 @@ Below are examples computing the matrix multiplication of two :math:`100 \times 
 
 .. code-block:: ipython
 
-    In [1]: import numpy as np
+    In [1]: import galois
 
-    In [2]: import galois
+    In [2]: GF = galois.GF(2097169)
 
-    In [3]: GF = galois.GF(2097169)
+    In [3]: GF.ufunc_mode
+    Out[3]: 'jit-calculate'
 
-    In [4]: A = GF.Random((100,100), dtype=int)
+    In [4]: A = GF.Random((100,100), seed=1, dtype=int)
 
-    In [5]: B = GF.Random((100,100), dtype=int)
+    In [5]: B = GF.Random((100,100), seed=2, dtype=int)
 
+    # Invoke the ufunc once to JIT compile it, if necessary
     In [6]: A @ B
     Out[6]:
-    GF([[ 128673, 1468479,  378652, ...,  994885, 1137736,  995031],
-        [ 244883, 1939904, 1954854, ...,  662720, 1936589,  342155],
-        [1517731,  802122,  844187, ..., 1891274,  818213,  917809],
+    GF([[1147163,   59466, 1841183, ...,  667877, 2084618,  799166],
+        [ 306714, 1380503,  810935, ..., 1932687, 1690697,  329837],
+        [ 325274,  575543, 1327001, ...,  167724,  422518,  696986],
         ...,
-        [1255894,  591621, 1719850, ..., 1002520, 1016816, 1853655],
-        [ 815808,  306389,  937511, ..., 1041239,  808795, 1298201],
-        [ 519286, 1029185,  158041, ...,  208118, 1930717, 1439762]], order=2097169)
+        [ 862992, 1143160,  588384, ...,  668891, 1285421, 1196448],
+        [1026856, 1413416, 1844802, ...,   38844, 1643604,   10409],
+        [ 401717,  329673,  860449, ..., 1551173, 1766877,  986430]],
+    order=2097169)
 
     In [7]: %timeit A @ B
-    728 µs ± 1.53 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+    708 µs ± 1.48 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 
 The equivalent operation using native NumPy ufuncs is slightly faster. This is because :obj:`galois` has some internal overhead
 before invoking the same NumPy calculation.
 
 .. code-block:: ipython
 
-    In [8]: AA, BB = A.view(np.ndarray), B.view(np.ndarray)
+    In [8]: import numpy as np
 
-    In [9]: %timeit (AA @ BB) % GF.order
-    669 µs ± 4.14 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+    In [9]: AA, BB = A.view(np.ndarray), B.view(np.ndarray)
+
+    In [10]: %timeit (AA @ BB) % GF.order
+    682 µs ± 11.1 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
