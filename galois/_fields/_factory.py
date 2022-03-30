@@ -484,6 +484,10 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
     :
         The degree-:math:`m` monic irreducible polynomial over :math:`\mathrm{GF}(q)`.
 
+    See Also
+    --------
+    is_irreducible, primitive_poly, conway_poly
+
     Notes
     -----
     If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
@@ -569,6 +573,10 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
     -------
     :
         An iterator over all degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(q)`.
+
+    See Also
+    --------
+    is_irreducible, primitive_polys
 
     Notes
     -----
@@ -688,6 +696,10 @@ def is_irreducible(poly: Poly) -> bool:
     :
         `True` if the polynomial is irreducible.
 
+    See Also
+    --------
+    is_primitive, irreducible_poly, irreducible_polys
+
     Notes
     -----
     A polynomial :math:`f(x) \in \mathrm{GF}(p^m)[x]` is *reducible* over :math:`\mathrm{GF}(p^m)` if it can
@@ -801,6 +813,10 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     :
         The degree-:math:`m` monic primitive polynomial over :math:`\mathrm{GF}(q)`.
 
+    See Also
+    --------
+    is_primitive, matlab_primitive_poly, conway_poly
+
     Notes
     -----
     If :math:`f(x)` is a primitive polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
@@ -908,6 +924,10 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
     -------
     :
         An iterator over all degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(q)`.
+
+    See Also
+    --------
+    is_primitive, irreducible_polys
 
     Notes
     -----
@@ -1029,6 +1049,10 @@ def is_primitive(poly: Poly) -> bool:
     :
         `True` if the polynomial is primitive.
 
+    See Also
+    --------
+    is_irreducible, primitive_poly, matlab_primitive_poly, primitive_polys
+
     Notes
     -----
     A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
@@ -1118,6 +1142,10 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     :
         The degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)`.
 
+    See Also
+    --------
+    is_primitive, primitive_poly, matlab_primitive_poly
+
     Raises
     ------
     LookupError
@@ -1189,6 +1217,10 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     -------
     :
         Matlab's default degree-:math:`m` primitive polynomial over :math:`\mathrm{GF}(p)`.
+
+    See Also
+    --------
+    is_primitive, primitive_poly, conway_poly
 
     Notes
     -----
@@ -1274,7 +1306,7 @@ def primitive_element(
 
     See Also
     --------
-    primitive_elements, is_primitive_element, FieldClass.primitive_element, FieldClass.primitive_elements
+    is_primitive_element, FieldClass.primitive_element
 
     Examples
     --------
@@ -1390,7 +1422,7 @@ def primitive_elements(irreducible_poly: Poly) -> List[Poly]:  # pylint: disable
 
     See Also
     --------
-    primitive_element, is_primitive_element, FieldClass.primitive_element, FieldClass.primitive_elements
+    is_primitive_element, FieldClass.primitive_elements
 
     Notes
     -----
@@ -1468,7 +1500,7 @@ def is_primitive_element(
 
     See Also
     --------
-    primitive_element, primitive_elements, FieldClass.primitive_element, FieldClass.primitive_elements
+    primitive_element, FieldClass.primitive_element
 
     Examples
     --------

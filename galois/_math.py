@@ -94,6 +94,10 @@ def isqrt(n: int) -> int:
     :
         The integer square root of :math:`n`.
 
+    See Also
+    --------
+    iroot, ilog
+
     Examples
     --------
     .. ipython:: python
@@ -139,6 +143,10 @@ def iroot(n: int, k: int) -> int:
     -------
     :
         The integer :math:`k`-th root of :math:`n`.
+
+    See Also
+    --------
+    isqrt, ilog
 
     Examples
     --------
@@ -191,6 +199,10 @@ def ilog(n: int, b: int) -> int:
     -------
     :
         The integer logarithm base :math:`b` of :math:`n`.
+
+    See Also
+    --------
+    iroot, isqrt
 
     Examples
     --------

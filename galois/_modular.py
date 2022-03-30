@@ -33,6 +33,10 @@ def totatives(n: int) -> List[int]:
     :
         The totatives of :math:`n`.
 
+    See Also
+    --------
+    euler_phi, carmichael_lambda, is_cyclic
+
     References
     ----------
     * Section 2.4.3 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
@@ -85,6 +89,10 @@ def euler_phi(n: int) -> int:
     -------
     :
         The number of totatives that are coprime to :math:`n`.
+
+    See Also
+    --------
+    carmichael_lambda, totatives, is_cyclic
 
     Notes
     -----
@@ -162,6 +170,10 @@ def carmichael_lambda(n: int) -> int:
     :
         The smallest positive integer :math:`m` such that :math:`a^m \equiv 1 (\textrm{mod}\ n)` for
         every :math:`a` in :math:`[1, n)` that is coprime to :math:`n`.
+
+    See Also
+    --------
+    euler_phi, totatives, is_cyclic
 
     References
     ----------
@@ -243,6 +255,10 @@ def is_cyclic(n: int) -> bool:
     -------
     :
         `True` if the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic.
+
+    See Also
+    --------
+    euler_phi, carmichael_lambda, totatives
 
     Notes
     -----
@@ -737,6 +753,10 @@ def is_primitive_root(g: int, n: int) -> bool:
     -------
     :
         `True` if :math:`g` is a primitive root modulo :math:`n`.
+
+    See Also
+    --------
+    primitive_root, primitive_roots, is_cyclic, euler_phi
 
     Notes
     -----
