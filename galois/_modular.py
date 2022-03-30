@@ -68,6 +68,7 @@ def totatives(n: int) -> List[int]:
 
 
 @set_module("galois")
+@functools.lru_cache(maxsize=64)
 def euler_phi(n: int) -> int:
     r"""
     Counts the positive integers (totatives) in :math:`[1, n)` that are coprime to :math:`n`.
