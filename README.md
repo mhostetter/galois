@@ -69,7 +69,7 @@ Import the `galois` package in Python.
 In [1]: import galois
 
 In [2]: galois.__version__
-Out[2]: '0.0.25'
+Out[2]: '0.0.26'
 ```
 
 ### Create a Galois field array class
