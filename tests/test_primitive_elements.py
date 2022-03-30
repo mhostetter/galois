@@ -452,18 +452,12 @@ def test_primitive_element_exceptions():
 
     with pytest.raises(TypeError):
         galois.primitive_element(p.coeffs)
-    with pytest.raises(TypeError):
-        galois.primitive_element(p, start=2.0)
-    with pytest.raises(TypeError):
-        galois.primitive_element(p, stop=256.0)
-    with pytest.raises(TypeError):
-        galois.primitive_element(p, reverse=1)
     with pytest.raises(ValueError):
         galois.primitive_element(galois.Poly.Random(0))
     with pytest.raises(ValueError):
         galois.primitive_element(galois.Poly.Random(2)*galois.Poly.Random(2))
     with pytest.raises(ValueError):
-        galois.primitive_element(p, start=200, stop=100)
+        galois.primitive_element(p, method="invalid")
 
 
 @pytest.mark.parametrize("characteristic,degree", [(2,2), (2,3), (2,4), (2,5), (2,6), (3,2), (3,3), (3,4), (5,2), (5,3), (5,4)])
@@ -477,26 +471,18 @@ def test_primitive_element_min(characteristic, degree):
 def test_primitive_element_max(characteristic, degree):
     LUT = eval(f"PRIMITIVE_ELEMENTS_{characteristic}_{degree}")
     p = galois.GF(characteristic**degree).irreducible_poly
-    assert galois.primitive_element(p, reverse=True) == LUT[-1]
+    assert galois.primitive_element(p, method="max") == LUT[-1]
 
 
 def test_primitive_elements_exceptions():
     p = galois.conway_poly(2, 8)
 
     with pytest.raises(TypeError):
-        galois.primitive_elements(p.coeffs)
-    with pytest.raises(TypeError):
-        galois.primitive_elements(p, start=2.0)
-    with pytest.raises(TypeError):
-        galois.primitive_elements(p, stop=256.0)
-    with pytest.raises(TypeError):
-        galois.primitive_elements(p, reverse=1)
+        galois.primitive_elements(float(int(p)))
     with pytest.raises(ValueError):
         galois.primitive_elements(galois.Poly.Random(0))
     with pytest.raises(ValueError):
         galois.primitive_elements(galois.Poly.Random(2)*galois.Poly.Random(2))
-    with pytest.raises(ValueError):
-        galois.primitive_elements(p, start=200, stop=100)
 
 
 @pytest.mark.parametrize("characteristic,degree", [(2,2), (2,3), (2,4), (2,5), (2,6), (3,2), (3,3), (3,4), (5,2), (5,3), (5,4)])
@@ -507,10 +493,13 @@ def test_primitive_elements(characteristic, degree):
 
 
 def test_is_primitive_element_exceptions():
+    e = galois.Poly([1, 0, 1, 1])
+    f = galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1])
+
     with pytest.raises(TypeError):
-        galois.is_primitive_element([1, 0, 1, 1], galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1]))
+        galois.is_primitive_element(float(int(e)), galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1]))
     with pytest.raises(TypeError):
-        galois.is_primitive_element(galois.Poly([1, 0, 1, 1]), [1, 0, 0, 0, 1, 1, 1, 0, 1])
+        galois.is_primitive_element(e, f.coeffs)
     with pytest.raises(ValueError):
         galois.is_primitive_element(galois.Poly([1, 0, 1, 1]), galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1], field=galois.GF(3)))
     with pytest.raises(ValueError):
