@@ -443,7 +443,7 @@ There are multiple primitive elements of any finite field. All primitive element
 
          @suppress
          GF7.display("int")
-         galois.primitive_roots(7)
+         list(galois.primitive_roots(7))
          GF7.primitive_elements
          g = GF7(5); g
 
@@ -454,7 +454,7 @@ There are multiple primitive elements of any finite field. All primitive element
 
          @suppress
          GF7.display("power")
-         galois.primitive_roots(7)
+         list(galois.primitive_roots(7))
          GF7.primitive_elements
          g = GF7(5); g
 
