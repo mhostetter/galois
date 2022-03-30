@@ -47,6 +47,10 @@ def primes(n: int) -> List[int]:
     :
         All primes up to and including :math:`n`. If :math:`n < 2`, the function returns an empty list.
 
+    See Also
+    --------
+    kth_prime, prev_prime, next_prime
+
     Notes
     -----
     This function implements the Sieve of Eratosthenes to efficiently find the primes.
@@ -126,6 +130,10 @@ def kth_prime(k: int) -> int:
     :
         The :math:`k`-th prime.
 
+    See Also
+    --------
+    primes, prev_prime, next_prime
+
     Examples
     --------
     .. ipython:: python
@@ -156,6 +164,10 @@ def prev_prime(n: int) -> int:
     -------
     :
         The nearest prime :math:`p \le n`.
+
+    See Also
+    --------
+    primes, kth_prime, next_prime
 
     Examples
     --------
@@ -199,6 +211,10 @@ def next_prime(n: int) -> int:
     :
         The nearest prime :math:`p > n`.
 
+    See Also
+    --------
+    primes, kth_prime, prev_prime
+
     Examples
     --------
     .. ipython:: python
@@ -241,6 +257,10 @@ def random_prime(bits: int) -> int:
     -------
     :
         A random prime in :math:`2^b \le p < 2^{b+1}`.
+
+    See Also
+    --------
+    prev_prime, next_prime
 
     References
     ----------
@@ -296,6 +316,10 @@ def mersenne_exponents(n: Optional[int] = None) -> List[int]:
     :
         The list of Mersenne exponents :math:`e` for :math:`e \le n`.
 
+    See Also
+    --------
+    mersenne_primes
+
     References
     ----------
     * https://oeis.org/A000043
@@ -338,6 +362,10 @@ def mersenne_primes(n: Optional[int] = None) -> List[int]:
     :
         The list of known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
 
+    See Also
+    --------
+    mersenne_exponents
+
     References
     ----------
     * https://oeis.org/A000668
@@ -376,6 +404,10 @@ def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> b
     -------
     :
         `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
+
+    See Also
+    --------
+    is_prime, miller_rabin_primality_test
 
     Notes
     -----
@@ -474,6 +506,10 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
     -------
     :
         `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
+
+    See Also
+    --------
+    is_prime, fermat_primality_test
 
     Notes
     -----
@@ -585,6 +621,10 @@ def legendre_symbol(a: int, p: int) -> int:
     :
         The Legendre symbol :math:`(\frac{a}{p})` with value in :math:`\{0, 1, -1\}`.
 
+    See Also
+    --------
+    jacobi_symbol, kronecker_symbol
+
     Notes
     -----
     The Legendre symbol is useful for determining if :math:`a` is a quadratic residue modulo :math:`p`, namely
@@ -643,6 +683,10 @@ def jacobi_symbol(a: int, n: int) -> int:
     -------
     :
         The Jacobi symbol :math:`(\frac{a}{n})` with value in :math:`\{0, 1, -1\}`.
+
+    See Also
+    --------
+    legendre_symbol, kronecker_symbol
 
     Notes
     -----
@@ -721,6 +765,10 @@ def kronecker_symbol(a: int, n: int) -> int:
     -------
     :
         The Kronecker symbol :math:`(\frac{a}{n})` with value in :math:`\{0, -1, 1\}`.
+
+    See Also
+    --------
+    legendre_symbol, jacobi_symbol
 
     References
     ----------
@@ -837,6 +885,10 @@ def perfect_power(n: int) -> Tuple[int, int]:
     :
         The exponent :math:`e`.
 
+    See Also
+    --------
+    factors, is_perfect_power, is_prime_power
+
     Examples
     --------
     Primes are not perfect powers because their exponent is 1.
@@ -941,6 +993,10 @@ def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int
     :
         The residual factor :math:`n_r`.
 
+    See Also
+    --------
+    factors
+
     Examples
     --------
     .. ipython:: python
@@ -1004,6 +1060,10 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
     ------
     RuntimeError
         If a non-trivial factor cannot be found.
+
+    See Also
+    --------
+    factors, pollard_rho
 
     Notes
     -----
@@ -1131,6 +1191,10 @@ def pollard_rho(n: int, c: int = 1) -> int:
     RuntimeError
         If a non-trivial factor cannot be found.
 
+    See Also
+    --------
+    factors, pollard_p1
+
     Notes
     -----
     Pollard's :math:`\rho` algorithm seeks to find a non-trivial factor of :math:`n` by finding a cycle in a sequence
@@ -1212,6 +1276,10 @@ def divisors(n: int) -> List[int]:
     :
         Sorted list of positive integer divisors :math:`d`.
 
+    See Also
+    --------
+    factors, divisor_sigma
+
     Notes
     -----
     The :func:`galois.divisors` function finds *all* positive integer divisors or factors of :math:`n`, where the :func:`galois.factors`
@@ -1278,6 +1346,10 @@ def divisor_sigma(n: int, k: int = 1) -> int:
     :
         The sum of divisors function :math:`\sigma_k(n)`.
 
+    See Also
+    --------
+    factors, divisors
+
     Notes
     -----
     This function implements the :math:`\sigma_k(n)` function. It is defined as:
@@ -1322,6 +1394,10 @@ def is_prime(n: int) -> bool:
     -------
     :
         `True` if the integer :math:`n` is prime.
+
+    See Also
+    --------
+    is_composite, is_prime_power, is_perfect_power
 
     Notes
     -----
@@ -1383,6 +1459,10 @@ def is_composite(n: int) -> bool:
     :
         `True` if the integer :math:`n` is composite.
 
+    See Also
+    --------
+    is_prime, is_square_free, is_perfect_power
+
     Examples
     --------
     .. ipython:: python
@@ -1413,6 +1493,10 @@ def is_prime_power(n: int) -> bool:
     -------
     :
         `True` if the integer :math:`n` is a prime power.
+
+    See Also
+    --------
+    is_perfect_power, is_prime
 
     Notes
     -----
@@ -1456,6 +1540,10 @@ def is_perfect_power(n: int) -> bool:
     -------
     :
         `True` if the integer :math:`n` is a perfect power.
+
+    See Also
+    --------
+    is_prime_power, is_square_free
 
     Examples
     --------
@@ -1548,6 +1636,10 @@ def is_smooth(n: int, B: int) -> bool:
     :
         `True` if :math:`n` is :math:`B`-smooth.
 
+    See Also
+    --------
+    factors, is_powersmooth
+
     Notes
     -----
     An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-smooth
@@ -1607,6 +1699,10 @@ def is_powersmooth(n: int, B: int) -> bool:
     -------
     :
         `True` if :math:`n` is :math:`B`-powersmooth.
+
+    See Also
+    --------
+    factors, is_smooth
 
     Notes
     -----

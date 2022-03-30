@@ -63,6 +63,10 @@ def bch_valid_codes(n: int, t_min: int = 1) -> List[Tuple[int, int, int]]:
     :
         A list of :math:`(n, k, t)` tuples of valid primitive BCH codes.
 
+    See Also
+    --------
+    BCH
+
     References
     ----------
     * https://link.springer.com/content/pdf/bbm%3A978-1-4899-2174-1%2F1.pdf
@@ -182,6 +186,10 @@ class BCH:
         systematic
             Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
             appended. The default is `True`.
+
+        See Also
+        --------
+        bch_valid_codes, primitive_poly, primitive_element
         """
         # NOTE: All other arguments will be verified in `_check_and_compute_field()`
         if not isinstance(systematic, bool):

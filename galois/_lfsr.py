@@ -244,6 +244,10 @@ class FLFSR(_LFSR):
     ----------
     * Gardner, David. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
 
+    See Also
+    --------
+    berlekamp_massey
+
     Examples
     --------
     .. tab-set::
@@ -338,6 +342,10 @@ class FLFSR(_LFSR):
         state
             The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
             all ones.
+
+        See Also
+        --------
+        irreducible_poly, primitive_poly
 
         Notes
         -----
@@ -757,6 +765,10 @@ class GLFSR(_LFSR):
     ----------
     * Gardner, David. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
 
+    See Also
+    --------
+    berlekamp_massey
+
     Examples
     --------
     .. tab-set::
@@ -851,6 +863,10 @@ class GLFSR(_LFSR):
         state
             The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
             all ones.
+
+        See Also
+        --------
+        irreducible_poly, primitive_poly
 
         Notes
         -----

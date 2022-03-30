@@ -91,6 +91,10 @@ class ReedSolomon:
         systematic
             Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
             appended. The default is `True`.
+
+        See Also
+        --------
+        primitive_poly, primitive_element
         """
         if not isinstance(n, (int, np.integer)):
             raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")

@@ -245,6 +245,10 @@ def square_free_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
     :
         The list of corresponding multiplicities :math:`i`.
 
+    See Also
+    --------
+    factors, distinct_degree_factorization, equal_degree_factorization
+
     Notes
     -----
     The Square-Free Factorization algorithm factors :math:`f(x)` into a product of :math:`m` square-free polynomials :math:`h_j(x)`
@@ -345,6 +349,10 @@ def distinct_degree_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
         The list of polynomials :math:`f_i(x)` whose irreducible factors all have degree :math:`i`.
     :
         The list of corresponding distinct degrees :math:`i`.
+
+    See Also
+    --------
+    factors, square_free_factorization, equal_degree_factorization
 
     Notes
     -----
@@ -454,6 +462,10 @@ def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
     :
         The list of :math:`r` irreducible factors :math:`\{g_1(x), \dots, g_r(x)\}` in lexicographically-increasing order.
 
+    See Also
+    --------
+    factors, square_free_factorization, distinct_degree_factorization
+
     Notes
     -----
     The Equal-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`rd` into a product of :math:`r`
@@ -548,6 +560,10 @@ def is_monic(poly: Poly) -> bool:
     -------
     :
         `True` if the polynomial is monic.
+
+    See Also
+    --------
+    is_irreducible, is_primitive
 
     Examples
     --------

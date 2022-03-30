@@ -54,6 +54,10 @@ def gcd(a, b):
     int or galois.Poly
         Greatest common divisor of :math:`a` and :math:`b`.
 
+    See Also
+    --------
+    egcd, lcm, prod
+
     Notes
     -----
     This function implements the Euclidean Algorithm.
@@ -128,6 +132,10 @@ def egcd(a, b):
         The multiplicand :math:`s` of :math:`a`, such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
     int or galois.Poly
         The multiplicand :math:`t` of :math:`b`, such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
+
+    See Also
+    --------
+    gcd, lcm, prod
 
     Notes
     -----
@@ -204,6 +212,10 @@ def lcm(*values):
     int or galois.Poly
         The least common multiple of the arguments.
 
+    See Also
+    --------
+    gcd, egcd, prod
+
     Examples
     --------
     .. tab-set::
@@ -269,6 +281,10 @@ def prod(*values):
     int or galois.Poly
         The product of the arguments.
 
+    See Also
+    --------
+    gcd, egcd, lcm
+
     Examples
     --------
     .. tab-set::
@@ -330,6 +346,10 @@ def are_coprime(*values):
     -------
     bool
         `True` if the arguments are pairwise coprime.
+
+    See Also
+    --------
+    lcm, prod
 
     Notes
     -----
@@ -639,6 +659,10 @@ def is_square_free(value):
     -------
     bool
         `True` if the integer or polynomial is square-free.
+
+    See Also
+    --------
+    is_prime_power, is_perfect_power
 
     Notes
     -----

@@ -41,6 +41,10 @@ def ntt(
         The NTT :math:`X` of the input :math:`x`, with length :math:`N`. The output is a :math:`\mathrm{GF}(p)` array. It can be viewed
         as a normal NumPy array with `.view(np.ndarray)` or converted to a Python list with `.tolist()`.
 
+    See Also
+    --------
+    intt
+
     Notes
     -----
     The Number-Theoretic Transform (NTT) is a specialized Discrete Fourier Transform (DFT) over a finite field :math:`\mathrm{GF}(p)`
@@ -144,6 +148,10 @@ def intt(
     :
         The INTT :math:`x` of the input :math:`X`, with length :math:`N`. The output is a :math:`\mathrm{GF}(p)` array. It can be viewed
         as a normal NumPy array with `.view(np.ndarray)` or converted to a Python list with `.tolist()`.
+
+    See Also
+    --------
+    ntt
 
     Notes
     -----
