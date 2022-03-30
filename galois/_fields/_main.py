@@ -2994,6 +2994,28 @@ class Poly:
 
         return coeffs, field
 
+    @classmethod
+    def _PolyLike(
+        cls,
+        poly_like: Union[int, str, Sequence[int], np.ndarray, FieldArray, "Poly"],
+        field: Optional[FieldClass] = GF2
+    ) -> "Poly":
+        """
+        A private alternate constructor that converts a poly-like object into a polynomial, given a finite field.
+        """
+        if isinstance(poly_like, int):
+            poly = Poly.Int(poly_like, field=field)
+        elif isinstance(poly_like, str):
+            poly = Poly.Str(poly_like, field=field)
+        elif isinstance(poly_like, (tuple, list, np.ndarray)):
+            poly = Poly(poly_like, field=field)
+        elif isinstance(poly_like, Poly):
+            poly = poly_like
+        else:
+            raise TypeError(f"A 'poly-like' object must be an int, str, tuple, list, np.ndarray, or galois.Poly, not {type(poly_like)}.")
+
+        return poly
+
     ###############################################################################
     # Alternate constructors
     ###############################################################################

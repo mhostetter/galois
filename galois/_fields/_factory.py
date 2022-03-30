@@ -380,27 +380,15 @@ def GF_extension(
         if primitive_element_ is None:
             primitive_element_ = Poly.Identity(prime_subfield)
             verify_element = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
-    elif isinstance(irreducible_poly_, int):
-        irreducible_poly_ = Poly.Int(irreducible_poly_, field=prime_subfield)
-    elif isinstance(irreducible_poly_, str):
-        irreducible_poly_ = Poly.Str(irreducible_poly_, field=prime_subfield)
-    elif isinstance(irreducible_poly_, (tuple, list, np.ndarray)):
-        irreducible_poly_ = Poly(irreducible_poly_, field=prime_subfield)
-    elif not isinstance(irreducible_poly_, Poly):
-        raise TypeError(f"Argument `irreducible_poly` must be an int, tuple, list, np.ndarray, or galois.Poly, not {type(irreducible_poly_)}.")
+    else:
+        irreducible_poly_ = Poly._PolyLike(irreducible_poly_, field=prime_subfield)
 
     # Get default primitive element
     if primitive_element_ is None:
         primitive_element_ = primitive_element(irreducible_poly_)
         verify_element = False
-    elif isinstance(primitive_element_, int):
-        primitive_element_ = Poly.Int(primitive_element_, field=prime_subfield)
-    elif isinstance(primitive_element_, str):
-        primitive_element_ = Poly.Str(primitive_element_, field=prime_subfield)
-    elif isinstance(primitive_element_, (tuple, list, np.ndarray)):
-        primitive_element_ = Poly(primitive_element_, field=prime_subfield)
-    elif not isinstance(primitive_element_, Poly):
-        raise TypeError(f"Argument `primitive_element` must be an int, tuple, list, np.ndarray, or galois.Poly, not {type(primitive_element_)}.")
+    else:
+        primitive_element_ = Poly._PolyLike(primitive_element_, field=prime_subfield)
 
     # Check polynomial fields and degrees
     if not irreducible_poly_.field.order == characteristic:
