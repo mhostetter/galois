@@ -106,12 +106,12 @@ def test_str():
         assert str(poly) == "(α^5)x^3 + (α)x + 1"
 
     GF = galois.GF(2**3)
-    poly = galois.Poly([2, 0, 3, 1], field=GF)
-    assert str(poly) == "2x^3 + 3x + 1"
+    poly = galois.Poly([2, 0, 3, 5], field=GF)
+    assert str(poly) == "2x^3 + 3x + 5"
     with GF.display("poly"):
-        assert str(poly) == "(α)x^3 + (α + 1)x + 1"
+        assert str(poly) == "(α)x^3 + (α + 1)x + (α^2 + 1)"
     with GF.display("power"):
-        assert str(poly) == "(α)x^3 + (α^3)x + 1"
+        assert str(poly) == "(α)x^3 + (α^3)x + α^6"
 
 
 def test_int():

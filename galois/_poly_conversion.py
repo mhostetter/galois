@@ -98,7 +98,6 @@ def sparse_poly_to_str(degrees: List[int], coeffs: List[int], poly_var: str = "x
         if coeff == 0:
             continue
 
-        # Use () around elements, except the 0-th degree term
         if degree > 1:
             if coeff == 1:
                 c = ""
@@ -116,7 +115,11 @@ def sparse_poly_to_str(degrees: List[int], coeffs: List[int], poly_var: str = "x
                 c = f"{coeff!s}"
             s = f"{c}{poly_var}"
         else:
-            s = f"{coeff!s}"
+            # Use () around 0-degree term only if it has a + separator in it ("poly" display mode)
+            if "+" in str(coeff):
+                s = f"({coeff!s})"
+            else:
+                s = f"{coeff!s}"
 
         x.append(s)
 
