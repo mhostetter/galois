@@ -104,6 +104,20 @@ html_theme_options = {
     "repo_url": "https://github.com/mhostetter/galois",
     "repo_name": "mhostetter/galois",
     "repo_type": "github",
+    "social": [
+        {
+            "icon": "fontawesome/brands/github",
+            "link": "https://github.com/mhostetter/galois"
+        },
+        {
+            "icon": "fontawesome/brands/python",
+            "link": "https://pypi.org/project/galois/"
+        },
+        {
+            "icon": "fontawesome/brands/twitter",
+            "link": "https://twitter.com/galois_py"
+        },
+    ],
     "edit_uri": "",
     "google_analytics": ["G-4FW9NCNFZH", "auto"],
     "globaltoc_collapse": False,
