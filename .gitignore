@@ -1,7 +1,8 @@
 __pycache__
+.benchmarks/
+.ipynb_checkpoints/
 .pytest_cache
 build/
 dist/
 env/
 *.egg-info
-.benchmarks/
