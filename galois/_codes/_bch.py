@@ -959,7 +959,7 @@ def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MU
     """
     References
     ----------
-    * S. Lin and D. Costello. Error Control Coding. Section 7.4.
+    * Lin, S. and Costello, D. Error Control Coding. Section 7.4.
     """
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
     dtype = codeword.dtype

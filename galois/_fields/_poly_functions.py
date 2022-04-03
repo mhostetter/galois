@@ -263,7 +263,7 @@ def square_free_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
 
     References
     ----------
-    * D. Hachenberger, D. Jungnickel. Topics in Galois Fields. Algorithm 6.1.7.
+    * Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.1.7.
     * Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
     Examples
@@ -382,7 +382,7 @@ def distinct_degree_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
 
     References
     ----------
-    * D. Hachenberger, D. Jungnickel. Topics in Galois Fields. Algorithm 6.2.2.
+    * Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.2.2.
     * Section 2.2 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
     Examples
