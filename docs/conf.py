@@ -119,7 +119,6 @@ html_theme_options = {
         },
     ],
     "edit_uri": "",
-    "google_analytics": ["G-4FW9NCNFZH", "auto"],
     "globaltoc_collapse": False,
     "features": [
         # "navigation.expand",
@@ -151,6 +150,10 @@ html_theme_options = {
             },
         },
     ],
+    "analytics": {
+        "provider": "google",
+        "property": "G-4FW9NCNFZH"
+    },
     # "font": {
     #     "code": "Ubuntu Mono"
     # },
