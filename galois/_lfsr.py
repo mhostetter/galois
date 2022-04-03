@@ -242,7 +242,7 @@ class FLFSR(_LFSR):
 
     References
     ----------
-    * Gardner, David. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
+    * Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
 
     See Also
     --------
@@ -763,7 +763,7 @@ class GLFSR(_LFSR):
 
     References
     ----------
-    * Gardner, David. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
+    * Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
 
     See Also
     --------
@@ -1279,8 +1279,8 @@ def berlekamp_massey(y, output="minimal"):
 
     References
     ----------
-    * Gardner, David. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
-    * Sachs, Jason. Linear Feedback Shift Registers for the Uninitiated, Part VI: Sing Along with the Berlekamp-Massey Algorithm. https://www.embeddedrelated.com/showarticle/1099.php
+    * Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
+    * Sachs, J. Linear Feedback Shift Registers for the Uninitiated, Part VI: Sing Along with the Berlekamp-Massey Algorithm. https://www.embeddedrelated.com/showarticle/1099.php
     * https://crypto.stanford.edu/~mironov/cs359/massey.pdf
 
     Examples

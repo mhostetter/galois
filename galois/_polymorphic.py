@@ -145,7 +145,7 @@ def egcd(a, b):
     ----------
     * Algorithm 2.107 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
     * Algorithm 2.221 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
-    * T. Moon, "Error Correction Coding", Section 5.2.2: The Euclidean Algorithm and Euclidean Domains, p. 181
+    * Moon, T. "Error Correction Coding", Section 5.2.2: The Euclidean Algorithm and Euclidean Domains, p. 181
 
     Examples
     --------
@@ -584,7 +584,7 @@ def factors(value):
 
     References
     ----------
-    * D. Hachenberger, D. Jungnickel. Topics in Galois Fields. Algorithm 6.1.7.
+    * Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.1.7.
     * Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
     Examples

@@ -714,8 +714,8 @@ def is_irreducible(poly: Poly) -> bool:
 
     References
     ----------
-    * M. O. Rabin. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273–280. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
-    * S. Gao and D. Panarino. Tests and constructions of irreducible polynomials over finite fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
+    * Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273–280. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
+    * Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
     * Section 4.5.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
     * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
 
@@ -1240,7 +1240,7 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
 
     References
     ----------
-    * S. Lin and D. Costello. Error Control Coding. Table 2.7.
+    * Lin, S. and Costello, D. Error Control Coding. Table 2.7.
 
     Examples
     --------

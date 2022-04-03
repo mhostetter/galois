@@ -3,7 +3,7 @@ A pytest module to test determination of valid BCH codes.
 
 References
 ----------
-* S. Lin and D. Costello. Error Control Coding. Appendix C, pp. 1231.
+* Lin, S. and Costello, D. Error Control Coding. Appendix C, pp. 1231.
 * https://link.springer.com/content/pdf/bbm%3A978-1-4899-2174-1%2F1.pdf
 """
 import pytest
