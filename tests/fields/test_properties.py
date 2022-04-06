@@ -49,6 +49,32 @@ def test_primitive_element_is_generator(field):
     assert len(set(elements.tolist())) == field.order - 1
 
 
+def test_primitive_root_of_unity():
+    GF = galois.GF(3**5)
+    i, j = 0, 0
+    while i < 5 and j < 5:
+        n = random.randint(2, GF.order - 1)
+        if (GF.order - 1) % n == 0 and i < 5:
+            r = GF.primitive_root_of_unity(n)
+            assert not np.any(np.power.outer(r, np.arange(1, n)) == 1)
+            assert np.all(r ** n == 1)
+            i += 1
+        elif j < 5:
+            x = GF.Elements()
+            assert np.any(x ** n == 1)
+
+    # Large field
+    GF = galois.GF(2**100)
+    i = 0
+    while i < 5:
+        n = random.randint(2, 1000)
+        if (GF.order - 1) % n == 0 and i < 5:
+            r = GF.primitive_root_of_unity(n)
+            assert not np.any(np.power.outer(r, np.arange(1, n)) == 1)
+            assert np.all(r ** n == 1)
+            i += 1
+
+
 def test_irreducible_poly(field):
     poly = field.irreducible_poly  # Polynomial in GF(p)
     alpha = field.primitive_element
