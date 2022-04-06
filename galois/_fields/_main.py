@@ -591,6 +591,71 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
         return cls.primitive_element ** ((cls.order - 1) // n)
 
+    def primitive_roots_of_unity(cls, n: int) -> "FieldArray":
+        r"""
+        Finds all primitive :math:`n`-th roots of unity in the finite field.
+
+        Parameters
+        ----------
+        n
+            The root of unity.
+
+        Returns
+        -------
+        :
+            All primitive :math:`n`-th roots of unity, a 1-D array. The roots are sorted in lexicographically-increasing
+            order.
+
+        Raises
+        ------
+        ValueError
+            If no primitive :math:`n`-th roots of unity exist. This happens when :math:`n` is not a
+            divisor of :math:`p^m - 1`.
+
+        Notes
+        -----
+        A primitive :math:`n`-th root of unity :math:`\omega_n` is such that :math:`\omega_n^n = 1` and :math:`\omega_n^k \ne 1`
+        for all :math:`1 \le k \lt n`.
+
+        In :math:`\mathrm{GF}(p^m)`, a primitive :math:`n`-th root of unity exists when :math:`n` divides :math:`p^m - 1`.
+        Then, the primitive root is :math:`\omega_n = \alpha^{(p^m - 1)/n}` where :math:`\alpha` is a primitive
+        element of the field.
+
+        Examples
+        --------
+        In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of :math:`30`.
+
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.primitive_roots_of_unity(2)
+            GF.primitive_roots_of_unity(5)
+            GF.primitive_roots_of_unity(15)
+
+        However, they do not exist for :math:`n` that do not divide :math:`30`.
+
+        .. ipython:: python
+            :okexcept:
+
+            GF.primitive_roots_of_unity(7)
+
+        For :math:`\omega_5`, one can see that :math:`\omega_5^5 = 1` and :math:`\omega_5^k \ne 1` for :math:`1 \le k \lt 5`.
+
+        .. ipython:: python
+
+            root = GF.primitive_roots_of_unity(5); root
+            np.power.outer(root, np.arange(1, 5 + 1))
+        """
+        if not isinstance(n, (int, np.ndarray)):
+            raise TypeError(f"Argument `n` must be an int, not {type(n)!r}.")
+        if not (cls.order - 1) % n == 0:
+            raise ValueError(f"There are no primitive {n}-th roots of unity in {cls.name}.")
+
+        roots = np.unique(cls.primitive_elements ** ((cls.order - 1) // n))
+        roots = np.sort(roots)
+
+        return roots
+
     ###############################################################################
     # Array display methods
     ###############################################################################
