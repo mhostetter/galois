@@ -5,7 +5,6 @@ FieldClass is also included.
 """
 import contextlib
 import inspect
-import math
 import random
 from typing import Tuple, List, Sequence, Iterable, Optional, Union, overload
 from typing_extensions import Literal
@@ -13,6 +12,7 @@ from typing_extensions import Literal
 import numba
 import numpy as np
 
+from .._modular import totatives
 from .._overrides import set_module
 from .._poly_conversion import integer_to_poly, integer_to_degree, poly_to_integer, str_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
 from .._prime import divisors
@@ -902,10 +902,11 @@ class FieldClass(FunctionMeta, UfuncMeta):
             galois.GF(31).primitive_elements
             galois.GF(7**5).primitive_elements
         """
-        n = cls.order - 1
-        totatives = [t for t in range(1, n + 1) if math.gcd(n, t) == 1]
-        powers = np.array(totatives)
-        return np.sort(cls.primitive_element ** powers)
+        if not hasattr(cls, "_primitive_elements"):
+            n = cls.order - 1
+            powers = np.array(totatives(n))
+            cls._primitive_elements = np.sort(cls.primitive_element ** powers)
+        return cls._primitive_elements.copy()
 
     @property
     def quadratic_residues(cls) -> "FieldArray":
