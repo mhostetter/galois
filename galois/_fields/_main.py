@@ -49,8 +49,6 @@ class FieldClass(FunctionMeta, UfuncMeta):
     """
     # pylint: disable=no-value-for-parameter,unsupported-membership-test,abstract-method,too-many-public-methods
 
-    _verify_on_view = True  # By default, verify array elements are within the valid range when `.view()` casting
-
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
         return super().__new__(cls, name, bases, namespace)
 
@@ -59,9 +57,7 @@ class FieldClass(FunctionMeta, UfuncMeta):
         cls._characteristic = kwargs.get("characteristic", 0)
         cls._degree = kwargs.get("degree", 0)
         cls._order = kwargs.get("order", 0)
-        cls._order_str = None
         cls._ufunc_mode = None
-        cls._ufunc_target = None
         cls._dtypes = cls._determine_dtypes()
 
         if "irreducible_poly" in kwargs:
@@ -84,6 +80,9 @@ class FieldClass(FunctionMeta, UfuncMeta):
 
         cls._element_fixed_width = None
         cls._element_fixed_width_counter = 0
+
+        # By default, verify array elements are within the valid range when `.view()` casting
+        cls._verify_on_view = True
 
     def __str__(cls) -> str:
         """
