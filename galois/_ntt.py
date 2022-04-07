@@ -6,7 +6,6 @@ from typing import Sequence, Optional, Union
 import numpy as np
 
 from ._fields import Field, FieldArray
-from ._modular import primitive_root
 from ._overrides import set_module
 from ._prime import is_prime
 
@@ -266,18 +265,8 @@ def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
         raise ValueError(f"Argument `modulus` must be at least the max value of the input which is {np.max(x)}, not {modulus}.")
 
     field = Field(modulus)  # The prime field GF(p)
-    xx = field.Zeros(size)
-    xx[0:len(x)] = x  # Potentially zero-pad the input to length `size`
 
-    g = primitive_root(modulus)  # A generator of the multiplicative group of GF(p)
-    omega = field(g)**m if forward else field(g)**-m  # A primitive N-th root of unity in GF(p)
-    v = field.Vandermonde(omega, size, size)
-
-    # Transform x into y with the NTT by matrix multiplying x with the Vandermonde matrix of primitive N-th root of unity `omega`
-    y = v @ xx
-
-    # Scale the inverse NTT such that x = INTT(NTT(x))
-    if not forward and scaled:
-        y /= field(size)
+    x = field(x)
+    y = field._dft(x, size=size, forward=forward, scaled=scaled)
 
     return y
