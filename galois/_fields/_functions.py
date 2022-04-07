@@ -101,6 +101,40 @@ class FunctionMeta(UfuncMeta):
     # Function routines
     ###############################################################################
 
+    def _dft(cls, x, size=None, omega=None, forward=True, scaled=True):
+        field = cls
+        dtype = x.dtype
+
+        if size is None:
+            size = x.size
+        x = np.append(x, np.zeros(size - x.size, dtype=x.dtype))
+
+        if omega is None:
+            omega = field.primitive_root_of_unity(x.size)
+        if not forward:
+            omega = omega ** -1
+
+        if cls.ufunc_mode != "python-calculate":
+            x = x.astype(np.int64)
+            omega = np.int64(omega)
+            add = cls._func_calculate("add")
+            multiply = cls._func_calculate("multiply")
+            y = cls._function("dft")(x, omega, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            y = y.astype(dtype)
+        else:
+            x = x.view(np.ndarray)
+            omega = int(omega)
+            add = cls._func_python("add")
+            multiply = cls._func_python("multiply")
+            y = cls._function("dft")(x, omega, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+        y = field._view(y)
+
+        # Scale the inverse NTT such that x = INTT(NTT(x))
+        if not forward and scaled:
+            y /= field(size)
+
+        return y
+
     def _matmul(cls, A, B, out=None, **kwargs):  # pylint: disable=unused-argument
         if not type(A) is type(B):
             raise TypeError(f"Operation 'matmul' requires both arrays be in the same Galois field, not {type(A)} and {type(B)}.")
@@ -391,6 +425,27 @@ class FunctionMeta(UfuncMeta):
     ###############################################################################
     # Function implementations using explicit calculation
     ###############################################################################
+
+    _DFT_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+
+    @staticmethod
+    @numba.extending.register_jitable
+    def _dft_calculate(x, omega, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+        dtype = x.dtype
+        N = x.size
+
+        X = np.zeros(N, dtype=dtype)
+
+        twiddle = 1
+        for k in range(0, N):
+            factor = 1
+            for j in range(0, N):
+                X[k] = ADD(X[k], MULTIPLY(x[j], factor, *args), *args)
+                factor = MULTIPLY(factor, twiddle, *args)  # Factor is omega^(j*k)
+            twiddle = MULTIPLY(twiddle, omega, *args)  # Twiddle is omega^k
+
+        return X
 
     _MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
 

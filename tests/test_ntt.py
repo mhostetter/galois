@@ -55,6 +55,18 @@ def test_ntt(x, p, X):
     assert np.array_equal(X_test, X)
 
 
+def test_ntt_zero_padding():
+    x = [1, 2, 3, 4, 5, 6]
+    X1 = galois.ntt(x, size=8)
+    X2 = galois.ntt(x + [0,]*2)
+    assert np.array_equal(X1, X2)
+
+    x = [60, 50, 40, 30, 20, 10]
+    X1 = galois.ntt(x, size=16)
+    X2 = galois.ntt(x + [0,]*10)
+    assert np.array_equal(X1, X2)
+
+
 def test_intt_exceptions():
     with pytest.raises(TypeError):
         galois.intt(1)
