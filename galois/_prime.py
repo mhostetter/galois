@@ -1172,6 +1172,7 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
     raise RuntimeError(f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}.")
 
 
+@set_module("galois")
 # @functools.lru_cache(maxsize=1024)
 def pollard_rho(n: int, c: int = 1) -> int:
     r"""
