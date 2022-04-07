@@ -75,7 +75,6 @@ def totatives(n: int) -> List[int]:
 
 
 @set_module("galois")
-@functools.lru_cache(maxsize=64)
 def euler_phi(n: int) -> int:
     r"""
     Counts the positive integers (totatives) in :math:`[1, n)` that are coprime to :math:`n`.
@@ -135,6 +134,11 @@ def euler_phi(n: int) -> int:
         n = 13
         galois.euler_phi(n)
     """
+    return _euler_phi(n)
+
+
+@functools.lru_cache(maxsize=64)
+def _euler_phi(n: int) -> int:
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not n > 0:

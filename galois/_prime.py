@@ -866,7 +866,6 @@ def factors(n: int) -> Tuple[List[int], List[int]]:
 
 
 @set_module("galois")
-@functools.lru_cache(maxsize=512)
 def perfect_power(n: int) -> Tuple[int, int]:
     r"""
     Returns the integer base :math:`c` and exponent :math:`e` of :math:`n = c^e`.
@@ -933,6 +932,11 @@ def perfect_power(n: int) -> Tuple[int, int]:
         galois.perfect_power(-100)
         galois.is_perfect_power(-100)
     """
+    return _perfect_power(n)
+
+
+@functools.lru_cache(maxsize=512)
+def _perfect_power(n: int) -> Tuple[int, int]:
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
 
