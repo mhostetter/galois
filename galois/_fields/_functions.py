@@ -41,6 +41,8 @@ class FunctionMeta(UfuncMeta):
 
     _OVERRIDDEN_FUNCTIONS = {
         np.convolve: "_convolve",
+        np.fft.fft: "_fft",
+        np.fft.ifft: "_ifft",
     }
 
     _OVERRIDDEN_LINALG_FUNCTIONS = {
@@ -101,16 +103,20 @@ class FunctionMeta(UfuncMeta):
     # Function routines
     ###############################################################################
 
-    def _dft(cls, x, size=None, omega=None, forward=True, scaled=True):
+    def _fft(cls, x, n=None, axis=-1, norm=None, forward=True, scaled=True):
+        if not axis == -1:
+            raise ValueError("The FFT is only implemented on 1-D arrays.")
+        if not norm in [None, "backward"]:
+            raise ValueError("The FFT normalization is only applied to the backward transform.")
+
         field = cls
         dtype = x.dtype
 
-        if size is None:
-            size = x.size
-        x = np.append(x, np.zeros(size - x.size, dtype=x.dtype))
+        if n is None:
+            n = x.size
+        x = np.append(x, np.zeros(n - x.size, dtype=x.dtype))
 
-        if omega is None:
-            omega = field.primitive_root_of_unity(x.size)
+        omega = field.primitive_root_of_unity(x.size)
         if not forward:
             omega = omega ** -1
 
@@ -133,9 +139,12 @@ class FunctionMeta(UfuncMeta):
 
         # Scale the inverse NTT such that x = INTT(NTT(x))
         if not forward and scaled:
-            y /= field(size)
+            y /= field(n % field.characteristic)
 
         return y
+
+    def _ifft(cls, x, n=None, axis=-1, norm=None, scaled=True):
+        return cls._fft(x, n=n, axis=axis, norm=norm, forward=False, scaled=scaled)
 
     def _matmul(cls, A, B, out=None, **kwargs):  # pylint: disable=unused-argument
         if not type(A) is type(B):

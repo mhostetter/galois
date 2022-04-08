@@ -103,6 +103,14 @@ def ntt(
 
         galois.ntt([1, 2, 3, 4, 5, 6], size=8)
         galois.ntt([1, 2, 3, 4, 5, 6, 0, 0])
+
+    The :func:`numpy.fft.fft` function may also be used to compute the NTT over :math:`\mathrm{GF}(p)`.
+
+    .. ipython:: python
+
+        GF = galois.GF(17)
+        x = GF([1, 2, 3, 4, 5, 6])
+        np.fft.fft(x, n=8)
     """
     if not isinstance(x, (tuple, list, np.ndarray, FieldArray)):
         raise TypeError(f"Argument `x` must be array-like, not {type(x)}.")
@@ -219,6 +227,13 @@ def intt(
     .. ipython:: python
 
         galois.ntt(galois.intt(x))
+
+    The :func:`numpy.fft.ifft` function may also be used to compute the inverse NTT over :math:`\mathrm{GF}(p)`.
+
+    .. ipython:: python
+
+        X = np.fft.fft(x); X
+        np.fft.ifft(X)
     """
     if not isinstance(X, (tuple, list, np.ndarray, FieldArray)):
         raise TypeError(f"Argument `X` must be array-like, not {type(X)}.")
@@ -265,6 +280,6 @@ def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
     field = Field(modulus)  # The prime field GF(p)
 
     x = field(x)
-    y = field._dft(x, size=size, forward=forward, scaled=scaled)
+    y = field._fft(x, n=size, forward=forward, scaled=scaled)
 
     return y
