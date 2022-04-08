@@ -120,7 +120,7 @@ class FunctionMeta(UfuncMeta):
             add = cls._func_calculate("add")
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
-            y = cls._function("dft")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            y = cls._function("dft_jit")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
             y = y.astype(dtype)
         else:
             x = x.view(np.ndarray)
@@ -128,7 +128,7 @@ class FunctionMeta(UfuncMeta):
             add = cls._func_python("add")
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
-            y = cls._function("dft")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            y = cls._function("dft_python")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
         y = field._view(y)
 
         # Scale the inverse NTT such that x = INTT(NTT(x))
@@ -428,11 +428,16 @@ class FunctionMeta(UfuncMeta):
     # Function implementations using explicit calculation
     ###############################################################################
 
-    _DFT_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _DFT_JIT_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+
+    # TODO: Determine how to handle recursion with a single JIT-compiled/pure-Python function
 
     @staticmethod
     @numba.extending.register_jitable
-    def _dft_calculate(x, omega, ADD, SUBTRACT, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _dft_jit_calculate(x, omega, ADD, SUBTRACT, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        """
+        Need a separate function to invoke _dft_jit_calculate() for recursion in the JIT compilation.
+        """
         args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
         dtype = x.dtype
         N = x.size
@@ -443,8 +448,46 @@ class FunctionMeta(UfuncMeta):
         elif N % 2 == 0:
             # Radix-2 Cooley-Tukey FFT
             omega2 = MULTIPLY(omega, omega, *args)
-            EVEN = _dft_calculate(x[0::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)  # pylint: disable=undefined-variable
-            ODD = _dft_calculate(x[1::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)  # pylint: disable=undefined-variable
+            EVEN = _dft_jit_calculate(x[0::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)  # pylint: disable=undefined-variable
+            ODD = _dft_jit_calculate(x[1::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)  # pylint: disable=undefined-variable
+
+            twiddle = 1
+            for k in range(0, N//2):
+                ODD[k] = MULTIPLY(ODD[k], twiddle, *args)
+                twiddle = MULTIPLY(twiddle, omega, *args)  # Twiddle is omega^k
+
+            for k in range(0, N//2):
+                X[k] = ADD(EVEN[k], ODD[k], *args)
+                X[k + N//2] = SUBTRACT(EVEN[k], ODD[k], *args)
+        else:
+            # DFT with O(N^2) complexity
+            twiddle = 1
+            for k in range(0, N):
+                factor = 1
+                for j in range(0, N):
+                    X[k] = ADD(X[k], MULTIPLY(x[j], factor, *args), *args)
+                    factor = MULTIPLY(factor, twiddle, *args)  # Factor is omega^(j*k)
+                twiddle = MULTIPLY(twiddle, omega, *args)  # Twiddle is omega^k
+
+        return X
+
+    @staticmethod
+    def _dft_python_calculate(x, omega, ADD, SUBTRACT, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        """
+        Need a separate function to invoke FunctionMeta._dft_python_calculate() for recursion.
+        """
+        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
+        dtype = x.dtype
+        N = x.size
+        X = np.zeros(N, dtype=dtype)
+
+        if N == 1:
+            X[0] = x[0]
+        elif N % 2 == 0:
+            # Radix-2 Cooley-Tukey FFT
+            omega2 = MULTIPLY(omega, omega, *args)
+            EVEN = FunctionMeta._dft_python_calculate(x[0::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
+            ODD = FunctionMeta._dft_python_calculate(x[1::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
 
             twiddle = 1
             for k in range(0, N//2):
