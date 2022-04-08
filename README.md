@@ -29,7 +29,7 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 - [**Faster**](https://galois.readthedocs.io/en/latest/performance/prime-fields.html) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`.
 - Seamless integration with NumPy -- normal NumPy functions work on *Galois field arrays*.
 - [Linear algebra](https://galois.readthedocs.io/en/latest/basic-usage/linear-algebra.html) over finite fields using normal `np.linalg` functions.
-- [Linear transforms](https://galois.readthedocs.io/en/stable/api/transforms.html) over finite fields, such as the NTT with `galois.ntt()` and `galois.intt()`.
+- [Linear transforms](https://galois.readthedocs.io/en/latest/api/transforms.html) over finite fields, such as the FFT with `np.fft.fft()` and the NTT with `galois.ntt()`.
 - Functions to generate [irreducible](https://galois.readthedocs.io/en/latest/api/polys.html#irreducible-polynomials), [primitive](https://galois.readthedocs.io/en/latest/api/polys.html#primitive-polynomials), and [Conway](https://galois.readthedocs.io/en/latest/api/galois.conway_poly.html) polynomials.
 - [Univariate polynomials](https://galois.readthedocs.io/en/latest/api/polys.html) over finite fields with `galois.Poly`.
 - [Forward error correction codes](https://galois.readthedocs.io/en/latest/api/fec.html) with `galois.BCH` and `galois.ReedSolomon`.
@@ -40,7 +40,6 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 ## Roadmap
 
-- DFT over all finite fields
 - Elliptic curves over finite fields
 - Galois ring arrays
 - GPU support

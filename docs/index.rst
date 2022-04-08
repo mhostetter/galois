@@ -27,7 +27,7 @@ Features
 - **Faster** than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for :math:`\mathrm{GF}(p)`.
 - Seamless integration with NumPy -- normal NumPy functions work on *Galois field arrays*.
 - Linear algebra over finite fields using normal :obj:`numpy.linalg` functions.
-- Linear transforms over finite fields, such as the NTT with :func:`galois.ntt` and :func:`galois.intt`.
+- Linear transforms over finite fields, such as the FFT with :func:`numpy.fft.fft` and the NTT with :func:`galois.ntt`.
 - Functions to generate irreducible, primitive, and Conway polynomials.
 - Univariate polynomials over finite fields with :obj:`galois.Poly`.
 - Forward error correction codes with :obj:`galois.BCH` and :obj:`galois.ReedSolomon`.
@@ -39,7 +39,6 @@ Features
 Roadmap
 -------
 
-- DFT over all finite fields
 - Elliptic curves over finite fields
 - Galois ring arrays
 - GPU support
