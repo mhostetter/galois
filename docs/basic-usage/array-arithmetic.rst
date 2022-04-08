@@ -223,3 +223,37 @@ Advanced arithmetic
     .. ipython:: python
 
         np.convolve(x, y)
+
+.. details:: FFT: `np.fft.fft(x)`
+
+    The Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)` exists when there
+    exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
+
+    .. ipython:: python
+
+        GF = galois.GF(7**5)
+        n = 6
+        # n divides p^m - 1
+        (GF.order - 1) % n
+        x = GF.Random(n); x
+        X = np.fft.fft(x); X
+        np.fft.ifft(X)
+
+    See also :func:`galois.ntt` and :obj:`galois.FieldClass.primitive_root_of_unity`.
+
+.. details:: Inverse FFT: `np.fft.ifft(X)`
+
+    The inverse Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)` exists when there
+    exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
+
+    .. ipython:: python
+
+        GF = galois.GF(7**5)
+        n = 6
+        # n divides p^m - 1
+        (GF.order - 1) % n
+        x = GF.Random(n); x
+        X = np.fft.fft(x); X
+        np.fft.ifft(X)
+
+    See also :func:`galois.ntt` and :obj:`galois.FieldClass.primitive_root_of_unity`.
