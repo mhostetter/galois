@@ -5,8 +5,9 @@ from typing import Optional
 
 import numpy as np
 
-from .._fields import FieldArray, Poly
+from .._fields import FieldArray
 from .._overrides import set_module
+from .._polys import Poly
 
 __all__ = ["poly_to_generator_matrix", "roots_to_parity_check_matrix"]
 
