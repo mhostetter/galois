@@ -1,11 +1,16 @@
-from typing import Tuple, List, Sequence, Optional, Union, overload
+"""
+A module containing a class for univariate polynomials over finite fields.
+"""
+from typing import Tuple, Sequence, Optional, Union, overload
 from typing_extensions import Literal
 
 import numpy as np
 
 from .._array import ArrayClass, Array, DEFAULT_ARRAY
 from .._overrides import set_module
-from .._poly_conversion import integer_to_poly, integer_to_degree, poly_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
+
+from . import _binary, _dense, _sparse
+from ._conversions import integer_to_poly, integer_to_degree, poly_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
 
 __all__ = ["Poly"]
 
@@ -39,7 +44,6 @@ class Poly:
     # pylint: disable=too-many-public-methods
 
     __slots__ = ["_field", "_degrees", "_coeffs", "_nonzero_degrees", "_nonzero_coeffs", "_integer", "_degree", "_type"]
-
 
     # Special private attributes that are once computed. There are three arithmetic types for polynomials: "dense", "binary",
     # and "sparse". All types define _field, "dense" defines _coeffs, "binary" defines "_integer", and "sparse" defines
@@ -474,8 +478,6 @@ class Poly:
             obj._type = "binary"
         else:
             obj._type = "dense"
-            # Compute the _coeffs value so we're ready for arithmetic computations
-            obj.coeffs  # pylint: disable=pointless-statement
 
         return obj
 
@@ -570,8 +572,6 @@ class Poly:
             obj._type = "sparse"
         else:
             obj._type = "dense"
-            # Compute the _coeffs value so we're ready for arithmetic computations
-            obj.coeffs  # pylint: disable=pointless-statement
 
         return obj
 
@@ -969,7 +969,7 @@ class Poly:
             f = galois.Poly([3, 0, 5, 2], field=GF); f
             f
         """
-        return f"Poly({self!s}, {self.field.name})"
+        return f"Poly({self!s}, {self.field._name})"
 
     def __str__(self) -> str:
         """
@@ -1121,271 +1121,6 @@ class Poly:
         """
         return self.degree + 1
 
-    def _check_inputs_are_polys(self, a, b):
-        """
-        Verify polynomial arithmetic operands are either galois.Poly or scalars in a finite field.
-        """
-        if not isinstance(a, (Poly, self.field)):
-            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field.name}, not {type(a)}.")
-        if not isinstance(b, (Poly, self.field)):
-            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field.name}, not {type(b)}.")
-        if (isinstance(a, Poly) and isinstance(b, Poly)) and not a.field is b.field:
-            raise TypeError(f"Both polynomial operands must be over the same field, not {a.field.name} and {b.field.name}.")
-
-    def _check_inputs_are_polys_or_none(self, a, b):
-        """
-        Verify polynomial arithmetic operands are either galois.Poly or None.
-        """
-        if not isinstance(a, (Poly, self.field)):
-            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field.name}, not {type(a)}.")
-        if b is not None:
-            if not isinstance(b, (Poly, self.field)):
-                raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field.name}, not {type(b)}.")
-            if (isinstance(a, Poly) and isinstance(b, Poly)) and not a.field is b.field:
-                raise TypeError(f"Both polynomial operands must be over the same field, not {a.field.name} and {b.field.name}.")
-
-    def _check_inputs_are_polys_or_ints(self, a, b):
-        """
-        Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or an integer (scalar multiplication).
-        """
-        if not isinstance(a, (Poly, self.field, int, np.integer)):
-            raise TypeError(f"Both operands must be a galois.Poly, a single element of its field {self.field.name}, or an integer, not {type(a)}.")
-        if not isinstance(b, (Poly, self.field, int, np.integer)):
-            raise TypeError(f"Both operands must be a galois.Poly, a single element of its field {self.field.name}, or an integer, not {type(b)}.")
-        if (isinstance(a, Poly) and isinstance(b, Poly)) and not a.field is b.field:
-            raise TypeError(f"Both polynomial operands must be over the same field, not {a.field.name} and {b.field.name}.")
-
-    def _convert_field_scalars_to_polys(self, a: Union["Poly", Array], b: Union["Poly", Array]) -> Tuple["Poly", "Poly"]:
-        """
-        Convert finite field scalars to 0-degree polynomials in that field.
-        """
-        # Promote a single field element to a 0-degree polynomial
-        if isinstance(a, self.field):
-            if not a.size == 1:
-                raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {a.size}.")
-            a = Poly(np.atleast_1d(a))
-        if isinstance(b, self.field):
-            if not b.size == 1:
-                raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {b.size}.")
-            b = Poly(np.atleast_1d(b))
-
-        return a, b
-
-    def __add__(self, other: Union["Poly", Array]) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_add(a, b)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_add(a, b)
-        elif a._type == "sparse" or b._type == "sparse":
-            return self._sparse_add(a, b)
-        else:
-            return self._dense_add(a, b)
-
-    def __radd__(self, other: Union["Poly", Array]) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_add(b, a)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_add(b, a)
-        elif a._type == "sparse" or b._type == "sparse":
-            return self._sparse_add(b, a)
-        else:
-            return self._dense_add(b, a)
-
-    def __neg__(self):
-        if self._type == "dense":
-            return self._dense_neg(self)
-        elif self._type == "binary":
-            return self._binary_neg(self)
-        else:
-            return self._sparse_neg(self)
-
-    def __sub__(self, other: Union["Poly", Array]) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_sub(a, b)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_sub(a, b)
-        elif a._type == "sparse" or b._type == "sparse":
-            return self._sparse_sub(a, b)
-        else:
-            return self._dense_sub(a, b)
-
-    def __rsub__(self, other: Union["Poly", Array]) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_sub(b, a)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_sub(b, a)
-        elif a._type == "sparse" or b._type == "sparse":
-            return self._sparse_sub(b, a)
-        else:
-            return self._dense_sub(b, a)
-
-    def __mul__(self, other: Union["Poly", Array, int]) -> "Poly":
-        self._check_inputs_are_polys_or_ints(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-        if isinstance(a, (int, np.integer)):
-            # Ensure the integer is in the second operand for scalar multiplication
-            a, b = b, a
-
-        if a._type == "dense":
-            return self._dense_mul(a, b)
-        elif a._type == "binary":
-            return self._binary_mul(a, b)
-        elif a._type == "sparse":
-            return self._sparse_mul(a, b)
-        else:
-            return self._dense_mul(a, b)
-
-    def __rmul__(self, other: Union["Poly", Array, int]) -> "Poly":
-        self._check_inputs_are_polys_or_ints(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-        if isinstance(b, (int, np.integer)):
-            # Ensure the integer is in the second operand for scalar multiplication
-            b, a = a, b
-
-        if b._type == "dense":
-            return self._dense_mul(b, a)
-        elif b._type == "binary":
-            return self._binary_mul(b, a)
-        elif b._type == "sparse":
-            return self._sparse_mul(b, a)
-        else:
-            return self._dense_mul(b, a)
-
-    def __divmod__(self, other: Union["Poly", Array]) -> Tuple["Poly", "Poly"]:
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_divmod(a, b)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_divmod(a, b)
-        elif a._type == "sparse" or b._type == "sparse":
-            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
-            a.coeffs  # pylint: disable=pointless-statement
-            b.coeffs  # pylint: disable=pointless-statement
-            return self._dense_divmod(a, b)
-        else:
-            return self._dense_divmod(a, b)
-
-    def __rdivmod__(self, other: Union["Poly", Array]) -> Tuple["Poly", "Poly"]:
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_divmod(b, a)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_divmod(b, a)
-        elif a._type == "sparse" or b._type == "sparse":
-            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
-            a.coeffs  # pylint: disable=pointless-statement
-            b.coeffs  # pylint: disable=pointless-statement
-            return self._dense_divmod(b, a)
-        else:
-            return self._dense_divmod(b, a)
-
-    def __truediv__(self, other):
-        raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
-
-    def __rtruediv__(self, other):
-        raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
-
-    def __floordiv__(self, other: Union["Poly", Array]) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_floordiv(a, b)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_floordiv(a, b)
-        elif a._type == "sparse" or b._type == "sparse":
-            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
-            a.coeffs  # pylint: disable=pointless-statement
-            b.coeffs  # pylint: disable=pointless-statement
-            return self._dense_floordiv(a, b)
-        else:
-            return self._dense_floordiv(a, b)
-
-    def __rfloordiv__(self, other: Union["Poly", Array]) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_floordiv(b, a)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_floordiv(b, a)
-        elif a._type == "sparse" or b._type == "sparse":
-            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
-            a.coeffs  # pylint: disable=pointless-statement
-            b.coeffs  # pylint: disable=pointless-statement
-            return self._dense_floordiv(b, a)
-        else:
-            return self._dense_floordiv(b, a)
-
-    def __mod__(self, other: Union["Poly", Array]) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_mod(a, b)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_mod(a, b)
-        elif a._type == "sparse" or b._type == "sparse":
-            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
-            a.coeffs  # pylint: disable=pointless-statement
-            b.coeffs  # pylint: disable=pointless-statement
-            return self._dense_mod(a, b)
-        else:
-            return self._dense_mod(a, b)
-
-    def __rmod__(self, other: Union["Poly", Array]) -> "Poly":
-        self._check_inputs_are_polys(self, other)
-        a, b = self._convert_field_scalars_to_polys(self, other)
-
-        if a._type == "dense" and b._type == "dense":
-            return self._dense_mod(b, a)
-        elif a._type == "binary" or b._type == "binary":
-            return self._binary_mod(b, a)
-        elif a._type == "sparse" or b._type == "sparse":
-            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
-            a.coeffs  # pylint: disable=pointless-statement
-            b.coeffs  # pylint: disable=pointless-statement
-            return self._dense_mod(b, a)
-        else:
-            return self._dense_mod(b, a)
-
-    def __pow__(self, exponent: int, modulus: Optional["Poly"] = None) -> "Poly":
-        self._check_inputs_are_polys_or_none(self, modulus)
-        a, c = self._convert_field_scalars_to_polys(self, modulus)
-
-        if not isinstance(exponent, (int, np.integer)):
-            raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {exponent}.")
-        if not exponent >= 0:
-            raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {exponent}.")
-
-        if a._type == "dense":
-            return self._dense_pow(a, exponent, c)
-        elif a._type == "binary":
-            return self._binary_pow(a, exponent, c)
-        elif a._type == "sparse":
-            # Ensure nonzero_coeffs are converted to coeffs before invoking dense arithmetic
-            a.coeffs  # pylint: disable=pointless-statement
-            c.coeffs  # pylint: disable=pointless-statement
-            return self._dense_pow(a, exponent, c)
-        else:
-            return self._dense_pow(a, exponent, c)
-
     def __eq__(self, other: Union["Poly", Array, int]) -> bool:
         r"""
         Determines if two polynomials over :math:`\mathrm{GF}(p^m)` are equal.
@@ -1448,244 +1183,325 @@ class Poly:
             return self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
 
     ###############################################################################
-    # Arithmetic methods for dense polynomials
+    # Arithmetic
     ###############################################################################
 
-    @classmethod
-    def _dense_add(cls, a, b):
-        field = a.field
-
-        # c(x) = a(x) + b(x)
-        c_coeffs = field.Zeros(max(a._coeffs.size, b._coeffs.size))
-        c_coeffs[-a._coeffs.size:] = a._coeffs
-        c_coeffs[-b._coeffs.size:] += b._coeffs
-
-        return cls(c_coeffs)
-
-    @classmethod
-    def _dense_neg(cls, a):
-        return cls(-a.coeffs)
-
-    @classmethod
-    def _dense_sub(cls, a, b):
-        field = a.field
-
-        # c(x) = a(x) + b(x)
-        c_coeffs = field.Zeros(max(a.coeffs.size, b.coeffs.size))
-        c_coeffs[-a.coeffs.size:] = a.coeffs
-        c_coeffs[-b.coeffs.size:] -= b.coeffs
-
-        return cls(c_coeffs)
-
-    @classmethod
-    def _dense_mul(cls, a, b):
-        if isinstance(b, (int, np.integer)):
-            # Scalar multiplication  (p * 3 = p + p + p)
-            c_coeffs = a.coeffs * b
+    def _check_input_is_poly(self, a):
+        """
+        Verify polynomial arithmetic operands are either galois.Poly or scalars in a finite field.
+        """
+        if isinstance(a, Poly):
+            field = a.field
+        elif isinstance(a, Array):
+            if not a.size == 1:
+                raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {a.size}.")
+            field = type(a)
         else:
-            # c(x) = a(x) * b(x)
-            c_coeffs = np.convolve(a.coeffs, b.coeffs)
+            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field._name}, not {type(a)}.")
 
-        return cls(c_coeffs)
+        if not field is self.field:
+            raise TypeError(f"Both polynomial operands must be over the same field, not {field._name} and {self.field._name}.")
 
-    @classmethod
-    def _dense_divmod(cls, a, b):
-        field = a.field
-        zero = cls([0], field)
-
-        # q(x)*b(x) + r(x) = a(x)
-        if b.degree == 0:
-            return cls(a.coeffs // b.coeffs), zero
-
-        elif a == 0:
-            return zero, zero
-
-        elif a.degree < b.degree:
-            return zero, a
-
+    def _check_input_is_poly_or_int(self, a):
+        """
+        Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or an integer scalar.
+        """
+        if isinstance(a, (int)):
+            pass
         else:
-            q_coeffs, r_coeffs = field._poly_divmod(a.coeffs, b.coeffs)
-            return cls(q_coeffs), cls(r_coeffs)
+            self._check_input_is_poly(a)
 
-    @classmethod
-    def _dense_floordiv(cls, a, b):
-        field = a.field
-        q_coeffs = field._poly_floordiv(a.coeffs, b.coeffs)
-        return cls(q_coeffs)
-
-    @classmethod
-    def _dense_mod(cls, a, b):
-        field = a.field
-        r_coeffs = field._poly_mod(a.coeffs, b.coeffs)
-        return cls(r_coeffs)
-
-    @classmethod
-    def _dense_pow(cls, a, b, c=None):
-        field = a.field
-        if c is not None:
-            z_coeffs = field._poly_pow(a.coeffs, b, c.coeffs)
+    def _check_input_is_poly_or_none(self, a):
+        """
+        Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or None.
+        """
+        if isinstance(a, type(None)):
+            pass
         else:
-            z_coeffs = field._poly_pow(a.coeffs, b, None)
-        return cls(z_coeffs)
+            self._check_input_is_poly(a)
 
-    ###############################################################################
-    # Arithmetic methods for binary polynomials (over GF(2))
-    ###############################################################################
-
-    @classmethod
-    def _binary_add(cls, a, b):
-        a = a._integer
-        b = b._integer
-        return cls.Int(a ^ b)
-
-    @classmethod
-    def _binary_neg(cls, a):
-        return a
-
-    @classmethod
-    def _binary_sub(cls, a, b):
-        a = a._integer
-        b = b._integer
-        return cls.Int(a ^ b)
-
-    @classmethod
-    def _binary_mul(cls, a, b):
-        if isinstance(b, (int, np.integer)):
-            # Scalar multiplication  (p * 3 = p + p + p)
-            if b % 2 == 1:
-                return a
-            else:
-                return cls.Int(0)
+    def _convert_to_coeffs(self, a: Union["Poly", Array, int]) -> Array:
+        """
+        Convert the polynomial or finite field scalar into a coefficient array.
+        """
+        if isinstance(a, Poly):
+            return a.coeffs
+        elif isinstance(a, int):
+            # Scalar multiplication
+            return np.atleast_1d(self.field(a % self.field._characteristic))
         else:
-            a = a._integer
-            b = b._integer
+            return np.atleast_1d(a)
 
-            # Re-order operands such that a > b so the while loop has less loops
-            if b > a:
-                a, b = b, a
-
-            c = 0
-            while b > 0:
-                if b & 0b1:
-                    c ^= a  # Add a(x) to c(x)
-                b >>= 1  # Divide b(x) by x
-                a <<= 1  # Multiply a(x) by x
-
-            return cls.Int(c)
-
-    @classmethod
-    def _binary_divmod(cls, a, b):
-        a = a._integer
-        b = b._integer
-
-        deg_a = max(a.bit_length() - 1, 0)
-        deg_b = max(b.bit_length() - 1, 0)
-        deg_q = deg_a - deg_b
-        deg_r = deg_b - 1
-
-        q = 0
-        mask = 1 << deg_a
-        for i in range(deg_q, -1, -1):
-            q <<= 1
-            if a & mask:
-                a ^= b << i
-                q ^= 1  # Set the LSB then left shift
-            assert a & mask == 0
-            mask >>= 1
-
-        # q = a >> deg_r
-        mask = (1 << (deg_r + 1)) - 1  # The last deg_r + 1 bits of a
-        r = a & mask
-
-        return cls.Int(q), cls.Int(r)
-
-    @classmethod
-    def _binary_floordiv(cls, a, b):
-        # TODO: Make more efficient?
-        return cls._binary_divmod(a, b)[0]
-
-    @classmethod
-    def _binary_mod(cls, a, b):
-        # TODO: Make more efficient?
-        return cls._binary_divmod(a, b)[1]
-
-    @classmethod
-    def _binary_pow(cls, a, b, c=None):
-        field = a.field
-        if b == 0:
-            return Poly.Int(1, field=field)
-
-        result_s = a  # The "squaring" part
-        result_m = Poly.Int(1, field=field)  # The "multiplicative" part
-
-        if c:
-            while b > 1:
-                if b % 2 == 0:
-                    result_s = cls._binary_mod(cls._binary_mul(result_s, result_s), c)
-                    b //= 2
-                else:
-                    result_m = cls._binary_mod(cls._binary_mul(result_m, result_s), c)
-                    b -= 1
-
-            result = cls._binary_mod(cls._binary_mul(result_s, result_m), c)
+    def _convert_to_integer(self, a: Union["Poly", Array, int]) -> int:
+        """
+        Convert the polynomial or finite field scalar into its integer representation.
+        """
+        if isinstance(a, int):
+            # Scalar multiplication
+            return a % self.field._characteristic
         else:
-            while b > 1:
-                if b % 2 == 0:
-                    result_s = cls._binary_mul(result_s, result_s)
-                    b //= 2
-                else:
-                    result_m = cls._binary_mul(result_m, result_s)
-                    b -= 1
+            return int(a)
 
-            result = cls._binary_mul(result_s, result_m)
-
-        return result
-
-    ###############################################################################
-    # Arithmetic methods for sparse polynomials
-    ###############################################################################
-
-    @classmethod
-    def _sparse_add(cls, a, b):
-        field = a.field
-
-        # c(x) = a(x) + b(x)
-        cc = dict(zip(a._nonzero_degrees, a._nonzero_coeffs))
-        for b_degree, b_coeff in zip(b._nonzero_degrees, b._nonzero_coeffs):
-            cc[b_degree] = cc.get(b_degree, field(0)) + b_coeff
-
-        return cls.Degrees(list(cc.keys()), list(cc.values()), field=field)
-
-    @classmethod
-    def _sparse_neg(cls, a):
-        return cls.Degrees(a._nonzero_degrees, -a._nonzero_coeffs)
-
-    @classmethod
-    def _sparse_sub(cls, a, b):
-        field = a.field
-
-        # c(x) = a(x) - b(x)
-        cc = dict(zip(a._nonzero_degrees, a._nonzero_coeffs))
-        for b_degree, b_coeff in zip(b._nonzero_degrees, b._nonzero_coeffs):
-            cc[b_degree] = cc.get(b_degree, field(0)) - b_coeff
-
-        return cls.Degrees(list(cc.keys()), list(cc.values()), field=field)
-
-    @classmethod
-    def _sparse_mul(cls, a, b):
-        field = a.field
-
-        if isinstance(b, (int, np.integer)):
-            # Scalar multiplication  (p * 3 = p + p + p)
-            return cls.Degrees(a._nonzero_degrees, a._nonzero_coeffs * b)
+    def _convert_to_sparse_coeffs(self, a: Union["Poly", Array, int]) -> Tuple[np.ndarray, Array]:
+        """
+        Convert the polynomial or finite field scalar into its non-zero degrees and coefficients.
+        """
+        if isinstance(a, Poly):
+            return a.nonzero_degrees, a.nonzero_coeffs
+        elif isinstance(a, int):
+            return np.array([0]), np.atleast_1d(self.field(a % self.field._characteristic))
         else:
-            # c(x) = a(x) * b(x)
-            cc = {}
-            for a_degree, a_coeff in zip(a._nonzero_degrees, a._nonzero_coeffs):
-                for b_degree, b_coeff in zip(b._nonzero_degrees, b._nonzero_coeffs):
-                    cc[a_degree + b_degree] = cc.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
+            return np.array([0]), np.atleast_1d(a)
 
-            return cls.Degrees(list(cc.keys()), list(cc.values()), field=field)
+    def __add__(self, other: Union["Poly", Array]) -> "Poly":
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(self)
+            b = self._convert_to_integer(other)
+            c = _binary.add(a, b)
+            return Poly.Int(c, field=self.field)
+        elif "sparse" in types:
+            a_degrees, a_coeffs = self._convert_to_sparse_coeffs(self)
+            b_degrees, b_coeffs = self._convert_to_sparse_coeffs(other)
+            c_degrees, c_coeffs = _sparse.add(a_degrees, a_coeffs, b_degrees, b_coeffs)
+            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+        else:
+            a = self._convert_to_coeffs(self)
+            b = self._convert_to_coeffs(other)
+            c = _dense.add(a, b)
+            return Poly(c, field=self.field)
+
+    def __radd__(self, other: Union["Poly", Array]) -> "Poly":
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(other)
+            b = self._convert_to_integer(self)
+            c = _binary.add(a, b)
+            return Poly.Int(c, field=self.field)
+        elif "sparse" in types:
+            a_degrees, a_coeffs = self._convert_to_sparse_coeffs(other)
+            b_degrees, b_coeffs = self._convert_to_sparse_coeffs(self)
+            c_degrees, c_coeffs = _sparse.add(a_degrees, a_coeffs, b_degrees, b_coeffs)
+            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+        else:
+            a = self._convert_to_coeffs(other)
+            b = self._convert_to_coeffs(self)
+            c = _dense.add(a, b)
+            return Poly(c, field=self.field)
+
+    def __neg__(self):
+        if self._type == "binary":
+            a = self._convert_to_integer(self)
+            c = _binary.neg(a)
+            return Poly.Int(c, field=self.field)
+        elif self._type == "sparse":
+            a_degrees, a_coeffs = self._convert_to_sparse_coeffs(self)
+            c_degrees, c_coeffs = _sparse.neg(a_degrees, a_coeffs)
+            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+        else:
+            a = self._convert_to_coeffs(self)
+            c = _dense.neg(a)
+            return Poly(c, field=self.field)
+
+    def __sub__(self, other: Union["Poly", Array]) -> "Poly":
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(self)
+            b = self._convert_to_integer(other)
+            c = _binary.sub(a, b)
+            return Poly.Int(c, field=self.field)
+        elif "sparse" in types:
+            a_degrees, a_coeffs = self._convert_to_sparse_coeffs(self)
+            b_degrees, b_coeffs = self._convert_to_sparse_coeffs(other)
+            c_degrees, c_coeffs = _sparse.sub(a_degrees, a_coeffs, b_degrees, b_coeffs)
+            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+        else:
+            a = self._convert_to_coeffs(self)
+            b = self._convert_to_coeffs(other)
+            c = _dense.sub(a, b)
+            return Poly(c, field=self.field)
+
+    def __rsub__(self, other: Union["Poly", Array]) -> "Poly":
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(other)
+            b = self._convert_to_integer(self)
+            c = _binary.sub(a, b)
+            return Poly.Int(c, field=self.field)
+        elif "sparse" in types:
+            a_degrees, a_coeffs = self._convert_to_sparse_coeffs(other)
+            b_degrees, b_coeffs = self._convert_to_sparse_coeffs(self)
+            c_degrees, c_coeffs = _sparse.sub(a_degrees, a_coeffs, b_degrees, b_coeffs)
+            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+        else:
+            a = self._convert_to_coeffs(other)
+            b = self._convert_to_coeffs(self)
+            c = _dense.sub(a, b)
+            return Poly(c, field=self.field)
+
+    def __mul__(self, other: Union["Poly", Array, int]) -> "Poly":
+        self._check_input_is_poly_or_int(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(self)
+            b = self._convert_to_integer(other)
+            c = _binary.mul(a, b)
+            return Poly.Int(c, field=self.field)
+        elif "sparse" in types:
+            a_degrees, a_coeffs = self._convert_to_sparse_coeffs(self)
+            b_degrees, b_coeffs = self._convert_to_sparse_coeffs(other)
+            c_degrees, c_coeffs = _sparse.mul(a_degrees, a_coeffs, b_degrees, b_coeffs)
+            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+        else:
+            a = self._convert_to_coeffs(self)
+            b = self._convert_to_coeffs(other)
+            c = _dense.mul(a, b)
+            return Poly(c, field=self.field)
+
+    def __rmul__(self, other: Union["Poly", Array, int]) -> "Poly":
+        self._check_input_is_poly_or_int(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(other)
+            b = self._convert_to_integer(self)
+            c = _binary.mul(a, b)
+            return Poly.Int(c, field=self.field)
+        elif "sparse" in types:
+            a_degrees, a_coeffs = self._convert_to_sparse_coeffs(other)
+            b_degrees, b_coeffs = self._convert_to_sparse_coeffs(self)
+            c_degrees, c_coeffs = _sparse.mul(a_degrees, a_coeffs, b_degrees, b_coeffs)
+            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+        else:
+            a = self._convert_to_coeffs(other)
+            b = self._convert_to_coeffs(self)
+            c = _dense.mul(a, b)
+            return Poly(c, field=self.field)
+
+    def __divmod__(self, other: Union["Poly", Array]) -> Tuple["Poly", "Poly"]:
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(self)
+            b = self._convert_to_integer(other)
+            q, r = _binary.divmod(a, b)
+            return Poly.Int(q, field=self.field), Poly.Int(r, field=self.field)
+        else:
+            a = self._convert_to_coeffs(self)
+            b = self._convert_to_coeffs(other)
+            q, r = _dense.divmod(a, b)
+            return Poly(q, field=self.field), Poly(r, field=self.field)
+
+    def __rdivmod__(self, other: Union["Poly", Array]) -> Tuple["Poly", "Poly"]:
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(other)
+            b = self._convert_to_integer(self)
+            q, r = _binary.divmod(a, b)
+            return Poly.Int(q, field=self.field), Poly.Int(r, field=self.field)
+        else:
+            a = self._convert_to_coeffs(other)
+            b = self._convert_to_coeffs(self)
+            q, r = _dense.divmod(a, b)
+            return Poly(q, field=self.field), Poly(r, field=self.field)
+
+    def __truediv__(self, other):
+        raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
+
+    def __rtruediv__(self, other):
+        raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
+
+    def __floordiv__(self, other: Union["Poly", Array]) -> "Poly":
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(self)
+            b = self._convert_to_integer(other)
+            q = _binary.floordiv(a, b)
+            return Poly.Int(q, field=self.field)
+        else:
+            a = self._convert_to_coeffs(self)
+            b = self._convert_to_coeffs(other)
+            q = _dense.floordiv(a, b)
+            return Poly(q, field=self.field)
+
+    def __rfloordiv__(self, other: Union["Poly", Array]) -> "Poly":
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(other)
+            b = self._convert_to_integer(self)
+            q = _binary.floordiv(a, b)
+            return Poly.Int(q, field=self.field)
+        else:
+            a = self._convert_to_coeffs(other)
+            b = self._convert_to_coeffs(self)
+            q = _dense.floordiv(a, b)
+            return Poly(q, field=self.field)
+
+    def __mod__(self, other: Union["Poly", Array]) -> "Poly":
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(self)
+            b = self._convert_to_integer(other)
+            r = _binary.mod(a, b)
+            return Poly.Int(r, field=self.field)
+        else:
+            a = self._convert_to_coeffs(self)
+            b = self._convert_to_coeffs(other)
+            r = _dense.mod(a, b)
+            return Poly(r, field=self.field)
+
+    def __rmod__(self, other: Union["Poly", Array]) -> "Poly":
+        self._check_input_is_poly(other)
+        types = [getattr(self, "_type", None), getattr(other, "_type", None)]
+
+        if "binary" in types:
+            a = self._convert_to_integer(other)
+            b = self._convert_to_integer(self)
+            r = _binary.mod(a, b)
+            return Poly.Int(r, field=self.field)
+        else:
+            a = self._convert_to_coeffs(other)
+            b = self._convert_to_coeffs(self)
+            r = _dense.mod(a, b)
+            return Poly(r, field=self.field)
+
+    def __pow__(self, exponent: int, modulus: Optional["Poly"] = None) -> "Poly":
+        self._check_input_is_poly_or_none(modulus)
+        types = [getattr(self, "_type", None), getattr(modulus, "_type", None)]
+
+        if not isinstance(exponent, (int, np.integer)):
+            raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {exponent}.")
+        if not exponent >= 0:
+            raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {exponent}.")
+
+        if "binary" in types:
+            a = self._convert_to_integer(self)
+            b = self._convert_to_integer(modulus) if modulus is not None else None
+            q = _binary.pow(a, exponent, b)
+            return Poly.Int(q, field=self.field)
+        else:
+            a = self._convert_to_coeffs(self)
+            b = self._convert_to_coeffs(modulus) if modulus is not None else None
+            q = _dense.pow(a, exponent, b)
+            return Poly(q, field=self.field)
 
     ###############################################################################
     # Instance properties

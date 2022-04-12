@@ -15,7 +15,7 @@ from .._databases import ConwayPolyDatabase
 from .._modular import totatives, primitive_root, is_primitive_root
 from .._overrides import set_module
 from .._polys import Poly
-from .._polys._poly_functions import gcd
+from .._polys._functions import gcd
 from .._prime import factors, is_prime, is_prime_power
 
 

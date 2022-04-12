@@ -11,12 +11,12 @@ from ._math import lcm as int_lcm
 from ._math import prod as int_prod
 from ._overrides import set_module
 from ._polys import Poly
-from ._polys._poly_functions import gcd as poly_gcd
-from ._polys._poly_functions import egcd as poly_egcd
-from ._polys._poly_functions import lcm as poly_lcm
-from ._polys._poly_functions import prod as poly_prod
-from ._polys._poly_functions import factors as poly_factors
-from ._polys._poly_functions import is_square_free as poly_is_square_free
+from ._polys._functions import gcd as poly_gcd
+from ._polys._functions import egcd as poly_egcd
+from ._polys._functions import lcm as poly_lcm
+from ._polys._functions import prod as poly_prod
+from ._polys._functions import factors as poly_factors
+from ._polys._functions import is_square_free as poly_is_square_free
 from ._prime import factors as int_factors
 from ._prime import is_square_free as int_is_square_free
 

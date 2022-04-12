@@ -15,7 +15,7 @@ from .._array import ArrayClass, Array
 from .._modular import totatives
 from .._overrides import set_module
 from .._polys import Poly
-from .._poly_conversion import integer_to_poly, integer_to_degree, poly_to_integer, str_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
+from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
 from .._prime import divisors
 
 from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space, column_space, left_null_space, null_space
