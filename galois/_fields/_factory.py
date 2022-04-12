@@ -14,13 +14,16 @@ import numpy as np
 from .._databases import ConwayPolyDatabase
 from .._modular import totatives, primitive_root, is_primitive_root
 from .._overrides import set_module
+from .._polys import Poly
+from .._polys._poly_functions import gcd
 from .._prime import factors, is_prime, is_prime_power
 
-from . import _poly_functions as poly_functions
+
+from ._array import FieldArray
+from ._gf2 import GF2
 from ._gfp import GFpMeta
 from ._gf2m import GF2mMeta
 from ._gfpm import GFpmMeta
-from ._main import FieldArray, GF2, Poly
 
 __all__ = [
     "GF", "Field",
@@ -772,7 +775,7 @@ def is_irreducible(poly: Poly) -> bool:
     for ni in sorted([m // pi for pi in primes]):
         # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
         hi = pow(h0, q**(ni - n0), poly)
-        g = poly_functions.gcd(poly, hi - x)
+        g = gcd(poly, hi - x)
         if g != 1:
             return False
         h0, n0 = hi, ni

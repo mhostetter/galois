@@ -6,8 +6,9 @@ import numba
 from numba import int64, uint64
 import numpy as np
 
+from .._array import DTYPES
+
 from . import _linalg
-from ._dtypes import DTYPES
 from ._ufuncs import UfuncMeta
 
 

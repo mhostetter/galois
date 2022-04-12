@@ -4,8 +4,9 @@ A module that contains a metaclass mixin that provides GF(p^m) arithmetic using 
 import numba
 import numpy as np
 
-from ._main import FieldClass, DirMeta
-from ._dtypes import DTYPES
+from .._array import DTYPES
+
+from ._array import FieldClass, DirMeta
 
 DTYPE = np.int64
 INT_TO_POLY = lambda a, CHARACTERISTIC, DEGREE: [0,]*DEGREE

@@ -14,6 +14,18 @@ Class factory functions
    Field
    GF
 
+Abstract base classes
+---------------------
+
+.. autosummary::
+   :template: class.rst
+   :toctree:
+
+   Array
+   ArrayClass
+   FieldArray
+   FieldClass
+
 Classes
 -------
 
@@ -23,8 +35,6 @@ Classes
 
    BCH
    FLFSR
-   FieldArray
-   FieldClass
    GF2
    GLFSR
    Poly
