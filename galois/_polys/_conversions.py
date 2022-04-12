@@ -6,7 +6,7 @@ from typing import Tuple, List, Optional
 
 import numpy as np
 
-from ._math import ilog
+from .._math import ilog
 
 
 def integer_to_degree(integer: int, order: int) -> int:

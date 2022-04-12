@@ -26,6 +26,8 @@ class ArrayClass(type):
     # pylint: disable=no-value-for-parameter
 
     _name = ""
+    _characteristic = 0
+    _degree = 0
     _order = 0
     _dtypes: List[np.dtype] = []
     _verify_on_view = True
@@ -188,4 +190,6 @@ class Array(np.ndarray, metaclass=ArrayClass):
                 self._verify_array_values(obj)
 
 
+# This will be monkey-patched in __init__.py to be GF2. It can't be set to that currently due to
+# circular dependencies.
 DEFAULT_ARRAY = Array
