@@ -29,13 +29,13 @@ argument to the :func:`galois.GF` class factory.
     A :obj:`galois.FieldArray`'s :func:`repr` displays `GF([...], order=p^m)` where :func:`str` only displays `[...]`. This is designed to be
     consistent with NumPy's use of :func:`repr` and :func:`str`.
 
-The current display mode is accessed with the :obj:`galois.FieldClass.display_mode` property.
+The current display mode is accessed with the :obj:`galois.FieldArrayClass.display_mode` property.
 
 .. ipython:: python
 
     GF.display_mode
 
-The display mode can be temporarily changed using the :func:`galois.FieldClass.display` method as a context manager.
+The display mode can be temporarily changed using the :func:`galois.FieldArrayClass.display` method as a context manager.
 
 .. ipython:: python
 
@@ -46,7 +46,7 @@ The display mode can be temporarily changed using the :func:`galois.FieldClass.d
     # Outside the context manager, x prints using the previous representation
     print(x)
 
-The display mode can be permanently changed using the :func:`galois.FieldClass.display` method.
+The display mode can be permanently changed using the :func:`galois.FieldArrayClass.display` method.
 
 .. ipython:: python
 
@@ -151,7 +151,7 @@ In extension fields, the elements are displayed as :math:`\{0, \alpha, \alpha^2,
 Vector representation
 ---------------------
 
-The vector representation, while not a proper display mode of :func:`galois.FieldClass.display`, represents finite field elements
+The vector representation, while not a proper display mode of :func:`galois.FieldArrayClass.display`, represents finite field elements
 as vectors of their polynomial coefficients.
 
 The vector representation is accessed using the :func:`galois.FieldArray.vector` method.
@@ -207,7 +207,7 @@ The readability is improved by increasing the line width using :func:`numpy.set_
 Representation comparisons
 --------------------------
 
-For any finite field, each of the four representations can be easily compared using the :func:`galois.FieldClass.repr_table` function.
+For any finite field, each of the four representations can be easily compared using the :func:`galois.FieldArrayClass.repr_table` function.
 
 .. ipython:: python
 

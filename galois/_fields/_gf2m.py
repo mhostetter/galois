@@ -4,13 +4,13 @@ A module that contains a metaclass mixin that provides GF(2^m) arithmetic using 
 import numba
 import numpy as np
 
-from ._array import FieldClass, DirMeta
+from ._array import FieldArrayClass, DirMeta
 
 MULTIPLY = lambda a, b, *args: a * b
 RECIPROCAL = lambda a, *args: 1 / a
 
 
-class GF2mMeta(FieldClass, DirMeta):
+class GF2mMeta(FieldArrayClass, DirMeta):
     """
     A metaclass for all GF(2^m) classes.
     """

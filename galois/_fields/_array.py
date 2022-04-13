@@ -1,7 +1,7 @@
 """
-A module that contains the main classes for Galois fields -- FieldClass, FieldArray,
+A module that contains the main classes for Galois fields -- FieldArrayClass, FieldArray,
 and Poly. They're all in one file because they have circular dependencies. The specific GF2
-FieldClass is also included.
+FieldArrayClass is also included.
 """
 import contextlib
 import inspect
@@ -22,7 +22,7 @@ from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space, co
 from ._functions import FunctionMeta
 from ._ufuncs import UfuncMeta
 
-__all__ = ["FieldClass", "FieldArray"]
+__all__ = ["FieldArrayClass", "FieldArray"]
 
 
 ###############################################################################
@@ -30,13 +30,13 @@ __all__ = ["FieldClass", "FieldArray"]
 ###############################################################################
 
 @set_module("galois")
-class FieldClass(ArrayClass, FunctionMeta, UfuncMeta):
+class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
     """
     Defines a metaclass for all :obj:`galois.FieldArray` classes.
 
     Important
     ---------
-    :obj:`galois.FieldClass` is a metaclass for :obj:`galois.FieldArray` subclasses created with the class factory
+    :obj:`galois.FieldArrayClass` is a metaclass for :obj:`galois.FieldArray` subclasses created with the class factory
     :func:`galois.GF` and should not be instantiated directly. This metaclass gives :obj:`galois.FieldArray` subclasses
     methods and attributes related to their Galois fields.
 
@@ -45,7 +45,7 @@ class FieldClass(ArrayClass, FunctionMeta, UfuncMeta):
     .. ipython:: python
 
         GF = galois.GF(7)
-        isinstance(GF, galois.FieldClass)
+        isinstance(GF, galois.FieldArrayClass)
     """
     # pylint: disable=no-value-for-parameter,unsupported-membership-test,abstract-method,too-many-public-methods
 
@@ -292,7 +292,7 @@ class FieldClass(ArrayClass, FunctionMeta, UfuncMeta):
         ----------
         primitive_element
             The primitive element to use for the power representation. The default is `None` which uses the field's
-            default primitive element, :obj:`FieldClass.primitive_element`. If an array, it must be a 0-D array.
+            default primitive element, :obj:`FieldArrayClass.primitive_element`. If an array, it must be a 0-D array.
         sort
             The sorting method for the table. The default is `"power"`. Sorting by `"power"` will order the rows of the table by ascending
             powers of the primitive element. Sorting by any of the others will order the rows in lexicographically-increasing polynomial/vector
@@ -814,7 +814,7 @@ class FieldClass(ArrayClass, FunctionMeta, UfuncMeta):
     @property
     def is_primitive_poly(cls) -> bool:
         r"""
-        Indicates whether the :obj:`FieldClass.irreducible_poly` is a primitive polynomial. If so, :math:`x` is a primitive element
+        Indicates whether the :obj:`FieldArrayClass.irreducible_poly` is a primitive polynomial. If so, :math:`x` is a primitive element
         of the finite field.
 
         The default irreducible polynomial is a Conway polynomial, see :func:`galois.conway_poly`, which is a primitive
@@ -979,7 +979,7 @@ class FieldClass(ArrayClass, FunctionMeta, UfuncMeta):
         return cls._degree > 1
 
     @property
-    def prime_subfield(cls) -> "FieldClass":
+    def prime_subfield(cls) -> "FieldArrayClass":
         r"""
         The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
 
@@ -1109,7 +1109,7 @@ class FieldClass(ArrayClass, FunctionMeta, UfuncMeta):
 class DirMeta(type):
     """
     A mixin metaclass that overrides __dir__() so that dir() and tab-completion in ipython of `FieldArray` classes
-    (which are `FieldClass` instances) include the methods and properties from the metaclass. Python does not
+    (which are `FieldArrayClass` instances) include the methods and properties from the metaclass. Python does not
     natively include metaclass properties in dir().
 
     This is a separate class because it will be mixed in to `GF2Meta`, `GF2mMeta`, `GFpMeta`, and `GFpmMeta` separately. Otherwise, the
@@ -1120,7 +1120,7 @@ class DirMeta(type):
     """
 
     def __dir__(cls):
-        if isinstance(cls, FieldClass):
+        if isinstance(cls, FieldArrayClass):
             meta_dir = dir(type(cls))
             classmethods = [attribute for attribute in super().__dir__() if attribute[0] != "_" and inspect.ismethod(getattr(cls, attribute))]
             return sorted(meta_dir + classmethods)
@@ -1133,7 +1133,7 @@ class DirMeta(type):
 ###############################################################################
 
 @set_module("galois")
-class FieldArray(Array, metaclass=FieldClass):
+class FieldArray(Array, metaclass=FieldArrayClass):
     r"""
     A :ref:`Galois field array` over :math:`\mathrm{GF}(p^m)`.
 
@@ -1151,7 +1151,7 @@ class FieldArray(Array, metaclass=FieldClass):
             x = GF([1, 2, 3]); x
             isinstance(x, galois.FieldArray)
 
-    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldClass` and
+    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldArrayClass` and
     :obj:`galois.FieldArray`.
 
     See :ref:`Array Creation` for a detailed discussion on creating arrays (with and without copying) from array-like
@@ -1166,12 +1166,12 @@ class FieldArray(Array, metaclass=FieldClass):
         GF = galois.GF(3**5)
         print(GF)
 
-    The *Galois field array class* `GF` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldClass` as its
+    The *Galois field array class* `GF` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldArrayClass` as its
     metaclass.
 
     .. ipython:: python
 
-        isinstance(GF, galois.FieldClass)
+        isinstance(GF, galois.FieldArrayClass)
         issubclass(GF, galois.FieldArray)
 
     Create a :ref:`Galois field array` using `GF`'s constructor.
@@ -1227,7 +1227,7 @@ class FieldArray(Array, metaclass=FieldClass):
 
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            data type for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            data type for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
         copy
             The `copy` keyword argument from :func:`numpy.array`. The default is `True` which makes a copy of the input array.
         order
@@ -1365,7 +1365,7 @@ class FieldArray(Array, metaclass=FieldClass):
             `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1400,7 +1400,7 @@ class FieldArray(Array, metaclass=FieldClass):
             `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1439,7 +1439,7 @@ class FieldArray(Array, metaclass=FieldClass):
             The increment between finite field element. The default is 1.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1503,7 +1503,7 @@ class FieldArray(Array, metaclass=FieldClass):
             entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1579,7 +1579,7 @@ class FieldArray(Array, metaclass=FieldClass):
         ----------
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1617,7 +1617,7 @@ class FieldArray(Array, metaclass=FieldClass):
             The size :math:`n` along one axis of the matrix. The resulting array has shape `(size, size)`.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1656,7 +1656,7 @@ class FieldArray(Array, metaclass=FieldClass):
             The number of columns in the Vandermonde matrix.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1712,7 +1712,7 @@ class FieldArray(Array, metaclass=FieldClass):
             `(n1, n2)`. By convention, the vectors are ordered from highest degree to 0-th degree.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1810,7 +1810,7 @@ class FieldArray(Array, metaclass=FieldClass):
 
         The multiplicative order of :math:`0` is not defined and will raise an :obj:`ArithmeticError`.
 
-        :func:`FieldArray.multiplicative_order` should not be confused with :obj:`FieldClass.order`. The former is a method on a
+        :func:`FieldArray.multiplicative_order` should not be confused with :obj:`FieldArrayClass.order`. The former is a method on a
         *Galois field array* that returns the multiplicative order of elements. The latter is a property of the field, namely
         the finite field's order or size.
 
@@ -1922,7 +1922,7 @@ class FieldArray(Array, metaclass=FieldClass):
         ----------
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldClass.dtypes`).
+            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
 
         Returns
         -------

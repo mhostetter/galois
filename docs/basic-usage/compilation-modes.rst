@@ -7,7 +7,7 @@ compile ufuncs written in pure Python. The created :ref:`Galois field array clas
 given ufunc, JIT compiles the finite field ufunc (if not already cached), and then invokes the new ufunc on the input array(s).
 
 There are two primary compilation modes: `"jit-lookup"` and `"jit-calculate"`. The supported ufunc compilation modes of a given finite
-field are listed in :obj:`galois.FieldClass.ufunc_modes`.
+field are listed in :obj:`galois.FieldArrayClass.ufunc_modes`.
 
 .. ipython:: python
 
@@ -123,7 +123,7 @@ default compilation mode. However, we can intentionally choose explicit calculat
     GF.ufunc_mode
 
 After *Galois field array classes* have been created, their compilation mode may be changed using the
-:func:`galois.FieldClass.compile` method.
+:func:`galois.FieldArrayClass.compile` method.
 
 .. ipython:: python
 

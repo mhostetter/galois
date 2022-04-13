@@ -6,12 +6,12 @@ import numpy as np
 
 from .._array import DTYPES
 
-from ._array import FieldClass, DirMeta
+from ._array import FieldArrayClass, DirMeta
 
 RECIPROCAL = lambda a, *args: 1 / a
 
 
-class GFpMeta(FieldClass, DirMeta):
+class GFpMeta(FieldArrayClass, DirMeta):
     """
     An metaclass for all GF(p) classes.
     """

@@ -24,7 +24,7 @@ Abstract base classes
    Array
    ArrayClass
    FieldArray
-   FieldClass
+   FieldArrayClass
 
 Classes
 -------

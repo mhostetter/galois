@@ -6,7 +6,7 @@ import numpy as np
 
 from .._array import DTYPES
 
-from ._array import FieldClass, DirMeta
+from ._array import FieldArrayClass, DirMeta
 
 DTYPE = np.int64
 INT_TO_POLY = lambda a, CHARACTERISTIC, DEGREE: [0,]*DEGREE
@@ -15,7 +15,7 @@ MULTIPLY = lambda a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY: a * b
 RECIPROCAL = lambda a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY: 1 / a
 
 
-class GFpmMeta(FieldClass, DirMeta):
+class GFpmMeta(FieldArrayClass, DirMeta):
     """
     A metaclass for all GF(p^m) classes.
     """

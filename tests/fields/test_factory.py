@@ -11,7 +11,7 @@ import galois
 def test_defaults(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     assert issubclass(GF, galois.FieldArray)
-    assert isinstance(GF, galois.FieldClass)
+    assert isinstance(GF, galois.FieldArrayClass)
     assert GF.characteristic == characteristic
     assert GF.degree == degree
 

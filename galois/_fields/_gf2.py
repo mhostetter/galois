@@ -4,12 +4,12 @@ import numpy as np
 from .._overrides import set_module
 from .._polys import Poly
 
-from ._array import FieldClass, DirMeta, FieldArray
+from ._array import FieldArrayClass, DirMeta, FieldArray
 
 __all__ = ["GF2"]
 
 
-class GF2Meta(FieldClass, DirMeta):
+class GF2Meta(FieldArrayClass, DirMeta):
     """
     A metaclass for the GF(2) class.
     """
@@ -171,7 +171,7 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
         Only the constructor is documented on this page. See :obj:`galois.FieldArray` for all other classmethods and methods
         for :obj:`galois.GF2`.
 
-    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldClass` and
+    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldArrayClass` and
     :obj:`galois.FieldArray`.
 
     See :ref:`Array Creation` for a detailed discussion on creating arrays (with and without copying) from array-like
@@ -186,12 +186,12 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
         galois.GF2 is galois.GF(2)
         print(galois.GF2)
 
-    The *Galois field array class* :obj:`galois.GF2` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldClass` as its
+    The *Galois field array class* :obj:`galois.GF2` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldArrayClass` as its
     metaclass.
 
     .. ipython:: python
 
-        isinstance(galois.GF2, galois.FieldClass)
+        isinstance(galois.GF2, galois.FieldArrayClass)
         issubclass(galois.GF2, galois.FieldArray)
 
     Create a :ref:`Galois field array` using :obj:`galois.GF2`'s constructor.
