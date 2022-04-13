@@ -3,7 +3,7 @@ Galois Field Classes
 
 There are two key classes in the :obj:`galois` library. Understanding them and their relationship will
 make using the library and accessing the appropriate documentation easier. These two classes are the
-:obj:`galois.FieldClass` metaclass and :obj:`galois.FieldArray`.
+:obj:`galois.FieldArrayClass` metaclass and :obj:`galois.FieldArray`.
 
 The documentation also regularly refers to a :ref:`Galois field array class` and a :ref:`Galois field array`.
 Both terms are defined on this page.
@@ -20,19 +20,19 @@ A *Galois field array class* is created using the class factory function :func:`
     print(GF)
 
 The *Galois field array class* `GF` is a subclass of :obj:`galois.FieldArray` (which itself subclasses :obj:`numpy.ndarray`) and
-has :obj:`galois.FieldClass` as its metaclass.
+has :obj:`galois.FieldArrayClass` as its metaclass.
 
 .. ipython:: python
 
     issubclass(GF, np.ndarray)
     issubclass(GF, galois.FieldArray)
-    isinstance(GF, galois.FieldClass)
+    isinstance(GF, galois.FieldArrayClass)
 
 Methods and properties
 ......................
 
-All of the methods and properties related to the Galois field itself, not one of its arrays, are documented in :obj:`galois.FieldClass`.
-For example, the irreducible polynomial of the finite field is accessed with :obj:`galois.FieldClass.irreducible_poly`.
+All of the methods and properties related to the Galois field itself, not one of its arrays, are documented in :obj:`galois.FieldArrayClass`.
+For example, the irreducible polynomial of the finite field is accessed with :obj:`galois.FieldArrayClass.irreducible_poly`.
 
 .. ipython:: python
 

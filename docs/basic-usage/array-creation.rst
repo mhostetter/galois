@@ -616,7 +616,7 @@ Default data type
 .................
 
 When arrays are created, unless otherwise specified, they use the default data type. The default data type is
-the smallest unsigned data type (the first in the :obj:`galois.FieldClass.dtypes` list).
+the smallest unsigned data type (the first in the :obj:`galois.FieldArrayClass.dtypes` list).
 
 .. ipython:: python
 

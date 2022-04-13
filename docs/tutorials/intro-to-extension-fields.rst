@@ -543,7 +543,7 @@ A primitive element has multiplicative order :math:`\textrm{ord}(g) = p^m - 1`.
 A primitive element
 ...................
 
-In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`galois.FieldClass.primitive_element`
+In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`galois.FieldArrayClass.primitive_element`
 property.
 
 .. tab-set::
@@ -580,7 +580,7 @@ property.
          g = GF9.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer
-representations using :func:`galois.FieldClass.repr_table`.
+representations using :func:`galois.FieldArrayClass.repr_table`.
 
 Here is the representation table using the default generator :math:`g = x`. Notice its multiplicative order is :math:`p^m - 1`.
 
@@ -593,7 +593,7 @@ Other primitive elements
 ........................
 
 There are multiple primitive elements of any finite field. All primitive elements are provided in the
-:obj:`galois.FieldClass.primitive_elements` property.
+:obj:`galois.FieldArrayClass.primitive_elements` property.
 
 .. tab-set::
 

@@ -77,7 +77,7 @@ The display representation of finite field elements can be set to either the int
 or power (`"power"`) representation. The default representation is the integer representation since that is natural when
 working with integer NumPy arrays.
 
-Set the display mode by passing the `display` keyword argument to :func:`galois.GF` or by calling the :func:`galois.FieldClass.display` method.
+Set the display mode by passing the `display` keyword argument to :func:`galois.GF` or by calling the :func:`galois.FieldArrayClass.display` method.
 Choose whichever element representation is most convenient for you.
 
 .. ipython:: python

@@ -6,7 +6,7 @@ from numba import int64
 import numpy as np
 
 from .. import _lfsr
-from .._fields import Field, FieldClass, FieldArray, matlab_primitive_poly
+from .._fields import Field, FieldArrayClass, FieldArray, matlab_primitive_poly
 from .._overrides import set_module
 from .._polys import Poly
 from .._prime import factors
@@ -674,7 +674,7 @@ class ReedSolomon:
             return message, N_errors
 
     @property
-    def field(self) -> FieldClass:
+    def field(self) -> FieldArrayClass:
         r"""
         The *Galois field array class* for the :math:`\mathrm{GF}(q)` field that defines the Reed-Solomon code.
 
@@ -864,7 +864,7 @@ class ReedSolomon:
 # JIT-compiled implementation of the specified functions
 ###############################################################################
 
-DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, int64, FieldClass._BINARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, FieldClass._UNARY_CALCULATE_SIG, FieldClass._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldClass._POLY_ROOTS_CALCULATE_SIG, FieldClass._POLY_EVALUATE_CALCULATE_SIG, FieldClass._CONVOLVE_CALCULATE_SIG, int64, int64, int64))
+DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, int64, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._UNARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldArrayClass._POLY_ROOTS_CALCULATE_SIG, FieldArrayClass._POLY_EVALUATE_CALCULATE_SIG, FieldArrayClass._CONVOLVE_CALCULATE_SIG, int64, int64, int64))
 
 def decode_calculate(codeword, syndrome, c, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, POLY_EVAL, CONVOLVE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """

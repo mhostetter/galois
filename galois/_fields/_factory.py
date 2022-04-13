@@ -51,7 +51,7 @@ def GF(
     r"""
     Creates a :ref:`Galois field array class` for :math:`\mathrm{GF}(p^m)`.
 
-    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldClass` and
+    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldArrayClass` and
     :obj:`galois.FieldArray`.
 
     Parameters
@@ -105,7 +105,7 @@ def GF(
         a multiplicative generator.
 
     compile
-        The ufunc calculation mode. This can be modified after class construction with the :func:`galois.FieldClass.compile` method.
+        The ufunc calculation mode. This can be modified after class construction with the :func:`galois.FieldArrayClass.compile` method.
         See :ref:`Compilation Modes` for a further discussion.
 
         * `None` (default): For newly-created classes, `None` corresponds to `"auto"`. For *Galois field array classes* of this type that were
@@ -120,7 +120,7 @@ def GF(
           represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
 
     display
-        The field element display representation. This can be modified after class construction with the :func:`galois.FieldClass.display` method.
+        The field element display representation. This can be modified after class construction with the :func:`galois.FieldArrayClass.display` method.
         See :ref:`Field Element Representation` for a further discussion.
 
         * `None` (default): For newly-created classes, `None` corresponds to `"int"`. For *Galois field array classes*
@@ -136,9 +136,9 @@ def GF(
 
     Notes
     -----
-    The created *Galois field array class* is a subclass of :obj:`galois.FieldArray` and an instance of :obj:`galois.FieldClass`.
+    The created *Galois field array class* is a subclass of :obj:`galois.FieldArray` and an instance of :obj:`galois.FieldArrayClass`.
     The :obj:`galois.FieldArray` inheritance provides the :obj:`numpy.ndarray` functionality and some additional methods on
-    *Galois field arrays*. The :obj:`galois.FieldClass` metaclass provides a variety of class attributes and methods relating to the
+    *Galois field arrays*. The :obj:`galois.FieldArrayClass` metaclass provides a variety of class attributes and methods relating to the
     finite field.
 
     *Galois field array classes* of the same type (order, irreducible polynomial, and primitive element) are singletons. So, calling this
@@ -1309,7 +1309,7 @@ def primitive_element(
 
     See Also
     --------
-    is_primitive_element, FieldClass.primitive_element
+    is_primitive_element, FieldArrayClass.primitive_element
 
     Examples
     --------
@@ -1425,7 +1425,7 @@ def primitive_elements(irreducible_poly: Poly) -> List[Poly]:  # pylint: disable
 
     See Also
     --------
-    is_primitive_element, FieldClass.primitive_elements
+    is_primitive_element, FieldArrayClass.primitive_elements
 
     Notes
     -----
@@ -1503,7 +1503,7 @@ def is_primitive_element(
 
     See Also
     --------
-    primitive_element, FieldClass.primitive_element
+    primitive_element, FieldArrayClass.primitive_element
 
     Examples
     --------

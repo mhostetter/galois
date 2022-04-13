@@ -239,7 +239,7 @@ Advanced arithmetic
         X = np.fft.fft(x); X
         np.fft.ifft(X)
 
-    See also :func:`galois.ntt` and :obj:`galois.FieldClass.primitive_root_of_unity`.
+    See also :func:`galois.ntt` and :obj:`galois.FieldArrayClass.primitive_root_of_unity`.
 
 .. details:: Inverse FFT: `np.fft.ifft(X)`
 
@@ -256,4 +256,4 @@ Advanced arithmetic
         X = np.fft.fft(x); X
         np.fft.ifft(X)
 
-    See also :func:`galois.ntt` and :obj:`galois.FieldClass.primitive_root_of_unity`.
+    See also :func:`galois.ntt` and :obj:`galois.FieldArrayClass.primitive_root_of_unity`.

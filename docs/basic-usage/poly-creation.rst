@@ -24,7 +24,7 @@ Element representation
 ----------------------
 
 As with *Galois field arrays*, the finite field element representation of the polynomial coefficients may be changed
-by setting the `display` keyword argument of :func:`galois.GF` or using the :func:`galois.FieldClass.display` method.
+by setting the `display` keyword argument of :func:`galois.GF` or using the :func:`galois.FieldArrayClass.display` method.
 
 .. ipython:: python
 
