@@ -9,9 +9,12 @@ from ._version import __version__
 from ._polys import *  # Needs to be imported before _fields
 from ._fields import *
 ###############################################################################
-# Monkey-patch the default array type to be GF(2)
+# Monkey-patch the finite field default array and class factory into the
+# _polys module. This is needed here due to circular dependencies.
 from . import _polys
-setattr(_polys._poly, "DEFAULT_ARRAY", GF2)
+_polys._irreducible.FIELD_FACTORY = GF
+_polys._poly.DEFAULT_FIELD_ARRAY = GF2
+_polys._primitive.FIELD_FACTORY = GF
 ###############################################################################
 from ._codes import *  # Needs monkey patching before importing
 
