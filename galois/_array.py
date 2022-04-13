@@ -2,7 +2,7 @@
 A module containing abstract base classes.
 """
 import contextlib
-from typing import List, Iterable, Optional, Union
+from typing import List, Iterable, Optional, Union, Type
 from typing_extensions import Literal
 
 import numpy as np
@@ -190,6 +190,14 @@ class Array(np.ndarray, metaclass=ArrayClass):
                 self._verify_array_values(obj)
 
 
-# This will be monkey-patched in __init__.py to be GF2. It can't be set to that currently due to
-# circular dependencies.
-DEFAULT_ARRAY = Array
+def FIELD_FACTORY(*args, **kwargs) -> Type[Array]:  # pylint: disable=unused-argument
+    """
+    This will be monkey-patched to be `galois.GF()` in __init__.py.
+    """
+    return Array
+
+
+DEFAULT_FIELD_ARRAY = Array
+"""
+This will be monkey-patched to be `galois.GF2` in __init__.py.
+"""

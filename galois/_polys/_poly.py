@@ -6,7 +6,7 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._array import ArrayClass, Array, DEFAULT_ARRAY
+from .._array import ArrayClass, Array, DEFAULT_FIELD_ARRAY
 from .._overrides import set_module
 
 from . import _binary, _dense, _sparse
@@ -41,8 +41,6 @@ class Poly:
 
     See :ref:`Polynomial Creation` and :ref:`Polynomial Arithmetic` for more examples.
     """
-    # pylint: disable=too-many-public-methods
-
     __slots__ = ["_field", "_degrees", "_coeffs", "_nonzero_degrees", "_nonzero_coeffs", "_integer", "_degree", "_type"]
 
     # Special private attributes that are once computed. There are three arithmetic types for polynomials: "dense", "binary",
@@ -114,7 +112,7 @@ class Poly:
         if self._coeffs.size == 0:
             self._coeffs = self._field([0])
 
-        if self._field == DEFAULT_ARRAY:
+        if self._field == DEFAULT_FIELD_ARRAY:
             # Binary arithmetic is always faster than dense arithmetic
             self._type = "binary"
             # Compute the integer value so we're ready for arithmetic computations
@@ -138,7 +136,7 @@ class Poly:
         else:
             # Convert coefficients into the specified field (or GF2 if unspecified)
             if field is None:
-                field = DEFAULT_ARRAY
+                field = DEFAULT_FIELD_ARRAY
             coeffs = np.array(coeffs, dtype=field._dtypes[-1])
             sign = np.sign(coeffs)
             coeffs = sign * field(np.abs(coeffs))
@@ -316,7 +314,7 @@ class Poly:
             galois.Poly.Random(5, seed=rng, field=GF)
             galois.Poly.Random(5, seed=rng, field=GF)
         """
-        field = DEFAULT_ARRAY if field is None else field
+        field = DEFAULT_FIELD_ARRAY if field is None else field
         if not isinstance(degree, (int, np.integer)):
             raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
         if seed is not None:
@@ -462,7 +460,7 @@ class Poly:
                     f = galois.Poly.Int(int("0xf700a275", 16), field=GF); f
                     hex(f)
         """
-        field = DEFAULT_ARRAY if field is None else field
+        field = DEFAULT_FIELD_ARRAY if field is None else field
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
         if not isinstance(field, ArrayClass):
@@ -474,7 +472,7 @@ class Poly:
         obj._integer = integer
         obj._field = field
 
-        if field == DEFAULT_ARRAY:
+        if field == DEFAULT_FIELD_ARRAY:
             obj._type = "binary"
         else:
             obj._type = "dense"
@@ -563,7 +561,7 @@ class Poly:
         obj._nonzero_coeffs = coeffs
         obj._field = field
 
-        if obj._field == DEFAULT_ARRAY:
+        if obj._field == DEFAULT_FIELD_ARRAY:
             # Binary arithmetic is always faster than dense arithmetic
             obj._type = "binary"
             # Compute the integer value so we're ready for arithmetic computations
