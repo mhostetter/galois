@@ -10,9 +10,9 @@ import numpy as np
 
 from .._array import FIELD_FACTORY
 from .._overrides import set_module
-from .._polys._functions import gcd
 from .._prime import factors, is_prime_power
 
+from ._functions import gcd
 from ._poly import Poly
 
 __all__ = ["is_irreducible", "irreducible_poly", "irreducible_polys"]
