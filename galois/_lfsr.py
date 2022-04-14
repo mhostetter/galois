@@ -1235,13 +1235,13 @@ class GLFSR(_LFSR):
 
 
 @overload
-def berlekamp_massey(y: FieldArray, output: Literal["minimal"] = "minimal") -> Poly:
+def berlekamp_massey(y: FieldArray, output: Literal["minimal"]) -> Poly:
     ...
 @overload
-def berlekamp_massey(y: FieldArray, output: Literal["fibonacci"] = "fibonacci") -> FLFSR:
+def berlekamp_massey(y: FieldArray, output: Literal["fibonacci"]) -> FLFSR:
     ...
 @overload
-def berlekamp_massey(y: FieldArray, output: Literal["galois"] = "galois") -> GLFSR:
+def berlekamp_massey(y: FieldArray, output: Literal["galois"]) -> GLFSR:
     ...
 @set_module("galois")
 def berlekamp_massey(y, output="minimal"):
@@ -1252,9 +1252,9 @@ def berlekamp_massey(y, output="minimal"):
 
     Parameters
     ----------
-    y : galois.FieldArray
+    y
         A linear recurrent sequence :math:`y` in :math:`\mathrm{GF}(p^m)`.
-    output : Literal["minimal", "fibonacci", "galois"]
+    output
         The output object type.
 
         * `"minimal"` (default): Returns the minimal polynomial that generates the linear recurrent sequence. The minimal polynomial
@@ -1264,7 +1264,7 @@ def berlekamp_massey(y, output="minimal"):
 
     Returns
     -------
-    galois.Poly or galois.FLFSR or galois.GLFSR
+    :
         The minimal polynomial :math:`c(x)`, a Fibonacci LFSR, or a Galois LFSR, depending on the value of `output`.
 
     Notes

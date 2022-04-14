@@ -44,14 +44,14 @@ def gcd(a, b):
 
     Parameters
     ----------
-    a : int or galois.Poly
+    a
         The first integer or polynomial argument.
-    b : int or galois.Poly
+    b
         The second integer or polynomial argument.
 
     Returns
     -------
-    int or galois.Poly
+    :
         Greatest common divisor of :math:`a` and :math:`b`.
 
     See Also
@@ -86,17 +86,15 @@ def gcd(a, b):
             .. ipython:: python
 
                 GF = galois.GF(7)
-                p1 = galois.irreducible_poly(7, 1); p1
-                p2 = galois.irreducible_poly(7, 2); p2
-                p3 = galois.irreducible_poly(7, 3); p3
+                f1 = galois.irreducible_poly(7, 1); f1
+                f2 = galois.irreducible_poly(7, 2); f2
+                f3 = galois.irreducible_poly(7, 3); f3
 
-            Compute the GCD of two polynomials.
+            Compute the GCD of :math:`f_1(x)^2 f_2(x)` and :math:`f_1(x) f_3(x)`, which is :math:`f_1(x)`.
 
             .. ipython:: python
 
-                a = p1**2 * p2; a
-                b = p1 * p3; b
-                gcd = galois.gcd(a, b); gcd
+                galois.gcd(f1**2 * f2, f1 * f3)
     """
     if isinstance(a, (int, np.integer)) and isinstance(b, (int, np.integer)):
         return int_gcd(a, b)
@@ -119,18 +117,18 @@ def egcd(a, b):
 
     Parameters
     ----------
-    a : int or galois.Poly
+    a
         The first integer or polynomial argument.
-    b : int or galois.Poly
+    b
         The second integer or polynomial argument.
 
     Returns
     -------
-    int or galois.Poly
+    :
         Greatest common divisor of :math:`a` and :math:`b`.
-    int or galois.Poly
+    :
         The multiplicand :math:`s` of :math:`a`, such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
-    int or galois.Poly
+    :
         The multiplicand :math:`t` of :math:`b`, such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
 
     See Also
@@ -169,16 +167,16 @@ def egcd(a, b):
             .. ipython:: python
 
                 GF = galois.GF(7)
-                p1 = galois.irreducible_poly(7, 1); p1
-                p2 = galois.irreducible_poly(7, 2); p2
-                p3 = galois.irreducible_poly(7, 3); p3
+                f1 = galois.irreducible_poly(7, 1); f1
+                f2 = galois.irreducible_poly(7, 2); f2
+                f3 = galois.irreducible_poly(7, 3); f3
 
-            Compute the extended GCD of two polynomials.
+            Compute the extended GCD of :math:`f_1(x)^2 f_2(x)` and :math:`f_1(x) f_3(x)`.
 
             .. ipython:: python
 
-                a = p1**2 * p2; a
-                b = p1 * p3; b
+                a = f1**2 * f2
+                b = f1 * f3
                 gcd, s, t = galois.egcd(a, b)
                 gcd, s, t
                 a*s + b*t == gcd
@@ -204,12 +202,12 @@ def lcm(*values):
 
     Parameters
     ----------
-    *values : int or galois.Poly
+    *values
         Each argument must be an integer or polynomial.
 
     Returns
     -------
-    int or galois.Poly
+    :
         The least common multiple of the arguments.
 
     See Also
@@ -235,19 +233,17 @@ def lcm(*values):
             .. ipython:: python
 
                 GF = galois.GF(7)
-                p1 = galois.irreducible_poly(7, 1); p1
-                p2 = galois.irreducible_poly(7, 2); p2
-                p3 = galois.irreducible_poly(7, 3); p3
+                f1 = galois.irreducible_poly(7, 1); f1
+                f2 = galois.irreducible_poly(7, 2); f2
+                f3 = galois.irreducible_poly(7, 3); f3
 
-            Compute the LCM of three polynomials.
+            Compute the LCM of three polynomials :math:`f_1(x)^2 f_2(x)`, :math:`f_1(x) f_3(x)`, and :math:`f_2(x) f_3(x)`,
+            which is :math:`f_1(x)^2 f_2(x) f_3(x)`.
 
             .. ipython:: python
 
-                a = p1**2 * p2; a
-                b = p1 * p3; b
-                c = p2 * p3; c
-                galois.lcm(a, b, c)
-                p1**2 * p2 * p3
+                galois.lcm(f1**2 * f2, f1 * f3, f2 * f3)
+                f1**2 * f2 * f3
     """
     if not len(values) > 0:
         raise ValueError("At least one argument must be provided.")
@@ -273,12 +269,12 @@ def prod(*values):
 
     Parameters
     ----------
-    *values : int or galois.Poly
+    *values
         Each argument must be an integer or polynomial.
 
     Returns
     -------
-    int or galois.Poly
+    :
         The product of the arguments.
 
     See Also
@@ -304,16 +300,16 @@ def prod(*values):
             .. ipython:: python
 
                 GF = galois.GF(7)
-                a = galois.Poly.Random(2, field=GF); a
-                b = galois.Poly.Random(3, field=GF); b
-                c = galois.Poly.Random(4, field=GF); c
+                f1 = galois.Poly.Random(2, field=GF); f1
+                f2 = galois.Poly.Random(3, field=GF); f2
+                f3 = galois.Poly.Random(4, field=GF); f3
 
             Compute the product of three polynomials.
 
             .. ipython:: python
 
-                galois.prod(a, b, c)
-                a * b * c
+                galois.prod(f1, f2, f3)
+                f1 * f2 * f3
     """
     if not len(values) > 0:
         raise ValueError("At least one argument must be provided.")
@@ -339,12 +335,12 @@ def are_coprime(*values):
 
     Parameters
     ----------
-    *values : int or galois.Poly
+    *values
         Each argument must be an integer or polynomial.
 
     Returns
     -------
-    bool
+    :
         `True` if the arguments are pairwise coprime.
 
     See Also
@@ -375,16 +371,16 @@ def are_coprime(*values):
             .. ipython:: python
 
                 GF = galois.GF(7)
-                p1 = galois.irreducible_poly(7, 1); p1
-                p2 = galois.irreducible_poly(7, 2); p2
-                p3 = galois.irreducible_poly(7, 3); p3
+                f1 = galois.irreducible_poly(7, 1); f1
+                f2 = galois.irreducible_poly(7, 2); f2
+                f3 = galois.irreducible_poly(7, 3); f3
 
             Determine if combinations of the irreducible polynomials are pairwise coprime.
 
             .. ipython:: python
 
-                galois.are_coprime(p1, p2, p3)
-                galois.are_coprime(p1*p2, p2, p3)
+                galois.are_coprime(f1, f2, f3)
+                galois.are_coprime(f1 * f2, f2, f3)
     """
     if not (all(isinstance(value, (int, np.integer)) for value in values) or all(isinstance(value, Poly) for value in values)):
         raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
@@ -411,14 +407,14 @@ def crt(remainders, moduli):
 
     Parameters
     ----------
-    remainders : typing.Sequence[int] or typing.Sequence[galois.Poly]
+    remainders
         The integer or polynomial remainders :math:`a_i`.
-    moduli : typing.Sequence[int] or typing.Sequence[galois.Poly]
+    moduli
         The integer or polynomial moduli :math:`m_i`.
 
     Returns
     -------
-    int or galois.Poly
+    :
         The simultaneous solution :math:`x` to the system of congruences.
 
     Notes
@@ -544,15 +540,15 @@ def factors(value):
 
     Parameters
     ----------
-    value : int or galois.Poly
+    value
         A positive integer :math:`n` or a non-constant, monic polynomial :math:`f(x)`.
 
     Returns
     -------
-    typing.List[int] or typing.List[galois.Poly]
+    :
         Sorted list of prime factors :math:`\{p_1, p_2, \dots, p_k\}` of :math:`n` with :math:`p_1 < p_2 < \dots < p_k` or
         irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of :math:`f(x)` sorted in lexicographically-increasing order.
-    typing.List[int]
+    :
         List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
 
     Notes
@@ -652,12 +648,12 @@ def is_square_free(value):
 
     Parameters
     ----------
-    value : int or galois.Poly
+    value
         An integer :math:`n` or polynomial :math:`f(x)`.
 
     Returns
     -------
-    bool
+    :
         `True` if the integer or polynomial is square-free.
 
     See Also
@@ -706,15 +702,15 @@ def is_square_free(value):
             .. ipython:: python
 
                 GF = galois.GF(3)
-                g3 = galois.irreducible_poly(3, 3); g3
-                g4 = galois.irreducible_poly(3, 4); g4
+                f1 = galois.irreducible_poly(3, 3); f1
+                f2 = galois.irreducible_poly(3, 4); f2
 
             Determine if composite polynomials are square-free over :math:`\mathrm{GF}(3)`.
 
             .. ipython:: python
 
-                galois.is_square_free(g3 * g4)
-                galois.is_square_free(g3**2 * g4)
+                galois.is_square_free(f1 * f2)
+                galois.is_square_free(f1**2 * f2)
     """
     if isinstance(value, (int, np.integer)):
         return int_is_square_free(value)
