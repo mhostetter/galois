@@ -748,10 +748,10 @@ class Poly:
             return Poly(self.coeffs[::-1])
 
     @overload
-    def roots(self, multiplicity: Literal[False] = False) -> Array:
+    def roots(self, multiplicity: Literal[False]) -> Array:
         ...
     @overload
-    def roots(self, multiplicity: Literal[True] = True) -> Tuple[Array, np.ndarray]:
+    def roots(self, multiplicity: Literal[True]) -> Tuple[Array, np.ndarray]:
         ...
     def roots(self, multiplicity=False):
         r"""
@@ -759,15 +759,15 @@ class Poly:
 
         Parameters
         ----------
-        multiplicity : bool, optional
+        multiplicity
             Optionally return the multiplicity of each root. The default is `False` which only returns the unique
             roots.
 
         Returns
         -------
-        galois.Array
+        :
             Galois field array of roots of :math:`f(x)`. The roots are ordered in increasing order.
-        numpy.ndarray
+        :
             The multiplicity of each root. This is only returned if `multiplicity=True`.
 
         Notes
@@ -804,10 +804,6 @@ class Poly:
                             &= a_{d}(\alpha^i)^{d}\alpha^d + a_{d-1}(\alpha^i)^{d-1}\alpha^{d-1} + \dots + a_1(\alpha^i)\alpha + a_0 \\
                             &= \lambda_{i,d}\alpha^d + \lambda_{i,d-1}\alpha^{d-1} + \dots + \lambda_{i,1}\alpha + \lambda_{i,0} \\
                             &= \sum_{j=0}^{d} \lambda_{i,j}\alpha^j
-
-        References
-        ----------
-        * https://en.wikipedia.org/wiki/Chien_search
 
         Examples
         --------

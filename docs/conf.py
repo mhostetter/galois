@@ -15,6 +15,12 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath(".."))
 
+# Assign a build variable to the builtin module that inerts the @set_module decorator. This is done because set_module
+# confuses Sphinx when parsing overloaded functions. When not building the documentation, the @set_module("galois")
+# decorator works as intended.
+import builtins
+setattr(builtins, "__sphinx_build__", True)
+
 from galois import __version__
 
 import numpy
@@ -193,6 +199,7 @@ autodoc_default_options = {
 }
 autodoc_typehints = "description"
 autodoc_typehints_description_target = "documented"
+autodoc_typehints_format = "short"
 
 autosummary_generate = True
 autosummary_generate_overwrite = True
