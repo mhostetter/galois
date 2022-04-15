@@ -219,7 +219,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     elif method == "max":
         return next(primitive_polys(order, degree, reverse=True))
     else:
-        return _primitive_poly_random_search(order, degree)
+        return _random_search(order, degree)
 
 
 @set_module("galois")
@@ -312,7 +312,7 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
         start, stop, step = stop - 1, start - 1, -1
 
     while True:
-        poly = _primitive_poly_deterministic_search(field, start, stop, step)
+        poly = _deterministic_search(field, start, stop, step)
         if poly is not None:
             start = int(poly) + step
             yield poly
@@ -321,7 +321,7 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
 
 
 @functools.lru_cache(maxsize=4096)
-def _primitive_poly_deterministic_search(field, start, stop, step) -> Optional[Poly]:
+def _deterministic_search(field, start, stop, step) -> Optional[Poly]:
     """
     Searches for an primitive polynomial in the range using the specified deterministic method.
     """
@@ -333,7 +333,7 @@ def _primitive_poly_deterministic_search(field, start, stop, step) -> Optional[P
     return None
 
 
-def _primitive_poly_random_search(order, degree) -> Poly:
+def _random_search(order, degree) -> Poly:
     """
     Searches for a random primitive polynomial.
     """
