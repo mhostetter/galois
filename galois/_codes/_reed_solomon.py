@@ -158,11 +158,39 @@ class ReedSolomon:
         # Pre-compile the JIT decoder
         self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(decode_calculate)
 
-    def __str__(self):
+    def __repr__(self) -> str:
+        """
+        A terse representation of the Reed-Solomon code.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9)
+            rs
+        """
         return f"<Reed-Solomon Code: [{self.n}, {self.k}, {self.d}] over {self.field.name}>"
 
-    def __repr__(self):
-        return str(self)
+    def __str__(self) -> str:
+        """
+        A formatted string with relevant properties of the Reed-Solomon code.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            rs = galois.ReedSolomon(15, 9)
+            print(rs)
+        """
+        string = f"Reed-Solomon Code:"
+        string += f"\n  [n, k, d]: [{self.n}, {self.k}, {self.d}]"
+        string += f"\n  field: {self.field.name}"
+        string += f"\n  generator_poly: {self.generator_poly}"
+        string += f"\n  is_narrow_sense: {self.is_narrow_sense}"
+        string += f"\n  systematic: {self.systematic}"
+        string += f"\n  t: {self.t}"
+
+        return string
 
     def encode(self, message: Union[np.ndarray, FieldArray], parity_only: bool = False) -> Union[np.ndarray, FieldArray]:
         r"""
