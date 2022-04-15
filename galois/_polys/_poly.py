@@ -1543,7 +1543,10 @@ class Poly:
                 else:
                     self._degree = max(self._nonzero_degrees)
             elif hasattr(self, "_integer"):
-                self._degree = integer_to_degree(self._integer, self._field.order)
+                if self._integer == 0:
+                    self._degree = 0
+                else:
+                    self._degree = integer_to_degree(self._integer, self._field.order)
 
         return self._degree
 
