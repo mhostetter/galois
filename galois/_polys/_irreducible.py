@@ -214,7 +214,7 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
     elif method == "max":
         return next(irreducible_polys(order, degree, reverse=True))
     else:
-        return _irreducible_poly_random_search(order, degree)
+        return _random_search(order, degree)
 
 
 @set_module("galois")
@@ -305,7 +305,7 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
         start, stop, step = stop - 1, start - 1, -1
 
     while True:
-        poly = _irreducible_poly_deterministic_search(field, start, stop, step)
+        poly = _deterministic_search(field, start, stop, step)
         if poly is not None:
             start = int(poly) + step
             yield poly
@@ -314,7 +314,7 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
 
 
 @functools.lru_cache(maxsize=4096)
-def _irreducible_poly_deterministic_search(field, start, stop, step) -> Optional[Poly]:
+def _deterministic_search(field, start, stop, step) -> Optional[Poly]:
     """
     Searches for an irreducible polynomial in the range using the specified deterministic method.
     """
@@ -326,7 +326,7 @@ def _irreducible_poly_deterministic_search(field, start, stop, step) -> Optional
     return None
 
 
-def _irreducible_poly_random_search(order, degree) -> Poly:
+def _random_search(order, degree) -> Poly:
     """
     Searches for a random irreducible polynomial.
     """
