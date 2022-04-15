@@ -188,7 +188,6 @@ html_domain_indices = True
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
-    "numba": ("https://numba.pydata.org/numba-doc/latest/", None)
 }
 
 autodoc_default_options = {
