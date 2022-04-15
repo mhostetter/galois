@@ -37,14 +37,14 @@ def test_bch_exceptions():
     #     galois.BCH(15, 7, c=0)
 
 
-def test_str():
-    bch = galois.BCH(15, 7)
-    assert str(bch) == "<BCH Code: [15, 7, 5] over GF(2)>"
-
-
 def test_repr():
     bch = galois.BCH(15, 7)
     assert repr(bch) == "<BCH Code: [15, 7, 5] over GF(2)>"
+
+
+def test_str():
+    bch = galois.BCH(15, 7)
+    assert str(bch) == "BCH Code:\n  [n, k, d]: [15, 7, 5]\n  field: GF(2)\n  generator_poly: x^8 + x^7 + x^6 + x^4 + 1\n  is_primitive: True\n  is_narrow_sense: True\n  systematic: True\n  t: 2"
 
 
 def test_bch_generator_poly_7():

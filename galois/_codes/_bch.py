@@ -260,11 +260,40 @@ class BCH:
         # Pre-compile the JIT decoder
         self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(decode_calculate)
 
-    def __str__(self):
+    def __repr__(self) -> str:
+        """
+        A terse representation of the BCH code.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7)
+            bch
+        """
         return f"<BCH Code: [{self.n}, {self.k}, {self.d}] over GF(2)>"
 
-    def __repr__(self):
-        return str(self)
+    def __str__(self) -> str:
+        """
+        A formatted string with relevant properties of the BCH code.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            bch = galois.BCH(15, 7)
+            print(bch)
+        """
+        string = f"BCH Code:"
+        string += f"\n  [n, k, d]: [{self.n}, {self.k}, {self.d}]"
+        string += f"\n  field: {GF2.name}"
+        string += f"\n  generator_poly: {self.generator_poly}"
+        string += f"\n  is_primitive: {self.is_primitive}"
+        string += f"\n  is_narrow_sense: {self.is_narrow_sense}"
+        string += f"\n  systematic: {self.systematic}"
+        string += f"\n  t: {self.t}"
+
+        return string
 
     def encode(self, message: Union[np.ndarray, GF2], parity_only: bool = False) -> Union[np.ndarray, GF2]:
         r"""
