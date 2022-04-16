@@ -208,7 +208,7 @@ def carmichael_lambda(n: int) -> int:
         galois.is_cyclic(n)
 
     When :math:`\phi(n) \ne \lambda(n)`, the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is not cyclic.
-    See :func:`galois.is_cyclic`.
+    See :func:`~galois.is_cyclic`.
 
     .. ipython:: python
 

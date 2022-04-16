@@ -56,7 +56,7 @@ def ntt(
 
     In :math:`\mathrm{GF}(p)`, where :math:`p` is prime, a primitive :math:`N`-th root of unity exists if :math:`N` divides :math:`p - 1`. If that is true,
     then :math:`p = mN + 1` for some integer :math:`m`. This function finds :math:`\omega_N` by first finding a primitive :math:`p - 1`-th root of
-    unity :math:`\omega_{p - 1}` in :math:`\mathrm{GF}(p)` using :func:`galois.primitive_root`. From there :math:`\omega_N` is found
+    unity :math:`\omega_{p - 1}` in :math:`\mathrm{GF}(p)` using :func:`~galois.primitive_root`. From there :math:`\omega_N` is found
     from :math:`\omega_N = \omega_{p - 1}^m`.
 
     The :math:`k`-th value of the :math:`N`-point NTT :math:`X = \mathrm{NTT}(x)` is
@@ -171,7 +171,7 @@ def intt(
 
     In :math:`\mathrm{GF}(p)`, where :math:`p` is prime, a primitive :math:`N`-th root of unity exists if :math:`N` divides :math:`p - 1`. If that is true,
     then :math:`p = mN + 1` for some integer :math:`m`. This function finds :math:`\omega_N` by first finding a primitive :math:`p - 1`-th root of
-    unity :math:`\omega_{p - 1}` in :math:`\mathrm{GF}(p)` using :func:`galois.primitive_root`. From there :math:`\omega_N` is found
+    unity :math:`\omega_{p - 1}` in :math:`\mathrm{GF}(p)` using :func:`~galois.primitive_root`. From there :math:`\omega_N` is found
     from :math:`\omega_N = \omega_{p - 1}^m`.
 
     The :math:`j`-th value of the scaled :math:`N`-point INTT :math:`x = \mathrm{INTT}(X)` is

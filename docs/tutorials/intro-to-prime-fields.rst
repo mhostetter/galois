@@ -14,7 +14,7 @@ Prime field
 -----------
 
 In this tutorial, we will consider the prime field :math:`\mathrm{GF}(7)`. Using the :obj:`galois` library, the :ref:`Galois field array class`
-`GF7` is created using the class factory :func:`galois.GF`.
+`GF7` is created using the class factory :func:`~galois.GF`.
 
 .. tab-set::
 
@@ -51,7 +51,7 @@ Elements
 The elements of the finite field :math:`\mathrm{GF}(p)` are naturally represented as the integers
 :math:`\{0, 1, \dots, p - 1\}`.
 
-The elements of the finite field are retrieved in a 1-D array using the :func:`galois.FieldArray.Elements` classmethod.
+The elements of the finite field are retrieved in a 1-D array using the :func:`~galois.FieldArray.Elements` classmethod.
 
 .. tab-set::
 
@@ -274,7 +274,7 @@ is the multiplicative inverse of :math:`b`. Let's first learn the multiplicative
 `Euclid <https://en.wikipedia.org/wiki/Euclid>`_ discovered an efficient algorithm to solve the `Bézout Identity <https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity>`_,
 which is used to find the multiplicative inverse. It is now called the `Extended Euclidean Algorithm <https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#:~:text=Extended%20Euclidean%20algorithm%20also%20refers,a%20and%20b%20are%20coprime.>`_.
 Given two integers :math:`x` and :math:`y`, the Extended Euclidean Algorithm finds the integers :math:`s` and :math:`t` such that
-:math:`xs + yt = \textrm{gcd}(x, y)`. This algorithm is implemented in :func:`galois.egcd`.
+:math:`xs + yt = \textrm{gcd}(x, y)`. This algorithm is implemented in :func:`~galois.egcd`.
 
 If :math:`x = 5` is a field element of :math:`\mathrm{GF}(7)` and :math:`y = 7` is the prime characteristic, then :math:`s = x^{-1}`
 in :math:`\mathrm{GF}(7)`. Note, the GCD will always be :math:`1` because :math:`y` is prime.
@@ -383,7 +383,7 @@ An integer :math:`g` is a *primitive root mod p* if every number coprime to :mat
 mod :math:`p`. Namely, every :math:`a` coprime to :math:`p` can be represented as :math:`g^k \equiv a\ (\textrm{mod}\ p)` for some :math:`k`.
 In prime fields, since :math:`p` is prime, every integer :math:`1 \le a < p` is coprime to :math:`p`.
 
-Finding primitive roots mod :math:`p` is implemented in :func:`galois.primitive_root` and :func:`galois.primitive_roots`.
+Finding primitive roots mod :math:`p` is implemented in :func:`~galois.primitive_root` and :func:`~galois.primitive_roots`.
 
 .. ipython:: python
 
@@ -392,7 +392,7 @@ Finding primitive roots mod :math:`p` is implemented in :func:`galois.primitive_
 A primitive element
 ...................
 
-In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`galois.FieldArrayClass.primitive_element`
+In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`~galois.FieldArrayClass.primitive_element`
 property.
 
 .. tab-set::
@@ -418,7 +418,7 @@ property.
          g = GF7.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer
-representations using :func:`galois.FieldArrayClass.repr_table`. Let's ignore the polynomial and vector representations for now.
+representations using :func:`~galois.FieldArrayClass.repr_table`. Let's ignore the polynomial and vector representations for now.
 They will become useful for extension fields.
 
 Here is the representation table using the default generator :math:`g = 3`. Notice its multiplicative order is :math:`p - 1`.
@@ -432,7 +432,7 @@ Other primitive elements
 ........................
 
 There are multiple primitive elements of any finite field. All primitive elements are provided in the
-:obj:`galois.FieldArrayClass.primitive_elements` property.
+:obj:`~galois.FieldArrayClass.primitive_elements` property.
 
 .. tab-set::
 

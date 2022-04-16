@@ -172,11 +172,11 @@ A :obj:`~typing.Union` representing objects that can be coerced into a NumPy dat
 @set_module("galois")
 class ArrayClass(type):
     """
-    Defines a metaclass for all :obj:`galois.Array` classes.
+    Defines a metaclass for all :obj:`~galois.Array` classes.
 
     Important
     ---------
-    :obj:`galois.ArrayClass` is an abstract base class for :obj:`galois.FieldArrayClass` and cannot be instantiated directly.
+    :obj:`~galois.ArrayClass` is an abstract base class for :obj:`~galois.FieldArrayClass` and cannot be instantiated directly.
     """
     # pylint: disable=no-value-for-parameter
 
@@ -238,11 +238,11 @@ class ArrayClass(type):
 @set_module("galois")
 class Array(np.ndarray, metaclass=ArrayClass):
     r"""
-    A :obj:`numpy.ndarray` subclass over a Galois field or Galois ring.
+    A :obj:`~numpy.ndarray` subclass over a Galois field or Galois ring.
 
     Important
     ---------
-    :obj:`galois.Array` is an abstract base class for :obj:`galois.FieldArray` and cannot be instantiated directly.
+    :obj:`~galois.Array` is an abstract base class for :obj:`~galois.FieldArray` and cannot be instantiated directly.
     """
     # pylint: disable=no-value-for-parameter
 

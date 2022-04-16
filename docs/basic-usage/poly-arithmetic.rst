@@ -168,7 +168,7 @@ Polynomial objects also work on several special arithmetic operations. Below are
     f = galois.Poly([1, 30, 0, 26, 6], field=GF); f
     g = galois.Poly([4, 17, 3], field=GF); g
 
-Compute the polynomial greatest common divisor using :func:`galois.gcd` and :func:`galois.egcd`.
+Compute the polynomial greatest common divisor using :func:`~galois.gcd` and :func:`~galois.egcd`.
 
 .. ipython:: python
 
@@ -182,7 +182,7 @@ Perform efficient modular exponentiation using the built-in :func:`pow`.
     # Computes (f ** 127) % g
     pow(f, 127, g)
 
-Factor a polynomial into its irreducible polynomial factors using :func:`galois.factors`.
+Factor a polynomial into its irreducible polynomial factors using :func:`~galois.factors`.
 
 .. ipython:: python
 
@@ -191,7 +191,7 @@ Factor a polynomial into its irreducible polynomial factors using :func:`galois.
 Polynomial evaluation
 ---------------------
 
-Polynomials are evaluated by invoking :func:`galois.Poly.__call__`. They can be evaluated at scalars.
+Polynomials are evaluated by invoking :func:`~galois.Poly.__call__`. They can be evaluated at scalars.
 
 .. ipython:: python
 

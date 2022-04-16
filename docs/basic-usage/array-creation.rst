@@ -233,7 +233,7 @@ Polynomial coefficients
 .......................
 
 Rather than strings, the polynomial coefficients may be passed into `GF`'s constructor as length-:math:`m` vectors using
-the :func:`galois.FieldArray.Vector` classmethod.
+the :func:`~galois.FieldArray.Vector` classmethod.
 
 .. tab-set::
 
@@ -264,7 +264,7 @@ the :func:`galois.FieldArray.Vector` classmethod.
          GF.display("power")
          GF.Vector([[0, 0, 1, 2, 2], [0, 0, 0, 1, 1]])
 
-The :func:`galois.FieldArray.vector` method is the opposite operation. It converts extension field elements from :math:`\mathrm{GF}(p^m)`
+The :func:`~galois.FieldArray.vector` method is the opposite operation. It converts extension field elements from :math:`\mathrm{GF}(p^m)`
 into length-:math:`m` vectors over :math:`\mathrm{GF}(p)`.
 
 .. tab-set::
@@ -299,7 +299,7 @@ into length-:math:`m` vectors over :math:`\mathrm{GF}(p)`.
 NumPy array
 ...........
 
-An integer NumPy array may also be passed into `GF`. The default keyword argument `copy=True` of the :obj:`galois.FieldArray`
+An integer NumPy array may also be passed into `GF`. The default keyword argument `copy=True` of the :obj:`~galois.FieldArray`
 constructor will create a copy of the array.
 
 .. tab-set::
@@ -434,12 +434,12 @@ A single finite field element (a scalar) is a 0-D *Galois field array*. They are
 Classmethods
 ------------
 
-Several classmethods are provided in :obj:`galois.FieldArray` to assist with creating arrays.
+Several classmethods are provided in :obj:`~galois.FieldArray` to assist with creating arrays.
 
 Constant arrays
 ...............
 
-The :func:`galois.FieldArray.Zeros` and :func:`galois.FieldArray.Ones` classmethods provide constant arrays that are
+The :func:`~galois.FieldArray.Zeros` and :func:`~galois.FieldArray.Ones` classmethods provide constant arrays that are
 useful for initializing empty arrays.
 
 .. tab-set::
@@ -477,7 +477,7 @@ useful for initializing empty arrays.
 Ordered arrays
 ..............
 
-The :func:`galois.FieldArray.Range` classmethod produces a range of elements similar to :func:`numpy.arange`. The integer `start`
+The :func:`~galois.FieldArray.Range` classmethod produces a range of elements similar to :func:`numpy.arange`. The integer `start`
 and `stop` values are the :ref:`integer representation <Integer representation>` of the polynomial field elements.
 
 .. tab-set::
@@ -509,7 +509,7 @@ and `stop` values are the :ref:`integer representation <Integer representation>`
          GF.display("power")
          GF.Range(10, 20)
 
-The :func:`galois.FieldArray.Elements` classmethod provides a 1-D array of all the finite field elements.
+The :func:`~galois.FieldArray.Elements` classmethod provides a 1-D array of all the finite field elements.
 
 .. tab-set::
 
@@ -543,7 +543,7 @@ The :func:`galois.FieldArray.Elements` classmethod provides a 1-D array of all t
 Random arrays
 .............
 
-The :func:`galois.FieldArray.Random` classmethod provides a random array of the specified shape. This is convenient
+The :func:`~galois.FieldArray.Random` classmethod provides a random array of the specified shape. This is convenient
 for testing. The integer `low` and `high` values are the :ref:`integer representation <Integer representation>` of
 the polynomial field elements.
 
@@ -616,7 +616,7 @@ Default data type
 .................
 
 When arrays are created, unless otherwise specified, they use the default data type. The default data type is
-the smallest unsigned data type (the first in the :obj:`galois.FieldArrayClass.dtypes` list).
+the smallest unsigned data type (the first in the :obj:`~galois.FieldArrayClass.dtypes` list).
 
 .. ipython:: python
 
@@ -635,7 +635,7 @@ the smallest unsigned data type (the first in the :obj:`galois.FieldArrayClass.d
 Changing data types
 ...................
 
-The data type may be explicitly set during array creation by setting the `dtype` keyword argument of the :obj:`galois.FieldArray`
+The data type may be explicitly set during array creation by setting the `dtype` keyword argument of the :obj:`~galois.FieldArray`
 constructor.
 
 .. ipython:: python

@@ -161,32 +161,32 @@ class GF2Meta(FieldArrayClass, DirMeta):
 @set_module("galois")
 class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, compile="jit-calculate"):
     r"""
-    A :obj:`numpy.ndarray` subclass over :math:`\mathrm{GF}(2)`.
+    A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(2)`.
 
     Important
     ---------
-        This class is a pre-generated :obj:`galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
+        This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
         for convenience.
 
-        Only the constructor is documented on this page. See :obj:`galois.FieldArray` for all other classmethods and methods
-        for :obj:`galois.GF2`.
+        Only the constructor is documented on this page. See :obj:`~galois.FieldArray` for all other classmethods and methods
+        for :obj:`~galois.GF2`.
 
-    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldArrayClass` and
-    :obj:`galois.FieldArray`.
+    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`~galois.FieldArrayClass` and
+    :obj:`~galois.FieldArray`.
 
     See :ref:`Array Creation` for a detailed discussion on creating arrays (with and without copying) from array-like
-    objects, valid NumPy data types, and other :obj:`galois.FieldArray` classmethods.
+    objects, valid NumPy data types, and other :obj:`~galois.FieldArray` classmethods.
 
     Examples
     --------
-    This class is equivalent, and in fact identical, to the subclass returned from the class factory :func:`galois.GF`.
+    This class is equivalent, and in fact identical, to the subclass returned from the class factory :func:`~galois.GF`.
 
     .. ipython:: python
 
         galois.GF2 is galois.GF(2)
         print(galois.GF2)
 
-    The *Galois field array class* :obj:`galois.GF2` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldArrayClass` as its
+    The *Galois field array class* :obj:`~galois.GF2` is a subclass of :obj:`~galois.FieldArray`, with :obj:`~galois.FieldArrayClass` as its
     metaclass.
 
     .. ipython:: python
@@ -194,13 +194,13 @@ class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, pr
         isinstance(galois.GF2, galois.FieldArrayClass)
         issubclass(galois.GF2, galois.FieldArray)
 
-    Create a :ref:`Galois field array` using :obj:`galois.GF2`'s constructor.
+    Create a :ref:`Galois field array` using :obj:`~galois.GF2`'s constructor.
 
     .. ipython:: python
 
         x = galois.GF2([1, 0, 1, 1]); x
 
-    The *Galois field array* `x` is an instance of the *Galois field array class* :obj:`galois.GF2`.
+    The *Galois field array* `x` is an instance of the *Galois field array class* :obj:`~galois.GF2`.
 
     .. ipython:: python
 

@@ -7,7 +7,7 @@ compile ufuncs written in pure Python. The created :ref:`Galois field array clas
 given ufunc, JIT compiles the finite field ufunc (if not already cached), and then invokes the new ufunc on the input array(s).
 
 There are two primary compilation modes: `"jit-lookup"` and `"jit-calculate"`. The supported ufunc compilation modes of a given finite
-field are listed in :obj:`galois.FieldArrayClass.ufunc_modes`.
+field are listed in :obj:`~galois.FieldArrayClass.ufunc_modes`.
 
 .. ipython:: python
 
@@ -26,7 +26,7 @@ Lookup tables
 
 The lookup table compilation mode `"jit-lookup"` uses exponential, logarithm, and Zech logarithm lookup tables
 to speed up arithmetic computations. These tables are built once at *Galois field array class*-creation time
-during the call to :func:`galois.GF`.
+during the call to :func:`~galois.GF`.
 
 The exponential and logarithm lookup tables map every finite field element to a power of the primitive element
 :math:`\alpha`.
@@ -112,7 +112,7 @@ Recompile the ufuncs
 --------------------
 
 The compilation mode may be explicitly set during construction of the *Galois field array class* using the
-`compile` keyword argument to :func:`galois.GF`.
+`compile` keyword argument to :func:`~galois.GF`.
 
 Here, the *Galois field array class* for :math:`\mathrm{GF}(3^5)` would normally select `"jit-lookup"` as its
 default compilation mode. However, we can intentionally choose explicit calculation.
@@ -123,7 +123,7 @@ default compilation mode. However, we can intentionally choose explicit calculat
     GF.ufunc_mode
 
 After *Galois field array classes* have been created, their compilation mode may be changed using the
-:func:`galois.FieldArrayClass.compile` method.
+:func:`~galois.FieldArrayClass.compile` method.
 
 .. ipython:: python
 

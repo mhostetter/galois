@@ -260,7 +260,7 @@ def square_free_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
 
     Some :math:`h_j(x) = 1`, but those polynomials are not returned by this function.
 
-    A complete polynomial factorization is implemented in :func:`galois.factors`.
+    A complete polynomial factorization is implemented in :func:`~galois.factors`.
 
     References
     ----------
@@ -378,8 +378,8 @@ def distinct_degree_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
     Some :math:`f_i(x) = 1`, but those polynomials are not returned by this function. In this example, the function returns
     :math:`\{f_1(x), f_2(x), f_3(x)\}` and :math:`\{1, 2, 3\}`.
 
-    The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see :func:`galois.square_free_factorization`.
-    A complete polynomial factorization is implemented in :func:`galois.factors`.
+    The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see :func:`~galois.square_free_factorization`.
+    A complete polynomial factorization is implemented in :func:`~galois.factors`.
 
     References
     ----------
@@ -472,8 +472,8 @@ def equal_degree_factorization(poly: Poly, degree: int) -> List[Poly]:
     The Equal-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`rd` into a product of :math:`r`
     irreducible polynomials each with degree :math:`d`. This function implements the Cantor-Zassenhaus algorithm, which is probabilistic.
 
-    The Equal-Degree Factorization algorithm is often applied after the Distinct-Degree Factorization algorithm, see :func:`galois.distinct_degree_factorization`.
-    A complete polynomial factorization is implemented in :func:`galois.factors`.
+    The Equal-Degree Factorization algorithm is often applied after the Distinct-Degree Factorization algorithm, see :func:`~galois.distinct_degree_factorization`.
+    A complete polynomial factorization is implemented in :func:`~galois.factors`.
 
     References
     ----------

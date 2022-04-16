@@ -12,7 +12,7 @@ Extension field
 ---------------
 
 In this tutorial, we will consider the extension field :math:`\mathrm{GF}(3^2)`. Using the :obj:`galois` library, the :ref:`Galois field array class`
-`GF9` is created using the class factory :func:`galois.GF`.
+`GF9` is created using the class factory :func:`~galois.GF`.
 
 .. tab-set::
 
@@ -59,7 +59,7 @@ The elements of :math:`\mathrm{GF}(p^m)` are polynomials over :math:`\mathrm{GF}
 Formally, they are all polynomials :math:`a_{m-1}x^{m-1} + \dots + a_1x^1 +  a_0 \in \mathrm{GF}(p)[x]`. There are
 exactly :math:`p^m` elements.
 
-The elements of the finite field are retrieved in a 1-D array using the :func:`galois.FieldArray.Elements` classmethod.
+The elements of the finite field are retrieved in a 1-D array using the :func:`~galois.FieldArray.Elements` classmethod.
 
 .. tab-set::
 
@@ -98,7 +98,7 @@ Every extension field must be defined with respect to an irreducible polynomial 
 arithmetic of the field.
 
 When creating a *Galois field array class* in :obj:`galois`, if an irreducible polynomial is not explicitly specified, a default
-is chosen. The default is the Conway polynomial :math:`C_{p,m}(x)`, which is irreducible *and* primitive. See :func:`galois.conway_poly`
+is chosen. The default is the Conway polynomial :math:`C_{p,m}(x)`, which is irreducible *and* primitive. See :func:`~galois.conway_poly`
 for more information.
 
 Notice :math:`f(x)` is over :math:`\mathrm{GF}(3)` with degree :math:`2`.
@@ -124,7 +124,7 @@ the polynomial ring :math:`\mathrm{GF}(p)[x] / f(x)`.
 In this tutorial, consider two field elements :math:`a = x + 2` and :math:`b = x + 1`. We will use :obj:`galois` to perform explicit polynomial
 calculations and then extension field arithmetic.
 
-Here are :math:`a` and :math:`b` represented using :obj:`galois.Poly` objects.
+Here are :math:`a` and :math:`b` represented using :obj:`~galois.Poly` objects.
 
 .. ipython:: python
 
@@ -406,7 +406,7 @@ inverse :math:`b^{-1}` before continuing onto division.
 The `Extended Euclidean Algorithm <https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#:~:text=Extended%20Euclidean%20algorithm%20also%20refers,a%20and%20b%20are%20coprime.>`_,
 which was used in prime fields on integers, can be used for extension fields on polynomials. Given two polynomials :math:`a(x)` and
 :math:`b(x)`, the Extended Euclidean Algorithm finds the polynomials :math:`s(x)` and :math:`t(x)` such that
-:math:`a(x)s(x) + b(x)t(x) = \textrm{gcd}(a(x), b(x))`. This algorithm is implemented in :func:`galois.egcd`.
+:math:`a(x)s(x) + b(x)t(x) = \textrm{gcd}(a(x), b(x))`. This algorithm is implemented in :func:`~galois.egcd`.
 
 If :math:`a(x) = x + 1` is a field element of :math:`\mathrm{GF}(3^2)` and :math:`b(x) = f(x)` is the irreducible polynomial, then
 :math:`s(x) = a^{-1}` in :math:`\mathrm{GF}(3^2)`. Note, the GCD will always be :math:`1` because :math:`f(x)` is irreducible.
@@ -543,7 +543,7 @@ A primitive element has multiplicative order :math:`\textrm{ord}(g) = p^m - 1`.
 A primitive element
 ...................
 
-In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`galois.FieldArrayClass.primitive_element`
+In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`~galois.FieldArrayClass.primitive_element`
 property.
 
 .. tab-set::
@@ -580,7 +580,7 @@ property.
          g = GF9.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer
-representations using :func:`galois.FieldArrayClass.repr_table`.
+representations using :func:`~galois.FieldArrayClass.repr_table`.
 
 Here is the representation table using the default generator :math:`g = x`. Notice its multiplicative order is :math:`p^m - 1`.
 
@@ -593,7 +593,7 @@ Other primitive elements
 ........................
 
 There are multiple primitive elements of any finite field. All primitive elements are provided in the
-:obj:`galois.FieldArrayClass.primitive_elements` property.
+:obj:`~galois.FieldArrayClass.primitive_elements` property.
 
 .. tab-set::
 

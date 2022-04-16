@@ -1,7 +1,7 @@
 Polynomial Creation
 ===================
 
-Univariate polynomials over finite fields are supported with the :obj:`galois.Poly` class.
+Univariate polynomials over finite fields are supported with the :obj:`~galois.Poly` class.
 
 Create a polynomial
 -------------------
@@ -24,7 +24,7 @@ Element representation
 ----------------------
 
 As with *Galois field arrays*, the finite field element representation of the polynomial coefficients may be changed
-by setting the `display` keyword argument of :func:`galois.GF` or using the :func:`galois.FieldArrayClass.display` method.
+by setting the `display` keyword argument of :func:`~galois.GF` or using the :func:`~galois.FieldArrayClass.display` method.
 
 .. ipython:: python
 
@@ -46,19 +46,19 @@ See :ref:`Field Element Representation` for more details.
 Classmethods
 ------------
 
-There are several additional ways to create a polynomial. They are included as classmethods in :obj:`galois.Poly`.
+There are several additional ways to create a polynomial. They are included as classmethods in :obj:`~galois.Poly`.
 By convention, classmethods use `PascalCase`, while methods use `snake_case`.
 
 Alternate constructors
 ......................
 
-Create a polynomial by specifying its non-zero degrees and coefficients using :func:`galois.Poly.Degrees`.
+Create a polynomial by specifying its non-zero degrees and coefficients using :func:`~galois.Poly.Degrees`.
 
 .. ipython:: python
 
    galois.Poly.Degrees([8, 1], coeffs=[1, 179], field=GF)
 
-Create a polynomial from its integer representation using :func:`galois.Poly.Int`. Additionally, one may create a polynomial from
+Create a polynomial from its integer representation using :func:`~galois.Poly.Int`. Additionally, one may create a polynomial from
 a binary, octal, or hexadecimal string of its integer representation.
 
 .. tab-set::
@@ -87,13 +87,13 @@ a binary, octal, or hexadecimal string of its integer representation.
 
          galois.Poly.Int(int("0xf700a275", 16), field=galois.GF(2**8))
 
-Create a polynomial from its string representation using :func:`galois.Poly.Str`.
+Create a polynomial from its string representation using :func:`~galois.Poly.Str`.
 
 .. ipython:: python
 
    galois.Poly.Str("x^5 + 143", field=GF)
 
-Create a polynomial from its roots using :func:`galois.Poly.Roots`.
+Create a polynomial from its roots using :func:`~galois.Poly.Roots`.
 
 .. ipython:: python
 
@@ -103,7 +103,7 @@ Create a polynomial from its roots using :func:`galois.Poly.Roots`.
 Simple polynomials
 ..................
 
-The :func:`galois.Poly.Zero`, :func:`galois.Poly.One`, and :func:`galois.Poly.Identity` classmethods create common,
+The :func:`~galois.Poly.Zero`, :func:`~galois.Poly.One`, and :func:`~galois.Poly.Identity` classmethods create common,
 simple polynomials. They are included for convenience.
 
 .. ipython:: python
@@ -115,7 +115,7 @@ simple polynomials. They are included for convenience.
 Random polynomials
 ..................
 
-Random polynomials of a given degree are easily created with :func:`galois.Poly.Random`.
+Random polynomials of a given degree are easily created with :func:`~galois.Poly.Random`.
 
 .. ipython:: python
 
@@ -126,7 +126,7 @@ Methods
 
 Polynomial objects have several methods that modify or perform operations on the polynomial. Below are some examples.
 
-Compute the derivative of a polynomial using :func:`galois.Poly.derivative`.
+Compute the derivative of a polynomial using :func:`~galois.Poly.derivative`.
 
 .. ipython:: python
 
@@ -134,7 +134,7 @@ Compute the derivative of a polynomial using :func:`galois.Poly.derivative`.
    f = galois.Poly([1, 0, 5, 2, 3], field=GF); f
    f.derivative()
 
-Compute the roots of a polynomial using :func:`galois.Poly.roots`.
+Compute the roots of a polynomial using :func:`~galois.Poly.roots`.
 
 .. ipython:: python
 
@@ -145,8 +145,8 @@ Properties
 
 Polynomial objects have several instance properties. Below are some examples.
 
-Find the non-zero degrees and coefficients of the polynomial using :obj:`galois.Poly.nonzero_degrees`
-and :obj:`galois.Poly.nonzero_coeffs`.
+Find the non-zero degrees and coefficients of the polynomial using :obj:`~galois.Poly.nonzero_degrees`
+and :obj:`~galois.Poly.nonzero_coeffs`.
 
 .. ipython:: python
 
@@ -155,7 +155,7 @@ and :obj:`galois.Poly.nonzero_coeffs`.
    f.nonzero_degrees
    f.nonzero_coeffs
 
-Find the integer equivalent of the polynomial using :func:`int`, see :func:`galois.Poly.__int__`. Additionally, one may
+Find the integer equivalent of the polynomial using :func:`int`, see :func:`~galois.Poly.__int__`. Additionally, one may
 convert a polynomial into the binary, octal, or hexadecimal string of its integer representation.
 
 .. tab-set::
@@ -198,21 +198,21 @@ Special polynomials
 
 The :obj:`galois` library also includes several functions to find certain *special* polynomials. Below are some examples.
 
-Find one or all irreducible polynomials with :func:`galois.irreducible_poly` and :func:`galois.irreducible_polys`.
+Find one or all irreducible polynomials with :func:`~galois.irreducible_poly` and :func:`~galois.irreducible_polys`.
 
 .. ipython:: python
 
    galois.irreducible_poly(3, 3)
    list(galois.irreducible_polys(3, 3))
 
-Find one or all primitive polynomials with :func:`galois.primitive_poly` and :func:`galois.primitive_polys`.
+Find one or all primitive polynomials with :func:`~galois.primitive_poly` and :func:`~galois.primitive_polys`.
 
 .. ipython:: python
 
    galois.primitive_poly(3, 3)
    list(galois.primitive_polys(3, 3))
 
-Find the Conway polynomial using :func:`galois.conway_poly`.
+Find the Conway polynomial using :func:`~galois.conway_poly`.
 
 .. ipython:: python
 

@@ -89,11 +89,11 @@ class ReedSolomon:
             The first consecutive power of :math:`\alpha`. The default is 1.
         primitive_poly
             Optionally specify the primitive polynomial that defines the extension field :math:`\mathrm{GF}(q)`. The default is
-            `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`.
+            `None` which uses Matlab's default, see :func:`~galois.matlab_primitive_poly`.
         primitive_element
             Optionally specify the primitive element :math:`\alpha` of :math:`\mathrm{GF}(q)` whose powers are roots of the generator polynomial :math:`g(x)`.
             The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(q)`, see
-            :func:`galois.primitive_element`.
+            :func:`~galois.primitive_element`.
         systematic
             Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
             appended. The default is `True`.

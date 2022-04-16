@@ -34,12 +34,12 @@ __all__ = ["FieldArrayClass", "FieldArray"]
 @set_module("galois")
 class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
     """
-    Defines a metaclass for all :obj:`galois.FieldArray` classes.
+    Defines a metaclass for all :obj:`~galois.FieldArray` classes.
 
     Important
     ---------
-    :obj:`galois.FieldArrayClass` is a metaclass for :obj:`galois.FieldArray` subclasses created with the class factory
-    :func:`galois.GF` and should not be instantiated directly. This metaclass gives :obj:`galois.FieldArray` subclasses
+    :obj:`~galois.FieldArrayClass` is a metaclass for :obj:`~galois.FieldArray` subclasses created with the class factory
+    :func:`~galois.GF` and should not be instantiated directly. This metaclass gives :obj:`~galois.FieldArray` subclasses
     methods and attributes related to their Galois fields.
 
     This class is included in the API to allow the user to test if a class is a Galois field array class.
@@ -819,7 +819,7 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         Indicates whether the :obj:`FieldArrayClass.irreducible_poly` is a primitive polynomial. If so, :math:`x` is a primitive element
         of the finite field.
 
-        The default irreducible polynomial is a Conway polynomial, see :func:`galois.conway_poly`, which is a primitive
+        The default irreducible polynomial is a Conway polynomial, see :func:`~galois.conway_poly`, which is a primitive
         polynomial. However, finite fields may be constructed from non-primitive, irreducible polynomials.
 
         Examples
@@ -1137,12 +1137,12 @@ class DirMeta(type):
 @set_module("galois")
 class FieldArray(Array, metaclass=FieldArrayClass):
     r"""
-    A :obj:`numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
+    A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
 
     Important
     ---------
-        :obj:`galois.FieldArray` is an abstract base class for all :ref:`Galois field array classes <Galois field array class>` and cannot
-        be instantiated directly. Instead, :obj:`galois.FieldArray` subclasses are created using the class factory :func:`galois.GF`.
+        :obj:`~galois.FieldArray` is an abstract base class for all :ref:`Galois field array classes <Galois field array class>` and cannot
+        be instantiated directly. Instead, :obj:`~galois.FieldArray` subclasses are created using the class factory :func:`~galois.GF`.
 
         This class is included in the API to allow the user to test if an array is a Galois field array subclass.
 
@@ -1153,22 +1153,22 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             x = GF([1, 2, 3]); x
             isinstance(x, galois.FieldArray)
 
-    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`galois.FieldArrayClass` and
-    :obj:`galois.FieldArray`.
+    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`~galois.FieldArrayClass` and
+    :obj:`~galois.FieldArray`.
 
     See :ref:`Array Creation` for a detailed discussion on creating arrays (with and without copying) from array-like
-    objects, valid NumPy data types, and other :obj:`galois.FieldArray` classmethods.
+    objects, valid NumPy data types, and other :obj:`~galois.FieldArray` classmethods.
 
     Examples
     --------
-    Create a :ref:`Galois field array class` using the class factory :func:`galois.GF`.
+    Create a :ref:`Galois field array class` using the class factory :func:`~galois.GF`.
 
     .. ipython:: python
 
         GF = galois.GF(3**5)
         print(GF)
 
-    The *Galois field array class* `GF` is a subclass of :obj:`galois.FieldArray`, with :obj:`galois.FieldArrayClass` as its
+    The *Galois field array class* `GF` is a subclass of :obj:`~galois.FieldArray`, with :obj:`~galois.FieldArrayClass` as its
     metaclass.
 
     .. ipython:: python
@@ -1219,7 +1219,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             A finite field scalar or array. See :ref:`Array Creation` for a detailed discussion about creating new arrays and array-like objects.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            data type for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            data type for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
         copy
             The `copy` keyword argument from :func:`numpy.array`. The default is `True`.
         order
@@ -1347,12 +1347,12 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         Parameters
         ----------
         shape
-            A NumPy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+            A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple. An empty tuple `()` represents a scalar.
             A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
             `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1378,12 +1378,12 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         Parameters
         ----------
         shape
-            A NumPy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+            A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple. An empty tuple `()` represents a scalar.
             A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
             `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1422,7 +1422,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             The increment between finite field elements. The default is 1.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1480,7 +1480,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         Parameters
         ----------
         shape
-            A NumPy-compliant `shape` tuple, see :obj:`numpy.ndarray.shape`. An empty tuple `()` represents a scalar.
+            A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple. An empty tuple `()` represents a scalar.
             A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
             `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
         low
@@ -1492,7 +1492,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1571,7 +1571,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         ----------
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1605,7 +1605,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             The size :math:`n` along one dimension of the identity matrix.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1638,7 +1638,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             The number of columns :math:`n` in the Vandermonde matrix.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1690,7 +1690,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             `(n1, n2)`. By convention, the vectors are ordered from highest degree to 0-th degree.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
 
         Returns
         -------
@@ -1897,7 +1897,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         ----------
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
+            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
 
         Returns
         -------

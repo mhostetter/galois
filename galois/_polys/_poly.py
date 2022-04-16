@@ -101,16 +101,14 @@ class Poly:
         Parameters
         ----------
         coeffs
-            The polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` with type :obj:`galois.Array`. Alternatively,
-            an iterable :obj:`tuple`, :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from
-            the `field` keyword argument.
+            The polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
         field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the coefficients are a :obj:`galois.Array`, they won't be modified. If the coefficients
+            * :obj:`None` (default): If the coefficients are a :obj:`~galois.Array`, they won't be modified. If the coefficients
               are not explicitly in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using
               `galois.GF2(coeffs)`.
-            * :obj:`galois.ArrayClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
+            * :obj:`~galois.ArrayClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
 
         order
             The interpretation of the coefficient degrees.
@@ -197,7 +195,7 @@ class Poly:
         Parameters
         ----------
         field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`galois.GF2`.
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
         Returns
         -------
@@ -229,7 +227,7 @@ class Poly:
         Parameters
         ----------
         field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`galois.GF2`.
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
         Returns
         -------
@@ -261,7 +259,7 @@ class Poly:
         Parameters
         ----------
         field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`galois.GF2`.
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
         Returns
         -------
@@ -298,7 +296,7 @@ class Poly:
             Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
             entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
         field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`galois.GF2`.
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
         Returns
         -------
@@ -354,14 +352,14 @@ class Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its string representation.
 
-        :func:`galois.Poly.Str` and :func:`galois.Poly.__str__` are inverse operations.
+        :func:`~galois.Poly.Str` and :func:`~galois.Poly.__str__` are inverse operations.
 
         Parameters
         ----------
         string
             The string representation of the polynomial :math:`f(x)`.
         field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`galois.GF2`.
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
         Returns
         -------
@@ -409,14 +407,14 @@ class Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its integer representation.
 
-        :func:`galois.Poly.Int` and :func:`galois.Poly.__int__` are inverse operations.
+        :func:`~galois.Poly.Int` and :func:`~galois.Poly.__int__` are inverse operations.
 
         Parameters
         ----------
         integer
             The integer representation of the polynomial :math:`f(x)`.
         field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`galois.GF2`.
+            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
         Returns
         -------
@@ -509,15 +507,13 @@ class Poly:
         degrees
             The polynomial degrees with non-zero coefficients.
         coeffs
-            The corresponding non-zero polynomial coefficients with type :obj:`galois.Array`. Alternatively, an iterable :obj:`tuple`,
-            :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from the `field` keyword argument. The
-            default is `None` which corresponds to all ones.
+            The corresponding non-zero polynomial coefficients. The default is `None` which corresponds to all ones.
         field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the coefficients are a :obj:`galois.Array`, they won't be modified. If the coefficients are not explicitly
+            * :obj:`None` (default): If the coefficients are a :obj:`~galois.Array`, they won't be modified. If the coefficients are not explicitly
               in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(coeffs)`.
-            * :obj:`galois.ArrayClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
+            * :obj:`~galois.ArrayClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
 
         Returns
         -------
@@ -607,9 +603,9 @@ class Poly:
         field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the roots are a :obj:`galois.Array`, they won't be modified. If the roots are not explicitly
+            * :obj:`None` (default): If the roots are a :obj:`~galois.Array`, they won't be modified. If the roots are not explicitly
               in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(roots)`.
-            * :obj:`galois.ArrayClass`: The roots are explicitly converted to this Galois field `field(roots)`.
+            * :obj:`~galois.ArrayClass`: The roots are explicitly converted to this Galois field `field(roots)`.
 
         Returns
         -------
@@ -983,7 +979,7 @@ class Poly:
         """
         The string representation of the polynomial, without specifying the finite field it's over.
 
-        :func:`galois.Poly.Str` and :func:`galois.Poly.__str__` are inverse operations.
+        :func:`~galois.Poly.Str` and :func:`~galois.Poly.__str__` are inverse operations.
 
         Examples
         --------
@@ -1013,7 +1009,7 @@ class Poly:
         r"""
         The integer representation of the polynomial.
 
-        :func:`galois.Poly.Int` and :func:`galois.Poly.__int__` are inverse operations.
+        :func:`~galois.Poly.Int` and :func:`~galois.Poly.__int__` are inverse operations.
 
         Notes
         -----
@@ -1163,7 +1159,7 @@ class Poly:
             b = galois.Poly([3, 0, 5], field=galois.GF(7**2)); b
             a == b
 
-        Comparison with :obj:`galois.typing.PolyLike` objects is allowed for convenience.
+        Comparison with :obj:`~galois.typing.PolyLike` objects is allowed for convenience.
 
         .. ipython:: python
 

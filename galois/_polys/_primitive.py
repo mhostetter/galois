@@ -168,8 +168,8 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
 
         .. tab-item:: Primitive vs. Conway
 
-            Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
-            :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+            Notice :func:`~galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
+            :func:`~galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
             with smaller Conway polynomials.
 
             This is sometimes the same polynomial.
@@ -392,8 +392,8 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
 
     Examples
     --------
-    Notice :func:`galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
-    :func:`galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+    Notice :func:`~galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
+    :func:`~galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
     with smaller Conway polynomials.
 
     This is sometimes the same polynomial.

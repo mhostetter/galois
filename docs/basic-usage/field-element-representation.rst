@@ -15,7 +15,7 @@ Set the display mode
 --------------------
 
 The field element display mode can be set at :ref:`Galois field array class` construction by passing the `display` keyword
-argument to the :func:`galois.GF` class factory.
+argument to the :func:`~galois.GF` class factory.
 
 .. ipython:: python
 
@@ -26,16 +26,16 @@ argument to the :func:`galois.GF` class factory.
 
 .. note::
 
-    A :obj:`galois.FieldArray`'s :func:`repr` displays `GF([...], order=p^m)` where :func:`str` only displays `[...]`. This is designed to be
+    A :obj:`~galois.FieldArray`'s :func:`repr` displays `GF([...], order=p^m)` where :func:`str` only displays `[...]`. This is designed to be
     consistent with NumPy's use of :func:`repr` and :func:`str`.
 
-The current display mode is accessed with the :obj:`galois.FieldArrayClass.display_mode` property.
+The current display mode is accessed with the :obj:`~galois.FieldArrayClass.display_mode` property.
 
 .. ipython:: python
 
     GF.display_mode
 
-The display mode can be temporarily changed using the :func:`galois.FieldArrayClass.display` method as a context manager.
+The display mode can be temporarily changed using the :func:`~galois.FieldArrayClass.display` method as a context manager.
 
 .. ipython:: python
 
@@ -46,7 +46,7 @@ The display mode can be temporarily changed using the :func:`galois.FieldArrayCl
     # Outside the context manager, x prints using the previous representation
     print(x)
 
-The display mode can be permanently changed using the :func:`galois.FieldArrayClass.display` method.
+The display mode can be permanently changed using the :func:`~galois.FieldArrayClass.display` method.
 
 .. ipython:: python
 
@@ -151,10 +151,10 @@ In extension fields, the elements are displayed as :math:`\{0, \alpha, \alpha^2,
 Vector representation
 ---------------------
 
-The vector representation, while not a proper display mode of :func:`galois.FieldArrayClass.display`, represents finite field elements
+The vector representation, while not a proper display mode of :func:`~galois.FieldArrayClass.display`, represents finite field elements
 as vectors of their polynomial coefficients.
 
-The vector representation is accessed using the :func:`galois.FieldArray.vector` method.
+The vector representation is accessed using the :func:`~galois.FieldArray.vector` method.
 
 .. ipython:: python
 
@@ -170,7 +170,7 @@ size :math:`m`. The first value of the vector is the highest-degree coefficient.
     GF(["α^2 + 2α + 2", "2α^4 + α"])
     GF(["α^2 + 2α + 2", "2α^4 + α"]).vector()
 
-Arrays can be created from the vector representation using the :func:`galois.FieldArray.Vector` classmethod.
+Arrays can be created from the vector representation using the :func:`~galois.FieldArray.Vector` classmethod.
 
 .. ipython:: python
 
@@ -207,7 +207,7 @@ The readability is improved by increasing the line width using :func:`numpy.set_
 Representation comparisons
 --------------------------
 
-For any finite field, each of the four representations can be easily compared using the :func:`galois.FieldArrayClass.repr_table` function.
+For any finite field, each of the four representations can be easily compared using the :func:`~galois.FieldArrayClass.repr_table` function.
 
 .. ipython:: python
 
