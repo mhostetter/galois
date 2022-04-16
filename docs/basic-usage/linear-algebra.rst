@@ -118,7 +118,7 @@ Additional routines
         A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
         A.row_space()
 
-    See :func:`galois.FieldArray.row_space` for more details.
+    See :func:`~galois.FieldArray.row_space` for more details.
 
 .. details:: Column space: `A.column_space()`
 
@@ -127,7 +127,7 @@ Additional routines
         A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
         A.column_space()
 
-    See :func:`galois.FieldArray.column_space` for more details.
+    See :func:`~galois.FieldArray.column_space` for more details.
 
 .. details:: Left null space: `A.left_null_space()`
 
@@ -136,7 +136,7 @@ Additional routines
         A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
         A.left_null_space()
 
-    See :func:`galois.FieldArray.left_null_space` for more details.
+    See :func:`~galois.FieldArray.left_null_space` for more details.
 
 .. details:: Null space: `A.null_space()`
 
@@ -145,7 +145,7 @@ Additional routines
         A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
         A.null_space()
 
-    See :func:`galois.FieldArray.null_space` for more details.
+    See :func:`~galois.FieldArray.null_space` for more details.
 
 .. details:: Gaussian elimination: `A.row_reduce()`
 
@@ -154,7 +154,7 @@ Additional routines
         A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
         A.row_reduce()
 
-    See :func:`galois.FieldArray.row_reduce` for more details.
+    See :func:`~galois.FieldArray.row_reduce` for more details.
 
 .. details:: LU decomposition: `A.lu_decompose()`
 
@@ -166,7 +166,7 @@ Additional routines
         U
         np.array_equal(L @ U, A)
 
-    See :func:`galois.FieldArray.lu_decompose` for more details.
+    See :func:`~galois.FieldArray.lu_decompose` for more details.
 
 .. details:: PLU decomposition: `A.plu_decompose()`
 
@@ -179,4 +179,4 @@ Additional routines
         U
         np.array_equal(P @ L @ U, A)
 
-    See :func:`galois.FieldArray.plu_decompose` for more details.
+    See :func:`~galois.FieldArray.plu_decompose` for more details.

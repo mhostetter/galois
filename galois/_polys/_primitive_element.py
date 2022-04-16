@@ -133,7 +133,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
                 f = galois.conway_poly(7, 5); f
                 g = galois.primitive_element(f); g
 
-            Construct the extension field :math:`\mathrm{GF}(7^5)`. Note, by default, :func:`galois.GF` uses a Conway polynomial
+            Construct the extension field :math:`\mathrm{GF}(7^5)`. Note, by default, :func:`~galois.GF` uses a Conway polynomial
             as its irreducible polynomial.
 
             .. ipython:: python
@@ -151,7 +151,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
                 f = galois.conway_poly(7, 5); f
                 g = galois.primitive_element(f, method="max"); g
 
-            Construct the extension field :math:`\mathrm{GF}(7^5)`. Note, by default, :func:`galois.GF` uses a Conway polynomial
+            Construct the extension field :math:`\mathrm{GF}(7^5)`. Note, by default, :func:`~galois.GF` uses a Conway polynomial
             as its irreducible polynomial.
 
             .. ipython:: python
@@ -169,7 +169,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
                 f = galois.conway_poly(7, 5); f
                 g = galois.primitive_element(f, method="random"); g
 
-            Construct the extension field :math:`\mathrm{GF}(7^5)`. Note, by default, :func:`galois.GF` uses a Conway polynomial
+            Construct the extension field :math:`\mathrm{GF}(7^5)`. Note, by default, :func:`~galois.GF` uses a Conway polynomial
             as its irreducible polynomial.
 
             .. ipython:: python
@@ -239,7 +239,7 @@ def primitive_elements(irreducible_poly: Poly) -> List[Poly]:
     Notes
     -----
     The number of primitive elements of :math:`\mathrm{GF}(q^m)` is :math:`\phi(q^m - 1)`, where
-    :math:`\phi(n)` is the Euler totient function. See :obj:`galois.euler_phi`.
+    :math:`\phi(n)` is the Euler totient function. See :obj:`~galois.euler_phi`.
 
     Examples
     --------
@@ -250,7 +250,7 @@ def primitive_elements(irreducible_poly: Poly) -> List[Poly]:
         f = galois.conway_poly(3, 4); f
         g = galois.primitive_elements(f); g
 
-    Construct the extension field :math:`\mathrm{GF}(3^4)`. Note, by default, :func:`galois.GF` uses a Conway polynomial
+    Construct the extension field :math:`\mathrm{GF}(3^4)`. Note, by default, :func:`~galois.GF` uses a Conway polynomial
     as its irreducible polynomial.
 
     .. ipython:: python

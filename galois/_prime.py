@@ -246,7 +246,7 @@ def random_prime(bits: int) -> int:
     Returns a random prime :math:`p` with :math:`b` bits, such that :math:`2^b \le p < 2^{b+1}`.
 
     This function randomly generates integers with :math:`b` bits and uses the primality tests in
-    :func:`galois.is_prime` to determine if :math:`p` is prime.
+    :func:`~galois.is_prime` to determine if :math:`p` is prime.
 
     Parameters
     ----------
@@ -1287,7 +1287,7 @@ def divisors(n: int) -> List[int]:
 
     Notes
     -----
-    The :func:`galois.divisors` function finds *all* positive integer divisors or factors of :math:`n`, where the :func:`galois.factors`
+    The :func:`~galois.divisors` function finds *all* positive integer divisors or factors of :math:`n`, where the :func:`~galois.factors`
     function only finds the prime factors of :math:`n`.
 
     Examples
@@ -1407,10 +1407,10 @@ def is_prime(n: int) -> bool:
     Notes
     -----
     This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
-    :func:`galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
+    :func:`~galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
 
     If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
-    will run 10 rounds of Miller-Rabin's primality test, see :func:`galois.miller_rabin_primality_test`. With this many rounds,
+    will run 10 rounds of Miller-Rabin's primality test, see :func:`~galois.miller_rabin_primality_test`. With this many rounds,
     a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
 
     Examples

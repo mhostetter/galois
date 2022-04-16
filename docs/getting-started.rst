@@ -25,7 +25,7 @@ Create a Galois field array class
 ---------------------------------
 
 Next, create a :ref:`Galois field array class` for the specific finite field you'd like to work in. This is created using
-the :func:`galois.GF` class factory. In this example, we are working in :math:`\mathrm{GF}(2^8)`.
+the :func:`~galois.GF` class factory. In this example, we are working in :math:`\mathrm{GF}(2^8)`.
 
 .. ipython:: python
 
@@ -33,7 +33,7 @@ the :func:`galois.GF` class factory. In this example, we are working in :math:`\
    GF
    print(GF)
 
-The *Galois field array class* `GF` is a subclass of :obj:`numpy.ndarray` that performs all arithmetic in the Galois field
+The *Galois field array class* `GF` is a subclass of :obj:`~numpy.ndarray` that performs all arithmetic in the Galois field
 :math:`\mathrm{GF}(2^8)`, not in :math:`\mathbb{R}`.
 
 .. ipython:: python
@@ -61,7 +61,7 @@ working in the finite field, view it back as a NumPy array with `.view(np.ndarra
    y = np.array([103, 146, 186, 83, 112], dtype=int); y
    y = y.view(GF); y
 
-The *Galois field array* `x` is an instance of the *Galois field array class* `GF` (and also an instance of :obj:`numpy.ndarray`).
+The *Galois field array* `x` is an instance of the *Galois field array class* `GF` (and also an instance of :obj:`~numpy.ndarray`).
 
 .. ipython:: python
 
@@ -77,7 +77,7 @@ The display representation of finite field elements can be set to either the int
 or power (`"power"`) representation. The default representation is the integer representation since that is natural when
 working with integer NumPy arrays.
 
-Set the display mode by passing the `display` keyword argument to :func:`galois.GF` or by calling the :func:`galois.FieldArrayClass.display` method.
+Set the display mode by passing the `display` keyword argument to :func:`~galois.GF` or by calling the :func:`~galois.FieldArrayClass.display` method.
 Choose whichever element representation is most convenient for you.
 
 .. ipython:: python

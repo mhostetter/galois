@@ -151,7 +151,7 @@ Expand any section for more details.
 
 .. details:: `reduce()`
 
-    The :obj:`numpy.ufunc.reduce` methods reduce the input array's dimension by one, applying the ufunc across one axis.
+    The :obj:`~numpy.ufunc.reduce` methods reduce the input array's dimension by one, applying the ufunc across one axis.
 
     .. ipython:: python
 
@@ -165,7 +165,7 @@ Expand any section for more details.
 
 .. details:: `accumulate()`
 
-    The :obj:`numpy.ufunc.accumulate` methods accumulate the result of the ufunc across a specified axis.
+    The :obj:`~numpy.ufunc.accumulate` methods accumulate the result of the ufunc across a specified axis.
 
     .. ipython:: python
 
@@ -179,7 +179,7 @@ Expand any section for more details.
 
 .. details:: `reduceat()`
 
-    The :obj:`numpy.ufunc.reduceat` methods reduces the input array's dimension by one, applying the ufunc across one axis
+    The :obj:`~numpy.ufunc.reduceat` methods reduces the input array's dimension by one, applying the ufunc across one axis
     in-between certain indices.
 
     .. ipython:: python
@@ -194,7 +194,7 @@ Expand any section for more details.
 
 .. details:: `outer()`
 
-    The :obj:`numpy.ufunc.outer` methods applies the ufunc to each pair of inputs.
+    The :obj:`~numpy.ufunc.outer` methods applies the ufunc to each pair of inputs.
 
     .. ipython:: python
 
@@ -206,7 +206,7 @@ Expand any section for more details.
 
 .. details:: `at()`
 
-    The :obj:`numpy.ufunc.at` methods performs the ufunc in-place at the specified indices.
+    The :obj:`~numpy.ufunc.at` methods performs the ufunc in-place at the specified indices.
 
     .. ipython:: python
 
@@ -239,7 +239,7 @@ Advanced arithmetic
         X = np.fft.fft(x); X
         np.fft.ifft(X)
 
-    See also :func:`galois.ntt` and :obj:`galois.FieldArrayClass.primitive_root_of_unity`.
+    See also :func:`~galois.ntt` and :obj:`~galois.FieldArrayClass.primitive_root_of_unity`.
 
 .. details:: Inverse FFT: `np.fft.ifft(X)`
 
@@ -256,4 +256,4 @@ Advanced arithmetic
         X = np.fft.fft(x); X
         np.fft.ifft(X)
 
-    See also :func:`galois.ntt` and :obj:`galois.FieldArrayClass.primitive_root_of_unity`.
+    See also :func:`~galois.ntt` and :obj:`~galois.FieldArrayClass.primitive_root_of_unity`.
