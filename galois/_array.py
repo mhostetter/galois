@@ -44,7 +44,7 @@ Scalars are 0-D :obj:`~galois.Array` objects.
 .. rubric:: Alias
 """
 
-IterableLike = Sequence[Union[ElementLike, "IterableLike"]]
+IterableLike = Union[Sequence[ElementLike], Sequence["IterableLike"]]
 IterableLike.__doc__ = """
 A :obj:`~typing.Union` representing iterable objects that can be coerced into a Galois field array.
 
@@ -59,7 +59,7 @@ A :obj:`~typing.Union` representing iterable objects that can be coerced into a 
     # Mix and match integers and strings
     GF([17, "x + 1"])
 
-- :obj:`~galois.typing.IterableLike`: A recursive iterable of iterables of elements.
+- :obj:`~typing.Sequence` [ :obj:`~galois.typing.IterableLike` ]: A recursive iterable of iterables of elements.
 
 .. ipython:: python
 

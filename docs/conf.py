@@ -299,7 +299,13 @@ def modify_type_hints(signature, do_print=False):
             idx = signature.find("~typing.Union[", idx)
             if idx == -1:
                 break
-            end_idx = signature.find("]", idx)
+            idx_2 = idx
+            while True:
+                end_idx = signature.find("]", idx_2)
+                if signature[idx:end_idx + 1].count("[") == signature[idx:end_idx + 1].count("]"):
+                    break
+                else:
+                    idx_2 = end_idx + 1
             pre = signature[:idx]
             post = signature[end_idx + 1:]
             union_str = signature[idx:end_idx + 1]
