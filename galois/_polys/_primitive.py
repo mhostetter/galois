@@ -120,9 +120,9 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     method
         The search method for finding the primitive polynomial.
 
-        * `"min"` (default): Returns the lexicographically-minimal monic primitive polynomial.
-        * `"max"`: Returns the lexicographically-maximal monic primitive polynomial.
-        * `"random"`: Returns a randomly generated degree-:math:`m` monic primitive polynomial.
+        - `"min"` (default): Returns the lexicographically-minimal monic primitive polynomial.
+        - `"max"`: Returns the lexicographically-maximal monic primitive polynomial.
+        - `"random"`: Returns a randomly generated degree-:math:`m` monic primitive polynomial.
 
     Returns
     -------

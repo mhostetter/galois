@@ -15,6 +15,9 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath(".."))
 
+# Need to build docs with Python 3.8 or higher for proper typing annotations, including from __future__ import annotations
+assert sys.version_info.major == 3 and sys.version_info.minor >= 8
+
 # Assign a build variable to the builtin module that inerts the @set_module decorator. This is done because set_module
 # confuses Sphinx when parsing overloaded functions. When not building the documentation, the @set_module("galois")
 # decorator works as intended.
@@ -196,9 +199,18 @@ autodoc_default_options = {
     "special-members": True,
     "member-order": "groupwise",
 }
-autodoc_typehints = "description"
+autodoc_typehints = "signature"
 autodoc_typehints_description_target = "documented"
 autodoc_typehints_format = "short"
+
+autodoc_type_aliases = {
+    "ElementLike": "~typing.ElementLike",
+    "IterableLike": "~typing.IterableLike",
+    "ArrayLike": "~typing.ArrayLike",
+    "ShapeLike": "~typing.ShapeLike",
+    "DTypeLike": "~typing.DTypeLike",
+    "PolyLike": "~typing.PolyLike",
+}
 
 autosummary_generate = True
 autosummary_generate_overwrite = True
@@ -207,7 +219,7 @@ autosummary_imported_members = True
 ipython_execlines = ["import math", "import numpy as np", "import galois"]
 
 
-# -- Functions and setup -----------------------------------------------------
+# -- Monkey-patching -----------------------------------------------------
 
 SPECIAL_MEMBERS = [
     "__repr__", "__str__", "__int__",
@@ -245,5 +257,90 @@ def skip_member(app, what, name, obj, skip, options):
     return skip
 
 
+def process_signature(app, what, name, obj, options, signature, return_annotation):
+    """
+    Monkey-patch the autodoc's processing of signatures.
+    """
+    signature = modify_type_hints(signature)
+    return_annotation = modify_type_hints(return_annotation)
+
+    return signature, return_annotation
+
+
+def modify_type_hints(signature, do_print=False):
+    """
+    Modify the autodoc type hint signatures to be more readable. Union[x, y] is replaced with x | y.
+    Optional[x] is replaced with x | None. Also, short names are used (and properly linked).
+    """
+    if signature:
+        # Ensure types from the typing module are properly hyperlinked
+        for type_name in ["Tuple", "List", "Sequence", "Dict", "Optional", "Union", "Iterator", "Type", "Literal"]:
+            signature = signature.replace(f"{type_name}[", f"~typing.{type_name}[")
+            signature = signature.replace("~typing.~typing", "~typing")
+
+        # Convert Optional[a] to a | None
+        idx = 0
+        while True:
+            idx = signature.find("~typing.Optional[", idx)
+            if idx == -1:
+                break
+            end_idx = signature.find("] = None", idx)
+            pre = signature[:idx]
+            post = signature[end_idx + 1:]
+            optional_str = signature[idx:end_idx + 1]
+            optional_str = optional_str[len("~typing.Optional[") : -len("]")]
+            optional_str += " | None"
+            signature = pre + optional_str + post
+            idx = len(pre) + len(optional_str)
+
+        # Convert Union[a, b] to a | b
+        idx = 0
+        while True:
+            idx = signature.find("~typing.Union[", idx)
+            if idx == -1:
+                break
+            end_idx = signature.find("]", idx)
+            pre = signature[:idx]
+            post = signature[end_idx + 1:]
+            union_str = signature[idx:end_idx + 1]
+            union_str = union_str[len("~typing.Union[") : -len("]")]
+            union_str = union_str.replace(", ", " | ")
+            signature = pre + union_str + post
+            idx = len(pre) + len(union_str)
+
+        # Ensure types from the galois.typing subpackage are properly hyperlinked
+        for type_name in autodoc_type_aliases.keys():
+            signature = signature.replace(type_name, autodoc_type_aliases[type_name])
+        signature = signature.replace("~typing.~typing", "~typing")
+
+        # Ensure forward references are properly linked by removing '' and adding ~
+        for type_name in ["Array", "FieldArray", "Poly"]:
+            signature = signature.replace(f"'{type_name}'", f"~{type_name}")
+
+        # Sometimes fully qualified names are in the signature. Convert them to short names. For example, ~galois._fields._gf2.GF2
+        # is used instead of ~galois.GF2.
+        idx = 0
+        while True:
+            idx = signature.find("~galois._", idx)
+            if idx == -1:
+                break
+            end_idx = signature.find(" ", idx)
+            if end_idx == -1:
+                end_idx = len(signature)
+            pre = signature[:idx]
+            post = signature[end_idx + 1:]
+            fullref_str = signature[idx:end_idx + 1]
+            fullref_str = "~galois." + fullref_str.split(".")[-1]
+            signature = pre + fullref_str + post
+            idx = len(pre) + len(fullref_str)
+
+        # Ensure NumPy references link properly
+        signature = signature.replace("np.ndarray", "~numpy.ndarray")
+        signature = signature.replace("np.random", "~numpy.random")
+
+    return signature
+
+
 def setup(app):
     app.connect("autodoc-skip-member", skip_member)
+    app.connect("autodoc-process-signature", process_signature)

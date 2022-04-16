@@ -5,6 +5,14 @@ API Reference
 
 .. currentmodule:: galois
 
+Subpackages
+-----------
+
+.. autosummary::
+   :toctree:
+
+   typing
+
 Class factory functions
 -----------------------
 

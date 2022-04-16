@@ -1,28 +1,24 @@
 """
 A module containing functions to generate and test primitive elements of finite fields.
 """
+from __future__ import annotations
+
 import random
-from typing import Sequence, List, Union
+from typing import List
 from typing_extensions import Literal
 
-import numpy as np
-
-from .._array import Array
 from .._modular import totatives
 from .._overrides import set_module
 from .._prime import factors
 
 from ._irreducible import is_irreducible
-from ._poly import Poly
+from ._poly import Poly, PolyLike
 
 __all__ = ["is_primitive_element", "primitive_element", "primitive_elements"]
 
 
 @set_module("galois")
-def is_primitive_element(
-    element: Union[int, str, Sequence[int], np.ndarray, Array, "Poly"],
-    irreducible_poly: Poly
-) -> bool:
+def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
     r"""
     Determines if :math:`g` is a primitive element of the Galois field :math:`\mathrm{GF}(q^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
@@ -32,11 +28,6 @@ def is_primitive_element(
     element
         An element :math:`g` of :math:`\mathrm{GF}(q^m)` is a polynomial over :math:`\mathrm{GF}(q)` with degree
         less than :math:`m`.
-
-        * :obj:`int`: The integer representation of the primitive element.
-        * :obj:`str`: The primitive element expressed as a string, e.g. `"x + 1"`.
-        * :obj:`galois.Poly`: The primitive element as a polynomial object.
-
     irreducible_poly
         The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that defines the extension
         field :math:`\mathrm{GF}(q^m)`.

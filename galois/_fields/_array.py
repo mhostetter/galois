@@ -3,15 +3,17 @@ A module that contains the main classes for Galois fields -- FieldArrayClass, Fi
 and Poly. They're all in one file because they have circular dependencies. The specific GF2
 FieldArrayClass is also included.
 """
+from __future__ import annotations
+
 import contextlib
 import inspect
 import random
-from typing import Tuple, List, Sequence, Iterable, Optional, Union
+from typing import Tuple, List, Iterable, Optional, Union
 from typing_extensions import Literal
 
 import numpy as np
 
-from .._array import ArrayClass, Array
+from .._array import ArrayClass, Array, ElementLike, ArrayLike, ShapeLike, DTypeLike
 from .._modular import totatives
 from .._overrides import set_module
 from .._polys import Poly
@@ -146,13 +148,13 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         mode
             The ufunc calculation mode.
 
-            * `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
+            - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
               for fields whose elements cannot be represented with :obj:`numpy.int64`.
-            * `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
+            - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
               In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
-            * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
+            - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
               fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower than `"jit-lookup"`.
-            * `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
+            - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
               represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
         """
         if not isinstance(mode, str):
@@ -192,9 +194,9 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         mode
             The field element representation.
 
-            * `"int"`: Sets the display mode to the :ref:`integer representation <Integer representation>`.
-            * `"poly"`: Sets the display mode to the :ref:`polynomial representation <Polynomial representation>`.
-            * `"power"`: Sets the display mode to the :ref:`power representation <Power representation>`.
+            - `"int"`: Sets the display mode to the :ref:`integer representation <Integer representation>`.
+            - `"poly"`: Sets the display mode to the :ref:`polynomial representation <Polynomial representation>`.
+            - `"power"`: Sets the display mode to the :ref:`power representation <Power representation>`.
 
         Returns
         -------
@@ -282,7 +284,7 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
 
     def repr_table(
         cls,
-        primitive_element: Optional[Union[int, str, np.ndarray, "FieldArray"]] = None,
+        element: Optional[ElementLike] = None,
         sort: Literal["power", "poly", "vector", "int"] = "power"
     ) -> str:
         r"""
@@ -290,12 +292,12 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
 
         Parameters
         ----------
-        primitive_element
+        element
             The primitive element to use for the power representation. The default is `None` which uses the field's
-            default primitive element, :obj:`FieldArrayClass.primitive_element`. If an array, it must be a 0-D array.
+            default primitive element, :obj:`FieldArrayClass.primitive_element`.
         sort
             The sorting method for the table. The default is `"power"`. Sorting by `"power"` will order the rows of the table by ascending
-            powers of the primitive element. Sorting by any of the others will order the rows in lexicographically-increasing polynomial/vector
+            powers of `element`. Sorting by any of the others will order the rows in lexicographically-increasing polynomial/vector
             order, which is equivalent to ascending order of the integer representation.
 
         Returns
@@ -344,17 +346,17 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         """
         if sort not in ["power", "poly", "vector", "int"]:
             raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
-        if primitive_element is None:
-            primitive_element = cls.primitive_element
+        if element is None:
+            element = cls.primitive_element
 
-        primitive_element = cls(primitive_element)
+        element = cls(element)
         degrees = np.arange(0, cls.order - 1)
-        x = primitive_element**degrees
+        x = element**degrees
         if sort != "power":
             idxs = np.argsort(x)
             degrees, x = degrees[idxs], x[idxs]
         x = np.concatenate((np.atleast_1d(cls(0)), x))  # Add 0 = alpha**-Inf
-        prim = poly_to_str(integer_to_poly(primitive_element, cls.characteristic))
+        prim = poly_to_str(integer_to_poly(element, cls.characteristic))
 
         # Define print helper functions
         if len(prim) > 1:
@@ -389,8 +391,8 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
     def arithmetic_table(
         cls,
         operation: Literal["+", "-", "*", "/"],
-        x: Optional["FieldArray"] = None,
-        y: Optional["FieldArray"] = None
+        x: Optional[FieldArray] = None,
+        y: Optional[FieldArray] = None
     ) -> str:
         r"""
         Generates the specified arithmetic table for the finite field.
@@ -527,7 +529,7 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
 
         return string
 
-    def primitive_root_of_unity(cls, n: int) -> "FieldArray":
+    def primitive_root_of_unity(cls, n: int) -> FieldArray:
         r"""
         Finds a primitive :math:`n`-th root of unity in the finite field.
 
@@ -590,7 +592,7 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
 
         return cls.primitive_element ** ((cls.order - 1) // n)
 
-    def primitive_roots_of_unity(cls, n: int) -> "FieldArray":
+    def primitive_roots_of_unity(cls, n: int) -> FieldArray:
         r"""
         Finds all primitive :math:`n`-th roots of unity in the finite field.
 
@@ -1135,7 +1137,7 @@ class DirMeta(type):
 @set_module("galois")
 class FieldArray(Array, metaclass=FieldArrayClass):
     r"""
-    A :ref:`Galois field array` over :math:`\mathrm{GF}(p^m)`.
+    A :obj:`numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
 
     Important
     ---------
@@ -1190,20 +1192,20 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
     def __new__(
         cls,
-        array_like: Union[int, str, Iterable, np.ndarray, Array],
-        dtype: Optional[Union[np.dtype, int, object]] = None,
+        x: Union[ElementLike, ArrayLike],
+        dtype: Optional[DTypeLike] = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
-    ) -> "FieldArray":
+    ) -> FieldArray:
         if cls is FieldArray:
             raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
-        return super().__new__(cls, array_like, dtype, copy, order, ndmin)
+        return super().__new__(cls, x, dtype, copy, order, ndmin)
 
     def __init__(
         self,
-        array: Union[int, str, Iterable, np.ndarray, "FieldArray"],
-        dtype: Optional[Union[np.dtype, int, object]] = None,
+        x: Union[ElementLike, ArrayLike],
+        dtype: Optional[DTypeLike] = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
@@ -1213,28 +1215,17 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
         Parameters
         ----------
-        array
-            The input array-like object to be converted to a *Galois field array*. See :ref:`Array Creation` for a detailed discussion
-            about creating new arrays and array-like objects.
-
-            * :obj:`int`: A single integer, which is the :ref:`integer representation <Integer representation>` of a finite field element,
-              creates a 0-D array (scalar).
-            * :obj:`str`: A single string, which is the :ref:`polynomial representation <Polynomial representation>` of a finite field element,
-              creates a 0-D array (scalar).
-            * :obj:`tuple`, :obj:`list`: A list or tuple (or nested lists/tuples) of integers or strings (which can be mixed and matched) creates
-              an array of finite field elements from their integer or polynomial representations.
-            * :obj:`numpy.ndarray`, :obj:`galois.FieldArray`: A NumPy array of integers creates a copy of the array over this specific field.
-
+        x
+            A finite field scalar or array. See :ref:`Array Creation` for a detailed discussion about creating new arrays and array-like objects.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
             data type for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
         copy
-            The `copy` keyword argument from :func:`numpy.array`. The default is `True` which makes a copy of the input array.
+            The `copy` keyword argument from :func:`numpy.array`. The default is `True`.
         order
-            The `order` keyword argument from :func:`numpy.array`. Valid values are `"K"` (default), `"A"`, `"C"`, or `"F"`.
+            The `order` keyword argument from :func:`numpy.array`. The default is `"K"`.
         ndmin
-            The `ndmin` keyword argument from :func:`numpy.array`. The minimum number of dimensions of the output.
-            The default is 0.
+            The `ndmin` keyword argument from :func:`numpy.array`. The default is 0.
         """
         # pylint: disable=unused-argument,super-init-not-called
         # Adding __init__ and not doing anything is done to overwrite the superclass's __init__ docstring
@@ -1245,35 +1236,35 @@ class FieldArray(Array, metaclass=FieldArrayClass):
     ###############################################################################
 
     @classmethod
-    def _verify_array_like_types_and_values(cls, array_like: Union[int, str, Iterable, np.ndarray, "FieldArray"]):
+    def _verify_array_like_types_and_values(cls, x: Union[ElementLike, ArrayLike]):
         """
         Verify the types of the array-like object. Also verify the values of the array are within the range [0, order).
         """
-        if isinstance(array_like, (int, np.integer)):
-            cls._verify_scalar_value(array_like)
-        elif isinstance(array_like, cls):
+        if isinstance(x, (int, np.integer)):
+            cls._verify_scalar_value(x)
+        elif isinstance(x, cls):
             # This was a previously-created and vetted array -- there's no need to re-verify
-            if array_like.ndim == 0:
+            if x.ndim == 0:
                 # Ensure that in "large" fields with dtype=object that FieldArray objects aren't assigned to the array. The arithmetic
                 # functions are designed to operate on Python ints.
-                array_like = int(array_like)
-        elif isinstance(array_like, str):
-            array_like = cls._convert_to_element(array_like)
-            cls._verify_scalar_value(array_like)
-        elif isinstance(array_like, (list, tuple)):
-            array_like = cls._convert_iterable_to_elements(array_like)
-            cls._verify_array_values(array_like)
-        elif isinstance(array_like, np.ndarray):
+                x = int(x)
+        elif isinstance(x, str):
+            x = cls._convert_to_element(x)
+            cls._verify_scalar_value(x)
+        elif isinstance(x, (list, tuple)):
+            x = cls._convert_iterable_to_elements(x)
+            cls._verify_array_values(x)
+        elif isinstance(x, np.ndarray):
             # If this a NumPy array, but not a FieldArray, verify the array
-            if array_like.dtype == np.object_:
-                array_like = cls._verify_element_types_and_convert(array_like, object_=True)
-            elif not np.issubdtype(array_like.dtype, np.integer):
-                raise TypeError(f"{cls.name} arrays must have integer dtypes, not {array_like.dtype}.")
-            cls._verify_array_values(array_like)
+            if x.dtype == np.object_:
+                x = cls._verify_element_types_and_convert(x, object_=True)
+            elif not np.issubdtype(x.dtype, np.integer):
+                raise TypeError(f"{cls.name} arrays must have integer dtypes, not {x.dtype}.")
+            cls._verify_array_values(x)
         else:
-            raise TypeError(f"{cls.name} arrays can be created with scalars of type int/str, lists/tuples, or ndarrays, not {type(array_like)}.")
+            raise TypeError(f"{cls.name} arrays can be created with scalars of type int/str, lists/tuples, or ndarrays, not {type(x)}.")
 
-        return array_like
+        return x
 
     @classmethod
     def _verify_element_types_and_convert(cls, array: np.ndarray, object_=False) -> np.ndarray:
@@ -1349,11 +1340,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
     ###############################################################################
 
     @classmethod
-    def Zeros(
-        cls,
-        shape: Union[int, Sequence[int]],
-        dtype: Optional[Union[np.dtype, int, object]] = None
-    ) -> "FieldArray":
+    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
         """
         Creates an array of all zeros.
 
@@ -1384,11 +1371,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         return cls._view(array)
 
     @classmethod
-    def Ones(
-        cls,
-        shape: Union[int, Sequence[int]],
-        dtype: Optional[Union[np.dtype, int, object]] = None
-    ) -> "FieldArray":
+    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
         """
         Creates an array of all ones.
 
@@ -1421,22 +1404,22 @@ class FieldArray(Array, metaclass=FieldArrayClass):
     @classmethod
     def Range(
         cls,
-        start: int,
-        stop: int,
-        step: Optional[int] = 1,
-        dtype: Optional[Union[np.dtype, int, object]] = None
-    ) -> "FieldArray":
+        start: ElementLike,
+        stop: ElementLike,
+        step: int = 1,
+        dtype: Optional[DTypeLike] = None
+    ) -> FieldArray:
         """
         Creates a 1-D array with a range of field elements.
 
         Parameters
         ----------
         start
-            The starting finite field element (inclusive) in its :ref:`integer representation <Integer representation>`.
+            The starting finite field element (inclusive).
         stop
-            The stopping finite field element (exclusive) in its :ref:`integer representation <Integer representation>`.
+            The stopping finite field element (exclusive).
         step
-            The increment between finite field element. The default is 1.
+            The increment between finite field elements. The default is 1.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
             dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
@@ -1466,23 +1449,31 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             @suppress
             GF.display()
         """
+        # Coerce element-like values to integers in [0, p^m)
+        if start != cls.order:
+            start = int(cls(start))
+        if stop != cls.order:
+            stop = int(cls(stop))
+        dtype = cls._get_dtype(dtype)
+
         if not 0 <= start <= cls.order:
             raise ValueError(f"Argument `start` must be within the field's order {cls.order}, not {start}.")
         if not 0 <= stop <= cls.order:
             raise ValueError(f"Argument `stop` must be within the field's order {cls.order}, not {stop}.")
-        dtype = cls._get_dtype(dtype)
+
         array = np.arange(start, stop, step=step, dtype=dtype)
+
         return cls._view(array)
 
     @classmethod
     def Random(
         cls,
-        shape: Union[int, Sequence[int]] = (),
-        low: Optional[int] = 0,
-        high: Optional[int] = None,
+        shape: ShapeLike = (),
+        low: ElementLike = 0,
+        high: Optional[ElementLike] = None,
         seed: Optional[Union[int, np.random.Generator]] = None,
-        dtype: Optional[Union[np.dtype, int, object]] = None
-    ) -> "FieldArray":
+        dtype: Optional[DTypeLike] = None
+    ) -> FieldArray:
         """
         Creates an array with random field elements.
 
@@ -1493,11 +1484,9 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
             `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
         low
-            The smallest finite field element (inclusive) in its :ref:`integer representation <Integer representation>`.
-            The default is 0.
+            The smallest finite field element (inclusive). The default is 0.
         high
-            The largest finite field element (exclusive) in its :ref:`integer representation <Integer representation>`.
-            The default is `None` which represents the field's order :math:`p^m`.
+            The largest finite field element (exclusive). The default is `None` which represents the field's order :math:`p^m`.
         seed
             Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
             entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
@@ -1534,8 +1523,14 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             GF.Random(10, seed=rng)
             GF.Random(10, seed=rng)
         """
+        # Coerce element-like values to integers in [0, p^m)
+        low = int(cls(low))
+        if high is None:
+            high = cls.order
+        elif high != cls.order:
+            high = int(cls(high))
         dtype = cls._get_dtype(dtype)
-        high = cls.order if high is None else high
+
         if not 0 <= low < high <= cls.order:
             raise ValueError(f"Arguments must satisfy `0 <= low < high <= order`, not `0 <= {low} < {high} <= {cls.order}`.")
 
@@ -1568,10 +1563,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         return cls._view(array)
 
     @classmethod
-    def Elements(
-        cls,
-        dtype: Optional[Union[np.dtype, int, object]] = None
-    ) -> "FieldArray":
+    def Elements(cls, dtype: Optional[DTypeLike] = None) -> FieldArray:
         r"""
         Creates a 1-D array of the finite field's elements :math:`\{0, \dots, p^m-1\}`.
 
@@ -1603,18 +1595,14 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         return cls.Range(0, cls.order, step=1, dtype=dtype)
 
     @classmethod
-    def Identity(
-        cls,
-        size: int,
-        dtype: Optional[Union[np.dtype, int, object]] = None
-    ) -> "FieldArray":
+    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
         r"""
         Creates an :math:`n \times n` identity matrix.
 
         Parameters
         ----------
         size
-            The size :math:`n` along one axis of the matrix. The resulting array has shape `(size, size)`.
+            The size :math:`n` along one dimension of the identity matrix.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
             dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
@@ -1636,24 +1624,18 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         return cls._view(array)
 
     @classmethod
-    def Vandermonde(
-        cls,
-        a: Union[int, "FieldArray"],
-        m: int,
-        n: int,
-        dtype: Optional[Union[np.dtype, int, object]] = None
-    ) -> "FieldArray":
+    def Vandermonde(cls, element: ElementLike, rows: int, cols: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
         r"""
         Creates an :math:`m \times n` Vandermonde matrix of :math:`a \in \mathrm{GF}(q)`.
 
         Parameters
         ----------
-        a
-            An element of :math:`\mathrm{GF}(q)`.
-        m
-            The number of rows in the Vandermonde matrix.
-        n
-            The number of columns in the Vandermonde matrix.
+        element
+            An element :math:`a` of :math:`\mathrm{GF}(q)`.
+        rows
+            The number of rows :math:`m` in the Vandermonde matrix.
+        cols
+            The number of columns :math:`n` in the Vandermonde matrix.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
             dtype for this class (the first element in :obj:`galois.FieldArrayClass.dtypes`).
@@ -1673,33 +1655,29 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             @suppress
             GF.display()
         """
-        if not isinstance(a, (int, np.integer, cls)):
-            raise TypeError(f"Argument `a` must be an integer or element of {cls.name}, not {type(a)}.")
-        if not isinstance(m, (int, np.integer)):
-            raise TypeError(f"Argument `m` must be an integer, not {type(m)}.")
-        if not isinstance(n, (int, np.integer)):
-            raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-        if not m > 0:
-            raise ValueError(f"Argument `m` must be non-negative, not {m}.")
-        if not n > 0:
-            raise ValueError(f"Argument `n` must be non-negative, not {n}.")
+        if not isinstance(element, (int, np.integer, cls)):
+            raise TypeError(f"Argument `element` must be an integer or element of {cls.name}, not {type(element)}.")
+        if not isinstance(rows, (int, np.integer)):
+            raise TypeError(f"Argument `rows` must be an integer, not {type(rows)}.")
+        if not isinstance(cols, (int, np.integer)):
+            raise TypeError(f"Argument `cols` must be an integer, not {type(cols)}.")
+        if not rows > 0:
+            raise ValueError(f"Argument `rows` must be non-negative, not {rows}.")
+        if not cols > 0:
+            raise ValueError(f"Argument `cols` must be non-negative, not {cols}.")
 
         dtype = cls._get_dtype(dtype)
-        a = cls(a, dtype=dtype)
-        if not a.ndim == 0:
-            raise ValueError(f"Argument `a` must be a scalar, not {a.ndim}-D.")
+        element = cls(element, dtype=dtype)
+        if not element.ndim == 0:
+            raise ValueError(f"Argument `element` must be element scalar, not {element.ndim}-D.")
 
-        v = a ** np.arange(0, m)
-        V = np.power.outer(v, np.arange(0, n))
+        v = element ** np.arange(0, rows)
+        V = np.power.outer(v, np.arange(0, cols))
 
         return V
 
     @classmethod
-    def Vector(
-        cls,
-        array: Union[Iterable, np.ndarray, "FieldArray"],
-        dtype: Optional[Union[np.dtype, int, object]] = None
-    ) -> "FieldArray":
+    def Vector(cls, array: ArrayLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
         r"""
         Creates an array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
@@ -1908,10 +1886,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             # Compute the Legendre symbol on each element
             return x ** ((field.order - 1)//2) != field.characteristic - 1
 
-    def vector(
-        self,
-        dtype: Optional[Union[np.dtype, int, object]] = None
-    ) -> "FieldArray":
+    def vector(self, dtype: Optional[DTypeLike] = None) -> FieldArray:
         r"""
         Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
@@ -1963,10 +1938,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
         return y
 
-    def row_reduce(
-        self,
-        ncols: Optional[int] = None
-    ) -> "FieldArray":
+    def row_reduce(self, ncols: Optional[int] = None) -> FieldArray:
         r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form.
 
@@ -1999,7 +1971,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         A_rre, _ = row_reduce(self, ncols=ncols)
         return A_rre
 
-    def lu_decompose(self) -> Tuple["FieldArray", "FieldArray"]:
+    def lu_decompose(self) -> Tuple[FieldArray, FieldArray]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices.
 
@@ -2029,7 +2001,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         L, U = lu_decompose(self)
         return L, U
 
-    def plu_decompose(self) -> Tuple["FieldArray", "FieldArray", "FieldArray"]:
+    def plu_decompose(self) -> Tuple[FieldArray, FieldArray, FieldArray]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
 
@@ -2063,7 +2035,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         P, L, U, _ = plu_decompose(self)
         return P, L, U
 
-    def row_space(self) -> "FieldArray":
+    def row_space(self) -> FieldArray:
         r"""
         Computes the row space of the matrix :math:`\mathbf{A}`.
 
@@ -2098,7 +2070,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         """
         return row_space(self)
 
-    def column_space(self) -> "FieldArray":
+    def column_space(self) -> FieldArray:
         r"""
         Computes the column space of the matrix :math:`\mathbf{A}`.
 
@@ -2133,7 +2105,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         """
         return column_space(self)
 
-    def left_null_space(self) -> "FieldArray":
+    def left_null_space(self) -> FieldArray:
         r"""
         Computes the left null space of the matrix :math:`\mathbf{A}`.
 
@@ -2174,7 +2146,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         """
         return left_null_space(self)
 
-    def null_space(self) -> "FieldArray":
+    def null_space(self) -> FieldArray:
         r"""
         Computes the null space of the matrix :math:`\mathbf{A}`.
 
@@ -2215,7 +2187,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         """
         return null_space(self)
 
-    def field_trace(self) -> "FieldArray":
+    def field_trace(self) -> FieldArray:
         r"""
         Computes the field trace :math:`\mathrm{Tr}_{L / K}(x)` of the elements of :math:`x`.
 
@@ -2263,7 +2235,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             trace = np.add.reduce(conjugates, axis=-1)
             return subfield._view(trace)
 
-    def field_norm(self) -> "FieldArray":
+    def field_norm(self) -> FieldArray:
         r"""
         Computes the field norm :math:`\mathrm{N}_{L / K}(x)` of the elements of :math:`x`.
 
@@ -2310,7 +2282,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             norm = x**((p**m - 1) // (p - 1))
             return subfield._view(norm)
 
-    def characteristic_poly(self) -> "Poly":
+    def characteristic_poly(self) -> Poly:
         r"""
         Computes the characteristic polynomial of a finite field element :math:`a` or a square matrix :math:`\mathbf{A}`.
 
@@ -2422,7 +2394,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
         return det
 
-    def minimal_poly(self) -> "Poly":
+    def minimal_poly(self) -> Poly:
         r"""
         Computes the minimal polynomial of a finite field element :math:`a`.
 

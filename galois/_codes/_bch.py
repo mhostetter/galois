@@ -1,3 +1,8 @@
+"""
+A module containing arbitrary Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(2).
+"""
+from __future__ import annotations
+
 import math
 from typing import Tuple, List, Optional, Union, overload
 from typing_extensions import Literal
@@ -7,27 +12,30 @@ from numba import int64
 import numpy as np
 
 from .. import _lfsr
-from .._fields import Field, FieldArrayClass, FieldArray, GF2
+from .._fields import Field, FieldArrayClass, FieldArray, GF2  # pylint: disable=unused-import
 from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
 from .._prime import factors
+from ..typing import PolyLike
 
 from ._cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
 
 __all__ = ["BCH", "bch_valid_codes"]
 
 
-def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
+def _check_and_compute_field(
+    n: int,
+    k: int,
+    c: int,
+    primitive_poly: Optional[PolyLike] = None,
+    primitive_element: Optional[PolyLike] = None
+) -> FieldArrayClass:
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not isinstance(k, (int, np.integer)):
         raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
     if not isinstance(c, (int, np.integer)):
         raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
-    if not isinstance(primitive_poly, (type(None), int, Poly)):
-        raise TypeError(f"Argument `primitive_poly` must be an int or galois.Poly, not {type(primitive_poly)}.")
-    if not isinstance(primitive_element, (type(None), int, Poly)):
-        raise TypeError(f"Argument `primitive_element` must be an int or galois.Poly, not {type(primitive_element)}.")
 
     p, m = factors(n + 1)
     if not (len(p) == 1 and p[0] == 2):
@@ -38,6 +46,10 @@ def _check_and_compute_field(n, k, c, primitive_poly, primitive_element):
 
     if primitive_poly is None:
         primitive_poly = matlab_primitive_poly(2, m)
+    else:
+        primitive_poly = Poly._PolyLike(primitive_poly)
+    if primitive_element is not None:
+        primitive_element = Poly._PolyLike(primitive_element)
 
     GF = Field(2**m, irreducible_poly=primitive_poly, primitive_element=primitive_element)
 
@@ -163,8 +175,8 @@ class BCH:
         self,
         n: int,
         k: int,
-        primitive_poly: Optional[Poly] = None,
-        primitive_element: Optional[Union[int, Poly]] = None,
+        primitive_poly: Optional[PolyLike] = None,
+        primitive_element: Optional[PolyLike] = None,
         systematic: bool = True
     ):
         r"""
@@ -178,8 +190,7 @@ class BCH:
             The message size :math:`k`.
         primitive_poly
             Optionally specify the primitive polynomial that defines the extension field :math:`\mathrm{GF}(2^m)`. The default is
-            `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-minimal
-            primitive polynomial as a default instead of the Conway polynomial.
+            `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`.
         primitive_element
             Optionally specify the primitive element :math:`\alpha` whose powers are roots of the generator polynomial :math:`g(x)`.
             The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(2^m)`, see
@@ -258,7 +269,7 @@ class BCH:
         self._poly_divmod_jit = GF2._function("poly_divmod")
 
         # Pre-compile the JIT decoder
-        self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(decode_calculate)
+        self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(_decode_calculate)
 
     def __repr__(self) -> str:
         """
@@ -284,7 +295,7 @@ class BCH:
             bch = galois.BCH(15, 7)
             print(bch)
         """
-        string = f"BCH Code:"
+        string = "BCH Code:"
         string += f"\n  [n, k, d]: [{self.n}, {self.k}, {self.d}]"
         string += f"\n  field: {GF2.name}"
         string += f"\n  generator_poly: {self.generator_poly}"
@@ -582,10 +593,10 @@ class BCH:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[False]) -> Union[np.ndarray, GF2]:
+    def decode(self, codeword: Union[np.ndarray, "GF2"], errors: Literal[False]) -> Union[np.ndarray, "GF2"]:
         ...
     @overload
-    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[True]) -> Tuple[Union[np.ndarray, GF2], Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: Union[np.ndarray, "GF2"], errors: Literal[True]) -> Tuple[Union[np.ndarray, "GF2"], Union[np.integer, np.ndarray]]:
         ...
     def decode(self, codeword, errors=False):
         r"""
@@ -800,7 +811,7 @@ class BCH:
             return message, N_errors
 
     @property
-    def field(self) -> FieldArrayClass:
+    def field(self) -> "FieldArrayClass":
         r"""
         The *Galois field array class* for the :math:`\mathrm{GF}(2^m)` field that defines the BCH code.
 
@@ -887,7 +898,7 @@ class BCH:
         return self._systematic
 
     @property
-    def generator_poly(self) -> Poly:
+    def generator_poly(self) -> "Poly":
         """
         The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
 
@@ -903,7 +914,7 @@ class BCH:
         return self._generator_poly
 
     @property
-    def roots(self) -> FieldArray:
+    def roots(self) -> "FieldArray":
         r"""
         The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
         :math:`\alpha, \alpha^2, \dots, \alpha^{2t}`.
@@ -920,7 +931,7 @@ class BCH:
         return self._roots
 
     @property
-    def G(self) -> GF2:
+    def G(self) -> "GF2":
         r"""
         The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
 
@@ -934,7 +945,7 @@ class BCH:
         return self._G
 
     @property
-    def H(self) -> FieldArray:
+    def H(self) -> "FieldArray":
         r"""
         The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
 
@@ -985,7 +996,7 @@ class BCH:
 
 DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._UNARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldArrayClass._POLY_ROOTS_CALCULATE_SIG, int64, int64, int64))
 
-def decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+def _decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """
     References
     ----------

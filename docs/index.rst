@@ -143,6 +143,7 @@ APA
    api/number-theory.rst
    api/integer-factorization.rst
    api/primes.rst
+   api/typing.rst
 
 .. toctree::
    :caption: Release Notes

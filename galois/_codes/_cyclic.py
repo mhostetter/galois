@@ -1,8 +1,6 @@
 """
 A module containing common functions for cyclic codes.
 """
-from typing import Optional
-
 import numpy as np
 
 from .._fields import FieldArray
@@ -13,7 +11,7 @@ __all__ = ["poly_to_generator_matrix", "roots_to_parity_check_matrix"]
 
 
 @set_module("galois")
-def poly_to_generator_matrix(n: int, generator_poly: Poly, systematic: Optional[bool] = True) -> FieldArray:
+def poly_to_generator_matrix(n: int, generator_poly: Poly, systematic: bool = True) -> FieldArray:
     r"""
     Converts the generator polynomial :math:`g(x)` into the generator matrix :math:`\mathbf{G}` for an :math:`[n, k]` cyclic code.
 

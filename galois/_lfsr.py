@@ -1,7 +1,9 @@
 """
 A module containing classes and functions for generating and analyzing linear feedback shift registers and their sequences.
 """
-from typing import Sequence, Union, Optional, overload
+from __future__ import annotations
+
+from typing import Optional, overload
 from typing_extensions import Literal
 
 import numba
@@ -11,6 +13,7 @@ from numba import int64
 from ._fields import FieldArrayClass, FieldArray
 from ._overrides import set_module
 from ._polys import Poly
+from .typing import ArrayLike
 
 __all__ = [
     "FLFSR", "GLFSR",
@@ -28,12 +31,10 @@ class _LFSR:
     def __init__(
         self,
         feedback_poly: Poly,
-        state: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None,
+        state: Optional[ArrayLike] = None,
     ):
         if not isinstance(feedback_poly, Poly):
             raise TypeError(f"Argument `feedback_poly` must be a galois.Poly, not {type(feedback_poly)}.")
-        if not isinstance(state, (type(None), tuple, list, np.ndarray, FieldArray)):
-            raise TypeError(f"Argument `state` must be an array-like, not {type(state)}.")
         if not feedback_poly.coeffs[-1] == 1:
             raise ValueError(f"Argument `feedback_poly` must have a 0-th degree term of 1, not {feedback_poly}.")
 
@@ -51,16 +52,14 @@ class _LFSR:
             # c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
             self._taps = -self.characteristic_poly.coeffs[1:][::-1]
 
-        state = self.field.Ones(self.order) if state is None else state
+        if state is None:
+            state = self.field.Ones(self.order)
+
         self._initial_state = self._verify_and_convert_state(state)
         self._state = self.initial_state.copy()
 
     @classmethod
-    def Taps(
-        cls,
-        taps: FieldArray,
-        state: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None,
-    ) -> "_LFSR":
+    def Taps(cls, taps: FieldArray, state: Optional[ArrayLike] = None) -> _LFSR:
         if not isinstance(taps, FieldArray):
             raise TypeError(f"Argument `taps` must be a Galois field array, not {type(taps)}.")
 
@@ -79,11 +78,11 @@ class _LFSR:
 
         return cls(feedback_poly, state=state)
 
-    def _verify_and_convert_state(self, state: Union[Sequence[int], np.ndarray, FieldArray]):
+    def _verify_and_convert_state(self, state: ArrayLike):
         if not isinstance(state, (tuple, list, np.ndarray, FieldArray)):
             raise TypeError(f"Argument `state` must be an array-like, not {type(state)}.")
 
-        state = self.field(state)
+        state = self.field(state)  # Coerce array-like object to field array
 
         # if not state.size == self.order:
         if not state.size == self.order:
@@ -91,7 +90,7 @@ class _LFSR:
 
         return state
 
-    def reset(self, state: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None):
+    def reset(self, state: Optional[ArrayLike] = None):
         state = self.initial_state if state is None else state
         self._state = self._verify_and_convert_state(state)
 
@@ -331,7 +330,7 @@ class FLFSR(_LFSR):
     def __init__(
         self,
         feedback_poly: Poly,
-        state: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None,
+        state: Optional[ArrayLike] = None,
     ):
         r"""
         Constructs a Fibonacci LFSR from its feedback polynomial :math:`f(x)`.
@@ -356,11 +355,7 @@ class FLFSR(_LFSR):
         super().__init__(feedback_poly, state=state)
 
     @classmethod
-    def Taps(
-        cls,
-        taps: FieldArray,
-        state: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None,
-    ) -> "FLFSR":
+    def Taps(cls, taps: FieldArray, state: Optional[ArrayLike] = None) -> FLFSR:
         r"""
         Constructs a Fibonacci LFSR from its taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
 
@@ -425,7 +420,7 @@ class FLFSR(_LFSR):
 
         return string
 
-    def reset(self, state: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None):
+    def reset(self, state: Optional[ArrayLike] = None):
         r"""
         Resets the Fibonacci LFSR state to the specified state.
 
@@ -553,7 +548,7 @@ class FLFSR(_LFSR):
         # pylint: disable=useless-super-delegation
         return super().step(steps)
 
-    def to_galois_lfsr(self) -> "GLFSR":
+    def to_galois_lfsr(self) -> GLFSR:
         """
         Converts the Fibonacci LFSR to a Galois LFSR that produces the same output.
 
@@ -606,7 +601,7 @@ class FLFSR(_LFSR):
         return GLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> FieldArrayClass:
+    def field(self) -> "FieldArrayClass":
         """
         The *Galois field array class* for the finite field that defines the linear arithmetic.
 
@@ -621,7 +616,7 @@ class FLFSR(_LFSR):
         return super().field
 
     @property
-    def feedback_poly(self) -> Poly:
+    def feedback_poly(self) -> "Poly":
         r"""
         The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`
         that defines the feedback arithmetic. The feedback polynomial is the reciprocal of the characteristic
@@ -639,7 +634,7 @@ class FLFSR(_LFSR):
         return super().feedback_poly
 
     @property
-    def characteristic_poly(self) -> Poly:
+    def characteristic_poly(self) -> "Poly":
         r"""
         The characteristic polynomial :math:`c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}`
         that defines the linear recurrent sequence. The characteristic polynomial is the reciprocal of the feedback
@@ -657,7 +652,7 @@ class FLFSR(_LFSR):
         return super().characteristic_poly
 
     @property
-    def taps(self) -> FieldArray:
+    def taps(self) -> "FieldArray":
         r"""
         The shift register taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`. The taps of the shift register define
         the linear recurrence relation.
@@ -682,7 +677,7 @@ class FLFSR(_LFSR):
         return super().order
 
     @property
-    def initial_state(self) -> FieldArray:
+    def initial_state(self) -> "FieldArray":
         r"""
         The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
@@ -704,7 +699,7 @@ class FLFSR(_LFSR):
         return super().initial_state
 
     @property
-    def state(self) -> FieldArray:
+    def state(self) -> "FieldArray":
         r"""
         The current state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
@@ -852,7 +847,7 @@ class GLFSR(_LFSR):
     def __init__(
         self,
         feedback_poly: Poly,
-        state: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None,
+        state: Optional[ArrayLike] = None,
     ):
         r"""
         Constructs a Galois LFSR from its feedback polynomial :math:`f(x)`.
@@ -877,11 +872,7 @@ class GLFSR(_LFSR):
         super().__init__(feedback_poly, state=state)
 
     @classmethod
-    def Taps(
-        cls,
-        taps: FieldArray,
-        state: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None,
-    ) -> "GLFSR":
+    def Taps(cls, taps: FieldArray, state: Optional[ArrayLike] = None) -> GLFSR:
         r"""
         Constructs a Galois LFSR from its taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
 
@@ -946,7 +937,7 @@ class GLFSR(_LFSR):
 
         return string
 
-    def reset(self, state: Optional[Union[Sequence[int], np.ndarray, FieldArray]] = None):
+    def reset(self, state: Optional[ArrayLike] = None):
         r"""
         Resets the Galois LFSR state to the specified state.
 
@@ -1073,7 +1064,7 @@ class GLFSR(_LFSR):
         # pylint: disable=useless-super-delegation
         return super().step(steps)
 
-    def to_fibonacci_lfsr(self) -> "FLFSR":
+    def to_fibonacci_lfsr(self) -> FLFSR:
         """
         Converts the Galois LFSR to a Fibonacci LFSR that produces the same output.
 
@@ -1114,7 +1105,7 @@ class GLFSR(_LFSR):
         return FLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> FieldArrayClass:
+    def field(self) -> "FieldArrayClass":
         """
         The *Galois field array class* for the finite field that defines the linear arithmetic.
 
@@ -1129,7 +1120,7 @@ class GLFSR(_LFSR):
         return super().field
 
     @property
-    def feedback_poly(self) -> Poly:
+    def feedback_poly(self) -> "Poly":
         r"""
         The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`
         that defines the feedback arithmetic. The feedback polynomial is the reciprocal of the characteristic
@@ -1147,7 +1138,7 @@ class GLFSR(_LFSR):
         return super().feedback_poly
 
     @property
-    def characteristic_poly(self) -> Poly:
+    def characteristic_poly(self) -> "Poly":
         r"""
         The characteristic polynomial :math:`c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}`
         that defines the linear recurrent sequence. The characteristic polynomial is the reciprocal of the feedback
@@ -1165,7 +1156,7 @@ class GLFSR(_LFSR):
         return super().characteristic_poly
 
     @property
-    def taps(self) -> FieldArray:
+    def taps(self) -> "FieldArray":
         r"""
         The shift register taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`. The taps of the shift register define
         the linear recurrence relation.
@@ -1190,7 +1181,7 @@ class GLFSR(_LFSR):
         return super().order
 
     @property
-    def initial_state(self) -> FieldArray:
+    def initial_state(self) -> "FieldArray":
         r"""
         The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
@@ -1212,7 +1203,7 @@ class GLFSR(_LFSR):
         return super().initial_state
 
     @property
-    def state(self) -> FieldArray:
+    def state(self) -> "FieldArray":
         r"""
         The current state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
@@ -1235,16 +1226,16 @@ class GLFSR(_LFSR):
 
 
 @overload
-def berlekamp_massey(y: FieldArray, output: Literal["minimal"]) -> Poly:
+def berlekamp_massey(sequence: FieldArray, output: Literal["minimal"]) -> Poly:
     ...
 @overload
-def berlekamp_massey(y: FieldArray, output: Literal["fibonacci"]) -> FLFSR:
+def berlekamp_massey(sequence: FieldArray, output: Literal["fibonacci"]) -> FLFSR:
     ...
 @overload
-def berlekamp_massey(y: FieldArray, output: Literal["galois"]) -> GLFSR:
+def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR:
     ...
 @set_module("galois")
-def berlekamp_massey(y, output="minimal"):
+def berlekamp_massey(sequence, output="minimal"):
     r"""
     Finds the minimal polynomial :math:`c(x)` that produces the linear recurrent sequence :math:`y`.
 
@@ -1252,15 +1243,15 @@ def berlekamp_massey(y, output="minimal"):
 
     Parameters
     ----------
-    y
+    sequence
         A linear recurrent sequence :math:`y` in :math:`\mathrm{GF}(p^m)`.
     output
         The output object type.
 
-        * `"minimal"` (default): Returns the minimal polynomial that generates the linear recurrent sequence. The minimal polynomial
+        - `"minimal"` (default): Returns the minimal polynomial that generates the linear recurrent sequence. The minimal polynomial
           is the characteristic polynomial :math:`c(x)` of minimal degree.
-        * `"fibonacci"`: Returns a Fibonacci LFSR that produces :math:`y`.
-        * `"galois"`: Returns a Galois LFSR that produces :math:`y`.
+        - `"fibonacci"`: Returns a Fibonacci LFSR that produces :math:`y`.
+        - `"galois"`: Returns a Galois LFSR that produces :math:`y`.
 
     Returns
     -------
@@ -1321,33 +1312,33 @@ def berlekamp_massey(y, output="minimal"):
                 z = lfsr.step(y.size); z
                 np.array_equal(y, z)
     """
-    if not isinstance(y, FieldArray):
-        raise TypeError(f"Argument `y` must be a Galois field array, not {type(y)}.")
+    if not isinstance(sequence, FieldArray):
+        raise TypeError(f"Argument `sequence` must be a Galois field array, not {type(sequence)}.")
     if not isinstance(output, str):
         raise TypeError(f"Argument `output` must be a string, not {type(output)}.")
-    if not y.ndim == 1:
-        raise ValueError(f"Argument `y` must be 1-D, not {y.ndim}-D.")
+    if not sequence.ndim == 1:
+        raise ValueError(f"Argument `sequence` must be 1-D, not {sequence.ndim}-D.")
     if not output in ["minimal", "fibonacci", "galois"]:
         raise ValueError(f"Argument `output` must be in ['minimal', 'fibonacci', 'galois'], not {output!r}.")
 
-    field = type(y)
-    dtype = y.dtype
+    field = type(sequence)
+    dtype = sequence.dtype
 
     if field.ufunc_mode != "python-calculate":
-        y = y.astype(np.int64)
+        sequence = sequence.astype(np.int64)
         add = field._func_calculate("add")
         subtract = field._func_calculate("subtract")
         multiply = field._func_calculate("multiply")
         reciprocal = field._func_calculate("reciprocal")
-        coeffs = jit_calculate("berlekamp_massey")(y, add, subtract, multiply, reciprocal, field.characteristic, field.degree, field._irreducible_poly_int)
+        coeffs = jit_calculate("berlekamp_massey")(sequence, add, subtract, multiply, reciprocal, field.characteristic, field.degree, field._irreducible_poly_int)
         coeffs = coeffs.astype(dtype)
     else:
-        y = y.view(np.ndarray)
+        sequence = sequence.view(np.ndarray)
         subtract = field._func_python("subtract")
         multiply = field._func_python("multiply")
         divide = field._func_python("divide")
         reciprocal = field._func_python("reciprocal")
-        coeffs = python_func("berlekamp_massey")(y, subtract, multiply, divide, reciprocal, field.characteristic, field.degree, field._irreducible_poly_int)
+        coeffs = python_func("berlekamp_massey")(sequence, subtract, multiply, divide, reciprocal, field.characteristic, field.degree, field._irreducible_poly_int)
     coeffs = field._view(coeffs)
 
     characteristic_poly = Poly(coeffs, field=field)
@@ -1357,7 +1348,7 @@ def berlekamp_massey(y, output="minimal"):
     else:
         # The first n outputs are the Fibonacci state reversed
         feedback_poly = characteristic_poly.reverse()
-        state_ = y[0:feedback_poly.degree][::-1]
+        state_ = sequence[0:feedback_poly.degree][::-1]
         fibonacci_lfsr = FLFSR(feedback_poly, state=state_)
 
         if output == "fibonacci":

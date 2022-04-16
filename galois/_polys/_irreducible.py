@@ -137,9 +137,9 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
     method
         The search method for finding the irreducible polynomial.
 
-        * `"min"` (default): Returns the lexicographically-minimal monic irreducible polynomial.
-        * `"max"`: Returns the lexicographically-maximal monic irreducible polynomial.
-        * `"random"`: Returns a randomly generated degree-:math:`m` monic irreducible polynomial.
+        - `"min"` (default): Returns the lexicographically-minimal monic irreducible polynomial.
+        - `"max"`: Returns the lexicographically-maximal monic irreducible polynomial.
+        - `"random"`: Returns a randomly generated degree-:math:`m` monic irreducible polynomial.
 
     Returns
     -------

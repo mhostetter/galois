@@ -403,7 +403,7 @@ def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> b
     Returns
     -------
     :
-        `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
+        `False` if :math:`n` is shown to be composite. `True` if :math:`n` is a probable prime.
 
     See Also
     --------
@@ -1274,12 +1274,12 @@ def divisors(n: int) -> List[int]:
     Parameters
     ----------
     n
-        Any integer.
+        An integer.
 
     Returns
     -------
     :
-        Sorted list of positive integer divisors :math:`d`.
+        Sorted list of positive integer divisors :math:`d` of :math:`n`.
 
     See Also
     --------
@@ -1341,7 +1341,7 @@ def divisor_sigma(n: int, k: int = 1) -> int:
     Parameters
     ----------
     n
-        Any integer.
+        An integer.
     k
         The degree of the positive divisors. The default is 1 which corresponds to :math:`\sigma_1(n)` which is the
         sum of positive divisors.
