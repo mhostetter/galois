@@ -1,12 +1,14 @@
 """
 A module containing a class for univariate polynomials over finite fields.
 """
+from __future__ import annotations
+
 from typing import Tuple, Sequence, Optional, Union, overload
 from typing_extensions import Literal
 
 import numpy as np
 
-from .._array import ArrayClass, Array, DEFAULT_FIELD_ARRAY
+from .._array import ArrayClass, Array, ElementLike, ArrayLike, DEFAULT_FIELD_ARRAY
 from .._overrides import set_module
 
 from . import _binary, _dense, _sparse
@@ -17,6 +19,37 @@ __all__ = ["Poly"]
 # Values were obtained by running scripts/sparse_poly_performance_test.py
 SPARSE_VS_DENSE_POLY_FACTOR = 0.00_125  # 1.25% density
 SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
+
+PolyLike = Union[int, str, ArrayLike, "Poly"]
+PolyLike.__doc__ = """
+A :obj:`~typing.Union` representing objects that can be coerced into a polynomial.
+
+.. rubric:: Union
+
+- :obj:`int`: A polynomial in its integer representation, see :func:`~galois.Poly.Int`. The Galois field must be known from context.
+
+.. ipython:: python
+
+    # Known from context
+    GF = galois.GF(3)
+    galois.Poly.Int(19, field=GF)
+
+- :obj:`str`: A polynomial in its string representation, see :func:`~galois.Poly.Str`. The Galois field must be known from context.
+
+.. ipython:: python
+
+    galois.Poly.Str("2x^2 + 1", field=GF)
+
+- :obj:`~galois.typing.ArrayLike`: An array of polynomial coefficients. If the coefficients are :obj:`~galois.typing.IterableLike`, then the
+  Galois field must be known from context.
+
+.. ipython:: python
+
+    galois.Poly([2, 0, 1], field=GF)
+    galois.Poly(GF([2, 0, 1]))
+
+.. rubric:: Alias
+"""
 
 
 @set_module("galois")
@@ -58,12 +91,7 @@ class Poly:
     # Increase my array priority so numpy will call my __radd__ instead of its own __add__
     __array_priority__ = 100
 
-    def __init__(
-        self,
-        coeffs: Union[Sequence[int], np.ndarray, Array],
-        field: Optional[ArrayClass] = None,
-        order: Literal["desc", "asc"] = "desc"
-    ):
+    def __init__(self, coeffs: ArrayLike, field: Optional[ArrayClass] = None, order: Literal["desc", "asc"] = "desc"):
         r"""
         Creates a polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
@@ -87,8 +115,8 @@ class Poly:
         order
             The interpretation of the coefficient degrees.
 
-            * `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
-            * `"asc"`: The first element of `coeffs` is the lowest degree coefficient, i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
+            - `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
+            - `"asc"`: The first element of `coeffs` is the lowest degree coefficient, i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
         """
         if not isinstance(coeffs, (list, tuple, np.ndarray, Array)):
             raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
@@ -121,11 +149,7 @@ class Poly:
             self._type = "dense"
 
     @classmethod
-    def _convert_coeffs(
-        cls,
-        coeffs: Union[Sequence[int], np.ndarray, Array],
-        field: Optional[ArrayClass] = None,
-    ) -> Tuple[Array, ArrayClass]:
+    def _convert_coeffs(cls, coeffs: ArrayLike, field: Optional[ArrayClass] = None) -> Tuple[Array, ArrayClass]:
         if isinstance(coeffs, Array):
             if field is None:
                 # Infer the field from the coefficients provided
@@ -144,11 +168,7 @@ class Poly:
         return coeffs, field
 
     @classmethod
-    def _PolyLike(
-        cls,
-        poly_like: Union[int, str, Sequence[int], np.ndarray, Array, "Poly"],
-        field: Optional[ArrayClass] = None
-    ) -> "Poly":
+    def _PolyLike(cls, poly_like: PolyLike, field: Optional[ArrayClass] = None) -> Poly:
         """
         A private alternate constructor that converts a poly-like object into a polynomial, given a finite field.
         """
@@ -170,7 +190,7 @@ class Poly:
     ###############################################################################
 
     @classmethod
-    def Zero(cls, field: Optional[ArrayClass] = None) -> "Poly":
+    def Zero(cls, field: Optional[ArrayClass] = None) -> Poly:
         r"""
         Constructs the polynomial :math:`f(x) = 0` over :math:`\mathrm{GF}(p^m)`.
 
@@ -202,7 +222,7 @@ class Poly:
         return Poly([0], field=field)
 
     @classmethod
-    def One(cls, field: Optional[ArrayClass] = None) -> "Poly":
+    def One(cls, field: Optional[ArrayClass] = None) -> Poly:
         r"""
         Constructs the polynomial :math:`f(x) = 1` over :math:`\mathrm{GF}(p^m)`.
 
@@ -234,7 +254,7 @@ class Poly:
         return Poly([1], field=field)
 
     @classmethod
-    def Identity(cls, field: Optional[ArrayClass] = None) -> "Poly":
+    def Identity(cls, field: Optional[ArrayClass] = None) -> Poly:
         r"""
         Constructs the polynomial :math:`f(x) = x` over :math:`\mathrm{GF}(p^m)`.
 
@@ -266,12 +286,7 @@ class Poly:
         return Poly([1, 0], field=field)
 
     @classmethod
-    def Random(
-        cls,
-        degree: int,
-        seed: Optional[Union[int, np.random.Generator]] = None,
-        field: Optional[ArrayClass] = None
-    ) -> "Poly":
+    def Random(cls, degree: int, seed: Optional[Union[int, np.random.Generator]] = None, field: Optional[ArrayClass] = None) -> Poly:
         r"""
         Constructs a random polynomial over :math:`\mathrm{GF}(p^m)` with degree :math:`d`.
 
@@ -335,7 +350,7 @@ class Poly:
         return Poly(coeffs)
 
     @classmethod
-    def Str(cls, string: str, field: Optional[ArrayClass] = None) -> "Poly":
+    def Str(cls, string: str, field: Optional[ArrayClass] = None) -> Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its string representation.
 
@@ -390,7 +405,7 @@ class Poly:
         return Poly.Degrees(degrees, coeffs, field=field)
 
     @classmethod
-    def Int(cls, integer: int, field: Optional[ArrayClass] = None) -> "Poly":
+    def Int(cls, integer: int, field: Optional[ArrayClass] = None) -> Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its integer representation.
 
@@ -483,9 +498,9 @@ class Poly:
     def Degrees(
         cls,
         degrees: Union[Sequence[int], np.ndarray],
-        coeffs: Optional[Union[Sequence[int], np.ndarray, Array]] = None,
+        coeffs: Optional[ArrayLike] = None,
         field: Optional[ArrayClass] = None
-    ) -> "Poly":
+    ) -> Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its non-zero degrees.
 
@@ -576,18 +591,17 @@ class Poly:
     @classmethod
     def Roots(
         cls,
-        roots: Union[Sequence[int], np.ndarray, Array],
+        roots: ArrayLike,
         multiplicities: Optional[Union[Sequence[int], np.ndarray]] = None,
         field: Optional[ArrayClass] = None
-    ) -> "Poly":
+    ) -> Poly:
         r"""
         Constructs a monic polynomial over :math:`\mathrm{GF}(p^m)` from its roots.
 
         Parameters
         ----------
         roots
-            The roots of the desired polynomial with type :obj:`galois.Array`. Alternatively, an iterable :obj:`tuple`,
-            :obj:`list`, or :obj:`numpy.ndarray` may be provided and the Galois field domain is taken from the `field` keyword argument.
+            The roots of the desired polynomial.
         multiplicities
             The corresponding root multiplicities. The default is `None` which corresponds to all ones.
         field
@@ -717,7 +731,7 @@ class Poly:
 
         return coeffs
 
-    def reverse(self) -> "Poly":
+    def reverse(self) -> Poly:
         r"""
         Returns the :math:`d`-th reversal :math:`x^d f(\frac{1}{x})` of the polynomial :math:`f(x)` with degree :math:`d`.
 
@@ -857,7 +871,7 @@ class Poly:
 
         return multiplicity
 
-    def derivative(self, k: int = 1) -> "Poly":
+    def derivative(self, k: int = 1) -> Poly:
         r"""
         Computes the :math:`k`-th formal derivative :math:`\frac{d^k}{dx^k} f(x)` of the polynomial :math:`f(x)`.
 
@@ -1027,7 +1041,7 @@ class Poly:
 
     def __call__(
         self,
-        x: Union[int, Sequence[int], np.ndarray, Array],
+        x: Union[ElementLike, ArrayLike],
         field: Optional[ArrayClass] = None,
         elementwise: bool = True
     ) -> Array:
@@ -1115,15 +1129,14 @@ class Poly:
         """
         return self.degree + 1
 
-    def __eq__(self, other: Union["Poly", Array, int]) -> bool:
+    def __eq__(self, other: PolyLike) -> bool:
         r"""
-        Determines if two polynomials over :math:`\mathrm{GF}(p^m)` are equal.
+        Determines if two polynomials are equal.
 
         Parameters
         ----------
         other
-            The polynomial :math:`b(x)` or a finite field scalar (equivalently a degree-:math:`0` polynomial). An integer
-            may be passed and is interpreted as a degree-:math:`0` polynomial in the field :math:`a(x)` is over.
+            The polynomial to compare against.
 
         Returns
         -------
@@ -1150,31 +1163,25 @@ class Poly:
             b = galois.Poly([3, 0, 5], field=galois.GF(7**2)); b
             a == b
 
-        Comparison with scalars is allowed for convenience.
+        Comparison with :obj:`galois.typing.PolyLike` objects is allowed for convenience.
 
         .. ipython:: python
 
             GF = galois.GF(7)
-            a = galois.Poly([0], field=GF); a
-            a == GF(0)
-            a == 0
+            a = galois.Poly([3, 0, 2], field=GF); a
+            a == GF([3, 0, 2])
+            a == [3, 0, 2]
+            a == "3x^2 + 2"
+            a == 3*7**2 + 2
         """
-        if isinstance(other, (int, np.integer)):
-            # Compare poly to a integer scalar (assumed to be from the same field)
-            return self.degree == 0 and np.array_equal(self.coeffs, [other])
-
-        elif isinstance(other, Array):
-            # Compare poly to a finite field scalar (may or may not be from the same field)
-            if not other.ndim == 0:
-                raise ValueError(f"Can only compare galois.Poly to a 0-D galois.Array scalar, not shape {other.shape}.")
-            return self.field is type(other) and self.degree == 0 and np.array_equal(self.coeffs, np.atleast_1d(other))
-
-        elif not isinstance(other, Poly):
-            raise TypeError(f"Can only compare galois.Poly and galois.Poly / int / galois.Array scalar objects, not {type(other)}.")
-
+        # Coerce to a polynomial object
+        if not isinstance(other, (Poly, Array)):
+            field = self.field
         else:
-            # Compare two poly objects to each other
-            return self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
+            field = None
+        other = Poly._PolyLike(other, field=field)
+
+        return self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
 
     ###############################################################################
     # Arithmetic
@@ -1214,7 +1221,7 @@ class Poly:
         else:
             self._check_input_is_poly(a)
 
-    def _convert_to_coeffs(self, a: Union["Poly", Array, int]) -> Array:
+    def _convert_to_coeffs(self, a: Union[Poly, Array, int]) -> Array:
         """
         Convert the polynomial or finite field scalar into a coefficient array.
         """
@@ -1226,7 +1233,7 @@ class Poly:
         else:
             return np.atleast_1d(a)
 
-    def _convert_to_integer(self, a: Union["Poly", Array, int]) -> int:
+    def _convert_to_integer(self, a: Union[Poly, Array, int]) -> int:
         """
         Convert the polynomial or finite field scalar into its integer representation.
         """
@@ -1236,7 +1243,7 @@ class Poly:
         else:
             return int(a)
 
-    def _convert_to_sparse_coeffs(self, a: Union["Poly", Array, int]) -> Tuple[np.ndarray, Array]:
+    def _convert_to_sparse_coeffs(self, a: Union[Poly, Array, int]) -> Tuple[np.ndarray, Array]:
         """
         Convert the polynomial or finite field scalar into its non-zero degrees and coefficients.
         """
@@ -1247,7 +1254,7 @@ class Poly:
         else:
             return np.array([0]), np.atleast_1d(a)
 
-    def __add__(self, other: Union["Poly", Array]) -> "Poly":
+    def __add__(self, other: Union[Poly, Array]) -> Poly:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1267,7 +1274,7 @@ class Poly:
             c = _dense.add(a, b)
             return Poly(c, field=self.field)
 
-    def __radd__(self, other: Union["Poly", Array]) -> "Poly":
+    def __radd__(self, other: Union[Poly, Array]) -> Poly:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1301,7 +1308,7 @@ class Poly:
             c = _dense.neg(a)
             return Poly(c, field=self.field)
 
-    def __sub__(self, other: Union["Poly", Array]) -> "Poly":
+    def __sub__(self, other: Union[Poly, Array]) -> Poly:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1321,7 +1328,7 @@ class Poly:
             c = _dense.sub(a, b)
             return Poly(c, field=self.field)
 
-    def __rsub__(self, other: Union["Poly", Array]) -> "Poly":
+    def __rsub__(self, other: Union[Poly, Array]) -> Poly:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1341,7 +1348,7 @@ class Poly:
             c = _dense.sub(a, b)
             return Poly(c, field=self.field)
 
-    def __mul__(self, other: Union["Poly", Array, int]) -> "Poly":
+    def __mul__(self, other: Union[Poly, Array, int]) -> Poly:
         self._check_input_is_poly_or_int(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1361,7 +1368,7 @@ class Poly:
             c = _dense.mul(a, b)
             return Poly(c, field=self.field)
 
-    def __rmul__(self, other: Union["Poly", Array, int]) -> "Poly":
+    def __rmul__(self, other: Union[Poly, Array, int]) -> Poly:
         self._check_input_is_poly_or_int(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1381,7 +1388,7 @@ class Poly:
             c = _dense.mul(a, b)
             return Poly(c, field=self.field)
 
-    def __divmod__(self, other: Union["Poly", Array]) -> Tuple["Poly", "Poly"]:
+    def __divmod__(self, other: Union[Poly, Array]) -> Tuple[Poly, Poly]:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1396,7 +1403,7 @@ class Poly:
             q, r = _dense.divmod(a, b)
             return Poly(q, field=self.field), Poly(r, field=self.field)
 
-    def __rdivmod__(self, other: Union["Poly", Array]) -> Tuple["Poly", "Poly"]:
+    def __rdivmod__(self, other: Union[Poly, Array]) -> Tuple[Poly, Poly]:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1417,7 +1424,7 @@ class Poly:
     def __rtruediv__(self, other):
         raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
 
-    def __floordiv__(self, other: Union["Poly", Array]) -> "Poly":
+    def __floordiv__(self, other: Union[Poly, Array]) -> Poly:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1432,7 +1439,7 @@ class Poly:
             q = _dense.floordiv(a, b)
             return Poly(q, field=self.field)
 
-    def __rfloordiv__(self, other: Union["Poly", Array]) -> "Poly":
+    def __rfloordiv__(self, other: Union[Poly, Array]) -> Poly:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1447,7 +1454,7 @@ class Poly:
             q = _dense.floordiv(a, b)
             return Poly(q, field=self.field)
 
-    def __mod__(self, other: Union["Poly", Array]) -> "Poly":
+    def __mod__(self, other: Union[Poly, Array]) -> Poly:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1462,7 +1469,7 @@ class Poly:
             r = _dense.mod(a, b)
             return Poly(r, field=self.field)
 
-    def __rmod__(self, other: Union["Poly", Array]) -> "Poly":
+    def __rmod__(self, other: Union[Poly, Array]) -> Poly:
         self._check_input_is_poly(other)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1477,7 +1484,7 @@ class Poly:
             r = _dense.mod(a, b)
             return Poly(r, field=self.field)
 
-    def __pow__(self, exponent: int, modulus: Optional["Poly"] = None) -> "Poly":
+    def __pow__(self, exponent: int, modulus: Optional[Poly] = None) -> Poly:
         self._check_input_is_poly_or_none(modulus)
         types = [getattr(self, "_type", None), getattr(modulus, "_type", None)]
 
@@ -1502,7 +1509,7 @@ class Poly:
     ###############################################################################
 
     @property
-    def field(self) -> ArrayClass:
+    def field(self) -> "ArrayClass":
         """
         The *Galois field array class* for the finite field the coefficients are over.
 
@@ -1551,7 +1558,7 @@ class Poly:
         return self._degree
 
     @property
-    def coeffs(self) -> Array:
+    def coeffs(self) -> "Array":
         """
         The coefficients of the polynomial in degree-descending order. The entries of :obj:`coeffs` are paired with :obj:`degrees`.
 
@@ -1592,7 +1599,7 @@ class Poly:
         return self._degrees.copy()
 
     @property
-    def nonzero_coeffs(self) -> Array:
+    def nonzero_coeffs(self) -> "Array":
         """
         The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_coeffs`
         are paired with :obj:`nonzero_degrees`.

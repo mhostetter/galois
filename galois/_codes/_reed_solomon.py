@@ -1,3 +1,8 @@
+"""
+A module containing arbitrary Reed-Solomon (RS) codes.
+"""
+from __future__ import annotations
+
 from typing import Tuple, Optional, Union, overload
 from typing_extensions import Literal
 
@@ -10,6 +15,7 @@ from .._fields import Field, FieldArrayClass, FieldArray
 from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
 from .._prime import factors
+from ..typing import PolyLike
 
 from ._cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
 
@@ -65,9 +71,9 @@ class ReedSolomon:
         self,
         n: int,
         k: int,
-        c: Optional[int] = 1,
-        primitive_poly: Optional[Poly] = None,
-        primitive_element: Optional[Union[int, Poly]] = None,
+        c: int = 1,
+        primitive_poly: Optional[PolyLike] = None,
+        primitive_element: Optional[PolyLike] = None,
         systematic: bool = True
     ):
         r"""
@@ -83,8 +89,7 @@ class ReedSolomon:
             The first consecutive power of :math:`\alpha`. The default is 1.
         primitive_poly
             Optionally specify the primitive polynomial that defines the extension field :math:`\mathrm{GF}(q)`. The default is
-            `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`. Matlab tends to use the lexicographically-minimal
-            primitive polynomial as a default instead of the Conway polynomial.
+            `None` which uses Matlab's default, see :func:`galois.matlab_primitive_poly`.
         primitive_element
             Optionally specify the primitive element :math:`\alpha` of :math:`\mathrm{GF}(q)` whose powers are roots of the generator polynomial :math:`g(x)`.
             The default is `None` which uses the lexicographically-minimal primitive element in :math:`\mathrm{GF}(q)`, see
@@ -103,8 +108,6 @@ class ReedSolomon:
             raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
         if not isinstance(c, (int, np.integer)):
             raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
-        if not isinstance(primitive_poly, (type(None), int, Poly)):
-            raise TypeError(f"Argument `primitive_poly` must be an int or galois.Poly, not {type(primitive_poly)}.")
         if not isinstance(systematic, bool):
             raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
 
@@ -156,7 +159,7 @@ class ReedSolomon:
         self._convolve_jit = self.field._function("convolve")
 
         # Pre-compile the JIT decoder
-        self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(decode_calculate)
+        self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(_decode_calculate)
 
     def __repr__(self) -> str:
         """
@@ -182,7 +185,7 @@ class ReedSolomon:
             rs = galois.ReedSolomon(15, 9)
             print(rs)
         """
-        string = f"Reed-Solomon Code:"
+        string = "Reed-Solomon Code:"
         string += f"\n  [n, k, d]: [{self.n}, {self.k}, {self.d}]"
         string += f"\n  field: {self.field.name}"
         string += f"\n  generator_poly: {self.generator_poly}"
@@ -702,7 +705,7 @@ class ReedSolomon:
             return message, N_errors
 
     @property
-    def field(self) -> FieldArrayClass:
+    def field(self) -> "FieldArrayClass":
         r"""
         The *Galois field array class* for the :math:`\mathrm{GF}(q)` field that defines the Reed-Solomon code.
 
@@ -788,7 +791,7 @@ class ReedSolomon:
         return self._systematic
 
     @property
-    def generator_poly(self) -> Poly:
+    def generator_poly(self) -> "Poly":
         """
         The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
 
@@ -808,7 +811,7 @@ class ReedSolomon:
         return self._generator_poly
 
     @property
-    def roots(self) -> FieldArray:
+    def roots(self) -> "FieldArray":
         r"""
         The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
         :math:`\alpha^c, \alpha^{c+1}, \dots, \alpha^{c+2t-1}`.
@@ -843,7 +846,7 @@ class ReedSolomon:
         return self._c
 
     @property
-    def G(self) -> FieldArray:
+    def G(self) -> "FieldArray":
         r"""
         The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
 
@@ -857,7 +860,7 @@ class ReedSolomon:
         return self._G
 
     @property
-    def H(self) -> FieldArray:
+    def H(self) -> "FieldArray":
         r"""
         The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
 
@@ -894,7 +897,7 @@ class ReedSolomon:
 
 DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, int64, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._UNARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldArrayClass._POLY_ROOTS_CALCULATE_SIG, FieldArrayClass._POLY_EVALUATE_CALCULATE_SIG, FieldArrayClass._CONVOLVE_CALCULATE_SIG, int64, int64, int64))
 
-def decode_calculate(codeword, syndrome, c, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, POLY_EVAL, CONVOLVE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+def _decode_calculate(codeword, syndrome, c, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, POLY_EVAL, CONVOLVE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """
     References
     ----------

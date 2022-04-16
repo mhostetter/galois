@@ -550,8 +550,6 @@ def is_monic(poly: Poly) -> bool:
     r"""
     Determines whether the polynomial is monic.
 
-    A monic polynomial has a highest-degree coefficient of 1.
-
     Parameters
     ----------
     poly
@@ -565,6 +563,10 @@ def is_monic(poly: Poly) -> bool:
     See Also
     --------
     is_irreducible, is_primitive
+
+    Notes
+    -----
+    A monic polynomial has its highest-degree, non-zero coefficient with value 1.
 
     Examples
     --------

@@ -1,20 +1,23 @@
 """
 A module that contains functions to perform the forward and reverse Number-Theoretic Transform (NTT).
 """
-from typing import Sequence, Optional, Union
+from __future__ import annotations
+
+from typing import Optional
 
 import numpy as np
 
 from ._fields import Field, FieldArray
 from ._overrides import set_module
 from ._prime import is_prime
+from .typing import ArrayLike
 
 __all__ = ["ntt", "intt"]
 
 
 @set_module("galois")
 def ntt(
-    x: Union[Sequence[int],  np.ndarray, FieldArray],
+    x: ArrayLike,
     size: Optional[int] = None,
     modulus: Optional[int] = None
 ) -> FieldArray:
@@ -125,7 +128,7 @@ def ntt(
 
 @set_module("galois")
 def intt(
-    X: Union[Sequence[int], np.ndarray, FieldArray],
+    X: ArrayLike,
     size: Optional[int] = None,
     modulus: Optional[int] = None,
     scaled: bool = True

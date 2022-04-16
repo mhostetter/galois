@@ -1,8 +1,10 @@
 """
 A module containing abstract base classes.
 """
+from __future__ import annotations
+
 import contextlib
-from typing import List, Iterable, Optional, Union, Type
+from typing import List, Sequence, Iterable, Optional, Union, Type
 from typing_extensions import Literal
 
 import numpy as np
@@ -11,7 +13,160 @@ from ._overrides import set_module
 
 __all__ = ["ArrayClass", "Array"]
 
+ElementLike = Union[int, str, "Array"]
+ElementLike.__doc__ = """
+A :obj:`~typing.Union` representing objects that can be coerced into a Galois field scalar.
+
+Scalars are 0-D :obj:`~galois.Array` objects.
+
+.. rubric:: Union
+
+- :obj:`int`: A finite field element in its :ref:`integer representation <Integer representation>`.
+
+.. ipython:: python
+
+    GF = galois.GF(3**5)
+    GF(17)
+
+- :obj:`str`: A finite field element in its :ref:`polynomial representation <Polynomial representation>`.
+
+.. ipython:: python
+
+    GF("x^2 + 2x + 2")
+
+- :obj:`~galois.Array`: A 0-D scalar array.
+
+.. ipython:: python
+
+    element = GF(17); element
+    GF(element)
+
+.. rubric:: Alias
+"""
+
+IterableLike = Sequence[Union[ElementLike, "IterableLike"]]
+IterableLike.__doc__ = """
+A :obj:`~typing.Union` representing iterable objects that can be coerced into a Galois field array.
+
+.. rubric:: Union
+
+- :obj:`~typing.Sequence` [ :obj:`~galois.typing.ElementLike` ]: An iterable of elements.
+
+.. ipython:: python
+
+    GF = galois.GF(3**5)
+    GF([17, 4])
+    # Mix and match integers and strings
+    GF([17, "x + 1"])
+
+- :obj:`~galois.typing.IterableLike`: A recursive iterable of iterables of elements.
+
+.. ipython:: python
+
+    GF = galois.GF(3**5)
+    GF([[17, 4], [148, 205]])
+    # Mix and match integers and strings
+    GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
+
+.. rubric:: Alias
+"""
+
+ArrayLike = Union[IterableLike, np.ndarray, "Array"]
+ArrayLike.__doc__ = """
+A :obj:`~typing.Union` representing objects that can be coerced into a Galois field array.
+
+.. rubric:: Union
+
+- :obj:`~galois.typing.IterableLike`: A recursive iterable of iterables of elements.
+
+.. ipython:: python
+
+    GF = galois.GF(3**5)
+    GF([[17, 4], [148, 205]])
+    # Mix and match integers and strings
+    GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
+
+- :obj:`~numpy.ndarray`: A NumPy array of integers, representing finite field elements in their :ref:`integer representation <Integer representation>`.
+
+.. ipython:: python
+
+    x = np.array([[17, 4], [148, 205]]); x
+    GF(x)
+
+- :obj:`~galois.Array`: A previously-created :obj:`~galois.Array` object.
+
+.. ipython:: python
+
+    x = GF([[17, 4], [148, 205]]); x
+    GF(x)
+
+.. rubric:: Alias
+"""
+
+ShapeLike = Union[int, Sequence[int]]
+ShapeLike.__doc__ = """
+A :obj:`~typing.Union` representing objects that can be coerced into a NumPy shape.
+
+.. rubric:: Union
+
+- :obj:`int`: The size of a 1-D array.
+
+.. ipython:: python
+
+    GF = galois.GF(3**5)
+    GF.Random(4)
+
+- :obj:`~typing.Sequence` [ :obj:`int` ]: An iterable of integer dimensions. Tuples or lists are allowed. An empty iterable, `()` or `[]`,
+  represents a 0-D array (scalar).
+
+.. ipython:: python
+
+    GF = galois.GF(3**5)
+    GF.Random((2, 3))
+    GF.Random([2, 3])
+    GF.Random(())
+
+.. rubric:: Alias
+"""
+
 DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
+
+DTypeLike = Union[np.integer, int, str, object]
+DTypeLike.__doc__ = """
+A :obj:`~typing.Union` representing objects that can be coerced into a NumPy data type.
+
+.. rubric:: Union
+
+- :obj:`numpy.integer`: A fixed-width NumPy integer data type.
+
+.. ipython:: python
+
+    GF = galois.GF(3**5)
+    x = GF.Random(4, dtype=np.uint16); x.dtype
+    x = GF.Random(4, dtype=np.int32); x.dtype
+
+- :obj:`int`: The system default integer.
+
+.. ipython:: python
+
+    x = GF.Random(4, dtype=int); x.dtype
+
+- :obj:`str`: The string that can be coerced with :obj:`numpy.dtype`.
+
+.. ipython:: python
+
+    x = GF.Random(4, dtype="uint16"); x.dtype
+    x = GF.Random(4, dtype="int32"); x.dtype
+
+- :obj:`object`: A Python object data type. This applies to non-compiled fields.
+
+.. ipython:: python
+
+    GF = galois.GF(2**100)
+    x = GF.Random(4, dtype=object); x.dtype
+
+.. rubric:: Alias
+"""
 
 
 @set_module("galois")
@@ -21,7 +176,7 @@ class ArrayClass(type):
 
     Important
     ---------
-    :obj:`galois.ArrayClass` is a metaclass for :obj:`galois.Array` subclasses. It cannot be instantiated directly.
+    :obj:`galois.ArrayClass` is an abstract base class for :obj:`galois.FieldArrayClass` and cannot be instantiated directly.
     """
     # pylint: disable=no-value-for-parameter
 
@@ -70,7 +225,7 @@ class ArrayClass(type):
         yield
         cls._verify_on_view = prev_value
 
-    def _view(cls, array: np.ndarray) -> "Array":
+    def _view(cls, array: np.ndarray) -> Array:
         """
         View the input array to the FieldArray subclass using the `_view_without_verification()` context manager. This disables
         bounds checking on the array elements. Instead of `x.view(field)` use `field._view(x)`.
@@ -83,7 +238,7 @@ class ArrayClass(type):
 @set_module("galois")
 class Array(np.ndarray, metaclass=ArrayClass):
     r"""
-    An array over a finite field or ring.
+    A :obj:`numpy.ndarray` subclass over a Galois field or Galois ring.
 
     Important
     ---------
@@ -93,25 +248,25 @@ class Array(np.ndarray, metaclass=ArrayClass):
 
     def __new__(
         cls,
-        array_like: Union[int, str, Iterable, np.ndarray, "Array"],
-        dtype: Optional[Union[np.dtype, int, object]] = None,
+        x: Union[ElementLike, ArrayLike],
+        dtype: Optional[DTypeLike] = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
-    ) -> "Array":
+    ) -> Array:
         if cls is Array:
             raise NotImplementedError("Array is an abstract base class that cannot be directly instantiated. Instead, create a Array subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
 
         dtype = cls._get_dtype(dtype)
 
-        array_like = cls._verify_array_like_types_and_values(array_like)
-        array = np.array(array_like, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
+        x = cls._verify_array_like_types_and_values(x)
+        array = np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
         # Perform view without verification since the elements were verified in _verify_array_like_types_and_values()
         return cls._view(array)
 
     @classmethod
-    def _get_dtype(cls, dtype: Optional[Union[np.dtype, int, object]]) -> np.dtype:
+    def _get_dtype(cls, dtype: DTypeLike) -> np.dtype:
         if dtype is None:
             return cls._dtypes[0]
 
@@ -128,7 +283,7 @@ class Array(np.ndarray, metaclass=ArrayClass):
     ###############################################################################
 
     @classmethod
-    def _verify_array_like_types_and_values(cls, array_like: Union[int, str, Iterable, np.ndarray, "Array"]):
+    def _verify_array_like_types_and_values(cls, x: Union[int, str, Iterable, np.ndarray, Array]):
         raise NotImplementedError
 
     @classmethod

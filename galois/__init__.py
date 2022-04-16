@@ -5,7 +5,7 @@ A performant NumPy extension for Galois fields and their applications.
 
 from ._version import __version__
 
-# Subpackages
+# Nested modules
 from ._polys import *  # Needs to be imported before _fields
 from ._fields import *
 ###############################################################################
@@ -26,3 +26,6 @@ from ._modular import *
 from ._ntt import *
 from ._polymorphic import *
 from ._prime import *
+
+# Subpackages
+from . import typing

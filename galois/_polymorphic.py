@@ -127,9 +127,9 @@ def egcd(a, b):
     :
         Greatest common divisor of :math:`a` and :math:`b`.
     :
-        The multiplicand :math:`s` of :math:`a`, such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
+        The multiplicand :math:`s` of :math:`a`.
     :
-        The multiplicand :math:`t` of :math:`b`, such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
+        The multiplicand :math:`t` of :math:`b`.
 
     See Also
     --------

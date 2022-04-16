@@ -161,7 +161,7 @@ class GF2Meta(FieldArrayClass, DirMeta):
 @set_module("galois")
 class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, compile="jit-calculate"):
     r"""
-    A :ref:`Galois field array` over :math:`\mathrm{GF}(2)`.
+    A :obj:`numpy.ndarray` subclass over :math:`\mathrm{GF}(2)`.
 
     Important
     ---------

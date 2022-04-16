@@ -108,49 +108,14 @@ def test_mod():
         GF.Random(3, low=1) % poly
 
 
-def test_equal_with_scalar(field):
-    # NOTE: GF(11) is not included in the `field` pytest fixture
-    scalar = 0
-    p = galois.Poly([scalar], field=field)
-    assert p == scalar
-    assert p == field(scalar)
-    assert p == galois.Poly([scalar], field=field)
-    assert p != galois.Poly([scalar], field=galois.GF(11))
-    assert scalar == p
-    assert field(scalar) == p
-    assert galois.Poly([scalar], field=field) == p
-    assert galois.Poly([scalar], field=galois.GF(11)) != p
-
-    scalar = 1
-    p = galois.Poly([scalar], field=field)
-    assert p == scalar
-    assert p == field(scalar)
-    assert p == galois.Poly([scalar], field=field)
-    assert p != galois.Poly([scalar], field=galois.GF(11))
-    assert scalar == p
-    assert field(scalar) == p
-    assert galois.Poly([scalar], field=field) == p
-    assert galois.Poly([scalar], field=galois.GF(11)) != p
-
-    scalar = random.randint(1, field.order - 1)
-    p = galois.Poly([scalar], field=field)
-    assert p == scalar
-    assert p == field(scalar)
-    assert p == galois.Poly([scalar], field=field)
-    assert scalar == p
-    assert field(scalar) == p
-    assert galois.Poly([scalar], field=field) == p
-
-
-def test_equal_with_vector(field):
-    # NOTE: GF(11) is not included in the `field` pytest fixture
-    c = field.Random(6)
-    c[0] = field.Random(low=1)  # Ensure leading coefficient is non-zero
-    with pytest.raises(ValueError):
-        # Comparing polynomials against FieldArrays (non-scalars) isn't supported
-        galois.Poly(c) == c
-
-    c = field.Ones(6)
-    with pytest.raises(ValueError):
-        # Comparing polynomials against FieldArrays (non-scalars) isn't supported
-        galois.Poly(c) == c
+def test_equal_with_poly_like():
+    GF = galois.GF(7)
+    f = galois.Poly([3, 0, 2, 5], field=GF)
+    assert f == galois.Poly([3, 0, 2, 5], field=GF)
+    assert f != galois.Poly([3, 0, 2, 5], field=galois.GF(11))
+    assert f == GF([3, 0, 2, 5])
+    assert f != galois.GF(11)([3, 0, 2, 5])
+    assert f == [3, 0, 2, 5]
+    assert f == "3x^3 + 2x + 5"
+    assert f == "3x**3+2x+5"
+    assert f == 1048

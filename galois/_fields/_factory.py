@@ -1,15 +1,16 @@
 """
 A module to implement the Galois field class factory `GF()`.
 """
-import types
-from typing import Sequence, Optional, Union, Type
-from typing_extensions import Literal
+from __future__ import annotations
 
-import numpy as np
+import types
+from typing import Optional, Type
+from typing_extensions import Literal
 
 from .._modular import primitive_root, is_primitive_root
 from .._overrides import set_module
 from .._polys import Poly, conway_poly, primitive_element, is_irreducible, is_primitive_element
+from .._polys._poly import PolyLike
 from .._prime import factors
 
 from ._array import FieldArray
@@ -19,8 +20,6 @@ from ._gf2m import GF2mMeta
 from ._gfpm import GFpmMeta
 
 __all__ = ["GF", "Field"]
-
-PolyLike = Union[int, str, Sequence[int], np.ndarray, FieldArray, Poly]
 
 
 @set_module("galois")
@@ -42,42 +41,20 @@ def GF(
     ----------
     order
         The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
-
     irreducible_poly
         Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that will
-        define the Galois field arithmetic.
-
-        * :obj:`None` (default): Uses the Conway polynomial :math:`C_{p,m}`. See :func:`galois.conway_poly`.
-        * :obj:`int`: The integer representation of the irreducible polynomial.
-        * :obj:`str`: The irreducible polynomial expressed as a string, e.g. `"x^2 + 1"`.
-        * :obj:`tuple`, :obj:`list`, :obj:`numpy.ndarray`: The irreducible polynomial coefficients in degree-descending order.
-        * :obj:`galois.Poly`: The irreducible polynomial as a polynomial object.
-
+        define the Galois field arithmetic. The default is `None` which uses the Conway polynomial :math:`C_{p,m}`.
+        See :func:`galois.conway_poly`.
     primitive_element
         Optionally specify a primitive element of the field. This value is used when building the exponential and logarithm
         lookup tables and when computing :obj:`numpy.log`. A primitive element is a generator of the multiplicative group of the
         field.
 
-        .. tab-set::
+        For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`.
+        The default is `None` which uses :func:`galois.primitive_root`.
 
-            .. tab-item:: Prime fields
-
-                For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`.
-
-                * :obj:`None` (default): Uses the minimal primitive root modulo :math:`p`. See :func:`galois.primitive_root`.
-                * :obj:`int`: A primitive root modulo :math:`p`.
-
-            .. tab-item:: Extension fields
-
-                For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over
-                :math:`\mathrm{GF}(p)`.
-
-                * :obj:`None` (default): Uses the lexicographically-minimal primitive element. See :func:`galois.primitive_element`.
-                * :obj:`int`: The integer representation of the primitive element.
-                * :obj:`str`: The primitive element expressed as a string, e.g. `"x + 1"`.
-                * :obj:`tuple`, :obj:`list`, :obj:`numpy.ndarray`: The primitive element's polynomial coefficients in degree-descending order.
-                * :obj:`galois.Poly`: The primitive element as a polynomial object.
-
+        For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over
+        :math:`\mathrm{GF}(p)`. The default is `None` which uses :func:`galois.primitive_element`.
     verify
         Indicates whether to verify that the user-specified irreducible polynomial is in fact irreducible and that the user-specified
         primitive element is in fact a generator of the multiplicative group. The default is `True`.
@@ -86,32 +63,31 @@ def GF(
         this argument may be set to `False`.
 
         The default irreducible polynomial and primitive element are never verified because they are known to be irreducible and
-        a multiplicative generator.
-
+        a multiplicative generator, respectively.
     compile
         The ufunc calculation mode. This can be modified after class construction with the :func:`galois.FieldArrayClass.compile` method.
         See :ref:`Compilation Modes` for a further discussion.
 
-        * `None` (default): For newly-created classes, `None` corresponds to `"auto"`. For *Galois field array classes* of this type that were
+        - `None` (default): For newly-created classes, `None` corresponds to `"auto"`. For *Galois field array classes* of this type that were
           previously created, `None` does not modify the current ufunc compilation mode.
-        * `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
+        - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
           for fields whose elements cannot be represented with :obj:`numpy.int64`.
-        * `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
+        - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
           In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
-        * `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
+        - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
           fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower than `"jit-lookup"`.
-        * `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
+        - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
           represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
 
     display
         The field element display representation. This can be modified after class construction with the :func:`galois.FieldArrayClass.display` method.
         See :ref:`Field Element Representation` for a further discussion.
 
-        * `None` (default): For newly-created classes, `None` corresponds to `"int"`. For *Galois field array classes*
+        - `None` (default): For newly-created classes, `None` corresponds to `"int"`. For *Galois field array classes*
           of this type that were previously created, `None` does not modify the current display mode.
-        * `"int"`: Sets the display mode to the :ref:`integer representation <Integer representation>`.
-        * `"poly"`: Sets the display mode to the :ref:`polynomial representation <Polynomial representation>`.
-        * `"power"`: Sets the display mode to the :ref:`power representation <Power representation>`.
+        - `"int"`: Sets the display mode to the :ref:`integer representation <Integer representation>`.
+        - `"poly"`: Sets the display mode to the :ref:`polynomial representation <Polynomial representation>`.
+        - `"power"`: Sets the display mode to the :ref:`power representation <Power representation>`.
 
     Returns
     -------
