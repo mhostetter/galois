@@ -50,7 +50,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.autosectionlabel",
     "sphinx_immaterial",
-    "recommonmark",
+    "myst_parser",
     "sphinx_design",
     "sphinxcontrib.details.directive",
     "IPython.sphinxext.ipython_console_highlighting",
