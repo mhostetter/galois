@@ -25,9 +25,8 @@ Abstract base classes
    :toctree:
 
    FieldArray
-   FieldArrayClass
 
-Pre-made Galois field array classes
+Pre-made `FieldArray` subclasses
 ...................................
 
 .. autosummary::

@@ -1,5 +1,5 @@
 """
-A pytest module to test methods of Galois field array classes.
+A pytest module to test methods of FieldArray subclasses.
 """
 import pytest
 import numpy as np

@@ -56,7 +56,7 @@
    .. rubric:: {{ _('Attributes') }}
    .. autosummary::
    {% for item in attributes %}
-      {{ item }}
+      ~{{ objname }}.{{ item }}
    {%- endfor %}
    {% endif %}
    {% endblock %}

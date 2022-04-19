@@ -3,7 +3,7 @@ A module that contains linear algebra routines over Galois fields.
 """
 import numpy as np
 
-from .._array import DTYPES
+from .._domains._array import DTYPES
 
 
 def _lapack_linalg(a, b, function, out=None, n_sum=None):
@@ -288,7 +288,7 @@ def det(A):
 
 def solve(A, b):
     if not type(A) is type(b):
-        raise TypeError(f"Arguments `A` and `b` must be of the same Galois field array class, not {type(A)} and {type(b)}.")
+        raise TypeError(f"Arguments `A` and `b` must be of the same FieldArray subclass, not {type(A)} and {type(b)}.")
     if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
         raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
     if not b.ndim in [1, 2]:

@@ -22,8 +22,6 @@ def integer_to_poly(integer: int, order: int, degree: Optional[int] = None) -> L
     """
     Converts the integer representation of the polynomial to its coefficients in descending order.
     """
-    integer = int(integer)
-
     if order == 2:
         c = [int(bit) for bit in bin(integer)[2:]]
     else:

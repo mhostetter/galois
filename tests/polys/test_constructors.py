@@ -20,7 +20,7 @@ FIELDS = [
 
 def test_zero_exceptions():
     with pytest.raises(TypeError):
-        galois.Poly.Zero(field=galois.FieldArrayClass)
+        galois.Poly.Zero(field=type(galois.Array))
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -39,7 +39,7 @@ def test_zero(field):
 
 def test_one_exceptions():
     with pytest.raises(TypeError):
-        galois.Poly.One(field=galois.FieldArrayClass)
+        galois.Poly.One(field=type(galois.Array))
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -58,7 +58,7 @@ def test_one(field):
 
 def test_identity_exceptions():
     with pytest.raises(TypeError):
-        galois.Poly.Identity(field=galois.FieldArrayClass)
+        galois.Poly.Identity(field=type(galois.Array))
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -79,7 +79,7 @@ def test_random_exceptions():
     with pytest.raises(TypeError):
         galois.Poly.Random(2.0)
     with pytest.raises(TypeError):
-        galois.Poly.Random(2, field=galois.FieldArrayClass)
+        galois.Poly.Random(2, field=type(galois.Array))
     with pytest.raises(ValueError):
         galois.Poly.Random(-1)
     with pytest.raises(ValueError):
@@ -101,7 +101,7 @@ def test_integer_exceptions():
     with pytest.raises(TypeError):
         galois.Poly.Int(5.0)
     with pytest.raises(TypeError):
-        galois.Poly.Int(5, field=galois.FieldArrayClass)
+        galois.Poly.Int(5, field=type(galois.Array))
     with pytest.raises(ValueError):
         galois.Poly.Int(-1)
 
@@ -124,7 +124,7 @@ def test_string_exceptions():
     with pytest.raises(TypeError):
         galois.Poly.Str(b"x + 5")
     with pytest.raises(TypeError):
-        galois.Poly.Str("x + 5", field=galois.FieldArrayClass)
+        galois.Poly.Str("x + 5", field=type(galois.Array))
 
 
 @pytest.mark.parametrize("field", FIELDS)
@@ -176,7 +176,7 @@ def test_degrees_exceptions():
     with pytest.raises(TypeError):
         galois.Poly.Degrees(degrees, coeffs="invalid-type", field=GF)
     with pytest.raises(TypeError):
-        galois.Poly.Degrees(degrees, coeffs=coeffs, field=galois.FieldArrayClass)
+        galois.Poly.Degrees(degrees, coeffs=coeffs, field=type(galois.Array))
 
     with pytest.raises(ValueError):
         galois.Poly.Degrees(np.atleast_2d(degrees), coeffs=coeffs, field=GF)

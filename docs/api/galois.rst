@@ -30,9 +30,7 @@ Abstract base classes
    :toctree:
 
    Array
-   ArrayClass
    FieldArray
-   FieldArrayClass
 
 Classes
 -------

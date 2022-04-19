@@ -1,5 +1,5 @@
 """
-A pytest module to test Galois field array view casting.
+A pytest module to test FieldArray view casting.
 """
 import numpy as np
 import pytest

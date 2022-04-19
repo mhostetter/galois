@@ -1,730 +1,43 @@
 """
-A module that contains the main classes for Galois fields -- FieldArrayClass, FieldArray,
-and Poly. They're all in one file because they have circular dependencies. The specific GF2
-FieldArrayClass is also included.
+A module that defines the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-import contextlib
-import inspect
-import random
-from typing import Tuple, List, Iterable, Optional, Union
+from typing import Tuple, List, Optional, Union, Type
 from typing_extensions import Literal
 
 import numpy as np
 
-from .._array import ArrayClass, Array, ElementLike, ArrayLike, ShapeLike, DTypeLike
+from .._domains import Array
+from .._domains._array import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 from .._modular import totatives
-from .._overrides import set_module
+from .._overrides import set_module, extend_docstring, classproperty, SPHINX_BUILD
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
 from .._prime import divisors
 
-from ._linalg import dot, row_reduce, lu_decompose, plu_decompose, row_space, column_space, left_null_space, null_space
-from ._functions import FunctionMeta
-from ._ufuncs import UfuncMeta
+from . import _linalg
+from ._functions import FieldFunction
+from ._meta import FieldMeta
+from ._ufuncs import FieldUfunc
 
-__all__ = ["FieldArrayClass", "FieldArray"]
+__all__ = ["FieldArray"]
 
 
-###############################################################################
-# NumPy ndarray subclass for Galois fields
-###############################################################################
-
-@set_module("galois")
-class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
+class FieldArrayMeta(FieldMeta):
     """
-    Defines a metaclass for all :obj:`~galois.FieldArray` classes.
-
-    Important
-    ---------
-    :obj:`~galois.FieldArrayClass` is a metaclass for :obj:`~galois.FieldArray` subclasses created with the class factory
-    :func:`~galois.GF` and should not be instantiated directly. This metaclass gives :obj:`~galois.FieldArray` subclasses
-    methods and attributes related to their Galois fields.
-
-    This class is included in the API to allow the user to test if a class is a Galois field array class.
-
-    .. ipython:: python
-
-        GF = galois.GF(7)
-        isinstance(GF, galois.FieldArrayClass)
+    A metaclass that provides documented class properties for `FieldArray` subclasses.
     """
-    # pylint: disable=no-value-for-parameter,unsupported-membership-test,abstract-method,too-many-public-methods
+    # pylint: disable=no-value-for-parameter
 
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
         return super().__new__(cls, name, bases, namespace)
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._characteristic = kwargs.get("characteristic", 0)
-        cls._degree = kwargs.get("degree", 0)
-        cls._order = kwargs.get("order", 0)
-        cls._ufunc_mode = None
-        cls._dtypes = cls._determine_dtypes()
 
-        if "irreducible_poly" in kwargs:
-            cls._irreducible_poly = kwargs["irreducible_poly"]
-            cls._irreducible_poly_int = int(cls._irreducible_poly)
-        else:
-            cls._irreducible_poly = None
-            cls._irreducible_poly_int = 0
-        cls._primitive_element = kwargs.get("primitive_element", None)
-
-        cls._is_primitive_poly = kwargs.get("is_primitive_poly", None)
-        cls._prime_subfield = None
-
-        cls._display_mode = "int"
-
-        if cls.degree == 1:
-            cls._name = f"GF({cls._characteristic})"
-            cls._order_str = f"order={cls.order}"
-        else:
-            cls._name = f"GF({cls._characteristic}^{cls._degree})"
-            cls._order_str = f"order={cls.characteristic}^{cls.degree}"
-
-        cls._element_fixed_width = None
-        cls._element_fixed_width_counter = 0
-
-        # By default, verify array elements are within the valid range when `.view()` casting
-        cls._verify_on_view = True
-
-    def __repr__(cls) -> str:
-        """
-        A terse string representation of the finite field class.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(2); GF
-            GF = galois.GF(2**8); GF
-            GF = galois.GF(31); GF
-            GF = galois.GF(7**5); GF
-        """
-        return super().__repr__()
-
-    def __str__(cls) -> str:
-        """
-        A formatted string displaying relevant properties of the finite field.
-
-        Examples
-        --------
-        .. ipython:: python
-
-            GF = galois.GF(2); print(GF)
-            GF = galois.GF(2**8); print(GF)
-            GF = galois.GF(31); print(GF)
-            GF = galois.GF(7**5); print(GF)
-        """
-        if cls.prime_subfield is None:
-            return repr(cls)
-
-        with cls.prime_subfield.display("int"):
-            irreducible_poly_str = str(cls.irreducible_poly)
-
-        string = "Galois Field:"
-        string += f"\n  name: {cls.name}"
-        string += f"\n  characteristic: {cls.characteristic}"
-        string += f"\n  degree: {cls.degree}"
-        string += f"\n  order: {cls.order}"
-        string += f"\n  irreducible_poly: {irreducible_poly_str}"
-        string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
-        string += f"\n  primitive_element: {poly_to_str(integer_to_poly(cls.primitive_element, cls.characteristic))}"
-
-        return string
-
-    ###############################################################################
-    # Class methods
-    ###############################################################################
-
-    def compile(cls, mode: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]):
-        """
-        Recompile the just-in-time compiled ufuncs for a new calculation mode.
-
-        This function updates :obj:`ufunc_mode`.
-
-        Parameters
-        ----------
-        mode
-            The ufunc calculation mode.
-
-            - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
-              for fields whose elements cannot be represented with :obj:`numpy.int64`.
-            - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
-              In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
-            - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
-              fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower than `"jit-lookup"`.
-            - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
-              represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
-        """
-        if not isinstance(mode, str):
-            raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
-        if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
-            raise ValueError(f"Argument `mode` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode!r}.")
-        mode = cls.default_ufunc_mode if mode == "auto" else mode
-        if mode not in cls.ufunc_modes:
-            raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls.name}, not {mode!r}.")
-
-        if mode == cls.ufunc_mode:
-            # Don't need to rebuild these ufuncs
-            return
-
-        cls._ufunc_mode = mode
-        cls._compile_ufuncs()
-
-    def display(
-        cls,
-        mode: Literal["int", "poly", "power"] = "int"
-    ) -> contextlib.AbstractContextManager:
-        r"""
-        Sets the display mode for all *Galois field arrays* from this field.
-
-        The display mode can be set to either the integer representation, polynomial representation, or power
-        representation. See :ref:`Field Element Representation` for a further discussion.
-
-        This function updates :obj:`display_mode`.
-
-        Warning
-        -------
-        For the power representation, :func:`numpy.log` is computed on each element. So for large fields without lookup
-        tables, displaying arrays in the power representation may take longer than expected.
-
-        Parameters
-        ----------
-        mode
-            The field element representation.
-
-            - `"int"`: Sets the display mode to the :ref:`integer representation <Integer representation>`.
-            - `"poly"`: Sets the display mode to the :ref:`polynomial representation <Polynomial representation>`.
-            - `"power"`: Sets the display mode to the :ref:`power representation <Power representation>`.
-
-        Returns
-        -------
-        :
-            A context manager for use in a `with` statement. If permanently setting the display mode, disregard the
-            return value.
-
-        Examples
-        --------
-        The default display mode is the integer representation.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**2)
-            x = GF.Elements(); x
-
-        Permanently set the display mode by calling :func:`display`.
-
-        .. tab-set::
-
-            .. tab-item:: Polynomial
-
-                .. ipython:: python
-
-                    GF.display("poly");
-                    x
-
-            .. tab-item:: Power
-
-                .. ipython:: python
-
-                    GF.display("power");
-                    x
-                    @suppress
-                    GF.display()
-
-        Temporarily modify the display mode by using :func:`display` as a context manager.
-
-        .. tab-set::
-
-            .. tab-item:: Polynomial
-
-                .. ipython:: python
-
-                    print(x)
-                    with GF.display("poly"):
-                        print(x)
-                    # Outside the context manager, the display mode reverts to its previous value
-                    print(x)
-
-            .. tab-item:: Power
-
-                .. ipython:: python
-
-                    print(x)
-                    with GF.display("power"):
-                        print(x)
-                    # Outside the context manager, the display mode reverts to its previous value
-                    print(x)
-                    @suppress
-                    GF.display()
-        """
-        if not isinstance(mode, (type(None), str)):
-            raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
-        if mode not in ["int", "poly", "power"]:
-            raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode!r}.")
-
-        prev_mode = cls._display_mode
-        cls._display_mode = mode
-
-        @set_module("galois")
-        class context(contextlib.AbstractContextManager):
-            """Simple display_mode context manager."""
-            def __init__(self, mode):
-                self.mode = mode
-
-            def __enter__(self):
-                # Don't need to do anything, we already set the new mode in the display() method
-                pass
-
-            def __exit__(self, exc_type, exc_value, traceback):
-                cls._display_mode = self.mode
-
-        return context(prev_mode)
-
-    def repr_table(
-        cls,
-        element: Optional[ElementLike] = None,
-        sort: Literal["power", "poly", "vector", "int"] = "power"
-    ) -> str:
-        r"""
-        Generates a finite field element representation table comparing the power, polynomial, vector, and integer representations.
-
-        Parameters
-        ----------
-        element
-            The primitive element to use for the power representation. The default is `None` which uses the field's
-            default primitive element, :obj:`FieldArrayClass.primitive_element`.
-        sort
-            The sorting method for the table. The default is `"power"`. Sorting by `"power"` will order the rows of the table by ascending
-            powers of `element`. Sorting by any of the others will order the rows in lexicographically-increasing polynomial/vector
-            order, which is equivalent to ascending order of the integer representation.
-
-        Returns
-        -------
-        :
-            A UTF-8 formatted table comparing the power, polynomial, vector, and integer representations of each
-            field element.
-
-        Examples
-        --------
-        Create a *Galois field array class* for :math:`\mathrm{GF}(2^4)`.
-
-        .. ipython:: python
-
-            GF = galois.GF(2**4)
-            print(GF)
-
-        .. tab-set::
-
-            .. tab-item:: Default
-
-                Generate a representation table for :math:`\mathrm{GF}(2^4)`. Since :math:`x^4 + x + 1` is a primitive polynomial,
-                :math:`x` is a primitive element of the field. Notice, :math:`\textrm{ord}(x) = 15`.
-
-                .. ipython:: python
-
-                    print(GF.repr_table())
-
-            .. tab-item:: Primitive element
-
-                Generate a representation table for :math:`\mathrm{GF}(2^4)` using a different primitive element :math:`x^3 + x^2 + x`.
-                Notice, :math:`\textrm{ord}(x^3 + x^2 + x) = 15`.
-
-                .. ipython:: python
-
-                    print(GF.repr_table("x^3 + x^2 + x"))
-
-            .. tab-item:: Non-primitive element
-
-                Generate a representation table for :math:`\mathrm{GF}(2^4)` using a non-primitive element :math:`x^3 + x^2`. Notice,
-                :math:`\textrm{ord}(x^3 + x^2) = 5 \ne 15`.
-
-                .. ipython:: python
-
-                    print(GF.repr_table("x^3 + x^2"))
-        """
-        if sort not in ["power", "poly", "vector", "int"]:
-            raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
-        if element is None:
-            element = cls.primitive_element
-
-        element = cls(element)
-        degrees = np.arange(0, cls.order - 1)
-        x = element**degrees
-        if sort != "power":
-            idxs = np.argsort(x)
-            degrees, x = degrees[idxs], x[idxs]
-        x = np.concatenate((np.atleast_1d(cls(0)), x))  # Add 0 = alpha**-Inf
-        prim = poly_to_str(integer_to_poly(element, cls.characteristic))
-
-        # Define print helper functions
-        if len(prim) > 1:
-            print_power = lambda power: "0" if power is None else f"({prim})^{power}"
-        else:
-            print_power = lambda power: "0" if power is None else f"{prim}^{power}"
-        print_poly = lambda x: poly_to_str(integer_to_poly(x, cls.characteristic))
-        print_vec = lambda x: str(integer_to_poly(x, cls.characteristic, degree=cls.degree-1))
-        print_int = lambda x: str(int(x))
-
-        # Determine column widths
-        N_power = max([len(print_power(max(degrees))), len("Power")]) + 2
-        N_poly = max([len(print_poly(e)) for e in x] + [len("Polynomial")]) + 2
-        N_vec = max([len(print_vec(e)) for e in x] + [len("Vector")]) + 2
-        N_int = max([len(print_int(e)) for e in x] + [len("Integer")]) + 2
-
-        string = "+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
-        string += "\n|" + "Power".center(N_power) + "|" + "Polynomial".center(N_poly) + "|" + "Vector".center(N_vec) + "|" + "Integer".center(N_int) + "|"
-        string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
-
-        for i in range(x.size):
-            d = None if i == 0 else degrees[i - 1]
-            string += "\n|" + print_power(d).center(N_power) + "|" + poly_to_str(integer_to_poly(x[i], cls.characteristic)).center(N_poly) + "|" + str(integer_to_poly(x[i], cls.characteristic, degree=cls.degree-1)).center(N_vec) + "|" + cls._print_int(x[i]).center(N_int) + "|"
-
-            if i < x.size - 1:
-                string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
-
-        string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+"+ "-"*N_vec + "+" + "-"*N_int + "+"
-
-        return string
-
-    def arithmetic_table(
-        cls,
-        operation: Literal["+", "-", "*", "/"],
-        x: Optional[FieldArray] = None,
-        y: Optional[FieldArray] = None
-    ) -> str:
-        r"""
-        Generates the specified arithmetic table for the finite field.
-
-        Parameters
-        ----------
-        operation
-            The arithmetic operation.
-        x
-            Optionally specify the :math:`x` values for the arithmetic table. The default is `None`
-            which represents :math:`\{0, \dots, p^m - 1\}`.
-        y
-            Optionally specify the :math:`y` values for the arithmetic table. The default is `None`
-            which represents :math:`\{0, \dots, p^m - 1\}` for addition, subtraction, and multiplication and
-            :math:`\{1, \dots, p^m - 1\}` for division.
-
-        Returns
-        -------
-        :
-            A UTF-8 formatted arithmetic table.
-
-        Examples
-        --------
-        Arithmetic tables can be displayed using the :ref:`integer representation <Integer representation>`.
-
-        .. tab-set::
-
-            .. tab-item:: Integer
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2)
-                    print(GF.arithmetic_table("+"))
-
-            .. tab-item:: Polynomial
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="poly")
-                    print(GF.arithmetic_table("+"))
-
-            .. tab-item:: Power
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="power")
-                    print(GF.arithmetic_table("+"))
-
-        An arithmetic table may also be constructed from arbitrary :math:`x` and :math:`y`.
-
-        .. tab-set::
-
-            .. tab-item:: Integer
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2)
-                    x = GF([7, 2, 8]); x
-                    y = GF([1, 4]); y
-                    print(GF.arithmetic_table("+", x=x, y=y))
-
-            .. tab-item:: Polynomial
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="poly")
-                    x = GF([7, 2, 8]); x
-                    y = GF([1, 4]); y
-                    print(GF.arithmetic_table("+", x=x, y=y))
-
-            .. tab-item:: Power
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="power")
-                    x = GF([7, 2, 8]); x
-                    y = GF([1, 4]); y
-                    print(GF.arithmetic_table("+", x=x, y=y))
-                    @suppress
-                    GF.display()
-        """
-        if not operation in ["+", "-", "*", "/"]:
-            raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation!r}.")
-
-        if cls.display_mode == "power":
-            # Order elements by powers of the primitive element
-            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1, dtype=cls.dtypes[-1])))
-        else:
-            x_default = cls.Elements()
-        y_default = x_default if operation != "/" else x_default[1:]
-
-        x = x_default if x is None else cls(x)
-        y = y_default if y is None else cls(y)
-        X, Y = np.meshgrid(x, y, indexing="ij")
-
-        if operation == "+":
-            Z = X + Y
-        elif operation == "-":
-            Z = X - Y
-        elif operation == "*":
-            Z = X * Y
-        else:
-            Z = X / Y
-
-        if cls.display_mode == "int":
-            print_element = cls._print_int
-        elif cls.display_mode == "poly":
-            print_element = cls._print_poly
-        else:
-            print_element = cls._print_power
-
-        operation_str = f"x {operation} y"
-
-        N = max([len(print_element(e)) for e in x]) + 2
-        N_left = max(N, len(operation_str) + 2)
-
-        string = "+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
-        string += "\n|" + operation_str.rjust(N_left - 1) + " |"
-        for j in range(y.size):
-            string += print_element(y[j]).rjust(N - 1) + " "
-            string += "|" if j < y.size - 1 else "|"
-        string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
-
-        for i in range(x.size):
-            string += "\n|" + print_element(x[i]).rjust(N_left - 1) + " |"
-            for j in range(y.size):
-                string += print_element(Z[i,j]).rjust(N - 1) + " "
-                string += "|" if j < y.size - 1 else "|"
-
-            if i < x.size - 1:
-                string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
-
-        string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
-
-        return string
-
-    def primitive_root_of_unity(cls, n: int) -> FieldArray:
-        r"""
-        Finds a primitive :math:`n`-th root of unity in the finite field.
-
-        Parameters
-        ----------
-        n
-            The root of unity.
-
-        Returns
-        -------
-        :
-            The primitive :math:`n`-th root of unity, a 0-D scalar array.
-
-        Raises
-        ------
-        ValueError
-            If no primitive :math:`n`-th roots of unity exist. This happens when :math:`n` is not a
-            divisor of :math:`p^m - 1`.
-
-        Notes
-        -----
-        A primitive :math:`n`-th root of unity :math:`\omega_n` is such that :math:`\omega_n^n = 1` and :math:`\omega_n^k \ne 1`
-        for all :math:`1 \le k \lt n`.
-
-        In :math:`\mathrm{GF}(p^m)`, a primitive :math:`n`-th root of unity exists when :math:`n` divides :math:`p^m - 1`.
-        Then, the primitive root is :math:`\omega_n = \alpha^{(p^m - 1)/n}` where :math:`\alpha` is a primitive
-        element of the field.
-
-        Examples
-        --------
-        In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of :math:`30`.
-
-        .. ipython:: python
-
-            GF = galois.GF(31)
-            GF.primitive_root_of_unity(2)
-            GF.primitive_root_of_unity(5)
-            GF.primitive_root_of_unity(15)
-
-        However, they do not exist for :math:`n` that do not divide :math:`30`.
-
-        .. ipython:: python
-            :okexcept:
-
-            GF.primitive_root_of_unity(7)
-
-        For :math:`\omega_5`, one can see that :math:`\omega_5^5 = 1` and :math:`\omega_5^k \ne 1` for :math:`1 \le k \lt 5`.
-
-        .. ipython:: python
-
-            root = GF.primitive_root_of_unity(5); root
-            np.power.outer(root, np.arange(1, 5 + 1))
-        """
-        if not isinstance(n, (int, np.ndarray)):
-            raise TypeError(f"Argument `n` must be an int, not {type(n)!r}.")
-        if not 1 <= n < cls.order:
-            raise ValueError(f"Argument `n` must be in [1, {cls.order}), not {n}.")
-        if not (cls.order - 1) % n == 0:
-            raise ValueError(f"There are no primitive {n}-th roots of unity in {cls.name}.")
-
-        return cls.primitive_element ** ((cls.order - 1) // n)
-
-    def primitive_roots_of_unity(cls, n: int) -> FieldArray:
-        r"""
-        Finds all primitive :math:`n`-th roots of unity in the finite field.
-
-        Parameters
-        ----------
-        n
-            The root of unity.
-
-        Returns
-        -------
-        :
-            All primitive :math:`n`-th roots of unity, a 1-D array. The roots are sorted in lexicographically-increasing
-            order.
-
-        Raises
-        ------
-        ValueError
-            If no primitive :math:`n`-th roots of unity exist. This happens when :math:`n` is not a
-            divisor of :math:`p^m - 1`.
-
-        Notes
-        -----
-        A primitive :math:`n`-th root of unity :math:`\omega_n` is such that :math:`\omega_n^n = 1` and :math:`\omega_n^k \ne 1`
-        for all :math:`1 \le k \lt n`.
-
-        In :math:`\mathrm{GF}(p^m)`, a primitive :math:`n`-th root of unity exists when :math:`n` divides :math:`p^m - 1`.
-        Then, the primitive root is :math:`\omega_n = \alpha^{(p^m - 1)/n}` where :math:`\alpha` is a primitive
-        element of the field.
-
-        Examples
-        --------
-        In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of :math:`30`.
-
-        .. ipython:: python
-
-            GF = galois.GF(31)
-            GF.primitive_roots_of_unity(2)
-            GF.primitive_roots_of_unity(5)
-            GF.primitive_roots_of_unity(15)
-
-        However, they do not exist for :math:`n` that do not divide :math:`30`.
-
-        .. ipython:: python
-            :okexcept:
-
-            GF.primitive_roots_of_unity(7)
-
-        For :math:`\omega_5`, one can see that :math:`\omega_5^5 = 1` and :math:`\omega_5^k \ne 1` for :math:`1 \le k \lt 5`.
-
-        .. ipython:: python
-
-            root = GF.primitive_roots_of_unity(5); root
-            np.power.outer(root, np.arange(1, 5 + 1))
-        """
-        if not isinstance(n, (int, np.ndarray)):
-            raise TypeError(f"Argument `n` must be an int, not {type(n)!r}.")
-        if not (cls.order - 1) % n == 0:
-            raise ValueError(f"There are no primitive {n}-th roots of unity in {cls.name}.")
-
-        roots = np.unique(cls.primitive_elements ** ((cls.order - 1) // n))
-        roots = np.sort(roots)
-
-        return roots
-
-    ###############################################################################
-    # Array display methods
-    ###############################################################################
-
-    def _formatter(cls, array):
-        """
-        Returns a NumPy printoptions "formatter" dictionary.
-        """
-        formatter = {}
-
-        if cls.display_mode == "poly" and cls.is_extension_field:
-            # The "poly" display mode for prime field's is the same as the integer representation
-            formatter["int"] = cls._print_poly
-            formatter["object"] = cls._print_poly
-        elif cls.display_mode == "power":
-            formatter["int"] = cls._print_power
-            formatter["object"] = cls._print_power
-        elif array.dtype == np.object_:
-            formatter["object"] = cls._print_int
-
-        return formatter
-
-    def _print_int(cls, element):  # pylint: disable=no-self-use
-        """
-        Prints a single element in the integer representation. This is only needed for dtype=object arrays.
-        """
-        s = f"{int(element)}"
-
-        if cls._element_fixed_width:
-            s = s.rjust(cls._element_fixed_width)
-        else:
-            cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
-
-        return s
-
-    def _print_poly(cls, element):
-        """
-        Prints a single element in the polynomial representation.
-        """
-        poly = integer_to_poly(element, cls.characteristic)
-        poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
-        s = poly_to_str(poly, poly_var=poly_var)
-
-        if cls._element_fixed_width:
-            s = s.rjust(cls._element_fixed_width)
-        else:
-            cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
-
-        return s
-
-    def _print_power(cls, element):
-        """
-        Prints a single element in the power representation.
-        """
-        if element in [0, 1]:
-            s = f"{int(element)}"
-        elif element == cls.primitive_element:
-            s = "α"
-        else:
-            power = cls._ufunc("log")(element, cls.primitive_element)
-            s = f"α^{power}"
-
-        if cls._element_fixed_width:
-            s = s.rjust(cls._element_fixed_width)
-        else:
-            cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
-
-        return s
+    def __init_subclass__(cls, **kwargs):
+        print("I am here", kwargs)
 
     ###############################################################################
     # Class attributes
@@ -816,11 +129,8 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
     @property
     def is_primitive_poly(cls) -> bool:
         r"""
-        Indicates whether the :obj:`FieldArrayClass.irreducible_poly` is a primitive polynomial. If so, :math:`x` is a primitive element
-        of the finite field.
-
-        The default irreducible polynomial is a Conway polynomial, see :func:`~galois.conway_poly`, which is a primitive
-        polynomial. However, finite fields may be constructed from non-primitive, irreducible polynomials.
+        Indicates whether the :obj:`~galois.FieldArray.irreducible_poly` is a primitive polynomial. If so, :math:`x` is a
+        primitive element of the finite field.
 
         Examples
         --------
@@ -829,7 +139,6 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         .. ipython:: python
 
             GF = galois.GF(2**8)
-            print(GF)
             GF.is_primitive_poly
 
         The :math:`\mathrm{GF}(2^8)` field from AES uses a non-primitive polynomial.
@@ -837,7 +146,6 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         .. ipython:: python
 
             GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
-            print(GF)
             GF.is_primitive_poly
         """
         return cls._is_primitive_poly
@@ -860,8 +168,7 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
             galois.GF(31).primitive_element
             galois.GF(7**5).primitive_element
         """
-        # Ensure accesses of this property doesn't alter it
-        return cls(cls._primitive_element)  # pylint: disable=no-value-for-parameter
+        return cls(cls._primitive_element)
 
     @property
     def primitive_elements(cls) -> "FieldArray":
@@ -895,25 +202,33 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         In fields with characteristic 2, every element is a quadratic residue. In fields with characteristic greater than 2,
         exactly half of the nonzero elements are quadratic residues (and they have two unique square roots).
 
-        See also :func:`FieldArray.is_quadratic_residue`.
+        See Also
+        --------
+        is_quadratic_residue
 
         Examples
         --------
-        .. ipython:: python
+        .. tab-set::
 
-            GF = galois.GF(11)
-            x = GF.quadratic_residues; x
-            r = np.sqrt(x); r
-            r ** 2
-            (-r) ** 2
+            .. tab-item:: Characteristic 2
 
-        .. ipython:: python
+                .. ipython:: python
 
-            GF = galois.GF(2**4)
-            x = GF.quadratic_residues; x
-            r = np.sqrt(x); r
-            r ** 2
-            (-r) ** 2
+                    GF = galois.GF(2**4)
+                    x = GF.quadratic_residues; x
+                    r = np.sqrt(x); r
+                    np.array_equal(r ** 2, x)
+                    np.array_equal((-r) ** 2, x)
+
+            .. tab-item:: Characteristic > 2
+
+                .. ipython:: python
+
+                    GF = galois.GF(11)
+                    x = GF.quadratic_residues; x
+                    r = np.sqrt(x); r
+                    np.array_equal(r ** 2, x)
+                    np.array_equal((-r) ** 2, x)
         """
         x = cls.Elements()
         is_quadratic_residue = x.is_quadratic_residue()
@@ -930,19 +245,27 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         In fields with characteristic 2, no elements are quadratic non-residues. In fields with characteristic greater than 2,
         exactly half of the nonzero elements are quadratic non-residues.
 
-        See also :func:`FieldArray.is_quadratic_residue`.
+        See Also
+        --------
+        is_quadratic_residue
 
         Examples
         --------
-        .. ipython:: python
+        .. tab-set::
 
-            GF = galois.GF(11)
-            GF.quadratic_non_residues
+            .. tab-item:: Characteristic 2
 
-        .. ipython:: python
+                .. ipython:: python
 
-            GF = galois.GF(2**4)
-            GF.quadratic_non_residues
+                    GF = galois.GF(2**4)
+                    GF.quadratic_non_residues
+
+            .. tab-item:: Characteristic > 2
+
+                .. ipython:: python
+
+                    GF = galois.GF(11)
+                    GF.quadratic_non_residues
         """
         x = cls.Elements()
         is_quadratic_residue = x.is_quadratic_residue()
@@ -981,7 +304,7 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         return cls._degree > 1
 
     @property
-    def prime_subfield(cls) -> "FieldArrayClass":
+    def prime_subfield(cls) -> Type["FieldArray"]:
         r"""
         The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
 
@@ -1027,7 +350,7 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
         r"""
         The current finite field element representation. This can be changed with :func:`display`.
 
-        See :ref:`Field Element Representation` for a further discussion.
+        See :doc:`/basic-usage/element-representation` for a further discussion.
 
         Examples
         --------
@@ -1054,141 +377,166 @@ class FieldArrayClass(ArrayClass, FunctionMeta, UfuncMeta):
     @property
     def ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
         """
-        The current ufunc compilation mode. The ufuncs can be recompiled with :func:`compile`.
+        The current ufunc compilation mode for this :obj:`~galois.FieldArray` subclass. The ufuncs may be recompiled
+        with :func:`~galois.FieldArray.compile`.
 
         Examples
         --------
-        .. ipython:: python
+        .. tab-set::
 
-            galois.GF(2).ufunc_mode
-            galois.GF(2**8).ufunc_mode
-            galois.GF(31).ufunc_mode
-            galois.GF(7**5).ufunc_mode
+            .. tab-item:: Small fields
+
+                Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
+
+                .. ipython:: python
+
+                    galois.GF(65537).ufunc_mode
+                    galois.GF(2**16).ufunc_mode
+
+            .. tab-item:: Medium fields
+
+                Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
+                memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
+
+                .. ipython:: python
+
+                    galois.GF(2147483647).ufunc_mode
+                    galois.GF(2**32).ufunc_mode
+
+            .. tab-item:: Large fields
+
+                Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
+
+                .. ipython:: python
+
+                    galois.GF(36893488147419103183).ufunc_mode
+                    galois.GF(2**100).ufunc_mode
         """
         return cls._ufunc_mode
 
     @property
     def ufunc_modes(cls) -> List[str]:
         """
-        All supported ufunc compilation modes for this *Galois field array class*.
+        All supported ufunc compilation modes for this :obj:`~galois.FieldArray` subclass.
 
         Examples
         --------
-        .. ipython:: python
+        .. tab-set::
 
-            galois.GF(2).ufunc_modes
-            galois.GF(2**8).ufunc_modes
-            galois.GF(31).ufunc_modes
-            galois.GF(2**100).ufunc_modes
+            .. tab-item:: Compiled fields
+
+                Fields whose elements and arithmetic can fit within :obj:`numpy.int64` can be JIT compiled
+                to use either lookup tables or explicit calculation.
+
+                .. ipython:: python
+
+                    galois.GF(65537).ufunc_modes
+                    galois.GF(2**32).ufunc_modes
+
+            .. tab-item:: Non-compiled fields
+
+                Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` may only use pure-Python explicit
+                calculation.
+
+                .. ipython:: python
+
+                    galois.GF(36893488147419103183).ufunc_modes
+                    galois.GF(2**100).ufunc_modes
         """
-        if cls.dtypes == [np.object_]:
-            return ["python-calculate"]
-        else:
-            return ["jit-lookup", "jit-calculate"]
+        return cls._ufunc_modes
 
     @property
     def default_ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
         """
-        The default ufunc compilation mode for this *Galois field array class*.
+        The default ufunc compilation mode for this :obj:`~galois.FieldArray` subclass. The ufuncs may be recompiled
+        with :func:`~galois.FieldArray.compile`.
 
         Examples
         --------
-        .. ipython:: python
+        .. tab-set::
 
-            galois.GF(2).default_ufunc_mode
-            galois.GF(2**8).default_ufunc_mode
-            galois.GF(31).default_ufunc_mode
-            galois.GF(2**100).default_ufunc_mode
+            .. tab-item:: Small fields
+
+                Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
+
+                .. ipython:: python
+
+                    galois.GF(65537).default_ufunc_mode
+                    galois.GF(2**16).default_ufunc_mode
+
+            .. tab-item:: Medium fields
+
+                Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
+                memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
+
+                .. ipython:: python
+
+                    galois.GF(2147483647).default_ufunc_mode
+                    galois.GF(2**32).default_ufunc_mode
+
+            .. tab-item:: Large fields
+
+                Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
+
+                .. ipython:: python
+
+                    galois.GF(36893488147419103183).default_ufunc_mode
+                    galois.GF(2**100).default_ufunc_mode
         """
-        if cls.dtypes == [np.object_]:
-            return "python-calculate"
-        elif cls.order <= 2**20:
-            return "jit-lookup"
-        else:
-            return "jit-calculate"
+        return cls._default_ufunc_mode
 
-
-class DirMeta(type):
-    """
-    A mixin metaclass that overrides __dir__() so that dir() and tab-completion in ipython of `FieldArray` classes
-    (which are `FieldArrayClass` instances) include the methods and properties from the metaclass. Python does not
-    natively include metaclass properties in dir().
-
-    This is a separate class because it will be mixed in to `GF2Meta`, `GF2mMeta`, `GFpMeta`, and `GFpmMeta` separately. Otherwise, the
-    sphinx documentation of `FieldArray` gets messed up.
-
-    Since, `GF2` has this class mixed in, its docs are messed up. Because of that, we added a separate Sphinx template `class_only_init.rst`
-    to suppress all the methods except __init__() so the docs are more presentable.
-    """
-
-    def __dir__(cls):
-        if isinstance(cls, FieldArrayClass):
-            meta_dir = dir(type(cls))
-            classmethods = [attribute for attribute in super().__dir__() if attribute[0] != "_" and inspect.ismethod(getattr(cls, attribute))]
-            return sorted(meta_dir + classmethods)
-        else:
-            return super().__dir__()
-
-
-###############################################################################
-# NumPy arrays over Galois fields
-###############################################################################
 
 @set_module("galois")
-class FieldArray(Array, metaclass=FieldArrayClass):
+class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
     r"""
     A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
 
     Important
     ---------
-        :obj:`~galois.FieldArray` is an abstract base class for all :ref:`Galois field array classes <Galois field array class>` and cannot
-        be instantiated directly. Instead, :obj:`~galois.FieldArray` subclasses are created using the class factory :func:`~galois.GF`.
-
-        This class is included in the API to allow the user to test if an array is a Galois field array subclass.
-
-        .. ipython:: python
-
-            GF = galois.GF(7)
-            issubclass(GF, galois.FieldArray)
-            x = GF([1, 2, 3]); x
-            isinstance(x, galois.FieldArray)
-
-    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`~galois.FieldArrayClass` and
-    :obj:`~galois.FieldArray`.
-
-    See :ref:`Array Creation` for a detailed discussion on creating arrays (with and without copying) from array-like
-    objects, valid NumPy data types, and other :obj:`~galois.FieldArray` classmethods.
+    :obj:`~galois.FieldArray` is an abstract base class and cannot be instantiated directly. Instead, :obj:`~galois.FieldArray`
+    subclasses are created using the class factory :func:`~galois.GF`.
 
     Examples
     --------
-    Create a :ref:`Galois field array class` using the class factory :func:`~galois.GF`.
+    Create a :obj:`~galois.FieldArray` subclass over :math:`\mathrm{GF}(3^5)` using the class factory :func:`~galois.GF`.
 
     .. ipython:: python
 
         GF = galois.GF(3**5)
+        issubclass(GF, galois.FieldArray)
         print(GF)
 
-    The *Galois field array class* `GF` is a subclass of :obj:`~galois.FieldArray`, with :obj:`~galois.FieldArrayClass` as its
-    metaclass.
-
-    .. ipython:: python
-
-        isinstance(GF, galois.FieldArrayClass)
-        issubclass(GF, galois.FieldArray)
-
-    Create a :ref:`Galois field array` using `GF`'s constructor.
+    Create a :obj:`~galois.FieldArray` instance using `GF`'s constructor.
 
     .. ipython:: python
 
         x = GF([44, 236, 206, 138]); x
-
-    The *Galois field array* `x` is an instance of the *Galois field array class* `GF`.
-
-    .. ipython:: python
-
         isinstance(x, GF)
     """
-    # pylint: disable=unsupported-membership-test,not-an-iterable,too-many-public-methods
+    # pylint: disable=no-value-for-parameter,abstract-method,too-many-public-methods
+
+    if SPHINX_BUILD:
+        # Only during Sphinx builds, monkey-patch the metaclass properties into this class as "class properties". In Python 3.9 and greater,
+        # class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
+        # in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
+        characteristic = classproperty(FieldArrayMeta.characteristic)
+        default_ufunc_mode = classproperty(FieldArrayMeta.default_ufunc_mode)
+        degree = classproperty(FieldArrayMeta.degree)
+        display_mode = classproperty(FieldArrayMeta.display_mode)
+        dtypes = classproperty(FieldArrayMeta.dtypes)
+        irreducible_poly = classproperty(FieldArrayMeta.irreducible_poly)
+        is_extension_field = classproperty(FieldArrayMeta.is_extension_field)
+        is_prime_field = classproperty(FieldArrayMeta.is_prime_field)
+        is_primitive_poly = classproperty(FieldArrayMeta.is_primitive_poly)
+        name = classproperty(FieldArrayMeta.name)
+        order = classproperty(FieldArrayMeta.order)
+        prime_subfield = classproperty(FieldArrayMeta.prime_subfield)
+        primitive_element = classproperty(FieldArrayMeta.primitive_element)
+        primitive_elements = classproperty(FieldArrayMeta.primitive_elements)
+        quadratic_non_residues = classproperty(FieldArrayMeta.quadratic_non_residues)
+        quadratic_residues = classproperty(FieldArrayMeta.quadratic_residues)
+        ufunc_mode = classproperty(FieldArrayMeta.ufunc_mode)
+        ufunc_modes = classproperty(FieldArrayMeta.ufunc_modes)
 
     def __new__(
         cls,
@@ -1198,7 +546,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
     ) -> FieldArray:
-        if cls is FieldArray:
+        if not SPHINX_BUILD and cls is FieldArray:
             raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
         return super().__new__(cls, x, dtype, copy, order, ndmin)
 
@@ -1211,15 +559,15 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         ndmin: int = 0
     ):
         r"""
-        Creates a :ref:`Galois field array` over :math:`\mathrm{GF}(p^m)`.
+        Creates an array over :math:`\mathrm{GF}(p^m)`.
 
         Parameters
         ----------
         x
-            A finite field scalar or array. See :ref:`Array Creation` for a detailed discussion about creating new arrays and array-like objects.
+            A finite field scalar or array.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            data type for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
+            data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
         copy
             The `copy` keyword argument from :func:`numpy.array`. The default is `True`.
         order
@@ -1236,7 +584,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
     ###############################################################################
 
     @classmethod
-    def _verify_array_like_types_and_values(cls, x: Union[ElementLike, ArrayLike]):
+    def _verify_array_like_types_and_values(cls, x: Union[ElementLike, ArrayLike]) -> Union[ElementLike, ArrayLike]:
         """
         Verify the types of the array-like object. Also verify the values of the array are within the range [0, order).
         """
@@ -1259,10 +607,10 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             if x.dtype == np.object_:
                 x = cls._verify_element_types_and_convert(x, object_=True)
             elif not np.issubdtype(x.dtype, np.integer):
-                raise TypeError(f"{cls.name} arrays must have integer dtypes, not {x.dtype}.")
+                raise TypeError(f"{cls._name} arrays must have integer dtypes, not {x.dtype}.")
             cls._verify_array_values(x)
         else:
-            raise TypeError(f"{cls.name} arrays can be created with scalars of type int/str, lists/tuples, or ndarrays, not {type(x)}.")
+            raise TypeError(f"{cls._name} arrays can be created with scalars of type int/str, lists/tuples, or ndarrays, not {type(x)}.")
 
         return x
 
@@ -1279,36 +627,36 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             return np.vectorize(cls._convert_to_element)(array)
 
     @classmethod
-    def _verify_scalar_value(cls, scalar: np.ndarray):
+    def _verify_scalar_value(cls, scalar: int):
         """
         Verify the single integer element is within the valid range [0, order).
         """
-        if not 0 <= scalar < cls.order:
-            raise ValueError(f"{cls.name} scalars must be in `0 <= x < {cls.order}`, not {scalar}.")
+        if not 0 <= scalar < cls._order:
+            raise ValueError(f"{cls._name} scalars must be in `0 <= x < {cls._order}`, not {scalar}.")
 
     @classmethod
     def _verify_array_values(cls, array: np.ndarray):
         """
         Verify all the elements of the integer array are within the valid range [0, order).
         """
-        if np.any(array < 0) or np.any(array >= cls.order):
-            idxs = np.logical_or(array < 0, array >= cls.order)
+        if np.any(array < 0) or np.any(array >= cls._order):
+            idxs = np.logical_or(array < 0, array >= cls._order)
             values = array if array.ndim == 0 else array[idxs]
-            raise ValueError(f"{cls.name} arrays must have elements in `0 <= x < {cls.order}`, not {values}.")
+            raise ValueError(f"{cls._name} arrays must have elements in `0 <= x < {cls._order}`, not {values}.")
 
     ###############################################################################
     # Element conversion routines
     ###############################################################################
 
     @classmethod
-    def _convert_to_element(cls, element) -> int:
+    def _convert_to_element(cls, element: ElementLike) -> int:
         """
         Convert any element-like value to an integer.
         """
         if isinstance(element, (int, np.integer)):
             element = int(element)
         elif isinstance(element, str):
-            element = str_to_integer(element, cls.prime_subfield)
+            element = str_to_integer(element, cls._prime_subfield)
         elif isinstance(element, FieldArray):
             element = int(element)
         else:
@@ -1317,7 +665,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         return element
 
     @classmethod
-    def _convert_iterable_to_elements(cls, iterable: Iterable) -> np.ndarray:
+    def _convert_iterable_to_elements(cls, iterable: IterableLike) -> np.ndarray:
         """
         Convert an iterable (recursive) to a NumPy integer array. Convert any strings to integers along the way.
         """
@@ -1340,25 +688,9 @@ class FieldArray(Array, metaclass=FieldArrayClass):
     ###############################################################################
 
     @classmethod
-    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    @extend_docstring(Array.Zeros, {"Array": "FieldArray"})
+    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> "FieldArray":
         """
-        Creates an array of all zeros.
-
-        Parameters
-        ----------
-        shape
-            A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple. An empty tuple `()` represents a scalar.
-            A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
-            `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
-
-        Returns
-        -------
-        :
-            An array of zeros.
-
         Examples
         --------
         .. ipython:: python
@@ -1366,30 +698,12 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             GF = galois.GF(31)
             GF.Zeros((2, 5))
         """
-        dtype = cls._get_dtype(dtype)
-        array = np.zeros(shape, dtype=dtype)
-        return cls._view(array)
+        return super().Zeros(shape, dtype=dtype)
 
     @classmethod
-    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    @extend_docstring(Array.Ones, {"Array": "FieldArray"})
+    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> "FieldArray":
         """
-        Creates an array of all ones.
-
-        Parameters
-        ----------
-        shape
-            A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple. An empty tuple `()` represents a scalar.
-            A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
-            `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
-
-        Returns
-        -------
-        :
-            An array of ones.
-
         Examples
         --------
         .. ipython:: python
@@ -1397,75 +711,48 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             GF = galois.GF(31)
             GF.Ones((2, 5))
         """
-        dtype = cls._get_dtype(dtype)
-        array = np.ones(shape, dtype=dtype)
-        return cls._view(array)
+        return super().Ones(shape, dtype=dtype)
 
     @classmethod
+    @extend_docstring(Array.Range, {"Array": "FieldArray"})
     def Range(
         cls,
         start: ElementLike,
         stop: ElementLike,
         step: int = 1,
         dtype: Optional[DTypeLike] = None
-    ) -> FieldArray:
+    ) -> "FieldArray":
         """
-        Creates a 1-D array with a range of field elements.
-
-        Parameters
-        ----------
-        start
-            The starting finite field element (inclusive).
-        stop
-            The stopping finite field element (exclusive).
-        step
-            The increment between finite field elements. The default is 1.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
-
-        Returns
-        -------
-        :
-            A 1-D array of a range of finite field elements.
-
         Examples
         --------
-        For prime fields, the increment is simply a finite field element, since all elements are integers.
+        .. tab-set::
 
-        .. ipython:: python
+            .. tab-item:: Prime fields
 
-            GF = galois.GF(31)
-            GF.Range(10, 20)
-            GF.Range(10, 20, 2)
+                For prime fields, the increment is simply a finite field element, since all elements are integers.
 
-        For extension fields, the increment is the integer increment between finite field elements in their :ref:`integer representation <Integer representation>`.
+                .. ipython:: python
 
-        .. ipython:: python
+                    GF = galois.GF(31)
+                    GF.Range(10, 20)
+                    GF.Range(10, 20, 2)
 
-            GF = galois.GF(3**3, display="poly")
-            GF.Range(10, 20)
-            GF.Range(10, 20, 2)
-            @suppress
-            GF.display()
+            .. tab-item:: Extension fields
+
+                For extension fields, the increment is the integer increment between finite field elements in their :ref:`integer representation <int repr>`.
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**3, display="poly")
+                    GF.Range(10, 20)
+                    GF.Range(10, 20, 2)
+                    @suppress
+                    GF.display()
         """
-        # Coerce element-like values to integers in [0, p^m)
-        if start != cls.order:
-            start = int(cls(start))
-        if stop != cls.order:
-            stop = int(cls(stop))
-        dtype = cls._get_dtype(dtype)
-
-        if not 0 <= start <= cls.order:
-            raise ValueError(f"Argument `start` must be within the field's order {cls.order}, not {start}.")
-        if not 0 <= stop <= cls.order:
-            raise ValueError(f"Argument `stop` must be within the field's order {cls.order}, not {stop}.")
-
-        array = np.arange(start, stop, step=step, dtype=dtype)
-
-        return cls._view(array)
+        return super().Range(start, stop, step=step, dtype=dtype)
 
     @classmethod
+    @extend_docstring(Array.Random, {"Array": "FieldArray"})
     def Random(
         cls,
         shape: ShapeLike = (),
@@ -1473,97 +760,44 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         high: Optional[ElementLike] = None,
         seed: Optional[Union[int, np.random.Generator]] = None,
         dtype: Optional[DTypeLike] = None
-    ) -> FieldArray:
+    ) -> "FieldArray":
         """
-        Creates an array with random field elements.
-
-        Parameters
-        ----------
-        shape
-            A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple. An empty tuple `()` represents a scalar.
-            A single integer or 1-tuple, e.g. `N` or `(N,)`, represents the size of a 1-D array. A 2-tuple, e.g.
-            `(M, N)`, represents a 2-D array with each element indicating the size in each dimension.
-        low
-            The smallest finite field element (inclusive). The default is 0.
-        high
-            The largest finite field element (exclusive). The default is `None` which represents the field's order :math:`p^m`.
-        seed
-            Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
-            entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
-
-        Returns
-        -------
-        :
-            An array of random finite field elements.
-
         Examples
         --------
-        Generate a random matrix with an unpredictable seed.
+        .. tab-set ::
 
-        .. ipython:: python
+            .. tab-item:: Unpredictable seed
 
-            GF = galois.GF(31)
-            GF.Random((2, 5))
+                Generate a random matrix with an unpredictable seed.
 
-        Generate a random array with a specified seed. This produces repeatable outputs.
+                .. ipython:: python
 
-        .. ipython:: python
+                    GF = galois.GF(31)
+                    GF.Random((2, 5))
 
-            GF.Random(10, seed=123456789)
-            GF.Random(10, seed=123456789)
+            .. tab-item:: Specific seed
 
-        Generate a group of random arrays using a single global seed.
+                Generate a random array with a specified seed. This produces repeatable outputs.
 
-        .. ipython:: python
+                .. ipython:: python
 
-            rng = np.random.default_rng(123456789)
-            GF.Random(10, seed=rng)
-            GF.Random(10, seed=rng)
+                    GF.Random(10, seed=123456789)
+                    GF.Random(10, seed=123456789)
+
+            .. tab-item:: Global seed
+
+                Generate a group of random arrays using a single global seed.
+
+                .. ipython:: python
+
+                    rng = np.random.default_rng(123456789)
+                    GF.Random(10, seed=rng)
+                    GF.Random(10, seed=rng)
         """
-        # Coerce element-like values to integers in [0, p^m)
-        low = int(cls(low))
-        if high is None:
-            high = cls.order
-        elif high != cls.order:
-            high = int(cls(high))
-        dtype = cls._get_dtype(dtype)
-
-        if not 0 <= low < high <= cls.order:
-            raise ValueError(f"Arguments must satisfy `0 <= low < high <= order`, not `0 <= {low} < {high} <= {cls.order}`.")
-
-        if seed is not None:
-            if not isinstance(seed, (int, np.integer, np.random.Generator)):
-                raise ValueError("Seed must be an integer, a numpy.random.Generator or None.")
-            if isinstance(seed, (int, np.integer)) and seed < 0:
-                raise ValueError("Seed must be non-negative.")
-
-        if dtype != np.object_:
-            rng = np.random.default_rng(seed)
-            array = rng.integers(low, high, shape, dtype=dtype)
-        else:
-            array = np.empty(shape, dtype=dtype)
-            iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
-            _seed = None
-            if seed is not None:
-                if isinstance(seed, np.integer):
-                    # np.integers not supported by random and seeding based on hashing deprecated since Python 3.9
-                    _seed = seed.item()
-                elif isinstance(seed, np.random.Generator):
-                    _seed = seed.bit_generator.state['state']['state']
-                    seed.bit_generator.advance(1)
-                else:  # int
-                    _seed = seed
-            random.seed(_seed)
-            for _ in iterator:
-                array[iterator.multi_index] = random.randint(low, high - 1)
-
-        return cls._view(array)
+        return super().Random(shape, low=low, high=high, seed=seed, dtype=dtype)
 
     @classmethod
-    def Elements(cls, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def Elements(cls, dtype: Optional[DTypeLike] = None) -> "FieldArray":
         r"""
         Creates a 1-D array of the finite field's elements :math:`\{0, \dots, p^m-1\}`.
 
@@ -1571,7 +805,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         ----------
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
+            data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
 
         Returns
         -------
@@ -1580,38 +814,30 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
         Examples
         --------
-        .. ipython:: python
+        .. tab-set::
 
-            GF = galois.GF(31)
-            GF.Elements()
+            .. tab-item:: Prime field
 
-        .. ipython:: python
+                .. ipython:: python
 
-            GF = galois.GF(3**2, display="poly")
-            GF.Elements()
-            @suppress
-            GF.display()
+                    GF = galois.GF(31)
+                    GF.Elements()
+
+            .. tab-item:: Extension field
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="poly")
+                    GF.Elements()
+                    @suppress
+                    GF.display()
         """
-        return cls.Range(0, cls.order, step=1, dtype=dtype)
+        return super().Elements(dtype)
 
     @classmethod
-    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
-        r"""
-        Creates an :math:`n \times n` identity matrix.
-
-        Parameters
-        ----------
-        size
-            The size :math:`n` along one dimension of the identity matrix.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
-
-        Returns
-        -------
-        :
-            A 2-D identity matrix with shape `(size, size)`.
-
+    @extend_docstring(Array.Identity, {"Array": "FieldArray"})
+    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> "FieldArray":
+        """
         Examples
         --------
         .. ipython:: python
@@ -1619,12 +845,10 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             GF = galois.GF(31)
             GF.Identity(4)
         """
-        dtype = cls._get_dtype(dtype)
-        array = np.identity(size, dtype=dtype)
-        return cls._view(array)
+        return super().Identity(size, dtype=dtype)
 
     @classmethod
-    def Vandermonde(cls, element: ElementLike, rows: int, cols: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def Vandermonde(cls, element: ElementLike, rows: int, cols: int, dtype: Optional[DTypeLike] = None) -> "FieldArray":
         r"""
         Creates an :math:`m \times n` Vandermonde matrix of :math:`a \in \mathrm{GF}(q)`.
 
@@ -1638,7 +862,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             The number of columns :math:`n` in the Vandermonde matrix.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
+            data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
 
         Returns
         -------
@@ -1677,7 +901,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         return V
 
     @classmethod
-    def Vector(cls, array: ArrayLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def Vector(cls, array: ArrayLike, dtype: Optional[DTypeLike] = None) -> "FieldArray":
         r"""
         Creates an array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
@@ -1687,10 +911,10 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         ----------
         array
             An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`. An array with shape `(n1, n2, m)` has output shape
-            `(n1, n2)`. By convention, the vectors are ordered from highest degree to 0-th degree.
+            `(n1, n2)`. By convention, the vectors are ordered from degree :math:`m-1` to degree :math:`0`.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
+            data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
 
         Returns
         -------
@@ -1725,6 +949,387 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             y = cls._view(y)
 
         return y
+
+    ###############################################################################
+    # Class methods
+    ###############################################################################
+
+    @classmethod
+    def repr_table(cls, element: Optional[ElementLike] = None, sort: Literal["power", "poly", "vector", "int"] = "power") -> str:
+        r"""
+        Generates a finite field element representation table comparing the power, polynomial, vector, and integer representations.
+
+        Parameters
+        ----------
+        element
+            An element to use as the exponent base in the power representation. The default is `None` which corresponds to
+            :obj:`~galois.FieldArray.primitive_element`.
+        sort
+            The sorting method for the table. The default is `"power"`. Sorting by `"power"` will order the rows of the table by ascending
+            powers of `element`. Sorting by any of the others will order the rows in lexicographically-increasing polynomial/vector
+            order, which is equivalent to ascending order of the integer representation.
+
+        Returns
+        -------
+        :
+            A UTF-8 formatted table comparing the power, polynomial, vector, and integer representations of each
+            field element.
+
+        Examples
+        --------
+        Create a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(2^4)`.
+
+        .. ipython:: python
+
+            GF = galois.GF(2**4)
+            print(GF)
+
+        .. tab-set::
+
+            .. tab-item:: Default
+
+                Generate a representation table for :math:`\mathrm{GF}(2^4)`. Since :math:`x^4 + x + 1` is a primitive polynomial,
+                :math:`x` is a primitive element of the field. Notice, :math:`\textrm{ord}(x) = 15`.
+
+                .. ipython:: python
+
+                    print(GF.repr_table())
+
+            .. tab-item:: Primitive element
+
+                Generate a representation table for :math:`\mathrm{GF}(2^4)` using a different primitive element :math:`x^3 + x^2 + x`.
+                Notice, :math:`\textrm{ord}(x^3 + x^2 + x) = 15`.
+
+                .. ipython:: python
+
+                    print(GF.repr_table("x^3 + x^2 + x"))
+
+            .. tab-item:: Non-primitive element
+
+                Generate a representation table for :math:`\mathrm{GF}(2^4)` using a non-primitive element :math:`x^3 + x^2`. Notice,
+                :math:`\textrm{ord}(x^3 + x^2) = 5 \ne 15`.
+
+                .. ipython:: python
+
+                    print(GF.repr_table("x^3 + x^2"))
+        """
+        if sort not in ["power", "poly", "vector", "int"]:
+            raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
+        if element is None:
+            element = cls.primitive_element
+
+        element = cls(element)
+        degrees = np.arange(0, cls.order - 1)
+        x = element**degrees
+        if sort != "power":
+            idxs = np.argsort(x)
+            degrees, x = degrees[idxs], x[idxs]
+        x = np.concatenate((np.atleast_1d(cls(0)), x))  # Add 0 = alpha**-Inf
+        prim = poly_to_str(integer_to_poly(int(element), cls.characteristic))
+
+        # Define print helper functions
+        if len(prim) > 1:
+            print_power = lambda power: "0" if power is None else f"({prim})^{power}"
+        else:
+            print_power = lambda power: "0" if power is None else f"{prim}^{power}"
+        print_poly = lambda x: poly_to_str(integer_to_poly(int(x), cls.characteristic))
+        print_vec = lambda x: str(integer_to_poly(int(x), cls.characteristic, degree=cls.degree-1))
+        print_int = lambda x: str(int(x))
+
+        # Determine column widths
+        N_power = max([len(print_power(max(degrees))), len("Power")]) + 2
+        N_poly = max([len(print_poly(e)) for e in x] + [len("Polynomial")]) + 2
+        N_vec = max([len(print_vec(e)) for e in x] + [len("Vector")]) + 2
+        N_int = max([len(print_int(e)) for e in x] + [len("Integer")]) + 2
+
+        string = "+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
+        string += "\n|" + "Power".center(N_power) + "|" + "Polynomial".center(N_poly) + "|" + "Vector".center(N_vec) + "|" + "Integer".center(N_int) + "|"
+        string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
+
+        for i in range(x.size):
+            d = None if i == 0 else degrees[i - 1]
+            string += "\n|" + print_power(d).center(N_power) + "|" + poly_to_str(integer_to_poly(int(x[i]), cls.characteristic)).center(N_poly) + "|" + str(integer_to_poly(int(x[i]), cls.characteristic, degree=cls.degree-1)).center(N_vec) + "|" + cls._print_int(x[i]).center(N_int) + "|"
+
+            if i < x.size - 1:
+                string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
+
+        string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+"+ "-"*N_vec + "+" + "-"*N_int + "+"
+
+        return string
+
+    @classmethod
+    def arithmetic_table(
+        cls,
+        operation: Literal["+", "-", "*", "/"],
+        x: Optional["FieldArray"] = None,
+        y: Optional["FieldArray"] = None
+    ) -> str:
+        r"""
+        Generates the specified arithmetic table for the finite field.
+
+        Parameters
+        ----------
+        operation
+            The arithmetic operation.
+        x
+            Optionally specify the :math:`x` values for the arithmetic table. The default is `None`
+            which represents :math:`\{0, \dots, p^m - 1\}`.
+        y
+            Optionally specify the :math:`y` values for the arithmetic table. The default is `None`
+            which represents :math:`\{0, \dots, p^m - 1\}` for addition, subtraction, and multiplication and
+            :math:`\{1, \dots, p^m - 1\}` for division.
+
+        Returns
+        -------
+        :
+            A UTF-8 formatted arithmetic table.
+
+        Examples
+        --------
+        Arithmetic tables can be displayed using any element representation.
+
+        .. tab-set::
+
+            .. tab-item:: Integer
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2)
+                    print(GF.arithmetic_table("+"))
+
+            .. tab-item:: Polynomial
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="poly")
+                    print(GF.arithmetic_table("+"))
+
+            .. tab-item:: Power
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="power")
+                    print(GF.arithmetic_table("+"))
+                    @suppress
+                    GF.display()
+
+        An arithmetic table may also be constructed from arbitrary :math:`x` and :math:`y`.
+
+        .. tab-set::
+
+            .. tab-item:: Integer
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2)
+                    x = GF([7, 2, 8]); x
+                    y = GF([1, 4]); y
+                    print(GF.arithmetic_table("+", x=x, y=y))
+
+            .. tab-item:: Polynomial
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="poly")
+                    x = GF([7, 2, 8]); x
+                    y = GF([1, 4]); y
+                    print(GF.arithmetic_table("+", x=x, y=y))
+
+            .. tab-item:: Power
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**2, display="power")
+                    x = GF([7, 2, 8]); x
+                    y = GF([1, 4]); y
+                    print(GF.arithmetic_table("+", x=x, y=y))
+                    @suppress
+                    GF.display()
+        """
+        if not operation in ["+", "-", "*", "/"]:
+            raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation!r}.")
+
+        if cls.display_mode == "power":
+            # Order elements by powers of the primitive element
+            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1, dtype=cls.dtypes[-1])))
+        else:
+            x_default = cls.Elements()
+        y_default = x_default if operation != "/" else x_default[1:]
+
+        x = x_default if x is None else cls(x)
+        y = y_default if y is None else cls(y)
+        X, Y = np.meshgrid(x, y, indexing="ij")
+
+        if operation == "+":
+            Z = X + Y
+        elif operation == "-":
+            Z = X - Y
+        elif operation == "*":
+            Z = X * Y
+        else:
+            Z = X / Y
+
+        if cls.display_mode == "int":
+            print_element = cls._print_int
+        elif cls.display_mode == "poly":
+            print_element = cls._print_poly
+        else:
+            print_element = cls._print_power
+
+        operation_str = f"x {operation} y"
+
+        N = max([len(print_element(e)) for e in x]) + 2
+        N_left = max(N, len(operation_str) + 2)
+
+        string = "+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
+        string += "\n|" + operation_str.rjust(N_left - 1) + " |"
+        for j in range(y.size):
+            string += print_element(y[j]).rjust(N - 1) + " "
+            string += "|" if j < y.size - 1 else "|"
+        string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
+
+        for i in range(x.size):
+            string += "\n|" + print_element(x[i]).rjust(N_left - 1) + " |"
+            for j in range(y.size):
+                string += print_element(Z[i,j]).rjust(N - 1) + " "
+                string += "|" if j < y.size - 1 else "|"
+
+            if i < x.size - 1:
+                string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
+
+        string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
+
+        return string
+
+    @classmethod
+    def primitive_root_of_unity(cls, n: int) -> "FieldArray":
+        r"""
+        Finds a primitive :math:`n`-th root of unity in the finite field.
+
+        Parameters
+        ----------
+        n
+            The root of unity.
+
+        Returns
+        -------
+        :
+            The primitive :math:`n`-th root of unity, a 0-D scalar array.
+
+        Raises
+        ------
+        ValueError
+            If no primitive :math:`n`-th roots of unity exist. This happens when :math:`n` is not a
+            divisor of :math:`p^m - 1`.
+
+        Notes
+        -----
+        A primitive :math:`n`-th root of unity :math:`\omega_n` is such that :math:`\omega_n^n = 1` and :math:`\omega_n^k \ne 1`
+        for all :math:`1 \le k \lt n`.
+
+        In :math:`\mathrm{GF}(p^m)`, a primitive :math:`n`-th root of unity exists when :math:`n` divides :math:`p^m - 1`.
+        Then, the primitive root is :math:`\omega_n = \alpha^{(p^m - 1)/n}` where :math:`\alpha` is a primitive
+        element of the field.
+
+        Examples
+        --------
+        In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of :math:`30`.
+
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.primitive_root_of_unity(2)
+            GF.primitive_root_of_unity(5)
+            GF.primitive_root_of_unity(15)
+
+        However, they do not exist for :math:`n` that do not divide :math:`30`.
+
+        .. ipython:: python
+            :okexcept:
+
+            GF.primitive_root_of_unity(7)
+
+        For :math:`\omega_5`, one can see that :math:`\omega_5^5 = 1` and :math:`\omega_5^k \ne 1` for :math:`1 \le k \lt 5`.
+
+        .. ipython:: python
+
+            root = GF.primitive_root_of_unity(5); root
+            np.power.outer(root, np.arange(1, 5 + 1))
+        """
+        if not isinstance(n, (int, np.ndarray)):
+            raise TypeError(f"Argument `n` must be an int, not {type(n)!r}.")
+        if not 1 <= n < cls.order:
+            raise ValueError(f"Argument `n` must be in [1, {cls.order}), not {n}.")
+        if not (cls.order - 1) % n == 0:
+            raise ValueError(f"There are no primitive {n}-th roots of unity in {cls.name}.")
+
+        return cls.primitive_element ** ((cls.order - 1) // n)
+
+    @classmethod
+    def primitive_roots_of_unity(cls, n: int) -> "FieldArray":
+        r"""
+        Finds all primitive :math:`n`-th roots of unity in the finite field.
+
+        Parameters
+        ----------
+        n
+            The root of unity.
+
+        Returns
+        -------
+        :
+            All primitive :math:`n`-th roots of unity, a 1-D array. The roots are sorted in lexicographically-increasing
+            order.
+
+        Raises
+        ------
+        ValueError
+            If no primitive :math:`n`-th roots of unity exist. This happens when :math:`n` is not a
+            divisor of :math:`p^m - 1`.
+
+        Notes
+        -----
+        A primitive :math:`n`-th root of unity :math:`\omega_n` is such that :math:`\omega_n^n = 1` and :math:`\omega_n^k \ne 1`
+        for all :math:`1 \le k \lt n`.
+
+        In :math:`\mathrm{GF}(p^m)`, a primitive :math:`n`-th root of unity exists when :math:`n` divides :math:`p^m - 1`.
+        Then, the primitive root is :math:`\omega_n = \alpha^{(p^m - 1)/n}` where :math:`\alpha` is a primitive
+        element of the field.
+
+        Examples
+        --------
+        In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of :math:`30`.
+
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.primitive_roots_of_unity(2)
+            GF.primitive_roots_of_unity(5)
+            GF.primitive_roots_of_unity(15)
+
+        However, they do not exist for :math:`n` that do not divide :math:`30`.
+
+        .. ipython:: python
+            :okexcept:
+
+            GF.primitive_roots_of_unity(7)
+
+        For :math:`\omega_5`, one can see that :math:`\omega_5^5 = 1` and :math:`\omega_5^k \ne 1` for :math:`1 \le k \lt 5`.
+
+        .. ipython:: python
+
+            root = GF.primitive_roots_of_unity(5); root
+            np.power.outer(root, np.arange(1, 5 + 1))
+        """
+        if not isinstance(n, (int, np.ndarray)):
+            raise TypeError(f"Argument `n` must be an int, not {type(n)!r}.")
+        if not (cls.order - 1) % n == 0:
+            raise ValueError(f"There are no primitive {n}-th roots of unity in {cls.name}.")
+
+        roots = np.unique(cls.primitive_elements ** ((cls.order - 1) // n))
+        roots = np.sort(roots)
+
+        return roots
 
     ###############################################################################
     # Instance methods
@@ -1780,17 +1385,20 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             An integer array of the multiplicative order of each element in :math:`x`. The return value is a single integer if the
             input array :math:`x` is a scalar.
 
+        Raises
+        ------
+        ArithmeticError
+            If zero is provided as an input. The multiplicative order of 0 is not defined. There is no power of 0 that ever
+            results in 1.
+
         Notes
         -----
         The multiplicative order :math:`\textrm{ord}(x) = a` of :math:`x` in :math:`\mathrm{GF}(p^m)` is the smallest power :math:`a`
         such that :math:`x^a = 1`. If :math:`a = p^m - 1`, :math:`a` is said to be a generator of the multiplicative group
         :math:`\mathrm{GF}(p^m)^\times`.
 
-        The multiplicative order of :math:`0` is not defined and will raise an :obj:`ArithmeticError`.
-
-        :func:`FieldArray.multiplicative_order` should not be confused with :obj:`FieldArrayClass.order`. The former is a method on a
-        *Galois field array* that returns the multiplicative order of elements. The latter is a property of the field, namely
-        the finite field's order or size.
+        :func:`multiplicative_order` should not be confused with :obj:`order`. The former returns the multiplicative order of
+        :obj:`~galois.FieldArray` elements. The latter is a property of the field, namely the finite field's order or size.
 
         Examples
         --------
@@ -1843,6 +1451,10 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             A boolean array indicating if each element in :math:`x` is a quadratic residue. The return value is a single boolean if the
             input array :math:`x` is a scalar.
 
+        See Also
+        --------
+        quadratic_residues, quadratic_non_residues
+
         Notes
         -----
         An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic residue* if there exists a :math:`y` such that
@@ -1857,24 +1469,30 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
         Examples
         --------
-        Since :math:`\mathrm{GF}(2^3)` has characteristic :math:`2`, every element has a square root.
+        .. tab-set::
 
-        .. ipython:: python
+            .. tab-item:: Characteristic 2
 
-            GF = galois.GF(2**3, display="poly")
-            x = GF.Elements(); x
-            x.is_quadratic_residue()
-            @suppress
-            GF.display()
+                Since :math:`\mathrm{GF}(2^3)` has characteristic :math:`2`, every element has a square root.
 
-        In :math:`\mathrm{GF}(11)`, the characteristic is greater than :math:`2` so only half of the elements have square
-        roots.
+                .. ipython:: python
 
-        .. ipython:: python
+                    GF = galois.GF(2**3, display="poly")
+                    x = GF.Elements(); x
+                    x.is_quadratic_residue()
+                    @suppress
+                    GF.display()
 
-            GF = galois.GF(11)
-            x = GF.Elements(); x
-            x.is_quadratic_residue()
+            .. tab-item:: Characteristic > 2
+
+                In :math:`\mathrm{GF}(11)`, the characteristic is greater than :math:`2` so only half of the elements have square
+                roots.
+
+                .. ipython:: python
+
+                    GF = galois.GF(11)
+                    x = GF.Elements(); x
+                    x.is_quadratic_residue()
         """
         x = self
         field = type(self)
@@ -1886,18 +1504,18 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             # Compute the Legendre symbol on each element
             return x ** ((field.order - 1)//2) != field.characteristic - 1
 
-    def vector(self, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def vector(self, dtype: Optional[DTypeLike] = None) -> "FieldArray":
         r"""
         Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
         This function is the inverse operation of the :func:`Vector` constructor. For an array with shape `(n1, n2)`, the output shape
-        is `(n1, n2, m)`. By convention, the vectors are ordered from highest degree to 0-th degree.
+        is `(n1, n2, m)`. By convention, the vectors are ordered from degree :math:`m-1` to degree :math:`0`.
 
         Parameters
         ----------
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            dtype for this class (the first element in :obj:`~galois.FieldArrayClass.dtypes`).
+            data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
 
         Returns
         -------
@@ -1938,7 +1556,7 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
         return y
 
-    def row_reduce(self, ncols: Optional[int] = None) -> FieldArray:
+    def row_reduce(self, ncols: Optional[int] = None) -> "FieldArray":
         r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form.
 
@@ -1968,10 +1586,10 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             A.row_reduce()
             np.linalg.matrix_rank(A)
         """
-        A_rre, _ = row_reduce(self, ncols=ncols)
+        A_rre, _ = _linalg.row_reduce(self, ncols=ncols)
         return A_rre
 
-    def lu_decompose(self) -> Tuple[FieldArray, FieldArray]:
+    def lu_decompose(self) -> Tuple["FieldArray", "FieldArray"]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices.
 
@@ -1998,10 +1616,10 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             U
             np.array_equal(A, L @ U)
         """
-        L, U = lu_decompose(self)
+        L, U = _linalg.lu_decompose(self)
         return L, U
 
-    def plu_decompose(self) -> Tuple[FieldArray, FieldArray, FieldArray]:
+    def plu_decompose(self) -> Tuple["FieldArray", "FieldArray", "FieldArray"]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
 
@@ -2032,10 +1650,10 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             np.array_equal(A, P @ L @ U)
             np.array_equal(P.T @ A, L @ U)
         """
-        P, L, U, _ = plu_decompose(self)
+        P, L, U, _ = _linalg.plu_decompose(self)
         return P, L, U
 
-    def row_space(self) -> FieldArray:
+    def row_space(self) -> "FieldArray":
         r"""
         Computes the row space of the matrix :math:`\mathbf{A}`.
 
@@ -2068,9 +1686,9 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             LN = A.left_null_space(); LN
             R.shape[0] + LN.shape[0] == m
         """
-        return row_space(self)
+        return _linalg.row_space(self)
 
-    def column_space(self) -> FieldArray:
+    def column_space(self) -> "FieldArray":
         r"""
         Computes the column space of the matrix :math:`\mathbf{A}`.
 
@@ -2103,9 +1721,9 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             N = A.null_space(); N
             C.shape[0] + N.shape[0] == n
         """
-        return column_space(self)
+        return _linalg.column_space(self)
 
-    def left_null_space(self) -> FieldArray:
+    def left_null_space(self) -> "FieldArray":
         r"""
         Computes the left null space of the matrix :math:`\mathbf{A}`.
 
@@ -2144,9 +1762,9 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
             LN @ A
         """
-        return left_null_space(self)
+        return _linalg.left_null_space(self)
 
-    def null_space(self) -> FieldArray:
+    def null_space(self) -> "FieldArray":
         r"""
         Computes the null space of the matrix :math:`\mathbf{A}`.
 
@@ -2185,9 +1803,9 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
             A @ N.T
         """
-        return null_space(self)
+        return _linalg.null_space(self)
 
-    def field_trace(self) -> FieldArray:
+    def field_trace(self) -> "FieldArray":
         r"""
         Computes the field trace :math:`\mathrm{Tr}_{L / K}(x)` of the elements of :math:`x`.
 
@@ -2231,11 +1849,11 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             subfield = field.prime_subfield
             p = field.characteristic
             m = field.degree
-            conjugates = np.power.outer(x, p**np.arange(0, m, dtype=field.dtypes[-1]))
+            conjugates = np.power.outer(x, p**np.arange(0, m, dtype=field._dtypes[-1]))
             trace = np.add.reduce(conjugates, axis=-1)
             return subfield._view(trace)
 
-    def field_norm(self) -> FieldArray:
+    def field_norm(self) -> "FieldArray":
         r"""
         Computes the field norm :math:`\mathrm{N}_{L / K}(x)` of the elements of :math:`x`.
 
@@ -2276,9 +1894,9 @@ class FieldArray(Array, metaclass=FieldArrayClass):
         if field.is_prime_field:
             return x.copy()
         else:
-            subfield = field.prime_subfield
-            p = field.characteristic
-            m = field.degree
+            subfield = field._prime_subfield
+            p = field._characteristic
+            m = field._degree
             norm = x**((p**m - 1) // (p - 1))
             return subfield._view(norm)
 
@@ -2314,29 +1932,35 @@ class FieldArray(Array, metaclass=FieldArrayClass):
 
         Examples
         --------
-        The characteristic polynomial of the element :math:`a`.
+        .. tab-set::
 
-        .. ipython:: python
+            .. tab-item:: Element
 
-            GF = galois.GF(3**5)
-            a = GF.Random(); a
-            poly = a.characteristic_poly(); poly
-            # The characteristic polynomial annihilates a
-            poly(a, field=GF)
+                The characteristic polynomial of the element :math:`a`.
 
-        The characteristic polynomial of the square matrix :math:`\mathbf{A}`.
+                .. ipython:: python
 
-        .. ipython:: python
+                    GF = galois.GF(3**5)
+                    a = GF.Random(); a
+                    poly = a.characteristic_poly(); poly
+                    # The characteristic polynomial annihilates a
+                    poly(a, field=GF)
 
-            GF = galois.GF(3**5)
-            A = GF.Random((3,3)); A
-            poly = A.characteristic_poly(); poly
-            # The x^0 coefficient is det(-A)
-            poly.coeffs[-1] == np.linalg.det(-A)
-            # The x^n-1 coefficient is -Tr(A)
-            poly.coeffs[1] == -np.trace(A)
-            # The characteristic polynomial annihilates the matrix A
-            poly(A, elementwise=False)
+            .. tab-item:: Matrix
+
+                The characteristic polynomial of the square matrix :math:`\mathbf{A}`.
+
+                .. ipython:: python
+
+                    GF = galois.GF(3**5)
+                    A = GF.Random((3,3)); A
+                    poly = A.characteristic_poly(); poly
+                    # The x^0 coefficient is det(-A)
+                    poly.coeffs[-1] == np.linalg.det(-A)
+                    # The x^n-1 coefficient is -Tr(A)
+                    poly.coeffs[1] == -np.trace(A)
+                    # The characteristic polynomial annihilates the matrix A
+                    poly(A, elementwise=False)
         """
         if self.ndim == 0:
             return self._characteristic_poly_element()
@@ -2450,112 +2074,6 @@ class FieldArray(Array, metaclass=FieldArrayClass):
             poly = Poly.Roots(conjugates, field=field)
             poly = Poly(poly.coeffs, field=field.prime_subfield)
             return poly
-
-    ###############################################################################
-    # Array creation functions that need redefined
-    ###############################################################################
-
-    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
-        """
-        Override the standard NumPy ufunc calls with the new finite field ufuncs.
-        """
-        field = type(self)
-
-        meta = {}
-        meta["types"] = [type(inputs[i]) for i in range(len(inputs))]
-        meta["operands"] = list(range(len(inputs)))
-        if method in ["at", "reduceat"]:
-            # Remove the second argument for "at" ufuncs which is the indices list
-            meta["operands"].pop(1)
-        meta["field_operands"] = [i for i in meta["operands"] if isinstance(inputs[i], self.__class__)]
-        meta["non_field_operands"] = [i for i in meta["operands"] if not isinstance(inputs[i], self.__class__)]
-        meta["field"] = self.__class__
-        meta["dtype"] = self.dtype
-        # meta["ufuncs"] = self._ufuncs
-
-        if ufunc in field._OVERRIDDEN_UFUNCS:
-            # Set all ufuncs with "casting" keyword argument to "unsafe" so we can cast unsigned integers
-            # to integers. We know this is safe because we already verified the inputs.
-            if method not in ["reduce", "accumulate", "at", "reduceat"]:
-                kwargs["casting"] = "unsafe"
-
-            # Need to set the intermediate dtype for reduction operations or an error will be thrown. We
-            # use the largest valid dtype for this field.
-            if method in ["reduce"]:
-                kwargs["dtype"] = field.dtypes[-1]
-
-            return getattr(field, field._OVERRIDDEN_UFUNCS[ufunc])(ufunc, method, inputs, kwargs, meta)
-
-        elif ufunc in field._UNSUPPORTED_UFUNCS:
-            raise NotImplementedError(f"The NumPy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
-
-        else:
-            if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:
-                kwargs["casting"] = "unsafe"
-
-            inputs, kwargs = field._view_inputs_as_ndarray(inputs, kwargs)
-            output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
-
-            if ufunc in field._UFUNCS_REQUIRING_VIEW and output is not None:
-                output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
-
-            return output
-
-    def __array_function__(self, func, types, args, kwargs):
-        """
-        Override the standard NumPy function calls with the new finite field functions.
-        """
-        field = type(self)
-
-        if func in field._OVERRIDDEN_FUNCTIONS:
-            output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
-
-        elif func in field._OVERRIDDEN_LINALG_FUNCTIONS:
-            output = field._OVERRIDDEN_LINALG_FUNCTIONS[func](*args, **kwargs)
-
-        elif func in field._UNSUPPORTED_FUNCTIONS:
-            raise NotImplementedError(f"The NumPy function {func.__name__!r} is not supported on FieldArray. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data, you should first call `array = array.view(np.ndarray)` and then call the function.")
-
-        else:
-            if func is np.insert:
-                args = list(args)
-                args[2] = self._verify_array_like_types_and_values(args[2])
-                args = tuple(args)
-
-            output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
-
-            if func in field._FUNCTIONS_REQUIRING_VIEW:
-                output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
-
-        return output
-
-    ###############################################################################
-    # Arithmetic functions that need redefiend
-    ###############################################################################
-
-    def __pow__(self, other):
-        # We call power here instead of `super().__pow__(other)` because when doing so `x ** GF(2)` will invoke `np.square(x)`
-        # and not throw a TypeError. This way `np.power(x, GF(2))` is called which correctly checks whether the second argument
-        # is an integer.
-        return np.power(self, other)
-
-    ###############################################################################
-    # Miscellaneous functions that need redefined
-    ###############################################################################
-
-    def astype(self, dtype, **kwargs):  # pylint: disable=arguments-differ
-        """
-        Before changing the array's data type, ensure it is a supported data type for this finite field.
-        """
-        if dtype not in type(self).dtypes:
-            raise TypeError(f"{type(self).name} arrays can only be cast as integer dtypes in {type(self).dtypes}, not {dtype}.")
-        return super().astype(dtype, **kwargs)
-
-    def dot(self, b, out=None):
-        """
-        The `np.dot(a, b)` ufunc is also available as `a.dot(b)`. Need to override this method for consistent results.
-        """
-        return dot(self, b, out=out)
 
     ###############################################################################
     # Display methods
@@ -2673,3 +2191,72 @@ class FieldArray(Array, metaclass=FieldArrayClass):
                 return prefix + string + ",\n" + " "*len(prefix) + order + suffix
         else:
             return prefix + string + suffix
+
+    @classmethod
+    def _formatter(cls, array):
+        """
+        Returns a NumPy printoptions "formatter" dictionary.
+        """
+        formatter = {}
+
+        if cls.display_mode == "poly" and cls.is_extension_field:
+            # The "poly" display mode for prime field's is the same as the integer representation
+            formatter["int"] = cls._print_poly
+            formatter["object"] = cls._print_poly
+        elif cls.display_mode == "power":
+            formatter["int"] = cls._print_power
+            formatter["object"] = cls._print_power
+        elif array.dtype == np.object_:
+            formatter["object"] = cls._print_int
+
+        return formatter
+
+    @classmethod
+    def _print_int(cls, element):
+        """
+        Prints a single element in the integer representation. This is only needed for dtype=object arrays.
+        """
+        s = f"{int(element)}"
+
+        if cls._element_fixed_width:
+            s = s.rjust(cls._element_fixed_width)
+        else:
+            cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
+
+        return s
+
+    @classmethod
+    def _print_poly(cls, element):
+        """
+        Prints a single element in the polynomial representation.
+        """
+        poly = integer_to_poly(int(element), cls.characteristic)
+        poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
+        s = poly_to_str(poly, poly_var=poly_var)
+
+        if cls._element_fixed_width:
+            s = s.rjust(cls._element_fixed_width)
+        else:
+            cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
+
+        return s
+
+    @classmethod
+    def _print_power(cls, element):
+        """
+        Prints a single element in the power representation.
+        """
+        if element in [0, 1]:
+            s = f"{int(element)}"
+        elif element == cls.primitive_element:
+            s = "α"
+        else:
+            power = cls._ufunc("log")(element, cls._primitive_element)
+            s = f"α^{power}"
+
+        if cls._element_fixed_width:
+            s = s.rjust(cls._element_fixed_width)
+        else:
+            cls._element_fixed_width_counter = max(len(s), cls._element_fixed_width_counter)
+
+        return s

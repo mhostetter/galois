@@ -1,5 +1,5 @@
 """
-A pytest module to test instantiation of new Galois field arrays through alternate constructors.
+A pytest module to test instantiation of new FieldArrays through alternate constructors.
 """
 import pytest
 import numpy as np

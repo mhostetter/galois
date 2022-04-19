@@ -1,8 +1,8 @@
 Array Arithmetic
 ================
 
-After creating a :ref:`Galois field array class` and one or two :ref:`Galois field arrays <Galois field array>`,
-nearly any arithmetic operation can be performed using normal NumPy ufuncs or Python operators.
+After creating a :obj:`~galois.FieldArray` subclass and one or two arrays, nearly any arithmetic operation can be
+performed using normal NumPy ufuncs or Python operators.
 
 In the sections below, the finite field :math:`\mathrm{GF}(3^5)` and arrays :math:`x` and :math:`y` are used.
 
@@ -144,7 +144,7 @@ Expand any section for more details.
 Ufunc methods
 -------------
 
-*Galois field arrays* support `NumPy ufunc methods <https://numpy.org/devdocs/reference/ufuncs.html#methods>`_. Ufunc methods allow
+:obj:`~galois.FieldArray` instances support `NumPy ufunc methods <https://numpy.org/devdocs/reference/ufuncs.html#methods>`_. Ufunc methods allow
 a user to apply a NumPy ufunc in a unique way across the target array. All arithmetic ufuncs are supported.
 
 Expand any section for more details.
@@ -215,6 +215,8 @@ Expand any section for more details.
         np.negative.at(x, [0, 1]); x
         z[0:1] *= -1; z
 
+.. _advanced arithmetic:
+
 Advanced arithmetic
 -------------------
 
@@ -239,7 +241,7 @@ Advanced arithmetic
         X = np.fft.fft(x); X
         np.fft.ifft(X)
 
-    See also :func:`~galois.ntt` and :obj:`~galois.FieldArrayClass.primitive_root_of_unity`.
+    See also :func:`~galois.ntt` and :obj:`~galois.FieldArray.primitive_root_of_unity`.
 
 .. details:: Inverse FFT: `np.fft.ifft(X)`
 
@@ -256,4 +258,195 @@ Advanced arithmetic
         X = np.fft.fft(x); X
         np.fft.ifft(X)
 
-    See also :func:`~galois.ntt` and :obj:`~galois.FieldArrayClass.primitive_root_of_unity`.
+    See also :func:`~galois.ntt` and :obj:`~galois.FieldArray.primitive_root_of_unity`.
+
+Linear algebra
+--------------
+
+Linear algebra on :obj:`~galois.FieldArray` arrays/matrices is supported through both native NumPy linear algebra functions
+in :obj:`numpy.linalg` and additional linear algebra routines not included in NumPy.
+
+Expand any section for more details.
+
+.. details:: Dot product: `np.dot(a, b)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        a = GF([29, 0, 2, 21]); a
+        b = GF([23, 5, 15, 12]); b
+        np.dot(a, b)
+
+.. details:: Vector dot product: `np.vdot(a, b)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        a = GF([29, 0, 2, 21]); a
+        b = GF([23, 5, 15, 12]); b
+        np.vdot(a, b)
+
+.. details:: Inner product: `np.inner(a, b)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        a = GF([29, 0, 2, 21]); a
+        b = GF([23, 5, 15, 12]); b
+        np.inner(a, b)
+
+.. details:: Outer product: `np.outer(a, b)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        a = GF([29, 0, 2, 21]); a
+        b = GF([23, 5, 15, 12]); b
+        np.outer(a, b)
+
+.. details:: Matrix multiplication: `A @ B == np.matmul(A, B)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[17, 25, 18, 8], [7, 9, 21, 15], [6, 16, 6, 30]]); A
+        B = GF([[8, 18], [22, 0], [7, 8], [20, 24]]); B
+        A @ B
+        np.matmul(A, B)
+
+.. details:: Matrix exponentiation: `np.linalg.matrix_power(A, z)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[14, 1, 5], [3, 23, 6], [24, 27, 4]]); A
+        np.linalg.matrix_power(A, 3)
+        A @ A @ A
+
+.. details:: Matrix determinant: `np.linalg.det(A)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
+        np.linalg.det(A)
+
+.. details:: Matrix rank: `np.linalg.matrix_rank(A, z)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
+        np.linalg.matrix_rank(A)
+        A.row_reduce()
+
+.. details:: Matrix trace: `np.trace(A)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
+        np.trace(A)
+        A[0,0] + A[1,1] + A[2,2] + A[3,3]
+
+.. details:: Solve a system of equations: `np.linalg.solve(A, b)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[14, 21, 14, 28], [24, 22, 23, 23], [16, 30, 26, 18], [4, 23, 18, 3]]); A
+        b = GF([15, 11, 6, 29]); b
+        x = np.linalg.solve(A, b)
+        np.array_equal(A @ x, b)
+
+.. details:: Matrix inverse: `np.linalg.inv(A)`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[14, 21, 14, 28], [24, 22, 23, 23], [16, 30, 26, 18], [4, 23, 18, 3]]); A
+        A_inv = np.linalg.inv(A); A_inv
+        A @ A_inv
+
+Additional linear algebra
+-------------------------
+
+Below are additional linear algebra routines provided for :obj:`~galois.FieldArray` arrays/matrices that are
+not included in NumPy.
+
+.. details:: Row space: `A.row_space()`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
+        A.row_space()
+
+    See :func:`~galois.FieldArray.row_space` for more details.
+
+.. details:: Column space: `A.column_space()`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
+        A.column_space()
+
+    See :func:`~galois.FieldArray.column_space` for more details.
+
+.. details:: Left null space: `A.left_null_space()`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
+        A.left_null_space()
+
+    See :func:`~galois.FieldArray.left_null_space` for more details.
+
+.. details:: Null space: `A.null_space()`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
+        A.null_space()
+
+    See :func:`~galois.FieldArray.null_space` for more details.
+
+.. details:: Gaussian elimination: `A.row_reduce()`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
+        A.row_reduce()
+
+    See :func:`~galois.FieldArray.row_reduce` for more details.
+
+.. details:: LU decomposition: `A.lu_decompose()`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[4, 1, 24], [7, 6, 1], [11, 20, 2]]); A
+        L, U = A.lu_decompose()
+        L
+        U
+        np.array_equal(L @ U, A)
+
+    See :func:`~galois.FieldArray.lu_decompose` for more details.
+
+.. details:: PLU decomposition: `A.plu_decompose()`
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        A = GF([[15, 4, 11], [7, 6, 1], [11, 20, 2]]); A
+        P, L, U = A.plu_decompose()
+        P
+        L
+        U
+        np.array_equal(P @ L @ U, A)
+
+    See :func:`~galois.FieldArray.plu_decompose` for more details.

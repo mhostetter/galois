@@ -4,44 +4,29 @@ A module that contains a metaclass mixin that provides GF(2^m) arithmetic using 
 import numba
 import numpy as np
 
-from ._array import FieldArrayClass, DirMeta
+from ._array import FieldArray
 
 MULTIPLY = lambda a, b, *args: a * b
 RECIPROCAL = lambda a, *args: 1 / a
 
 
-class GF2mMeta(FieldArrayClass, DirMeta):
+class GF2m(FieldArray):
     """
-    A metaclass for all GF(2^m) classes.
+    A base class for all GF(2^m) classes.
     """
-    # pylint: disable=no-value-for-parameter
-
     # Need to have a unique cache of "calculate" functions for GF(2^m)
     _FUNC_CACHE_CALCULATE = {}
 
-    def __init__(cls, name, bases, namespace, **kwargs):
-        super().__init__(name, bases, namespace, **kwargs)
-        cls._prime_subfield = kwargs["prime_subfield"]
-
-        cls.compile(kwargs["compile"])
-
-        # Determine if the irreducible polynomial is primitive
-        if cls._is_primitive_poly is None:
-            # TODO: Clean this up
-            coeffs = cls.irreducible_poly.coeffs.view(np.ndarray).astype(cls.dtypes[-1])
-            x = np.array(cls.primitive_element, dtype=cls.dtypes[-1], ndmin=1)
-            add = cls._func_python("add")
-            multiply = cls._func_python("multiply")
-            cls._is_primitive_poly = cls._function_python("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0] == 0
-
-    def _compile_ufuncs(cls):
-        super()._compile_ufuncs()
+    @classmethod
+    def _reset_ufuncs(cls):
+        super()._reset_ufuncs()
 
         # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835552639.
         cls._ufuncs["add"] = np.bitwise_xor
         cls._ufuncs["negative"] = np.positive
         cls._ufuncs["subtract"] = np.bitwise_xor
 
+    @classmethod
     def _set_globals(cls, name):
         global MULTIPLY, RECIPROCAL
 
@@ -50,6 +35,7 @@ class GF2mMeta(FieldArrayClass, DirMeta):
         if name in ["divide", "power"]:
             RECIPROCAL = cls._func_calculate("reciprocal")
 
+    @classmethod
     def _reset_globals(cls):
         global MULTIPLY, RECIPROCAL
 
@@ -233,3 +219,6 @@ class GF2mMeta(FieldArrayClass, DirMeta):
         """
         field = type(a)
         return a ** (field.characteristic**(field.degree - 1))
+
+
+GF2m._reset_globals()

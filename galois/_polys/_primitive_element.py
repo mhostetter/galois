@@ -39,7 +39,7 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
 
     See Also
     --------
-    primitive_element, FieldArrayClass.primitive_element
+    primitive_element, FieldArray.primitive_element
 
     Examples
     --------
@@ -118,7 +118,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
 
     See Also
     --------
-    is_primitive_element, FieldArrayClass.primitive_element
+    is_primitive_element, FieldArray.primitive_element
 
     Examples
     --------
@@ -234,7 +234,7 @@ def primitive_elements(irreducible_poly: Poly) -> List[Poly]:
 
     See Also
     --------
-    is_primitive_element, FieldArrayClass.primitive_elements
+    is_primitive_element, FieldArray.primitive_elements
 
     Notes
     -----

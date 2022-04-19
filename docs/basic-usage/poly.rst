@@ -1,5 +1,5 @@
-Polynomial Creation
-===================
+Polynomials
+===========
 
 Univariate polynomials over finite fields are supported with the :obj:`~galois.Poly` class.
 
@@ -13,7 +13,7 @@ Create a polynomial by specifying its coefficients in degree-descending order an
    GF = galois.GF(2**8)
    galois.Poly([1, 0, 0, 55, 23], field=GF)
 
-Or pass a *Galois field array* of coefficients without explicitly specifying the finite field.
+Or pass a :obj:`~galois.FieldArray` of coefficients without explicitly specifying the finite field.
 
 .. ipython:: python
 
@@ -23,40 +23,37 @@ Or pass a *Galois field array* of coefficients without explicitly specifying the
 Element representation
 ----------------------
 
-As with *Galois field arrays*, the finite field element representation of the polynomial coefficients may be changed
-by setting the `display` keyword argument of :func:`~galois.GF` or using the :func:`~galois.FieldArrayClass.display` method.
+As with :obj:`~galois.FieldArray` instances, the finite field element representation of the polynomial coefficients may be changed
+by setting the `display` keyword argument of :func:`~galois.GF` or using the :func:`~galois.FieldArray.display` classmethod.
 
 .. ipython:: python
 
    GF = galois.GF(3**5)
 
-   # Display f using the default integer representation
-   f = galois.Poly([13, 0, 4, 2], field=GF); f
+   # Display f(x) using the default integer representation
+   f = galois.Poly([13, 0, 4, 2], field=GF); print(f)
 
-   # Display f using the polynomial representation
-   GF.display("poly"); f
+   # Display f(x) using the polynomial representation
+   GF.display("poly"); print(f)
 
-   # Display f using the power representation
-   GF.display("power"); f
+   # Display f(x) using the power representation
+   GF.display("power"); print(f)
 
    GF.display("int");
 
-See :ref:`Field Element Representation` for more details.
-
-Classmethods
-------------
-
-There are several additional ways to create a polynomial. They are included as classmethods in :obj:`~galois.Poly`.
-By convention, classmethods use `PascalCase`, while methods use `snake_case`.
+See :doc:`element-representation` for more details.
 
 Alternate constructors
-......................
+----------------------
+
+There are several additional ways to create a polynomial. These alternate constructors are included as classmethods in :obj:`~galois.Poly`.
+By convention, alternate constructors use `PascalCase` while other classmethods use `snake_case`.
 
 Create a polynomial by specifying its non-zero degrees and coefficients using :func:`~galois.Poly.Degrees`.
 
 .. ipython:: python
 
-   galois.Poly.Degrees([8, 1], coeffs=[1, 179], field=GF)
+   galois.Poly.Degrees([1000, 1], coeffs=[1, 179], field=GF)
 
 Create a polynomial from its integer representation using :func:`~galois.Poly.Int`. Additionally, one may create a polynomial from
 a binary, octal, or hexadecimal string of its integer representation.
@@ -100,9 +97,6 @@ Create a polynomial from its roots using :func:`~galois.Poly.Roots`.
    f = galois.Poly.Roots([137, 22, 51], field=GF); f
    f.roots()
 
-Simple polynomials
-..................
-
 The :func:`~galois.Poly.Zero`, :func:`~galois.Poly.One`, and :func:`~galois.Poly.Identity` classmethods create common,
 simple polynomials. They are included for convenience.
 
@@ -111,9 +105,6 @@ simple polynomials. They are included for convenience.
    galois.Poly.Zero(GF)
    galois.Poly.One(GF)
    galois.Poly.Identity(GF)
-
-Random polynomials
-..................
 
 Random polynomials of a given degree are easily created with :func:`~galois.Poly.Random`.
 

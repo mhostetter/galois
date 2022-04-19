@@ -30,85 +30,54 @@ the finite field :math:`\mathrm{GF}(3^5)`.
          GF = galois.GF(3**5, display="power")
          print(GF)
 
+Create a scalar
+---------------
+
+A single finite field element (a scalar) is a 0-D :obj:`~galois.FieldArray`. They are created by passing a single
+:obj:`~galois.typing.ElementLike` object to `GF`'s constructor.
+
+.. tab-set::
+
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF.display("int")
+         a = GF(17); a
+         a = GF("x^2 + 2x + 2"); a
+         a.ndim
+
+   .. tab-item:: Polynomial
+      :sync: poly
+
+      .. ipython:: python
+
+         @suppress
+         GF.display("poly")
+         a = GF(17); a
+         a = GF("x^2 + 2x + 2"); a
+         a.ndim
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF.display("power")
+         a = GF(17); a
+         a = GF("x^2 + 2x + 2"); a
+         a.ndim
+
 Create a new array
 ------------------
 
-A :ref:`Galois field array` can be created from various *array-like* objects.
-
-Valid *array-like* objects are: single values, iterables of values, iterables of iterables, or NumPy arrays. The
-*values* can be either integers or polynomial strings.
-
-Integers
-........
-
-The most standard input is an iterable of integers. For extension fields, an integer input is the :ref:`integer
-representation <Integer representation>` of the polynomial field element.
-
-.. tab-set::
-
-   .. tab-item:: Integer
-      :sync: int
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         GF([17, 4])
-
-   .. tab-item:: Polynomial
-      :sync: poly
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF([17, 4])
-
-   .. tab-item:: Power
-      :sync: power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF([17, 4])
-
-Iterables of iterables are also supported.
-
-.. tab-set::
-
-   .. tab-item:: Integer
-      :sync: int
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         GF([[17, 4], [148, 205]])
-
-   .. tab-item:: Polynomial
-      :sync: poly
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF([[17, 4], [148, 205]])
-
-   .. tab-item:: Power
-      :sync: power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF([[17, 4], [148, 205]])
-
-Polynomial strings
+Array-Like objects
 ..................
 
-In addition to the integer representation, field elements may be expressed in their :ref:`polynomial representation <Polynomial representation>`
-using strings.
+A :obj:`~galois.FieldArray` can be created from various :obj:`~galois.typing.ArrayLike` objects.
 
 .. tab-set::
 
@@ -119,7 +88,8 @@ using strings.
 
          @suppress
          GF.display("int")
-         GF(["x^2 + 2x + 2", "x + 1"])
+         GF([17, 4, 148, 205])
+         GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
 
    .. tab-item:: Polynomial
       :sync: poly
@@ -128,7 +98,8 @@ using strings.
 
          @suppress
          GF.display("poly")
-         GF(["x^2 + 2x + 2", "x + 1"])
+         GF([17, 4, 148, 205])
+         GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
 
    .. tab-item:: Power
       :sync: power
@@ -137,97 +108,8 @@ using strings.
 
          @suppress
          GF.display("power")
-         GF(["x^2 + 2x + 2", "x + 1"])
-
-Many string conventions are accepted, including: with/without `*`, with/without spaces, `^` or `**`,
-any indeterminate variable, increasing/decreasing degrees, etc. Or any combination of the above.
-
-.. tab-set::
-
-   .. tab-item:: Integer
-      :sync: int
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         # Add explicit * for multiplication
-         GF(["x^2 + 2*x + 2", "x + 1"])
-         # No spaces
-         GF(["x^2+2x+2", "x+1"])
-         # ** instead of ^
-         GF(["x**2 + 2x + 2", "x + 1"])
-         # Different indeterminate
-         GF(["α^2 + 2α + 2", "α + 1"])
-         # Ascending degrees
-         GF(["2 + 2x + x^2", "1 + x"])
-
-   .. tab-item:: Polynomial
-      :sync: poly
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         # Add explicit * for multiplication
-         GF(["x^2 + 2*x + 2", "x + 1"])
-         # No spaces
-         GF(["x^2+2x+2", "x+1"])
-         # ** instead of ^
-         GF(["x**2 + 2x + 2", "x + 1"])
-         # Different indeterminate
-         GF(["α^2 + 2α + 2", "α + 1"])
-         # Ascending degrees
-         GF(["2 + 2x + x^2", "1 + x"])
-
-   .. tab-item:: Power
-      :sync: power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         # Add explicit * for multiplication
-         GF(["x^2 + 2*x + 2", "x + 1"])
-         # No spaces
-         GF(["x^2+2x+2", "x+1"])
-         # ** instead of ^
-         GF(["x**2 + 2x + 2", "x + 1"])
-         # Different indeterminate
-         GF(["α^2 + 2α + 2", "α + 1"])
-         # Ascending degrees
-         GF(["2 + 2x + x^2", "1 + x"])
-
-Integers and polynomial strings may be mixed and matched.
-
-.. tab-set::
-
-   .. tab-item:: Integer
-      :sync: int
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         GF(["x^2 + 2x + 2", 4])
-
-   .. tab-item:: Polynomial
-      :sync: poly
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF(["x^2 + 2x + 2", 4])
-
-   .. tab-item:: Power
-      :sync: power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF(["x^2 + 2x + 2", 4])
+         GF([17, 4, 148, 205])
+         GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
 
 Polynomial coefficients
 .......................
@@ -296,6 +178,46 @@ into length-:math:`m` vectors over :math:`\mathrm{GF}(p)`.
          GF.display("power")
          GF([17, 4]).vector()
 
+Primitive element powers
+........................
+
+A :obj:`~galois.FieldArray` can also be created from the powers of a primitive element :math:`\alpha`.
+
+.. tab-set::
+
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         @suppress
+         GF.display("int")
+         alpha = GF.primitive_element; alpha
+         powers = np.array([222, 69, 54, 24]); powers
+         alpha ** powers
+
+   .. tab-item:: Polynomial
+      :sync: poly
+
+      .. ipython:: python
+
+         @suppress
+         GF.display("poly")
+         alpha = GF.primitive_element; alpha
+         powers = np.array([222, 69, 54, 24]); powers
+         alpha ** powers
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         @suppress
+         GF.display("power")
+         alpha = GF.primitive_element; alpha
+         powers = np.array([222, 69, 54, 24]); powers
+         alpha ** powers
+
 NumPy array
 ...........
 
@@ -311,7 +233,7 @@ constructor will create a copy of the array.
 
          @suppress
          GF.display("int")
-         x_np = np.array([213, 167, 4, 214, 209], dtype=int); x_np
+         x_np = np.array([213, 167, 4, 214, 209]); x_np
          x = GF(x_np); x
          # Modifying x does not modify x_np
          x[0] = 0; x_np
@@ -323,7 +245,7 @@ constructor will create a copy of the array.
 
          @suppress
          GF.display("poly")
-         x_np = np.array([213, 167, 4, 214, 209], dtype=int); x_np
+         x_np = np.array([213, 167, 4, 214, 209]); x_np
          x = GF(x_np); x
          # Modifying x does not modify x_np
          x[0] = 0; x_np
@@ -335,7 +257,7 @@ constructor will create a copy of the array.
 
          @suppress
          GF.display("power")
-         x_np = np.array([213, 167, 4, 214, 209], dtype=int); x_np
+         x_np = np.array([213, 167, 4, 214, 209]); x_np
          x = GF(x_np); x
          # Modifying x does not modify x_np
          x[0] = 0; x_np
@@ -343,10 +265,10 @@ constructor will create a copy of the array.
 View an existing array
 ----------------------
 
-Instead of creating a *Galois field array* explicitly, you can convert an existing NumPy array into a *Galois field array*
+Instead of creating a :obj:`~galois.FieldArray` explicitly, you can convert an existing NumPy array into a :obj:`~galois.FieldArray`
 temporarily and work with it in-place.
 
-Simply call `.view(GF)` to *view* the NumPy array as a *Galois field array*. When finished working in the
+Simply call `.view(GF)` to *view* the NumPy array as a :obj:`~galois.FieldArray`. When finished working in the
 finite field, call `.view(np.ndarray)` to *view* it back to a NumPy array.
 
 .. tab-set::
@@ -386,50 +308,6 @@ finite field, call `.view(np.ndarray)` to *view* it back to a NumPy array.
          x = x_np.view(GF); x
          # Modifying x does modify x_np!
          x[0] = 0; x_np
-
-Scalars
--------
-
-A single finite field element (a scalar) is a 0-D *Galois field array*. They are created by passing a single
-:ref:`array-like object <Create a new array>` to the *Galois field array class* `GF`'s constructor.
-
-.. tab-set::
-
-   .. tab-item:: Integer
-      :sync: int
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         a = GF(17); a
-         a = GF("x^2 + 2x + 2"); a
-         a = GF.Vector([0, 0, 1, 2, 2]); a
-         a.ndim
-
-   .. tab-item:: Polynomial
-      :sync: poly
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         a = GF(17); a
-         a = GF("x^2 + 2x + 2"); a
-         a = GF.Vector([0, 0, 1, 2, 2]); a
-         a.ndim
-
-   .. tab-item:: Power
-      :sync: power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         a = GF(17); a
-         a = GF("x^2 + 2x + 2"); a
-         a = GF.Vector([0, 0, 1, 2, 2]); a
-         a.ndim
 
 Classmethods
 ------------
@@ -474,11 +352,17 @@ useful for initializing empty arrays.
          GF.Zeros(4)
          GF.Ones(4)
 
+.. note::
+
+   There is no :func:`numpy.empty` equivalent. This is because :obj:`~galois.FieldArray` instances must have values in
+   :math:`[0, p^m)`. Empty NumPy arrays have whatever values are currently in memory, and therefore would fail those
+   bounds checks.
+
 Ordered arrays
 ..............
 
 The :func:`~galois.FieldArray.Range` classmethod produces a range of elements similar to :func:`numpy.arange`. The integer `start`
-and `stop` values are the :ref:`integer representation <Integer representation>` of the polynomial field elements.
+and `stop` values are the :ref:`integer representation <int repr>` of the polynomial field elements.
 
 .. tab-set::
 
@@ -544,7 +428,7 @@ Random arrays
 .............
 
 The :func:`~galois.FieldArray.Random` classmethod provides a random array of the specified shape. This is convenient
-for testing. The integer `low` and `high` values are the :ref:`integer representation <Integer representation>` of
+for testing. The integer `low` and `high` values are the :ref:`integer representation <int repr>` of
 the polynomial field elements.
 
 .. tab-set::
@@ -582,8 +466,8 @@ the polynomial field elements.
 Data types
 ----------
 
-*Galois field arrays* support a fixed set of NumPy data types (:obj:`numpy.dtype`). The data type must be able to store
-all the field elements (in their :ref:`integer representation <Integer representation>`).
+:obj:`~galois.FieldArray` instances support a fixed set of NumPy data types (:obj:`numpy.dtype`). The data type must be
+able to store all the field elements (in their :ref:`integer representation <int repr>`).
 
 Valid data types
 ................
@@ -604,8 +488,8 @@ For medium finite fields, like :math:`\mathrm{GF}(2^{10})`, some NumPy integer d
     GF.dtypes
 
 For large finite fields, like :math:`\mathrm{GF}(2^{100})`, only the "object" data type (:obj:`numpy.object_`) is
-supported. This uses arrays of Python objects, rather than integer data types. For *Galois field arrays*, the
-Python objects used are Python integers, which have unlimited size.
+supported. This uses arrays of Python objects, rather than integer data types. The Python objects used are Python integers,
+which have unlimited size.
 
 .. ipython:: python
 
@@ -616,7 +500,7 @@ Default data type
 .................
 
 When arrays are created, unless otherwise specified, they use the default data type. The default data type is
-the smallest unsigned data type (the first in the :obj:`~galois.FieldArrayClass.dtypes` list).
+the smallest unsigned data type (the first in the :obj:`~galois.FieldArray.dtypes` list).
 
 .. ipython:: python
 

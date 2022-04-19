@@ -48,7 +48,6 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.mathjax",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.autosectionlabel",
     "sphinx_immaterial",
     "myst_parser",
     "sphinx_design",
@@ -197,6 +196,7 @@ autodoc_default_options = {
     "imported-members": True,
     "members": True,
     "special-members": True,
+    "inherited-members": "ndarray",
     "member-order": "groupwise",
 }
 autodoc_typehints = "signature"
@@ -226,7 +226,7 @@ SPECIAL_MEMBERS = [
     "__call__", "__len__", "__eq__",
 ]
 
-def skip_member(app, what, name, obj, skip, options):
+def autodoc_skip_member(app, what, name, obj, skip, options):
     """
     Instruct autosummary to skip members that are inherited from np.ndarray
     """
@@ -236,6 +236,9 @@ def skip_member(app, what, name, obj, skip, options):
 
     if hasattr(obj, "__objclass__"):
         # This is a NumPy method, don't include docs
+        return True
+    elif getattr(obj, "__qualname__", None) in ["FieldFunction.dot", "Array.astype"]:
+        # NumPy methods that wer overridden, don't include docs
         return True
     elif hasattr(obj, "__qualname__") and getattr(obj, "__qualname__").split(".")[0] == "FieldArray" and hasattr(numpy.ndarray, name):
         if name in ["__repr__", "__str__"]:
@@ -257,7 +260,18 @@ def skip_member(app, what, name, obj, skip, options):
     return skip
 
 
-def process_signature(app, what, name, obj, options, signature, return_annotation):
+# def autodoc_process_docstring(app, what, name, obj, options, lines):
+#     # if "monkey" in name:
+#     #     print("process-docstring", what, name, obj, options, lines[0])
+#     return lines
+
+
+# def autodoc_before_process_signature(app, obj, bound_method):
+#     # print(obj, bound_method)
+#     return obj
+
+
+def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
     """
     Monkey-patch the autodoc's processing of signatures.
     """
@@ -267,7 +281,7 @@ def process_signature(app, what, name, obj, options, signature, return_annotatio
     return signature, return_annotation
 
 
-def modify_type_hints(signature, do_print=False):
+def modify_type_hints(signature):
     """
     Modify the autodoc type hint signatures to be more readable. Union[x, y] is replaced with x | y.
     Optional[x] is replaced with x | None. Also, short names are used (and properly linked).
@@ -348,5 +362,7 @@ def modify_type_hints(signature, do_print=False):
 
 
 def setup(app):
-    app.connect("autodoc-skip-member", skip_member)
-    app.connect("autodoc-process-signature", process_signature)
+    app.connect("autodoc-skip-member", autodoc_skip_member)
+    # app.connect("autodoc-process-docstring", autodoc_process_docstring)
+    # app.connect("autodoc-before-process-signature", autodoc_before_process_signature)
+    app.connect("autodoc-process-signature", autodoc_process_signature)

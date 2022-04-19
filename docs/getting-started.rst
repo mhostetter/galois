@@ -1,8 +1,8 @@
 Getting Started
 ===============
 
-The :ref:`Getting Started` guide is intended to assist the user in installing the library, creating two example
-arrays, and performing basic array arithmetic. See :ref:`Basic Usage <Galois Field Classes>` for more detailed discussions
+The :doc:`getting-started` guide is intended to assist the user with installing the library, creating two example
+arrays, and performing basic array arithmetic. See :doc:`Basic Usage </basic-usage/array-classes>` for more detailed discussions
 and examples.
 
 Install the package
@@ -21,54 +21,54 @@ Import the :obj:`galois` package in Python.
    import galois
    galois.__version__
 
-Create a Galois field array class
----------------------------------
+Create a :obj:`~galois.FieldArray` subclass
+-------------------------------------------
 
-Next, create a :ref:`Galois field array class` for the specific finite field you'd like to work in. This is created using
-the :func:`~galois.GF` class factory. In this example, we are working in :math:`\mathrm{GF}(2^8)`.
+Next, create a :obj:`~galois.FieldArray` subclass for the specific finite field you'd like to work in. This is created using
+the :func:`~galois.GF` class factory. In this example, we are working in :math:`\mathrm{GF}(3^5)`.
 
 .. ipython:: python
 
-   GF = galois.GF(2**8)
+   GF = galois.GF(3**5)
    GF
    print(GF)
 
-The *Galois field array class* `GF` is a subclass of :obj:`~numpy.ndarray` that performs all arithmetic in the Galois field
-:math:`\mathrm{GF}(2^8)`, not in :math:`\mathbb{R}`.
+The :obj:`~galois.FieldArray` subclass `GF` is a subclass of :obj:`~numpy.ndarray` that performs all arithmetic in the Galois field
+:math:`\mathrm{GF}(3^5)`, not in :math:`\mathbb{R}`.
 
 .. ipython:: python
 
+   issubclass(GF, galois.FieldArray)
    issubclass(GF, np.ndarray)
 
-See :ref:`Galois Field Classes` for more details.
+See :doc:`/basic-usage/array-classes` for more details.
 
-Create two Galois field arrays
-------------------------------
+Create two :obj:`~galois.FieldArray` instances
+----------------------------------------------
 
-Next, create a new :ref:`Galois field array` `x` by passing an :ref:`array-like object <Create a new array>` to the
-*Galois field array class* `GF`.
+Next, create a new :obj:`~galois.FieldArray` `x` by passing an :obj:`~galois.typing.ArrayLike` object to `GF`'s constructor.
 
 .. ipython:: python
 
-   x = GF([45, 36, 7, 74, 135]); x
+   x = GF([236, 87, 38, 112]); x
 
-Create a second *Galois field array* `y` by converting an existing NumPy array (without copying it) by invoking `.view()`. When finished
-working in the finite field, view it back as a NumPy array with `.view(np.ndarray)`.
+The array `x` is an instance of :obj:`~galois.FieldArray` and also an instance of :obj:`~numpy.ndarray`.
+
+.. ipython:: python
+
+   isinstance(x, galois.FieldArray)
+   isinstance(x, np.ndarray)
+
+Create a second :obj:`~galois.FieldArray` `y` by converting an existing NumPy array (without copying it) by invoking
+`.view()`. When finished working in the finite field, view it back as a NumPy array with `.view(np.ndarray)`.
 
 .. ipython:: python
 
    # y represents an array created elsewhere in the code
-   y = np.array([103, 146, 186, 83, 112], dtype=int); y
+   y = np.array([109, 17, 108, 224]); y
    y = y.view(GF); y
 
-The *Galois field array* `x` is an instance of the *Galois field array class* `GF` (and also an instance of :obj:`~numpy.ndarray`).
-
-.. ipython:: python
-
-   isinstance(x, GF)
-   isinstance(x, np.ndarray)
-
-See :ref:`Array Creation` for more details.
+See :doc:`/basic-usage/array-creation` for more details.
 
 Change the element representation
 ---------------------------------
@@ -77,8 +77,8 @@ The display representation of finite field elements can be set to either the int
 or power (`"power"`) representation. The default representation is the integer representation since that is natural when
 working with integer NumPy arrays.
 
-Set the display mode by passing the `display` keyword argument to :func:`~galois.GF` or by calling the :func:`~galois.FieldArrayClass.display` method.
-Choose whichever element representation is most convenient for you.
+Set the display mode by passing the `display` keyword argument to :func:`~galois.GF` or by calling the :func:`~galois.FieldArray.display`
+method. Choose whichever element representation is most convenient for you.
 
 .. ipython:: python
 
@@ -89,7 +89,7 @@ Choose whichever element representation is most convenient for you.
    # Reset to the integer representation
    GF.display("int");
 
-See :ref:`Field Element Representation` for more details.
+See :doc:`/basic-usage/element-representation` for more details.
 
 Perform array arithmetic
 ------------------------
@@ -97,7 +97,7 @@ Perform array arithmetic
 Once you have two Galois field arrays, nearly any arithmetic operation can be performed using normal NumPy arithmetic.
 The traditional `NumPy broadcasting rules <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_ apply.
 
-Standard element-wise array arithmetic -- like addition, subtraction, multiplication, and division -- are easily preformed.
+Standard element-wise array arithmetic -- addition, subtraction, multiplication, and division -- are easily preformed.
 
 .. ipython:: python
 
@@ -113,4 +113,4 @@ More complicated arithmetic, like square root and logarithm base :math:`\alpha`,
    np.sqrt(x)
    np.log(x)
 
-See :ref:`Array Arithmetic` for more details.
+See :doc:`/basic-usage/array-arithmetic` for more details.

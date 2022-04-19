@@ -15,9 +15,9 @@ from .._prime import factors
 
 from ._array import FieldArray
 from ._gf2 import GF2
-from ._gfp import GFpMeta
-from ._gf2m import GF2mMeta
-from ._gfpm import GFpmMeta
+from ._gfp import GFp
+from ._gf2m import GF2m
+from ._gfpm import GFpm
 
 __all__ = ["GF", "Field"]
 
@@ -32,10 +32,7 @@ def GF(
     display: Optional[Literal["int", "poly", "power"]] = None
 ) -> Type[FieldArray]:
     r"""
-    Creates a :ref:`Galois field array class` for :math:`\mathrm{GF}(p^m)`.
-
-    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`~galois.FieldArrayClass` and
-    :obj:`~galois.FieldArray`.
+    Creates a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
 
     Parameters
     ----------
@@ -43,11 +40,11 @@ def GF(
         The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
     irreducible_poly
         Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that will
-        define the Galois field arithmetic. The default is `None` which uses the Conway polynomial :math:`C_{p,m}`.
-        See :func:`~galois.conway_poly`.
+        define the finite field arithmetic. The default is `None` which uses the Conway polynomial :math:`C_{p,m}`,
+        see :func:`~galois.conway_poly`.
     primitive_element
         Optionally specify a primitive element of the field. This value is used when building the exponential and logarithm
-        lookup tables and when computing :obj:`numpy.log`. A primitive element is a generator of the multiplicative group of the
+        lookup tables and as the base of :obj:`numpy.log`. A primitive element is a generator of the multiplicative group of the
         field.
 
         For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`.
@@ -56,20 +53,20 @@ def GF(
         For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over
         :math:`\mathrm{GF}(p)`. The default is `None` which uses :func:`~galois.primitive_element`.
     verify
-        Indicates whether to verify that the user-specified irreducible polynomial is in fact irreducible and that the user-specified
+        Indicates whether to verify that the user-provided irreducible polynomial is in fact irreducible and that the user-provided
         primitive element is in fact a generator of the multiplicative group. The default is `True`.
 
         For large fields and irreducible polynomials that are already known to be irreducible (which may take a while to verify),
         this argument may be set to `False`.
 
-        The default irreducible polynomial and primitive element are never verified because they are known to be irreducible and
-        a multiplicative generator, respectively.
+        The default irreducible polynomial and primitive element are never verified because they are already known to be irreducible
+        and a multiplicative generator, respectively.
     compile
-        The ufunc calculation mode. This can be modified after class construction with the :func:`~galois.FieldArrayClass.compile` method.
-        See :ref:`Compilation Modes` for a further discussion.
+        The ufunc calculation mode. This can be modified after class construction with the :func:`~galois.FieldArray.compile` method.
+        See :doc:`/basic-usage/compilation-modes` for a further discussion.
 
-        - `None` (default): For newly-created classes, `None` corresponds to `"auto"`. For *Galois field array classes* of this type that were
-          previously created, `None` does not modify the current ufunc compilation mode.
+        - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"auto"`. If the
+          :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current compilation mode.
         - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
           for fields whose elements cannot be represented with :obj:`numpy.int64`.
         - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
@@ -80,33 +77,28 @@ def GF(
           represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
 
     display
-        The field element display representation. This can be modified after class construction with the :func:`~galois.FieldArrayClass.display` method.
-        See :ref:`Field Element Representation` for a further discussion.
+        The field element display representation. This can be modified after class construction with the :func:`~galois.FieldArray.display` method.
+        See :doc:`/basic-usage/element-representation` for a further discussion.
 
-        - `None` (default): For newly-created classes, `None` corresponds to `"int"`. For *Galois field array classes*
-          of this type that were previously created, `None` does not modify the current display mode.
-        - `"int"`: Sets the display mode to the :ref:`integer representation <Integer representation>`.
-        - `"poly"`: Sets the display mode to the :ref:`polynomial representation <Polynomial representation>`.
-        - `"power"`: Sets the display mode to the :ref:`power representation <Power representation>`.
+        - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"int"`. If the
+          :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current display mode.
+        - `"int"`: Sets the display mode to the :ref:`integer representation <int repr>`.
+        - `"poly"`: Sets the display mode to the :ref:`polynomial representation <poly repr>`.
+        - `"power"`: Sets the display mode to the :ref:`power representation <power repr>`.
 
     Returns
     -------
     :
-        A *Galois field array class* for :math:`\mathrm{GF}(p^m)`. If this class has already been created, a reference to that class is returned.
+        A :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
 
     Notes
     -----
-    The created *Galois field array class* is a subclass of :obj:`~galois.FieldArray` and an instance of :obj:`~galois.FieldArrayClass`.
-    The :obj:`~galois.FieldArray` inheritance provides the :obj:`~numpy.ndarray` functionality and some additional methods on
-    *Galois field arrays*. The :obj:`~galois.FieldArrayClass` metaclass provides a variety of class attributes and methods relating to the
-    finite field.
-
-    *Galois field array classes* of the same type (order, irreducible polynomial, and primitive element) are singletons. So, calling this
-    class factory with arguments that correspond to the same class will return the same class object.
+    :obj:`~galois.FieldArray` subclasses of the same type (order, irreducible polynomial, and primitive element) are singletons. So,
+    calling this class factory with arguments that correspond to the same subclass will return the same class object.
 
     Examples
     --------
-    Create a *Galois field array class* for each type of finite field.
+    Create a :obj:`~galois.FieldArray` subclass for each type of finite field.
 
     .. tab-set::
 
@@ -148,7 +140,7 @@ def GF(
                 GF = galois.GF(3**5)
                 print(GF)
 
-    Create a *Galois field array class* for extension fields and specify their irreducible polynomial.
+    Create a :obj:`~galois.FieldArray` subclass for extension fields and specify their irreducible polynomials.
 
     .. tab-set::
 
@@ -172,13 +164,13 @@ def GF(
                 GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 2")
                 print(GF)
 
-    Arbitrarily-large finite fields are also supported.
+    Finite fields with arbitrarily-large orders are supported.
 
     .. tab-set::
 
         .. tab-item:: GF(p)
 
-            Construct an arbitrarily-large prime field.
+            Construct a large prime field.
 
             .. ipython:: python
 
@@ -187,7 +179,7 @@ def GF(
 
         .. tab-item:: GF(2^m)
 
-            Construct an arbitrarily-large binary extension field.
+            Construct a large binary extension field.
 
             .. ipython:: python
 
@@ -196,7 +188,7 @@ def GF(
 
         .. tab-item:: GF(p^m)
 
-            Construct an arbitrarily-large prime extension field.
+            Construct a large prime extension field.
 
             .. ipython:: python
 
@@ -250,7 +242,7 @@ def Field(
 
 def _GF_prime(
     characteristic: int,
-    primitive_element_: Optional[PolyLike] = None,
+    primitive_element_: Optional[int] = None,
     verify: bool = True,
     compile_: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
     display: Optional[Literal["int", "poly", "power"]] = None
@@ -291,21 +283,21 @@ def _GF_prime(
 
     if characteristic == 2:
         cls = GF2
-        cls.compile(compile_)
     else:
-        cls = types.new_class(name, bases=(FieldArray,), kwds={
-            "metaclass": GFpMeta,
+        cls = types.new_class(name, bases=(GFp,), kwds={
             "characteristic": characteristic,
             "degree": degree,
             "order": order,
-            "is_primitive_poly": True,
+            "irreducible_poly_int": 2*characteristic - primitive_element_,  # f(x) = x - e
             "primitive_element": primitive_element_,
-            "compile": compile_
+            "compile": compile_,
+            "display": display
         })
 
+    # Add the class to the "galois" namespace
     cls.__module__ = "galois"
-    cls._irreducible_poly = Poly([1, -int(primitive_element_)], field=cls)
-    cls.display(display)
+
+    cls._is_primitive_poly = True
 
     # Add class to dictionary of flyweights
     _GF_prime._classes[key] = cls
@@ -385,32 +377,37 @@ def _GF_extension(
         raise ValueError(f"Argument `primitive_element` must be a multiplicative generator of GF({characteristic}^{degree}), {primitive_element_} is not.")
 
     if characteristic == 2:
-        cls = types.new_class(name, bases=(FieldArray,), kwds={
-            "metaclass": GF2mMeta,
+        cls = types.new_class(name, bases=(GF2m,), kwds={
             "characteristic": characteristic,
             "degree": degree,
             "order": order,
-            "irreducible_poly": irreducible_poly_,
+            "irreducible_poly_int": int(irreducible_poly_),
             "is_primitive_poly": is_primitive_poly,
             "primitive_element": int(primitive_element_),
             "prime_subfield": prime_subfield,
-            "compile": compile_
+            "compile": compile_,
+            "display": display
         })
     else:
-        cls = types.new_class(name, bases=(FieldArray,), kwds={
-            "metaclass": GFpmMeta,
+        cls = types.new_class(name, bases=(GFpm,), kwds={
             "characteristic": characteristic,
             "degree": degree,
             "order": order,
-            "irreducible_poly": irreducible_poly_,
+            "irreducible_poly_int": int(irreducible_poly_),
             "is_primitive_poly": is_primitive_poly,
             "primitive_element": int(primitive_element_),
             "prime_subfield": prime_subfield,
-            "compile": compile_
+            "compile": compile_,
+            "display": display
         })
 
+    # Add the class to the "galois" namespace
     cls.__module__ = "galois"
-    cls.display(display)
+
+    if is_primitive_poly is not None:
+        cls._is_primitive_poly = is_primitive_poly
+    else:
+        cls._is_primitive_poly = cls._irreducible_poly(cls._primitive_element, field=cls) == 0
 
     # Add class to dictionary of flyweights
     _GF_extension._classes[key] = cls

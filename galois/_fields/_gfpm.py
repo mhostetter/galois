@@ -1,12 +1,14 @@
 """
 A module that contains a metaclass mixin that provides GF(p^m) arithmetic using explicit calculation.
 """
+from __future__ import annotations
+
 import numba
 import numpy as np
 
-from .._array import DTYPES
+from .._domains._array import DTYPES
 
-from ._array import FieldArrayClass, DirMeta
+from ._array import FieldArray
 
 DTYPE = np.int64
 INT_TO_POLY = lambda a, CHARACTERISTIC, DEGREE: [0,]*DEGREE
@@ -15,31 +17,14 @@ MULTIPLY = lambda a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY: a * b
 RECIPROCAL = lambda a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY: 1 / a
 
 
-class GFpmMeta(FieldArrayClass, DirMeta):
+class GFpm(FieldArray):
     """
-    A metaclass for all GF(p^m) classes.
+    A base class for all GF(p^m) classes.
     """
-    # pylint: disable=no-value-for-parameter
-
     # Need to have a unique cache of "calculate" functions for GF(p^m)
     _FUNC_CACHE_CALCULATE = {}
 
-    def __init__(cls, name, bases, namespace, **kwargs):
-        super().__init__(name, bases, namespace, **kwargs)
-        cls._irreducible_poly_coeffs = np.array(cls._irreducible_poly.coeffs, dtype=cls.dtypes[-1])
-        cls._prime_subfield = kwargs["prime_subfield"]
-
-        cls.compile(kwargs["compile"])
-
-        # Determine if the irreducible polynomial is primitive
-        if cls._is_primitive_poly is None:
-            # TODO: Clean this up
-            coeffs = cls.irreducible_poly.coeffs.view(np.ndarray).astype(cls.dtypes[-1])
-            x = np.array(cls.primitive_element, dtype=cls.dtypes[-1], ndmin=1)
-            add = cls._func_python("add")
-            multiply = cls._func_python("multiply")
-            cls._is_primitive_poly = cls._function_python("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0] == 0
-
+    @classmethod
     def _determine_dtypes(cls):
         """
         The only valid dtypes are ones that can hold x*x for x in [0, order).
@@ -51,8 +36,8 @@ class GFpmMeta(FieldArrayClass, DirMeta):
             dtypes = [np.object_]
         return dtypes
 
+    @classmethod
     def _set_globals(cls, name):
-        super()._set_globals(name)
         global DTYPE, INT_TO_POLY, POLY_TO_INT, MULTIPLY, RECIPROCAL
 
         DTYPE = np.int64
@@ -63,8 +48,8 @@ class GFpmMeta(FieldArrayClass, DirMeta):
         if name in ["divide", "power"]:
             RECIPROCAL = cls._func_calculate("reciprocal", reset=False)
 
+    @classmethod
     def _reset_globals(cls):
-        super()._reset_globals()
         global DTYPE, INT_TO_POLY, POLY_TO_INT, MULTIPLY, RECIPROCAL
 
         DTYPE = np.object_
@@ -73,6 +58,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
         MULTIPLY = cls._func_python("multiply")
         RECIPROCAL = cls._func_python("reciprocal")
 
+    @classmethod
     def _func_calculate(cls, name, reset=True):
         key = (name,)
 
@@ -91,6 +77,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
     # Ufunc routines
     ###############################################################################
 
+    @classmethod
     def _convert_inputs_to_vector(cls, inputs, kwargs):
         v_inputs = list(inputs)
         for i in range(len(inputs)):
@@ -111,12 +98,14 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
         return v_inputs, kwargs
 
+    @classmethod
     def _convert_output_from_vector(cls, output, field, dtype):  # pylint: disable=no-self-use
         if output is None:
             return None
         else:
             return field.Vector(output, dtype=dtype)
 
+    @classmethod
     def _ufunc_routine_add(cls, ufunc, method, inputs, kwargs, meta):
         if cls.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
@@ -129,6 +118,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
             output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
             return output
 
+    @classmethod
     def _ufunc_routine_negative(cls, ufunc, method, inputs, kwargs, meta):
         if cls.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
@@ -141,6 +131,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
             output = cls._convert_output_from_vector(output, meta["field"], meta["dtype"])
             return output
 
+    @classmethod
     def _ufunc_routine_subtract(cls, ufunc, method, inputs, kwargs, meta):
         if cls.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
@@ -159,7 +150,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _int_to_poly(a, CHARACTERISTIC, DEGREE):
+    def _int_to_poly(a: int, CHARACTERISTIC: int, DEGREE: int):
         """
         Convert the integer representation to vector/polynomial representation
         """
@@ -173,7 +164,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _poly_to_int(a_vec, CHARACTERISTIC, DEGREE):
+    def _poly_to_int(a_vec: int, CHARACTERISTIC: int, DEGREE: int):
         """
         Convert the integer representation to vector/polynomial representation
         """
@@ -187,7 +178,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _add_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec + b_vec) % CHARACTERISTIC
@@ -197,7 +188,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _negative_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         a_vec = (-a_vec) % CHARACTERISTIC
         c = POLY_TO_INT(a_vec, CHARACTERISTIC, DEGREE)
@@ -206,7 +197,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _subtract_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec - b_vec) % CHARACTERISTIC
@@ -216,7 +207,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _multiply_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
 
@@ -247,7 +238,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _reciprocal_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
         """
         From Fermat's Little Theorem:
         a^(p^m - 1) = 1 (mod p^m), for a in GF(p^m)
@@ -279,7 +270,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _divide_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -293,7 +284,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _power_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
         """
         Square and Multiply Algorithm
 
@@ -331,7 +322,7 @@ class GFpmMeta(FieldArrayClass, DirMeta):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _log_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
         """
         TODO: Replace this with more efficient algorithm
         a = α^m
@@ -359,26 +350,26 @@ class GFpmMeta(FieldArrayClass, DirMeta):
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a):
+    def _sqrt(a: GFpm):
         """
         Algorithm 3.34 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         """
         field = type(a)
-        p = field.characteristic
+        p = field._characteristic
 
         if p % 4 == 3:
-            roots = a ** ((field.order + 1)//4)
+            roots = a ** ((field._order + 1)//4)
 
         elif p % 8 == 5:
-            d = a ** ((field.order - 1)//4)
+            d = a ** ((field._order - 1)//4)
             roots = field.Zeros(a.shape)
 
             idxs = np.where(d == 1)
-            roots[idxs] = a[idxs] ** ((field.order + 3)//8)
+            roots[idxs] = a[idxs] ** ((field._order + 3)//8)
 
             idxs = np.where(d == p - 1)
-            roots[idxs] = 2*a[idxs] * (4*a[idxs]) ** ((field.order - 5)//8)
+            roots[idxs] = 2*a[idxs] * (4*a[idxs]) ** ((field._order - 5)//8)
 
         else:
             # Find a quadratic non-residue element `b`
@@ -388,13 +379,13 @@ class GFpmMeta(FieldArrayClass, DirMeta):
                     break
 
             # Write p - 1 = 2^s * t
-            n = field.order - 1
+            n = field._order - 1
             s = 0
             while n % 2 == 0:
                 n >>= 1
                 s += 1
             t = n
-            assert field.order - 1 == 2**s * t
+            assert field._order - 1 == 2**s * t
 
             roots = field.Zeros(a.shape)  # Empty array of roots
 
@@ -412,3 +403,5 @@ class GFpmMeta(FieldArrayClass, DirMeta):
         roots = field._view(np.minimum(roots, -roots))  # Return only the smaller root
 
         return roots
+
+GFpm._reset_globals()

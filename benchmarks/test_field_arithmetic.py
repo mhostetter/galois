@@ -1,5 +1,5 @@
 """
-A pytest module to benchmark Galois field array arithmetic.
+A pytest module to benchmark FieldArray arithmetic.
 """
 import pytest
 import numpy as np

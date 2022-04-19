@@ -1,5 +1,5 @@
 """
-A pytest module to test the accuracy of Galois field array arithmetic.
+A pytest module to test the accuracy of FieldArray arithmetic.
 """
 import random
 

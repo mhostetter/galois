@@ -1,11 +1,12 @@
 """
 A performant NumPy extension for Galois fields and their applications.
 """
-# pylint: disable=redefined-builtin,wrong-import-position
+# pylint: disable=wrong-import-position
 
 from ._version import __version__
 
 # Nested modules
+from ._domains import *
 from ._polys import *  # Needs to be imported before _fields
 from ._fields import *
 ###############################################################################
@@ -19,7 +20,6 @@ _polys._primitive.FIELD_FACTORY = GF
 from ._codes import *  # Needs monkey patching before importing
 
 # Modules
-from ._array import *
 from ._lfsr import *
 from ._math import *
 from ._modular import *
