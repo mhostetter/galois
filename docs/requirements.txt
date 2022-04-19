@@ -1,6 +1,6 @@
 sphinx>=3
 git+https://github.com/jbms/sphinx-immaterial
-recommonmark>=0.5
+myst-parser
 sphinx-design
 sphinxcontrib-details-directive
 ipykernel
