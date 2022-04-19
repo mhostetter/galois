@@ -1,5 +1,5 @@
 """
-A pytest module to test instantiation of new Galois field arrays.
+A pytest module to test instantiation of new FieldArrays.
 """
 import pytest
 import numpy as np

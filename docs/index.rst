@@ -3,9 +3,9 @@
 
 The :obj:`galois` library is a Python 3 package that extends NumPy arrays to operate over finite fields.
 
-The user creates a :ref:`Galois field array class` using `GF = galois.GF(p**m)`. The *Galois field array class* `GF` is a subclass
-of :obj:`numpy.ndarray` and its constructor `x = GF(array_like)` mimics the call signature of :func:`numpy.array`. The :ref:`Galois field array`
-`x` is operated on like any other NumPy array except all arithmetic is performed in :math:`\mathrm{GF}(p^m)`, not :math:`\mathbb{R}`.
+The user creates a :obj:`~galois.FieldArray` subclass using `GF = galois.GF(p**m)`. `GF` is a subclass of :obj:`numpy.ndarray`
+and its constructor `x = GF(array_like)` mimics the signature of :func:`numpy.array`. The :obj:`~galois.FieldArray` `x` is operated
+on like any other NumPy array except all arithmetic is performed in :math:`\mathrm{GF}(p^m)`, not :math:`\mathbb{R}`.
 
 Internally, the finite field arithmetic is implemented by replacing `NumPy ufuncs <https://numpy.org/doc/stable/reference/ufuncs.html>`_.
 The new ufuncs are written in pure Python and `just-in-time compiled <https://numba.pydata.org/numba-doc/dev/user/vectorize.html>`_ with
@@ -25,13 +25,13 @@ Features
 
 - Supports all Galois fields :math:`\mathrm{GF}(p^m)`, even arbitrarily-large fields!
 - **Faster** than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for :math:`\mathrm{GF}(p)`.
-- Seamless integration with NumPy -- normal NumPy functions work on *Galois field arrays*.
+- Seamless integration with NumPy -- normal NumPy functions work on :obj:`~galois.FieldArray` instances.
 - Linear algebra over finite fields using normal :obj:`numpy.linalg` functions.
-- Linear transforms over finite fields, such as the FFT with :func:`numpy.fft.fft` and the NTT with :func:`galois.ntt`.
+- Linear transforms over finite fields, such as the FFT with :func:`numpy.fft.fft` and the NTT with :func:`~galois.ntt`.
 - Functions to generate irreducible, primitive, and Conway polynomials.
-- Univariate polynomials over finite fields with :obj:`galois.Poly`.
-- Forward error correction codes with :obj:`galois.BCH` and :obj:`galois.ReedSolomon`.
-- Fibonacci and Galois linear-feedback shift registers over any finite field with :obj:`galois.FLFSR` and :obj:`galois.GLFSR`.
+- Univariate polynomials over finite fields with :obj:`~galois.Poly`.
+- Forward error correction codes with :obj:`~galois.BCH` and :obj:`~galois.ReedSolomon`.
+- Fibonacci and Galois linear-feedback shift registers over any finite field with :obj:`~galois.FLFSR` and :obj:`~galois.GLFSR`.
 - Various number theoretic functions.
 - Integer factorization and accompanying algorithms.
 - Prime number generation and primality testing.
@@ -65,25 +65,25 @@ Citation
 
 If this library was useful to you in your research, please cite us. Following the `GitHub citation standards <https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/about-citation-files>`_, here is the recommended citation.
 
-BibTeX
-......
+.. tab-set::
 
-.. code-block:: TeX
+   .. tab-item:: BibTeX
 
-   @software{Hostetter_Galois_2020,
-      title = {{Galois: A performant NumPy extension for Galois fields}},
-      author = {Hostetter, Matt},
-      month = {11},
-      year = {2020},
-      url = {https://github.com/mhostetter/galois},
-   }
+      .. code-block:: TeX
 
-APA
-...
+         @software{Hostetter_Galois_2020,
+            title = {{Galois: A performant NumPy extension for Galois fields}},
+            author = {Hostetter, Matt},
+            month = {11},
+            year = {2020},
+            url = {https://github.com/mhostetter/galois},
+         }
 
-.. code-block:: text
+   .. tab-item:: APA
 
-   Hostetter, M. (2020). Galois: A performant NumPy extension for Galois fields [Computer software]. https://github.com/mhostetter/galois
+      .. code-block:: text
+
+         Hostetter, M. (2020). Galois: A performant NumPy extension for Galois fields [Computer software]. https://github.com/mhostetter/galois
 
 
 .. toctree::
@@ -96,13 +96,12 @@ APA
    :caption: Basic Usage
    :hidden:
 
-   basic-usage/galois-field-classes.rst
+   basic-usage/array-classes.rst
    basic-usage/compilation-modes.rst
-   basic-usage/field-element-representation.rst
+   basic-usage/element-representation.rst
    basic-usage/array-creation.rst
    basic-usage/array-arithmetic.rst
-   basic-usage/linear-algebra.rst
-   basic-usage/poly-creation.rst
+   basic-usage/poly.rst
    basic-usage/poly-arithmetic.rst
 
 .. toctree::

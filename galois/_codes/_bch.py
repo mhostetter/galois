@@ -4,7 +4,7 @@ A module containing arbitrary Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(2).
 from __future__ import annotations
 
 import math
-from typing import Tuple, List, Optional, Union, overload
+from typing import Tuple, List, Optional, Union, Type, overload
 from typing_extensions import Literal
 
 import numba
@@ -12,7 +12,7 @@ from numba import int64
 import numpy as np
 
 from .. import _lfsr
-from .._fields import Field, FieldArrayClass, FieldArray, GF2  # pylint: disable=unused-import
+from .._fields import Field, FieldArray, GF2  # pylint: disable=unused-import
 from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
 from .._prime import factors
@@ -29,7 +29,7 @@ def _check_and_compute_field(
     c: int,
     primitive_poly: Optional[PolyLike] = None,
     primitive_element: Optional[PolyLike] = None
-) -> FieldArrayClass:
+) -> Type[FieldArray]:
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
     if not isinstance(k, (int, np.integer)):
@@ -811,9 +811,9 @@ class BCH:
             return message, N_errors
 
     @property
-    def field(self) -> "FieldArrayClass":
+    def field(self) -> Type["FieldArray"]:
         r"""
-        The *Galois field array class* for the :math:`\mathrm{GF}(2^m)` field that defines the BCH code.
+        The :obj:`~galois.FieldArray` subclass for the :math:`\mathrm{GF}(2^m)` field that defines the BCH code.
 
         Examples
         --------
@@ -829,7 +829,6 @@ class BCH:
     def n(self) -> int:
         """
         The codeword size :math:`n` of the :math:`[n, k, d]_2` code
-
 
         Examples
         --------
@@ -994,7 +993,7 @@ class BCH:
 # JIT-compiled implementation of the specified functions
 ###############################################################################
 
-DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._UNARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldArrayClass._POLY_ROOTS_CALCULATE_SIG, int64, int64, int64))
+DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._UNARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldArray._POLY_ROOTS_CALCULATE_SIG, int64, int64, int64))
 
 def _decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """

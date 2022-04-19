@@ -5,7 +5,7 @@ from typing import Tuple, Optional
 
 import numpy as np
 
-from .._array import Array
+from .._domains import Array
 
 
 def add(a: Array, b: Array) -> Array:

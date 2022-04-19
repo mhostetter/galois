@@ -3,29 +3,31 @@ Compilation Modes
 
 The :obj:`galois` library supports finite field arithmetic on NumPy arrays by just-in-time compiling custom
 `NumPy ufuncs <https://numpy.org/doc/stable/reference/ufuncs.html>`_. It uses `Numba <https://numba.pydata.org/>`_ to JIT
-compile ufuncs written in pure Python. The created :ref:`Galois field array class` `GF` intercepts NumPy calls to a
+compile ufuncs written in pure Python. The created :obj:`~galois.FieldArray` subclass `GF` intercepts NumPy calls to a
 given ufunc, JIT compiles the finite field ufunc (if not already cached), and then invokes the new ufunc on the input array(s).
 
 There are two primary compilation modes: `"jit-lookup"` and `"jit-calculate"`. The supported ufunc compilation modes of a given finite
-field are listed in :obj:`~galois.FieldArrayClass.ufunc_modes`.
+field are listed in :obj:`~galois.FieldArray.ufunc_modes`.
 
 .. ipython:: python
 
     GF = galois.GF(3**5)
     GF.ufunc_modes
 
-Large finite fields, which have `dtype=np.object_`, use `"python-calculate"` which utilizes non-compiled, pure-Python ufuncs.
+Large finite fields, which have :obj:`numpy.object_` data types, use `"python-calculate"` which utilizes non-compiled, pure-Python ufuncs.
 
 .. ipython:: python
 
     GF = galois.GF(2**100)
     GF.ufunc_modes
 
+.. _lookup tables:
+
 Lookup tables
 -------------
 
 The lookup table compilation mode `"jit-lookup"` uses exponential, logarithm, and Zech logarithm lookup tables
-to speed up arithmetic computations. These tables are built once at *Galois field array class*-creation time
+to speed up arithmetic computations. These tables are built once at :obj:`~galois.FieldArray` subclass-creation time
 during the call to :func:`~galois.GF`.
 
 The exponential and logarithm lookup tables map every finite field element to a power of the primitive element
@@ -70,6 +72,8 @@ is faster than table lookup, the explicit calculation is used.
     GF = galois.GF(3**5)
     GF.ufunc_mode
 
+.. _explicit calculation:
+
 Explicit calculation
 --------------------
 
@@ -111,10 +115,10 @@ the ufuncs to operate on Python integers, which have unlimited size. This does c
 Recompile the ufuncs
 --------------------
 
-The compilation mode may be explicitly set during construction of the *Galois field array class* using the
+The compilation mode may be explicitly set during creation of the :obj:`~galois.FieldArray` subclass using the
 `compile` keyword argument to :func:`~galois.GF`.
 
-Here, the *Galois field array class* for :math:`\mathrm{GF}(3^5)` would normally select `"jit-lookup"` as its
+Here, the :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(3^5)` would normally select `"jit-lookup"` as its
 default compilation mode. However, we can intentionally choose explicit calculation.
 
 .. ipython:: python
@@ -122,8 +126,8 @@ default compilation mode. However, we can intentionally choose explicit calculat
     GF = galois.GF(3**5, compile="jit-calculate")
     GF.ufunc_mode
 
-After *Galois field array classes* have been created, their compilation mode may be changed using the
-:func:`~galois.FieldArrayClass.compile` method.
+After a :obj:`~galois.FieldArray` subclass has been created, its compilation mode may be changed using the
+:func:`~galois.FieldArray.compile` method.
 
 .. ipython:: python
 

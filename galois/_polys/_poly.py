@@ -3,12 +3,12 @@ A module containing a class for univariate polynomials over finite fields.
 """
 from __future__ import annotations
 
-from typing import Tuple, Sequence, Optional, Union, overload
+from typing import Tuple, Sequence, Optional, Union, Type, overload
 from typing_extensions import Literal
 
 import numpy as np
 
-from .._array import ArrayClass, Array, ElementLike, ArrayLike, DEFAULT_FIELD_ARRAY
+from .._domains._array import Array, ElementLike, ArrayLike, DEFAULT_FIELD_ARRAY
 from .._overrides import set_module
 
 from . import _binary, _dense, _sparse
@@ -40,13 +40,15 @@ A :obj:`~typing.Union` representing objects that can be coerced into a polynomia
 
     galois.Poly.Str("2x^2 + 1", field=GF)
 
-- :obj:`~galois.typing.ArrayLike`: An array of polynomial coefficients. If the coefficients are :obj:`~galois.typing.IterableLike`, then the
-  Galois field must be known from context.
+- :obj:`~galois.typing.ArrayLike`: An array of polynomial coefficients in degree-descending order. If the coefficients are not
+  :obj:`~galois.Array`, then the Galois field must be known from context.
 
 .. ipython:: python
 
     galois.Poly([2, 0, 1], field=GF)
     galois.Poly(GF([2, 0, 1]))
+
+- :obj:`~galois.Poly`: A previously-created :obj:`~galois.Poly` object. No coercion is necessary.
 
 .. rubric:: Alias
 """
@@ -72,14 +74,14 @@ class Poly:
         GF = galois.GF(3**5)
         galois.Poly([124, 0, 223, 0, 0, 15], field=GF)
 
-    See :ref:`Polynomial Creation` and :ref:`Polynomial Arithmetic` for more examples.
+    See :doc:`/basic-usage/poly` and :doc:`/basic-usage/poly-arithmetic` for more examples.
     """
     __slots__ = ["_field", "_degrees", "_coeffs", "_nonzero_degrees", "_nonzero_coeffs", "_integer", "_degree", "_type"]
 
     # Special private attributes that are once computed. There are three arithmetic types for polynomials: "dense", "binary",
     # and "sparse". All types define _field, "dense" defines _coeffs, "binary" defines "_integer", and "sparse" defines
     # _nonzero_degrees and _nonzero_coeffs. The other properties are created when needed.
-    _field: ArrayClass
+    _field: Type[Array]
     _degrees: np.ndarray
     _coeffs: Array
     _nonzero_degrees: np.ndarray
@@ -91,7 +93,7 @@ class Poly:
     # Increase my array priority so numpy will call my __radd__ instead of its own __add__
     __array_priority__ = 100
 
-    def __init__(self, coeffs: ArrayLike, field: Optional[ArrayClass] = None, order: Literal["desc", "asc"] = "desc"):
+    def __init__(self, coeffs: ArrayLike, field: Optional[Type[Array]] = None, order: Literal["desc", "asc"] = "desc"):
         r"""
         Creates a polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
@@ -108,7 +110,7 @@ class Poly:
             * :obj:`None` (default): If the coefficients are a :obj:`~galois.Array`, they won't be modified. If the coefficients
               are not explicitly in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using
               `galois.GF2(coeffs)`.
-            * :obj:`~galois.ArrayClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
+            * :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
 
         order
             The interpretation of the coefficient degrees.
@@ -118,8 +120,8 @@ class Poly:
         """
         if not isinstance(coeffs, (list, tuple, np.ndarray, Array)):
             raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
-        if not isinstance(field, (type(None), ArrayClass)):
-            raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
+        if not (field is None or issubclass(field, Array)):
+            raise TypeError(f"Argument `field` must be a Array subclass, not {field}.")
         if not isinstance(order, str):
             raise TypeError(f"Argument `order` must be a str, not {type(order)}.")
         if isinstance(coeffs, (Array, np.ndarray)) and not coeffs.ndim <= 1:
@@ -147,7 +149,7 @@ class Poly:
             self._type = "dense"
 
     @classmethod
-    def _convert_coeffs(cls, coeffs: ArrayLike, field: Optional[ArrayClass] = None) -> Tuple[Array, ArrayClass]:
+    def _convert_coeffs(cls, coeffs: ArrayLike, field: Optional[Type[Array]] = None) -> Tuple[Array, Type[Array]]:
         if isinstance(coeffs, Array):
             if field is None:
                 # Infer the field from the coefficients provided
@@ -166,7 +168,7 @@ class Poly:
         return coeffs, field
 
     @classmethod
-    def _PolyLike(cls, poly_like: PolyLike, field: Optional[ArrayClass] = None) -> Poly:
+    def _PolyLike(cls, poly_like: PolyLike, field: Optional[Type[Array]] = None) -> Poly:
         """
         A private alternate constructor that converts a poly-like object into a polynomial, given a finite field.
         """
@@ -188,7 +190,7 @@ class Poly:
     ###############################################################################
 
     @classmethod
-    def Zero(cls, field: Optional[ArrayClass] = None) -> Poly:
+    def Zero(cls, field: Optional[Type[Array]] = None) -> Poly:
         r"""
         Constructs the polynomial :math:`f(x) = 0` over :math:`\mathrm{GF}(p^m)`.
 
@@ -220,7 +222,7 @@ class Poly:
         return Poly([0], field=field)
 
     @classmethod
-    def One(cls, field: Optional[ArrayClass] = None) -> Poly:
+    def One(cls, field: Optional[Type[Array]] = None) -> Poly:
         r"""
         Constructs the polynomial :math:`f(x) = 1` over :math:`\mathrm{GF}(p^m)`.
 
@@ -252,7 +254,7 @@ class Poly:
         return Poly([1], field=field)
 
     @classmethod
-    def Identity(cls, field: Optional[ArrayClass] = None) -> Poly:
+    def Identity(cls, field: Optional[Type[Array]] = None) -> Poly:
         r"""
         Constructs the polynomial :math:`f(x) = x` over :math:`\mathrm{GF}(p^m)`.
 
@@ -284,7 +286,7 @@ class Poly:
         return Poly([1, 0], field=field)
 
     @classmethod
-    def Random(cls, degree: int, seed: Optional[Union[int, np.random.Generator]] = None, field: Optional[ArrayClass] = None) -> Poly:
+    def Random(cls, degree: int, seed: Optional[Union[int, np.random.Generator]] = None, field: Optional[Type[Array]] = None) -> Poly:
         r"""
         Constructs a random polynomial over :math:`\mathrm{GF}(p^m)` with degree :math:`d`.
 
@@ -335,7 +337,7 @@ class Poly:
                 raise ValueError("Seed must be an integer, a numpy.random.Generator or None.")
             if isinstance(seed, (int, np.integer)) and seed < 0:
                 raise ValueError("Seed must be non-negative.")
-        if not isinstance(field, ArrayClass):
+        if not issubclass(field, Array):
             raise TypeError(f"Argument `field` must be a Galois field class, not {type(field)}.")
         if not degree >= 0:
             raise ValueError(f"Argument `degree` must be non-negative, not {degree}.")
@@ -348,7 +350,7 @@ class Poly:
         return Poly(coeffs)
 
     @classmethod
-    def Str(cls, string: str, field: Optional[ArrayClass] = None) -> Poly:
+    def Str(cls, string: str, field: Optional[Type[Array]] = None) -> Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its string representation.
 
@@ -403,7 +405,7 @@ class Poly:
         return Poly.Degrees(degrees, coeffs, field=field)
 
     @classmethod
-    def Int(cls, integer: int, field: Optional[ArrayClass] = None) -> Poly:
+    def Int(cls, integer: int, field: Optional[Type[Array]] = None) -> Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its integer representation.
 
@@ -476,7 +478,7 @@ class Poly:
         field = DEFAULT_FIELD_ARRAY if field is None else field
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
-        if not isinstance(field, ArrayClass):
+        if not issubclass(field, Array):
             raise TypeError(f"Argument `field` must be a Galois field class, not {type(field)}.")
         if not integer >= 0:
             raise ValueError(f"Argument `integer` must be non-negative, not {integer}.")
@@ -497,7 +499,7 @@ class Poly:
         cls,
         degrees: Union[Sequence[int], np.ndarray],
         coeffs: Optional[ArrayLike] = None,
-        field: Optional[ArrayClass] = None
+        field: Optional[Type[Array]] = None
     ) -> Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its non-zero degrees.
@@ -513,7 +515,7 @@ class Poly:
 
             * :obj:`None` (default): If the coefficients are a :obj:`~galois.Array`, they won't be modified. If the coefficients are not explicitly
               in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(coeffs)`.
-            * :obj:`~galois.ArrayClass`: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
+            * :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
 
         Returns
         -------
@@ -539,8 +541,8 @@ class Poly:
             raise TypeError(f"Argument `degrees` must array-like, not {type(degrees)}.")
         if not isinstance(coeffs, (type(None), list, tuple, np.ndarray, Array)):
             raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
-        if not isinstance(field, (type(None), ArrayClass)):
-            raise TypeError(f"Argument `field` must be a Galois field array class, not {type(field)}.")
+        if not (field is None or issubclass(field, Array)):
+            raise TypeError(f"Argument `field` must be a Array subclass, not {type(field)}.")
 
         degrees = np.array(degrees, dtype=np.int64)
         coeffs = [1,]*len(degrees) if coeffs is None else coeffs
@@ -589,7 +591,7 @@ class Poly:
         cls,
         roots: ArrayLike,
         multiplicities: Optional[Union[Sequence[int], np.ndarray]] = None,
-        field: Optional[ArrayClass] = None
+        field: Optional[Type[Array]] = None
     ) -> Poly:
         r"""
         Constructs a monic polynomial over :math:`\mathrm{GF}(p^m)` from its roots.
@@ -605,7 +607,7 @@ class Poly:
 
             * :obj:`None` (default): If the roots are a :obj:`~galois.Array`, they won't be modified. If the roots are not explicitly
               in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(roots)`.
-            * :obj:`~galois.ArrayClass`: The roots are explicitly converted to this Galois field `field(roots)`.
+            * :obj:`~galois.Array` subclass: The roots are explicitly converted to this Galois field `field(roots)`.
 
         Returns
         -------
@@ -650,8 +652,8 @@ class Poly:
             raise TypeError(f"Argument `roots` must be array-like, not {type(roots)}.")
         if not isinstance(multiplicities, (tuple, list, np.ndarray)):
             raise TypeError(f"Argument `multiplicities` must be array-like, not {type(multiplicities)}.")
-        if not isinstance(field, (type(None), ArrayClass)):
-            raise TypeError(f"Argument `field` must be a Galois field array class, not {field}.")
+        if not (field is None or issubclass(field, Array)):
+            raise TypeError(f"Argument `field` must be a Array subclass, not {field}.")
 
         roots, field = cls._convert_coeffs(roots, field)
 
@@ -776,7 +778,7 @@ class Poly:
         Returns
         -------
         :
-            Galois field array of roots of :math:`f(x)`. The roots are ordered in increasing order.
+            An array of roots of :math:`f(x)`. The roots are ordered in increasing order.
         :
             The multiplicity of each root. This is only returned if `multiplicity=True`.
 
@@ -1038,7 +1040,7 @@ class Poly:
     def __call__(
         self,
         x: Union[ElementLike, ArrayLike],
-        field: Optional[ArrayClass] = None,
+        field: Optional[Type[Array]] = None,
         elementwise: bool = True
     ) -> Array:
         r"""
@@ -1047,7 +1049,7 @@ class Poly:
         Parameters
         ----------
         x
-            An array (or 0-D scalar) :math:`x` of finite field elements to evaluate the polynomial at.
+            A finite field scalar or array to evaluate the polynomial at.
         field
             The Galois field to evaluate the polynomial over. The default is `None` which represents
             the polynomial's current field, i.e. :obj:`field`.
@@ -1090,8 +1092,8 @@ class Poly:
 
         :meta public:
         """
-        if not isinstance(field, (type(None), ArrayClass)):
-            raise TypeError(f"Argument `field` must be a Galois field array class, not {type(field)}.")
+        if not (field is None or issubclass(field, Array)):
+            raise TypeError(f"Argument `field` must be a Array subclass, not {type(field)}.")
 
         field = self.field if field is None else field
         coeffs = field(self.coeffs)
@@ -1505,9 +1507,9 @@ class Poly:
     ###############################################################################
 
     @property
-    def field(self) -> "ArrayClass":
+    def field(self) -> Type["Array"]:
         """
-        The *Galois field array class* for the finite field the coefficients are over.
+        The :obj:`~galois.Array` subclass for the finite field the coefficients are over.
 
         Examples
         --------

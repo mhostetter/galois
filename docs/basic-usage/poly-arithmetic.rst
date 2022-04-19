@@ -4,7 +4,7 @@ Polynomial Arithmetic
 Standard arithmetic
 -------------------
 
-After creating a :ref:`polynomial over a finite field <Polynomial Creation>`, nearly any polynomial arithmetic operation can be
+After creating a :doc:`polynomial over a finite field <poly>`, nearly any polynomial arithmetic operation can be
 performed using Python operators.
 
 In the sections below, the finite field :math:`\mathrm{GF}(7)` and polynomials :math:`f(x)` and :math:`g(x)` are used.
@@ -174,13 +174,6 @@ Compute the polynomial greatest common divisor using :func:`~galois.gcd` and :fu
 
     galois.gcd(f, g)
     galois.egcd(f, g)
-
-Perform efficient modular exponentiation using the built-in :func:`pow`.
-
-.. ipython:: python
-
-    # Computes (f ** 127) % g
-    pow(f, 127, g)
 
 Factor a polynomial into its irreducible polynomial factors using :func:`~galois.factors`.
 

@@ -4,28 +4,21 @@ A module that contains a metaclass mixin that provides GF(p) arithmetic using ex
 import numba
 import numpy as np
 
-from .._array import DTYPES
+from .._domains._array import DTYPES
 
-from ._array import FieldArrayClass, DirMeta
+from ._array import FieldArray
 
 RECIPROCAL = lambda a, *args: 1 / a
 
 
-class GFpMeta(FieldArrayClass, DirMeta):
+class GFp(FieldArray):
     """
-    An metaclass for all GF(p) classes.
+    An base class for all GF(p) classes.
     """
-    # pylint: disable=no-value-for-parameter
-
     # Need to have a unique cache of "calculate" functions for GF(p)
     _FUNC_CACHE_CALCULATE = {}
 
-    def __init__(cls, name, bases, namespace, **kwargs):
-        super().__init__(name, bases, namespace, **kwargs)
-        cls._prime_subfield = cls
-
-        cls.compile(kwargs["compile"])
-
+    @classmethod
     def _determine_dtypes(cls):
         """
         The only valid dtypes are ones that can hold x*x for x in [0, order).
@@ -36,21 +29,22 @@ class GFpMeta(FieldArrayClass, DirMeta):
             dtypes = [np.object_]
         return dtypes
 
+    @classmethod
     def _ufunc(cls, name):
         # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
         if name not in cls._ufuncs and cls.ufunc_mode == "jit-lookup" and name in ["add", "negative", "subtract"]:
             cls._ufuncs[name] = cls._ufunc_calculate(name)
         return super()._ufunc(name)
 
+    @classmethod
     def _set_globals(cls, name):
-        super()._set_globals(name)
         global RECIPROCAL
 
         if name in ["divide", "power"]:
             RECIPROCAL = cls._func_calculate("reciprocal", reset=False)
 
+    @classmethod
     def _reset_globals(cls):
-        super()._reset_globals()
         global RECIPROCAL
 
         RECIPROCAL = cls._func_python("reciprocal")
@@ -255,3 +249,5 @@ class GFpMeta(FieldArrayClass, DirMeta):
         roots = field._view(np.minimum(roots, -roots))  # Return only the smaller root
 
         return roots
+
+GFp._reset_globals()

@@ -1,7 +1,7 @@
 Intro to Extension Fields
 =========================
 
-As discussed in the :ref:`Intro to Prime Fields` tutorial, a finite field is a finite set that is closed under addition, subtraction, multiplication,
+As discussed in the :doc:`intro-to-prime-fields` tutorial, a finite field is a finite set that is closed under addition, subtraction, multiplication,
 and division. Galois proved that finite fields exist only when their *order* (or size of the set) is a prime power :math:`p^m`.
 
 When the order is prime, the arithmetic is *mostly* computed using integer arithmetic modulo :math:`p`. When the order is a prime power, namely
@@ -11,7 +11,7 @@ polynomial :math:`f(x)`.
 Extension field
 ---------------
 
-In this tutorial, we will consider the extension field :math:`\mathrm{GF}(3^2)`. Using the :obj:`galois` library, the :ref:`Galois field array class`
+In this tutorial, we will consider the extension field :math:`\mathrm{GF}(3^2)`. Using the :obj:`galois` library, the :obj:`~galois.FieldArray` subclass
 `GF9` is created using the class factory :func:`~galois.GF`.
 
 .. tab-set::
@@ -50,7 +50,7 @@ In this tutorial, we will consider the extension field :math:`\mathrm{GF}(3^2)`.
    integer representation :math:`\{0, 1, \dots, p^m - 1\}` to display the arrays more compactly. Switch the display between the three
    representations using the tabbed sections.
 
-   See :ref:`Field Element Representation` for more details.
+   See :doc:`/basic-usage/element-representation` for more details.
 
 Elements
 --------
@@ -97,7 +97,7 @@ Irreducible polynomial
 Every extension field must be defined with respect to an irreducible polynomial :math:`f(x)`. This polynomial defines the
 arithmetic of the field.
 
-When creating a *Galois field array class* in :obj:`galois`, if an irreducible polynomial is not explicitly specified, a default
+When creating a :obj:`~galois.FieldArray` subclass in :obj:`galois`, if an irreducible polynomial is not explicitly specified, a default
 is chosen. The default is the Conway polynomial :math:`C_{p,m}(x)`, which is irreducible *and* primitive. See :func:`~galois.conway_poly`
 for more information.
 
@@ -133,7 +133,7 @@ Here are :math:`a` and :math:`b` represented using :obj:`~galois.Poly` objects.
    b_poly = galois.Poly([1, 1], field=GF3); b_poly
 
 Here are :math:`a` and :math:`b` represented as extension field elements. Extension field elements can be specified as integers
-or polynomial strings. See :ref:`Array Creation` for more details.
+or polynomial strings. See :doc:`/basic-usage/array-creation` for more details.
 
 .. tab-set::
 
@@ -543,8 +543,8 @@ A primitive element has multiplicative order :math:`\textrm{ord}(g) = p^m - 1`.
 A primitive element
 ...................
 
-In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`~galois.FieldArrayClass.primitive_element`
-property.
+In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`~galois.FieldArray.primitive_element`
+class property.
 
 .. tab-set::
 
@@ -580,7 +580,7 @@ property.
          g = GF9.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer
-representations using :func:`~galois.FieldArrayClass.repr_table`.
+representations using :func:`~galois.FieldArray.repr_table`.
 
 Here is the representation table using the default generator :math:`g = x`. Notice its multiplicative order is :math:`p^m - 1`.
 
@@ -593,7 +593,7 @@ Other primitive elements
 ........................
 
 There are multiple primitive elements of any finite field. All primitive elements are provided in the
-:obj:`~galois.FieldArrayClass.primitive_elements` property.
+:obj:`~galois.FieldArray.primitive_elements` class property.
 
 .. tab-set::
 

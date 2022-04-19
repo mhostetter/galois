@@ -1,5 +1,5 @@
 """
-A pytest module to test ufunc methods on Galois field arrays.
+A pytest module to test ufunc methods on FieldArrays.
 """
 import numpy as np
 import pytest

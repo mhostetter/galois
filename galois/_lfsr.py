@@ -3,22 +3,19 @@ A module containing classes and functions for generating and analyzing linear fe
 """
 from __future__ import annotations
 
-from typing import Optional, overload
+from typing import Optional, Type, overload
 from typing_extensions import Literal
 
 import numba
 import numpy as np
 from numba import int64
 
-from ._fields import FieldArrayClass, FieldArray
+from ._fields import FieldArray
 from ._overrides import set_module
 from ._polys import Poly
 from .typing import ArrayLike
 
-__all__ = [
-    "FLFSR", "GLFSR",
-    "berlekamp_massey"
-]
+__all__ = ["FLFSR", "GLFSR", "berlekamp_massey"]
 
 
 class _LFSR:
@@ -61,7 +58,7 @@ class _LFSR:
     @classmethod
     def Taps(cls, taps: FieldArray, state: Optional[ArrayLike] = None) -> _LFSR:
         if not isinstance(taps, FieldArray):
-            raise TypeError(f"Argument `taps` must be a Galois field array, not {type(taps)}.")
+            raise TypeError(f"Argument `taps` must be a FieldArray, not {type(taps)}.")
 
         if cls._type == "fibonacci":
             # T = [c_n-1, c_n-2, ..., c_1, c_0]
@@ -175,7 +172,7 @@ class _LFSR:
         return y
 
     @property
-    def field(self) -> FieldArrayClass:
+    def field(self) -> Type[FieldArray]:
         return self._field
 
     @property
@@ -601,9 +598,9 @@ class FLFSR(_LFSR):
         return GLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> "FieldArrayClass":
+    def field(self) -> Type["FieldArray"]:
         """
-        The *Galois field array class* for the finite field that defines the linear arithmetic.
+        The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 
         Examples
         --------
@@ -1105,9 +1102,9 @@ class GLFSR(_LFSR):
         return FLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> "FieldArrayClass":
+    def field(self) -> Type["FieldArray"]:
         """
-        The *Galois field array class* for the finite field that defines the linear arithmetic.
+        The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 
         Examples
         --------
@@ -1226,13 +1223,13 @@ class GLFSR(_LFSR):
 
 
 @overload
-def berlekamp_massey(sequence: FieldArray, output: Literal["minimal"]) -> Poly:
+def berlekamp_massey(sequence: "FieldArray", output: Literal["minimal"]) -> Poly:
     ...
 @overload
-def berlekamp_massey(sequence: FieldArray, output: Literal["fibonacci"]) -> FLFSR:
+def berlekamp_massey(sequence: "FieldArray", output: Literal["fibonacci"]) -> FLFSR:
     ...
 @overload
-def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR:
+def berlekamp_massey(sequence: "FieldArray", output: Literal["galois"]) -> GLFSR:
     ...
 @set_module("galois")
 def berlekamp_massey(sequence, output="minimal"):
@@ -1313,7 +1310,7 @@ def berlekamp_massey(sequence, output="minimal"):
                 np.array_equal(y, z)
     """
     if not isinstance(sequence, FieldArray):
-        raise TypeError(f"Argument `sequence` must be a Galois field array, not {type(sequence)}.")
+        raise TypeError(f"Argument `sequence` must be a FieldArray, not {type(sequence)}.")
     if not isinstance(output, str):
         raise TypeError(f"Argument `output` must be a string, not {type(output)}.")
     if not sequence.ndim == 1:
@@ -1375,7 +1372,7 @@ def python_func(name):
     return eval(f"{name}_calculate")
 
 
-FIBONACCI_LFSR_STEP_FORWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, int64, int64, int64))
+FIBONACCI_LFSR_STEP_FORWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def fibonacci_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """
@@ -1428,7 +1425,7 @@ def fibonacci_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHA
     return y
 
 
-FIBONACCI_LFSR_STEP_BACKWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, int64, int64, int64))
+FIBONACCI_LFSR_STEP_BACKWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def fibonacci_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """
@@ -1481,7 +1478,7 @@ def fibonacci_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPL
     return y
 
 
-GALOIS_LFSR_STEP_FORWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, int64, int64, int64))
+GALOIS_LFSR_STEP_FORWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def galois_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """
@@ -1534,7 +1531,7 @@ def galois_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHARAC
     return y
 
 
-GALOIS_LFSR_STEP_BACKWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, int64, int64, int64))
+GALOIS_LFSR_STEP_BACKWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, int64, int64, int64))
 
 def galois_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """
@@ -1584,7 +1581,7 @@ def galois_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPLY, 
     return y
 
 
-BERLEKAMP_MASSEY_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._UNARY_CALCULATE_SIG, int64, int64, int64))
+BERLEKAMP_MASSEY_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._UNARY_CALCULATE_SIG, int64, int64, int64))
 
 def berlekamp_massey_calculate(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY

@@ -17,13 +17,13 @@ def test_add():
     assert poly + e == poly + e_poly
     assert e + poly == e_poly + poly
 
-    # Not a Galois field array
+    # Not a FieldArray
     with pytest.raises(TypeError):
         poly + 1
     with pytest.raises(TypeError):
         1 + poly
 
-    # Not a 0-D Galois field array
+    # Not a 0-D FieldArray
     with pytest.raises(ValueError):
         poly + GF.Random(3, low=1)
     with pytest.raises(ValueError):
@@ -38,13 +38,13 @@ def test_subtract():
     assert poly - e == poly - e_poly
     assert e - poly == e_poly - poly
 
-    # Not a Galois field array
+    # Not a FieldArray
     with pytest.raises(TypeError):
         poly - 1
     with pytest.raises(TypeError):
         1 - poly
 
-    # Not a 0-D Galois field array
+    # Not a 0-D FieldArray
     with pytest.raises(ValueError):
         poly - GF.Random(3, low=1)
     with pytest.raises(ValueError):
@@ -59,7 +59,7 @@ def test_multiply():
     assert poly * e == poly * e_poly
     assert e * poly == e_poly * poly
 
-    # Not a 0-D Galois field array
+    # Not a 0-D FieldArray
     with pytest.raises(ValueError):
         poly * GF.Random(3, low=1)
     with pytest.raises(ValueError):
@@ -74,13 +74,13 @@ def test_floor_divide():
     assert poly // e == poly // e_poly
     assert e // poly == e_poly // poly
 
-    # Not a Galois field array
+    # Not a FieldArray
     with pytest.raises(TypeError):
         poly // 1
     with pytest.raises(TypeError):
         1 // poly
 
-    # Not a 0-D Galois field array
+    # Not a 0-D FieldArray
     with pytest.raises(ValueError):
         poly // GF.Random(3, low=1)
     with pytest.raises(ValueError):
@@ -95,13 +95,13 @@ def test_mod():
     assert poly % e == poly % e_poly
     assert e % poly == e_poly % poly
 
-    # Not a Galois field array
+    # Not a FieldArray
     with pytest.raises(TypeError):
         poly % 1
     with pytest.raises(TypeError):
         1 % poly
 
-    # Not a 0-D Galois field array
+    # Not a 0-D FieldArray
     with pytest.raises(ValueError):
         poly % GF.Random(3, low=1)
     with pytest.raises(ValueError):

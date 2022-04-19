@@ -6,17 +6,15 @@ import numba
 from numba import int64, uint64
 import numpy as np
 
-from .._array import DTYPES
-
 from . import _linalg
-from ._ufuncs import UfuncMeta
+from ._ufuncs import FieldUfunc
 
 
-class FunctionMeta(UfuncMeta):
+class FieldFunction(FieldUfunc):
     """
-    A mixin metaclass that JIT compiles general-purpose functions on Galois field arrays.
+    A mixin class that JIT compiles general-purpose functions on Galois field arrays.
     """
-    # pylint: disable=no-value-for-parameter,abstract-method
+    # pylint: disable=abstract-method,no-member
 
     _UNSUPPORTED_FUNCTIONS_UNARY = [
         np.packbits, np.unpackbits,
@@ -60,25 +58,55 @@ class FunctionMeta(UfuncMeta):
 
     _FUNCTION_CACHE_CALCULATE = {}
 
-    def __init__(cls, name, bases, namespace, **kwargs):
-        super().__init__(name, bases, namespace, **kwargs)
-        cls._functions = {}
+    def __array_function__(self, func, types, args, kwargs):
+        """
+        Override the standard NumPy function calls with the new finite field functions.
+        """
+        field = type(self)
+
+        if func in field._OVERRIDDEN_FUNCTIONS:
+            output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
+
+        elif func in field._OVERRIDDEN_LINALG_FUNCTIONS:
+            output = field._OVERRIDDEN_LINALG_FUNCTIONS[func](*args, **kwargs)
+
+        elif func in field._UNSUPPORTED_FUNCTIONS:
+            raise NotImplementedError(f"The NumPy function {func.__name__!r} is not supported on FieldArray. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data, you should first call `array = array.view(np.ndarray)` and then call the function.")
+
+        else:
+            if func is np.insert:
+                args = list(args)
+                args[2] = self._verify_array_like_types_and_values(args[2])
+                args = tuple(args)
+
+            output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
+
+            if func in field._FUNCTIONS_REQUIRING_VIEW:
+                output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
+
+        return output
+
+    def dot(self, b, out=None):
+        # The `np.dot(a, b)` ufunc is also available as `a.dot(b)`. Need to override this method for consistent results.
+        return _linalg.dot(self, b, out=out)
 
     ###############################################################################
     # Individual functions, pre-compiled (cached)
     ###############################################################################
 
+    @classmethod
     def _function(cls, name):
         """
         Returns the function for the specific routine. The function compilation is based on `ufunc_mode`.
         """
         if name not in cls._functions:
-            if cls.ufunc_mode != "python-calculate":
+            if cls._ufunc_mode != "python-calculate":
                 cls._functions[name] = cls._function_calculate(name)
             else:
                 cls._functions[name] = cls._function_python(name)
         return cls._functions[name]
 
+    @classmethod
     def _function_calculate(cls, name):
         """
         Returns a JIT-compiled function using explicit calculation. These functions are once-compiled and shared for all
@@ -94,6 +122,7 @@ class FunctionMeta(UfuncMeta):
 
         return cls._FUNCTION_CACHE_CALCULATE[key]
 
+    @classmethod
     def _function_python(cls, name):
         """
         Returns a pure-Python function using explicit calculation.
@@ -104,6 +133,7 @@ class FunctionMeta(UfuncMeta):
     # Function routines
     ###############################################################################
 
+    @classmethod
     def _fft(cls, x, n=None, axis=-1, norm=None, forward=True, scaled=True):
         if not axis == -1:
             raise ValueError("The FFT is only implemented on 1-D arrays.")
@@ -121,13 +151,13 @@ class FunctionMeta(UfuncMeta):
         if not forward:
             omega = omega ** -1
 
-        if cls.ufunc_mode != "python-calculate":
+        if cls._ufunc_mode != "python-calculate":
             x = x.astype(np.int64)
             omega = np.int64(omega)
             add = cls._func_calculate("add")
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
-            y = cls._function("dft_jit")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            y = cls._function("dft_jit")(x, omega, add, subtract, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
             y = y.astype(dtype)
         else:
             x = x.view(np.ndarray)
@@ -135,7 +165,7 @@ class FunctionMeta(UfuncMeta):
             add = cls._func_python("add")
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
-            y = cls._function("dft_python")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            y = cls._function("dft_python")(x, omega, add, subtract, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
         y = field._view(y)
 
         # Scale the inverse NTT such that x = INTT(NTT(x))
@@ -144,9 +174,11 @@ class FunctionMeta(UfuncMeta):
 
         return y
 
+    @classmethod
     def _ifft(cls, x, n=None, axis=-1, norm=None, scaled=True):
         return cls._fft(x, n=n, axis=axis, norm=norm, forward=False, scaled=scaled)
 
+    @classmethod
     def _matmul(cls, A, B, out=None, **kwargs):  # pylint: disable=unused-argument
         if not type(A) is type(B):
             raise TypeError(f"Operation 'matmul' requires both arrays be in the same Galois field, not {type(A)} and {type(B)}.")
@@ -178,19 +210,19 @@ class FunctionMeta(UfuncMeta):
         #     new_shape = list(B.shape[:-2]) + list(A.shape)
         #     A = np.broadcast_to(A, new_shape)
 
-        if cls.ufunc_mode != "python-calculate":
+        if cls._ufunc_mode != "python-calculate":
             A = A.astype(np.int64)
             B = B.astype(np.int64)
             add = cls._func_calculate("add")
             multiply = cls._func_calculate("multiply")
-            C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            C = cls._function("matmul")(A, B, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
             C = C.astype(dtype)
         else:
             A = A.view(np.ndarray)
             B = B.view(np.ndarray)
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
-            C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            C = cls._function("matmul")(A, B, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
         C = field._view(C)
 
         shape = list(C.shape)
@@ -208,19 +240,26 @@ class FunctionMeta(UfuncMeta):
 
         return C
 
+    @classmethod
     def _convolve(cls, a, b, mode="full"):
         if not type(a) is type(b):
-            raise TypeError(f"Arguments `a` and `b` must be of the same Galois field array class, not {type(a)} and {type(b)}.")
+            raise TypeError(f"Arguments `a` and `b` must be of the same FieldArray subclass, not {type(a)} and {type(b)}.")
         if not mode == "full":
             raise ValueError(f"Operation 'convolve' currently only supports mode of 'full', not {mode!r}.")
         field = type(a)
         dtype = a.dtype
 
-        if field.is_prime_field:
+        if cls._ufunc_mode == "python-calculate":
+            a = a.view(np.ndarray)
+            b = b.view(np.ndarray)
+            add = cls._func_python("add")
+            multiply = cls._func_python("multiply")
+            c = cls._function("convolve")(a, b, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+        elif field.is_prime_field:
             # Determine the minimum dtype to hold the entire product and summation without overflowing
             n_sum = min(a.size, b.size)
             max_value = n_sum * (field.characteristic - 1)**2
-            dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= max_value]
+            dtypes = [dtype for dtype in cls._dtypes if np.iinfo(dtype).max >= max_value]
             dtype = np.object_ if len(dtypes) == 0 else dtypes[0]
             return_dtype = a.dtype
             a = a.view(np.ndarray).astype(dtype)
@@ -229,47 +268,42 @@ class FunctionMeta(UfuncMeta):
             c = c % field.characteristic  # Reduce the result mod p
             c = field._view(c.astype(return_dtype)) if not np.isscalar(c) else field(c, dtype=return_dtype)
         else:
-            if cls.ufunc_mode != "python-calculate":
-                a = a.astype(np.int64)
-                b = b.astype(np.int64)
-                add = cls._func_calculate("add")
-                multiply = cls._func_calculate("multiply")
-                c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-                c = c.astype(dtype)
-            else:
-                a = a.view(np.ndarray)
-                b = b.view(np.ndarray)
-                add = cls._func_python("add")
-                multiply = cls._func_python("multiply")
-                c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
-            c = field._view(c)
+            a = a.astype(np.int64)
+            b = b.astype(np.int64)
+            add = cls._func_calculate("add")
+            multiply = cls._func_calculate("multiply")
+            c = cls._function("convolve")(a, b, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            c = c.astype(dtype)
+        c = field._view(c)
 
         return c
 
+    @classmethod
     def _poly_evaluate(cls, coeffs, x):
         field = cls
         dtype = x.dtype
         shape = x.shape
         x = np.atleast_1d(x.flatten())
 
-        if cls.ufunc_mode != "python-calculate":
+        if cls._ufunc_mode != "python-calculate":
             coeffs = coeffs.astype(np.int64)
             x = x.astype(np.int64)
             add = cls._func_calculate("add")
             multiply = cls._func_calculate("multiply")
-            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
             results = results.astype(dtype)
         else:
             coeffs = coeffs.view(np.ndarray)
             x = x.view(np.ndarray)
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
-            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
         results = field._view(results)
         results = results.reshape(shape)
 
         return results
 
+    @classmethod
     def _poly_evaluate_matrix(cls, coeffs, X):
         field = cls
         assert X.ndim == 2 and X.shape[0] == X.shape[1]
@@ -281,6 +315,7 @@ class FunctionMeta(UfuncMeta):
 
         return results
 
+    @classmethod
     def _poly_divmod(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
         assert 1 <= a.ndim <= 2 and b.ndim == 1
@@ -292,13 +327,13 @@ class FunctionMeta(UfuncMeta):
         q_degree = a.shape[-1] - b.shape[-1]
         r_degree = b.shape[-1] - 1
 
-        if cls.ufunc_mode != "python-calculate":
+        if cls._ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             b = b.astype(np.int64)
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
             divide = cls._func_calculate("divide")
-            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
             qr = qr.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -306,7 +341,7 @@ class FunctionMeta(UfuncMeta):
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
-            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
         qr = field._view(qr)
 
         q = qr[:, 0:q_degree + 1]
@@ -318,19 +353,20 @@ class FunctionMeta(UfuncMeta):
 
         return q, r
 
+    @classmethod
     def _poly_floordiv(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
         assert a.ndim == 1 and b.ndim == 1
         field = type(a)
         dtype = a.dtype
 
-        if cls.ufunc_mode != "python-calculate":
+        if cls._ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             b = b.astype(np.int64)
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
             divide = cls._func_calculate("divide")
-            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
             q = q.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -338,24 +374,25 @@ class FunctionMeta(UfuncMeta):
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
-            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
         q = field._view(q)
 
         return q
 
+    @classmethod
     def _poly_mod(cls, a, b):
         assert isinstance(a, cls) and isinstance(b, cls)
         assert a.ndim == 1 and b.ndim == 1
         field = type(a)
         dtype = a.dtype
 
-        if cls.ufunc_mode != "python-calculate":
+        if cls._ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             b = b.astype(np.int64)
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
             divide = cls._func_calculate("divide")
-            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
             r = r.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -363,11 +400,12 @@ class FunctionMeta(UfuncMeta):
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
-            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
         r = field._view(r)
 
         return r
 
+    @classmethod
     def _poly_pow(cls, a, b, c=None):
         assert isinstance(a, cls) and isinstance(b, (int, np.integer)) and isinstance(c, (type(None), cls))
         assert a.ndim == 1 and c.ndim == 1 if c is not None else True
@@ -384,7 +422,7 @@ class FunctionMeta(UfuncMeta):
         b_vec.append(b)
         b_vec = np.array(b_vec[::-1], dtype=np.uint64)  # Make vector MSWord -> LSWord
 
-        if cls.ufunc_mode != "python-calculate":
+        if cls._ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             c = np.array([], dtype=np.int64) if c is None else c.astype(np.int64)
             add = cls._func_calculate("add")
@@ -393,7 +431,7 @@ class FunctionMeta(UfuncMeta):
             divide = cls._func_calculate("divide")
             convolve = cls._function("convolve")
             poly_mod = cls._function("poly_mod")
-            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls._characteristic, cls._degree, cls._irreducible_poly_int)
             z = z.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -404,23 +442,24 @@ class FunctionMeta(UfuncMeta):
             divide = cls._func_python("divide")
             convolve = cls._function("convolve")
             poly_mod = cls._function("poly_mod")
-            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, cls._irreducible_poly_int)
+            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls._characteristic, cls._degree, cls._irreducible_poly_int)
         z = field._view(z)
 
         return z
 
+    @classmethod
     def _poly_roots(cls, nonzero_degrees, nonzero_coeffs):
         assert isinstance(nonzero_coeffs, cls)
         field = cls
         dtype = nonzero_coeffs.dtype
 
-        if cls.ufunc_mode != "python-calculate":
+        if cls._ufunc_mode != "python-calculate":
             nonzero_degrees = nonzero_degrees.astype(np.int64)
             nonzero_coeffs = nonzero_coeffs.astype(np.int64)
             add = cls._func_calculate("add")
             multiply = cls._func_calculate("multiply")
             power = cls._func_calculate("power")
-            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, np.int64(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0,:]
+            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, np.int64(cls._primitive_element), add, multiply, power, cls._characteristic, cls._degree, cls._irreducible_poly_int)[0,:]
             roots = roots.astype(dtype)
         else:
             nonzero_degrees = nonzero_degrees.view(np.ndarray)
@@ -428,7 +467,7 @@ class FunctionMeta(UfuncMeta):
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
             power = cls._func_python("power")
-            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, int(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, cls._irreducible_poly_int)[0,:]
+            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, int(cls._primitive_element), add, multiply, power, cls._characteristic, cls._degree, cls._irreducible_poly_int)[0,:]
         roots = field._view(roots)
 
         idxs = np.argsort(roots)
@@ -438,7 +477,7 @@ class FunctionMeta(UfuncMeta):
     # Function implementations using explicit calculation
     ###############################################################################
 
-    _DFT_JIT_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _DFT_JIT_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64, FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     # TODO: Determine how to handle recursion with a single JIT-compiled/pure-Python function
 
@@ -496,8 +535,8 @@ class FunctionMeta(UfuncMeta):
         elif N % 2 == 0:
             # Radix-2 Cooley-Tukey FFT
             omega2 = MULTIPLY(omega, omega, *args)
-            EVEN = FunctionMeta._dft_python_calculate(x[0::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
-            ODD = FunctionMeta._dft_python_calculate(x[1::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
+            EVEN = FieldFunction._dft_python_calculate(x[0::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
+            ODD = FieldFunction._dft_python_calculate(x[1::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
 
             twiddle = 1
             for k in range(0, N//2):
@@ -519,7 +558,7 @@ class FunctionMeta(UfuncMeta):
 
         return X
 
-    _MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
@@ -540,7 +579,7 @@ class FunctionMeta(UfuncMeta):
 
         return C
 
-    _CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
@@ -555,7 +594,7 @@ class FunctionMeta(UfuncMeta):
 
         return c
 
-    _POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
@@ -571,7 +610,7 @@ class FunctionMeta(UfuncMeta):
 
         return results
 
-    _POLY_DIVMOD_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _POLY_DIVMOD_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:], FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
@@ -594,7 +633,7 @@ class FunctionMeta(UfuncMeta):
 
         return qr
 
-    _POLY_FLOORDIV_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _POLY_FLOORDIV_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
@@ -621,7 +660,7 @@ class FunctionMeta(UfuncMeta):
 
         return q
 
-    _POLY_MOD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _POLY_MOD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
@@ -664,7 +703,7 @@ class FunctionMeta(UfuncMeta):
 
         return r
 
-    _POLY_POW_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], uint64[:], int64[:], UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, _CONVOLVE_CALCULATE_SIG, _POLY_MOD_CALCULATE_SIG, int64, int64, int64))
+    _POLY_POW_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], uint64[:], int64[:], FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, _CONVOLVE_CALCULATE_SIG, _POLY_MOD_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable
@@ -707,7 +746,7 @@ class FunctionMeta(UfuncMeta):
 
         return result
 
-    _POLY_ROOTS_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, UfuncMeta._BINARY_CALCULATE_SIG, int64, int64, int64))
+    _POLY_ROOTS_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64, FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, FieldUfunc._BINARY_CALCULATE_SIG, int64, int64, int64))
 
     @staticmethod
     @numba.extending.register_jitable

@@ -1,5 +1,5 @@
 """
-A pytest module to test exception raising for invalid Galois field array arithmetic.
+A pytest module to test exception raising for invalid FieldArray arithmetic.
 """
 import pytest
 import numpy as np

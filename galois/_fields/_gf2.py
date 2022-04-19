@@ -1,40 +1,83 @@
 import numba
 import numpy as np
 
-from .._overrides import set_module
-from .._polys import Poly
+from .._overrides import set_module, classproperty, SPHINX_BUILD
 
-from ._array import FieldArrayClass, DirMeta, FieldArray
+from ._array import FieldArray, FieldArrayMeta
 
 __all__ = ["GF2"]
 
 
-class GF2Meta(FieldArrayClass, DirMeta):
-    """
-    A metaclass for the GF(2) class.
-    """
-    # pylint: disable=no-value-for-parameter
+@set_module("galois")
+class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=3, is_primitive_poly=True, primitive_element=1, compile="jit-calculate"):
+    r"""
+    A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(2)`.
 
+    Important
+    ---------
+    This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
+    for convenience.
+
+    Only the constructor is documented on this page. See :obj:`~galois.FieldArray` for all other classmethods and methods
+    for :obj:`~galois.GF2`.
+
+    Examples
+    --------
+    This class is equivalent, and in fact identical, to the :obj:`~galois.FieldArray` subclass returned from the class factory
+    :func:`~galois.GF`.
+
+    .. ipython:: python
+
+        galois.GF2 is galois.GF(2)
+        issubclass(galois.GF2, galois.FieldArray)
+        print(galois.GF2)
+
+    Create a :obj:`~galois.FieldArray` instance using :obj:`~galois.GF2`'s constructor.
+
+    .. ipython:: python
+
+        x = galois.GF2([1, 0, 1, 1]); x
+        isinstance(x, galois.GF2)
+    """
     # Need to have a unique cache of "calculate" functions for GF(2)
     _FUNC_CACHE_CALCULATE = {}
 
-    def __init__(cls, name, bases, namespace, **kwargs):
-        super().__init__(name, bases, namespace, **kwargs)
-        cls._prime_subfield = cls
-        cls._is_primitive_poly = True
+    # @property
+    # def ufunc_modes(cls):
+    #     return ["jit-calculate"]
+    _ufunc_modes = ["jit-calculate"]
 
-        cls.compile(kwargs["compile"])
+    # @property
+    # def default_ufunc_mode(cls):
+    #     return "jit-calculate"
+    _default_ufunc_mode = "jit-calculate"
 
-    @property
-    def ufunc_modes(cls):
-        return ["jit-calculate"]
+    if SPHINX_BUILD:
+        # Only during Sphinx builds, monkey-patch the metaclass properties into this class as "class properties". In Python 3.9 and greater,
+        # class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
+        # in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
+        characteristic = classproperty(FieldArrayMeta.characteristic)
+        default_ufunc_mode = classproperty(FieldArrayMeta.default_ufunc_mode)
+        degree = classproperty(FieldArrayMeta.degree)
+        display_mode = classproperty(FieldArrayMeta.display_mode)
+        dtypes = classproperty(FieldArrayMeta.dtypes)
+        irreducible_poly = classproperty(FieldArrayMeta.irreducible_poly)
+        is_extension_field = classproperty(FieldArrayMeta.is_extension_field)
+        is_prime_field = classproperty(FieldArrayMeta.is_prime_field)
+        is_primitive_poly = classproperty(FieldArrayMeta.is_primitive_poly)
+        name = classproperty(FieldArrayMeta.name)
+        order = classproperty(FieldArrayMeta.order)
+        prime_subfield = classproperty(FieldArrayMeta.prime_subfield)
+        primitive_element = classproperty(FieldArrayMeta.primitive_element)
+        primitive_elements = classproperty(FieldArrayMeta.primitive_elements)
+        quadratic_non_residues = classproperty(FieldArrayMeta.quadratic_non_residues)
+        quadratic_residues = classproperty(FieldArrayMeta.quadratic_residues)
+        ufunc_mode = classproperty(FieldArrayMeta.ufunc_mode)
+        ufunc_modes = classproperty(FieldArrayMeta.ufunc_modes)
 
-    @property
-    def default_ufunc_mode(cls):
-        return "jit-calculate"
-
-    def _compile_ufuncs(cls):
-        super()._compile_ufuncs()
+    @classmethod
+    def _reset_ufuncs(cls):
+        super()._reset_ufuncs()
         assert cls.ufunc_mode == "jit-calculate"
 
         cls._ufuncs["add"] = np.bitwise_xor
@@ -44,11 +87,20 @@ class GF2Meta(FieldArrayClass, DirMeta):
         cls._ufuncs["reciprocal"] = np.positive
         cls._ufuncs["divide"] = np.bitwise_and
 
+    @classmethod
+    def _set_globals(cls, name):
+        return
+
+    @classmethod
+    def _reset_globals(cls):
+        return
+
     ###############################################################################
     # Override ufunc routines to use native numpy bitwise ufuncs for GF(2)
     # arithmetic, which is faster than custom ufuncs
     ###############################################################################
 
+    @classmethod
     def _ufunc_routine_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         """
         a, b in GF(2)
@@ -61,6 +113,7 @@ class GF2Meta(FieldArrayClass, DirMeta):
         output = getattr(cls._ufunc("reciprocal"), method)(*inputs, **kwargs)
         return output
 
+    @classmethod
     def _ufunc_routine_divide(cls, ufunc, method, inputs, kwargs, meta):
         """
         Need to re-implement this to manually throw ZeroDivisionError if necessary
@@ -72,6 +125,7 @@ class GF2Meta(FieldArrayClass, DirMeta):
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
         return output
 
+    @classmethod
     def _ufunc_routine_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         """
         a, c in GF(2)
@@ -156,58 +210,3 @@ class GF2Meta(FieldArrayClass, DirMeta):
     @staticmethod
     def _sqrt(a):
         return a.copy()
-
-
-@set_module("galois")
-class GF2(FieldArray, metaclass=GF2Meta, characteristic=2, degree=1, order=2, primitive_element=1, compile="jit-calculate"):
-    r"""
-    A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(2)`.
-
-    Important
-    ---------
-        This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
-        for convenience.
-
-        Only the constructor is documented on this page. See :obj:`~galois.FieldArray` for all other classmethods and methods
-        for :obj:`~galois.GF2`.
-
-    See :ref:`Galois Field Classes` for a detailed discussion of the relationship between :obj:`~galois.FieldArrayClass` and
-    :obj:`~galois.FieldArray`.
-
-    See :ref:`Array Creation` for a detailed discussion on creating arrays (with and without copying) from array-like
-    objects, valid NumPy data types, and other :obj:`~galois.FieldArray` classmethods.
-
-    Examples
-    --------
-    This class is equivalent, and in fact identical, to the subclass returned from the class factory :func:`~galois.GF`.
-
-    .. ipython:: python
-
-        galois.GF2 is galois.GF(2)
-        print(galois.GF2)
-
-    The *Galois field array class* :obj:`~galois.GF2` is a subclass of :obj:`~galois.FieldArray`, with :obj:`~galois.FieldArrayClass` as its
-    metaclass.
-
-    .. ipython:: python
-
-        isinstance(galois.GF2, galois.FieldArrayClass)
-        issubclass(galois.GF2, galois.FieldArray)
-
-    Create a :ref:`Galois field array` using :obj:`~galois.GF2`'s constructor.
-
-    .. ipython:: python
-
-        x = galois.GF2([1, 0, 1, 1]); x
-
-    The *Galois field array* `x` is an instance of the *Galois field array class* :obj:`~galois.GF2`.
-
-    .. ipython:: python
-
-        isinstance(x, galois.GF2)
-    """
-
-# Define the GF(2) primitive polynomial here, not in _fields/_gf2.py, to avoid a circular dependency with `Poly`.
-# The primitive polynomial is p(x) = x - alpha, where alpha = 1. Over GF(2), this is equivalent
-# to p(x) = x + 1.
-GF2._irreducible_poly = Poly([1, 1], field=GF2)  # pylint: disable=protected-access

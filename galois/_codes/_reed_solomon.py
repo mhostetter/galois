@@ -3,7 +3,7 @@ A module containing arbitrary Reed-Solomon (RS) codes.
 """
 from __future__ import annotations
 
-from typing import Tuple, Optional, Union, overload
+from typing import Tuple, Optional, Union, Type, overload
 from typing_extensions import Literal
 
 import numba
@@ -11,7 +11,7 @@ from numba import int64
 import numpy as np
 
 from .. import _lfsr
-from .._fields import Field, FieldArrayClass, FieldArray
+from .._fields import Field, FieldArray
 from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
 from .._prime import factors
@@ -705,9 +705,9 @@ class ReedSolomon:
             return message, N_errors
 
     @property
-    def field(self) -> "FieldArrayClass":
+    def field(self) -> Type["FieldArray"]:
         r"""
-        The *Galois field array class* for the :math:`\mathrm{GF}(q)` field that defines the Reed-Solomon code.
+        The :obj:`~galois.FieldArray` subclass for the :math:`\mathrm{GF}(q)` field that defines the Reed-Solomon code.
 
         Examples
         --------
@@ -895,7 +895,7 @@ class ReedSolomon:
 # JIT-compiled implementation of the specified functions
 ###############################################################################
 
-DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, int64, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, FieldArrayClass._UNARY_CALCULATE_SIG, FieldArrayClass._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldArrayClass._POLY_ROOTS_CALCULATE_SIG, FieldArrayClass._POLY_EVALUATE_CALCULATE_SIG, FieldArrayClass._CONVOLVE_CALCULATE_SIG, int64, int64, int64))
+DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._UNARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldArray._POLY_ROOTS_CALCULATE_SIG, FieldArray._POLY_EVALUATE_CALCULATE_SIG, FieldArray._CONVOLVE_CALCULATE_SIG, int64, int64, int64))
 
 def _decode_calculate(codeword, syndrome, c, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, POLY_EVAL, CONVOLVE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
     """

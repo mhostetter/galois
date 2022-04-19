@@ -1,5 +1,5 @@
 """
-A pytest module to test proper Galois field array broadcasting.
+A pytest module to test proper FieldArray broadcasting.
 """
 import numpy as np
 import pytest

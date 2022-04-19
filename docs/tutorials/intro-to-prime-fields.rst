@@ -13,8 +13,8 @@ This tutorial will focus on prime fields.
 Prime field
 -----------
 
-In this tutorial, we will consider the prime field :math:`\mathrm{GF}(7)`. Using the :obj:`galois` library, the :ref:`Galois field array class`
-`GF7` is created using the class factory :func:`~galois.GF`.
+In this tutorial, we will consider the prime field :math:`\mathrm{GF}(7)`. Using the :obj:`galois` library, the :obj:`~galois.FieldArray`
+subclass `GF7` is created using the class factory :func:`~galois.GF`.
 
 .. tab-set::
 
@@ -43,7 +43,7 @@ In this tutorial, we will consider the prime field :math:`\mathrm{GF}(7)`. Using
    representations using the tabbed sections. Note, the polynomial representation is not shown because it is identical to the integer
    representation for prime fields.
 
-   See :ref:`Field Element Representation` for more details.
+   See :doc:`/basic-usage/element-representation` for more details.
 
 Elements
 --------
@@ -90,7 +90,7 @@ Here are :math:`a` and :math:`b` represented as Python integers.
    b_int = 5
    p = GF7.characteristic; p
 
-Here are :math:`a` and :math:`b` represented as prime field elements. See :ref:`Array Creation` for more details.
+Here are :math:`a` and :math:`b` represented as prime field elements. See :doc:`/basic-usage/array-creation` for more details.
 
 .. tab-set::
 
@@ -392,8 +392,8 @@ Finding primitive roots mod :math:`p` is implemented in :func:`~galois.primitive
 A primitive element
 ...................
 
-In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`~galois.FieldArrayClass.primitive_element`
-property.
+In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`~galois.FieldArray.primitive_element`
+class property.
 
 .. tab-set::
 
@@ -418,7 +418,7 @@ property.
          g = GF7.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer
-representations using :func:`~galois.FieldArrayClass.repr_table`. Let's ignore the polynomial and vector representations for now.
+representations using :func:`~galois.FieldArray.repr_table`. Let's ignore the polynomial and vector representations for now.
 They will become useful for extension fields.
 
 Here is the representation table using the default generator :math:`g = 3`. Notice its multiplicative order is :math:`p - 1`.
@@ -432,7 +432,7 @@ Other primitive elements
 ........................
 
 There are multiple primitive elements of any finite field. All primitive elements are provided in the
-:obj:`~galois.FieldArrayClass.primitive_elements` property.
+:obj:`~galois.FieldArray.primitive_elements` class property.
 
 .. tab-set::
 

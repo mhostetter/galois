@@ -5,7 +5,7 @@ from typing import Tuple, List
 
 import numpy as np
 
-from .._array import Array
+from .._domains import Array
 from .._overrides import set_module
 
 from ._poly import Poly
@@ -166,9 +166,9 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
         np.array_equal(L(x), y)
     """
     if not isinstance(x, Array):
-        raise TypeError(f"Argument `x` must be a Galois field array, not {type(x)}.")
+        raise TypeError(f"Argument `x` must be a FieldArray, not {type(x)}.")
     if not isinstance(y, Array):
-        raise TypeError(f"Argument `y` must be a Galois field array, not {type(y)}.")
+        raise TypeError(f"Argument `y` must be a FieldArray, not {type(y)}.")
     if not type(x) == type(y):  # pylint: disable=unidiomatic-typecheck
         raise TypeError(f"Arguments `x` and `y` must be over the same Galois field, not {type(x)} and {type(y)}.")
     if not x.ndim == 1:
