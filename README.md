@@ -10,10 +10,10 @@
 
 The `galois` library is a Python 3 package that extends NumPy arrays to operate over finite fields.
 
-The user creates a [Galois field array class](https://galois.readthedocs.io/en/latest/basic-usage/galois-field-classes.html#galois-field-array-class)
-using `GF = galois.GF(p**m)`. The *Galois field array class* `GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)`
-mimics the call signature of `np.array()`. The [Galois field array](https://galois.readthedocs.io/en/latest/basic-usage/galois-field-classes.html#galois-field-array)
-`x` is operated on like any other NumPy array except all arithmetic is performed in `GF(p^m)`, not **R**.
+The user creates a [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) subclass using `GF = galois.GF(p**m)`.
+`GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)` mimics the signature of `np.array()`. The
+[`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) `x` is operated on like any other NumPy array except
+all arithmetic is performed in `GF(p^m)`, not **R**.
 
 Internally, the finite field arithmetic is implemented by replacing [NumPy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html).
 The new ufuncs are written in pure Python and [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
@@ -27,13 +27,13 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 - Supports all [Galois fields](https://galois.readthedocs.io/en/latest/api/galois.GF.html) `GF(p^m)`, even arbitrarily-large fields!
 - [**Faster**](https://galois.readthedocs.io/en/latest/performance/prime-fields.html) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`.
-- Seamless integration with NumPy -- normal NumPy functions work on *Galois field arrays*.
-- [Linear algebra](https://galois.readthedocs.io/en/latest/basic-usage/linear-algebra.html) over finite fields using normal `np.linalg` functions.
-- [Linear transforms](https://galois.readthedocs.io/en/latest/api/transforms.html) over finite fields, such as the FFT with `np.fft.fft()` and the NTT with `galois.ntt()`.
+- Seamless integration with NumPy -- normal NumPy functions work on [`FieldArray`s](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html).
+- Linear algebra over finite fields using normal `np.linalg` functions.
+- Linear transforms over finite fields, such as the FFT with `np.fft.fft()` and the NTT with [`ntt()`](https://galois.readthedocs.io/en/latest/api/galois.ntt.html).
 - Functions to generate [irreducible](https://galois.readthedocs.io/en/latest/api/polys.html#irreducible-polynomials), [primitive](https://galois.readthedocs.io/en/latest/api/polys.html#primitive-polynomials), and [Conway](https://galois.readthedocs.io/en/latest/api/galois.conway_poly.html) polynomials.
-- [Univariate polynomials](https://galois.readthedocs.io/en/latest/api/polys.html) over finite fields with `galois.Poly`.
-- [Forward error correction codes](https://galois.readthedocs.io/en/latest/api/fec.html) with `galois.BCH` and `galois.ReedSolomon`.
-- [Fibonacci](https://galois.readthedocs.io/en/latest/api/galois.FLFSR.html) and [Galois](https://galois.readthedocs.io/en/latest/api/galois.GLFSR.html) linear-feedback shift registers over any finite field with `galois.FLFSR` and `galois.GLFSR`.
+- Univariate polynomials over finite fields with [`Poly`](https://galois.readthedocs.io/en/latest/api/galois.Poly.html).
+- Forward error correction codes with [`BCH`](https://galois.readthedocs.io/en/latest/api/galois.BCH.html) and [`ReedSolomon`](https://galois.readthedocs.io/en/latest/api/galois.ReedSolomon.html).
+- Fibonacci and Galois linear-feedback shift registers over any finite field with [`FLFSR`](https://galois.readthedocs.io/en/latest/api/galois.FLFSR.html) and [`GLFSR`](https://galois.readthedocs.io/en/latest/api/galois.GLFSR.html).
 - Various [number theoretic functions](https://galois.readthedocs.io/en/latest/api/number-theory.html).
 - [Integer factorization](https://galois.readthedocs.io/en/latest/api/integer-factorization.html) and accompanying algorithms.
 - [Prime number generation](https://galois.readthedocs.io/en/latest/api/primes.html#prime-number-generation) and [primality testing](https://galois.readthedocs.io/en/latest/api/primes.html#primality-tests).
@@ -50,8 +50,8 @@ The documentation for `galois` is located at https://galois.readthedocs.io/en/la
 
 ## Getting Started
 
-The [Getting Started](https://galois.readthedocs.io/en/latest/getting-started.html) guide is intended to assist the user in installing the
-library, creating two example arrays, and performing basic array arithmetic. See [Basic Usage](https://galois.readthedocs.io/en/latest/basic-usage/galois-field-classes.html)
+The [Getting Started](https://galois.readthedocs.io/en/latest/getting-started.html) guide is intended to assist the user with installing the
+library, creating two example arrays, and performing basic array arithmetic. See [Basic Usage](https://galois.readthedocs.io/en/latest/basic-usage/array-classes.html)
 for more detailed discussions and examples.
 
 ### Install the package
@@ -71,70 +71,74 @@ In [2]: galois.__version__
 Out[2]: '0.0.26'
 ```
 
-### Create a Galois field array class
+### Create a [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) subclass
 
-Next, create a [Galois field array class](https://galois.readthedocs.io/en/latest/basic-usage/galois-field-classes.html#galois-field-array-class)
+Next, create a [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) subclass
 for the specific finite field you'd like to work in. This is created using the `galois.GF()` class factory. In this example, we are
-working in `GF(2^8)`.
+working in `GF(3^5)`.
 
 ```python
-In [3]: GF = galois.GF(2**8)
+In [3]: GF = galois.GF(3**5)
 
 In [4]: GF
-Out[4]: <class 'numpy.ndarray over GF(2^8)'>
+Out[4]: <class 'numpy.ndarray over GF(3^5)'>
 
 In [5]: print(GF)
 Galois Field:
-  name: GF(2^8)
-  characteristic: 2
-  degree: 8
-  order: 256
-  irreducible_poly: x^8 + x^4 + x^3 + x^2 + 1
+  name: GF(3^5)
+  characteristic: 3
+  degree: 5
+  order: 243
+  irreducible_poly: x^5 + 2x + 1
   is_primitive_poly: True
   primitive_element: x
 ```
 
-The *Galois field array class* `GF` is a subclass of `np.ndarray` that performs all arithmetic in the Galois field
-`GF(2^8)`, not in **R**.
+The [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) subclass `GF` is a subclass of
+`np.ndarray` that performs all arithmetic in the Galois field `GF(3^5)`, not in **R**.
 
 ```python
-In [6]: issubclass(GF, np.ndarray)
+In [6]: issubclass(GF, galois.FieldArray)
 Out[6]: True
+
+In [7]: issubclass(GF, np.ndarray)
+Out[7]: True
 ```
 
-See [Galois Field Classes](https://galois.readthedocs.io/en/latest/basic-usage/galois-field-classes.html) for more details.
+See [Array Classes](https://galois.readthedocs.io/en/latest/basic-usage/array-classes.html) for more details.
 
-### Create two Galois field arrays
+### Create two [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) instances
 
-Next, create a new [Galois field array](https://galois.readthedocs.io/en/latest/basic-usage/galois-field-classes.html#galois-field-array)
-`x` by passing an [array-like object](https://galois.readthedocs.io/en/latest/basic-usage/array-creation.html#create-a-new-array) to the
-*Galois field array class* `GF`.
+Next, create a new [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) `x` by passing an
+[`ArrayLike`](https://galois.readthedocs.io/en/latest/api/galois.typing.ArrayLike.html) object to `GF`'s constructor.
 
 ```python
-In [7]: x = GF([45, 36, 7, 74, 135]); x
-Out[7]: GF([ 45,  36,   7,  74, 135], order=2^8)
+In [8]: x = GF([236, 87, 38, 112]); x
+Out[8]: GF([236,  87,  38, 112], order=3^5)
 ```
 
-Create a second *Galois field array* `y` by converting an existing NumPy array (without copying it) by invoking `.view()`. When finished
-working in the finite field, view it back as a NumPy array with `.view(np.ndarray)`.
+The array `x` is an instance of [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) and also
+an instance of `np.ndarray`.
+
+```python
+In [9]: isinstance(x, galois.FieldArray)
+Out[9]: True
+
+In [10]: isinstance(x, np.ndarray)
+Out[10]: True
+```
+
+Create a second [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) `y` by converting an existing
+NumPy array (without copying it) by invoking `.view()`. When finished working in the finite field, view it back as a NumPy array
+with `.view(np.ndarray)`.
 
 ```python
 # y represents an array created elsewhere in the code
-In [8]: y = np.array([103, 146, 186, 83, 112], dtype=int); y
-Out[8]: array([103, 146, 186,  83, 112])
+In [11]: y = np.array([109, 17, 108, 224]); y
+Out[11]: array([109,  17, 108, 224])
 
-In [9]: y = y.view(GF); y
-Out[9]: GF([103, 146, 186,  83, 112], order=2^8)
-```
-
-The *Galois field array* `x` is an instance of the *Galois field array class* `GF` (and also an instance of `np.ndarray`).
-
-```python
-In [10]: isinstance(x, GF)
-Out[10]: True
-
-In [11]: isinstance(x, np.ndarray)
-Out[11]: True
+In [12]: y = y.view(GF); y
+Out[12]: GF([109,  17, 108, 224], order=3^5)
 ```
 
 See [Array Creation](https://galois.readthedocs.io/en/latest/basic-usage/array-creation.html) for more details.
@@ -145,57 +149,57 @@ The display representation of finite field elements can be set to either the int
 or power (`"power"`) representation. The default representation is the integer representation since that is natural when
 working with integer NumPy arrays.
 
-Set the display mode by passing the `display` keyword argument to `galois.GF()` or by calling the `galois.FieldArray.display()` method.
+Set the display mode by passing the `display` keyword argument to `galois.GF()` or by calling the `display()` classmethod.
 Choose whichever element representation is most convenient for you.
 
 ```python
 # The default representation is the integer representation
-In [12]: x
-Out[12]: GF([ 45,  36,   7,  74, 135], order=2^8)
+In [13]: x
+Out[13]: GF([236,  87,  38, 112], order=3^5)
 
-In [13]: GF.display("poly"); x
-Out[13]: 
-GF([α^5 + α^3 + α^2 + 1,           α^5 + α^2,         α^2 + α + 1,
-          α^6 + α^3 + α,   α^7 + α^2 + α + 1], order=2^8)
+In [14]: GF.display("poly"); x
+Out[14]: 
+GF([2α^4 + 2α^3 + 2α^2 + 2,               α^4 + 2α,
+             α^3 + α^2 + 2,      α^4 + α^3 + α + 1], order=3^5)
 
-In [14]: GF.display("power"); x
-Out[14]: GF([ α^18, α^225, α^198,  α^37,  α^13], order=2^8)
+In [15]: GF.display("power"); x
+Out[15]: GF([α^204,  α^16, α^230,  α^34], order=3^5)
 
 # Reset to the integer representation
-In [15]: GF.display("int");
+In [16]: GF.display("int");
 ```
 
-See [Field Element Representation](https://galois.readthedocs.io/en/latest/basic-usage/field-element-representation.html) for more details.
+See [Element Representation](https://galois.readthedocs.io/en/latest/basic-usage/element-representation.html) for more details.
 
 ### Perform array arithmetic
 
 Once you have two Galois field arrays, nearly any arithmetic operation can be performed using normal NumPy arithmetic.
 The traditional [NumPy broadcasting rules](https://numpy.org/doc/stable/user/basics.broadcasting.html) apply.
 
-Standard element-wise array arithmetic -- like addition, subtraction, multiplication, and division -- are easily preformed.
+Standard element-wise array arithmetic -- addition, subtraction, multiplication, and division -- are easily preformed.
 
 ```python
-In [16]: x + y
-Out[16]: GF([ 74, 182, 189,  25, 247], order=2^8)
+In [17]: x + y
+Out[17]: GF([ 18,  95, 146,   0], order=3^5)
 
-In [17]: x - y
-Out[17]: GF([ 74, 182, 189,  25, 247], order=2^8)
+In [18]: x - y
+Out[18]: GF([127, 100, 173, 224], order=3^5)
 
-In [18]: x * y
-Out[18]: GF([133, 197,   1, 125, 239], order=2^8)
+In [19]: x * y
+Out[19]: GF([ 21, 241, 179,  82], order=3^5)
 
-In [19]: x / y
-Out[19]: GF([ 99, 101,  21, 177,  97], order=2^8)
+In [20]: x / y
+Out[20]: GF([ 67,  47, 192,   2], order=3^5)
 ```
 
 More complicated arithmetic, like square root and logarithm base alpha, are also supported.
 
 ```python
-In [20]: np.sqrt(x)
-Out[20]: GF([ 58,  44, 134, 154, 218], order=2^8)
+In [21]: np.sqrt(x)
+Out[21]: GF([ 51, 135,  40,  16], order=3^5)
 
-In [21]: np.log(x)
-Out[21]: array([ 18, 225, 198,  37,  13])
+In [22]: np.log(x)
+Out[22]: array([204,  16, 230,  34])
 ```
 
 See [Array Arithmetic](https://galois.readthedocs.io/en/latest/basic-usage/array-arithmetic.html) for more details.
