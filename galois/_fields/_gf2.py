@@ -18,9 +18,6 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
     This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
     for convenience.
 
-    Only the constructor is documented on this page. See :obj:`~galois.FieldArray` for all other classmethods and methods
-    for :obj:`~galois.GF2`.
-
     Examples
     --------
     This class is equivalent, and in fact identical, to the :obj:`~galois.FieldArray` subclass returned from the class factory
@@ -38,6 +35,11 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
 
         x = galois.GF2([1, 0, 1, 1]); x
         isinstance(x, galois.GF2)
+
+    Note
+    ----
+    Only the class docstring is documented on this page. See :obj:`~galois.FieldArray` for all other classmethods, class properties,
+    and methods inherited by :obj:`~galois.GF2`.
     """
     # Need to have a unique cache of "calculate" functions for GF(2)
     _FUNC_CACHE_CALCULATE = {}
@@ -51,29 +53,6 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
     # def default_ufunc_mode(cls):
     #     return "jit-calculate"
     _default_ufunc_mode = "jit-calculate"
-
-    if SPHINX_BUILD:
-        # Only during Sphinx builds, monkey-patch the metaclass properties into this class as "class properties". In Python 3.9 and greater,
-        # class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
-        # in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
-        characteristic = classproperty(FieldArrayMeta.characteristic)
-        default_ufunc_mode = classproperty(FieldArrayMeta.default_ufunc_mode)
-        degree = classproperty(FieldArrayMeta.degree)
-        display_mode = classproperty(FieldArrayMeta.display_mode)
-        dtypes = classproperty(FieldArrayMeta.dtypes)
-        irreducible_poly = classproperty(FieldArrayMeta.irreducible_poly)
-        is_extension_field = classproperty(FieldArrayMeta.is_extension_field)
-        is_prime_field = classproperty(FieldArrayMeta.is_prime_field)
-        is_primitive_poly = classproperty(FieldArrayMeta.is_primitive_poly)
-        name = classproperty(FieldArrayMeta.name)
-        order = classproperty(FieldArrayMeta.order)
-        prime_subfield = classproperty(FieldArrayMeta.prime_subfield)
-        primitive_element = classproperty(FieldArrayMeta.primitive_element)
-        primitive_elements = classproperty(FieldArrayMeta.primitive_elements)
-        quadratic_non_residues = classproperty(FieldArrayMeta.quadratic_non_residues)
-        quadratic_residues = classproperty(FieldArrayMeta.quadratic_residues)
-        ufunc_mode = classproperty(FieldArrayMeta.ufunc_mode)
-        ufunc_modes = classproperty(FieldArrayMeta.ufunc_modes)
 
     @classmethod
     def _reset_ufuncs(cls):
