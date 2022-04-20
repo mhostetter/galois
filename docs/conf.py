@@ -213,7 +213,7 @@ autodoc_type_aliases = {
 }
 
 autosummary_generate = True
-autosummary_generate_overwrite = True
+autosummary_generate_overwrite = False
 autosummary_imported_members = True
 
 ipython_execlines = ["import math", "import numpy as np", "import galois"]

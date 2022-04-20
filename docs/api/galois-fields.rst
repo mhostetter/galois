@@ -26,11 +26,11 @@ Abstract base classes
 
    FieldArray
 
-Pre-made `FieldArray` subclasses
-...................................
+Pre-made :obj:`~galois.FieldArray` subclasses
+.............................................
 
 .. autosummary::
-   :template: class_only_init.rst
+   :template: class.rst
    :toctree:
 
    GF2
