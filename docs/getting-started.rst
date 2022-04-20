@@ -78,7 +78,7 @@ or power (`"power"`) representation. The default representation is the integer r
 working with integer NumPy arrays.
 
 Set the display mode by passing the `display` keyword argument to :func:`~galois.GF` or by calling the :func:`~galois.FieldArray.display`
-method. Choose whichever element representation is most convenient for you.
+classmethod. Choose whichever element representation is most convenient for you.
 
 .. ipython:: python
 
