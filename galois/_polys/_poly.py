@@ -620,7 +620,6 @@ class Poly:
         :math:`\{m_1, m_2, \dots, m_k\}` is
 
         .. math::
-
             f(x) &= (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k} \\
                  &= a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
 

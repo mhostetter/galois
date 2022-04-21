@@ -1822,7 +1822,8 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
         For finite fields, since :math:`L` is a Galois extension of :math:`K`, the field trace of :math:`x` is defined as a sum
         of the Galois conjugates of :math:`x`.
 
-        .. math:: \mathrm{Tr}_{L / K}(x) = \sum_{i=0}^{m-1} x^{p^i}
+        .. math::
+            \mathrm{Tr}_{L / K}(x) = \sum_{i=0}^{m-1} x^{p^i}
 
         References
         ----------
@@ -1870,7 +1871,8 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
         For finite fields, since :math:`L` is a Galois extension of :math:`K`, the field norm of :math:`x` is defined as a product
         of the Galois conjugates of :math:`x`.
 
-        .. math:: \mathrm{N}_{L / K}(x) = \prod_{i=0}^{m-1} x^{p^i} = x^{(p^m - 1) / (p - 1)}
+        .. math::
+            \mathrm{N}_{L / K}(x) = \prod_{i=0}^{m-1} x^{p^i} = x^{(p^m - 1) / (p - 1)}
 
         References
         ----------

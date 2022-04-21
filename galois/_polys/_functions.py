@@ -132,9 +132,9 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
     The Lagrange interpolating polynomial is defined as
 
     .. math::
-
         L(x) = \sum_{j=0}^{k-1} y_j \ell_j(x)
 
+    .. math::
         \ell_j(x) = \prod_{\substack{0 \le m < k \\ m \ne j}} \frac{x - x_m}{x_j - x_m} .
 
     It is the polynomial of minimal degree that satisfies :math:`L(x_i) = y_i`.
@@ -367,12 +367,9 @@ def distinct_degree_factorization(poly: Poly) -> Tuple[List[Poly], List[int]]:
     factorization is
 
     .. math::
-        f_1(x) &= x(x + 1) = x^2 + x
-
-        f_2(x) &= x^2 + x + 1
-
-        f_3(x) &= (x^3 + x + 1)(x^3 + x^2 + 1) = x^6 + x^5 + x^4 + x^3 + x^2 + x + 1
-
+        f_1(x) &= x(x + 1) = x^2 + x \\
+        f_2(x) &= x^2 + x + 1 \\
+        f_3(x) &= (x^3 + x + 1)(x^3 + x^2 + 1) = x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 \\
         f_i(x) &= 1\ \textrm{for}\ i = 4, \dots, 10.
 
     Some :math:`f_i(x) = 1`, but those polynomials are not returned by this function. In this example, the function returns

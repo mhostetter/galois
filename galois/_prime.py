@@ -632,7 +632,6 @@ def legendre_symbol(a: int, p: int) -> int:
     for some :math:`x`.
 
     .. math::
-
         \bigg(\frac{a}{p}\bigg) =
             \begin{cases}
                 0, & p\ |\ a
@@ -1359,7 +1358,8 @@ def divisor_sigma(n: int, k: int = 1) -> int:
     -----
     This function implements the :math:`\sigma_k(n)` function. It is defined as:
 
-    .. math:: \sigma_k(n) = \sum_{d\ |\ n} d^k
+    .. math::
+        \sigma_k(n) = \sum_{d\ |\ n} d^k
 
     Examples
     --------
