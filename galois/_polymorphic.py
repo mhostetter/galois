@@ -670,7 +670,8 @@ def is_square_free(value):
             A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
             of a square-free integer :math:`n` is
 
-            .. math:: n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
+            .. math::
+                n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
 
         .. tab-item:: Polynomials
             :sync: polynomials
@@ -678,7 +679,8 @@ def is_square_free(value):
             A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one. Therefore,
             its canonical factorization is
 
-            .. math:: f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
+            .. math::
+                f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
 
     Examples
     --------

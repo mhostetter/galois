@@ -62,7 +62,6 @@ def ntt(
     The :math:`k`-th value of the :math:`N`-point NTT :math:`X = \mathrm{NTT}(x)` is
 
     .. math::
-
         X_k = \sum_{j=0}^{N-1} x_j \omega_N^{jk} ,
 
     with all arithmetic performed in :math:`\mathrm{GF}(p)`.
@@ -177,7 +176,6 @@ def intt(
     The :math:`j`-th value of the scaled :math:`N`-point INTT :math:`x = \mathrm{INTT}(X)` is
 
     .. math::
-
         x_j = \frac{1}{N} \sum_{k=0}^{N-1} X_k \omega_N^{-kj} ,
 
     with all arithmetic performed in :math:`\mathrm{GF}(p)`. The scaled INTT has the property that :math:`x = \mathrm{INTT}(\mathrm{NTT}(x))`.

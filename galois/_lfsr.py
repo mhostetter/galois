@@ -216,7 +216,9 @@ class FLFSR(_LFSR):
     :math:`y` produced by the Fibonacci LFSR.
 
     .. math::
-        c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0} \\
+        c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
+
+    .. math::
         y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
 
     .. code-block:: text
@@ -734,7 +736,9 @@ class GLFSR(_LFSR):
     :math:`y` produced by the Galois LFSR.
 
     .. math::
-        c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0} \\
+        c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
+
+    .. math::
         y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
 
     .. code-block:: text
@@ -1261,7 +1265,9 @@ def berlekamp_massey(sequence, output="minimal"):
     sequence :math:`y`.
 
     .. math::
-        c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0} \\
+        c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
+
+    .. math::
         y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
 
     For a linear sequence with order :math:`n`, at least :math:`2n` output symbols are required to determine the minimal polynomial.
