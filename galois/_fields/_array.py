@@ -9,11 +9,11 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._domains import Array
-from .._domains._array import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 from .._overrides import set_module, extend_docstring, SPHINX_BUILD
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
 from .._prime import divisors
+from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 
 from . import _linalg
 from ._functions import FieldFunction

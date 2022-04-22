@@ -8,8 +8,9 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains._array import Array, ElementLike, ArrayLike, DEFAULT_FIELD_ARRAY
+from .._domains._array import Array, DEFAULT_FIELD_ARRAY
 from .._overrides import set_module
+from ..typing import ElementLike, ArrayLike, PolyLike
 
 from . import _binary, _dense, _sparse
 from ._conversions import integer_to_poly, integer_to_degree, poly_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
@@ -19,39 +20,6 @@ __all__ = ["Poly"]
 # Values were obtained by running scripts/sparse_poly_performance_test.py
 SPARSE_VS_DENSE_POLY_FACTOR = 0.00_125  # 1.25% density
 SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
-
-PolyLike = Union[int, str, ArrayLike, "Poly"]
-PolyLike.__doc__ = """
-A :obj:`~typing.Union` representing objects that can be coerced into a polynomial.
-
-.. rubric:: Union
-
-- :obj:`int`: A polynomial in its integer representation, see :func:`~galois.Poly.Int`. The Galois field must be known from context.
-
-.. ipython:: python
-
-    # Known from context
-    GF = galois.GF(3)
-    galois.Poly.Int(19, field=GF)
-
-- :obj:`str`: A polynomial in its string representation, see :func:`~galois.Poly.Str`. The Galois field must be known from context.
-
-.. ipython:: python
-
-    galois.Poly.Str("2x^2 + 1", field=GF)
-
-- :obj:`~galois.typing.ArrayLike`: An array of polynomial coefficients in degree-descending order. If the coefficients are not
-  :obj:`~galois.Array`, then the Galois field must be known from context.
-
-.. ipython:: python
-
-    galois.Poly([2, 0, 1], field=GF)
-    galois.Poly(GF([2, 0, 1]))
-
-- :obj:`~galois.Poly`: A previously-created :obj:`~galois.Poly` object. No coercion is necessary.
-
-.. rubric:: Alias
-"""
 
 
 @set_module("galois")
