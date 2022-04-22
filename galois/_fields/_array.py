@@ -11,7 +11,7 @@ import numpy as np
 from .._domains import Array
 from .._domains._array import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 from .._modular import totatives
-from .._overrides import set_module, extend_docstring, classproperty, SPHINX_BUILD
+from .._overrides import set_module, extend_docstring, SPHINX_BUILD
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
 from .._prime import divisors
@@ -35,9 +35,6 @@ class FieldArrayMeta(FieldMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-
-    def __init_subclass__(cls, **kwargs):
-        print("I am here", kwargs)
 
     ###############################################################################
     # Class attributes
@@ -514,29 +511,6 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
         isinstance(x, GF)
     """
     # pylint: disable=no-value-for-parameter,abstract-method,too-many-public-methods
-
-    if SPHINX_BUILD:
-        # Only during Sphinx builds, monkey-patch the metaclass properties into this class as "class properties". In Python 3.9 and greater,
-        # class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
-        # in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
-        characteristic = classproperty(FieldArrayMeta.characteristic)
-        default_ufunc_mode = classproperty(FieldArrayMeta.default_ufunc_mode)
-        degree = classproperty(FieldArrayMeta.degree)
-        display_mode = classproperty(FieldArrayMeta.display_mode)
-        dtypes = classproperty(FieldArrayMeta.dtypes)
-        irreducible_poly = classproperty(FieldArrayMeta.irreducible_poly)
-        is_extension_field = classproperty(FieldArrayMeta.is_extension_field)
-        is_prime_field = classproperty(FieldArrayMeta.is_prime_field)
-        is_primitive_poly = classproperty(FieldArrayMeta.is_primitive_poly)
-        name = classproperty(FieldArrayMeta.name)
-        order = classproperty(FieldArrayMeta.order)
-        prime_subfield = classproperty(FieldArrayMeta.prime_subfield)
-        primitive_element = classproperty(FieldArrayMeta.primitive_element)
-        primitive_elements = classproperty(FieldArrayMeta.primitive_elements)
-        quadratic_non_residues = classproperty(FieldArrayMeta.quadratic_non_residues)
-        quadratic_residues = classproperty(FieldArrayMeta.quadratic_residues)
-        ufunc_mode = classproperty(FieldArrayMeta.ufunc_mode)
-        ufunc_modes = classproperty(FieldArrayMeta.ufunc_modes)
 
     def __new__(
         cls,

@@ -1,9 +1,9 @@
 import numba
 import numpy as np
 
-from .._overrides import set_module, classproperty, SPHINX_BUILD
+from .._overrides import set_module
 
-from ._array import FieldArray, FieldArrayMeta
+from ._array import FieldArray
 
 __all__ = ["GF2"]
 

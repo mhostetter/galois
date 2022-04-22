@@ -38,33 +38,3 @@ def extend_docstring(method, replace={}):  # pylint: disable=dangerous-default-v
         return obj
 
     return decorator
-
-
-def classproperty(obj):
-    """
-    In Python 3.9, decorating class properties is possible using:
-
-        @classmethod
-        @property
-        def foo(cls):
-            return cls._foo
-
-    In Python 3.8 and lower, the class property must be specified in a metaclass. However, Sphinx cannot document
-    the metaclass's properties. We add this function inside a Sphinx-build if statement to wrap the metaclass's
-    properties using Python 3.9 syntax (if if building with lower versions). This will document correctly. And when
-    not building the docs, the metaclass property is referenced normally.
-
-        class MetaFoo(type):
-            @property
-            def foo(cls):
-                return cls._foo
-
-        class Foo(metaclass=MetaFoo):
-            if hasattr(builtins, "__sphinx_build__"):
-                foo = classproperty(MetaFoo.foo)
-    """
-    ret = classmethod(property(obj.fget, obj.fset, obj.fdel, obj.__doc__))
-    ret.__doc__ = obj.__doc__
-    # ret.__annotations__ = obj.__annotations__
-
-    return ret
