@@ -8,7 +8,8 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains._array import Array, DEFAULT_FIELD_ARRAY
+from .._domains import Array
+from .._domains._factory import DEFAULT_FIELD_ARRAY
 from .._overrides import set_module
 from ..typing import ElementLike, ArrayLike, PolyLike
 

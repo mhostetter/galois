@@ -8,7 +8,7 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains._array import FIELD_FACTORY
+from .._domains._factory import FIELD_FACTORY
 from .._databases import ConwayPolyDatabase
 from .._overrides import set_module
 from .._prime import factors, is_prime, is_prime_power
