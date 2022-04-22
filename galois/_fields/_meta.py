@@ -3,13 +3,13 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains._array import Meta
+from .._domains._meta import ArrayMeta
 from .._modular import totatives
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, poly_to_str
 
 
-class FieldArrayMeta(Meta):
+class FieldArrayMeta(ArrayMeta):
     """
     A metaclass that provides documented class properties for `FieldArray` subclasses.
     """
