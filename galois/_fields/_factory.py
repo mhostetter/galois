@@ -10,8 +10,8 @@ from typing_extensions import Literal
 from .._modular import primitive_root, is_primitive_root
 from .._overrides import set_module
 from .._polys import Poly, conway_poly, primitive_element, is_irreducible, is_primitive_element
-from .._polys._poly import PolyLike
 from .._prime import factors
+from ..typing import PolyLike
 
 from ._array import FieldArray
 from ._gf2 import GF2
