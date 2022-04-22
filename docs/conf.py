@@ -24,8 +24,7 @@ assert sys.version_info.major == 3 and sys.version_info.minor >= 8
 import builtins
 setattr(builtins, "__sphinx_build__", True)
 
-from galois import __version__
-
+import galois
 import numpy
 
 
@@ -34,7 +33,7 @@ import numpy
 project = "galois"
 copyright = "2020-2022, Matt Hostetter"
 author = "Matt Hostetter"
-version = __version__
+version = galois.__version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -219,7 +218,7 @@ autosummary_imported_members = True
 ipython_execlines = ["import math", "import numpy as np", "import galois"]
 
 
-# -- Monkey-patching -----------------------------------------------------
+# -- Monkey-patching ---------------------------------------------------------
 
 SPECIAL_MEMBERS = [
     "__repr__", "__str__", "__int__",
@@ -359,6 +358,43 @@ def modify_type_hints(signature):
         signature = signature.replace("np.random", "~numpy.random")
 
     return signature
+
+
+# Only during Sphinx builds, monkey-patch the metaclass properties into this class as "class properties". In Python 3.9 and greater,
+# class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
+# in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
+# In Python 3.9, decorating class properties is possible using:
+
+
+def classproperty(obj):
+    ret = classmethod(obj)
+    ret.__doc__ = obj.__doc__
+
+    return ret
+
+
+class FieldArray(galois.FieldArray):
+    characteristic = classproperty(type(galois.FieldArray).characteristic)
+    default_ufunc_mode = classproperty(type(galois.FieldArray).default_ufunc_mode)
+    degree = classproperty(type(galois.FieldArray).degree)
+    display_mode = classproperty(type(galois.FieldArray).display_mode)
+    dtypes = classproperty(type(galois.FieldArray).dtypes)
+    irreducible_poly = classproperty(type(galois.FieldArray).irreducible_poly)
+    is_extension_field = classproperty(type(galois.FieldArray).is_extension_field)
+    is_prime_field = classproperty(type(galois.FieldArray).is_prime_field)
+    is_primitive_poly = classproperty(type(galois.FieldArray).is_primitive_poly)
+    name = classproperty(type(galois.FieldArray).name)
+    order = classproperty(type(galois.FieldArray).order)
+    prime_subfield = classproperty(type(galois.FieldArray).prime_subfield)
+    primitive_element = classproperty(type(galois.FieldArray).primitive_element)
+    primitive_elements = classproperty(type(galois.FieldArray).primitive_elements)
+    quadratic_non_residues = classproperty(type(galois.FieldArray).quadratic_non_residues)
+    quadratic_residues = classproperty(type(galois.FieldArray).quadratic_residues)
+    ufunc_mode = classproperty(type(galois.FieldArray).ufunc_mode)
+    ufunc_modes = classproperty(type(galois.FieldArray).ufunc_modes)
+
+FieldArray.__doc__ = galois.FieldArray.__doc__
+galois.FieldArray = FieldArray
 
 
 def setup(app):
