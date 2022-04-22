@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import contextlib
 import random
-from typing import Optional, Union, Type
+from typing import Optional, Union
 from typing_extensions import Literal
 
 import numpy as np
@@ -493,16 +493,3 @@ class Array(np.ndarray, metaclass=ArrayMeta):
         if dtype not in type(self)._dtypes:
             raise TypeError(f"{type(self)._name} arrays can only be cast as integer dtypes in {type(self)._dtypes}, not {dtype}.")
         return super().astype(dtype, order=order, casting=casting, subok=subok, copy=copy)
-
-
-def FIELD_FACTORY(*args, **kwargs) -> Type[Array]:  # pylint: disable=unused-argument
-    """
-    This will be monkey-patched to be `galois.GF()` in __init__.py.
-    """
-    return Array
-
-
-DEFAULT_FIELD_ARRAY = Array
-"""
-This will be monkey-patched to be `galois.GF2` in __init__.py.
-"""
