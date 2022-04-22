@@ -114,7 +114,7 @@ class _LFSR:
             taps = self.taps.astype(np.int64)
             state = self.state.astype(np.int64)
 
-            y = step(taps, state, steps, add, multiply, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
+            y = step(taps, state, steps, add, multiply, self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
             y = y.astype(self.state.dtype)
         else:
             # Retrieve pure-Python arithmetic functions using explicit calculation
@@ -125,7 +125,7 @@ class _LFSR:
             taps = self.taps.view(np.ndarray)
             state = self.state.view(np.ndarray)
 
-            y = step(taps, state, steps, add, multiply, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
+            y = step(taps, state, steps, add, multiply, self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
 
         self._state[:] = state[:]
         y = self.field._view(y)
@@ -150,7 +150,7 @@ class _LFSR:
             taps = self.taps.astype(np.int64)
             state = self.state.astype(np.int64)
 
-            y = step(taps, state, steps, subtract, multiply, divide, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
+            y = step(taps, state, steps, subtract, multiply, divide, self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
             y = y.astype(self.state.dtype)
         else:
             # Retrieve pure-Python arithmetic functions using explicit calculation
@@ -162,7 +162,7 @@ class _LFSR:
             taps = self.taps.view(np.ndarray)
             state = self.state.view(np.ndarray)
 
-            y = step(taps, state, steps, subtract, multiply, divide, self.field.characteristic, self.field.degree, self.field._irreducible_poly_int)
+            y = step(taps, state, steps, subtract, multiply, divide, self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
 
         self._state[:] = state[:]
         y = self.field._view(y)
@@ -1333,7 +1333,7 @@ def berlekamp_massey(sequence, output="minimal"):
         subtract = field._func_calculate("subtract")
         multiply = field._func_calculate("multiply")
         reciprocal = field._func_calculate("reciprocal")
-        coeffs = jit_calculate("berlekamp_massey")(sequence, add, subtract, multiply, reciprocal, field.characteristic, field.degree, field._irreducible_poly_int)
+        coeffs = jit_calculate("berlekamp_massey")(sequence, add, subtract, multiply, reciprocal, field.characteristic, field.degree, int(field.irreducible_poly))
         coeffs = coeffs.astype(dtype)
     else:
         sequence = sequence.view(np.ndarray)
@@ -1341,7 +1341,7 @@ def berlekamp_massey(sequence, output="minimal"):
         multiply = field._func_python("multiply")
         divide = field._func_python("divide")
         reciprocal = field._func_python("reciprocal")
-        coeffs = python_func("berlekamp_massey")(sequence, subtract, multiply, divide, reciprocal, field.characteristic, field.degree, field._irreducible_poly_int)
+        coeffs = python_func("berlekamp_massey")(sequence, subtract, multiply, divide, reciprocal, field.characteristic, field.degree, int(field.irreducible_poly))
     coeffs = field._view(coeffs)
 
     characteristic_poly = Poly(coeffs, field=field)

@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import List, Type, TYPE_CHECKING
 from typing_extensions import Literal
 
 import numpy as np
@@ -7,6 +7,10 @@ from .._domains._meta import ArrayMeta
 from .._modular import totatives
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, poly_to_str
+
+# Obtain forward references
+if TYPE_CHECKING:
+    from ._array import FieldArray
 
 
 class FieldArrayMeta(ArrayMeta):
@@ -40,20 +44,20 @@ class FieldArrayMeta(ArrayMeta):
             cls.compile(kwargs["compile"])
 
     def __str__(cls) -> str:
-        if cls._prime_subfield is None:
+        if cls.prime_subfield is None:
             return repr(cls)
 
-        with cls._prime_subfield.display("int"):
-            irreducible_poly_str = str(cls._irreducible_poly)
+        with cls.prime_subfield.display("int"):
+            irreducible_poly_str = str(cls.irreducible_poly)
 
         string = "Galois Field:"
-        string += f"\n  name: {cls._name}"
-        string += f"\n  characteristic: {cls._characteristic}"
-        string += f"\n  degree: {cls._degree}"
-        string += f"\n  order: {cls._order}"
+        string += f"\n  name: {cls.name}"
+        string += f"\n  characteristic: {cls.characteristic}"
+        string += f"\n  degree: {cls.degree}"
+        string += f"\n  order: {cls.order}"
         string += f"\n  irreducible_poly: {irreducible_poly_str}"
-        string += f"\n  is_primitive_poly: {cls._is_primitive_poly}"
-        string += f"\n  primitive_element: {poly_to_str(integer_to_poly(int(cls._primitive_element), cls._characteristic))}"
+        string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
+        string += f"\n  primitive_element: {poly_to_str(integer_to_poly(int(cls.primitive_element), cls.characteristic))}"
 
         return string
 

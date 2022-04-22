@@ -100,7 +100,7 @@ class FieldFunction(FieldUfunc):
         Returns the function for the specific routine. The function compilation is based on `ufunc_mode`.
         """
         if name not in cls._functions:
-            if cls._ufunc_mode != "python-calculate":
+            if cls.ufunc_mode != "python-calculate":
                 cls._functions[name] = cls._function_calculate(name)
             else:
                 cls._functions[name] = cls._function_python(name)
@@ -151,13 +151,13 @@ class FieldFunction(FieldUfunc):
         if not forward:
             omega = omega ** -1
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             x = x.astype(np.int64)
             omega = np.int64(omega)
             add = cls._func_calculate("add")
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
-            y = cls._function("dft_jit")(x, omega, add, subtract, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            y = cls._function("dft_jit")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
             y = y.astype(dtype)
         else:
             x = x.view(np.ndarray)
@@ -165,7 +165,7 @@ class FieldFunction(FieldUfunc):
             add = cls._func_python("add")
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
-            y = cls._function("dft_python")(x, omega, add, subtract, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            y = cls._function("dft_python")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
         y = field._view(y)
 
         # Scale the inverse NTT such that x = INTT(NTT(x))
@@ -210,19 +210,19 @@ class FieldFunction(FieldUfunc):
         #     new_shape = list(B.shape[:-2]) + list(A.shape)
         #     A = np.broadcast_to(A, new_shape)
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             A = A.astype(np.int64)
             B = B.astype(np.int64)
             add = cls._func_calculate("add")
             multiply = cls._func_calculate("multiply")
-            C = cls._function("matmul")(A, B, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
             C = C.astype(dtype)
         else:
             A = A.view(np.ndarray)
             B = B.view(np.ndarray)
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
-            C = cls._function("matmul")(A, B, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
         C = field._view(C)
 
         shape = list(C.shape)
@@ -249,17 +249,17 @@ class FieldFunction(FieldUfunc):
         field = type(a)
         dtype = a.dtype
 
-        if cls._ufunc_mode == "python-calculate":
+        if cls.ufunc_mode == "python-calculate":
             a = a.view(np.ndarray)
             b = b.view(np.ndarray)
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
-            c = cls._function("convolve")(a, b, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
         elif field.is_prime_field:
             # Determine the minimum dtype to hold the entire product and summation without overflowing
             n_sum = min(a.size, b.size)
             max_value = n_sum * (field.characteristic - 1)**2
-            dtypes = [dtype for dtype in cls._dtypes if np.iinfo(dtype).max >= max_value]
+            dtypes = [dtype for dtype in cls.dtypes if np.iinfo(dtype).max >= max_value]
             dtype = np.object_ if len(dtypes) == 0 else dtypes[0]
             return_dtype = a.dtype
             a = a.view(np.ndarray).astype(dtype)
@@ -272,7 +272,7 @@ class FieldFunction(FieldUfunc):
             b = b.astype(np.int64)
             add = cls._func_calculate("add")
             multiply = cls._func_calculate("multiply")
-            c = cls._function("convolve")(a, b, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
             c = c.astype(dtype)
         c = field._view(c)
 
@@ -285,19 +285,19 @@ class FieldFunction(FieldUfunc):
         shape = x.shape
         x = np.atleast_1d(x.flatten())
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             coeffs = coeffs.astype(np.int64)
             x = x.astype(np.int64)
             add = cls._func_calculate("add")
             multiply = cls._func_calculate("multiply")
-            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
             results = results.astype(dtype)
         else:
             coeffs = coeffs.view(np.ndarray)
             x = x.view(np.ndarray)
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
-            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            results = cls._function("poly_evaluate")(coeffs, x, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
         results = field._view(results)
         results = results.reshape(shape)
 
@@ -327,13 +327,13 @@ class FieldFunction(FieldUfunc):
         q_degree = a.shape[-1] - b.shape[-1]
         r_degree = b.shape[-1] - 1
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             b = b.astype(np.int64)
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
             divide = cls._func_calculate("divide")
-            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, int(cls.irreducible_poly))
             qr = qr.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -341,7 +341,7 @@ class FieldFunction(FieldUfunc):
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
-            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            qr = cls._function("poly_divmod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, int(cls.irreducible_poly))
         qr = field._view(qr)
 
         q = qr[:, 0:q_degree + 1]
@@ -360,13 +360,13 @@ class FieldFunction(FieldUfunc):
         field = type(a)
         dtype = a.dtype
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             b = b.astype(np.int64)
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
             divide = cls._func_calculate("divide")
-            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, int(cls.irreducible_poly))
             q = q.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -374,7 +374,7 @@ class FieldFunction(FieldUfunc):
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
-            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            q = cls._function("poly_floordiv")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, int(cls.irreducible_poly))
         q = field._view(q)
 
         return q
@@ -386,13 +386,13 @@ class FieldFunction(FieldUfunc):
         field = type(a)
         dtype = a.dtype
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             b = b.astype(np.int64)
             subtract = cls._func_calculate("subtract")
             multiply = cls._func_calculate("multiply")
             divide = cls._func_calculate("divide")
-            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, int(cls.irreducible_poly))
             r = r.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -400,7 +400,7 @@ class FieldFunction(FieldUfunc):
             subtract = cls._func_python("subtract")
             multiply = cls._func_python("multiply")
             divide = cls._func_python("divide")
-            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            r = cls._function("poly_mod")(a, b, subtract, multiply, divide, cls.characteristic, cls.degree, int(cls.irreducible_poly))
         r = field._view(r)
 
         return r
@@ -422,7 +422,7 @@ class FieldFunction(FieldUfunc):
         b_vec.append(b)
         b_vec = np.array(b_vec[::-1], dtype=np.uint64)  # Make vector MSWord -> LSWord
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             a = a.astype(np.int64)
             c = np.array([], dtype=np.int64) if c is None else c.astype(np.int64)
             add = cls._func_calculate("add")
@@ -431,7 +431,7 @@ class FieldFunction(FieldUfunc):
             divide = cls._func_calculate("divide")
             convolve = cls._function("convolve")
             poly_mod = cls._function("poly_mod")
-            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, int(cls.irreducible_poly))
             z = z.astype(dtype)
         else:
             a = a.view(np.ndarray)
@@ -442,7 +442,7 @@ class FieldFunction(FieldUfunc):
             divide = cls._func_python("divide")
             convolve = cls._function("convolve")
             poly_mod = cls._function("poly_mod")
-            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls._characteristic, cls._degree, cls._irreducible_poly_int)
+            z = cls._function("poly_pow")(a, b_vec, c, add, subtract, multiply, divide, convolve, poly_mod, cls.characteristic, cls.degree, int(cls.irreducible_poly))
         z = field._view(z)
 
         return z
@@ -453,13 +453,13 @@ class FieldFunction(FieldUfunc):
         field = cls
         dtype = nonzero_coeffs.dtype
 
-        if cls._ufunc_mode != "python-calculate":
+        if cls.ufunc_mode != "python-calculate":
             nonzero_degrees = nonzero_degrees.astype(np.int64)
             nonzero_coeffs = nonzero_coeffs.astype(np.int64)
             add = cls._func_calculate("add")
             multiply = cls._func_calculate("multiply")
             power = cls._func_calculate("power")
-            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, np.int64(cls._primitive_element), add, multiply, power, cls._characteristic, cls._degree, cls._irreducible_poly_int)[0,:]
+            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, np.int64(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, int(cls.irreducible_poly))[0,:]
             roots = roots.astype(dtype)
         else:
             nonzero_degrees = nonzero_degrees.view(np.ndarray)
@@ -467,7 +467,7 @@ class FieldFunction(FieldUfunc):
             add = cls._func_python("add")
             multiply = cls._func_python("multiply")
             power = cls._func_python("power")
-            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, int(cls._primitive_element), add, multiply, power, cls._characteristic, cls._degree, cls._irreducible_poly_int)[0,:]
+            roots = cls._function("poly_roots")(nonzero_degrees, nonzero_coeffs, int(cls.primitive_element), add, multiply, power, cls.characteristic, cls.degree, int(cls.irreducible_poly))[0,:]
         roots = field._view(roots)
 
         idxs = np.argsort(roots)

@@ -130,7 +130,7 @@ class Poly:
             # Convert coefficients into the specified field (or GF2 if unspecified)
             if field is None:
                 field = DEFAULT_FIELD_ARRAY
-            coeffs = np.array(coeffs, dtype=field._dtypes[-1])
+            coeffs = np.array(coeffs, dtype=field.dtypes[-1])
             sign = np.sign(coeffs)
             coeffs = sign * field(np.abs(coeffs))
 
@@ -943,7 +943,7 @@ class Poly:
             f = galois.Poly([3, 0, 5, 2], field=GF); f
             f
         """
-        return f"Poly({self!s}, {self.field._name})"
+        return f"Poly({self!s}, {self.field.name})"
 
     def __str__(self) -> str:
         """
@@ -1164,10 +1164,10 @@ class Poly:
                 raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {a.size}.")
             field = type(a)
         else:
-            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field._name}, not {type(a)}.")
+            raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {self.field.name}, not {type(a)}.")
 
         if not field is self.field:
-            raise TypeError(f"Both polynomial operands must be over the same field, not {field._name} and {self.field._name}.")
+            raise TypeError(f"Both polynomial operands must be over the same field, not {field.name} and {self.field.name}.")
 
     def _check_input_is_poly_or_int(self, a):
         """
@@ -1195,7 +1195,7 @@ class Poly:
             return a.coeffs
         elif isinstance(a, int):
             # Scalar multiplication
-            return np.atleast_1d(self.field(a % self.field._characteristic))
+            return np.atleast_1d(self.field(a % self.field.characteristic))
         else:
             return np.atleast_1d(a)
 
@@ -1205,7 +1205,7 @@ class Poly:
         """
         if isinstance(a, int):
             # Scalar multiplication
-            return a % self.field._characteristic
+            return a % self.field.characteristic
         else:
             return int(a)
 
@@ -1216,7 +1216,7 @@ class Poly:
         if isinstance(a, Poly):
             return a.nonzero_degrees, a.nonzero_coeffs
         elif isinstance(a, int):
-            return np.array([0]), np.atleast_1d(self.field(a % self.field._characteristic))
+            return np.array([0]), np.atleast_1d(self.field(a % self.field.characteristic))
         else:
             return np.array([0]), np.atleast_1d(a)
 
