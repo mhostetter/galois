@@ -1,6 +1,8 @@
 """
 A module containing common functions for linear block codes.
 """
+from __future__ import annotations
+
 import numpy as np
 
 from .._fields import FieldArray
@@ -10,7 +12,7 @@ __all__ = ["generator_to_parity_check_matrix", "parity_check_to_generator_matrix
 
 
 @set_module("galois")
-def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
+def generator_to_parity_check_matrix(G: "FieldArray") -> "FieldArray":
     r"""
     Converts the generator matrix :math:`\mathbf{G}` of a linear :math:`[n, k]` code into its parity-check matrix :math:`\mathbf{H}`.
 
@@ -52,7 +54,7 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
 
 
 @set_module("galois")
-def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
+def parity_check_to_generator_matrix(H: "FieldArray") -> "FieldArray":
     r"""
     Converts the parity-check matrix :math:`\mathbf{H}` of a linear :math:`[n, k]` code into its generator matrix :math:`\mathbf{G}`.
 
