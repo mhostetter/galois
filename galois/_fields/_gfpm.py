@@ -356,20 +356,20 @@ class GFpm(FieldArray):
         Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         """
         field = type(a)
-        p = field._characteristic
+        p = field.characteristic
 
         if p % 4 == 3:
-            roots = a ** ((field._order + 1)//4)
+            roots = a ** ((field.order + 1)//4)
 
         elif p % 8 == 5:
-            d = a ** ((field._order - 1)//4)
+            d = a ** ((field.order - 1)//4)
             roots = field.Zeros(a.shape)
 
             idxs = np.where(d == 1)
-            roots[idxs] = a[idxs] ** ((field._order + 3)//8)
+            roots[idxs] = a[idxs] ** ((field.order + 3)//8)
 
             idxs = np.where(d == p - 1)
-            roots[idxs] = 2*a[idxs] * (4*a[idxs]) ** ((field._order - 5)//8)
+            roots[idxs] = 2*a[idxs] * (4*a[idxs]) ** ((field.order - 5)//8)
 
         else:
             # Find a quadratic non-residue element `b`
@@ -379,13 +379,13 @@ class GFpm(FieldArray):
                     break
 
             # Write p - 1 = 2^s * t
-            n = field._order - 1
+            n = field.order - 1
             s = 0
             while n % 2 == 0:
                 n >>= 1
                 s += 1
             t = n
-            assert field._order - 1 == 2**s * t
+            assert field.order - 1 == 2**s * t
 
             roots = field.Zeros(a.shape)  # Empty array of roots
 

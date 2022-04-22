@@ -121,10 +121,10 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
             if x.dtype == np.object_:
                 x = cls._verify_element_types_and_convert(x, object_=True)
             elif not np.issubdtype(x.dtype, np.integer):
-                raise TypeError(f"{cls._name} arrays must have integer dtypes, not {x.dtype}.")
+                raise TypeError(f"{cls.name} arrays must have integer dtypes, not {x.dtype}.")
             cls._verify_array_values(x)
         else:
-            raise TypeError(f"{cls._name} arrays can be created with scalars of type int/str, lists/tuples, or ndarrays, not {type(x)}.")
+            raise TypeError(f"{cls.name} arrays can be created with scalars of type int/str, lists/tuples, or ndarrays, not {type(x)}.")
 
         return x
 
@@ -145,18 +145,18 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
         """
         Verify the single integer element is within the valid range [0, order).
         """
-        if not 0 <= scalar < cls._order:
-            raise ValueError(f"{cls._name} scalars must be in `0 <= x < {cls._order}`, not {scalar}.")
+        if not 0 <= scalar < cls.order:
+            raise ValueError(f"{cls.name} scalars must be in `0 <= x < {cls.order}`, not {scalar}.")
 
     @classmethod
     def _verify_array_values(cls, array: np.ndarray):
         """
         Verify all the elements of the integer array are within the valid range [0, order).
         """
-        if np.any(array < 0) or np.any(array >= cls._order):
-            idxs = np.logical_or(array < 0, array >= cls._order)
+        if np.any(array < 0) or np.any(array >= cls.order):
+            idxs = np.logical_or(array < 0, array >= cls.order)
             values = array if array.ndim == 0 else array[idxs]
-            raise ValueError(f"{cls._name} arrays must have elements in `0 <= x < {cls._order}`, not {values}.")
+            raise ValueError(f"{cls.name} arrays must have elements in `0 <= x < {cls.order}`, not {values}.")
 
     ###############################################################################
     # Element conversion routines
@@ -170,7 +170,7 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
         if isinstance(element, (int, np.integer)):
             element = int(element)
         elif isinstance(element, str):
-            element = str_to_integer(element, cls._prime_subfield)
+            element = str_to_integer(element, cls.prime_subfield)
         elif isinstance(element, FieldArray):
             element = int(element)
         else:
@@ -1364,7 +1364,7 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
             subfield = field.prime_subfield
             p = field.characteristic
             m = field.degree
-            conjugates = np.power.outer(x, p**np.arange(0, m, dtype=field._dtypes[-1]))
+            conjugates = np.power.outer(x, p**np.arange(0, m, dtype=field.dtypes[-1]))
             trace = np.add.reduce(conjugates, axis=-1)
             return subfield._view(trace)
 
@@ -1410,9 +1410,9 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
         if field.is_prime_field:
             return x.copy()
         else:
-            subfield = field._prime_subfield
-            p = field._characteristic
-            m = field._degree
+            subfield = field.prime_subfield
+            p = field.characteristic
+            m = field.degree
             norm = x**((p**m - 1) // (p - 1))
             return subfield._view(norm)
 

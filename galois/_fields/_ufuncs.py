@@ -77,16 +77,16 @@ class FieldCalculate(Array, metaclass=FieldArrayMeta):
         Returns a JIT-compiled arithmetic ufunc using explicit calculation. These ufuncs are compiled for each Galois field since
         the characteristic, degree, and irreducible polynomial are compiled into the ufuncs as constants.
         """
-        key = (name, cls._characteristic, cls._degree, int(cls._irreducible_poly))
+        key = (name, cls.characteristic, cls.degree, int(cls.irreducible_poly))
 
         if key not in cls._UFUNC_CACHE_CALCULATE:
             cls._set_globals(name)
             function = getattr(cls, f"_{name}_calculate")
 
             # These variables must be locals and not class properties for Numba to compile them as literals
-            characteristic = cls._characteristic
-            degree = cls._degree
-            irreducible_poly = int(cls._irreducible_poly)
+            characteristic = cls.characteristic
+            degree = cls.degree
+            irreducible_poly = int(cls.irreducible_poly)
 
             if cls._UFUNC_TYPE[name] == "unary":
                 cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64)"], nopython=True)(lambda a: function(a, characteristic, degree, irreducible_poly))
@@ -113,9 +113,9 @@ class FieldCalculate(Array, metaclass=FieldArrayMeta):
         function = getattr(cls, f"_{name}_calculate")
 
         # Pre-fetching these values into local variables allows Python to cache them as constants in the lambda function
-        characteristic = cls._characteristic
-        degree = cls._degree
-        irreducible_poly = int(cls._irreducible_poly)
+        characteristic = cls.characteristic
+        degree = cls.degree
+        irreducible_poly = int(cls.irreducible_poly)
 
         if cls._UFUNC_TYPE[name] == "unary":
             return np.frompyfunc(lambda a: function(a, characteristic, degree, irreducible_poly), 1, 1)
@@ -183,41 +183,41 @@ class FieldLookup(FieldCalculate):
         add = cls._ufunc_python("add")
         multiply = cls._ufunc_python("multiply")
 
-        cls._EXP = np.zeros(2*cls._order, dtype=np.int64)
-        cls._LOG = np.zeros(cls._order, dtype=np.int64)
-        cls._ZECH_LOG = np.zeros(cls._order, dtype=np.int64)
-        if cls._characteristic == 2:
+        cls._EXP = np.zeros(2*cls.order, dtype=np.int64)
+        cls._LOG = np.zeros(cls.order, dtype=np.int64)
+        cls._ZECH_LOG = np.zeros(cls.order, dtype=np.int64)
+        if cls.characteristic == 2:
             cls._ZECH_E = 0
         else:
-            cls._ZECH_E = (cls._order - 1) // 2
+            cls._ZECH_E = (cls.order - 1) // 2
 
         element = 1
         cls._EXP[0] = element
         cls._LOG[0] = 0  # Technically -Inf
-        for i in range(1, cls._order):
+        for i in range(1, cls.order):
             # Increment by multiplying by the primitive element, which is a multiplicative generator of the field
             element = multiply(element, primitive_element)
             cls._EXP[i] = element
 
             # Assign to the log lookup table but skip indices greater than or equal to `order - 1`
             # because `EXP[0] == EXP[order - 1]`
-            if i < cls._order - 1:
+            if i < cls.order - 1:
                 cls._LOG[cls._EXP[i]] = i
 
         # Compute Zech log lookup table
-        for i in range(0, cls._order):
+        for i in range(0, cls.order):
             one_plus_element = add(1, cls._EXP[i])
             cls._ZECH_LOG[i] = cls._LOG[one_plus_element]
 
-        if not cls._EXP[cls._order - 1] == 1:
-            raise RuntimeError(f"The anti-log lookup table for {cls._name} is not cyclic with size {cls._order - 1}, which means the primitive element {cls._primitive_element} does not have multiplicative order {cls._order - 1} and therefore isn't a multiplicative generator for {cls._name}.")
-        if not len(set(cls._EXP[0:cls._order - 1])) == cls._order - 1:
-            raise RuntimeError(f"The anti-log lookup table for {cls._name} is not unique, which means the primitive element {cls._primitive_element} has order less than {cls._order - 1} and is not a multiplicative generator of {cls._name}.")
-        if not len(set(cls._LOG[1:cls._order])) == cls._order - 1:
-            raise RuntimeError(f"The log lookup table for {cls._name} is not unique.")
+        if not cls._EXP[cls.order - 1] == 1:
+            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not cyclic with size {cls.order - 1}, which means the primitive element {cls._primitive_element} does not have multiplicative order {cls.order - 1} and therefore isn't a multiplicative generator for {cls.name}.")
+        if not len(set(cls._EXP[0:cls.order - 1])) == cls.order - 1:
+            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not unique, which means the primitive element {cls._primitive_element} has order less than {cls.order - 1} and is not a multiplicative generator of {cls.name}.")
+        if not len(set(cls._LOG[1:cls.order])) == cls.order - 1:
+            raise RuntimeError(f"The log lookup table for {cls.name} is not unique.")
 
         # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
-        cls._EXP[cls._order:2*cls._order] = cls._EXP[1:1 + cls._order]
+        cls._EXP[cls.order:2*cls.order] = cls._EXP[1:1 + cls.order]
 
     @classmethod
     def _func_lookup(cls, name):  # pylint: disable=no-self-use
@@ -242,7 +242,7 @@ class FieldLookup(FieldCalculate):
         Returns an arithmetic ufunc using lookup tables. These ufuncs are compiled for each Galois field since the lookup tables are compiled
         into the ufuncs as constants.
         """
-        key = (name, cls._characteristic, cls._degree, int(cls._irreducible_poly))
+        key = (name, cls.characteristic, cls.degree, int(cls.irreducible_poly))
 
         if key not in cls._UFUNC_CACHE_LOOKUP:
             # These variables must be locals for Numba to compile them as literals
@@ -540,12 +540,12 @@ class FieldUfunc(FieldLookup, FieldCalculate):
             # Need to set the intermediate dtype for reduction operations or an error will be thrown. We
             # use the largest valid dtype for this field.
             if method in ["reduce"]:
-                kwargs["dtype"] = field._dtypes[-1]
+                kwargs["dtype"] = field.dtypes[-1]
 
             return getattr(field, field._OVERRIDDEN_UFUNCS[ufunc])(ufunc, method, inputs, kwargs, meta)
 
         elif ufunc in field._UNSUPPORTED_UFUNCS:
-            raise NotImplementedError(f"The NumPy ufunc {ufunc.__name__!r} is not supported on {field._name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+            raise NotImplementedError(f"The NumPy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
 
         else:
             if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:
@@ -593,7 +593,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
     @classmethod
     def _verify_binary_method_not_reduction(cls, ufunc, method):  # pylint: disable=no-self-use
         if method in ["reduce", "accumulate", "reduceat"]:
-            raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs with type {cls._name} array and integer array. Different types do not support reduction.")
+            raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs with type {cls.name} array and integer array. Different types do not support reduction.")
 
     @classmethod
     def _verify_method_only_call(cls, ufunc, method):  # pylint: disable=no-self-use
@@ -603,7 +603,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
     @classmethod
     def _verify_operands_in_same_field(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
         if len(meta["non_field_operands"]) > 0:
-            raise TypeError(f"Operation {ufunc.__name__!r} requires both operands to be {cls._name} arrays, not {[inputs[i] for i in meta['operands']]}.")
+            raise TypeError(f"Operation {ufunc.__name__!r} requires both operands to be {cls.name} arrays, not {[inputs[i] for i in meta['operands']]}.")
 
     @classmethod
     def _verify_operands_in_field_or_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
@@ -618,7 +618,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
                     if not np.issubdtype(inputs[i].dtype, np.integer):
                         raise ValueError(f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {inputs[i].dtype}.")
             else:
-                raise TypeError(f"Operation {ufunc.__name__!r} requires operands that are not {cls._name} arrays to be integers or an integer np.ndarray, not {type(inputs[i])}.")
+                raise TypeError(f"Operation {ufunc.__name__!r} requires operands that are not {cls.name} arrays to be integers or an integer np.ndarray, not {type(inputs[i])}.")
 
     @classmethod
     def _verify_operands_first_field_second_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
@@ -626,7 +626,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
             return
 
         if not meta["operands"][0] == meta["field_operands"][0]:
-            raise TypeError(f"Operation {ufunc.__name__!r} requires the first operand to be a {cls._name} array, not {meta['types'][meta['operands'][0]]}.")
+            raise TypeError(f"Operation {ufunc.__name__!r} requires the first operand to be a {cls.name} array, not {meta['types'][meta['operands'][0]]}.")
         if len(meta["field_operands"]) > 1 and meta["operands"][1] == meta["field_operands"][1]:
             raise TypeError(f"Operation {ufunc.__name__!r} requires the second operand to be an integer array, not {meta['types'][meta['operands'][1]]}.")
 
@@ -713,7 +713,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
             # Scalar multiplication
             cls._verify_operands_in_field_or_int(ufunc, inputs, meta)
             inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
-            inputs[meta["non_field_operands"][0]] = np.mod(inputs[meta["non_field_operands"][0]], cls._characteristic)
+            inputs[meta["non_field_operands"][0]] = np.mod(inputs[meta["non_field_operands"][0]], cls.characteristic)
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufunc("multiply"), method)(*inputs, **kwargs)
         output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
@@ -781,7 +781,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
         x = inputs[0]
         b = x.is_quadratic_residue()  # Boolean indicating if the inputs are quadratic residues
         if not np.all(b):
-            raise ArithmeticError(f"Input array has elements that are quadratic non-residues (do not have a square root). Use `x.is_quadratic_residue()` to determine if elements have square roots in {cls._name}.\n{x[~b]}")
+            raise ArithmeticError(f"Input array has elements that are quadratic non-residues (do not have a square root). Use `x.is_quadratic_residue()` to determine if elements have square roots in {cls.name}.\n{x[~b]}")
         return cls._sqrt(*inputs)
 
     @classmethod
