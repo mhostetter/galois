@@ -472,7 +472,7 @@ class FLFSR(_LFSR):
         # pylint: disable=useless-super-delegation
         return super().reset(state)
 
-    def step(self, steps: int = 1) -> FieldArray:
+    def step(self, steps: int = 1) -> "FieldArray":
         """
         Produces the next `steps` output symbols.
 
@@ -991,7 +991,7 @@ class GLFSR(_LFSR):
         # pylint: disable=useless-super-delegation
         return super().reset(state)
 
-    def step(self, steps: int = 1) -> FieldArray:
+    def step(self, steps: int = 1) -> "FieldArray":
         """
         Produces the next `steps` output symbols.
 

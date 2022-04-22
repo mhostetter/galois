@@ -195,7 +195,7 @@ class ReedSolomon:
 
         return string
 
-    def encode(self, message: Union[np.ndarray, FieldArray], parity_only: bool = False) -> Union[np.ndarray, FieldArray]:
+    def encode(self, message: Union[np.ndarray, "FieldArray"], parity_only: bool = False) -> Union[np.ndarray, "FieldArray"]:
         r"""
         Encodes the message :math:`\mathbf{m}` into the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -327,7 +327,7 @@ class ReedSolomon:
             codeword = message.view(self.field) @ self.G
             return codeword.view(type(message))
 
-    def detect(self, codeword: Union[np.ndarray, FieldArray]) -> Union[np.bool_, np.ndarray]:
+    def detect(self, codeword: Union[np.ndarray, "FieldArray"]) -> Union[np.bool_, np.ndarray]:
         r"""
         Detects if errors are present in the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -484,10 +484,10 @@ class ReedSolomon:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[False]) -> Union[np.ndarray, FieldArray]:
+    def decode(self, codeword: Union[np.ndarray, "FieldArray"], errors: Literal[False]) -> Union[np.ndarray, "FieldArray"]:
         ...
     @overload
-    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[True]) -> Tuple[Union[np.ndarray, FieldArray], Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: Union[np.ndarray, "FieldArray"], errors: Literal[True]) -> Tuple[Union[np.ndarray, "FieldArray"], Union[np.integer, np.ndarray]]:
         ...
     def decode(self, codeword, errors=False):
         r"""

@@ -306,7 +306,7 @@ class BCH:
 
         return string
 
-    def encode(self, message: Union[np.ndarray, GF2], parity_only: bool = False) -> Union[np.ndarray, GF2]:
+    def encode(self, message: Union[np.ndarray, "GF2"], parity_only: bool = False) -> Union[np.ndarray, "GF2"]:
         r"""
         Encodes the message :math:`\mathbf{m}` into the BCH codeword :math:`\mathbf{c}`.
 
@@ -438,7 +438,7 @@ class BCH:
             codeword = message.view(GF2) @ self.G
             return codeword.view(type(message))
 
-    def detect(self, codeword: Union[np.ndarray, GF2]) -> Union[np.bool_, np.ndarray]:
+    def detect(self, codeword: Union[np.ndarray, "GF2"]) -> Union[np.bool_, np.ndarray]:
         r"""
         Detects if errors are present in the BCH codeword :math:`\mathbf{c}`.
 
