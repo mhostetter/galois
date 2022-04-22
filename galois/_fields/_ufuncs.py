@@ -7,10 +7,10 @@ import numpy as np
 
 from .._domains import Array
 
-from ._meta import FieldMeta
+from ._meta import FieldArrayMeta
 
 
-class FieldCalculate(Array, metaclass=FieldMeta):
+class FieldCalculate(Array, metaclass=FieldArrayMeta):
     """
     A mixin class that provides finite field arithmetic using explicit calculation. Specific implementations are
     overridded in GF2, GF2m, GFp, and GFpm.
