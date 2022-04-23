@@ -2,11 +2,17 @@ from __future__ import annotations
 
 import contextlib
 import inspect
-from typing import List
+from typing import List, TYPE_CHECKING
+from typing_extensions import Literal
 
 import numpy as np
 
 DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
+
+# Obtain forward references
+if TYPE_CHECKING:
+    from .._polys import Poly
+    from ._array import Array
 
 
 class ArrayMeta(type):
@@ -23,6 +29,8 @@ class ArrayMeta(type):
         cls._characteristic: int = kwargs.get("characteristic", 0)
         cls._degree: int = kwargs.get("degree", 1)
         cls._order: int = kwargs.get("order", 0)
+        cls._irreducible_poly_int: int = kwargs.get("irreducible_poly_int", 0)
+        cls._primitive_element: int = kwargs.get("primitive_element", 0)
         cls._dtypes = cls._determine_dtypes()
 
         if cls._dtypes == [np.object_]:
@@ -36,7 +44,7 @@ class ArrayMeta(type):
             cls._ufunc_modes = ["jit-lookup", "jit-calculate"]
         cls._ufunc_mode = None  # This is set in the first call to compile
 
-        cls._name = ""  # Needs overridden
+        cls._name = "Undefined"  # Needs overridden
 
         # A dictionary of ufuncs and LUTs
         cls._ufuncs = {}
@@ -93,21 +101,69 @@ class ArrayMeta(type):
     # View methods
     ###############################################################################
 
+    def _view(cls, array: np.ndarray) -> "Array":
+        """
+        View the input array to the Array subclass `A` using the `_view_without_verification()` context manager. This disables
+        bounds checking on the array elements. Instead of `x.view(A)` use `A._view(x)`. For internal library use only.
+        """
+        with cls._view_without_verification():
+            array = array.view(cls)
+        return array
+
     @contextlib.contextmanager
     def _view_without_verification(cls):
         """
-        A context manager to disable verifying array element values are within [0, p^m). For internal library use only.
+        A context manager to disable verifying array element values are within [0, order). For internal library use only.
         """
         prev_value = cls._verify_on_view
         cls._verify_on_view = False
         yield
         cls._verify_on_view = prev_value
 
-    def _view(cls, array: np.ndarray) -> "Array":
-        """
-        View the input array to the FieldArray subclass using the `_view_without_verification()` context manager. This disables
-        bounds checking on the array elements. Instead of `x.view(field)` use `field._view(x)`.
-        """
-        with cls._view_without_verification():
-            array = array.view(cls)
-        return array
+    ###############################################################################
+    # Class properties
+    ###############################################################################
+
+    @property
+    def name(cls) -> str:
+        return cls._name
+
+    @property
+    def characteristic(cls) -> int:
+        return cls._characteristic
+
+    @property
+    def degree(cls) -> int:
+        return cls._degree
+
+    @property
+    def order(cls) -> int:
+        return cls._order
+
+    @property
+    def irreducible_poly(cls) -> "Poly":
+        return cls._irreducible_poly
+
+    @property
+    def primitive_element(cls) -> "Array":
+        return cls(cls._primitive_element)
+
+    @property
+    def dtypes(cls) -> List[np.dtype]:
+        return cls._dtypes
+
+    @property
+    def display_mode(cls) -> Literal["int", "poly", "power"]:
+        return cls._display_mode
+
+    @property
+    def ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
+        return cls._ufunc_mode
+
+    @property
+    def ufunc_modes(cls) -> List[str]:
+        return cls._ufunc_modes
+
+    @property
+    def default_ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
+        return cls._default_ufunc_mode

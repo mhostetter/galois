@@ -24,9 +24,7 @@ class FieldArrayMeta(ArrayMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._irreducible_poly_int: int = kwargs.get("irreducible_poly_int", 0)
         cls._is_primitive_poly: bool = kwargs.get("is_primitive_poly", None)
-        cls._primitive_element: int = kwargs.get("primitive_element", 0)
 
         if cls._degree == 1:
             cls._prime_subfield = cls
@@ -62,7 +60,7 @@ class FieldArrayMeta(ArrayMeta):
         return string
 
     ###############################################################################
-    # Class attributes
+    # Class properties
     ###############################################################################
 
     @property
