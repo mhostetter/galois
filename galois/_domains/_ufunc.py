@@ -10,7 +10,7 @@ import numpy as np
 from ._array import Array, ArrayMeta
 
 
-class RingCalculate(Array, metaclass=ArrayMeta):
+class RingCalculateUfuncs(Array, metaclass=ArrayMeta):
     """
     A mixin abstract base class that provides ring arithmetic (+, -, *) using explicit calculation.
     """
@@ -166,11 +166,11 @@ class RingCalculate(Array, metaclass=ArrayMeta):
         """
 
 
-class FieldCalculate(RingCalculate, abc.ABC):
+class FieldCalculateUfuncs(RingCalculateUfuncs, abc.ABC):
     """
     A mixin abstract base class that provides field arithmetic (+, -, *, /) using explicit calculation.
     """
-    _UFUNC_TYPE = {**RingCalculate._UFUNC_TYPE, **{
+    _UFUNC_TYPE = {**RingCalculateUfuncs._UFUNC_TYPE, **{
         "reciprocal": "unary",
         "divide": "binary",
     }}
@@ -190,7 +190,7 @@ class FieldCalculate(RingCalculate, abc.ABC):
         """
 
 
-class RingLookup(RingCalculate, abc.ABC):
+class RingLookupUfuncs(RingCalculateUfuncs, abc.ABC):
     """
     A mixin class that provides ring arithmetic (+, -, *) using lookup tables. These routines are the same
     for each Galois field or ring. When building the lookup tables, the explicit calculation routines are used
@@ -445,7 +445,7 @@ class RingLookup(RingCalculate, abc.ABC):
         return LOG[beta]
 
 
-class FieldLookup(FieldCalculate, abc.ABC):
+class FieldLookupUfuncs(FieldCalculateUfuncs, abc.ABC):
     """
     A mixin class that provides field arithmetic (+, -, *, /) using lookup tables. These routines are the same
     for each Galois field. When building the lookup tables, the explicit calculation routines are used
@@ -499,7 +499,7 @@ class FieldLookup(FieldCalculate, abc.ABC):
             return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
 
 
-class RingUfunc(RingLookup, RingCalculate, abc.ABC):
+class RingUfuncs(RingLookupUfuncs, RingCalculateUfuncs, abc.ABC):
     """
     A mixin base class that overrides NumPy ufuncs to perform ring arithmetic (+, -, *), using either lookup tables or explicit
     calculation.
@@ -801,13 +801,13 @@ class RingUfunc(RingLookup, RingCalculate, abc.ABC):
         """
 
 
-class FieldUfunc(RingUfunc, FieldLookup, FieldCalculate):
+class FieldUfuncs(RingUfuncs, FieldLookupUfuncs, FieldCalculateUfuncs):
     """
     A mixin base class that overrides NumPy ufuncs to perform field arithmetic (+, -, *, /), using either lookup tables or explicit
     calculation.
     """
 
-    _OVERRIDDEN_UFUNCS = {**RingUfunc._OVERRIDDEN_UFUNCS, **{
+    _OVERRIDDEN_UFUNCS = {**RingUfuncs._OVERRIDDEN_UFUNCS, **{
         np.reciprocal: "_ufunc_routine_reciprocal",
         np.floor_divide: "_ufunc_routine_divide",
         np.true_divide: "_ufunc_routine_divide",
