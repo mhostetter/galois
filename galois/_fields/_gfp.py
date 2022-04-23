@@ -4,7 +4,7 @@ A module that contains a metaclass mixin that provides GF(p) arithmetic using ex
 import numba
 import numpy as np
 
-from .._domains._meta import DTYPES
+from .._domains._array import DTYPES
 
 from ._array import FieldArray
 

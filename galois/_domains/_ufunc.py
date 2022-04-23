@@ -1,17 +1,18 @@
 """
 A module that contains a Array mixin classes that override NumPy ufuncs.
 """
+import abc
+
 import numba
 from numba import int64
 import numpy as np
 
-from ._array import Array
-from ._meta import ArrayMeta
+from ._array import Array, ArrayMeta
 
 
 class RingCalculate(Array, metaclass=ArrayMeta):
     """
-    A mixin base class that provides ring arithmetic (+, -, *) using explicit calculation.
+    A mixin abstract base class that provides ring arithmetic (+, -, *) using explicit calculation.
     """
     # Function signatures for JIT-compiled explicit calculation arithmetic functions
     _UNARY_CALCULATE_SIG = numba.types.FunctionType(int64(int64, int64, int64, int64))
@@ -30,19 +31,19 @@ class RingCalculate(Array, metaclass=ArrayMeta):
     }
 
     @classmethod
-    def _set_globals(cls, name):
+    @abc.abstractmethod
+    def _set_globals(cls, name: str):
         """
         Sets the global variables in the GF*Meta metaclass mixins that are needed for linking during JIT compilation.
         """
-        raise NotImplementedError
 
     @classmethod
+    @abc.abstractmethod
     def _reset_globals(cls):
         """
         Resets the global variables in the GF*Meta metaclass mixins so when the pure-Python functions/ufuncs invoke these
         globals, they reference the correct pure-Python functions and not the JIT-compiled functions/ufuncs.
         """
-        raise NotImplementedError
 
     @classmethod
     def _func_calculate(cls, name, reset=True):
@@ -123,33 +124,51 @@ class RingCalculate(Array, metaclass=ArrayMeta):
     ###############################################################################
 
     @staticmethod
-    def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
+    @abc.abstractmethod
+    def _add_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+        """
+        Adds two elements in a Galois field or Galois ring.
+        """
 
     @staticmethod
-    def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
+    @abc.abstractmethod
+    def _negative_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+        """
+        Computes the additive inverse of an element in a Galois field or Galois ring.
+        """
 
     @staticmethod
-    def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
+    @abc.abstractmethod
+    def _subtract_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+        """
+        Subtracts two elements in a Galois field or Galois ring.
+        """
 
     @staticmethod
-    def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
+    @abc.abstractmethod
+    def _multiply_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+        """
+        Multiplies two elements in a Galois field or Galois ring.
+        """
 
     @staticmethod
-    def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
+    @abc.abstractmethod
+    def _power_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+        """
+        Exponentiates a element of a Galois field or Galois ring to an integer power.
+        """
 
     @staticmethod
-    def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
+    @abc.abstractmethod
+    def _log_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+        """
+        Computes the logarithm of an element base another element in a Galois field or Galois ring.
+        """
 
 
-class FieldCalculate(RingCalculate):
+class FieldCalculate(RingCalculate, abc.ABC):
     """
-    A mixin base class that provides field arithmetic (+, -, *, /) using explicit calculation.
+    A mixin abstract base class that provides field arithmetic (+, -, *, /) using explicit calculation.
     """
     _UFUNC_TYPE = {**RingCalculate._UFUNC_TYPE, **{
         "reciprocal": "unary",
@@ -157,22 +176,26 @@ class FieldCalculate(RingCalculate):
     }}
 
     @staticmethod
-    def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
+    @abc.abstractmethod
+    def _reciprocal_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+        """
+        Computes the multiplicative inverse of an element in a Galois field or Galois ring.
+        """
 
     @staticmethod
-    def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
+    @abc.abstractmethod
+    def _divide_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+        """
+        Divides two elements in a Galois field or Galois ring.
+        """
 
 
-class RingLookup(RingCalculate):
+class RingLookup(RingCalculate, abc.ABC):
     """
     A mixin class that provides ring arithmetic (+, -, *) using lookup tables. These routines are the same
     for each Galois field or ring. When building the lookup tables, the explicit calculation routines are used
     once.
     """
-    # pylint: disable=abstract-method
-
     # Function signatures for JIT-compiled "lookup" arithmetic functions
     _UNARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64[:], int64[:], int64[:], int64))
     _BINARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64, int64[:], int64[:], int64[:], int64))
@@ -422,13 +445,13 @@ class RingLookup(RingCalculate):
         return LOG[beta]
 
 
-class FieldLookup(FieldCalculate):
+class FieldLookup(FieldCalculate, abc.ABC):
     """
     A mixin class that provides field arithmetic (+, -, *, /) using lookup tables. These routines are the same
     for each Galois field. When building the lookup tables, the explicit calculation routines are used
     once.
     """
-    # pylint: disable=abstract-method,unused-argument
+    # pylint: disable=unused-argument
 
     @staticmethod
     @numba.extending.register_jitable
@@ -476,7 +499,7 @@ class FieldLookup(FieldCalculate):
             return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
 
 
-class RingUfunc(RingLookup, RingCalculate):
+class RingUfunc(RingLookup, RingCalculate, abc.ABC):
     """
     A mixin base class that overrides NumPy ufuncs to perform ring arithmetic (+, -, *), using either lookup tables or explicit
     calculation.
@@ -568,7 +591,7 @@ class RingUfunc(RingLookup, RingCalculate):
             return output
 
     @classmethod
-    def _ufunc(cls, name):
+    def _ufunc(cls, name: str):
         """
         Returns the ufunc for the specific type of arithmetic. The ufunc compilation is based on `ufunc_mode`.
         """
@@ -586,8 +609,11 @@ class RingUfunc(RingLookup, RingCalculate):
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a):
-        raise NotImplementedError
+    @abc.abstractmethod
+    def _sqrt(a: int) -> int:
+        """
+        Computes the square root of an element in a Galois field or Galois ring.
+        """
 
     ###############################################################################
     # Input/output conversion functions
@@ -768,11 +794,11 @@ class RingUfunc(RingLookup, RingCalculate):
         return cls._matmul(*inputs, **kwargs)
 
     @classmethod
+    @abc.abstractmethod
     def _matmul(cls, A, B, out=None, **kwargs):
         """
-        Will be implemented in FieldFunctions.
+        Computes the matrix multiplication of two arrays in a Galois field or Galois ring.
         """
-        raise NotImplementedError
 
 
 class FieldUfunc(RingUfunc, FieldLookup, FieldCalculate):
@@ -780,7 +806,6 @@ class FieldUfunc(RingUfunc, FieldLookup, FieldCalculate):
     A mixin base class that overrides NumPy ufuncs to perform field arithmetic (+, -, *, /), using either lookup tables or explicit
     calculation.
     """
-    # pylint: disable=abstract-method
 
     _OVERRIDDEN_UFUNCS = {**RingUfunc._OVERRIDDEN_UFUNCS, **{
         np.reciprocal: "_ufunc_routine_reciprocal",

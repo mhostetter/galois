@@ -2,6 +2,8 @@
 A module that contains a Array mixin classes that override NumPy functions. Additionally, other JIT functions are created for use in
 polynomials and error-correcting codes, such as _poly_evaluate() or _poly_divmod().
 """
+import abc
+
 import numba
 from numba import int64, uint64
 import numpy as np
@@ -10,13 +12,12 @@ from . import _linalg
 from ._ufunc import RingUfunc, FieldUfunc
 
 
-class RingFunction(RingUfunc):
+class RingFunction(RingUfunc, abc.ABC):
     """
     A mixin base class that overrides NumPy functions to perform ring arithmetic (+, -, *), using *only* explicit
     calculation. It was determined that explicit calculation is always faster than lookup tables. For some reason,
     passing large LUTs to JIT functions is slow.
     """
-    # pylint: disable=abstract-method
 
     _UNSUPPORTED_FUNCTIONS_UNARY = [
         np.packbits, np.unpackbits,
