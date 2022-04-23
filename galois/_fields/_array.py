@@ -8,17 +8,16 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains import Array
+from .._domains import Array, _linalg
+from .._domains._function import FieldFunction
+from .._domains._ufunc import FieldUfunc
 from .._overrides import set_module, extend_docstring, SPHINX_BUILD
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
 from .._prime import divisors
 from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 
-from . import _linalg
-from ._functions import FieldFunction
 from ._meta import FieldArrayMeta
-from ._ufuncs import FieldUfunc
 
 __all__ = ["FieldArray"]
 

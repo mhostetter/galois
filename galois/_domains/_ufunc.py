@@ -1,19 +1,17 @@
 """
-A module that contains a metaclass mixin that provides NumPy ufunc overriding for an ndarray subclass.
+A module that contains a Array mixin classes that override NumPy ufuncs.
 """
 import numba
 from numba import int64
 import numpy as np
 
-from .._domains import Array
+from ._array import Array
+from ._meta import ArrayMeta
 
-from ._meta import FieldArrayMeta
 
-
-class FieldCalculate(Array, metaclass=FieldArrayMeta):
+class RingCalculate(Array, metaclass=ArrayMeta):
     """
-    A mixin class that provides finite field arithmetic using explicit calculation. Specific implementations are
-    overridded in GF2, GF2m, GFp, and GFpm.
+    A mixin base class that provides ring arithmetic (+, -, *) using explicit calculation.
     """
     # Function signatures for JIT-compiled explicit calculation arithmetic functions
     _UNARY_CALCULATE_SIG = numba.types.FunctionType(int64(int64, int64, int64, int64))
@@ -27,8 +25,6 @@ class FieldCalculate(Array, metaclass=FieldArrayMeta):
         "negative": "unary",
         "subtract": "binary",
         "multiply": "binary",
-        "reciprocal": "unary",
-        "divide": "binary",
         "power": "binary",
         "log": "binary",
     }
@@ -143,14 +139,6 @@ class FieldCalculate(Array, metaclass=FieldArrayMeta):
         raise NotImplementedError
 
     @staticmethod
-    def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
-
-    @staticmethod
-    def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        raise NotImplementedError
-
-    @staticmethod
     def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
         raise NotImplementedError
 
@@ -159,10 +147,28 @@ class FieldCalculate(Array, metaclass=FieldArrayMeta):
         raise NotImplementedError
 
 
-class FieldLookup(FieldCalculate):
+class FieldCalculate(RingCalculate):
     """
-    A mixin class that provides finite field arithmetic using lookup tables. These routines are the same
-    for each finite field type. When building the lookup tables, the explicit calculation routines are used
+    A mixin base class that provides field arithmetic (+, -, *, /) using explicit calculation.
+    """
+    _UFUNC_TYPE = {**RingCalculate._UFUNC_TYPE, **{
+        "reciprocal": "unary",
+        "divide": "binary",
+    }}
+
+    @staticmethod
+    def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        raise NotImplementedError
+
+    @staticmethod
+    def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+        raise NotImplementedError
+
+
+class RingLookup(RingCalculate):
+    """
+    A mixin class that provides ring arithmetic (+, -, *) using lookup tables. These routines are the same
+    for each Galois field or ring. When building the lookup tables, the explicit calculation routines are used
     once.
     """
     # pylint: disable=abstract-method
@@ -375,6 +381,57 @@ class FieldLookup(FieldCalculate):
 
     @staticmethod
     @numba.extending.register_jitable
+    def _power_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
+        b in Z
+
+        a ** b = α^m ** b
+               = α^(m * b)
+               = α^(m * ((b // (ORDER - 1))*(ORDER - 1) + b % (ORDER - 1)))
+               = α^(m * ((b // (ORDER - 1))*(ORDER - 1)) * α^(m * (b % (ORDER - 1)))
+               = 1 * α^(m * (b % (ORDER - 1)))
+               = α^(m * (b % (ORDER - 1)))
+        """
+        if a == 0 and b < 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        if b == 0:
+            return 1
+        elif a == 0:
+            return 0
+        else:
+            ORDER = LOG.size
+            m = LOG[a]
+            return EXP[(m * b) % (ORDER - 1)]  # TODO: Do b % (ORDER - 1) first? b could be very large and overflow int64
+
+    @staticmethod
+    @numba.extending.register_jitable
+    def _log_lookup(beta, alpha, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
+        """
+        α is a primitive element of GF(p^m)
+        a = α^m
+
+        log(beta, α) = log(α^m, α)
+                     = m
+        """
+        if beta == 0:
+            raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
+
+        return LOG[beta]
+
+
+class FieldLookup(FieldCalculate):
+    """
+    A mixin class that provides field arithmetic (+, -, *, /) using lookup tables. These routines are the same
+    for each Galois field. When building the lookup tables, the explicit calculation routines are used
+    once.
+    """
+    # pylint: disable=abstract-method,unused-argument
+
+    @staticmethod
+    @numba.extending.register_jitable
     def _reciprocal_lookup(a, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
@@ -418,56 +475,12 @@ class FieldLookup(FieldCalculate):
             n = LOG[b]
             return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
 
-    @staticmethod
-    @numba.extending.register_jitable
-    def _power_lookup(a, b, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-        """
-        α is a primitive element of GF(p^m)
-        a = α^m
-        b in Z
 
-        a ** b = α^m ** b
-               = α^(m * b)
-               = α^(m * ((b // (ORDER - 1))*(ORDER - 1) + b % (ORDER - 1)))
-               = α^(m * ((b // (ORDER - 1))*(ORDER - 1)) * α^(m * (b % (ORDER - 1)))
-               = 1 * α^(m * (b % (ORDER - 1)))
-               = α^(m * (b % (ORDER - 1)))
-        """
-        if a == 0 and b < 0:
-            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
-
-        if b == 0:
-            return 1
-        elif a == 0:
-            return 0
-        else:
-            ORDER = LOG.size
-            m = LOG[a]
-            return EXP[(m * b) % (ORDER - 1)]  # TODO: Do b % (ORDER - 1) first? b could be very large and overflow int64
-
-    @staticmethod
-    @numba.extending.register_jitable
-    def _log_lookup(beta, alpha, EXP, LOG, ZECH_LOG, ZECH_E):  # pragma: no cover
-        """
-        α is a primitive element of GF(p^m)
-        a = α^m
-
-        log(beta, α) = log(α^m, α)
-                     = m
-        """
-        if beta == 0:
-            raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
-
-        return LOG[beta]
-
-
-class FieldUfunc(FieldLookup, FieldCalculate):
+class RingUfunc(RingLookup, RingCalculate):
     """
-    A mixin class that overrides NumPy ufuncs to perform finite field arithmetic, using either lookup tables or explicit
+    A mixin base class that overrides NumPy ufuncs to perform ring arithmetic (+, -, *), using either lookup tables or explicit
     calculation.
     """
-    # pylint: disable=no-member
-
     _UNSUPPORTED_UFUNCS_UNARY = [
         np.invert,
         np.log2, np.log10,
@@ -501,11 +514,6 @@ class FieldUfunc(FieldLookup, FieldCalculate):
         np.negative: "_ufunc_routine_negative",
         np.subtract: "_ufunc_routine_subtract",
         np.multiply: "_ufunc_routine_multiply",
-        np.reciprocal: "_ufunc_routine_reciprocal",
-        np.floor_divide: "_ufunc_routine_divide",
-        np.true_divide: "_ufunc_routine_divide",
-        np.divmod: "_ufunc_routine_divmod",
-        np.remainder: "_ufunc_routine_remainder",
         np.power: "_ufunc_routine_power",
         np.square: "_ufunc_routine_square",
         np.log: "_ufunc_routine_log",
@@ -586,12 +594,12 @@ class FieldUfunc(FieldLookup, FieldCalculate):
     ###############################################################################
 
     @classmethod
-    def _verify_unary_method_not_reduction(cls, ufunc, method):  # pylint: disable=no-self-use
+    def _verify_unary_method_not_reduction(cls, ufunc, method):
         if method in ["reduce", "accumulate", "reduceat", "outer"]:
             raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Reduction methods are only supported on binary functions.")
 
     @classmethod
-    def _verify_binary_method_not_reduction(cls, ufunc, method):  # pylint: disable=no-self-use
+    def _verify_binary_method_not_reduction(cls, ufunc, method):
         if method in ["reduce", "accumulate", "reduceat"]:
             raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs with type {cls.name} array and integer array. Different types do not support reduction.")
 
@@ -601,12 +609,12 @@ class FieldUfunc(FieldLookup, FieldCalculate):
             raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Only '__call__' is supported.")
 
     @classmethod
-    def _verify_operands_in_same_field(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
+    def _verify_operands_in_same_field(cls, ufunc, inputs, meta):
         if len(meta["non_field_operands"]) > 0:
             raise TypeError(f"Operation {ufunc.__name__!r} requires both operands to be {cls.name} arrays, not {[inputs[i] for i in meta['operands']]}.")
 
     @classmethod
-    def _verify_operands_in_field_or_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
+    def _verify_operands_in_field_or_int(cls, ufunc, inputs, meta):
         for i in meta["non_field_operands"]:
             if isinstance(inputs[i], (int, np.integer)):
                 pass
@@ -621,7 +629,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
                 raise TypeError(f"Operation {ufunc.__name__!r} requires operands that are not {cls.name} arrays to be integers or an integer np.ndarray, not {type(inputs[i])}.")
 
     @classmethod
-    def _verify_operands_first_field_second_int(cls, ufunc, inputs, meta):  # pylint: disable=no-self-use
+    def _verify_operands_first_field_second_int(cls, ufunc, inputs, meta):
         if len(meta["operands"]) == 1:
             return
 
@@ -647,7 +655,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
             raise TypeError(f"Operation {ufunc.__name__!r} requires the second operand to be an integer or integer np.ndarray, not {type(second)}.")
 
     @classmethod
-    def _view_inputs_as_ndarray(cls, inputs, kwargs, dtype=None):  # pylint: disable=no-self-use
+    def _view_inputs_as_ndarray(cls, inputs, kwargs, dtype=None):
         # View all inputs that are FieldArrays as np.ndarray to avoid infinite recursion
         v_inputs = list(inputs)
         for i in range(len(inputs)):
@@ -692,7 +700,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
         return output
 
     @classmethod
-    def _ufunc_routine_negative(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_negative(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_unary_method_not_reduction(ufunc, method)
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(cls._ufunc("negative"), method)(*inputs, **kwargs)
@@ -720,36 +728,6 @@ class FieldUfunc(FieldLookup, FieldCalculate):
         return output
 
     @classmethod
-    def _ufunc_routine_reciprocal(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
-        cls._verify_unary_method_not_reduction(ufunc, method)
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
-        output = getattr(cls._ufunc("reciprocal"), method)(*inputs, **kwargs)
-        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
-        return output
-
-    @classmethod
-    def _ufunc_routine_divide(cls, ufunc, method, inputs, kwargs, meta):
-        cls._verify_operands_in_same_field(ufunc, inputs, meta)
-        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
-        output = getattr(cls._ufunc("divide"), method)(*inputs, **kwargs)
-        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
-        return output
-
-    @classmethod
-    def _ufunc_routine_divmod(cls, ufunc, method, inputs, kwargs, meta):
-        q = cls._ufunc_routine_divide(ufunc, method, inputs, kwargs, meta)
-        r = cls.Zeros(q.shape)
-        output = q, r
-        return output
-
-    @classmethod
-    def _ufunc_routine_remainder(cls, ufunc, method, inputs, kwargs, meta):
-        # Perform dummy addition operation to get shape of output zeros
-        x = cls._ufunc_routine_add(ufunc, method, inputs, kwargs, meta)
-        output = cls.Zeros(x.shape)
-        return output
-
-    @classmethod
     def _ufunc_routine_power(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_binary_method_not_reduction(ufunc, method)
         cls._verify_operands_first_field_second_int(ufunc, inputs, meta)
@@ -759,7 +737,7 @@ class FieldUfunc(FieldLookup, FieldCalculate):
         return output
 
     @classmethod
-    def _ufunc_routine_square(cls, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def _ufunc_routine_square(cls, ufunc, method, inputs, kwargs, meta):
         cls._verify_unary_method_not_reduction(ufunc, method)
         inputs = list(inputs) + [2]
         inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
@@ -795,3 +773,49 @@ class FieldUfunc(FieldLookup, FieldCalculate):
         Will be implemented in FieldFunctions.
         """
         raise NotImplementedError
+
+
+class FieldUfunc(RingUfunc, FieldLookup, FieldCalculate):
+    """
+    A mixin base class that overrides NumPy ufuncs to perform field arithmetic (+, -, *, /), using either lookup tables or explicit
+    calculation.
+    """
+    # pylint: disable=abstract-method
+
+    _OVERRIDDEN_UFUNCS = {**RingUfunc._OVERRIDDEN_UFUNCS, **{
+        np.reciprocal: "_ufunc_routine_reciprocal",
+        np.floor_divide: "_ufunc_routine_divide",
+        np.true_divide: "_ufunc_routine_divide",
+        np.divmod: "_ufunc_routine_divmod",
+        np.remainder: "_ufunc_routine_remainder",
+    }}
+
+    @classmethod
+    def _ufunc_routine_reciprocal(cls, ufunc, method, inputs, kwargs, meta):
+        cls._verify_unary_method_not_reduction(ufunc, method)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("reciprocal"), method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    @classmethod
+    def _ufunc_routine_divide(cls, ufunc, method, inputs, kwargs, meta):
+        cls._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = cls._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(cls._ufunc("divide"), method)(*inputs, **kwargs)
+        output = cls._view_output_as_field(output, meta["field"], meta["dtype"])
+        return output
+
+    @classmethod
+    def _ufunc_routine_divmod(cls, ufunc, method, inputs, kwargs, meta):
+        q = cls._ufunc_routine_divide(ufunc, method, inputs, kwargs, meta)
+        r = cls.Zeros(q.shape)
+        output = q, r
+        return output
+
+    @classmethod
+    def _ufunc_routine_remainder(cls, ufunc, method, inputs, kwargs, meta):
+        # Perform dummy addition operation to get shape of output zeros
+        x = cls._ufunc_routine_add(ufunc, method, inputs, kwargs, meta)
+        output = cls.Zeros(x.shape)
+        return output
