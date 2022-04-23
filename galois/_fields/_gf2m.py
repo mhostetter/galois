@@ -1,6 +1,8 @@
 """
-A module that contains a metaclass mixin that provides GF(2^m) arithmetic using explicit calculation.
+A module that defines the base class for all GF(2^m) array classes.
 """
+from __future__ import annotations
+
 import numba
 import numpy as np
 
@@ -27,7 +29,7 @@ class GF2m(FieldArray):
         cls._ufuncs["subtract"] = np.bitwise_xor
 
     @classmethod
-    def _set_globals(cls, name):
+    def _set_globals(cls, name: str):
         global MULTIPLY, RECIPROCAL
 
         if name in ["reciprocal", "divide", "power", "log"]:
@@ -47,21 +49,21 @@ class GF2m(FieldArray):
     ###############################################################################
 
     @staticmethod
-    def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _add_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
         return a ^ b
 
     @staticmethod
-    def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _negative_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Not actually used. `np.positive()` is faster.
         """
         return a
 
     @staticmethod
-    def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _subtract_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
@@ -69,7 +71,7 @@ class GF2m(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _multiply_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         a in GF(2^m), can be represented as a degree m-1 polynomial a(x) in GF(2)[x]
         b in GF(2^m), can be represented as a degree m-1 polynomial b(x) in GF(2)[x]
@@ -100,7 +102,7 @@ class GF2m(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _reciprocal_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         From Fermat's Little Theorem:
         a in GF(p^m)
@@ -133,7 +135,7 @@ class GF2m(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _divide_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -147,7 +149,7 @@ class GF2m(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _power_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Square and Multiply Algorithm
 
@@ -185,7 +187,7 @@ class GF2m(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _log_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         TODO: Replace this with more efficient algorithm
         a = α^m
@@ -213,7 +215,7 @@ class GF2m(FieldArray):
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a):
+    def _sqrt(a: GF2m) -> GF2m:
         """
         Fact 3.42 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         """

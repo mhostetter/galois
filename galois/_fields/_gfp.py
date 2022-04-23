@@ -1,6 +1,10 @@
 """
-A module that contains a metaclass mixin that provides GF(p) arithmetic using explicit calculation.
+A module that defines the base class for all GF(p) array classes.
 """
+from __future__ import annotations
+
+from typing import List
+
 import numba
 import numpy as np
 
@@ -19,7 +23,7 @@ class GFp(FieldArray):
     _FUNC_CACHE_CALCULATE = {}
 
     @classmethod
-    def _determine_dtypes(cls):
+    def _determine_dtypes(cls) -> List[np.dtype]:
         """
         The only valid dtypes are ones that can hold x*x for x in [0, order).
         """
@@ -30,14 +34,14 @@ class GFp(FieldArray):
         return dtypes
 
     @classmethod
-    def _ufunc(cls, name):
+    def _ufunc(cls, name: str):
         # Some explicit calculation functions are faster than using lookup tables. See https://github.com/mhostetter/galois/pull/92#issuecomment-835548405.
         if name not in cls._ufuncs and cls.ufunc_mode == "jit-lookup" and name in ["add", "negative", "subtract"]:
             cls._ufuncs[name] = cls._ufunc_calculate(name)
         return super()._ufunc(name)
 
     @classmethod
-    def _set_globals(cls, name):
+    def _set_globals(cls, name: str):
         global RECIPROCAL
 
         if name in ["divide", "power"]:
@@ -55,7 +59,7 @@ class GFp(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _add_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         c = a + b
         if c >= CHARACTERISTIC:
             c -= CHARACTERISTIC
@@ -64,7 +68,7 @@ class GFp(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _negative_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         if a == 0:
             c = 0
         else:
@@ -74,7 +78,7 @@ class GFp(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _subtract_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         if a >= b:
             c = a - b
         else:
@@ -84,14 +88,14 @@ class GFp(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _multiply_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         c = (a * b) % CHARACTERISTIC
 
         return c
 
     @staticmethod
     @numba.extending.register_jitable
-    def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _reciprocal_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         s*x + t*y = gcd(x, y) = 1
         x = p
@@ -116,7 +120,7 @@ class GFp(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _divide_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -130,7 +134,7 @@ class GFp(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _power_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Square and Multiply Algorithm
 
@@ -168,7 +172,7 @@ class GFp(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _log_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         TODO: Replace this with more efficient algorithm
         a = α^m
@@ -196,7 +200,7 @@ class GFp(FieldArray):
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a):
+    def _sqrt(a: GFp) -> GFp:
         """
         Algorithm 3.34 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.

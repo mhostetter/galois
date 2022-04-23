@@ -1,7 +1,9 @@
 """
-A module that contains a metaclass mixin that provides GF(p^m) arithmetic using explicit calculation.
+A module that defines the base class for all GF(p^m) array classes.
 """
 from __future__ import annotations
+
+from typing import List
 
 import numba
 import numpy as np
@@ -25,7 +27,7 @@ class GFpm(FieldArray):
     _FUNC_CACHE_CALCULATE = {}
 
     @classmethod
-    def _determine_dtypes(cls):
+    def _determine_dtypes(cls) -> List[np.dtype]:
         """
         The only valid dtypes are ones that can hold x*x for x in [0, order).
         """
@@ -37,7 +39,7 @@ class GFpm(FieldArray):
         return dtypes
 
     @classmethod
-    def _set_globals(cls, name):
+    def _set_globals(cls, name: str):
         global DTYPE, INT_TO_POLY, POLY_TO_INT, MULTIPLY, RECIPROCAL
 
         DTYPE = np.int64
@@ -150,7 +152,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _int_to_poly(a: int, CHARACTERISTIC: int, DEGREE: int):
+    def _int_to_poly(a: int, CHARACTERISTIC: int, DEGREE: int) -> np.ndarray:
         """
         Convert the integer representation to vector/polynomial representation
         """
@@ -164,7 +166,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _poly_to_int(a_vec: int, CHARACTERISTIC: int, DEGREE: int):
+    def _poly_to_int(a_vec: np.ndarray, CHARACTERISTIC: int, DEGREE: int) -> int:
         """
         Convert the integer representation to vector/polynomial representation
         """
@@ -178,7 +180,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _add_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
+    def _add_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec + b_vec) % CHARACTERISTIC
@@ -188,7 +190,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _negative_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
+    def _negative_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         a_vec = (-a_vec) % CHARACTERISTIC
         c = POLY_TO_INT(a_vec, CHARACTERISTIC, DEGREE)
@@ -197,7 +199,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _subtract_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
+    def _subtract_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec - b_vec) % CHARACTERISTIC
@@ -207,7 +209,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _multiply_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
+    def _multiply_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         a_vec = INT_TO_POLY(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_POLY(b, CHARACTERISTIC, DEGREE)
 
@@ -238,7 +240,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _reciprocal_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
+    def _reciprocal_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         From Fermat's Little Theorem:
         a^(p^m - 1) = 1 (mod p^m), for a in GF(p^m)
@@ -270,7 +272,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _divide_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
+    def _divide_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -284,7 +286,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _power_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
+    def _power_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Square and Multiply Algorithm
 
@@ -322,7 +324,7 @@ class GFpm(FieldArray):
 
     @staticmethod
     @numba.extending.register_jitable
-    def _log_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int):
+    def _log_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         TODO: Replace this with more efficient algorithm
         a = α^m
@@ -350,7 +352,7 @@ class GFpm(FieldArray):
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a: GFpm):
+    def _sqrt(a: GFpm) -> GFpm:
         """
         Algorithm 3.34 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.

@@ -1,3 +1,8 @@
+"""
+A module that defines the GF(2) array class.
+"""
+from __future__ import annotations
+
 import numba
 import numpy as np
 
@@ -77,7 +82,7 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
         cls._ufuncs["divide"] = np.bitwise_and
 
     @classmethod
-    def _set_globals(cls, name):
+    def _set_globals(cls, name: str):
         return
 
     @classmethod
@@ -130,42 +135,42 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
     ###############################################################################
 
     @staticmethod
-    def _add_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _add_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
         return a ^ b
 
     @staticmethod
-    def _negative_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _negative_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Not actually used. `np.positive()` is faster.
         """
         return a
 
     @staticmethod
-    def _subtract_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _subtract_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Not actually used. `np.bitwise_xor()` is faster.
         """
         return a ^ b
 
     @staticmethod
-    def _multiply_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _multiply_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         """
         Not actually used. `np.bitwise_and()` is faster.
         """
         return a & b
 
     @staticmethod
-    def _reciprocal_calculate(a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _reciprocal_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         if a == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
         return 1
 
     @staticmethod
-    def _divide_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _divide_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -173,7 +178,7 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
 
     @staticmethod
     @numba.extending.register_jitable
-    def _power_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _power_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -184,7 +189,7 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
 
     @staticmethod
     @numba.extending.register_jitable
-    def _log_calculate(a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _log_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
         if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
         if b != 1:
@@ -197,5 +202,5 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a):
+    def _sqrt(a: GF2) -> GF2:
         return a.copy()
