@@ -3,7 +3,7 @@ A module that contains linear algebra routines over Galois fields.
 """
 import numpy as np
 
-from .._domains._meta import DTYPES
+from .._domains._array import DTYPES
 
 
 def _lapack_linalg(a, b, function, out=None, n_sum=None):
