@@ -1,6 +1,6 @@
 """
-A module that contains a Array mixin classes that override NumPy functions. Additionally, other JIT functions are created for use in
-polynomials and error-correcting codes, such as _poly_evaluate() or _poly_divmod().
+A module that contains Array mixin classes that override NumPy linear algebra functions. Additional functions not included
+in NumPy are also included.
 """
 import abc
 from typing import Tuple, Optional
@@ -16,8 +16,7 @@ from ._function import RingFunction, FieldFunction
 class RingLinalgFunction(RingFunction, abc.ABC):
     """
     A mixin base class that overrides NumPy linear algebra functions to perform ring arithmetic (+, -, *), using *only* explicit
-    calculation. It was determined that explicit calculation is always faster than lookup tables. For some reason,
-    passing large LUTs to JIT functions is slow.
+    calculation.
     """
 
     _OVERRIDDEN_FUNCTIONS = {**RingFunction._OVERRIDDEN_FUNCTIONS, **{
@@ -285,8 +284,7 @@ class RingLinalgFunction(RingFunction, abc.ABC):
 class FieldLinalgFunction(RingLinalgFunction, FieldFunction, abc.ABC):
     """
     A mixin base class that overrides NumPy linear algebra functions to perform field arithmetic (+, -, *, /), using *only* explicit
-    calculation. It was determined that explicit calculation is always faster than lookup tables. For some reason,
-    passing large LUTs to JIT functions is slow.
+    calculation.
     """
 
     _OVERRIDDEN_FUNCTIONS = {**RingLinalgFunction._OVERRIDDEN_FUNCTIONS, **{
