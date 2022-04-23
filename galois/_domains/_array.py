@@ -54,6 +54,7 @@ class ArrayMeta(abc.ABCMeta):
         cls._ufunc_mode = None  # This is set in the first call to compile
 
         cls._name = "Undefined"  # Needs overridden
+        cls._is_prime_field = False  # Defaults to False for Galois rings
 
         # A dictionary of ufuncs and LUTs
         cls._ufuncs = {}

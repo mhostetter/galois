@@ -795,7 +795,7 @@ class RingUfunc(RingLookup, RingCalculate, abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def _matmul(cls, A, B, out=None, **kwargs):
+    def _matmul(cls, A: Array, B: Array, out=None, **kwargs) -> Array:
         """
         Computes the matrix multiplication of two arrays in a Galois field or Galois ring.
         """
