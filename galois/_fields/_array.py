@@ -8,9 +8,10 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains import Array, _linalg
+from .._domains import Array
 from .._domains._array import ArrayMeta
 from .._domains._function import FieldFunction
+from .._domains._linalg import FieldLinalgFunction
 from .._domains._ufunc import FieldUfunc
 from .._modular import totatives
 from .._overrides import set_module, extend_docstring, SPHINX_BUILD
@@ -36,10 +37,12 @@ class FieldArrayMeta(ArrayMeta):
         cls._is_primitive_poly: bool = kwargs.get("is_primitive_poly", None)
 
         if cls._degree == 1:
+            cls._is_prime_field = True
             cls._prime_subfield = cls
             cls._name = f"GF({cls._characteristic})"
             cls._order_str = f"order={cls._order}"
         else:
+            cls._is_prime_field = False
             cls._prime_subfield = kwargs["prime_subfield"]  # Must be provided
             cls._name = f"GF({cls._characteristic}^{cls._degree})"
             cls._order_str = f"order={cls._characteristic}^{cls._degree}"
@@ -516,7 +519,7 @@ class FieldArrayMeta(ArrayMeta):
 
 
 @set_module("galois")
-class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
+class FieldArray(FieldLinalgFunction, FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
     r"""
     A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
 
@@ -1574,7 +1577,7 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
             A.row_reduce()
             np.linalg.matrix_rank(A)
         """
-        A_rre, _ = _linalg.row_reduce(self, ncols=ncols)
+        A_rre, _ = type(self)._row_reduce(self, ncols=ncols)
         return A_rre
 
     def lu_decompose(self) -> Tuple["FieldArray", "FieldArray"]:
@@ -1604,7 +1607,7 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
             U
             np.array_equal(A, L @ U)
         """
-        L, U = _linalg.lu_decompose(self)
+        L, U = type(self)._lu_decompose(self)
         return L, U
 
     def plu_decompose(self) -> Tuple["FieldArray", "FieldArray", "FieldArray"]:
@@ -1638,7 +1641,7 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
             np.array_equal(A, P @ L @ U)
             np.array_equal(P.T @ A, L @ U)
         """
-        P, L, U, _ = _linalg.plu_decompose(self)
+        P, L, U, _ = type(self)._plu_decompose(self)
         return P, L, U
 
     def row_space(self) -> "FieldArray":
@@ -1674,7 +1677,7 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
             LN = A.left_null_space(); LN
             R.shape[0] + LN.shape[0] == m
         """
-        return _linalg.row_space(self)
+        return type(self)._row_space(self)
 
     def column_space(self) -> "FieldArray":
         r"""
@@ -1709,7 +1712,7 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
             N = A.null_space(); N
             C.shape[0] + N.shape[0] == n
         """
-        return _linalg.column_space(self)
+        return type(self)._column_space(self)
 
     def left_null_space(self) -> "FieldArray":
         r"""
@@ -1750,7 +1753,7 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
 
             LN @ A
         """
-        return _linalg.left_null_space(self)
+        return type(self)._left_null_space(self)
 
     def null_space(self) -> "FieldArray":
         r"""
@@ -1791,7 +1794,7 @@ class FieldArray(FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
 
             A @ N.T
         """
-        return _linalg.null_space(self)
+        return type(self)._null_space(self)
 
     def field_trace(self) -> "FieldArray":
         r"""
