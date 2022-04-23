@@ -363,7 +363,10 @@ def modify_type_hints(signature):
 # Only during Sphinx builds, monkey-patch the metaclass properties into this class as "class properties". In Python 3.9 and greater,
 # class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
 # in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
-# In Python 3.9, decorating class properties is possible using:
+
+
+import galois
+import galois._fields._factory
 
 
 def classproperty(obj):
@@ -392,9 +395,29 @@ class FieldArray(galois.FieldArray):
     quadratic_residues = classproperty(type(galois.FieldArray).quadratic_residues)
     ufunc_mode = classproperty(type(galois.FieldArray).ufunc_mode)
     ufunc_modes = classproperty(type(galois.FieldArray).ufunc_modes)
-
 FieldArray.__doc__ = galois.FieldArray.__doc__
 galois.FieldArray = FieldArray
+
+# TODO: Monkey patching GF2 doesn't seem to work
+# class GF2(FieldArray, galois.GF2):
+#     pass
+# GF2.__doc__ = galois.GF2.__doc__
+# galois.GF2 = GF2
+
+
+class GFp(FieldArray, galois._fields._factory.GFp):
+    pass
+galois._fields._factory.GFp = GFp
+
+
+class GF2m(FieldArray, galois._fields._factory.GF2m):
+    pass
+galois._fields._factory.GF2m = GF2m
+
+
+class GFpm(FieldArray, galois._fields._factory.GFpm):
+    pass
+galois._fields._factory.GFpm = GFpm
 
 
 def setup(app):

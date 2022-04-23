@@ -8,6 +8,12 @@ from ._array import FieldArray
 __all__ = ["GF2"]
 
 
+# NOTE: There is a "verbatim" block in the docstring because we were not able to monkey-patch GF2 like the
+# other classes in docs/conf.py. So, technically, at doc-build-time issubclass(galois.GF2, galois.FieldArray) == False
+# because galois.FieldArray is monkey-patched and GF2 is not. This all stems from an inability of Sphinx to
+# document class properties... :(
+
+
 @set_module("galois")
 class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=3, is_primitive_poly=True, primitive_element=1, compile="jit-calculate"):
     r"""
@@ -23,11 +29,15 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
     This class is equivalent, and in fact identical, to the :obj:`~galois.FieldArray` subclass returned from the class factory
     :func:`~galois.GF`.
 
-    .. ipython:: python
+    .. ipython::
 
-        galois.GF2 is galois.GF(2)
-        issubclass(galois.GF2, galois.FieldArray)
-        print(galois.GF2)
+        In [2]: galois.GF2 is galois.GF(2)
+
+        @verbatim
+        In [3]: issubclass(galois.GF2, galois.FieldArray)
+        Out[3]: True
+
+        In [4]: print(galois.GF2)
 
     Create a :obj:`~galois.FieldArray` instance using :obj:`~galois.GF2`'s constructor.
 
