@@ -7,10 +7,10 @@ import numba
 from numba import int64, uint64
 import numpy as np
 
-from ._function import RingFunction, FieldFunction
+from ._function import RingFunctions, FieldFunctions
 
 
-class RingPolyFunction(RingFunction, abc.ABC):
+class RingPolyFunctions(RingFunctions, abc.ABC):
     """
     A mixin base class that ring arithmetic (+, -, *) on polynomials, using *only* explicit calculation.
     """
@@ -57,8 +57,8 @@ class RingPolyFunction(RingFunction, abc.ABC):
     _POLY_EVALUATE_CALCULATE_SIG = numba.types.FunctionType(int64[:](
         int64[:],
         int64[:],
-        RingFunction._BINARY_CALCULATE_SIG,
-        RingFunction._BINARY_CALCULATE_SIG,
+        RingFunctions._BINARY_CALCULATE_SIG,
+        RingFunctions._BINARY_CALCULATE_SIG,
         int64,
         int64,
         int64
@@ -111,9 +111,9 @@ class RingPolyFunction(RingFunction, abc.ABC):
         int64[:],
         int64[:],
         int64,
-        RingFunction._BINARY_CALCULATE_SIG,
-        RingFunction._BINARY_CALCULATE_SIG,
-        RingFunction._BINARY_CALCULATE_SIG,
+        RingFunctions._BINARY_CALCULATE_SIG,
+        RingFunctions._BINARY_CALCULATE_SIG,
+        RingFunctions._BINARY_CALCULATE_SIG,
         int64,
         int64,
         int64
@@ -164,7 +164,7 @@ class RingPolyFunction(RingFunction, abc.ABC):
         return np.array([roots, powers], dtype=dtype)
 
 
-class FieldPolyFunction(RingPolyFunction, FieldFunction, abc.ABC):
+class FieldPolyFunctions(RingPolyFunctions, FieldFunctions, abc.ABC):
     """
     A mixin base class that field arithmetic (+, -, *, /) on polynomials, using *only* explicit calculation.
     """
@@ -201,9 +201,9 @@ class FieldPolyFunction(RingPolyFunction, FieldFunction, abc.ABC):
     _POLY_FLOORDIV_CALCULATE_SIG = numba.types.FunctionType(int64[:](
         int64[:],
         int64[:],
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
         int64,
         int64,
         int64
@@ -266,9 +266,9 @@ class FieldPolyFunction(RingPolyFunction, FieldFunction, abc.ABC):
     _POLY_MOD_CALCULATE_SIG = numba.types.FunctionType(int64[:](
         int64[:],
         int64[:],
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
         int64,
         int64,
         int64
@@ -359,9 +359,9 @@ class FieldPolyFunction(RingPolyFunction, FieldFunction, abc.ABC):
     _POLY_DIVMOD_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](
         int64[:,:],
         int64[:],
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
         int64,
         int64,
         int64
@@ -439,11 +439,11 @@ class FieldPolyFunction(RingPolyFunction, FieldFunction, abc.ABC):
         int64[:],
         uint64[:],
         int64[:],
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._BINARY_CALCULATE_SIG,
-        FieldFunction._CONVOLVE_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._BINARY_CALCULATE_SIG,
+        FieldFunctions._CONVOLVE_CALCULATE_SIG,
         _POLY_MOD_CALCULATE_SIG,
         int64,
         int64,

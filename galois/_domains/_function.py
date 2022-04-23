@@ -7,10 +7,10 @@ import numba
 from numba import int64
 import numpy as np
 
-from ._ufunc import RingUfunc, FieldUfunc
+from ._ufunc import RingUfuncs, FieldUfuncs
 
 
-class RingFunction(RingUfunc, abc.ABC):
+class RingFunctions(RingUfuncs, abc.ABC):
     """
     A mixin base class that overrides NumPy functions to perform ring arithmetic (+, -, *), using *only* explicit
     calculation. It was determined that explicit calculation is always faster than lookup tables. For some reason,
@@ -156,8 +156,8 @@ class RingFunction(RingUfunc, abc.ABC):
     _CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](
         int64[:],
         int64[:],
-        RingUfunc._BINARY_CALCULATE_SIG,
-        RingUfunc._BINARY_CALCULATE_SIG,
+        RingUfuncs._BINARY_CALCULATE_SIG,
+        RingUfuncs._BINARY_CALCULATE_SIG,
         int64,
         int64,
         int64
@@ -230,9 +230,9 @@ class RingFunction(RingUfunc, abc.ABC):
     _DFT_JIT_CALCULATE_SIG = numba.types.FunctionType(int64[:](
         int64[:],
         int64,
-        RingUfunc._BINARY_CALCULATE_SIG,
-        RingUfunc._BINARY_CALCULATE_SIG,
-        RingUfunc._BINARY_CALCULATE_SIG,
+        RingUfuncs._BINARY_CALCULATE_SIG,
+        RingUfuncs._BINARY_CALCULATE_SIG,
+        RingUfuncs._BINARY_CALCULATE_SIG,
         int64,
         int64,
         int64
@@ -292,8 +292,8 @@ class RingFunction(RingUfunc, abc.ABC):
         elif N % 2 == 0:
             # Radix-2 Cooley-Tukey FFT
             omega2 = MULTIPLY(omega, omega, *args)
-            EVEN = RingFunction._dft_python_calculate(x[0::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
-            ODD = RingFunction._dft_python_calculate(x[1::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
+            EVEN = RingFunctions._dft_python_calculate(x[0::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
+            ODD = RingFunctions._dft_python_calculate(x[1::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
 
             twiddle = 1
             for k in range(0, N//2):
@@ -316,7 +316,7 @@ class RingFunction(RingUfunc, abc.ABC):
         return X
 
 
-class FieldFunction(RingFunction, FieldUfunc):
+class FieldFunctions(RingFunctions, FieldUfuncs):
     """
     A mixin base class that overrides NumPy functions to perform field arithmetic (+, -, *, /), using *only* explicit
     calculation.

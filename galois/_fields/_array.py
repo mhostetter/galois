@@ -10,10 +10,10 @@ import numpy as np
 
 from .._domains import Array
 from .._domains._array import ArrayMeta
-from .._domains._function import FieldFunction
-from .._domains._linalg import FieldLinalgFunction
-from .._domains._poly import FieldPolyFunction
-from .._domains._ufunc import FieldUfunc
+from .._domains._function import FieldFunctions
+from .._domains._linalg import FieldLinalgFunctions
+from .._domains._poly import FieldPolyFunctions
+from .._domains._ufunc import FieldUfuncs
 from .._modular import totatives
 from .._overrides import set_module, extend_docstring, SPHINX_BUILD
 from .._polys import Poly
@@ -520,7 +520,7 @@ class FieldArrayMeta(ArrayMeta):
 
 
 @set_module("galois")
-class FieldArray(FieldLinalgFunction, FieldPolyFunction, FieldFunction, FieldUfunc, Array, metaclass=FieldArrayMeta):
+class FieldArray(FieldPolyFunctions, FieldLinalgFunctions, FieldFunctions, FieldUfuncs, Array, metaclass=FieldArrayMeta):
     r"""
     A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
 

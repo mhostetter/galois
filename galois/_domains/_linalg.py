@@ -10,16 +10,16 @@ from numba import int64
 import numpy as np
 
 from ._array import Array, DTYPES
-from ._function import RingFunction, FieldFunction
+from ._function import RingFunctions, FieldFunctions
 
 
-class RingLinalgFunction(RingFunction, abc.ABC):
+class RingLinalgFunctions(RingFunctions, abc.ABC):
     """
     A mixin base class that overrides NumPy linear algebra functions to perform ring arithmetic (+, -, *), using *only* explicit
     calculation.
     """
 
-    _OVERRIDDEN_FUNCTIONS = {**RingFunction._OVERRIDDEN_FUNCTIONS, **{
+    _OVERRIDDEN_FUNCTIONS = {**RingFunctions._OVERRIDDEN_FUNCTIONS, **{
         np.dot: "_dot",
         np.vdot: "_vdot",
         np.inner: "_inner",
@@ -254,8 +254,8 @@ class RingLinalgFunction(RingFunction, abc.ABC):
     _MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](
         int64[:,:],
         int64[:,:],
-        RingFunction._BINARY_CALCULATE_SIG,
-        RingFunction._BINARY_CALCULATE_SIG,
+        RingFunctions._BINARY_CALCULATE_SIG,
+        RingFunctions._BINARY_CALCULATE_SIG,
         int64,
         int64,
         int64
@@ -281,13 +281,13 @@ class RingLinalgFunction(RingFunction, abc.ABC):
         return C
 
 
-class FieldLinalgFunction(RingLinalgFunction, FieldFunction, abc.ABC):
+class FieldLinalgFunctions(RingLinalgFunctions, FieldFunctions, abc.ABC):
     """
     A mixin base class that overrides NumPy linear algebra functions to perform field arithmetic (+, -, *, /), using *only* explicit
     calculation.
     """
 
-    _OVERRIDDEN_FUNCTIONS = {**RingLinalgFunction._OVERRIDDEN_FUNCTIONS, **{
+    _OVERRIDDEN_FUNCTIONS = {**RingLinalgFunctions._OVERRIDDEN_FUNCTIONS, **{
         np.linalg.det: "_det",
         np.linalg.matrix_rank: "_matrix_rank",
         np.linalg.solve: "_solve",
