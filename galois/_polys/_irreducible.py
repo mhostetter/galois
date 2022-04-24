@@ -8,7 +8,7 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains._factory import FIELD_FACTORY
+from .._domains import _factory
 from .._overrides import set_module
 from .._prime import factors, is_prime_power
 
@@ -294,7 +294,7 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
     if not degree >= 0:
         raise ValueError(f"Argument `degree` must be at least 0, not {degree}.")
 
-    field = FIELD_FACTORY(order)
+    field = _factory.FIELD_FACTORY(order)
 
     # Only search monic polynomials of degree m over GF(q)
     start = order**degree
@@ -330,7 +330,7 @@ def _random_search(order, degree) -> Poly:
     """
     Searches for a random irreducible polynomial.
     """
-    field = FIELD_FACTORY(order)
+    field = _factory.FIELD_FACTORY(order)
 
     # Only search monic polynomials of degree m over GF(p)
     start = order**degree

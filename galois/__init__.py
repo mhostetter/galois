@@ -12,10 +12,9 @@ from ._fields import *
 ###############################################################################
 # Monkey-patch the finite field default array and class factory into the
 # _polys module. This is needed here due to circular dependencies.
-from . import _polys
-_polys._irreducible.FIELD_FACTORY = GF
-_polys._poly.DEFAULT_FIELD_ARRAY = GF2
-_polys._primitive.FIELD_FACTORY = GF
+from ._domains import _factory
+_factory.FIELD_FACTORY = GF
+_factory.DEFAULT_ARRAY = GF2
 ###############################################################################
 from ._codes import *  # Needs monkey patching before importing
 
