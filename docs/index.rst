@@ -142,7 +142,7 @@ If this library was useful to you in your research, please cite us. Following th
    api/number-theory.rst
    api/integer-factorization.rst
    api/primes.rst
-   api/typing.rst
+   api/galois.typing.rst
 
 .. toctree::
    :caption: Release Notes
