@@ -8,7 +8,7 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains._factory import FIELD_FACTORY
+from .._domains import _factory
 from .._databases import ConwayPolyDatabase
 from .._overrides import set_module
 from .._prime import factors, is_prime, is_prime_power
@@ -301,7 +301,7 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
     if not degree >= 0:
         raise ValueError(f"Argument `degree` must be at least 0, not {degree}.")
 
-    field = FIELD_FACTORY(order)
+    field = _factory.FIELD_FACTORY(order)
 
     # Only search monic polynomials of degree m over GF(q)
     start = order**degree
@@ -337,7 +337,7 @@ def _random_search(order, degree) -> Poly:
     """
     Searches for a random primitive polynomial.
     """
-    field = FIELD_FACTORY(order)
+    field = _factory.FIELD_FACTORY(order)
 
     # Only search monic polynomials of degree m over GF(p)
     start = order**degree
@@ -420,7 +420,7 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
         raise ValueError(f"Argument `degree` must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
 
     coeffs = ConwayPolyDatabase().fetch(characteristic, degree)
-    field = FIELD_FACTORY(characteristic)
+    field = _factory.FIELD_FACTORY(characteristic)
     poly = Poly(coeffs, field=field)
 
     return poly

@@ -8,8 +8,7 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains import Array
-from .._domains._factory import DEFAULT_FIELD_ARRAY
+from .._domains import Array, _factory
 from .._overrides import set_module
 from ..typing import ElementLike, ArrayLike, PolyLike
 
@@ -109,7 +108,7 @@ class Poly:
         if self._coeffs.size == 0:
             self._coeffs = self._field([0])
 
-        if self._field == DEFAULT_FIELD_ARRAY:
+        if self._field == _factory.DEFAULT_ARRAY:
             # Binary arithmetic is always faster than dense arithmetic
             self._type = "binary"
             # Compute the integer value so we're ready for arithmetic computations
@@ -129,7 +128,7 @@ class Poly:
         else:
             # Convert coefficients into the specified field (or GF2 if unspecified)
             if field is None:
-                field = DEFAULT_FIELD_ARRAY
+                field = _factory.DEFAULT_ARRAY
             coeffs = np.array(coeffs, dtype=field.dtypes[-1])
             sign = np.sign(coeffs)
             coeffs = sign * field(np.abs(coeffs))
@@ -298,7 +297,7 @@ class Poly:
             galois.Poly.Random(5, seed=rng, field=GF)
             galois.Poly.Random(5, seed=rng, field=GF)
         """
-        field = DEFAULT_FIELD_ARRAY if field is None else field
+        field = _factory.DEFAULT_ARRAY if field is None else field
         if not isinstance(degree, (int, np.integer)):
             raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
         if seed is not None:
@@ -444,7 +443,7 @@ class Poly:
                     f = galois.Poly.Int(int("0xf700a275", 16), field=GF); f
                     hex(f)
         """
-        field = DEFAULT_FIELD_ARRAY if field is None else field
+        field = _factory.DEFAULT_ARRAY if field is None else field
         if not isinstance(integer, (int, np.integer)):
             raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
         if not issubclass(field, Array):
@@ -456,7 +455,7 @@ class Poly:
         obj._integer = integer
         obj._field = field
 
-        if field == DEFAULT_FIELD_ARRAY:
+        if field == _factory.DEFAULT_ARRAY:
             obj._type = "binary"
         else:
             obj._type = "dense"
@@ -543,7 +542,7 @@ class Poly:
         obj._nonzero_coeffs = coeffs
         obj._field = field
 
-        if obj._field == DEFAULT_FIELD_ARRAY:
+        if obj._field == _factory.DEFAULT_ARRAY:
             # Binary arithmetic is always faster than dense arithmetic
             obj._type = "binary"
             # Compute the integer value so we're ready for arithmetic computations
