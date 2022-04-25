@@ -183,6 +183,10 @@ html_last_updated_fmt = ""
 html_use_index = True
 html_domain_indices = True
 
+# Sphinx Immaterial API config
+include_object_description_fields_in_toc = False
+
+
 # -- Extension configuration -------------------------------------------------
 
 # Create hyperlinks to other documentation
