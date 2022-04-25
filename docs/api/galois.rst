@@ -1,7 +1,7 @@
 .. py:module:: galois
 
-API Reference
-=============
+galois
+======
 
 .. currentmodule:: galois
 
