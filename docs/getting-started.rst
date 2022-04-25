@@ -30,8 +30,7 @@ the :func:`~galois.GF` class factory. In this example, we are working in :math:`
 .. ipython:: python
 
    GF = galois.GF(3**5)
-   GF
-   print(GF)
+   print(GF.properties)
 
 The :obj:`~galois.FieldArray` subclass `GF` is a subclass of :obj:`~numpy.ndarray` that performs all arithmetic in the Galois field
 :math:`\mathrm{GF}(3^5)`, not in :math:`\mathbb{R}`.

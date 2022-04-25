@@ -80,10 +80,7 @@ working in `GF(3^5)`.
 ```python
 In [3]: GF = galois.GF(3**5)
 
-In [4]: GF
-Out[4]: <class 'numpy.ndarray over GF(3^5)'>
-
-In [5]: print(GF)
+In [4]: print(GF.properties)
 Galois Field:
   name: GF(3^5)
   characteristic: 3
@@ -98,11 +95,11 @@ The [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray
 `np.ndarray` that performs all arithmetic in the Galois field `GF(3^5)`, not in **R**.
 
 ```python
-In [6]: issubclass(GF, galois.FieldArray)
-Out[6]: True
+In [5]: issubclass(GF, galois.FieldArray)
+Out[5]: True
 
-In [7]: issubclass(GF, np.ndarray)
-Out[7]: True
+In [6]: issubclass(GF, np.ndarray)
+Out[6]: True
 ```
 
 See [Array Classes](https://galois.readthedocs.io/en/latest/basic-usage/array-classes.html) for more details.
@@ -113,19 +110,19 @@ Next, create a new [`FieldArray`](https://galois.readthedocs.io/en/latest/api/ga
 [`ArrayLike`](https://galois.readthedocs.io/en/latest/api/galois.typing.ArrayLike.html) object to `GF`'s constructor.
 
 ```python
-In [8]: x = GF([236, 87, 38, 112]); x
-Out[8]: GF([236,  87,  38, 112], order=3^5)
+In [7]: x = GF([236, 87, 38, 112]); x
+Out[7]: GF([236,  87,  38, 112], order=3^5)
 ```
 
 The array `x` is an instance of [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) and also
 an instance of `np.ndarray`.
 
 ```python
-In [9]: isinstance(x, galois.FieldArray)
-Out[9]: True
+In [8]: isinstance(x, galois.FieldArray)
+Out[8]: True
 
-In [10]: isinstance(x, np.ndarray)
-Out[10]: True
+In [9]: isinstance(x, np.ndarray)
+Out[9]: True
 ```
 
 Create a second [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) `y` by converting an existing
@@ -134,11 +131,11 @@ with `.view(np.ndarray)`.
 
 ```python
 # y represents an array created elsewhere in the code
-In [11]: y = np.array([109, 17, 108, 224]); y
-Out[11]: array([109,  17, 108, 224])
+In [10]: y = np.array([109, 17, 108, 224]); y
+Out[10]: array([109,  17, 108, 224])
 
-In [12]: y = y.view(GF); y
-Out[12]: GF([109,  17, 108, 224], order=3^5)
+In [11]: y = y.view(GF); y
+Out[11]: GF([109,  17, 108, 224], order=3^5)
 ```
 
 See [Array Creation](https://galois.readthedocs.io/en/latest/basic-usage/array-creation.html) for more details.
@@ -154,19 +151,19 @@ Choose whichever element representation is most convenient for you.
 
 ```python
 # The default representation is the integer representation
-In [13]: x
-Out[13]: GF([236,  87,  38, 112], order=3^5)
+In [12]: x
+Out[12]: GF([236,  87,  38, 112], order=3^5)
 
-In [14]: GF.display("poly"); x
-Out[14]: 
+In [13]: GF.display("poly"); x
+Out[13]: 
 GF([2α^4 + 2α^3 + 2α^2 + 2,               α^4 + 2α,
              α^3 + α^2 + 2,      α^4 + α^3 + α + 1], order=3^5)
 
-In [15]: GF.display("power"); x
-Out[15]: GF([α^204,  α^16, α^230,  α^34], order=3^5)
+In [14]: GF.display("power"); x
+Out[14]: GF([α^204,  α^16, α^230,  α^34], order=3^5)
 
 # Reset to the integer representation
-In [16]: GF.display("int");
+In [15]: GF.display("int");
 ```
 
 See [Element Representation](https://galois.readthedocs.io/en/latest/basic-usage/element-representation.html) for more details.
@@ -179,27 +176,27 @@ The traditional [NumPy broadcasting rules](https://numpy.org/doc/stable/user/bas
 Standard element-wise array arithmetic -- addition, subtraction, multiplication, and division -- are easily preformed.
 
 ```python
-In [17]: x + y
-Out[17]: GF([ 18,  95, 146,   0], order=3^5)
+In [16]: x + y
+Out[16]: GF([ 18,  95, 146,   0], order=3^5)
 
-In [18]: x - y
-Out[18]: GF([127, 100, 173, 224], order=3^5)
+In [17]: x - y
+Out[17]: GF([127, 100, 173, 224], order=3^5)
 
-In [19]: x * y
-Out[19]: GF([ 21, 241, 179,  82], order=3^5)
+In [18]: x * y
+Out[18]: GF([ 21, 241, 179,  82], order=3^5)
 
-In [20]: x / y
-Out[20]: GF([ 67,  47, 192,   2], order=3^5)
+In [19]: x / y
+Out[19]: GF([ 67,  47, 192,   2], order=3^5)
 ```
 
 More complicated arithmetic, like square root and logarithm base alpha, are also supported.
 
 ```python
-In [21]: np.sqrt(x)
-Out[21]: GF([ 51, 135,  40,  16], order=3^5)
+In [20]: np.sqrt(x)
+Out[20]: GF([ 51, 135,  40,  16], order=3^5)
 
-In [22]: np.log(x)
-Out[22]: array([204,  16, 230,  34])
+In [21]: np.log(x)
+Out[21]: array([204,  16, 230,  34])
 ```
 
 See [Array Arithmetic](https://galois.readthedocs.io/en/latest/basic-usage/array-arithmetic.html) for more details.

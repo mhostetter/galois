@@ -395,6 +395,7 @@ class FieldArray(galois.FieldArray):
     prime_subfield = classproperty(type(galois.FieldArray).prime_subfield)
     primitive_element = classproperty(type(galois.FieldArray).primitive_element)
     primitive_elements = classproperty(type(galois.FieldArray).primitive_elements)
+    properties = classproperty(type(galois.FieldArray).properties)
     quadratic_non_residues = classproperty(type(galois.FieldArray).quadratic_non_residues)
     quadratic_residues = classproperty(type(galois.FieldArray).quadratic_residues)
     ufunc_mode = classproperty(type(galois.FieldArray).ufunc_mode)

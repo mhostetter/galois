@@ -109,7 +109,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(2)
-                print(GF)
+                print(GF.properties)
 
         .. tab-item:: GF(p)
 
@@ -118,7 +118,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(31)
-                print(GF)
+                print(GF.properties)
 
         .. tab-item:: GF(2^m)
 
@@ -128,7 +128,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(2**8)
-                print(GF)
+                print(GF.properties)
 
         .. tab-item:: GF(p^m)
 
@@ -138,7 +138,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(3**5)
-                print(GF)
+                print(GF.properties)
 
     Create a :obj:`~galois.FieldArray` subclass for extension fields and specify their irreducible polynomials.
 
@@ -152,7 +152,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
-                print(GF)
+                print(GF.properties)
 
         .. tab-item:: GF(p^m)
 
@@ -162,7 +162,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 2")
-                print(GF)
+                print(GF.properties)
 
     Finite fields with arbitrarily-large orders are supported.
 
@@ -175,7 +175,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(36893488147419103183)
-                print(GF)
+                print(GF.properties)
 
         .. tab-item:: GF(2^m)
 
@@ -184,7 +184,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(2**100)
-                print(GF)
+                print(GF.properties)
 
         .. tab-item:: GF(p^m)
 
@@ -193,7 +193,7 @@ def GF(
             .. ipython:: python
 
                 GF = galois.GF(109987**4)
-                print(GF)
+                print(GF.properties)
     """
     # pylint: disable=redefined-outer-name,redefined-builtin
     if not isinstance(order, int):
@@ -252,7 +252,7 @@ def _GF_prime(
     """
     degree = 1
     order = characteristic**degree
-    name = f"GF{characteristic}"
+    name = f"GF({characteristic})"
 
     # Get default primitive element
     if primitive_element_ is None:
@@ -321,7 +321,7 @@ def _GF_extension(
     """
     # pylint: disable=too-many-statements
     order = characteristic**degree
-    name = f"GF{characteristic}_{degree}"
+    name = f"GF({characteristic}^{degree})"
     prime_subfield = _GF_prime(characteristic)
     is_primitive_poly = None
     verify_poly = verify
