@@ -9,7 +9,6 @@ Divisibility
 ------------
 
 .. autosummary::
-   :toctree:
 
    gcd
    egcd
@@ -23,7 +22,6 @@ Congruences
 -----------
 
 .. autosummary::
-   :toctree:
 
    crt
    primitive_root
@@ -39,7 +37,6 @@ Integer arithmetic
 ------------------
 
 .. autosummary::
-   :toctree:
 
    isqrt
    iroot

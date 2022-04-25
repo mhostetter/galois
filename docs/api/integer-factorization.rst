@@ -9,7 +9,6 @@ Prime factorization
 -------------------
 
 .. autosummary::
-   :toctree:
 
    factors
 
@@ -17,7 +16,6 @@ Composite factorization
 -----------------------
 
 .. autosummary::
-   :toctree:
 
    divisors
    divisor_sigma
@@ -26,7 +24,6 @@ Specific factorization algorithms
 ---------------------------------
 
 .. autosummary::
-   :toctree:
 
    perfect_power
    trial_division
@@ -37,7 +34,6 @@ Tests
 -----
 
 .. autosummary::
-   :toctree:
 
    is_prime
    is_prime_power
