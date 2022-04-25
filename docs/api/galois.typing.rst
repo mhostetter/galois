@@ -1,7 +1,7 @@
 .. py:module:: galois.typing
 
-Typing
-======
+galois.typing
+=============
 
 The :obj:`galois.typing` subpackage contains `type aliases <https://docs.python.org/3/library/typing.html#type-aliases>`_ for common
 types used in the :obj:`galois` library.
