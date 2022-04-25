@@ -10,7 +10,6 @@ Polynomial classes
 
 .. autosummary::
    :template: class.rst
-   :toctree:
 
    Poly
 
@@ -21,7 +20,6 @@ Irreducible polynomials
 .......................
 
 .. autosummary::
-   :toctree:
 
    irreducible_poly
    irreducible_polys
@@ -30,7 +28,6 @@ Primitive polynomials
 .....................
 
 .. autosummary::
-   :toctree:
 
    primitive_poly
    primitive_polys
@@ -41,7 +38,6 @@ Interpolating polynomials
 .........................
 
 .. autosummary::
-   :toctree:
 
    lagrange_poly
 
@@ -52,7 +48,6 @@ Divisibility
 ............
 
 .. autosummary::
-   :toctree:
 
    gcd
    egcd
@@ -64,7 +59,6 @@ Congruences
 ...........
 
 .. autosummary::
-   :toctree:
 
    crt
 
@@ -72,7 +66,6 @@ Factorization
 ..............
 
 .. autosummary::
-   :toctree:
 
    factors
    square_free_factorization
@@ -83,7 +76,6 @@ Tests
 .....
 
 .. autosummary::
-   :toctree:
 
    is_monic
    is_irreducible

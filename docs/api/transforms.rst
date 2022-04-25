@@ -9,7 +9,6 @@ Number-theoretic transform
 --------------------------
 
 .. autosummary::
-   :toctree:
 
    ntt
    intt
