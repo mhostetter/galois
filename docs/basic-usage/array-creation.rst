@@ -12,7 +12,7 @@ the finite field :math:`\mathrm{GF}(3^5)`.
       .. ipython:: python
 
          GF = galois.GF(3**5)
-         print(GF)
+         print(GF.properties)
 
    .. tab-item:: Polynomial
       :sync: poly
@@ -20,7 +20,7 @@ the finite field :math:`\mathrm{GF}(3^5)`.
       .. ipython:: python
 
          GF = galois.GF(3**5, display="poly")
-         print(GF)
+         print(GF.properties)
 
    .. tab-item:: Power
       :sync: power
@@ -28,7 +28,7 @@ the finite field :math:`\mathrm{GF}(3^5)`.
       .. ipython:: python
 
          GF = galois.GF(3**5, display="power")
-         print(GF)
+         print(GF.properties)
 
 Create a scalar
 ---------------

@@ -19,8 +19,7 @@ A :obj:`~galois.FieldArray` subclass is created using the class factory function
 .. ipython:: python
 
     GF = galois.GF(3**5)
-    GF
-    print(GF)
+    print(GF.properties)
 
 The `GF` class is a subclass of :obj:`~galois.FieldArray` and a subclasses of :obj:`~numpy.ndarray`.
 

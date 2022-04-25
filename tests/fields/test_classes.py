@@ -7,20 +7,22 @@ import numpy as np
 import galois
 
 
-def test_repr():
+def test_repr_str():
     GF = galois.GF(7)
-    assert repr(GF) == "<class 'numpy.ndarray over GF(7)'>"
+    assert repr(GF) == "<class 'galois.GF(7)'>"
+    assert str(GF) == "<class 'galois.GF(7)'>"
 
     GF = galois.GF(2**8)
-    assert repr(GF) == "<class 'numpy.ndarray over GF(2^8)'>"
+    assert repr(GF) == "<class 'galois.GF(2^8)'>"
+    assert str(GF) == "<class 'galois.GF(2^8)'>"
 
 
-def test_str():
+def test_properties():
     GF = galois.GF(7)
-    assert str(GF) == "Galois Field:\n  name: GF(7)\n  characteristic: 7\n  degree: 1\n  order: 7\n  irreducible_poly: x + 4\n  is_primitive_poly: True\n  primitive_element: 3"
+    assert GF.properties == "Galois Field:\n  name: GF(7)\n  characteristic: 7\n  degree: 1\n  order: 7\n  irreducible_poly: x + 4\n  is_primitive_poly: True\n  primitive_element: 3"
 
     GF = galois.GF(2**8)
-    assert str(GF) == "Galois Field:\n  name: GF(2^8)\n  characteristic: 2\n  degree: 8\n  order: 256\n  irreducible_poly: x^8 + x^4 + x^3 + x^2 + 1\n  is_primitive_poly: True\n  primitive_element: x"
+    assert GF.properties == "Galois Field:\n  name: GF(2^8)\n  characteristic: 2\n  degree: 8\n  order: 256\n  irreducible_poly: x^8 + x^4 + x^3 + x^2 + 1\n  is_primitive_poly: True\n  primitive_element: x"
 
 
 def test_dtypes(field):

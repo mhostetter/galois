@@ -54,12 +54,24 @@ class FieldArrayMeta(ArrayMeta):
         if "compile" in kwargs:
             cls.compile(kwargs["compile"])
 
-    def __str__(cls) -> str:
-        if cls.prime_subfield is None:
-            return repr(cls)
+    ###############################################################################
+    # Class properties
+    ###############################################################################
 
+    @property
+    def properties(cls) -> str:
+        """
+        A formatted string of relevant properties of the Galois field.
+
+        Examples
+        --------
+        .. ipython:: python
+
+            GF = galois.GF(7**5)
+            print(GF.properties)
+        """
         with cls.prime_subfield.display("int"):
-            irreducible_poly_str = str(cls.irreducible_poly)
+            irreducible_poly_str = str(cls._irreducible_poly)
 
         string = "Galois Field:"
         string += f"\n  name: {cls.name}"
@@ -71,10 +83,6 @@ class FieldArrayMeta(ArrayMeta):
         string += f"\n  primitive_element: {poly_to_str(integer_to_poly(int(cls.primitive_element), cls.characteristic))}"
 
         return string
-
-    ###############################################################################
-    # Class properties
-    ###############################################################################
 
     @property
     def name(cls) -> str:
@@ -537,7 +545,7 @@ class FieldArray(FieldPolyFunctions, FieldLinalgFunctions, FieldFunctions, Field
 
         GF = galois.GF(3**5)
         issubclass(GF, galois.FieldArray)
-        print(GF)
+        print(GF.properties)
 
     Create a :obj:`~galois.FieldArray` instance using `GF`'s constructor.
 
@@ -974,7 +982,7 @@ class FieldArray(FieldPolyFunctions, FieldLinalgFunctions, FieldFunctions, Field
         .. ipython:: python
 
             GF = galois.GF(2**4)
-            print(GF)
+            print(GF.properties)
 
         .. tab-set::
 

@@ -140,7 +140,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             .. ipython:: python
 
                 GF = galois.GF(7**5)
-                print(GF)
+                print(GF.properties)
                 int(g) == GF.primitive_element
 
         .. tab-item:: Max
@@ -158,7 +158,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             .. ipython:: python
 
                 GF = galois.GF(7**5)
-                print(GF)
+                print(GF.properties)
                 int(g) in GF.primitive_elements
 
         .. tab-item:: Random
@@ -176,7 +176,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             .. ipython:: python
 
                 GF = galois.GF(7**5)
-                print(GF)
+                print(GF.properties)
                 int(g) in GF.primitive_elements
     """
     if not isinstance(irreducible_poly, Poly):
@@ -257,7 +257,7 @@ def primitive_elements(irreducible_poly: Poly) -> List[Poly]:
     .. ipython:: python
 
         GF = galois.GF(3**4)
-        print(GF)
+        print(GF.properties)
         np.array_equal([int(gi) for gi in g], GF.primitive_elements)
 
     The number of primitive elements is given by :math:`\phi(q^m - 1)`.

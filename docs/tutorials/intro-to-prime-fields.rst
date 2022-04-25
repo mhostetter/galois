@@ -24,8 +24,7 @@ subclass `GF7` is created using the class factory :func:`~galois.GF`.
       .. ipython:: python
 
          GF7 = galois.GF(7)
-         GF7
-         print(GF7)
+         print(GF7.properties)
 
    .. tab-item:: Power
       :sync: power
@@ -33,8 +32,7 @@ subclass `GF7` is created using the class factory :func:`~galois.GF`.
       .. ipython:: python
 
          GF7 = galois.GF(7, display="power")
-         GF7
-         print(GF7)
+         print(GF7.properties)
 
 .. note::
 
@@ -404,7 +402,7 @@ class property.
 
          @suppress
          GF7.display("int")
-         print(GF7)
+         print(GF7.properties)
          g = GF7.primitive_element; g
 
    .. tab-item:: Power
@@ -414,7 +412,7 @@ class property.
 
          @suppress
          GF7.display("power")
-         print(GF7)
+         print(GF7.properties)
          g = GF7.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer

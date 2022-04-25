@@ -42,7 +42,7 @@ class GF2(FieldArray, characteristic=2, degree=1, order=2, irreducible_poly_int=
         In [3]: issubclass(galois.GF2, galois.FieldArray)
         Out[3]: True
 
-        In [4]: print(galois.GF2)
+        In [4]: print(galois.GF2.properties)
 
     Create a :obj:`~galois.FieldArray` instance using :obj:`~galois.GF2`'s constructor.
 
