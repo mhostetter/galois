@@ -73,18 +73,6 @@ class ArrayMeta(abc.ABCMeta):
         # By default, verify array elements are within the valid range when `.view()` casting
         cls._verify_on_view = True
 
-    def __repr__(cls) -> str:
-        return f"<class 'numpy.ndarray over {cls._name}'>"
-
-    def __str__(cls) -> str:
-        string = "Domain:"
-        string += f"\n  name: {cls._name}"
-        string += f"\n  characteristic: {cls._characteristic}"
-        string += f"\n  degree: {cls._degree}"
-        string += f"\n  order: {cls._order}"
-
-        return string
-
     def __dir__(cls) -> List[str]:
         """
         Add class properties from the metaclass onto the new Array class's dir().

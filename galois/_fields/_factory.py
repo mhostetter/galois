@@ -252,7 +252,7 @@ def _GF_prime(
     """
     degree = 1
     order = characteristic**degree
-    name = f"GF{characteristic}"
+    name = f"GF({characteristic})"
 
     # Get default primitive element
     if primitive_element_ is None:
@@ -321,7 +321,7 @@ def _GF_extension(
     """
     # pylint: disable=too-many-statements
     order = characteristic**degree
-    name = f"GF{characteristic}_{degree}"
+    name = f"GF({characteristic}^{degree})"
     prime_subfield = _GF_prime(characteristic)
     is_primitive_poly = None
     verify_poly = verify
