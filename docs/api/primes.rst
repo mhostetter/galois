@@ -9,7 +9,6 @@ Prime number generation
 -----------------------
 
 .. autosummary::
-   :toctree:
 
    primes
    kth_prime
@@ -23,7 +22,6 @@ Primality tests
 ---------------
 
 .. autosummary::
-   :toctree:
 
    is_prime
    is_prime_power
@@ -37,7 +35,6 @@ Specific primality tests
 ------------------------
 
 .. autosummary::
-   :toctree:
 
    fermat_primality_test
    miller_rabin_primality_test

@@ -12,7 +12,6 @@ Class factory functions
 .......................
 
 .. autosummary::
-   :toctree:
 
    GF
    Field
@@ -22,7 +21,6 @@ Abstract base classes
 
 .. autosummary::
    :template: class.rst
-   :toctree:
 
    FieldArray
 
@@ -31,7 +29,6 @@ Pre-made :obj:`~galois.FieldArray` subclasses
 
 .. autosummary::
    :template: class.rst
-   :toctree:
 
    GF2
 
@@ -42,7 +39,6 @@ Primitive roots
 ...............
 
 .. autosummary::
-   :toctree:
 
    primitive_root
    primitive_roots
@@ -55,7 +51,6 @@ Irreducible polynomials
 .......................
 
 .. autosummary::
-   :toctree:
 
    irreducible_poly
    irreducible_polys
@@ -65,7 +60,6 @@ Primitive polynomials
 .....................
 
 .. autosummary::
-   :toctree:
 
    primitive_poly
    primitive_polys
@@ -77,7 +71,6 @@ Primitive elements
 ..................
 
 .. autosummary::
-   :toctree:
 
    primitive_element
    primitive_elements

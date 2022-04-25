@@ -10,7 +10,6 @@ Linear-feedback shift registers
 
 .. autosummary::
    :template: class.rst
-   :toctree:
 
    FLFSR
    GLFSR
@@ -19,6 +18,5 @@ Sequence analysis functions
 ---------------------------
 
 .. autosummary::
-   :toctree:
 
    berlekamp_massey
