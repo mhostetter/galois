@@ -402,27 +402,13 @@ class FieldArray(galois.FieldArray):
     ufunc_modes = classproperty(type(galois.FieldArray).ufunc_modes)
 FieldArray.__doc__ = galois.FieldArray.__doc__
 galois.FieldArray = FieldArray
+galois._fields._factory.FieldArray = FieldArray
 
 # TODO: Monkey patching GF2 doesn't seem to work
 # class GF2(FieldArray, galois.GF2):
 #     pass
 # GF2.__doc__ = galois.GF2.__doc__
 # galois.GF2 = GF2
-
-
-class GFp(FieldArray, galois._fields._factory.GFp):
-    pass
-galois._fields._factory.GFp = GFp
-
-
-class GF2m(FieldArray, galois._fields._factory.GF2m):
-    pass
-galois._fields._factory.GF2m = GF2m
-
-
-class GFpm(FieldArray, galois._fields._factory.GFpm):
-    pass
-galois._fields._factory.GFpm = GFpm
 
 
 def setup(app):

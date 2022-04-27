@@ -1,5 +1,5 @@
 """
-A module that defines the base class for all GF(p^m) array classes.
+A module that defines a mixin class GF(p^m) arithmetic.
 """
 from __future__ import annotations
 
@@ -9,8 +9,7 @@ import numba
 import numpy as np
 
 from .._domains._array import DTYPES
-
-from ._array import FieldArray
+from .._domains._ufunc import FieldUfuncs
 
 DTYPE = np.int64
 INT_TO_POLY = lambda a, CHARACTERISTIC, DEGREE: [0,]*DEGREE
@@ -19,9 +18,9 @@ MULTIPLY = lambda a, b, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY: a * b
 RECIPROCAL = lambda a, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY: 1 / a
 
 
-class GFpm(FieldArray):
+class FieldUfuncs_p_m(FieldUfuncs):
     """
-    A base class for all GF(p^m) classes.
+    A mixin class that provides explicit calculation arithmetic for all GF(p^m) classes.
     """
     # Need to have a unique cache of "calculate" functions for GF(p^m)
     _FUNC_CACHE_CALCULATE = {}
@@ -352,7 +351,7 @@ class GFpm(FieldArray):
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a: GFpm) -> GFpm:
+    def _sqrt(a: FieldUfuncs_p_m) -> FieldUfuncs_p_m:
         """
         Algorithm 3.34 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
@@ -406,4 +405,4 @@ class GFpm(FieldArray):
 
         return roots
 
-GFpm._reset_globals()
+FieldUfuncs_p_m._reset_globals()
