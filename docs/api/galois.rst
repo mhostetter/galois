@@ -66,6 +66,7 @@ Functions
    fermat_primality_test
    gcd
    generator_to_parity_check_matrix
+   get_printoptions
    ilog
    intt
    iroot
@@ -110,5 +111,6 @@ Functions
    prod
    random_prime
    roots_to_parity_check_matrix
+   set_printoptions
    totatives
    trial_division
