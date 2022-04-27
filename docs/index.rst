@@ -163,3 +163,9 @@ If this library was useful to you in your research, please cite us. Following th
    release-notes/v0.0.16.md
    release-notes/v0.0.15.md
    release-notes/v0.0.14.md
+
+.. toctree::
+   :caption: Index
+   :hidden:
+
+   genindex
