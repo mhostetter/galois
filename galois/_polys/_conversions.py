@@ -6,6 +6,7 @@ from typing import Tuple, List, Optional
 import numpy as np
 
 from .._math import ilog
+from .._options import get_printoptions
 
 
 def integer_to_degree(integer: int, order: int) -> int:
@@ -120,9 +121,10 @@ def sparse_poly_to_str(degrees: List[int], coeffs: List[int], poly_var: str = "x
 
         x.append(s)
 
-    poly_str = " + ".join(x) if x else "0"
+    if get_printoptions()["coeffs"] == "asc":
+        x = x[::-1]
 
-    return poly_str
+    return " + ".join(x) if x else "0"
 
 
 def str_to_sparse_poly(poly_str: str) -> Tuple[List[int], List[int]]:
