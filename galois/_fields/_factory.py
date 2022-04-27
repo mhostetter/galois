@@ -15,9 +15,9 @@ from ..typing import PolyLike
 
 from ._array import FieldArray
 from ._gf2 import GF2
-from ._gfp import GFp
-from ._gf2m import GF2m
-from ._gfpm import GFpm
+from ._ufunc_2_m import FieldUfuncs_2_m
+from ._ufunc_p_1 import FieldUfuncs_p_1
+from ._ufunc_p_m import FieldUfuncs_p_m
 
 __all__ = ["GF", "Field"]
 
@@ -26,9 +26,9 @@ __all__ = ["GF", "Field"]
 def GF(
     order: int,
     irreducible_poly: Optional[PolyLike] = None,
-    primitive_element: Optional[PolyLike] = None,
+    primitive_element: Optional[PolyLike] = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
-    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
+    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
     display: Optional[Literal["int", "poly", "power"]] = None
 ) -> Type[FieldArray]:
     r"""
@@ -195,7 +195,6 @@ def GF(
                 GF = galois.GF(109987**4)
                 print(GF)
     """
-    # pylint: disable=redefined-outer-name,redefined-builtin
     if not isinstance(order, int):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
     if not isinstance(verify, bool):
@@ -219,78 +218,77 @@ def GF(
     if m == 1:
         if not irreducible_poly is None:
             raise ValueError(f"Argument `irreducible_poly` can only be specified for extension fields, not the prime field GF({p}).")
-        return _GF_prime(p, primitive_element_=primitive_element, verify=verify, compile_=compile, display=display)
+        return _GF_prime(p, alpha=primitive_element, verify=verify, compile=compile, display=display)
     else:
-        return _GF_extension(p, m, irreducible_poly_=irreducible_poly, primitive_element_=primitive_element, verify=verify, compile_=compile, display=display)
+        return _GF_extension(p, m, irreducible_poly_=irreducible_poly, alpha=primitive_element, verify=verify, compile=compile, display=display)
 
 
 @set_module("galois")
 def Field(
     order: int,
     irreducible_poly: Optional[PolyLike] = None,
-    primitive_element: Optional[PolyLike] = None,
+    primitive_element: Optional[PolyLike] = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
-    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
+    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
     display: Optional[Literal["int", "poly", "power"]] = None
 ) -> Type[FieldArray]:
     """
     Alias of :func:`~galois.GF`.
     """
-    # pylint: disable=redefined-outer-name,redefined-builtin
     return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, display=display)
 
 
 def _GF_prime(
-    characteristic: int,
-    primitive_element_: Optional[int] = None,
+    p: int,
+    alpha: Optional[int] = None,
     verify: bool = True,
-    compile_: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
+    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
     display: Optional[Literal["int", "poly", "power"]] = None
 ) -> Type[FieldArray]:
     """
     Class factory for prime fields GF(p).
     """
-    degree = 1
-    order = characteristic**degree
-    name = f"GF({characteristic})"
+    name = f"GF({p})"
 
     # Get default primitive element
-    if primitive_element_ is None:
-        primitive_element_ = primitive_root(characteristic)
+    if alpha is None:
+        alpha = primitive_root(p)
 
     # Check primitive element range
-    if not 0 < primitive_element_ < order:
-        raise ValueError(f"Argument `primitive_element` must be non-zero in the field 0 < x < {order}, not {primitive_element_}.")
+    if not 0 < alpha < p:
+        raise ValueError(f"Argument `primitive_element` must be non-zero in the field 0 < x < {p}, not {alpha}.")
 
     # If the requested field has already been constructed, return it
-    key = (order, primitive_element_)
+    key = (p, alpha)
     if key in _GF_prime._classes:
         cls = _GF_prime._classes[key]
-        if compile_ is not None:
-            cls.compile(compile_)
+        if compile is not None:
+            cls.compile(compile)
         if display is not None:
             cls.display(display)
         return cls
 
     # Since this is a new class, set `compile` and `display` to their default values
-    if compile_ is None:
-        compile_ = "auto"
+    if compile is None:
+        compile = "auto"
     if display is None:
         display = "int"
 
-    if verify and not is_primitive_root(primitive_element_, characteristic):
-        raise ValueError(f"Argument `primitive_element` must be a primitive root modulo {characteristic}, {primitive_element_} is not.")
+    if verify and not is_primitive_root(alpha, p):
+        raise ValueError(f"Argument `primitive_element` must be a primitive root modulo {p}, {alpha} is not.")
 
-    if characteristic == 2:
+    if p == 2:
         cls = GF2
     else:
-        cls = types.new_class(name, bases=(GFp,), kwds={
-            "characteristic": characteristic,
-            "degree": degree,
-            "order": order,
-            "irreducible_poly_int": 2*characteristic - primitive_element_,  # f(x) = x - e
-            "primitive_element": primitive_element_,
-            "compile": compile_,
+        cls = types.new_class(name, bases=(FieldArray, FieldUfuncs_p_1), kwds={
+            "p": p,
+            "m": 1,
+            "characteristic": p,
+            "degree": 1,
+            "order": p,
+            "irreducible_poly_int": 2*p - alpha,  # f(x) = x - e
+            "primitive_element": alpha,
+            "compile": compile,
             "display": display
         })
 
@@ -308,98 +306,88 @@ _GF_prime._classes = {}
 
 
 def _GF_extension(
-    characteristic: int,
-    degree: int,
+    p: int,
+    m: int,
     irreducible_poly_: Optional[PolyLike] = None,
-    primitive_element_: Optional[PolyLike] = None,
+    alpha: Optional[PolyLike] = None,
     verify: bool = True,
-    compile_: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,
+    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
     display: Optional[Literal["int", "poly", "power"]] = None
 ) -> Type[FieldArray]:
     """
     Class factory for extension fields GF(p^m).
     """
     # pylint: disable=too-many-statements
-    order = characteristic**degree
-    name = f"GF({characteristic}^{degree})"
-    prime_subfield = _GF_prime(characteristic)
+    name = f"GF({p}^{m})"
+    prime_subfield = _GF_prime(p)
     is_primitive_poly = None
     verify_poly = verify
     verify_element = verify
 
     # Get default irreducible polynomial
     if irreducible_poly_ is None:
-        irreducible_poly_ = conway_poly(characteristic, degree)
+        irreducible_poly_ = conway_poly(p, m)
         is_primitive_poly = True
         verify_poly = False  # We don't need to verify Conway polynomials are irreducible
-        if primitive_element_ is None:
-            primitive_element_ = Poly.Identity(prime_subfield)
+        if alpha is None:
+            alpha = Poly.Identity(prime_subfield)
             verify_element = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
     else:
         irreducible_poly_ = Poly._PolyLike(irreducible_poly_, field=prime_subfield)
 
     # Get default primitive element
-    if primitive_element_ is None:
-        primitive_element_ = primitive_element(irreducible_poly_)
+    if alpha is None:
+        alpha = primitive_element(irreducible_poly_)
         verify_element = False
     else:
-        primitive_element_ = Poly._PolyLike(primitive_element_, field=prime_subfield)
+        alpha = Poly._PolyLike(alpha, field=prime_subfield)
 
     # Check polynomial fields and degrees
-    if not irreducible_poly_.field.order == characteristic:
+    if not irreducible_poly_.field.order == p:
         raise ValueError(f"Argument `irreducible_poly` must be over {prime_subfield.name}, not {irreducible_poly_.field.name}.")
-    if not irreducible_poly_.degree == degree:
-        raise ValueError(f"Argument `irreducible_poly` must have degree equal to {degree}, not {irreducible_poly_.degree}.")
-    if not primitive_element_.field.order == characteristic:
-        raise ValueError(f"Argument `primitive_element` must be a polynomial over {prime_subfield.name}, not {primitive_element_.field.name}.")
-    if not primitive_element_.degree < degree:
-        raise ValueError(f"Argument `primitive_element` must have degree strictly less than {degree}, not {primitive_element_.degree}.")
+    if not irreducible_poly_.degree == m:
+        raise ValueError(f"Argument `irreducible_poly` must have degree equal to {m}, not {irreducible_poly_.degree}.")
+    if not alpha.field.order == p:
+        raise ValueError(f"Argument `primitive_element` must be a polynomial over {prime_subfield.name}, not {alpha.field.name}.")
+    if not alpha.degree < m:
+        raise ValueError(f"Argument `primitive_element` must have degree strictly less than {m}, not {alpha.degree}.")
 
     # If the requested field has already been constructed, return it
-    key = (order, int(primitive_element_), int(irreducible_poly_))
+    key = (p, m, int(alpha), int(irreducible_poly_))
     if key in _GF_extension._classes:
         cls = _GF_extension._classes[key]
-        if compile_ is not None:
-            cls.compile(compile_)
+        if compile is not None:
+            cls.compile(compile)
         if display is not None:
             cls.display(display)
         return cls
 
     # Since this is a new class, set `compile` and `display` to their default values
-    if compile_ is None:
-        compile_ = "auto"
+    if compile is None:
+        compile = "auto"
     if display is None:
         display = "int"
 
     if verify_poly and not is_irreducible(irreducible_poly_):
         raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly_} is not.")
-    if verify_element and not is_primitive_element(primitive_element_, irreducible_poly_):
-        raise ValueError(f"Argument `primitive_element` must be a multiplicative generator of GF({characteristic}^{degree}), {primitive_element_} is not.")
+    if verify_element and not is_primitive_element(alpha, irreducible_poly_):
+        raise ValueError(f"Argument `primitive_element` must be a multiplicative generator of {name}, {alpha} is not.")
 
-    if characteristic == 2:
-        cls = types.new_class(name, bases=(GF2m,), kwds={
-            "characteristic": characteristic,
-            "degree": degree,
-            "order": order,
-            "irreducible_poly_int": int(irreducible_poly_),
-            "is_primitive_poly": is_primitive_poly,
-            "primitive_element": int(primitive_element_),
-            "prime_subfield": prime_subfield,
-            "compile": compile_,
-            "display": display
-        })
-    else:
-        cls = types.new_class(name, bases=(GFpm,), kwds={
-            "characteristic": characteristic,
-            "degree": degree,
-            "order": order,
-            "irreducible_poly_int": int(irreducible_poly_),
-            "is_primitive_poly": is_primitive_poly,
-            "primitive_element": int(primitive_element_),
-            "prime_subfield": prime_subfield,
-            "compile": compile_,
-            "display": display
-        })
+    ufunc_mixin = FieldUfuncs_2_m if p == 2 else FieldUfuncs_p_m
+
+    cls = types.new_class(name, bases=(FieldArray, ufunc_mixin), kwds={
+        "p": p,
+        "m": m,
+        "characteristic": p,
+        "degree": m,
+        "order": p**m,
+        "irreducible_poly_int": int(irreducible_poly_),
+        "is_primitive_poly": is_primitive_poly,
+        "primitive_element": int(alpha),
+        "prime_subfield": prime_subfield,
+        "compile": compile,
+        "display": display
+    })
 
     # Add the class to the "galois" namespace
     cls.__module__ = "galois"
