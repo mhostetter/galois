@@ -26,7 +26,7 @@ argument to the :func:`~galois.GF` class factory.
 
 .. note::
 
-    Notice :func:`~galois.FieldArray.__repr__` displays `GF([...], order=p^m)` where :func:`galois.~FieldArray.__str__` only displays
+    Notice :func:`~galois.FieldArray.__repr__` displays `GF([...], order=p^m)` where :func:`~galois.FieldArray.__str__` only displays
     `[...]`. This is designed to be consistent with NumPy's use of `repr()` and `str()`.
 
 The current display mode is accessed with the :obj:`~galois.FieldArray.display_mode` class property.
