@@ -1,5 +1,5 @@
 """
-A module that defines the base class for all GF(p) array classes.
+A module that defines a mixin class GF(p) arithmetic.
 """
 from __future__ import annotations
 
@@ -9,15 +9,14 @@ import numba
 import numpy as np
 
 from .._domains._array import DTYPES
-
-from ._array import FieldArray
+from .._domains._ufunc import FieldUfuncs
 
 RECIPROCAL = lambda a, *args: 1 / a
 
 
-class GFp(FieldArray):
+class FieldUfuncs_p_1(FieldUfuncs):
     """
-    An base class for all GF(p) classes.
+    A mixin class that provides explicit calculation arithmetic for all GF(p) classes.
     """
     # Need to have a unique cache of "calculate" functions for GF(p)
     _FUNC_CACHE_CALCULATE = {}
@@ -200,7 +199,7 @@ class GFp(FieldArray):
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a: GFp) -> GFp:
+    def _sqrt(a: FieldUfuncs_p_1) -> FieldUfuncs_p_1:
         """
         Algorithm 3.34 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
@@ -254,4 +253,4 @@ class GFp(FieldArray):
 
         return roots
 
-GFp._reset_globals()
+FieldUfuncs_p_1._reset_globals()

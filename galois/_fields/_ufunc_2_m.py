@@ -1,20 +1,20 @@
 """
-A module that defines the base class for all GF(2^m) array classes.
+A module that defines a mixin class GF(2^m) arithmetic.
 """
 from __future__ import annotations
 
 import numba
 import numpy as np
 
-from ._array import FieldArray
+from .._domains._ufunc import FieldUfuncs
 
 MULTIPLY = lambda a, b, *args: a * b
 RECIPROCAL = lambda a, *args: 1 / a
 
 
-class GF2m(FieldArray):
+class FieldUfuncs_2_m(FieldUfuncs):
     """
-    A base class for all GF(2^m) classes.
+    A mixin class that provides explicit calculation arithmetic for all GF(2^m) classes.
     """
     # Need to have a unique cache of "calculate" functions for GF(2^m)
     _FUNC_CACHE_CALCULATE = {}
@@ -215,7 +215,7 @@ class GF2m(FieldArray):
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a: GF2m) -> GF2m:
+    def _sqrt(a: FieldUfuncs_2_m) -> FieldUfuncs_2_m:
         """
         Fact 3.42 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         """
@@ -223,4 +223,4 @@ class GF2m(FieldArray):
         return a ** (field.characteristic**(field.degree - 1))
 
 
-GF2m._reset_globals()
+FieldUfuncs_2_m._reset_globals()
