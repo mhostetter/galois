@@ -1,5 +1,5 @@
 sphinx>=3
-git+https://github.com/jbms/sphinx-immaterial@0e0dcc8c9cc88f2d160ec80a38410547c8a904d3
+git+https://github.com/jbms/sphinx-immaterial@98d0ab6b618fb9a9fe6a0f33ac6875bbbbb05ad2
 myst-parser
 sphinx-design
 sphinxcontrib-details-directive

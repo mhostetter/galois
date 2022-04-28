@@ -184,7 +184,10 @@ html_use_index = True
 html_domain_indices = True
 
 # Sphinx Immaterial API config
-include_object_description_fields_in_toc = False
+object_description_options = [
+    ("py:function", dict(include_fields_in_toc=False)),
+    ("py:method", dict(include_fields_in_toc=False)),
+]
 
 
 # -- Extension configuration -------------------------------------------------
