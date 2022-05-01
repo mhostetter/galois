@@ -4,7 +4,6 @@ A module that contains a Array mixin classes that override NumPy ufuncs.
 import abc
 
 import numba
-from numba import int64
 import numpy as np
 
 from ._array import Array, ArrayMeta
@@ -14,12 +13,9 @@ class RingCalculateUfuncs(Array, metaclass=ArrayMeta):
     """
     A mixin abstract base class that provides ring arithmetic (+, -, *) using explicit calculation.
     """
-    # Function signatures for JIT-compiled explicit calculation arithmetic functions
-    _UNARY_CALCULATE_SIG = numba.types.FunctionType(int64(int64, int64, int64, int64))
-    _BINARY_CALCULATE_SIG = numba.types.FunctionType(int64(int64, int64, int64, int64, int64))
-
-    _FUNC_CACHE_CALCULATE = {}
+    _UFUNC_OVERRIDES = {}
     _UFUNC_CACHE_CALCULATE = {}
+    _UFUNC_CACHE_PYTHON = {}
 
     _UFUNC_TYPE = {
         "add": "binary",
@@ -31,136 +27,116 @@ class RingCalculateUfuncs(Array, metaclass=ArrayMeta):
     }
 
     @classmethod
-    @abc.abstractmethod
-    def _set_globals(cls, name: str):
-        """
-        Sets the global variables in the GF*Meta metaclass mixins that are needed for linking during JIT compilation.
-        """
-
-    @classmethod
-    @abc.abstractmethod
-    def _reset_globals(cls):
-        """
-        Resets the global variables in the GF*Meta metaclass mixins so when the pure-Python functions/ufuncs invoke these
-        globals, they reference the correct pure-Python functions and not the JIT-compiled functions/ufuncs.
-        """
-
-    @classmethod
-    def _func_calculate(cls, name, reset=True):
-        """
-        Returns a JIT-compiled arithmetic function using explicit calculation. These functions are once-compiled and shared for all
-        Galois fields. The only difference between Galois fields are the characteristic, degree, and irreducible polynomial that are
-        passed in as inputs.
-        """
-        key = (name,)
-
-        if key not in cls._FUNC_CACHE_CALCULATE:
-            cls._set_globals(name)
-            function = getattr(cls, f"_{name}_calculate")
-
-            if cls._UFUNC_TYPE[name] == "unary":
-                cls._FUNC_CACHE_CALCULATE[key] = numba.jit(["int64(int64, int64, int64, int64)"], nopython=True, cache=True)(function)
-            else:
-                cls._FUNC_CACHE_CALCULATE[key] = numba.jit(["int64(int64, int64, int64, int64, int64)"], nopython=True, cache=True)(function)
-
-            if reset:
-                cls._reset_globals()
-
-        return cls._FUNC_CACHE_CALCULATE[key]
-
-    @classmethod
     def _ufunc_calculate(cls, name):
         """
         Returns a JIT-compiled arithmetic ufunc using explicit calculation. These ufuncs are compiled for each Galois field since
         the characteristic, degree, and irreducible polynomial are compiled into the ufuncs as constants.
         """
-        key = (name, cls.characteristic, cls.degree, int(cls.irreducible_poly))
+        if name in cls._UFUNC_OVERRIDES:
+            return cls._UFUNC_OVERRIDES[name]
 
+        key = (name, cls.characteristic, cls.degree, int(cls.irreducible_poly), int(cls.primitive_element))
         if key not in cls._UFUNC_CACHE_CALCULATE:
-            cls._set_globals(name)
+            # Set the globals once before JIT compiling the ufunc
+            getattr(cls, f"_set_{name}_calculate_globals")()
+
             function = getattr(cls, f"_{name}_calculate")
 
-            # These variables must be locals and not class properties for Numba to compile them as literals
-            characteristic = cls.characteristic
-            degree = cls.degree
-            irreducible_poly = int(cls.irreducible_poly)
-
             if cls._UFUNC_TYPE[name] == "unary":
-                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64)"], nopython=True)(lambda a: function(a, characteristic, degree, irreducible_poly))
+                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64)"], nopython=True)(function)
             else:
-                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(lambda a, b: function(a, b, characteristic, degree, irreducible_poly))
-
-            cls._reset_globals()
+                cls._UFUNC_CACHE_CALCULATE[key] = numba.vectorize(["int64(int64, int64)"], nopython=True)(function)
 
         return cls._UFUNC_CACHE_CALCULATE[key]
 
     @classmethod
-    def _func_python(cls, name):
-        """
-        Returns a pure-Python arithmetic function using explicit calculation. This lambda function wraps the arithmetic functions in
-        GF2Meta, GF2mMeta, GFpMeta, and GFpmMeta by passing in the field's characteristic, degree, and irreducible polynomial.
-        """
-        return getattr(cls, f"_{name}_calculate")
-
-    @classmethod
     def _ufunc_python(cls, name):
         """
-        Returns a pure-Python arithmetic ufunc using explicit calculation.
+        Returns a pure-Python (not compiled) arithmetic ufunc using explicit calculation.
         """
-        function = getattr(cls, f"_{name}_calculate")
+        if name in cls._UFUNC_OVERRIDES:
+            return cls._UFUNC_OVERRIDES[name]
 
-        # Pre-fetching these values into local variables allows Python to cache them as constants in the lambda function
-        characteristic = cls.characteristic
-        degree = cls.degree
-        irreducible_poly = int(cls.irreducible_poly)
+        # Set the globals each time before invoking the pure-Python ufunc
+        getattr(cls, f"_set_{name}_calculate_globals")()
 
-        if cls._UFUNC_TYPE[name] == "unary":
-            return np.frompyfunc(lambda a: function(a, characteristic, degree, irreducible_poly), 1, 1)
-        else:
-            return np.frompyfunc(lambda a, b: function(a, b, characteristic, degree, irreducible_poly), 2, 1)
+        key = (name,)
+        if key not in cls._UFUNC_CACHE_PYTHON:
+            function = getattr(cls, f"_{name}_calculate")
+
+            if cls._UFUNC_TYPE[name] == "unary":
+                cls._UFUNC_CACHE_PYTHON[name] = np.frompyfunc(function, 1, 1)
+            else:
+                cls._UFUNC_CACHE_PYTHON[name] = np.frompyfunc(function, 2, 1)
+
+        return cls._UFUNC_CACHE_PYTHON[name]
 
     ###############################################################################
     # Arithmetic functions using explicit calculation
     ###############################################################################
 
+    @classmethod
+    def _set_add_calculate_globals(cls):
+        return
+
     @staticmethod
     @abc.abstractmethod
-    def _add_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+    def _add_calculate(a: int, b: int) -> int:
         """
         Adds two elements in a Galois field or Galois ring.
         """
 
+    @classmethod
+    def _set_negative_calculate_globals(cls):
+        return
+
     @staticmethod
     @abc.abstractmethod
-    def _negative_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+    def _negative_calculate(a: int) -> int:
         """
         Computes the additive inverse of an element in a Galois field or Galois ring.
         """
 
+    @classmethod
+    def _set_subtract_calculate_globals(cls):
+        return
+
     @staticmethod
     @abc.abstractmethod
-    def _subtract_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+    def _subtract_calculate(a: int, b: int) -> int:
         """
         Subtracts two elements in a Galois field or Galois ring.
         """
 
+    @classmethod
+    def _set_multiply_calculate_globals(cls):
+        return
+
     @staticmethod
     @abc.abstractmethod
-    def _multiply_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+    def _multiply_calculate(a: int, b: int) -> int:
         """
         Multiplies two elements in a Galois field or Galois ring.
         """
 
+    @classmethod
+    def _set_power_calculate_globals(cls):
+        return
+
     @staticmethod
     @abc.abstractmethod
-    def _power_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+    def _power_calculate(a: int, b: int) -> int:
         """
         Exponentiates a element of a Galois field or Galois ring to an integer power.
         """
 
+    @classmethod
+    def _set_log_calculate_globals(cls):
+        return
+
     @staticmethod
     @abc.abstractmethod
-    def _log_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+    def _log_calculate(a: int, b: int) -> int:
         """
         Computes the logarithm of an element base another element in a Galois field or Galois ring.
         """
@@ -175,16 +151,24 @@ class FieldCalculateUfuncs(RingCalculateUfuncs, abc.ABC):
         "divide": "binary",
     }}
 
+    @classmethod
+    def _set_reciprocal_calculate_globals(cls):
+        return
+
     @staticmethod
     @abc.abstractmethod
-    def _reciprocal_calculate(a: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+    def _reciprocal_calculate(a: int) -> int:
         """
         Computes the multiplicative inverse of an element in a Galois field or Galois ring.
         """
 
+    @classmethod
+    def _set_negative_calculate_globals(cls):
+        return
+
     @staticmethod
     @abc.abstractmethod
-    def _divide_calculate(a: int, b: int, CHARACTERISTIC: int, DEGREE: int, IRREDUCIBLE_POLY: int) -> int:
+    def _divide_calculate(a: int, b: int) -> int:
         """
         Divides two elements in a Galois field or Galois ring.
         """
@@ -196,11 +180,6 @@ class RingLookupUfuncs(RingCalculateUfuncs, abc.ABC):
     for each Galois field or ring. When building the lookup tables, the explicit calculation routines are used
     once.
     """
-    # Function signatures for JIT-compiled "lookup" arithmetic functions
-    _UNARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64[:], int64[:], int64[:], int64))
-    _BINARY_LOOKUP_SIG = numba.types.FunctionType(int64(int64, int64, int64[:], int64[:], int64[:], int64))
-
-    _FUNC_CACHE_LOOKUP = {}
     _UFUNC_CACHE_LOOKUP = {}
 
     @classmethod
@@ -249,30 +228,15 @@ class RingLookupUfuncs(RingCalculateUfuncs, abc.ABC):
         cls._EXP[cls.order:2*cls.order] = cls._EXP[1:1 + cls.order]
 
     @classmethod
-    def _func_lookup(cls, name):  # pylint: disable=no-self-use
-        """
-        Returns an arithmetic function using lookup tables. These functions are once-compiled and shared for all Galois fields. The only difference
-        between Galois fields are the lookup tables that are passed in as inputs.
-        """
-        key = (name,)
-
-        if key not in cls._FUNC_CACHE_LOOKUP:
-            function = getattr(cls, f"_{name}_lookup")
-            if cls._UFUNC_TYPE[name] == "unary":
-                cls._FUNC_CACHE_LOOKUP[key] = numba.jit("int64(int64, int64[:], int64[:], int64[:], int64)", nopython=True, cache=True)(function)
-            else:
-                cls._FUNC_CACHE_LOOKUP[key] = numba.jit("int64(int64, int64, int64[:], int64[:], int64[:], int64)", nopython=True, cache=True)(function)
-
-        return cls._FUNC_CACHE_LOOKUP[key]
-
-    @classmethod
     def _ufunc_lookup(cls, name):
         """
-        Returns an arithmetic ufunc using lookup tables. These ufuncs are compiled for each Galois field since the lookup tables are compiled
-        into the ufuncs as constants.
+        Returns an JIT-compiled arithmetic ufunc using lookup tables. These ufuncs are compiled for each Galois field since the lookup tables
+        are compiled into the ufuncs as constants.
         """
-        key = (name, cls.characteristic, cls.degree, int(cls.irreducible_poly))
+        if name in cls._UFUNC_OVERRIDES:
+            return cls._UFUNC_OVERRIDES[name]
 
+        key = (name, cls.characteristic, cls.degree, int(cls.irreducible_poly))
         if key not in cls._UFUNC_CACHE_LOOKUP:
             # These variables must be locals for Numba to compile them as literals
             EXP = cls._EXP
@@ -595,14 +559,12 @@ class RingUfuncs(RingLookupUfuncs, RingCalculateUfuncs, abc.ABC):
         """
         Returns the ufunc for the specific type of arithmetic. The ufunc compilation is based on `ufunc_mode`.
         """
-        if name not in cls._ufuncs:
-            if cls._ufunc_mode == "jit-lookup":
-                cls._ufuncs[name] = cls._ufunc_lookup(name)
-            elif cls._ufunc_mode == "jit-calculate":
-                cls._ufuncs[name] = cls._ufunc_calculate(name)
-            else:
-                cls._ufuncs[name] = cls._ufunc_python(name)
-        return cls._ufuncs[name]
+        if cls.ufunc_mode == "jit-lookup":
+            return cls._ufunc_lookup(name)
+        elif cls.ufunc_mode == "jit-calculate":
+            return cls._ufunc_calculate(name)
+        else:
+            return cls._ufunc_python(name)
 
     ###############################################################################
     # Ufuncs written in NumPy operations (not JIT compiled)

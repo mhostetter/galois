@@ -15,9 +15,7 @@ from ..typing import PolyLike
 
 from ._array import FieldArray
 from ._gf2 import GF2
-from ._ufunc_2_m import FieldUfuncs_2_m
-from ._ufunc_p_1 import FieldUfuncs_p_1
-from ._ufunc_p_m import FieldUfuncs_p_m
+from ._ufunc import FieldUfuncs_2_m, FieldUfuncs_p_1, FieldUfuncs_p_m
 
 __all__ = ["GF", "Field"]
 

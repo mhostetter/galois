@@ -6,7 +6,7 @@ from __future__ import annotations
 from .._overrides import set_module
 
 from ._array import FieldArray
-from ._ufunc_2_1 import FieldUfuncs_2_1
+from ._ufunc import FieldUfuncs_2_1
 
 __all__ = ["GF2"]
 

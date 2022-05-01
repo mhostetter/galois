@@ -57,13 +57,10 @@ class ArrayMeta(abc.ABCMeta):
         cls._is_prime_field = False  # Defaults to False for Galois rings
 
         # A dictionary of ufuncs and LUTs
-        cls._ufuncs = {}
         cls._EXP = np.array([], dtype=cls._dtypes[-1])
         cls._LOG = np.array([], dtype=cls._dtypes[-1])
         cls._ZECH_LOG = np.array([], dtype=cls._dtypes[-1])
         cls._ZECH_E = 0
-
-        cls._functions = {}
 
         # Class variables needed when displaying elements with fixed width
         cls._display_mode = kwargs.get("display", "int")
@@ -486,15 +483,6 @@ class Array(np.ndarray, metaclass=ArrayMeta):
             return
 
         cls._ufunc_mode = mode
-        cls._reset_ufuncs()
-
-    @classmethod
-    def _reset_ufuncs(cls):
-        """
-        Reset the dictionary of ufuncs, they will be re-compiled on demand.  If the ufunc mode uses lookup tables, build them if they
-        haven't been built before.
-        """
-        cls._ufuncs = {}
 
         if cls._ufunc_mode == "jit-lookup" and cls._EXP.size == 0:
             cls._build_lookup_tables()
