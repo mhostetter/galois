@@ -12,6 +12,9 @@ import numpy as np
 from ._array import Array, DTYPES
 from ._function import RingFunctions, FieldFunctions
 
+ADD = np.add
+MULTIPLY = np.multiply
+
 
 class RingLinalgFunctions(RingFunctions, abc.ABC):
     """
@@ -224,16 +227,12 @@ class RingLinalgFunctions(RingFunctions, abc.ABC):
         if cls.ufunc_mode != "python-calculate":
             A = A.astype(np.int64)
             B = B.astype(np.int64)
-            add = cls._func_calculate("add")
-            multiply = cls._func_calculate("multiply")
-            C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
+            C = cls._function("matmul")(A, B)
             C = C.astype(dtype)
         else:
             A = A.view(np.ndarray)
             B = B.view(np.ndarray)
-            add = cls._func_python("add")
-            multiply = cls._func_python("multiply")
-            C = cls._function("matmul")(A, B, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
+            C = cls._function("matmul")(A, B)
         C = cls._view(C)
 
         shape = list(C.shape)
@@ -251,32 +250,27 @@ class RingLinalgFunctions(RingFunctions, abc.ABC):
 
         return C
 
-    _MATMUL_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](
-        int64[:,:],
-        int64[:,:],
-        RingFunctions._BINARY_CALCULATE_SIG,
-        RingFunctions._BINARY_CALCULATE_SIG,
-        int64,
-        int64,
-        int64
-    ))
+    @classmethod
+    def _set_matmul_jit_globals(cls):
+        global ADD, MULTIPLY
+        ADD = cls._ufunc("add")
+        MULTIPLY = cls._ufunc("multiply")
+
+    _MATMUL_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:]))
 
     @staticmethod
     @numba.extending.register_jitable
-    def _matmul_calculate(A, B, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-        dtype = A.dtype
-
+    def _matmul_jit(A, B):
         assert A.ndim == 2 and B.ndim == 2
         assert A.shape[-1] == B.shape[-2]
 
         M, K = A.shape
         K, N = B.shape
-        C = np.zeros((M, N), dtype=dtype)
+        C = np.zeros((M, N), dtype=A.dtype)
         for i in range(M):
             for j in range(N):
                 for k in range(K):
-                    C[i,j] = ADD(C[i,j], MULTIPLY(A[i,k], B[k,j], *args), *args)
+                    C[i,j] = ADD(C[i,j], MULTIPLY(A[i,k], B[k,j]))
 
         return C
 

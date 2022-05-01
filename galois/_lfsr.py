@@ -106,26 +106,14 @@ class _LFSR:
         assert steps > 0
 
         if self.field.ufunc_mode != "python-calculate":
-            # Retrieve JIT arithmetic functions using explicit calculation
-            add = self.field._func_calculate("add")
-            multiply = self.field._func_calculate("multiply")
-            step = jit_calculate(f"{self._type}_lfsr_step_forward")
-
             taps = self.taps.astype(np.int64)
             state = self.state.astype(np.int64)
-
-            y = step(taps, state, steps, add, multiply, self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
+            y = function(f"{self._type}_lfsr_step_forward", self.field)(taps, state, steps)
             y = y.astype(self.state.dtype)
         else:
-            # Retrieve pure-Python arithmetic functions using explicit calculation
-            add = self.field._func_python("add")
-            multiply = self.field._func_python("multiply")
-            step = python_func(f"{self._type}_lfsr_step_forward")
-
             taps = self.taps.view(np.ndarray)
             state = self.state.view(np.ndarray)
-
-            y = step(taps, state, steps, add, multiply, self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
+            y = function(f"{self._type}_lfsr_step_forward", self.field)(taps, state, steps)
 
         self._state[:] = state[:]
         y = self.field._view(y)
@@ -141,28 +129,14 @@ class _LFSR:
             raise ValueError(f"Can only step the shift register backwards if the c_0 tap is non-zero, not c(x) = {self.characteristic_poly}.")
 
         if self.field.ufunc_mode != "python-calculate":
-            # Retrieve JIT arithmetic functions using explicit calculation
-            subtract = self.field._func_calculate("subtract")
-            multiply = self.field._func_calculate("multiply")
-            divide = self.field._func_calculate("divide")
-            step = jit_calculate(f"{self._type}_lfsr_step_backward")
-
             taps = self.taps.astype(np.int64)
             state = self.state.astype(np.int64)
-
-            y = step(taps, state, steps, subtract, multiply, divide, self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
+            y = function(f"{self._type}_lfsr_step_backward", self.field)(taps, state, steps)
             y = y.astype(self.state.dtype)
         else:
-            # Retrieve pure-Python arithmetic functions using explicit calculation
-            subtract = self.field._func_python("subtract")
-            multiply = self.field._func_python("multiply")
-            divide = self.field._func_python("divide")
-            step = python_func(f"{self._type}_lfsr_step_backward")
-
             taps = self.taps.view(np.ndarray)
             state = self.state.view(np.ndarray)
-
-            y = step(taps, state, steps, subtract, multiply, divide, self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
+            y = function(f"{self._type}_lfsr_step_backward", self.field)(taps, state, steps)
 
         self._state[:] = state[:]
         y = self.field._view(y)
@@ -1329,19 +1303,11 @@ def berlekamp_massey(sequence, output="minimal"):
 
     if field.ufunc_mode != "python-calculate":
         sequence = sequence.astype(np.int64)
-        add = field._func_calculate("add")
-        subtract = field._func_calculate("subtract")
-        multiply = field._func_calculate("multiply")
-        reciprocal = field._func_calculate("reciprocal")
-        coeffs = jit_calculate("berlekamp_massey")(sequence, add, subtract, multiply, reciprocal, field.characteristic, field.degree, int(field.irreducible_poly))
+        coeffs = function("berlekamp_massey", field)(sequence)
         coeffs = coeffs.astype(dtype)
     else:
         sequence = sequence.view(np.ndarray)
-        subtract = field._func_python("subtract")
-        multiply = field._func_python("multiply")
-        divide = field._func_python("divide")
-        reciprocal = field._func_python("reciprocal")
-        coeffs = python_func("berlekamp_massey")(sequence, subtract, multiply, divide, reciprocal, field.characteristic, field.degree, int(field.irreducible_poly))
+        coeffs = function("berlekamp_massey", field)(sequence)
     coeffs = field._view(coeffs)
 
     characteristic_poly = Poly(coeffs, field=field)
@@ -1364,23 +1330,61 @@ def berlekamp_massey(sequence, output="minimal"):
 # JIT functions
 ###############################################################################
 
-def jit_calculate(name):
-    if name not in jit_calculate.cache:
-        function = eval(f"{name}_calculate")
-        sig = eval(f"{name.upper()}_CALCULATE_SIG")
-        jit_calculate.cache[name] = numba.jit(sig.signature, nopython=True, cache=True)(function)
-    return jit_calculate.cache[name]
-
-jit_calculate.cache = {}
+ADD = np.add
+SUBTRACT = np.subtract
+MULTIPLY = np.multiply
+DIVIDE = np.divide
+RECIPROCAL = np.reciprocal
 
 
-def python_func(name):
-    return eval(f"{name}_calculate")
+def function(name: str, field: Type[FieldArray]):
+    """
+    Returns a function implemented over the given field and ufunc mode.
+    """
+    if field.ufunc_mode != "python-calculate":
+        return function_jit(name, field)
+    else:
+        return function_python(name, field)
 
 
-FIBONACCI_LFSR_STEP_FORWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, int64, int64, int64))
+def function_jit(name: str, field: Type[FieldArray]):
+    """
+    Returns a JIT-compiled function implemented over the given field.
+    """
+    key = (name, field.characteristic, field.degree, int(field.irreducible_poly), int(field.primitive_element))
+    if key not in function_jit.cache:
+        # Set the globals once before JIT compiling the function
+        eval(f"set_{name}_globals")(field)
+        sig = eval(f"{name.upper()}_SIG")
+        function_jit.cache[key] = numba.jit(sig.signature, nopython=True)(eval(f"{name}_jit"))
 
-def fibonacci_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+    return function_jit.cache[key]
+
+function_jit.cache = {}
+
+
+def function_python(name: str, field: Type[FieldArray]):
+    """
+    Returns a pure-Python function.
+    """
+    # Set the globals each time before invoking the pure-Python ufunc
+    eval(f"set_{name}_globals")(field)
+    return eval(f"{name}_jit")
+
+
+###############################################################################
+# Fibonacci LFSR JIT functions
+###############################################################################
+
+def set_fibonacci_lfsr_step_forward_globals(field: Type[FieldArray]):
+    global ADD, MULTIPLY
+    ADD = field._ufunc("add")
+    MULTIPLY = field._ufunc("multiply")
+
+
+FIBONACCI_LFSR_STEP_FORWARD_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
+
+def fibonacci_lfsr_step_forward_jit(taps, state, steps):  # pragma: no cover
     """
     Steps the Fibonacci LFSR `steps` forward.
 
@@ -1413,16 +1417,13 @@ def fibonacci_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHA
     y
         The output sequence of size `steps`.
     """
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-    dtype = state.dtype
-
     n = taps.size
-    y = np.zeros(steps, dtype=dtype)  # The output array
+    y = np.zeros(steps, dtype=state.dtype)  # The output array
 
     for i in range(steps):
         f = 0  # The feedback value
         for j in range(n):
-            f = ADD(f, MULTIPLY(state[j], taps[j], *args), *args)
+            f = ADD(f, MULTIPLY(state[j], taps[j]))
 
         y[i] = state[-1]  # Output is popped off the shift register
         state[1:] = state[0:-1]  # Shift state rightward
@@ -1431,9 +1432,16 @@ def fibonacci_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHA
     return y
 
 
-FIBONACCI_LFSR_STEP_BACKWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, int64, int64, int64))
+def set_fibonacci_lfsr_step_backward_globals(field: Type[FieldArray]):
+    global SUBTRACT, MULTIPLY, DIVIDE
+    SUBTRACT = field._ufunc("subtract")
+    MULTIPLY = field._ufunc("multiply")
+    DIVIDE = field._ufunc("divide")
 
-def fibonacci_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+
+FIBONACCI_LFSR_STEP_BACKWARD_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
+
+def fibonacci_lfsr_step_backward_jit(taps, state, steps):  # pragma: no cover
     """
     Steps the Fibonacci LFSR `steps` backward.
 
@@ -1463,11 +1471,8 @@ def fibonacci_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPL
     y
         The output sequence of size `steps`.
     """
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-    dtype = state.dtype
-
     n = taps.size
-    y = np.zeros(steps, dtype=dtype)  # The output array
+    y = np.zeros(steps, dtype=state.dtype)  # The output array
 
     for i in range(steps):
         f = state[0]  # The feedback value
@@ -1475,8 +1480,8 @@ def fibonacci_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPL
 
         s = f  # The unknown previous state value
         for j in range(n - 1):
-            s = SUBTRACT(s, MULTIPLY(state[j], taps[j], *args), *args)
-        s = DIVIDE(s, taps[n - 1], *args)
+            s = SUBTRACT(s, MULTIPLY(state[j], taps[j]))
+        s = DIVIDE(s, taps[n - 1])
 
         y[i] = s  # The previous output was the last value in the shift register
         state[-1] = s  # Assign recovered state to the leftmost position
@@ -1484,9 +1489,19 @@ def fibonacci_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPL
     return y
 
 
-GALOIS_LFSR_STEP_FORWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, int64, int64, int64))
+###############################################################################
+# Galois LFSR JIT functions
+###############################################################################
 
-def galois_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+def set_galois_lfsr_step_forward_globals(field: Type[FieldArray]):
+    global ADD, MULTIPLY
+    ADD = field._ufunc("add")
+    MULTIPLY = field._ufunc("multiply")
+
+
+GALOIS_LFSR_STEP_FORWARD_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
+
+def galois_lfsr_step_forward_jit(taps, state, steps):  # pragma: no cover
     """
     Steps the Galois LFSR `steps` forward.
 
@@ -1516,11 +1531,8 @@ def galois_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHARAC
     y
         The output sequence of size `steps`.
     """
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-    dtype = state.dtype
-
     n = taps.size
-    y = np.zeros(steps, dtype=dtype)  # The output array
+    y = np.zeros(steps, dtype=state.dtype)  # The output array
 
     for i in range(steps):
         f = state[n - 1]  # The feedback value
@@ -1531,15 +1543,22 @@ def galois_lfsr_step_forward_calculate(taps, state, steps, ADD, MULTIPLY, CHARAC
             state[0] = 0
         else:
             for j in range(n - 1, 0, -1):
-                state[j] = ADD(state[j - 1], MULTIPLY(f, taps[j], *args), *args)
-            state[0] = MULTIPLY(f, taps[0], *args)
+                state[j] = ADD(state[j - 1], MULTIPLY(f, taps[j]))
+            state[0] = MULTIPLY(f, taps[0])
 
     return y
 
 
-GALOIS_LFSR_STEP_BACKWARD_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, int64, int64, int64))
+def set_galois_lfsr_step_backward_globals(field: Type[FieldArray]):
+    global SUBTRACT, MULTIPLY, DIVIDE
+    SUBTRACT = field._ufunc("subtract")
+    MULTIPLY = field._ufunc("multiply")
+    DIVIDE = field._ufunc("divide")
 
-def galois_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPLY, DIVIDE, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+
+GALOIS_LFSR_STEP_BACKWARD_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
+
+def galois_lfsr_step_backward_jit(taps, state, steps):  # pragma: no cover
     """
     Steps the Galois LFSR `steps` backward.
 
@@ -1569,17 +1588,14 @@ def galois_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPLY, 
     y
         The output sequence of size `steps`.
     """
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-    dtype = state.dtype
-
     n = taps.size
-    y = np.zeros(steps, dtype=dtype)  # The output array
+    y = np.zeros(steps, dtype=state.dtype)  # The output array
 
     for i in range(steps):
-        f = DIVIDE(state[0], taps[0], *args)  # The feedback value
+        f = DIVIDE(state[0], taps[0])  # The feedback value
 
         for j in range(0, n - 1):
-            state[j] = SUBTRACT(state[j + 1], MULTIPLY(f, taps[j + 1], *args), *args)
+            state[j] = SUBTRACT(state[j + 1], MULTIPLY(f, taps[j + 1]))
 
         state[n - 1] = f
         y[i] = f  # The output
@@ -1587,17 +1603,25 @@ def galois_lfsr_step_backward_calculate(taps, state, steps, SUBTRACT, MULTIPLY, 
     return y
 
 
-BERLEKAMP_MASSEY_CALCULATE_SIG = numba.types.FunctionType(int64[:](int64[:], FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._UNARY_CALCULATE_SIG, int64, int64, int64))
+###############################################################################
+# Berlekamp-Massey JIT functions
+###############################################################################
 
-def berlekamp_massey_calculate(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-    dtype = sequence.dtype
+def set_berlekamp_massey_globals(field: Type[FieldArray]):
+    global ADD, SUBTRACT, MULTIPLY, RECIPROCAL
+    ADD = field._ufunc("add")
+    SUBTRACT = field._ufunc("subtract")
+    MULTIPLY = field._ufunc("multiply")
+    RECIPROCAL = field._ufunc("reciprocal")
 
+
+BERLEKAMP_MASSEY_SIG = numba.types.FunctionType(int64[:](int64[:]))
+
+def berlekamp_massey_jit(sequence):  # pragma: no cover
     N = sequence.size
-
     s = sequence
-    c = np.zeros(N, dtype=dtype)
-    b = np.zeros(N, dtype=dtype)
+    c = np.zeros(N, dtype=sequence.dtype)
+    b = np.zeros(N, dtype=sequence.dtype)
     c[0] = 1  # The polynomial c(x) = 1
     b[0] = 1  # The polynomial b(x) = 1
     L = 0
@@ -1607,23 +1631,23 @@ def berlekamp_massey_calculate(sequence, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, CH
     for n in range(0, N):
         d = 0
         for i in range(0, L + 1):
-            d = ADD(d, MULTIPLY(s[n - i], c[i], *args), *args)
+            d = ADD(d, MULTIPLY(s[n - i], c[i]))
 
         if d == 0:
             m += 1
         elif 2*L <= n:
             t = c.copy()
-            d_bb = MULTIPLY(d, RECIPROCAL(bb, *args), *args)
+            d_bb = MULTIPLY(d, RECIPROCAL(bb))
             for i in range(m, N):
-                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m], *args), *args)
+                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m]))
             L = n + 1 - L
             b = t.copy()
             bb = d
             m = 1
         else:
-            d_bb = MULTIPLY(d, RECIPROCAL(bb, *args), *args)
+            d_bb = MULTIPLY(d, RECIPROCAL(bb))
             for i in range(m, N):
-                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m], *args), *args)
+                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m]))
             m += 1
 
     return c[0:L + 1]

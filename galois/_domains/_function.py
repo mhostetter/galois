@@ -9,6 +9,10 @@ import numpy as np
 
 from ._ufunc import RingUfuncs, FieldUfuncs
 
+ADD = np.add
+SUBTRACT = np.subtract
+MULTIPLY = np.multiply
+
 
 class RingFunctions(RingUfuncs, abc.ABC):
     """
@@ -45,7 +49,8 @@ class RingFunctions(RingUfuncs, abc.ABC):
         np.fft.ifft: "_ifft",
     }
 
-    _FUNCTION_CACHE_CALCULATE = {}
+    _FUNCTION_CACHE = {}
+    _FUNCTION_CACHE_PYTHON = {}
 
     def __array_function__(self, func, types, args, kwargs):
         """
@@ -73,7 +78,7 @@ class RingFunctions(RingUfuncs, abc.ABC):
         return output
 
     ###############################################################################
-    # Individual functions, pre-compiled (cached)
+    # Individual functions compiled on-demand
     ###############################################################################
 
     @classmethod
@@ -81,35 +86,35 @@ class RingFunctions(RingUfuncs, abc.ABC):
         """
         Returns the function for the specific routine. The function compilation is based on `ufunc_mode`.
         """
-        if name not in cls._functions:
-            if cls.ufunc_mode != "python-calculate":
-                cls._functions[name] = cls._function_calculate(name)
-            else:
-                cls._functions[name] = cls._function_python(name)
-        return cls._functions[name]
+        if cls.ufunc_mode != "python-calculate":
+            return cls._function_jit(name)
+        else:
+            return cls._function_python(name)
 
     @classmethod
-    def _function_calculate(cls, name):
+    def _function_jit(cls, name):
         """
-        Returns a JIT-compiled function using explicit calculation. These functions are once-compiled and shared for all
-        Galois fields. The only difference between Galois fields are the arithmetic funcs, characteristic, degree, and
-        irreducible polynomial that are passed in as inputs.
+        Returns a JIT-compiled function.
         """
-        key = (name,)
+        key = (name, cls.characteristic, cls.degree, int(cls.irreducible_poly), int(cls.primitive_element))
+        if key not in cls._FUNCTION_CACHE:
+            # Set the globals once before JIT compiling the function
+            getattr(cls, f"_set_{name}_jit_globals")()
 
-        if key not in cls._FUNCTION_CACHE_CALCULATE:
-            function = getattr(cls, f"_{name}_calculate")
-            sig = getattr(cls, f"_{name.upper()}_CALCULATE_SIG")
-            cls._FUNCTION_CACHE_CALCULATE[key] = numba.jit(sig.signature, nopython=True, cache=True)(function)
+            function = getattr(cls, f"_{name}_jit")
+            sig = getattr(cls, f"_{name.upper()}_SIG")
+            cls._FUNCTION_CACHE[key] = numba.jit(sig.signature, nopython=True)(function)
 
-        return cls._FUNCTION_CACHE_CALCULATE[key]
+        return cls._FUNCTION_CACHE[key]
 
     @classmethod
     def _function_python(cls, name):
         """
-        Returns a pure-Python function using explicit calculation.
+        Returns a pure-Python arithmetic function using explicit calculation.
         """
-        return getattr(cls, f"_{name}_calculate")
+        # Set the globals each time before invoking the pure-Python ufunc
+        getattr(cls, f"_set_{name}_jit_globals")()
+        return getattr(cls, f"_{name}_jit")
 
     ###############################################################################
     # Convolution
@@ -127,9 +132,7 @@ class RingFunctions(RingUfuncs, abc.ABC):
         if cls.ufunc_mode == "python-calculate":
             a = a.view(np.ndarray)
             b = b.view(np.ndarray)
-            add = cls._func_python("add")
-            multiply = cls._func_python("multiply")
-            c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
+            c = cls._function("convolve")(a, b)
         elif field.is_prime_field:
             # Determine the minimum dtype to hold the entire product and summation without overflowing
             n_sum = min(a.size, b.size)
@@ -145,34 +148,27 @@ class RingFunctions(RingUfuncs, abc.ABC):
         else:
             a = a.astype(np.int64)
             b = b.astype(np.int64)
-            add = cls._func_calculate("add")
-            multiply = cls._func_calculate("multiply")
-            c = cls._function("convolve")(a, b, add, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
+            c = cls._function("convolve")(a, b)
             c = c.astype(dtype)
         c = field._view(c)
 
         return c
 
-    _CONVOLVE_CALCULATE_SIG = numba.types.FunctionType(int64[:](
-        int64[:],
-        int64[:],
-        RingUfuncs._BINARY_CALCULATE_SIG,
-        RingUfuncs._BINARY_CALCULATE_SIG,
-        int64,
-        int64,
-        int64
-    ))
+    @classmethod
+    def _set_convolve_jit_globals(cls):
+        global ADD, MULTIPLY
+        ADD = cls._ufunc("add")
+        MULTIPLY = cls._ufunc("multiply")
+
+    _CONVOLVE_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
     @staticmethod
     @numba.extending.register_jitable
-    def _convolve_calculate(a, b, ADD, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
-        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-        dtype = a.dtype
-
-        c = np.zeros(a.size + b.size - 1, dtype=dtype)
+    def _convolve_jit(a, b):
+        c = np.zeros(a.size + b.size - 1, dtype=a.dtype)
         for i in range(a.size):
             for j in range(b.size - 1, -1, -1):
-                c[i + j] = ADD(c[i + j], MULTIPLY(a[i], b[j], *args), *args)
+                c[i + j] = ADD(c[i + j], MULTIPLY(a[i], b[j]))
 
         return c
 
@@ -203,18 +199,12 @@ class RingFunctions(RingUfuncs, abc.ABC):
         if cls.ufunc_mode != "python-calculate":
             x = x.astype(np.int64)
             omega = np.int64(omega)
-            add = cls._func_calculate("add")
-            subtract = cls._func_calculate("subtract")
-            multiply = cls._func_calculate("multiply")
-            y = cls._function("dft_jit")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
+            y = cls._function("dft1")(x, omega)
             y = y.astype(dtype)
         else:
             x = x.view(np.ndarray)
             omega = int(omega)
-            add = cls._func_python("add")
-            subtract = cls._func_python("subtract")
-            multiply = cls._func_python("multiply")
-            y = cls._function("dft_python")(x, omega, add, subtract, multiply, cls.characteristic, cls.degree, int(cls.irreducible_poly))
+            y = cls._function("dft2")(x, omega)
         y = field._view(y)
 
         # Scale the inverse NTT such that x = INTT(NTT(x))
@@ -227,91 +217,89 @@ class RingFunctions(RingUfuncs, abc.ABC):
     def _ifft(cls, x, n=None, axis=-1, norm=None, scaled=True):
         return cls._fft(x, n=n, axis=axis, norm=norm, forward=False, scaled=scaled)
 
-    _DFT_JIT_CALCULATE_SIG = numba.types.FunctionType(int64[:](
-        int64[:],
-        int64,
-        RingUfuncs._BINARY_CALCULATE_SIG,
-        RingUfuncs._BINARY_CALCULATE_SIG,
-        RingUfuncs._BINARY_CALCULATE_SIG,
-        int64,
-        int64,
-        int64
-    ))
+    _DFT1_SIG = numba.types.FunctionType(int64[:](int64[:], int64))
+
+    @classmethod
+    def _set_dft1_jit_globals(cls):
+        global ADD, SUBTRACT, MULTIPLY
+        ADD = cls._ufunc("add")
+        SUBTRACT = cls._ufunc("subtract")
+        MULTIPLY = cls._ufunc("multiply")
 
     @staticmethod
     @numba.extending.register_jitable
-    def _dft_jit_calculate(x, omega, ADD, SUBTRACT, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _dft1_jit(x, omega):
         """
-        Need a separate function to invoke _dft_jit_calculate() for recursion in the JIT compilation.
+        Need a separate function to invoke _dft_jit_jit() for recursion in the JIT compilation.
         """
-        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-        dtype = x.dtype
         N = x.size
-        X = np.zeros(N, dtype=dtype)
+        X = np.zeros(N, dtype=x.dtype)
 
         if N == 1:
             X[0] = x[0]
         elif N % 2 == 0:
             # Radix-2 Cooley-Tukey FFT
-            omega2 = MULTIPLY(omega, omega, *args)
-            EVEN = _dft_jit_calculate(x[0::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)  # pylint: disable=undefined-variable
-            ODD = _dft_jit_calculate(x[1::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)  # pylint: disable=undefined-variable
+            omega2 = MULTIPLY(omega, omega)
+            EVEN = _dft1_jit(x[0::2], omega2)  # pylint: disable=undefined-variable
+            ODD = _dft1_jit(x[1::2], omega2)  # pylint: disable=undefined-variable
 
             twiddle = 1
             for k in range(0, N//2):
-                ODD[k] = MULTIPLY(ODD[k], twiddle, *args)
-                twiddle = MULTIPLY(twiddle, omega, *args)  # Twiddle is omega^k
+                ODD[k] = MULTIPLY(ODD[k], twiddle)
+                twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
 
             for k in range(0, N//2):
-                X[k] = ADD(EVEN[k], ODD[k], *args)
-                X[k + N//2] = SUBTRACT(EVEN[k], ODD[k], *args)
+                X[k] = ADD(EVEN[k], ODD[k])
+                X[k + N//2] = SUBTRACT(EVEN[k], ODD[k])
         else:
             # DFT with O(N^2) complexity
             twiddle = 1
             for k in range(0, N):
                 factor = 1
                 for j in range(0, N):
-                    X[k] = ADD(X[k], MULTIPLY(x[j], factor, *args), *args)
-                    factor = MULTIPLY(factor, twiddle, *args)  # Factor is omega^(j*k)
-                twiddle = MULTIPLY(twiddle, omega, *args)  # Twiddle is omega^k
+                    X[k] = ADD(X[k], MULTIPLY(x[j], factor))
+                    factor = MULTIPLY(factor, twiddle)  # Factor is omega^(j*k)
+                twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
 
         return X
 
+    @classmethod
+    def _set_dft2_jit_globals(cls):
+        cls._set_dft1_jit_globals()
+
     @staticmethod
-    def _dft_python_calculate(x, omega, ADD, SUBTRACT, MULTIPLY, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):
+    def _dft2_jit(x, omega):
         """
-        Need a separate function to invoke FunctionMeta._dft_python_calculate() for recursion.
+        Need a separate function to invoke FunctionMeta._dft_python_jit() for recursion.
         """
-        args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-        dtype = x.dtype
         N = x.size
-        X = np.zeros(N, dtype=dtype)
+        X = np.zeros(N, dtype=x.dtype)
 
         if N == 1:
             X[0] = x[0]
         elif N % 2 == 0:
             # Radix-2 Cooley-Tukey FFT
-            omega2 = MULTIPLY(omega, omega, *args)
-            EVEN = RingFunctions._dft_python_calculate(x[0::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
-            ODD = RingFunctions._dft_python_calculate(x[1::2], omega2, ADD, SUBTRACT, MULTIPLY, *args)
+            omega2 = MULTIPLY(omega, omega)
+            EVEN = RingFunctions._dft2_jit(x[0::2], omega2)  # pylint: disable=undefined-variable
+            ODD = RingFunctions._dft2_jit(x[1::2], omega2)  # pylint: disable=undefined-variable
 
             twiddle = 1
             for k in range(0, N//2):
-                ODD[k] = MULTIPLY(ODD[k], twiddle, *args)
-                twiddle = MULTIPLY(twiddle, omega, *args)  # Twiddle is omega^k
+                ODD[k] = MULTIPLY(ODD[k], twiddle)
+                twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
 
             for k in range(0, N//2):
-                X[k] = ADD(EVEN[k], ODD[k], *args)
-                X[k + N//2] = SUBTRACT(EVEN[k], ODD[k], *args)
+                X[k] = ADD(EVEN[k], ODD[k])
+                X[k + N//2] = SUBTRACT(EVEN[k], ODD[k])
         else:
             # DFT with O(N^2) complexity
             twiddle = 1
             for k in range(0, N):
                 factor = 1
                 for j in range(0, N):
-                    X[k] = ADD(X[k], MULTIPLY(x[j], factor, *args), *args)
-                    factor = MULTIPLY(factor, twiddle, *args)  # Factor is omega^(j*k)
-                twiddle = MULTIPLY(twiddle, omega, *args)  # Twiddle is omega^k
+                    X[k] = ADD(X[k], MULTIPLY(x[j], factor))
+                    factor = MULTIPLY(factor, twiddle)  # Factor is omega^(j*k)
+                twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
 
         return X
 

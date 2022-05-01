@@ -4,7 +4,7 @@ A module containing arbitrary Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(2).
 from __future__ import annotations
 
 import math
-from typing import Tuple, List, Optional, Union, Type, overload
+from typing import Tuple, List, Optional, Union, Type, Any, overload
 from typing_extensions import Literal
 
 import numba
@@ -255,21 +255,6 @@ class BCH:
 
         self._is_primitive = True
         self._is_narrow_sense = True
-
-        # Pre-compile the arithmetic methods
-        self._add_jit = self.field._func_calculate("add")
-        self._subtract_jit = self.field._func_calculate("subtract")
-        self._multiply_jit = self.field._func_calculate("multiply")
-        self._reciprocal_jit = self.field._func_calculate("reciprocal")
-        self._power_jit = self.field._func_calculate("power")
-
-        # Pre-compile the JIT functions
-        self._berlekamp_massey_jit = _lfsr.jit_calculate("berlekamp_massey")
-        self._poly_roots_jit = self.field._function("poly_roots")
-        self._poly_divmod_jit = GF2._function("poly_divmod")
-
-        # Pre-compile the JIT decoder
-        self._decode_jit = numba.jit(DECODE_CALCULATE_SIG.signature, nopython=True, cache=True)(_decode_calculate)
 
     def __repr__(self) -> str:
         """
@@ -790,17 +775,20 @@ class BCH:
         syndrome = codeword.view(self.field) @ self.H[:,-ns:].T
 
         if self.field.ufunc_mode != "python-calculate":
-            dec_codeword =  self._decode_jit(codeword.astype(np.int64), syndrome.astype(np.int64), self.t, int(self.field.primitive_element), self._add_jit, self._subtract_jit, self._multiply_jit, self._reciprocal_jit, self._power_jit, self._berlekamp_massey_jit, self._poly_roots_jit, self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
-            N_errors = dec_codeword[:, -1]
-
-            if self.systematic:
-                message = dec_codeword[:, 0:ks]
-            else:
-                message, _ = GF2._poly_divmod(dec_codeword[:, 0:self.n].view(GF2), self.generator_poly.coeffs)
-            message = message.astype(dtype).view(type(codeword))
-
+            codeword_ = codeword.astype(np.int64)
+            syndrome_ = syndrome.astype(np.int64)
+            y = function("decode", self.field)(codeword_, syndrome_, self.t, int(self.field.primitive_element))
         else:
-            raise NotImplementedError("BCH codes haven't been implemented for extremely large Galois fields.")
+            codeword_ = codeword.view(np.ndarray)
+            syndrome_ = syndrome.view(np.ndarray)
+            y = function("decode", self.field)(codeword_, syndrome_, self.t, int(self.field.primitive_element))
+
+        if self.systematic:
+            message = y[:, 0:ks]
+        else:
+            message, _ = GF2._poly_divmod(y[:, 0:ns].view(GF2), self.generator_poly.coeffs)
+        message = message.astype(dtype).view(type(codeword))
+        N_errors = y[:, -1]
 
         if codeword_1d:
             message, N_errors = message[0,:], N_errors[0]
@@ -990,20 +978,64 @@ class BCH:
 
 
 ###############################################################################
-# JIT-compiled implementation of the specified functions
+# JIT functions
 ###############################################################################
 
-DECODE_CALCULATE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, FieldArray._UNARY_CALCULATE_SIG, FieldArray._BINARY_CALCULATE_SIG, _lfsr.BERLEKAMP_MASSEY_CALCULATE_SIG, FieldArray._POLY_ROOTS_CALCULATE_SIG, int64, int64, int64))
+POLY_ROOTS: Any
+BERLEKAMP_MASSEY: Any
 
-def _decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, BERLEKAMP_MASSEY, POLY_ROOTS, CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY):  # pragma: no cover
+
+def function(name: str, field: Type[FieldArray]):
+    """
+    Returns a function implemented over the given field and ufunc mode.
+    """
+    if field.ufunc_mode != "python-calculate":
+        return function_jit(name, field)
+    else:
+        return function_python(name, field)
+
+
+def function_jit(name: str, field: Type[FieldArray]):
+    """
+    Returns a JIT-compiled function implemented over the given field.
+    """
+    key = (name, field.characteristic, field.degree, int(field.irreducible_poly), int(field.primitive_element))
+    if key not in function_jit.cache:
+        # Set the globals once before JIT compiling the function
+        eval(f"set_{name}_globals")(field)
+        sig = eval(f"{name.upper()}_SIG")
+        function_jit.cache[key] = numba.jit(sig.signature, nopython=True)(eval(f"{name}_jit"))
+
+    return function_jit.cache[key]
+
+function_jit.cache = {}
+
+
+def function_python(name: str, field: Type[FieldArray]):
+    """
+    Returns a pure-Python function.
+    """
+    # Set the globals each time before invoking the pure-Python ufunc
+    eval(f"set_{name}_globals")(field)
+    return eval(f"{name}_jit")
+
+
+def set_decode_globals(field: Type[FieldArray]):
+    global POLY_ROOTS, BERLEKAMP_MASSEY
+    POLY_ROOTS = field._function("poly_roots")
+    BERLEKAMP_MASSEY = _lfsr.function("berlekamp_massey", field)
+
+
+DECODE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64))
+
+
+def decode_jit(codeword, syndrome, t, primitive_element):  # pragma: no cover
     """
     References
     ----------
     * Lin, S. and Costello, D. Error Control Coding. Section 7.4.
     """
-    args = CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
     dtype = codeword.dtype
-
     N = codeword.shape[0]  # The number of codewords
     n = codeword.shape[1]  # The codeword size (could be less than the design n for shortened codes)
 
@@ -1024,7 +1056,7 @@ def _decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, M
 
             # Compute the error-locator polynomial's v-reversal σ(x^-v), since the syndrome is passed in backwards
             # TODO: Re-evaluate these equations since changing BMA to return characteristic polynomial, not feedback polynomial
-            sigma_rev = BERLEKAMP_MASSEY(syndrome[i,::-1], ADD, SUBTRACT, MULTIPLY, RECIPROCAL, *args)[::-1]
+            sigma_rev = BERLEKAMP_MASSEY(syndrome[i,::-1])[::-1]
             v = sigma_rev.size - 1  # The number of errors
 
             if v > t:
@@ -1033,7 +1065,7 @@ def _decode_calculate(codeword, syndrome, t, primitive_element, ADD, SUBTRACT, M
 
             # Compute βi, the roots of σ(x^-v) which are the inverse roots of σ(x)
             degrees = np.arange(sigma_rev.size - 1, -1, -1)
-            results = POLY_ROOTS(degrees, sigma_rev, primitive_element, ADD, MULTIPLY, POWER, *args)
+            results = POLY_ROOTS(degrees, sigma_rev, primitive_element)
             beta = results[0,:]  # The roots of σ(x^-v)
             error_locations = results[1,:]  # The roots as powers of the primitive element α
 

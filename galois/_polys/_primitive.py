@@ -323,7 +323,7 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
 @functools.lru_cache(maxsize=4096)
 def _deterministic_search(field, start, stop, step) -> Optional[Poly]:
     """
-    Searches for an primitive polynomial in the range using the specified deterministic method.
+    Searches for a primitive polynomial in the range using the specified deterministic method.
     """
     for element in range(start, stop, step):
         poly = Poly.Int(element, field=field)
