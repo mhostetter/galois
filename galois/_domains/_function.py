@@ -2,16 +2,74 @@
 A module that contains Array mixin classes that override NumPy functions.
 """
 import abc
+from typing import Type, Callable
 
 import numba
 from numba import int64
 import numpy as np
 
+from ._array import Array
 from ._ufunc import RingUFuncs, FieldUFuncs
 
 ADD = np.add
 SUBTRACT = np.subtract
 MULTIPLY = np.multiply
+
+
+class JITFunction:
+    """
+    Wrapper class for optionally JIT-compiled functions.
+    """
+    _CACHE = {}  # A cache of compiled functions. Should be cleared for each derived class.
+
+    call: Callable
+    """Call the function, invoking either the JIT-compiled or pure-Python version."""
+
+    @classmethod
+    def set_globals(cls, field: Type[Array]):
+        """
+        Set the global variables used in `implementation()` before JIT compiling it or before invoking it in pure Python.
+        """
+        # pylint: disable=unused-argument
+        return
+
+    _SIGNATURE: numba.types.FunctionType
+    """The function's Numba signature."""
+
+    implementation: Callable
+    """The function implementation in Python."""
+
+    @classmethod
+    def function(cls, field: Type[Array]):
+        """
+        Returns a JIT-compiled or pure-Python function based on field size.
+        """
+        if field.ufunc_mode != "python-calculate":
+            return cls.jit(field)
+        else:
+            return cls.python(field)
+
+    @classmethod
+    def jit(cls, field: Type[Array]) -> numba.types.FunctionType:
+        """
+        Returns a JIT-compiled function implemented over the given field.
+        """
+        key = (field.characteristic, field.degree, int(field.irreducible_poly), int(field.primitive_element))
+        if key not in cls._CACHE:
+            # Set the globals once before JIT compiling the function
+            cls.set_globals(field)
+            cls._CACHE[key] = numba.jit(cls._SIGNATURE.signature, nopython=True)(cls.implementation)
+
+        return cls._CACHE[key]
+
+    @classmethod
+    def python(cls, field: Type[Array]) -> Callable:
+        """
+        Returns the pure-Python function implemented over the given field.
+        """
+        # Set the globals each time before invoking the pure-Python function
+        cls.set_globals(field)
+        return cls.implementation
 
 
 class RingFunctions(RingUFuncs, abc.ABC):

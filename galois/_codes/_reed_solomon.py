@@ -3,15 +3,16 @@ A module containing arbitrary Reed-Solomon (RS) codes.
 """
 from __future__ import annotations
 
-from typing import Tuple, Optional, Union, Type, Any, overload
+from typing import Tuple, Optional, Union, Type, overload
 from typing_extensions import Literal
 
 import numba
 from numba import int64
 import numpy as np
 
-from .. import _lfsr
+from .._domains._function import JITFunction
 from .._fields import Field, FieldArray
+from .._lfsr import berlekamp_massey_jit
 from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
 from .._prime import factors
@@ -656,7 +657,6 @@ class ReedSolomon:
                 raise ValueError(f"For a non-systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension equal to {self.n}, not shape {codeword.shape}.")
 
         codeword_1d = codeword.ndim == 1
-        dtype = codeword.dtype
         ns = codeword.shape[-1]  # The number of input codeword symbols (could be less than self.n for shortened codes)
         ks = self.k - (self.n - ns)  # The equivalent number of input message symbols (could be less than self.k for shortened codes)
 
@@ -666,21 +666,14 @@ class ReedSolomon:
         # Compute the syndrome by matrix multiplying with the parity-check matrix
         syndrome = codeword.view(self.field) @ self.H[:,-ns:].T
 
-        if self.field.ufunc_mode != "python-calculate":
-            codeword_ = codeword.astype(np.int64)
-            syndrome_ = syndrome.astype(np.int64)
-            y = function("decode", self.field)(codeword_, syndrome_, self.c, self.t, int(self.field.primitive_element))
-        else:
-            codeword_ = codeword.view(np.ndarray)
-            syndrome_ = syndrome.view(np.ndarray)
-            y = function("decode", self.field)(codeword_, syndrome_, self.c, self.t, int(self.field.primitive_element))
+        # Invoke the JIT compiled function
+        dec_codeword, N_errors = decode_jit.call(self.field, codeword, syndrome, self.c, self.t, int(self.field.primitive_element))
 
         if self.systematic:
-            message = y[:, 0:ks]
+            message = dec_codeword[:, 0:ks]
         else:
-            message, _ = self.field._poly_divmod(y[:, 0:ns].view(self.field), self.generator_poly.coeffs)
-        message = message.astype(dtype).view(type(codeword))
-        N_errors = y[:, -1]
+            message, _ = self.field._poly_divmod(dec_codeword[:, 0:ns].view(self.field), self.generator_poly.coeffs)
+        message = message.view(type(codeword))  # TODO: Remove this
 
         if codeword_1d:
             message, N_errors = message[0,:], N_errors[0]
@@ -877,145 +870,118 @@ class ReedSolomon:
         return self._is_narrow_sense
 
 
-###############################################################################
-# JIT functions
-###############################################################################
-
-CHARACTERISTIC: int
-ORDER: int
-SUBTRACT = np.subtract
-MULTIPLY = np.multiply
-RECIPROCAL = np.reciprocal
-POWER = np.power
-CONVOLVE = np.convolve
-POLY_ROOTS: Any
-POLY_EVALUATE: Any
-BERLEKAMP_MASSEY: Any
-
-
-def function(name: str, field: Type[FieldArray]):
+class decode_jit(JITFunction):
     """
-    Returns a function implemented over the given field and ufunc mode.
-    """
-    if field.ufunc_mode != "python-calculate":
-        return function_jit(name, field)
-    else:
-        return function_python(name, field)
+    Performs Reed-Solomon decoding.
 
-
-def function_jit(name: str, field: Type[FieldArray]):
-    """
-    Returns a JIT-compiled function implemented over the given field.
-    """
-    key = (name, field.characteristic, field.degree, int(field.irreducible_poly), int(field.primitive_element))
-    if key not in function_jit.cache:
-        # Set the globals once before JIT compiling the function
-        eval(f"set_{name}_globals")(field)
-        sig = eval(f"{name.upper()}_SIG")
-        function_jit.cache[key] = numba.jit(sig.signature, nopython=True)(eval(f"{name}_jit"))
-
-    return function_jit.cache[key]
-
-function_jit.cache = {}
-
-
-def function_python(name: str, field: Type[FieldArray]):
-    """
-    Returns a pure-Python function.
-    """
-    # Set the globals each time before invoking the pure-Python ufunc
-    eval(f"set_{name}_globals")(field)
-    return eval(f"{name}_jit")
-
-
-def set_decode_globals(field: Type[FieldArray]):
-    global CHARACTERISTIC, ORDER, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, CONVOLVE, POLY_ROOTS, POLY_EVALUATE, BERLEKAMP_MASSEY
-    CHARACTERISTIC = field.characteristic
-    ORDER = field.order
-    SUBTRACT = field._ufunc("subtract")
-    MULTIPLY = field._ufunc("multiply")
-    RECIPROCAL = field._ufunc("reciprocal")
-    POWER = field._ufunc("power")
-    CONVOLVE = field._function("convolve")
-    POLY_ROOTS = field._function("poly_roots")
-    POLY_EVALUATE = field._function("poly_evaluate")
-    BERLEKAMP_MASSEY = _lfsr.function("berlekamp_massey", field)
-
-
-DECODE_SIG = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, int64))
-
-def decode_jit(codeword, syndrome, c, t, primitive_element):  # pragma: no cover
-    """
     References
     ----------
     * Lin, S. and Costello, D. Error Control Coding. Section 7.4.
     """
-    dtype = codeword.dtype
-    N = codeword.shape[0]  # The number of codewords
-    n = codeword.shape[1]  # The codeword size (could be less than the design n for shortened codes)
-    design_n = ORDER - 1  # The designed codeword size
+    _CACHE = {}
 
-    # The last column of the returned decoded codeword is the number of corrected errors
-    dec_codeword = np.zeros((N, n + 1), dtype=dtype)
-    dec_codeword[:, 0:n] = codeword[:,:]
+    @classmethod
+    def call(cls, field, codeword, syndrome, c, t, primitive_element):
+        if field.ufunc_mode != "python-calculate":
+            codeword_ = codeword.astype(np.int64)
+            syndrome_ = syndrome.astype(np.int64)
+            y = cls.jit(field)(codeword_, syndrome_, c, t, primitive_element)
+        else:
+            codeword_ = codeword.view(np.ndarray)
+            syndrome_ = syndrome.view(np.ndarray)
+            y = cls.python(field)(codeword_, syndrome_, c, t, primitive_element)
 
-    for i in range(N):
-        if not np.all(syndrome[i,:] == 0):
-            # The syndrome vector is S = [S0, S1, ..., S2t-1]
+        dec_codeword, N_errors = y[:,0:-1], y[:,-1]
+        dec_codeword = dec_codeword.astype(codeword.dtype)
+        dec_codeword = dec_codeword.view(field)
 
-            # The error pattern is defined as the polynomial e(x) = e_j1*x^j1 + e_j2*x^j2 + ... for j1 to jv,
-            # implying there are v errors. And δi = e_ji is the i-th error value and βi = α^ji is the i-th error-locator
-            # value and ji is the error location.
+        return dec_codeword, N_errors
 
-            # The error-locator polynomial σ(x) = (1 - β1*x)(1 - β2*x)...(1 - βv*x) where βi are the inverse of the roots
-            # of σ(x).
+    @classmethod
+    def set_globals(cls, field: Type[FieldArray]):
+        # pylint: disable=global-variable-undefined
+        global CHARACTERISTIC, ORDER, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, CONVOLVE, POLY_ROOTS, POLY_EVALUATE, BERLEKAMP_MASSEY
+        CHARACTERISTIC = field.characteristic
+        ORDER = field.order
+        SUBTRACT = field._ufunc("subtract")
+        MULTIPLY = field._ufunc("multiply")
+        RECIPROCAL = field._ufunc("reciprocal")
+        POWER = field._ufunc("power")
+        CONVOLVE = field._function("convolve")
+        POLY_ROOTS = field._function("poly_roots")
+        POLY_EVALUATE = field._function("poly_evaluate")
+        BERLEKAMP_MASSEY = berlekamp_massey_jit.function(field)
 
-            # Compute the error-locator polynomial σ(x)
-            # TODO: Re-evaluate these equations since changing BMA to return characteristic polynomial, not feedback polynomial
-            sigma = BERLEKAMP_MASSEY(syndrome[i,:])[::-1]
-            v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
+    _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, int64))
 
-            if v > t:
-                dec_codeword[i,-1] = -1
-                continue
+    @staticmethod
+    def implementation(codeword, syndrome, c, t, primitive_element):  # pragma: no cover
+        dtype = codeword.dtype
+        N = codeword.shape[0]  # The number of codewords
+        n = codeword.shape[1]  # The codeword size (could be less than the design n for shortened codes)
+        design_n = ORDER - 1  # The designed codeword size
 
-            # Compute βi^-1, the roots of σ(x)
-            degrees = np.arange(sigma.size - 1, -1, -1)
-            results = POLY_ROOTS(degrees, sigma, primitive_element)
-            beta_inv = results[0,:]  # The roots βi^-1 of σ(x)
-            error_locations_inv = results[1,:]  # The roots βi^-1 as powers of the primitive element α
-            error_locations = -error_locations_inv % design_n  # The error locations as degrees of c(x)
+        # The last column of the returned decoded codeword is the number of corrected errors
+        dec_codeword = np.zeros((N, n + 1), dtype=dtype)
+        dec_codeword[:, 0:n] = codeword[:,:]
 
-            if np.any(error_locations > n - 1):
-                # Indicates there are "errors" in the zero-ed portion of a shortened code, which indicates there are actually
-                # more errors than alleged. Return failure to decode.
-                dec_codeword[i,-1] = -1
-                continue
+        for i in range(N):
+            if not np.all(syndrome[i,:] == 0):
+                # The syndrome vector is S = [S0, S1, ..., S2t-1]
 
-            if beta_inv.size != v:
-                dec_codeword[i,-1] = -1
-                continue
+                # The error pattern is defined as the polynomial e(x) = e_j1*x^j1 + e_j2*x^j2 + ... for j1 to jv,
+                # implying there are v errors. And δi = e_ji is the i-th error value and βi = α^ji is the i-th error-locator
+                # value and ji is the error location.
 
-            # Compute σ'(x)
-            sigma_prime = np.zeros(v, dtype=dtype)
-            for j in range(v):
-                degree = v - j
-                sigma_prime[j] = MULTIPLY(degree % CHARACTERISTIC, sigma[j])  # Scalar multiplication
+                # The error-locator polynomial σ(x) = (1 - β1*x)(1 - β2*x)...(1 - βv*x) where βi are the inverse of the roots
+                # of σ(x).
 
-            # The error-value evaluator polynomial Z0(x) = S0*σ0 + (S1*σ0 + S0*σ1)*x + (S2*σ0 + S1*σ1 + S0*σ2)*x^2 + ...
-            # with degree v-1
-            Z0 = CONVOLVE(sigma[-v:], syndrome[i,0:v][::-1])[-v:]
+                # Compute the error-locator polynomial σ(x)
+                # TODO: Re-evaluate these equations since changing BMA to return characteristic polynomial, not feedback polynomial
+                sigma = BERLEKAMP_MASSEY(syndrome[i,:])[::-1]
+                v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
 
-            # The error value δi = -1 * βi^(1-c) * Z0(βi^-1) / σ'(βi^-1)
-            for j in range(v):
-                beta_i = POWER(beta_inv[j], c - 1)
-                Z0_i = POLY_EVALUATE(Z0, np.array([beta_inv[j]], dtype=dtype))[0]  # NOTE: poly_eval() expects a 1-D array of values
-                sigma_prime_i = POLY_EVALUATE(sigma_prime, np.array([beta_inv[j]], dtype=dtype))[0]  # NOTE: poly_eval() expects a 1-D array of values
-                delta_i = MULTIPLY(beta_i, Z0_i)
-                delta_i = MULTIPLY(delta_i, RECIPROCAL(sigma_prime_i))
-                delta_i = SUBTRACT(0, delta_i)
-                dec_codeword[i, n - 1 - error_locations[j]] = SUBTRACT(dec_codeword[i, n - 1 - error_locations[j]], delta_i)
+                if v > t:
+                    dec_codeword[i,-1] = -1
+                    continue
 
-            dec_codeword[i,-1] = v  # The number of corrected errors
+                # Compute βi^-1, the roots of σ(x)
+                degrees = np.arange(sigma.size - 1, -1, -1)
+                results = POLY_ROOTS(degrees, sigma, primitive_element)
+                beta_inv = results[0,:]  # The roots βi^-1 of σ(x)
+                error_locations_inv = results[1,:]  # The roots βi^-1 as powers of the primitive element α
+                error_locations = -error_locations_inv % design_n  # The error locations as degrees of c(x)
 
-    return dec_codeword
+                if np.any(error_locations > n - 1):
+                    # Indicates there are "errors" in the zero-ed portion of a shortened code, which indicates there are actually
+                    # more errors than alleged. Return failure to decode.
+                    dec_codeword[i,-1] = -1
+                    continue
+
+                if beta_inv.size != v:
+                    dec_codeword[i,-1] = -1
+                    continue
+
+                # Compute σ'(x)
+                sigma_prime = np.zeros(v, dtype=dtype)
+                for j in range(v):
+                    degree = v - j
+                    sigma_prime[j] = MULTIPLY(degree % CHARACTERISTIC, sigma[j])  # Scalar multiplication
+
+                # The error-value evaluator polynomial Z0(x) = S0*σ0 + (S1*σ0 + S0*σ1)*x + (S2*σ0 + S1*σ1 + S0*σ2)*x^2 + ...
+                # with degree v-1
+                Z0 = CONVOLVE(sigma[-v:], syndrome[i,0:v][::-1])[-v:]
+
+                # The error value δi = -1 * βi^(1-c) * Z0(βi^-1) / σ'(βi^-1)
+                for j in range(v):
+                    beta_i = POWER(beta_inv[j], c - 1)
+                    Z0_i = POLY_EVALUATE(Z0, np.array([beta_inv[j]], dtype=dtype))[0]  # NOTE: poly_eval() expects a 1-D array of values
+                    sigma_prime_i = POLY_EVALUATE(sigma_prime, np.array([beta_inv[j]], dtype=dtype))[0]  # NOTE: poly_eval() expects a 1-D array of values
+                    delta_i = MULTIPLY(beta_i, Z0_i)
+                    delta_i = MULTIPLY(delta_i, RECIPROCAL(sigma_prime_i))
+                    delta_i = SUBTRACT(0, delta_i)
+                    dec_codeword[i, n - 1 - error_locations[j]] = SUBTRACT(dec_codeword[i, n - 1 - error_locations[j]], delta_i)
+
+                dec_codeword[i,-1] = v  # The number of corrected errors
+
+        return dec_codeword
