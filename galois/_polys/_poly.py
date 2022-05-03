@@ -727,7 +727,7 @@ class Poly:
             return Poly(self.coeffs[::-1])
 
     @overload
-    def roots(self, multiplicity: Literal[False]) -> Array:
+    def roots(self, multiplicity: Literal[False] = False) -> Array:
         ...
     @overload
     def roots(self, multiplicity: Literal[True]) -> Tuple[Array, np.ndarray]:

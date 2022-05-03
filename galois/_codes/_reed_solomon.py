@@ -467,7 +467,7 @@ class ReedSolomon:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, "FieldArray"], errors: Literal[False]) -> Union[np.ndarray, "FieldArray"]:
+    def decode(self, codeword: Union[np.ndarray, "FieldArray"], errors: Literal[False] = False) -> Union[np.ndarray, "FieldArray"]:
         ...
     @overload
     def decode(self, codeword: Union[np.ndarray, "FieldArray"], errors: Literal[True]) -> Tuple[Union[np.ndarray, "FieldArray"], Union[np.integer, np.ndarray]]:
