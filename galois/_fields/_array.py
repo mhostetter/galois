@@ -12,7 +12,6 @@ from .._domains import Array
 from .._domains._array import ArrayMeta
 from .._domains._function import FieldFunctions
 from .._domains._linalg import FieldLinalgFunctions
-from .._domains._poly import FieldPolyFunctions
 from .._domains._ufunc import FieldUFuncs
 from .._modular import totatives
 from .._overrides import set_module, extend_docstring, SPHINX_BUILD
@@ -528,7 +527,7 @@ class FieldArrayMeta(ArrayMeta):
 
 
 @set_module("galois")
-class FieldArray(FieldPolyFunctions, FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metaclass=FieldArrayMeta):
+class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metaclass=FieldArrayMeta):
     r"""
     A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
 
