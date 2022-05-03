@@ -10,6 +10,7 @@ import numba
 import numpy as np
 from numba import int64
 
+from ._domains._function import JITFunction
 from ._fields import FieldArray
 from ._overrides import set_module
 from ._polys import Poly
@@ -17,6 +18,10 @@ from .typing import ArrayLike
 
 __all__ = ["FLFSR", "GLFSR", "berlekamp_massey"]
 
+
+###############################################################################
+# LFSR base class
+###############################################################################
 
 class _LFSR:
     r"""
@@ -105,18 +110,12 @@ class _LFSR:
     def _step_forward(self, steps):
         assert steps > 0
 
-        if self.field.ufunc_mode != "python-calculate":
-            taps = self.taps.astype(np.int64)
-            state = self.state.astype(np.int64)
-            y = function(f"{self._type}_lfsr_step_forward", self.field)(taps, state, steps)
-            y = y.astype(self.state.dtype)
+        if self._type == "fibonacci":
+            y, state = fibonacci_lfsr_step_forward_jit.call(self.field, self.taps, self.state, steps)
         else:
-            taps = self.taps.view(np.ndarray)
-            state = self.state.view(np.ndarray)
-            y = function(f"{self._type}_lfsr_step_forward", self.field)(taps, state, steps)
+            y, state = galois_lfsr_step_forward_jit.call(self.field, self.taps, self.state, steps)
 
         self._state[:] = state[:]
-        y = self.field._view(y)
         if y.size == 1:
             y = y[0]
 
@@ -128,18 +127,12 @@ class _LFSR:
         if not self.characteristic_poly.coeffs[-1] > 0:
             raise ValueError(f"Can only step the shift register backwards if the c_0 tap is non-zero, not c(x) = {self.characteristic_poly}.")
 
-        if self.field.ufunc_mode != "python-calculate":
-            taps = self.taps.astype(np.int64)
-            state = self.state.astype(np.int64)
-            y = function(f"{self._type}_lfsr_step_backward", self.field)(taps, state, steps)
-            y = y.astype(self.state.dtype)
+        if self._type == "fibonacci":
+            y, state = fibonacci_lfsr_step_backward_jit.call(self.field, self.taps, self.state, steps)
         else:
-            taps = self.taps.view(np.ndarray)
-            state = self.state.view(np.ndarray)
-            y = function(f"{self._type}_lfsr_step_backward", self.field)(taps, state, steps)
+            y, state = galois_lfsr_step_backward_jit.call(self.field, self.taps, self.state, steps)
 
         self._state[:] = state[:]
-        y = self.field._view(y)
         if y.size == 1:
             y = y[0]
 
@@ -173,6 +166,10 @@ class _LFSR:
     def state(self) -> FieldArray:
         return self._state.copy()
 
+
+###############################################################################
+# Fibonacci LFSR
+###############################################################################
 
 @set_module("galois")
 class FLFSR(_LFSR):
@@ -694,6 +691,162 @@ class FLFSR(_LFSR):
         return super().state
 
 
+class fibonacci_lfsr_step_forward_jit(JITFunction):
+    """
+    Steps the Fibonacci LFSR `steps` forward.
+
+    .. code-block:: text
+       :caption: Fibonacci LFSR Configuration
+
+        +--------------+<-------------+<-------------+<-------------+
+        |              ^              ^              ^              |
+        |              | c_n-1        | c_n-2        | c_1          | c_0
+        |              | T[0]         | T[1]         | T[n-2]       | T[n-1]
+        |  +--------+  |  +--------+  |              |  +--------+  |
+        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
+           +--------+     +--------+                    +--------+
+            y[t+n-1]       y[t+n-2]                       y[t+1]
+
+    Parameters
+    ----------
+    taps
+        The set of taps T = [c_n-1, c_n-2, ..., c_1, c_0].
+    state
+        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
+    steps
+        The number of output symbols to produce.
+    feedback
+        `True` indicates to output the feedback value `y_1[t]` (LRS) and `False` indicates to output the value out of the
+        shift register `y_2[t]`.
+
+    Returns
+    -------
+    y
+        The output sequence of size `steps`.
+    """
+    _CACHE = {}
+
+    @classmethod
+    def call(cls, field, taps, state, steps):
+        if field.ufunc_mode != "python-calculate":
+            taps_ = taps.astype(np.int64)
+            state_ = state.astype(np.int64)
+            y = cls.jit(field)(taps_, state_, steps)
+            y = y.astype(state.dtype)
+        else:
+            taps_ = taps.view(np.ndarray)
+            state_ = state.view(np.ndarray)
+            y = cls.python(field)(taps_, state_, steps)
+        y = field._view(y)
+
+        return y, state_
+
+    @staticmethod
+    def set_globals(field: Type[FieldArray]):
+        # pylint: disable=global-variable-undefined
+        global ADD, MULTIPLY
+        ADD = field._ufunc("add")
+        MULTIPLY = field._ufunc("multiply")
+
+    _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
+
+    @staticmethod
+    def implementation(taps, state, steps):  # pragma: no cover
+        n = taps.size
+        y = np.zeros(steps, dtype=state.dtype)  # The output array
+
+        for i in range(steps):
+            f = 0  # The feedback value
+            for j in range(n):
+                f = ADD(f, MULTIPLY(state[j], taps[j]))
+
+            y[i] = state[-1]  # Output is popped off the shift register
+            state[1:] = state[0:-1]  # Shift state rightward
+            state[0] = f  # Insert feedback value at leftmost position
+
+        return y
+
+
+class fibonacci_lfsr_step_backward_jit(JITFunction):
+    """
+    Steps the Fibonacci LFSR `steps` backward.
+
+    .. code-block:: text
+       :caption: Fibonacci LFSR Configuration
+
+        +--------------+<-------------+<-------------+<-------------+
+        |              ^              ^              ^              |
+        |              | c_n-1        | c_n-2        | c_1          | c_0
+        |              | T[0]         | T[1]         | T[n-2]       | T[n-1]
+        |  +--------+  |  +--------+  |              |  +--------+  |
+        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
+           +--------+     +--------+                    +--------+
+            y[t+n-1]       y[t+n-2]                       y[t+1]
+
+    Parameters
+    ----------
+    taps
+        The set of taps T = [c_n-1, c_n-2, ..., c_1, c_0].
+    state
+        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
+    steps
+        The number of output symbols to produce.
+
+    Returns
+    -------
+    y
+        The output sequence of size `steps`.
+    """
+    _CACHE = {}
+
+    @classmethod
+    def call(cls, field, taps, state, steps):
+        if field.ufunc_mode != "python-calculate":
+            taps_ = taps.astype(np.int64)
+            state_ = state.astype(np.int64)
+            y = cls.jit(field)(taps_, state_, steps)
+            y = y.astype(state.dtype)
+        else:
+            taps_ = taps.view(np.ndarray)
+            state_ = state.view(np.ndarray)
+            y = cls.python(field)(taps_, state_, steps)
+        y = field._view(y)
+
+        return y, state_
+
+    @staticmethod
+    def set_globals(field: Type[FieldArray]):
+        global SUBTRACT, MULTIPLY, DIVIDE
+        SUBTRACT = field._ufunc("subtract")
+        MULTIPLY = field._ufunc("multiply")
+        DIVIDE = field._ufunc("divide")
+
+    _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
+
+    @staticmethod
+    def implementation(taps, state, steps):  # pragma: no cover
+        n = taps.size
+        y = np.zeros(steps, dtype=state.dtype)  # The output array
+
+        for i in range(steps):
+            f = state[0]  # The feedback value
+            state[0:-1] = state[1:]  # Shift state leftward
+
+            s = f  # The unknown previous state value
+            for j in range(n - 1):
+                s = SUBTRACT(s, MULTIPLY(state[j], taps[j]))
+            s = DIVIDE(s, taps[n - 1])
+
+            y[i] = s  # The previous output was the last value in the shift register
+            state[-1] = s  # Assign recovered state to the leftmost position
+
+        return y
+
+
+###############################################################################
+# Galois LFSR
+###############################################################################
+
 @set_module("galois")
 class GLFSR(_LFSR):
     r"""
@@ -1200,6 +1353,158 @@ class GLFSR(_LFSR):
         return super().state
 
 
+class galois_lfsr_step_forward_jit(JITFunction):
+    """
+    Steps the Galois LFSR `steps` forward.
+
+    .. code-block:: text
+       :caption: Galois LFSR Configuration
+
+        +--------------+<-------------+<-------------+<-------------+
+        |              |              |              |              |
+        | c_0          | c_1          | c_2          | c_n-1        |
+        | T[0]         | T[1]         | T[2]         | T[n-1]       |
+        |  +--------+  v  +--------+  v              v  +--------+  |
+        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
+           +--------+     +--------+                    +--------+
+                                                          y[t+1]
+
+    Parameters
+    ----------
+    taps
+        The set of taps T = [c_0, c_1, ..., c_n-2, c_n-2].
+    state
+        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
+    steps
+        The number of output symbols to produce.
+
+    Returns
+    -------
+    y
+        The output sequence of size `steps`.
+    """
+    _CACHE = {}
+
+    @classmethod
+    def call(cls, field, taps, state, steps):
+        if field.ufunc_mode != "python-calculate":
+            taps_ = taps.astype(np.int64)
+            state_ = state.astype(np.int64)
+            y = cls.jit(field)(taps_, state_, steps)
+            y = y.astype(state.dtype)
+        else:
+            taps_ = taps.view(np.ndarray)
+            state_ = state.view(np.ndarray)
+            y = cls.python(field)(taps_, state_, steps)
+        y = field._view(y)
+
+        return y, state_
+
+    @staticmethod
+    def set_globals(field: Type[FieldArray]):
+        global ADD, MULTIPLY
+        ADD = field._ufunc("add")
+        MULTIPLY = field._ufunc("multiply")
+
+    _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
+
+    @staticmethod
+    def implementation(taps, state, steps):  # pragma: no cover
+        n = taps.size
+        y = np.zeros(steps, dtype=state.dtype)  # The output array
+
+        for i in range(steps):
+            f = state[n - 1]  # The feedback value
+            y[i] = f  # The output
+
+            if f == 0:
+                state[1:] = state[0:-1]
+                state[0] = 0
+            else:
+                for j in range(n - 1, 0, -1):
+                    state[j] = ADD(state[j - 1], MULTIPLY(f, taps[j]))
+                state[0] = MULTIPLY(f, taps[0])
+
+        return y
+
+
+class galois_lfsr_step_backward_jit(JITFunction):
+    """
+    Steps the Galois LFSR `steps` backward.
+
+    .. code-block:: text
+       :caption: Galois LFSR Configuration
+
+        +--------------+<-------------+<-------------+<-------------+
+        |              |              |              |              |
+        | c_0          | c_1          | c_2          | c_n-1        |
+        | T[0]         | T[1]         | T[2]         | T[n-1]       |
+        |  +--------+  v  +--------+  v              v  +--------+  |
+        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
+           +--------+     +--------+                    +--------+
+                                                          y[t+1]
+
+    Parameters
+    ----------
+    taps
+        The set of taps T = [c_0, c_1, ..., c_n-2, c_n-2].
+    state
+        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
+    steps
+        The number of output symbols to produce.
+
+    Returns
+    -------
+    y
+        The output sequence of size `steps`.
+    """
+    _CACHE = {}
+
+    @classmethod
+    def call(cls, field, taps, state, steps):
+        if field.ufunc_mode != "python-calculate":
+            taps_ = taps.astype(np.int64)
+            state_ = state.astype(np.int64)
+            y = cls.jit(field)(taps_, state_, steps)
+            y = y.astype(state.dtype)
+        else:
+            taps_ = taps.view(np.ndarray)
+            state_ = state.view(np.ndarray)
+            y = cls.python(field)(taps_, state_, steps)
+        y = field._view(y)
+
+        return y, state_
+
+    @staticmethod
+    def set_globals(field: Type[FieldArray]):
+        global SUBTRACT, MULTIPLY, DIVIDE
+        SUBTRACT = field._ufunc("subtract")
+        MULTIPLY = field._ufunc("multiply")
+        DIVIDE = field._ufunc("divide")
+
+    _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
+
+    @staticmethod
+    def implementation(taps, state, steps):  # pragma: no cover
+        n = taps.size
+        y = np.zeros(steps, dtype=state.dtype)  # The output array
+
+        for i in range(steps):
+            f = DIVIDE(state[0], taps[0])  # The feedback value
+
+            for j in range(0, n - 1):
+                state[j] = SUBTRACT(state[j + 1], MULTIPLY(f, taps[j + 1]))
+
+            state[n - 1] = f
+            y[i] = f  # The output
+
+        return y
+
+
+###############################################################################
+# Berlekamp-Massey algorithm
+###############################################################################
+
 @overload
 def berlekamp_massey(sequence: "FieldArray", output: Literal["minimal"] = "minimal") -> Poly:
     ...
@@ -1299,17 +1604,7 @@ def berlekamp_massey(sequence, output="minimal"):
         raise ValueError(f"Argument `output` must be in ['minimal', 'fibonacci', 'galois'], not {output!r}.")
 
     field = type(sequence)
-    dtype = sequence.dtype
-
-    if field.ufunc_mode != "python-calculate":
-        sequence = sequence.astype(np.int64)
-        coeffs = function("berlekamp_massey", field)(sequence)
-        coeffs = coeffs.astype(dtype)
-    else:
-        sequence = sequence.view(np.ndarray)
-        coeffs = function("berlekamp_massey", field)(sequence)
-    coeffs = field._view(coeffs)
-
+    coeffs = berlekamp_massey_jit.call(field, sequence)
     characteristic_poly = Poly(coeffs, field=field)
 
     if output == "minimal":
@@ -1326,328 +1621,67 @@ def berlekamp_massey(sequence, output="minimal"):
             return fibonacci_lfsr.to_galois_lfsr()
 
 
-###############################################################################
-# JIT functions
-###############################################################################
-
-ADD = np.add
-SUBTRACT = np.subtract
-MULTIPLY = np.multiply
-DIVIDE = np.divide
-RECIPROCAL = np.reciprocal
-
-
-def function(name: str, field: Type[FieldArray]):
+class berlekamp_massey_jit(JITFunction):
     """
-    Returns a function implemented over the given field and ufunc mode.
+    Finds the minimal polynomial c(x) of the input sequence.
     """
-    if field.ufunc_mode != "python-calculate":
-        return function_jit(name, field)
-    else:
-        return function_python(name, field)
+    _CACHE = {}
 
-
-def function_jit(name: str, field: Type[FieldArray]):
-    """
-    Returns a JIT-compiled function implemented over the given field.
-    """
-    key = (name, field.characteristic, field.degree, int(field.irreducible_poly), int(field.primitive_element))
-    if key not in function_jit.cache:
-        # Set the globals once before JIT compiling the function
-        eval(f"set_{name}_globals")(field)
-        sig = eval(f"{name.upper()}_SIG")
-        function_jit.cache[key] = numba.jit(sig.signature, nopython=True)(eval(f"{name}_jit"))
-
-    return function_jit.cache[key]
-
-function_jit.cache = {}
-
-
-def function_python(name: str, field: Type[FieldArray]):
-    """
-    Returns a pure-Python function.
-    """
-    # Set the globals each time before invoking the pure-Python ufunc
-    eval(f"set_{name}_globals")(field)
-    return eval(f"{name}_jit")
-
-
-###############################################################################
-# Fibonacci LFSR JIT functions
-###############################################################################
-
-def set_fibonacci_lfsr_step_forward_globals(field: Type[FieldArray]):
-    global ADD, MULTIPLY
-    ADD = field._ufunc("add")
-    MULTIPLY = field._ufunc("multiply")
-
-
-FIBONACCI_LFSR_STEP_FORWARD_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
-
-def fibonacci_lfsr_step_forward_jit(taps, state, steps):  # pragma: no cover
-    """
-    Steps the Fibonacci LFSR `steps` forward.
-
-    .. code-block:: text
-       :caption: Fibonacci LFSR Configuration
-
-        +--------------+<-------------+<-------------+<-------------+
-        |              ^              ^              ^              |
-        |              | c_n-1        | c_n-2        | c_1          | c_0
-        |              | T[0]         | T[1]         | T[n-2]       | T[n-1]
-        |  +--------+  |  +--------+  |              |  +--------+  |
-        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
-           +--------+     +--------+                    +--------+
-            y[t+n-1]       y[t+n-2]                       y[t+1]
-
-    Parameters
-    ----------
-    taps
-        The set of taps T = [c_n-1, c_n-2, ..., c_1, c_0].
-    state
-        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
-    steps
-        The number of output symbols to produce.
-    feedback
-        `True` indicates to output the feedback value `y_1[t]` (LRS) and `False` indicates to output the value out of the
-        shift register `y_2[t]`.
-
-    Returns
-    -------
-    y
-        The output sequence of size `steps`.
-    """
-    n = taps.size
-    y = np.zeros(steps, dtype=state.dtype)  # The output array
-
-    for i in range(steps):
-        f = 0  # The feedback value
-        for j in range(n):
-            f = ADD(f, MULTIPLY(state[j], taps[j]))
-
-        y[i] = state[-1]  # Output is popped off the shift register
-        state[1:] = state[0:-1]  # Shift state rightward
-        state[0] = f  # Insert feedback value at leftmost position
-
-    return y
-
-
-def set_fibonacci_lfsr_step_backward_globals(field: Type[FieldArray]):
-    global SUBTRACT, MULTIPLY, DIVIDE
-    SUBTRACT = field._ufunc("subtract")
-    MULTIPLY = field._ufunc("multiply")
-    DIVIDE = field._ufunc("divide")
-
-
-FIBONACCI_LFSR_STEP_BACKWARD_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
-
-def fibonacci_lfsr_step_backward_jit(taps, state, steps):  # pragma: no cover
-    """
-    Steps the Fibonacci LFSR `steps` backward.
-
-    .. code-block:: text
-       :caption: Fibonacci LFSR Configuration
-
-        +--------------+<-------------+<-------------+<-------------+
-        |              ^              ^              ^              |
-        |              | c_n-1        | c_n-2        | c_1          | c_0
-        |              | T[0]         | T[1]         | T[n-2]       | T[n-1]
-        |  +--------+  |  +--------+  |              |  +--------+  |
-        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
-           +--------+     +--------+                    +--------+
-            y[t+n-1]       y[t+n-2]                       y[t+1]
-
-    Parameters
-    ----------
-    taps
-        The set of taps T = [c_n-1, c_n-2, ..., c_1, c_0].
-    state
-        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
-    steps
-        The number of output symbols to produce.
-
-    Returns
-    -------
-    y
-        The output sequence of size `steps`.
-    """
-    n = taps.size
-    y = np.zeros(steps, dtype=state.dtype)  # The output array
-
-    for i in range(steps):
-        f = state[0]  # The feedback value
-        state[0:-1] = state[1:]  # Shift state leftward
-
-        s = f  # The unknown previous state value
-        for j in range(n - 1):
-            s = SUBTRACT(s, MULTIPLY(state[j], taps[j]))
-        s = DIVIDE(s, taps[n - 1])
-
-        y[i] = s  # The previous output was the last value in the shift register
-        state[-1] = s  # Assign recovered state to the leftmost position
-
-    return y
-
-
-###############################################################################
-# Galois LFSR JIT functions
-###############################################################################
-
-def set_galois_lfsr_step_forward_globals(field: Type[FieldArray]):
-    global ADD, MULTIPLY
-    ADD = field._ufunc("add")
-    MULTIPLY = field._ufunc("multiply")
-
-
-GALOIS_LFSR_STEP_FORWARD_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
-
-def galois_lfsr_step_forward_jit(taps, state, steps):  # pragma: no cover
-    """
-    Steps the Galois LFSR `steps` forward.
-
-    .. code-block:: text
-       :caption: Galois LFSR Configuration
-
-        +--------------+<-------------+<-------------+<-------------+
-        |              |              |              |              |
-        | c_0          | c_1          | c_2          | c_n-1        |
-        | T[0]         | T[1]         | T[2]         | T[n-1]       |
-        |  +--------+  v  +--------+  v              v  +--------+  |
-        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
-           +--------+     +--------+                    +--------+
-                                                          y[t+1]
-
-    Parameters
-    ----------
-    taps
-        The set of taps T = [c_0, c_1, ..., c_n-2, c_n-2].
-    state
-        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
-    steps
-        The number of output symbols to produce.
-
-    Returns
-    -------
-    y
-        The output sequence of size `steps`.
-    """
-    n = taps.size
-    y = np.zeros(steps, dtype=state.dtype)  # The output array
-
-    for i in range(steps):
-        f = state[n - 1]  # The feedback value
-        y[i] = f  # The output
-
-        if f == 0:
-            state[1:] = state[0:-1]
-            state[0] = 0
+    @classmethod
+    def call(cls, field, sequence):
+        if field.ufunc_mode != "python-calculate":
+            sequence = sequence.astype(np.int64)
+            coeffs = cls.jit(field)(sequence)
+            coeffs = coeffs.astype(sequence.dtype)
         else:
-            for j in range(n - 1, 0, -1):
-                state[j] = ADD(state[j - 1], MULTIPLY(f, taps[j]))
-            state[0] = MULTIPLY(f, taps[0])
+            sequence = sequence.view(np.ndarray)
+            coeffs = cls.python(field)(sequence)
+        coeffs = field._view(coeffs)
 
-    return y
+        return coeffs
 
+    @staticmethod
+    def set_globals(field: Type[FieldArray]):
+        global ADD, SUBTRACT, MULTIPLY, RECIPROCAL
+        ADD = field._ufunc("add")
+        SUBTRACT = field._ufunc("subtract")
+        MULTIPLY = field._ufunc("multiply")
+        RECIPROCAL = field._ufunc("reciprocal")
 
-def set_galois_lfsr_step_backward_globals(field: Type[FieldArray]):
-    global SUBTRACT, MULTIPLY, DIVIDE
-    SUBTRACT = field._ufunc("subtract")
-    MULTIPLY = field._ufunc("multiply")
-    DIVIDE = field._ufunc("divide")
+    _SIGNATURE = numba.types.FunctionType(int64[:](int64[:]))
 
+    @staticmethod
+    def implementation(sequence):  # pragma: no cover
+        N = sequence.size
+        s = sequence
+        c = np.zeros(N, dtype=sequence.dtype)
+        b = np.zeros(N, dtype=sequence.dtype)
+        c[0] = 1  # The polynomial c(x) = 1
+        b[0] = 1  # The polynomial b(x) = 1
+        L = 0
+        m = 1
+        bb = 1
 
-GALOIS_LFSR_STEP_BACKWARD_SIG = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
+        for n in range(0, N):
+            d = 0
+            for i in range(0, L + 1):
+                d = ADD(d, MULTIPLY(s[n - i], c[i]))
 
-def galois_lfsr_step_backward_jit(taps, state, steps):  # pragma: no cover
-    """
-    Steps the Galois LFSR `steps` backward.
+            if d == 0:
+                m += 1
+            elif 2*L <= n:
+                t = c.copy()
+                d_bb = MULTIPLY(d, RECIPROCAL(bb))
+                for i in range(m, N):
+                    c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m]))
+                L = n + 1 - L
+                b = t.copy()
+                bb = d
+                m = 1
+            else:
+                d_bb = MULTIPLY(d, RECIPROCAL(bb))
+                for i in range(m, N):
+                    c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m]))
+                m += 1
 
-    .. code-block:: text
-       :caption: Galois LFSR Configuration
-
-        +--------------+<-------------+<-------------+<-------------+
-        |              |              |              |              |
-        | c_0          | c_1          | c_2          | c_n-1        |
-        | T[0]         | T[1]         | T[2]         | T[n-1]       |
-        |  +--------+  v  +--------+  v              v  +--------+  |
-        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
-           +--------+     +--------+                    +--------+
-                                                          y[t+1]
-
-    Parameters
-    ----------
-    taps
-        The set of taps T = [c_0, c_1, ..., c_n-2, c_n-2].
-    state
-        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
-    steps
-        The number of output symbols to produce.
-
-    Returns
-    -------
-    y
-        The output sequence of size `steps`.
-    """
-    n = taps.size
-    y = np.zeros(steps, dtype=state.dtype)  # The output array
-
-    for i in range(steps):
-        f = DIVIDE(state[0], taps[0])  # The feedback value
-
-        for j in range(0, n - 1):
-            state[j] = SUBTRACT(state[j + 1], MULTIPLY(f, taps[j + 1]))
-
-        state[n - 1] = f
-        y[i] = f  # The output
-
-    return y
-
-
-###############################################################################
-# Berlekamp-Massey JIT functions
-###############################################################################
-
-def set_berlekamp_massey_globals(field: Type[FieldArray]):
-    global ADD, SUBTRACT, MULTIPLY, RECIPROCAL
-    ADD = field._ufunc("add")
-    SUBTRACT = field._ufunc("subtract")
-    MULTIPLY = field._ufunc("multiply")
-    RECIPROCAL = field._ufunc("reciprocal")
-
-
-BERLEKAMP_MASSEY_SIG = numba.types.FunctionType(int64[:](int64[:]))
-
-def berlekamp_massey_jit(sequence):  # pragma: no cover
-    N = sequence.size
-    s = sequence
-    c = np.zeros(N, dtype=sequence.dtype)
-    b = np.zeros(N, dtype=sequence.dtype)
-    c[0] = 1  # The polynomial c(x) = 1
-    b[0] = 1  # The polynomial b(x) = 1
-    L = 0
-    m = 1
-    bb = 1
-
-    for n in range(0, N):
-        d = 0
-        for i in range(0, L + 1):
-            d = ADD(d, MULTIPLY(s[n - i], c[i]))
-
-        if d == 0:
-            m += 1
-        elif 2*L <= n:
-            t = c.copy()
-            d_bb = MULTIPLY(d, RECIPROCAL(bb))
-            for i in range(m, N):
-                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m]))
-            L = n + 1 - L
-            b = t.copy()
-            bb = d
-            m = 1
-        else:
-            d_bb = MULTIPLY(d, RECIPROCAL(bb))
-            for i in range(m, N):
-                c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m]))
-            m += 1
-
-    return c[0:L + 1]
+        return c[0:L + 1]
