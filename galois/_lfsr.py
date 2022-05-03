@@ -1201,7 +1201,7 @@ class GLFSR(_LFSR):
 
 
 @overload
-def berlekamp_massey(sequence: "FieldArray", output: Literal["minimal"]) -> Poly:
+def berlekamp_massey(sequence: "FieldArray", output: Literal["minimal"] = "minimal") -> Poly:
     ...
 @overload
 def berlekamp_massey(sequence: "FieldArray", output: Literal["fibonacci"]) -> FLFSR:

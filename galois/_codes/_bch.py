@@ -578,7 +578,7 @@ class BCH:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, "GF2"], errors: Literal[False]) -> Union[np.ndarray, "GF2"]:
+    def decode(self, codeword: Union[np.ndarray, "GF2"], errors: Literal[False] = False) -> Union[np.ndarray, "GF2"]:
         ...
     @overload
     def decode(self, codeword: Union[np.ndarray, "GF2"], errors: Literal[True]) -> Tuple[Union[np.ndarray, "GF2"], Union[np.integer, np.ndarray]]:
