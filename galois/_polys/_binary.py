@@ -11,7 +11,7 @@ def add(a: int, b: int) -> int:
     return a ^ b
 
 
-def neg(a: int) -> int:
+def negative(a: int) -> int:
     """
     c(x) = -a(x)
     a(x) + -a(x) = 0
@@ -19,14 +19,14 @@ def neg(a: int) -> int:
     return a
 
 
-def sub(a: int, b: int) -> int:
+def subtract(a: int, b: int) -> int:
     """
     c(x) = a(x) - b(x)
     """
     return a ^ b
 
 
-def mul(a: int, b: int) -> int:
+def multiply(a: int, b: int) -> int:
     """
     c(x) = a(x) * b(x)
     c(x) = a(x) * b = a(x) + ... + a(x)
@@ -100,22 +100,22 @@ def pow(a: int, b: int, c: Optional[int] = None) -> int:  # pylint: disable=rede
     if c:
         while b > 1:
             if b % 2 == 0:
-                result_s = mod(mul(result_s, result_s), c)
+                result_s = mod(multiply(result_s, result_s), c)
                 b //= 2
             else:
-                result_m = mod(mul(result_m, result_s), c)
+                result_m = mod(multiply(result_m, result_s), c)
                 b -= 1
 
-        result = mod(mul(result_s, result_m), c)
+        result = mod(multiply(result_s, result_m), c)
     else:
         while b > 1:
             if b % 2 == 0:
-                result_s = mul(result_s, result_s)
+                result_s = multiply(result_s, result_s)
                 b //= 2
             else:
-                result_m = mul(result_m, result_s)
+                result_m = multiply(result_m, result_s)
                 b -= 1
 
-        result = mul(result_s, result_m)
+        result = multiply(result_s, result_m)
 
     return result
