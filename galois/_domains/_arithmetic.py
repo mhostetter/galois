@@ -7,7 +7,7 @@ import numba
 import numpy as np
 
 from ._array import Array
-from ._ufunc import RingUfuncs, FieldUfuncs
+from ._ufunc import RingUFuncs, FieldUFuncs
 
 CHARACTERISTIC: int
 DEGREE: int
@@ -72,7 +72,7 @@ def set_helper_globals(ufunc_mode: str):
 # Mixins
 ###############################################################################
 
-class AddModular(RingUfuncs):
+class AddModular(RingUFuncs):
     """
     A mixin class that provides addition modulo the characteristic.
     """
@@ -91,7 +91,7 @@ class AddModular(RingUfuncs):
         return c
 
 
-class AddVector(RingUfuncs):
+class AddVector(RingUFuncs):
     """
     A mixin class that provides addition for extensions.
     """
@@ -113,7 +113,7 @@ class AddVector(RingUfuncs):
         return c
 
 
-class NegativeModular(RingUfuncs):
+class NegativeModular(RingUFuncs):
     """
     A mixin class that provides additive inverse modulo the characteristic.
     """
@@ -133,7 +133,7 @@ class NegativeModular(RingUfuncs):
         return c
 
 
-class NegativeVector(RingUfuncs):
+class NegativeVector(RingUFuncs):
     """
     A mixin class that provides additive inverse for extensions.
     """
@@ -154,7 +154,7 @@ class NegativeVector(RingUfuncs):
         return c
 
 
-class SubtractModular(RingUfuncs):
+class SubtractModular(RingUFuncs):
     """
     A mixin class that provides subtraction modulo the characteristic.
     """
@@ -174,7 +174,7 @@ class SubtractModular(RingUfuncs):
         return c
 
 
-class SubtractVector(RingUfuncs):
+class SubtractVector(RingUFuncs):
     """
     A mixin class that provides subtraction for extensions.
     """
@@ -196,7 +196,7 @@ class SubtractVector(RingUfuncs):
         return c
 
 
-class MultiplyBinary(RingUfuncs):
+class MultiplyBinary(RingUFuncs):
     """
     A mixin class that provides multiplication modulo 2.
 
@@ -236,7 +236,7 @@ class MultiplyBinary(RingUfuncs):
         return c
 
 
-class MultiplyModular(RingUfuncs):
+class MultiplyModular(RingUFuncs):
     """
     A mixin class that provides multiplication modulo the characteristic.
     """
@@ -253,7 +253,7 @@ class MultiplyModular(RingUfuncs):
         return c
 
 
-class MultiplyVector(RingUfuncs):
+class MultiplyVector(RingUFuncs):
     """
     A mixin class that provides multiplication for extensions.
     """
@@ -297,7 +297,7 @@ class MultiplyVector(RingUfuncs):
         return c
 
 
-class ReciprocalModularEGCD(FieldUfuncs):
+class ReciprocalModularEGCD(FieldUFuncs):
     """
     A mixin class that provides the multiplicative inverse modulo the characteristic.
     """
@@ -332,7 +332,7 @@ class ReciprocalModularEGCD(FieldUfuncs):
         return t2
 
 
-class ReciprocalFermat(FieldUfuncs):
+class ReciprocalFermat(FieldUFuncs):
     """
     A mixin class that provides the multiplicative inverse using Fermat's Little Theorem.
 
@@ -373,7 +373,7 @@ class ReciprocalFermat(FieldUfuncs):
         return result
 
 
-class Divide(FieldUfuncs):
+class Divide(FieldUFuncs):
     """
     A mixin class that provides division.
     """
@@ -398,7 +398,7 @@ class Divide(FieldUfuncs):
         return c
 
 
-class FieldPowerSquareAndMultiply(FieldUfuncs):
+class FieldPowerSquareAndMultiply(FieldUFuncs):
     """
     A mixin class that provides exponentiation using the Square and Multiply algorithm.
 
@@ -449,7 +449,7 @@ class FieldPowerSquareAndMultiply(FieldUfuncs):
         return result
 
 
-class LogBruteForce(RingUfuncs):
+class LogBruteForce(RingUFuncs):
     """
     A mixin class that provides logarithm calculation using a brute-force search.
     """
@@ -482,7 +482,7 @@ class LogBruteForce(RingUfuncs):
         return i
 
 
-class Sqrt(RingUfuncs):
+class Sqrt(RingUFuncs):
     """
     A mixin class that provides square root using NumPy array arithmetic.
     """

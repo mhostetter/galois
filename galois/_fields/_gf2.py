@@ -6,7 +6,7 @@ from __future__ import annotations
 from .._overrides import set_module
 
 from ._array import FieldArray
-from ._ufunc import FieldUfuncs_2_1
+from ._ufunc import FieldUFuncs_2_1
 
 __all__ = ["GF2"]
 
@@ -18,7 +18,7 @@ __all__ = ["GF2"]
 
 
 @set_module("galois")
-class GF2(FieldArray, FieldUfuncs_2_1, characteristic=2, degree=1, order=2, irreducible_poly_int=3, is_primitive_poly=True, primitive_element=1, compile="jit-calculate"):
+class GF2(FieldArray, FieldUFuncs_2_1, characteristic=2, degree=1, order=2, irreducible_poly_int=3, is_primitive_poly=True, primitive_element=1, compile="jit-calculate"):
     r"""
     A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(2)`.
 
