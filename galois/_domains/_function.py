@@ -7,14 +7,14 @@ import numba
 from numba import int64
 import numpy as np
 
-from ._ufunc import RingUfuncs, FieldUfuncs
+from ._ufunc import RingUFuncs, FieldUFuncs
 
 ADD = np.add
 SUBTRACT = np.subtract
 MULTIPLY = np.multiply
 
 
-class RingFunctions(RingUfuncs, abc.ABC):
+class RingFunctions(RingUFuncs, abc.ABC):
     """
     A mixin base class that overrides NumPy functions to perform ring arithmetic (+, -, *), using *only* explicit
     calculation. It was determined that explicit calculation is always faster than lookup tables. For some reason,
@@ -304,7 +304,7 @@ class RingFunctions(RingUfuncs, abc.ABC):
         return X
 
 
-class FieldFunctions(RingFunctions, FieldUfuncs):
+class FieldFunctions(RingFunctions, FieldUFuncs):
     """
     A mixin base class that overrides NumPy functions to perform field arithmetic (+, -, *, /), using *only* explicit
     calculation.

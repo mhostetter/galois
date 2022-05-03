@@ -10,10 +10,10 @@ import numpy as np
 
 from .._domains import _arithmetic
 from .._domains._array import DTYPES
-from .._domains._ufunc import FieldUfuncs
+from .._domains._ufunc import FieldUFuncs
 
 
-class FieldUfuncs_2_1(FieldUfuncs):
+class FieldUFuncs_2_1(FieldUFuncs):
     """
     A mixin class that provides explicit calculation arithmetic for GF(2).
     """
@@ -110,21 +110,21 @@ class FieldUfuncs_2_1(FieldUfuncs):
         return 0
 
     ###############################################################################
-    # Ufuncs written in NumPy operations (not JIT compiled)
+    # UFuncs written in NumPy operations (not JIT compiled)
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a: FieldUfuncs_2_1) -> FieldUfuncs_2_1:
+    def _sqrt(a: FieldUFuncs_2_1) -> FieldUFuncs_2_1:
         return a.copy()
 
 
-class FieldUfuncs_2_m(
+class FieldUFuncs_2_m(
     _arithmetic.MultiplyBinary,
     _arithmetic.ReciprocalFermat,
     _arithmetic.Divide,
     _arithmetic.FieldPowerSquareAndMultiply,
     _arithmetic.LogBruteForce,
-    FieldUfuncs,
+    FieldUFuncs,
 ):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(2^m) classes.
@@ -139,11 +139,11 @@ class FieldUfuncs_2_m(
     }
 
     ###############################################################################
-    # Ufuncs written in NumPy operations (not JIT compiled)
+    # UFuncs written in NumPy operations (not JIT compiled)
     ###############################################################################
 
     @staticmethod
-    def _sqrt(a: FieldUfuncs_2_m) -> FieldUfuncs_2_m:
+    def _sqrt(a: FieldUFuncs_2_m) -> FieldUFuncs_2_m:
         """
         Fact 3.42 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         """
@@ -151,7 +151,7 @@ class FieldUfuncs_2_m(
         return a ** (field.characteristic**(field.degree - 1))
 
 
-class FieldUfuncs_p_1(
+class FieldUFuncs_p_1(
     _arithmetic.AddModular,
     _arithmetic.NegativeModular,
     _arithmetic.SubtractModular,
@@ -161,7 +161,7 @@ class FieldUfuncs_p_1(
     _arithmetic.FieldPowerSquareAndMultiply,
     _arithmetic.LogBruteForce,
     _arithmetic.Sqrt,
-    FieldUfuncs
+    FieldUFuncs
 ):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(p) classes.
@@ -189,7 +189,7 @@ class FieldUfuncs_p_1(
             return super()._ufunc(name)
 
 
-class FieldUfuncs_p_m(
+class FieldUFuncs_p_m(
     _arithmetic.AddVector,
     _arithmetic.NegativeVector,
     _arithmetic.SubtractVector,
@@ -199,7 +199,7 @@ class FieldUfuncs_p_m(
     _arithmetic.FieldPowerSquareAndMultiply,
     _arithmetic.LogBruteForce,
     _arithmetic.Sqrt,
-    FieldUfuncs
+    FieldUFuncs
 ):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(p^m) classes.

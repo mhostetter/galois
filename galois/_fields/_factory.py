@@ -15,7 +15,7 @@ from ..typing import PolyLike
 
 from ._array import FieldArray
 from ._gf2 import GF2
-from ._ufunc import FieldUfuncs_2_m, FieldUfuncs_p_1, FieldUfuncs_p_m
+from ._ufunc import FieldUFuncs_2_m, FieldUFuncs_p_1, FieldUFuncs_p_m
 
 __all__ = ["GF", "Field"]
 
@@ -278,7 +278,7 @@ def _GF_prime(
     if p == 2:
         cls = GF2
     else:
-        cls = types.new_class(name, bases=(FieldArray, FieldUfuncs_p_1), kwds={
+        cls = types.new_class(name, bases=(FieldArray, FieldUFuncs_p_1), kwds={
             "p": p,
             "m": 1,
             "characteristic": p,
@@ -371,7 +371,7 @@ def _GF_extension(
     if verify_element and not is_primitive_element(alpha, irreducible_poly_):
         raise ValueError(f"Argument `primitive_element` must be a multiplicative generator of {name}, {alpha} is not.")
 
-    ufunc_mixin = FieldUfuncs_2_m if p == 2 else FieldUfuncs_p_m
+    ufunc_mixin = FieldUFuncs_2_m if p == 2 else FieldUFuncs_p_m
 
     cls = types.new_class(name, bases=(FieldArray, ufunc_mixin), kwds={
         "p": p,
