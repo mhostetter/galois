@@ -21,7 +21,7 @@ __all__ = [
 # Divisibility
 ###############################################################################
 
-def gcd(a, b):
+def gcd(a: Poly, b: Poly) -> Poly:
     """
     This function is wrapped and documented in `_polymorphic.gcd()`.
     """
@@ -40,7 +40,7 @@ def gcd(a, b):
     return r2
 
 
-def egcd(a, b):
+def egcd(a: Poly, b: Poly) -> Tuple[Poly, Poly, Poly]:
     """
     This function is wrapped and documented in `_polymorphic.egcd()`.
     """
@@ -71,7 +71,7 @@ def egcd(a, b):
     return r2, s2, t2
 
 
-def lcm(*args):
+def lcm(*args: Poly) -> Poly:
     """
     This function is wrapped and documented in `_polymorphic.lcm()`.
     """
@@ -89,7 +89,7 @@ def lcm(*args):
     return lcm_
 
 
-def prod(*args):
+def prod(*args: Poly) -> Poly:
     """
     This function is wrapped and documented in `_polymorphic.prod()`.
     """
@@ -199,7 +199,7 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
 # Polynomial factorization
 ###############################################################################
 
-def factors(poly):
+def factors(poly: Poly) -> Tuple[List[Poly], List[int]]:
     """
     This function is wrapped and documented in `_polymorphic.factors()`.
     """

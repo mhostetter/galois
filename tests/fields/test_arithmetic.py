@@ -153,19 +153,15 @@ def test_power_zero_to_positive_integer(field_power):
 
 
 def test_square(field_power):
-    GF, X, Y, Z = field_power["GF"], field_power["X"], field_power["Y"], field_power["Z"]
+    GF = field_power["GF"]
     dtype = random.choice(GF.dtypes)
-    x = X.astype(dtype)
-    y = Y  # Don't convert this, it's not a field element
+    x = GF.Random(10, dtype=dtype)
+    x[0:2] = [0, 1]
 
-    # Not guaranteed to have y=2 for "sparse" LUTs
-    if np.where(Y == 2)[1].size > 0:
-        j = np.where(y == 2)[1][0]  # Index of Y where y=2
-        x = x[:,j]
-        z = x ** 2
-        assert np.array_equal(z, Z[:,j])
-        assert type(z) is GF
-        assert z.dtype == dtype
+    z = x ** 2
+    assert np.array_equal(z, x * x)
+    assert type(z) is GF
+    assert z.dtype == dtype
 
 
 def test_log(field_log):

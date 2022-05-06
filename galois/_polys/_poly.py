@@ -806,7 +806,7 @@ class Poly:
         if not isinstance(multiplicity, bool):
             raise TypeError(f"Argument `multiplicity` must be a bool, not {type(multiplicity)}.")
 
-        roots = _dense.roots_jit.call(self.field, self.nonzero_degrees, self.nonzero_coeffs)
+        roots = _dense.roots_jit(self.field)(self.nonzero_degrees, self.nonzero_coeffs)
 
         if not multiplicity:
             return roots
@@ -1067,11 +1067,11 @@ class Poly:
         x = field(x)
 
         if elementwise:
-            return _dense.evaluate_elementwise_jit.call(field, coeffs, x)
+            return _dense.evaluate_elementwise_jit(field)(coeffs, x)
         else:
             if not (x.ndim == 2 and x.shape[0] == x.shape[1]):
                 raise ValueError(f"Argument `x` must be a square matrix when evaluating the polynomial not elementwise, not have shape {x.shape}.")
-            return _dense.evaluate_matrix_jit.call(field, coeffs, x)
+            return _dense.evaluate_matrix_jit(field)(coeffs, x)
 
     def __len__(self) -> int:
         """
@@ -1365,7 +1365,7 @@ class Poly:
         else:
             a = self._convert_to_coeffs(self)
             b = self._convert_to_coeffs(other)
-            q, r = _dense.divmod_jit.call(self.field, a, b)
+            q, r = _dense.divmod_jit(self.field)(a, b)
             return Poly(q, field=self.field), Poly(r, field=self.field)
 
     def __rdivmod__(self, other: Union[Poly, Array]) -> Tuple[Poly, Poly]:
@@ -1380,7 +1380,7 @@ class Poly:
         else:
             a = self._convert_to_coeffs(other)
             b = self._convert_to_coeffs(self)
-            q, r = _dense.divmod_jit.call(self.field, a, b)
+            q, r = _dense.divmod_jit(self.field)(a, b)
             return Poly(q, field=self.field), Poly(r, field=self.field)
 
     def __truediv__(self, other):
@@ -1401,7 +1401,7 @@ class Poly:
         else:
             a = self._convert_to_coeffs(self)
             b = self._convert_to_coeffs(other)
-            q = _dense.floordiv_jit.call(self.field, a, b)
+            q = _dense.floordiv_jit(self.field)(a, b)
             return Poly(q, field=self.field)
 
     def __rfloordiv__(self, other: Union[Poly, Array]) -> Poly:
@@ -1416,7 +1416,7 @@ class Poly:
         else:
             a = self._convert_to_coeffs(other)
             b = self._convert_to_coeffs(self)
-            q = _dense.floordiv_jit.call(self.field, a, b)
+            q = _dense.floordiv_jit(self.field)(a, b)
             return Poly(q, field=self.field)
 
     def __mod__(self, other: Union[Poly, Array]) -> Poly:
@@ -1431,7 +1431,7 @@ class Poly:
         else:
             a = self._convert_to_coeffs(self)
             b = self._convert_to_coeffs(other)
-            r = _dense.mod_jit.call(self.field, a, b)
+            r = _dense.mod_jit(self.field)(a, b)
             return Poly(r, field=self.field)
 
     def __rmod__(self, other: Union[Poly, Array]) -> Poly:
@@ -1446,7 +1446,7 @@ class Poly:
         else:
             a = self._convert_to_coeffs(other)
             b = self._convert_to_coeffs(self)
-            r = _dense.mod_jit.call(self.field, a, b)
+            r = _dense.mod_jit(self.field)(a, b)
             return Poly(r, field=self.field)
 
     def __pow__(self, exponent: int, modulus: Optional[Poly] = None) -> Poly:
@@ -1466,7 +1466,7 @@ class Poly:
         else:
             a = self._convert_to_coeffs(self)
             b = self._convert_to_coeffs(modulus) if modulus is not None else None
-            q = _dense.pow_jit.call(self.field, a, exponent, b)
+            q = _dense.pow_jit(self.field)(a, exponent, b)
             return Poly(q, field=self.field)
 
     ###############################################################################

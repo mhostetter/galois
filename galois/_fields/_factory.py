@@ -15,7 +15,7 @@ from ..typing import PolyLike
 
 from ._array import FieldArray
 from ._gf2 import GF2
-from ._ufunc import FieldUFuncs_2_m, FieldUFuncs_p_1, FieldUFuncs_p_m
+from ._ufunc import UFuncMixin_2_m, UFuncMixin_p_1, UFuncMixin_p_m
 
 __all__ = ["GF", "Field"]
 
@@ -259,26 +259,20 @@ def _GF_prime(
     # If the requested field has already been constructed, return it
     key = (p, alpha)
     if key in _GF_prime._classes:
-        cls = _GF_prime._classes[key]
+        field = _GF_prime._classes[key]
         if compile is not None:
-            cls.compile(compile)
+            field.compile(compile)
         if display is not None:
-            cls.display(display)
-        return cls
-
-    # Since this is a new class, set `compile` and `display` to their default values
-    if compile is None:
-        compile = "auto"
-    if display is None:
-        display = "int"
+            field.display(display)
+        return field
 
     if verify and not is_primitive_root(alpha, p):
         raise ValueError(f"Argument `primitive_element` must be a primitive root modulo {p}, {alpha} is not.")
 
     if p == 2:
-        cls = GF2
+        field = GF2
     else:
-        cls = types.new_class(name, bases=(FieldArray, FieldUFuncs_p_1), kwds={
+        field = types.new_class(name, bases=(FieldArray, UFuncMixin_p_1), kwds={
             "p": p,
             "m": 1,
             "characteristic": p,
@@ -286,19 +280,21 @@ def _GF_prime(
             "order": p,
             "irreducible_poly_int": 2*p - alpha,  # f(x) = x - e
             "primitive_element": alpha,
-            "compile": compile,
-            "display": display
         })
 
     # Add the class to the "galois" namespace
-    cls.__module__ = "galois"
+    field.__module__ = "galois"
 
-    cls._is_primitive_poly = True
+    # Since this is a new class, compile the ufuncs and set the display mode
+    field.compile("auto" if compile is None else compile)
+    field.display("int" if display is None else display)
+
+    field._is_primitive_poly = field._irreducible_poly(field._primitive_element, field=field) == 0
 
     # Add class to dictionary of flyweights
-    _GF_prime._classes[key] = cls
+    _GF_prime._classes[key] = field
 
-    return cls
+    return field
 
 _GF_prime._classes = {}
 
@@ -353,51 +349,46 @@ def _GF_extension(
     # If the requested field has already been constructed, return it
     key = (p, m, int(alpha), int(irreducible_poly_))
     if key in _GF_extension._classes:
-        cls = _GF_extension._classes[key]
+        field = _GF_extension._classes[key]
         if compile is not None:
-            cls.compile(compile)
+            field.compile(compile)
         if display is not None:
-            cls.display(display)
-        return cls
-
-    # Since this is a new class, set `compile` and `display` to their default values
-    if compile is None:
-        compile = "auto"
-    if display is None:
-        display = "int"
+            field.display(display)
+        return field
 
     if verify_poly and not is_irreducible(irreducible_poly_):
         raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly_} is not.")
     if verify_element and not is_primitive_element(alpha, irreducible_poly_):
         raise ValueError(f"Argument `primitive_element` must be a multiplicative generator of {name}, {alpha} is not.")
 
-    ufunc_mixin = FieldUFuncs_2_m if p == 2 else FieldUFuncs_p_m
+    ufunc_mixin = UFuncMixin_2_m if p == 2 else UFuncMixin_p_m
 
-    cls = types.new_class(name, bases=(FieldArray, ufunc_mixin), kwds={
+    field = types.new_class(name, bases=(FieldArray, ufunc_mixin), kwds={
         "p": p,
         "m": m,
         "characteristic": p,
         "degree": m,
         "order": p**m,
         "irreducible_poly_int": int(irreducible_poly_),
-        "is_primitive_poly": is_primitive_poly,
         "primitive_element": int(alpha),
         "prime_subfield": prime_subfield,
-        "compile": compile,
-        "display": display
     })
 
     # Add the class to the "galois" namespace
-    cls.__module__ = "galois"
+    field.__module__ = "galois"
+
+    # Since this is a new class, compile the ufuncs and set the display mode
+    field.compile("auto" if compile is None else compile)
+    field.display("int" if display is None else display)
 
     if is_primitive_poly is not None:
-        cls._is_primitive_poly = is_primitive_poly
+        field._is_primitive_poly = is_primitive_poly
     else:
-        cls._is_primitive_poly = cls._irreducible_poly(cls._primitive_element, field=cls) == 0
+        field._is_primitive_poly = field._irreducible_poly(field._primitive_element, field=field) == 0
 
     # Add class to dictionary of flyweights
-    _GF_extension._classes[key] = cls
+    _GF_extension._classes[key] = field
 
-    return cls
+    return field
 
 _GF_extension._classes = {}

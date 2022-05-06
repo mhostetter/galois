@@ -1,24 +1,13 @@
 """
-A module containing various mixin classes for generic explicit calculation.
+A module containing various ufunc dispatchers using explicit calculation.
 """
-from typing import Any
+from typing import Any, Type
 
 import numba
 import numpy as np
 
+from . import _lookup
 from ._array import Array
-from ._ufunc import RingUFuncs, FieldUFuncs
-
-CHARACTERISTIC: int
-DEGREE: int
-ORDER: int
-IRREDUCIBLE_POLY: int
-
-ADD = np.add
-SUBTRACT = np.subtract
-MULTIPLY = np.multiply
-DIVIDE = np.divide
-RECIPROCAL = np.reciprocal
 
 
 ###############################################################################
@@ -33,7 +22,7 @@ VECTOR_TO_INT: Any
 @numba.jit(["int64[:](int64, int64, int64)"], nopython=True, cache=True)
 def int_to_vector(a: int, characteristic: int, degree: int) -> np.ndarray:
     """
-    Convert the integer representation to vector/polynomial representation
+    Converts the integer representation to vector/polynomial representation.
     """
     a_vec = np.zeros(degree, dtype=DTYPE)
     for i in range(degree - 1, -1, -1):
@@ -47,7 +36,7 @@ def int_to_vector(a: int, characteristic: int, degree: int) -> np.ndarray:
 @numba.jit(["int64(int64[:], int64, int64)"], nopython=True, cache=True)
 def vector_to_int(a_vec: np.ndarray, characteristic: int, degree: int) -> int:
     """
-    Convert the integer representation to vector/polynomial representation
+    Converts the vector/polynomial representation to the integer representation.
     """
     a = 0
     factor = 1
@@ -57,9 +46,10 @@ def vector_to_int(a_vec: np.ndarray, characteristic: int, degree: int) -> int:
 
     return a
 
-def set_helper_globals(ufunc_mode: str):
+
+def set_helper_globals(field: Type[Array]):
     global DTYPE, INT_TO_VECTOR, VECTOR_TO_INT
-    if ufunc_mode != "python-calculate":
+    if field.ufunc_mode != "python-calculate":
         DTYPE = np.int64
         INT_TO_VECTOR = int_to_vector
         VECTOR_TO_INT = vector_to_int
@@ -68,43 +58,49 @@ def set_helper_globals(ufunc_mode: str):
         INT_TO_VECTOR = int_to_vector.py_func
         VECTOR_TO_INT = vector_to_int.py_func
 
-###############################################################################
-# Mixins
-###############################################################################
 
-class AddModular(RingUFuncs):
+class add_modular(_lookup.add_ufunc):
     """
-    A mixin class that provides addition modulo the characteristic.
+    A ufunc dispatcher that provides addition modulo the characteristic.
     """
-    @classmethod
-    def _set_add_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
-        CHARACTERISTIC = cls.characteristic
+        CHARACTERISTIC = self.field.characteristic
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _add_calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:
         c = a + b
         if c >= CHARACTERISTIC:
             c -= CHARACTERISTIC
-
         return c
 
 
-class AddVector(RingUFuncs):
+class add_vector(_lookup.add_ufunc):
     """
-    A mixin class that provides addition for extensions.
+    A ufunc dispatcher that provides addition for extensions.
     """
-    @classmethod
-    def _set_add_calculate_globals(cls):
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        if self.field.ufunc_mode == "jit-lookup" or method != "__call__":
+            # Use the lookup ufunc on each array entry
+            return super().__call__(ufunc, method, inputs, kwargs, meta)
+        else:
+            # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+            self._verify_operands_in_same_field(ufunc, inputs, meta)
+            inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
+            output = getattr(ufunc, method)(*inputs, **kwargs)
+            output = self._convert_output_from_vector(output, meta["dtype"])
+            return output
+
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, DEGREE
-        CHARACTERISTIC = cls.characteristic
-        DEGREE = cls.degree
-        set_helper_globals(cls.ufunc_mode)
+        CHARACTERISTIC = self.field.characteristic
+        DEGREE = self.field.degree
+        set_helper_globals(self.field)
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _add_calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:
         a_vec = INT_TO_VECTOR(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_VECTOR(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec + b_vec) % CHARACTERISTIC
@@ -113,40 +109,49 @@ class AddVector(RingUFuncs):
         return c
 
 
-class NegativeModular(RingUFuncs):
+class negative_modular(_lookup.negative_ufunc):
     """
-    A mixin class that provides additive inverse modulo the characteristic.
+    A ufunc dispatcher that provides additive inverse modulo the characteristic.
     """
-    @classmethod
-    def _set_negative_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
-        CHARACTERISTIC = cls.characteristic
+        CHARACTERISTIC = self.field.characteristic
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _negative_calculate(a: int) -> int:
+    def calculate(a: int) -> int:
         if a == 0:
             c = 0
         else:
             c = CHARACTERISTIC - a
-
         return c
 
 
-class NegativeVector(RingUFuncs):
+class negative_vector(_lookup.negative_ufunc):
     """
-    A mixin class that provides additive inverse for extensions.
+    A ufunc dispatcher that provides additive inverse for extensions.
     """
-    @classmethod
-    def _set_negative_calculate_globals(cls):
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        if self.field.ufunc_mode == "jit-lookup" or method != "__call__":
+            # Use the lookup ufunc on each array entry
+            return super().__call__(ufunc, method, inputs, kwargs, meta)
+        else:
+            # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+            self._verify_operands_in_same_field(ufunc, inputs, meta)
+            inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
+            output = getattr(ufunc, method)(*inputs, **kwargs)
+            output = self._convert_output_from_vector(output, meta["dtype"])
+            return output
+
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, DEGREE
-        CHARACTERISTIC = cls.characteristic
-        DEGREE = cls.degree
-        set_helper_globals(cls.ufunc_mode)
+        CHARACTERISTIC = self.field.characteristic
+        DEGREE = self.field.degree
+        set_helper_globals(self.field)
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _negative_calculate(a: int) -> int:
+    def calculate(a: int) -> int:
         a_vec = INT_TO_VECTOR(a, CHARACTERISTIC, DEGREE)
         c_vec = (-a_vec) % CHARACTERISTIC
         c = VECTOR_TO_INT(c_vec, CHARACTERISTIC, DEGREE)
@@ -154,18 +159,17 @@ class NegativeVector(RingUFuncs):
         return c
 
 
-class SubtractModular(RingUFuncs):
+class subtract_modular(_lookup.subtract_ufunc):
     """
-    A mixin class that provides subtraction modulo the characteristic.
+    A ufunc dispatcher that provides subtraction modulo the characteristic.
     """
-    @classmethod
-    def _set_subtract_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
-        CHARACTERISTIC = cls.characteristic
+        CHARACTERISTIC = self.field.characteristic
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _subtract_calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:
         if a >= b:
             c = a - b
         else:
@@ -174,20 +178,31 @@ class SubtractModular(RingUFuncs):
         return c
 
 
-class SubtractVector(RingUFuncs):
+class subtract_vector(_lookup.subtract_ufunc):
     """
-    A mixin class that provides subtraction for extensions.
+    A ufunc dispatcher that provides subtraction for extensions.
     """
-    @classmethod
-    def _set_subtract_calculate_globals(cls):
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        if self.field.ufunc_mode == "jit-lookup" or method != "__call__":
+            # Use the lookup ufunc on each array entry
+            return super().__call__(ufunc, method, inputs, kwargs, meta)
+        else:
+            # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+            self._verify_operands_in_same_field(ufunc, inputs, meta)
+            inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
+            output = getattr(ufunc, method)(*inputs, **kwargs)
+            output = self._convert_output_from_vector(output, meta["dtype"])
+            return output
+
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, DEGREE
-        CHARACTERISTIC = cls.characteristic
-        DEGREE = cls.degree
-        set_helper_globals(cls.ufunc_mode)
+        CHARACTERISTIC = self.field.characteristic
+        DEGREE = self.field.degree
+        set_helper_globals(self.field)
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _subtract_calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:
         a_vec = INT_TO_VECTOR(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_VECTOR(b, CHARACTERISTIC, DEGREE)
         c_vec = (a_vec - b_vec) % CHARACTERISTIC
@@ -196,9 +211,9 @@ class SubtractVector(RingUFuncs):
         return c
 
 
-class MultiplyBinary(RingUFuncs):
+class multiply_binary(_lookup.multiply_ufunc):
     """
-    A mixin class that provides multiplication modulo 2.
+    A ufunc dispatcher that provides multiplication modulo 2.
 
     Algorithm:
         a in GF(2^m), can be represented as a degree m-1 polynomial a(x) in GF(2)[x]
@@ -210,15 +225,14 @@ class MultiplyBinary(RingUFuncs):
               = c(x)
               = c
     """
-    @classmethod
-    def _set_multiply_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global ORDER, IRREDUCIBLE_POLY
-        ORDER = cls.order
-        IRREDUCIBLE_POLY = cls._irreducible_poly_int
+        ORDER = self.field.order
+        IRREDUCIBLE_POLY = self.field._irreducible_poly_int
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _multiply_calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:
         # Re-order operands such that a > b so the while loop has less loops
         if b > a:
             a, b = b, a
@@ -236,38 +250,36 @@ class MultiplyBinary(RingUFuncs):
         return c
 
 
-class MultiplyModular(RingUFuncs):
+class multiply_modular(_lookup.multiply_ufunc):
     """
-    A mixin class that provides multiplication modulo the characteristic.
+    A ufunc dispatcher that provides multiplication modulo the characteristic.
     """
-    @classmethod
-    def _set_multiply_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
-        CHARACTERISTIC = cls.characteristic
+        CHARACTERISTIC = self.field.characteristic
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _multiply_calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:
         c = (a * b) % CHARACTERISTIC
 
         return c
 
 
-class MultiplyVector(RingUFuncs):
+class multiply_vector(_lookup.multiply_ufunc):
     """
-    A mixin class that provides multiplication for extensions.
+    A ufunc dispatcher that provides multiplication for extensions.
     """
-    @classmethod
-    def _set_multiply_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
-        CHARACTERISTIC = cls.characteristic
-        DEGREE = cls.degree
-        IRREDUCIBLE_POLY = cls._irreducible_poly_int
-        set_helper_globals(cls.ufunc_mode)
+        CHARACTERISTIC = self.field.characteristic
+        DEGREE = self.field.degree
+        IRREDUCIBLE_POLY = self.field._irreducible_poly_int
+        set_helper_globals(self.field)
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _multiply_calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:
         a_vec = INT_TO_VECTOR(a, CHARACTERISTIC, DEGREE)
         b_vec = INT_TO_VECTOR(b, CHARACTERISTIC, DEGREE)
 
@@ -297,18 +309,17 @@ class MultiplyVector(RingUFuncs):
         return c
 
 
-class ReciprocalModularEGCD(FieldUFuncs):
+class reciprocal_modular_egcd(_lookup.reciprocal_ufunc):
     """
-    A mixin class that provides the multiplicative inverse modulo the characteristic.
+    A ufunc dispatcher that provides the multiplicative inverse modulo the characteristic.
     """
-    @classmethod
-    def _set_reciprocal_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
-        CHARACTERISTIC = cls.characteristic
+        CHARACTERISTIC = self.field.characteristic
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _reciprocal_calculate(a: int) -> int:
+    def calculate(a: int) -> int:
         """
         s*x + t*y = gcd(x, y) = 1
         x = p
@@ -332,9 +343,9 @@ class ReciprocalModularEGCD(FieldUFuncs):
         return t2
 
 
-class ReciprocalFermat(FieldUFuncs):
+class reciprocal_fermat(_lookup.reciprocal_ufunc):
     """
-    A mixin class that provides the multiplicative inverse using Fermat's Little Theorem.
+    A ufunc dispatcher that provides the multiplicative inverse using Fermat's Little Theorem.
 
     Algorithm:
         a in GF(p^m)
@@ -344,15 +355,14 @@ class ReciprocalFermat(FieldUFuncs):
         a * a^-1 = a^(p^m - 1)
             a^-1 = a^(p^m - 2)
     """
-    @classmethod
-    def _set_reciprocal_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global ORDER, MULTIPLY
-        ORDER = cls.order
-        MULTIPLY = cls._ufunc("multiply")
+        ORDER = self.field.order
+        MULTIPLY = self.field._multiply.ufunc
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _reciprocal_calculate(a: int) -> int:
+    def calculate(a: int) -> int:
         if a == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -373,19 +383,18 @@ class ReciprocalFermat(FieldUFuncs):
         return result
 
 
-class Divide(FieldUFuncs):
+class divide(_lookup.divide_ufunc):
     """
-    A mixin class that provides division.
+    A ufunc dispatcher that provides division.
     """
-    @classmethod
-    def _set_divide_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global MULTIPLY, RECIPROCAL
-        MULTIPLY = cls._ufunc("multiply")
-        RECIPROCAL = cls._ufunc("reciprocal")
+        MULTIPLY = self.field._multiply.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _divide_calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -398,24 +407,13 @@ class Divide(FieldUFuncs):
         return c
 
 
-class FieldPowerSquareAndMultiply(FieldUFuncs):
+class field_power_square_and_multiply(_lookup.power_ufunc):
     """
-    A mixin class that provides exponentiation using the Square and Multiply algorithm.
+    A ufunc dispatcher that provides exponentiation using the Square and Multiply algorithm.
 
     - This algorithm is applicable to fields since the exponent may be negative.
-    """
-    @classmethod
-    def _set_power_calculate_globals(cls):
-        global MULTIPLY, RECIPROCAL
-        MULTIPLY = cls._ufunc("multiply")
-        RECIPROCAL = cls._ufunc("reciprocal")
 
-    @staticmethod
-    @numba.extending.register_jitable
-    def _power_calculate(a: int, b: int) -> int:
-        """
-        Square and Multiply Algorithm
-
+    Algorithm:
         a^13 = (1) * (a)^13
              = (a) * (a)^12
              = (a) * (a^2)^6
@@ -423,7 +421,15 @@ class FieldPowerSquareAndMultiply(FieldUFuncs):
              = (a * a^4) * (a^4)^2
              = (a * a^4) * (a^8)
              = result_m * result_s
-        """
+    """
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
+        global MULTIPLY, RECIPROCAL
+        MULTIPLY = self.field._multiply.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
+
+    @staticmethod
+    def calculate(a: int, b: int) -> int:
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
@@ -449,19 +455,18 @@ class FieldPowerSquareAndMultiply(FieldUFuncs):
         return result
 
 
-class LogBruteForce(RingUFuncs):
+class log_brute_force(_lookup.log_ufunc):
     """
-    A mixin class that provides logarithm calculation using a brute-force search.
+    A ufunc dispatcher that provides logarithm calculation using a brute-force search.
     """
-    @classmethod
-    def _set_log_calculate_globals(cls):
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
         global ORDER, MULTIPLY
-        ORDER = cls.order
-        MULTIPLY = cls._ufunc("multiply")
+        ORDER = self.field.order
+        MULTIPLY = self.field._multiply.ufunc
 
     @staticmethod
-    @numba.extending.register_jitable
-    def _log_calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:
         """
         a = α^m
         b is a primitive element of the field
@@ -482,49 +487,58 @@ class LogBruteForce(RingUFuncs):
         return i
 
 
-class Sqrt(RingUFuncs):
+class sqrt_binary(_lookup.sqrt_ufunc):
     """
-    A mixin class that provides square root using NumPy array arithmetic.
+    A ufunc dispatcher that provides the square root in binary extension fields.
     """
+    def implementation(self, a: Array) -> Array:
+        """
+        Fact 3.42 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
+        """
+        return a ** (self.field.characteristic**(self.field.degree - 1))
 
-    @classmethod
-    def _sqrt(cls, a: Array) -> Array:
+
+class sqrt(_lookup.sqrt_ufunc):
+    """
+    A ufunc dispatcher that provides square root using NumPy array arithmetic.
+    """
+    def implementation(self, a: Array) -> Array:
         """
         Algorithm 3.34 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         """
-        p = cls.characteristic
+        p = self.field.characteristic
 
         if p % 4 == 3:
-            roots = a ** ((cls.order + 1)//4)
+            roots = a ** ((self.field.order + 1)//4)
 
         elif p % 8 == 5:
-            d = a ** ((cls.order - 1)//4)
-            roots = cls.Zeros(a.shape)
+            d = a ** ((self.field.order - 1)//4)
+            roots = self.field.Zeros(a.shape)
 
             idxs = np.where(d == 1)
-            roots[idxs] = a[idxs] ** ((cls.order + 3)//8)
+            roots[idxs] = a[idxs] ** ((self.field.order + 3)//8)
 
             idxs = np.where(d == p - 1)
-            roots[idxs] = 2*a[idxs] * (4*a[idxs]) ** ((cls.order - 5)//8)
+            roots[idxs] = 2*a[idxs] * (4*a[idxs]) ** ((self.field.order - 5)//8)
 
         else:
             # Find a quadratic non-residue element `b`
             while True:
-                b = cls.Random(low=1)
+                b = self.field.Random(low=1)
                 if not b.is_quadratic_residue():
                     break
 
             # Write p - 1 = 2^s * t
-            n = cls.order - 1
+            n = self.field.order - 1
             s = 0
             while n % 2 == 0:
                 n >>= 1
                 s += 1
             t = n
-            assert cls.order - 1 == 2**s * t
+            assert self.field.order - 1 == 2**s * t
 
-            roots = cls.Zeros(a.shape)  # Empty array of roots
+            roots = self.field.Zeros(a.shape)  # Empty array of roots
 
             # Compute a root `r` for the non-zero elements
             idxs = np.where(a > 0)  # Indices where a has a reciprocal
@@ -537,6 +551,6 @@ class Sqrt(RingUFuncs):
                 c = c**2
             roots[idxs] = r  # Assign non-zero roots to the original array
 
-        roots = cls._view(np.minimum(roots, -roots))  # Return only the smaller root
+        roots = self.field._view(np.minimum(roots, -roots))  # Return only the smaller root
 
         return roots

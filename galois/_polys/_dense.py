@@ -1,14 +1,14 @@
 """
 A module containing polynomial arithmetic for polynomials with dense coefficients.
 """
-from typing import Tuple, Optional, Type
+from typing import Tuple, Optional
 
 import numba
 from numba import int64, uint64
 import numpy as np
 
 from .._domains import Array
-from .._domains._function import JITFunction
+from .._domains._function import Function
 
 # pylint: disable=unidiomatic-typecheck
 
@@ -60,29 +60,26 @@ def multiply(a: Array, b: Array) -> Array:
         return np.convolve(a, b)
 
 
-class divmod_jit(JITFunction):
+class divmod_jit(Function):
     """
     Computes polynomial division with remainder of two polynomials.
 
     Algorithm:
         a(x) = q(x)*b(x) + r(x)
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field: Type[Array], a: Array, b: Array) -> Tuple[Array, Array]:
-        assert type(a) is field and type(b) is field
+    def __call__(self, a: Array, b: Array) -> Tuple[Array, Array]:
+        assert type(a) is self.field and type(b) is self.field
 
         a_degree = a.size - 1
         b_degree = b.size - 1
 
         # TODO: Merge all of this into `implementation()`
         if b_degree == 0:
-            q, r = a // b, field([0])
+            q, r = a // b, self.field([0])
         elif a_degree == 0 and a[0] == 0:
-            q, r = field([0]), field([0])
+            q, r = self.field([0]), self.field([0])
         elif a_degree < b_degree:
-            q, r = field([0]), a
+            q, r = self.field([0]), a
         else:
             assert 1 <= a.ndim <= 2 and b.ndim == 1
             dtype = a.dtype
@@ -93,12 +90,12 @@ class divmod_jit(JITFunction):
             q_degree = a.shape[-1] - b.shape[-1]
             r_degree = b.shape[-1] - 1
 
-            if field.ufunc_mode != "python-calculate":
-                qr = cls.jit(field)(a.astype(np.int64), b.astype(np.int64))
+            if self.field.ufunc_mode != "python-calculate":
+                qr = self.jit(a.astype(np.int64), b.astype(np.int64))
                 qr = qr.astype(dtype)
             else:
-                qr = cls.python(field)(a.view(np.ndarray), b.view(np.ndarray))
-            qr = field._view(qr)
+                qr = self.python(a.view(np.ndarray), b.view(np.ndarray))
+            qr = self.field._view(qr)
 
             q = qr[:, 0:q_degree + 1]
             r = qr[:, q_degree + 1:q_degree + 1 + r_degree + 1]
@@ -109,13 +106,12 @@ class divmod_jit(JITFunction):
 
         return q, r
 
-    @staticmethod
-    def set_globals(field):
+    def set_globals(self):
         # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, DIVIDE
-        SUBTRACT = field._ufunc("subtract")
-        MULTIPLY = field._ufunc("multiply")
-        DIVIDE = field._ufunc("divide")
+        SUBTRACT = self.field._subtract.ufunc
+        MULTIPLY = self.field._multiply.ufunc
+        DIVIDE = self.field._divide.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:]))
 
@@ -138,37 +134,33 @@ class divmod_jit(JITFunction):
         return qr
 
 
-class floordiv_jit(JITFunction):
+class floordiv_jit(Function):
     """
     Computes polynomial division without remainder of two polynomials.
 
     Algorithm:
         a(x) = q(x)*b(x) + r(x)
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field: Type[Array], a: Array, b: Array) -> Array:
-        assert type(a) is field and type(b) is field
+    def __call__(self, a: Array, b: Array) -> Array:
+        assert type(a) is self.field and type(b) is self.field
         assert a.ndim == 1 and b.ndim == 1
         dtype = a.dtype
 
-        if field.ufunc_mode != "python-calculate":
-            q = cls.jit(field)(a.astype(np.int64), b.astype(np.int64))
+        if self.field.ufunc_mode != "python-calculate":
+            q = self.jit(a.astype(np.int64), b.astype(np.int64))
             q = q.astype(dtype)
         else:
-            q = cls.python(field)(a.view(np.ndarray), b.view(np.ndarray))
-        q = field._view(q)
+            q = self.python(a.view(np.ndarray), b.view(np.ndarray))
+        q = self.field._view(q)
 
         return q
 
-    @staticmethod
-    def set_globals(field):
+    def set_globals(self):
         # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, DIVIDE
-        SUBTRACT = field._ufunc("subtract")
-        MULTIPLY = field._ufunc("multiply")
-        DIVIDE = field._ufunc("divide")
+        SUBTRACT = self.field._subtract.ufunc
+        MULTIPLY = self.field._multiply.ufunc
+        DIVIDE = self.field._divide.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -194,37 +186,33 @@ class floordiv_jit(JITFunction):
         return q
 
 
-class mod_jit(JITFunction):
+class mod_jit(Function):
     """
     Computes the modular division of two polynomials.
 
     Algorithm:
         a(x) = q(x)*b(x) + r(x)
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field: Type[Array], a: Array, b: Array) -> Array:
-        assert type(a) is field and type(b) is field
+    def __call__(self, a: Array, b: Array) -> Array:
+        assert type(a) is self.field and type(b) is self.field
         assert a.ndim == 1 and b.ndim == 1
         dtype = a.dtype
 
-        if field.ufunc_mode != "python-calculate":
-            r = cls.jit(field)(a.astype(np.int64), b.astype(np.int64))
+        if self.field.ufunc_mode != "python-calculate":
+            r = self.jit(a.astype(np.int64), b.astype(np.int64))
             r = r.astype(dtype)
         else:
-            r = cls.python(field)(a.view(np.ndarray), b.view(np.ndarray))
-        r = field._view(r)
+            r = self.python(a.view(np.ndarray), b.view(np.ndarray))
+        r = self.field._view(r)
 
         return r
 
-    @staticmethod
-    def set_globals(field):
+    def set_globals(self):
         # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, DIVIDE
-        SUBTRACT = field._ufunc("subtract")
-        MULTIPLY = field._ufunc("multiply")
-        DIVIDE = field._ufunc("divide")
+        SUBTRACT = self.field._subtract.ufunc
+        MULTIPLY = self.field._multiply.ufunc
+        DIVIDE = self.field._divide.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -266,18 +254,15 @@ class mod_jit(JITFunction):
         return r
 
 
-class pow_jit(JITFunction):
+class pow_jit(Function):
     """
     Performs modular exponentiation on the polynomial f(x).
 
     Algorithm:
         d(x) = a(x)^b % c(x)
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field: Type[Array], a: Array, b: int, c: Optional[Array] = None) -> Array:
-        assert isinstance(a, field) and isinstance(b, (int, np.integer)) and isinstance(c, (type(None), field))
+    def __call__(self, a: Array, b: int, c: Optional[Array] = None) -> Array:
+        assert isinstance(a, self.field) and isinstance(b, (int, np.integer)) and isinstance(c, (type(None), self.field))
         assert a.ndim == 1 and c.ndim == 1 if c is not None else True
         dtype = a.dtype
 
@@ -291,23 +276,22 @@ class pow_jit(JITFunction):
         b_vec.append(b)
         b_vec = np.array(b_vec[::-1], dtype=np.uint64)  # Make vector MSWord -> LSWord
 
-        if field.ufunc_mode != "python-calculate":
+        if self.field.ufunc_mode != "python-calculate":
             c_ = np.array([], dtype=np.int64) if c is None else c.astype(np.int64)
-            z = cls.jit(field)(a.astype(np.int64), b_vec, c_)
+            z = self.jit(a.astype(np.int64), b_vec, c_)
             z = z.astype(dtype)
         else:
             c_ = np.array([], dtype=dtype) if c is None else c.view(np.ndarray)
-            z = cls.python(field)(a.view(np.ndarray), b_vec, c_)
-        z = field._view(z)
+            z = self.python(a.view(np.ndarray), b_vec, c_)
+        z = self.field._view(z)
 
         return z
 
-    @staticmethod
-    def set_globals(field):
+    def set_globals(self):
         # pylint: disable=global-variable-undefined
         global POLY_MULTIPLY, POLY_MOD
-        POLY_MULTIPLY = field._function("convolve")
-        POLY_MOD = mod_jit.function(field)
+        POLY_MULTIPLY = self.field._convolve.function
+        POLY_MOD = mod_jit(self.field).function
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], uint64[:], int64[:]))
 
@@ -349,34 +333,30 @@ class pow_jit(JITFunction):
         return result
 
 
-class evaluate_elementwise_jit(JITFunction):
+class evaluate_elementwise_jit(Function):
     """
     Evaluates the polynomial f(x) elementwise at xi.
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field, coeffs, x):
+    def __call__(self, coeffs: Array, x: Array) -> Array:
         dtype = x.dtype
         shape = x.shape
         x = np.atleast_1d(x.flatten())
 
-        if field.ufunc_mode != "python-calculate":
-            y = cls.jit(field)(coeffs.astype(np.int64), x.astype(np.int64))
+        if self.field.ufunc_mode != "python-calculate":
+            y = self.jit(coeffs.astype(np.int64), x.astype(np.int64))
             y = y.astype(dtype)
         else:
-            y = cls.python(field)(coeffs.view(np.ndarray), x.view(np.ndarray))
-        y = field._view(y)
+            y = self.python(coeffs.view(np.ndarray), x.view(np.ndarray))
+        y = self.field._view(y)
         y = y.reshape(shape)
 
         return y
 
-    @staticmethod
-    def set_globals(field):
+    def set_globals(self):
         # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
-        ADD = field._ufunc("add")
-        MULTIPLY = field._ufunc("multiply")
+        ADD = self.field._add.ufunc
+        MULTIPLY = self.field._multiply.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -394,16 +374,13 @@ class evaluate_elementwise_jit(JITFunction):
         return y
 
 
-class evaluate_matrix_jit(JITFunction):
+class evaluate_matrix_jit(Function):
     """
     Evaluates the polynomial f(x) at the square matrix X.
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field, coeffs, X):
+    def __call__(self, coeffs: Array, X: Array) -> Array:
         assert X.ndim == 2 and X.shape[0] == X.shape[1]
-        I = field.Identity(X.shape[0])
+        I = self.field.Identity(X.shape[0])
 
         y = coeffs[0]*I
         for j in range(1, coeffs.size):
@@ -414,35 +391,31 @@ class evaluate_matrix_jit(JITFunction):
     # TODO: Maybe add a JIT implementation?
 
 
-class roots_jit(JITFunction):
+class roots_jit(Function):
     """
     Finds the roots of the polynomial f(x).
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field, nonzero_degrees, nonzero_coeffs):
-        assert isinstance(nonzero_coeffs, field)
+    def __call__(self, nonzero_degrees: np.ndarray, nonzero_coeffs: Array) -> Array:
+        assert isinstance(nonzero_coeffs, self.field)
         dtype = nonzero_coeffs.dtype
 
-        if field.ufunc_mode != "python-calculate":
-            roots = cls.jit(field)(nonzero_degrees.astype(np.int64), nonzero_coeffs.astype(np.int64), int(field.primitive_element))[0,:]
+        if self.field.ufunc_mode != "python-calculate":
+            roots = self.jit(nonzero_degrees.astype(np.int64), nonzero_coeffs.astype(np.int64), int(self.field.primitive_element))[0,:]
             roots = roots.astype(dtype)
         else:
-            roots = cls.python(field)(nonzero_degrees.view(np.ndarray), nonzero_coeffs.view(np.ndarray), int(field.primitive_element))[0,:]
-        roots = field._view(roots)
+            roots = self.python(nonzero_degrees.view(np.ndarray), nonzero_coeffs.view(np.ndarray), int(self.field.primitive_element))[0,:]
+        roots = self.field._view(roots)
         idxs = np.argsort(roots)
 
         return roots[idxs]
 
-    @staticmethod
-    def set_globals(field):
+    def set_globals(self):
         # pylint: disable=global-variable-undefined
         global ORDER, ADD, MULTIPLY, POWER
-        ORDER = field.order
-        ADD = field._ufunc("add")
-        MULTIPLY = field._ufunc("multiply")
-        POWER = field._ufunc("power")
+        ORDER = self.field.order
+        ADD = self.field._add.ufunc
+        MULTIPLY = self.field._multiply.ufunc
+        POWER = self.field._power.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64))
 

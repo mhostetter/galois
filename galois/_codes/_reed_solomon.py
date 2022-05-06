@@ -10,11 +10,12 @@ import numba
 from numba import int64
 import numpy as np
 
-from .._domains._function import JITFunction
-from .._fields import Field, FieldArray
+from .._domains._function import Function
+from .._fields import Field, FieldArray  # pylint: disable=unused-import
 from .._lfsr import berlekamp_massey_jit
 from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
+from .._polys._dense import divmod_jit, roots_jit, evaluate_elementwise_jit
 from .._prime import factors
 from ..typing import PolyLike
 
@@ -667,12 +668,12 @@ class ReedSolomon:
         syndrome = codeword.view(self.field) @ self.H[:,-ns:].T
 
         # Invoke the JIT compiled function
-        dec_codeword, N_errors = decode_jit.call(self.field, codeword, syndrome, self.c, self.t, int(self.field.primitive_element))
+        dec_codeword, N_errors = decode_jit(self.field)(codeword, syndrome, self.c, self.t, int(self.field.primitive_element))
 
         if self.systematic:
             message = dec_codeword[:, 0:ks]
         else:
-            message, _ = self.field._poly_divmod(dec_codeword[:, 0:ns].view(self.field), self.generator_poly.coeffs)
+            message, _ = divmod_jit(self.field)(dec_codeword[:, 0:ns].view(self.field), self.generator_poly.coeffs)
         message = message.view(type(codeword))  # TODO: Remove this
 
         if codeword_1d:
@@ -870,7 +871,7 @@ class ReedSolomon:
         return self._is_narrow_sense
 
 
-class decode_jit(JITFunction):
+class decode_jit(Function):
     """
     Performs Reed-Solomon decoding.
 
@@ -878,39 +879,31 @@ class decode_jit(JITFunction):
     ----------
     * Lin, S. and Costello, D. Error Control Coding. Section 7.4.
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field, codeword, syndrome, c, t, primitive_element):
-        if field.ufunc_mode != "python-calculate":
-            codeword_ = codeword.astype(np.int64)
-            syndrome_ = syndrome.astype(np.int64)
-            y = cls.jit(field)(codeword_, syndrome_, c, t, primitive_element)
+    def __call__(self, codeword, syndrome, c, t, primitive_element):
+        if self.field.ufunc_mode != "python-calculate":
+            y = self.jit(codeword.astype(np.int64), syndrome.astype(np.int64), c, t, primitive_element)
         else:
-            codeword_ = codeword.view(np.ndarray)
-            syndrome_ = syndrome.view(np.ndarray)
-            y = cls.python(field)(codeword_, syndrome_, c, t, primitive_element)
+            y = self.python(codeword.view(np.ndarray), syndrome.view(np.ndarray), c, t, primitive_element)
 
         dec_codeword, N_errors = y[:,0:-1], y[:,-1]
         dec_codeword = dec_codeword.astype(codeword.dtype)
-        dec_codeword = dec_codeword.view(field)
+        dec_codeword = dec_codeword.view(self.field)
 
         return dec_codeword, N_errors
 
-    @classmethod
-    def set_globals(cls, field: Type[FieldArray]):
+    def set_globals(self):
         # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, ORDER, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, CONVOLVE, POLY_ROOTS, POLY_EVALUATE, BERLEKAMP_MASSEY
-        CHARACTERISTIC = field.characteristic
-        ORDER = field.order
-        SUBTRACT = field._ufunc("subtract")
-        MULTIPLY = field._ufunc("multiply")
-        RECIPROCAL = field._ufunc("reciprocal")
-        POWER = field._ufunc("power")
-        CONVOLVE = field._function("convolve")
-        POLY_ROOTS = field._function("poly_roots")
-        POLY_EVALUATE = field._function("poly_evaluate")
-        BERLEKAMP_MASSEY = berlekamp_massey_jit.function(field)
+        CHARACTERISTIC = self.field.characteristic
+        ORDER = self.field.order
+        SUBTRACT = self.field._subtract.ufunc
+        MULTIPLY = self.field._multiply.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
+        POWER = self.field._power.ufunc
+        CONVOLVE = self.field._convolve.function
+        POLY_ROOTS = roots_jit(self.field).function
+        POLY_EVALUATE = evaluate_elementwise_jit(self.field).function
+        BERLEKAMP_MASSEY = berlekamp_massey_jit(self.field).function
 
     _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:], int64, int64, int64))
 
