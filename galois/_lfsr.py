@@ -10,7 +10,7 @@ import numba
 import numpy as np
 from numba import int64
 
-from ._domains._function import JITFunction
+from ._domains._function import Function
 from ._fields import FieldArray
 from ._overrides import set_module
 from ._polys import Poly
@@ -111,9 +111,9 @@ class _LFSR:
         assert steps > 0
 
         if self._type == "fibonacci":
-            y, state = fibonacci_lfsr_step_forward_jit.call(self.field, self.taps, self.state, steps)
+            y, state = fibonacci_lfsr_step_forward_jit(self.field)(self.taps, self.state, steps)
         else:
-            y, state = galois_lfsr_step_forward_jit.call(self.field, self.taps, self.state, steps)
+            y, state = galois_lfsr_step_forward_jit(self.field)(self.taps, self.state, steps)
 
         self._state[:] = state[:]
         if y.size == 1:
@@ -128,9 +128,9 @@ class _LFSR:
             raise ValueError(f"Can only step the shift register backwards if the c_0 tap is non-zero, not c(x) = {self.characteristic_poly}.")
 
         if self._type == "fibonacci":
-            y, state = fibonacci_lfsr_step_backward_jit.call(self.field, self.taps, self.state, steps)
+            y, state = fibonacci_lfsr_step_backward_jit(self.field)(self.taps, self.state, steps)
         else:
-            y, state = galois_lfsr_step_backward_jit.call(self.field, self.taps, self.state, steps)
+            y, state = galois_lfsr_step_backward_jit(self.field)(self.taps, self.state, steps)
 
         self._state[:] = state[:]
         if y.size == 1:
@@ -691,7 +691,7 @@ class FLFSR(_LFSR):
         return super().state
 
 
-class fibonacci_lfsr_step_forward_jit(JITFunction):
+class fibonacci_lfsr_step_forward_jit(Function):
     """
     Steps the Fibonacci LFSR `steps` forward.
 
@@ -724,29 +724,23 @@ class fibonacci_lfsr_step_forward_jit(JITFunction):
     y
         The output sequence of size `steps`.
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field, taps, state, steps):
-        if field.ufunc_mode != "python-calculate":
-            taps_ = taps.astype(np.int64)
-            state_ = state.astype(np.int64)
-            y = cls.jit(field)(taps_, state_, steps)
+    def __call__(self, taps, state, steps):
+        if self.field.ufunc_mode != "python-calculate":
+            state_ = state.astype(np.int64)  # NOTE: This will be modified
+            y = self.jit(taps.astype(np.int64), state_, steps)
             y = y.astype(state.dtype)
         else:
-            taps_ = taps.view(np.ndarray)
-            state_ = state.view(np.ndarray)
-            y = cls.python(field)(taps_, state_, steps)
-        y = field._view(y)
+            state_ = state.view(np.ndarray)  # NOTE: This will be modified
+            y = self.python(taps.view(np.ndarray), state_, steps)
+        y = self.field._view(y)
 
         return y, state_
 
-    @staticmethod
-    def set_globals(field: Type[FieldArray]):
+    def set_globals(self):
         # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
-        ADD = field._ufunc("add")
-        MULTIPLY = field._ufunc("multiply")
+        ADD = self.field._add.ufunc
+        MULTIPLY = self.field._multiply.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -767,7 +761,7 @@ class fibonacci_lfsr_step_forward_jit(JITFunction):
         return y
 
 
-class fibonacci_lfsr_step_backward_jit(JITFunction):
+class fibonacci_lfsr_step_backward_jit(Function):
     """
     Steps the Fibonacci LFSR `steps` backward.
 
@@ -797,29 +791,24 @@ class fibonacci_lfsr_step_backward_jit(JITFunction):
     y
         The output sequence of size `steps`.
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field, taps, state, steps):
-        if field.ufunc_mode != "python-calculate":
-            taps_ = taps.astype(np.int64)
-            state_ = state.astype(np.int64)
-            y = cls.jit(field)(taps_, state_, steps)
+    def __call__(self, taps, state, steps):
+        if self.field.ufunc_mode != "python-calculate":
+            state_ = state.astype(np.int64)  # NOTE: This will be modified
+            y = self.jit(taps.astype(np.int64), state_, steps)
             y = y.astype(state.dtype)
         else:
-            taps_ = taps.view(np.ndarray)
-            state_ = state.view(np.ndarray)
-            y = cls.python(field)(taps_, state_, steps)
-        y = field._view(y)
+            state_ = state.view(np.ndarray)  # NOTE: This will be modified
+            y = self.python(taps.view(np.ndarray), state_, steps)
+        y = self.field._view(y)
 
         return y, state_
 
-    @staticmethod
-    def set_globals(field: Type[FieldArray]):
+    def set_globals(self):
+        # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, DIVIDE
-        SUBTRACT = field._ufunc("subtract")
-        MULTIPLY = field._ufunc("multiply")
-        DIVIDE = field._ufunc("divide")
+        SUBTRACT = self.field._subtract.ufunc
+        MULTIPLY = self.field._multiply.ufunc
+        DIVIDE = self.field._divide.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -1353,7 +1342,7 @@ class GLFSR(_LFSR):
         return super().state
 
 
-class galois_lfsr_step_forward_jit(JITFunction):
+class galois_lfsr_step_forward_jit(Function):
     """
     Steps the Galois LFSR `steps` forward.
 
@@ -1383,28 +1372,23 @@ class galois_lfsr_step_forward_jit(JITFunction):
     y
         The output sequence of size `steps`.
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field, taps, state, steps):
-        if field.ufunc_mode != "python-calculate":
-            taps_ = taps.astype(np.int64)
-            state_ = state.astype(np.int64)
-            y = cls.jit(field)(taps_, state_, steps)
+    def __call__(self, taps, state, steps):
+        if self.field.ufunc_mode != "python-calculate":
+            state_ = state.astype(np.int64)  # NOTE: This will be modified
+            y = self.jit(taps.astype(np.int64), state_, steps)
             y = y.astype(state.dtype)
         else:
-            taps_ = taps.view(np.ndarray)
-            state_ = state.view(np.ndarray)
-            y = cls.python(field)(taps_, state_, steps)
-        y = field._view(y)
+            state_ = state.view(np.ndarray)  # NOTE: This will be modified
+            y = self.python(taps.view(np.ndarray), state_, steps)
+        y = self.field._view(y)
 
         return y, state_
 
-    @staticmethod
-    def set_globals(field: Type[FieldArray]):
+    def set_globals(self):
+        # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
-        ADD = field._ufunc("add")
-        MULTIPLY = field._ufunc("multiply")
+        ADD = self.field._add.ufunc
+        MULTIPLY = self.field._multiply.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -1428,7 +1412,7 @@ class galois_lfsr_step_forward_jit(JITFunction):
         return y
 
 
-class galois_lfsr_step_backward_jit(JITFunction):
+class galois_lfsr_step_backward_jit(Function):
     """
     Steps the Galois LFSR `steps` backward.
 
@@ -1458,29 +1442,24 @@ class galois_lfsr_step_backward_jit(JITFunction):
     y
         The output sequence of size `steps`.
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field, taps, state, steps):
-        if field.ufunc_mode != "python-calculate":
-            taps_ = taps.astype(np.int64)
-            state_ = state.astype(np.int64)
-            y = cls.jit(field)(taps_, state_, steps)
+    def __call__(self, taps, state, steps):
+        if self.field.ufunc_mode != "python-calculate":
+            state_ = state.astype(np.int64)  # NOTE: This will be modified
+            y = self.jit(taps.astype(np.int64), state_, steps)
             y = y.astype(state.dtype)
         else:
-            taps_ = taps.view(np.ndarray)
-            state_ = state.view(np.ndarray)
-            y = cls.python(field)(taps_, state_, steps)
-        y = field._view(y)
+            state_ = state.view(np.ndarray)  # NOTE: This will be modified
+            y = self.python(taps.view(np.ndarray), state_, steps)
+        y = self.field._view(y)
 
         return y, state_
 
-    @staticmethod
-    def set_globals(field: Type[FieldArray]):
+    def set_globals(self):
+        # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, DIVIDE
-        SUBTRACT = field._ufunc("subtract")
-        MULTIPLY = field._ufunc("multiply")
-        DIVIDE = field._ufunc("divide")
+        SUBTRACT = self.field._subtract.ufunc
+        MULTIPLY = self.field._multiply.ufunc
+        DIVIDE = self.field._divide.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -1604,7 +1583,7 @@ def berlekamp_massey(sequence, output="minimal"):
         raise ValueError(f"Argument `output` must be in ['minimal', 'fibonacci', 'galois'], not {output!r}.")
 
     field = type(sequence)
-    coeffs = berlekamp_massey_jit.call(field, sequence)
+    coeffs = berlekamp_massey_jit(field)(sequence)
     characteristic_poly = Poly(coeffs, field=field)
 
     if output == "minimal":
@@ -1621,32 +1600,27 @@ def berlekamp_massey(sequence, output="minimal"):
             return fibonacci_lfsr.to_galois_lfsr()
 
 
-class berlekamp_massey_jit(JITFunction):
+class berlekamp_massey_jit(Function):
     """
     Finds the minimal polynomial c(x) of the input sequence.
     """
-    _CACHE = {}
-
-    @classmethod
-    def call(cls, field, sequence):
-        if field.ufunc_mode != "python-calculate":
-            sequence = sequence.astype(np.int64)
-            coeffs = cls.jit(field)(sequence)
+    def __call__(self, sequence):
+        if self.field.ufunc_mode != "python-calculate":
+            coeffs = self.jit(sequence.astype(np.int64))
             coeffs = coeffs.astype(sequence.dtype)
         else:
-            sequence = sequence.view(np.ndarray)
-            coeffs = cls.python(field)(sequence)
-        coeffs = field._view(coeffs)
+            coeffs = self.python(sequence.view(np.ndarray))
+        coeffs = self.field._view(coeffs)
 
         return coeffs
 
-    @staticmethod
-    def set_globals(field: Type[FieldArray]):
+    def set_globals(self):
+        # pylint: disable=global-variable-undefined
         global ADD, SUBTRACT, MULTIPLY, RECIPROCAL
-        ADD = field._ufunc("add")
-        SUBTRACT = field._ufunc("subtract")
-        MULTIPLY = field._ufunc("multiply")
-        RECIPROCAL = field._ufunc("reciprocal")
+        ADD = self.field._add.ufunc
+        SUBTRACT = self.field._subtract.ufunc
+        MULTIPLY = self.field._multiply.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:]))
 

@@ -8,11 +8,8 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._domains import Array
+from .._domains import Array, _linalg
 from .._domains._array import ArrayMeta
-from .._domains._function import FieldFunctions
-from .._domains._linalg import FieldLinalgFunctions
-from .._domains._ufunc import FieldUFuncs
 from .._modular import totatives
 from .._overrides import set_module, extend_docstring, SPHINX_BUILD
 from .._polys import Poly
@@ -49,9 +46,6 @@ class FieldArrayMeta(ArrayMeta):
 
         # Construct the irreducible polynomial from its integer representation
         cls._irreducible_poly = Poly.Int(cls._irreducible_poly_int, field=cls._prime_subfield)
-
-        if "compile" in kwargs:
-            cls.compile(kwargs["compile"])
 
     ###############################################################################
     # Class properties
@@ -527,7 +521,7 @@ class FieldArrayMeta(ArrayMeta):
 
 
 @set_module("galois")
-class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metaclass=FieldArrayMeta):
+class FieldArray(Array, metaclass=FieldArrayMeta):
     r"""
     A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
 
@@ -1585,7 +1579,7 @@ class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metac
             A.row_reduce()
             np.linalg.matrix_rank(A)
         """
-        A_rre, _ = type(self)._row_reduce(self, ncols=ncols)
+        A_rre, _ = _linalg.row_reduce_jit(type(self))(self, ncols=ncols)
         return A_rre
 
     def lu_decompose(self) -> Tuple["FieldArray", "FieldArray"]:
@@ -1615,7 +1609,9 @@ class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metac
             U
             np.array_equal(A, L @ U)
         """
-        L, U = type(self)._lu_decompose(self)
+        field = type(self)
+        A = self
+        L, U = _linalg.lu_decompose_jit(field)(A)
         return L, U
 
     def plu_decompose(self) -> Tuple["FieldArray", "FieldArray", "FieldArray"]:
@@ -1649,7 +1645,9 @@ class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metac
             np.array_equal(A, P @ L @ U)
             np.array_equal(P.T @ A, L @ U)
         """
-        P, L, U, _ = type(self)._plu_decompose(self)
+        field = type(self)
+        A = self
+        P, L, U, _ = _linalg.plu_decompose_jit(field)(A)
         return P, L, U
 
     def row_space(self) -> "FieldArray":
@@ -1685,7 +1683,15 @@ class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metac
             LN = A.left_null_space(); LN
             R.shape[0] + LN.shape[0] == m
         """
-        return type(self)._row_space(self)
+        A = self
+        if not A.ndim == 2:
+            raise ValueError(f"Only 2-D matrices have a row space, not {A.ndim}-D.")
+
+        A_rre = A.row_reduce()
+        rank = np.sum(~np.all(A_rre == 0, axis=1))
+        R = A_rre[0:rank,:]
+
+        return R
 
     def column_space(self) -> "FieldArray":
         r"""
@@ -1720,7 +1726,11 @@ class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metac
             N = A.null_space(); N
             C.shape[0] + N.shape[0] == n
         """
-        return type(self)._column_space(self)
+        A = self
+        if not A.ndim == 2:
+            raise ValueError(f"Only 2-D matrices have a column space, not {A.ndim}-D.")
+
+        return (A.T).row_space()  # pylint: disable=no-member
 
     def left_null_space(self) -> "FieldArray":
         r"""
@@ -1761,7 +1771,25 @@ class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metac
 
             LN @ A
         """
-        return type(self)._left_null_space(self)
+        field = type(self)
+        A = self
+        if not A.ndim == 2:
+            raise ValueError(f"Only 2-D matrices have a left null space, not {A.ndim}-D.")
+
+        m, n = A.shape
+        I = field.Identity(m, dtype=A.dtype)
+
+        # Concatenate A and I to get the matrix AI = [A | I]
+        AI = np.concatenate((A, I), axis=-1)
+
+        # Perform Gaussian elimination to get the reduced row echelon form AI_rre = [I | A^-1]
+        AI_rre, p = _linalg.row_reduce_jit(field)(AI, ncols=n)
+
+        # Row reduce the left null space so that it begins with an I
+        LN = AI_rre[p:,n:]
+        LN = LN.row_reduce()
+
+        return LN
 
     def null_space(self) -> "FieldArray":
         r"""
@@ -1802,7 +1830,11 @@ class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metac
 
             A @ N.T
         """
-        return type(self)._null_space(self)
+        A = self
+        if not A.ndim == 2:
+            raise ValueError(f"Only 2-D matrices have a null space, not {A.ndim}-D.")
+
+        return (A.T).left_null_space()  # pylint: disable=no-member
 
     def field_trace(self) -> "FieldArray":
         r"""
@@ -2252,7 +2284,7 @@ class FieldArray(FieldLinalgFunctions, FieldFunctions, FieldUFuncs, Array, metac
         elif element == cls.primitive_element:
             s = "α"
         else:
-            power = cls._ufunc("log")(element, cls._primitive_element)
+            power = cls._log.ufunc(element, cls._primitive_element)
             s = f"α^{power}"
 
         if cls._element_fixed_width:

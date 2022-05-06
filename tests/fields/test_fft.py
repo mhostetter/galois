@@ -15,7 +15,7 @@ def test_fft_exceptions():
     with pytest.raises(ValueError):
         np.fft.fft(x, axis=0)
     with pytest.raises(ValueError):
-        np.fft.fft(x, norm="forward")
+        np.fft.fft(x, norm="front")
 
 
 def test_ifft_exceptions():
@@ -26,7 +26,7 @@ def test_ifft_exceptions():
     with pytest.raises(ValueError):
         np.fft.ifft(x, axis=0)
     with pytest.raises(ValueError):
-        np.fft.ifft(x, norm="forward")
+        np.fft.ifft(x, norm="front")
 
 
 @pytest.mark.parametrize("order", [31, 2**8, 3**5, 5**3, 2**100, 36893488147419103183])

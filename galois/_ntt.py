@@ -281,6 +281,11 @@ def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
     field = Field(modulus)  # The prime field GF(p)
 
     x = field(x)
-    y = field._fft(x, n=size, forward=forward, scaled=scaled)
+    if forward:
+        norm = "forward" if scaled else "backward"
+        y = np.fft.fft(x, n=size)
+    else:
+        norm = "backward" if scaled else "forward"
+        y = np.fft.ifft(x, n=size, norm=norm)
 
     return y
