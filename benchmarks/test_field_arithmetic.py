@@ -81,15 +81,15 @@ class Test_GF257_calculate(Base):
     N = 100_000
 
 
-@pytest.mark.benchmark(group="GF(3^5) Array Arithmetic: shape=(1_000,), ufunc_mode='jit-lookup'")
+@pytest.mark.benchmark(group="GF(3^5) Array Arithmetic: shape=(100_000,), ufunc_mode='jit-lookup'")
 class Test_GF3_5_lookup(Base):
     order = 3**5
     ufunc_mode = "jit-lookup"
-    N = 1_000
+    N = 100_000
 
 
-@pytest.mark.benchmark(group="GF(3^5) Array Arithmetic: shape=(1_000,), ufunc_mode='jit-calculate'")
+@pytest.mark.benchmark(group="GF(3^5) Array Arithmetic: shape=(10_000,), ufunc_mode='jit-calculate'")
 class Test_GF3_5_calculate(Base):
     order = 3**5
     ufunc_mode = "jit-calculate"
-    N = 1_000
+    N = 10_000
