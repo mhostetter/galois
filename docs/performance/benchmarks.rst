@@ -129,7 +129,7 @@ advised to pass extra arguments to format the display `--benchmark-columns=min,m
 Compare with a previous benchmark
 ---------------------------------
 
-If you would like to compare the performance impacts of a branch, first run a benchmark on `master` using the `--benchmark-save` option.
+If you would like to compare the performance impact of a branch, first run a benchmark on `master` using the `--benchmark-save` option.
 This will save the file `.benchmarks/0001_master.json`.
 
 .. code-block::
@@ -137,15 +137,17 @@ This will save the file `.benchmarks/0001_master.json`.
    $ git checkout master
    $ python3 -m pytest benchmarks/test_field_arithmetic.py --benchmark-save=master --benchmark-columns=min,max,mean,stddev,median --benchmark-sort=name
 
-Next, checkout your branch and run another benchmark. This will save the file `.benchmarks/0001_branch.json`.
+Next, run a benchmark on the branch under test while comparing against the benchmark from `master`.
+
+.. code-block::
+
+   $ git checkout branch
+   $ python3 -m pytest benchmarks/test_field_arithmetic.py --benchmark-compare=0001_master --benchmark-columns=min,max,mean,stddev,median --benchmark-sort=name
+
+Or, save a benchmark run from `branch` and compare it explicitly against the one from `master`. This benchmark run will save the file `.benchmarks/0001_branch.json`.
 
 .. code-block::
 
    $ git checkout branch
    $ python3 -m pytest benchmarks/test_field_arithmetic.py --benchmark-save=branch --benchmark-columns=min,max,mean,stddev,median --benchmark-sort=name
-
-And finally, compare the two benchmarks.
-
-.. code-block::
-
    $ python3 -m pytest-benchmark compare 0001_master 0001_branch
