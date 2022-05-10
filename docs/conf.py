@@ -243,7 +243,7 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
     if hasattr(obj, "__objclass__"):
         # This is a NumPy method, don't include docs
         return True
-    elif getattr(obj, "__qualname__", None) in ["FieldFunction.dot", "Array.astype"]:
+    elif getattr(obj, "__qualname__", None) in ["FunctionMixin.dot", "Array.astype"]:
         # NumPy methods that wer overridden, don't include docs
         return True
     elif hasattr(obj, "__qualname__") and getattr(obj, "__qualname__").split(".")[0] == "FieldArray" and hasattr(numpy.ndarray, name):
