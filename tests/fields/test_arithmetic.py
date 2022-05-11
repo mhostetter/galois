@@ -131,6 +131,17 @@ def test_divmod(field_divide):
     assert r.dtype == dtype
 
 
+def test_mod(field_divide):
+    GF = field_divide["GF"]
+    dtype = random.choice(GF.dtypes)
+    x = GF.Random(10, dtype=dtype)
+    y = GF.Random(10, low=1, dtype=dtype)
+
+    r = x % y
+    assert np.all(r == 0)
+    assert type(r) is GF
+    assert r.dtype == dtype
+
 
 def test_power(field_power):
     GF, X, Y, Z = field_power["GF"], field_power["X"], field_power["Y"], field_power["Z"]
