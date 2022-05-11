@@ -26,6 +26,17 @@ def test_add(field_add):
     assert z.dtype == dtype
 
 
+def test_additive_inverse(field_additive_inverse):
+    GF, X, Z = field_additive_inverse["GF"], field_additive_inverse["X"], field_additive_inverse["Z"]
+    dtype = random.choice(GF.dtypes)
+    x = X.astype(dtype)
+
+    z = -x
+    assert np.array_equal(z, Z)
+    assert type(z) is GF
+    assert z.dtype == dtype
+
+
 def test_subtract(field_subtract):
     GF, X, Y, Z = field_subtract["GF"], field_subtract["X"], field_subtract["Y"], field_subtract["Z"]
     dtype = random.choice(GF.dtypes)
@@ -50,29 +61,18 @@ def test_multiply(field_multiply):
     assert z.dtype == dtype
 
 
-def test_divide(field_divide):
-    GF, X, Y, Z = field_divide["GF"], field_divide["X"], field_divide["Y"], field_divide["Z"]
+def test_scalar_multiply(field_scalar_multiply):
+    GF, X, Y, Z = field_scalar_multiply["GF"], field_scalar_multiply["X"], field_scalar_multiply["Y"], field_scalar_multiply["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
-    y = Y.astype(dtype)
+    y = Y  # Don't convert this, it's not a field element
 
-    z = x / y
+    z = x * y
     assert np.array_equal(z, Z)
     assert type(z) is GF
     assert z.dtype == dtype
 
-    z = x // y
-    assert np.array_equal(z, Z)
-    assert type(z) is GF
-    assert z.dtype == dtype
-
-
-def test_additive_inverse(field_additive_inverse):
-    GF, X, Z = field_additive_inverse["GF"], field_additive_inverse["X"], field_additive_inverse["Z"]
-    dtype = random.choice(GF.dtypes)
-    x = X.astype(dtype)
-
-    z = -x
+    z = y * x
     assert np.array_equal(z, Z)
     assert type(z) is GF
     assert z.dtype == dtype
@@ -99,21 +99,37 @@ def test_multiplicative_inverse(field_multiplicative_inverse):
     assert z.dtype == dtype
 
 
-def test_scalar_multiply(field_scalar_multiply):
-    GF, X, Y, Z = field_scalar_multiply["GF"], field_scalar_multiply["X"], field_scalar_multiply["Y"], field_scalar_multiply["Z"]
+def test_divide(field_divide):
+    GF, X, Y, Z = field_divide["GF"], field_divide["X"], field_divide["Y"], field_divide["Z"]
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
-    y = Y  # Don't convert this, it's not a field element
+    y = Y.astype(dtype)
 
-    z = x * y
+    z = x / y
     assert np.array_equal(z, Z)
     assert type(z) is GF
     assert z.dtype == dtype
 
-    z = y * x
+    z = x // y
     assert np.array_equal(z, Z)
     assert type(z) is GF
     assert z.dtype == dtype
+
+
+def test_divmod(field_divide):
+    GF = field_divide["GF"]
+    dtype = random.choice(GF.dtypes)
+    x = GF.Random(10, dtype=dtype)
+    y = GF.Random(10, low=1, dtype=dtype)
+
+    q, r = np.divmod(x, y)
+    assert np.array_equal(q, x // y)
+    assert type(q) is GF
+    assert q.dtype == dtype
+    assert np.all(r == 0)
+    assert type(r) is GF
+    assert r.dtype == dtype
+
 
 
 def test_power(field_power):
