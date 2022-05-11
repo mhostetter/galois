@@ -148,6 +148,7 @@ If this library was useful to you in your research, please cite us. Following th
    :hidden:
 
    release-notes/versioning.rst
+   release-notes/v0.0.28.md
    release-notes/v0.0.27.md
    release-notes/v0.0.26.md
    release-notes/v0.0.25.md

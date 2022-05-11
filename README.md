@@ -68,7 +68,7 @@ Import the `galois` package in Python.
 In [1]: import galois
 
 In [2]: galois.__version__
-Out[2]: '0.0.27'
+Out[2]: '0.0.28'
 ```
 
 ### Create a [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) subclass
