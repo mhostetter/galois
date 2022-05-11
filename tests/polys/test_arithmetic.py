@@ -1,7 +1,6 @@
 """
 A pytest module to test polynomial arithmetic over Galois fields.
 """
-import pytest
 import numpy as np
 
 import galois
@@ -20,6 +19,13 @@ def test_add(poly_add):
         assert type(z.coeffs) is GF
 
 
+def test_right_add(poly_add):
+    GF = poly_add["GF"]
+    a = GF.Random()
+    b_poly = galois.Poly.Random(5, field=GF)
+    assert a + b_poly == galois.Poly(a) + b_poly
+
+
 def test_subtract(poly_subtract):
     GF, X, Y, Z = poly_subtract["GF"], poly_subtract["X"], poly_subtract["Y"], poly_subtract["Z"]
     for i in range(len(X)):
@@ -33,6 +39,13 @@ def test_subtract(poly_subtract):
         assert type(z.coeffs) is GF
 
 
+def test_right_subtract(poly_subtract):
+    GF = poly_subtract["GF"]
+    a = GF.Random()
+    b_poly = galois.Poly.Random(5, field=GF)
+    assert a - b_poly == galois.Poly(a) - b_poly
+
+
 def test_multiply(poly_multiply):
     GF, X, Y, Z = poly_multiply["GF"], poly_multiply["X"], poly_multiply["Y"], poly_multiply["Z"]
     for i in range(len(X)):
@@ -44,6 +57,13 @@ def test_multiply(poly_multiply):
         assert isinstance(z, galois.Poly)
         assert z.field is GF
         assert type(z.coeffs) is GF
+
+
+def test_right_multiply(poly_multiply):
+    GF = poly_multiply["GF"]
+    a = GF.Random()
+    b_poly = galois.Poly.Random(5, field=GF)
+    assert a * b_poly == galois.Poly(a) * b_poly
 
 
 def test_scalar_multiply(poly_scalar_multiply):
@@ -78,6 +98,13 @@ def test_divide(poly_divmod):
         assert type(q.coeffs) is GF
 
 
+def test_right_divide(poly_divmod):
+    GF = poly_divmod["GF"]
+    a = GF.Random()
+    b_poly = galois.Poly.Random(5, field=GF)
+    assert a // b_poly == galois.Poly(a) // b_poly
+
+
 def test_mod(poly_divmod):
     # NOTE: Test modulo separately because there's a separate method to compute it without the quotient for space spacings
     GF, X, Y, R = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["R"]
@@ -89,6 +116,13 @@ def test_mod(poly_divmod):
         assert isinstance(r, galois.Poly)
         assert r.field is GF
         assert type(r.coeffs) is GF
+
+
+def test_right_mod(poly_divmod):
+    GF = poly_divmod["GF"]
+    a = GF.Random()
+    b_poly = galois.Poly.Random(5, field=GF)
+    assert a % b_poly == galois.Poly(a) % b_poly
 
 
 def test_divmod(poly_divmod):
@@ -107,6 +141,13 @@ def test_divmod(poly_divmod):
         assert isinstance(r, galois.Poly)
         assert r.field is GF
         assert type(r.coeffs) is GF
+
+
+def test_right_divmod(poly_divmod):
+    GF = poly_divmod["GF"]
+    a = GF.Random()
+    b_poly = galois.Poly.Random(5, field=GF)
+    assert divmod(a, b_poly) == divmod(galois.Poly(a), b_poly)
 
 
 def test_power(poly_power):
