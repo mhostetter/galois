@@ -285,7 +285,7 @@ class remainder_ufunc(UFunc):
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         # Perform dummy addition operation to get shape of output zeros
         x = getattr(np.add, method)(*inputs, **kwargs)
-        output = self.field.Zeros(x.shape)
+        output = self.field.Zeros(x.shape, dtype=meta["dtype"])
         return output
 
 
