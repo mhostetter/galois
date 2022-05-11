@@ -135,3 +135,4 @@ class GF2(FieldArray, UFuncMixin_2_1, characteristic=2, degree=1, order=2, irred
 
 GF2._default_ufunc_mode = "jit-calculate"
 GF2._ufunc_modes = ["jit-calculate"]
+GF2.compile("auto")
