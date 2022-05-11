@@ -420,7 +420,7 @@ class roots_jit(Function):
     _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64))
 
     @staticmethod
-    def implementation(nonzero_degrees, nonzero_coeffs, primitive_element):
+    def implementation(nonzero_degrees, nonzero_coeffs, primitive_element):  # pragma: no cover
         N = nonzero_degrees.size
         lambda_vector = nonzero_coeffs.copy()
         alpha_vector = np.zeros(N, dtype=nonzero_coeffs.dtype)

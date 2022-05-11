@@ -91,7 +91,7 @@ class FieldArrayMeta(ArrayMeta):
             galois.GF(31).name
             galois.GF(7**5).name
         """
-        return cls._name
+        return super().name
 
     @property
     def characteristic(cls) -> int:
@@ -109,7 +109,7 @@ class FieldArrayMeta(ArrayMeta):
             galois.GF(7**5).characteristic
 
         """
-        return cls._characteristic
+        return super().characteristic
 
     @property
     def degree(cls) -> int:
@@ -125,7 +125,7 @@ class FieldArrayMeta(ArrayMeta):
             galois.GF(31).degree
             galois.GF(7**5).degree
         """
-        return cls._degree
+        return super().degree
 
     @property
     def order(cls) -> int:
@@ -141,7 +141,7 @@ class FieldArrayMeta(ArrayMeta):
             galois.GF(31).order
             galois.GF(7**5).order
         """
-        return cls._order
+        return super().order
 
     @property
     def irreducible_poly(cls) -> "Poly":
@@ -158,7 +158,7 @@ class FieldArrayMeta(ArrayMeta):
             galois.GF(31).irreducible_poly
             galois.GF(7**5).irreducible_poly
         """
-        return cls._irreducible_poly
+        return super().irreducible_poly
 
     @property
     def is_primitive_poly(cls) -> bool:
@@ -202,7 +202,7 @@ class FieldArrayMeta(ArrayMeta):
             galois.GF(31).primitive_element
             galois.GF(7**5).primitive_element
         """
-        return cls(cls._primitive_element)
+        return super().primitive_element
 
     @property
     def primitive_elements(cls) -> "FieldArray":
@@ -377,7 +377,7 @@ class FieldArrayMeta(ArrayMeta):
             GF = galois.GF(2**100); GF.dtypes
             GF = galois.GF(36893488147419103183); GF.dtypes
         """
-        return cls._dtypes
+        return super().dtypes
 
     @property
     def display_mode(cls) -> Literal["int", "poly", "power"]:
@@ -406,7 +406,7 @@ class FieldArrayMeta(ArrayMeta):
             @suppress
             GF.display()
         """
-        return cls._display_mode
+        return super().display_mode
 
     @property
     def ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
@@ -446,7 +446,7 @@ class FieldArrayMeta(ArrayMeta):
                     galois.GF(36893488147419103183).ufunc_mode
                     galois.GF(2**100).ufunc_mode
         """
-        return cls._ufunc_mode
+        return super().ufunc_mode
 
     @property
     def ufunc_modes(cls) -> List[str]:
@@ -477,7 +477,7 @@ class FieldArrayMeta(ArrayMeta):
                     galois.GF(36893488147419103183).ufunc_modes
                     galois.GF(2**100).ufunc_modes
         """
-        return cls._ufunc_modes
+        return super().ufunc_modes
 
     @property
     def default_ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
@@ -517,7 +517,7 @@ class FieldArrayMeta(ArrayMeta):
                     galois.GF(36893488147419103183).default_ufunc_mode
                     galois.GF(2**100).default_ufunc_mode
         """
-        return cls._default_ufunc_mode
+        return super().default_ufunc_mode
 
 
 @set_module("galois")

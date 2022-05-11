@@ -19,7 +19,7 @@ class reciprocal(reciprocal_ufunc):
     A ufunc dispatcher for the multiplicative inverse in GF(2).
     """
     @staticmethod
-    def calculate(a: int) -> int:
+    def calculate(a: int) -> int:  # pragma: no cover
         if a == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
         return 1
@@ -30,7 +30,7 @@ class divide(divide_ufunc):
     A ufunc dispatcher for division in GF(2).
     """
     @staticmethod
-    def calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:  # pragma: no cover
         if b == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
         return a & b
@@ -41,7 +41,7 @@ class power(power_ufunc):
     A ufunc dispatcher for exponentiation in GF(2).
     """
     @staticmethod
-    def calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:  # pragma: no cover
         if a == 0 and b < 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
         if b == 0:
@@ -54,7 +54,7 @@ class log(log_ufunc):
     A ufunc dispatcher for the logarithm in GF(2).
     """
     @staticmethod
-    def calculate(a: int, b: int) -> int:
+    def calculate(a: int, b: int) -> int:  # pragma: no cover
         if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
         if b != 1:

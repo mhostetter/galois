@@ -189,7 +189,7 @@ class fft_jit(Function):
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64))
 
     @staticmethod
-    def implementation(x, omega):
+    def implementation(x, omega):  # pragma: no cover
         N = x.size
         X = np.zeros(N, dtype=x.dtype)
 
