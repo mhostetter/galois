@@ -37,8 +37,8 @@ def GF(
     order
         The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
     irreducible_poly
-        Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that will
-        define the finite field arithmetic. The default is `None` which uses the Conway polynomial :math:`C_{p,m}`,
+        Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that
+        defines the finite field arithmetic. The default is `None` which uses the Conway polynomial :math:`C_{p,m}`,
         see :func:`~galois.conway_poly`.
     primitive_element
         Optionally specify a primitive element of the field. This value is used when building the exponential and logarithm
