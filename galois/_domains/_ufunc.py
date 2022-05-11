@@ -270,7 +270,7 @@ class divmod_ufunc(UFunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         q = getattr(np.divide, method)(*inputs, **kwargs)
-        r = self.field.Zeros(q.shape)
+        r = self.field.Zeros(q.shape, dtype=meta["dtype"])
         output = q, r
         return output
 
