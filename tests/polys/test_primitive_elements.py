@@ -458,6 +458,8 @@ def test_primitive_element_exceptions():
         galois.primitive_element(galois.Poly.Random(2)*galois.Poly.Random(2))
     with pytest.raises(ValueError):
         galois.primitive_element(p, method="invalid")
+    with pytest.raises(ValueError):
+        galois.primitive_element(galois.Poly.Str("x^4"))
 
 
 @pytest.mark.parametrize("characteristic,degree", [(2,2), (2,3), (2,4), (2,5), (2,6), (3,2), (3,3), (3,4), (5,2), (5,3), (5,4)])
@@ -472,6 +474,13 @@ def test_primitive_element_max(characteristic, degree):
     LUT = eval(f"PRIMITIVE_ELEMENTS_{characteristic}_{degree}")
     p = galois.GF(characteristic**degree).irreducible_poly
     assert galois.primitive_element(p, method="max") == LUT[-1]
+
+
+@pytest.mark.parametrize("characteristic,degree", [(2,2), (2,3), (2,4), (2,5), (2,6), (3,2), (3,3), (3,4), (5,2), (5,3), (5,4)])
+def test_primitive_element_random(characteristic, degree):
+    LUT = eval(f"PRIMITIVE_ELEMENTS_{characteristic}_{degree}")
+    p = galois.GF(characteristic**degree).irreducible_poly
+    assert galois.primitive_element(p, method="max") in LUT
 
 
 def test_primitive_elements_exceptions():
