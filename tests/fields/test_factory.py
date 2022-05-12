@@ -75,19 +75,6 @@ def test_basic_exceptions():
         galois.GF(2**8, display="invalid-argument")
 
 
-@pytest.mark.parametrize("characteristic,degree", [(2,8), (3,5)])
-def test_specify_irreducible_poly(characteristic, degree):
-    GF = galois.GF(characteristic**degree)
-    poly = GF.irreducible_poly
-    assert galois.GF(characteristic**degree, irreducible_poly=int(poly)) is GF
-    assert galois.GF(characteristic**degree, irreducible_poly=str(poly)) is GF
-    assert galois.GF(characteristic**degree, irreducible_poly=tuple(poly.coeffs)) is GF
-    assert galois.GF(characteristic**degree, irreducible_poly=list(poly.coeffs)) is GF
-    assert galois.GF(characteristic**degree, irreducible_poly=np.array(poly.coeffs)) is GF
-    assert galois.GF(characteristic**degree, irreducible_poly=poly.coeffs) is GF
-    assert galois.GF(characteristic**degree, irreducible_poly=poly) is GF
-
-
 def test_irreducible_poly_exceptions():
     with pytest.raises(TypeError):
         galois.GF(2**8, irreducible_poly=285.0)
@@ -101,6 +88,38 @@ def test_irreducible_poly_exceptions():
     # Don't allow `irreducible_poly` for prime fields
     with pytest.raises(ValueError):
         galois.GF(3, irreducible_poly=[1, 1])
+
+
+def test_primitive_element_exceptions():
+    with pytest.raises(TypeError):
+        galois.GF(2**8, primitive_element=2.0)
+    with pytest.raises(ValueError):
+        galois.GF(2**8, primitive_element=256)
+    with pytest.raises(ValueError):
+        galois.GF(7, primitive_element=10)
+    with pytest.raises(ValueError):
+        galois.GF(7, primitive_element=4)
+    with pytest.raises(ValueError):
+        galois.GF(2**8, primitive_element=galois.Poly([1, 0], field=galois.GF(3)))
+    with pytest.raises(ValueError):
+        galois.GF(2**8, primitive_element=galois.Poly([1, 0], field=galois.GF(3)))
+    with pytest.raises(ValueError):
+        galois.GF(2**8, primitive_element=galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1]))
+    with pytest.raises(ValueError):
+        galois.GF(2**8, primitive_element=galois.Poly([1, 1, 1]))
+
+
+@pytest.mark.parametrize("characteristic,degree", [(2,8), (3,5)])
+def test_specify_irreducible_poly(characteristic, degree):
+    GF = galois.GF(characteristic**degree)
+    poly = GF.irreducible_poly
+    assert galois.GF(characteristic**degree, irreducible_poly=int(poly)) is GF
+    assert galois.GF(characteristic**degree, irreducible_poly=str(poly)) is GF
+    assert galois.GF(characteristic**degree, irreducible_poly=tuple(poly.coeffs)) is GF
+    assert galois.GF(characteristic**degree, irreducible_poly=list(poly.coeffs)) is GF
+    assert galois.GF(characteristic**degree, irreducible_poly=np.array(poly.coeffs)) is GF
+    assert galois.GF(characteristic**degree, irreducible_poly=poly.coeffs) is GF
+    assert galois.GF(characteristic**degree, irreducible_poly=poly) is GF
 
 
 @pytest.mark.parametrize("characteristic,degree", [(2,1), (3,1)])
@@ -121,16 +140,3 @@ def test_specify_primitive_element_extension(characteristic, degree):
     assert galois.GF(characteristic**degree, primitive_element=np.array(poly.coeffs)) is GF
     assert galois.GF(characteristic**degree, primitive_element=poly.coeffs) is GF
     assert galois.GF(characteristic**degree, primitive_element=poly) is GF
-
-
-def test_primitive_element_exceptions():
-    with pytest.raises(TypeError):
-        galois.GF(2**8, primitive_element=2.0)
-    with pytest.raises(ValueError):
-        galois.GF(2**8, primitive_element=256)
-    with pytest.raises(ValueError):
-        galois.GF(2**8, primitive_element=galois.Poly([1, 0], field=galois.GF(3)))
-    with pytest.raises(ValueError):
-        galois.GF(2**8, primitive_element=galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1]))
-    with pytest.raises(ValueError):
-        galois.GF(2**8, primitive_element=galois.Poly([1, 1, 1]))
