@@ -745,7 +745,7 @@ class fibonacci_lfsr_step_forward_jit(Function):
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
     @staticmethod
-    def implementation(taps, state, steps):  # pragma: no cover
+    def implementation(taps, state, steps):
         n = taps.size
         y = np.zeros(steps, dtype=state.dtype)  # The output array
 
@@ -813,7 +813,7 @@ class fibonacci_lfsr_step_backward_jit(Function):
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
     @staticmethod
-    def implementation(taps, state, steps):  # pragma: no cover
+    def implementation(taps, state, steps):
         n = taps.size
         y = np.zeros(steps, dtype=state.dtype)  # The output array
 
@@ -1393,7 +1393,7 @@ class galois_lfsr_step_forward_jit(Function):
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
     @staticmethod
-    def implementation(taps, state, steps):  # pragma: no cover
+    def implementation(taps, state, steps):
         n = taps.size
         y = np.zeros(steps, dtype=state.dtype)  # The output array
 
@@ -1464,7 +1464,7 @@ class galois_lfsr_step_backward_jit(Function):
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
     @staticmethod
-    def implementation(taps, state, steps):  # pragma: no cover
+    def implementation(taps, state, steps):
         n = taps.size
         y = np.zeros(steps, dtype=state.dtype)  # The output array
 

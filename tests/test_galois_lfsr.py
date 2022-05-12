@@ -6,6 +6,11 @@ import numpy as np
 
 import galois
 
+# These two polys allow for testing JIT compiled and pure-Python implementations
+CHARACTERISTIC_POLYS = [
+    galois.primitive_poly(7, 4),
+    galois.Poly.Str("x^4 + 414029366129716807589746234643x^3 + 713840634647528950143955598853x^2 + 178965232760409569156590479285x + 574717025925479275195710910921", field=galois.GF(2**100))
+]
 
 def test_exceptions():
     c = galois.primitive_poly(7, 4)
@@ -14,6 +19,21 @@ def test_exceptions():
         galois.GLFSR(c.reverse().coeffs)
     with pytest.raises(TypeError):
         galois.GLFSR(c.reverse(), state=1)
+    with pytest.raises(ValueError):
+        f_coeffs = c.reverse().coeffs
+        f_coeffs[-1] = 2  # Needs to be 1
+        f = galois.Poly(f_coeffs)
+        galois.GLFSR(f)
+    with pytest.raises(ValueError):
+        galois.GLFSR(c.reverse(), state=[1, 2, 3, 4, 5])
+
+
+def test_from_taps():
+    GF = galois.GF(7)
+    T = GF([1, 2, 3, 4])
+    lfsr = galois.GLFSR.Taps(T)
+    assert lfsr.characteristic_poly == galois.Poly([1, -4, -3, -2, -1], field=GF)
+    assert lfsr.feedback_poly == galois.Poly([-1, -2, -3, -4, 1], field=GF)
 
 
 def test_repr():
@@ -28,9 +48,8 @@ def test_str():
     assert str(lfsr) == "Galois LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [2, 4, 6, 0]\n  order: 4\n  state: [1, 1, 1, 1]\n  initial_state: [1, 1, 1, 1]"
 
 
-def test_initial_state():
-    c = galois.primitive_poly(7, 4)
-
+@pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
+def test_initial_state(c):
     default_state = [1, 1, 1, 1]
     lfsr = galois.GLFSR(c.reverse())
     assert np.array_equal(lfsr.initial_state, default_state)
@@ -42,8 +61,8 @@ def test_initial_state():
     assert np.array_equal(lfsr.state, state)
 
 
-def test_feedback_and_characteristic_poly():
-    c = galois.primitive_poly(7, 4)
+@pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
+def test_feedback_and_characteristic_poly(c):
     f = c.reverse()
     lfsr = galois.GLFSR(f)
     assert lfsr.feedback_poly == f
@@ -59,8 +78,8 @@ def test_reset_exceptions():
         lfsr.reset(1)
 
 
-def test_reset_initial_state():
-    c = galois.primitive_poly(7, 4)
+@pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
+def test_reset_initial_state(c):
     lfsr = galois.GLFSR(c.reverse())
 
     assert np.array_equal(lfsr.state, lfsr.initial_state)
@@ -70,7 +89,8 @@ def test_reset_initial_state():
     assert np.array_equal(lfsr.state, lfsr.initial_state)
 
 
-def test_reset_specific_state():
+@pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
+def test_reset_specific_state(c):
     c = galois.primitive_poly(7, 4)
     lfsr = galois.GLFSR(c.reverse())
     state = [1, 2, 3, 4]
@@ -88,8 +108,8 @@ def test_step_exceptions():
         lfsr.step(10.0)
 
 
-def test_step_zero():
-    c = galois.primitive_poly(7, 4)
+@pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
+def test_step_zero(c):
     lfsr = galois.GLFSR(c.reverse())
 
     y = lfsr.step(0)
@@ -97,25 +117,35 @@ def test_step_zero():
     assert type(y) is lfsr.field
 
 
-def test_step_forwards_backwards():
-    c = galois.primitive_poly(7, 4)
+@pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
+def test_step_forwards_backwards(c):
     lfsr = galois.GLFSR(c.reverse())
 
     y_forward = lfsr.step(10)
     y_reverse = lfsr.step(-10)
-
     assert np.array_equal(y_forward, y_reverse[::-1])
     assert np.array_equal(lfsr.state, lfsr.initial_state)
 
+    # Step forward and backward by 1 step
+    assert lfsr.step(1) == lfsr.step(-1)
+    assert lfsr.step(1) == lfsr.step(-1)
+    assert lfsr.step(1) == lfsr.step(-1)
+    assert np.array_equal(lfsr.state, lfsr.initial_state)
 
-def test_step_backwards_forwards():
-    c = galois.primitive_poly(7, 4)
+
+@pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
+def test_step_backwards_forwards(c):
     lfsr = galois.GLFSR(c.reverse())
 
     y_reverse = lfsr.step(-10)
     y_forward = lfsr.step(10)
-
     assert np.array_equal(y_reverse, y_forward[::-1])
+    assert np.array_equal(lfsr.state, lfsr.initial_state)
+
+    # Step backward and forward by 1 step
+    assert lfsr.step(-1) == lfsr.step(1)
+    assert lfsr.step(-1) == lfsr.step(1)
+    assert lfsr.step(-1) == lfsr.step(1)
     assert np.array_equal(lfsr.state, lfsr.initial_state)
 
 
@@ -171,3 +201,14 @@ def test_step_gf3_extension_field():
 #     for i in range(50):
 #         np.array_equal(lfsr.state[::-1], (alpha**i).vector())
 #         lfsr.step()
+
+
+@pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
+def test_to_fibonacci_lfsr(c):
+    galois_lfsr = galois.GLFSR(c.reverse())
+    fibonacci_lfsr = galois_lfsr.to_fibonacci_lfsr()
+
+    y1 = galois_lfsr.step(100)
+    y2 = fibonacci_lfsr.step(100)
+
+    assert np.array_equal(y1, y2)
