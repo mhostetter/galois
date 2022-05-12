@@ -24,6 +24,8 @@ def test_ntt_exceptions():
         galois.ntt([1, 2, 3, 4], size=6.0)
     with pytest.raises(TypeError):
         galois.ntt([1, 2, 3, 4], modulus=3*256 + 1.0)
+    with pytest.raises(TypeError):
+        galois.ntt([1, 2, 3, 4], forward=1.0)
 
     with pytest.raises(ValueError):
         GF = galois.GF(2**8)  # Invalid field for NTTs
@@ -32,6 +34,10 @@ def test_ntt_exceptions():
         galois.ntt([1, 2, 3, 4], size=3)
     with pytest.raises(ValueError):
         galois.ntt([1, 2, 3, 40], modulus=13)
+    with pytest.raises(ValueError):
+        galois.ntt([1, 2, 3, 40], modulus=43)
+    with pytest.raises(ValueError):
+        galois.ntt([1, 2, 3, 4], modulus=3*256 + 2)
 
 
 @pytest.mark.parametrize(["x", "p", "X"], NTT_LUTS)
