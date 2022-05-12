@@ -16,6 +16,12 @@ def test_cant_instantiate_GF():
         a = galois.FieldArray(v)
 
 
+def test_element_like_conversion():
+    GF = galois.GF(3**5)
+    assert np.array_equal(GF(17), GF("x^2 + 2x + 2"))
+    assert np.array_equal(GF([[17, 4], [148, 205]]), GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]]))
+
+
 class Test0D:
     @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.FieldArray])
     def test_new(self, field, type1):

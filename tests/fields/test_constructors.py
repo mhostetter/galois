@@ -198,6 +198,45 @@ def test_random_invalid_dtype(field, shape):
         a = field.Random(shape, dtype=dtype)
 
 
+def test_vandermonde_exceptions():
+    GF = galois.GF(7)
+    with pytest.raises(TypeError):
+        GF.Vandermonde(2.0, 3, 3)
+    with pytest.raises(TypeError):
+        GF.Vandermonde(2, 3.0, 3)
+    with pytest.raises(TypeError):
+        GF.Vandermonde(2, 3, 3.0)
+    with pytest.raises(ValueError):
+        GF.Vandermonde(GF([2,3]), 3, 3)
+    with pytest.raises(ValueError):
+        GF.Vandermonde(2, -3, 3)
+    with pytest.raises(ValueError):
+        GF.Vandermonde(2, 3, -3)
+
+
+def test_vandermonde(field):
+    m, n = 3, 4
+    dtype = valid_dtype(field)
+    V = field.Vandermonde(field.primitive_element, m, n, dtype=dtype)
+    assert type(V) is field
+    assert V.dtype == dtype
+    assert V.shape == (m, n)
+
+    assert np.all(V[0,:] == 1)
+    assert np.all(V[:,0] == 1)
+    assert np.array_equal(V[1,:], field.primitive_element ** np.arange(0, n))
+
+
+def test_vector_exceptions():
+    GF = galois.GF(7**3)
+    with pytest.raises(TypeError):
+        GF.Vector([1, 2.0, 3])
+    with pytest.raises(TypeError):
+        GF.Vector([1, 2, 3], dtype=invalid_dtype(GF))
+    with pytest.raises(ValueError):
+        GF.Vector([1, 2, 3, 4])
+
+
 @pytest.mark.parametrize("shape", [(), (4,), (4,4)])
 def test_vector_valid_dtype(field, shape):
     v_dtype = valid_dtype(field.prime_subfield)
