@@ -74,7 +74,6 @@ Functions
    is_composite
    is_cyclic
    is_irreducible
-   is_monic
    is_perfect_power
    is_powersmooth
    is_prime

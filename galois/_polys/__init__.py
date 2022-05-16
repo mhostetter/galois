@@ -9,4 +9,3 @@ from ._primitive_element import *
 
 # pylint: disable=undefined-variable
 _poly.GCD = _functions.gcd
-_poly.IS_MONIC = _functions.is_monic

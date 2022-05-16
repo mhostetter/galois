@@ -6,15 +6,10 @@ import pytest
 import galois
 
 
-def test_is_monic_exceptions():
-    with pytest.raises(TypeError):
-        galois.is_monic([1, 0, 1, 1])
-
-
 def test_is_monic(poly_is_monic):
     X, Z = poly_is_monic["X"], poly_is_monic["Z"]
     for i in range(len(X)):
-        assert galois.is_monic(X[i]) == Z[i]
+        assert X[i].is_monic == Z[i]
 
 
 def test_is_irreducible_exceptions():
