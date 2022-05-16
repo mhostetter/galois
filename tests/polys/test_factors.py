@@ -240,47 +240,45 @@ def test_factors(characteristic, degree):
         else:
             assert a.factors() == (factors, multiplicities)
 
-def test_square_free_factorization_exceptions():
+def test_square_free_factors_exceptions():
     GF = galois.GF(5)
-    with pytest.raises(TypeError):
-        galois.square_free_factorization([1,0,2,4])
     with pytest.raises(ValueError):
-        galois.square_free_factorization(galois.Poly([2,0,2,4], field=GF))
+        galois.Poly([2,0,2,4], field=GF).square_free_factors()
     with pytest.raises(ValueError):
-        galois.square_free_factorization(galois.Poly([2], field=GF))
+        galois.Poly([2], field=GF).square_free_factors()
 
 
-def test_square_free_factorization():
+def test_square_free_factors():
     a = galois.irreducible_poly(2, 1, method="random")
     b = galois.irreducible_poly(2, 4, method="random")
     c = galois.irreducible_poly(2, 3, method="random")
     f = a * b * c**3
-    assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
+    assert f.square_free_factors() == ([a*b, c], [1, 3])
 
     a = galois.irreducible_poly(5, 1, method="random")
     b = galois.irreducible_poly(5, 4, method="random")
     c = galois.irreducible_poly(5, 3, method="random")
     f = a * b * c**3
-    assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
+    assert f.square_free_factors() == ([a*b, c], [1, 3])
 
     a = galois.irreducible_poly(2**2, 1, method="random")
     b = galois.irreducible_poly(2**2, 4, method="random")
     c = galois.irreducible_poly(2**2, 3, method="random")
     f = a * b * c**3
-    assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
+    assert f.square_free_factors() == ([a*b, c], [1, 3])
 
     a = galois.irreducible_poly(5**2, 1, method="random")
     b = galois.irreducible_poly(5**2, 4, method="random")
     c = galois.irreducible_poly(5**2, 3, method="random")
     f = a * b * c**3
-    assert galois.square_free_factorization(f) == ([a*b, c], [1, 3])
+    assert f.square_free_factors() == ([a*b, c], [1, 3])
 
 
-def test_square_free_factorization_random():
+def test_square_free_factors_random():
     GF = galois.GF(2)
     f = galois.Poly.Random(10, field=GF)
     f //= f.coeffs[0] # Make monic
-    factors, multiplicities = galois.square_free_factorization(f)
+    factors, multiplicities = f.square_free_factors()
     g = galois.Poly.One(GF)
     for fi, mi in zip(factors, multiplicities):
         g *= fi**mi
@@ -289,7 +287,7 @@ def test_square_free_factorization_random():
     GF = galois.GF(5)
     f = galois.Poly.Random(10, field=GF)
     f //= f.coeffs[0] # Make monic
-    factors, multiplicities = galois.square_free_factorization(f)
+    factors, multiplicities = f.square_free_factors()
     g = galois.Poly.One(GF)
     for fi, mi in zip(factors, multiplicities):
         g *= fi**mi
@@ -298,7 +296,7 @@ def test_square_free_factorization_random():
     GF = galois.GF(2**2)
     f = galois.Poly.Random(10, field=GF)
     f //= f.coeffs[0] # Make monic
-    factors, multiplicities = galois.square_free_factorization(f)
+    factors, multiplicities = f.square_free_factors()
     g = galois.Poly.One(GF)
     for fi, mi in zip(factors, multiplicities):
         g *= fi**mi
@@ -307,24 +305,22 @@ def test_square_free_factorization_random():
     GF = galois.GF(5**2)
     f = galois.Poly.Random(10, field=GF)
     f //= f.coeffs[0] # Make monic
-    factors, multiplicities = galois.square_free_factorization(f)
+    factors, multiplicities = f.square_free_factors()
     g = galois.Poly.One(GF)
     for fi, mi in zip(factors, multiplicities):
         g *= fi**mi
     assert f == g
 
 
-def test_distinct_degree_factorization_exceptions():
+def test_distinct_degree_factors_exceptions():
     GF = galois.GF(5)
-    with pytest.raises(TypeError):
-        galois.distinct_degree_factorization([1,0,2,4])
     with pytest.raises(ValueError):
-        galois.distinct_degree_factorization(galois.Poly([2,0,2,4], field=GF))
+        galois.Poly([2,0,2,4], field=GF).distinct_degree_factors()
     with pytest.raises(ValueError):
-        galois.distinct_degree_factorization(galois.Poly([2], field=GF))
+        galois.Poly([2], field=GF).distinct_degree_factors()
 
 
-def test_distinct_degree_factorization():
+def test_distinct_degree_factors():
     GF = galois.GF(2)
     f1, factors_1 = galois.Poly.One(GF), []
     while len(factors_1) < random.randint(1, 2):
@@ -345,7 +341,7 @@ def test_distinct_degree_factorization():
             factors_4.append(f)
             f4 *= f
     f = f1 * f3 * f4
-    assert galois.distinct_degree_factorization(f) == ([f1, f3, f4], [1, 3, 4])
+    assert f.distinct_degree_factors() == ([f1, f3, f4], [1, 3, 4])
 
     GF = galois.GF(5)
     f1, factors_1 = galois.Poly.One(GF), []
@@ -367,7 +363,7 @@ def test_distinct_degree_factorization():
             factors_4.append(f)
             f4 *= f
     f = f1 * f3 * f4
-    assert galois.distinct_degree_factorization(f) == ([f1, f3, f4], [1, 3, 4])
+    assert f.distinct_degree_factors() == ([f1, f3, f4], [1, 3, 4])
 
     GF = galois.GF(2**2)
     f1, factors_1 = galois.Poly.One(GF), []
@@ -389,7 +385,7 @@ def test_distinct_degree_factorization():
             factors_4.append(f)
             f4 *= f
     f = f1 * f3 * f4
-    assert galois.distinct_degree_factorization(f) == ([f1, f3, f4], [1, 3, 4])
+    assert f.distinct_degree_factors() == ([f1, f3, f4], [1, 3, 4])
 
     GF = galois.GF(5**2)
     f1, factors_1 = galois.Poly.One(GF), []
@@ -411,28 +407,26 @@ def test_distinct_degree_factorization():
             factors_4.append(f)
             f4 *= f
     f = f1 * f3 * f4
-    assert galois.distinct_degree_factorization(f) == ([f1, f3, f4], [1, 3, 4])
+    assert f.distinct_degree_factors() == ([f1, f3, f4], [1, 3, 4])
 
 
-def test_equal_degree_factorization_exceptions():
+def test_equal_degree_factors_exceptions():
     GF = galois.GF(5)
     a = galois.Poly([1,0,2,1], field=GF)
     b = galois.Poly([1,4,4,4], field=GF)
     f = a * b
 
     with pytest.raises(TypeError):
-        galois.equal_degree_factorization(f.coeffs, 2)
-    with pytest.raises(TypeError):
-        galois.equal_degree_factorization(f, 2.0)
+        f.equal_degree_factors(2.0)
     with pytest.raises(ValueError):
-        galois.equal_degree_factorization(galois.Poly([2], field=GF), 1)
+        galois.Poly([2], field=GF).equal_degree_factors(1)
     with pytest.raises(ValueError):
-        galois.equal_degree_factorization(galois.Poly([2,0,2,4], field=GF), 2)
+        galois.Poly([2,0,2,4], field=GF).equal_degree_factors(2)
     with pytest.raises(ValueError):
-        galois.equal_degree_factorization(f, 4)
+        f.equal_degree_factors(4)
 
 
-def test_equal_degree_factorization():
+def test_equal_degree_factors():
     GF = galois.GF(2)
     d = random.randint(5, 8)
     r = random.randint(2, 4)
@@ -443,7 +437,7 @@ def test_equal_degree_factorization():
             factors.append(fi)
             f *= fi
     factors = sorted(factors, key=int)
-    assert galois.equal_degree_factorization(f, d) == factors
+    assert f.equal_degree_factors(d) == factors
 
     GF = galois.GF(5)
     d = random.randint(1, 3)
@@ -455,7 +449,7 @@ def test_equal_degree_factorization():
             factors.append(fi)
             f *= fi
     factors = sorted(factors, key=int)
-    assert galois.equal_degree_factorization(f, d) == factors
+    assert f.equal_degree_factors(d) == factors
 
     GF = galois.GF(2**2)
     d = random.randint(1, 4)
@@ -467,7 +461,7 @@ def test_equal_degree_factorization():
             factors.append(fi)
             f *= fi
     factors = sorted(factors, key=int)
-    assert galois.equal_degree_factorization(f, d) == factors
+    assert f.equal_degree_factors(d) == factors
 
     GF = galois.GF(5**2)
     d = 1
@@ -479,4 +473,4 @@ def test_equal_degree_factorization():
             factors.append(fi)
             f *= fi
     factors = sorted(factors, key=int)
-    assert galois.equal_degree_factorization(f, d) == factors
+    assert f.equal_degree_factors(d) == factors
