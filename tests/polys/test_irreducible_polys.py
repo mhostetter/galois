@@ -111,3 +111,11 @@ def test_irreducible_polys_exceptions():
 def test_irreducible_polys(order, degree):
     LUT = eval(f"IRREDUCIBLE_POLYS_{order}_{degree}")
     assert [f.coeffs.tolist() for f in galois.irreducible_polys(order, degree)] == LUT
+
+
+def test_large_degree():
+    """
+    See https://github.com/mhostetter/galois/issues/360.
+    """
+    f = galois.Poly.Degrees([233, 74, 0])
+    assert galois.is_irreducible(f)
