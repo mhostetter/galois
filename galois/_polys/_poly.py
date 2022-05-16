@@ -25,7 +25,6 @@ SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
 # implementations are in a different module that needs to import Poly. This monkey patching avoids the circular import.
 # If you have a better solution, please open a GitHub issue or pull request.
 GCD = lambda x, y: x
-IS_MONIC = lambda x: True
 
 
 @set_module("galois")
@@ -899,7 +898,7 @@ class Poly:
         """
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
-        if not IS_MONIC(self):
+        if not self.is_monic:
             raise ValueError(f"The polynomial must be monic, not {self}.")
 
         field = self.field
@@ -1008,7 +1007,7 @@ class Poly:
         """
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
-        if not IS_MONIC(self):
+        if not self.is_monic:
             raise ValueError(f"The polynomial must be monic, not {self}.")
         # TODO: Add check if the polynomial is square-free
 
@@ -1099,7 +1098,7 @@ class Poly:
             raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
-        if not IS_MONIC(self):
+        if not self.is_monic:
             raise ValueError(f"The polynomial must be monic, not {self}.")
         if not self.degree % degree == 0:
             raise ValueError(f"Argument `degree` must be divide the degree of the polynomial, {degree} does not divide {self.degree}.")
@@ -1191,7 +1190,7 @@ class Poly:
         """
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
-        if not IS_MONIC(self):
+        if not self.is_monic:
             raise ValueError(f"The polynomial must be monic, not {self}.")
 
         factors_, multiplicities = [], []
@@ -1981,3 +1980,28 @@ class Poly:
             self._nonzero_degrees = degrees[np.nonzero(coeffs)]
 
         return self._nonzero_degrees.copy()
+
+    @property
+    def is_monic(self) -> bool:
+        r"""
+        Returns whether the polynomial is monic, meaning its highest-degree coefficient is one.
+
+        Examples
+        --------
+        A monic polynomial over :math:`\mathrm{GF}(7)`.
+
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([1, 0, 4, 5], field=GF); p
+            p.is_monic
+
+        A non-monic polynomial over :math:`\mathrm{GF}(7)`.
+
+        .. ipython:: python
+
+            GF = galois.GF(7)
+            p = galois.Poly([3, 0, 4, 5], field=GF); p
+            p.is_monic
+        """
+        return self.nonzero_coeffs[0] == 1

@@ -12,7 +12,6 @@ from ._poly import Poly
 
 __all__ = [
     "lagrange_poly",
-    "is_monic",
 ]
 
 
@@ -198,58 +197,11 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
 # Polynomial tests
 ###############################################################################
 
-@set_module("galois")
-def is_monic(poly: Poly) -> bool:
-    r"""
-    Determines whether the polynomial is monic.
-
-    Parameters
-    ----------
-    poly
-        A polynomial over a Galois field.
-
-    Returns
-    -------
-    :
-        `True` if the polynomial is monic.
-
-    See Also
-    --------
-    is_irreducible, is_primitive
-
-    Notes
-    -----
-    A monic polynomial has its highest-degree, non-zero coefficient with value 1.
-
-    Examples
-    --------
-    A monic polynomial over :math:`\mathrm{GF}(7)`.
-
-    .. ipython:: python
-
-        GF = galois.GF(7)
-        p = galois.Poly([1, 0, 4, 5], field=GF); p
-        galois.is_monic(p)
-
-    A non-monic polynomial over :math:`\mathrm{GF}(7)`.
-
-    .. ipython:: python
-
-        GF = galois.GF(7)
-        p = galois.Poly([3, 0, 4, 5], field=GF); p
-        galois.is_monic(p)
-    """
-    if not isinstance(poly, Poly):
-        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-
-    return poly.nonzero_coeffs[0] == 1
-
-
 def is_square_free(poly: Poly) -> bool:
     """
     This function is wrapped and documented in `_polymorphic.is_square_free()`.
     """
-    if not is_monic(poly):
+    if not poly.is_monic:
         poly //= poly.coeffs[0]
 
     # Constant polynomials are square-free
