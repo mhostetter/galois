@@ -15,7 +15,6 @@ from ._polys._functions import gcd as poly_gcd
 from ._polys._functions import egcd as poly_egcd
 from ._polys._functions import lcm as poly_lcm
 from ._polys._functions import prod as poly_prod
-from ._polys._functions import is_square_free as poly_is_square_free
 from ._prime import factors as int_factors
 from ._prime import is_square_free as int_is_square_free
 
@@ -716,6 +715,6 @@ def is_square_free(value):
     if isinstance(value, (int, np.integer)):
         return int_is_square_free(value)
     elif isinstance(value, Poly):
-        return poly_is_square_free(value)
+        return value.is_square_free()
     else:
         raise TypeError(f"Argument `value` must be either int or galois.Poly, not {type(value)}.")

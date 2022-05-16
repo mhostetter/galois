@@ -1484,6 +1484,55 @@ class Poly:
 
         return True
 
+    def is_square_free(self) -> bool:
+        r"""
+        Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is square-free.
+
+        Returns
+        -------
+        :
+            `True` if the polynomial is square-free.
+
+        Important
+        ---------
+        This is a method, not a property, to indicate this test is computationally expensive.
+
+        Notes
+        -----
+        A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one. Therefore,
+        its canonical factorization is
+
+        .. math::
+            f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
+
+        Examples
+        --------
+        Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+
+        .. ipython:: python
+
+            GF = galois.GF(3)
+            f1 = galois.irreducible_poly(3, 3); f1
+            f2 = galois.irreducible_poly(3, 4); f2
+
+        Determine if composite polynomials are square-free over :math:`\mathrm{GF}(3)`.
+
+        .. ipython:: python
+
+            (f1 * f2).is_square_free()
+            (f1**2 * f2).is_square_free()
+        """
+        if not self.is_monic:
+            self //= self.coeffs[0]
+
+        # Constant polynomials are square-free
+        if self.degree == 0:
+            return True
+
+        _, multiplicities = self.square_free_factors()
+
+        return multiplicities == [1,]
+
     ###############################################################################
     # Overridden dunder methods
     ###############################################################################

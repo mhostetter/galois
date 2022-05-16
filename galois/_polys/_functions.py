@@ -191,23 +191,3 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
         L += y[j] * lj
 
     return L
-
-
-###############################################################################
-# Polynomial tests
-###############################################################################
-
-def is_square_free(poly: Poly) -> bool:
-    """
-    This function is wrapped and documented in `_polymorphic.is_square_free()`.
-    """
-    if not poly.is_monic:
-        poly //= poly.coeffs[0]
-
-    # Constant polynomials are square-free
-    if poly.degree == 0:
-        return True
-
-    _, multiplicities = poly.square_free_factors()
-
-    return multiplicities == [1,]

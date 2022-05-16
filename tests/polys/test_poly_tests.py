@@ -1,9 +1,6 @@
 """
-A pytest module to test general functions on polynomials over finite fields.
+A pytest module to test polynomial test (is_blank) method and properties.
 """
-import pytest
-
-import galois
 
 
 def test_is_monic(poly_is_monic):
@@ -30,12 +27,7 @@ def test_is_primitive(poly_is_primitive):
         assert not p.is_primitive()
 
 
-def test_is_square_free_exceptions():
-    with pytest.raises(TypeError):
-        galois.is_square_free([1, 0, 1, 1])
-
-
 def test_is_square_free(poly_is_square_free):
     X, Z = poly_is_square_free["X"], poly_is_square_free["Z"]
     for i in range(len(X)):
-        assert galois.is_square_free(X[i]) == Z[i]
+        assert X[i].is_square_free() == Z[i]
