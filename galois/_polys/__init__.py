@@ -6,3 +6,6 @@ from ._irreducible import *
 from ._poly import *
 from ._primitive import *
 from ._primitive_element import *
+
+# pylint: disable=undefined-variable
+_poly.FACTORS = _functions.factors
