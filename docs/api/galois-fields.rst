@@ -64,7 +64,6 @@ Primitive polynomials
    primitive_polys
    conway_poly
    matlab_primitive_poly
-   is_primitive
 
 Primitive elements
 ..................

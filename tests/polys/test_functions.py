@@ -21,18 +21,13 @@ def test_is_irreducible(poly_is_irreducible):
         assert not p.is_irreducible()
 
 
-def test_is_primitive_exceptions():
-    with pytest.raises(TypeError):
-        galois.is_primitive([1, 0, 1, 1])
-
-
 def test_is_primitive(poly_is_primitive):
     IS, IS_NOT = poly_is_primitive["IS"], poly_is_primitive["IS_NOT"]
     for i in range(len(IS)):
         p = IS[i]
-        assert galois.is_primitive(p)
+        assert p.is_primitive()
         p = IS_NOT[i]
-        assert not galois.is_primitive(p)
+        assert not p.is_primitive()
 
 
 def test_is_square_free_exceptions():

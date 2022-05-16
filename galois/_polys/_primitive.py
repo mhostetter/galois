@@ -11,98 +11,11 @@ import numpy as np
 from .._domains import _factory
 from .._databases import ConwayPolyDatabase
 from .._overrides import set_module
-from .._prime import factors, is_prime, is_prime_power
+from .._prime import is_prime, is_prime_power
 
 from ._poly import Poly
 
-__all__ = ["is_primitive", "primitive_poly", "primitive_polys", "conway_poly", "matlab_primitive_poly"]
-
-
-@set_module("galois")
-def is_primitive(poly: Poly) -> bool:
-    r"""
-    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
-
-    Parameters
-    ----------
-    poly
-        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
-
-    Returns
-    -------
-    :
-        `True` if the polynomial is primitive.
-
-    See Also
-    --------
-    primitive_poly, matlab_primitive_poly, primitive_polys
-
-    Notes
-    -----
-    A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
-    :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than :math:`q^m - 1`.
-
-    References
-    ----------
-    * Algorithm 4.77 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
-
-    Examples
-    --------
-    All Conway polynomials are primitive.
-
-    .. ipython:: python
-
-        f = galois.conway_poly(2, 8); f
-        galois.is_primitive(f)
-
-        f = galois.conway_poly(3, 5); f
-        galois.is_primitive(f)
-
-    The irreducible polynomial of :math:`\mathrm{GF}(2^8)` for AES is not primitive.
-
-    .. ipython:: python
-
-        f = galois.Poly.Degrees([8, 4, 3, 1, 0]); f
-        f.is_irreducible()
-        galois.is_primitive(f)
-    """
-    if not isinstance(poly, Poly):
-        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-
-    if poly.degree == 0:
-        # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x]. Both the
-        # zero element and the units are not irreducible over the polynomial ring GF(p^m)[x], and therefore cannot
-        # be primitive.
-        return False
-
-    if poly.field.order == 2 and poly.degree == 1:
-        # There is only one primitive polynomial in GF(2)
-        return poly == Poly([1, 1])
-
-    if poly.coeffs[-1] == 0:
-        # A primitive polynomial cannot have zero constant term
-        # TODO: Why isn't f(x) = x primitive? It's irreducible and passes the primitivity tests.
-        return False
-
-    if not poly.is_irreducible():
-        # A polynomial must be irreducible to be primitive
-        return False
-
-    field = poly.field
-    q = field.order
-    m = poly.degree
-    one = Poly.One(field)
-
-    primes, _ = factors(q**m - 1)
-    x = Poly.Identity(field)
-    for ki in sorted([(q**m - 1) // pi for pi in primes]):
-        # f(x) must not divide (x^((q^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of q**m - 1
-        h = pow(x, ki, poly)
-        g = (h - one) % poly
-        if g == 0:
-            return False
-
-    return True
+__all__ = ["primitive_poly", "primitive_polys", "conway_poly", "matlab_primitive_poly"]
 
 
 @set_module("galois")
@@ -130,7 +43,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
 
     See Also
     --------
-    is_primitive, matlab_primitive_poly, conway_poly
+    Poly.is_primitive, matlab_primitive_poly, conway_poly
 
     Notes
     -----
@@ -192,7 +105,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
             .. ipython:: python
 
                 f = galois.primitive_poly(7, 5, method="random"); f
-                galois.is_primitive(f)
+                f.is_primitive()
 
             Monic primitive polynomials scaled by non-zero field elements (now non-monic) are also primitive.
 
@@ -200,7 +113,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
 
                 GF = galois.GF(7)
                 g = f * GF(3); g
-                galois.is_primitive(g)
+                g.is_primitive()
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
@@ -242,7 +155,7 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
 
     See Also
     --------
-    is_primitive, irreducible_polys
+    Poly.is_primitive, irreducible_polys
 
     Notes
     -----
@@ -326,7 +239,7 @@ def _deterministic_search(field, start, stop, step) -> Optional[Poly]:
     """
     for element in range(start, stop, step):
         poly = Poly.Int(element, field=field)
-        if is_primitive(poly):
+        if poly.is_primitive():
             return poly
 
     return None
@@ -345,7 +258,7 @@ def _random_search(order, degree) -> Poly:
     while True:
         integer = random.randint(start, stop - 1)
         poly = Poly.Int(integer, field=field)
-        if is_primitive(poly):
+        if poly.is_primitive():
             return poly
 
 
@@ -368,7 +281,7 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
 
     See Also
     --------
-    is_primitive, primitive_poly, matlab_primitive_poly
+    Poly.is_primitive, primitive_poly, matlab_primitive_poly
 
     Raises
     ------
@@ -444,7 +357,7 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
 
     See Also
     --------
-    is_primitive, primitive_poly, conway_poly
+    Poly.is_primitive, primitive_poly, conway_poly
 
     Notes
     -----

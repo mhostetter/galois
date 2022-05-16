@@ -74,5 +74,4 @@ Tests
 
 .. autosummary::
 
-   is_primitive
    is_square_free
