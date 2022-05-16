@@ -178,12 +178,17 @@ def test_factors_exceptions():
     with pytest.raises(ValueError):
         galois.factors(galois.Poly([2], field=GF))
 
+    with pytest.raises(ValueError):
+        galois.Poly([2,0,2,4], field=GF).factors()
+    with pytest.raises(ValueError):
+        galois.Poly([2], field=GF).factors()
+
 
 def test_factors_old():
     g0, g1, g2 = galois.conway_poly(2, 3), galois.conway_poly(2, 4), galois.conway_poly(2, 5)
     k0, k1, k2 = 2, 3, 4
     f = g0**k0 * g1**k1 * g2**k2
-    factors, multiplicities = galois.factors(f)
+    factors, multiplicities = galois.factors(f) if random.choice([True, False]) else f.factors()
     assert factors == [g0, g1, g2]
     assert multiplicities == [k0, k1, k2]
 
@@ -199,7 +204,7 @@ def test_factors_old():
 def test_factors_random():
     for _ in range(5):
         f = galois.Poly.Random(random.randint(10, 50))
-        factors, multiplicities = galois.factors(f)
+        factors, multiplicities = galois.factors(f) if random.choice([True, False]) else f.factors()
         g = galois.Poly.One()
         for fi, mi in zip(factors, multiplicities):
             g *= fi**mi
@@ -209,7 +214,7 @@ def test_factors_random():
     for _ in range(5):
         f = galois.Poly.Random(random.randint(10, 50), field=GF)
         f //= f.coeffs[0]  # Make monic
-        factors, multiplicities = galois.factors(f)
+        factors, multiplicities = galois.factors(f) if random.choice([True, False]) else f.factors()
         g = galois.Poly.One(GF)
         for fi, mi in zip(factors, multiplicities):
             g *= fi**mi
@@ -230,8 +235,10 @@ def test_factors(characteristic, degree):
         factors, multiplicities = zip(*sorted(zip(factors, multiplicities), key=lambda item: int(item[0])))
         factors, multiplicities = list(factors), list(multiplicities)
 
-        assert galois.factors(a) == (factors, multiplicities)
-
+        if random.choice([True, False]):
+            assert galois.factors(a) == (factors, multiplicities)
+        else:
+            assert a.factors() == (factors, multiplicities)
 
 def test_square_free_factorization_exceptions():
     GF = galois.GF(5)

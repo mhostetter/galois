@@ -3,7 +3,7 @@ A module containing a class for univariate polynomials over finite fields.
 """
 from __future__ import annotations
 
-from typing import Tuple, Sequence, Optional, Union, Type, overload
+from typing import Tuple, List, Sequence, Optional, Union, Type, overload
 from typing_extensions import Literal
 
 import numpy as np
@@ -20,6 +20,11 @@ __all__ = ["Poly"]
 # Values were obtained by running scripts/sparse_poly_performance_test.py
 SPARSE_VS_DENSE_POLY_FACTOR = 0.00_125  # 1.25% density
 SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
+
+# Functions that will be monkey-patched in _polys/__init__.py to the actual implementations. This is required because the
+# implementations are in a different module that needs to import Poly. This monkey patching avoids the circular import.
+# If you have a better solution, please open a GitHub issue or pull request.
+FACTORS = lambda x: ([x], [1])
 
 
 @set_module("galois")
@@ -835,6 +840,60 @@ class Poly:
                 break
 
         return multiplicity
+
+    def factors(self) -> Tuple[List[Poly], List[int]]:
+        r"""
+        Computes the irreducible factors of the non-constant, monic polynomial :math:`f(x)`.
+
+        Returns
+        -------
+        :
+            Sorted list of irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of :math:`f(x)` sorted in
+            lexicographically-increasing order.
+        :
+            List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
+
+        Notes
+        -----
+        This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that
+        :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
+
+        Steps:
+
+        1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free polynomials.
+        2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors with the same degree.
+        3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible factors.
+
+        References
+        ----------
+        * Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.1.7.
+        * Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
+
+        Examples
+        --------
+        Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+
+        .. ipython:: python
+
+            GF = galois.GF(3)
+            g1 = galois.irreducible_poly(3, 3); g1
+            g2 = galois.irreducible_poly(3, 4); g2
+            g3 = galois.irreducible_poly(3, 5); g3
+
+        Construct a composite polynomial.
+
+        .. ipython:: python
+
+            e1, e2, e3 = 5, 4, 3
+            f = g1**e1 * g2**e2 * g3**e3; f
+
+        Factor the polynomial into its irreducible factors over :math:`\mathrm{GF}(3)`.
+
+        .. ipython:: python
+
+            f.factors()
+        """
+        return FACTORS(self)
 
     def derivative(self, k: int = 1) -> Poly:
         r"""
