@@ -118,4 +118,4 @@ def test_large_degree():
     See https://github.com/mhostetter/galois/issues/360.
     """
     f = galois.Poly.Degrees([233, 74, 0])
-    assert galois.is_irreducible(f)
+    assert f.is_irreducible()

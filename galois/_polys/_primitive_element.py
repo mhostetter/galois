@@ -12,7 +12,6 @@ from .._overrides import set_module
 from .._prime import factors
 from ..typing import PolyLike
 
-from ._irreducible import is_irreducible
 from ._poly import Poly
 
 __all__ = ["is_primitive_element", "primitive_element", "primitive_elements"]
@@ -70,7 +69,7 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
         raise ValueError(f"Arguments `element` and `irreducible_poly` must be over the same field, not {element.field.name} and {irreducible_poly.field.name}.")
     if not element.degree < irreducible_poly.degree:
         raise ValueError(f"Argument `element` must have degree less than `irreducible_poly`, not {element.degree} and {irreducible_poly.degree}.")
-    if not is_irreducible(irreducible_poly):
+    if not irreducible_poly.is_irreducible():
         raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly} is reducible over {irreducible_poly.field.name}.")
 
     return _is_primitive_element(element, irreducible_poly)
@@ -183,7 +182,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
         raise TypeError(f"Argument `irreducible_poly` must be a galois.Poly, not {type(irreducible_poly)}.")
     if not irreducible_poly.degree > 1:
         raise ValueError(f"Argument `irreducible_poly` must have degree greater than 1, not {irreducible_poly.degree}.")
-    if not is_irreducible(irreducible_poly):
+    if not irreducible_poly.is_irreducible():
         raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly} is reducible over {irreducible_poly.field.name}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")

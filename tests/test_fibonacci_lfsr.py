@@ -283,7 +283,7 @@ def test_step_gf2_reducible():
         coeffs[0] = 1
         coeffs[-1] = GF.Random(low=1)
         c = galois.Poly(coeffs)
-        assert not galois.is_irreducible(c)
+        assert not c.is_irreducible()
         key = -coeffs[1:][::-1]
         c
         key
@@ -319,7 +319,7 @@ def test_step_gf3_reducible():
         coeffs[0] = 1
         coeffs[-1] = GF.Random(low=1)
         c = galois.Poly(coeffs)
-        assert not galois.is_irreducible(c)
+        assert not c.is_irreducible()
         key = -coeffs[1:][::-1]
         c
         key
@@ -355,7 +355,7 @@ def test_step_gf2_3_reducible():
         coeffs[0] = 1
         coeffs[-1] = GF.Random(low=1)
         c = galois.Poly(coeffs)
-        assert not galois.is_irreducible(c)
+        assert not c.is_irreducible()
         key = -coeffs[1:][::-1]
         c
         key
@@ -391,7 +391,7 @@ def test_step_gf3_3_reducible():
         coeffs[0] = 1
         coeffs[-1] = GF.Random(low=1)
         c = galois.Poly(coeffs)
-        assert not galois.is_irreducible(c)
+        assert not c.is_irreducible()
         key = -coeffs[1:][::-1]
         c
         key
@@ -451,7 +451,7 @@ def test_to_galois_lfsr_reducible(order):
         coeffs[0] = 1
         coeffs[-1] = GF.Random(low=1)
         c = galois.Poly(coeffs)
-        if not galois.is_irreducible(c):
+        if not c.is_irreducible():
             break
 
     fibonacci_lfsr = galois.FLFSR(c.reverse())

@@ -74,6 +74,5 @@ Tests
 
 .. autosummary::
 
-   is_irreducible
    is_primitive
    is_square_free

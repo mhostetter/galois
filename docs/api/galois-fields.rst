@@ -54,7 +54,6 @@ Irreducible polynomials
 
    irreducible_poly
    irreducible_polys
-   is_irreducible
 
 Primitive polynomials
 .....................
