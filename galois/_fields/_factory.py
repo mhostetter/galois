@@ -9,7 +9,7 @@ from typing_extensions import Literal
 
 from .._modular import primitive_root, is_primitive_root
 from .._overrides import set_module
-from .._polys import Poly, conway_poly, primitive_element, is_irreducible, is_primitive_element
+from .._polys import Poly, conway_poly, primitive_element, is_primitive_element
 from .._prime import factors
 from ..typing import PolyLike
 
@@ -356,7 +356,7 @@ def _GF_extension(
             field.display(display)
         return field
 
-    if verify_poly and not is_irreducible(irreducible_poly_):
+    if verify_poly and not irreducible_poly_.is_irreducible():
         raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly_} is not.")
     if verify_element and not is_primitive_element(alpha, irreducible_poly_):
         raise ValueError(f"Argument `primitive_element` must be a multiplicative generator of {name}, {alpha} is not.")

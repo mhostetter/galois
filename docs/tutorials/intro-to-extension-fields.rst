@@ -108,8 +108,8 @@ Also note, when factored, :math:`f(x)` has no irreducible factors other than its
 
 .. ipython:: python
 
-   galois.is_irreducible(f)
-   galois.factors(f)
+   f.is_irreducible()
+   f.factors()
 
 Arithmetic
 ----------

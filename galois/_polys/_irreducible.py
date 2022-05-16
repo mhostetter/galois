@@ -10,117 +10,11 @@ import numpy as np
 
 from .._domains import _factory
 from .._overrides import set_module
-from .._prime import factors, is_prime_power
+from .._prime import is_prime_power
 
-from ._functions import gcd
 from ._poly import Poly
 
-__all__ = ["is_irreducible", "irreducible_poly", "irreducible_polys"]
-
-
-@set_module("galois")
-def is_irreducible(poly: Poly) -> bool:
-    r"""
-    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
-
-    Parameters
-    ----------
-    poly
-        A polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
-
-    Returns
-    -------
-    :
-        `True` if the polynomial is irreducible.
-
-    See Also
-    --------
-    is_primitive, irreducible_poly, irreducible_polys
-
-    Notes
-    -----
-    A polynomial :math:`f(x) \in \mathrm{GF}(p^m)[x]` is *reducible* over :math:`\mathrm{GF}(p^m)` if it can
-    be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p^m)[x]` of strictly
-    lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
-    closed, such irreducible polynomials exist.
-
-    This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
-    over :math:`\mathrm{GF}(q)` for prime power :math:`q` is irreducible if and only if :math:`f(x)\ |\ (x^{q^m} - x)`
-    and :math:`\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1` for :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for
-    the :math:`k` prime divisors :math:`p_i` of :math:`m`.
-
-    References
-    ----------
-    * Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273–280. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
-    * Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
-    * Section 4.5.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
-    * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
-
-    Examples
-    --------
-    .. ipython:: python
-
-        # Conway polynomials are always irreducible (and primitive)
-        f = galois.conway_poly(2, 5); f
-
-        # f(x) has no roots in GF(2), a necessary but not sufficient condition of being irreducible
-        f.roots()
-
-        galois.is_irreducible(f)
-
-    .. ipython:: python
-
-        g = galois.irreducible_poly(2**4, 2, method="random"); g
-        h = galois.irreducible_poly(2**4, 3, method="random"); h
-        f = g * h; f
-
-        galois.is_irreducible(f)
-    """
-    # pylint: disable=too-many-return-statements
-    if not isinstance(poly, Poly):
-        raise TypeError(f"Argument `poly` must be a galois.Poly, not {type(poly)}.")
-
-    if poly.degree == 0:
-        # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x]. Both the
-        # zero element and the units are not irreducible over the polynomial ring GF(p^m)[x].
-        return False
-
-    if poly.degree == 1:
-        # f(x) = x + a (even a = 0) in any Galois field is irreducible
-        return True
-
-    if poly.coeffs[-1] == 0:
-        # g(x) = x can be factored, therefore it is not irreducible
-        return False
-
-    if poly.field.order == 2 and poly.nonzero_coeffs.size % 2 == 0:
-        # Polynomials over GF(2) with degree at least 2 and an even number of terms satisfy f(1) = 0, hence
-        # g(x) = x + 1 can be factored. Section 4.5.2 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf.
-        return False
-
-    field = poly.field
-    q = field.order
-    m = poly.degree
-    x = Poly.Identity(field)
-
-    primes, _ = factors(m)
-    h0 = Poly.Identity(field)
-    n0 = 0
-    for ni in sorted([m // pi for pi in primes]):
-        # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
-        hi = pow(h0, q**(ni - n0), poly)
-        g = gcd(poly, hi - x)
-        if g != 1:
-            return False
-        h0, n0 = hi, ni
-
-    # f(x) must divide (x^(q^m) - x) to be irreducible
-    h = pow(h0, q**(m - n0), poly)
-    g = (h - x) % poly
-    if g != 0:
-        return False
-
-    return True
+__all__ = ["irreducible_poly", "irreducible_polys"]
 
 
 @set_module("galois")
@@ -148,7 +42,7 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
 
     See Also
     --------
-    is_irreducible, primitive_poly, conway_poly
+    Poly.is_irreducible, primitive_poly, conway_poly
 
     Notes
     -----
@@ -188,7 +82,7 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
             .. ipython:: python
 
                 f = galois.irreducible_poly(7, 5, method="random"); f
-                galois.is_irreducible(f)
+                f.is_irreducible()
 
             Monic irreducible polynomials scaled by non-zero field elements (now non-monic) are also irreducible.
 
@@ -196,7 +90,7 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
 
                 GF = galois.GF(7)
                 g = f * GF(3); g
-                galois.is_irreducible(g)
+                g.is_irreducible()
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
@@ -238,7 +132,7 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
 
     See Also
     --------
-    is_irreducible, primitive_polys
+    Poly.is_irreducible, primitive_polys
 
     Notes
     -----
@@ -320,7 +214,7 @@ def _deterministic_search(field, start, stop, step) -> Optional[Poly]:
     """
     for element in range(start, stop, step):
         poly = Poly.Int(element, field=field)
-        if is_irreducible(poly):
+        if poly.is_irreducible():
             return poly
 
     return None
@@ -339,5 +233,5 @@ def _random_search(order, degree) -> Poly:
     while True:
         integer = random.randint(start, stop - 1)
         poly = Poly.Int(integer, field=field)
-        if is_irreducible(poly):
+        if poly.is_irreducible():
             return poly

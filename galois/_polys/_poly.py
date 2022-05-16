@@ -10,6 +10,7 @@ import numpy as np
 
 from .._domains import Array, _factory
 from .._overrides import set_module
+from .._prime import factors
 from ..typing import ElementLike, ArrayLike, PolyLike
 
 from . import _binary, _dense, _sparse
@@ -884,9 +885,9 @@ class Poly:
         .. ipython:: python
 
             GF = galois.GF(5)
-            a = galois.Poly([1,0], field=GF); a, galois.is_irreducible(a)
-            b = galois.Poly([1,0,2,4], field=GF); b, galois.is_irreducible(b)
-            c = galois.Poly([1,4,1], field=GF); c, galois.is_irreducible(c)
+            a = galois.Poly([1,0], field=GF); a, a.is_irreducible()
+            b = galois.Poly([1,0,2,4], field=GF); b, b.is_irreducible()
+            c = galois.Poly([1,4,1], field=GF); c, c.is_irreducible()
             f = a * b * c**3; f
 
         The square-free factorization is :math:`\{x(x^3 + 2x + 4), x^2 + 4x + 1\}` with multiplicities :math:`\{1, 3\}`.
@@ -990,11 +991,11 @@ class Poly:
 
         .. ipython:: python
 
-            a = galois.Poly([1, 0]); a, galois.is_irreducible(a)
-            b = galois.Poly([1, 1]); b, galois.is_irreducible(b)
-            c = galois.Poly([1, 1, 1]); c, galois.is_irreducible(c)
-            d = galois.Poly([1, 0, 1, 1]); d, galois.is_irreducible(d)
-            e = galois.Poly([1, 1, 0, 1]); e, galois.is_irreducible(e)
+            a = galois.Poly([1, 0]); a, a.is_irreducible()
+            b = galois.Poly([1, 1]); b, b.is_irreducible()
+            c = galois.Poly([1, 1, 1]); c, c.is_irreducible()
+            d = galois.Poly([1, 0, 1, 1]); d, d.is_irreducible()
+            e = galois.Poly([1, 1, 0, 1]); e, e.is_irreducible()
             f = a * b * c * d * e; f
 
         The distinct-degree factorization is :math:`\{x(x + 1), x^2 + x + 1, (x^3 + x + 1)(x^3 + x^2 + 1)\}` whose irreducible factors
@@ -1079,8 +1080,8 @@ class Poly:
 
         .. ipython:: python
 
-            a = galois.Poly([1, 0]); a, galois.is_irreducible(a)
-            b = galois.Poly([1, 1]); b, galois.is_irreducible(b)
+            a = galois.Poly([1, 0]); a, a.is_irreducible()
+            b = galois.Poly([1, 1]); b, b.is_irreducible()
             f = a * b; f
             f.equal_degree_factors(1)
 
@@ -1089,8 +1090,8 @@ class Poly:
         .. ipython:: python
 
             GF = galois.GF(5)
-            a = galois.Poly([1, 0, 2, 1], field=GF); a, galois.is_irreducible(a)
-            b = galois.Poly([1, 4, 4, 4], field=GF); b, galois.is_irreducible(b)
+            a = galois.Poly([1, 0, 2, 1], field=GF); a, a.is_irreducible()
+            b = galois.Poly([1, 4, 4, 4], field=GF); b, b.is_irreducible()
             f = a * b; f
             f.equal_degree_factors(3)
         """
@@ -1302,6 +1303,105 @@ class Poly:
             return p_prime.derivative(k)
         else:
             return p_prime
+
+    def is_irreducible(self) -> bool:
+        r"""
+        Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
+
+        Important
+        ---------
+        This is a method, not a property, to indicate this test is computationally expensive.
+
+        Returns
+        -------
+        :
+            `True` if the polynomial is irreducible.
+
+        See Also
+        --------
+        irreducible_poly, irreducible_polys
+
+        Notes
+        -----
+        A polynomial :math:`f(x) \in \mathrm{GF}(p^m)[x]` is *reducible* over :math:`\mathrm{GF}(p^m)` if it can
+        be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p^m)[x]` of strictly
+        lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
+        closed, such irreducible polynomials exist.
+
+        This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
+        over :math:`\mathrm{GF}(q)` for prime power :math:`q` is irreducible if and only if :math:`f(x)\ |\ (x^{q^m} - x)`
+        and :math:`\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1` for :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for
+        the :math:`k` prime divisors :math:`p_i` of :math:`m`.
+
+        References
+        ----------
+        * Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273-280. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
+        * Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
+        * Section 4.5.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
+        * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
+
+        Examples
+        --------
+        .. ipython:: python
+
+            # Conway polynomials are always irreducible (and primitive)
+            f = galois.conway_poly(2, 5); f
+
+            # f(x) has no roots in GF(2), a necessary but not sufficient condition of being irreducible
+            f.roots()
+
+            f.is_irreducible()
+
+        .. ipython:: python
+
+            g = galois.irreducible_poly(2**4, 2, method="random"); g
+            h = galois.irreducible_poly(2**4, 3, method="random"); h
+            f = g * h; f
+
+            f.is_irreducible()
+        """
+        # pylint: disable=too-many-return-statements
+        if self.degree == 0:
+            # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x]. Both the
+            # zero element and the units are not irreducible over the polynomial ring GF(p^m)[x].
+            return False
+
+        if self.degree == 1:
+            # f(x) = x + a (even a = 0) in any Galois field is irreducible
+            return True
+
+        if self.coeffs[-1] == 0:
+            # g(x) = x can be factored, therefore it is not irreducible
+            return False
+
+        if self.field.order == 2 and self.nonzero_coeffs.size % 2 == 0:
+            # Polynomials over GF(2) with degree at least 2 and an even number of terms satisfy f(1) = 0, hence
+            # g(x) = x + 1 can be factored. Section 4.5.2 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf.
+            return False
+
+        field = self.field
+        q = field.order
+        m = self.degree
+        x = Poly.Identity(field)
+
+        primes, _ = factors(m)
+        h0 = Poly.Identity(field)
+        n0 = 0
+        for ni in sorted([m // pi for pi in primes]):
+            # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
+            hi = pow(h0, q**(ni - n0), self)
+            g = GCD(self, hi - x)
+            if g != 1:
+                return False
+            h0, n0 = hi, ni
+
+        # f(x) must divide (x^(q^m) - x) to be irreducible
+        h = pow(h0, q**(m - n0), self)
+        g = (h - x) % self
+        if g != 0:
+            return False
+
+        return True
 
     ###############################################################################
     # Overridden dunder methods

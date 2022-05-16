@@ -14,7 +14,6 @@ from .._overrides import set_module
 from .._prime import factors, is_prime, is_prime_power
 
 from ._poly import Poly
-from ._irreducible import is_irreducible
 
 __all__ = ["is_primitive", "primitive_poly", "primitive_polys", "conway_poly", "matlab_primitive_poly"]
 
@@ -36,7 +35,7 @@ def is_primitive(poly: Poly) -> bool:
 
     See Also
     --------
-    is_irreducible, primitive_poly, matlab_primitive_poly, primitive_polys
+    primitive_poly, matlab_primitive_poly, primitive_polys
 
     Notes
     -----
@@ -64,7 +63,7 @@ def is_primitive(poly: Poly) -> bool:
     .. ipython:: python
 
         f = galois.Poly.Degrees([8, 4, 3, 1, 0]); f
-        galois.is_irreducible(f)
+        f.is_irreducible()
         galois.is_primitive(f)
     """
     if not isinstance(poly, Poly):
@@ -85,7 +84,7 @@ def is_primitive(poly: Poly) -> bool:
         # TODO: Why isn't f(x) = x primitive? It's irreducible and passes the primitivity tests.
         return False
 
-    if not is_irreducible(poly):
+    if not poly.is_irreducible():
         # A polynomial must be irreducible to be primitive
         return False
 

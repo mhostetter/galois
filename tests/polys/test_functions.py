@@ -12,18 +12,13 @@ def test_is_monic(poly_is_monic):
         assert X[i].is_monic == Z[i]
 
 
-def test_is_irreducible_exceptions():
-    with pytest.raises(TypeError):
-        galois.is_irreducible([1, 0, 1, 1])
-
-
 def test_is_irreducible(poly_is_irreducible):
     IS, IS_NOT = poly_is_irreducible["IS"], poly_is_irreducible["IS_NOT"]
     for i in range(len(IS)):
         p = IS[i]
-        assert galois.is_irreducible(p)
+        assert p.is_irreducible()
         p = IS_NOT[i]
-        assert not galois.is_irreducible(p)
+        assert not p.is_irreducible()
 
 
 def test_is_primitive_exceptions():
