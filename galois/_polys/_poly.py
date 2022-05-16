@@ -1513,7 +1513,7 @@ class Poly:
                 if self._nonzero_degrees.size == 0:
                     self._degree = 0
                 else:
-                    self._degree = max(self._nonzero_degrees)
+                    self._degree = int(max(self._nonzero_degrees))
             elif hasattr(self, "_integer"):
                 if self._integer == 0:
                     self._degree = 0
