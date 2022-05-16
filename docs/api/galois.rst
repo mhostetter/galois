@@ -77,7 +77,6 @@ Functions
    is_powersmooth
    is_prime
    is_prime_power
-   is_primitive
    is_primitive_element
    is_primitive_root
    is_smooth

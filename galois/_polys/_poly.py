@@ -1308,14 +1308,14 @@ class Poly:
         r"""
         Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
 
-        Important
-        ---------
-        This is a method, not a property, to indicate this test is computationally expensive.
-
         Returns
         -------
         :
             `True` if the polynomial is irreducible.
+
+        Important
+        ---------
+        This is a method, not a property, to indicate this test is computationally expensive.
 
         See Also
         --------
@@ -1400,6 +1400,87 @@ class Poly:
         g = (h - x) % self
         if g != 0:
             return False
+
+        return True
+
+    def is_primitive(self) -> bool:
+        r"""
+        Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
+
+        Returns
+        -------
+        :
+            `True` if the polynomial is primitive.
+
+        Important
+        ---------
+        This is a method, not a property, to indicate this test is computationally expensive.
+
+        See Also
+        --------
+        primitive_poly, primitive_polys, conway_poly, matlab_primitive_poly
+
+        Notes
+        -----
+        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
+        :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than :math:`q^m - 1`.
+
+        References
+        ----------
+        * Algorithm 4.77 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
+
+        Examples
+        --------
+        All Conway polynomials are primitive.
+
+        .. ipython:: python
+
+            f = galois.conway_poly(2, 8); f
+            f.is_primitive()
+
+            f = galois.conway_poly(3, 5); f
+            f.is_primitive()
+
+        The irreducible polynomial of :math:`\mathrm{GF}(2^8)` for AES is not primitive.
+
+        .. ipython:: python
+
+            f = galois.Poly.Degrees([8, 4, 3, 1, 0]); f
+            f.is_irreducible()
+            f.is_primitive()
+        """
+        if self.degree == 0:
+            # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x]. Both the
+            # zero element and the units are not irreducible over the polynomial ring GF(p^m)[x], and therefore cannot
+            # be primitive.
+            return False
+
+        if self.field.order == 2 and self.degree == 1:
+            # There is only one primitive polynomial in GF(2)
+            return self == Poly([1, 1])
+
+        if self.coeffs[-1] == 0:
+            # A primitive polynomial cannot have zero constant term
+            # TODO: Why isn't f(x) = x primitive? It's irreducible and passes the primitivity tests.
+            return False
+
+        if not self.is_irreducible():
+            # A polynomial must be irreducible to be primitive
+            return False
+
+        field = self.field
+        q = field.order
+        m = self.degree
+        one = Poly.One(field)
+
+        primes, _ = factors(q**m - 1)
+        x = Poly.Identity(field)
+        for ki in sorted([(q**m - 1) // pi for pi in primes]):
+            # f(x) must not divide (x^((q^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors of q**m - 1
+            h = pow(x, ki, self)
+            g = (h - one) % self
+            if g == 0:
+                return False
 
         return True
 
