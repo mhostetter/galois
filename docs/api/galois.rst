@@ -58,11 +58,9 @@ Functions
    carmichael_lambda
    conway_poly
    crt
-   distinct_degree_factorization
    divisor_sigma
    divisors
    egcd
-   equal_degree_factorization
    euler_phi
    factors
    fermat_primality_test
@@ -115,6 +113,5 @@ Functions
    prod
    random_prime
    roots_to_parity_check_matrix
-   square_free_factorization
    totatives
    trial_division
