@@ -108,6 +108,7 @@ Functions
    primitive_polys
    primitive_root
    primitive_roots
+   printoptions
    prod
    random_prime
    roots_to_parity_check_matrix
