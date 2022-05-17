@@ -21,7 +21,7 @@ Large finite fields, which have :obj:`numpy.object_` data types, use `"python-ca
     GF = galois.GF(2**100)
     GF.ufunc_modes
 
-.. _lookup tables:
+.. _lookup-tables:
 
 Lookup tables
 -------------
@@ -72,7 +72,7 @@ is faster than table lookup, the explicit calculation is used.
     GF = galois.GF(3**5)
     GF.ufunc_mode
 
-.. _explicit calculation:
+.. _explicit-calculation:
 
 Explicit calculation
 --------------------

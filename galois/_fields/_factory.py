@@ -80,9 +80,9 @@ def GF(
 
         - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"int"`. If the
           :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current display mode.
-        - `"int"`: Sets the display mode to the :ref:`integer representation <int repr>`.
-        - `"poly"`: Sets the display mode to the :ref:`polynomial representation <poly repr>`.
-        - `"power"`: Sets the display mode to the :ref:`power representation <power repr>`.
+        - `"int"`: Sets the display mode to the :ref:`integer representation <int-repr>`.
+        - `"poly"`: Sets the display mode to the :ref:`polynomial representation <poly-repr>`.
+        - `"power"`: Sets the display mode to the :ref:`power representation <power-repr>`.
 
     Returns
     -------

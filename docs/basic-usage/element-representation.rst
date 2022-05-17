@@ -58,7 +58,7 @@ The display mode can be permanently changed using the :func:`~galois.FieldArray.
     # The new integer display mode
     x
 
-.. _int repr:
+.. _int-repr:
 
 Integer representation
 ----------------------
@@ -84,7 +84,7 @@ coefficient as the most-significant digit and zero-degree coefficient as the lea
     # Integer/polynomial equivalence
     p = 3; p**2 + 2*p + 2 == 17
 
-.. _poly repr:
+.. _poly-repr:
 
 Polynomial representation
 -------------------------
@@ -114,10 +114,10 @@ This is useful, however it can become cluttered for large arrays.
 
     Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
 
-    Use :func:`numpy.set_printoptions` to increase the line width to display large arrays more clearly. See :ref:`numpy print options`
+    Use :func:`numpy.set_printoptions` to increase the line width to display large arrays more clearly. See :ref:`numpy-print-options`
     for more details.
 
-.. _power repr:
+.. _power-repr:
 
 Power representation
 --------------------
@@ -127,8 +127,8 @@ The power display mode represents the elements as powers of the finite field's p
 .. warning::
 
     To display elements in the power representation, :obj:`galois` must compute the discrete logarithm of each element displayed.
-    For large fields (or fields using :ref:`explicit calculation <explicit calculation>`), this process can take a while. However, when
-    using :ref:`lookup tables <lookup tables>` this display mode is just as fast as the others.
+    For large fields (or fields using :ref:`explicit calculation <explicit-calculation>`), this process can take a while. However, when
+    using :ref:`lookup tables <lookup-tables>` this display mode is just as fast as the others.
 
 In prime fields, the elements are displayed as :math:`\{0, \alpha, \alpha^2, \dots, \alpha^{p-2}\}`.
 
@@ -184,7 +184,7 @@ Arrays can be created from the vector representation using the :func:`~galois.Fi
 
     GF.Vector([[0, 0, 1, 2, 2], [2, 0, 0, 1, 0]])
 
-.. _numpy print options:
+.. _numpy-print-options:
 
 NumPy print options
 -------------------
