@@ -6,7 +6,7 @@ from __future__ import annotations
 import abc
 import contextlib
 import random
-from typing import Optional, Union
+from typing import Optional, Union, Generator
 from typing_extensions import Literal
 
 import numpy as np
@@ -350,7 +350,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     ###############################################################################
 
     @classmethod
-    def display(cls, mode: Literal["int", "poly", "power"] = "int") -> contextlib.AbstractContextManager:
+    def display(cls, mode: Literal["int", "poly", "power"] = "int") -> Generator[None, None, None]:
         r"""
         Sets the display mode for all arrays from this :obj:`~galois.FieldArray` subclass.
 
@@ -440,23 +440,17 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode!r}.")
 
         prev_mode = cls.display_mode
+        cls._display_mode = mode  # Set the new display mode
+
+        # Return a context manager for optional use in a `with` statement that will reset the display mode
+        # to its original value
+        return cls._display_context_manager(prev_mode)
+
+    @classmethod
+    @contextlib.contextmanager
+    def _display_context_manager(cls, mode):
+        yield
         cls._display_mode = mode
-
-        # TODO: Replace this with a decorator
-        @set_module("galois")
-        class context(contextlib.AbstractContextManager):
-            """Simple display_mode context manager."""
-            def __init__(self, mode):
-                self.mode = mode
-
-            def __enter__(self):
-                # Don't need to do anything, we already set the new mode in the display() method
-                pass
-
-            def __exit__(self, exc_type, exc_value, traceback):
-                cls._display_mode = self.mode
-
-        return context(prev_mode)
 
     ###############################################################################
     # Override getters/setters and type conversion functions
