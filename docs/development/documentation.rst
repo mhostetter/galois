@@ -1,8 +1,8 @@
 Documentation
 =============
 
-The :obj:`galois` documentation is generated with `Sphinx <https://www.sphinx-doc.org/en/master/>`_. The Sphinx theme
-used is `sphinx-immaterial <https://jbms.github.io/sphinx-immaterial/>`_.
+The :obj:`galois` documentation is generated with `Sphinx <https://www.sphinx-doc.org/en/master/>`_ and the
+`Sphinx Immaterial <https://jbms.github.io/sphinx-immaterial/>`_ theme.
 
 Install
 -------
