@@ -1543,6 +1543,10 @@ class Poly:
         """
         A representation of the polynomial and the finite field it's over.
 
+        Tip
+        ---
+        Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
+
         Examples
         --------
         .. ipython:: python
@@ -1558,6 +1562,10 @@ class Poly:
         The string representation of the polynomial, without specifying the finite field it's over.
 
         :func:`~galois.Poly.Str` and :func:`~galois.Poly.__str__` are inverse operations.
+
+        Tip
+        ---
+        Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
 
         Examples
         --------

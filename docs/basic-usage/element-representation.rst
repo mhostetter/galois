@@ -112,6 +112,8 @@ This is useful, however it can become cluttered for large arrays.
 
 .. tip::
 
+    Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
+
     Use :func:`numpy.set_printoptions` to increase the line width to display large arrays more clearly. See :ref:`numpy print options`
     for more details.
 
