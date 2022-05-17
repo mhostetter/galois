@@ -362,7 +362,7 @@ Ordered arrays
 ..............
 
 The :func:`~galois.FieldArray.Range` classmethod produces a range of elements similar to :func:`numpy.arange`. The integer `start`
-and `stop` values are the :ref:`integer representation <int repr>` of the polynomial field elements.
+and `stop` values are the :ref:`integer representation <int-repr>` of the polynomial field elements.
 
 .. tab-set::
 
@@ -428,7 +428,7 @@ Random arrays
 .............
 
 The :func:`~galois.FieldArray.Random` classmethod provides a random array of the specified shape. This is convenient
-for testing. The integer `low` and `high` values are the :ref:`integer representation <int repr>` of
+for testing. The integer `low` and `high` values are the :ref:`integer representation <int-repr>` of
 the polynomial field elements.
 
 .. tab-set::
@@ -467,7 +467,7 @@ Data types
 ----------
 
 :obj:`~galois.FieldArray` instances support a fixed set of NumPy data types (:obj:`numpy.dtype`). The data type must be
-able to store all the field elements (in their :ref:`integer representation <int repr>`).
+able to store all the field elements (in their :ref:`integer representation <int-repr>`).
 
 Valid data types
 ................

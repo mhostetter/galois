@@ -21,14 +21,14 @@ Scalars are 0-D :obj:`~galois.Array` objects.
 
 .. rubric:: Union
 
-- :obj:`int`: A finite field element in its :ref:`integer representation <int repr>`.
+- :obj:`int`: A finite field element in its :ref:`integer representation <int-repr>`.
 
   .. ipython:: python
 
       GF = galois.GF(3**5)
       GF(17)
 
-- :obj:`str`: A finite field element in its :ref:`polynomial representation <poly repr>`. Many string conventions are
+- :obj:`str`: A finite field element in its :ref:`polynomial representation <poly-repr>`. Many string conventions are
   accepted, including: with/without `*`, with/without spaces, `^` or `**`, any indeterminate variable, increasing/decreasing
   degrees, etc. Or any combination of the above.
 
@@ -95,7 +95,7 @@ A :obj:`~typing.Union` representing objects that can be coerced into a Galois fi
       # Mix and match integers and strings
       GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
 
-- :obj:`~numpy.ndarray`: A NumPy array of integers, representing finite field elements in their :ref:`integer representation <int repr>`.
+- :obj:`~numpy.ndarray`: A NumPy array of integers, representing finite field elements in their :ref:`integer representation <int-repr>`.
 
   .. ipython:: python
 

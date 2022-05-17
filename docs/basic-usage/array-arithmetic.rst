@@ -215,7 +215,7 @@ Expand any section for more details.
         np.negative.at(x, [0, 1]); x
         z[0:1] *= -1; z
 
-.. _advanced arithmetic:
+.. _advanced-arithmetic:
 
 Advanced arithmetic
 -------------------

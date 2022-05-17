@@ -732,7 +732,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
             .. tab-item:: Extension fields
 
-                For extension fields, the increment is the integer increment between finite field elements in their :ref:`integer representation <int repr>`.
+                For extension fields, the increment is the integer increment between finite field elements in their :ref:`integer representation <int-repr>`.
 
                 .. ipython:: python
 

@@ -369,9 +369,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         mode
             The field element representation.
 
-            - `"int"`: Sets the display mode to the :ref:`integer representation <int repr>`.
-            - `"poly"`: Sets the display mode to the :ref:`polynomial representation <poly repr>`.
-            - `"power"`: Sets the display mode to the :ref:`power representation <power repr>`.
+            - `"int"`: Sets the display mode to the :ref:`integer representation <int-repr>`.
+            - `"poly"`: Sets the display mode to the :ref:`polynomial representation <poly-repr>`.
+            - `"power"`: Sets the display mode to the :ref:`power representation <power-repr>`.
 
         Returns
         -------
