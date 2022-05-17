@@ -1,12 +1,13 @@
 """
 A module to get or set package-wide options.
 """
-from typing import Dict, Any
+import contextlib
+from typing import Dict, Generator, Any
 from typing_extensions import Literal
 
 from ._overrides import set_module
 
-__all__ = ["set_printoptions", "get_printoptions"]
+__all__ = ["set_printoptions", "get_printoptions", "printoptions"]
 
 # The default print options for the package
 PRINTOPTIONS = {}
@@ -26,7 +27,7 @@ def set_printoptions(
 
     See Also
     --------
-    get_printoptions
+    get_printoptions, printoptions
 
     Examples
     --------
@@ -72,7 +73,7 @@ def get_printoptions() -> Dict[str, Any]:
 
     See Also
     --------
-    set_printoptions
+    set_printoptions, printoptions
 
     Examples
     --------
@@ -88,3 +89,47 @@ def get_printoptions() -> Dict[str, Any]:
         galois.set_printoptions()
     """
     return PRINTOPTIONS.copy()
+
+
+@set_module("galois")
+@contextlib.contextmanager
+def printoptions(**kwargs) -> Generator[None, None, None]:
+    """
+    A context manager to temporarily modify the print options for the package. This function is the :obj:`galois` equivalent of :func:`numpy.printoptions`.
+
+    See :func:`~galois.set_printoptions` for the full list of available options.
+
+    Returns
+    -------
+    :
+        A context manager for use in a `with` statement. The print options are only modified inside the `with` block.
+
+    See Also
+    --------
+    set_printoptions, get_printoptions
+
+    Examples
+    --------
+    By default, polynomials are displayed with descending degrees.
+
+    .. ipython:: python
+
+        GF = galois.GF(3**5, display="poly")
+        a = GF([109, 83])
+        f = galois.Poly([3, 0, 5, 2], field=galois.GF(7))
+
+    Modify the print options only inside the context manager.
+
+    .. ipython:: python
+
+        print(a); print(f)
+        with galois.printoptions(coeffs="asc"):
+            print(a); print(f)
+        print(a); print(f)
+        @suppress
+        GF.display()
+    """
+    options = get_printoptions()
+    set_printoptions(**kwargs)
+    yield
+    set_printoptions(**options)

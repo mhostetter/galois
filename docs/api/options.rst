@@ -12,3 +12,10 @@ Functions
 
    get_printoptions
    set_printoptions
+
+Context managers
+----------------
+
+.. autosummary::
+
+   printoptions
