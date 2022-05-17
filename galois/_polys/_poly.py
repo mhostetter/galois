@@ -955,7 +955,7 @@ class Poly:
         Raises
         ------
         ValueError
-            If :math:`f(x)` is not monic or has degree 0.
+            If :math:`f(x)` is not monic, has degree 0, or is not square-free.
 
         Notes
         -----
@@ -1010,7 +1010,8 @@ class Poly:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
         if not self.is_monic:
             raise ValueError(f"The polynomial must be monic, not {self}.")
-        # TODO: Add check if the polynomial is square-free
+        if not self.is_square_free():
+            raise ValueError(f"The polynomial must be square-free, not {self}.")
 
         field = self.field
         q = field.order
@@ -1059,7 +1060,7 @@ class Poly:
         Raises
         ------
         ValueError
-            If :math:`f(x)` is not monic or has degree 0.
+            If :math:`f(x)` is not monic, has degree 0, or is not square-free.
 
         Notes
         -----
@@ -1103,7 +1104,8 @@ class Poly:
             raise ValueError(f"The polynomial must be monic, not {self}.")
         if not self.degree % degree == 0:
             raise ValueError(f"Argument `degree` must be divide the degree of the polynomial, {degree} does not divide {self.degree}.")
-        # TODO: Add check if the polynomial is square-free
+        if not self.is_square_free():
+            raise ValueError(f"The polynomial must be square-free, not {self}.")
 
         field = self.field
         q = field.order
