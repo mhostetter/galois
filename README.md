@@ -13,7 +13,7 @@ The `galois` library is a Python 3 package that extends NumPy arrays to operate 
 The user creates a [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) subclass using `GF = galois.GF(p**m)`.
 `GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)` mimics the signature of `np.array()`. The
 [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) `x` is operated on like any other NumPy array except
-all arithmetic is performed in `GF(p^m)`, not **R**.
+all arithmetic is performed in $\mathrm{GF}(p^m)$, not $\mathbb{R}$.
 
 Internally, the finite field arithmetic is implemented by replacing [NumPy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html).
 The new ufuncs are written in pure Python and [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
@@ -25,8 +25,8 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 ## Features
 
-- Supports all [Galois fields](https://galois.readthedocs.io/en/latest/api/galois.GF.html) `GF(p^m)`, even arbitrarily-large fields!
-- [**Faster**](https://galois.readthedocs.io/en/latest/performance/prime-fields.html) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for `GF(p)`.
+- Supports all [Galois fields](https://galois.readthedocs.io/en/latest/api/galois.GF.html) $\mathrm{GF}(p^m)$, even arbitrarily-large fields!
+- [**Faster**](https://galois.readthedocs.io/en/latest/performance/prime-fields.html) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for $\mathrm{GF}(p)$.
 - Seamless integration with NumPy -- normal NumPy functions work on [`FieldArray`s](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html).
 - Linear algebra over finite fields using normal `np.linalg` functions.
 - Linear transforms over finite fields, such as the FFT with `np.fft.fft()` and the NTT with [`ntt()`](https://galois.readthedocs.io/en/latest/api/galois.ntt.html).
@@ -75,7 +75,7 @@ Out[2]: '0.0.29'
 
 Next, create a [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) subclass
 for the specific finite field you'd like to work in. This is created using the `galois.GF()` class factory. In this example, we are
-working in `GF(3^5)`.
+working in $\mathrm{GF}(3^5)$.
 
 ```python
 In [3]: GF = galois.GF(3**5)
@@ -92,7 +92,7 @@ Galois Field:
 ```
 
 The [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray.html) subclass `GF` is a subclass of
-`np.ndarray` that performs all arithmetic in the Galois field `GF(3^5)`, not in **R**.
+`np.ndarray` that performs all arithmetic in the Galois field $\mathrm{GF}(3^5)$, not in $\mathbb{R}$.
 
 ```python
 In [5]: issubclass(GF, galois.FieldArray)
@@ -189,7 +189,7 @@ In [19]: x / y
 Out[19]: GF([ 67,  47, 192,   2], order=3^5)
 ```
 
-More complicated arithmetic, like square root and logarithm base alpha, are also supported.
+More complicated arithmetic, like square root and logarithm base $\alpha$, are also supported.
 
 ```python
 In [20]: np.sqrt(x)
