@@ -1,4 +1,4 @@
-pylint
+pylint>=2.14
 pytest
 pytest-cov
 pytest-benchmark
