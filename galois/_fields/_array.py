@@ -1035,18 +1035,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         N_vec = max([len(print_vec(e)) for e in x] + [len("Vector")]) + 2
         N_int = max([len(print_int(e)) for e in x] + [len("Integer")]) + 2
 
-        string = "+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
-        string += "\n|" + "Power".center(N_power) + "|" + "Polynomial".center(N_poly) + "|" + "Vector".center(N_vec) + "|" + "Integer".center(N_int) + "|"
-        string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
+        string = "Power".center(N_power) + " " + "Polynomial".center(N_poly) + " " + "Vector".center(N_vec) + " " + "Integer".center(N_int)
+        string += "\n" + "-"*N_power + " " + "-"*N_poly + " " + "-"*N_vec + " " + "-"*N_int
 
         for i in range(x.size):
             d = None if i == 0 else degrees[i - 1]
-            string += "\n|" + print_power(d).center(N_power) + "|" + poly_to_str(integer_to_poly(int(x[i]), cls.characteristic)).center(N_poly) + "|" + str(integer_to_poly(int(x[i]), cls.characteristic, degree=cls.degree-1)).center(N_vec) + "|" + cls._print_int(x[i]).center(N_int) + "|"
-
-            if i < x.size - 1:
-                string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+" + "-"*N_vec + "+" + "-"*N_int + "+"
-
-        string += "\n+" + "-"*N_power + "+" + "-"*N_poly + "+"+ "-"*N_vec + "+" + "-"*N_int + "+"
+            string += "\n" + print_power(d).center(N_power) + " " + poly_to_str(integer_to_poly(int(x[i]), cls.characteristic)).center(N_poly) + " " + str(integer_to_poly(int(x[i]), cls.characteristic, degree=cls.degree-1)).center(N_vec) + " " + cls._print_int(x[i]).center(N_int) + " "
 
         return string
 
