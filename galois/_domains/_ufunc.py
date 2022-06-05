@@ -40,14 +40,12 @@ class UFunc:
         """
         Sets the global variables used in `calculate()` before JIT compiling it or before invoking it in pure Python.
         """
-        # pylint: disable=no-self-use
         return
 
     def set_lookup_globals(self):
         """
         Sets the global variables used in `lookup()` before JIT compiling it or before invoking it in pure Python.
         """
-        # pylint: disable=no-self-use
         return
 
     calculate: Callable
@@ -136,7 +134,6 @@ class UFunc:
     ###############################################################################
 
     def _verify_unary_method_not_reduction(self, ufunc, method):
-        # pylint: disable=no-self-use
         if method in ["reduce", "accumulate", "reduceat", "outer"]:
             raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Reduction methods are only supported on binary functions.")
 
@@ -145,7 +142,6 @@ class UFunc:
             raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs with type {self.field.name} array and integer array. Different types do not support reduction.")
 
     def _verify_method_only_call(self, ufunc, method):
-        # pylint: disable=no-self-use
         if not method == "__call__":
             raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Only '__call__' is supported.")
 
@@ -247,7 +243,7 @@ class UFunc:
 
         return v_inputs, kwargs
 
-    def _view_output_as_field(self, output, field, dtype):  # pylint: disable=no-self-use
+    def _view_output_as_field(self, output, field, dtype):
         if isinstance(type(output), field):
             return output
         elif isinstance(output, np.ndarray):

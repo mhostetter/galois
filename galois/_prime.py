@@ -1378,7 +1378,7 @@ def divisor_sigma(n: int, k: int = 1) -> int:
     if n == 0:
         return len(d)
     else:
-        return sum([di**k for di in d])
+        return sum(di**k for di in d)
 
 
 ###############################################################################

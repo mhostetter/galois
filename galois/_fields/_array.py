@@ -1165,7 +1165,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         operation_str = f"x {operation} y"
 
-        N = max([len(print_element(e)) for e in x]) + 1
+        N = max(len(print_element(e)) for e in x) + 1
         N_left = max(N, len(operation_str) + 1)
 
         string = operation_str.rjust(N_left - 1) + " |"

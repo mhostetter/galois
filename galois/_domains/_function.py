@@ -36,7 +36,6 @@ class Function:
         """
         Sets the global variables used in `implementation()` before JIT compiling it or before invoking it in pure Python.
         """
-        # pylint: disable=no-self-use
         return
 
     _SIGNATURE: numba.types.FunctionType
