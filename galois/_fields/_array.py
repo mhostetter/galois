@@ -1165,26 +1165,18 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         operation_str = f"x {operation} y"
 
-        N = max([len(print_element(e)) for e in x]) + 2
-        N_left = max(N, len(operation_str) + 2)
+        N = max([len(print_element(e)) for e in x]) + 1
+        N_left = max(N, len(operation_str) + 1)
 
-        string = "+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
-        string += "\n|" + operation_str.rjust(N_left - 1) + " |"
+        string = operation_str.rjust(N_left - 1) + " |"
         for j in range(y.size):
-            string += print_element(y[j]).rjust(N - 1) + " "
-            string += "|" if j < y.size - 1 else "|"
-        string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
+            string += print_element(y[j]).rjust(N) + " "
+        string += "\n" + "-"*N_left + "|" + "-"*(N + 1)*y.size
 
         for i in range(x.size):
-            string += "\n|" + print_element(x[i]).rjust(N_left - 1) + " |"
+            string += "\n" + print_element(x[i]).rjust(N_left - 1) + " |"
             for j in range(y.size):
-                string += print_element(Z[i,j]).rjust(N - 1) + " "
-                string += "|" if j < y.size - 1 else "|"
-
-            if i < x.size - 1:
-                string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
-
-        string += "\n+" + "-"*N_left + "+" + ("-"*N + "+")*(y.size - 1) + "-"*N + "+"
+                string += print_element(Z[i,j]).rjust(N) + " "
 
         return string
 
