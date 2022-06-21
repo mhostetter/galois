@@ -95,8 +95,15 @@ html_css_files = [
     "extra.css",
 ]
 
-# Sets the default role of `content` to :samp:`content`, which mimics inline literals ``content```
-default_role = "samp"
+# Define a custom inline Python syntax highlighting literal
+rst_prolog = """
+.. role:: python(code)
+   :language: python
+   :class: highlight
+"""
+
+# Sets the default role of `content` to :python:`content`, which uses the custom Python syntax highlighting inline literal
+default_role = "python"
 
 html_title = "galois"
 html_favicon = "../logo/galois-favicon-color.png"

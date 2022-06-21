@@ -150,7 +150,7 @@ and :obj:`~galois.Poly.nonzero_coeffs`.
    f.nonzero_degrees
    f.nonzero_coeffs
 
-Find the integer equivalent of the polynomial using :func:`int`, see :func:`~galois.Poly.__int__`. Additionally, one may
+Find the integer equivalent of the polynomial using `int()`, see :func:`~galois.Poly.__int__`. Additionally, one may
 convert a polynomial into the binary, octal, or hexadecimal string of its integer representation.
 
 .. tab-set::
@@ -182,7 +182,7 @@ convert a polynomial into the binary, octal, or hexadecimal string of its intege
          g = galois.Poly([0xf7, 0x00, 0xa2, 0x75], field=galois.GF(2**8)); g
          hex(g)
 
-Get the string representation of the polynomial using :func:`str`.
+Get the string representation of the polynomial using `str()`.
 
 .. ipython:: python
 
