@@ -37,6 +37,8 @@ def generator_to_parity_check_matrix(G: "FieldArray") -> "FieldArray":
         G = galois.poly_to_generator_matrix(7, g); G
         H = galois.generator_to_parity_check_matrix(G); H
         G @ H.T
+
+    :group: fec
     """
     if not isinstance(G, (FieldArray)):
         raise TypeError(f"Argument `G` must be a galois.FieldArray, not {type(G)}.")
@@ -80,6 +82,8 @@ def parity_check_to_generator_matrix(H: "FieldArray") -> "FieldArray":
         H = galois.generator_to_parity_check_matrix(G); H
         G2 = galois.parity_check_to_generator_matrix(H); G2
         G2 @ H.T
+
+    :group: fec
     """
     if not isinstance(H, (FieldArray)):
         raise TypeError(f"Argument `H` must be a galois.FieldArray, not {type(H)}.")

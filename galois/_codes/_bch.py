@@ -92,6 +92,8 @@ def bch_valid_codes(n: int, t_min: int = 1) -> List[Tuple[int, int, int]]:
 
         galois.bch_valid_codes(31)
         galois.bch_valid_codes(31, t_min=3)
+
+    :group: fec
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -170,6 +172,8 @@ class BCH:
         # Instruct the decoder to return the number of corrected bit errors
         dec_m, N = bch.decode(c, errors=True); dec_m, N
         np.array_equal(dec_m, m)
+
+    :group: fec
     """
     # pylint: disable=no-member
 

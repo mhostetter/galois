@@ -23,6 +23,8 @@ def totatives(n: int) -> List[int]:
 
     The totatives of :math:`n` form the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
 
+    :group: number-theory-divisibility
+
     Parameters
     ----------
     n
@@ -49,19 +51,14 @@ def totatives(n: int) -> List[int]:
     .. ipython:: python
 
         n = 20
-        totatives = galois.totatives(n); totatives
-
-    Compute :math:`\phi(20)`.
-
-    .. ipython:: python
-
-        phi = galois.euler_phi(n); phi
+        x = galois.totatives(n); x
 
     The number of totatives of :math:`n` is :math:`\phi(n)`.
 
     .. ipython:: python
 
-        len(totatives) == phi
+        phi = galois.euler_phi(n); phi
+        len(x) == phi
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -78,6 +75,8 @@ def totatives(n: int) -> List[int]:
 def euler_phi(n: int) -> int:
     r"""
     Counts the positive integers (totatives) in :math:`[1, n)` that are coprime to :math:`n`.
+
+    :group: number-theory-divisibility
 
     Parameters
     ----------
@@ -116,17 +115,12 @@ def euler_phi(n: int) -> int:
         n = 20
         phi = galois.euler_phi(n); phi
 
-    Find the totatives that are coprime with :math:`n`.
+    Find the totatives that are coprime with :math:`n = 20`. The number of totatives of :math:`n` is :math:`\phi(n)`.
 
     .. ipython:: python
 
-        totatives = [k for k in range(n) if math.gcd(k, n) == 1]; totatives
-
-    The number of totatives of :math:`n` is :math:`\phi(n)`.
-
-    .. ipython:: python
-
-        len(totatives) == phi
+        x = galois.totatives(n); x
+        len(x) == phi
 
     For prime :math:`n`, :math:`\phi(n) = n - 1`.
 
@@ -138,6 +132,7 @@ def euler_phi(n: int) -> int:
     return _euler_phi(n)
 
 
+# NOTE: This is a separate function to hide the "lru_cache" from the public API
 @functools.lru_cache(maxsize=64)
 def _euler_phi(n: int) -> int:
     if not isinstance(n, (int, np.integer)):
@@ -164,6 +159,8 @@ def carmichael_lambda(n: int) -> int:
     every integer :math:`a` in :math:`[1, n)` that is coprime to :math:`n`.
 
     This function implements the Carmichael function :math:`\lambda(n)`.
+
+    :group: number-theory-congruences
 
     Parameters
     ----------
@@ -250,6 +247,8 @@ def carmichael_lambda(n: int) -> int:
 def is_cyclic(n: int) -> bool:
     r"""
     Determines whether the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic.
+
+    :group: number-theory-congruences
 
     Parameters
     ----------
@@ -411,7 +410,9 @@ def is_cyclic(n: int) -> bool:
 @set_module("galois")
 def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: Literal["min", "max", "random"] = "min") -> int:
     r"""
-    Finds a primitive root modulo :math:`n` in the range `[start, stop)`.
+    Finds a primitive root modulo :math:`n` in the range :math:`[\textrm{start}, \textrm{stop})`.
+
+    :group: number-theory-primitive-roots
 
     Parameters
     ----------
@@ -585,7 +586,9 @@ def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: L
 @set_module("galois")
 def primitive_roots(n: int, start: int = 1, stop: Optional[int] = None, reverse: bool = False) -> Iterator[int]:
     r"""
-    Iterates through all primitive roots modulo :math:`n` in the range `[start, stop)`.
+    Iterates through all primitive roots modulo :math:`n` in the range :math:`[\textrm{start}, \textrm{stop})`.
+
+    :group: number-theory-primitive-roots
 
     Parameters
     ----------
@@ -626,51 +629,45 @@ def primitive_roots(n: int, start: int = 1, stop: Optional[int] = None, reverse:
 
     Examples
     --------
-    .. tab-set::
+    All primitive roots modulo :math:`31`. You may also use `tuple()` on the returned generator.
 
-        .. tab-item:: Return full list
+    .. ipython:: python
 
-            All primitive roots modulo :math:`31`. You may also use :func:`tuple` on the returned generator.
+        list(galois.primitive_roots(31))
 
-            .. ipython:: python
+    There are no primitive roots modulo :math:`30`.
 
-                list(galois.primitive_roots(31))
+    .. ipython:: python
 
-            There are no primitive roots modulo :math:`30`.
+        list(galois.primitive_roots(30))
 
-            .. ipython:: python
+    Show the each primitive root modulo :math:`22` generates the multiplicative group :math:`(\mathbb{Z}/22\mathbb{Z}){^\times}`.
 
-                list(galois.primitive_roots(30))
+    .. ipython:: python
 
-        .. tab-item:: Use generator
+        n = 22
+        Znx = galois.totatives(n); Znx
+        phi = galois.euler_phi(n); phi
+        for root in galois.primitive_roots(22):
+            span = set(pow(root, i, n) for i in range(0, phi))
+            print(f"Element: {root:>2}, Span: {span}")
 
-            Show the each primitive root modulo :math:`22` generates the multiplicative group :math:`(\mathbb{Z}/22\mathbb{Z}){^\times}`.
+    Find the three largest primitive roots modulo :math:`31` in reversed order.
 
-            .. ipython:: python
+    .. ipython:: python
 
-                n = 22
-                Znx = galois.totatives(n); Znx
-                phi = galois.euler_phi(n); phi
-                for root in galois.primitive_roots(22):
-                    span = set(pow(root, i, n) for i in range(0, phi))
-                    print(f"Element: {root:>2}, Span: {span}")
+        generator = galois.primitive_roots(31, reverse=True); generator
+        [next(generator) for _ in range(3)]
 
-            Find the three largest primitive roots modulo :math:`31` in reversed order.
+    Loop over all the primitive roots in reversed order, only finding them as needed. The search cost for the roots that would
+    have been found after the `break` condition is never incurred.
 
-            .. ipython:: python
+    .. ipython:: python
 
-                generator = galois.primitive_roots(31, reverse=True); generator
-                [next(generator) for _ in range(3)]
-
-            Loop over all the primitive roots in reversed order, only finding them as needed. The search cost for the roots that would
-            have been found after the `break` condition is never incurred.
-
-            .. ipython:: python
-
-                for root in galois.primitive_roots(31, reverse=True):
-                    print(root)
-                    if root % 7 == 0:  # Arbitrary early exit condition
-                        break
+        for root in galois.primitive_roots(31, reverse=True):
+            print(root)
+            if root % 7 == 0:  # Arbitrary early exit condition
+                break
     """
     if n in [1, 2]:
         yield n - 1
@@ -747,6 +744,8 @@ def is_primitive_root(g: int, n: int) -> bool:
     r"""
     Determines if :math:`g` is a primitive root modulo :math:`n`.
 
+    :group: number-theory-primitive-roots
+
     Parameters
     ----------
     g
@@ -782,9 +781,9 @@ def is_primitive_root(g: int, n: int) -> bool:
     --------
     .. ipython:: python
 
+        list(galois.primitive_roots(7))
         galois.is_primitive_root(2, 7)
         galois.is_primitive_root(3, 7)
-        list(galois.primitive_roots(7))
     """
     if not isinstance(g, (int, np.integer)):
         raise TypeError(f"Argument `g` must be an integer, not {type(g)}.")

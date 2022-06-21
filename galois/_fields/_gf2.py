@@ -97,7 +97,9 @@ class UFuncMixin_2_1(UFuncMixin):
 @set_module("galois")
 class GF2(FieldArray, UFuncMixin_2_1, characteristic=2, degree=1, order=2, irreducible_poly_int=3, is_primitive_poly=True, primitive_element=1):
     r"""
-    A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(2)`.
+    A :obj:`~galois.FieldArray` subclass over :math:`\mathrm{GF}(2)`.
+
+    :group: galois-fields
 
     Important
     ---------

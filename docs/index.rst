@@ -133,16 +133,7 @@ If this library was useful to you in your research, please cite us. Following th
    :hidden:
    :maxdepth: 2
 
-   api/galois.rst
-   api/galois-fields.rst
-   api/polys.rst
-   api/fec.rst
-   api/transforms.rst
-   api/linear-sequences.rst
-   api/number-theory.rst
-   api/integer-factorization.rst
-   api/primes.rst
-   api/options.rst
+   api.rst
 
 .. toctree::
    :caption: Release Notes

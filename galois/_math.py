@@ -79,6 +79,8 @@ def isqrt(n: int) -> int:
     r"""
     Computes :math:`x = \lfloor\sqrt{n}\rfloor` such that :math:`x^2 \le n < (x + 1)^2`.
 
+    :group: number-theory-integer
+
     Note
     ----
     This function is included for Python versions before 3.8. For Python 3.8 and later, this function
@@ -131,6 +133,8 @@ def isqrt(n: int) -> int:
 def iroot(n: int, k: int) -> int:
     r"""
     Computes :math:`x = \lfloor n^{\frac{1}{k}} \rfloor` such that :math:`x^k \le n < (x + 1)^k`.
+
+    :group: number-theory-integer
 
     Parameters
     ----------
@@ -187,6 +191,8 @@ def iroot(n: int, k: int) -> int:
 def ilog(n: int, b: int) -> int:
     r"""
     Computes :math:`x = \lfloor\textrm{log}_b(n)\rfloor` such that :math:`b^x \le n < b^{x + 1}`.
+
+    :group: number-theory-integer
 
     Parameters
     ----------
