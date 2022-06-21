@@ -147,7 +147,7 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
 
         .. tab-item:: Return full list
 
-            All monic irreducible polynomials over :math:`\mathrm{GF}(3)` with degree :math:`4`. You may also use :func:`tuple` on
+            All monic irreducible polynomials over :math:`\mathrm{GF}(3)` with degree :math:`4`. You may also use `tuple()` on
             the returned generator.
 
             .. ipython:: python
