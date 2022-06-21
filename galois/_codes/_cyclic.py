@@ -42,6 +42,8 @@ def poly_to_generator_matrix(n: int, generator_poly: "Poly", systematic: bool = 
         g = galois.primitive_poly(2, 3); g
         galois.poly_to_generator_matrix(7, g, systematic=False)
         galois.poly_to_generator_matrix(7, g, systematic=True)
+
+    :group: fec
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
@@ -105,6 +107,8 @@ def roots_to_parity_check_matrix(n: int, roots: "FieldArray") -> "FieldArray":
         roots = alpha**np.arange(1, 2*t + 1); roots
         g = galois.Poly.Roots(roots); g
         galois.roots_to_parity_check_matrix(15, roots)
+
+    :group: fec
     """
     if not isinstance(n, (int, np.integer)):
         raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")

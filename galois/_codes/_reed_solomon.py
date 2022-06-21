@@ -66,6 +66,8 @@ class ReedSolomon:
         # Instruct the decoder to return the number of corrected symbol errors
         dec_m, N = rs.decode(c, errors=True); dec_m, N
         np.array_equal(dec_m, m)
+
+    :group: fec
     """
     # pylint: disable=no-member
 

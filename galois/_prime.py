@@ -37,6 +37,8 @@ def primes(n: int) -> List[int]:
     r"""
     Returns all primes :math:`p` for :math:`p \le n`.
 
+    :group: primes-generation
+
     Parameters
     ----------
     n
@@ -120,6 +122,8 @@ def kth_prime(k: int) -> int:
     r"""
     Returns the :math:`k`-th prime.
 
+    :group: primes-generation
+
     Parameters
     ----------
     k
@@ -139,6 +143,7 @@ def kth_prime(k: int) -> int:
     .. ipython:: python
 
         galois.kth_prime(1)
+        galois.kth_prime(2)
         galois.kth_prime(3)
         galois.kth_prime(1000)
     """
@@ -154,6 +159,8 @@ def kth_prime(k: int) -> int:
 def prev_prime(n: int) -> int:
     r"""
     Returns the nearest prime :math:`p`, such that :math:`p \le n`.
+
+    :group: primes-generation
 
     Parameters
     ----------
@@ -201,6 +208,8 @@ def next_prime(n: int) -> int:
     r"""
     Returns the nearest prime :math:`p`, such that :math:`p > n`.
 
+    :group: primes-generation
+
     Parameters
     ----------
     n:
@@ -247,6 +256,8 @@ def random_prime(bits: int) -> int:
 
     This function randomly generates integers with :math:`b` bits and uses the primality tests in
     :func:`~galois.is_prime` to determine if :math:`p` is prime.
+
+    :group: primes-generation
 
     Parameters
     ----------
@@ -306,6 +317,8 @@ def mersenne_exponents(n: Optional[int] = None) -> List[int]:
 
     A Mersenne exponent :math:`e` is an exponent of :math:`2` such that :math:`2^e - 1` is prime.
 
+    :group: primes-generation
+
     Parameters
     ----------
     n
@@ -352,6 +365,8 @@ def mersenne_primes(n: Optional[int] = None) -> List[int]:
 
     Mersenne primes are primes that are one less than a power of 2.
 
+    :group: primes-generation
+
     Parameters
     ----------
     n
@@ -389,6 +404,8 @@ def mersenne_primes(n: Optional[int] = None) -> List[int]:
 def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> bool:
     r"""
     Determines if :math:`n` is composite using Fermat's primality test.
+
+    :group: primes-specific-tests
 
     Parameters
     ----------
@@ -491,6 +508,8 @@ def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> b
 def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
     r"""
     Determines if :math:`n` is composite using the Miller-Rabin primality test.
+
+    :group: primes-specific-tests
 
     Parameters
     ----------
@@ -609,6 +628,8 @@ def legendre_symbol(a: int, p: int) -> int:
     r"""
     Computes the Legendre symbol :math:`(\frac{a}{p})`.
 
+    :group: number-theory-congruences
+
     Parameters
     ----------
     a
@@ -670,6 +691,8 @@ def legendre_symbol(a: int, p: int) -> int:
 def jacobi_symbol(a: int, n: int) -> int:
     r"""
     Computes the Jacobi symbol :math:`(\frac{a}{n})`.
+
+    :group: number-theory-congruences
 
     Parameters
     ----------
@@ -752,6 +775,8 @@ def kronecker_symbol(a: int, n: int) -> int:
     Computes the Kronecker symbol :math:`(\frac{a}{n})`.
 
     The Kronecker symbol extends the Jacobi symbol for all :math:`n`.
+
+    :group: number-theory-congruences
 
     Parameters
     ----------
@@ -871,6 +896,8 @@ def perfect_power(n: int) -> Tuple[int, int]:
 
     If :math:`n` is a *not* perfect power, then :math:`c = n` and :math:`e = 1`.
 
+    :group: factorization-specific
+
     Parameters
     ----------
     n
@@ -893,43 +920,49 @@ def perfect_power(n: int) -> Tuple[int, int]:
 
     .. ipython:: python
 
-        galois.perfect_power(13)
-        galois.is_perfect_power(13)
+        n = 13
+        galois.perfect_power(n)
+        galois.is_perfect_power(n)
 
     Products of primes are not perfect powers.
 
     .. ipython:: python
 
-        galois.perfect_power(5*7)
-        galois.is_perfect_power(5*7)
+        n = 5 * 7
+        galois.perfect_power(n)
+        galois.is_perfect_power(n)
 
     Products of prime powers where the GCD of the exponents is 1 are not perfect powers.
 
     .. ipython:: python
 
-        galois.perfect_power(2 * 3 * 5**3)
-        galois.is_perfect_power(2 * 3 * 5**3)
+        n = 2 * 3 * 5**3
+        galois.perfect_power(n)
+        galois.is_perfect_power(n)
 
     Products of prime powers where the GCD of the exponents is greater than 1 are perfect powers.
 
     .. ipython:: python
 
-        galois.perfect_power(2**2 * 3**2 * 5**4)
-        galois.is_perfect_power(2**2 * 3**2 * 5**4)
+        n = 2**2 * 3**2 * 5**4
+        galois.perfect_power(n)
+        galois.is_perfect_power(n)
 
     Negative integers can be perfect powers if they can be factored with an odd exponent.
 
     .. ipython:: python
 
-        galois.perfect_power(-64)
-        galois.is_perfect_power(-64)
+        n = -64
+        galois.perfect_power(n)
+        galois.is_perfect_power(n)
 
     Negative integers that are only factored with an even exponent are not perfect powers.
 
     .. ipython:: python
 
-        galois.perfect_power(-100)
-        galois.is_perfect_power(-100)
+        n = -100
+        galois.perfect_power(n)
+        galois.is_perfect_power(n)
     """
     return _perfect_power(n)
 
@@ -977,6 +1010,8 @@ def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int
 
     The trial division factorization will find all prime factors :math:`p_i \le B` such that :math:`n` factors
     as :math:`n = p_1^{e_1} \dots p_k^{e_k} n_r` where :math:`n_r` is a residual factor (which may be composite).
+
+    :group: factorization-specific
 
     Parameters
     ----------
@@ -1044,6 +1079,8 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
     Attempts to find a non-trivial factor of :math:`n` if it has a prime factor :math:`p` such that
     :math:`p-1` is :math:`B`-smooth.
 
+    :group: factorization-specific
+
     Parameters
     ----------
     n
@@ -1084,7 +1121,7 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
 
     Examples
     --------
-    Here, :math:`n = pq` where :math:`p-1` is :math:`1039`-smooth and :math:`q-1` is :math:`17`-smooth.
+    Here, :math:`n = pq` where :math:`p-1` is 1039-smooth and :math:`q-1` is 17-smooth.
 
     .. ipython:: python
 
@@ -1176,6 +1213,8 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
 def pollard_rho(n: int, c: int = 1) -> int:
     r"""
     Attempts to find a non-trivial factor of :math:`n` using cycle detection.
+
+    :group: factorization-specific
 
     Parameters
     ----------
@@ -1270,6 +1309,8 @@ def divisors(n: int) -> List[int]:
     r"""
     Computes all positive integer divisors :math:`d` of the integer :math:`n` such that :math:`d\ |\ n`.
 
+    :group: factorization-composite
+
     Parameters
     ----------
     n
@@ -1337,6 +1378,8 @@ def divisor_sigma(n: int, k: int = 1) -> int:
     r"""
     Returns the sum of :math:`k`-th powers of the positive divisors of :math:`n`.
 
+    :group: factorization-composite
+
     Parameters
     ----------
     n
@@ -1389,6 +1432,8 @@ def divisor_sigma(n: int, k: int = 1) -> int:
 def is_prime(n: int) -> bool:
     r"""
     Determines if :math:`n` is prime.
+
+    :group: primes-tests
 
     Parameters
     ----------
@@ -1454,6 +1499,8 @@ def is_composite(n: int) -> bool:
     r"""
     Determines if :math:`n` is composite.
 
+    :group: primes-tests
+
     Parameters
     ----------
     n
@@ -1488,6 +1535,8 @@ def is_composite(n: int) -> bool:
 def is_prime_power(n: int) -> bool:
     r"""
     Determines if :math:`n` is a prime power :math:`n = p^k` for prime :math:`p` and :math:`k \ge 1`.
+
+    :group: primes-tests
 
     Parameters
     ----------
@@ -1535,6 +1584,8 @@ def is_prime_power(n: int) -> bool:
 def is_perfect_power(n: int) -> bool:
     r"""
     Determines if :math:`n` is a perfect power :math:`n = c^e` with :math:`e > 1`.
+
+    :group: primes-tests
 
     Parameters
     ----------
@@ -1629,6 +1680,8 @@ def is_smooth(n: int, B: int) -> bool:
     r"""
     Determines if the integer :math:`n` is :math:`B`-smooth.
 
+    :group: primes-tests
+
     Parameters
     ----------
     n
@@ -1692,6 +1745,8 @@ def is_smooth(n: int, B: int) -> bool:
 def is_powersmooth(n: int, B: int) -> bool:
     r"""
     Determines if the integer :math:`n` is :math:`B`-powersmooth.
+
+    :group: primes-tests
 
     Parameters
     ----------

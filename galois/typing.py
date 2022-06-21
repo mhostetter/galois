@@ -14,8 +14,10 @@ if TYPE_CHECKING:
 
 
 ElementLike = Union[int, str, "Array"]
-ElementLike.__doc__ = """
+"""
 A :obj:`~typing.Union` representing objects that can be coerced into a Galois field element.
+
+:group: arrays
 
 Scalars are 0-D :obj:`~galois.Array` objects.
 
@@ -53,8 +55,10 @@ Scalars are 0-D :obj:`~galois.Array` objects.
 
 
 IterableLike = Union[Sequence[ElementLike], Sequence["IterableLike"]]
-IterableLike.__doc__ = """
+"""
 A :obj:`~typing.Union` representing iterable objects that can be coerced into a Galois field array.
+
+:group: arrays
 
 .. rubric:: Union
 
@@ -81,8 +85,10 @@ A :obj:`~typing.Union` representing iterable objects that can be coerced into a 
 
 
 ArrayLike = Union[IterableLike, np.ndarray, "Array"]
-ArrayLike.__doc__ = """
+"""
 A :obj:`~typing.Union` representing objects that can be coerced into a Galois field array.
+
+:group: arrays
 
 .. rubric:: Union
 
@@ -109,8 +115,10 @@ A :obj:`~typing.Union` representing objects that can be coerced into a Galois fi
 
 
 ShapeLike = Union[int, Sequence[int]]
-ShapeLike.__doc__ = """
+"""
 A :obj:`~typing.Union` representing objects that can be coerced into a NumPy :obj:`~numpy.ndarray.shape` tuple.
+
+:group: arrays
 
 .. rubric:: Union
 
@@ -139,8 +147,10 @@ A :obj:`~typing.Union` representing objects that can be coerced into a NumPy :ob
 
 
 DTypeLike = Union[np.integer, int, str, object]
-DTypeLike.__doc__ = """
+"""
 A :obj:`~typing.Union` representing objects that can be coerced into a NumPy data type.
+
+:group: arrays
 
 .. rubric:: Union
 
@@ -177,8 +187,10 @@ A :obj:`~typing.Union` representing objects that can be coerced into a NumPy dat
 
 
 PolyLike = Union[int, str, ArrayLike, "Poly"]
-PolyLike.__doc__ = """
+"""
 A :obj:`~typing.Union` representing objects that can be coerced into a polynomial.
+
+:group: polys
 
 .. rubric:: Union
 

@@ -40,6 +40,8 @@ def gcd(a, b):
     r"""
     Finds the greatest common divisor of :math:`a` and :math:`b`.
 
+    :group: number-theory-divisibility
+
     Parameters
     ----------
     a
@@ -112,6 +114,8 @@ def egcd(a: Poly, b: Poly) -> Tuple[Poly, Poly, Poly]:
 def egcd(a, b):
     r"""
     Finds the multiplicands of :math:`a` and :math:`b` such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
+
+    :group: number-theory-divisibility
 
     Parameters
     ----------
@@ -198,6 +202,8 @@ def lcm(*values):
     r"""
     Computes the least common multiple of the arguments.
 
+    :group: number-theory-divisibility
+
     Parameters
     ----------
     *values
@@ -265,6 +271,8 @@ def prod(*values):
     r"""
     Computes the product of the arguments.
 
+    :group: number-theory-divisibility
+
     Parameters
     ----------
     *values
@@ -330,6 +338,8 @@ def are_coprime(*values: Poly) -> bool:
 def are_coprime(*values):
     r"""
     Determines if the arguments are pairwise coprime.
+
+    :group: number-theory-divisibility
 
     Parameters
     ----------
@@ -402,6 +412,8 @@ def crt(remainders: Sequence[Poly], moduli: Sequence[Poly]) -> Poly:
 def crt(remainders, moduli):
     r"""
     Solves the simultaneous system of congruences for :math:`x`.
+
+    :group: number-theory-congruences
 
     Parameters
     ----------
@@ -536,6 +548,8 @@ def factors(value):
     r"""
     Computes the prime factors of a positive integer or the irreducible factors of a non-constant, monic polynomial.
 
+    :group: factorization-prime
+
     Parameters
     ----------
     value
@@ -560,10 +574,13 @@ def factors(value):
 
             Steps:
 
-            1. Test if :math:`n` is prime. If so, return `[n], [1]`.
-            2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and multiply the exponents by :math:`k`.
-            3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the discovered prime factors.
+            1. Test if :math:`n` is prime. If so, return `[n], [1]`. See :func:`~galois.is_prime`.
+            2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and multiply the
+               exponents by :math:`k`. See :func:`~galois.perfect_power`.
+            3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the discovered prime
+               factors. See :func:`~galois.trial_division`.
             4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are found.
+               See :func:`~galois.pollard_rho`.
 
         .. tab-item:: Polynomials
             :sync: polynomials
@@ -573,8 +590,13 @@ def factors(value):
             Steps:
 
             1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free polynomials.
-            2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors with the same degree.
-            3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible factors.
+               See :func:`Poly.square_free_factors`.
+            2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors
+               with the same degree. See :func:`Poly.distinct_degree_factors`.
+            3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible
+               factors. See :func:`Poly.equal_degree_factors`.
+
+            This factorization is also available in :func:`Poly.factors`.
 
     References
     ----------
@@ -644,6 +666,8 @@ def is_square_free(value):
     r"""
     Determines if an integer or polynomial is square-free.
 
+    :group: primes-tests
+
     Parameters
     ----------
     value
@@ -679,6 +703,8 @@ def is_square_free(value):
 
             .. math::
                 f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
+
+            This test is also available in :func:`Poly.is_square_free`.
 
     Examples
     --------

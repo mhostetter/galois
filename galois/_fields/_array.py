@@ -56,6 +56,9 @@ class FieldArrayMeta(ArrayMeta):
         """
         A formatted string of relevant properties of the Galois field.
 
+        :group: String representation
+        :order: 21
+
         Examples
         --------
         .. ipython:: python
@@ -173,6 +176,7 @@ class FieldArrayMeta(ArrayMeta):
         .. ipython:: python
 
             GF = galois.GF(2**8)
+            print(GF.properties)
             GF.is_primitive_poly
 
         The :math:`\mathrm{GF}(2^8)` field from AES uses a non-primitive polynomial.
@@ -180,6 +184,7 @@ class FieldArrayMeta(ArrayMeta):
         .. ipython:: python
 
             GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+            print(GF.properties)
             GF.is_primitive_poly
         """
         return cls._is_primitive_poly
@@ -233,36 +238,32 @@ class FieldArrayMeta(ArrayMeta):
         An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic residue* if there exists a :math:`y` such that
         :math:`y^2 = x` in the field.
 
-        In fields with characteristic 2, every element is a quadratic residue. In fields with characteristic greater than 2,
-        exactly half of the nonzero elements are quadratic residues (and they have two unique square roots).
-
         See Also
         --------
         is_quadratic_residue
 
         Examples
         --------
-        .. tab-set::
+        In fields with characteristic 2, every element is a quadratic residue.
 
-            .. tab-item:: Characteristic 2
+        .. ipython:: python
 
-                .. ipython:: python
+            GF = galois.GF(2**4)
+            x = GF.quadratic_residues; x
+            r = np.sqrt(x); r
+            np.array_equal(r ** 2, x)
+            np.array_equal((-r) ** 2, x)
 
-                    GF = galois.GF(2**4)
-                    x = GF.quadratic_residues; x
-                    r = np.sqrt(x); r
-                    np.array_equal(r ** 2, x)
-                    np.array_equal((-r) ** 2, x)
+        In fields with characteristic greater than 2,exactly half of the nonzero elements are quadratic residues
+        (and they have two unique square roots).
 
-            .. tab-item:: Characteristic > 2
+        .. ipython:: python
 
-                .. ipython:: python
-
-                    GF = galois.GF(11)
-                    x = GF.quadratic_residues; x
-                    r = np.sqrt(x); r
-                    np.array_equal(r ** 2, x)
-                    np.array_equal((-r) ** 2, x)
+            GF = galois.GF(11)
+            x = GF.quadratic_residues; x
+            r = np.sqrt(x); r
+            np.array_equal(r ** 2, x)
+            np.array_equal((-r) ** 2, x)
         """
         x = cls.Elements()
         is_quadratic_residue = x.is_quadratic_residue()
@@ -276,30 +277,25 @@ class FieldArrayMeta(ArrayMeta):
         An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic non-residue* if there does not exist a :math:`y` such that
         :math:`y^2 = x` in the field.
 
-        In fields with characteristic 2, no elements are quadratic non-residues. In fields with characteristic greater than 2,
-        exactly half of the nonzero elements are quadratic non-residues.
-
         See Also
         --------
         is_quadratic_residue
 
         Examples
         --------
-        .. tab-set::
+        In fields with characteristic 2, no elements are quadratic non-residues.
 
-            .. tab-item:: Characteristic 2
+        .. ipython:: python
 
-                .. ipython:: python
+            GF = galois.GF(2**4)
+            GF.quadratic_non_residues
 
-                    GF = galois.GF(2**4)
-                    GF.quadratic_non_residues
+        In fields with characteristic greater than 2, exactly half of the nonzero elements are quadratic non-residues.
 
-            .. tab-item:: Characteristic > 2
+        .. ipython:: python
 
-                .. ipython:: python
-
-                    GF = galois.GF(11)
-                    GF.quadratic_non_residues
+            GF = galois.GF(11)
+            GF.quadratic_non_residues
         """
         x = cls.Elements()
         is_quadratic_residue = x.is_quadratic_residue()
@@ -363,11 +359,17 @@ class FieldArrayMeta(ArrayMeta):
 
         Examples
         --------
-        Some data types are too small for certain finite fields, such as :obj:`numpy.int16` for :math:`\mathrm{GF}(7^5)`.
+        For small finite fields, all integer data types are acceptable, with the exception of :obj:`numpy.uint64`. This is
+        because all arithmetic is done using :obj:`numpy.int64`.
 
         .. ipython:: python
 
             GF = galois.GF(31); GF.dtypes
+
+        Some data types are too small for certain finite fields, such as :obj:`numpy.int16` for :math:`\mathrm{GF}(7^5)`.
+
+        .. ipython:: python
+
             GF = galois.GF(7**5); GF.dtypes
 
         Large fields must use :obj:`numpy.object_` which uses Python :obj:`int` for its unlimited size.
@@ -382,7 +384,7 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def display_mode(cls) -> Literal["int", "poly", "power"]:
         r"""
-        The current finite field element representation. This can be changed with :func:`display`.
+        The current finite field element representation. This can be changed with :func:`~galois.FieldArray.display`.
 
         See :doc:`/basic-usage/element-representation` for a further discussion.
 
@@ -396,7 +398,7 @@ class FieldArrayMeta(ArrayMeta):
             x = GF.Elements(); x
             GF.display_mode
 
-        Permanently modify the display mode by calling :func:`display`.
+        Permanently modify the display mode by calling :func:`~galois.FieldArray.display`.
 
         .. ipython:: python
 
@@ -416,35 +418,27 @@ class FieldArrayMeta(ArrayMeta):
 
         Examples
         --------
-        .. tab-set::
+        Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
 
-            .. tab-item:: Small fields
+        .. ipython:: python
 
-                Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
+            galois.GF(65537).ufunc_mode
+            galois.GF(2**16).ufunc_mode
 
-                .. ipython:: python
+        Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
+        memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
 
-                    galois.GF(65537).ufunc_mode
-                    galois.GF(2**16).ufunc_mode
+        .. ipython:: python
 
-            .. tab-item:: Medium fields
+            galois.GF(2147483647).ufunc_mode
+            galois.GF(2**32).ufunc_mode
 
-                Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
-                memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
+        Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
 
-                .. ipython:: python
+        .. ipython:: python
 
-                    galois.GF(2147483647).ufunc_mode
-                    galois.GF(2**32).ufunc_mode
-
-            .. tab-item:: Large fields
-
-                Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
-
-                .. ipython:: python
-
-                    galois.GF(36893488147419103183).ufunc_mode
-                    galois.GF(2**100).ufunc_mode
+            galois.GF(36893488147419103183).ufunc_mode
+            galois.GF(2**100).ufunc_mode
         """
         return super().ufunc_mode
 
@@ -455,27 +449,21 @@ class FieldArrayMeta(ArrayMeta):
 
         Examples
         --------
-        .. tab-set::
+        Fields whose elements and arithmetic can fit within :obj:`numpy.int64` can be JIT compiled
+        to use either lookup tables or explicit calculation.
 
-            .. tab-item:: Compiled fields
+        .. ipython:: python
 
-                Fields whose elements and arithmetic can fit within :obj:`numpy.int64` can be JIT compiled
-                to use either lookup tables or explicit calculation.
+            galois.GF(65537).ufunc_modes
+            galois.GF(2**32).ufunc_modes
 
-                .. ipython:: python
+        Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` may only use pure-Python explicit
+        calculation.
 
-                    galois.GF(65537).ufunc_modes
-                    galois.GF(2**32).ufunc_modes
+        .. ipython:: python
 
-            .. tab-item:: Non-compiled fields
-
-                Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` may only use pure-Python explicit
-                calculation.
-
-                .. ipython:: python
-
-                    galois.GF(36893488147419103183).ufunc_modes
-                    galois.GF(2**100).ufunc_modes
+            galois.GF(36893488147419103183).ufunc_modes
+            galois.GF(2**100).ufunc_modes
         """
         return super().ufunc_modes
 
@@ -487,35 +475,27 @@ class FieldArrayMeta(ArrayMeta):
 
         Examples
         --------
-        .. tab-set::
+        Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
 
-            .. tab-item:: Small fields
+        .. ipython:: python
 
-                Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
+            galois.GF(65537).default_ufunc_mode
+            galois.GF(2**16).default_ufunc_mode
 
-                .. ipython:: python
+        Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
+        memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
 
-                    galois.GF(65537).default_ufunc_mode
-                    galois.GF(2**16).default_ufunc_mode
+        .. ipython:: python
 
-            .. tab-item:: Medium fields
+            galois.GF(2147483647).default_ufunc_mode
+            galois.GF(2**32).default_ufunc_mode
 
-                Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
-                memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
+        Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
 
-                .. ipython:: python
+        .. ipython:: python
 
-                    galois.GF(2147483647).default_ufunc_mode
-                    galois.GF(2**32).default_ufunc_mode
-
-            .. tab-item:: Large fields
-
-                Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
-
-                .. ipython:: python
-
-                    galois.GF(36893488147419103183).default_ufunc_mode
-                    galois.GF(2**100).default_ufunc_mode
+            galois.GF(36893488147419103183).default_ufunc_mode
+            galois.GF(2**100).default_ufunc_mode
         """
         return super().default_ufunc_mode
 
@@ -523,7 +503,7 @@ class FieldArrayMeta(ArrayMeta):
 @set_module("galois")
 class FieldArray(Array, metaclass=FieldArrayMeta):
     r"""
-    A :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
+    An abstract :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
 
     Important
     ---------
@@ -546,6 +526,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         x = GF([44, 236, 206, 138]); x
         isinstance(x, GF)
+
+    :group: galois-fields
     """
     # pylint: disable=no-value-for-parameter,abstract-method,too-many-public-methods
 
@@ -718,29 +700,23 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         Examples
         --------
-        .. tab-set::
+        For prime fields, the increment is simply a finite field element, since all elements are integers.
 
-            .. tab-item:: Prime fields
+        .. ipython:: python
 
-                For prime fields, the increment is simply a finite field element, since all elements are integers.
+            GF = galois.GF(31)
+            GF.Range(10, 20)
+            GF.Range(10, 20, 2)
 
-                .. ipython:: python
+        For extension fields, the increment is the integer increment between finite field elements in their :ref:`integer representation <int-repr>`.
 
-                    GF = galois.GF(31)
-                    GF.Range(10, 20)
-                    GF.Range(10, 20, 2)
+        .. ipython:: python
 
-            .. tab-item:: Extension fields
-
-                For extension fields, the increment is the integer increment between finite field elements in their :ref:`integer representation <int-repr>`.
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**3, display="poly")
-                    GF.Range(10, 20)
-                    GF.Range(10, 20, 2)
-                    @suppress
-                    GF.display()
+            GF = galois.GF(3**3, display="poly")
+            GF.Range(10, 20)
+            GF.Range(10, 20, 2)
+            @suppress
+            GF.display()
         """
         return super().Range(start, stop, step=step, dtype=dtype)
 
@@ -757,37 +733,29 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         Examples
         --------
-        .. tab-set ::
+        Generate a random matrix with an unpredictable seed.
 
-            .. tab-item:: Unpredictable seed
+        .. ipython:: python
 
-                Generate a random matrix with an unpredictable seed.
+            GF = galois.GF(31)
+            GF.Random((2, 5))
 
-                .. ipython:: python
+        Generate a random array with a specified seed. This produces repeatable outputs.
 
-                    GF = galois.GF(31)
-                    GF.Random((2, 5))
+        .. ipython:: python
 
-            .. tab-item:: Specific seed
+            GF.Random(10, seed=123456789)
+            GF.Random(10, seed=123456789)
 
-                Generate a random array with a specified seed. This produces repeatable outputs.
+        Generate a group of random arrays using a single global seed.
 
-                .. ipython:: python
+        .. ipython:: python
 
-                    GF.Random(10, seed=123456789)
-                    GF.Random(10, seed=123456789)
-
-            .. tab-item:: Global seed
-
-                Generate a group of random arrays using a single global seed.
-
-                .. ipython:: python
-
-                    rng = np.random.default_rng(123456789)
-                    GF.Random(10, seed=rng)
-                    GF.Random(10, seed=rng)
+            rng = np.random.default_rng(123456789)
+            GF.Random(10, seed=rng)
+            GF.Random(10, seed=rng)
         """
-        return super().Random(shape, low=low, high=high, seed=seed, dtype=dtype)
+        return super().Random(shape=shape, low=low, high=high, seed=seed, dtype=dtype)
 
     @classmethod
     def Elements(cls, dtype: Optional[DTypeLike] = None) -> "FieldArray":
@@ -807,23 +775,21 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. tab-set::
+        Generate an array of elements of a prime field in increasing order.
 
-            .. tab-item:: Prime field
+        .. ipython:: python
 
-                .. ipython:: python
+            GF = galois.GF(31)
+            GF.Elements()
 
-                    GF = galois.GF(31)
-                    GF.Elements()
+        Generate an array of elements of an extension field in lexicographically-increasing order.
 
-            .. tab-item:: Extension field
+        .. ipython:: python
 
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="poly")
-                    GF.Elements()
-                    @suppress
-                    GF.display()
+            GF = galois.GF(3**2, display="poly")
+            GF.Elements()
+            @suppress
+            GF.display()
         """
         return super().Elements(dtype)
 
@@ -904,7 +870,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         ----------
         array
             An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`. An array with shape `(n1, n2, m)` has output shape
-            `(n1, n2)`. By convention, the vectors are ordered from degree :math:`m-1` to degree :math:`0`.
+            `(n1, n2)`. By convention, the vectors are ordered from degree :math:`m-1` to degree 0.
         dtype
             The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
             data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
@@ -965,46 +931,41 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Returns
         -------
         :
-            A UTF-8 formatted table comparing the power, polynomial, vector, and integer representations of each
+            A string representation of the table comparing the power, polynomial, vector, and integer representations of each
             field element.
 
         Examples
         --------
-        Create a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(2^4)`.
+        Create a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(3^3)`.
 
         .. ipython:: python
 
-            GF = galois.GF(2**4)
+            GF = galois.GF(3**3)
             print(GF.properties)
 
-        .. tab-set::
+        Generate a representation table for :math:`\mathrm{GF}(3^3)`. Since :math:`x^3 + 2x + 1` is a primitive polynomial,
+        :math:`x` is a primitive element of the field. Notice, :math:`\textrm{ord}(x) = 26`.
 
-            .. tab-item:: Default
+        .. ipython:: python
 
-                Generate a representation table for :math:`\mathrm{GF}(2^4)`. Since :math:`x^4 + x + 1` is a primitive polynomial,
-                :math:`x` is a primitive element of the field. Notice, :math:`\textrm{ord}(x) = 15`.
+            print(GF.repr_table())
+            GF("x").multiplicative_order()
 
-                .. ipython:: python
+        Generate a representation table for :math:`\mathrm{GF}(3^3)` using a different primitive element :math:`2x^2 + 2x + 2`.
+        Notice, :math:`\textrm{ord}(2x^2 + 2x + 2) = 26`.
 
-                    print(GF.repr_table())
+        .. ipython:: python
 
-            .. tab-item:: Primitive element
+            print(GF.repr_table("2x^2 + 2x + 2"))
+            GF("2x^2 + 2x + 2").multiplicative_order()
 
-                Generate a representation table for :math:`\mathrm{GF}(2^4)` using a different primitive element :math:`x^3 + x^2 + x`.
-                Notice, :math:`\textrm{ord}(x^3 + x^2 + x) = 15`.
+        Generate a representation table for :math:`\mathrm{GF}(3^3)` using a non-primitive element :math:`x^2`. Notice,
+        :math:`\textrm{ord}(x^2) = 13 \ne 26`.
 
-                .. ipython:: python
+        .. ipython:: python
 
-                    print(GF.repr_table("x^3 + x^2 + x"))
-
-            .. tab-item:: Non-primitive element
-
-                Generate a representation table for :math:`\mathrm{GF}(2^4)` using a non-primitive element :math:`x^3 + x^2`. Notice,
-                :math:`\textrm{ord}(x^3 + x^2) = 5 \ne 15`.
-
-                .. ipython:: python
-
-                    print(GF.repr_table("x^3 + x^2"))
+            print(GF.repr_table("x^2"))
+            GF("x^2").multiplicative_order()
         """
         if sort not in ["power", "poly", "vector", "int"]:
             raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
@@ -1069,7 +1030,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Returns
         -------
         :
-            A UTF-8 formatted arithmetic table.
+            A string representation of the arithmetic table.
 
         Examples
         --------
@@ -1110,7 +1071,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                     GF = galois.GF(3**2)
                     x = GF([7, 2, 8]); x
-                    y = GF([1, 4]); y
+                    y = GF([1, 4, 5, 3]); y
                     print(GF.arithmetic_table("+", x=x, y=y))
 
             .. tab-item:: Polynomial
@@ -1119,7 +1080,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                     GF = galois.GF(3**2, display="poly")
                     x = GF([7, 2, 8]); x
-                    y = GF([1, 4]); y
+                    y = GF([1, 4, 5, 3]); y
                     print(GF.arithmetic_table("+", x=x, y=y))
 
             .. tab-item:: Power
@@ -1128,7 +1089,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                     GF = galois.GF(3**2, display="power")
                     x = GF([7, 2, 8]); x
-                    y = GF([1, 4]); y
+                    y = GF([1, 4, 5, 3]); y
                     print(GF.arithmetic_table("+", x=x, y=y))
                     @suppress
                     GF.display()
@@ -1212,7 +1173,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of :math:`30`.
+        In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of 30.
 
         .. ipython:: python
 
@@ -1221,7 +1182,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.primitive_root_of_unity(5)
             GF.primitive_root_of_unity(15)
 
-        However, they do not exist for :math:`n` that do not divide :math:`30`.
+        However, they do not exist for :math:`n` that do not divide 30.
 
         .. ipython:: python
             :okexcept:
@@ -1233,7 +1194,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         .. ipython:: python
 
             root = GF.primitive_root_of_unity(5); root
-            np.power.outer(root, np.arange(1, 5 + 1))
+            powers = np.arange(1, 5 + 1); powers
+            root ** powers
         """
         if not isinstance(n, (int, np.ndarray)):
             raise TypeError(f"Argument `n` must be an int, not {type(n)!r}.")
@@ -1277,7 +1239,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of :math:`30`.
+        In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of 30.
 
         .. ipython:: python
 
@@ -1286,7 +1248,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.primitive_roots_of_unity(5)
             GF.primitive_roots_of_unity(15)
 
-        However, they do not exist for :math:`n` that do not divide :math:`30`.
+        However, they do not exist for :math:`n` that do not divide 30.
 
         .. ipython:: python
             :okexcept:
@@ -1298,7 +1260,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         .. ipython:: python
 
             root = GF.primitive_roots_of_unity(5); root
-            np.power.outer(root, np.arange(1, 5 + 1))
+            powers = np.arange(1, 5 + 1); powers
+            np.power.outer(root, powers)
         """
         if not isinstance(n, (int, np.ndarray)):
             raise TypeError(f"Argument `n` must be an int, not {type(n)!r}.")
@@ -1332,7 +1295,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        Below is the additive order of each element of :math:`\mathrm{GF}(3^2)`.
+        Compute the additive order of each element of :math:`\mathrm{GF}(3^2)`.
 
         .. ipython:: python
 
@@ -1376,12 +1339,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         such that :math:`x^a = 1`. If :math:`a = p^m - 1`, :math:`a` is said to be a generator of the multiplicative group
         :math:`\mathrm{GF}(p^m)^\times`.
 
-        :func:`multiplicative_order` should not be confused with :obj:`order`. The former returns the multiplicative order of
+        Note, :func:`multiplicative_order` should not be confused with :obj:`order`. The former returns the multiplicative order of
         :obj:`~galois.FieldArray` elements. The latter is a property of the field, namely the finite field's order or size.
 
         Examples
         --------
-        Below is the multiplicative order of each non-zero element of :math:`\mathrm{GF}(3^2)`.
+        Compute the multiplicative order of each non-zero element of :math:`\mathrm{GF}(3^2)`.
 
         .. ipython:: python
 
@@ -1391,7 +1354,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             order = x.multiplicative_order(); order
             x ** order
 
-        The elements with :math:`\textrm{ord}(x) = 8` are multiplicative generators of :math:`\mathrm{GF}(3^2)^\times`.
+        The elements with :math:`\textrm{ord}(x) = 8` are multiplicative generators of :math:`\mathrm{GF}(3^2)^\times`,
+        which are also called primitive elements.
 
         .. ipython:: python
 
@@ -1448,30 +1412,24 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. tab-set::
+        Since :math:`\mathrm{GF}(2^3)` has characteristic 2, every element has a square root.
 
-            .. tab-item:: Characteristic 2
+        .. ipython:: python
 
-                Since :math:`\mathrm{GF}(2^3)` has characteristic :math:`2`, every element has a square root.
+            GF = galois.GF(2**3, display="poly")
+            x = GF.Elements(); x
+            x.is_quadratic_residue()
+            @suppress
+            GF.display()
 
-                .. ipython:: python
+        In :math:`\mathrm{GF}(11)`, the characteristic is greater than 2 so only half of the elements have square
+        roots.
 
-                    GF = galois.GF(2**3, display="poly")
-                    x = GF.Elements(); x
-                    x.is_quadratic_residue()
-                    @suppress
-                    GF.display()
+        .. ipython:: python
 
-            .. tab-item:: Characteristic > 2
-
-                In :math:`\mathrm{GF}(11)`, the characteristic is greater than :math:`2` so only half of the elements have square
-                roots.
-
-                .. ipython:: python
-
-                    GF = galois.GF(11)
-                    x = GF.Elements(); x
-                    x.is_quadratic_residue()
+            GF = galois.GF(11)
+            x = GF.Elements(); x
+            x.is_quadratic_residue()
         """
         x = self
         field = type(self)
@@ -1488,7 +1446,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
         This function is the inverse operation of the :func:`Vector` constructor. For an array with shape `(n1, n2)`, the output shape
-        is `(n1, n2, m)`. By convention, the vectors are ordered from degree :math:`m-1` to degree :math:`0`.
+        is `(n1, n2, m)`. By convention, the vectors are ordered from degree :math:`m-1` to degree 0.
 
         Parameters
         ----------
@@ -1537,7 +1495,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def row_reduce(self, ncols: Optional[int] = None) -> "FieldArray":
         r"""
-        Performs Gaussian elimination on the matrix to achieve reduced row echelon form.
+        Performs Gaussian elimination on the matrix to achieve reduced row echelon form (RREF).
 
         Parameters
         ----------
@@ -1553,17 +1511,28 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Notes
         -----
 
-        The elementary row operations in Gaussian elimination are: swap the position of any two rows, multiply any row by
-        a non-zero scalar, and add any row to a scalar multiple of another row.
+        The elementary row operations in Gaussian elimination are:
+
+        1. Swap the position of any two rows.
+        2. Multiply any row by a non-zero scalar.
+        3. Add any row to a scalar multiple of another row.
 
         Examples
         --------
+        Perform Gaussian elimination to get the reduced row echelon form of :math:`\mathbf{A}`.
+
         .. ipython:: python
 
             GF = galois.GF(31)
             A = GF([[16, 12, 1, 25], [1, 10, 27, 29], [1, 0, 3, 19]]); A
             A.row_reduce()
             np.linalg.matrix_rank(A)
+
+        Or only perform Gaussian elimination over 2 columns.
+
+        .. ipython:: python
+
+            A.row_reduce(ncols=2)
         """
         A_rre, _ = _linalg.row_reduce_jit(type(self))(self, ncols=ncols)
         return A_rre
@@ -1848,7 +1817,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        The field trace of the elements of :math:`\mathrm{GF}(3^2)` is shown below.
+        Compute the field trace of the elements of :math:`\mathrm{GF}(3^2)`.
 
         .. ipython:: python
 
@@ -1897,7 +1866,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        The field norm of the elements of :math:`\mathrm{GF}(3^2)` is shown below.
+        Compute the field norm of the elements of :math:`\mathrm{GF}(3^2)`.
 
         .. ipython:: python
 
@@ -1923,8 +1892,10 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         r"""
         Computes the characteristic polynomial of a finite field element :math:`a` or a square matrix :math:`\mathbf{A}`.
 
-        This function can be invoked on single finite field elements (scalar 0-D arrays) or square :math:`n \times n`
-        matrices (2-D arrays).
+        Note
+        ----
+        This function can be invoked on a single finite field element (scalar 0-D array) or square :math:`n \times n`
+        matrix (2-D array).
 
         Returns
         -------
@@ -1951,35 +1922,29 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. tab-set::
+        The characteristic polynomial of the element :math:`a`.
 
-            .. tab-item:: Element
+        .. ipython:: python
 
-                The characteristic polynomial of the element :math:`a`.
+            GF = galois.GF(3**5)
+            a = GF.Random(); a
+            poly = a.characteristic_poly(); poly
+            # The characteristic polynomial annihilates a
+            poly(a, field=GF)
 
-                .. ipython:: python
+        The characteristic polynomial of the square matrix :math:`\mathbf{A}`.
 
-                    GF = galois.GF(3**5)
-                    a = GF.Random(); a
-                    poly = a.characteristic_poly(); poly
-                    # The characteristic polynomial annihilates a
-                    poly(a, field=GF)
+        .. ipython:: python
 
-            .. tab-item:: Matrix
-
-                The characteristic polynomial of the square matrix :math:`\mathbf{A}`.
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**5)
-                    A = GF.Random((3,3)); A
-                    poly = A.characteristic_poly(); poly
-                    # The x^0 coefficient is det(-A)
-                    poly.coeffs[-1] == np.linalg.det(-A)
-                    # The x^n-1 coefficient is -Tr(A)
-                    poly.coeffs[1] == -np.trace(A)
-                    # The characteristic polynomial annihilates the matrix A
-                    poly(A, elementwise=False)
+            GF = galois.GF(3**5)
+            A = GF.Random((3,3)); A
+            poly = A.characteristic_poly(); poly
+            # The x^0 coefficient is det(-A)
+            poly.coeffs[-1] == np.linalg.det(-A)
+            # The x^n-1 coefficient is -Tr(A)
+            poly.coeffs[1] == -np.trace(A)
+            # The characteristic polynomial annihilates the matrix A
+            poly(A, elementwise=False)
         """
         if self.ndim == 0:
             return self._characteristic_poly_element()
@@ -2041,7 +2006,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         r"""
         Computes the minimal polynomial of a finite field element :math:`a`.
 
-        This function can be invoked only on single finite field elements (scalar 0-D arrays).
+        Note
+        ----
+        This function can only be invoked on a single finite field element (scalar 0-D array).
 
         Returns
         -------
@@ -2072,7 +2039,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             # The minimal polynomial annihilates a
             poly(a, field=GF)
             # The minimal polynomial always divides the characteristic polynomial
-            a.characteristic_poly() // poly
+            divmod(a.characteristic_poly(), poly)
         """
         if self.ndim == 0:
             return self._minimal_poly_element()

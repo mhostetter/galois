@@ -192,6 +192,8 @@ def GF(
 
                 GF = galois.GF(109987**4)
                 print(GF.properties)
+
+    :group: galois-fields
     """
     if not isinstance(order, int):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
@@ -232,6 +234,8 @@ def Field(
 ) -> Type[FieldArray]:
     """
     Alias of :func:`~galois.GF`.
+
+    :group: galois-fields
     """
     return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, display=display)
 

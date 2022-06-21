@@ -49,6 +49,8 @@ class Poly:
         galois.Poly([124, 0, 223, 0, 0, 15], field=GF)
 
     See :doc:`/basic-usage/poly` and :doc:`/basic-usage/poly-arithmetic` for more examples.
+
+    :group: polys
     """
     # pylint: disable=too-many-public-methods
 
@@ -83,10 +85,10 @@ class Poly:
         field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the coefficients are a :obj:`~galois.Array`, they won't be modified. If the coefficients
+            * :obj:`None` (default): If the coefficients are an :obj:`~galois.Array`, they won't be modified. If the coefficients
               are not explicitly in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using
               `galois.GF2(coeffs)`.
-            * :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
+            * :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field using `field(coeffs)`.
 
         order
             The interpretation of the coefficient degrees.
@@ -401,55 +403,45 @@ class Poly:
 
         Examples
         --------
-        .. tab-set::
+        Construct a polynomial over :math:`\mathrm{GF}(2)` from its integer representation.
 
-            .. tab-item:: Integer
+        .. ipython:: python
 
-                Construct a polynomial over :math:`\mathrm{GF}(2)` from its integer representation.
+            f = galois.Poly.Int(5); f
+            int(f)
 
-                .. ipython:: python
+        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its integer representation.
 
-                    f = galois.Poly.Int(5); f
-                    int(f)
+        .. ipython:: python
 
-                Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its integer representation.
+            GF = galois.GF(3**5)
+            f = galois.Poly.Int(186535908, field=GF); f
+            int(f)
+            # The polynomial/integer equivalence
+            int(f) == 13*GF.order**3 + 117
 
-                .. ipython:: python
+        Construct a polynomial over :math:`\mathrm{GF}(2)` from its binary string.
 
-                    GF = galois.GF(3**5)
-                    f = galois.Poly.Int(186535908, field=GF); f
-                    int(f)
-                    # The polynomial/integer equivalence
-                    int(f) == 13*GF.order**3 + 117
+        .. ipython:: python
 
-            .. tab-item:: Binary string
+            f = galois.Poly.Int(int("0b1011", 2)); f
+            bin(f)
 
-                Construct a polynomial over :math:`\mathrm{GF}(2)` from its binary string.
+        Construct a polynomial over :math:`\mathrm{GF}(2^3)` from its octal string.
 
-                .. ipython:: python
+        .. ipython:: python
 
-                    f = galois.Poly.Int(int("0b1011", 2)); f
-                    bin(f)
+            GF = galois.GF(2**3)
+            f = galois.Poly.Int(int("0o5034", 8), field=GF); f
+            oct(f)
 
-            .. tab-item:: Octal string
+        Construct a polynomial over :math:`\mathrm{GF}(2^8)` from its hexadecimal string.
 
-                Construct a polynomial over :math:`\mathrm{GF}(2^3)` from its octal string.
+        .. ipython:: python
 
-                .. ipython:: python
-
-                    GF = galois.GF(2**3)
-                    f = galois.Poly.Int(int("0o5034", 8), field=GF); f
-                    oct(f)
-
-            .. tab-item:: Hex string
-
-                Construct a polynomial over :math:`\mathrm{GF}(2^8)` from its hexadecimal string.
-
-                .. ipython:: python
-
-                    GF = galois.GF(2**8)
-                    f = galois.Poly.Int(int("0xf700a275", 16), field=GF); f
-                    hex(f)
+            GF = galois.GF(2**8)
+            f = galois.Poly.Int(int("0xf700a275", 16), field=GF); f
+            hex(f)
         """
         field = _factory.DEFAULT_ARRAY if field is None else field
         if not isinstance(integer, (int, np.integer)):
@@ -489,9 +481,9 @@ class Poly:
         field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the coefficients are a :obj:`~galois.Array`, they won't be modified. If the coefficients are not explicitly
+            * :obj:`None` (default): If the coefficients are an :obj:`~galois.Array`, they won't be modified. If the coefficients are not explicitly
               in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(coeffs)`.
-            * :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field `field(coeffs)`.
+            * :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field using `field(coeffs)`.
 
         Returns
         -------
@@ -506,7 +498,8 @@ class Poly:
 
             galois.Poly.Degrees([3, 1, 0])
 
-        Construct a polynomial over :math:`\mathrm{GF}(3^5)` by specifying the degrees with non-zero coefficients.
+        Construct a polynomial over :math:`\mathrm{GF}(3^5)` by specifying the degrees with non-zero coefficients
+        and their coefficient values.
 
         .. ipython:: python
 
@@ -581,9 +574,9 @@ class Poly:
         field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the roots are a :obj:`~galois.Array`, they won't be modified. If the roots are not explicitly
+            * :obj:`None` (default): If the roots are an :obj:`~galois.Array`, they won't be modified. If the roots are not explicitly
               in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(roots)`.
-            * :obj:`~galois.Array` subclass: The roots are explicitly converted to this Galois field `field(roots)`.
+            * :obj:`~galois.Array` subclass: The roots are explicitly converted to this Galois field using `field(roots)`.
 
         Returns
         -------
@@ -682,9 +675,17 @@ class Poly:
             f = galois.Poly([3, 0, 5, 2], field=GF); f
             f.coeffs
             f.coefficients()
-            # Return the coefficients in ascending order
+
+        Return the coefficients in ascending order.
+
+        .. ipython:: python
+
             f.coefficients(order="asc")
-            # Return the coefficients in ascending order with size 8
+
+        Return the coefficients in ascending order with size 8.
+
+        .. ipython:: python
+
             f.coefficients(8, order="asc")
         """
         if not isinstance(size, (type(None), int, np.integer)):
@@ -1159,8 +1160,11 @@ class Poly:
         Steps:
 
         1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free polynomials.
-        2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors with the same degree.
-        3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible factors.
+           See :func:`~Poly.square_free_factors`.
+        2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors
+           with the same degree. See :func:`~Poly.distinct_degree_factors`.
+        3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible
+           factors. See :func:`~Poly.equal_degree_factors`.
 
         References
         ----------
@@ -1553,7 +1557,7 @@ class Poly:
 
             GF = galois.GF(7)
             f = galois.Poly([3, 0, 5, 2], field=GF); f
-            f
+            repr(f)
         """
         return f"Poly({self!s}, {self.field.name})"
 
@@ -1604,7 +1608,7 @@ class Poly:
         not finite field arithmetic.
 
         Said differently, the polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` are considered as the :math:`d` "digits" of a radix-:math:`p^m`
-        value. The polynomial's integer representation is that value in decimal (radix-:math:`10`).
+        value. The polynomial's integer representation is that value in decimal (radix-10).
 
         Examples
         --------
@@ -1692,7 +1696,7 @@ class Poly:
 
     def __len__(self) -> int:
         """
-        Returns the length of the coefficient array `Poly.degree + 1`.
+        Returns the length of the coefficient array, which is equivalent to `Poly.degree + 1`.
 
         Returns
         -------

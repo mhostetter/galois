@@ -22,6 +22,8 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
     r"""
     Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
+    :group: polys-irreducible
+
     Parameters
     ----------
     order
@@ -53,44 +55,24 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
 
     Examples
     --------
-    .. tab-set::
+    Find the lexicographically minimal and maximal monic irreducible polynomial. Also find a random monic irreducible
+    polynomial.
 
-        .. tab-item:: Search methods
+    .. ipython:: python
 
-            Find the lexicographically-minimal monic irreducible polynomial.
+        galois.irreducible_poly(7, 3)
+        galois.irreducible_poly(7, 3, method="max")
+        galois.irreducible_poly(7, 3, method="random")
 
-            .. ipython:: python
+    Monic irreducible polynomials scaled by non-zero field elements (now non-monic) are also irreducible.
 
-                galois.irreducible_poly(7, 3)
+    .. ipython:: python
 
-            Find the lexicographically-maximal monic irreducible polynomial.
-
-            .. ipython:: python
-
-                galois.irreducible_poly(7, 3, method="max")
-
-            Find a random monic irreducible polynomial.
-
-            .. ipython:: python
-
-                galois.irreducible_poly(7, 3, method="random")
-
-        .. tab-item:: Properties
-
-            Find a random monic irreducible polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
-
-            .. ipython:: python
-
-                f = galois.irreducible_poly(7, 5, method="random"); f
-                f.is_irreducible()
-
-            Monic irreducible polynomials scaled by non-zero field elements (now non-monic) are also irreducible.
-
-            .. ipython:: python
-
-                GF = galois.GF(7)
-                g = f * GF(3); g
-                g.is_irreducible()
+        GF = galois.GF(7)
+        f = galois.irreducible_poly(7, 5, method="random"); f
+        f.is_irreducible()
+        g = f * GF(3); g
+        g.is_irreducible()
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
@@ -115,6 +97,8 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
 def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterator[Poly]:
     r"""
     Iterates through all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
+
+    :group: polys-irreducible
 
     Parameters
     ----------
@@ -143,39 +127,31 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
 
     Examples
     --------
-    .. tab-set::
+    Find all monic irreducible polynomials over :math:`\mathrm{GF}(3)` with degree 4. You may also use `tuple()` on
+    the returned generator.
 
-        .. tab-item:: Return full list
+    .. ipython:: python
 
-            All monic irreducible polynomials over :math:`\mathrm{GF}(3)` with degree :math:`4`. You may also use `tuple()` on
-            the returned generator.
+        list(galois.irreducible_polys(3, 4))
 
-            .. ipython:: python
+    Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
+    have been found after the `break` condition is never incurred.
 
-                list(galois.irreducible_polys(3, 4))
+    .. ipython:: python
 
-        .. tab-item:: For loop
+        for poly in galois.irreducible_polys(3, 4, reverse=True):
+            if poly.coeffs[1] < 2:  # Early exit condition
+                break
+            print(poly)
 
-            Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
-            have been found after the `break` condition is never incurred.
+    Or, manually iterate over the generator.
 
-            .. ipython:: python
+    .. ipython:: python
 
-                for poly in galois.irreducible_polys(3, 4, reverse=True):
-                    if poly.coeffs[1] < 2:  # Early exit condition
-                        break
-                    print(poly)
-
-        .. tab-item:: Manual iteration
-
-            Or, manually iterate over the generator.
-
-            .. ipython:: python
-
-                generator = galois.irreducible_polys(3, 4, reverse=True); generator
-                next(generator)
-                next(generator)
-                next(generator)
+        generator = galois.irreducible_polys(3, 4, reverse=True); generator
+        next(generator)
+        next(generator)
+        next(generator)
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")

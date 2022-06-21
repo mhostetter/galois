@@ -50,6 +50,8 @@ def set_printoptions(
         GF.display()
         @suppress
         galois.set_printoptions()
+
+    :group: config
     """
     if not coeffs in ["desc", "asc"]:
         raise ValueError(f"Argument `coeffs` must be in ['desc', 'asc'], not {coeffs}.")
@@ -87,6 +89,8 @@ def get_printoptions() -> Dict[str, Any]:
         galois.get_printoptions()
         @suppress
         galois.set_printoptions()
+
+    :group: config
     """
     return PRINTOPTIONS.copy()
 
@@ -128,6 +132,8 @@ def printoptions(**kwargs) -> Generator[None, None, None]:
         print(a); print(f)
         @suppress
         GF.display()
+
+    :group: config
     """
     options = get_printoptions()
     set_printoptions(**kwargs)

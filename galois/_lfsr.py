@@ -176,6 +176,8 @@ class FLFSR(_LFSR):
     r"""
     A Fibonacci linear-feedback shift register (LFSR).
 
+    :group: linear-sequences
+
     Notes
     -----
     A Fibonacci LFSR is defined by its feedback polynomial :math:`f(x)`.
@@ -957,6 +959,8 @@ class GLFSR(_LFSR):
                 lfsr.state
                 lfsr.step(10)
                 lfsr.state
+
+    :group: linear-sequences
     """
 
     _type = "galois"
@@ -1508,7 +1512,7 @@ def berlekamp_massey(sequence, output="minimal"):
         The output object type.
 
         - `"minimal"` (default): Returns the minimal polynomial that generates the linear recurrent sequence. The minimal polynomial
-          is the characteristic polynomial :math:`c(x)` of minimal degree.
+          is a characteristic polynomial :math:`c(x)` of minimal degree.
         - `"fibonacci"`: Returns a Fibonacci LFSR that produces :math:`y`.
         - `"galois"`: Returns a Galois LFSR that produces :math:`y`.
 
@@ -1551,27 +1555,25 @@ def berlekamp_massey(sequence, output="minimal"):
 
         galois.berlekamp_massey(y)
 
-    Use the Berlekamp-Massey algorithm to return equivalent Fibonacci and Galois LFSRs that reproduce the sequence.
+    Use the Berlekamp-Massey algorithm to return equivalent Fibonacci LFSR that reproduces the sequence.
 
-    .. tab-set::
+    .. ipython:: python
 
-        .. tab-item:: Fibonacci LFSR
+        lfsr = galois.berlekamp_massey(y, output="fibonacci")
+        print(lfsr)
+        z = lfsr.step(y.size); z
+        np.array_equal(y, z)
 
-            .. ipython:: python
+    Use the Berlekamp-Massey algorithm to return equivalent Galois LFSR that reproduces the sequence.
 
-                lfsr = galois.berlekamp_massey(y, output="fibonacci")
-                print(lfsr)
-                z = lfsr.step(y.size); z
-                np.array_equal(y, z)
+    .. ipython:: python
 
-        .. tab-item:: Galois LFSR
+        lfsr = galois.berlekamp_massey(y, output="galois")
+        print(lfsr)
+        z = lfsr.step(y.size); z
+        np.array_equal(y, z)
 
-            .. ipython:: python
-
-                lfsr = galois.berlekamp_massey(y, output="galois")
-                print(lfsr)
-                z = lfsr.step(y.size); z
-                np.array_equal(y, z)
+    :group: linear-sequences
     """
     if not isinstance(sequence, FieldArray):
         raise TypeError(f"Argument `sequence` must be a FieldArray, not {type(sequence)}.")

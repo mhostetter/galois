@@ -113,6 +113,8 @@ def ntt(
         GF = galois.GF(17)
         x = GF([1, 2, 3, 4, 5, 6])
         np.fft.fft(x, n=8)
+
+    :group: transforms
     """
     if not isinstance(x, (tuple, list, np.ndarray, FieldArray)):
         raise TypeError(f"Argument `x` must be array-like, not {type(x)}.")
@@ -235,6 +237,8 @@ def intt(
 
         X = np.fft.fft(x); X
         np.fft.ifft(X)
+
+    :group: transforms
     """
     if not isinstance(X, (tuple, list, np.ndarray, FieldArray)):
         raise TypeError(f"Argument `X` must be array-like, not {type(X)}.")

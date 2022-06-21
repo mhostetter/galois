@@ -23,6 +23,8 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
     Determines if :math:`g` is a primitive element of the Galois field :math:`\mathrm{GF}(q^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
 
+    :group: galois-fields-primitive-elements
+
     Parameters
     ----------
     element
@@ -43,20 +45,22 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
 
     Examples
     --------
-    Find all primitive elements for the degree :math:`4` extension of :math:`\mathrm{GF}(3)`.
+    In the extension field :math:`\mathrm{GF}(3^4)`, the element :math:`x + 2` is a primitive element whose
+    order is :math:`3^4 - 1 = 80`.
 
     .. ipython:: python
 
-        f = galois.conway_poly(3, 4); f
-        g = galois.primitive_elements(f); g
-
-    Note from the list above that :math:`x + 2` is a primitive element, but :math:`x + 1` is not.
-
-    .. ipython:: python
-
+        GF = galois.GF(3**4)
+        f = GF.irreducible_poly; f
         galois.is_primitive_element("x + 2", f)
-        # x + 1 over GF(3) has integer equivalent of 4
-        galois.is_primitive_element(4, f)
+        GF("x + 2").multiplicative_order()
+
+    However, the element :math:`x + 1` is not a primitive element, as noted by its order being only 20.
+
+    .. ipython:: python
+
+        galois.is_primitive_element("x + 1", f)
+        GF("x + 1").multiplicative_order()
     """
     if not isinstance(irreducible_poly, Poly):
         raise TypeError(f"Argument `irreducible_poly` must be a galois.Poly, not {type(irreducible_poly)}.")
@@ -103,6 +107,8 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
     Finds a primitive element :math:`g` of the Galois field :math:`\mathrm{GF}(q^m)` with degree-:math:`m` irreducible polynomial
     :math:`f(x)` over :math:`\mathrm{GF}(q)`.
 
+    :group: galois-fields-primitive-elements
+
     Parameters
     ----------
     irreducible_poly
@@ -122,61 +128,45 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
 
     Examples
     --------
-    .. tab-set::
+    Construct the extension field :math:`\mathrm{GF}(7^5)`.
 
-        .. tab-item:: Min
+    .. ipython:: python
 
-            Find the smallest primitive element for the degree :math:`5` extension of :math:`\mathrm{GF}(7)`.
+        f = galois.irreducible_poly(7, 5, method="max"); f
+        GF = galois.GF(7**5, irreducible_poly=f, display="poly")
+        print(GF.properties)
 
-            .. ipython:: python
+    Find the smallest primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible polynomial
+    :math:`f(x)`.
 
-                f = galois.conway_poly(7, 5); f
-                g = galois.primitive_element(f); g
+    .. ipython:: python
 
-            Construct the extension field :math:`\mathrm{GF}(7^5)`. Note, by default, :func:`~galois.GF` uses a Conway polynomial
-            as its irreducible polynomial.
+        g = galois.primitive_element(f); g
+        # Convert the polynomial over GF(7) into an element of GF(7^5)
+        g = GF(int(g)); g
+        g.multiplicative_order() == GF.order - 1
 
-            .. ipython:: python
+    Find the largest primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible polynomial
+    :math:`f(x)`.
 
-                GF = galois.GF(7**5)
-                print(GF.properties)
-                int(g) == GF.primitive_element
+    .. ipython:: python
 
-        .. tab-item:: Max
+        g = galois.primitive_element(f, method="max"); g
+        # Convert the polynomial over GF(7) into an element of GF(7^5)
+        g = GF(int(g)); g
+        g.multiplicative_order() == GF.order - 1
 
-            Find the largest primitive element for the degree :math:`5` extension of :math:`\mathrm{GF}(7)`.
+    Find a random primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible polynomial
+    :math:`f(x)`.
 
-            .. ipython:: python
+    .. ipython:: python
 
-                f = galois.conway_poly(7, 5); f
-                g = galois.primitive_element(f, method="max"); g
-
-            Construct the extension field :math:`\mathrm{GF}(7^5)`. Note, by default, :func:`~galois.GF` uses a Conway polynomial
-            as its irreducible polynomial.
-
-            .. ipython:: python
-
-                GF = galois.GF(7**5)
-                print(GF.properties)
-                int(g) in GF.primitive_elements
-
-        .. tab-item:: Random
-
-            Find a random primitive element for the degree :math:`5` extension of :math:`\mathrm{GF}(7)`.
-
-            .. ipython:: python
-
-                f = galois.conway_poly(7, 5); f
-                g = galois.primitive_element(f, method="random"); g
-
-            Construct the extension field :math:`\mathrm{GF}(7^5)`. Note, by default, :func:`~galois.GF` uses a Conway polynomial
-            as its irreducible polynomial.
-
-            .. ipython:: python
-
-                GF = galois.GF(7**5)
-                print(GF.properties)
-                int(g) in GF.primitive_elements
+        g = galois.primitive_element(f, method="random"); g
+        # Convert the polynomial over GF(7) into an element of GF(7^5)
+        g = GF(int(g)); g
+        g.multiplicative_order() == GF.order - 1
+        @suppress
+        GF.display()
     """
     if not isinstance(irreducible_poly, Poly):
         raise TypeError(f"Argument `irreducible_poly` must be a galois.Poly, not {type(irreducible_poly)}.")
@@ -220,6 +210,8 @@ def primitive_elements(irreducible_poly: Poly) -> List[Poly]:
     Finds all primitive elements :math:`g` of the Galois field :math:`\mathrm{GF}(q^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
 
+    :group: galois-fields-primitive-elements
+
     Parameters
     ----------
     irreducible_poly
@@ -243,21 +235,19 @@ def primitive_elements(irreducible_poly: Poly) -> List[Poly]:
 
     Examples
     --------
-    Find all primitive elements for the degree :math:`4` extension of :math:`\mathrm{GF}(3)`.
+    Construct the extension field :math:`\mathrm{GF}(3^4)`.
 
     .. ipython:: python
 
-        f = galois.conway_poly(3, 4); f
-        g = galois.primitive_elements(f); g
-
-    Construct the extension field :math:`\mathrm{GF}(3^4)`. Note, by default, :func:`~galois.GF` uses a Conway polynomial
-    as its irreducible polynomial.
-
-    .. ipython:: python
-
-        GF = galois.GF(3**4)
+        f = galois.irreducible_poly(3, 4, method="max"); f
+        GF = galois.GF(3**4, irreducible_poly=f, display="poly")
         print(GF.properties)
-        np.array_equal([int(gi) for gi in g], GF.primitive_elements)
+
+    Find all primitive elements for the degree-4 extension of :math:`\mathrm{GF}(3)`.
+
+    .. ipython:: python
+
+        g = galois.primitive_elements(f); g
 
     The number of primitive elements is given by :math:`\phi(q^m - 1)`.
 
@@ -265,6 +255,16 @@ def primitive_elements(irreducible_poly: Poly) -> List[Poly]:
 
         phi = galois.euler_phi(3**4 - 1); phi
         len(g) == phi
+
+    Shows that each primitive element has an order of :math:`q^m - 1`.
+
+    .. ipython:: python
+
+        # Convert the polynomials over GF(3) into elements of GF(3^4)
+        g = GF([int(gi) for gi in g]); g
+        np.all(g.multiplicative_order() == GF.order - 1)
+        @suppress
+        GF.display()
     """
     # Find one primitive element first
     element = primitive_element(irreducible_poly)

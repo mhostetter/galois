@@ -23,6 +23,8 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     r"""
     Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
+    :group: polys-primitive
+
     Parameters
     ----------
     order
@@ -56,64 +58,40 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
 
     Examples
     --------
-    .. tab-set::
+    Find the lexicographically minimal and maximal monic primitive polynomial. Also find a random monic primitive
+    polynomial.
 
-        .. tab-item:: Search methods
+    .. ipython:: python
 
-            Find the lexicographically-minimal monic primitive polynomial.
+        galois.primitive_poly(7, 3)
+        galois.primitive_poly(7, 3, method="max")
+        galois.primitive_poly(7, 3, method="random")
 
-            .. ipython:: python
+    Notice :func:`~galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
+    :func:`~galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+    with smaller Conway polynomials. This is sometimes the same polynomial.
 
-                galois.primitive_poly(7, 3)
+    .. ipython:: python
 
-            Find the lexicographically-maximal monic primitive polynomial.
+        galois.primitive_poly(2, 4)
+        galois.conway_poly(2, 4)
 
-            .. ipython:: python
+    However, it is not always.
 
-                galois.primitive_poly(7, 3, method="max")
+    .. ipython:: python
 
-            Find a random monic primitive polynomial.
+        galois.primitive_poly(7, 10)
+        galois.conway_poly(7, 10)
 
-            .. ipython:: python
+    Monic primitive polynomials scaled by non-zero field elements (now non-monic) are also primitive.
 
-                galois.primitive_poly(7, 3, method="random")
+    .. ipython:: python
 
-        .. tab-item:: Primitive vs. Conway
-
-            Notice :func:`~galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
-            :func:`~galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
-            with smaller Conway polynomials.
-
-            This is sometimes the same polynomial.
-
-            .. ipython:: python
-
-                galois.primitive_poly(2, 4)
-                galois.conway_poly(2, 4)
-
-            However, it is not always.
-
-            .. ipython:: python
-
-                galois.primitive_poly(7, 10)
-                galois.conway_poly(7, 10)
-
-        .. tab-item:: Properties
-
-            Find a random monic primitive polynomial over :math:`\mathrm{GF}(7)` with degree :math:`5`.
-
-            .. ipython:: python
-
-                f = galois.primitive_poly(7, 5, method="random"); f
-                f.is_primitive()
-
-            Monic primitive polynomials scaled by non-zero field elements (now non-monic) are also primitive.
-
-            .. ipython:: python
-
-                GF = galois.GF(7)
-                g = f * GF(3); g
-                g.is_primitive()
+        GF = galois.GF(7)
+        f = galois.primitive_poly(7, 5, method="random"); f
+        f.is_primitive()
+        g = f * GF(3); g
+        g.is_primitive()
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
@@ -138,6 +116,8 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
 def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[Poly]:
     r"""
     Iterates through all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
+
+    :group: polys-primitive
 
     Parameters
     ----------
@@ -168,39 +148,31 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
 
     Examples
     --------
-    .. tab-set::
+    Find all monic primitive polynomials over :math:`\mathrm{GF}(3)` with degree 4. You may also use `tuple()` on
+    the returned generator.
 
-        .. tab-item:: Return full list
+    .. ipython:: python
 
-            All monic primitive polynomials over :math:`\mathrm{GF}(3)` with degree :math:`4`. You may also use `tuple()` on
-            the returned generator.
+        list(galois.primitive_polys(3, 4))
 
-            .. ipython:: python
+    Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
+    have been found after the `break` condition is never incurred.
 
-                list(galois.primitive_polys(3, 4))
+    .. ipython:: python
 
-        .. tab-item:: For loop
+        for poly in galois.primitive_polys(3, 4, reverse=True):
+            if poly.coeffs[1] < 2:  # Early exit condition
+                break
+            print(poly)
 
-            Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
-            have been found after the `break` condition is never incurred.
+    Or, manually iterate over the generator.
 
-            .. ipython:: python
+    .. ipython:: python
 
-                for poly in galois.primitive_polys(3, 4, reverse=True):
-                    if poly.coeffs[1] < 2:  # Early exit condition
-                        break
-                    print(poly)
-
-        .. tab-item:: Manual iteration
-
-            Or, manually iterate over the generator.
-
-            .. ipython:: python
-
-                generator = galois.primitive_polys(3, 4, reverse=True); generator
-                next(generator)
-                next(generator)
-                next(generator)
+        generator = galois.primitive_polys(3, 4, reverse=True); generator
+        next(generator)
+        next(generator)
+        next(generator)
     """
     if not isinstance(order, (int, np.integer)):
         raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
@@ -267,6 +239,8 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     r"""
     Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
+    :group: polys-primitive
+
     Parameters
     ----------
     characteristic
@@ -306,9 +280,7 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     --------
     Notice :func:`~galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
     :func:`~galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
-    with smaller Conway polynomials.
-
-    This is sometimes the same polynomial.
+    with smaller Conway polynomials. This is sometimes the same polynomial.
 
     .. ipython:: python
 
@@ -342,6 +314,8 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
 def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     r"""
     Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
+
+    :group: polys-primitive
 
     Parameters
     ----------

@@ -25,7 +25,9 @@ __all__ = ["Array"]
 @set_module("galois")
 class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclass=ArrayMeta):
     r"""
-    A :obj:`~numpy.ndarray` subclass over a Galois field or Galois ring.
+    An abstract :obj:`~numpy.ndarray` subclass over a Galois field or Galois ring.
+
+    :group: arrays
 
     Important
     ---------

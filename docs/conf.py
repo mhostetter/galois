@@ -48,6 +48,7 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.intersphinx",
     "sphinx_immaterial",
+    "sphinx_immaterial.apidoc.python.apigen",
     "myst_parser",
     "sphinx_design",
     "sphinxcontrib.details.directive",
@@ -143,6 +144,8 @@ html_theme_options = {
         # "header.autohide",
         "navigation.top",
         "navigation.tracking",
+        "toc.follow",
+        "toc.sticky"
     ],
     "palette": [
         {
@@ -190,12 +193,6 @@ html_last_updated_fmt = ""
 html_use_index = True
 html_domain_indices = True
 
-# Sphinx Immaterial API config
-object_description_options = [
-    ("py:function", dict(include_fields_in_toc=False)),
-    ("py:method", dict(include_fields_in_toc=False)),
-]
-
 
 # -- Extension configuration -------------------------------------------------
 
@@ -208,9 +205,9 @@ intersphinx_mapping = {
 autodoc_default_options = {
     "imported-members": True,
     "members": True,
-    "special-members": True,
-    "inherited-members": "ndarray",
-    "member-order": "groupwise",
+    # "special-members": True,
+    # "inherited-members": "ndarray",
+    # "member-order": "groupwise",
 }
 autodoc_typehints = "signature"
 autodoc_typehints_description_target = "documented"
@@ -225,9 +222,54 @@ autodoc_type_aliases = {
     "PolyLike": "~typing.PolyLike",
 }
 
-autosummary_generate = True
-autosummary_generate_overwrite = False
-autosummary_imported_members = True
+# autosummary_generate = True
+# autosummary_generate_overwrite = False
+# autosummary_imported_members = True
+
+# Sphinx Immaterial API config
+python_apigen_modules = {
+    "galois": "api/galois.",
+    "galois.typing": "api/galois.typing.",
+}
+python_type_aliases = {
+    "ElementLike": "~typing.ElementLike",
+    "IterableLike": "~typing.IterableLike",
+    "ArrayLike": "~typing.ArrayLike",
+    "ShapeLike": "~typing.ShapeLike",
+    "DTypeLike": "~typing.DTypeLike",
+    "PolyLike": "~typing.PolyLike",
+}
+python_apigen_default_groups = [
+    ("class:.*", "Classes"),
+    ("data:.*", "Variables"),
+    ("function:.*", "Functions"),
+    ("method:.*", "Methods"),
+    ("classmethod:.*", "Class methods"),
+    ("property:.*", "Properties"),
+    (r"method:.*\.[A-Z][A-Za-z,_]*", "Constructors"),
+    (r"method:.*\.__[A-Za-z,_]*__", "Special methods"),
+    (r"method:.*\.__(init|new)__", "Constructors"),
+    (r"method:.*\.__(str|repr)__", "String representation"),
+    (r"method:.*\.is_[a-z,_]*", "Tests"),
+    (r"property:.*\.is_[a-z,_]*", "Tests"),
+]
+python_apigen_default_order = [
+    ("class:.*", 10),
+    ("data:.*", 11),
+    ("function:.*", 12),
+    ("method:.*", 24),
+    ("classmethod:.*", 22),
+    ("property:.*", 30),
+    (r"method:.*\.[A-Z][A-Za-z,_]*", 20),
+    (r"method:.*\.__[A-Za-z,_]*__", 23),
+    (r"method:.*\.__(init|new)__", 20),
+    (r"method:.*\.__(str|repr)__", 21),
+    (r"method:.*\.is_[a-z,_]*", 31),
+    (r"property:.*\.is_[a-z,_]*", 32),
+]
+python_apigen_order_tiebreaker = "alphabetical"
+python_apigen_case_insensitive_filesystem = False
+python_transform_type_annotations_pep585 = False
 
 ipython_execlines = ["import math", "import numpy as np", "import galois"]
 
@@ -241,21 +283,23 @@ SPECIAL_MEMBERS = [
 
 def autodoc_skip_member(app, what, name, obj, skip, options):
     """
-    Instruct autosummary to skip members that are inherited from np.ndarray
+    Instruct autodoc to skip members that are inherited from np.ndarray
     """
     if skip:
         # Continue skipping things Sphinx already wants to skip
         return skip
 
-    if hasattr(obj, "__objclass__"):
+    if name == "__init__":
+        return False
+    elif hasattr(obj, "__objclass__"):
         # This is a NumPy method, don't include docs
         return True
     elif getattr(obj, "__qualname__", None) in ["FunctionMixin.dot", "Array.astype"]:
-        # NumPy methods that wer overridden, don't include docs
+        # NumPy methods that were overridden, don't include docs
         return True
     elif hasattr(obj, "__qualname__") and getattr(obj, "__qualname__").split(".")[0] == "FieldArray" and hasattr(numpy.ndarray, name):
         if name in ["__repr__", "__str__"]:
-            # Specially allow these methods to be displayed
+            # Specifically allow these methods to be documented
             return False
         else:
             # This is a NumPy method that was overridden in one of our ndarray subclasses. Also don't include
@@ -263,11 +307,11 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
             return True
 
     if name in SPECIAL_MEMBERS:
-        # Don"t skip members in "special-members"
+        # Don't skip members in "special-members"
         return False
 
     if name[0] == "_":
-        # For some reason we need to tell sphinx to hide private members
+        # For some reason we need to tell Sphinx to hide private members
         return True
 
     return skip
@@ -378,47 +422,46 @@ def modify_type_hints(signature):
 # class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
 # in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
 
-
-import galois
-import galois._fields._factory
-
-
 def classproperty(obj):
     ret = classmethod(obj)
     ret.__doc__ = obj.__doc__
-
     return ret
 
 
-class FieldArray(galois.FieldArray):
-    characteristic = classproperty(type(galois.FieldArray).characteristic)
-    default_ufunc_mode = classproperty(type(galois.FieldArray).default_ufunc_mode)
-    degree = classproperty(type(galois.FieldArray).degree)
-    display_mode = classproperty(type(galois.FieldArray).display_mode)
-    dtypes = classproperty(type(galois.FieldArray).dtypes)
-    irreducible_poly = classproperty(type(galois.FieldArray).irreducible_poly)
-    is_extension_field = classproperty(type(galois.FieldArray).is_extension_field)
-    is_prime_field = classproperty(type(galois.FieldArray).is_prime_field)
-    is_primitive_poly = classproperty(type(galois.FieldArray).is_primitive_poly)
-    name = classproperty(type(galois.FieldArray).name)
-    order = classproperty(type(galois.FieldArray).order)
-    prime_subfield = classproperty(type(galois.FieldArray).prime_subfield)
-    primitive_element = classproperty(type(galois.FieldArray).primitive_element)
-    primitive_elements = classproperty(type(galois.FieldArray).primitive_elements)
-    properties = classproperty(type(galois.FieldArray).properties)
-    quadratic_non_residues = classproperty(type(galois.FieldArray).quadratic_non_residues)
-    quadratic_residues = classproperty(type(galois.FieldArray).quadratic_residues)
-    ufunc_mode = classproperty(type(galois.FieldArray).ufunc_mode)
-    ufunc_modes = classproperty(type(galois.FieldArray).ufunc_modes)
-FieldArray.__doc__ = galois.FieldArray.__doc__
-galois.FieldArray = FieldArray
-galois._fields._factory.FieldArray = FieldArray
+ArrayMeta_properties = ["name", "characteristic", "degree", "order", "irreducible_poly", "primitive_element", "dtypes", "display_mode", "ufunc_mode", "ufunc_modes", "default_ufunc_mode"]
+for p in ArrayMeta_properties:
+    # Fetch the class properties from the private metaclasses
+    ArrayMeta_property = getattr(galois._domains._array.ArrayMeta, p)
 
-# TODO: Monkey patching GF2 doesn't seem to work
-# class GF2(FieldArray, galois.GF2):
-#     pass
-# GF2.__doc__ = galois.GF2.__doc__
-# galois.GF2 = GF2
+    # Temporarily delete the class properties from the private metaclasses
+    delattr(galois._domains._array.ArrayMeta, p)
+
+    # Add a Python 3.9 style class property to the public class
+    setattr(galois.Array, p, classproperty(ArrayMeta_property))
+
+    # Add back the class properties to the private metaclasses
+    setattr(galois._domains._array.ArrayMeta, p, ArrayMeta_property)
+
+
+FieldArrayMeta_properties = ["properties", "name", "characteristic", "degree", "order", "irreducible_poly", "is_primitive_poly", "primitive_element", "primitive_elements", "quadratic_residues", "quadratic_non_residues", "is_prime_field", "is_extension_field", "prime_subfield", "dtypes", "display_mode", "ufunc_mode", "ufunc_modes", "default_ufunc_mode"]
+for p in FieldArrayMeta_properties:
+    # Fetch the class properties from the private metaclasses
+    if p in ArrayMeta_properties:
+        ArrayMeta_property = getattr(galois._domains._array.ArrayMeta, p)
+    FieldArrayMeta_property = getattr(galois._fields._array.FieldArrayMeta, p)
+
+    # Temporarily delete the class properties from the private metaclasses
+    if p in ArrayMeta_properties:
+        delattr(galois._domains._array.ArrayMeta, p)
+    delattr(galois._fields._array.FieldArrayMeta, p)
+
+    # Add a Python 3.9 style class property to the public class
+    setattr(galois.FieldArray, p, classproperty(FieldArrayMeta_property))
+
+    # Add back the class properties to the private metaclasses
+    if p in ArrayMeta_properties:
+        setattr(galois._domains._array.ArrayMeta, p, ArrayMeta_property)
+    setattr(galois._fields._array.FieldArrayMeta, p, FieldArrayMeta_property)
 
 
 def setup(app):

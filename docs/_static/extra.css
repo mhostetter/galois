@@ -35,3 +35,14 @@
 .sd-tab-content {
   box-shadow: 0 -0.05rem var(--md-default-fg-color--lightest), 0 0.05rem var(--md-default-fg-color--lightest);
 }
+
+/* Modify Sphinx Immaterial python-apigen entity summary coloring. */
+/* .md-typeset :is(dl.objdesc,dl.api-field)>dt .sig-name:not(.sig-name-nonprimary ){
+  color: var(--md-accent-fg-color);
+} */
+/* .md-typeset .sig-inline a.reference.sig-name, .md-typeset .sig-inline a.reference:not(.desctype)>.n, .md-typeset .sig-inline a.reference>.sig-name, .md-typeset :-webkit-any(dl.objdesc,dl.api-field)>dt a.reference.sig-name, .md-typeset :-webkit-any(dl.objdesc,dl.api-field)>dt a.reference:not(.desctype)>.n, .md-typeset :-webkit-any(dl.objdesc,dl.api-field)>dt a.reference>.sig-name {
+  color: var(--md-default-fg-color--light);
+}
+.md-typeset .sig-inline a.reference.sig-name, .md-typeset .sig-inline a.reference:not(.desctype)>.n, .md-typeset .sig-inline a.reference>.sig-name, .md-typeset :is(dl.objdesc,dl.api-field)>dt a.reference.sig-name, .md-typeset :is(dl.objdesc,dl.api-field)>dt a.reference:not(.desctype)>.n, .md-typeset :is(dl.objdesc,dl.api-field)>dt a.reference>.sig-name {
+  color: var(--md-default-fg-color--light);
+} */

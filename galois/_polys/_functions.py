@@ -111,6 +111,8 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
     r"""
     Computes the Lagrange interpolating polynomial :math:`L(x)` such that :math:`L(x_i) = y_i`.
 
+    :group: polys-interpolating
+
     Parameters
     ----------
     x
