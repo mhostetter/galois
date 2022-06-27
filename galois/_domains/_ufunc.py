@@ -20,7 +20,7 @@ class UFunc:
     A ufunc dispatcher for Array objects. The dispatcher will invoke a JIT-compiled or pure-Python ufunc depending on the size
     of the Galois field or Galois ring.
     """
-    _TYPE: Literal["unary", "binary"]
+    type: Literal["unary", "binary"]
 
     _CACHE_CALCULATE = {}  # A cache of compiled ufuncs using explicit calculation
     _CACHE_LOOKUP = {}  # A cache of compiled ufuncs using lookup tables
@@ -85,7 +85,7 @@ class UFunc:
         if key_2 not in self._CACHE_CALCULATE[key_1]:
             self.set_calculate_globals()  # Set the globals once before JIT compiling the function
 
-            if self._TYPE == "unary":
+            if self.type == "unary":
                 self._CACHE_CALCULATE[key_1][key_2] = numba.vectorize(["int64(int64)"], nopython=True)(self.calculate)
             else:
                 self._CACHE_CALCULATE[key_1][key_2] = numba.vectorize(["int64(int64, int64)"], nopython=True)(self.calculate)
@@ -107,7 +107,7 @@ class UFunc:
         if key_2 not in self._CACHE_LOOKUP[key_1]:
             self.set_lookup_globals()  # Set the globals once before JIT compiling the function
 
-            if self._TYPE == "unary":
+            if self.type == "unary":
                 self._CACHE_LOOKUP[key_1][key_2] = numba.vectorize(["int64(int64)"], nopython=True)(self.lookup)
             else:
                 self._CACHE_LOOKUP[key_1][key_2] = numba.vectorize(["int64(int64, int64)"], nopython=True)(self.lookup)
@@ -124,7 +124,7 @@ class UFunc:
 
         self.set_calculate_globals()  # Set the globals each time before invoking the pure-Python function
 
-        if self._TYPE == "unary":
+        if self.type == "unary":
             return np.frompyfunc(self.calculate, 1, 1)
         else:
             return np.frompyfunc(self.calculate, 2, 1)
@@ -262,7 +262,7 @@ class divmod_ufunc(UFunc):
     """
     Default division with remainder ufunc dispatcher.
     """
-    _TYPE = "binary"
+    type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         q = getattr(np.divide, method)(*inputs, **kwargs)
@@ -276,7 +276,7 @@ class remainder_ufunc(UFunc):
     """
     Default remainder ufunc dispatcher.
     """
-    _TYPE = "binary"
+    type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         # Perform dummy addition operation to get shape of output zeros
@@ -289,7 +289,7 @@ class square_ufunc(UFunc):
     """
     Default squaring ufunc dispatcher.
     """
-    _TYPE = "unary"
+    type = "unary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_unary_method_not_reduction(ufunc, method)
@@ -304,7 +304,7 @@ class matmul_ufunc(UFunc):
     """
     Default matrix multiplication ufunc dispatcher.
     """
-    _TYPE = "binary"
+    type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         self._verify_method_only_call(ufunc, method)
