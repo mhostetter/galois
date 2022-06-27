@@ -15,7 +15,7 @@ class add_ufunc(UFunc):
     """
     Default addition ufunc dispatcher.
     """
-    _TYPE = "binary"
+    type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_operands_in_same_field(ufunc, inputs, meta)
@@ -33,7 +33,7 @@ class add_ufunc(UFunc):
         ZECH_E = self.field._ZECH_E
 
     @staticmethod
-    def lookup(a, b):  # pragma: no cover
+    def lookup(a: int, b: int) -> int:  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
         a = α^m
@@ -68,7 +68,7 @@ class negative_ufunc(UFunc):
     """
     Default additive inverse ufunc dispatcher.
     """
-    _TYPE = "unary"
+    type = "unary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_unary_method_not_reduction(ufunc, method)
@@ -85,7 +85,7 @@ class negative_ufunc(UFunc):
         ZECH_E = self.field._ZECH_E
 
     @staticmethod
-    def lookup(a):  # pragma: no cover
+    def lookup(a: int) -> int:  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
         a = α^m
@@ -106,7 +106,7 @@ class subtract_ufunc(UFunc):
     """
     Default subtraction ufunc dispatcher.
     """
-    _TYPE = "binary"
+    type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_operands_in_same_field(ufunc, inputs, meta)
@@ -125,7 +125,7 @@ class subtract_ufunc(UFunc):
         ZECH_E = self.field._ZECH_E
 
     @staticmethod
-    def lookup(a, b):  # pragma: no cover
+    def lookup(a: int, b: int) -> int:  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
         a = α^m
@@ -166,7 +166,7 @@ class multiply_ufunc(UFunc):
     """
     Default multiplication ufunc dispatcher.
     """
-    _TYPE = "binary"
+    type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         if len(meta["non_field_operands"]) > 0:
@@ -186,7 +186,7 @@ class multiply_ufunc(UFunc):
         LOG = self.field._LOG
 
     @staticmethod
-    def lookup(a, b):  # pragma: no cover
+    def lookup(a: int, b: int) -> int:  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
         a = α^m
@@ -207,7 +207,7 @@ class reciprocal_ufunc(UFunc):
     """
     Default multiplicative inverse ufunc dispatcher.
     """
-    _TYPE = "unary"
+    type = "unary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_unary_method_not_reduction(ufunc, method)
@@ -224,7 +224,7 @@ class reciprocal_ufunc(UFunc):
         LOG = self.field._LOG
 
     @staticmethod
-    def lookup(a):  # pragma: no cover
+    def lookup(a: int) -> int:  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
         a = α^m
@@ -246,7 +246,7 @@ class divide_ufunc(UFunc):
     """
     Default division ufunc dispatcher.
     """
-    _TYPE = "binary"
+    type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_operands_in_same_field(ufunc, inputs, meta)
@@ -263,7 +263,7 @@ class divide_ufunc(UFunc):
         LOG = self.field._LOG
 
     @staticmethod
-    def lookup(a, b):  # pragma: no cover
+    def lookup(a: int, b: int) -> int:  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
         a = α^m
@@ -290,7 +290,7 @@ class power_ufunc(UFunc):
     """
     Default exponentiation ufunc dispatcher.
     """
-    _TYPE = "binary"
+    type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_binary_method_not_reduction(ufunc, method)
@@ -308,7 +308,7 @@ class power_ufunc(UFunc):
         LOG = self.field._LOG
 
     @staticmethod
-    def lookup(a, b):  # pragma: no cover
+    def lookup(a: int, b: int) -> int:  # pragma: no cover
         """
         α is a primitive element of GF(p^m)
         a = α^m
@@ -337,7 +337,7 @@ class log_ufunc(UFunc):
     """
     Default logarithm ufunc dispatcher.
     """
-    _TYPE = "binary"
+    type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         self._verify_method_only_call(ufunc, method)
@@ -352,7 +352,7 @@ class log_ufunc(UFunc):
         LOG = self.field._LOG
 
     @staticmethod
-    def lookup(a, b):  # pragma: no cover
+    def lookup(a: int, b: int) -> int:  # pragma: no cover
         """
         b is a primitive element of GF(p^m)
         a = b^c
@@ -371,7 +371,7 @@ class sqrt_ufunc(UFunc):
     """
     Default square root ufunc dispatcher.
     """
-    _TYPE = "unary"
+    type = "unary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         self._verify_method_only_call(ufunc, method)
