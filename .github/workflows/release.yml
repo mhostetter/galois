@@ -19,21 +19,25 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.7
+
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0  # Fetch all commits and tags
         ref: ${{ github.REF }}
+
     # - name: Wait on other workflows
     #   uses: lewagon/wait-on-check-action@v0.2
     #   with:
     #     ref: ${{ github.REF }}
     #     repo-token: ${{ secrets.GITHUB_TOKEN }}
     #     wait-interval: 5
+
     - name: Get previous version
       id: previous_version
       run: |  # Get last version tag and remove the "v"
         version=$(git describe --tags --abbrev=0 | cut -c 2-)
         echo "::set-output name=version::${version}"
+
     - name: Validate next version
       uses: zwaldowski/semver-release-action@v2
       id: next_version
@@ -42,10 +46,12 @@ jobs:
         bump: ${{ github.event.inputs.release_type }}
         prefix: "v"
         github_token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Update version file
       run: |
         echo -n "${{ steps.next_version.outputs.version }}" > galois/version.txt
         cat galois/version.txt
+
     - name: Commit and tag version
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
@@ -54,10 +60,12 @@ jobs:
         repository: .
         branch: master
         tagging_message: "v${{ steps.next_version.outputs.version }}"
+
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0  # Fetch all commits and tags
         ref: ${{ github.REF }}
+
     - name: Construct release notes
       run: |
         prev=v${{ steps.previous_version.outputs.version }}
@@ -66,6 +74,7 @@ jobs:
         git log ${prev}..${next} --pretty="- @%an" | sort | uniq >> release_notes.md
         echo -e "\n## Commits" >> release_notes.md
         git log --oneline ${prev}..${next} >> release_notes.md
+
     - name: Create GitHub release
       uses: actions/create-release@v1
       env:
@@ -75,11 +84,13 @@ jobs:
         release_name: galois v${{ steps.next_version.outputs.version }}
         body_path: release_notes.md
         draft: true
-    - name: Build python package
+
+    - name: Build Python package
       run: |
         python3 -m pip install --upgrade setuptools wheel twine
         python3 setup.py sdist bdist_wheel
         python3 -m twine check dist/*
+
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@v1.4.2
       with:

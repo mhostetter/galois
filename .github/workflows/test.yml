@@ -17,16 +17,20 @@ jobs:
         python-version: [3.7, 3.8, 3.9, '3.10']
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install linting dependencies
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements-dev.txt
-    - name: Install python package
+
+    - name: Install Python package
       run: python3 -m pip install .  # Needed to guarantee dependencies are installed
+
     - name: Lint with pylint
       run: python3 -m pylint --rcfile=setup.cfg galois/
 
@@ -36,18 +40,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
         python-version: 3.7
+
     - name: Install testing dependencies
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements-dev.txt
-    - name: Install python package
+
+    - name: Install Python package
       run: python3 -m pip install .
+
     - name: Test with pytest
       run: python3 -m pytest --cov=galois/ --cov-report=xml tests/
+
     - name: Upload coverage report
       uses: codecov/codecov-action@v2
       with:
@@ -60,15 +69,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
         python-version: 3.7
-    - name: Build python package
+
+    - name: Build Python package
       run: |
         python3 -m pip install --upgrade setuptools wheel twine
         python3 setup.py sdist bdist_wheel
         python3 -m twine check dist/*
+
     - name: Upload wheel artifact
       uses: actions/upload-artifact@v2
       with:
@@ -86,28 +98,35 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install testing dependencies
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements-dev.txt
+
     - name: Install minimum package dependencies
       run: python3 -m pip install -r requirements-min.txt
+
     - name: Remove source code
       uses: JesseTG/rm@v1.0.2
       with:
         path: galois/
+
     - name: Download wheel artifact
       uses: actions/download-artifact@v2
       with:
         name: dist
         path: dist/
+
     - name: Install package wheel
       run: |
         python3 -m pip install $(ls dist/galois-*.whl)
+
     - name: Test with pytest
       run: |
         python3 -m pytest tests/
@@ -122,26 +141,32 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install testing dependencies
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements-dev.txt
+
     - name: Remove source code
       uses: JesseTG/rm@v1.0.2
       with:
         path: galois/
+
     - name: Download wheel artifact
       uses: actions/download-artifact@v2
       with:
         name: dist
         path: dist/
+
     - name: Install package wheel
       run: |
         python3 -m pip install $(ls dist/galois-*.whl)
+
     - name: Test with pytest
       run: |
         python3 -m pytest tests/
