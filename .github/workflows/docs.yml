@@ -14,16 +14,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
+
     - name: Install documentation dependencies
       run: |
         python3 -m pip install --upgrade pip
         sudo apt install pandoc
         python3 -m pip install -r docs/requirements.txt
-    - name: Install python package
+
+    - name: Install Python package
       run: python3 -m pip install .
-    - name: Run sphinx to build docs
-      run: sphinx-build -b html -v docs/ docs/build/
+
+    - name: Run Sphinx to build docs
+      run: sphinx-build -b dirhtml -v docs/ docs/build/
