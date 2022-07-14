@@ -24,7 +24,7 @@ class FieldArrayMeta(ArrayMeta):
     """
     A metaclass that provides documented class properties for `FieldArray` subclasses.
     """
-    # pylint: disable=no-value-for-parameter
+    # pylint: disable=no-value-for-parameter,too-many-public-methods
 
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
         return super().__new__(cls, name, bases, namespace)
@@ -213,6 +213,31 @@ class FieldArrayMeta(ArrayMeta):
             GF.display()
         """
         return super().elements
+
+    @property
+    def units(cls) -> FieldArray:
+        r"""
+        All of the finite field's units :math:`\{1, \dots, p^m-1\}`. A unit is an element with a multiplicative inverse.
+
+        Examples
+        --------
+        All units of the prime field :math:`\mathrm{GF}(31)` in increasing order.
+
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.units
+
+        All units of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
+
+        .. ipython:: python
+
+            GF = galois.GF(5**2, display="poly")
+            GF.units
+            @suppress
+            GF.display()
+        """
+        return super().units
 
     @property
     def primitive_element(cls) -> FieldArray:
@@ -1338,8 +1363,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         .. ipython:: python
 
             GF = galois.GF(3**2, display="poly")
-            # The multiplicative order of 0 is not defined
-            x = GF.Range(1, GF.order); x
+            x = GF.units; x
             order = x.multiplicative_order(); order
             x ** order
 
