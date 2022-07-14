@@ -374,6 +374,7 @@ and `stop` values are the :ref:`integer representation <int-repr>` of the polyno
          @suppress
          GF.display("int")
          GF.Range(10, 20)
+         GF.Range(10, 20, 2)
 
    .. tab-item:: Polynomial
       :sync: poly
@@ -383,6 +384,7 @@ and `stop` values are the :ref:`integer representation <int-repr>` of the polyno
          @suppress
          GF.display("poly")
          GF.Range(10, 20)
+         GF.Range(10, 20, 2)
 
    .. tab-item:: Power
       :sync: power
@@ -392,37 +394,7 @@ and `stop` values are the :ref:`integer representation <int-repr>` of the polyno
          @suppress
          GF.display("power")
          GF.Range(10, 20)
-
-The :func:`~galois.FieldArray.Elements` classmethod provides a 1-D array of all the finite field elements.
-
-.. tab-set::
-
-   .. tab-item:: Integer
-      :sync: int
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         GF.Elements()
-
-   .. tab-item:: Polynomial
-      :sync: poly
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF.Elements()
-
-   .. tab-item:: Power
-      :sync: power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF.Elements()
+         GF.Range(10, 20, 2)
 
 Random arrays
 .............
@@ -462,6 +434,49 @@ the polynomial field elements.
          GF.display("power")
          GF.Random(4, seed=1234)
          GF.Random(4, low=10, high=20, seed=5678)
+
+..
+   Reset the display mode to the integer representation so other pages aren't affected
+.. ipython:: python
+   :suppress:
+
+   GF.display("int")
+
+Class properties
+----------------
+
+The :obj:`~galois.FieldArray.elements` class property provides a 1-D array of all the finite field elements.
+
+.. tab-set::
+
+   .. tab-item:: Integer
+      :sync: int
+
+      .. ipython:: python
+
+         GF = galois.GF(3**2)
+         GF.elements
+         GF.primitive_elements
+
+   .. tab-item:: Polynomial
+      :sync: poly
+
+      .. ipython:: python
+
+         GF = galois.GF(3**2, display="poly")
+         GF.elements
+         GF.primitive_elements
+
+   .. tab-item:: Power
+      :sync: power
+
+      .. ipython:: python
+
+         GF = galois.GF(3**2, display="power")
+         GF.elements
+         GF.primitive_elements
+         @suppress
+         GF.display()
 
 Data types
 ----------
@@ -535,10 +550,3 @@ Arrays may also have their data types changed using `.astype()`. The data type m
     x.dtype
     x = x.astype(np.int64)
     x.dtype
-
-..
-   Reset the display mode to the integer representation so other pages aren't affected
-.. ipython:: python
-   :suppress:
-
-   GF.display("int")

@@ -280,10 +280,6 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         return cls._view(array)
 
     @classmethod
-    def Elements(cls, dtype: Optional[DTypeLike] = None) -> Array:
-        return cls.Range(0, cls.order, step=1, dtype=dtype)
-
-    @classmethod
     def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> Array:
         r"""
         Creates an :math:`n \times n` identity matrix.
@@ -388,7 +384,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         .. ipython:: python
 
             GF = galois.GF(3**2)
-            x = GF.Elements(); x
+            x = GF.elements; x
 
         Permanently set the display mode by calling :func:`display`.
 

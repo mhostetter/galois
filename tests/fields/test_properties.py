@@ -20,7 +20,7 @@ def test_properties(field_properties):
 
 def test_characteristic(field):
     if field.order < 2**16:
-        a = field.Elements()
+        a = field.elements
     else:
         # Only select some, not all, elements for very large fields
         a = field.Random(2**16)
@@ -33,7 +33,7 @@ def test_element_order(field):
     if field.order > 1e6:  # TODO: Skip for extremely large fields
         return
     if field.order < 2**16:
-        a = field.Elements()[1:]
+        a = field.elements[1:]
     else:
         # Only select some, not all, elements for very large fields
         a = field.Random(2**16, low=1)
@@ -60,7 +60,7 @@ def test_primitive_root_of_unity():
             assert np.all(r ** n == 1)
             i += 1
         elif j < 5:
-            x = GF.Elements()
+            x = GF.elements
             assert np.any(x ** n == 1)
 
     # Large field
@@ -86,7 +86,7 @@ def test_primitive_roots_of_unity():
             assert np.all(r ** n == 1)
             i += 1
         elif j < 5:
-            x = GF.Elements()
+            x = GF.elements
             assert np.any(x ** n == 1)
 
 
@@ -109,7 +109,7 @@ def test_fermats_little_theorem(field):
         return
     poly = galois.Poly([1], field=field)  # Base polynomial
     # p = field.characteristic
-    for a in field.Elements():
+    for a in field.elements:
         poly = poly * galois.Poly([1, -a], field=field)
     assert poly == galois.Poly.Degrees([field.order, 1], coeffs=[1, -1], field=field)
 

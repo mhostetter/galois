@@ -150,7 +150,7 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
     .. ipython:: python
 
         GF = galois.GF(3**2)
-        x = GF.Elements(); x
+        x = GF.elements; x
         y = GF.Random(x.size); y
 
     Find the Lagrange polynomial that interpolates the coordinates.

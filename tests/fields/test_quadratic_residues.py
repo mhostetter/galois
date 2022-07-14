@@ -67,7 +67,7 @@ def test_shapes():
 
 def test_binary_field():
     GF = galois.GF(2)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1])
@@ -84,7 +84,7 @@ def test_binary_field():
 
 def test_prime_field_1():
     GF = galois.GF(7)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 2, 4])
@@ -101,7 +101,7 @@ def test_prime_field_1():
 
 def test_prime_field_2():
     GF = galois.GF(31)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 2, 4, 5, 7, 8, 9, 10, 14, 16, 18, 19, 20, 25, 28])
@@ -118,7 +118,7 @@ def test_prime_field_2():
 
 def test_prime_field_3():
     GF = galois.GF(79)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 2, 4, 5, 8, 9, 10, 11, 13, 16, 18, 19, 20, 21, 22, 23, 25, 26, 31, 32, 36, 38, 40, 42, 44, 45, 46, 49, 50, 51, 52, 55, 62, 64, 65, 67, 72, 73, 76])
@@ -135,7 +135,7 @@ def test_prime_field_3():
 
 def test_binary_extension_field_1():
     GF = galois.GF(2**3)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 2, 3, 4, 5, 6, 7])
@@ -152,7 +152,7 @@ def test_binary_extension_field_1():
 
 def test_binary_extension_field_2():
     GF = galois.GF(2**4)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
@@ -170,7 +170,7 @@ def test_binary_extension_field_2():
 def test_binary_extension_field_3():
     # Use an irreducible, but not primitive, polynomial
     GF = galois.GF(2**4, irreducible_poly="x^4 + x^3 + x^2 + x + 1")
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
@@ -187,7 +187,7 @@ def test_binary_extension_field_3():
 
 def test_binary_extension_field_4():
     GF = galois.GF(2**5)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31])
@@ -204,7 +204,7 @@ def test_binary_extension_field_4():
 
 def test_prime_extension_field_1():
     GF = galois.GF(3**2)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 2, 4, 8])
@@ -221,7 +221,7 @@ def test_prime_extension_field_1():
 
 def test_prime_extension_field_2():
     GF = galois.GF(3**3)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 6, 7, 8, 9, 11, 12, 13, 15, 16, 20, 22, 25])
@@ -238,7 +238,7 @@ def test_prime_extension_field_2():
 
 def test_prime_extension_field_3():
     GF = galois.GF(5**2)
-    x = GF.Elements()
+    x = GF.elements
 
     qr = GF.quadratic_residues
     assert np.array_equal(qr, [0, 1, 2, 3, 4, 6, 8, 11, 12, 18, 19, 22, 24])

@@ -60,7 +60,7 @@ The elements of the finite field are retrieved in a 1-D array using the :func:`~
 
          @suppress
          GF7.display("int")
-         GF7.Elements()
+         GF7.elements
 
    .. tab-item:: Power
       :sync: power
@@ -69,7 +69,7 @@ The elements of the finite field are retrieved in a 1-D array using the :func:`~
 
          @suppress
          GF7.display("power")
-         GF7.Elements()
+         GF7.elements
 
 Arithmetic
 ----------
