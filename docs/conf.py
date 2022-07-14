@@ -238,8 +238,8 @@ python_apigen_default_groups = [
     (r"method:.*\.__[A-Za-z,_]*__", "Special methods"),
     (r"method:.*\.__(init|new)__", "Constructors"),
     (r"method:.*\.__(str|repr)__", "String representation"),
-    (r"method:.*\.is_[a-z,_]*", "Tests"),
-    (r"property:.*\.is_[a-z,_]*", "Tests"),
+    # (r"method:.*\.is_[a-z,_]*", "Tests"),
+    # (r"property:.*\.is_[a-z,_]*", "Tests"),
 ]
 python_apigen_default_order = [
     ("class:.*", 10),
@@ -252,8 +252,8 @@ python_apigen_default_order = [
     (r"method:.*\.__[A-Za-z,_]*__", 23),
     (r"method:.*\.__(init|new)__", 20),
     (r"method:.*\.__(str|repr)__", 21),
-    (r"method:.*\.is_[a-z,_]*", 31),
-    (r"property:.*\.is_[a-z,_]*", 32),
+    # (r"method:.*\.is_[a-z,_]*", 31),
+    # (r"property:.*\.is_[a-z,_]*", 32),
 ]
 python_apigen_order_tiebreaker = "alphabetical"
 python_apigen_case_insensitive_filesystem = False
