@@ -11,6 +11,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+import inspect
 import os
 import sys
 sys.path.insert(0, os.path.abspath(".."))
@@ -331,7 +332,7 @@ def classproperty(obj):
     return ret
 
 
-ArrayMeta_properties = ["name", "characteristic", "degree", "order", "irreducible_poly", "primitive_element", "dtypes", "display_mode", "ufunc_mode", "ufunc_modes", "default_ufunc_mode"]
+ArrayMeta_properties = [member for member in dir(galois.Array) if inspect.isdatadescriptor(getattr(type(galois.Array), member, None))]
 for p in ArrayMeta_properties:
     # Fetch the class properties from the private metaclasses
     ArrayMeta_property = getattr(galois._domains._array.ArrayMeta, p)
@@ -346,7 +347,7 @@ for p in ArrayMeta_properties:
     setattr(galois._domains._array.ArrayMeta, p, ArrayMeta_property)
 
 
-FieldArrayMeta_properties = ["properties", "name", "characteristic", "degree", "order", "irreducible_poly", "is_primitive_poly", "primitive_element", "primitive_elements", "quadratic_residues", "quadratic_non_residues", "is_prime_field", "is_extension_field", "prime_subfield", "dtypes", "display_mode", "ufunc_mode", "ufunc_modes", "default_ufunc_mode"]
+FieldArrayMeta_properties = [member for member in dir(galois.FieldArray) if inspect.isdatadescriptor(getattr(type(galois.FieldArray), member, None))]
 for p in FieldArrayMeta_properties:
     # Fetch the class properties from the private metaclasses
     if p in ArrayMeta_properties:
