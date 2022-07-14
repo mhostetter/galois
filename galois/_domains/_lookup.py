@@ -1,6 +1,8 @@
 """
 A module containing various ufunc dispatchers using lookup tables.
 """
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -381,7 +383,7 @@ class sqrt_ufunc(UFunc):
             raise ArithmeticError(f"Input array has elements that are quadratic non-residues (do not have a square root). Use `x.is_quadratic_residue()` to determine if elements have square roots in {self.field.name}.\n{x[~b]}")
         return self.implementation(*inputs)
 
-    def implementation(self, a: "Array") -> "Array":
+    def implementation(self, a: Array) -> Array:
         """
         Computes the square root of an element in a Galois field or Galois ring.
         """

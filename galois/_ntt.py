@@ -20,7 +20,7 @@ def ntt(
     x: ArrayLike,
     size: Optional[int] = None,
     modulus: Optional[int] = None
-) -> "FieldArray":
+) -> FieldArray:
     r"""
     Computes the Number-Theoretic Transform (NTT) of :math:`x`.
 
@@ -133,7 +133,7 @@ def intt(
     size: Optional[int] = None,
     modulus: Optional[int] = None,
     scaled: bool = True
-) -> "FieldArray":
+) -> FieldArray:
     r"""
     Computes the Inverse Number-Theoretic Transform (INTT) of :math:`X`.
 

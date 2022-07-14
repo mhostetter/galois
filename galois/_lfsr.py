@@ -445,7 +445,7 @@ class FLFSR(_LFSR):
         # pylint: disable=useless-super-delegation
         return super().reset(state)
 
-    def step(self, steps: int = 1) -> "FieldArray":
+    def step(self, steps: int = 1) -> FieldArray:
         """
         Produces the next `steps` output symbols.
 
@@ -573,7 +573,7 @@ class FLFSR(_LFSR):
         return GLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> Type["FieldArray"]:
+    def field(self) -> Type[FieldArray]:
         """
         The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 
@@ -588,7 +588,7 @@ class FLFSR(_LFSR):
         return super().field
 
     @property
-    def feedback_poly(self) -> "Poly":
+    def feedback_poly(self) -> Poly:
         r"""
         The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`
         that defines the feedback arithmetic. The feedback polynomial is the reciprocal of the characteristic
@@ -606,7 +606,7 @@ class FLFSR(_LFSR):
         return super().feedback_poly
 
     @property
-    def characteristic_poly(self) -> "Poly":
+    def characteristic_poly(self) -> Poly:
         r"""
         The characteristic polynomial :math:`c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}`
         that defines the linear recurrent sequence. The characteristic polynomial is the reciprocal of the feedback
@@ -624,7 +624,7 @@ class FLFSR(_LFSR):
         return super().characteristic_poly
 
     @property
-    def taps(self) -> "FieldArray":
+    def taps(self) -> FieldArray:
         r"""
         The shift register taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`. The taps of the shift register define
         the linear recurrence relation.
@@ -649,7 +649,7 @@ class FLFSR(_LFSR):
         return super().order
 
     @property
-    def initial_state(self) -> "FieldArray":
+    def initial_state(self) -> FieldArray:
         r"""
         The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
@@ -671,7 +671,7 @@ class FLFSR(_LFSR):
         return super().initial_state
 
     @property
-    def state(self) -> "FieldArray":
+    def state(self) -> FieldArray:
         r"""
         The current state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
@@ -1111,7 +1111,7 @@ class GLFSR(_LFSR):
         # pylint: disable=useless-super-delegation
         return super().reset(state)
 
-    def step(self, steps: int = 1) -> "FieldArray":
+    def step(self, steps: int = 1) -> FieldArray:
         """
         Produces the next `steps` output symbols.
 
@@ -1226,7 +1226,7 @@ class GLFSR(_LFSR):
         return FLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> Type["FieldArray"]:
+    def field(self) -> Type[FieldArray]:
         """
         The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 
@@ -1241,7 +1241,7 @@ class GLFSR(_LFSR):
         return super().field
 
     @property
-    def feedback_poly(self) -> "Poly":
+    def feedback_poly(self) -> Poly:
         r"""
         The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`
         that defines the feedback arithmetic. The feedback polynomial is the reciprocal of the characteristic
@@ -1259,7 +1259,7 @@ class GLFSR(_LFSR):
         return super().feedback_poly
 
     @property
-    def characteristic_poly(self) -> "Poly":
+    def characteristic_poly(self) -> Poly:
         r"""
         The characteristic polynomial :math:`c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}`
         that defines the linear recurrent sequence. The characteristic polynomial is the reciprocal of the feedback
@@ -1277,7 +1277,7 @@ class GLFSR(_LFSR):
         return super().characteristic_poly
 
     @property
-    def taps(self) -> "FieldArray":
+    def taps(self) -> FieldArray:
         r"""
         The shift register taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`. The taps of the shift register define
         the linear recurrence relation.
@@ -1302,7 +1302,7 @@ class GLFSR(_LFSR):
         return super().order
 
     @property
-    def initial_state(self) -> "FieldArray":
+    def initial_state(self) -> FieldArray:
         r"""
         The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
@@ -1324,7 +1324,7 @@ class GLFSR(_LFSR):
         return super().initial_state
 
     @property
-    def state(self) -> "FieldArray":
+    def state(self) -> FieldArray:
         r"""
         The current state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
@@ -1489,13 +1489,13 @@ class galois_lfsr_step_backward_jit(Function):
 ###############################################################################
 
 @overload
-def berlekamp_massey(sequence: "FieldArray", output: Literal["minimal"] = "minimal") -> Poly:
+def berlekamp_massey(sequence: FieldArray, output: Literal["minimal"] = "minimal") -> Poly:
     ...
 @overload
-def berlekamp_massey(sequence: "FieldArray", output: Literal["fibonacci"]) -> FLFSR:
+def berlekamp_massey(sequence: FieldArray, output: Literal["fibonacci"]) -> FLFSR:
     ...
 @overload
-def berlekamp_massey(sequence: "FieldArray", output: Literal["galois"]) -> GLFSR:
+def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR:
     ...
 @set_module("galois")
 def berlekamp_massey(sequence, output="minimal"):

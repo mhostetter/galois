@@ -2095,7 +2095,7 @@ class Poly:
     ###############################################################################
 
     @property
-    def field(self) -> Type["Array"]:
+    def field(self) -> Type[Array]:
         """
         The :obj:`~galois.Array` subclass for the finite field the coefficients are over.
 
@@ -2144,7 +2144,7 @@ class Poly:
         return self._degree
 
     @property
-    def coeffs(self) -> "Array":
+    def coeffs(self) -> Array:
         """
         The coefficients of the polynomial in degree-descending order. The entries of :obj:`coeffs` are paired with :obj:`degrees`.
 
@@ -2185,7 +2185,7 @@ class Poly:
         return self._degrees.copy()
 
     @property
-    def nonzero_coeffs(self) -> "Array":
+    def nonzero_coeffs(self) -> Array:
         """
         The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_coeffs`
         are paired with :obj:`nonzero_degrees`.

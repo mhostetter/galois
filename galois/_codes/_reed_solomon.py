@@ -11,7 +11,7 @@ from numba import int64
 import numpy as np
 
 from .._domains._function import Function
-from .._fields import Field, FieldArray  # pylint: disable=unused-import
+from .._fields import Field, FieldArray
 from .._lfsr import berlekamp_massey_jit
 from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
@@ -182,7 +182,7 @@ class ReedSolomon:
 
         return string
 
-    def encode(self, message: Union[np.ndarray, "FieldArray"], parity_only: bool = False) -> Union[np.ndarray, "FieldArray"]:
+    def encode(self, message: Union[np.ndarray, FieldArray], parity_only: bool = False) -> Union[np.ndarray, FieldArray]:
         r"""
         Encodes the message :math:`\mathbf{m}` into the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -314,7 +314,7 @@ class ReedSolomon:
             codeword = message.view(self.field) @ self.G
             return codeword.view(type(message))
 
-    def detect(self, codeword: Union[np.ndarray, "FieldArray"]) -> Union[np.bool_, np.ndarray]:
+    def detect(self, codeword: Union[np.ndarray, FieldArray]) -> Union[np.bool_, np.ndarray]:
         r"""
         Detects if errors are present in the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -471,10 +471,10 @@ class ReedSolomon:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, "FieldArray"], errors: Literal[False] = False) -> Union[np.ndarray, "FieldArray"]:
+    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[False] = False) -> Union[np.ndarray, FieldArray]:
         ...
     @overload
-    def decode(self, codeword: Union[np.ndarray, "FieldArray"], errors: Literal[True]) -> Tuple[Union[np.ndarray, "FieldArray"], Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[True]) -> Tuple[Union[np.ndarray, FieldArray], Union[np.integer, np.ndarray]]:
         ...
     def decode(self, codeword, errors=False):
         r"""
@@ -687,7 +687,7 @@ class ReedSolomon:
             return message, N_errors
 
     @property
-    def field(self) -> Type["FieldArray"]:
+    def field(self) -> Type[FieldArray]:
         r"""
         The :obj:`~galois.FieldArray` subclass for the :math:`\mathrm{GF}(q)` field that defines the Reed-Solomon code.
 
@@ -773,7 +773,7 @@ class ReedSolomon:
         return self._systematic
 
     @property
-    def generator_poly(self) -> "Poly":
+    def generator_poly(self) -> Poly:
         """
         The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
 
@@ -793,7 +793,7 @@ class ReedSolomon:
         return self._generator_poly
 
     @property
-    def roots(self) -> "FieldArray":
+    def roots(self) -> FieldArray:
         r"""
         The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
         :math:`\alpha^c, \alpha^{c+1}, \dots, \alpha^{c+2t-1}`.
@@ -828,7 +828,7 @@ class ReedSolomon:
         return self._c
 
     @property
-    def G(self) -> "FieldArray":
+    def G(self) -> FieldArray:
         r"""
         The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
 
@@ -842,7 +842,7 @@ class ReedSolomon:
         return self._G
 
     @property
-    def H(self) -> "FieldArray":
+    def H(self) -> FieldArray:
         r"""
         The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
 

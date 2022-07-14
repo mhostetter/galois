@@ -147,7 +147,7 @@ class FieldArrayMeta(ArrayMeta):
         return super().order
 
     @property
-    def irreducible_poly(cls) -> "Poly":
+    def irreducible_poly(cls) -> Poly:
         r"""
         The irreducible polynomial :math:`f(x)` of the Galois field :math:`\mathrm{GF}(p^m)`. The irreducible
         polynomial is of degree :math:`m` over :math:`\mathrm{GF}(p)`.
@@ -190,7 +190,7 @@ class FieldArrayMeta(ArrayMeta):
         return cls._is_primitive_poly
 
     @property
-    def primitive_element(cls) -> "FieldArray":
+    def primitive_element(cls) -> FieldArray:
         r"""
         A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
@@ -210,7 +210,7 @@ class FieldArrayMeta(ArrayMeta):
         return super().primitive_element
 
     @property
-    def primitive_elements(cls) -> "FieldArray":
+    def primitive_elements(cls) -> FieldArray:
         r"""
         All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
@@ -231,7 +231,7 @@ class FieldArrayMeta(ArrayMeta):
         return cls._primitive_elements.copy()
 
     @property
-    def quadratic_residues(cls) -> "FieldArray":
+    def quadratic_residues(cls) -> FieldArray:
         r"""
         All quadratic residues in the finite field.
 
@@ -270,7 +270,7 @@ class FieldArrayMeta(ArrayMeta):
         return x[is_quadratic_residue]
 
     @property
-    def quadratic_non_residues(cls) -> "FieldArray":
+    def quadratic_non_residues(cls) -> FieldArray:
         r"""
         All quadratic non-residues in the Galois field.
 
@@ -334,7 +334,7 @@ class FieldArrayMeta(ArrayMeta):
         return cls._degree > 1
 
     @property
-    def prime_subfield(cls) -> Type["FieldArray"]:
+    def prime_subfield(cls) -> Type[FieldArray]:
         r"""
         The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
 
@@ -664,7 +664,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     @classmethod
     @extend_docstring(Array.Zeros, {"Array": "FieldArray"})
-    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> "FieldArray":
+    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
         """
         Examples
         --------
@@ -677,7 +677,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     @classmethod
     @extend_docstring(Array.Ones, {"Array": "FieldArray"})
-    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> "FieldArray":
+    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
         """
         Examples
         --------
@@ -696,7 +696,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         stop: ElementLike,
         step: int = 1,
         dtype: Optional[DTypeLike] = None
-    ) -> "FieldArray":
+    ) -> FieldArray:
         """
         Examples
         --------
@@ -729,7 +729,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         high: Optional[ElementLike] = None,
         seed: Optional[Union[int, np.random.Generator]] = None,
         dtype: Optional[DTypeLike] = None
-    ) -> "FieldArray":
+    ) -> FieldArray:
         """
         Examples
         --------
@@ -758,7 +758,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return super().Random(shape=shape, low=low, high=high, seed=seed, dtype=dtype)
 
     @classmethod
-    def Elements(cls, dtype: Optional[DTypeLike] = None) -> "FieldArray":
+    def Elements(cls, dtype: Optional[DTypeLike] = None) -> FieldArray:
         r"""
         Creates a 1-D array of the finite field's elements :math:`\{0, \dots, p^m-1\}`.
 
@@ -795,7 +795,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     @classmethod
     @extend_docstring(Array.Identity, {"Array": "FieldArray"})
-    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> "FieldArray":
+    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
         """
         Examples
         --------
@@ -807,7 +807,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return super().Identity(size, dtype=dtype)
 
     @classmethod
-    def Vandermonde(cls, element: ElementLike, rows: int, cols: int, dtype: Optional[DTypeLike] = None) -> "FieldArray":
+    def Vandermonde(cls, element: ElementLike, rows: int, cols: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
         r"""
         Creates an :math:`m \times n` Vandermonde matrix of :math:`a \in \mathrm{GF}(q)`.
 
@@ -860,7 +860,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return V
 
     @classmethod
-    def Vector(cls, array: ArrayLike, dtype: Optional[DTypeLike] = None) -> "FieldArray":
+    def Vector(cls, array: ArrayLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
         r"""
         Creates an array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
@@ -1009,8 +1009,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     def arithmetic_table(
         cls,
         operation: Literal["+", "-", "*", "/"],
-        x: Optional["FieldArray"] = None,
-        y: Optional["FieldArray"] = None
+        x: Optional[FieldArray] = None,
+        y: Optional[FieldArray] = None
     ) -> str:
         r"""
         Generates the specified arithmetic table for the finite field.
@@ -1142,7 +1142,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return string
 
     @classmethod
-    def primitive_root_of_unity(cls, n: int) -> "FieldArray":
+    def primitive_root_of_unity(cls, n: int) -> FieldArray:
         r"""
         Finds a primitive :math:`n`-th root of unity in the finite field.
 
@@ -1207,7 +1207,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return cls.primitive_element ** ((cls.order - 1) // n)
 
     @classmethod
-    def primitive_roots_of_unity(cls, n: int) -> "FieldArray":
+    def primitive_roots_of_unity(cls, n: int) -> FieldArray:
         r"""
         Finds all primitive :math:`n`-th roots of unity in the finite field.
 
@@ -1441,7 +1441,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             # Compute the Legendre symbol on each element
             return x ** ((field.order - 1)//2) != field.characteristic - 1
 
-    def vector(self, dtype: Optional[DTypeLike] = None) -> "FieldArray":
+    def vector(self, dtype: Optional[DTypeLike] = None) -> FieldArray:
         r"""
         Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
@@ -1493,7 +1493,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return y
 
-    def row_reduce(self, ncols: Optional[int] = None) -> "FieldArray":
+    def row_reduce(self, ncols: Optional[int] = None) -> FieldArray:
         r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form (RREF).
 
@@ -1537,7 +1537,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         A_rre, _ = _linalg.row_reduce_jit(type(self))(self, ncols=ncols)
         return A_rre
 
-    def lu_decompose(self) -> Tuple["FieldArray", "FieldArray"]:
+    def lu_decompose(self) -> Tuple[FieldArray, FieldArray]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices.
 
@@ -1569,7 +1569,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         L, U = _linalg.lu_decompose_jit(field)(A)
         return L, U
 
-    def plu_decompose(self) -> Tuple["FieldArray", "FieldArray", "FieldArray"]:
+    def plu_decompose(self) -> Tuple[FieldArray, FieldArray, FieldArray]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
 
@@ -1605,7 +1605,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         P, L, U, _ = _linalg.plu_decompose_jit(field)(A)
         return P, L, U
 
-    def row_space(self) -> "FieldArray":
+    def row_space(self) -> FieldArray:
         r"""
         Computes the row space of the matrix :math:`\mathbf{A}`.
 
@@ -1648,7 +1648,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return R
 
-    def column_space(self) -> "FieldArray":
+    def column_space(self) -> FieldArray:
         r"""
         Computes the column space of the matrix :math:`\mathbf{A}`.
 
@@ -1687,7 +1687,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return (A.T).row_space()  # pylint: disable=no-member
 
-    def left_null_space(self) -> "FieldArray":
+    def left_null_space(self) -> FieldArray:
         r"""
         Computes the left null space of the matrix :math:`\mathbf{A}`.
 
@@ -1746,7 +1746,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return LN
 
-    def null_space(self) -> "FieldArray":
+    def null_space(self) -> FieldArray:
         r"""
         Computes the null space of the matrix :math:`\mathbf{A}`.
 
@@ -1791,7 +1791,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return (A.T).left_null_space()  # pylint: disable=no-member
 
-    def field_trace(self) -> "FieldArray":
+    def field_trace(self) -> FieldArray:
         r"""
         Computes the field trace :math:`\mathrm{Tr}_{L / K}(x)` of the elements of :math:`x`.
 
@@ -1840,7 +1840,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             trace = np.add.reduce(conjugates, axis=-1)
             return subfield._view(trace)
 
-    def field_norm(self) -> "FieldArray":
+    def field_norm(self) -> FieldArray:
         r"""
         Computes the field norm :math:`\mathrm{N}_{L / K}(x)` of the elements of :math:`x`.
 
