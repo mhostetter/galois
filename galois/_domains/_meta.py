@@ -116,44 +116,79 @@ class ArrayMeta(abc.ABCMeta):
 
     @property
     def name(cls) -> str:
+        """
+        The name of the Galois field or Galois ring.
+        """
         return cls._name
 
     @property
     def characteristic(cls) -> int:
+        r"""
+        The characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)` or :math:`p^e` of the Galois ring
+        :math:`\mathrm{GR}(p^e, m)`.
+        """
         return cls._characteristic
 
     @property
     def degree(cls) -> int:
+        r"""
+        The degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)` or Galois ring :math:`\mathrm{GR}(p^e, m)`.
+        """
         return cls._degree
 
     @property
     def order(cls) -> int:
+        r"""
+        The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)` or :math:`p^{em}` of the Galois ring
+        :math:`\mathrm{GR}(p^e, m)`.
+        """
         return cls._order
 
     @property
     def irreducible_poly(cls) -> Poly:
+        """
+        The irreducible polynomial of the Galois field or Galois ring.
+        """
         return cls._irreducible_poly
 
     @property
     def primitive_element(cls) -> Array:
+        """
+        A primitive element of the Galois field or Galois ring.
+        """
         return cls(cls._primitive_element)
 
     @property
     def dtypes(cls) -> List[np.dtype]:
+        """
+        List of valid integer :obj:`numpy.dtype` values that are compatible with this Galois field or Galois ring.
+        """
         return cls._dtypes
 
     @property
     def display_mode(cls) -> Literal["int", "poly", "power"]:
+        """
+        The current element representation of the Galois field or Galois ring.
+        """
         return cls._display_mode
 
     @property
     def ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
+        """
+        The current compilation mode of the Galois field or Galois ring.
+        """
         return cls._ufunc_mode
 
     @property
     def ufunc_modes(cls) -> List[str]:
+        """
+        All supported compilation modes of the Galois field or Galois ring.
+        """
         return cls._ufunc_modes
 
     @property
     def default_ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
+        """
+        The default compilation mode of the Galois field or Galois ring.
+        """
         return cls._default_ufunc_mode
