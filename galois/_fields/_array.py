@@ -1627,7 +1627,6 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Examples
         --------
         The :func:`row_space` method defines basis vectors (its rows) that span the row space of :math:`\mathbf{A}`.
-        The dimension of the row space and left null space sum to :math:`m`.
 
         .. ipython:: python
 
@@ -1635,6 +1634,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF = galois.GF(31)
             A = GF.Random((m, n)); A
             R = A.row_space(); R
+
+        The dimension of the row space and left null space sum to :math:`m`.
+
+        .. ipython:: python
+
             LN = A.left_null_space(); LN
             R.shape[0] + LN.shape[0] == m
         """
@@ -1670,7 +1674,6 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Examples
         --------
         The :func:`column_space` method defines basis vectors (its rows) that span the column space of :math:`\mathbf{A}`.
-        The dimension of the column space and null space sum to :math:`n`.
 
         .. ipython:: python
 
@@ -1678,6 +1681,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF = galois.GF(31)
             A = GF.Random((m, n)); A
             C = A.column_space(); C
+
+        The dimension of the column space and null space sum to :math:`n`.
+
+        .. ipython:: python
+
             N = A.null_space(); N
             C.shape[0] + N.shape[0] == n
         """
@@ -1709,22 +1717,26 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Examples
         --------
         The :func:`left_null_space` method defines basis vectors (its rows) that span the left null space of :math:`\mathbf{A}`.
-        The dimension of the row space and left null space sum to :math:`m`.
 
         .. ipython:: python
 
             m, n = 5, 3
             GF = galois.GF(31)
             A = GF.Random((m, n)); A
-            R = A.row_space(); R
             LN = A.left_null_space(); LN
-            R.shape[0] + LN.shape[0] == m
 
         The left null space is the set of vectors that sum the rows to 0.
 
         .. ipython:: python
 
             LN @ A
+
+        The dimension of the row space and left null space sum to :math:`m`.
+
+        .. ipython:: python
+
+            R = A.row_space(); R
+            R.shape[0] + LN.shape[0] == m
         """
         field = type(self)
         A = self
@@ -1768,22 +1780,26 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Examples
         --------
         The :func:`null_space` method defines basis vectors (its rows) that span the null space of :math:`\mathbf{A}`.
-        The dimension of the column space and null space sum to :math:`n`.
 
         .. ipython:: python
 
             m, n = 3, 5
             GF = galois.GF(31)
             A = GF.Random((m, n)); A
-            C = A.column_space(); C
             N = A.null_space(); N
-            C.shape[0] + N.shape[0] == n
 
         The null space is the set of vectors that sum the columns to 0.
 
         .. ipython:: python
 
             A @ N.T
+
+        The dimension of the column space and null space sum to :math:`n`.
+
+        .. ipython:: python
+
+            C = A.column_space(); C
+            C.shape[0] + N.shape[0] == n
         """
         A = self
         if not A.ndim == 2:
