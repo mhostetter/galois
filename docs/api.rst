@@ -6,14 +6,10 @@ galois
 Arrays
 ------
 
-This section contains an abstract array base class and useful type hints related to arrays.
-
 .. python-apigen-group:: arrays
 
 Galois fields
 -------------
-
-This section contains abstract classes, class factories, and useful functions for Galois fields.
 
 .. python-apigen-group:: galois-fields
 
@@ -26,6 +22,10 @@ Polynomials
 -----------
 
 .. python-apigen-group:: polys
+
+.. important::
+
+    The :ref:`number-theory` section contains many functions that operate on polynomials.
 
 Irreducible polynomials
 .......................
@@ -56,6 +56,8 @@ Transforms
 ----------
 
 .. python-apigen-group:: transforms
+
+.. _number-theory:
 
 Number theory
 -------------
