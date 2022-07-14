@@ -159,6 +159,13 @@ class ArrayMeta(abc.ABCMeta):
         return cls.Range(0, cls.order, step=1)
 
     @property
+    def units(cls) -> Array:
+        """
+        All units of the Galois field or Galois ring.
+        """
+        return cls.Range(1, cls.order, step=1)
+
+    @property
     def primitive_element(cls) -> Array:
         """
         A primitive element of the Galois field or Galois ring.

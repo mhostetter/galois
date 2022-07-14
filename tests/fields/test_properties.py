@@ -33,7 +33,7 @@ def test_element_order(field):
     if field.order > 1e6:  # TODO: Skip for extremely large fields
         return
     if field.order < 2**16:
-        a = field.elements[1:]
+        a = field.units
     else:
         # Only select some, not all, elements for very large fields
         a = field.Random(2**16, low=1)
