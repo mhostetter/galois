@@ -190,6 +190,31 @@ class FieldArrayMeta(ArrayMeta):
         return cls._is_primitive_poly
 
     @property
+    def elements(cls) -> FieldArray:
+        r"""
+        All of the finite field's elements :math:`\{0, \dots, p^m-1\}`.
+
+        Examples
+        --------
+        All elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
+
+        .. ipython:: python
+
+            GF = galois.GF(31)
+            GF.elements
+
+        All elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
+
+        .. ipython:: python
+
+            GF = galois.GF(5**2, display="poly")
+            GF.elements
+            @suppress
+            GF.display()
+        """
+        return super().elements
+
+    @property
     def primitive_element(cls) -> FieldArray:
         r"""
         A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
@@ -265,7 +290,7 @@ class FieldArrayMeta(ArrayMeta):
             np.array_equal(r ** 2, x)
             np.array_equal((-r) ** 2, x)
         """
-        x = cls.Elements()
+        x = cls.elements
         is_quadratic_residue = x.is_quadratic_residue()
         return x[is_quadratic_residue]
 
@@ -297,7 +322,7 @@ class FieldArrayMeta(ArrayMeta):
             GF = galois.GF(11)
             GF.quadratic_non_residues
         """
-        x = cls.Elements()
+        x = cls.elements
         is_quadratic_residue = x.is_quadratic_residue()
         return x[~is_quadratic_residue]
 
@@ -395,7 +420,7 @@ class FieldArrayMeta(ArrayMeta):
         .. ipython:: python
 
             GF = galois.GF(3**2)
-            x = GF.Elements(); x
+            x = GF.elements; x
             GF.display_mode
 
         Permanently modify the display mode by calling :func:`~galois.FieldArray.display`.
@@ -758,42 +783,6 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return super().Random(shape=shape, low=low, high=high, seed=seed, dtype=dtype)
 
     @classmethod
-    def Elements(cls, dtype: Optional[DTypeLike] = None) -> FieldArray:
-        r"""
-        Creates a 1-D array of the finite field's elements :math:`\{0, \dots, p^m-1\}`.
-
-        Parameters
-        ----------
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
-
-        Returns
-        -------
-        :
-            A 1-D array of all the finite field's elements.
-
-        Examples
-        --------
-        Generate an array of elements of a prime field in increasing order.
-
-        .. ipython:: python
-
-            GF = galois.GF(31)
-            GF.Elements()
-
-        Generate an array of elements of an extension field in lexicographically-increasing order.
-
-        .. ipython:: python
-
-            GF = galois.GF(3**2, display="poly")
-            GF.Elements()
-            @suppress
-            GF.display()
-        """
-        return super().Elements(dtype)
-
-    @classmethod
     @extend_docstring(Array.Identity, {"Array": "FieldArray"})
     def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
         """
@@ -1101,7 +1090,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             # Order elements by powers of the primitive element
             x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1, dtype=cls.dtypes[-1])))
         else:
-            x_default = cls.Elements()
+            x_default = cls.elements
         y_default = x_default if operation != "/" else x_default[1:]
 
         x = x_default if x is None else cls(x)
@@ -1300,7 +1289,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         .. ipython:: python
 
             GF = galois.GF(3**2, display="poly")
-            x = GF.Elements(); x
+            x = GF.elements; x
             order = x.additive_order(); order
             x * order
             @suppress
@@ -1417,7 +1406,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         .. ipython:: python
 
             GF = galois.GF(2**3, display="poly")
-            x = GF.Elements(); x
+            x = GF.elements; x
             x.is_quadratic_residue()
             @suppress
             GF.display()
@@ -1428,7 +1417,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         .. ipython:: python
 
             GF = galois.GF(11)
-            x = GF.Elements(); x
+            x = GF.elements; x
             x.is_quadratic_residue()
         """
         x = self
@@ -1838,7 +1827,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         .. ipython:: python
 
             GF = galois.GF(3**2, display="poly")
-            x = GF.Elements(); x
+            x = GF.elements; x
             y = x.field_trace(); y
             @suppress
             GF.display()
@@ -1887,7 +1876,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         .. ipython:: python
 
             GF = galois.GF(3**2, display="poly")
-            x = GF.Elements(); x
+            x = GF.elements; x
             y = x.field_norm(); y
             @suppress
             GF.display()

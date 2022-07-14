@@ -152,6 +152,13 @@ class ArrayMeta(abc.ABCMeta):
         return cls._irreducible_poly
 
     @property
+    def elements(cls) -> Array:
+        """
+        All elements of the Galois field or Galois ring.
+        """
+        return cls.Range(0, cls.order, step=1)
+
+    @property
     def primitive_element(cls) -> Array:
         """
         A primitive element of the Galois field or Galois ring.

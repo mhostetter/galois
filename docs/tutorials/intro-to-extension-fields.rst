@@ -67,7 +67,7 @@ The elements of the finite field are retrieved in a 1-D array using the :func:`~
 
          @suppress
          GF9.display("int")
-         GF9.Elements()
+         GF9.elements
 
    .. tab-item:: Polynomial
       :sync: poly
@@ -77,7 +77,7 @@ The elements of the finite field are retrieved in a 1-D array using the :func:`~
 
          @suppress
          GF9.display("poly")
-         GF9.Elements()
+         GF9.elements
 
    .. tab-item:: Power
       :sync: power
@@ -86,7 +86,7 @@ The elements of the finite field are retrieved in a 1-D array using the :func:`~
 
          @suppress
          GF9.display("power")
-         GF9.Elements()
+         GF9.elements
 
 Irreducible polynomial
 ----------------------
