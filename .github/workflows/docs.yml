@@ -23,7 +23,6 @@ jobs:
     - name: Install documentation dependencies
       run: |
         python3 -m pip install --upgrade pip
-        sudo apt install pandoc
         python3 -m pip install -r docs/requirements.txt
 
     - name: Install Python package
