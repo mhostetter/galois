@@ -127,11 +127,6 @@ class GF2(FieldArray, UFuncMixin_2_1, characteristic=2, degree=1, order=2, irred
 
         x = galois.GF2([1, 0, 1, 1]); x
         isinstance(x, galois.GF2)
-
-    Note
-    ----
-    Only the class docstring is documented on this page. See :obj:`~galois.FieldArray` for all other classmethods, class properties,
-    and methods inherited by :obj:`~galois.GF2`.
     """
 
 
