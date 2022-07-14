@@ -91,7 +91,7 @@ class ArrayMeta(abc.ABCMeta):
     # View methods
     ###############################################################################
 
-    def _view(cls, array: np.ndarray) -> "Array":
+    def _view(cls, array: np.ndarray) -> Array:
         """
         View the input array to the Array subclass `A` using the `_view_without_verification()` context manager. This disables
         bounds checking on the array elements. Instead of `x.view(A)` use `A._view(x)`. For internal library use only.
@@ -131,11 +131,11 @@ class ArrayMeta(abc.ABCMeta):
         return cls._order
 
     @property
-    def irreducible_poly(cls) -> "Poly":
+    def irreducible_poly(cls) -> Poly:
         return cls._irreducible_poly
 
     @property
-    def primitive_element(cls) -> "Array":
+    def primitive_element(cls) -> Array:
         return cls(cls._primitive_element)
 
     @property

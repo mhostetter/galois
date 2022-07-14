@@ -12,7 +12,7 @@ from numba import int64
 import numpy as np
 
 from .._domains._function import Function
-from .._fields import Field, FieldArray, GF2  # pylint: disable=unused-import
+from .._fields import Field, FieldArray, GF2
 from .._lfsr import berlekamp_massey_jit
 from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
@@ -297,7 +297,7 @@ class BCH:
 
         return string
 
-    def encode(self, message: Union[np.ndarray, "GF2"], parity_only: bool = False) -> Union[np.ndarray, "GF2"]:
+    def encode(self, message: Union[np.ndarray, GF2], parity_only: bool = False) -> Union[np.ndarray, GF2]:
         r"""
         Encodes the message :math:`\mathbf{m}` into the BCH codeword :math:`\mathbf{c}`.
 
@@ -429,7 +429,7 @@ class BCH:
             codeword = message.view(GF2) @ self.G
             return codeword.view(type(message))
 
-    def detect(self, codeword: Union[np.ndarray, "GF2"]) -> Union[np.bool_, np.ndarray]:
+    def detect(self, codeword: Union[np.ndarray, GF2]) -> Union[np.bool_, np.ndarray]:
         r"""
         Detects if errors are present in the BCH codeword :math:`\mathbf{c}`.
 
@@ -584,10 +584,10 @@ class BCH:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, "GF2"], errors: Literal[False] = False) -> Union[np.ndarray, "GF2"]:
+    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[False] = False) -> Union[np.ndarray, GF2]:
         ...
     @overload
-    def decode(self, codeword: Union[np.ndarray, "GF2"], errors: Literal[True]) -> Tuple[Union[np.ndarray, "GF2"], Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[True]) -> Tuple[Union[np.ndarray, GF2], Union[np.integer, np.ndarray]]:
         ...
     def decode(self, codeword, errors=False):
         r"""
@@ -797,7 +797,7 @@ class BCH:
             return message, N_errors
 
     @property
-    def field(self) -> Type["FieldArray"]:
+    def field(self) -> Type[FieldArray]:
         r"""
         The :obj:`~galois.FieldArray` subclass for the :math:`\mathrm{GF}(2^m)` field that defines the BCH code.
 
@@ -883,7 +883,7 @@ class BCH:
         return self._systematic
 
     @property
-    def generator_poly(self) -> "Poly":
+    def generator_poly(self) -> Poly:
         """
         The generator polynomial :math:`g(x)` whose roots are :obj:`roots`.
 
@@ -899,7 +899,7 @@ class BCH:
         return self._generator_poly
 
     @property
-    def roots(self) -> "FieldArray":
+    def roots(self) -> FieldArray:
         r"""
         The :math:`2t` roots of the generator polynomial. These are consecutive powers of :math:`\alpha`, specifically
         :math:`\alpha, \alpha^2, \dots, \alpha^{2t}`.
@@ -916,7 +916,7 @@ class BCH:
         return self._roots
 
     @property
-    def G(self) -> "GF2":
+    def G(self) -> GF2:
         r"""
         The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
 
@@ -930,7 +930,7 @@ class BCH:
         return self._G
 
     @property
-    def H(self) -> "FieldArray":
+    def H(self) -> FieldArray:
         r"""
         The parity-check matrix :math:`\mathbf{H}` with shape :math:`(2t, n)`.
 

@@ -2,6 +2,8 @@
 A module that contains a NumPy function dispatcher and an Array mixin class that override NumPy functions. The function
 dispatcher classes have snake_case naming because they are act like functions.
 """
+from __future__ import annotations
+
 from typing import Type, Callable, TYPE_CHECKING
 
 import numba
@@ -23,7 +25,7 @@ class Function:
     """
     _CACHE = {}  # A cache of compiled functions
 
-    def __init__(self, field: Type["Array"]):
+    def __init__(self, field: Type[Array]):
         self.field = field
 
     def __call__(self):

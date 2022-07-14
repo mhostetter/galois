@@ -2,6 +2,8 @@
 A module that contains a NumPy ufunc dispatcher and an Array mixin class that override NumPy ufuncs. The ufunc
 dispatcher classes have snake_case naming because they are act like functions.
 """
+from __future__ import annotations
+
 from typing import Type, Callable, TYPE_CHECKING
 from typing_extensions import Literal
 
@@ -25,7 +27,7 @@ class UFunc:
     _CACHE_CALCULATE = {}  # A cache of compiled ufuncs using explicit calculation
     _CACHE_LOOKUP = {}  # A cache of compiled ufuncs using lookup tables
 
-    def __init__(self, field: Type["Array"], override=None, always_calculate=False):
+    def __init__(self, field: Type[Array], override=None, always_calculate=False):
         self.field = field
         self.override = override  # A NumPy ufunc used instead of a custom one
         self.always_calculate = always_calculate  # Indicates to never use lookup tables for this ufunc

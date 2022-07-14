@@ -2,6 +2,8 @@
 A module that contains Array mixin classes that override NumPy linear algebra functions. Additional functions not included
 in NumPy are also included.
 """
+from __future__ import annotations
+
 from typing import Tuple, Optional, Type, TYPE_CHECKING
 
 import numba
@@ -15,7 +17,7 @@ if TYPE_CHECKING:
     from ._array import Array
 
 
-def _lapack_linalg(field: Type["Array"], a: "Array", b: "Array", function, out=None, n_sum=None) -> "Array":
+def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n_sum=None) -> Array:
     """
     In prime fields GF(p), it's much more efficient to use LAPACK/BLAS implementations of linear algebra
     and then reduce modulo p rather than compute manually.
@@ -68,7 +70,7 @@ class dot_jit(Function):
     https://numpy.org/doc/stable/reference/generated/numpy.dot.html
     """
 
-    def __call__(self, a: "Array", b: "Array", out=None) -> "Array":
+    def __call__(self, a: Array, b: Array, out=None) -> Array:
         if not type(a) is type(b):
             raise TypeError(f"Operation 'dot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
 
@@ -95,7 +97,7 @@ class vdot_jit(Function):
     https://numpy.org/doc/stable/reference/generated/numpy.vdot.html
     """
 
-    def __call__(self, a: "Array", b: "Array") -> "Array":
+    def __call__(self, a: Array, b: Array) -> Array:
         if not type(a) is type(b):
             raise TypeError(f"Operation 'vdot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
 
@@ -115,7 +117,7 @@ class inner_jit(Function):
     https://numpy.org/doc/stable/reference/generated/numpy.inner.html#numpy.inner
     """
 
-    def __call__(self, a: "Array", b: "Array") -> "Array":
+    def __call__(self, a: Array, b: Array) -> Array:
         if not type(a) is type(b):
             raise TypeError(f"Operation 'inner' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
 
@@ -137,7 +139,7 @@ class outer_jit(Function):
     https://numpy.org/doc/stable/reference/generated/numpy.outer.html#numpy.outer
     """
 
-    def __call__(self, a: "Array", b: "Array", out=None) -> "Array":
+    def __call__(self, a: Array, b: Array, out=None) -> Array:
         if not type(a) is type(b):
             raise TypeError(f"Operation 'outer' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
 
@@ -156,7 +158,7 @@ class matmul_jit(Function):
     https://numpy.org/doc/stable/reference/generated/numpy.matmul.html#numpy.matmul
     """
 
-    def __call__(self, A: "Array", B: "Array", out=None, **kwargs) -> "Array":  # pylint: disable=unused-argument
+    def __call__(self, A: Array, B: Array, out=None, **kwargs) -> Array:  # pylint: disable=unused-argument
         if not type(A) is type(B):
             raise TypeError(f"Operation 'matmul' requires both arrays be in the same Galois field, not {type(A)} and {type(B)}.")
         if not (A.ndim >= 1 and B.ndim >= 1):
@@ -241,7 +243,7 @@ class row_reduce_jit(Function):
     Converts the matrix into its row-reduced echelon form using Gaussian elimination.
     """
 
-    def __call__(self, A: "Array", ncols: Optional[int] = None) -> Tuple["Array", int]:
+    def __call__(self, A: Array, ncols: Optional[int] = None) -> Tuple[Array, int]:
         if not A.ndim == 2:
             raise ValueError(f"Only 2-D matrices can be converted to reduced row echelon form, not {A.ndim}-D.")
 
@@ -279,7 +281,7 @@ class lu_decompose_jit(Function):
     Decomposes the matrix into its LU decomposition.
     """
 
-    def __call__(self, A: "Array") -> Tuple["Array", "Array"]:
+    def __call__(self, A: Array) -> Tuple[Array, Array]:
         if not A.ndim == 2:
             raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")
 
@@ -310,7 +312,7 @@ class plu_decompose_jit(Function):
     Decomposes the matrix into its PLU decomposition.
     """
 
-    def __call__(self, A: "Array") -> Tuple["Array", "Array", "Array", int]:
+    def __call__(self, A: Array) -> Tuple[Array, Array, Array, int]:
         if not A.ndim == 2:
             raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")
 
@@ -355,7 +357,7 @@ class triangular_det_jit(Function):
     Computes the determinant of a triangular square matrix.
     """
 
-    def __call__(self, A: "Array") -> "Array":
+    def __call__(self, A: Array) -> Array:
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
             raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
         idxs = np.arange(0, A.shape[0])
@@ -367,7 +369,7 @@ class det_jit(Function):
     Computes the determinant of a square matrix.
     """
 
-    def __call__(self, A: "Array") -> "Array":
+    def __call__(self, A: Array) -> Array:
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
             raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
 
@@ -395,7 +397,7 @@ class matrix_rank_jit(Function):
     Computes the rank of the square matrix.
     """
 
-    def __call__(self, A: "Array") -> int:
+    def __call__(self, A: Array) -> int:
         A_rre, _ = row_reduce_jit(self.field)(A)
         rank = np.sum(~np.all(A_rre == 0, axis=1))
         return rank
@@ -406,7 +408,7 @@ class inv_jit(Function):
     Computes the inverse of the square matrix.
     """
 
-    def __call__(self, A: "Array") -> "Array":
+    def __call__(self, A: Array) -> Array:
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
             raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
 
@@ -434,7 +436,7 @@ class solve_jit(Function):
     Solves the linear system Ax = b.
     """
 
-    def __call__(self, A: "Array", b: "Array") -> "Array":
+    def __call__(self, A: Array, b: Array) -> Array:
         if not type(A) is type(b):
             raise TypeError(f"Arguments `A` and `b` must be of the same FieldArray subclass, not {type(A)} and {type(b)}.")
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):

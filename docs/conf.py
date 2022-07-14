@@ -43,7 +43,6 @@ version = galois.__version__
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
     "sphinx.ext.mathjax",
     "sphinx.ext.intersphinx",
@@ -221,10 +220,6 @@ autodoc_type_aliases = {
     "DTypeLike": "~typing.DTypeLike",
     "PolyLike": "~typing.PolyLike",
 }
-
-# autosummary_generate = True
-# autosummary_generate_overwrite = False
-# autosummary_imported_members = True
 
 # Sphinx Immaterial API config
 python_apigen_modules = {

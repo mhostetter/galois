@@ -121,7 +121,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     ###############################################################################
 
     @classmethod
-    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> "Array":
+    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> Array:
         """
         Creates an array of all zeros.
 
@@ -143,7 +143,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         return cls._view(array)
 
     @classmethod
-    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> "Array":
+    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> Array:
         """
         Creates an array of all ones.
 
@@ -171,7 +171,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         stop: ElementLike,
         step: int = 1,
         dtype: Optional[DTypeLike] = None
-    ) -> "Array":
+    ) -> Array:
         """
         Creates a 1-D array with a range of elements.
 
@@ -216,7 +216,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         high: Optional[ElementLike] = None,
         seed: Optional[Union[int, np.random.Generator]] = None,
         dtype: Optional[DTypeLike] = None
-    ) -> "Array":
+    ) -> Array:
         """
         Creates an array with random elements.
 
@@ -280,11 +280,11 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         return cls._view(array)
 
     @classmethod
-    def Elements(cls, dtype: Optional[DTypeLike] = None) -> "Array":
+    def Elements(cls, dtype: Optional[DTypeLike] = None) -> Array:
         return cls.Range(0, cls.order, step=1, dtype=dtype)
 
     @classmethod
-    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> "Array":
+    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> Array:
         r"""
         Creates an :math:`n \times n` identity matrix.
 
