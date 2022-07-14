@@ -258,6 +258,7 @@ python_apigen_default_order = [
 python_apigen_order_tiebreaker = "alphabetical"
 python_apigen_case_insensitive_filesystem = False
 python_transform_type_annotations_pep585 = False
+python_apigen_show_base_classes = True
 
 ipython_execlines = ["import math", "import numpy as np", "import galois"]
 
@@ -271,7 +272,7 @@ SPECIAL_MEMBERS = [
 
 def autodoc_skip_member(app, what, name, obj, skip, options):
     """
-    Instruct autodoc to skip members that are inherited from np.ndarray
+    Instruct autodoc to skip members that are inherited from np.ndarray.
     """
     if skip:
         # Continue skipping things Sphinx already wants to skip
@@ -303,6 +304,21 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
         return True
 
     return skip
+
+
+def autodoc_process_bases(app, name, obj, options, bases):
+    """
+    Remove private classes or mixin classes from documented class bases.
+    """
+    # Determine the bases to be removed
+    remove_bases = []
+    for base in bases:
+        if base.__name__[0] == "_" or "Mixin" in base.__name__:
+            remove_bases.append(base)
+
+    # Remove from the bases list in-place
+    for base in remove_bases:
+        bases.remove(base)
 
 
 # Only during Sphinx builds, monkey-patch the metaclass properties into this class as "class properties". In Python 3.9 and greater,
@@ -353,3 +369,4 @@ for p in FieldArrayMeta_properties:
 
 def setup(app):
     app.connect("autodoc-skip-member", autodoc_skip_member)
+    app.connect("autodoc-process-bases", autodoc_process_bases)
