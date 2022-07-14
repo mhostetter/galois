@@ -231,14 +231,7 @@ python_apigen_modules = {
     "galois": "api/galois.",
     "galois.typing": "api/galois.typing.",
 }
-python_type_aliases = {
-    "ElementLike": "~typing.ElementLike",
-    "IterableLike": "~typing.IterableLike",
-    "ArrayLike": "~typing.ArrayLike",
-    "ShapeLike": "~typing.ShapeLike",
-    "DTypeLike": "~typing.DTypeLike",
-    "PolyLike": "~typing.PolyLike",
-}
+python_type_aliases = autodoc_type_aliases
 python_apigen_default_groups = [
     ("class:.*", "Classes"),
     ("data:.*", "Variables"),
@@ -317,107 +310,6 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
     return skip
 
 
-# def autodoc_process_docstring(app, what, name, obj, options, lines):
-#     # if "monkey" in name:
-#     #     print("process-docstring", what, name, obj, options, lines[0])
-#     return lines
-
-
-# def autodoc_before_process_signature(app, obj, bound_method):
-#     # print(obj, bound_method)
-#     return obj
-
-
-def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
-    """
-    Monkey-patch the autodoc's processing of signatures.
-    """
-    signature = modify_type_hints(signature)
-    return_annotation = modify_type_hints(return_annotation)
-
-    return signature, return_annotation
-
-
-def modify_type_hints(signature):
-    """
-    Modify the autodoc type hint signatures to be more readable. Union[x, y] is replaced with x | y.
-    Optional[x] is replaced with x | None. Also, short names are used (and properly linked).
-    """
-    if signature:
-        # Ensure types from the typing module are properly hyperlinked
-        for type_name in ["Tuple", "List", "Sequence", "Dict", "Optional", "Union", "Iterator", "Type", "Literal"]:
-            signature = signature.replace(f"{type_name}[", f"~typing.{type_name}[")
-            signature = signature.replace("~typing.~typing", "~typing")
-
-        # Convert Optional[a] to a | None
-        idx = 0
-        while True:
-            idx = signature.find("~typing.Optional[", idx)
-            if idx == -1:
-                break
-            end_idx = signature.find("] = None", idx)
-            pre = signature[:idx]
-            post = signature[end_idx + 1:]
-            optional_str = signature[idx:end_idx + 1]
-            optional_str = optional_str[len("~typing.Optional[") : -len("]")]
-            optional_str += " | None"
-            signature = pre + optional_str + post
-            idx = len(pre) + len(optional_str)
-
-        # Convert Union[a, b] to a | b
-        idx = 0
-        while True:
-            idx = signature.find("~typing.Union[", idx)
-            if idx == -1:
-                break
-            idx_2 = idx
-            while True:
-                end_idx = signature.find("]", idx_2)
-                if signature[idx:end_idx + 1].count("[") == signature[idx:end_idx + 1].count("]"):
-                    break
-                else:
-                    idx_2 = end_idx + 1
-            pre = signature[:idx]
-            post = signature[end_idx + 1:]
-            union_str = signature[idx:end_idx + 1]
-            union_str = union_str[len("~typing.Union[") : -len("]")]
-            union_str = union_str.replace(", ", " | ")
-            signature = pre + union_str + post
-            idx = len(pre) + len(union_str)
-
-        # Ensure types from the galois.typing subpackage are properly hyperlinked
-        for type_name in autodoc_type_aliases.keys():
-            signature = signature.replace(type_name, autodoc_type_aliases[type_name])
-        signature = signature.replace("~typing.~typing", "~typing")
-
-        # Ensure forward references are properly linked by removing '' and adding ~
-        for type_name in ["Array", "FieldArray", "Poly"]:
-            signature = signature.replace(f"'{type_name}'", f"~{type_name}")
-
-        # Sometimes fully qualified names are in the signature. Convert them to short names. For example, ~galois._fields._gf2.GF2
-        # is used instead of ~galois.GF2.
-        idx = 0
-        while True:
-            idx = signature.find("~galois._", idx)
-            if idx == -1:
-                break
-            end_idx = signature.find(" ", idx)
-            if end_idx == -1:
-                end_idx = len(signature)
-            pre = signature[:idx]
-            post = signature[end_idx + 1:]
-            fullref_str = signature[idx:end_idx + 1]
-            fullref_str = "~galois." + fullref_str.split(".")[-1]
-            signature = pre + fullref_str + post
-            idx = len(pre) + len(fullref_str)
-
-        # Ensure NumPy references link properly
-        signature = signature.replace("np.ndarray", "~numpy.ndarray")
-        signature = signature.replace("np.random", "~numpy.random")
-
-    return signature
-
-
 # Only during Sphinx builds, monkey-patch the metaclass properties into this class as "class properties". In Python 3.9 and greater,
 # class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
 # in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
@@ -466,6 +358,3 @@ for p in FieldArrayMeta_properties:
 
 def setup(app):
     app.connect("autodoc-skip-member", autodoc_skip_member)
-    # app.connect("autodoc-process-docstring", autodoc_process_docstring)
-    # app.connect("autodoc-before-process-signature", autodoc_before_process_signature)
-    app.connect("autodoc-process-signature", autodoc_process_signature)
