@@ -445,7 +445,8 @@ the polynomial field elements.
 Class properties
 ----------------
 
-The :obj:`~galois.FieldArray.elements` class property provides a 1-D array of all the finite field elements.
+Certain class properties, such as :obj:`~galois.FieldArray.elements`, :obj:`~galois.FieldArray.units`, :obj:`~galois.FieldArray.primitive_elements`,
+and :obj:`~galois.FieldArray.quadratic_residues`, provide an array of elements with the specified properties.
 
 .. tab-set::
 
@@ -456,7 +457,9 @@ The :obj:`~galois.FieldArray.elements` class property provides a 1-D array of al
 
          GF = galois.GF(3**2)
          GF.elements
+         GF.units
          GF.primitive_elements
+         GF.quadratic_residues
 
    .. tab-item:: Polynomial
       :sync: poly
@@ -465,7 +468,9 @@ The :obj:`~galois.FieldArray.elements` class property provides a 1-D array of al
 
          GF = galois.GF(3**2, display="poly")
          GF.elements
+         GF.units
          GF.primitive_elements
+         GF.quadratic_residues
 
    .. tab-item:: Power
       :sync: power
@@ -474,7 +479,9 @@ The :obj:`~galois.FieldArray.elements` class property provides a 1-D array of al
 
          GF = galois.GF(3**2, display="power")
          GF.elements
+         GF.units
          GF.primitive_elements
+         GF.quadratic_residues
          @suppress
          GF.display()
 
