@@ -25,6 +25,6 @@ The documentation is built by running the `sphinx-build` command.
 
 .. code-block:: sh
 
-    $ sphinx-build -b html -v docs/ docs/build/
+    $ sphinx-build -b dirhtml -v docs/ docs/build/
 
 The HTML output is located in `docs/build/`. The home page is `docs/build/index.html`.
