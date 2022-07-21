@@ -215,7 +215,7 @@ class BCH:
 
         self._n = n
         self._k = k
-        self._systematic = systematic
+        self._is_systematic = systematic
 
         c = 1
         GF = _check_and_compute_field(n, k, c, primitive_poly, primitive_element)
@@ -292,7 +292,7 @@ class BCH:
         string += f"\n  generator_poly: {self.generator_poly}"
         string += f"\n  is_primitive: {self.is_primitive}"
         string += f"\n  is_narrow_sense: {self.is_narrow_sense}"
-        string += f"\n  systematic: {self.systematic}"
+        string += f"\n  is_systematic: {self.is_systematic}"
         string += f"\n  t: {self.t}"
 
         return string
@@ -408,9 +408,9 @@ class BCH:
         """
         if not isinstance(message, (np.ndarray, GF2)):
             raise TypeError(f"Argument `message` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(message)}.")
-        if parity_only and not self.systematic:
+        if parity_only and not self.is_systematic:
             raise ValueError("Argument `parity_only=True` only applies to systematic codes.")
-        if self.systematic:
+        if self.is_systematic:
             if not message.shape[-1] <= self.k:
                 raise ValueError(f"For a systematic code, argument `message` must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}.")
         else:
@@ -422,7 +422,7 @@ class BCH:
         if parity_only:
             parity = message.view(GF2) @ self.G[-ks:, self.k:]
             return parity.view(type(message))
-        elif self.systematic:
+        elif self.is_systematic:
             parity = message.view(GF2) @ self.G[-ks:, self.k:]
             return np.hstack((message, parity)).view(type(message))
         else:
@@ -560,7 +560,7 @@ class BCH:
         """
         if not isinstance(codeword, np.ndarray):
             raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
-        if self.systematic:
+        if self.is_systematic:
             if not codeword.shape[-1] <= self.n:
                 raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")
         else:
@@ -762,7 +762,7 @@ class BCH:
         """
         if not isinstance(codeword, (np.ndarray, GF2)):
             raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
-        if self.systematic:
+        if self.is_systematic:
             if not codeword.shape[-1] <= self.n:
                 raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")
         else:
@@ -782,7 +782,7 @@ class BCH:
         # Invoke the JIT compiled function
         dec_codeword, N_errors = decode_jit(self.field)(codeword, syndrome, self.t, int(self.field.primitive_element))
 
-        if self.systematic:
+        if self.is_systematic:
             message = dec_codeword[:, 0:ks]
         else:
             message, _ = divmod_jit(GF2)(dec_codeword[:, 0:ns].view(GF2), self.generator_poly.coeffs)
@@ -869,7 +869,7 @@ class BCH:
         return self._t
 
     @property
-    def systematic(self) -> bool:
+    def is_systematic(self) -> bool:
         """
         Indicates if the code is configured to return codewords in systematic form.
 
@@ -878,9 +878,9 @@ class BCH:
         .. ipython:: python
 
             bch = galois.BCH(15, 7); bch
-            bch.systematic
+            bch.is_systematic
         """
-        return self._systematic
+        return self._is_systematic
 
     @property
     def generator_poly(self) -> Poly:

@@ -40,7 +40,7 @@ def test_repr():
 
 def test_str():
     rs = galois.ReedSolomon(15, 11)
-    assert str(rs) == "Reed-Solomon Code:\n  [n, k, d]: [15, 11, 5]\n  field: GF(2^4)\n  generator_poly: x^4 + 13x^3 + 12x^2 + 8x + 7\n  is_narrow_sense: True\n  systematic: True\n  t: 2"
+    assert str(rs) == "Reed-Solomon Code:\n  [n, k, d]: [15, 11, 5]\n  field: GF(2^4)\n  generator_poly: x^4 + 13x^3 + 12x^2 + 8x + 7\n  is_narrow_sense: True\n  is_systematic: True\n  t: 2"
 
 
 def test_rs_generator_poly():
