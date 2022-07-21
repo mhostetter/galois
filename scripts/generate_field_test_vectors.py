@@ -791,6 +791,19 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "evaluate_matrix.pkl")
 
+    set_seed(seed + 109)
+    X = [random_coeffs(0, order, 1, 6) for i in range(20)]
+    Y = [random_coeffs(0, order, 1, 6) for i in range(20)]
+    Z = []
+    for i in range(len(X)):
+        x = list_to_poly(X[i])
+        y = list_to_poly(Y[i])
+        z = x(y)
+        z = poly_to_list(z)
+        Z.append(z)
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "evaluate_poly.pkl")
+
     ###############################################################################
     # Polynomial arithmetic methods
     ###############################################################################
