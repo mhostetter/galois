@@ -107,7 +107,7 @@ class Poly:
         if not order in ["desc", "asc"]:
             raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order!r}.")
 
-        self._coeffs, self._field = self._convert_coeffs(coeffs, field)
+        self._coeffs, self._field = _convert_coeffs(coeffs, field)
 
         if self._coeffs.ndim == 0:
             self._coeffs = np.atleast_1d(self._coeffs)
@@ -125,25 +125,6 @@ class Poly:
             int(self)
         else:
             self._type = "dense"
-
-    @classmethod
-    def _convert_coeffs(cls, coeffs: ArrayLike, field: Optional[Type[Array]] = None) -> Tuple[Array, Type[Array]]:
-        if isinstance(coeffs, Array):
-            if field is None:
-                # Infer the field from the coefficients provided
-                field = type(coeffs)
-            elif type(coeffs) is not field:  # pylint: disable=unidiomatic-typecheck
-                # Convert coefficients into the specified field
-                coeffs = field(coeffs)
-        else:
-            # Convert coefficients into the specified field (or GF2 if unspecified)
-            if field is None:
-                field = _factory.DEFAULT_ARRAY
-            coeffs = np.array(coeffs, dtype=field.dtypes[-1])
-            sign = np.sign(coeffs)
-            coeffs = sign * field(np.abs(coeffs))
-
-        return coeffs, field
 
     @classmethod
     def _PolyLike(cls, poly_like: PolyLike, field: Optional[Type[Array]] = None) -> Poly:
@@ -515,7 +496,7 @@ class Poly:
 
         degrees = np.array(degrees, dtype=np.int64)
         coeffs = [1,]*len(degrees) if coeffs is None else coeffs
-        coeffs, field = cls._convert_coeffs(coeffs, field)
+        coeffs, field = _convert_coeffs(coeffs, field)
 
         if not degrees.ndim <= 1:
             raise ValueError(f"Argument `degrees` can have dimension at most 1, not {degrees.ndim}.")
@@ -623,7 +604,7 @@ class Poly:
         if not (field is None or issubclass(field, Array)):
             raise TypeError(f"Argument `field` must be a Array subclass, not {field}.")
 
-        roots, field = cls._convert_coeffs(roots, field)
+        roots, field = _convert_coeffs(roots, field)
 
         roots = field(roots).flatten()
         if not len(roots) == len(multiplicities):
@@ -2229,7 +2210,29 @@ class Poly:
         return self.nonzero_coeffs[0] == 1
 
 
-def _root_multiplicity(poly, root):
+def _convert_coeffs(coeffs: ArrayLike, field: Optional[Type[Array]] = None) -> Tuple[Array, Type[Array]]:
+    """
+    Converts the coefficient-like input into a Galois field array based on the `field` keyword argument.
+    """
+    if isinstance(coeffs, Array):
+        if field is None:
+            # Infer the field from the coefficients provided
+            field = type(coeffs)
+        elif type(coeffs) is not field:  # pylint: disable=unidiomatic-typecheck
+            # Convert coefficients into the specified field
+            coeffs = field(coeffs)
+    else:
+        # Convert coefficients into the specified field (or GF2 if unspecified)
+        if field is None:
+            field = _factory.DEFAULT_ARRAY
+        coeffs = np.array(coeffs, dtype=field.dtypes[-1])
+        sign = np.sign(coeffs)
+        coeffs = sign * field(np.abs(coeffs))
+
+    return coeffs, field
+
+
+def _root_multiplicity(poly: Poly, root: Array) -> int:
     """
     Determines the multiplicity of each root of the polynomial.
 
