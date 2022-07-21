@@ -110,6 +110,16 @@ def poly_evaluate_matrix(field_folder):
     return d
 
 
+@pytest.fixture(scope="session")
+def poly_evaluate_poly(field_folder):
+    GF, d = read_pickle(field_folder, "evaluate_poly.pkl")
+    d["GF"] = GF
+    d["X"] = [galois.Poly(p, field=GF) for p in d["X"]]
+    d["Y"] = [galois.Poly(p, field=GF) for p in d["Y"]]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d
+
+
 ###############################################################################
 # Fixtures for polynomial arithmetic methods
 ###############################################################################

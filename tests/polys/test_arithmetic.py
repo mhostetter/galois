@@ -252,3 +252,13 @@ def test_evaluate_matrix(poly_evaluate_matrix):
         z = x(y, elementwise=False)  # GF square matrix
         assert np.array_equal(z, Z[i])
         assert type(z) is GF
+
+
+def test_evaluate_poly(poly_evaluate_poly):
+    GF, X, Y, Z = poly_evaluate_poly["GF"], poly_evaluate_poly["X"], poly_evaluate_poly["Y"], poly_evaluate_poly["Z"]
+    for i in range(len(X)):
+        x = X[i]  # Polynomial f(x)
+        y = Y[i]  # Polynomial g(x)
+        z = x(y)
+        assert z == Z[i]
+        assert isinstance(z, galois.Poly)
