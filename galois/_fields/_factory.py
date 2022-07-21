@@ -4,7 +4,7 @@ A module to implement the Galois field class factory `GF()`.
 from __future__ import annotations
 
 import types
-from typing import Optional, Type
+from typing import Union, Optional, Type
 from typing_extensions import Literal
 
 from .._modular import primitive_root, is_primitive_root
@@ -24,7 +24,7 @@ __all__ = ["GF", "Field"]
 def GF(
     order: int,
     irreducible_poly: Optional[PolyLike] = None,
-    primitive_element: Optional[PolyLike] = None,  # pylint: disable=redefined-outer-name
+    primitive_element: Optional[Union[int, PolyLike]] = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
     compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
     display: Optional[Literal["int", "poly", "power"]] = None
@@ -227,7 +227,7 @@ def GF(
 def Field(
     order: int,
     irreducible_poly: Optional[PolyLike] = None,
-    primitive_element: Optional[PolyLike] = None,  # pylint: disable=redefined-outer-name
+    primitive_element: Optional[Union[int, PolyLike]] = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
     compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
     display: Optional[Literal["int", "poly", "power"]] = None
