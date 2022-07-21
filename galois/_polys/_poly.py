@@ -820,30 +820,8 @@ class Poly:
         if not multiplicity:
             return roots
         else:
-            multiplicities = np.array([self._root_multiplicity(root) for root in roots])
+            multiplicities = np.array([_root_multiplicity(self, root) for root in roots])
             return roots, multiplicities
-
-    def _root_multiplicity(self, root):
-        poly = self
-        multiplicity = 1
-
-        while True:
-            # If the root is also a root of the derivative, then its a multiple root.
-            poly = poly.derivative()
-
-            if poly == 0:
-                # Cannot test whether p'(root) = 0 because p'(x) = 0. We've exhausted the non-zero derivatives. For
-                # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
-                # greater than the field's characteristic, we need factor to the polynomial. Here we factor out (x - root)^m,
-                # where m is the current multiplicity.
-                poly = self // (Poly([1, -root], field=self.field)**multiplicity)
-
-            if poly(root) == 0:
-                multiplicity += 1
-            else:
-                break
-
-        return multiplicity
 
     def square_free_factors(self) -> Tuple[List[Poly], List[int]]:
         r"""
@@ -2249,3 +2227,32 @@ class Poly:
             p.is_monic
         """
         return self.nonzero_coeffs[0] == 1
+
+
+def _root_multiplicity(poly, root):
+    """
+    Determines the multiplicity of each root of the polynomial.
+
+    TODO: Process all roots simultaneously.
+    """
+    field = poly.field
+    multiplicity = 1
+
+    p = poly
+    while True:
+        # If the root is also a root of the derivative, then its a multiple root.
+        p = p.derivative()
+
+        if p == 0:
+            # Cannot test whether p'(root) = 0 because p'(x) = 0. We've exhausted the non-zero derivatives. For
+            # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
+            # greater than the field's characteristic, we need factor to the polynomial. Here we factor out (x - root)^m,
+            # where m is the current multiplicity.
+            p = poly // (Poly([1, -root], field=field)**multiplicity)
+
+        if p(root) == 0:
+            multiplicity += 1
+        else:
+            break
+
+    return multiplicity
