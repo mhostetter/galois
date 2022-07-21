@@ -1584,31 +1584,34 @@ class Poly:
         t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
         return hash(t)
 
-    def __call__(
-        self,
-        x: Union[ElementLike, ArrayLike],
-        field: Optional[Type[Array]] = None,
-        elementwise: bool = True
-    ) -> Array:
+    @overload
+    def __call__(self, at: Union[ElementLike, ArrayLike], field: Optional[Type[Array]] = None, elementwise: bool = True) -> Array:
+        ...
+    @overload
+    def __call__(self, at: Poly) -> Poly:
+        ...
+    def __call__(self, at, field=None, elementwise=True):
         r"""
-        Evaluates the polynomial :math:`f(x)` at `x`.
+        Evaluates the polynomial :math:`f(x)` at :math:`x_0` or the polynomial composition :math:`f(g(x))`.
 
         Parameters
         ----------
-        x
-            A finite field scalar or array to evaluate the polynomial at.
+        at
+            A finite field scalar or array :math:`x_0` to evaluate the polynomial at or the polynomial
+            :math:`g(x)` to evaluate the polynomial composition :math:`f(g(x))`.
         field
             The Galois field to evaluate the polynomial over. The default is `None` which represents
             the polynomial's current field, i.e. :obj:`field`.
         elementwise
-            Indicates whether to evaluate :math:`x` elementwise. The default is `True`. If `False` (only valid
+            Indicates whether to evaluate :math:`x_0` element-wise. The default is `True`. If `False` (only valid
             for square matrices), the polynomial indeterminate :math:`x` is exponentiated using matrix powers
             (repeated matrix multiplication).
 
         Returns
         -------
         :
-            The result of the polynomial evaluation :math:`f(x)`. The resulting array has the same shape as `x`.
+            The result of the polynomial evaluation :math:`f(x_0)`. The resulting array has the same shape as :math:`x_0`.
+            Or the polynomial composition :math:`f(g(x))`.
 
         Examples
         --------
@@ -1619,38 +1622,50 @@ class Poly:
             GF = galois.GF(3**5)
             f = galois.Poly([37, 123, 0, 201], field=GF); f
 
-        Evaluate the polynomial elementwise at :math:`x`.
+        Evaluate the polynomial element-wise at :math:`x_0`.
 
         .. ipython:: python
 
-            x = GF([185, 218, 84, 163]); x
-            f(x)
+            x0 = GF([185, 218, 84, 163])
+            f(x0)
             # The equivalent calculation
-            GF(37)*x**3 + GF(123)*x**2 + GF(201)
+            GF(37)*x0**3 + GF(123)*x0**2 + GF(201)
 
-        Evaluate the polynomial at the square matrix :math:`X`.
+        Evaluate the polynomial at the square matrix :math:`X_0`.
 
         .. ipython:: python
 
-            X = GF([[185, 218], [84, 163]]); X
-            f(X, elementwise=False)
+            X0 = GF([[185, 218], [84, 163]])
+            # This is performed element-wise. Notice the values are equal to the vector x0.
+            f(X0)
+            f(X0, elementwise=False)
             # The equivalent calculation
-            GF(37)*np.linalg.matrix_power(X,3) + GF(123)*np.linalg.matrix_power(X,2) + GF(201)*GF.Identity(2)
+            GF(37)*np.linalg.matrix_power(X0, 3) + GF(123)*np.linalg.matrix_power(X0, 2) + GF(201)*GF.Identity(2)
 
-        :meta public:
+        Evaluate the polynomial :math:`f(x)` at the polynomial :math:`g(x)`.
+
+        .. ipython:: python
+
+            g = galois.Poly([55, 0, 1], field=GF); g
+            f(g)
+            # The equivalent calculation
+            GF(37)*g**3 + GF(123)*g**2 + GF(201)
         """
+        if isinstance(at, Poly):
+            return _evaluate_poly(self, at)
+
         if not (field is None or issubclass(field, Array)):
             raise TypeError(f"Argument `field` must be a Array subclass, not {type(field)}.")
 
         field = self.field if field is None else field
         coeffs = field(self.coeffs)
-        x = field(x)
+        x = field(at)  # An array of finite field elements
 
         if elementwise:
             return _dense.evaluate_elementwise_jit(field)(coeffs, x)
         else:
             if not (x.ndim == 2 and x.shape[0] == x.shape[1]):
-                raise ValueError(f"Argument `x` must be a square matrix when evaluating the polynomial not elementwise, not have shape {x.shape}.")
+                raise ValueError(f"Argument `x` must be a square matrix when evaluating the polynomial not element-wise, not have shape {x.shape}.")
             return _evaluate_matrix(coeffs, x)
 
     def __len__(self) -> int:
@@ -2207,6 +2222,20 @@ def _evaluate_matrix(coeffs: Array, X: Array) -> Array:
         y = coeffs[j]*I + y @ X
 
     return y
+
+
+def _evaluate_poly(f: Poly, g: Poly) -> Poly:
+    """
+    Evaluates the polynomial f(x) at the polynomial g(x). This is polynomial composition.
+    """
+    assert f.field is g.field
+    coeffs = f.coeffs
+
+    h = Poly(coeffs[0])
+    for j in range(1, coeffs.size):
+        h = coeffs[j] + h*g
+
+    return h
 
 
 def _check_input_is_poly(a: Union[Poly, Array], field: Type[Array]):
