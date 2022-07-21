@@ -374,23 +374,6 @@ class evaluate_elementwise_jit(Function):
         return y
 
 
-class evaluate_matrix_jit(Function):
-    """
-    Evaluates the polynomial f(x) at the square matrix X.
-    """
-    def __call__(self, coeffs: Array, X: Array) -> Array:
-        assert X.ndim == 2 and X.shape[0] == X.shape[1]
-        I = self.field.Identity(X.shape[0])
-
-        y = coeffs[0]*I
-        for j in range(1, coeffs.size):
-            y = coeffs[j]*I + y @ X
-
-        return y
-
-    # TODO: Maybe add a JIT implementation?
-
-
 class roots_jit(Function):
     """
     Finds the roots of the polynomial f(x).

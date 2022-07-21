@@ -1651,7 +1651,7 @@ class Poly:
         else:
             if not (x.ndim == 2 and x.shape[0] == x.shape[1]):
                 raise ValueError(f"Argument `x` must be a square matrix when evaluating the polynomial not elementwise, not have shape {x.shape}.")
-            return _dense.evaluate_matrix_jit(field)(coeffs, x)
+            return _evaluate_matrix(coeffs, x)
 
     def __len__(self) -> int:
         """
@@ -2192,6 +2192,21 @@ def _root_multiplicity(poly: Poly, root: Array) -> int:
             break
 
     return multiplicity
+
+
+def _evaluate_matrix(coeffs: Array, X: Array) -> Array:
+    """
+    Evaluates the polynomial f(x) at the square matrix X.
+    """
+    assert X.ndim == 2 and X.shape[0] == X.shape[1]
+    field = type(coeffs)
+    I = field.Identity(X.shape[0])
+
+    y = coeffs[0]*I
+    for j in range(1, coeffs.size):
+        y = coeffs[j]*I + y @ X
+
+    return y
 
 
 def _check_input_is_poly(a: Union[Poly, Array], field: Type[Array]):
