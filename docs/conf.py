@@ -222,12 +222,16 @@ autodoc_type_aliases = {
     "PolyLike": "~typing.PolyLike",
 }
 
-# Sphinx Immaterial API config
+ipython_execlines = ["import math", "import numpy as np", "import galois"]
+
+
+# -- Sphinx Immaterial configs -------------------------------------------------
+
 python_apigen_modules = {
     "galois": "api/galois.",
     "galois.typing": "api/galois.typing.",
 }
-python_type_aliases = autodoc_type_aliases
+
 python_apigen_default_groups = [
     ("class:.*", "Classes"),
     ("data:.*", "Variables"),
@@ -256,12 +260,17 @@ python_apigen_default_order = [
     # (r"method:.*\.is_[a-z,_]*", 31),
     # (r"property:.*\.is_[a-z,_]*", 32),
 ]
+
 python_apigen_order_tiebreaker = "alphabetical"
 python_apigen_case_insensitive_filesystem = False
-python_transform_type_annotations_pep585 = False
 python_apigen_show_base_classes = True
 
-ipython_execlines = ["import math", "import numpy as np", "import galois"]
+python_type_aliases = autodoc_type_aliases
+python_transform_type_annotations_pep585 = False
+
+object_description_options = [
+    ("py:.*", dict(include_rubrics_in_toc=True)),
+]
 
 
 # -- Monkey-patching ---------------------------------------------------------
