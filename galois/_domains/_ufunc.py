@@ -375,6 +375,9 @@ class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
     _log: UFunc
     _sqrt: UFunc
 
+    # Special helper ufunc dispatchers that are used in other ufuncs
+    _positive_power: UFunc
+
     # These ufuncs are implementation independent
     _divmod: UFunc
     _remainder: UFunc

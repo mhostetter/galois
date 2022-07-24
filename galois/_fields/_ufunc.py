@@ -12,23 +12,6 @@ from .._domains._meta import DTYPES
 from .._domains._ufunc import UFuncMixin
 
 
-class UFuncMixin_2_m(UFuncMixin):
-    """
-    A mixin class that provides explicit calculation arithmetic for all GF(2^m) classes.
-    """
-    def __init_subclass__(cls) -> None:
-        super().__init_subclass__()
-        cls._add = _lookup.add_ufunc(cls, override=np.bitwise_xor)
-        cls._negative = _lookup.negative_ufunc(cls, override=np.positive)
-        cls._subtract = _lookup.subtract_ufunc(cls, override=np.bitwise_xor)
-        cls._multiply = _calculate.multiply_binary(cls)
-        cls._reciprocal = _calculate.reciprocal_itoh_tsujii(cls)
-        cls._divide = _calculate.divide(cls)
-        cls._power = _calculate.field_power_square_and_multiply(cls)
-        cls._log = _calculate.log_brute_force(cls)
-        cls._sqrt = _calculate.sqrt_binary(cls)
-
-
 class UFuncMixin_p_1(UFuncMixin):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(p) classes.
@@ -41,9 +24,11 @@ class UFuncMixin_p_1(UFuncMixin):
         cls._multiply = _calculate.multiply_modular(cls)
         cls._reciprocal = _calculate.reciprocal_modular_egcd(cls)
         cls._divide = _calculate.divide(cls)
-        cls._power = _calculate.field_power_square_and_multiply(cls)
+        cls._power = _calculate.power_square_and_multiply(cls)
         cls._log = _calculate.log_brute_force(cls)
         cls._sqrt = _calculate.sqrt(cls)
+
+        cls._positive_power = _calculate.positive_power_square_and_multiply(cls)
 
     @classmethod
     def _determine_dtypes(cls) -> List[np.dtype]:
@@ -55,6 +40,25 @@ class UFuncMixin_p_1(UFuncMixin):
         if len(dtypes) == 0:
             dtypes = [np.object_]
         return dtypes
+
+
+class UFuncMixin_2_m(UFuncMixin):
+    """
+    A mixin class that provides explicit calculation arithmetic for all GF(2^m) classes.
+    """
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+        cls._add = _lookup.add_ufunc(cls, override=np.bitwise_xor)
+        cls._negative = _lookup.negative_ufunc(cls, override=np.positive)
+        cls._subtract = _lookup.subtract_ufunc(cls, override=np.bitwise_xor)
+        cls._multiply = _calculate.multiply_binary(cls)
+        cls._reciprocal = _calculate.reciprocal_itoh_tsujii(cls)
+        cls._divide = _calculate.divide(cls)
+        cls._power = _calculate.power_square_and_multiply(cls)
+        cls._log = _calculate.log_brute_force(cls)
+        cls._sqrt = _calculate.sqrt_binary(cls)
+
+        cls._positive_power = _calculate.positive_power_square_and_multiply(cls)
 
 
 class UFuncMixin_p_m(UFuncMixin):
@@ -69,9 +73,11 @@ class UFuncMixin_p_m(UFuncMixin):
         cls._multiply = _calculate.multiply_vector(cls)
         cls._reciprocal = _calculate.reciprocal_itoh_tsujii(cls)
         cls._divide = _calculate.divide(cls)
-        cls._power = _calculate.field_power_square_and_multiply(cls)
+        cls._power = _calculate.power_square_and_multiply(cls)
         cls._log = _calculate.log_brute_force(cls)
         cls._sqrt = _calculate.sqrt(cls)
+
+        cls._positive_power = _calculate.positive_power_square_and_multiply(cls)
 
     @classmethod
     def _determine_dtypes(cls) -> List[np.dtype]:
