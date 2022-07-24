@@ -67,7 +67,7 @@ Expand any section for more details.
         x + x + x + x
 
     In finite fields :math:`\mathrm{GF}(p^m)`, the characteristic :math:`p` is the smallest value when multiplied by
-    any non-zero field element that results in :math:`0`.
+    any non-zero field element that results in 0.
 
     .. ipython:: python
 

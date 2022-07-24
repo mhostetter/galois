@@ -315,7 +315,7 @@ def mersenne_exponents(n: Optional[int] = None) -> List[int]:
     r"""
     Returns all known Mersenne exponents :math:`e` for :math:`e \le n`.
 
-    A Mersenne exponent :math:`e` is an exponent of :math:`2` such that :math:`2^e - 1` is prime.
+    A Mersenne exponent :math:`e` is an exponent of 2 such that :math:`2^e - 1` is prime.
 
     :group: primes-generation
 
@@ -562,7 +562,7 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
         [galois.is_prime(p) for p in primes]
         [galois.miller_rabin_primality_test(p) for p in primes]
 
-    However, a composite :math:`n` may have strong liars. :math:`91` has :math:`\{9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82\}`
+    However, a composite :math:`n` may have strong liars. 91 has :math:`\{9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82\}`
     as strong liars.
 
     .. ipython:: python
@@ -668,8 +668,8 @@ def legendre_symbol(a: int, p: int) -> int:
 
     Examples
     --------
-    The quadratic residues modulo :math:`7` are :math:`Q_7 = \{1, 2, 4\}`. The quadratic non-residues
-    modulo :math:`7` are :math:`\overline{Q}_7 = \{3, 5, 6\}`.
+    The quadratic residues modulo 7 are :math:`Q_7 = \{1, 2, 4\}`. The quadratic non-residues
+    modulo 7 are :math:`\overline{Q}_7 = \{3, 5, 6\}`.
 
     .. ipython:: python
 
@@ -721,9 +721,9 @@ def jacobi_symbol(a: int, n: int) -> int:
 
     Examples
     --------
-    The quadratic residues modulo :math:`9` are :math:`Q_9 = \{1, 4, 7\}` and these all satisfy :math:`(\frac{a}{9}) = 1`.
-    The quadratic non-residues modulo :math:`9` are :math:`\overline{Q}_9 = \{2, 3, 5, 6, 8\}`, but notice :math:`\{2, 5, 8\}`
-    also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime to :math:`9` satisfies
+    The quadratic residues modulo 9 are :math:`Q_9 = \{1, 4, 7\}` and these all satisfy :math:`(\frac{a}{9}) = 1`.
+    The quadratic non-residues modulo 9 are :math:`\overline{Q}_9 = \{2, 3, 5, 6, 8\}`, but notice :math:`\{2, 5, 8\}`
+    also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime to 9 satisfies
     :math:`(\frac{a}{9}) = 0`.
 
     .. ipython:: python
@@ -1554,8 +1554,8 @@ def is_prime_power(n: int) -> bool:
 
     Notes
     -----
-    There is some controversy over whether :math:`1` is a prime power :math:`p^0`. Since :math:`1` is the :math:`0`-th power
-    of all primes, it is often regarded not as a prime power. This function returns `False` for :math:`1`.
+    There is some controversy over whether 1 is a prime power :math:`p^0`. Since 1 is the 0-th power
+    of all primes, it is often regarded not as a prime power. This function returns `False` for 1.
 
     Examples
     --------
@@ -1701,8 +1701,8 @@ def is_smooth(n: int, B: int) -> bool:
     Notes
     -----
     An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-smooth
-    if :math:`p_k \le B`. The :math:`2`-smooth numbers are the powers of :math:`2`. The :math:`5`-smooth numbers
-    are known as *regular numbers*. The :math:`7`-smooth numbers are known as *humble numbers* or *highly composite numbers*.
+    if :math:`p_k \le B`. The 2-smooth numbers are the powers of 2. The 5-smooth numbers
+    are known as *regular numbers*. The 7-smooth numbers are known as *humble numbers* or *highly composite numbers*.
 
     Examples
     --------

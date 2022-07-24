@@ -275,7 +275,7 @@ Given two integers :math:`x` and :math:`y`, the Extended Euclidean Algorithm fin
 :math:`xs + yt = \textrm{gcd}(x, y)`. This algorithm is implemented in :func:`~galois.egcd`.
 
 If :math:`x = 5` is a field element of :math:`\mathrm{GF}(7)` and :math:`y = 7` is the prime characteristic, then :math:`s = x^{-1}`
-in :math:`\mathrm{GF}(7)`. Note, the GCD will always be :math:`1` because :math:`y` is prime.
+in :math:`\mathrm{GF}(7)`. Note, the GCD will always be 1 because :math:`y` is prime.
 
 .. ipython:: python
 
@@ -283,7 +283,7 @@ in :math:`\mathrm{GF}(7)`. Note, the GCD will always be :math:`1` because :math:
    galois.egcd(b_int, p)
 
 The :obj:`galois` library uses the Extended Euclidean Algorithm to compute multiplicative inverses (and division) in prime fields.
-The inverse of :math:`5` in :math:`\mathrm{GF}(7)` can be easily computed in the following way.
+The inverse of 5 in :math:`\mathrm{GF}(7)` can be easily computed in the following way.
 
 .. tab-set::
 
@@ -456,7 +456,7 @@ There are multiple primitive elements of any finite field. All primitive element
          GF7.primitive_elements
          g = GF7(5); g
 
-This means that :math:`3` and :math:`5` generate the multiplicative group :math:`\mathrm{GF}(7)^\times`.
+This means that 3 and 5 generate the multiplicative group :math:`\mathrm{GF}(7)^\times`.
 We can examine this by viewing the representation table using different generators.
 
 Here is the representation table using a different generator :math:`g = 5`. Notice it also has
@@ -495,7 +495,7 @@ For example, the element :math:`e = 2` is not a primitive element.
          GF7.display("power")
          e = GF7(2); e
 
-It has :math:`\textrm{ord}(e) = 3`. Notice elements :math:`3`, :math:`5`, and :math:`6` are not represented by the powers of :math:`e`.
+It has :math:`\textrm{ord}(e) = 3`. Notice elements 3, 5, and 6 are not represented by the powers of :math:`e`.
 
 .. ipython:: python
 

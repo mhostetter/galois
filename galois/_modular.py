@@ -272,7 +272,7 @@ def is_cyclic(n: int) -> bool:
     :math:`\phi(n)` is Euler's totient function and calculates the order of the group. If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic,
     the number of primitive roots is found by :math:`\phi(\phi(n))`.
 
-    :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is *cyclic* if and only if :math:`n` is :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`,
+    :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is *cyclic* if and only if :math:`n` is 2, 4, :math:`p^k`, or :math:`2p^k`,
     where :math:`p` is an odd prime and :math:`k` is a positive integer.
 
     Examples
@@ -281,7 +281,7 @@ def is_cyclic(n: int) -> bool:
 
         .. tab-item:: n = 14
 
-            The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives of :math:`14`.
+            The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives of 14.
 
             .. ipython:: python
 
@@ -296,14 +296,14 @@ def is_cyclic(n: int) -> bool:
                 phi = galois.euler_phi(n); phi
                 len(Znx) == phi
 
-            Since :math:`14` is of the form :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}` is cyclic,
+            Since 14 is of the form :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}` is cyclic,
             meaning there exists at least one element that generates the group by its powers.
 
             .. ipython:: python
 
                 galois.is_cyclic(n)
 
-            Find the smallest primitive root modulo :math:`14`. Observe that the powers of :math:`g` uniquely represent each element
+            Find the smallest primitive root modulo 14. Observe that the powers of :math:`g` uniquely represent each element
             in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`.
 
             .. ipython:: python
@@ -311,7 +311,7 @@ def is_cyclic(n: int) -> bool:
                 g = galois.primitive_root(n); g
                 [pow(g, i, n) for i in range(0, phi)]
 
-            Find the largest primitive root modulo :math:`14`. Observe that the powers of :math:`g` also uniquely represent each element
+            Find the largest primitive root modulo 14. Observe that the powers of :math:`g` also uniquely represent each element
             in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`, although in a different order.
 
             .. ipython:: python
@@ -329,7 +329,7 @@ def is_cyclic(n: int) -> bool:
                 Znx = galois.totatives(n); Znx
                 phi = galois.euler_phi(n); phi
 
-            Since :math:`15` is not of the form :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}`
+            Since 15 is not of the form 2, 4, :math:`p^k`, or :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}`
             is not cyclic, meaning no elements exist whose powers generate the group.
 
             .. ipython:: python
@@ -346,13 +346,13 @@ def is_cyclic(n: int) -> bool:
                     print("Element: {:2d}, Span: {:<13}, Primitive root: {}".format(a, str(span), primitive_root))
 
             The Carmichael :math:`\lambda(n)` function finds the maximum multiplicative order of any element, which is
-            :math:`4` and not :math:`8`.
+            4 and not 8.
 
             .. ipython:: python
 
                 galois.carmichael_lambda(n)
 
-            Observe that no primitive roots modulo :math:`15` exist and a `RuntimeError` is raised.
+            Observe that no primitive roots modulo 15 exist and a `RuntimeError` is raised.
 
             .. ipython:: python
                 :okexcept:
@@ -462,7 +462,7 @@ def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: L
 
         .. tab-item:: n = 14
 
-            The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives of :math:`14`.
+            The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives of 14.
 
             .. ipython:: python
 
@@ -477,14 +477,14 @@ def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: L
                 phi = galois.euler_phi(n); phi
                 len(Znx) == phi
 
-            Since :math:`14` is of the form :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}` is cyclic,
+            Since 14 is of the form :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}` is cyclic,
             meaning there exists at least one element that generates the group by its powers.
 
             .. ipython:: python
 
                 galois.is_cyclic(n)
 
-            Find the smallest primitive root modulo :math:`14`. Observe that the powers of :math:`g` uniquely represent each element
+            Find the smallest primitive root modulo 14. Observe that the powers of :math:`g` uniquely represent each element
             in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`.
 
             .. ipython:: python
@@ -492,7 +492,7 @@ def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: L
                 g = galois.primitive_root(n); g
                 [pow(g, i, n) for i in range(0, phi)]
 
-            Find the largest primitive root modulo :math:`14`. Observe that the powers of :math:`g` also uniquely represent each element
+            Find the largest primitive root modulo 14. Observe that the powers of :math:`g` also uniquely represent each element
             in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`, although in a different order.
 
             .. ipython:: python
@@ -510,7 +510,7 @@ def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: L
                 Znx = galois.totatives(n); Znx
                 phi = galois.euler_phi(n); phi
 
-            Since :math:`15` is not of the form :math:`2`, :math:`4`, :math:`p^k`, or :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}`
+            Since 15 is not of the form 2, 4, :math:`p^k`, or :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}`
             is not cyclic, meaning no elements exist whose powers generate the group.
 
             .. ipython:: python
@@ -527,13 +527,13 @@ def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: L
                     print("Element: {:2d}, Span: {:<13}, Primitive root: {}".format(a, str(span), primitive_root))
 
             The Carmichael :math:`\lambda(n)` function finds the maximum multiplicative order of any element, which is
-            :math:`4` and not :math:`8`.
+            4 and not 8.
 
             .. ipython:: python
 
                 galois.carmichael_lambda(n)
 
-            Observe that no primitive roots modulo :math:`15` exist and a `RuntimeError` is raised.
+            Observe that no primitive roots modulo 15 exist and a `RuntimeError` is raised.
 
             .. ipython:: python
                 :okexcept:
@@ -629,19 +629,19 @@ def primitive_roots(n: int, start: int = 1, stop: Optional[int] = None, reverse:
 
     Examples
     --------
-    All primitive roots modulo :math:`31`. You may also use `tuple()` on the returned generator.
+    All primitive roots modulo 31. You may also use `tuple()` on the returned generator.
 
     .. ipython:: python
 
         list(galois.primitive_roots(31))
 
-    There are no primitive roots modulo :math:`30`.
+    There are no primitive roots modulo 30.
 
     .. ipython:: python
 
         list(galois.primitive_roots(30))
 
-    Show the each primitive root modulo :math:`22` generates the multiplicative group :math:`(\mathbb{Z}/22\mathbb{Z}){^\times}`.
+    Show the each primitive root modulo 22 generates the multiplicative group :math:`(\mathbb{Z}/22\mathbb{Z}){^\times}`.
 
     .. ipython:: python
 
@@ -652,7 +652,7 @@ def primitive_roots(n: int, start: int = 1, stop: Optional[int] = None, reverse:
             span = set(pow(root, i, n) for i in range(0, phi))
             print(f"Element: {root:>2}, Span: {span}")
 
-    Find the three largest primitive roots modulo :math:`31` in reversed order.
+    Find the three largest primitive roots modulo 31 in reversed order.
 
     .. ipython:: python
 

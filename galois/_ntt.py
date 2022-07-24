@@ -66,7 +66,7 @@ def ntt(
 
     with all arithmetic performed in :math:`\mathrm{GF}(p)`.
 
-    A radix-:math:`2` Cooley-Tukey FFT algorithm is implemented, which achieves :math:`O(N \mathrm{log}(N))`.
+    A radix-2 Cooley-Tukey FFT algorithm is implemented, which achieves :math:`O(N \mathrm{log}(N))`.
 
     References
     ----------
@@ -182,7 +182,7 @@ def intt(
 
     with all arithmetic performed in :math:`\mathrm{GF}(p)`. The scaled INTT has the property that :math:`x = \mathrm{INTT}(\mathrm{NTT}(x))`.
 
-    A radix-:math:`2` Cooley-Tukey FFT algorithm is implemented, which achieves :math:`O(N \mathrm{log}(N))`.
+    A radix-2 Cooley-Tukey FFT algorithm is implemented, which achieves :math:`O(N \mathrm{log}(N))`.
 
     References
     ----------

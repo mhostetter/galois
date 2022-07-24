@@ -757,7 +757,7 @@ class Poly:
         The Galois field elements can be represented as :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`,
         where :math:`\alpha` is a primitive element of :math:`\mathrm{GF}(p^m)`.
 
-        :math:`0` is a root of :math:`f(x)` if :math:`a_0 = 0`. :math:`1` is a root of :math:`f(x)` if :math:`\sum_{j=0}^{d} a_j = 0`. The
+        0 is a root of :math:`f(x)` if :math:`a_0 = 0`. 1 is a root of :math:`f(x)` if :math:`\sum_{j=0}^{d} a_j = 0`. The
         remaining elements of :math:`\mathrm{GF}(p^m)` are powers of :math:`\alpha`. The following equations calculate :math:`f(\alpha^i)`,
         where :math:`\alpha^i` is a root of :math:`f(x)` if :math:`f(\alpha^i) = 0`.
 

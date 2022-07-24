@@ -100,7 +100,7 @@ class FieldArrayMeta(ArrayMeta):
     def characteristic(cls) -> int:
         r"""
         The prime characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)`. Adding
-        :math:`p` copies of any element will always result in :math:`0`.
+        :math:`p` copies of any element will always result in 0.
 
         Examples
         --------
@@ -1304,7 +1304,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Notes
         -----
         The additive order :math:`a` of :math:`x` in :math:`\mathrm{GF}(p^m)` is the smallest integer :math:`a`
-        such that :math:`x a = 0`. With the exception of :math:`0`, the additive order of every element is
+        such that :math:`x a = 0`. With the exception of 0, the additive order of every element is
         the finite field's characteristic.
 
         Examples
