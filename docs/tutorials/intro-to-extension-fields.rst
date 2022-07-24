@@ -98,7 +98,7 @@ When creating a :obj:`~galois.FieldArray` subclass in :obj:`galois`, if an irred
 is chosen. The default is the Conway polynomial :math:`C_{p,m}(x)`, which is irreducible *and* primitive. See :func:`~galois.conway_poly`
 for more information.
 
-Notice :math:`f(x)` is over :math:`\mathrm{GF}(3)` with degree :math:`2`.
+Notice :math:`f(x)` is over :math:`\mathrm{GF}(3)` with degree 2.
 
 .. ipython:: python
 
@@ -319,8 +319,8 @@ Multiplication
 Multiplication of polynomials with degree less than :math:`m`, however, will often result in a polynomial of degree :math:`m`
 or greater. Therefore, it is necessary to reduce the result modulo :math:`f(x)`.
 
-First compute :math:`ab = (x + 2)(x + 1) = x^2 + 2`. Notice that :math:`x^2 + 2` has degree :math:`2`, but the elements of
-:math:`\mathrm{GF}(3^2)` can have degree at most :math:`1`. Therefore, reduction modulo :math:`f(x)` is required. After remainder
+First compute :math:`ab = (x + 2)(x + 1) = x^2 + 2`. Notice that :math:`x^2 + 2` has degree 2, but the elements of
+:math:`\mathrm{GF}(3^2)` can have degree at most 1. Therefore, reduction modulo :math:`f(x)` is required. After remainder
 division, we see that :math:`ab\ \equiv x\ \textrm{mod}\ f(x)`.
 
 .. tab-set::
@@ -406,7 +406,7 @@ which was used in prime fields on integers, can be used for extension fields on 
 :math:`a(x)s(x) + b(x)t(x) = \textrm{gcd}(a(x), b(x))`. This algorithm is implemented in :func:`~galois.egcd`.
 
 If :math:`a(x) = x + 1` is a field element of :math:`\mathrm{GF}(3^2)` and :math:`b(x) = f(x)` is the irreducible polynomial, then
-:math:`s(x) = a^{-1}` in :math:`\mathrm{GF}(3^2)`. Note, the GCD will always be :math:`1` because :math:`f(x)` is irreducible.
+:math:`s(x) = a^{-1}` in :math:`\mathrm{GF}(3^2)`. Note, the GCD will always be 1 because :math:`f(x)` is irreducible.
 
 .. ipython:: python
 

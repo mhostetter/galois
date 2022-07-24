@@ -92,7 +92,7 @@ Polynomial representation
 The polynomial display mode displays all finite field elements as polynomials over their prime subfield with degree less than :math:`m`.
 
 In prime fields, :math:`m = 1` and, therefore, the polynomial representation is equivalent to the integer representation because the
-polynomials all have degree :math:`0`.
+polynomials all have degree 0.
 
 .. ipython:: python
 

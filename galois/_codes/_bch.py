@@ -136,7 +136,7 @@ class BCH:
     A primitive, narrow-sense binary :math:`\textrm{BCH}(n, k)` code.
 
     A :math:`\textrm{BCH}(n, k)` code is a :math:`[n, k, d]_2` linear block code with codeword size :math:`n`, message
-    size :math:`k`, minimum distance :math:`d`, and symbols taken from an alphabet of size :math:`2`.
+    size :math:`k`, minimum distance :math:`d`, and symbols taken from an alphabet of size 2.
 
     To create the shortened :math:`\textrm{BCH}(n-s, k-s)` code, construct the full-sized :math:`\textrm{BCH}(n, k)` code
     and then pass :math:`k-s` bits into :func:`encode` and :math:`n-s` bits into :func:`decode()`. Shortened codes are only
