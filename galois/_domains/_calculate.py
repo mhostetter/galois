@@ -357,30 +357,16 @@ class reciprocal_fermat(_lookup.reciprocal_ufunc):
     """
     def set_calculate_globals(self):
         # pylint: disable=global-variable-undefined
-        global ORDER, MULTIPLY
+        global ORDER, POSITIVE_POWER
         ORDER = self.field.order
-        MULTIPLY = self.field._multiply.ufunc
+        POSITIVE_POWER = self.field._positive_power.ufunc
 
     @staticmethod
     def calculate(a: int) -> int:
         if a == 0:
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
-        exponent = ORDER - 2
-        result_s = a  # The "squaring" part
-        result_m = 1  # The "multiplicative" part
-
-        while exponent > 1:
-            if exponent % 2 == 0:
-                result_s = MULTIPLY(result_s, result_s)
-                exponent //= 2
-            else:
-                result_m = MULTIPLY(result_m, result_s)
-                exponent -= 1
-
-        result = MULTIPLY(result_m, result_s)
-
-        return result
+        return POSITIVE_POWER(a, ORDER - 2)
 
 
 class reciprocal_itoh_tsujii(_lookup.reciprocal_ufunc):
@@ -398,10 +384,11 @@ class reciprocal_itoh_tsujii(_lookup.reciprocal_ufunc):
     """
     def set_calculate_globals(self):
         # pylint: disable=global-variable-undefined
-        global CHARACTERISTIC, ORDER, MULTIPLY, SUBFIELD_RECIPROCAL
+        global CHARACTERISTIC, ORDER, MULTIPLY, POSITIVE_POWER, SUBFIELD_RECIPROCAL
         CHARACTERISTIC = self.field.characteristic
         ORDER = self.field.order
         MULTIPLY = self.field._multiply.ufunc
+        POSITIVE_POWER = self.field._positive_power.ufunc
         SUBFIELD_RECIPROCAL = self.field.prime_subfield._reciprocal.ufunc
 
     @staticmethod
@@ -413,28 +400,18 @@ class reciprocal_itoh_tsujii(_lookup.reciprocal_ufunc):
         r = (ORDER - 1) // (CHARACTERISTIC - 1)
 
         # Step 2: Compute a^(r - 1)
-        exponent = r - 1
-        result_s = a  # The "squaring" part
-        result_m = 1  # The "multiplicative" part
-        while exponent > 1:
-            if exponent % 2 == 0:
-                result_s = MULTIPLY(result_s, result_s)
-                exponent //= 2
-            else:
-                result_m = MULTIPLY(result_m, result_s)
-                exponent -= 1
-        a_r1 = MULTIPLY(result_m, result_s)
+        a_r1 = POSITIVE_POWER(a, r - 1)
 
         # Step 3: Compute a^r = a^(r - 1) * a, a^r is in GF(p)
         a_r = MULTIPLY(a_r1, a)
 
         # Step 4: Compute (a^r)^-1 in GF(p)
-        a_r_inverse = SUBFIELD_RECIPROCAL(a_r)
+        a_r_inv = SUBFIELD_RECIPROCAL(a_r)
 
         # Step 5: Compute a^-1 = (a^r)^-1 * a^(r - 1)
-        a_inverse = MULTIPLY(a_r_inverse, a_r1)
+        a_inv = MULTIPLY(a_r_inv, a_r1)
 
-        return a_inverse
+        return a_inv
 
 
 class divide(_lookup.divide_ufunc):
@@ -461,7 +438,49 @@ class divide(_lookup.divide_ufunc):
         return c
 
 
-class field_power_square_and_multiply(_lookup.power_ufunc):
+class positive_power_square_and_multiply(_lookup.power_ufunc):
+    """
+    A ufunc dispatcher that provides exponentiation (positive exponents only) using the Square and Multiply algorithm.
+
+    Algorithm:
+        a^13 = (1) * (a)^13
+             = (a) * (a)^12
+             = (a) * (a^2)^6
+             = (a) * (a^4)^3
+             = (a * a^4) * (a^4)^2
+             = (a * a^4) * (a^8)
+           c = c_m * c_s
+    """
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
+        global MULTIPLY
+        MULTIPLY = self.field._multiply.ufunc
+
+    @staticmethod
+    def calculate(a: int, b: int) -> int:
+        if a == 0 and b < 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+        assert b >= 0
+
+        if b == 0:
+            return 1
+
+        c_square = a  # The "squaring" part
+        c_mult = 1  # The "multiplicative" part
+
+        while b > 1:
+            if b % 2 == 0:
+                c_square = MULTIPLY(c_square, c_square)
+                b //= 2
+            else:
+                c_mult = MULTIPLY(c_mult, c_square)
+                b -= 1
+        c = MULTIPLY(c_mult, c_square)
+
+        return c
+
+
+class power_square_and_multiply(_lookup.power_ufunc):
     """
     A ufunc dispatcher that provides exponentiation using the Square and Multiply algorithm.
 
@@ -478,9 +497,9 @@ class field_power_square_and_multiply(_lookup.power_ufunc):
     """
     def set_calculate_globals(self):
         # pylint: disable=global-variable-undefined
-        global MULTIPLY, RECIPROCAL
-        MULTIPLY = self.field._multiply.ufunc
+        global RECIPROCAL, POSITIVE_POWER
         RECIPROCAL = self.field._reciprocal.ufunc
+        POSITIVE_POWER = self.field._positive_power.ufunc
 
     @staticmethod
     def calculate(a: int, b: int) -> int:
@@ -488,25 +507,14 @@ class field_power_square_and_multiply(_lookup.power_ufunc):
             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
         if b == 0:
-            return 1
-        elif b < 0:
-            a = RECIPROCAL(a)
-            b = abs(b)
+            c = 1
+        elif b > 0:
+            c = POSITIVE_POWER(a, b)
+        else:
+            a_inv = RECIPROCAL(a)
+            c = POSITIVE_POWER(a_inv, abs(b))
 
-        result_s = a  # The "squaring" part
-        result_m = 1  # The "multiplicative" part
-
-        while b > 1:
-            if b % 2 == 0:
-                result_s = MULTIPLY(result_s, result_s)
-                b //= 2
-            else:
-                result_m = MULTIPLY(result_m, result_s)
-                b -= 1
-
-        result = MULTIPLY(result_m, result_s)
-
-        return result
+        return c
 
 
 class log_brute_force(_lookup.log_ufunc):
