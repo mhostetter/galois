@@ -9,10 +9,10 @@ from typing_extensions import Literal
 
 from .._modular import totatives
 from .._overrides import set_module
+from .._polys import Poly
 from .._prime import factors
 from ..typing import PolyLike
 
-from ._poly import Poly
 
 __all__ = ["is_primitive_element", "primitive_element", "primitive_elements"]
 
