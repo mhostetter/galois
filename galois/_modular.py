@@ -170,7 +170,7 @@ def carmichael_lambda(n: int) -> int:
     Returns
     -------
     :
-        The smallest positive integer :math:`m` such that :math:`a^m \equiv 1 (\textrm{mod}\ n)` for
+        The smallest positive integer :math:`m` such that :math:`a^m \equiv 1\ (\textrm{mod}\ n)` for
         every :math:`a` in :math:`[1, n)` that is coprime to :math:`n`.
 
     See Also
@@ -183,14 +183,16 @@ def carmichael_lambda(n: int) -> int:
 
     Examples
     --------
-    The Carmichael lambda function and Euler totient function are often equal. However, there are notable exceptions.
+    The Carmichael :math:`\lambda(n)` function and Euler :math:`\phi(n)` function are often equal. However, there are
+    notable exceptions.
 
     .. ipython:: python
 
         [galois.euler_phi(n) for n in range(1, 20)]
         [galois.carmichael_lambda(n) for n in range(1, 20)]
 
-    For prime :math:`n`, :math:`\phi(n) = \lambda(n) = n - 1`. And for most composite :math:`n`, :math:`\phi(n) = \lambda(n) < n - 1`.
+    For prime :math:`n`, :math:`\phi(n) = \lambda(n) = n - 1`. And for most composite :math:`n`,
+    :math:`\phi(n) = \lambda(n) < n - 1`.
 
     .. ipython:: python
 
