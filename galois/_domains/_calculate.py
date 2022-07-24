@@ -383,6 +383,60 @@ class reciprocal_fermat(_lookup.reciprocal_ufunc):
         return result
 
 
+class reciprocal_itoh_tsujii(_lookup.reciprocal_ufunc):
+    """
+    A ufunc dispatcher that provides the multiplicative inverse using the Itoh-Tsujii inversion algorithm.
+
+    Algorithm:
+        a in GF(p^m)
+
+        1. Compute r = (p^m - 1) / (p - 1)
+        2. Compute a^(r - 1) in GF(p^m)
+        3. Compute a^r = a^(r - 1) * a = a.field_norm(), a^r is in GF(p)
+        4. Compute (a^r)^-1 in GF(p)
+        5. Compute a^-1 = (a^r)^-1 * a^(r - 1)
+    """
+    def set_calculate_globals(self):
+        # pylint: disable=global-variable-undefined
+        global CHARACTERISTIC, ORDER, MULTIPLY, SUBFIELD_RECIPROCAL
+        CHARACTERISTIC = self.field.characteristic
+        ORDER = self.field.order
+        MULTIPLY = self.field._multiply.ufunc
+        SUBFIELD_RECIPROCAL = self.field.prime_subfield._reciprocal.ufunc
+
+    @staticmethod
+    def calculate(a: int) -> int:
+        if a == 0:
+            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+
+        # Step 1: Compute r = (p^m - 1) / (p - 1)
+        r = (ORDER - 1) // (CHARACTERISTIC - 1)
+
+        # Step 2: Compute a^(r - 1)
+        exponent = r - 1
+        result_s = a  # The "squaring" part
+        result_m = 1  # The "multiplicative" part
+        while exponent > 1:
+            if exponent % 2 == 0:
+                result_s = MULTIPLY(result_s, result_s)
+                exponent //= 2
+            else:
+                result_m = MULTIPLY(result_m, result_s)
+                exponent -= 1
+        a_r1 = MULTIPLY(result_m, result_s)
+
+        # Step 3: Compute a^r = a^(r - 1) * a, a^r is in GF(p)
+        a_r = MULTIPLY(a_r1, a)
+
+        # Step 4: Compute (a^r)^-1 in GF(p)
+        a_r_inverse = SUBFIELD_RECIPROCAL(a_r)
+
+        # Step 5: Compute a^-1 = (a^r)^-1 * a^(r - 1)
+        a_inverse = MULTIPLY(a_r_inverse, a_r1)
+
+        return a_inverse
+
+
 class divide(_lookup.divide_ufunc):
     """
     A ufunc dispatcher that provides division.
