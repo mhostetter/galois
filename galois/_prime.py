@@ -120,14 +120,14 @@ MAX_N = 10_000_000
 @set_module("galois")
 def kth_prime(k: int) -> int:
     r"""
-    Returns the :math:`k`-th prime.
+    Returns the :math:`k`-th prime, where :math:`k = \{1,2,3,4,\dots\}` for primes :math:`p = \{2,3,5,7,\dots\}`.
 
     :group: primes-generation
 
     Parameters
     ----------
     k
-        The prime index (1-indexed), where :math:`k = \{1,2,3,4,\dots\}` for primes :math:`p = \{2,3,5,7,\dots\}`.
+        The prime index (1-indexed).
 
     Returns
     -------
