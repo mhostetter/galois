@@ -9,12 +9,13 @@ from typing_extensions import Literal
 
 from .._modular import primitive_root, is_primitive_root
 from .._overrides import set_module
-from .._polys import Poly, conway_poly, primitive_element, is_primitive_element
+from .._polys import Poly, conway_poly
 from .._prime import factors
 from ..typing import PolyLike
 
 from ._array import FieldArray
 from ._gf2 import GF2
+from ._primitive_element import primitive_element, is_primitive_element
 from ._ufunc import UFuncMixin_2_m, UFuncMixin_p_1, UFuncMixin_p_m
 
 __all__ = ["GF", "Field"]
