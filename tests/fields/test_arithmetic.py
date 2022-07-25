@@ -199,6 +199,19 @@ def test_log(field_log):
     x = X.astype(dtype)
     z = np.log(x)
     assert np.array_equal(z, Z)
+    z = x.log()
+    assert np.array_equal(z, Z)
+
+
+def test_log_different_base(field_log):
+    GF, X = field_log["GF"], field_log["X"]
+    dtype = random.choice(GF.dtypes)
+    if GF.order > 2**16:  # TODO: Skip slow log() for very large fields
+        return
+    x = X.astype(dtype)
+    beta = GF.primitive_elements[-1]
+    z = x.log(beta)
+    assert np.array_equal(beta ** z, x)
 
 
 # class TestArithmeticNonField:
