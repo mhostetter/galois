@@ -2,7 +2,7 @@
 A module containing various ufunc dispatchers with explicit calculation arithmetic added. Various algorithms for
 each type of arithmetic are implemented here.
 """
-from typing import Any, Type
+from typing import Type
 
 import numba
 import numpy as np
@@ -10,15 +10,13 @@ import numpy as np
 from . import _lookup
 from ._array import Array
 
+# pylint: disable=global-variable-undefined
+DTYPE = np.int64
+
 
 ###############################################################################
 # Helper JIT functions
 ###############################################################################
-
-DTYPE = np.int64
-INT_TO_VECTOR: Any
-VECTOR_TO_INT: Any
-
 
 @numba.jit(["int64[:](int64, int64, int64)"], nopython=True, cache=True)
 def int_to_vector(a: int, characteristic: int, degree: int) -> np.ndarray:
@@ -48,24 +46,56 @@ def vector_to_int(a_vec: np.ndarray, characteristic: int, degree: int) -> int:
     return a
 
 
+@numba.jit(["int64[:](int64, int64)"], nopython=True, cache=True)
+def egcd(a: int, b: int) -> np.ndarray:
+    """
+    Computes the Extended Euclidean Algorithm. Returns (d, s, t).
+
+    Algorithm:
+        s*x + t*y = gcd(x, y) = d
+    """
+    r2, r1 = a, b
+    s2, s1 = 1, 0
+    t2, t1 = 0, 1
+
+    while r1 != 0:
+        q = r2 // r1
+        r2, r1 = r1, r2 - q*r1
+        s2, s1 = s1, s2 - q*s1
+        t2, t1 = t1, t2 - q*t1
+
+    # Ensure the GCD is positive
+    if r2 < 0:
+        r2 *= -1
+        s2 *= -1
+        t2 *= -1
+
+    return np.array([r2, s2, t2], dtype=DTYPE)
+
+
 def set_helper_globals(field: Type[Array]):
-    global DTYPE, INT_TO_VECTOR, VECTOR_TO_INT
+    global DTYPE, INT_TO_VECTOR, VECTOR_TO_INT, EGCD
     if field.ufunc_mode != "python-calculate":
         DTYPE = np.int64
         INT_TO_VECTOR = int_to_vector
         VECTOR_TO_INT = vector_to_int
+        EGCD = egcd
     else:
         DTYPE = np.object_
         INT_TO_VECTOR = int_to_vector.py_func
         VECTOR_TO_INT = vector_to_int.py_func
+        EGCD = egcd.py_func
 
+
+###############################################################################
+# Specific explicit calculation algorithms
+###############################################################################
 
 class add_modular(_lookup.add_ufunc):
     """
     A ufunc dispatcher that provides addition modulo the characteristic.
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
 
@@ -94,7 +124,6 @@ class add_vector(_lookup.add_ufunc):
             return output
 
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, DEGREE
         CHARACTERISTIC = self.field.characteristic
         DEGREE = self.field.degree
@@ -115,7 +144,6 @@ class negative_modular(_lookup.negative_ufunc):
     A ufunc dispatcher that provides additive inverse modulo the characteristic.
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
 
@@ -145,7 +173,6 @@ class negative_vector(_lookup.negative_ufunc):
             return output
 
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, DEGREE
         CHARACTERISTIC = self.field.characteristic
         DEGREE = self.field.degree
@@ -165,7 +192,6 @@ class subtract_modular(_lookup.subtract_ufunc):
     A ufunc dispatcher that provides subtraction modulo the characteristic.
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
 
@@ -196,7 +222,6 @@ class subtract_vector(_lookup.subtract_ufunc):
             return output
 
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, DEGREE
         CHARACTERISTIC = self.field.characteristic
         DEGREE = self.field.degree
@@ -227,7 +252,6 @@ class multiply_binary(_lookup.multiply_ufunc):
               = c
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global ORDER, IRREDUCIBLE_POLY
         ORDER = self.field.order
         IRREDUCIBLE_POLY = self.field._irreducible_poly_int
@@ -256,7 +280,6 @@ class multiply_modular(_lookup.multiply_ufunc):
     A ufunc dispatcher that provides multiplication modulo the characteristic.
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
 
@@ -272,7 +295,6 @@ class multiply_vector(_lookup.multiply_ufunc):
     A ufunc dispatcher that provides multiplication for extensions.
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
         CHARACTERISTIC = self.field.characteristic
         DEGREE = self.field.degree
@@ -315,7 +337,6 @@ class reciprocal_modular_egcd(_lookup.reciprocal_ufunc):
     A ufunc dispatcher that provides the multiplicative inverse modulo the characteristic.
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
 
@@ -357,7 +378,6 @@ class reciprocal_fermat(_lookup.reciprocal_ufunc):
             a^-1 = a^(p^m - 2)
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global ORDER, POSITIVE_POWER
         ORDER = self.field.order
         POSITIVE_POWER = self.field._positive_power.ufunc
@@ -384,7 +404,6 @@ class reciprocal_itoh_tsujii(_lookup.reciprocal_ufunc):
         5. Compute a^-1 = (a^r)^-1 * a^(r - 1)
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, ORDER, MULTIPLY, POSITIVE_POWER, SUBFIELD_RECIPROCAL
         CHARACTERISTIC = self.field.characteristic
         ORDER = self.field.order
@@ -420,7 +439,6 @@ class divide(_lookup.divide_ufunc):
     A ufunc dispatcher that provides division.
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global MULTIPLY, RECIPROCAL
         MULTIPLY = self.field._multiply.ufunc
         RECIPROCAL = self.field._reciprocal.ufunc
@@ -453,7 +471,6 @@ class positive_power_square_and_multiply(_lookup.power_ufunc):
            c = c_m * c_s
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global MULTIPLY
         MULTIPLY = self.field._multiply.ufunc
 
@@ -497,7 +514,6 @@ class power_square_and_multiply(_lookup.power_ufunc):
              = result_m * result_s
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global RECIPROCAL, POSITIVE_POWER
         RECIPROCAL = self.field._reciprocal.ufunc
         POSITIVE_POWER = self.field._positive_power.ufunc
@@ -523,7 +539,6 @@ class log_brute_force(_lookup.log_ufunc):
     A ufunc dispatcher that provides logarithm calculation using a brute-force search.
     """
     def set_calculate_globals(self):
-        # pylint: disable=global-variable-undefined
         global ORDER, MULTIPLY
         ORDER = self.field.order
         MULTIPLY = self.field._multiply.ufunc
@@ -540,7 +555,6 @@ class log_brute_force(_lookup.log_ufunc):
         if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
-        # Naive algorithm
         c = 1
         for i in range(0, ORDER - 1):
             if c == a:
@@ -548,6 +562,81 @@ class log_brute_force(_lookup.log_ufunc):
             c = MULTIPLY(c, b)
 
         raise ArithmeticError("The specified logarithm base is not a primitive element of the Galois field.")
+
+
+class log_pollard_rho(_lookup.log_ufunc):
+    """
+    A ufunc dispatcher that provides logarithm calculation using the Pollard ρ algorithm.
+    """
+    def set_calculate_globals(self):
+        global ORDER, MULTIPLY
+        ORDER = self.field.order
+        MULTIPLY = self.field._multiply.ufunc
+        set_helper_globals(self.field)
+
+    @staticmethod
+    def calculate(alpha: int, beta: int) -> int:
+        """
+        alpha is an element of GF(p^m)
+        beta is a primitive element of GF(p^m)
+
+        Algorithm 3.60 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
+        """
+        if alpha == 0:
+            raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
+
+        n = ORDER - 1  # Order of the multiplicative group of GF(p^m), must be prime
+        x0, a0, b0 = 1, 0, 0
+        xi, ai, bi = x0, a0, b0
+        x2i, a2i, b2i = xi, ai, bi
+
+        def compute_x(x):
+            # Equation 3.2
+            if x % 3 == 1:
+                return MULTIPLY(alpha, x)
+            elif x % 3 == 2:
+                return MULTIPLY(x, x)
+            else:
+                return MULTIPLY(beta, x)
+
+        def compute_a(a, x):
+            # Equation 3.3
+            if x % 3 == 1:
+                return a
+            elif x % 3 == 2:
+                return (2*a) % n
+            else:
+                return (a + 1) % n
+
+        def compute_b(b, x):
+            # Equation 3.4
+            if x % 3 == 1:
+                return (b + 1) % n
+            elif x % 3 == 2:
+                return (2*b) % n
+            else:
+                return b
+
+        while True:
+            xi, ai, bi = compute_x(xi), compute_a(ai, xi), compute_b(bi, xi)
+
+            x2i, a2i, b2i = compute_x(x2i), compute_a(a2i, x2i), compute_b(b2i, x2i)
+            x2i, a2i, b2i = compute_x(x2i), compute_a(a2i, x2i), compute_b(b2i, x2i)
+
+            if xi == x2i:
+                r = (bi - b2i) % n
+                if r == 0:
+                    # Re-try with different x0, a0, and b0
+                    a0 += 1
+                    b0 += 1
+                    x0 = MULTIPLY(x0, alpha)
+                    x0 = MULTIPLY(x0, beta)
+                    xi, ai, bi = x0, a0, b0
+                    x2i, a2i, b2i = xi, ai, bi
+                else:
+                    d, r_inv = EGCD(r, n)[0:2]
+                    assert d == 1
+                    return (r_inv * (a2i - ai)) % n
 
 
 class sqrt_binary(_lookup.sqrt_ufunc):

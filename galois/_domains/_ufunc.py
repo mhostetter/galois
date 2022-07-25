@@ -533,8 +533,8 @@ class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
     _square: UFunc
     _matmul: UFunc
 
-    def __init_subclass__(cls) -> None:
-        super().__init_subclass__()
+    @classmethod
+    def _assign_ufuncs(cls):
         cls._divmod = divmod_ufunc(cls)
         cls._remainder = remainder_ufunc(cls)
         cls._square = square_ufunc(cls)

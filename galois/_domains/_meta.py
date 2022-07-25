@@ -65,6 +65,8 @@ class ArrayMeta(abc.ABCMeta):
         # By default, verify array elements are within the valid range when `.view()` casting
         cls._verify_on_view = True
 
+        cls._assign_ufuncs()
+
     def __dir__(cls) -> List[str]:
         """
         Add class properties from the metaclass onto the new Array class's dir().
@@ -86,6 +88,10 @@ class ArrayMeta(abc.ABCMeta):
         if len(dtypes) == 0:
             dtypes = [np.object_]
         return dtypes
+
+    def _assign_ufuncs(cls):
+        # This will be implemented in UFuncMixin and its children
+        return
 
     ###############################################################################
     # View methods
