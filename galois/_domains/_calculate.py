@@ -1,5 +1,6 @@
 """
-A module containing various ufunc dispatchers using explicit calculation.
+A module containing various ufunc dispatchers with explicit calculation arithmetic added. Various algorithms for
+each type of arithmetic are implemented here.
 """
 from typing import Any, Type
 
