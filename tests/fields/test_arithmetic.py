@@ -214,6 +214,35 @@ def test_log_different_base(field_log):
     assert np.array_equal(beta ** z, x)
 
 
+def test_log_pollard_rho():
+    GF = galois.GF(2**19, compile="jit-calculate")
+    assert isinstance(GF._log, galois._domains._calculate.log_pollard_rho)
+    dtype = random.choice(GF.dtypes)
+    x = GF.Random(10, low=1, dtype=dtype)
+
+    alpha = GF.primitive_element
+    z = np.log(x)
+    assert np.array_equal(alpha ** z, x)
+    z = x.log()
+    assert np.array_equal(alpha ** z, x)
+
+    beta = GF.primitive_elements[-1]
+    z = x.log(beta)
+    assert np.array_equal(beta ** z, x)
+
+
+# TODO: Skip slow log() for very large fields
+# def test_log_pollard_rho_python():
+#     GF = galois.GF(2**61)
+#     assert isinstance(GF._log, galois._domains._calculate.log_pollard_rho)
+#     dtype = random.choice(GF.dtypes)
+#     x = GF.Random(low=1, dtype=dtype)
+
+#     alpha = GF.primitive_element
+#     z = x.log()
+#     assert np.array_equal(alpha ** z, x)
+
+
 # class TestArithmeticNonField:
 
 
