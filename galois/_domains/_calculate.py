@@ -18,6 +18,8 @@ DTYPE = np.int64
 # Helper JIT functions
 ###############################################################################
 
+DTYPE = np.int64
+
 @numba.jit(["int64[:](int64, int64, int64)"], nopython=True, cache=True)
 def int_to_vector(a: int, characteristic: int, degree: int) -> np.ndarray:
     """
@@ -73,18 +75,55 @@ def egcd(a: int, b: int) -> np.ndarray:
     return np.array([r2, s2, t2], dtype=DTYPE)
 
 
+EGCD = egcd
+
+@numba.jit(["int64(int64[:], int64[:])"], nopython=True, cache=True)
+def crt(remainders: np.ndarray, moduli: np.ndarray) -> int:
+    """
+    Computes the simultaneous solution to the system of congruences xi == ai (mod mi).
+    """
+    # Iterate through the system of congruences reducing a pair of congruences into a
+    # single one. The answer to the final congruence solves all the congruences.
+    a1, m1 = remainders[0], moduli[0]
+    for a2, m2 in zip(remainders[1:], moduli[1:]):
+        # Use the Extended Euclidean Algorithm to determine: b1*m1 + b2*m2 = gcd(m1, m2).
+        d, b1, b2 = EGCD(m1, m2)
+
+        if d == 1:
+            # The moduli (m1, m2) are coprime
+            x = a1*b2*m2 + a2*b1*m1  # Compute x through explicit construction
+            m1 = m1 * m2  # The new modulus
+        else:
+            # The moduli (m1, m2) are not coprime, however if a1 == b2 (mod d)
+            # then a unique solution still exists.
+            if not (a1 % d) == (a2 % d):
+                raise ArithmeticError
+                # raise ValueError(f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, therefore a unique solution does not exist.")
+            x = (a1*b2*m2 + a2*b1*m1) // d  # Compute x through explicit construction
+            m1 = (m1 * m2) // d  # The new modulus
+
+        a1 = x % m1  # The new equivalent remainder
+
+    # At the end of the process x == a1 (mod m1) where a1 and m1 are the new/modified residual
+    # and remainder.
+
+    return a1
+
+
 def set_helper_globals(field: Type[Array]):
-    global DTYPE, INT_TO_VECTOR, VECTOR_TO_INT, EGCD
+    global DTYPE, INT_TO_VECTOR, VECTOR_TO_INT, EGCD, CRT
     if field.ufunc_mode != "python-calculate":
         DTYPE = np.int64
         INT_TO_VECTOR = int_to_vector
         VECTOR_TO_INT = vector_to_int
         EGCD = egcd
+        CRT = crt
     else:
         DTYPE = np.object_
         INT_TO_VECTOR = int_to_vector.py_func
         VECTOR_TO_INT = vector_to_int.py_func
         EGCD = egcd.py_func
+        CRT = crt.py_func
 
 
 ###############################################################################
