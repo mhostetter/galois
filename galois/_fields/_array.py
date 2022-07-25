@@ -2028,6 +2028,87 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         else:
             raise ValueError(f"The array must be either 0-D to return the minimal polynomial of a single element or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}.")
 
+    def log(self, base: Optional[Union[ElementLike, ArrayLike]] = None) -> np.ndarray:
+        r"""
+        Computes the logarithm of the array :math:`x` base :math:`\beta`.
+
+        Important
+        ---------
+        If the Galois field is configured to use lookup tables, `ufunc_mode == "jit-lookup"`, and this function is invoked
+        with a base different from :obj:`~FieldArray.primitive_element`, then explicit calculation will be used.
+
+        Parameters
+        ----------
+        base
+            A primitive element(s) :math:`\beta` of the finite field that is the base of the logarithm. The default is `None`
+            which uses :obj:`~FieldArray.primitive_element`.
+
+        Returns
+        -------
+        :
+            An integer array :math:`i` of powers of :math:`\beta` such that :math:`\beta^i = x`. The return array
+            shape obeys NumPy broadcasting rules.
+
+        Examples
+        --------
+        Compute the logarithm of :math:`x` with default base :math:`\alpha`, which is the specified primitive element
+        of the field.
+
+        .. ipython:: python
+
+            GF = galois.GF(3**5, display="poly")
+            alpha = GF.primitive_element; alpha
+            x = GF.Random(10, low=1); x
+            i = x.log(); i
+            np.array_equal(alpha ** i, x)
+
+        With the default argument, :func:`numpy.log` and :func:`~FieldArray.log` are equivalent.
+
+        .. ipython:: python
+
+            np.array_equal(np.log(x), x.log())
+
+        Compute the logarithm of :math:`x` with a different base :math:`\beta`, which is another primitive element
+        of the field.
+
+        .. ipython:: python
+
+            beta = GF.primitive_elements[-1]; beta
+            i = x.log(beta); i
+            np.array_equal(beta ** i, x)
+
+        Compute the logarithm of a single finite field element base all of the primitive elements of the field.
+
+        .. ipython:: python
+
+            x = GF.Random(low=1); x
+            bases = GF.primitive_elements
+            i = x.log(bases); i
+            np.all(bases ** i == x)
+            @suppress
+            GF.display()
+        """
+        x = self
+        field = type(self)
+        if base is None:
+            base = field.primitive_element
+        else:
+            base = field(base)  # This will perform type checking
+
+        kwargs = {}
+        inputs = [x, base]
+        inputs, kwargs = field._log._view_inputs_as_ndarray(inputs, kwargs)
+        if not np.array_equal(base, field.primitive_element) and field.ufunc_mode == "jit-lookup":
+            # Must explicitly use calculation and not lookup tables if the base of the logarithm isn't the base
+            # used in the lookup tables.
+            ufunc = field._log.jit_calculate
+        else:
+            ufunc = field._log.ufunc
+        output = getattr(ufunc, "__call__")(*inputs, **kwargs)
+        # TODO: Could add a method keyword argument to the function to allow different modes.
+
+        return output
+
     ###############################################################################
     # Display methods
     ###############################################################################
