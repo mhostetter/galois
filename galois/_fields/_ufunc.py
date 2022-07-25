@@ -10,14 +10,16 @@ import numpy as np
 from .._domains import _calculate, _lookup
 from .._domains._meta import DTYPES
 from .._domains._ufunc import UFuncMixin
+from .._prime import is_prime
 
 
 class UFuncMixin_p_1(UFuncMixin):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(p) classes.
     """
-    def __init_subclass__(cls) -> None:
-        super().__init_subclass__()
+    @classmethod
+    def _assign_ufuncs(cls):
+        super()._assign_ufuncs()
         cls._add = _calculate.add_modular(cls, always_calculate=True)
         cls._negative = _calculate.negative_modular(cls, always_calculate=True)
         cls._subtract = _calculate.subtract_modular(cls, always_calculate=True)
@@ -46,8 +48,9 @@ class UFuncMixin_2_m(UFuncMixin):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(2^m) classes.
     """
-    def __init_subclass__(cls) -> None:
-        super().__init_subclass__()
+    @classmethod
+    def _assign_ufuncs(cls):
+        super()._assign_ufuncs()
         cls._add = _lookup.add_ufunc(cls, override=np.bitwise_xor)
         cls._negative = _lookup.negative_ufunc(cls, override=np.positive)
         cls._subtract = _lookup.subtract_ufunc(cls, override=np.bitwise_xor)
@@ -55,7 +58,12 @@ class UFuncMixin_2_m(UFuncMixin):
         cls._reciprocal = _calculate.reciprocal_itoh_tsujii(cls)
         cls._divide = _calculate.divide(cls)
         cls._power = _calculate.power_square_and_multiply(cls)
-        cls._log = _calculate.log_brute_force(cls)
+        if is_prime(cls.order - 1):
+            # When the order of the multiplicative group GF(p^m)* is prime, then the Pollard-rho discrete logarithm
+            # algorithm is most efficient.
+            cls._log = _calculate.log_pollard_rho(cls)
+        else:
+            cls._log = _calculate.log_brute_force(cls)
         cls._sqrt = _calculate.sqrt_binary(cls)
 
         cls._positive_power = _calculate.positive_power_square_and_multiply(cls)
@@ -65,8 +73,9 @@ class UFuncMixin_p_m(UFuncMixin):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(p^m) classes.
     """
-    def __init_subclass__(cls) -> None:
-        super().__init_subclass__()
+    @classmethod
+    def _assign_ufuncs(cls):
+        super()._assign_ufuncs()
         cls._add = _calculate.add_vector(cls)
         cls._negative = _calculate.negative_vector(cls)
         cls._subtract = _calculate.subtract_vector(cls)
