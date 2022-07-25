@@ -27,7 +27,7 @@ class UFuncMixin_p_1(UFuncMixin):
         cls._reciprocal = _calculate.reciprocal_modular_egcd(cls)
         cls._divide = _calculate.divide(cls)
         cls._power = _calculate.power_square_and_multiply(cls)
-        cls._log = _calculate.log_brute_force(cls)
+        cls._log = _calculate.log_pohlig_hellman(cls)
         cls._sqrt = _calculate.sqrt(cls)
 
         cls._positive_power = _calculate.positive_power_square_and_multiply(cls)
@@ -63,7 +63,7 @@ class UFuncMixin_2_m(UFuncMixin):
             # algorithm is most efficient.
             cls._log = _calculate.log_pollard_rho(cls)
         else:
-            cls._log = _calculate.log_brute_force(cls)
+            cls._log = _calculate.log_pohlig_hellman(cls)
         cls._sqrt = _calculate.sqrt_binary(cls)
 
         cls._positive_power = _calculate.positive_power_square_and_multiply(cls)
@@ -83,7 +83,7 @@ class UFuncMixin_p_m(UFuncMixin):
         cls._reciprocal = _calculate.reciprocal_itoh_tsujii(cls)
         cls._divide = _calculate.divide(cls)
         cls._power = _calculate.power_square_and_multiply(cls)
-        cls._log = _calculate.log_brute_force(cls)
+        cls._log = _calculate.log_pohlig_hellman(cls)
         cls._sqrt = _calculate.sqrt(cls)
 
         cls._positive_power = _calculate.positive_power_square_and_multiply(cls)

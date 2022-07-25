@@ -2098,13 +2098,14 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         kwargs = {}
         inputs = [x, base]
         inputs, kwargs = field._log._view_inputs_as_ndarray(inputs, kwargs)
-        if not np.array_equal(base, field.primitive_element) and field.ufunc_mode == "jit-lookup":
+        if field.ufunc_mode == "jit-lookup" and not np.array_equal(base, field.primitive_element):
             # Must explicitly use calculation and not lookup tables if the base of the logarithm isn't the base
             # used in the lookup tables.
             ufunc = field._log.jit_calculate
         else:
             ufunc = field._log.ufunc
         output = getattr(ufunc, "__call__")(*inputs, **kwargs)
+
         # TODO: Could add a method keyword argument to the function to allow different modes.
 
         return output
