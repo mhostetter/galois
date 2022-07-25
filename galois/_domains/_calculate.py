@@ -583,22 +583,22 @@ class log_brute_force(_lookup.log_ufunc):
         MULTIPLY = self.field._multiply.ufunc
 
     @staticmethod
-    def calculate(a: int, b: int) -> int:
+    def calculate(beta: int, alpha: int) -> int:
         """
-        a = α^m
-        b is a primitive element of the field
+        beta is an element of GF(p^m)
+        alpha is a primitive element of GF(p^m)
 
-        c = log(a, b)
-        a = b^c
+        i = log(beta, alpha)
+        beta = alpha^i
         """
-        if a == 0:
+        if beta == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
         c = 1
         for i in range(0, ORDER - 1):
-            if c == a:
+            if c == beta:
                 return i
-            c = MULTIPLY(c, b)
+            c = MULTIPLY(c, alpha)
 
         raise ArithmeticError("The specified logarithm base is not a primitive element of the Galois field.")
 
@@ -614,14 +614,15 @@ class log_pollard_rho(_lookup.log_ufunc):
         set_helper_globals(self.field)
 
     @staticmethod
-    def calculate(alpha: int, beta: int) -> int:
+    def calculate(beta: int, alpha: int) -> int:
         """
-        alpha is an element of GF(p^m)
-        beta is a primitive element of GF(p^m)
+        beta is an element of GF(p^m)
+        alpha is a primitive element of GF(p^m)
+        Compute x = log_alpha(beta)
 
         Algorithm 3.60 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
         """
-        if alpha == 0:
+        if beta == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
         n = ORDER - 1  # Order of the multiplicative group of GF(p^m), must be prime
@@ -632,11 +633,11 @@ class log_pollard_rho(_lookup.log_ufunc):
         def compute_x(x):
             # Equation 3.2
             if x % 3 == 1:
-                return MULTIPLY(alpha, x)
+                return MULTIPLY(beta, x)
             elif x % 3 == 2:
                 return MULTIPLY(x, x)
             else:
-                return MULTIPLY(beta, x)
+                return MULTIPLY(alpha, x)
 
         def compute_a(a, x):
             # Equation 3.3
@@ -664,18 +665,18 @@ class log_pollard_rho(_lookup.log_ufunc):
 
             if xi == x2i:
                 r = (bi - b2i) % n
-                if r == 0:
-                    # Re-try with different x0, a0, and b0
-                    a0 += 1
-                    b0 += 1
-                    x0 = MULTIPLY(x0, alpha)
-                    x0 = MULTIPLY(x0, beta)
-                    xi, ai, bi = x0, a0, b0
-                    x2i, a2i, b2i = xi, ai, bi
-                else:
+                if r != 0:
                     d, r_inv = EGCD(r, n)[0:2]
                     assert d == 1
                     return (r_inv * (a2i - ai)) % n
+                else:
+                    # Re-try with different x0, a0, and b0
+                    a0 += 1
+                    b0 += 1
+                    x0 = MULTIPLY(x0, beta)
+                    x0 = MULTIPLY(x0, alpha)
+                    xi, ai, bi = x0, a0, b0
+                    x2i, a2i, b2i = xi, ai, bi
 
 
 class sqrt_binary(_lookup.sqrt_ufunc):
