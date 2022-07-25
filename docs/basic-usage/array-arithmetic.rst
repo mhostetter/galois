@@ -133,13 +133,24 @@ Expand any section for more details.
         z = np.sqrt(x); z
         z ** 2 == x
 
-.. details:: Logarithm: `np.log(x)`
+.. details:: Logarithm: `np.log(x)` or `x.log()`
+
+    Compute the logarithm base :math:`\alpha`, the primitive element of the field.
 
     .. ipython:: python
 
         z = np.log(y); z
-        α = GF.primitive_element; α
-        α ** z == y
+        alpha = GF.primitive_element; alpha
+        alpha ** z == y
+
+    Compute the logarithm base :math:`\beta`, a different primitive element of the field. See :func:`FieldArray.log` for more
+    details.
+
+    .. ipython:: python
+
+        beta = GF.primitive_elements[-1]; beta
+        z = y.log(beta); z
+        beta ** z == y
 
 Ufunc methods
 -------------
