@@ -541,13 +541,13 @@ class log_brute_force(_lookup.log_ufunc):
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 
         # Naive algorithm
-        result = 1
+        c = 1
         for i in range(0, ORDER - 1):
-            if result == a:
-                break
-            result = MULTIPLY(result, b)
+            if c == a:
+                return i
+            c = MULTIPLY(c, b)
 
-        return i
+        raise ArithmeticError("The specified logarithm base is not a primitive element of the Galois field.")
 
 
 class sqrt_binary(_lookup.sqrt_ufunc):
