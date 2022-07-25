@@ -215,6 +215,9 @@ def test_log_different_base(field_log):
 
 
 def test_log_pollard_rho():
+    """
+    The Pollard-rho discrete logarithm algorithm is only applicable for fields when p^m - 1 is prime.
+    """
     GF = galois.GF(2**19, compile="jit-calculate")
     assert isinstance(GF._log, galois._domains._calculate.log_pollard_rho)
     dtype = random.choice(GF.dtypes)

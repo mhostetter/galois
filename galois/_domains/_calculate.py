@@ -7,11 +7,12 @@ from typing import Type
 import numba
 import numpy as np
 
+from .._prime import factors
+
 from . import _lookup
 from ._array import Array
 
 # pylint: disable=global-variable-undefined
-DTYPE = np.int64
 
 
 ###############################################################################
@@ -677,6 +678,63 @@ class log_pollard_rho(_lookup.log_ufunc):
                     x0 = MULTIPLY(x0, alpha)
                     xi, ai, bi = x0, a0, b0
                     x2i, a2i, b2i = xi, ai, bi
+
+
+class log_pohlig_hellman(_lookup.log_ufunc):
+    """
+    A ufunc dispatcher that provides logarithm calculation using the Pohlig-Hellman algorithm.
+    """
+    def set_calculate_globals(self):
+        global ORDER, MULTIPLY, RECIPROCAL, POWER, BRUTE_FORCE_LOG, FACTORS, MULTIPLICITIES
+        ORDER = self.field.order
+        MULTIPLY = self.field._multiply.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
+        POWER = self.field._power.ufunc
+        if self.field.ufunc_mode in ["jit-lookup", "jit-calculate"]:
+            # We can never use the lookup table version of log because it has a fixed base
+            BRUTE_FORCE_LOG = log_brute_force(self.field).jit_calculate
+        else:
+            BRUTE_FORCE_LOG = log_brute_force(self.field).python_calculate
+        FACTORS, MULTIPLICITIES = factors(self.field.order - 1)
+        set_helper_globals(self.field)
+        FACTORS = np.array(FACTORS, dtype=DTYPE)
+        MULTIPLICITIES = np.array(MULTIPLICITIES, dtype=DTYPE)
+
+    @staticmethod
+    def calculate(beta: int, alpha: int) -> int:
+        """
+        beta is an element of GF(p^m)
+        alpha is a primitive element of GF(p^m)
+        The n = p1^e1 * ... * pr^er prime factorization is required
+        Compute x = log_alpha(beta)
+
+        Algorithm 3.63 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
+        """
+        if beta == 0:
+            raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
+
+        r = len(FACTORS)
+        n = ORDER - 1  # Order of the multiplicative group of GF(p^m), must be prime
+
+        x = np.zeros(r, dtype=DTYPE)
+        m = np.zeros(r, dtype=DTYPE)
+        for i in range(r):
+            q = FACTORS[i]
+            e = MULTIPLICITIES[i]
+            m[i] = q ** e
+            gamma = 1
+            alpha_bar = POWER(alpha, n // q)
+            l_prev = 0  # Starts as l_i-1
+            q_prev = 0  # Starts as q^(-1)
+            for j in range(e):
+                gamma = MULTIPLY(gamma, POWER(alpha, l_prev * q_prev))
+                beta_bar = POWER(MULTIPLY(beta, RECIPROCAL(gamma)), n // (q**(j + 1)))
+                l = BRUTE_FORCE_LOG(beta_bar, alpha_bar)
+                x[i] += l * q**j
+                l_prev = l
+                q_prev = q ** j
+
+        return CRT(x, m)
 
 
 class sqrt_binary(_lookup.sqrt_ufunc):
