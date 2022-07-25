@@ -2092,7 +2092,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         field = type(self)
         if base is None:
             base = field.primitive_element
-        else:
+        elif not isinstance(base, field):
             base = field(base)  # This will perform type checking
 
         kwargs = {}
