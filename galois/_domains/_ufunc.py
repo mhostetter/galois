@@ -257,12 +257,103 @@ class UFunc:
 
 
 ###############################################################################
-# Default ufunc dispatchers that simply invoke other ufuncs
+# Basic ufunc dispatchers, but they still need need lookup and calculate
+# arithmetic implemented
 ###############################################################################
+
+class add_ufunc(UFunc):
+    """
+    Default addition ufunc dispatcher.
+    """
+    type = "binary"
+
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        self._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        output = self._view_output_as_field(output, self.field, meta["dtype"])
+        return output
+
+
+class negative_ufunc(UFunc):
+    """
+    Default additive inverse ufunc dispatcher.
+    """
+    type = "unary"
+
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        self._verify_unary_method_not_reduction(ufunc, method)
+        inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        output = self._view_output_as_field(output, self.field, meta["dtype"])
+        return output
+
+
+class subtract_ufunc(UFunc):
+    """
+    Default subtraction ufunc dispatcher.
+    """
+    type = "binary"
+
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        self._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        output = self._view_output_as_field(output, self.field, meta["dtype"])
+        return output
+
+
+class multiply_ufunc(UFunc):
+    """
+    Default multiplication ufunc dispatcher.
+    """
+    type = "binary"
+
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        if len(meta["non_field_operands"]) > 0:
+            # Scalar multiplication
+            self._verify_operands_in_field_or_int(ufunc, inputs, meta)
+            inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
+            inputs[meta["non_field_operands"][0]] = np.mod(inputs[meta["non_field_operands"][0]], self.field.characteristic)
+        inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        output = self._view_output_as_field(output, self.field, meta["dtype"])
+        return output
+
+
+class reciprocal_ufunc(UFunc):
+    """
+    Default multiplicative inverse ufunc dispatcher.
+    """
+    type = "unary"
+
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        self._verify_unary_method_not_reduction(ufunc, method)
+        inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        output = self._view_output_as_field(output, self.field, meta["dtype"])
+        return output
+
+
+class divide_ufunc(UFunc):
+    """
+    Default division ufunc dispatcher.
+    """
+    type = "binary"
+
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        self._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        output = self._view_output_as_field(output, self.field, meta["dtype"])
+        return output
+
 
 class divmod_ufunc(UFunc):
     """
     Default division with remainder ufunc dispatcher.
+
+    NOTE: This does not need its own implementation. Instead, it invokes other ufuncs.
     """
     type = "binary"
 
@@ -277,6 +368,8 @@ class divmod_ufunc(UFunc):
 class remainder_ufunc(UFunc):
     """
     Default remainder ufunc dispatcher.
+
+    NOTE: This does not need its own implementation. Instead, it invokes other ufuncs.
     """
     type = "binary"
 
@@ -287,9 +380,26 @@ class remainder_ufunc(UFunc):
         return output
 
 
+class power_ufunc(UFunc):
+    """
+    Default exponentiation ufunc dispatcher.
+    """
+    type = "binary"
+
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        self._verify_binary_method_not_reduction(ufunc, method)
+        self._verify_operands_first_field_second_int(ufunc, inputs, meta)
+        inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        output = self._view_output_as_field(output, self.field, meta["dtype"])
+        return output
+
+
 class square_ufunc(UFunc):
     """
     Default squaring ufunc dispatcher.
+
+    NOTE: This does not need its own implementation. Instead, it invokes other ufuncs.
     """
     type = "unary"
 
@@ -300,6 +410,41 @@ class square_ufunc(UFunc):
         output = getattr(self.field._power.ufunc, method)(*inputs, **kwargs)
         output = self._view_output_as_field(output, self.field, meta["dtype"])
         return output
+
+
+class log_ufunc(UFunc):
+    """
+    Default logarithm ufunc dispatcher.
+    """
+    type = "binary"
+
+    def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        self._verify_method_only_call(ufunc, method)
+        inputs = list(inputs) + [int(self.field.primitive_element)]
+        inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
+        output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        return output
+
+
+class sqrt_ufunc(UFunc):
+    """
+    Default square root ufunc dispatcher.
+    """
+    type = "unary"
+
+    def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+        self._verify_method_only_call(ufunc, method)
+        x = inputs[0]
+        b = x.is_quadratic_residue()  # Boolean indicating if the inputs are quadratic residues
+        if not np.all(b):
+            raise ArithmeticError(f"Input array has elements that are quadratic non-residues (do not have a square root). Use `x.is_quadratic_residue()` to determine if elements have square roots in {self.field.name}.\n{x[~b]}")
+        return self.implementation(*inputs)
+
+    def implementation(self, a: Array) -> Array:
+        """
+        Computes the square root of an element in a Galois field or Galois ring.
+        """
+        raise NotImplementedError
 
 
 class matmul_ufunc(UFunc):
