@@ -107,6 +107,10 @@ class UFunc:
         self._CACHE_LOOKUP.setdefault(key_1, {})
 
         if key_2 not in self._CACHE_LOOKUP[key_1]:
+            # Ensure the lookup tables were created
+            assert self.field._EXP.size > 0
+            assert self.field._LOG.size > 0
+            assert self.field._ZECH_LOG.size > 0
             self.set_lookup_globals()  # Set the globals once before JIT compiling the function
 
             if self.type == "unary":
