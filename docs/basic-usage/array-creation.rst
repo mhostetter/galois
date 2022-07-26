@@ -445,8 +445,8 @@ the polynomial field elements.
 Class properties
 ----------------
 
-Certain class properties, such as :obj:`~galois.FieldArray.elements`, :obj:`~galois.FieldArray.units`, :obj:`~galois.FieldArray.primitive_elements`,
-and :obj:`~galois.FieldArray.quadratic_residues`, provide an array of elements with the specified properties.
+Certain class properties, such as :obj:`~galois.FieldArray.elements`, :obj:`~galois.FieldArray.units`, :obj:`~galois.FieldArray.squares`,
+and :obj:`~galois.FieldArray.primitive_elements`, provide an array of elements with the specified properties.
 
 .. tab-set::
 
@@ -458,8 +458,8 @@ and :obj:`~galois.FieldArray.quadratic_residues`, provide an array of elements w
          GF = galois.GF(3**2)
          GF.elements
          GF.units
+         GF.squares
          GF.primitive_elements
-         GF.quadratic_residues
 
    .. tab-item:: Polynomial
       :sync: poly
@@ -469,8 +469,8 @@ and :obj:`~galois.FieldArray.quadratic_residues`, provide an array of elements w
          GF = galois.GF(3**2, display="poly")
          GF.elements
          GF.units
+         GF.squares
          GF.primitive_elements
-         GF.quadratic_residues
 
    .. tab-item:: Power
       :sync: power
@@ -480,8 +480,8 @@ and :obj:`~galois.FieldArray.quadratic_residues`, provide an array of elements w
          GF = galois.GF(3**2, display="power")
          GF.elements
          GF.units
+         GF.squares
          GF.primitive_elements
-         GF.quadratic_residues
          @suppress
          GF.display()
 

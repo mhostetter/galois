@@ -281,11 +281,11 @@ class FieldArrayMeta(ArrayMeta):
         return cls._primitive_elements.copy()
 
     @property
-    def quadratic_residues(cls) -> FieldArray:
+    def squares(cls) -> FieldArray:
         r"""
-        All quadratic residues in the finite field.
+        All squares in the finite field.
 
-        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic residue* if there exists a :math:`y` such that
+        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *square* if there exists a :math:`y` such that
         :math:`y^2 = x` in the field.
 
         See Also
@@ -294,26 +294,30 @@ class FieldArrayMeta(ArrayMeta):
 
         Examples
         --------
-        In fields with characteristic 2, every element is a quadratic residue.
+        In fields with characteristic 2, every element is a square (with two identical square roots).
 
         .. ipython:: python
 
-            GF = galois.GF(2**4)
-            x = GF.quadratic_residues; x
-            r = np.sqrt(x); r
-            np.array_equal(r ** 2, x)
-            np.array_equal((-r) ** 2, x)
+            GF = galois.GF(2**3, display="poly")
+            x = GF.squares; x
+            y1 = np.sqrt(x); y1
+            y2 = -y1; y2
+            np.array_equal(y1 ** 2, x)
+            np.array_equal(y2 ** 2, x)
+            @suppress
+            GF.display()
 
-        In fields with characteristic greater than 2,exactly half of the nonzero elements are quadratic residues
-        (and they have two unique square roots).
+        In fields with characteristic greater than 2, exactly half of the nonzero elements are squares
+        (with two unique square roots).
 
         .. ipython:: python
 
             GF = galois.GF(11)
-            x = GF.quadratic_residues; x
-            r = np.sqrt(x); r
-            np.array_equal(r ** 2, x)
-            np.array_equal((-r) ** 2, x)
+            x = GF.squares; x
+            y1 = np.sqrt(x); y1
+            y2 = -y1; y2
+            np.array_equal(y1 ** 2, x)
+            np.array_equal(y2 ** 2, x)
         """
         x = cls.elements
         is_square = x.is_square()
@@ -1409,7 +1413,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         See Also
         --------
-        quadratic_residues, quadratic_non_residues
+        squares, quadratic_non_residues
 
         Notes
         -----
