@@ -1,6 +1,10 @@
 """
 A module that contains a NumPy ufunc dispatcher and an Array mixin class that override NumPy ufuncs. The ufunc
 dispatcher classes have snake_case naming because they are act like functions.
+
+The ufunc dispatchers (eg `add_ufunc`) and the UFuncMixin will be subclassed in `_lookup.py` to add the lookup arithmetic
+and lookup table construction. Then in `_calculate.py` the ufunc dispatchers will be subclassed to add unique
+explicit calculation algorithms.
 """
 from __future__ import annotations
 
@@ -539,56 +543,6 @@ class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
         cls._remainder = remainder_ufunc(cls)
         cls._square = square_ufunc(cls)
         cls._matmul = matmul_ufunc(cls)
-
-    ###############################################################################
-    # Lookup table construction
-    ###############################################################################
-
-    @classmethod
-    def _build_lookup_tables(cls):
-        """
-        Construct EXP, LOG, and ZECH_LOG lookup tables to be used in the "lookup" arithmetic functions
-        """
-        # TODO: Make this faster by using JIT-compiled ufuncs and vector arithmetic, when possible
-        primitive_element = int(cls._primitive_element)
-        add = cls._add.python_calculate
-        multiply = cls._multiply.python_calculate
-
-        cls._EXP = np.zeros(2*cls.order, dtype=np.int64)
-        cls._LOG = np.zeros(cls.order, dtype=np.int64)
-        cls._ZECH_LOG = np.zeros(cls.order, dtype=np.int64)
-        if cls.characteristic == 2:
-            cls._ZECH_E = 0
-        else:
-            cls._ZECH_E = (cls.order - 1) // 2
-
-        element = 1
-        cls._EXP[0] = element
-        cls._LOG[0] = 0  # Technically -Inf
-        for i in range(1, cls.order):
-            # Increment by multiplying by the primitive element, which is a multiplicative generator of the field
-            element = multiply(element, primitive_element)
-            cls._EXP[i] = element
-
-            # Assign to the log lookup table but skip indices greater than or equal to `order - 1`
-            # because `EXP[0] == EXP[order - 1]`
-            if i < cls.order - 1:
-                cls._LOG[cls._EXP[i]] = i
-
-        # Compute Zech log lookup table
-        for i in range(0, cls.order):
-            one_plus_element = add(1, cls._EXP[i])
-            cls._ZECH_LOG[i] = cls._LOG[one_plus_element]
-
-        if not cls._EXP[cls.order - 1] == 1:
-            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not cyclic with size {cls.order - 1}, which means the primitive element {cls._primitive_element} does not have multiplicative order {cls.order - 1} and therefore isn't a multiplicative generator for {cls.name}.")
-        if not len(set(cls._EXP[0:cls.order - 1])) == cls.order - 1:
-            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not unique, which means the primitive element {cls._primitive_element} has order less than {cls.order - 1} and is not a multiplicative generator of {cls.name}.")
-        if not len(set(cls._LOG[1:cls.order])) == cls.order - 1:
-            raise RuntimeError(f"The log lookup table for {cls.name} is not unique.")
-
-        # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
-        cls._EXP[cls.order:2*cls.order] = cls._EXP[1:1 + cls.order]
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         """
