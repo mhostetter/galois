@@ -290,7 +290,7 @@ class FieldArrayMeta(ArrayMeta):
 
         See Also
         --------
-        is_quadratic_residue
+        is_square
 
         Examples
         --------
@@ -316,8 +316,8 @@ class FieldArrayMeta(ArrayMeta):
             np.array_equal((-r) ** 2, x)
         """
         x = cls.elements
-        is_quadratic_residue = x.is_quadratic_residue()
-        return x[is_quadratic_residue]
+        is_square = x.is_square()
+        return x[is_square]
 
     @property
     def quadratic_non_residues(cls) -> FieldArray:
@@ -329,7 +329,7 @@ class FieldArrayMeta(ArrayMeta):
 
         See Also
         --------
-        is_quadratic_residue
+        is_square
 
         Examples
         --------
@@ -348,8 +348,8 @@ class FieldArrayMeta(ArrayMeta):
             GF.quadratic_non_residues
         """
         x = cls.elements
-        is_quadratic_residue = x.is_quadratic_residue()
-        return x[~is_quadratic_residue]
+        is_square = x.is_square()
+        return x[~is_square]
 
     @property
     def is_prime_field(cls) -> bool:
@@ -1397,15 +1397,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return order
 
-    def is_quadratic_residue(self) -> Union[np.bool_, np.ndarray]:
+    def is_square(self) -> Union[np.bool_, np.ndarray]:
         r"""
-        Determines if the elements of :math:`x` are quadratic residues in the finite field.
+        Determines if the elements of :math:`x` are squares in the finite field.
 
         Returns
         -------
         :
-            A boolean array indicating if each element in :math:`x` is a quadratic residue. The return value is a single boolean if the
-            input array :math:`x` is a scalar.
+            A boolean array indicating if each element in :math:`x` is a square. The return value is a single boolean
+            if the input array :math:`x` is a scalar.
 
         See Also
         --------
@@ -1413,11 +1413,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Notes
         -----
-        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic residue* if there exists a :math:`y` such that
+        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *square* if there exists a :math:`y` such that
         :math:`y^2 = x` in the field.
 
-        In fields with characteristic 2, every element is a quadratic residue. In fields with characteristic greater than 2,
-        exactly half of the nonzero elements are quadratic residues (and they have two unique square roots).
+        In fields with characteristic 2, every element is a square (with two identical square roots). In fields with
+        characteristic greater than 2, exactly half of the nonzero elements are squares (with two unique square roots).
 
         References
         ----------
@@ -1431,7 +1431,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
             GF = galois.GF(2**3, display="poly")
             x = GF.elements; x
-            x.is_quadratic_residue()
+            x.is_square()
             @suppress
             GF.display()
 
@@ -1442,13 +1442,13 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
             GF = galois.GF(11)
             x = GF.elements; x
-            x.is_quadratic_residue()
+            x.is_square()
         """
         x = self
         field = type(self)
 
         if field.characteristic == 2:
-            # All elements are quadratic residues if the field's characteristic is 2
+            # All elements are squares if the field's characteristic is 2
             return np.ones(x.shape, dtype=bool) if x.ndim > 0 else np.bool_(True)
         else:
             # Compute the Legendre symbol on each element

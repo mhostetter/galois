@@ -757,6 +757,9 @@ class sqrt(_lookup.sqrt_ufunc):
         Algorithm 3.34 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         """
+        if not np.all(a.is_square()):
+            raise ArithmeticError(f"Input array has elements that are non-squares in {self.field.name}.\n{a[~a.is_square()]}")
+
         p = self.field.characteristic
 
         if p % 4 == 3:
@@ -776,7 +779,7 @@ class sqrt(_lookup.sqrt_ufunc):
             # Find a quadratic non-residue element `b`
             while True:
                 b = self.field.Random(low=1)
-                if not b.is_quadratic_residue():
+                if not b.is_square():
                     break
 
             # Write p - 1 = 2^s * t

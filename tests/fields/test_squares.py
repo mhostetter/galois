@@ -1,5 +1,5 @@
 """
-A pytest module to test the quadratic (non-)residues in finite fields.
+A pytest module to test squares and non-squares in finite fields.
 
 Sage:
     F = GF(79)
@@ -46,23 +46,23 @@ import galois
 def test_shapes():
     GF = galois.GF(31)
     x = GF.Random()
-    assert isinstance(x.is_quadratic_residue(), np.bool_)
+    assert isinstance(x.is_square(), np.bool_)
     x = GF.Random((2,))
-    assert x.is_quadratic_residue().shape == x.shape
+    assert x.is_square().shape == x.shape
     x = GF.Random((2,2))
-    assert x.is_quadratic_residue().shape == x.shape
+    assert x.is_square().shape == x.shape
     x = GF.Random((2,2,2))
-    assert x.is_quadratic_residue().shape == x.shape
+    assert x.is_square().shape == x.shape
 
     GF = galois.GF(2**4)
     x = GF.Random()
-    assert isinstance(x.is_quadratic_residue(), np.bool_)
+    assert isinstance(x.is_square(), np.bool_)
     x = GF.Random((2,))
-    assert x.is_quadratic_residue().shape == x.shape
+    assert x.is_square().shape == x.shape
     x = GF.Random((2,2))
-    assert x.is_quadratic_residue().shape == x.shape
+    assert x.is_square().shape == x.shape
     x = GF.Random((2,2,2))
-    assert x.is_quadratic_residue().shape == x.shape
+    assert x.is_square().shape == x.shape
 
 
 def test_binary_field():
@@ -77,7 +77,7 @@ def test_binary_field():
     assert np.array_equal(qnr, [])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True])
     assert isinstance(b, np.ndarray)
 
@@ -94,7 +94,7 @@ def test_prime_field_1():
     assert np.array_equal(qnr, [3, 5, 6])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, True, False, True, False, False])
     assert isinstance(b, np.ndarray)
 
@@ -111,7 +111,7 @@ def test_prime_field_2():
     assert np.array_equal(qnr, [3, 6, 11, 12, 13, 15, 17, 21, 22, 23, 24, 26, 27, 29, 30])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, True, False, True, True, False, True, True, True, True, False, False, False, True, False, True, False, True, True, True, False, False, False, False, True, False, False, True, False, False])
     assert isinstance(b, np.ndarray)
 
@@ -128,7 +128,7 @@ def test_prime_field_3():
     assert np.array_equal(qnr, [3, 6, 7, 12, 14, 15, 17, 24, 27, 28, 29, 30, 33, 34, 35, 37, 39, 41, 43, 47, 48, 53, 54, 56, 57, 58, 59, 60, 61, 63, 66, 68, 69, 70, 71, 74, 75, 77, 78])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, True, False, True, True, False, False, True, True, True, True, False, True, False, False, True, False, True, True, True, True, True, True, False, True, True, False, False, False, False, True, True, False, False, False, True, False, True, False, True, False, True, False, True, True, True, False, False, True, True, True, True, False, False, True, False, False, False, False, False, False, True, False, True, True, False, True, False, False, False, False, True, True, False, False, True, False, False])
     assert isinstance(b, np.ndarray)
 
@@ -145,7 +145,7 @@ def test_binary_extension_field_1():
     assert np.array_equal(qnr, [])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, True, True, True, True, True, True])
     assert isinstance(b, np.ndarray)
 
@@ -162,7 +162,7 @@ def test_binary_extension_field_2():
     assert np.array_equal(qnr, [])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True])
     assert isinstance(b, np.ndarray)
 
@@ -180,7 +180,7 @@ def test_binary_extension_field_3():
     assert np.array_equal(qnr, [])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True])
     assert isinstance(b, np.ndarray)
 
@@ -197,7 +197,7 @@ def test_binary_extension_field_4():
     assert np.array_equal(qnr, [])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True])
     assert isinstance(b, np.ndarray)
 
@@ -214,7 +214,7 @@ def test_prime_extension_field_1():
     assert np.array_equal(qnr, [3, 5, 6, 7])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, True, False, True, False, False, False, True])
     assert isinstance(b, np.ndarray)
 
@@ -231,7 +231,7 @@ def test_prime_extension_field_2():
     assert np.array_equal(qnr, [2, 3, 4, 5, 10, 14, 17, 18, 19, 21, 23, 24, 26])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, False, False, False, False, True, True, True, True, False, True, True, True, False, True, True, False, False, False, True, False, True, False, False, True, False])
     assert isinstance(b, np.ndarray)
 
@@ -248,6 +248,6 @@ def test_prime_extension_field_3():
     assert np.array_equal(qnr, [5, 7, 9, 10, 13, 14, 15, 16, 17, 20, 21, 23])
     assert type(qnr) is GF
 
-    b = x.is_quadratic_residue()
+    b = x.is_square()
     assert np.array_equal(b, [True, True, True, True, True, False, True, False, True, False, False, True, True, False, False, False, False, False, True, True, False, False, True, False, True])
     assert isinstance(b, np.ndarray)

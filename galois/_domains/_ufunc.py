@@ -442,10 +442,6 @@ class sqrt_ufunc(UFunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
         self._verify_method_only_call(ufunc, method)
-        x = inputs[0]
-        b = x.is_quadratic_residue()  # Boolean indicating if the inputs are quadratic residues
-        if not np.all(b):
-            raise ArithmeticError(f"Input array has elements that are quadratic non-residues (do not have a square root). Use `x.is_quadratic_residue()` to determine if elements have square roots in {self.field.name}.\n{x[~b]}")
         return self.implementation(*inputs)
 
     def implementation(self, a: Array) -> Array:

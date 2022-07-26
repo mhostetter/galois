@@ -128,10 +128,11 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        # Ensure the elements of x have square roots
-        x.is_quadratic_residue()
+        x.is_square()
         z = np.sqrt(x); z
         z ** 2 == x
+
+    See also :func:`~galois.FieldArray.is_square`, :func:`~galois.FieldArray.quadratic_residues`, and :func:`~galois.FieldArray.quadratic_non_residues`.
 
 .. details:: Logarithm: `np.log(x)` or `x.log()`
 
