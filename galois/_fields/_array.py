@@ -47,6 +47,13 @@ class FieldArrayMeta(ArrayMeta):
         # Construct the irreducible polynomial from its integer representation
         cls._irreducible_poly = Poly.Int(cls._irreducible_poly_int, field=cls._prime_subfield)
 
+    def __repr__(cls) -> str:
+        # When FieldArray instances are created they are added to the `galois._fields._factory` module with a name
+        # like `FieldArray_<p>_<primitive_element>` or `FieldArray_<p>_<m>_<primitive_element>_<irreducible_poly>`.
+        # This is visually unappealing. So here we override the repr() to be more succinct and indicate how the class
+        # was created. So galois._fields._factory.FieldArray_31_3 is converted to galois.GF(31).
+        return f"<class 'galois.{cls.name}'>"
+
     ###############################################################################
     # Class properties
     ###############################################################################

@@ -3,6 +3,7 @@ A module to implement the Galois field class factory `GF()`.
 """
 from __future__ import annotations
 
+import sys
 import types
 from typing import Union, Optional, Type
 from typing_extensions import Literal
@@ -251,8 +252,6 @@ def _GF_prime(
     """
     Class factory for prime fields GF(p).
     """
-    name = f"GF({p})"
-
     # Get default primitive element
     if alpha is None:
         alpha = primitive_root(p)
@@ -262,6 +261,7 @@ def _GF_prime(
         raise ValueError(f"Argument `primitive_element` must be non-zero in the field 0 < x < {p}, not {alpha}.")
 
     # If the requested field has already been constructed, return it
+    name = f"FieldArray_{p}_{alpha}"
     key = (p, alpha)
     if key in _GF_prime._classes:
         field = _GF_prime._classes[key]
@@ -287,8 +287,9 @@ def _GF_prime(
             "primitive_element": alpha,
         })
 
-    # Add the class to the "galois" namespace
-    field.__module__ = "galois"
+    # Add the class to this module's namespace
+    field.__module__ = __name__
+    setattr(sys.modules[__name__], name, field)
 
     # Since this is a new class, compile the ufuncs and set the display mode
     field.compile("auto" if compile is None else compile)
@@ -317,7 +318,6 @@ def _GF_extension(
     Class factory for extension fields GF(p^m).
     """
     # pylint: disable=too-many-statements
-    name = f"GF({p}^{m})"
     prime_subfield = _GF_prime(p)
     is_primitive_poly = None
     verify_poly = verify
@@ -352,6 +352,7 @@ def _GF_extension(
         raise ValueError(f"Argument `primitive_element` must have degree strictly less than {m}, not {alpha.degree}.")
 
     # If the requested field has already been constructed, return it
+    name = f"FieldArray_{p}_{m}_{int(alpha)}_{int(irreducible_poly_)}"
     key = (p, m, int(alpha), int(irreducible_poly_))
     if key in _GF_extension._classes:
         field = _GF_extension._classes[key]
@@ -379,8 +380,9 @@ def _GF_extension(
         "prime_subfield": prime_subfield,
     })
 
-    # Add the class to the "galois" namespace
-    field.__module__ = "galois"
+    # Add the class to this module's namespace
+    field.__module__ = __name__
+    setattr(sys.modules[__name__], name, field)
 
     # Since this is a new class, compile the ufuncs and set the display mode
     field.compile("auto" if compile is None else compile)
