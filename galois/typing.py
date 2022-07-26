@@ -1,5 +1,5 @@
 """
-A subpackage containing type hints for the :obj:`galois` library.
+A public module containing type hints for the :obj:`galois` library.
 """
 from __future__ import annotations
 
