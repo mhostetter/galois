@@ -17,7 +17,7 @@ all arithmetic is performed in $\mathrm{GF}(p^m)$, not $\mathbb{R}$.
 
 Internally, the finite field arithmetic is implemented by replacing [NumPy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html).
 The new ufuncs are written in pure Python and [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
-[Numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit calculation (for memory savings).
+[Numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit calculation (for memory savings). 
 
 | :warning: Disclaimer    |
 |:------------------------|
