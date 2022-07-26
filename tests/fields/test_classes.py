@@ -1,6 +1,8 @@
 """
 A pytest module to test the class attributes of FieldArray subclasses.
 """
+import pickle
+
 import pytest
 import numpy as np
 
@@ -97,3 +99,37 @@ def test_is_primitive_poly():
     poly = galois.conway_poly(3, 101)
     GF = galois.GF(3**101, irreducible_poly=poly, primitive_element="x", verify=False)
     assert GF.is_primitive_poly == True
+
+
+def test_pickle_class(tmp_path):
+    GF = galois.GF(13)
+    with open(tmp_path / "class.pkl", "wb") as f:
+        pickle.dump(GF, f)
+    with open(tmp_path / "class.pkl", "rb") as f:
+        GF_loaded = pickle.load(f)
+    assert GF is GF_loaded
+
+    GF = galois.GF(3**5)
+    with open(tmp_path / "class.pkl", "wb") as f:
+        pickle.dump(GF, f)
+    with open(tmp_path / "class.pkl", "rb") as f:
+        GF_loaded = pickle.load(f)
+    assert GF is GF_loaded
+
+
+def test_pickle_array(tmp_path):
+    GF = galois.GF(13)
+    x = GF.Random(10)
+    with open(tmp_path / "array.pkl", "wb") as f:
+        pickle.dump(x, f)
+    with open(tmp_path / "array.pkl", "rb") as f:
+        x_loaded = pickle.load(f)
+    assert np.array_equal(x, x_loaded)
+
+    GF = galois.GF(3**5)
+    x = GF.Random(10)
+    with open(tmp_path / "array.pkl", "wb") as f:
+        pickle.dump(x, f)
+    with open(tmp_path / "array.pkl", "rb") as f:
+        x_loaded = pickle.load(f)
+    assert np.array_equal(x, x_loaded)
