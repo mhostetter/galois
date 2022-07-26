@@ -16,8 +16,8 @@ from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 
 from ._function import FunctionMixin
 from ._linalg import LinalgFunctionMixin
+from ._lookup import UFuncMixin
 from ._meta import ArrayMeta
-from ._ufunc import UFuncMixin
 
 __all__ = ["Array"]
 

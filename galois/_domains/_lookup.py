@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 from . import _ufunc
 
 if TYPE_CHECKING:
@@ -301,3 +303,59 @@ class sqrt_ufunc(_ufunc.sqrt_ufunc):
         Computes the square root of an element in a Galois field or Galois ring.
         """
         raise NotImplementedError
+
+
+###############################################################################
+# Array mixin class
+###############################################################################
+
+class UFuncMixin(_ufunc.UFuncMixin):
+    """
+    The UFuncMixin class with lookup table construction added.
+    """
+
+    @classmethod
+    def _build_lookup_tables(cls):
+        """
+        Construct EXP, LOG, and ZECH_LOG lookup tables to be used in the "lookup" arithmetic functions
+        """
+        # TODO: Make this faster by using JIT-compiled ufuncs and vector arithmetic, when possible
+        primitive_element = int(cls._primitive_element)
+        add = cls._add.python_calculate
+        multiply = cls._multiply.python_calculate
+
+        cls._EXP = np.zeros(2*cls.order, dtype=np.int64)
+        cls._LOG = np.zeros(cls.order, dtype=np.int64)
+        cls._ZECH_LOG = np.zeros(cls.order, dtype=np.int64)
+        if cls.characteristic == 2:
+            cls._ZECH_E = 0
+        else:
+            cls._ZECH_E = (cls.order - 1) // 2
+
+        element = 1
+        cls._EXP[0] = element
+        cls._LOG[0] = 0  # Technically -Inf
+        for i in range(1, cls.order):
+            # Increment by multiplying by the primitive element, which is a multiplicative generator of the field
+            element = multiply(element, primitive_element)
+            cls._EXP[i] = element
+
+            # Assign to the log lookup table but skip indices greater than or equal to `order - 1`
+            # because `EXP[0] == EXP[order - 1]`
+            if i < cls.order - 1:
+                cls._LOG[cls._EXP[i]] = i
+
+        # Compute Zech log lookup table
+        for i in range(0, cls.order):
+            one_plus_element = add(1, cls._EXP[i])
+            cls._ZECH_LOG[i] = cls._LOG[one_plus_element]
+
+        if not cls._EXP[cls.order - 1] == 1:
+            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not cyclic with size {cls.order - 1}, which means the primitive element {cls._primitive_element} does not have multiplicative order {cls.order - 1} and therefore isn't a multiplicative generator for {cls.name}.")
+        if not len(set(cls._EXP[0:cls.order - 1])) == cls.order - 1:
+            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not unique, which means the primitive element {cls._primitive_element} has order less than {cls.order - 1} and is not a multiplicative generator of {cls.name}.")
+        if not len(set(cls._LOG[1:cls.order])) == cls.order - 1:
+            raise RuntimeError(f"The log lookup table for {cls.name} is not unique.")
+
+        # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
+        cls._EXP[cls.order:2*cls.order] = cls._EXP[1:1 + cls.order]
