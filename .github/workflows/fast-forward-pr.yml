@@ -1,0 +1,25 @@
+name: Fast-Forward PR
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  fast_forward:
+    name: Fast forward
+    if: github.event.issue.pull_request != "" && contains(github.event.comment.body, "/fast-forward")
+    runs-on: ubuntu-latest
+    steps:
+      # To use this repository's private action, you must check out the repository
+      - name: Checkout code into workspace directory
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Fast Forward PR
+        id: ff-action
+        uses: endre-spotlab/fast-forward-js-action@2.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          success_message: "Success! Fast forwarded ***target_base*** to ***source_head***! ```git checkout target_base && git merge source_head --ff-only``` "
+          failure_message: "Failed! Cannot do fast forward!"
