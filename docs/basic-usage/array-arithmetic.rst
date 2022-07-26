@@ -132,7 +132,7 @@ Expand any section for more details.
         z = np.sqrt(x); z
         z ** 2 == x
 
-    See also :func:`~galois.FieldArray.is_square`, :func:`~galois.FieldArray.squares`, and :func:`~galois.FieldArray.quadratic_non_residues`.
+    See also :func:`~galois.FieldArray.is_square`, :func:`~galois.FieldArray.squares`, and :func:`~galois.FieldArray.non_squares`.
 
 .. details:: Logarithm: `np.log(x)` or `x.log()`
 

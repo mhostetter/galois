@@ -776,7 +776,7 @@ class sqrt(_lookup.sqrt_ufunc):
             roots[idxs] = 2*a[idxs] * (4*a[idxs]) ** ((self.field.order - 5)//8)
 
         else:
-            # Find a quadratic non-residue element `b`
+            # Find a non-square element `b`
             while True:
                 b = self.field.Random(low=1)
                 if not b.is_square():

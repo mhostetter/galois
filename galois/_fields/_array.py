@@ -324,11 +324,11 @@ class FieldArrayMeta(ArrayMeta):
         return x[is_square]
 
     @property
-    def quadratic_non_residues(cls) -> FieldArray:
+    def non_squares(cls) -> FieldArray:
         r"""
-        All quadratic non-residues in the Galois field.
+        All non-squares in the Galois field.
 
-        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *quadratic non-residue* if there does not exist a :math:`y` such that
+        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *non-square* if there does not exist a :math:`y` such that
         :math:`y^2 = x` in the field.
 
         See Also
@@ -337,19 +337,21 @@ class FieldArrayMeta(ArrayMeta):
 
         Examples
         --------
-        In fields with characteristic 2, no elements are quadratic non-residues.
+        In fields with characteristic 2, no elements are non-squares.
 
         .. ipython:: python
 
-            GF = galois.GF(2**4)
-            GF.quadratic_non_residues
+            GF = galois.GF(2**3, display="poly")
+            GF.non_squares
+            @suppress
+            GF.display()
 
-        In fields with characteristic greater than 2, exactly half of the nonzero elements are quadratic non-residues.
+        In fields with characteristic greater than 2, exactly half of the nonzero elements are non-squares.
 
         .. ipython:: python
 
             GF = galois.GF(11)
-            GF.quadratic_non_residues
+            GF.non_squares
         """
         x = cls.elements
         is_square = x.is_square()
@@ -1413,7 +1415,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         See Also
         --------
-        squares, quadratic_non_residues
+        squares, non_squares
 
         Notes
         -----
