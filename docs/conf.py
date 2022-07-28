@@ -224,6 +224,8 @@ autodoc_type_aliases = {
 
 ipython_execlines = ["import math", "import numpy as np", "import galois"]
 
+myst_enable_extensions = ["dollarmath"]
+
 
 # -- Sphinx Immaterial configs -------------------------------------------------
 
