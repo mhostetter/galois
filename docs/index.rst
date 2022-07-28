@@ -140,6 +140,7 @@ If this library was useful to you in your research, please cite us. Following th
    :hidden:
 
    release-notes/versioning.rst
+   release-notes/v0.0.32.md
    release-notes/v0.0.31.md
    release-notes/v0.0.30.md
    release-notes/v0.0.29.md
