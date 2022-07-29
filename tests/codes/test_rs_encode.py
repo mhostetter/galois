@@ -69,11 +69,11 @@ def test_systematic(size):
     assert np.array_equal(c, c_truth[k:])
 
     c = rs.encode(m.view(np.ndarray))
-    assert type(c) is np.ndarray
+    assert type(c) is GF
     assert np.array_equal(c, c_truth)
 
     c = rs.encode(m.view(np.ndarray), parity_only=True)
-    assert type(c) is np.ndarray
+    assert type(c) is GF
     assert np.array_equal(c, c_truth[k:])
 
 
@@ -95,7 +95,7 @@ def test_non_systematic(size):
         c = rs.encode(m, parity_only=True)
 
     c = rs.encode(m.view(np.ndarray))
-    assert type(c) is np.ndarray
+    assert type(c) is GF
     assert np.array_equal(c, c_truth)
 
     with pytest.raises(ValueError):
@@ -146,11 +146,11 @@ class Test_n15_k9:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
     def test_diff_primitive_poly(self):
@@ -183,11 +183,11 @@ class Test_n15_k9:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
     def test_diff_c(self):
@@ -220,11 +220,11 @@ class Test_n15_k9:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
 
@@ -276,11 +276,11 @@ class Test_n15_k9_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
     def test_diff_primitive_poly(self):
@@ -316,11 +316,11 @@ class Test_n15_k9_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
     def test_diff_c(self):
@@ -356,11 +356,11 @@ class Test_n15_k9_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
 
@@ -408,11 +408,11 @@ class Test_n31_k23:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
     def test_diff_primitive_poly(self):
@@ -445,11 +445,11 @@ class Test_n31_k23:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
     def test_diff_c(self):
@@ -482,11 +482,11 @@ class Test_n31_k23:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
 
@@ -538,11 +538,11 @@ class Test_n31_k23_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
     def test_diff_primitive_poly(self):
@@ -578,11 +578,11 @@ class Test_n31_k23_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
     def test_diff_c(self):
@@ -618,9 +618,9 @@ class Test_n31_k23_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = rs.encode(M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
         C = rs.encode(M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])

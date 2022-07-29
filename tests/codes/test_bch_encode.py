@@ -70,11 +70,11 @@ def test_systematic(size):
     assert np.array_equal(c, c_truth[k:])
 
     c = bch.encode(m.view(np.ndarray))
-    assert type(c) is np.ndarray
+    assert type(c) is galois.GF2
     assert np.array_equal(c, c_truth)
 
     c = bch.encode(m.view(np.ndarray), parity_only=True)
-    assert type(c) is np.ndarray
+    assert type(c) is galois.GF2
     assert np.array_equal(c, c_truth[k:])
 
 
@@ -95,7 +95,7 @@ def test_non_systematic(size):
         c = bch.encode(m, parity_only=True)
 
     c = bch.encode(m.view(np.ndarray))
-    assert type(c) is np.ndarray
+    assert type(c) is galois.GF2
     assert np.array_equal(c, c_truth)
 
     with pytest.raises(ValueError):
@@ -145,11 +145,11 @@ class Test_n15_k7:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
         C = bch.encode(self.M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, self.k:])
 
     def test_diff_primitive_poly(self):
@@ -181,11 +181,11 @@ class Test_n15_k7:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
         C = bch.encode(self.M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, self.k:])
 
 
@@ -233,11 +233,11 @@ class Test_n15_k7_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
         C = bch.encode(self.M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
     def test_diff_primitive_poly(self):
@@ -269,11 +269,11 @@ class Test_n15_k7_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
         C = bch.encode(self.M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
 
@@ -320,11 +320,11 @@ class Test_n31_k21:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
         C = bch.encode(self.M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, self.k:])
 
     def test_diff_primitive_poly(self):
@@ -356,11 +356,11 @@ class Test_n31_k21:
         assert np.array_equal(C, C_truth[:, self.k:])
 
         C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
         C = bch.encode(self.M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, self.k:])
 
 
@@ -408,11 +408,11 @@ class Test_n31_k21_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
         C = bch.encode(self.M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
     def test_diff_primitive_poly(self):
@@ -444,9 +444,9 @@ class Test_n31_k21_shortened:
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
         C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
         C = bch.encode(self.M.view(np.ndarray), parity_only=True)
-        assert type(C) is np.ndarray
+        assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])

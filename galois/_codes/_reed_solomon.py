@@ -182,7 +182,7 @@ class ReedSolomon:
 
         return string
 
-    def encode(self, message: Union[np.ndarray, FieldArray], parity_only: bool = False) -> Union[np.ndarray, FieldArray]:
+    def encode(self, message: Union[np.ndarray, FieldArray], parity_only: bool = False) -> FieldArray:
         r"""
         Encodes the message :math:`\mathbf{m}` into the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -199,9 +199,8 @@ class ReedSolomon:
         Returns
         -------
         :
-            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. The return type matches the
-            message type. If `parity_only=True`, the parity symbols are returned as either a :math:`n - k`-length vector or
-            :math:`(N, n-k)` matrix.
+            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. If `parity_only=True`, the parity
+            symbols are returned as either a :math:`n - k`-length vector or :math:`(N, n-k)` matrix.
 
         Notes
         -----
@@ -306,13 +305,14 @@ class ReedSolomon:
 
         if parity_only:
             parity = message.view(self.field) @ self.G[-ks:, self.k:]
-            return parity.view(type(message))
+            return parity
         elif self.is_systematic:
             parity = message.view(self.field) @ self.G[-ks:, self.k:]
-            return np.hstack((message, parity)).view(type(message))
+            codeword = np.hstack((message, parity))
+            return codeword
         else:
             codeword = message.view(self.field) @ self.G
-            return codeword.view(type(message))
+            return codeword
 
     def detect(self, codeword: Union[np.ndarray, FieldArray]) -> Union[np.bool_, np.ndarray]:
         r"""
@@ -471,10 +471,10 @@ class ReedSolomon:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[False] = False) -> Union[np.ndarray, FieldArray]:
+    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[False] = False) -> FieldArray:
         ...
     @overload
-    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[True]) -> Tuple[Union[np.ndarray, FieldArray], Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[True]) -> Tuple[FieldArray, Union[np.integer, np.ndarray]]:
         ...
     def decode(self, codeword, errors=False):
         r"""
@@ -676,7 +676,7 @@ class ReedSolomon:
             message = dec_codeword[:, 0:ks]
         else:
             message, _ = divmod_jit(self.field)(dec_codeword[:, 0:ns].view(self.field), self.generator_poly.coeffs)
-        message = message.view(type(codeword))  # TODO: Remove this
+        message = message.view(self.field)
 
         if codeword_1d:
             message, N_errors = message[0,:], N_errors[0]

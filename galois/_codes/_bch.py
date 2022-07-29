@@ -297,7 +297,7 @@ class BCH:
 
         return string
 
-    def encode(self, message: Union[np.ndarray, GF2], parity_only: bool = False) -> Union[np.ndarray, GF2]:
+    def encode(self, message: Union[np.ndarray, GF2], parity_only: bool = False) -> GF2:
         r"""
         Encodes the message :math:`\mathbf{m}` into the BCH codeword :math:`\mathbf{c}`.
 
@@ -314,9 +314,8 @@ class BCH:
         Returns
         -------
         :
-            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. The return type matches the
-            message type. If `parity_only=True`, the parity bits are returned as either a :math:`n - k`-length vector or
-            :math:`(N, n-k)` matrix.
+            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. If `parity_only=True`, the parity
+            bits are returned as either a :math:`n - k`-length vector or :math:`(N, n-k)` matrix.
 
         Notes
         -----
@@ -421,13 +420,14 @@ class BCH:
 
         if parity_only:
             parity = message.view(GF2) @ self.G[-ks:, self.k:]
-            return parity.view(type(message))
+            return parity
         elif self.is_systematic:
             parity = message.view(GF2) @ self.G[-ks:, self.k:]
-            return np.hstack((message, parity)).view(type(message))
+            codeword = np.hstack((message, parity))
+            return codeword
         else:
             codeword = message.view(GF2) @ self.G
-            return codeword.view(type(message))
+            return codeword
 
     def detect(self, codeword: Union[np.ndarray, GF2]) -> Union[np.bool_, np.ndarray]:
         r"""
@@ -584,10 +584,10 @@ class BCH:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[False] = False) -> Union[np.ndarray, GF2]:
+    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[False] = False) -> GF2:
         ...
     @overload
-    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[True]) -> Tuple[Union[np.ndarray, GF2], Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[True]) -> Tuple[GF2, Union[np.integer, np.ndarray]]:
         ...
     def decode(self, codeword, errors=False):
         r"""
@@ -786,7 +786,7 @@ class BCH:
             message = dec_codeword[:, 0:ks]
         else:
             message, _ = divmod_jit(GF2)(dec_codeword[:, 0:ns].view(GF2), self.generator_poly.coeffs)
-        message = message.view(type(codeword))  # TODO: Remove this
+        message = message.view(GF2)
 
         if codeword_1d:
             message, N_errors = message[0,:], N_errors[0]

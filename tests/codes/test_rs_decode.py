@@ -67,11 +67,11 @@ class TestSystematic:
         assert np.array_equal(N_corr, N_errors)
 
         DEC_M = rs.decode(R.view(np.ndarray))
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M, M)
 
         DEC_M, N_corr = rs.decode(R.view(np.ndarray), errors=True)
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M, M)
         assert np.array_equal(N_corr, N_errors)
 
@@ -98,11 +98,11 @@ class TestSystematic:
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
 
         DEC_M = rs.decode(R.view(np.ndarray))
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
 
         DEC_M, N_corr = rs.decode(R.view(np.ndarray), errors=True)
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
 
@@ -133,11 +133,11 @@ class TestSystematicShortened:
         assert np.array_equal(N_corr, N_errors)
 
         DEC_M = rs.decode(R.view(np.ndarray))
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M, M)
 
         DEC_M, N_corr = rs.decode(R.view(np.ndarray), errors=True)
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M, M)
         assert np.array_equal(N_corr, N_errors)
 
@@ -168,11 +168,11 @@ class TestSystematicShortened:
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
 
         DEC_M = rs.decode(R.view(np.ndarray))
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
 
         DEC_M, N_corr = rs.decode(R.view(np.ndarray), errors=True)
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
 
@@ -199,11 +199,11 @@ class TestNonSystematic:
         assert np.array_equal(N_corr, N_errors)
 
         DEC_M = rs.decode(R.view(np.ndarray))
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M, M)
 
         DEC_M, N_corr = rs.decode(R.view(np.ndarray), errors=True)
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M, M)
         assert np.array_equal(N_corr, N_errors)
 
@@ -230,10 +230,10 @@ class TestNonSystematic:
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
 
         DEC_M = rs.decode(R.view(np.ndarray))
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
 
         DEC_M, N_corr = rs.decode(R.view(np.ndarray), errors=True)
-        assert type(DEC_M) is np.ndarray
+        assert type(DEC_M) is GF
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
