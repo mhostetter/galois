@@ -17,7 +17,7 @@ from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
 from .._polys._dense import divmod_jit, roots_jit, evaluate_elementwise_jit
 from .._prime import factors
-from ..typing import PolyLike
+from ..typing import ArrayLike, PolyLike
 
 from ._cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
 
@@ -182,7 +182,7 @@ class ReedSolomon:
 
         return string
 
-    def encode(self, message: Union[np.ndarray, FieldArray], parity_only: bool = False) -> FieldArray:
+    def encode(self, message: ArrayLike, parity_only: bool = False) -> FieldArray:
         r"""
         Encodes the message :math:`\mathbf{m}` into the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -290,8 +290,7 @@ class ReedSolomon:
 
                     p = rs.encode(m, parity_only=True); p
         """
-        if not isinstance(message, np.ndarray):
-            raise TypeError(f"Argument `message` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(message)}.")
+        message = self.field(message)  # This performs type/value checking
         if parity_only and not self.is_systematic:
             raise ValueError("Argument `parity_only=True` only applies to systematic codes.")
         if self.is_systematic:
@@ -304,17 +303,17 @@ class ReedSolomon:
         ks = message.shape[-1]  # The number of input message symbols (could be less than self.k for shortened codes)
 
         if parity_only:
-            parity = message.view(self.field) @ self.G[-ks:, self.k:]
+            parity = message @ self.G[-ks:, self.k:]
             return parity
         elif self.is_systematic:
-            parity = message.view(self.field) @ self.G[-ks:, self.k:]
+            parity = message @ self.G[-ks:, self.k:]
             codeword = np.hstack((message, parity))
             return codeword
         else:
-            codeword = message.view(self.field) @ self.G
+            codeword = message @ self.G
             return codeword
 
-    def detect(self, codeword: Union[np.ndarray, FieldArray]) -> Union[np.bool_, np.ndarray]:
+    def detect(self, codeword: ArrayLike) -> Union[np.bool_, np.ndarray]:
         r"""
         Detects if errors are present in the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -445,8 +444,7 @@ class ReedSolomon:
                     c
                     rs.detect(c)
         """
-        if not isinstance(codeword, np.ndarray):
-            raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
+        codeword = self.field(codeword)  # This performs type/value checking
         if self.is_systematic:
             if not codeword.shape[-1] <= self.n:
                 raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")
@@ -471,10 +469,10 @@ class ReedSolomon:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[False] = False) -> FieldArray:
+    def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> FieldArray:
         ...
     @overload
-    def decode(self, codeword: Union[np.ndarray, FieldArray], errors: Literal[True]) -> Tuple[FieldArray, Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[FieldArray, Union[np.integer, np.ndarray]]:
         ...
     def decode(self, codeword, errors=False):
         r"""
@@ -650,8 +648,7 @@ class ReedSolomon:
                     d, e = rs.decode(c, errors=True); d, e
                     np.array_equal(d, m)
         """
-        if not isinstance(codeword, np.ndarray):
-            raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.FieldArray), not {type(codeword)}.")
+        codeword = self.field(codeword)  # This performs type/value checking
         if self.is_systematic:
             if not codeword.shape[-1] <= self.n:
                 raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")

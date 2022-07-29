@@ -6,7 +6,7 @@ import numpy as np
 
 import galois
 
-from .helper import random_errors
+from .helper import random_errors, random_type
 
 CODES = [
     (15, 13),  # GF(2^4) with t=1
@@ -30,8 +30,6 @@ def test_exceptions():
     n, k = 15, 11
     rs = galois.ReedSolomon(n, k)
     GF = rs.field
-    with pytest.raises(TypeError):
-        rs.detect(GF.Random(n).tolist())
     with pytest.raises(ValueError):
         rs.detect(GF.Random(n + 1))
 
@@ -39,8 +37,6 @@ def test_exceptions():
     n, k = 15, 11
     rs = galois.ReedSolomon(n, k, systematic=False)
     GF = rs.field
-    with pytest.raises(TypeError):
-        rs.detect(GF.Random(n).tolist())
     with pytest.raises(ValueError):
         rs.detect(GF.Random(n - 1))
 
@@ -56,7 +52,8 @@ class TestSystematic:
         C = rs.encode(M)
         R = C
 
-        detected = rs.detect(R)
+        RR = random_type(R)
+        detected = rs.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected == False)
 
@@ -74,7 +71,8 @@ class TestSystematic:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= rs.d - 1))[0]
 
-        detected = rs.detect(R)
+        RR = random_type(R)
+        detected = rs.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -93,7 +91,8 @@ class TestSystematic:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= rs.d - 1))[0]
 
-        detected = rs.detect(R)
+        RR = random_type(R)
+        detected = rs.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -114,7 +113,8 @@ class TestSystematicShortened:
         C = rs.encode(M)
         R = C
 
-        detected = rs.detect(R)
+        RR = random_type(R)
+        detected = rs.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected == False)
 
@@ -136,7 +136,8 @@ class TestSystematicShortened:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= rs.d - 1))[0]
 
-        detected = rs.detect(R)
+        RR = random_type(R)
+        detected = rs.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -159,7 +160,8 @@ class TestSystematicShortened:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= rs.d - 1))[0]
 
-        detected = rs.detect(R)
+        RR = random_type(R)
+        detected = rs.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -176,7 +178,8 @@ class TestNonSystematic:
         C = rs.encode(M)
         R = C
 
-        detected = rs.detect(R)
+        RR = random_type(R)
+        detected = rs.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected == False)
 
@@ -194,7 +197,8 @@ class TestNonSystematic:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= rs.d - 1))[0]
 
-        detected = rs.detect(R)
+        RR = random_type(R)
+        detected = rs.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -213,7 +217,8 @@ class TestNonSystematic:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= rs.d - 1))[0]
 
-        detected = rs.detect(R)
+        RR = random_type(R)
+        detected = rs.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)

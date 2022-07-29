@@ -13,3 +13,18 @@ def random_errors(GF, N, n, max_errors):
         E[i, random.sample(list(range(n)), N_errors[i])] = GF.Random(N_errors[i], low=1)
 
     return E, N_errors
+
+
+def random_type(array):
+    """
+    Randomly vary the input type to encode()/decode() across various ArrayLike inputs.
+    """
+    x = random.randint(0, 2)
+    if x == 0:
+        # A FieldArray instance
+        return array
+    elif x == 1:
+        # A np.ndarray instance
+        return array.view(np.ndarray)
+    else:
+        return array.tolist()

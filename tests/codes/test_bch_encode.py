@@ -12,6 +12,8 @@ import numpy as np
 
 import galois
 
+from .helper import random_type
+
 CODES = [
     (15, 11),  # GF(2^4) with t=1
     (15, 7),  # GF(2^4) with t=2
@@ -36,8 +38,6 @@ def test_exceptions():
     n, k = 15, 7
     bch = galois.BCH(n, k)
     GF = galois.GF2
-    with pytest.raises(TypeError):
-        bch.encode(GF.Random(k).tolist())
     with pytest.raises(ValueError):
         bch.encode(GF.Random(k + 1))
 
@@ -45,8 +45,6 @@ def test_exceptions():
     n, k = 15, 7
     bch = galois.BCH(n, k, systematic=False)
     GF = galois.GF2
-    with pytest.raises(TypeError):
-        bch.encode(GF.Random(k).tolist())
     with pytest.raises(ValueError):
         bch.encode(GF.Random(k - 1))
 
@@ -61,19 +59,13 @@ def test_systematic(size):
     r_poly = (galois.Poly(m) * galois.Poly.Degrees([n-k])) % bch.generator_poly
     c_truth[-r_poly.coeffs.size:] = -r_poly.coeffs
 
-    c = bch.encode(m)
+    mm = random_type(m)
+    c = bch.encode(mm)
     assert type(c) is galois.GF2
     assert np.array_equal(c, c_truth)
 
-    c = bch.encode(m, parity_only=True)
-    assert type(c) is galois.GF2
-    assert np.array_equal(c, c_truth[k:])
-
-    c = bch.encode(m.view(np.ndarray))
-    assert type(c) is galois.GF2
-    assert np.array_equal(c, c_truth)
-
-    c = bch.encode(m.view(np.ndarray), parity_only=True)
+    mm = random_type(m)
+    c = bch.encode(mm, parity_only=True)
     assert type(c) is galois.GF2
     assert np.array_equal(c, c_truth[k:])
 
@@ -87,19 +79,13 @@ def test_non_systematic(size):
     c_truth = galois.GF2.Zeros(n)
     c_truth[-c_poly.coeffs.size:] = c_poly.coeffs
 
-    c = bch.encode(m)
+    mm = random_type(m)
+    c = bch.encode(mm)
     assert type(c) is galois.GF2
     assert np.array_equal(c, c_truth)
 
     with pytest.raises(ValueError):
         c = bch.encode(m, parity_only=True)
-
-    c = bch.encode(m.view(np.ndarray))
-    assert type(c) is galois.GF2
-    assert np.array_equal(c, c_truth)
-
-    with pytest.raises(ValueError):
-        c = bch.encode(m.view(np.ndarray), parity_only=True)
 
 
 class Test_n15_k7:
@@ -136,19 +122,13 @@ class Test_n15_k7:
             [1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1],
         ])
 
-        C = bch.encode(self.M)
+        MM = random_type(self.M)
+        C = bch.encode(MM)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
-        C = bch.encode(self.M, parity_only=True)
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth)
-
-        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        MM = random_type(self.M)
+        C = bch.encode(MM, parity_only=True)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -172,19 +152,13 @@ class Test_n15_k7:
             [1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1],
         ])
 
-        C = bch.encode(self.M)
+        MM = random_type(self.M)
+        C = bch.encode(MM)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
-        C = bch.encode(self.M, parity_only=True)
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth)
-
-        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        MM = random_type(self.M)
+        C = bch.encode(MM, parity_only=True)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -224,19 +198,13 @@ class Test_n15_k7_shortened:
             [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1],
         ])
 
-        C = bch.encode(self.M)
+        MM = random_type(self.M)
+        C = bch.encode(MM)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
-        C = bch.encode(self.M, parity_only=True)
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth)
-
-        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        MM = random_type(self.M)
+        C = bch.encode(MM, parity_only=True)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
@@ -260,19 +228,13 @@ class Test_n15_k7_shortened:
             [0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0],
         ])
 
-        C = bch.encode(self.M)
+        MM = random_type(self.M)
+        C = bch.encode(MM)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
-        C = bch.encode(self.M, parity_only=True)
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth)
-
-        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        MM = random_type(self.M)
+        C = bch.encode(MM, parity_only=True)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
@@ -311,19 +273,13 @@ class Test_n31_k21:
             [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1],
         ])
 
-        C = bch.encode(self.M)
+        MM = random_type(self.M)
+        C = bch.encode(MM)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
-        C = bch.encode(self.M, parity_only=True)
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth)
-
-        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        MM = random_type(self.M)
+        C = bch.encode(MM, parity_only=True)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -347,19 +303,13 @@ class Test_n31_k21:
             [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1],
         ])
 
-        C = bch.encode(self.M)
+        MM = random_type(self.M)
+        C = bch.encode(MM)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
-        C = bch.encode(self.M, parity_only=True)
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth)
-
-        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        MM = random_type(self.M)
+        C = bch.encode(MM, parity_only=True)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -399,19 +349,13 @@ class Test_n31_k21_shortened:
             [1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1],
         ])
 
-        C = bch.encode(self.M)
+        MM = random_type(self.M)
+        C = bch.encode(MM)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
-        C = bch.encode(self.M, parity_only=True)
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth)
-
-        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        MM = random_type(self.M)
+        C = bch.encode(MM, parity_only=True)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
@@ -435,18 +379,12 @@ class Test_n31_k21_shortened:
             [1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1],
         ])
 
-        C = bch.encode(self.M)
+        MM = random_type(self.M)
+        C = bch.encode(MM)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth)
 
-        C = bch.encode(self.M, parity_only=True)
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = bch.encode(self.M.view(np.ndarray))
-        assert type(C) is galois.GF2
-        assert np.array_equal(C, C_truth)
-
-        C = bch.encode(self.M.view(np.ndarray), parity_only=True)
+        MM = random_type(self.M)
+        C = bch.encode(MM, parity_only=True)
         assert type(C) is galois.GF2
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])

@@ -6,7 +6,7 @@ import numpy as np
 
 import galois
 
-from .helper import random_errors
+from .helper import random_errors, random_type
 
 CODES = [
     (15, 11),  # GF(2^4) with t=1
@@ -32,8 +32,6 @@ def test_exceptions():
     n, k = 15, 7
     bch = galois.BCH(n, k)
     GF = galois.GF2
-    with pytest.raises(TypeError):
-        bch.decode(GF.Random(n).tolist())
     with pytest.raises(ValueError):
         bch.decode(GF.Random(n + 1))
 
@@ -41,8 +39,6 @@ def test_exceptions():
     n, k = 15, 7
     bch = galois.BCH(n, k, systematic=False)
     GF = galois.GF2
-    with pytest.raises(TypeError):
-        bch.decode(GF.Random(n).tolist())
     with pytest.raises(ValueError):
         bch.decode(GF.Random(n - 1))
 
@@ -58,20 +54,13 @@ class TestSystematic:
         E, N_errors = random_errors(galois.GF2, N, n, bch.t)
         R = C + E
 
-        DEC_M = bch.decode(R)
+        RR = random_type(R)
+        DEC_M = bch.decode(RR)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M, M)
 
-        DEC_M, N_corr = bch.decode(R, errors=True)
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M, M)
-        assert np.array_equal(N_corr, N_errors)
-
-        DEC_M = bch.decode(R.view(np.ndarray))
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M, M)
-
-        DEC_M, N_corr = bch.decode(R.view(np.ndarray), errors=True)
+        RR = random_type(R)
+        DEC_M, N_corr = bch.decode(RR, errors=True)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M, M)
         assert np.array_equal(N_corr, N_errors)
@@ -88,20 +77,13 @@ class TestSystematic:
 
         corr_idxs = np.where(N_errors <= bch.t)[0]
 
-        DEC_M = bch.decode(R)
+        RR = random_type(R)
+        DEC_M = bch.decode(RR)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
 
-        DEC_M, N_corr = bch.decode(R, errors=True)
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
-        assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
-
-        DEC_M = bch.decode(R.view(np.ndarray))
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
-
-        DEC_M, N_corr = bch.decode(R.view(np.ndarray), errors=True)
+        RR = random_type(R)
+        DEC_M, N_corr = bch.decode(RR, errors=True)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
@@ -120,20 +102,13 @@ class TestSystematicShortened:
         E, N_errors = random_errors(galois.GF2, N, ns, bch.t)
         R = C + E
 
-        DEC_M = bch.decode(R)
+        RR = random_type(R)
+        DEC_M = bch.decode(RR)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M, M)
 
-        DEC_M, N_corr = bch.decode(R, errors=True)
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M, M)
-        assert np.array_equal(N_corr, N_errors)
-
-        DEC_M = bch.decode(R.view(np.ndarray))
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M, M)
-
-        DEC_M, N_corr = bch.decode(R.view(np.ndarray), errors=True)
+        RR = random_type(R)
+        DEC_M, N_corr = bch.decode(RR, errors=True)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M, M)
         assert np.array_equal(N_corr, N_errors)
@@ -152,20 +127,13 @@ class TestSystematicShortened:
 
         corr_idxs = np.where(N_errors <= bch.t)[0]
 
-        DEC_M = bch.decode(R)
+        RR = random_type(R)
+        DEC_M = bch.decode(RR)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
 
-        DEC_M, N_corr = bch.decode(R, errors=True)
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
-        assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
-
-        DEC_M = bch.decode(R.view(np.ndarray))
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
-
-        DEC_M, N_corr = bch.decode(R.view(np.ndarray), errors=True)
+        RR = random_type(R)
+        DEC_M, N_corr = bch.decode(RR, errors=True)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
@@ -182,20 +150,13 @@ class TestNonSystematic:
         E, N_errors = random_errors(galois.GF2, N, n, bch.t)
         R = C + E
 
-        DEC_M = bch.decode(R)
+        RR = random_type(R)
+        DEC_M = bch.decode(RR)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M, M)
 
-        DEC_M, N_corr = bch.decode(R, errors=True)
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M, M)
-        assert np.array_equal(N_corr, N_errors)
-
-        DEC_M = bch.decode(R.view(np.ndarray))
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M, M)
-
-        DEC_M, N_corr = bch.decode(R.view(np.ndarray), errors=True)
+        RR = random_type(R)
+        DEC_M, N_corr = bch.decode(RR, errors=True)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M, M)
         assert np.array_equal(N_corr, N_errors)
@@ -212,20 +173,13 @@ class TestNonSystematic:
 
         corr_idxs = np.where(N_errors <= bch.t)[0]
 
-        DEC_M = bch.decode(R)
+        RR = random_type(R)
+        DEC_M = bch.decode(RR)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
 
-        DEC_M, N_corr = bch.decode(R, errors=True)
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
-        assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])
-
-        DEC_M = bch.decode(R.view(np.ndarray))
-        assert type(DEC_M) is galois.GF2
-        assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
-
-        DEC_M, N_corr = bch.decode(R.view(np.ndarray), errors=True)
+        RR = random_type(R)
+        DEC_M, N_corr = bch.decode(RR, errors=True)
         assert type(DEC_M) is galois.GF2
         assert np.array_equal(DEC_M[corr_idxs,:], M[corr_idxs,:])
         assert np.array_equal(N_corr[corr_idxs], N_errors[corr_idxs])

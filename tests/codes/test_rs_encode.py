@@ -12,6 +12,8 @@ import numpy as np
 
 import galois
 
+from .helper import random_type
+
 CODES = [
     (15, 13, 1),  # GF(2^4) with t=1
     (15, 11, 2),  # GF(2^4) with t=2
@@ -34,8 +36,6 @@ def test_exceptions():
     n, k = 15, 11
     rs = galois.ReedSolomon(n, k)
     GF = rs.field
-    with pytest.raises(TypeError):
-        rs.encode(GF.Random(k).tolist())
     with pytest.raises(ValueError):
         rs.encode(GF.Random(k + 1))
 
@@ -43,8 +43,6 @@ def test_exceptions():
     n, k = 15, 11
     rs = galois.ReedSolomon(n, k, systematic=False)
     GF = rs.field
-    with pytest.raises(TypeError):
-        rs.encode(GF.Random(k).tolist())
     with pytest.raises(ValueError):
         rs.encode(GF.Random(k - 1))
 
@@ -60,19 +58,13 @@ def test_systematic(size):
     r_poly = (galois.Poly(m) * galois.Poly.Identity(GF)**(n-k)) % rs.generator_poly
     c_truth[-r_poly.coeffs.size:] = -r_poly.coeffs
 
-    c = rs.encode(m)
+    mm = random_type(m)
+    c = rs.encode(mm)
     assert type(c) is GF
     assert np.array_equal(c, c_truth)
 
-    c = rs.encode(m, parity_only=True)
-    assert type(c) is GF
-    assert np.array_equal(c, c_truth[k:])
-
-    c = rs.encode(m.view(np.ndarray))
-    assert type(c) is GF
-    assert np.array_equal(c, c_truth)
-
-    c = rs.encode(m.view(np.ndarray), parity_only=True)
+    mm = random_type(m)
+    c = rs.encode(mm, parity_only=True)
     assert type(c) is GF
     assert np.array_equal(c, c_truth[k:])
 
@@ -87,19 +79,13 @@ def test_non_systematic(size):
     c_truth = GF.Zeros(n)
     c_truth[-c_poly.coeffs.size:] = c_poly.coeffs
 
-    c = rs.encode(m)
+    mm = random_type(m)
+    c = rs.encode(mm)
     assert type(c) is GF
     assert np.array_equal(c, c_truth)
 
     with pytest.raises(ValueError):
         c = rs.encode(m, parity_only=True)
-
-    c = rs.encode(m.view(np.ndarray))
-    assert type(c) is GF
-    assert np.array_equal(c, c_truth)
-
-    with pytest.raises(ValueError):
-        c = rs.encode(m.view(np.ndarray), parity_only=True)
 
 
 class Test_n15_k9:
@@ -137,19 +123,13 @@ class Test_n15_k9:
             [ 9,  3,  4,  7,  3,  7,  6, 11, 15, 13, 11,  7, 11,  3, 13],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -174,19 +154,13 @@ class Test_n15_k9:
             [ 9,  3,  4,  7,  3,  7,  6, 11, 15,  4,  1,  7,  1,  1, 14],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -211,19 +185,13 @@ class Test_n15_k9:
             [ 9,  3,  4,  7,  3,  7,  6, 11, 15,  7, 14, 11,  8,  0, 12],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -267,19 +235,13 @@ class Test_n15_k9_shortened:
             [14, 11, 15, 12,  8,  8, 14,  3,  8,  4, 14],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
@@ -307,19 +269,13 @@ class Test_n15_k9_shortened:
             [14, 11, 15, 12,  8,  1,  1, 10,  8,  9,  6],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
@@ -347,19 +303,13 @@ class Test_n15_k9_shortened:
             [14, 11, 15, 12,  8, 11,  3,  4,  9,  9,  7],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
@@ -399,19 +349,13 @@ class Test_n31_k23:
             [31, 24, 26, 21, 15, 30, 19, 14, 17,  7, 13, 20, 13,  7, 14,  1, 17, 20, 28, 13, 13, 30, 19, 16,  2, 15,  2, 15,  6,  2,  2],
        ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -436,19 +380,13 @@ class Test_n31_k23:
             [31, 24, 26, 21, 15, 30, 19, 14, 17,  7, 13, 20, 13,  7, 14,  1, 17, 20, 28, 13, 13, 30, 19, 26, 31, 27,  7, 17, 26, 21, 16],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -473,19 +411,13 @@ class Test_n31_k23:
             [31, 24, 26, 21, 15, 30, 19, 14, 17,  7, 13, 20, 13,  7, 14,  1, 17, 20, 28, 13, 13, 30, 19, 27,  3, 23, 17,  5,  8,  4, 23],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, self.k:])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, self.k:])
 
@@ -529,19 +461,13 @@ class Test_n31_k23_shortened:
             [17,  6, 17, 21, 15, 10, 31,  8, 27, 27, 21,  9, 15, 12, 24, 30,  8,  7, 12, 11, 19],
        ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
@@ -569,19 +495,13 @@ class Test_n31_k23_shortened:
             [17,  6, 17, 21, 15, 10, 31,  8, 27, 27, 21,  9, 15, 18, 30, 17,  6, 17,  5, 20, 15],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
 
@@ -609,18 +529,12 @@ class Test_n31_k23_shortened:
             [17,  6, 17, 21, 15, 10, 31,  8, 27, 27, 21,  9, 15,  8, 22,  8, 24, 11, 24, 23, 21],
         ])
 
-        C = rs.encode(M)
+        MM = random_type(M)
+        C = rs.encode(MM)
         assert type(C) is GF
         assert np.array_equal(C, C_truth)
 
-        C = rs.encode(M, parity_only=True)
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth[:, -(self.n - self.k):])
-
-        C = rs.encode(M.view(np.ndarray))
-        assert type(C) is GF
-        assert np.array_equal(C, C_truth)
-
-        C = rs.encode(M.view(np.ndarray), parity_only=True)
+        MM = random_type(M)
+        C = rs.encode(MM, parity_only=True)
         assert type(C) is GF
         assert np.array_equal(C, C_truth[:, -(self.n - self.k):])

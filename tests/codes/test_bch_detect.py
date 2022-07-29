@@ -6,7 +6,7 @@ import numpy as np
 
 import galois
 
-from .helper import random_errors
+from .helper import random_errors, random_type
 
 CODES = [
     (15, 11),  # GF(2^4) with t=1
@@ -32,8 +32,6 @@ def test_exceptions():
     n, k = 15, 7
     bch = galois.BCH(n, k)
     GF = galois.GF2
-    with pytest.raises(TypeError):
-        bch.detect(GF.Random(n).tolist())
     with pytest.raises(ValueError):
         bch.detect(GF.Random(n + 1))
 
@@ -41,8 +39,6 @@ def test_exceptions():
     n, k = 15, 7
     bch = galois.BCH(n, k, systematic=False)
     GF = galois.GF2
-    with pytest.raises(TypeError):
-        bch.detect(GF.Random(n).tolist())
     with pytest.raises(ValueError):
         bch.detect(GF.Random(n - 1))
 
@@ -57,7 +53,8 @@ class TestSystematic:
         C = bch.encode(M)
         R = C
 
-        detected = bch.detect(R)
+        RR = random_type(R)
+        detected = bch.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected == False)
 
@@ -74,7 +71,8 @@ class TestSystematic:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= bch.d - 1))[0]
 
-        detected = bch.detect(R)
+        RR = random_type(R)
+        detected = bch.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -92,7 +90,8 @@ class TestSystematic:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= bch.d - 1))[0]
 
-        detected = bch.detect(R)
+        RR = random_type(R)
+        detected = bch.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -110,7 +109,8 @@ class TestSystematicShortened:
         C = bch.encode(M)
         R = C
 
-        detected = bch.detect(R)
+        RR = random_type(R)
+        detected = bch.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected == False)
 
@@ -129,7 +129,8 @@ class TestSystematicShortened:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= bch.d - 1))[0]
 
-        detected = bch.detect(R)
+        RR = random_type(R)
+        detected = bch.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -149,7 +150,8 @@ class TestSystematicShortened:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= bch.d - 1))[0]
 
-        detected = bch.detect(R)
+        RR = random_type(R)
+        detected = bch.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -165,7 +167,8 @@ class TestNonSystematic:
         C = bch.encode(M)
         R = C
 
-        detected = bch.detect(R)
+        RR = random_type(R)
+        detected = bch.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected == False)
 
@@ -182,7 +185,8 @@ class TestNonSystematic:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= bch.d - 1))[0]
 
-        detected = bch.detect(R)
+        RR = random_type(R)
+        detected = bch.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)
@@ -200,7 +204,8 @@ class TestNonSystematic:
         corr_idxs = np.where(N_errors == 0)[0]
         det_idxs = np.where(np.logical_and(0 < N_errors, N_errors <= bch.d - 1))[0]
 
-        detected = bch.detect(R)
+        RR = random_type(R)
+        detected = bch.detect(RR)
         assert type(detected) is np.ndarray
         assert np.all(detected[corr_idxs] == False)
         assert np.all(detected[det_idxs] == True)

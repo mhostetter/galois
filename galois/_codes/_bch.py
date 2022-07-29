@@ -18,7 +18,7 @@ from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
 from .._polys._dense import roots_jit, divmod_jit
 from .._prime import factors
-from ..typing import PolyLike
+from ..typing import ArrayLike, PolyLike
 
 from ._cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
 
@@ -297,7 +297,7 @@ class BCH:
 
         return string
 
-    def encode(self, message: Union[np.ndarray, GF2], parity_only: bool = False) -> GF2:
+    def encode(self, message: ArrayLike, parity_only: bool = False) -> GF2:
         r"""
         Encodes the message :math:`\mathbf{m}` into the BCH codeword :math:`\mathbf{c}`.
 
@@ -405,8 +405,7 @@ class BCH:
 
                     p = bch.encode(m, parity_only=True); p
         """
-        if not isinstance(message, (np.ndarray, GF2)):
-            raise TypeError(f"Argument `message` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(message)}.")
+        message = GF2(message)  # This performs type/value checking
         if parity_only and not self.is_systematic:
             raise ValueError("Argument `parity_only=True` only applies to systematic codes.")
         if self.is_systematic:
@@ -419,17 +418,17 @@ class BCH:
         ks = message.shape[-1]  # The number of input message bits (could be less than self.k for shortened codes)
 
         if parity_only:
-            parity = message.view(GF2) @ self.G[-ks:, self.k:]
+            parity = message @ self.G[-ks:, self.k:]
             return parity
         elif self.is_systematic:
-            parity = message.view(GF2) @ self.G[-ks:, self.k:]
+            parity = message @ self.G[-ks:, self.k:]
             codeword = np.hstack((message, parity))
             return codeword
         else:
-            codeword = message.view(GF2) @ self.G
+            codeword = message @ self.G
             return codeword
 
-    def detect(self, codeword: Union[np.ndarray, GF2]) -> Union[np.bool_, np.ndarray]:
+    def detect(self, codeword: ArrayLike) -> Union[np.bool_, np.ndarray]:
         r"""
         Detects if errors are present in the BCH codeword :math:`\mathbf{c}`.
 
@@ -558,8 +557,7 @@ class BCH:
                     c
                     bch.detect(c)
         """
-        if not isinstance(codeword, np.ndarray):
-            raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
+        codeword = GF2(codeword)  # This performs type/value checking
         if self.is_systematic:
             if not codeword.shape[-1] <= self.n:
                 raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")
@@ -584,10 +582,10 @@ class BCH:
         return detected
 
     @overload
-    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[False] = False) -> GF2:
+    def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> GF2:
         ...
     @overload
-    def decode(self, codeword: Union[np.ndarray, GF2], errors: Literal[True]) -> Tuple[GF2, Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[GF2, Union[np.integer, np.ndarray]]:
         ...
     def decode(self, codeword, errors=False):
         r"""
@@ -760,8 +758,7 @@ class BCH:
                     d, e = bch.decode(c, errors=True); d, e
                     np.array_equal(d, m)
         """
-        if not isinstance(codeword, (np.ndarray, GF2)):
-            raise TypeError(f"Argument `codeword` must be a subclass of np.ndarray (or a galois.GF2 array), not {type(codeword)}.")
+        codeword = GF2(codeword)  # This performs type/value checking
         if self.is_systematic:
             if not codeword.shape[-1] <= self.n:
                 raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")
