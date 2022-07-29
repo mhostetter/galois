@@ -12,7 +12,7 @@ import numpy as np
 
 import galois
 
-from .helper import random_type
+from ..helper import random_type
 
 CODES = [
     (15, 11),  # GF(2^4) with t=1

@@ -15,7 +15,7 @@ import numpy as np
 import galois
 
 
-def test_bch_exceptions():
+def test_exceptions():
     with pytest.raises(TypeError):
         galois.BCH(15.0, 7)
     with pytest.raises(TypeError):
@@ -47,19 +47,19 @@ def test_str():
     assert str(bch) == "BCH Code:\n  [n, k, d]: [15, 7, 5]\n  field: GF(2)\n  generator_poly: x^8 + x^7 + x^6 + x^4 + 1\n  is_primitive: True\n  is_narrow_sense: True\n  is_systematic: True\n  t: 2"
 
 
-def test_bch_generator_poly_7():
+def test_generator_poly_7():
     assert int(galois.BCH(7, 4).generator_poly) == 0o13
     assert int(galois.BCH(7, 1).generator_poly) == 0o177
 
 
-def test_bch_generator_poly_15():
+def test_generator_poly_15():
     assert int(galois.BCH(15, 11).generator_poly) == 0o23
     assert int(galois.BCH(15, 7).generator_poly) == 0o721
     assert int(galois.BCH(15, 5).generator_poly) == 0o2467
     assert int(galois.BCH(15, 1).generator_poly) == 0o77777
 
 
-def test_bch_generator_poly_31():
+def test_generator_poly_31():
     assert int(galois.BCH(31, 26).generator_poly) == 0o45
     assert int(galois.BCH(31, 21).generator_poly) == 0o3551
     assert int(galois.BCH(31, 16).generator_poly) == 0o107657
@@ -67,7 +67,7 @@ def test_bch_generator_poly_31():
     assert int(galois.BCH(31, 1).generator_poly) == 0o17777777777
 
 
-def test_bch_generator_poly_63():
+def test_generator_poly_63():
     assert int(galois.BCH(63, 57).generator_poly) == 0o103
     assert int(galois.BCH(63, 51).generator_poly) == 0o12471
     assert int(galois.BCH(63, 45).generator_poly) == 0o1701317
@@ -82,7 +82,7 @@ def test_bch_generator_poly_63():
     assert int(galois.BCH(63, 1).generator_poly) == 0o777777777777777777777
 
 
-def test_bch_generator_poly_127():
+def test_generator_poly_127():
     assert int(galois.BCH(127, 120).generator_poly) == 0o211
     assert int(galois.BCH(127, 113).generator_poly) == 0o41567
     assert int(galois.BCH(127, 106).generator_poly) == 0o11554_743
@@ -96,7 +96,7 @@ def test_bch_generator_poly_127():
     assert int(galois.BCH(127, 1).generator_poly) == 0o17777_77777_77777_77777_77777_77777_77777_77777_777
 
 
-def test_bch_generator_poly_255():
+def test_generator_poly_255():
     assert int(galois.BCH(255, 247).generator_poly) == 0o435
     assert int(galois.BCH(255, 239).generator_poly) == 0o26754_3
     assert int(galois.BCH(255, 231).generator_poly) == 0o15672_0665
@@ -110,14 +110,14 @@ def test_bch_generator_poly_255():
     assert int(galois.BCH(255, 1).generator_poly) == 0o77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777_77777
 
 
-def test_bch_generator_poly_1024():
+def test_generator_poly_1024():
     assert int(galois.BCH(1023, 1013).generator_poly) == 0o2011
     assert int(galois.BCH(1023, 1003).generator_poly) == 0o4014167
     # ...
     # asserint(t galois.BCH(1023, 11).generator_poly) == 0o3435423242053413257500125205705563224605
 
 
-def test_bch_properties():
+def test_properties():
     bch = galois.BCH(7, 4)
     assert (bch.n, bch.k, bch.t) == (7, 4, 1)
     assert (bch.is_primitive, bch.is_narrow_sense) == (True, True)
@@ -183,7 +183,7 @@ def test_bch_properties():
     assert (bch.is_primitive, bch.is_narrow_sense) == (True, True)
 
 
-def test_bch_generator_poly_diff_primitive_poly():
+def test_generator_poly_diff_primitive_poly():
     """
     Test with primitive polynomial others than the default. Generated in Octave with `bchpoly()`.
     """
@@ -206,7 +206,7 @@ def test_bch_generator_poly_diff_primitive_poly():
     assert galois.BCH(63, 57, primitive_poly=p).generator_poly == galois.Poly([1,1,0,0,1,1,1], order="asc")
 
 
-def test_bch_parity_check_matrix():
+def test_parity_check_matrix():
     # S. Lin and D. Costello. Error Control Coding. Example 6.2, p. 202.
     p = galois.Poly.Degrees([4,1,0])
     GF = galois.GF(2**4, irreducible_poly=p)

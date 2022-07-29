@@ -13,7 +13,7 @@ import numpy as np
 import galois
 
 
-def test_rs_exceptions():
+def test_exceptions():
     with pytest.raises(TypeError):
         galois.ReedSolomon(15.0, 11)
     with pytest.raises(TypeError):
@@ -43,7 +43,7 @@ def test_str():
     assert str(rs) == "Reed-Solomon Code:\n  [n, k, d]: [15, 11, 5]\n  field: GF(2^4)\n  generator_poly: x^4 + 13x^3 + 12x^2 + 8x + 7\n  is_narrow_sense: True\n  is_systematic: True\n  t: 2"
 
 
-def test_rs_generator_poly():
+def test_generator_poly():
     # S. Lin and D. Costello. Error Control Coding. Example 7.1, p. 238.
     p = galois.primitive_poly(2, 6)
     GF = galois.GF(2**6, irreducible_poly=p)
@@ -76,7 +76,7 @@ def test_rs_generator_poly():
     # assert np.array_equal(galois.ReedSolomon(2**16 - 1, 2**16 - 7).generator_poly.coeffs, [1, 126, 3224, 57024, 11322, 24786, 8566])
 
 
-def test_rs_generator_poly_specify_c():
+def test_generator_poly_specify_c():
     # Octave rsgenpoly(15, k, 19, 2)
     assert np.array_equal(galois.ReedSolomon(15, 13, c=2).generator_poly.coeffs, [1, 12, 6])
     assert np.array_equal(galois.ReedSolomon(15, 11, c=2).generator_poly.coeffs, [1, 9, 5, 12, 9])
@@ -90,7 +90,7 @@ def test_rs_generator_poly_specify_c():
     assert np.array_equal(galois.ReedSolomon(15, 11, c=4).generator_poly.coeffs, [1, 2, 15, 15, 11])
 
 
-def test_rs_generator_poly_specify_primitive_poly():
+def test_generator_poly_specify_primitive_poly():
     # Octave rsgenpoly(31, k, 41)
     p = galois.Poly.Degrees([5,3,0])
     assert np.array_equal(galois.ReedSolomon(31, 29, primitive_poly=p).generator_poly.coeffs, [1, 6, 8])
@@ -112,7 +112,7 @@ def test_rs_generator_poly_specify_primitive_poly():
     assert np.array_equal(galois.ReedSolomon(31, 27, primitive_poly=p, c=2).generator_poly.coeffs, [1, 1, 3, 14, 19])
 
 
-def test_rs_parity_check_matrix():
+def test_parity_check_matrix():
     p = galois.Poly.Degrees([4,1,0])
     GF = galois.GF(2**4, irreducible_poly=p)
     alpha = GF.primitive_element
@@ -126,7 +126,7 @@ def test_rs_parity_check_matrix():
     assert np.array_equal(rs.H, np.fliplr(H_truth))  # NOTE: We use the convention of polynomial highest degree first, not last
 
 
-def test_rs_properties():
+def test_properties():
     rs = galois.ReedSolomon(7, 5)
     assert (rs.n, rs.k, rs.t) == (7, 5, 1)
     assert rs.c == 1
