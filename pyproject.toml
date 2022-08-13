@@ -1,0 +1,138 @@
+[build-system]
+requires = [
+    "setuptools>=62",
+    "wheel",
+    # "setuptools_scm"
+]
+
+[project]
+name = "galois"
+version = {file = "galois/version.txt"}
+authors = [
+  {name = "Matt Hostetter", email = "matthostetter@gmail.com"},
+]
+description = "A performant NumPy extension for Galois fields and their applications"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = [
+    "galois field", "finite field", "numpy",
+    "fec", "error correction", "bch", "reed solomon", "hamming", "golay",
+    "encryption", "cryptography", "elliptic curves", "elliptic curve cryptography", "ecc", "aes", "rsa",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Telecommunications Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "numpy >= 1.18.4, < 1.23",  # v1.18.4 is needed for the new random
+    "numba >= 0.53, < 0.57",  # v0.53 needed for function signautres of CPUDispatchers
+    "typing_extensions",  # Needed for use of Literal in type hints for Python 3.7
+]
+
+[project.optional-dependencies]
+dev = [
+    "pylint>=2.14",
+    "pytest",
+    "pytest-cov[toml]",
+    "pytest-benchmark",
+]
+doc = [
+    "sphinx==5",
+    "sphinx-immaterial @ git+https://github.com/jbms/sphinx-immaterial@bf169751fba59362bcd06da96bfa65b2728cbbae",
+    "myst-parser",
+    "sphinx-design",
+    "sphinxcontrib-details-directive",
+    "ipykernel",
+    "numpy",
+]
+
+[project.urls]
+homepage = "https://github.com/mhostetter/galois"
+source = "https://github.com/mhostetter/galois"
+issues = "https://github.com/mhostetter/galois/issues"
+documentation = "https://galois.readthedocs.io/en/stable/"
+discuss = "https://github.com/mhostetter/galois/discussions"
+changelog = "https://galois.readthedocs.io/en/stable/release-notes/versioning/"
+twitter = "https://twitter.com/galois_py"
+
+[tool.setuptools]
+packages = [
+    "galois",
+    "galois._codes",
+    "galois._databases",
+    "galois._domains",
+    "galois._fields",
+    "galois._polys",
+]
+include-package-data = true  # Appears not to be needed with pyproject.toml
+
+[tool.setuptools.package-data]
+galois = ["*.txt"]
+"galois._databases" = ["*.db"]
+
+# For the future when src/galois/ is used
+# [tool.setuptools.packages.find]
+# where = ["src"]
+
+[tool.distutils.bdist_wheel]
+universal = false
+
+[tool.pylint]
+disable = [
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "line-too-long",
+    "too-many-lines",
+    "invalid-name",
+    "no-else-return",
+    "fixme",
+    "too-many-arguments",
+    "too-many-locals",
+    "too-many-instance-attributes",
+    "too-many-ancestors",
+    "consider-using-enumerate",
+    "unneeded-not",
+    "global-statement",
+    "invalid-unary-operand-type",
+    "not-callable",  # pylint doesn't understand metaclass properties
+    "unsubscriptable-object",  # pylint doesn't understand metaclass properties
+    "comparison-with-callable",  # pylint doesn't understand metaclass properties
+    "eval-used",
+    "too-many-branches",
+    "protected-access",
+    "unnecessary-lambda-assignment"
+]
+min-similarity-lines = 100
+
+[tool.pytest.ini_options]
+# addopts = "-v"
+testpaths = [
+    "tests"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise AssertionError",
+    "raise RuntimeError",
+    "raise NotImplementedError",
+    "@overload",
+    "if TYPE_CHECKING:",
+]
