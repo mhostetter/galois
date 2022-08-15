@@ -6,11 +6,10 @@ from __future__ import annotations
 import numpy as np
 
 from .._fields import FieldArray
-from .._helper import export, verify_isinstance
+from .._helper import verify_isinstance
 from .._polys import Poly
 
 
-@export
 def poly_to_generator_matrix(n: int, generator_poly: Poly, systematic: bool = True) -> FieldArray:
     r"""
     Converts the generator polynomial :math:`g(x)` into the generator matrix :math:`\mathbf{G}` for an :math:`[n, k]` cyclic code.
@@ -72,7 +71,6 @@ def poly_to_generator_matrix(n: int, generator_poly: Poly, systematic: bool = Tr
     return G
 
 
-@export
 def roots_to_parity_check_matrix(n: int, roots: FieldArray) -> FieldArray:
     r"""
     Converts the generator polynomial roots into the parity-check matrix :math:`\mathbf{H}` for an :math:`[n, k]` cyclic code.
