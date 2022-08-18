@@ -346,37 +346,37 @@ def classproperty(obj):
 ArrayMeta_properties = [member for member in dir(galois.Array) if inspect.isdatadescriptor(getattr(type(galois.Array), member, None))]
 for p in ArrayMeta_properties:
     # Fetch the class properties from the private metaclasses
-    ArrayMeta_property = getattr(galois._domains._array.ArrayMeta, p)
+    ArrayMeta_property = getattr(galois._domains._meta.ArrayMeta, p)
 
     # Temporarily delete the class properties from the private metaclasses
-    delattr(galois._domains._array.ArrayMeta, p)
+    delattr(galois._domains._meta.ArrayMeta, p)
 
     # Add a Python 3.9 style class property to the public class
     setattr(galois.Array, p, classproperty(ArrayMeta_property))
 
     # Add back the class properties to the private metaclasses
-    setattr(galois._domains._array.ArrayMeta, p, ArrayMeta_property)
+    setattr(galois._domains._meta.ArrayMeta, p, ArrayMeta_property)
 
 
 FieldArrayMeta_properties = [member for member in dir(galois.FieldArray) if inspect.isdatadescriptor(getattr(type(galois.FieldArray), member, None))]
 for p in FieldArrayMeta_properties:
     # Fetch the class properties from the private metaclasses
     if p in ArrayMeta_properties:
-        ArrayMeta_property = getattr(galois._domains._array.ArrayMeta, p)
-    FieldArrayMeta_property = getattr(galois._fields._array.FieldArrayMeta, p)
+        ArrayMeta_property = getattr(galois._domains._meta.ArrayMeta, p)
+    FieldArrayMeta_property = getattr(galois._fields._meta.FieldArrayMeta, p)
 
     # Temporarily delete the class properties from the private metaclasses
     if p in ArrayMeta_properties:
-        delattr(galois._domains._array.ArrayMeta, p)
-    delattr(galois._fields._array.FieldArrayMeta, p)
+        delattr(galois._domains._meta.ArrayMeta, p)
+    delattr(galois._fields._meta.FieldArrayMeta, p)
 
     # Add a Python 3.9 style class property to the public class
     setattr(galois.FieldArray, p, classproperty(FieldArrayMeta_property))
 
     # Add back the class properties to the private metaclasses
     if p in ArrayMeta_properties:
-        setattr(galois._domains._array.ArrayMeta, p, ArrayMeta_property)
-    setattr(galois._fields._array.FieldArrayMeta, p, FieldArrayMeta_property)
+        setattr(galois._domains._meta.ArrayMeta, p, ArrayMeta_property)
+    setattr(galois._fields._meta.FieldArrayMeta, p, FieldArrayMeta_property)
 
 
 def setup(app):
