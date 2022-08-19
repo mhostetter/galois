@@ -6,7 +6,7 @@ from __future__ import annotations
 import numpy as np
 
 from .._fields import FieldArray
-from .._overrides import set_module
+from .._helper import set_module
 
 __all__ = ["generator_to_parity_check_matrix", "parity_check_to_generator_matrix"]
 

@@ -12,7 +12,7 @@ from numba import int64
 
 from ._domains._function import Function
 from ._fields import FieldArray
-from ._overrides import set_module
+from ._helper import set_module
 from ._polys import Poly
 from .typing import ArrayLike
 

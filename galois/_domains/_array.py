@@ -11,7 +11,7 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._overrides import set_module, SPHINX_BUILD
+from .._helper import set_module, SPHINX_BUILD
 
 from ._function import FunctionMixin
 from ._linalg import LinalgFunctionMixin

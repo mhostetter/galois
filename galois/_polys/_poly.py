@@ -9,7 +9,7 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._domains import Array, _factory
-from .._overrides import set_module
+from .._helper import set_module
 from .._prime import factors
 from ..typing import ElementLike, ArrayLike, PolyLike
 

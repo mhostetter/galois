@@ -5,7 +5,7 @@ import contextlib
 from typing import Dict, Generator, Any
 from typing_extensions import Literal
 
-from ._overrides import set_module
+from ._helper import set_module
 
 __all__ = ["set_printoptions", "get_printoptions", "printoptions"]
 

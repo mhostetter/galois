@@ -6,7 +6,7 @@ from typing import Tuple
 import numpy as np
 
 from .._domains import Array
-from .._overrides import set_module
+from .._helper import set_module
 
 from ._poly import Poly
 

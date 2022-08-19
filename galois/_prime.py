@@ -10,8 +10,8 @@ from typing import Tuple, List, Optional
 
 import numpy as np
 
+from ._helper import set_module
 from ._math import prod, isqrt, iroot, ilog
-from ._overrides import set_module
 
 __all__ = [
     "primes", "kth_prime", "prev_prime", "next_prime", "random_prime", "mersenne_exponents", "mersenne_primes",

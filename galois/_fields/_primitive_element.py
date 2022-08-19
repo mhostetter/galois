@@ -7,8 +7,8 @@ import random
 from typing import List
 from typing_extensions import Literal
 
+from .._helper import set_module
 from .._modular import totatives
-from .._overrides import set_module
 from .._polys import Poly
 from .._prime import factors
 from ..typing import PolyLike

@@ -7,7 +7,7 @@ from typing import Tuple
 
 import numpy as np
 
-from ._overrides import set_module
+from ._helper import set_module
 
 __all__ = ["isqrt", "iroot", "ilog"]
 

@@ -5,11 +5,11 @@ from typing import Tuple, List, Sequence, overload
 
 import numpy as np
 
+from ._helper import set_module
 from ._math import gcd as int_gcd
 from ._math import egcd as int_egcd
 from ._math import lcm as int_lcm
 from ._math import prod as int_prod
-from ._overrides import set_module
 from ._polys import Poly
 from ._polys._functions import gcd as poly_gcd
 from ._polys._functions import egcd as poly_egcd

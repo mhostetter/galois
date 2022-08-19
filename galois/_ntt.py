@@ -8,7 +8,7 @@ from typing import Optional
 import numpy as np
 
 from ._fields import Field, FieldArray
-from ._overrides import set_module
+from ._helper import set_module
 from ._prime import is_prime
 from .typing import ArrayLike
 

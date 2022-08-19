@@ -8,8 +8,8 @@ import types
 from typing import Union, Optional, Type
 from typing_extensions import Literal
 
+from .._helper import set_module
 from .._modular import primitive_root, is_primitive_root
-from .._overrides import set_module
 from .._polys import Poly, conway_poly
 from .._prime import factors
 from ..typing import PolyLike

@@ -10,7 +10,7 @@ import numpy as np
 
 from .._domains import _factory
 from .._databases import ConwayPolyDatabase
-from .._overrides import set_module
+from .._helper import set_module
 from .._prime import is_prime, is_prime_power
 
 from ._poly import Poly

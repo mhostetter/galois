@@ -6,8 +6,8 @@ from typing_extensions import Literal
 
 import numpy as np
 
+from ._helper import set_module
 from ._math import lcm
-from ._overrides import set_module
 from ._prime import factors
 
 __all__ = [

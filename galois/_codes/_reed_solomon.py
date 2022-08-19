@@ -12,8 +12,8 @@ import numpy as np
 
 from .._domains._function import Function
 from .._fields import Field, FieldArray
+from .._helper import set_module
 from .._lfsr import berlekamp_massey_jit
-from .._overrides import set_module
 from .._polys import Poly, matlab_primitive_poly
 from .._polys._dense import divmod_jit, roots_jit, evaluate_elementwise_jit
 from .._prime import factors

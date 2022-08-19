@@ -9,7 +9,7 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._domains import _factory
-from .._overrides import set_module
+from .._helper import set_module
 from .._prime import is_prime_power
 
 from ._poly import Poly

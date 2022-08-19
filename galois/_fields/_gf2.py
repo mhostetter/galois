@@ -7,7 +7,7 @@ import numpy as np
 
 from .._domains._lookup import add_ufunc, negative_ufunc, subtract_ufunc, multiply_ufunc, reciprocal_ufunc, divide_ufunc, power_ufunc, log_ufunc, sqrt_ufunc
 from .._domains._ufunc import UFuncMixin
-from .._overrides import set_module
+from .._helper import set_module
 
 from ._array import FieldArray
 
