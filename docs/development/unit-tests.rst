@@ -10,7 +10,18 @@ First, `pytest` needs to be installed on your system. Easily install it by insta
 
 .. code-block:: sh
 
-   $ python3 -m pip install -r requirements-dev.txt
+   $ python3 -m pip install .[dev]
+
+Configuration
+-------------
+
+The `pytest` configuration is stored in `pyproject.toml`.
+
+.. literalinclude:: ../../pyproject.toml
+   :caption: pyproject.toml
+   :start-at: [tool.pytest.ini_options]
+   :end-before: [tool.coverage.report]
+   :language: toml
 
 Run from the command line
 -------------------------

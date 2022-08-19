@@ -47,13 +47,16 @@ Install the `dev` dependencies
 ------------------------------
 
 The development dependencies include packages for linting and unit testing. These dependencies are stored
-in `requirements-dev.txt`.
+in `pyproject.toml`.
 
-.. literalinclude:: ../../requirements-dev.txt
-   :linenos:
+.. literalinclude:: ../../pyproject.toml
+   :caption: pyproject.toml
+   :start-at: [project.optional-dependencies]
+   :end-before: [project.urls]
+   :language: toml
 
-Install the development dependencies by passing the `-r` switch to `pip install`.
+Install the development dependencies by passing the `[dev]` extras to `pip install`.
 
 .. code-block:: sh
 
-   $ python3 -m pip install -r requirements-dev.txt
+   $ python3 -m pip install galois[dev]
