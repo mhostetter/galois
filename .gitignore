@@ -6,4 +6,4 @@ build/
 dist/
 env/
 *.egg-info
-galois/_version.py
+src/galois/_version.py

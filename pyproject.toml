@@ -73,7 +73,7 @@ changelog = "https://galois.readthedocs.io/en/stable/release-notes/versioning/"
 twitter = "https://twitter.com/galois_py"
 
 [tool.setuptools_scm]
-write_to = "galois/_version.py"
+write_to = "src/galois/_version.py"
 
 [tool.setuptools]
 packages = [
@@ -85,6 +85,9 @@ packages = [
     "galois._polys",
 ]
 include-package-data = true  # Appears not to be needed with pyproject.toml, but still including for now
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.setuptools.package-data]
 "galois._databases" = ["*.db"]
