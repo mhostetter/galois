@@ -9,6 +9,7 @@ import numpy as np
 
 from .._domains import Array
 from .._domains._function import Function
+from .._helper import verify_isinstance
 
 # pylint: disable=unidiomatic-typecheck
 
@@ -68,7 +69,8 @@ class divmod_jit(Function):
         a(x) = q(x)*b(x) + r(x)
     """
     def __call__(self, a: Array, b: Array) -> Tuple[Array, Array]:
-        assert type(a) is self.field and type(b) is self.field
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
 
         a_degree = a.size - 1
         b_degree = b.size - 1
@@ -142,7 +144,8 @@ class floordiv_jit(Function):
         a(x) = q(x)*b(x) + r(x)
     """
     def __call__(self, a: Array, b: Array) -> Array:
-        assert type(a) is self.field and type(b) is self.field
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
         assert a.ndim == 1 and b.ndim == 1
         dtype = a.dtype
 
@@ -194,7 +197,8 @@ class mod_jit(Function):
         a(x) = q(x)*b(x) + r(x)
     """
     def __call__(self, a: Array, b: Array) -> Array:
-        assert type(a) is self.field and type(b) is self.field
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
         assert a.ndim == 1 and b.ndim == 1
         dtype = a.dtype
 
@@ -262,7 +266,9 @@ class pow_jit(Function):
         d(x) = a(x)^b % c(x)
     """
     def __call__(self, a: Array, b: int, c: Optional[Array] = None) -> Array:
-        assert isinstance(a, self.field) and isinstance(b, (int, np.integer)) and isinstance(c, (type(None), self.field))
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, int)
+        verify_isinstance(c, self.field, optional=True)
         assert a.ndim == 1 and c.ndim == 1 if c is not None else True
         dtype = a.dtype
 
@@ -379,7 +385,8 @@ class roots_jit(Function):
     Finds the roots of the polynomial f(x).
     """
     def __call__(self, nonzero_degrees: np.ndarray, nonzero_coeffs: Array) -> Array:
-        assert isinstance(nonzero_coeffs, self.field)
+        verify_isinstance(nonzero_degrees, np.ndarray)
+        verify_isinstance(nonzero_coeffs, self.field)
         dtype = nonzero_coeffs.dtype
 
         if self.field.ufunc_mode != "python-calculate":

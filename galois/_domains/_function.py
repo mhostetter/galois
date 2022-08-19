@@ -10,6 +10,8 @@ import numba
 from numba import int64
 import numpy as np
 
+from .._helper import verify_isinstance
+
 from ._meta import ArrayMeta
 
 if TYPE_CHECKING:
@@ -97,9 +99,9 @@ class convolve_jit(Function):
     """
     Function dispatcher to convolve two 1-D arrays.
     """
-    def __call__(self, a: np.ndarray, b: np.ndarray, mode="full") -> np.ndarray:
-        if not type(a) is type(b):
-            raise TypeError(f"Arguments `a` and `b` must be of the same FieldArray subclass, not {type(a)} and {type(b)}.")
+    def __call__(self, a: Array, b: Array, mode="full") -> Array:
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
         if not mode == "full":
             raise ValueError(f"Operation 'convolve' currently only supports mode of 'full', not {mode!r}.")
         dtype = a.dtype
@@ -152,7 +154,8 @@ class fft_jit(Function):
     """
     _direction = "forward"
 
-    def __call__(self, x: np.ndarray, n=None, axis=-1, norm=None) -> np.ndarray:
+    def __call__(self, x: Array, n=None, axis=-1, norm=None) -> Array:
+        verify_isinstance(x, self.field)
         norm = "backward" if norm is None else norm
         if not axis == -1:
             raise ValueError("The FFT is only implemented on 1-D arrays.")

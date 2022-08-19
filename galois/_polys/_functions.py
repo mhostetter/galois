@@ -6,7 +6,7 @@ from typing import Tuple
 import numpy as np
 
 from .._domains import Array
-from .._helper import set_module
+from .._helper import set_module, verify_isinstance
 
 from ._poly import Poly
 
@@ -165,10 +165,8 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
 
         np.array_equal(L(x), y)
     """
-    if not isinstance(x, Array):
-        raise TypeError(f"Argument `x` must be a FieldArray, not {type(x)}.")
-    if not isinstance(y, Array):
-        raise TypeError(f"Argument `y` must be a FieldArray, not {type(y)}.")
+    verify_isinstance(x, Array)
+    verify_isinstance(y, Array)
     if not type(x) == type(y):  # pylint: disable=unidiomatic-typecheck
         raise TypeError(f"Arguments `x` and `y` must be over the same Galois field, not {type(x)} and {type(y)}.")
     if not x.ndim == 1:

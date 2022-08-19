@@ -7,7 +7,7 @@ import random
 from typing import List
 from typing_extensions import Literal
 
-from .._helper import set_module
+from .._helper import set_module, verify_isinstance
 from .._modular import totatives
 from .._polys import Poly
 from .._prime import factors
@@ -62,8 +62,7 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
         galois.is_primitive_element("x + 1", f)
         GF("x + 1").multiplicative_order()
     """
-    if not isinstance(irreducible_poly, Poly):
-        raise TypeError(f"Argument `irreducible_poly` must be a galois.Poly, not {type(irreducible_poly)}.")
+    verify_isinstance(irreducible_poly, Poly)
     field = irreducible_poly.field
 
     # Convert element into a Poly object
@@ -168,8 +167,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
         @suppress
         GF.display()
     """
-    if not isinstance(irreducible_poly, Poly):
-        raise TypeError(f"Argument `irreducible_poly` must be a galois.Poly, not {type(irreducible_poly)}.")
+    verify_isinstance(irreducible_poly, Poly)
     if not irreducible_poly.degree > 1:
         raise ValueError(f"Argument `irreducible_poly` must have degree greater than 1, not {irreducible_poly.degree}.")
     if not irreducible_poly.is_irreducible():

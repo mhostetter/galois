@@ -1,6 +1,39 @@
 import builtins
+import inspect
 
 SPHINX_BUILD = hasattr(builtins, "__sphinx_build__")
+
+
+def verify_isinstance(argument, types, optional=False):
+    """
+    Verifies that the argument is an instance of the type(s).
+    """
+    if optional and argument is None:
+        return
+
+    if not isinstance(argument, types):
+        frame = inspect.currentframe()
+        frame = inspect.getouterframes(frame)[1]
+        string = inspect.getframeinfo(frame[0]).code_context[0].strip()
+        args = string[string.find("(") + 1:-1].split(",")
+        argument_name = args[0]
+        raise TypeError(f"Argument {argument_name!r} must be an instance of {types}, not {type(argument)}.")
+
+
+def verify_issubclass(argument, types, optional=False):
+    """
+    Verifies that the argument is a subclass of the type(s).
+    """
+    if optional and argument is None:
+        return
+
+    if not issubclass(argument, types):
+        frame = inspect.currentframe()
+        frame = inspect.getouterframes(frame)[1]
+        string = inspect.getframeinfo(frame[0]).code_context[0].strip()
+        args = string[string.find("(") + 1:-1].split(",")
+        argument_name = args[0]
+        raise TypeError(f"Argument {argument_name!r} must be a subclass of {types}, not {type(type(argument))}.")
 
 
 def set_module(module):

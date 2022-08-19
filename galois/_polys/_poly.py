@@ -9,7 +9,7 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._domains import Array, _factory
-from .._helper import set_module
+from .._helper import set_module, verify_isinstance, verify_issubclass
 from .._prime import factors
 from ..typing import ElementLike, ArrayLike, PolyLike
 
@@ -96,12 +96,9 @@ class Poly:
             - `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
             - `"asc"`: The first element of `coeffs` is the lowest degree coefficient, i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
         """
-        if not isinstance(coeffs, (list, tuple, np.ndarray, Array)):
-            raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
-        if not (field is None or issubclass(field, Array)):
-            raise TypeError(f"Argument `field` must be a Array subclass, not {field}.")
-        if not isinstance(order, str):
-            raise TypeError(f"Argument `order` must be a str, not {type(order)}.")
+        verify_isinstance(coeffs, (list, tuple, np.ndarray, Array))
+        verify_issubclass(field, Array, optional=True)
+        verify_isinstance(order, str)
         if isinstance(coeffs, (Array, np.ndarray)) and not coeffs.ndim <= 1:
             raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
         if not order in ["desc", "asc"]:
@@ -245,7 +242,7 @@ class Poly:
         return Poly([1, 0], field=field)
 
     @classmethod
-    def Random(cls, degree: int, seed: Optional[Union[int, np.random.Generator]] = None, field: Optional[Type[Array]] = None) -> Poly:
+    def Random(cls, degree: int, seed: Optional[Union[int, np.integer, np.random.Generator]] = None, field: Optional[Type[Array]] = None) -> Poly:
         r"""
         Constructs a random polynomial over :math:`\mathrm{GF}(p^m)` with degree :math:`d`.
 
@@ -288,16 +285,14 @@ class Poly:
             galois.Poly.Random(5, seed=rng, field=GF)
             galois.Poly.Random(5, seed=rng, field=GF)
         """
+        verify_isinstance(degree, int)
+        verify_isinstance(seed, (int, np.integer, np.random.Generator), optional=True)
+        verify_issubclass(field, Array, optional=True)
+
         field = _factory.DEFAULT_ARRAY if field is None else field
-        if not isinstance(degree, (int, np.integer)):
-            raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
         if seed is not None:
-            if not isinstance(seed, (int, np.integer, np.random.Generator)):
-                raise ValueError("Seed must be an integer, a numpy.random.Generator or None.")
-            if isinstance(seed, (int, np.integer)) and seed < 0:
-                raise ValueError("Seed must be non-negative.")
-        if not issubclass(field, Array):
-            raise TypeError(f"Argument `field` must be a Galois field class, not {type(field)}.")
+            if isinstance(seed, int) and not seed >= 0:
+                raise ValueError(f"Argument `seed` must be non-negative, not {seed}.")
         if not degree >= 0:
             raise ValueError(f"Argument `degree` must be non-negative, not {degree}.")
 
@@ -356,8 +351,7 @@ class Poly:
             f = galois.Poly.Str("13x^3 + 117", field=GF); f
             str(f)
         """
-        if not isinstance(string, str):
-            raise TypeError(f"Argument `string` be a string, not {type(string)}")
+        verify_isinstance(string, str)
 
         degrees, coeffs = str_to_sparse_poly(string)
 
@@ -424,11 +418,10 @@ class Poly:
             f = galois.Poly.Int(int("0xf700a275", 16), field=GF); f
             hex(f)
         """
+        verify_isinstance(integer, int)
+        verify_issubclass(field, Array, optional=True)
+
         field = _factory.DEFAULT_ARRAY if field is None else field
-        if not isinstance(integer, (int, np.integer)):
-            raise TypeError(f"Argument `integer` be an integer, not {type(integer)}")
-        if not issubclass(field, Array):
-            raise TypeError(f"Argument `field` must be a Galois field class, not {type(field)}.")
         if not integer >= 0:
             raise ValueError(f"Argument `integer` must be non-negative, not {integer}.")
 
@@ -487,10 +480,8 @@ class Poly:
             GF = galois.GF(3**5)
             galois.Poly.Degrees([3, 1, 0], coeffs=[214, 73, 185], field=GF)
         """
-        if not isinstance(degrees, (list, tuple, np.ndarray)):
-            raise TypeError(f"Argument `degrees` must array-like, not {type(degrees)}.")
-        if not isinstance(coeffs, (type(None), list, tuple, np.ndarray, Array)):
-            raise TypeError(f"Argument `coeffs` must array-like, not {type(coeffs)}.")
+        verify_isinstance(degrees, (list, tuple, np.ndarray))
+        verify_isinstance(coeffs, (list, tuple, np.ndarray, Array), optional=True)
         if not (field is None or issubclass(field, Array)):
             raise TypeError(f"Argument `field` must be a Array subclass, not {type(field)}.")
 
@@ -597,10 +588,8 @@ class Poly:
             f(roots)
         """
         multiplicities = [1,]*len(roots) if multiplicities is None else multiplicities
-        if not isinstance(roots, (tuple, list, np.ndarray, Array)):
-            raise TypeError(f"Argument `roots` must be array-like, not {type(roots)}.")
-        if not isinstance(multiplicities, (tuple, list, np.ndarray)):
-            raise TypeError(f"Argument `multiplicities` must be array-like, not {type(multiplicities)}.")
+        verify_isinstance(roots, (tuple, list, np.ndarray, Array))
+        verify_isinstance(multiplicities, (tuple, list, np.ndarray))
         if not (field is None or issubclass(field, Array)):
             raise TypeError(f"Argument `field` must be a Array subclass, not {field}.")
 
@@ -669,10 +658,8 @@ class Poly:
 
             f.coefficients(8, order="asc")
         """
-        if not isinstance(size, (type(None), int, np.integer)):
-            raise TypeError(f"Argument `size` must be an integer, not {type(size)}.")
-        if not isinstance(order, str):
-            raise TypeError(f"Argument `order` must be a str, not {type(order)}.")
+        verify_isinstance(size, int, optional=True)
+        verify_isinstance(order, str)
         size = len(self) if size is None else size
         if not size >= len(self):
             raise ValueError(f"Argument `size` must be at least `degree + 1` which is {len(self)}, not {size}.")
@@ -793,8 +780,7 @@ class Poly:
             f.roots()
             f.roots(multiplicity=True)
         """
-        if not isinstance(multiplicity, bool):
-            raise TypeError(f"Argument `multiplicity` must be a bool, not {type(multiplicity)}.")
+        verify_isinstance(multiplicity, bool)
 
         roots = _dense.roots_jit(self.field)(self.nonzero_degrees, self.nonzero_coeffs)
 
@@ -1056,8 +1042,7 @@ class Poly:
             f = a * b; f
             f.equal_degree_factors(3)
         """
-        if not isinstance(degree, (int, np.integer)):
-            raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+        verify_isinstance(degree, int)
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
         if not self.is_monic:
@@ -1248,8 +1233,7 @@ class Poly:
             # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
             f.derivative(GF.characteristic)
         """
-        if not isinstance(k, (int, np.integer)):
-            raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
+        verify_isinstance(k, int)
         if not k > 0:
             raise ValueError(f"Argument `k` must be a positive integer, not {k}.")
 
@@ -1981,8 +1965,7 @@ class Poly:
         _check_input_is_poly_or_none(modulus, self.field)
         types = [getattr(self, "_type", None), getattr(modulus, "_type", None)]
 
-        if not isinstance(exponent, (int, np.integer)):
-            raise TypeError(f"For polynomial exponentiation, the second argument must be an int, not {exponent}.")
+        verify_isinstance(exponent, int)
         if not exponent >= 0:
             raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {exponent}.")
 

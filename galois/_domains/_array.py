@@ -11,7 +11,7 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._helper import set_module, SPHINX_BUILD
+from .._helper import set_module, verify_isinstance, SPHINX_BUILD
 
 from ._function import FunctionMixin
 from ._linalg import LinalgFunctionMixin
@@ -326,8 +326,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
               represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
         """
-        if not isinstance(mode, str):
-            raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
+        verify_isinstance(mode, str)
         if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
             raise ValueError(f"Argument `mode` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode!r}.")
         mode = cls.default_ufunc_mode if mode == "auto" else mode
@@ -432,8 +431,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                     @suppress
                     GF.display()
         """
-        if not isinstance(mode, (type(None), str)):
-            raise TypeError(f"Argument `mode` must be a string, not {type(mode)}.")
+        verify_isinstance(mode, str, optional=True)
         if mode not in ["int", "poly", "power"]:
             raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode!r}.")
 

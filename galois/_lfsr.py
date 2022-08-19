@@ -12,7 +12,7 @@ from numba import int64
 
 from ._domains._function import Function
 from ._fields import FieldArray
-from ._helper import set_module
+from ._helper import set_module, verify_isinstance
 from ._polys import Poly
 from .typing import ArrayLike
 
@@ -35,8 +35,7 @@ class _LFSR:
         feedback_poly: Poly,
         state: Optional[ArrayLike] = None,
     ):
-        if not isinstance(feedback_poly, Poly):
-            raise TypeError(f"Argument `feedback_poly` must be a galois.Poly, not {type(feedback_poly)}.")
+        verify_isinstance(feedback_poly, Poly)
         if not feedback_poly.coeffs[-1] == 1:
             raise ValueError(f"Argument `feedback_poly` must have a 0-th degree term of 1, not {feedback_poly}.")
 
@@ -62,8 +61,7 @@ class _LFSR:
 
     @classmethod
     def Taps(cls, taps: FieldArray, state: Optional[ArrayLike] = None) -> _LFSR:
-        if not isinstance(taps, FieldArray):
-            raise TypeError(f"Argument `taps` must be a FieldArray, not {type(taps)}.")
+        verify_isinstance(taps, FieldArray)
 
         if cls._type == "fibonacci":
             # T = [c_n-1, c_n-2, ..., c_1, c_0]
@@ -81,8 +79,7 @@ class _LFSR:
         return cls(feedback_poly, state=state)
 
     def _verify_and_convert_state(self, state: ArrayLike):
-        if not isinstance(state, (tuple, list, np.ndarray, FieldArray)):
-            raise TypeError(f"Argument `state` must be an array-like, not {type(state)}.")
+        verify_isinstance(state, (tuple, list, np.ndarray, FieldArray))
 
         state = self.field(state)  # Coerce array-like object to field array
 
@@ -97,8 +94,7 @@ class _LFSR:
         self._state = self._verify_and_convert_state(state)
 
     def step(self, steps: int = 1) -> FieldArray:
-        if not isinstance(steps, (int, np.integer)):
-            raise TypeError(f"Argument `steps` must be an integer, not {type(steps)}.")
+        verify_isinstance(steps, int)
 
         if steps == 0:
             return self.field([])
@@ -1575,10 +1571,8 @@ def berlekamp_massey(sequence, output="minimal"):
 
     :group: linear-sequences
     """
-    if not isinstance(sequence, FieldArray):
-        raise TypeError(f"Argument `sequence` must be a FieldArray, not {type(sequence)}.")
-    if not isinstance(output, str):
-        raise TypeError(f"Argument `output` must be a string, not {type(output)}.")
+    verify_isinstance(sequence, FieldArray)
+    verify_isinstance(output, str)
     if not sequence.ndim == 1:
         raise ValueError(f"Argument `sequence` must be 1-D, not {sequence.ndim}-D.")
     if not output in ["minimal", "fibonacci", "galois"]:

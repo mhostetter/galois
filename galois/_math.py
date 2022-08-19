@@ -5,9 +5,7 @@ import math
 import sys
 from typing import Tuple
 
-import numpy as np
-
-from ._helper import set_module
+from ._helper import set_module, verify_isinstance
 
 __all__ = ["isqrt", "iroot", "ilog"]
 
@@ -110,23 +108,21 @@ def isqrt(n: int) -> int:
     """
     if sys.version_info.major == 3 and sys.version_info.minor >= 8:
         return math.isqrt(n)  # pylint: disable=no-member
+
+    verify_isinstance(n, int)
+    if not n >= 0:
+        raise ValueError(f"Argument `n` must be non-negative, not {n}.")
+
+    if n < 2:
+        return n
+
+    # Recursively compute the integer square root
+    x = isqrt(n >> 2) << 1
+
+    if (x + 1)**2 > n:
+        return x
     else:
-        if not isinstance(n, (int, np.integer)):
-            raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-        if not n >= 0:
-            raise ValueError(f"Argument `n` must be non-negative, not {n}.")
-        n = int(n)
-
-        if n < 2:
-            return n
-
-        # Recursively compute the integer square root
-        x = isqrt(n >> 2) << 1
-
-        if (x + 1)**2 > n:
-            return x
-        else:
-            return x + 1
+        return x + 1
 
 
 @set_module("galois")
@@ -160,15 +156,12 @@ def iroot(n: int, k: int) -> int:
         x = galois.iroot(n, 5); x
         print(f"{x**5} <= {n} < {(x + 1)**5}")
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(k, (int, np.integer)):
-        raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(k, int)
     if not n >= 0:
         raise ValueError(f"Argument `n` must be non-negative, not {n}.")
     if not k >= 1:
         raise ValueError(f"Argument `k` must be at least 1, not {k}.")
-    n, k = int(n), int(k)
 
     if n == 0:
         return 0
@@ -218,15 +211,12 @@ def ilog(n: int, b: int) -> int:
         x = galois.ilog(n, 5); x
         print(f"{5**x} <= {n} < {5**(x + 1)}")
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(b, (int, np.integer)):
-        raise TypeError(f"Argument `b` must be an integer, not {type(b)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(b, int)
     if not n > 0:
         raise ValueError(f"Argument `n` must be positive, not {n}.")
     if not b >= 2:
         raise ValueError(f"Argument `b` must be at least 2, not {b}.")
-    n, b = int(n), int(b)
 
     # https://stackoverflow.com/a/39191163/11694321
     low, b_low, high, b_high = 0, 1, 1, b

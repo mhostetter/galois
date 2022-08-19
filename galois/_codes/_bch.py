@@ -13,7 +13,7 @@ import numpy as np
 
 from .._domains._function import Function
 from .._fields import Field, FieldArray, GF2
-from .._helper import set_module
+from .._helper import set_module, verify_isinstance
 from .._lfsr import berlekamp_massey_jit
 from .._polys import Poly, matlab_primitive_poly
 from .._polys._dense import roots_jit, divmod_jit
@@ -32,12 +32,9 @@ def _check_and_compute_field(
     primitive_poly: Optional[PolyLike] = None,
     primitive_element: Optional[PolyLike] = None
 ) -> Type[FieldArray]:
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(k, (int, np.integer)):
-        raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
-    if not isinstance(c, (int, np.integer)):
-        raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(k, int)
+    verify_isinstance(c, int)
 
     p, m = factors(n + 1)
     if not (len(p) == 1 and p[0] == 2):
@@ -95,10 +92,8 @@ def bch_valid_codes(n: int, t_min: int = 1) -> List[Tuple[int, int, int]]:
 
     :group: fec
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(t_min, (int, np.integer)):
-        raise TypeError(f"Argument `t_min` must be an integer, not {type(t_min)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(t_min, int)
     if not t_min >= 1:
         raise ValueError(f"Argument `t_min` must be at least 1, not {t_min}.")
 
@@ -210,8 +205,7 @@ class BCH:
         bch_valid_codes, primitive_poly, primitive_element
         """
         # NOTE: All other arguments will be verified in `_check_and_compute_field()`
-        if not isinstance(systematic, bool):
-            raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
+        verify_isinstance(systematic, bool)
 
         self._n = n
         self._k = k

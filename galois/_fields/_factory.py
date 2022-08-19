@@ -8,7 +8,7 @@ import types
 from typing import Union, Optional, Type
 from typing_extensions import Literal
 
-from .._helper import set_module
+from .._helper import set_module, verify_isinstance
 from .._modular import primitive_root, is_primitive_root
 from .._polys import Poly, conway_poly
 from .._prime import factors
@@ -197,14 +197,10 @@ def GF(
 
     :group: galois-fields
     """
-    if not isinstance(order, int):
-        raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
-    if not isinstance(verify, bool):
-        raise TypeError(f"Argument `verify` must be a bool, not {type(verify)}.")
-    if not isinstance(compile, (type(None), str)):
-        raise TypeError(f"Argument `compile` must be a string, not {type(compile)}.")
-    if not isinstance(display, (type(None), str)):
-        raise TypeError(f"Argument `display` must be a string, not {type(display)}.")
+    verify_isinstance(order, int)
+    verify_isinstance(verify, bool)
+    verify_isinstance(compile, str, optional=True)
+    verify_isinstance(display, str, optional=True)
 
     p, e = factors(order)
     if not len(p) == len(e) == 1:

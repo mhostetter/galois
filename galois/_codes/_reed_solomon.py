@@ -12,7 +12,7 @@ import numpy as np
 
 from .._domains._function import Function
 from .._fields import Field, FieldArray
-from .._helper import set_module
+from .._helper import set_module, verify_isinstance
 from .._lfsr import berlekamp_massey_jit
 from .._polys import Poly, matlab_primitive_poly
 from .._polys._dense import divmod_jit, roots_jit, evaluate_elementwise_jit
@@ -106,14 +106,10 @@ class ReedSolomon:
         --------
         primitive_poly, primitive_element
         """
-        if not isinstance(n, (int, np.integer)):
-            raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-        if not isinstance(k, (int, np.integer)):
-            raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
-        if not isinstance(c, (int, np.integer)):
-            raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
-        if not isinstance(systematic, bool):
-            raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
+        verify_isinstance(n, int)
+        verify_isinstance(k, int)
+        verify_isinstance(c, int)
+        verify_isinstance(systematic, bool)
 
         if not (n - k) % 2 == 0:
             raise ValueError("Arguments `n - k` must be even.")

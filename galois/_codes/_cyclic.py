@@ -6,7 +6,7 @@ from __future__ import annotations
 import numpy as np
 
 from .._fields import FieldArray
-from .._helper import set_module
+from .._helper import set_module, verify_isinstance
 from .._polys import Poly
 
 __all__ = ["poly_to_generator_matrix", "roots_to_parity_check_matrix"]
@@ -45,12 +45,9 @@ def poly_to_generator_matrix(n: int, generator_poly: Poly, systematic: bool = Tr
 
     :group: fec
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(generator_poly, Poly):
-        raise TypeError(f"Argument `generator_poly` must be a galois.Poly, not {type(generator_poly)}.")
-    if not isinstance(systematic, bool):
-        raise TypeError(f"Argument `systematic` must be a bool, not {type(systematic)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(generator_poly, Poly)
+    verify_isinstance(systematic, bool)
 
     GF = generator_poly.field
     k = n - generator_poly.degree
@@ -110,10 +107,8 @@ def roots_to_parity_check_matrix(n: int, roots: FieldArray) -> FieldArray:
 
     :group: fec
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(roots, FieldArray):
-        raise TypeError(f"Argument `roots` must be a galois.FieldArray, not {type(roots)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(roots, FieldArray)
 
     GF = type(roots)
     H = np.power.outer(roots, np.arange(n - 1, -1, -1, dtype=GF.dtypes[-1]))

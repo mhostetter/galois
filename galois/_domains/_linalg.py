@@ -10,6 +10,8 @@ import numba
 from numba import int64
 import numpy as np
 
+from .._helper import verify_isinstance
+
 from ._function import Function, FunctionMixin
 from ._meta import DTYPES
 
@@ -71,8 +73,8 @@ class dot_jit(Function):
     """
 
     def __call__(self, a: Array, b: Array, out=None) -> Array:
-        if not type(a) is type(b):
-            raise TypeError(f"Operation 'dot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
 
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, a, b, np.dot, out=out)
@@ -98,8 +100,8 @@ class vdot_jit(Function):
     """
 
     def __call__(self, a: Array, b: Array) -> Array:
-        if not type(a) is type(b):
-            raise TypeError(f"Operation 'vdot' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
 
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, a, b, np.vdot)
@@ -118,8 +120,8 @@ class inner_jit(Function):
     """
 
     def __call__(self, a: Array, b: Array) -> Array:
-        if not type(a) is type(b):
-            raise TypeError(f"Operation 'inner' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
 
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, a, b, np.inner)
@@ -140,8 +142,8 @@ class outer_jit(Function):
     """
 
     def __call__(self, a: Array, b: Array, out=None) -> Array:
-        if not type(a) is type(b):
-            raise TypeError(f"Operation 'outer' requires both arrays be in the same Galois field, not {type(a)} and {type(b)}.")
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
 
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, a, b, np.outer, out=out, n_sum=1)
@@ -159,8 +161,8 @@ class matmul_jit(Function):
     """
 
     def __call__(self, A: Array, B: Array, out=None, **kwargs) -> Array:  # pylint: disable=unused-argument
-        if not type(A) is type(B):
-            raise TypeError(f"Operation 'matmul' requires both arrays be in the same Galois field, not {type(A)} and {type(B)}.")
+        verify_isinstance(A, self.field)
+        verify_isinstance(B, self.field)
         if not (A.ndim >= 1 and B.ndim >= 1):
             raise ValueError(f"Operation 'matmul' requires both arrays have dimension at least 1, not {A.ndim}-D and {B.ndim}-D.")
         if not (A.ndim <= 2 and B.ndim <= 2):
@@ -244,6 +246,7 @@ class row_reduce_jit(Function):
     """
 
     def __call__(self, A: Array, ncols: Optional[int] = None) -> Tuple[Array, int]:
+        verify_isinstance(A, self.field)
         if not A.ndim == 2:
             raise ValueError(f"Only 2-D matrices can be converted to reduced row echelon form, not {A.ndim}-D.")
 
@@ -282,6 +285,7 @@ class lu_decompose_jit(Function):
     """
 
     def __call__(self, A: Array) -> Tuple[Array, Array]:
+        verify_isinstance(A, self.field)
         if not A.ndim == 2:
             raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")
 
@@ -313,6 +317,7 @@ class plu_decompose_jit(Function):
     """
 
     def __call__(self, A: Array) -> Tuple[Array, Array, Array, int]:
+        verify_isinstance(A, self.field)
         if not A.ndim == 2:
             raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")
 
@@ -358,6 +363,7 @@ class triangular_det_jit(Function):
     """
 
     def __call__(self, A: Array) -> Array:
+        verify_isinstance(A, self.field)
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
             raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
         idxs = np.arange(0, A.shape[0])
@@ -370,6 +376,7 @@ class det_jit(Function):
     """
 
     def __call__(self, A: Array) -> Array:
+        verify_isinstance(A, self.field)
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
             raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
 
@@ -398,6 +405,7 @@ class matrix_rank_jit(Function):
     """
 
     def __call__(self, A: Array) -> int:
+        verify_isinstance(A, self.field)
         A_rre, _ = row_reduce_jit(self.field)(A)
         rank = np.sum(~np.all(A_rre == 0, axis=1))
         return rank
@@ -409,6 +417,7 @@ class inv_jit(Function):
     """
 
     def __call__(self, A: Array) -> Array:
+        verify_isinstance(A, self.field)
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
             raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
 
@@ -437,8 +446,8 @@ class solve_jit(Function):
     """
 
     def __call__(self, A: Array, b: Array) -> Array:
-        if not type(A) is type(b):
-            raise TypeError(f"Arguments `A` and `b` must be of the same FieldArray subclass, not {type(A)} and {type(b)}.")
+        verify_isinstance(A, self.field)
+        verify_isinstance(b, self.field)
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
             raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
         if not b.ndim in [1, 2]:

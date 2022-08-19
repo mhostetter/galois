@@ -10,7 +10,7 @@ from typing import Tuple, List, Optional
 
 import numpy as np
 
-from ._helper import set_module
+from ._helper import set_module, verify_isinstance
 from ._math import prod, isqrt, iroot, ilog
 
 __all__ = [
@@ -69,8 +69,7 @@ def primes(n: int) -> List[int]:
         galois.primes(20)
     """
     global PRIMES, MAX_K, MAX_N
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
 
     if n <= MAX_N:
         # Return a subset of the pre-computed global primes list
@@ -147,8 +146,7 @@ def kth_prime(k: int) -> int:
         galois.kth_prime(3)
         galois.kth_prime(1000)
     """
-    if not isinstance(k, (int, np.integer)):
-        raise TypeError(f"Argument `k` must be an integer, not {type(k)}.")
+    verify_isinstance(k, int)
     if not 1 <= k <= MAX_K:
         raise ValueError(f"Argument `k` is out of range of the prime lookup table. The lookup table only contains the first {MAX_K} primes (up to {MAX_N}).")
 
@@ -184,8 +182,7 @@ def prev_prime(n: int) -> int:
         galois.prev_prime(15)
         galois.prev_prime(6298891201241929548477199440981228280038)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
     if not n >= 2:
         raise ValueError("There are no primes less than 2.")
 
@@ -232,8 +229,7 @@ def next_prime(n: int) -> int:
         galois.next_prime(15)
         galois.next_prime(6852976918500265458318414454675831645298)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
 
     # Directly use lookup table
     if n < PRIMES[-1]:
@@ -294,8 +290,7 @@ def random_prime(bits: int) -> int:
         $ openssl prime 236861787926957382206996886087214592029752524078026392358936844479667423570833116126506927878773110287700754280996224768092589904231910149528080012692722763539766058401127758399272786475279348968866620857161889678512852050561604969208679095086283103827661300743342847921567132587459205365243815835763830067933
         1514D68EDB7C650F1FF713531A1A43255A4BE6D66EE1FDBD96F4EB32757C1B1BAF16A5933E24D45FAD6C6A814F3C8C14F3CB98F24FEA74C43C349D6FA3AB76EB0156811A1FBAA64EB4AC525CCEF9278AF78886DC6DBF46C4463A34C0E53B0FA2F784BB2DC5FDF076BB6E145AA15AA6D616ACC1D5F95B8BE757670B9AAF53292DD (236861787926957382206996886087214592029752524078026392358936844479667423570833116126506927878773110287700754280996224768092589904231910149528080012692722763539766058401127758399272786475279348968866620857161889678512852050561604969208679095086283103827661300743342847921567132587459205365243815835763830067933) is prime
     """
-    if not isinstance(bits, (int, np.integer)):
-        raise TypeError(f"Argument `bits` must be an integer, not {type(bits)}.")
+    verify_isinstance(bits, int)
     if not bits > 0:
         raise ValueError(f"Argument `bits` must be positive, not {bits}.")
 
@@ -350,8 +345,8 @@ def mersenne_exponents(n: Optional[int] = None) -> List[int]:
     """
     if n is None:
         return MERSENNE_EXPONENTS
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+
+    verify_isinstance(n, int)
     if not n > 0:
         raise ValueError(f"Argument `n` must be positive, not {n}.")
 
@@ -480,14 +475,10 @@ def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> b
         # But they may not satisfy a^(p-1) = 1 (mod p) for other a
         [galois.fermat_primality_test(p) for p in pseudoprimes]
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(a, (type(None), int, np.integer)):
-        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
-    if not isinstance(rounds, (int, np.integer)):
-        raise TypeError(f"Argument `rounds` must be an integer, not {type(rounds)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(a, int, optional=True)
+    verify_isinstance(rounds, int)
 
-    n = int(n)
     a = random.randint(2, n - 2) if a is None else a
     if not (n > 2 and n % 2 == 1):
         raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
@@ -576,18 +567,14 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
         # All other a are witnesses to the compositeness of 91
         [galois.miller_rabin_primality_test(91, a=a) for a in witnesses] == [False,]*len(witnesses)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(a, (int, np.integer)):
-        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
-    if not isinstance(rounds, (int, np.integer)):
-        raise TypeError(f"Argument `rounds` must be an integer, not {type(rounds)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(a, int)
+    verify_isinstance(rounds, int)
 
     # To avoid this test `2 <= a <= n - 2` which doesn't apply for n=3
     if n == 3:
         return True
 
-    n = int(n)
     if not (n > 2 and n % 2 == 1):
         raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
     if not 2 <= a <= n - 2:
@@ -677,10 +664,8 @@ def legendre_symbol(a: int, p: int) -> int:
         for a in range(7):
             print(f"({a} / 7) = {galois.legendre_symbol(a, 7)}")
     """
-    if not isinstance(a, (int, np.integer)):
-        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
-    if not isinstance(p, (int, np.integer)):
-        raise TypeError(f"Argument `p` must be an integer, not {type(p)}.")
+    verify_isinstance(a, int)
+    verify_isinstance(p, int)
     if not (is_prime(p) and p > 2):
         raise ValueError(f"Argument `p` must be an odd prime greater than 2, not {p}.")
 
@@ -732,10 +717,8 @@ def jacobi_symbol(a: int, n: int) -> int:
         for a in range(9):
             print(f"({a} / 9) = {galois.jacobi_symbol(a, 9)}")
     """
-    if not isinstance(a, (int, np.integer)):
-        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(a, int)
+    verify_isinstance(n, int)
     if not (n > 2 and n % 2 == 1):
         raise ValueError(f"Argument `n` must be an odd integer greater than 2, not {n}.")
 
@@ -799,10 +782,8 @@ def kronecker_symbol(a: int, n: int) -> int:
     * Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
     """
     # pylint: disable=too-many-return-statements
-    if not isinstance(a, (int, np.integer)):
-        raise TypeError(f"Argument `a` must be an integer, not {type(a)}.")
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(a, int)
+    verify_isinstance(n, int)
 
     if n == 0:
         return 1 if a in [1, -1] else 0
@@ -843,9 +824,9 @@ def factors(n: int) -> Tuple[List[int], List[int]]:
     """
     This function is wrapped and documented in `_polymorphic.factors()`.
     """
+    verify_isinstance(n, int)
     if not n > 1:
         raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
-    n = int(n)
 
     # Step 1
     if is_prime(n):
@@ -969,13 +950,11 @@ def perfect_power(n: int) -> Tuple[int, int]:
 
 @functools.lru_cache(maxsize=512)
 def _perfect_power(n: int) -> Tuple[int, int]:
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
 
     if n == 0:
         return 0, 1
 
-    n = int(n)
     abs_n = abs(n)
 
     for k in primes(ilog(abs_n, 2)):
@@ -1044,16 +1023,14 @@ def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int
         galois.trial_division(n, B=500)
         galois.trial_division(n, B=100)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(B, (type(None), int, np.integer)):
-        raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(B, int, optional=True)
+
     B = isqrt(n) if B is None else B
     if not n > 1:
         raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
     if not B > 2:
         raise ValueError(f"Argument `B` must be greater than 2, not {B}.")
-    n = int(n)
     B = min(isqrt(n), B)  # There cannot be a prime factor greater than sqrt(n)
 
     p, e = [], []
@@ -1158,17 +1135,14 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
         galois.pollard_p1(n, 10)
         37*41
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(B, (int, np.integer)):
-        raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
-    if not isinstance(B2, (type(None), int, np.integer)):
-        raise TypeError(f"Argument `B2` must be an integer, not {type(B2)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(B, int)
+    verify_isinstance(B2, int, optional=True)
+
     if not (n % 2 == 1 and n > 2):
         raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
     if not B > 2:
         raise ValueError(f"Argument `B` must be greater than 2, not {B}.")
-    n = int(n)
 
     a = 2  # A value that is coprime to n (since n is odd)
     check_stride = 10
@@ -1266,15 +1240,14 @@ def pollard_rho(n: int, c: int = 1) -> int:
         n = 1182640843 * 1716279751
         galois.pollard_rho(n)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(c, (type(None), int, np.integer)):
-        raise TypeError(f"Argument `c` must be an integer, not {type(c)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(c, int, optional=True)
+
     if not n > 1:
         raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
     if not c not in [0, -2]:
         raise ValueError("Argument `c` cannot be -2 or 0.")
-    n = abs(int(n))
+    n = abs(n)
 
     f = lambda x: (x**2 + c) % n
 
@@ -1340,9 +1313,8 @@ def divisors(n: int) -> List[int]:
         galois.divisors(-24)
         galois.factors(24)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    n = abs(int(n))
+    verify_isinstance(n, int)
+    n = abs(n)
 
     if n == 0:
         return []
@@ -1413,8 +1385,7 @@ def divisor_sigma(n: int, k: int = 1) -> int:
         galois.divisor_sigma(9, k=1)
         galois.divisor_sigma(9, k=2)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
 
     d = divisors(n)
 
@@ -1471,8 +1442,7 @@ def is_prime(n: int) -> bool:
 
         galois.is_prime(1000000000000000035000061)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
 
     if n < 2:
         return False
@@ -1522,8 +1492,7 @@ def is_composite(n: int) -> bool:
         galois.is_composite(13)
         galois.is_composite(15)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
 
     if n < 2:
         return False
@@ -1565,8 +1534,7 @@ def is_prime_power(n: int) -> bool:
         galois.is_prime_power(6)
         galois.is_prime_power(1)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
 
     if n < 2:
         return False
@@ -1645,8 +1613,7 @@ def is_perfect_power(n: int) -> bool:
         galois.perfect_power(-100)
         galois.is_perfect_power(-100)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
 
     # Special cases: -1 = -1^3, 0 = 0^2, 1 = 1^3
     if n in [-1, 0, 1]:
@@ -1713,10 +1680,8 @@ def is_smooth(n: int, B: int) -> bool:
         galois.is_smooth(12, 5)
         galois.is_smooth(60**2, 5)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(B, (int, np.integer)):
-        raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(B, int)
     if not B >= 2:
         raise ValueError(f"Argument `B` must be at least 2, not {B}.")
 
@@ -1779,10 +1744,8 @@ def is_powersmooth(n: int, B: int) -> bool:
         galois.is_smooth(2**4 * 3**2 * 5, 5)
         galois.is_powersmooth(2**4 * 3**2 * 5, 5)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(B, (int, np.integer)):
-        raise TypeError(f"Argument `B` must be an integer, not {type(B)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(B, int)
     if not B >= 2:
         raise ValueError(f"Argument `B` must be at least 2, not {B}.")
 

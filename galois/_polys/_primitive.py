@@ -6,11 +6,9 @@ import random
 from typing import Iterator, Optional
 from typing_extensions import Literal
 
-import numpy as np
-
 from .._domains import _factory
 from .._databases import ConwayPolyDatabase
-from .._helper import set_module
+from .._helper import set_module, verify_isinstance
 from .._prime import is_prime, is_prime_power
 
 from ._poly import Poly
@@ -93,10 +91,9 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
         g = f * GF(3); g
         g.is_primitive()
     """
-    if not isinstance(order, (int, np.integer)):
-        raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
-    if not isinstance(degree, (int, np.integer)):
-        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    verify_isinstance(order, int)
+    verify_isinstance(degree, int)
+
     if not is_prime_power(order):
         raise ValueError(f"Argument `order` must be a prime power, not {order}.")
     if not degree >= 1:
@@ -174,12 +171,10 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
         next(generator)
         next(generator)
     """
-    if not isinstance(order, (int, np.integer)):
-        raise TypeError(f"Argument `order` must be an integer, not {type(order)}.")
-    if not isinstance(degree, (int, np.integer)):
-        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
-    if not isinstance(reverse, bool):
-        raise TypeError(f"Argument `reverse` must be a bool, not {type(reverse)}.")
+    verify_isinstance(order, int)
+    verify_isinstance(degree, int)
+    verify_isinstance(reverse, bool)
+
     if not is_prime_power(order):
         raise ValueError(f"Argument `order` must be a prime power, not {order}.")
     if not degree >= 0:
@@ -294,10 +289,9 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
         galois.primitive_poly(7, 10)
         galois.conway_poly(7, 10)
     """
-    if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
-    if not isinstance(degree, (int, np.integer)):
-        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    verify_isinstance(characteristic, int)
+    verify_isinstance(degree, int)
+
     if not is_prime(characteristic):
         raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
     if not degree >= 1:
@@ -365,10 +359,9 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
         galois.primitive_poly(2, 7)
         galois.matlab_primitive_poly(2, 7)
     """
-    if not isinstance(characteristic, (int, np.integer)):
-        raise TypeError(f"Argument `characteristic` must be an integer, not {type(characteristic)}.")
-    if not isinstance(degree, (int, np.integer)):
-        raise TypeError(f"Argument `degree` must be an integer, not {type(degree)}.")
+    verify_isinstance(characteristic, int)
+    verify_isinstance(degree, int)
+
     if not is_prime(characteristic):
         raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
     if not degree >= 1:

@@ -80,12 +80,12 @@ def test_random_exceptions():
         galois.Poly.Random(2.0)
     with pytest.raises(TypeError):
         galois.Poly.Random(2, field=type(galois.Array))
+    with pytest.raises(TypeError):
+        galois.Poly.Random(2, seed=3.14)
     with pytest.raises(ValueError):
         galois.Poly.Random(-1)
     with pytest.raises(ValueError):
         galois.Poly.Random(2, seed=-1)
-    with pytest.raises(ValueError):
-        galois.Poly.Random(2, seed=3.14)
 
 
 @pytest.mark.parametrize("field", FIELDS)

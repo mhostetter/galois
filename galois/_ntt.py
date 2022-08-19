@@ -8,7 +8,7 @@ from typing import Optional
 import numpy as np
 
 from ._fields import Field, FieldArray
-from ._helper import set_module
+from ._helper import set_module, verify_isinstance
 from ._prime import is_prime
 from .typing import ArrayLike
 
@@ -116,8 +116,7 @@ def ntt(
 
     :group: transforms
     """
-    if not isinstance(x, (tuple, list, np.ndarray, FieldArray)):
-        raise TypeError(f"Argument `x` must be array-like, not {type(x)}.")
+    verify_isinstance(x, (tuple, list, np.ndarray, FieldArray))
     if isinstance(x, FieldArray) and not type(x).is_prime_field:
         raise ValueError(f"If argument `x` is a FieldArray, it must be a prime field, not {type(x)}.")
 
@@ -240,8 +239,7 @@ def intt(
 
     :group: transforms
     """
-    if not isinstance(X, (tuple, list, np.ndarray, FieldArray)):
-        raise TypeError(f"Argument `X` must be array-like, not {type(X)}.")
+    verify_isinstance(X, (tuple, list, np.ndarray, FieldArray))
     if isinstance(X, FieldArray) and not type(X).is_prime_field:
         raise ValueError(f"If argument `X` is a FieldArray, it must be a prime field, not {type(X)}.")
 
@@ -252,14 +250,10 @@ def intt(
 
 
 def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
-    if not isinstance(size, (type(None), int, np.integer)):
-        raise TypeError(f"Argument `size` must be an integer, not {type(size)}.")
-    if not isinstance(modulus, (type(None), int, np.integer)):
-        raise TypeError(f"Argument `modulus` must be an integer, not {type(modulus)}.")
-    if not isinstance(forward, bool):
-        raise TypeError(f"Argument `forward` must be a bool, not {type(forward)}.")
-    if not isinstance(scaled, bool):
-        raise TypeError(f"Argument `scaled` must be a bool, not {type(scaled)}.")
+    verify_isinstance(size, int, optional=True)
+    verify_isinstance(modulus, int, optional=True)
+    verify_isinstance(forward, bool)
+    verify_isinstance(scaled, bool)
 
     # The size N of the input/output sequence
     if size is None:

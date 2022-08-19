@@ -4,9 +4,7 @@ import random
 from typing import List, Optional, Iterator
 from typing_extensions import Literal
 
-import numpy as np
-
-from ._helper import set_module
+from ._helper import set_module, verify_isinstance
 from ._math import lcm
 from ._prime import factors
 
@@ -60,8 +58,7 @@ def totatives(n: int) -> List[int]:
         phi = galois.euler_phi(n); phi
         len(x) == phi
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
     if not n > 0:
         raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
@@ -135,8 +132,7 @@ def euler_phi(n: int) -> int:
 # NOTE: This is a separate function to hide the "lru_cache" from the public API
 @functools.lru_cache(maxsize=64)
 def _euler_phi(n: int) -> int:
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
     if not n > 0:
         raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
@@ -223,8 +219,7 @@ def carmichael_lambda(n: int) -> int:
 
         galois.is_cyclic(n)
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
     if not n > 0:
         raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
@@ -386,8 +381,7 @@ def is_cyclic(n: int) -> bool:
                 GF.primitive_elements
                 galois.euler_phi(galois.euler_phi(n))
     """
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(n, int)
     if not n > 0:
         raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
 
@@ -562,13 +556,11 @@ def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: L
     if n in [1, 2]:
         return n - 1
 
+    verify_isinstance(n, int)
+    verify_isinstance(start, int)
+    verify_isinstance(stop, int, optional=True)
+
     stop = n if stop is None else stop
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(start, (int, np.integer)):
-        raise TypeError(f"Argument `start` must be an integer, not {type(start)}.")
-    if not isinstance(stop, (int, np.integer)):
-        raise TypeError(f"Argument `stop` must be an integer, not {type(stop)}.")
     if not 1 <= start < stop <= n:
         raise ValueError(f"Arguments must satisfy `1 <= start < stop <= n`, not `1 <= {start} < {stop} <= {n}`.")
     if not method in ["min", "max", "random"]:
@@ -676,14 +668,10 @@ def primitive_roots(n: int, start: int = 1, stop: Optional[int] = None, reverse:
         return
 
     stop = n if stop is None else stop
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
-    if not isinstance(start, (int, np.integer)):
-        raise TypeError(f"Argument `start` must be an integer, not {type(start)}.")
-    if not isinstance(stop, (int, np.integer)):
-        raise TypeError(f"Argument `stop` must be an integer, not {type(stop)}.")
-    if not isinstance(reverse, bool):
-        raise TypeError(f"Argument `reverse` must be a bool, not {type(reverse)}.")
+    verify_isinstance(n, int)
+    verify_isinstance(start, int)
+    verify_isinstance(stop, int)
+    verify_isinstance(reverse, bool)
     if not 1 <= start < stop <= n:
         raise ValueError(f"Arguments must satisfy `1 <= start < stop <= n`, not `1 <= {start} < {stop} <= {n}`.")
 
@@ -787,10 +775,8 @@ def is_primitive_root(g: int, n: int) -> bool:
         galois.is_primitive_root(2, 7)
         galois.is_primitive_root(3, 7)
     """
-    if not isinstance(g, (int, np.integer)):
-        raise TypeError(f"Argument `g` must be an integer, not {type(g)}.")
-    if not isinstance(n, (int, np.integer)):
-        raise TypeError(f"Argument `n` must be an integer, not {type(n)}.")
+    verify_isinstance(g, int)
+    verify_isinstance(n, int)
     if not n > 0:
         raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
     if not 0 < g < n:

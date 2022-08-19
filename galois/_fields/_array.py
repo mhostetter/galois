@@ -9,7 +9,7 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._domains import Array, _linalg
-from .._helper import set_module, extend_docstring, SPHINX_BUILD
+from .._helper import set_module, extend_docstring, verify_isinstance, SPHINX_BUILD
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
 from .._prime import divisors
@@ -332,12 +332,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             @suppress
             GF.display()
         """
-        if not isinstance(element, (int, np.integer, cls)):
-            raise TypeError(f"Argument `element` must be an integer or element of {cls.name}, not {type(element)}.")
-        if not isinstance(rows, (int, np.integer)):
-            raise TypeError(f"Argument `rows` must be an integer, not {type(rows)}.")
-        if not isinstance(cols, (int, np.integer)):
-            raise TypeError(f"Argument `cols` must be an integer, not {type(cols)}.")
+        verify_isinstance(element, (int, np.integer, cls))
+        verify_isinstance(rows, int)
+        verify_isinstance(cols, int)
         if not rows > 0:
             raise ValueError(f"Argument `rows` must be non-negative, not {rows}.")
         if not cols > 0:
@@ -691,8 +688,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             powers = np.arange(1, 5 + 1); powers
             root ** powers
         """
-        if not isinstance(n, (int, np.ndarray)):
-            raise TypeError(f"Argument `n` must be an int, not {type(n)!r}.")
+        verify_isinstance(n, (int, np.ndarray))
         if not 1 <= n < cls.order:
             raise ValueError(f"Argument `n` must be in [1, {cls.order}), not {n}.")
         if not (cls.order - 1) % n == 0:

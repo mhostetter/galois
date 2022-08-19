@@ -6,7 +6,7 @@ from __future__ import annotations
 import numpy as np
 
 from .._fields import FieldArray
-from .._helper import set_module
+from .._helper import set_module, verify_isinstance
 
 __all__ = ["generator_to_parity_check_matrix", "parity_check_to_generator_matrix"]
 
@@ -40,8 +40,7 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
 
     :group: fec
     """
-    if not isinstance(G, (FieldArray)):
-        raise TypeError(f"Argument `G` must be a galois.FieldArray, not {type(G)}.")
+    verify_isinstance(G, FieldArray)
 
     field = type(G)
     k, n = G.shape
@@ -85,8 +84,7 @@ def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
 
     :group: fec
     """
-    if not isinstance(H, (FieldArray)):
-        raise TypeError(f"Argument `H` must be a galois.FieldArray, not {type(H)}.")
+    verify_isinstance(H, FieldArray)
 
     field = type(H)
     n_k, n = H.shape
