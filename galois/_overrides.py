@@ -24,16 +24,15 @@ def set_module(module):
     return decorator
 
 
-def extend_docstring(method, replace={}):  # pylint: disable=dangerous-default-value
+def extend_docstring(method, replace={}, docstring=""):  # pylint: disable=dangerous-default-value
     """
     A decorator to append the docstring of a `method` with the docstring the the decorated method.
     """
     def decorator(obj):
-        doc_1 = getattr(method, "__doc__", "")
-        doc_2 = getattr(obj, "__doc__", "")
+        parent_docstring = getattr(method, "__doc__", "")
         for from_str, to_str in replace.items():
-            doc_1 = doc_1.replace(from_str, to_str)
-        obj.__doc__ = doc_1 + "\n" + doc_2
+            parent_docstring = parent_docstring.replace(from_str, to_str)
+        obj.__doc__ = parent_docstring + "\n" + docstring
 
         return obj
 

@@ -20,6 +20,11 @@ from ._meta import FieldArrayMeta
 __all__ = ["FieldArray"]
 
 
+DOCSTRING_MAP = {
+    "Array": "FieldArray"
+}
+
+
 @set_module("galois")
 class FieldArray(Array, metaclass=FieldArrayMeta):
     r"""
@@ -183,8 +188,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     ###############################################################################
 
     @classmethod
-    @extend_docstring(Array.Zeros, {"Array": "FieldArray"})
-    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    @extend_docstring(Array.Zeros, DOCSTRING_MAP,
         """
         Examples
         --------
@@ -193,11 +197,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF = galois.GF(31)
             GF.Zeros((2, 5))
         """
+    )
+    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
         return super().Zeros(shape, dtype=dtype)
 
     @classmethod
-    @extend_docstring(Array.Ones, {"Array": "FieldArray"})
-    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    @extend_docstring(Array.Ones, DOCSTRING_MAP,
         """
         Examples
         --------
@@ -206,17 +211,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF = galois.GF(31)
             GF.Ones((2, 5))
         """
+    )
+    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
         return super().Ones(shape, dtype=dtype)
 
     @classmethod
-    @extend_docstring(Array.Range, {"Array": "FieldArray"})
-    def Range(
-        cls,
-        start: ElementLike,
-        stop: ElementLike,
-        step: int = 1,
-        dtype: Optional[DTypeLike] = None
-    ) -> FieldArray:
+    @extend_docstring(Array.Range, DOCSTRING_MAP,
         """
         Examples
         --------
@@ -238,18 +238,18 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             @suppress
             GF.display()
         """
+    )
+    def Range(
+        cls,
+        start: ElementLike,
+        stop: ElementLike,
+        step: int = 1,
+        dtype: Optional[DTypeLike] = None
+    ) -> FieldArray:
         return super().Range(start, stop, step=step, dtype=dtype)
 
     @classmethod
-    @extend_docstring(Array.Random, {"Array": "FieldArray"})
-    def Random(
-        cls,
-        shape: ShapeLike = (),
-        low: ElementLike = 0,
-        high: Optional[ElementLike] = None,
-        seed: Optional[Union[int, np.random.Generator]] = None,
-        dtype: Optional[DTypeLike] = None
-    ) -> FieldArray:
+    @extend_docstring(Array.Random, DOCSTRING_MAP,
         """
         Examples
         --------
@@ -275,11 +275,19 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.Random(10, seed=rng)
             GF.Random(10, seed=rng)
         """
+    )
+    def Random(
+        cls,
+        shape: ShapeLike = (),
+        low: ElementLike = 0,
+        high: Optional[ElementLike] = None,
+        seed: Optional[Union[int, np.random.Generator]] = None,
+        dtype: Optional[DTypeLike] = None
+    ) -> FieldArray:
         return super().Random(shape=shape, low=low, high=high, seed=seed, dtype=dtype)
 
     @classmethod
-    @extend_docstring(Array.Identity, {"Array": "FieldArray"})
-    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    @extend_docstring(Array.Identity, DOCSTRING_MAP,
         """
         Examples
         --------
@@ -288,6 +296,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF = galois.GF(31)
             GF.Identity(4)
         """
+    )
+    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
         return super().Identity(size, dtype=dtype)
 
     @classmethod
