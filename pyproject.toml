@@ -2,12 +2,11 @@
 requires = [
     "setuptools>=62",
     "wheel",
-    # "setuptools_scm"
+    "setuptools_scm[toml]>=6.2"
 ]
 
 [project]
 name = "galois"
-version = {file = "galois/version.txt"}
 authors = [
   {name = "Matt Hostetter", email = "matthostetter@gmail.com"},
 ]
@@ -45,6 +44,7 @@ dependencies = [
     "numba >= 0.53, < 0.57",  # v0.53 needed for function signautres of CPUDispatchers
     "typing_extensions",  # Needed for use of Literal in type hints for Python 3.7
 ]
+dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [
@@ -72,6 +72,9 @@ discuss = "https://github.com/mhostetter/galois/discussions"
 changelog = "https://galois.readthedocs.io/en/stable/release-notes/versioning/"
 twitter = "https://twitter.com/galois_py"
 
+[tool.setuptools_scm]
+write_to = "galois/_version.py"
+
 [tool.setuptools]
 packages = [
     "galois",
@@ -81,10 +84,9 @@ packages = [
     "galois._fields",
     "galois._polys",
 ]
-include-package-data = true  # Appears not to be needed with pyproject.toml
+include-package-data = true  # Appears not to be needed with pyproject.toml, but still including for now
 
 [tool.setuptools.package-data]
-galois = ["*.txt"]
 "galois._databases" = ["*.db"]
 
 # For the future when src/galois/ is used

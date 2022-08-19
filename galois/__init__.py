@@ -3,9 +3,15 @@ A performant NumPy extension for Galois fields and their applications.
 """
 # pylint: disable=wrong-import-position
 
-from ._version import __version__
+try:
+    from ._version import __version__, __version_tuple__
+except ModuleNotFoundError:
+    __version__ = "0.0.0"
+    __version_tuple__ = (0, 0, 0)
+    import warnings
+    warnings.warn("An error occurred during package install where setuptools_scm failed to create a _version.py file. Defaulting version to 0.0.0.")
 
-# Nested modules
+# Import class/functions from nested private modules
 from ._domains import *
 from ._polys import *  # Needs to be imported before _fields
 from ._fields import *
@@ -18,7 +24,7 @@ _factory.DEFAULT_ARRAY = GF2
 ###############################################################################
 from ._codes import *  # Needs monkey patching before importing
 
-# Modules
+# Import class/functions from private modules
 from ._lfsr import *
 from ._math import *
 from ._modular import *
@@ -27,5 +33,5 @@ from ._options import *
 from ._polymorphic import *
 from ._prime import *
 
-# Subpackages
+# Import public modules
 from . import typing
