@@ -8,92 +8,118 @@ on:
       release_type:
         description: "Release type (major,minor,patch)"
         required: true
+        type: string
         default: "patch"
 
 jobs:
-  release:
-    name: Create new release
+  tag:
+    name: Tag new version
+    id: tag
     runs-on: ubuntu-latest
+    outputs:
+      previous_version: ${{ steps.previous_version.outputs.version }}
+      next_version: ${{ steps.next_version.outputs.version }}
     steps:
-    - name: Set up Python 3
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch all commits and tags
+          ref: ${{ github.REF }}
 
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0  # Fetch all commits and tags
-        ref: ${{ github.REF }}
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
 
-    # - name: Wait on other workflows
-    #   uses: lewagon/wait-on-check-action@v0.2
-    #   with:
-    #     ref: ${{ github.REF }}
-    #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-    #     wait-interval: 5
+      - name: Get previous version
+        id: previous_version
+        run: |  # Get last version tag and remove the "v"
+          version=$(git describe --tags --abbrev=0 | cut -c 2-)
+          echo "::set-output name=version::${version}"
 
-    - name: Get previous version
-      id: previous_version
-      run: |  # Get last version tag and remove the "v"
-        version=$(git describe --tags --abbrev=0 | cut -c 2-)
-        echo "::set-output name=version::${version}"
+      - name: Validate next version
+        uses: zwaldowski/semver-release-action@v2
+        id: next_version
+        with:
+          dry_run: true
+          bump: ${{ github.event.inputs.release_type }}
+          prefix: "v"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Validate next version
-      uses: zwaldowski/semver-release-action@v2
-      id: next_version
-      with:
-        dry_run: true
-        bump: ${{ github.event.inputs.release_type }}
-        prefix: "v"
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Update version file
+      #   run: |
+      #     echo -n "${{ steps.next_version.outputs.version }}" > galois/version.txt
+      #     cat galois/version.txt
 
-    - name: Update version file
-      run: |
-        echo -n "${{ steps.next_version.outputs.version }}" > galois/version.txt
-        cat galois/version.txt
+      - name: Create and push new tag
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: "v${{ steps.next_version.outputs.version }}"
+          message: "v${{ steps.next_version.outputs.version }}"
 
-    - name: Commit and tag version
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        file_pattern: galois/version.txt
-        commit_message: "Version bump to ${{ steps.next_version.outputs.version }}"
-        repository: .
-        branch: master
-        tagging_message: "v${{ steps.next_version.outputs.version }}"
+      # - name: Commit and tag version
+      #   uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     file_pattern: galois/version.txt
+      #     commit_message: "Version bump to ${{ steps.next_version.outputs.version }}"
+      #     repository: .
+      #     branch: master
+      #     tagging_message: "v${{ steps.next_version.outputs.version }}"
 
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0  # Fetch all commits and tags
-        ref: ${{ github.REF }}
+  build:
+    name: Build the package
+    id: build
+    needs: tag
+    uses: ./.github/workflows/build.yml
 
-    - name: Construct release notes
-      run: |
-        prev=v${{ steps.previous_version.outputs.version }}
-        next=v${{ steps.next_version.outputs.version }}
-        echo -e "\n## Contributors" > release_notes.md
-        git log ${prev}..${next} --pretty="- @%an" | sort | uniq >> release_notes.md
-        echo -e "\n## Commits" >> release_notes.md
-        git log --oneline ${prev}..${next} >> release_notes.md
+  release-test:
+    name: Release on TestPyPI
+    id: release-test
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch all commits and tags
+          ref: ${{ github.REF }}
 
-    - name: Create GitHub release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ steps.next_version.outputs.version }}
-        release_name: galois v${{ steps.next_version.outputs.version }}
-        body_path: release_notes.md
-        draft: true
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@v1.4.2
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          verbose: true
 
-    - name: Build Python package
-      run: |
-        python3 -m pip install --upgrade setuptools wheel twine
-        python3 setup.py sdist bdist_wheel
-        python3 -m twine check dist/*
+  release:
+    name: Release on PyPI
+    id: release
+    needs: tag, release-test
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch all commits and tags
+          ref: ${{ github.REF }}
 
-    - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@v1.4.2
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
-        verbose: true
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.4.2
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          verbose: true
+
+      - name: Construct release notes
+        run: |
+          prev=v${{ needs.tag.outputs.previous_version }}
+          next=v${{ needs.tag.outputs.next_version }}
+          cp docs/release-notes/v${{ needs.tag.outputs.next_version }}.md release_notes.md
+          echo -e "\n## Commits" >> release_notes.md
+          git log --oneline ${prev}..${next} >> release_notes.md
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.tag.outputs.version }}
+          release_name: galois v${{ needs.tag.outputs.version }}
+          body_path: release_notes.md
+          draft: true

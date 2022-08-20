@@ -1,0 +1,23 @@
+name: Pull Request
+
+on:
+  # push:
+  #   branches:
+  #   - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  lint:
+    uses: ./.github/workflows/lint.yml
+
+  docs:
+    uses: ./.github/workflows/docs.yml
+
+  test:
+    uses: ./.github/workflows/test.yml
+    needs: build

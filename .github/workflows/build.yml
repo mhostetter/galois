@@ -1,0 +1,34 @@
+name: Build
+
+on:
+  workflow_call
+
+jobs:
+  build_wheel:
+    name: Wheel
+    runs-on: ubuntu-latest
+    outputs:
+      wheel_file: ${{ steps.get_wheel_name.outputs.paths }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Upgrade pip and other packaging tools
+        run: python3 -m pip install --upgrade pip setuptools wheel build twine
+
+      - name: Build the `galois` package
+        run: python3 -m build
+
+      - name: Verify the wheel file
+        run: python3 -m twine check dist/*
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1

@@ -1,7 +1,0 @@
-sphinx==5
-git+https://github.com/jbms/sphinx-immaterial@0fc4e47f0332244b92df63f9aad1f62b757ff0d3
-myst-parser
-sphinx-design
-sphinxcontrib-details-directive
-ipykernel
-numpy

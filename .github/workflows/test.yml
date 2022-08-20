@@ -1,172 +1,92 @@
 name: Test
 
 on:
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+  workflow_call
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9, '3.10']
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-
-    - name: Install linting dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install -r requirements-dev.txt
-
-    - name: Install Python package
-      run: python3 -m pip install .  # Needed to guarantee dependencies are installed
-
-    - name: Lint with pylint
-      run: python3 -m pylint --rcfile=setup.cfg galois/
-
-  test-coverage:
-    name: Coverage
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-
-    - name: Install testing dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install -r requirements-dev.txt
-
-    - name: Install Python package
-      run: python3 -m pip install .
-
-    - name: Test with pytest
-      run: python3 -m pytest --cov=galois/ --cov-report=xml tests/
-
-    - name: Upload coverage report
-      uses: codecov/codecov-action@v2
-      with:
-        fail_ci_if_error: false
-        verbose: true
-
-  build-wheel:
-    name: Build Wheel
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-
-    - name: Build Python package
-      run: |
-        python3 -m pip install --upgrade setuptools wheel twine
-        python3 setup.py sdist bdist_wheel
-        python3 -m twine check dist/*
-
-    - name: Upload wheel artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: dist
-        path: dist/
-        retention-days: 1
-
   test-min:
-    name: Minimum Dependencies
-    needs: build-wheel
+    name: Min
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.7, 3.8, 3.9, '3.10']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install testing dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install -r requirements-dev.txt
+      - name: Upgrade pip
+        run: python3 -m pip install --upgrade pip
 
-    - name: Install minimum package dependencies
-      run: python3 -m pip install -r requirements-min.txt
+      - name: Download wheel artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist/
 
-    - name: Remove source code
-      uses: JesseTG/rm@v1.0.2
-      with:
-        path: galois/
+      - name: Get wheel file name
+        uses: tj-actions/glob@v10
+        id: glob
+        with:
+          files: dist/galois-*.whl
 
-    - name: Download wheel artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: dist
-        path: dist/
+      - name: Install minimum package dependencies
+        run: python3 -m pip install -r requirements-min.txt
 
-    - name: Install package wheel
-      run: |
-        python3 -m pip install $(ls dist/galois-*.whl)
+      - name: Install the `galois` package wheel with [dev]
+        run: python3 -m pip install ${{ steps.glob.outputs.paths }}[dev]
 
-    - name: Test with pytest
-      run: |
-        python3 -m pytest tests/
+      - name: Test with pytest
+        run: python3 -m pytest tests/ --cov=src/galois/ --cov-report=xml tests/
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: false
+          verbose: true
 
   test-latest:
-    name: Latest Dependencies
-    needs: build-wheel
+    name: Latest
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.7, 3.8, 3.9, '3.10']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install testing dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install -r requirements-dev.txt
+      - name: Upgrade pip
+        run: python3 -m pip install --upgrade pip
 
-    - name: Remove source code
-      uses: JesseTG/rm@v1.0.2
-      with:
-        path: galois/
+      - name: Download wheel artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist/
 
-    - name: Download wheel artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: dist
-        path: dist/
+      - name: Get wheel file name
+        uses: tj-actions/glob@v10
+        id: glob
+        with:
+          files: dist/galois-*.whl
 
-    - name: Install package wheel
-      run: |
-        python3 -m pip install $(ls dist/galois-*.whl)
+      - name: Install the `galois` package wheel with [dev]
+        run: python3 -m pip install --upgrade ${{ steps.glob.outputs.paths }}[dev]
 
-    - name: Test with pytest
-      run: |
-        python3 -m pytest tests/
+      - name: Test with pytest
+        run: python3 -m pytest tests/ --cov=src/galois/ --cov-report=xml tests/
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: false
+          verbose: true

@@ -75,26 +75,11 @@ twitter = "https://twitter.com/galois_py"
 [tool.setuptools_scm]
 write_to = "src/galois/_version.py"
 
-[tool.setuptools]
-packages = [
-    "galois",
-    "galois._codes",
-    "galois._databases",
-    "galois._domains",
-    "galois._fields",
-    "galois._polys",
-]
-include-package-data = true  # Appears not to be needed with pyproject.toml, but still including for now
-
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 "galois._databases" = ["*.db"]
-
-# For the future when src/galois/ is used
-# [tool.setuptools.packages.find]
-# where = ["src"]
 
 [tool.distutils.bdist_wheel]
 universal = false
@@ -122,11 +107,12 @@ disable = [
     "eval-used",
     "too-many-branches",
     "protected-access",
-    "unnecessary-lambda-assignment"
+    "unnecessary-lambda-assignment",
 ]
 min-similarity-lines = 100
 
 [tool.pytest.ini_options]
+minversion = "6.2"
 # addopts = "-v"
 testpaths = [
     "tests"
