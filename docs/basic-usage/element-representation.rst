@@ -130,7 +130,7 @@ The power display mode represents the elements as powers of the finite field's p
     For large fields (or fields using :ref:`explicit calculation <explicit-calculation>`), this process can take a while. However, when
     using :ref:`lookup tables <lookup-tables>` this display mode is just as fast as the others.
 
-In prime fields, the elements are displayed as :math:`\{0, \alpha, \alpha^2, \dots, \alpha^{p-2}\}`.
+In prime fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p-2}\}`.
 
 .. ipython:: python
 
@@ -143,7 +143,7 @@ In prime fields, the elements are displayed as :math:`\{0, \alpha, \alpha^2, \do
     α = GF.primitive_element; α
     α**23
 
-In extension fields, the elements are displayed as :math:`\{0, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
+In extension fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
 
 .. ipython:: python
 
