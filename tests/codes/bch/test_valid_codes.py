@@ -6,20 +6,12 @@ References
 * Lin, S. and Costello, D. Error Control Coding. Appendix C, pp. 1231.
 * https://link.springer.com/content/pdf/bbm%3A978-1-4899-2174-1%2F1.pdf
 """
+import random
+
 import pytest
 import numpy as np
 
 import galois
-
-
-def test_bch_valid_codes_exceptions():
-    with pytest.raises(TypeError):
-        galois.bch_valid_codes(15.0)
-    with pytest.raises(TypeError):
-        galois.bch_valid_codes(15, t_min=1.0)
-
-    with pytest.raises(ValueError):
-        galois.bch_valid_codes(15, t_min=0)
 
 
 def test_bch_valid_codes_7():
@@ -27,7 +19,9 @@ def test_bch_valid_codes_7():
         (7, 4, 1),
         (7, 1, 3),
     ]
-    assert galois.bch_valid_codes(7) == codes
+    code = random.choice(codes)
+    bch = galois.BCH(code[0], code[1])
+    assert (bch.n, bch.k, bch.t) == code
 
 
 def test_bch_valid_codes_15():
@@ -37,7 +31,9 @@ def test_bch_valid_codes_15():
         (15, 5, 3),
         (15, 1, 7),
     ]
-    assert galois.bch_valid_codes(15) == codes
+    code = random.choice(codes)
+    bch = galois.BCH(code[0], code[1])
+    assert (bch.n, bch.k, bch.t) == code
 
 
 def test_bch_valid_codes_31():
@@ -49,7 +45,10 @@ def test_bch_valid_codes_31():
         (31, 6, 7),
         (31, 1, 15),
     ]
-    assert galois.bch_valid_codes(31) == codes
+    # code = random.choice(codes)
+    code = (31, 6, 7)
+    bch = galois.BCH(code[0], code[1])
+    assert (bch.n, bch.k, bch.t) == code
 
 
 def test_bch_valid_codes_63():
@@ -67,7 +66,9 @@ def test_bch_valid_codes_63():
         (63, 7, 15),
         (63, 1, 31),
     ]
-    assert galois.bch_valid_codes(63) == codes
+    code = random.choice(codes)
+    bch = galois.BCH(code[0], code[1])
+    assert (bch.n, bch.k, bch.t) == code
 
 
 def test_bch_valid_codes_127():
@@ -91,7 +92,9 @@ def test_bch_valid_codes_127():
         (127, 8, 31),
         (127, 1, 63),
     ]
-    assert galois.bch_valid_codes(127) == codes
+    code = random.choice(codes)
+    bch = galois.BCH(code[0], code[1])
+    assert (bch.n, bch.k, bch.t) == code
 
 
 def test_bch_valid_codes_255():
@@ -131,7 +134,9 @@ def test_bch_valid_codes_255():
         (255, 9, 63),
         (255, 1, 127),
     ]
-    assert galois.bch_valid_codes(255) == codes
+    code = random.choice(codes)
+    bch = galois.BCH(code[0], code[1])
+    assert (bch.n, bch.k, bch.t) == code
 
 
 def test_bch_valid_codes_511():
@@ -195,4 +200,6 @@ def test_bch_valid_codes_511():
         (511, 10, 127),
         (511, 1, 255),
     ]
-    assert galois.bch_valid_codes(511) == codes
+    code = random.choice(codes)
+    bch = galois.BCH(code[0], code[1])
+    assert (bch.n, bch.k, bch.t) == code
