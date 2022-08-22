@@ -3,10 +3,332 @@ A module containing common functions for linear block codes.
 """
 from __future__ import annotations
 
+from typing import Tuple, Union, Type, overload
+from typing_extensions import Literal
+
 import numpy as np
 
 from .._fields import FieldArray
 from .._helper import verify_isinstance
+from ..typing import ArrayLike
+
+
+class _LinearCode:
+    """
+    A FEC base class for linear codes.
+    """
+
+    def __init__(self, n: int, k: int, d: int, G: FieldArray, H: FieldArray, systematic: bool):
+        verify_isinstance(n, int)
+        verify_isinstance(k, int)
+        verify_isinstance(d, int)
+        verify_isinstance(G, FieldArray)
+        verify_isinstance(H, FieldArray)
+        verify_isinstance(systematic, bool)
+
+        if not n >= k:
+            raise ValueError(f"Argument `n` must be greater than or equal to `k`, {n} is not greater than {k}.")
+        if not d >= 1:
+            raise ValueError(f"Argument `d` must be at least 1, not {d}.")
+        if not type(G) is type(H):
+            raise ValueError(f"Arguments `G` and `H` must be over the same field, not {type(G)} and {type(H)}.")
+        if not G.shape == (k, n):
+            raise ValueError(f"Argument `G` must be have shape (k, n), {G.shape} is not ({k}, {n}).")
+        if not H.shape == (n - k, n):
+            raise ValueError(f"Argument `H` must be have shape (n - k, n), {H.shape} is not ({n - k}, {n}).")
+
+        self._n = n
+        self._k = k
+        self._d = d
+        self._field = type(G)
+        self._G = G
+        self._H = H
+        self._is_systematic = systematic
+
+    def encode(self, message: ArrayLike, parity_only: bool = False) -> FieldArray:
+        r"""
+        Encodes the message :math:`\mathbf{m}` into the codeword :math:`\mathbf{c}`.
+
+        Important
+        ---------
+        For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`k-s` symbols into
+        :func:`encode` to return the :math:`n-s`-symbol message.
+
+        Parameters
+        ----------
+        message
+            The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the number
+            of messages. For systematic codes, message lengths less than :math:`k` may be provided to produce
+            shortened codewords.
+        parity_only
+            Optionally specify whether to return only the parity symbols. This only applies to systematic codes.
+            The default is `False`.
+
+        Returns
+        -------
+        :
+            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. If `parity_only=True`, the parity
+            symbols are returned as either a :math:`n-k`-length vector or :math:`(N, n-k)` matrix.
+        """
+        if parity_only and not self.is_systematic:
+            raise ValueError("Argument `parity_only=True` only applies to systematic codes.")
+
+        message, is_message_1d = self._check_and_convert_message(message)
+        codeword = self._encode_message(message)
+        if is_message_1d:
+            codeword = codeword[0,:]
+
+        if parity_only:
+            parity = self._convert_codeword_to_parity(codeword)
+            return parity
+        else:
+            return codeword
+
+    def detect(self, codeword: ArrayLike) -> Union[bool, np.ndarray]:
+        r"""
+        Detects if errors are present in the codeword :math:`\mathbf{c}`.
+
+        Parameters
+        ----------
+        codeword
+            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
+            number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
+            shortened codewords.
+
+        Returns
+        -------
+        :
+            A boolean scalar or :math:`N`-length array indicating if errors were detected in the corresponding codeword.
+        """
+        codeword, is_codeword_1d = self._check_and_convert_codeword(codeword)
+        detected = self._detect_errors(codeword)
+
+        if is_codeword_1d:
+            detected = bool(detected[0])
+
+        return detected
+
+    @overload
+    def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> FieldArray:
+        ...
+    @overload
+    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[FieldArray, Union[int, np.ndarray]]:
+        ...
+    def decode(self, codeword, errors=False):
+        r"""
+        Decodes the codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
+
+        Important
+        ---------
+        For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
+        :func:`decode` to return the :math:`k-s`-symbol message.
+
+        Parameters
+        ----------
+        codeword
+            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
+            number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
+            shortened codewords.
+        errors
+            Optionally specify whether to return the number of corrected errors. The default is `False`.
+
+        Returns
+        -------
+        :
+            The decoded message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
+        :
+            Optional return argument of the number of corrected symbol errors as either a scalar or :math:`N`-length array.
+            Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
+            -1 will be returned.
+        """
+        codeword, is_codeword_1d = self._check_and_convert_codeword(codeword)
+        dec_codeword, N_errors = self._decode_codeword(codeword)
+
+        ns = codeword.shape[-1]  # The number of codeword symbols (could be less than self.n for shortened codes)
+        ks = self.k - (self.n - ns)  # The number of message symbols (could be less than self.k for shortened codes)
+
+        dec_message = self._convert_codeword_to_message(dec_codeword)
+        dec_message = dec_message[:, :ks]
+
+        if is_codeword_1d:
+            dec_message, N_errors = dec_message[0,:], int(N_errors[0])
+
+        if errors:
+            return dec_message, N_errors
+        else:
+            return dec_message
+
+    # def dual_code(self) -> _LinearCode:
+    #     n = self.n
+    #     k = self.n - self.k
+    #     d = 0
+    #     field = self.field
+    #     G = self.G.null_space()
+    #     H = self.H.null_space()
+    #     systematic = self.is_systematic
+    #     return super(n, k, d, field, G, H, systematic)
+
+    ###############################################################################
+    # Helper functions
+    ###############################################################################
+
+    def _check_and_convert_message(self, message: ArrayLike) -> Tuple[FieldArray, bool]:
+        """
+        Converts the array-like message into a 2-D FieldArray with shape (N, ks).
+        """
+        # Convert the array-like message into a FieldArray
+        message = self.field(message)
+
+        if message.ndim > 2:
+            raise ValueError(f"Argument `message` can be either 1-D or 2-D, not {message.ndim}-D.")
+        if self.is_systematic:
+            if not message.shape[-1] <= self.k:
+                raise ValueError(f"For a systematic code, argument `message` must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}.")
+        else:
+            if not message.shape[-1] == self.k:
+                raise ValueError(f"For a non-systematic code, argument `message` must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}.")
+
+        # Record if the original message was 1-D and then convert to 2-D
+        is_message_1d = message.ndim == 1
+        message = np.atleast_2d(message)
+
+        return message, is_message_1d
+
+    def _check_and_convert_codeword(self, codeword: FieldArray) -> FieldArray:
+        """
+        Converts the array-like codeword into a 2-D FieldArray with shape (N, ns).
+        """
+        # Convert the array-like codeword into a FieldArray
+        codeword = self.field(codeword)
+
+        if self.is_systematic:
+            if not codeword.shape[-1] <= self.n:
+                raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")
+        else:
+            if not codeword.shape[-1] == self.n:
+                raise ValueError(f"For a non-systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension equal to {self.n}, not shape {codeword.shape}.")
+
+        # Record if the original codeword was 1-D and then convert to 2-D
+        is_codeword_1d = codeword.ndim == 1
+        codeword = np.atleast_2d(codeword)
+
+        return codeword, is_codeword_1d
+
+    def _convert_codeword_to_message(self, codeword: FieldArray) -> FieldArray:
+        """
+        Returns the message portion (N, k) of the codeword (N, ns).
+        """
+        raise NotImplementedError
+
+    def _convert_codeword_to_parity(self, codeword: FieldArray) -> FieldArray:
+        """
+        Returns the parity portion (N, n - k) of the codeword (N, ns).
+        """
+        raise NotImplementedError
+
+    ###############################################################################
+    # Actual implementation functions that must be implemented in children
+    # classes
+    ###############################################################################
+
+    def _encode_message(self, message: FieldArray) -> FieldArray:
+        """
+        Encodes the message with shape (N, ks) into the codeword with shape (N, ns).
+        """
+        ks = message.shape[-1]  # The number of input message symbols (could be less than self.k for shortened codes)
+
+        if self.is_systematic:
+            parity = message @ self.G[-ks:, self.k:]
+            codeword = np.hstack((message, parity))
+        else:
+            codeword = message @ self.G
+
+        return codeword
+
+    def _detect_errors(self, codeword: FieldArray) -> np.ndarray:
+        """
+        Returns a boolean array (N,) indicating if errors are present in the codeword.
+        """
+        ns = codeword.shape[-1]  # The number of input codeword symbols (could be less than self.n for shortened codes)
+
+        # Compute the syndrome with shape (N, n-k) over GF(q) by matrix multiplying with the parity-check matrix
+        syndrome = codeword @ self.H[:, -ns:].T
+
+        # Any non-zero syndrome row has errors
+        detected = ~np.all(syndrome == 0, axis=1)
+
+        return detected
+
+    def _decode_codeword(self, codeword: FieldArray) -> Tuple[FieldArray, np.ndarray]:
+        """
+        Decodes errors in the received codeword. Returns the corrected codeword (N, ns) and array of number of corrected
+        errors (N,).
+        """
+        raise NotImplementedError
+
+    ###############################################################################
+    # Instance properties
+    ###############################################################################
+
+    @property
+    def field(self) -> Type[FieldArray]:
+        r"""
+        The Galois field :math:`\mathrm{GF}(q)` that defines the codeword alphabet.
+        """
+        return self._field
+
+    @property
+    def n(self) -> int:
+        """
+        The codeword size :math:`n` of the :math:`[n, k, d]_q` code. This is also called the code *length*.
+        """
+        return self._n
+
+    @property
+    def k(self) -> int:
+        """
+        The message size :math:`k` of the :math:`[n, k, d]_q` code. This is also called the code *dimension*.
+        """
+        return self._k
+
+    @property
+    def d(self) -> int:
+        r"""
+        The design distance :math:`d` of the :math:`[n, k, d]_q` code.
+        """
+        return self._d
+
+    @property
+    def t(self) -> int:
+        r"""
+        The error-correcting capability :math:`t` of the code. The code can correct :math:`t` symbol errors in
+        a codeword.
+
+        .. math::
+            t = \bigg\lfloor \frac{d - 1}{2} \bigg\rfloor
+        """
+        return (self.d - 1) // 2
+
+    @property
+    def G(self) -> FieldArray:
+        r"""
+        The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
+        """
+        return self._G
+
+    @property
+    def H(self) -> FieldArray:
+        r"""
+        The parity-check matrix :math:`\mathbf{H}` with shape :math:`(n - k, n)`.
+        """
+        return self._H
+
+    @property
+    def is_systematic(self) -> bool:
+        """
+        Indicates if the code is *systematic*, meaning the codewords have parity appended to the message.
+        """
+        return self._is_systematic
 
 
 def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
