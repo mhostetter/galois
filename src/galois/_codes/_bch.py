@@ -3,7 +3,6 @@ A module containing general Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(q).
 """
 from __future__ import annotations
 
-import math
 from typing import Type, overload
 from typing_extensions import Literal
 
@@ -299,7 +298,7 @@ class BCH(_CyclicCode):
             alpha = extension_field(alpha)
 
         if d is not None:
-            generator_poly, roots = _generator_poly_from_d(n, d, field, extension_field, alpha, c)
+            generator_poly, roots = _generator_poly_from_d(d, field, alpha, c)
             # Check if both `k` and `d` were provided that the code is consistent
             kk = n - generator_poly.degree
             if not k in [None, kk]:
@@ -587,7 +586,7 @@ class BCH(_CyclicCode):
     def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> FieldArray:
         ...
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> tuple[FieldArray, int | np.ndarray]:
+    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> tuple[FieldArray, int | np.ndarray]:  # pylint: disable=signature-differs
         ...
     @extend_docstring(_CyclicCode.decode, {},
         r"""
@@ -1185,10 +1184,8 @@ class BCH(_CyclicCode):
 
 
 def _generator_poly_from_d(
-    n: int,
     d: int,
     field: Type[FieldArray],
-    extension_field: Type[FieldArray],
     alpha: FieldArray,
     c: int
 ) -> tuple[Poly, FieldArray]:
@@ -1220,26 +1217,45 @@ def _generator_poly_from_k(
     Determines the BCH generator polynomial from the message size k.
     """
     m = ilog(extension_field.order, field.order)
-    d = int(math.ceil((n - k) / (2*m)))  # The minimum value of d
-    found = False
-    while True:
-        generator_poly, roots = _generator_poly_from_d(n, d, field, extension_field, alpha, c)
+
+    min_d = (n - k)//m + 1
+    max_d = (n - k) + 1
+    possible_d = list(range(min_d, max_d + 1))
+
+    # Binary search for a d that creates the BCH(n, k) code
+    while len(possible_d) > 0:
+        idx = len(possible_d) // 2
+        d = possible_d[idx]
+        generator_poly, roots = _generator_poly_from_d(d, field, alpha, c)
 
         if generator_poly.degree < n - k:
             # This d is too small to produce the BCH code
-            d += 1
+            possible_d = possible_d[idx + 1:]
         elif generator_poly.degree == n - k:
             # This d produces the correct BCH code size and g(x) is its generator. However, there may also be a larger d that
             # generates a BCH code of the same size, so keep looking.
-            found = True
-            best_generator_poly = generator_poly
-            best_roots = roots
-            d += 1
-        elif found and generator_poly.degree > n - k:
-            # This d does not produce a valid code, but the previous d (which is the largest) did, so use it
             break
         else:
-            raise ValueError(f"The BCH({n}, {k}) code over {field.name} with alpha={alpha} and c={c} does not exist.")
+            # This d is too large to produce the BCH code
+            possible_d = possible_d[0:idx]
+    else:
+        raise ValueError(f"The BCH({n}, {k}) code over {field.name} with alpha={alpha} and c={c} does not exist.")
+
+    # Single step d to ensure there are no codes of the same size with larger design distance
+    # TODO: Can this be another binary search?
+    best_generator_poly = generator_poly
+    best_roots = roots
+    while True:
+        d += 1
+        generator_poly, roots = _generator_poly_from_d(d, field, alpha, c)
+
+        if generator_poly.degree == n - k:
+            # This larger d still produces the same size code
+            best_generator_poly = generator_poly
+            best_roots = roots
+        elif generator_poly.degree > n - k:
+            # This d does not produce a valid code, but the previous d (which is "best") did, so use it
+            break
 
     return best_generator_poly, best_roots
 
