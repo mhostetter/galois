@@ -85,28 +85,28 @@ universal = false
 
 [tool.pylint]
 disable = [
-    "missing-module-docstring",
-    "missing-function-docstring",
-    "line-too-long",
-    "too-many-lines",
-    "invalid-name",
-    "no-else-return",
-    "fixme",
-    "too-many-arguments",
-    "too-many-locals",
-    "too-many-instance-attributes",
-    "too-many-ancestors",
-    "consider-using-enumerate",
-    "unneeded-not",
-    "global-statement",
-    "invalid-unary-operand-type",
-    "not-callable",  # pylint doesn't understand metaclass properties
-    "unsubscriptable-object",  # pylint doesn't understand metaclass properties
     "comparison-with-callable",  # pylint doesn't understand metaclass properties
+    "consider-using-enumerate",
     "eval-used",
-    "too-many-branches",
+    "fixme",
+    "global-statement",
+    "invalid-name",
+    "invalid-unary-operand-type",
+    "line-too-long",
+    "missing-function-docstring",
+    "missing-module-docstring",
+    "no-else-return",
+    "not-callable",  # pylint doesn't understand metaclass properties
     "protected-access",
+    "too-many-ancestors",
+    "too-many-arguments",
+    "too-many-branches",
+    "too-many-instance-attributes",
+    "too-many-lines",
+    "too-many-locals",
     "unnecessary-lambda-assignment",
+    "unneeded-not",
+    "unsubscriptable-object",  # pylint doesn't understand metaclass properties
 ]
 min-similarity-lines = 100
 
@@ -119,10 +119,10 @@ testpaths = [
 
 [tool.coverage.report]
 exclude_lines = [
-    "pragma: no cover",
-    "raise AssertionError",
-    "raise RuntimeError",
-    "raise NotImplementedError",
     "@overload",
     "if TYPE_CHECKING:",
+    "pragma: no cover",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "raise RuntimeError",
 ]
