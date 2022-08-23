@@ -1,85 +1,70 @@
 name: Release
 
 on:
-  workflow_dispatch:
+  push:
     branches:
-      master
-    inputs:
-      release_type:
-        description: "Release type (major,minor,patch)"
-        required: true
-        type: string
-        default: "patch"
+      - master
+    tags:
+      - v*
 
 jobs:
-  tag:
-    name: Tag new version
-    id: tag
-    runs-on: ubuntu-latest
-    outputs:
-      previous_version: ${{ steps.previous_version.outputs.version }}
-      next_version: ${{ steps.next_version.outputs.version }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Fetch all commits and tags
-          ref: ${{ github.REF }}
-
-      - name: Set up Python 3
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-
-      - name: Get previous version
-        id: previous_version
-        run: |  # Get last version tag and remove the "v"
-          version=$(git describe --tags --abbrev=0 | cut -c 2-)
-          echo "::set-output name=version::${version}"
-
-      - name: Validate next version
-        uses: zwaldowski/semver-release-action@v2
-        id: next_version
-        with:
-          dry_run: true
-          bump: ${{ github.event.inputs.release_type }}
-          prefix: "v"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Update version file
-      #   run: |
-      #     echo -n "${{ steps.next_version.outputs.version }}" > galois/version.txt
-      #     cat galois/version.txt
-
-      - name: Create and push new tag
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: "v${{ steps.next_version.outputs.version }}"
-          message: "v${{ steps.next_version.outputs.version }}"
-
-      # - name: Commit and tag version
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     file_pattern: galois/version.txt
-      #     commit_message: "Version bump to ${{ steps.next_version.outputs.version }}"
-      #     repository: .
-      #     branch: master
-      #     tagging_message: "v${{ steps.next_version.outputs.version }}"
-
   build:
     name: Build the package
     id: build
-    needs: tag
     uses: ./.github/workflows/build.yml
 
-  release-test:
-    name: Release on TestPyPI
-    id: release-test
-    needs: build
+  release:
+    name: Create GitHub release
+    id: release
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Fetch all commits and tags
           ref: ${{ github.REF }}
+
+      - name: Get current version
+        id: current
+        run: |
+          version=$(git tag --sort=-version:refname | head -n 1)
+          echo "::set-output name=version::${version}"
+
+      - name: Get previous version
+        id: previous
+        run: |
+          version=$(git tag --sort=-version:refname | head -n 2 | tail -1)
+          echo "::set-output name=version::${version}"
+
+      - name: Construct release notes
+        run: |
+          cp docs/release-notes/${{ steps.current.outputs.version }}.md release_notes.md
+          echo -e "\n## Commits\n" >> release_notes.md
+          git log --oneline ${{ steps.previous.outputs.version }}..${{ steps.current.outputs.version }} >> release_notes.md
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.current.outputs.version }}
+          release_name: galois v${{ steps.current.outputs.version }}
+          body_path: release_notes.md
+          draft: true
+
+  publish-test:
+    name: Publish on TestPyPI
+    id: publish-test
+    needs: build, release
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch all commits and tags
+          ref: ${{ github.REF }}
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist/
 
       - name: Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@v1.4.2
@@ -87,39 +72,29 @@ jobs:
           user: __token__
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
+          packages_dir: dist/
           verbose: true
 
-  release:
-    name: Release on PyPI
-    id: release
-    needs: tag, release-test
+  publish:
+    name: Publish on PyPI
+    id: publish
+    needs: publish-test
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Fetch all commits and tags
           ref: ${{ github.REF }}
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist/
+
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+          packages_dir: dist/
           verbose: true
-
-      - name: Construct release notes
-        run: |
-          prev=v${{ needs.tag.outputs.previous_version }}
-          next=v${{ needs.tag.outputs.next_version }}
-          cp docs/release-notes/v${{ needs.tag.outputs.next_version }}.md release_notes.md
-          echo -e "\n## Commits" >> release_notes.md
-          git log --oneline ${prev}..${next} >> release_notes.md
-
-      - name: Create GitHub release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ needs.tag.outputs.version }}
-          release_name: galois v${{ needs.tag.outputs.version }}
-          body_path: release_notes.md
-          draft: true
