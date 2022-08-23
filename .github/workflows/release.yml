@@ -13,6 +13,9 @@ jobs:
     id: build
     uses: ./.github/workflows/build.yml
 
+  # TODO: Add other CI workflows here: lint, docs, test?
+  # Here would also be the place to build the docs and then add a GitHub pages release job
+
   release:
     name: Create GitHub release
     id: release

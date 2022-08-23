@@ -7,8 +7,6 @@ jobs:
   build_wheel:
     name: Wheel
     runs-on: ubuntu-latest
-    outputs:
-      wheel_file: ${{ steps.get_wheel_name.outputs.paths }}
     steps:
       - uses: actions/checkout@v2
 

@@ -28,6 +28,7 @@ jobs:
           name: dist
           path: dist/
 
+      # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
         uses: tj-actions/glob@v10
         id: glob
@@ -73,13 +74,14 @@ jobs:
           name: dist
           path: dist/
 
+      # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
         uses: tj-actions/glob@v10
         id: glob
         with:
           files: dist/galois-*.whl
 
-      - name: Install the `galois` package wheel with [dev]
+      - name: Install the `galois` package wheel with upgraded [dev]
         run: python3 -m pip install --upgrade ${{ steps.glob.outputs.paths }}[dev]
 
       - name: Test with pytest

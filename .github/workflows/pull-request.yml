@@ -1,23 +1,24 @@
 name: Pull Request
 
 on:
-  # push:
-  #   branches:
-  #   - master
   pull_request:
     branches:
-    - master
+      - master
 
 jobs:
   build:
+    name: Build
     uses: ./.github/workflows/build.yml
 
   lint:
+    name: Lint
     uses: ./.github/workflows/lint.yml
 
   docs:
+    name: Docs
     uses: ./.github/workflows/docs.yml
 
   test:
+    name: Test
     uses: ./.github/workflows/test.yml
     needs: build
