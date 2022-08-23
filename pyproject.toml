@@ -60,7 +60,6 @@ doc = [
     "sphinx-design",
     "sphinxcontrib-details-directive",
     "ipykernel",
-    "numpy",
 ]
 
 [project.urls]
