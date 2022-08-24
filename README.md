@@ -1,12 +1,21 @@
 # ![Galois: A performant NumPy extension for Galois fields and their applications](https://raw.githubusercontent.com/mhostetter/galois/master/logo/galois-heading.png)
 
-[![PyPI version](https://badge.fury.io/py/galois.svg)](https://badge.fury.io/py/galois)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/galois)](https://pypistats.org/packages/galois)
-[![Supported Versions](https://img.shields.io/pypi/pyversions/galois.svg)](https://pypi.org/project/galois)
-[![Read the Docs](https://img.shields.io/readthedocs/galois)](https://galois.readthedocs.io/en/latest/)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mhostetter/galois/Test)](https://github.com/mhostetter/galois/actions)
-[![Codecov](https://img.shields.io/codecov/c/github/mhostetter/galois)](https://codecov.io/gh/mhostetter/galois)
-[![Twitter](https://img.shields.io/twitter/follow/galois_py?label=galois_py&style=flat&logo=twitter)](https://twitter.com/galois_py)
+<div align=center>
+  <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/v/galois"></a>
+  <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/pyversions/galois"></a>
+  <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/wheel/galois"></a>
+  <a href="https://pypistats.org/packages/galois"><img src="https://img.shields.io/pypi/dm/galois"></a>
+  <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/l/galois"></a>
+  <a href="https://twitter.com/galois_py"><img src="https://img.shields.io/twitter/follow/galois_py?label=galois_py&style=flat&logo=twitter"></a>
+</div>
+
+<div align=center>
+  <a href="https://github.com/mhostetter/galois/actions/workflows/docs.yml"><img src="https://github.com/mhostetter/galois/actions/workflows/docs.yml/badge.svg"></a>
+  <a href="https://github.com/mhostetter/galois/actions/workflows/build.yml"><img src="https://github.com/mhostetter/galois/actions/workflows/build.yml/badge.svg"></a>
+  <a href="https://github.com/mhostetter/galois/actions/workflows/lint.yml"><img src="https://github.com/mhostetter/galois/actions/workflows/lint.yml/badge.svg"></a>
+  <a href="https://github.com/mhostetter/galois/actions/workflows/test.yml"><img src="https://github.com/mhostetter/galois/actions/workflows/test.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/mhostetter/galois"><img src="https://codecov.io/gh/mhostetter/galois/branch/master/graph/badge.svg?token=3FJML79ZUK"></a>
+</div>
 
 The `galois` library is a Python 3 package that extends NumPy arrays to operate over finite fields.
 
