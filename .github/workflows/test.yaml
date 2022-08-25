@@ -1,11 +1,32 @@
 name: Test
 
 on:
-  workflow_call
+  # push:
+  #   branches:
+  #     - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
+  wait-on-wheel:
+    name: Wait for wheel
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait on build.yaml to build the wheel
+        uses: lewagon/wait-on-check-action@v1.0.0
+        with:
+          # NOTE: https://github.com/lewagon/wait-on-check-action/issues/25#issuecomment-784773361
+          # May need to modify this if running tests on `master` too
+          ref:  ${{ github.event.pull_request.head.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          check-name: 'Wheel'
+          allowed-conclusions: success
+          wait-interval: 10
+
   test-min:
     name: Min
+    needs: wait-on-wheel
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -23,10 +44,11 @@ jobs:
         run: python3 -m pip install --upgrade pip
 
       - name: Download wheel artifact
-        uses: actions/download-artifact@v2
+        uses: dawidd6/action-download-artifact@v2
         with:
-          name: dist
-          path: dist/
+          workflow: build.yaml
+          workflow_conclusion: success
+          commit: ${{github.event.pull_request.head.sha}}
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
@@ -52,6 +74,7 @@ jobs:
 
   test-latest:
     name: Latest
+    needs: wait-on-wheel
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -69,10 +92,11 @@ jobs:
         run: python3 -m pip install --upgrade pip
 
       - name: Download wheel artifact
-        uses: actions/download-artifact@v2
+        uses: dawidd6/action-download-artifact@v2
         with:
-          name: dist
-          path: dist/
+          workflow: build.yaml
+          workflow_conclusion: success
+          commit: ${{github.event.pull_request.head.sha}}
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name

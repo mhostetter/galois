@@ -1,7 +1,12 @@
 name: Lint
 
 on:
-  workflow_call
+  # push:
+  #   branches:
+  #     - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   run-linter:
