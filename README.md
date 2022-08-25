@@ -10,10 +10,10 @@
 </div>
 
 <div align=center>
-  <a href="https://github.com/mhostetter/galois/actions/workflows/docs.yml"><img src="https://github.com/mhostetter/galois/actions/workflows/docs.yml/badge.svg"></a>
-  <a href="https://github.com/mhostetter/galois/actions/workflows/build.yml"><img src="https://github.com/mhostetter/galois/actions/workflows/build.yml/badge.svg"></a>
-  <a href="https://github.com/mhostetter/galois/actions/workflows/lint.yml"><img src="https://github.com/mhostetter/galois/actions/workflows/lint.yml/badge.svg"></a>
-  <a href="https://github.com/mhostetter/galois/actions/workflows/test.yml"><img src="https://github.com/mhostetter/galois/actions/workflows/test.yml/badge.svg"></a>
+  <a href="https://github.com/mhostetter/galois/actions/workflows/docs.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/docs.yaml/badge.svg"></a>
+  <a href="https://github.com/mhostetter/galois/actions/workflows/lint.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/lint.yaml/badge.svg"></a>
+  <a href="https://github.com/mhostetter/galois/actions/workflows/build.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/build.yaml/badge.svg"></a>
+  <a href="https://github.com/mhostetter/galois/actions/workflows/test.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/test.yaml/badge.svg"></a>
   <a href="https://codecov.io/gh/mhostetter/galois"><img src="https://codecov.io/gh/mhostetter/galois/branch/master/graph/badge.svg?token=3FJML79ZUK"></a>
 </div>
 

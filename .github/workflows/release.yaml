@@ -11,7 +11,7 @@ jobs:
   build:
     name: Build the package
     id: build
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/build.yaml
 
   # TODO: Add other CI workflows here: lint, docs, test?
   # Here would also be the place to build the docs and then add a GitHub pages release job

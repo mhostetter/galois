@@ -8,17 +8,17 @@ on:
 jobs:
   build:
     name: Build
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/build.yaml
 
   lint:
     name: Lint
-    uses: ./.github/workflows/lint.yml
+    uses: ./.github/workflows/lint.yaml
 
   docs:
     name: Docs
-    uses: ./.github/workflows/docs.yml
+    uses: ./.github/workflows/docs.yaml
 
   test:
     name: Test
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test.yaml
     needs: build
