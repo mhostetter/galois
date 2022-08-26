@@ -2,8 +2,6 @@ name: Release
 
 on:
   push:
-    branches:
-      - master
     tags:
       - v*
 
@@ -17,6 +15,7 @@ jobs:
 
   release:
     name: Create GitHub release
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -53,7 +52,8 @@ jobs:
 
   publish:
     name: Publish on PyPI
-    needs: build, release
+    needs: [build, release]
+    runs-on: ubuntu-latest
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v2
