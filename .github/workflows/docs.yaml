@@ -23,8 +23,11 @@ jobs:
       - name: Upgrade pip
         run: python3 -m pip install --upgrade pip
 
-      - name: Install the `galois` package with [doc]
-        run: python3 -m pip install .[doc]
+      - name: Install the documentation dependencies
+        run: python3 -m pip install -r docs/requirements.txt
+
+      - name: Install the `galois` package
+        run: python3 -m pip install .
 
       - name: Run Sphinx to build docs
         run: sphinx-build -b dirhtml -v docs/ docs/build/

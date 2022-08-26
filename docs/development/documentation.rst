@@ -7,19 +7,17 @@ The :obj:`galois` documentation is generated with `Sphinx <https://www.sphinx-do
 Install
 -------
 
-The documentation dependencies are stored in `pyproject.toml`.
+The documentation dependencies are stored in `docs/requirements.txt`.
 
-.. literalinclude:: ../../pyproject.toml
-   :caption: pyproject.toml
-   :start-at: [project.optional-dependencies]
-   :end-before: [project.urls]
-   :language: toml
+.. literalinclude:: ../requirements.txt
+   :caption: docs/requirements.txt
+   :language: txt
 
-Install the documentation dependencies by passing the `[doc]` extras to `pip install`.
+Install the documentation dependencies by passing the `-r` switch to `pip install`.
 
 .. code-block:: sh
 
-   $ python3 -m pip install .[doc]
+   $ python3 -m pip install -r docs/requirements.txt
 
 Build the docs
 --------------

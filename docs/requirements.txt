@@ -1,0 +1,6 @@
+sphinx==5
+git+https://github.com/jbms/sphinx-immaterial@bf169751fba59362bcd06da96bfa65b2728cbbae
+myst-parser
+sphinx-design
+sphinxcontrib-details-directive
+ipykernel
