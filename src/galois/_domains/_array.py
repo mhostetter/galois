@@ -12,12 +12,12 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._helper import set_module, verify_isinstance, SPHINX_BUILD
+from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 
 from ._function import FunctionMixin
 from ._linalg import LinalgFunctionMixin
 from ._lookup import UFuncMixin
 from ._meta import ArrayMeta
-from ._typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 
 __all__ = ["Array"]
 
