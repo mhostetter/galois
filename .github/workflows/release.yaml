@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.current.outputs.version }}
-          release_name: galois v${{ steps.current.outputs.version }}
+          release_name: galois ${{ steps.current.outputs.version }}
           body_path: release_notes.md
           draft: true
 
