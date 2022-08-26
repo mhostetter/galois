@@ -5,7 +5,7 @@ A performant NumPy extension for Galois fields and their applications.
 
 try:
     from ._version import __version__, __version_tuple__
-except ModuleNotFoundError:
+except ModuleNotFoundError:  # pragma: no cover
     __version__ = "0.0.0"
     __version_tuple__ = (0, 0, 0)
     import warnings
