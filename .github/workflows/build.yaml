@@ -1,9 +1,9 @@
 name: Build
 
 on:
-  # push:
-  #   branches:
-  #     - master
+  push:
+    branches:
+      - master
   workflow_call:
   pull_request:
     branches:
