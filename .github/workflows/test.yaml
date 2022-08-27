@@ -16,9 +16,11 @@ jobs:
       - name: Wait on build.yaml to build the wheel
         uses: lewagon/wait-on-check-action@v1.0.0
         with:
-          # NOTE: https://github.com/lewagon/wait-on-check-action/issues/25#issuecomment-784773361
-          # May need to modify this if running tests on `master` too
-          ref:  ${{ github.event.pull_request.head.sha }}
+          # When triggered on a pull request, github.sha is a temporary merge commit for the PR. The wait
+          # action must wait on the SHA of the commit that triggered the workflow, which is the HEAD of the
+          # PR branch. https://github.com/lewagon/wait-on-check-action/issues/25#issuecomment-784773361
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          # NOTE: Fake ternary operator, see https://github.com/actions/runner/issues/409
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           check-name: 'Wheel'
           allowed-conclusions: success
