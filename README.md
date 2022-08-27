@@ -28,9 +28,8 @@ Internally, the finite field arithmetic is implemented by replacing [NumPy ufunc
 The new ufuncs are written in pure Python and [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
 [Numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit calculation (for memory savings).
 
-| :warning: Disclaimer    |
-|:------------------------|
-| The algorithms implemented in the NumPy ufuncs are not constant-time, but were instead designed for performance. As such, the library could be vulnerable to a [side-channel timing attack](https://en.wikipedia.org/wiki/Timing_attack). This library is not intended for production security, but instead for research & development, reverse engineering, cryptanalysis, experimentation, and general education. |
+> **Warning**
+> The algorithms implemented in the NumPy ufuncs are not constant-time, but were instead designed for performance. As such, the library could be vulnerable to a [side-channel timing attack](https://en.wikipedia.org/wiki/Timing_attack). This library is not intended for production security, but instead for research & development, reverse engineering, cryptanalysis, experimentation, and general education.
 
 ## Features
 
