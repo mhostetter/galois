@@ -12,7 +12,7 @@ authors = [
 ]
 description = "A performant NumPy extension for Galois fields and their applications"
 readme = "README.md"
-license = {file = "LICENSE"}
+license = {text = "MIT"}
 keywords = [
     "galois field", "finite field", "numpy",
     "fec", "error correction", "bch", "reed solomon", "hamming", "golay",
@@ -37,6 +37,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Security :: Cryptography",
     "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
 requires-python = ">=3.7"
 dependencies = [
@@ -55,13 +56,13 @@ dev = [
 ]
 
 [project.urls]
-homepage = "https://github.com/mhostetter/galois"
-source = "https://github.com/mhostetter/galois"
-issues = "https://github.com/mhostetter/galois/issues"
-documentation = "https://galois.readthedocs.io/en/stable/"
-discuss = "https://github.com/mhostetter/galois/discussions"
-changelog = "https://galois.readthedocs.io/en/stable/release-notes/versioning/"
-twitter = "https://twitter.com/galois_py"
+Homepage = "https://github.com/mhostetter/galois"
+Source = "https://github.com/mhostetter/galois"
+Issues = "https://github.com/mhostetter/galois/issues"
+Documentation = "https://galois.readthedocs.io/en/stable/"
+Discuss = "https://github.com/mhostetter/galois/discussions"
+Changelog = "https://galois.readthedocs.io/en/stable/release-notes/versioning/"
+Twitter = "https://twitter.com/galois_py"
 
 [tool.setuptools_scm]
 write_to = "src/galois/_version.py"
