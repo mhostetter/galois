@@ -171,22 +171,8 @@ html_theme_options = {
         "provider": "google",
         "property": "G-4FW9NCNFZH"
     },
-    # "font": {
-    #     "code": "Ubuntu Mono"
-    # },
-    # "version_dropdown": True,
-    # "version_info": [
-    #     {
-    #         "version": "https://sphinx-immaterial.rtfd.io",
-    #         "title": "ReadTheDocs",
-    #         "aliases": []
-    #     },
-    #     {
-    #         "version": "https://jbms.github.io/sphinx-immaterial",
-    #         "title": "Github Pages",
-    #         "aliases": []
-    #     },
-    # ],
+    "version_dropdown": True,
+    "version_json": "../versions.json",
 }
 
 html_last_updated_fmt = ""
