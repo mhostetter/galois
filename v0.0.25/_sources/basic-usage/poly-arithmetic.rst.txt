@@ -4,7 +4,7 @@ Polynomial Arithmetic
 Standard arithmetic
 -------------------
 
-After creating a :doc:`polynomial over a finite field <poly>`, nearly any polynomial arithmetic operation can be
+After creating a :ref:`polynomial over a finite field <Polynomial Creation>`, nearly any polynomial arithmetic operation can be
 performed using Python operators.
 
 In the sections below, the finite field :math:`\mathrm{GF}(7)` and polynomials :math:`f(x)` and :math:`g(x)` are used.
@@ -85,20 +85,20 @@ Expand any section for more details.
         f + f + f + f
 
     In finite fields :math:`\mathrm{GF}(p^m)`, the characteristic :math:`p` is the smallest value when multiplied by
-    any non-zero field element that always results in 0.
+    any non-zero field element that always results in :math:`0`.
 
     .. ipython:: python
 
         p = GF.characteristic; p
         f * p
 
-.. details:: Division: `f // g`
+.. details:: Division: `f / g == f // g`
 
-    Divide one polynomial by another. Floor division is supported. True division is not supported since fractional polynomials are not
-    currently supported.
+    Divide one polynomial by another. True division and floor division are equivalent.
 
     .. ipython:: python
 
+        f / g
         f // g
 
     Divide a polynomial by a finite field scalar, or vice versa. The scalar is treated as a 0-degree polynomial.
@@ -168,14 +168,21 @@ Polynomial objects also work on several special arithmetic operations. Below are
     f = galois.Poly([1, 30, 0, 26, 6], field=GF); f
     g = galois.Poly([4, 17, 3], field=GF); g
 
-Compute the polynomial greatest common divisor using :func:`~galois.gcd` and :func:`~galois.egcd`.
+Compute the polynomial greatest common divisor using :func:`galois.gcd` and :func:`galois.egcd`.
 
 .. ipython:: python
 
     galois.gcd(f, g)
     galois.egcd(f, g)
 
-Factor a polynomial into its irreducible polynomial factors using :func:`~galois.factors`.
+Perform efficient modular exponentiation using the built-in :func:`pow`.
+
+.. ipython:: python
+
+    # Computes (f ** 127) % g
+    pow(f, 127, g)
+
+Factor a polynomial into its irreducible polynomial factors using :func:`galois.factors`.
 
 .. ipython:: python
 
@@ -184,7 +191,7 @@ Factor a polynomial into its irreducible polynomial factors using :func:`~galois
 Polynomial evaluation
 ---------------------
 
-Polynomials are evaluated by invoking :func:`~galois.Poly.__call__`. They can be evaluated at scalars.
+Polynomials are evaluated by invoking :func:`galois.Poly.__call__`. They can be evaluated at scalars.
 
 .. ipython:: python
 

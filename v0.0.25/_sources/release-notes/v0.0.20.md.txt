@@ -2,7 +2,7 @@
 
 *Released August 24, 2021*
 
-## Breaking changes
+## Breaking Changes
 
 - Move `poly_gcd()` functionality into `gcd()`.
 - Move `poly_egcd()` functionality into `egcd()`.

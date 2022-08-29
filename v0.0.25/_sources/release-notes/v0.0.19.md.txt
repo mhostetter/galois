@@ -2,7 +2,7 @@
 
 *Released August 9, 2021*
 
-## Breaking changes
+## Breaking Changes
 
 - Remove unnecessary `is_field()` function. Use `isinstance(x, galois.FieldClass)` or `isinstance(x, galois.FieldArray)` instead.
 - Remove `log_naive()` function. Might be re-added later through `np.log()` on a multiplicative group array.

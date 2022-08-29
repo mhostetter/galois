@@ -2,7 +2,7 @@
 
 *Released December 3, 2021*
 
-## Breaking changes
+## Breaking Changes
 
 - Random integer generation is handled using [new style](https://numpy.org/doc/stable/reference/random/index.html#random-quick-start) random generators. Now each `.Random()` call will generate a new seed rather than using the NumPy "global" seed used with `np.random.randint()`.
 - Add a `seed=None` keyword argument to `FieldArray.Random()` and `Poly.Random()`. A reproducible script can be constructed like this:

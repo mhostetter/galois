@@ -1,0 +1,71 @@
+﻿galois.FieldClass
+=================
+
+.. currentmodule:: galois
+
+.. autoclass:: FieldClass
+   
+
+   
+
+   
+   
+
+   
+   
+   .. rubric:: Constructors
+   .. autosummary::
+   
+      __init__
+   
+   
+
+   
+   
+   .. rubric:: Special Methods
+   .. autosummary::
+   
+      __repr__
+      __str__
+   
+   
+
+   
+   
+   .. rubric:: Methods
+   .. autosummary::
+   
+      arithmetic_table
+      compile
+      display
+      repr_table
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   .. autosummary::
+   
+      characteristic
+      default_ufunc_mode
+      degree
+      display_mode
+      dtypes
+      irreducible_poly
+      is_extension_field
+      is_prime_field
+      is_primitive_poly
+      name
+      order
+      prime_subfield
+      primitive_element
+      primitive_elements
+      quadratic_non_residues
+      quadratic_residues
+      ufunc_mode
+      ufunc_modes
+   
+   
+
+   .. automethod:: __init__

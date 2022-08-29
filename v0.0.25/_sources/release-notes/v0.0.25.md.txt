@@ -2,7 +2,7 @@
 
 *Released March 21, 2022*
 
-## Breaking changes
+## Breaking Changes
 
 - Separated `LFSR` into `FLFSR`/`GLFSR` and fixed/redefined terms (feedback poly, characteristic poly, state). ([#285](https://github.com/mhostetter/galois/pull/285))
 - Removed `galois.pow()` and replaced it with the built-in `pow()`. ([#300](https://github.com/mhostetter/galois/pull/300))
