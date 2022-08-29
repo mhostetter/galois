@@ -87,6 +87,12 @@
       
     </div>
     
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
     
       
 
@@ -7294,15 +7300,15 @@ Vector</label><div class="sd-tab-content docutils">
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([1, 1, 0, 1, 1, 0, 0], order=2)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([1, 1, 0, 1, 0, 1, 0], order=2)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1], order=2)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0], order=2)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity bits only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
-<span class="gh">Out[5]: </span><span class="go">GF([0, 1, 1, 0, 0, 1, 1, 1], order=2)</span>
+<span class="gh">Out[5]: </span><span class="go">GF([1, 1, 1, 1, 0, 0, 1, 0], order=2)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7315,15 +7321,15 @@ Vector (shortened)</label><div class="sd-tab-content docutils">
 <span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="gp">In [8]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[8]: </span><span class="go">GF([1, 1, 0, 1], order=2)</span>
+<span class="gh">Out[8]: </span><span class="go">GF([1, 1, 1, 0], order=2)</span>
 
 <span class="gp">In [9]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[9]: </span><span class="go">GF([1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0], order=2)</span>
+<span class="gh">Out[9]: </span><span class="go">GF([1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0], order=2)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity bits only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
-<span class="gh">Out[10]: </span><span class="go">GF([0, 0, 1, 0, 1, 0, 1, 0], order=2)</span>
+<span class="gh">Out[10]: </span><span class="go">GF([1, 0, 0, 0, 1, 0, 0, 0], order=2)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7337,23 +7343,23 @@ Matrix</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [13]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[13]: </span><span class="go"></span>
-<span class="go">GF([[0, 1, 0, 1, 1, 0, 0],</span>
-<span class="go">    [0, 0, 1, 1, 0, 0, 0],</span>
-<span class="go">    [0, 1, 0, 1, 1, 1, 0]], order=2)</span>
+<span class="go">GF([[1, 1, 1, 0, 0, 1, 1],</span>
+<span class="go">    [0, 0, 1, 0, 1, 1, 0],</span>
+<span class="go">    [0, 1, 1, 1, 0, 1, 0]], order=2)</span>
 
 <span class="gp">In [14]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[14]: </span><span class="go"></span>
-<span class="go">GF([[0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1],</span>
-<span class="go">    [0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1],</span>
-<span class="go">    [0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0]], order=2)</span>
+<span class="go">GF([[1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0],</span>
+<span class="go">    [0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1],</span>
+<span class="go">    [0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity bits only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [15]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
 <span class="gh">Out[15]: </span><span class="go"></span>
-<span class="go">GF([[1, 0, 0, 0, 1, 1, 1, 1],</span>
-<span class="go">    [0, 0, 1, 0, 0, 1, 1, 1],</span>
-<span class="go">    [1, 1, 1, 1, 1, 1, 0, 0]], order=2)</span>
+<span class="go">GF([[0, 0, 0, 0, 0, 1, 0, 0],</span>
+<span class="go">    [1, 0, 1, 0, 1, 1, 1, 1],</span>
+<span class="go">    [0, 0, 1, 0, 0, 0, 0, 0]], order=2)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7367,23 +7373,23 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [18]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[18]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 0],</span>
-<span class="go">    [1, 1, 0, 1],</span>
-<span class="go">    [1, 0, 1, 1]], order=2)</span>
+<span class="go">GF([[0, 1, 1, 0],</span>
+<span class="go">    [1, 0, 1, 0],</span>
+<span class="go">    [1, 0, 1, 0]], order=2)</span>
 
 <span class="gp">In [19]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[19]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1],</span>
-<span class="go">    [1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0],</span>
-<span class="go">    [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]], order=2)</span>
+<span class="go">GF([[0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1],</span>
+<span class="go">    [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0],</span>
+<span class="go">    [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity bits only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [20]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
 <span class="gh">Out[20]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 1, 1, 1, 0, 1, 1],</span>
-<span class="go">    [0, 0, 1, 0, 1, 0, 1, 0],</span>
-<span class="go">    [1, 0, 1, 1, 1, 1, 1, 1]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 1, 0, 1, 0, 1],</span>
+<span class="go">    [0, 1, 1, 0, 1, 1, 1, 0],</span>
+<span class="go">    [0, 1, 1, 0, 1, 1, 1, 0]], order=2)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7398,7 +7404,7 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
   <small>
     
       Last update:
-      Aug 28, 2022
+      Aug 29, 2022
     
   </small>
 </div>
@@ -7512,7 +7518,7 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
       <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>

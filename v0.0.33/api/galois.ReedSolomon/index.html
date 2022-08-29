@@ -87,6 +87,12 @@
       
     </div>
     
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
     
       
 
@@ -7395,10 +7401,10 @@ applicable for systematic codes.</p>
 </div>
 <p>Encode a message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([ 3,  4, 10, 13, 12,  6,  1,  9,  6], order=2^4)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([14, 12, 10,  0,  8, 14,  2,  8, 15], order=2^4)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([ 3,  4, 10, 13, 12,  6,  1,  9,  6,  5,  1, 13, 10,  8,  2], order=2^4)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([14, 12, 10,  0,  8, 14,  2,  8, 15, 10,  7,  1,  9,  9, 13], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Corrupt the codeword and decode the message.</p>
@@ -7406,7 +7412,7 @@ applicable for systematic codes.</p>
 <span class="gp">In [5]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">13</span>
 
 <span class="gp">In [6]: </span><span class="n">dec_m</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">dec_m</span>
-<span class="gh">Out[6]: </span><span class="go">GF([ 3,  4, 10, 13, 12,  6,  1,  9,  6], order=2^4)</span>
+<span class="gh">Out[6]: </span><span class="go">GF([14, 12, 10,  0,  8, 14,  2,  8, 15], order=2^4)</span>
 
 <span class="gp">In [7]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">dec_m</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[7]: </span><span class="go">True</span>
@@ -7414,7 +7420,7 @@ applicable for systematic codes.</p>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="go"># Instruct the decoder to return the number of corrected symbol errors</span>
 <span class="gp">In [8]: </span><span class="n">dec_m</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">dec_m</span><span class="p">,</span> <span class="n">N</span>
-<span class="gh">Out[8]: </span><span class="go">(GF([ 3,  4, 10, 13, 12,  6,  1,  9,  6], order=2^4), 1)</span>
+<span class="gh">Out[8]: </span><span class="go">(GF([14, 12, 10,  0,  8, 14,  2,  8, 15], order=2^4), 1)</span>
 
 <span class="gp">In [9]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">dec_m</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[9]: </span><span class="go">True</span>
@@ -7555,7 +7561,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
   <small>
     
       Last update:
-      Aug 28, 2022
+      Aug 29, 2022
     
   </small>
 </div>
@@ -7669,7 +7675,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
       <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>

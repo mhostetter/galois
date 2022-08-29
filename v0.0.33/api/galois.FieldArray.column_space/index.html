@@ -87,6 +87,12 @@
       
     </div>
     
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
     
       
 
@@ -7220,9 +7226,9 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The column 
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[10, 30, 13, 24, 16],</span>
-<span class="go">    [ 9,  9,  8,  8, 10],</span>
-<span class="go">    [19, 19,  9, 15,  7]], order=31)</span>
+<span class="go">GF([[ 1,  7, 14, 19, 23],</span>
+<span class="go">    [29,  5, 15, 26, 22],</span>
+<span class="go">    [26, 29, 27, 10, 14]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">C</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">column_space</span><span class="p">();</span> <span class="n">C</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
@@ -7234,8 +7240,8 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The column 
 <p>The dimension of the column space and null space sum to <span class="math notranslate nohighlight">\(n\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">();</span> <span class="n">N</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0, 10, 29,  2],</span>
-<span class="go">    [ 0,  1,  8,  4,  5]], order=31)</span>
+<span class="go">GF([[ 1,  0,  0, 30, 21],</span>
+<span class="go">    [ 0,  1,  2, 11, 15]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">C</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">n</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>
@@ -7251,7 +7257,7 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The column 
   <small>
     
       Last update:
-      Aug 28, 2022
+      Aug 29, 2022
     
   </small>
 </div>
@@ -7365,7 +7371,7 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The column 
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
       <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>

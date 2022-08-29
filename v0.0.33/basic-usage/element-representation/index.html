@@ -87,6 +87,12 @@
       
     </div>
     
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
     
       
 
@@ -7435,21 +7441,21 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [40]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[40]: </span><span class="go"></span>
-<span class="go">GF([[             2α^3 + α + 1,      2α^4 + α^3 + α^2 + 1,</span>
-<span class="go">              α^4 + α^3 + 2α^2,                         α,</span>
-<span class="go">                α^4 + α^2 + 2α],</span>
-<span class="go">    [ 2α^4 + α^3 + α^2 + α + 1,                  2α^3 + α,</span>
-<span class="go">                       α^2 + α,            α^3 + α^2 + 2α,</span>
-<span class="go">                  α^3 + 2α + 2],</span>
-<span class="go">    [               α^3 + 2α^2,             α^4 + α^2 + 1,</span>
-<span class="go">                      2α^3 + 1,               2α^3 + 2α^2,</span>
-<span class="go">                2α^3 + α^2 + α],</span>
-<span class="go">    [       2α^4 + α^3 + α + 1,                  2α^3 + 2,</span>
-<span class="go">         2α^4 + α^3 + 2α^2 + 2, α^4 + 2α^3 + α^2 + 2α + 1,</span>
-<span class="go">             α^4 + α^3 + α + 1],</span>
-<span class="go">    [      2α^4 + α^3 + 2α + 1,       2α^3 + 2α^2 + α + 1,</span>
-<span class="go">                α^3 + 2α^2 + 1,       2α^4 + 2α^2 + α + 2,</span>
-<span class="go">                         α + 1]], order=3^5)</span>
+<span class="go">GF([[                    α^3 + 1,                    α^3 + 2α,</span>
+<span class="go">           2α^4 + 2α^3 + α^2 + α,                        2α^2,</span>
+<span class="go">             α^3 + 2α^2 + 2α + 1],</span>
+<span class="go">    [          2α^4 + α^3 + 2α^2,              α^4 + 2α^3 + 2,</span>
+<span class="go">       α^4 + α^3 + 2α^2 + 2α + 2,        2α^4 + 2α^3 + 2α + 2,</span>
+<span class="go">                            2α^2],</span>
+<span class="go">    [              α^4 + α^3 + α,       α^4 + 2α^3 + 2α^2 + 2,</span>
+<span class="go">              α^4 + α^2 + 2α + 2,          2α^4 + α^3 + α + 1,</span>
+<span class="go">     2α^4 + 2α^3 + 2α^2 + 2α + 1],</span>
+<span class="go">    [      α^4 + 2α^3 + α^2 + 2α,            2α^3 + 2α^2 + 2α,</span>
+<span class="go">                 α^3 + 2α^2 + 2α,                α^4 + 2α + 2,</span>
+<span class="go">                   2α^2 + 2α + 2],</span>
+<span class="go">    [  α^4 + 2α^3 + 2α^2 + α + 2,          α^4 + α^3 + 2α + 1,</span>
+<span class="go">            2α^4 + α^3 + α^2 + 2,    α^4 + α^3 + α^2 + 2α + 2,</span>
+<span class="go">             2α^4 + 2α^3 + α + 2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <p>The readability is improved by increasing the line width using <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html#numpy.set_printoptions" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.set_printoptions()</span></code></a>.</p>
@@ -7457,12 +7463,16 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [42]: </span><span class="n">x</span>
 <span class="gh">Out[42]: </span><span class="go"></span>
-<span class="go">GF([[             2α^3 + α + 1,      2α^4 + α^3 + α^2 + 1,          α^4 + α^3 + 2α^2,                         α,            α^4 + α^2 + 2α],</span>
-<span class="go">    [ 2α^4 + α^3 + α^2 + α + 1,                  2α^3 + α,                   α^2 + α,            α^3 + α^2 + 2α,              α^3 + 2α + 2],</span>
-<span class="go">    [               α^3 + 2α^2,             α^4 + α^2 + 1,                  2α^3 + 1,               2α^3 + 2α^2,            2α^3 + α^2 + α],</span>
-<span class="go">    [       2α^4 + α^3 + α + 1,                  2α^3 + 2,     2α^4 + α^3 + 2α^2 + 2, α^4 + 2α^3 + α^2 + 2α + 1,         α^4 + α^3 + α + 1],</span>
-<span class="go">    [      2α^4 + α^3 + 2α + 1,       2α^3 + 2α^2 + α + 1,            α^3 + 2α^2 + 1,       2α^4 + 2α^2 + α + 2,                     α + 1]],</span>
-<span class="go">   order=3^5)</span>
+<span class="go">GF([[                    α^3 + 1,                    α^3 + 2α,       2α^4 + 2α^3 + α^2 + α,                        2α^2,</span>
+<span class="go">             α^3 + 2α^2 + 2α + 1],</span>
+<span class="go">    [          2α^4 + α^3 + 2α^2,              α^4 + 2α^3 + 2,   α^4 + α^3 + 2α^2 + 2α + 2,        2α^4 + 2α^3 + 2α + 2,</span>
+<span class="go">                            2α^2],</span>
+<span class="go">    [              α^4 + α^3 + α,       α^4 + 2α^3 + 2α^2 + 2,          α^4 + α^2 + 2α + 2,          2α^4 + α^3 + α + 1,</span>
+<span class="go">     2α^4 + 2α^3 + 2α^2 + 2α + 1],</span>
+<span class="go">    [      α^4 + 2α^3 + α^2 + 2α,            2α^3 + 2α^2 + 2α,             α^3 + 2α^2 + 2α,                α^4 + 2α + 2,</span>
+<span class="go">                   2α^2 + 2α + 2],</span>
+<span class="go">    [  α^4 + 2α^3 + 2α^2 + α + 2,          α^4 + α^3 + 2α + 1,        2α^4 + α^3 + α^2 + 2,    α^4 + α^3 + α^2 + 2α + 2,</span>
+<span class="go">             2α^4 + 2α^3 + α + 2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <h2 id="representation-comparisons">Representation comparisons<a class="headerlink" href="#representation-comparisons" title="Permalink to this heading">¶</a></h2>
@@ -7509,7 +7519,7 @@ With the default line width, the array is quite difficult to read.</p>
   <small>
     
       Last update:
-      Aug 28, 2022
+      Aug 29, 2022
     
   </small>
 </div>
@@ -7623,7 +7633,7 @@ With the default line width, the array is quite difficult to read.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
       <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>
