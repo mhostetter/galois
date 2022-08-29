@@ -1,0 +1,64 @@
+﻿galois.ReedSolomon
+==================
+
+.. currentmodule:: galois
+
+.. autoclass:: ReedSolomon
+   
+
+   
+
+   
+   
+
+   
+   
+   .. rubric:: Constructors
+   .. autosummary::
+   
+      __init__
+   
+   
+
+   
+   
+   .. rubric:: Special Methods
+   .. autosummary::
+   
+      __repr__
+      __str__
+   
+   
+
+   
+   
+   .. rubric:: Methods
+   .. autosummary::
+   
+      decode
+      detect
+      encode
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   .. autosummary::
+   
+      G
+      H
+      c
+      d
+      field
+      generator_poly
+      is_narrow_sense
+      k
+      n
+      roots
+      systematic
+      t
+   
+   
+
+   .. automethod:: __init__

@@ -1,0 +1,64 @@
+﻿galois.BCH
+==========
+
+.. currentmodule:: galois
+
+.. autoclass:: BCH
+   
+
+   
+
+   
+   
+
+   
+   
+   .. rubric:: Constructors
+   .. autosummary::
+   
+      __init__
+   
+   
+
+   
+   
+   .. rubric:: Special Methods
+   .. autosummary::
+   
+      __repr__
+      __str__
+   
+   
+
+   
+   
+   .. rubric:: Methods
+   .. autosummary::
+   
+      decode
+      detect
+      encode
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   .. autosummary::
+   
+      G
+      H
+      d
+      field
+      generator_poly
+      is_narrow_sense
+      is_primitive
+      k
+      n
+      roots
+      systematic
+      t
+   
+   
+
+   .. automethod:: __init__

@@ -1,0 +1,6 @@
+﻿galois.is\_square\_free
+=======================
+
+.. currentmodule:: galois
+
+.. autofunction:: is_square_free

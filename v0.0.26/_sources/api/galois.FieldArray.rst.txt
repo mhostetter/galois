@@ -1,0 +1,68 @@
+﻿galois.FieldArray
+=================
+
+.. currentmodule:: galois
+
+.. autoclass:: FieldArray
+   
+
+   
+
+   
+   
+
+   
+   
+   .. rubric:: Constructors
+   .. autosummary::
+   
+      __init__
+      Elements
+      Identity
+      Ones
+      Random
+      Range
+      Vandermonde
+      Vector
+      Zeros
+   
+   
+
+   
+   
+   .. rubric:: Special Methods
+   .. autosummary::
+   
+      __repr__
+      __str__
+   
+   
+
+   
+   
+   .. rubric:: Methods
+   .. autosummary::
+   
+      additive_order
+      characteristic_poly
+      column_space
+      field_norm
+      field_trace
+      is_quadratic_residue
+      left_null_space
+      lu_decompose
+      minimal_poly
+      multiplicative_order
+      null_space
+      plu_decompose
+      row_reduce
+      row_space
+      vector
+   
+   
+
+   
+   
+   
+
+   .. automethod:: __init__

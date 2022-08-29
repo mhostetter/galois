@@ -1,0 +1,12 @@
+﻿galois.GF2
+==========
+
+.. currentmodule:: galois
+
+.. autoclass:: GF2
+   :exclude-members: Elements, Identity, Ones, Random, Range, Vandermonde, Vector, Zeros
+
+   
+   .. automethod:: __init__
+
+   

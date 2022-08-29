@@ -1,0 +1,6491 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../../_static/galois-favicon-color.png">
+    
+    
+      
+        <title>galois.primitive_polys - galois</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../_static/stylesheets/main.5aa58769.min.css">
+      
+        
+        <link rel="stylesheet" href="../../_static/stylesheets/palette.92c9fe4a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-4FW9NCNFZH",{page_path:e.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH"></script>
+
+
+    
+    
+
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="deep-orange">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#galois.primitive_polys" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../" title="galois" class="md-header__button md-logo" aria-label="galois" data-md-component="logo">
+      <img src="../../_static/galois-favicon-white.png" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            galois
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              galois.primitive_polys
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent="deep-orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mhostetter/galois
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../getting-started/" class="md-tabs__link">
+      <span class="md-ellipsis">Getting Started</span>
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../basic-usage/galois-field-classes/" class="md-tabs__link">
+      <span class="md-ellipsis">Basic Usage</span>
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../tutorials/intro-to-prime-fields/" class="md-tabs__link">
+      <span class="md-ellipsis">Tutorials</span>
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../performance/prime-fields/" class="md-tabs__link">
+      <span class="md-ellipsis">Performance</span>
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../development/installation/" class="md-tabs__link">
+      <span class="md-ellipsis">Development</span>
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../galois/" class="md-tabs__link md-tabs__link--active">
+      <span class="md-ellipsis">API Reference</span>
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../release-notes/versioning/" class="md-tabs__link">
+      <span class="md-ellipsis">Release Notes</span>
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="galois" class="md-nav__button md-logo" aria-label="galois" data-md-component="logo">
+      <img src="../../_static/galois-favicon-white.png" alt="logo">
+    </a>
+    galois
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mhostetter/galois
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          <span class="md-ellipsis">Getting Started</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Getting Started</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        <span class="md-ellipsis">Getting Started</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          <span class="md-ellipsis">Basic Usage</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Basic Usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Basic Usage</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic-usage/galois-field-classes/" class="md-nav__link">
+        <span class="md-ellipsis">Galois Field Classes</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic-usage/compilation-modes/" class="md-nav__link">
+        <span class="md-ellipsis">Compilation Modes</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic-usage/field-element-representation/" class="md-nav__link">
+        <span class="md-ellipsis">Field Element Representation</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic-usage/array-creation/" class="md-nav__link">
+        <span class="md-ellipsis">Array Creation</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic-usage/array-arithmetic/" class="md-nav__link">
+        <span class="md-ellipsis">Array Arithmetic</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic-usage/linear-algebra/" class="md-nav__link">
+        <span class="md-ellipsis">Linear Algebra</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic-usage/poly-creation/" class="md-nav__link">
+        <span class="md-ellipsis">Polynomial Creation</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic-usage/poly-arithmetic/" class="md-nav__link">
+        <span class="md-ellipsis">Polynomial Arithmetic</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          <span class="md-ellipsis">Tutorials</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Tutorials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/intro-to-prime-fields/" class="md-nav__link">
+        <span class="md-ellipsis">Intro to Prime Fields</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/intro-to-extension-fields/" class="md-nav__link">
+        <span class="md-ellipsis">Intro to Extension Fields</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          <span class="md-ellipsis">Performance</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Performance" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Performance</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../performance/prime-fields/" class="md-nav__link">
+        <span class="md-ellipsis">Prime Fields</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../performance/binary-extension-fields/" class="md-nav__link">
+        <span class="md-ellipsis">Binary Extension Fields</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../performance/benchmarks/" class="md-nav__link">
+        <span class="md-ellipsis">Benchmarks</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          <span class="md-ellipsis">Development</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Development</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/installation/" class="md-nav__link">
+        <span class="md-ellipsis">Installation</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/linter/" class="md-nav__link">
+        <span class="md-ellipsis">Linter</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/unit-tests/" class="md-nav__link">
+        <span class="md-ellipsis">Unit Tests</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/documentation/" class="md-nav__link">
+        <span class="md-ellipsis">Documentation</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          <span class="md-ellipsis">API Reference</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">API Reference</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_1" type="checkbox" id="__nav_6_1" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois/"><span class="md-ellipsis">API Reference</span></a>
+          
+            <label for="__nav_6_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="API Reference" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">API Reference</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_1_1" type="checkbox" id="__nav_6_1_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois/#class-factory-functions"><span class="md-ellipsis">Class factory functions</span></a>
+          
+            <label for="__nav_6_1_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Class factory functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Class factory functions</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.Field/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Field</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.GF/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>GF</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_1_2" type="checkbox" id="__nav_6_1_2" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois/#classes"><span title="classes (reference label)" class="md-ellipsis">Classes</span></a>
+          
+            <label for="__nav_6_1_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Classes" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="classes (reference label)" class="md-ellipsis">Classes</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.BCH/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>BCH</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.FLFSR/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>FLFSR</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.FieldArray/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Field<wbr>Array</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.FieldClass/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Field<wbr>Class</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.GF2/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>GF2</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.GLFSR/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>GLFSR</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.Poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.ReedSolomon/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Reed<wbr>Solomon</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_1_3" type="checkbox" id="__nav_6_1_3" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois/#functions"><span title="functions (reference label)" class="md-ellipsis">Functions</span></a>
+          
+            <label for="__nav_6_1_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="functions (reference label)" class="md-ellipsis">Functions</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.are_coprime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>are_<wbr>coprime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.bch_valid_codes/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>bch_<wbr>valid_<wbr>codes</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.berlekamp_massey/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>berlekamp_<wbr>massey</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.carmichael_lambda/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>carmichael_<wbr>lambda</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.conway_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>conway_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.crt/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>crt</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.distinct_degree_factorization/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>distinct_<wbr>degree_<wbr>factorization</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.divisor_sigma/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>divisor_<wbr>sigma</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.divisors/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>divisors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.egcd/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>egcd</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.equal_degree_factorization/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>equal_<wbr>degree_<wbr>factorization</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.euler_phi/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>euler_<wbr>phi</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.factors/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>factors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.fermat_primality_test/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>fermat_<wbr>primality_<wbr>test</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.gcd/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>gcd</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.generator_to_parity_check_matrix/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>generator_<wbr>to_<wbr>parity_<wbr>check_<wbr>matrix</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.ilog/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>ilog</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.intt/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>intt</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.iroot/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>iroot</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.irreducible_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>irreducible_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.irreducible_polys/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>irreducible_<wbr>polys</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_composite/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>composite</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_cyclic/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>cyclic</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_irreducible/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>irreducible</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_monic/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>monic</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_perfect_power/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>perfect_<wbr>power</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_powersmooth/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>powersmooth</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_prime_power/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>prime_<wbr>power</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_primitive/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>primitive</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_primitive_element/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>primitive_<wbr>element</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_primitive_root/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>primitive_<wbr>root</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_smooth/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>smooth</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_square_free/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>square_<wbr>free</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.isqrt/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>isqrt</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.jacobi_symbol/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>jacobi_<wbr>symbol</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.kronecker_symbol/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>kronecker_<wbr>symbol</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.kth_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>kth_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.lagrange_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>lagrange_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.lcm/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>lcm</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.legendre_symbol/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>legendre_<wbr>symbol</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.matlab_primitive_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>matlab_<wbr>primitive_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.mersenne_exponents/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>mersenne_<wbr>exponents</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.mersenne_primes/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>mersenne_<wbr>primes</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.miller_rabin_primality_test/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>miller_<wbr>rabin_<wbr>primality_<wbr>test</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.next_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>next_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.ntt/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>ntt</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.parity_check_to_generator_matrix/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>parity_<wbr>check_<wbr>to_<wbr>generator_<wbr>matrix</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.perfect_power/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>perfect_<wbr>power</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.pollard_p1/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>pollard_<wbr>p1</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.pollard_rho/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>pollard_<wbr>rho</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.poly_to_generator_matrix/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>poly_<wbr>to_<wbr>generator_<wbr>matrix</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.prev_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>prev_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primes/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primes</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_element/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>element</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_elements/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>elements</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          <span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#galois.primitive_polys" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.primitive_polys (Python function) — Iterates through all monic primitive polynomials f(x) over \mathrm{GF}(q) with degree m." class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="galois.primitive_polys">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.order" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.order (Python parameter) — The prime power order q of the field \mathrm{GF}(q) that the polynomial is over." class="md-ellipsis">order</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.degree" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.degree (Python parameter) — The degree m of the desired primitive polynomial." class="md-ellipsis">degree</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.reverse" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.reverse (Python parameter) — Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is False." class="md-ellipsis">reverse</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_root/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>root</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_roots/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>roots</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.prod/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>prod</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.random_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>random_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.roots_to_parity_check_matrix/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>roots_<wbr>to_<wbr>parity_<wbr>check_<wbr>matrix</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.square_free_factorization/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>square_<wbr>free_<wbr>factorization</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.totatives/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>totatives</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.trial_division/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>trial_<wbr>division</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/"><span class="md-ellipsis">Galois Fields</span></a>
+          
+            <label for="__nav_6_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Galois Fields" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Galois Fields</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_1" type="checkbox" id="__nav_6_2_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#galois-field-classes"><span class="md-ellipsis">Galois field classes</span></a>
+          
+            <label for="__nav_6_2_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Galois field classes" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Galois field classes</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_1_1" type="checkbox" id="__nav_6_2_1_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#class-factory-functions"><span title="class factory functions (reference label)" class="md-ellipsis">Class factory functions</span></a>
+          
+            <label for="__nav_6_2_1_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Class factory functions" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="class factory functions (reference label)" class="md-ellipsis">Class factory functions</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.GF/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>GF</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.Field/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Field</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_1_2" type="checkbox" id="__nav_6_2_1_2" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#abstract-base-classes"><span title="abstract base classes (reference label)" class="md-ellipsis">Abstract base classes</span></a>
+          
+            <label for="__nav_6_2_1_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Abstract base classes" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="abstract base classes (reference label)" class="md-ellipsis">Abstract base classes</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.FieldArray/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Field<wbr>Array</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.FieldClass/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Field<wbr>Class</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_1_3" type="checkbox" id="__nav_6_2_1_3" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#pre-made-galois-field-array-classes"><span title="pre-made galois field array classes (reference label)" class="md-ellipsis">Pre-<wbr>made Galois field array classes</span></a>
+          
+            <label for="__nav_6_2_1_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Pre-made Galois field array classes" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="pre-made galois field array classes (reference label)" class="md-ellipsis">Pre-<wbr>made Galois field array classes</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.GF2/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>GF2</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2" type="checkbox" id="__nav_6_2_2" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#prime-field-functions"><span title="prime field functions (reference label)" class="md-ellipsis">Prime field functions</span></a>
+          
+            <label for="__nav_6_2_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Prime field functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="prime field functions (reference label)" class="md-ellipsis">Prime field functions</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_1" type="checkbox" id="__nav_6_2_2_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#primitive-roots"><span title="primitive roots (reference label)" class="md-ellipsis">Primitive roots</span></a>
+          
+            <label for="__nav_6_2_2_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Primitive roots" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="primitive roots (reference label)" class="md-ellipsis">Primitive roots</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_root/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>root</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_roots/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>roots</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_primitive_root/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>primitive_<wbr>root</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3" type="checkbox" id="__nav_6_2_3" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#extension-field-functions"><span title="extension field functions (reference label)" class="md-ellipsis">Extension field functions</span></a>
+          
+            <label for="__nav_6_2_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Extension field functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="extension field functions (reference label)" class="md-ellipsis">Extension field functions</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3_1" type="checkbox" id="__nav_6_2_3_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#irreducible-polynomials"><span class="md-ellipsis">Irreducible polynomials</span></a>
+          
+            <label for="__nav_6_2_3_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Irreducible polynomials" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Irreducible polynomials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.irreducible_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>irreducible_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.irreducible_polys/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>irreducible_<wbr>polys</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_irreducible/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>irreducible</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3_2" type="checkbox" id="__nav_6_2_3_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#primitive-polynomials"><span class="md-ellipsis">Primitive polynomials</span></a>
+          
+            <label for="__nav_6_2_3_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Primitive polynomials" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Primitive polynomials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+    
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__current-nested md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3_2_2" type="checkbox" id="__nav_6_2_3_2_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index md-nav__link--active">
+          <a href="#"><span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span></a>
+          
+            <label for="__nav_6_2_3_2_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="galois.primitive_polys" data-md-level="5">
+        <label class="md-nav__title" for="__nav_6_2_3_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3_2_2_1" type="checkbox" id="__nav_6_2_3_2_2_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#galois.primitive_polys"><span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.primitive_polys (Python function) — Iterates through all monic primitive polynomials f(x) over \mathrm{GF}(q) with degree m." class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span></a>
+          
+            <label for="__nav_6_2_3_2_2_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="galois.primitive_polys" data-md-level="6">
+        <label class="md-nav__title" for="__nav_6_2_3_2_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.primitive_polys (Python function) — Iterates through all monic primitive polynomials f(x) over \mathrm{GF}(q) with degree m." class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3_2_2_1_1" type="checkbox" id="__nav_6_2_3_2_2_1_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#galois.primitive_polys-parameters"><span class="md-ellipsis">Parameters</span></a>
+          
+            <label for="__nav_6_2_3_2_2_1_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Parameters" data-md-level="7">
+        <label class="md-nav__title" for="__nav_6_2_3_2_2_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Parameters</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys.order" class="md-nav__link">
+        <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.order (Python parameter) — The prime power order q of the field \mathrm{GF}(q) that the polynomial is over." class="md-ellipsis">order</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys.degree" class="md-nav__link">
+        <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.degree (Python parameter) — The degree m of the desired primitive polynomial." class="md-ellipsis">degree</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys.reverse" class="md-nav__link">
+        <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.reverse (Python parameter) — Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is False." class="md-ellipsis">reverse</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys-returns" class="md-nav__link">
+        <span class="md-ellipsis">Returns</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys-return-type" class="md-nav__link">
+        <span class="md-ellipsis">Return type</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+      
+    <li class="md-nav__item md-nav__item--active md-nav__current-toc">
+      
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          <span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#galois.primitive_polys" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.primitive_polys (Python function) — Iterates through all monic primitive polynomials f(x) over \mathrm{GF}(q) with degree m." class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="galois.primitive_polys">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.order" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.order (Python parameter) — The prime power order q of the field \mathrm{GF}(q) that the polynomial is over." class="md-ellipsis">order</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.degree" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.degree (Python parameter) — The degree m of the desired primitive polynomial." class="md-ellipsis">degree</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.reverse" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.reverse (Python parameter) — Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is False." class="md-ellipsis">reverse</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.conway_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>conway_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.matlab_primitive_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>matlab_<wbr>primitive_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_primitive/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>primitive</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3_3" type="checkbox" id="__nav_6_2_3_3" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../galois-fields/#primitive-elements"><span class="md-ellipsis">Primitive elements</span></a>
+          
+            <label for="__nav_6_2_3_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Primitive elements" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Primitive elements</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_element/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>element</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_elements/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>elements</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_primitive_element/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>primitive_<wbr>element</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/"><span class="md-ellipsis">Polynomials</span></a>
+          
+            <label for="__nav_6_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Polynomials" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Polynomials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_1" type="checkbox" id="__nav_6_3_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#polynomial-classes"><span title="polynomial classes (reference label)" class="md-ellipsis">Polynomial classes</span></a>
+          
+            <label for="__nav_6_3_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Polynomial classes" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="polynomial classes (reference label)" class="md-ellipsis">Polynomial classes</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.Poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_2" type="checkbox" id="__nav_6_3_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#special-polynomials"><span class="md-ellipsis">Special polynomials</span></a>
+          
+            <label for="__nav_6_3_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Special polynomials" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Special polynomials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_2_1" type="checkbox" id="__nav_6_3_2_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#irreducible-polynomials"><span title="irreducible polynomials (reference label)" class="md-ellipsis">Irreducible polynomials</span></a>
+          
+            <label for="__nav_6_3_2_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Irreducible polynomials" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_3_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="irreducible polynomials (reference label)" class="md-ellipsis">Irreducible polynomials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.irreducible_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>irreducible_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.irreducible_polys/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>irreducible_<wbr>polys</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_2_2" type="checkbox" id="__nav_6_3_2_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#primitive-polynomials"><span title="primitive polynomials (reference label)" class="md-ellipsis">Primitive polynomials</span></a>
+          
+            <label for="__nav_6_3_2_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Primitive polynomials" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_3_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="primitive polynomials (reference label)" class="md-ellipsis">Primitive polynomials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+    
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__current-nested md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_2_2_2" type="checkbox" id="__nav_6_3_2_2_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index md-nav__link--active">
+          <a href="#"><span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span></a>
+          
+            <label for="__nav_6_3_2_2_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="galois.primitive_polys" data-md-level="5">
+        <label class="md-nav__title" for="__nav_6_3_2_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_2_2_2_1" type="checkbox" id="__nav_6_3_2_2_2_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#galois.primitive_polys"><span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.primitive_polys (Python function) — Iterates through all monic primitive polynomials f(x) over \mathrm{GF}(q) with degree m." class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span></a>
+          
+            <label for="__nav_6_3_2_2_2_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="galois.primitive_polys" data-md-level="6">
+        <label class="md-nav__title" for="__nav_6_3_2_2_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.primitive_polys (Python function) — Iterates through all monic primitive polynomials f(x) over \mathrm{GF}(q) with degree m." class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_2_2_2_1_1" type="checkbox" id="__nav_6_3_2_2_2_1_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#galois.primitive_polys-parameters"><span class="md-ellipsis">Parameters</span></a>
+          
+            <label for="__nav_6_3_2_2_2_1_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Parameters" data-md-level="7">
+        <label class="md-nav__title" for="__nav_6_3_2_2_2_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Parameters</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys.order" class="md-nav__link">
+        <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.order (Python parameter) — The prime power order q of the field \mathrm{GF}(q) that the polynomial is over." class="md-ellipsis">order</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys.degree" class="md-nav__link">
+        <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.degree (Python parameter) — The degree m of the desired primitive polynomial." class="md-ellipsis">degree</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys.reverse" class="md-nav__link">
+        <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.reverse (Python parameter) — Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is False." class="md-ellipsis">reverse</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys-returns" class="md-nav__link">
+        <span class="md-ellipsis">Returns</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="#galois.primitive_polys-return-type" class="md-nav__link">
+        <span class="md-ellipsis">Return type</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+      
+    <li class="md-nav__item md-nav__item--active md-nav__current-toc">
+      
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          <span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#galois.primitive_polys" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.primitive_polys (Python function) — Iterates through all monic primitive polynomials f(x) over \mathrm{GF}(q) with degree m." class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="galois.primitive_polys">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.order" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.order (Python parameter) — The prime power order q of the field \mathrm{GF}(q) that the polynomial is over." class="md-ellipsis">order</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.degree" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.degree (Python parameter) — The degree m of the desired primitive polynomial." class="md-ellipsis">degree</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.reverse" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.reverse (Python parameter) — Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is False." class="md-ellipsis">reverse</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.conway_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>conway_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.matlab_primitive_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>matlab_<wbr>primitive_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_2_3" type="checkbox" id="__nav_6_3_2_3" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#interpolating-polynomials"><span title="interpolating polynomials (reference label)" class="md-ellipsis">Interpolating polynomials</span></a>
+          
+            <label for="__nav_6_3_2_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Interpolating polynomials" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_3_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="interpolating polynomials (reference label)" class="md-ellipsis">Interpolating polynomials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.lagrange_poly/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>lagrange_<wbr>poly</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_3" type="checkbox" id="__nav_6_3_3" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#polynomial-functions"><span title="polynomial functions (reference label)" class="md-ellipsis">Polynomial functions</span></a>
+          
+            <label for="__nav_6_3_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Polynomial functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="polynomial functions (reference label)" class="md-ellipsis">Polynomial functions</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_3_1" type="checkbox" id="__nav_6_3_3_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#divisibility"><span title="divisibility (reference label)" class="md-ellipsis">Divisibility</span></a>
+          
+            <label for="__nav_6_3_3_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Divisibility" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_3_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="divisibility (reference label)" class="md-ellipsis">Divisibility</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.gcd/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>gcd</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.egcd/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>egcd</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.lcm/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>lcm</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.prod/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>prod</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.are_coprime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>are_<wbr>coprime</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_3_2" type="checkbox" id="__nav_6_3_3_2" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#congruences"><span title="congruences (reference label)" class="md-ellipsis">Congruences</span></a>
+          
+            <label for="__nav_6_3_3_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Congruences" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_3_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="congruences (reference label)" class="md-ellipsis">Congruences</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.crt/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>crt</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_3_3" type="checkbox" id="__nav_6_3_3_3" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#factorization"><span title="factorization (reference label)" class="md-ellipsis">Factorization</span></a>
+          
+            <label for="__nav_6_3_3_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Factorization" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_3_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="factorization (reference label)" class="md-ellipsis">Factorization</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.factors/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>factors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.square_free_factorization/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>square_<wbr>free_<wbr>factorization</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.distinct_degree_factorization/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>distinct_<wbr>degree_<wbr>factorization</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.equal_degree_factorization/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>equal_<wbr>degree_<wbr>factorization</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_3_4" type="checkbox" id="__nav_6_3_3_4" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../polys/#tests"><span title="tests (reference label)" class="md-ellipsis">Tests</span></a>
+          
+            <label for="__nav_6_3_3_4">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Tests" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_3_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="tests (reference label)" class="md-ellipsis">Tests</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_monic/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>monic</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_irreducible/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>irreducible</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_primitive/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>primitive</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_square_free/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>square_<wbr>free</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../fec/"><span class="md-ellipsis">Forward Error Correction</span></a>
+          
+            <label for="__nav_6_4">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Forward Error Correction" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Forward Error Correction</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_1" type="checkbox" id="__nav_6_4_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../fec/#fec-classes"><span title="fec classes (reference label)" class="md-ellipsis">FEC classes</span></a>
+          
+            <label for="__nav_6_4_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="FEC classes" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_4_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="fec classes (reference label)" class="md-ellipsis">FEC classes</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.BCH/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>BCH</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.ReedSolomon/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>Reed<wbr>Solomon</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_2" type="checkbox" id="__nav_6_4_2" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../fec/#linear-block-code-functions"><span title="linear block code functions (reference label)" class="md-ellipsis">Linear block code functions</span></a>
+          
+            <label for="__nav_6_4_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Linear block code functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="linear block code functions (reference label)" class="md-ellipsis">Linear block code functions</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.generator_to_parity_check_matrix/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>generator_<wbr>to_<wbr>parity_<wbr>check_<wbr>matrix</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.parity_check_to_generator_matrix/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>parity_<wbr>check_<wbr>to_<wbr>generator_<wbr>matrix</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_3" type="checkbox" id="__nav_6_4_3" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../fec/#cyclic-code-functions"><span title="cyclic code functions (reference label)" class="md-ellipsis">Cyclic code functions</span></a>
+          
+            <label for="__nav_6_4_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Cyclic code functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="cyclic code functions (reference label)" class="md-ellipsis">Cyclic code functions</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.bch_valid_codes/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>bch_<wbr>valid_<wbr>codes</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.poly_to_generator_matrix/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>poly_<wbr>to_<wbr>generator_<wbr>matrix</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.roots_to_parity_check_matrix/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>roots_<wbr>to_<wbr>parity_<wbr>check_<wbr>matrix</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../transforms/"><span class="md-ellipsis">Transforms</span></a>
+          
+            <label for="__nav_6_5">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Transforms" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Transforms</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5_1" type="checkbox" id="__nav_6_5_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../transforms/#number-theoretic-transform"><span title="number-theoretic transform (reference label)" class="md-ellipsis">Number-<wbr>theoretic transform</span></a>
+          
+            <label for="__nav_6_5_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Number-theoretic transform" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_5_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="number-theoretic transform (reference label)" class="md-ellipsis">Number-<wbr>theoretic transform</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.ntt/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>ntt</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.intt/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>intt</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../linear-sequences/"><span class="md-ellipsis">Linear Sequences</span></a>
+          
+            <label for="__nav_6_6">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Linear Sequences" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Linear Sequences</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_1" type="checkbox" id="__nav_6_6_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../linear-sequences/#linear-feedback-shift-registers"><span title="linear-feedback shift registers (reference label)" class="md-ellipsis">Linear-<wbr>feedback shift registers</span></a>
+          
+            <label for="__nav_6_6_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Linear-feedback shift registers" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="linear-feedback shift registers (reference label)" class="md-ellipsis">Linear-<wbr>feedback shift registers</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.FLFSR/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>FLFSR</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.GLFSR/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>GLFSR</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_2" type="checkbox" id="__nav_6_6_2" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../linear-sequences/#sequence-analysis-functions"><span title="sequence analysis functions (reference label)" class="md-ellipsis">Sequence analysis functions</span></a>
+          
+            <label for="__nav_6_6_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Sequence analysis functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="sequence analysis functions (reference label)" class="md-ellipsis">Sequence analysis functions</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.berlekamp_massey/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>berlekamp_<wbr>massey</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../number-theory/"><span class="md-ellipsis">Number Theory</span></a>
+          
+            <label for="__nav_6_7">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Number Theory" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Number Theory</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_7_1" type="checkbox" id="__nav_6_7_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../number-theory/#divisibility"><span class="md-ellipsis">Divisibility</span></a>
+          
+            <label for="__nav_6_7_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Divisibility" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_7_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Divisibility</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.gcd/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>gcd</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.egcd/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>egcd</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.lcm/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>lcm</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.prod/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>prod</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.euler_phi/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>euler_<wbr>phi</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.totatives/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>totatives</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.are_coprime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>are_<wbr>coprime</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_7_2" type="checkbox" id="__nav_6_7_2" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../number-theory/#congruences"><span class="md-ellipsis">Congruences</span></a>
+          
+            <label for="__nav_6_7_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Congruences" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_7_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Congruences</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.crt/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>crt</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_root/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>root</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primitive_roots/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primitive_<wbr>roots</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.carmichael_lambda/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>carmichael_<wbr>lambda</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.legendre_symbol/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>legendre_<wbr>symbol</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.jacobi_symbol/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>jacobi_<wbr>symbol</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.kronecker_symbol/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>kronecker_<wbr>symbol</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_primitive_root/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>primitive_<wbr>root</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_cyclic/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>cyclic</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_7_3" type="checkbox" id="__nav_6_7_3" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../number-theory/#integer-arithmetic"><span title="integer arithmetic (reference label)" class="md-ellipsis">Integer arithmetic</span></a>
+          
+            <label for="__nav_6_7_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Integer arithmetic" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="integer arithmetic (reference label)" class="md-ellipsis">Integer arithmetic</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.isqrt/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>isqrt</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.iroot/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>iroot</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.ilog/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>ilog</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../integer-factorization/"><span class="md-ellipsis">Integer Factorization</span></a>
+          
+            <label for="__nav_6_8">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Integer Factorization" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Integer Factorization</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_1" type="checkbox" id="__nav_6_8_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../integer-factorization/#prime-factorization"><span title="prime factorization (reference label)" class="md-ellipsis">Prime factorization</span></a>
+          
+            <label for="__nav_6_8_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Prime factorization" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="prime factorization (reference label)" class="md-ellipsis">Prime factorization</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.factors/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>factors</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_2" type="checkbox" id="__nav_6_8_2" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../integer-factorization/#composite-factorization"><span title="composite factorization (reference label)" class="md-ellipsis">Composite factorization</span></a>
+          
+            <label for="__nav_6_8_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Composite factorization" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="composite factorization (reference label)" class="md-ellipsis">Composite factorization</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.divisors/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>divisors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.divisor_sigma/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>divisor_<wbr>sigma</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_3" type="checkbox" id="__nav_6_8_3" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../integer-factorization/#specific-factorization-algorithms"><span title="specific factorization algorithms (reference label)" class="md-ellipsis">Specific factorization algorithms</span></a>
+          
+            <label for="__nav_6_8_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Specific factorization algorithms" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="specific factorization algorithms (reference label)" class="md-ellipsis">Specific factorization algorithms</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.perfect_power/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>perfect_<wbr>power</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.trial_division/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>trial_<wbr>division</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.pollard_p1/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>pollard_<wbr>p1</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.pollard_rho/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>pollard_<wbr>rho</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_4" type="checkbox" id="__nav_6_8_4" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../integer-factorization/#tests"><span class="md-ellipsis">Tests</span></a>
+          
+            <label for="__nav_6_8_4">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Tests" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Tests</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_prime_power/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>prime_<wbr>power</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_composite/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>composite</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_perfect_power/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>perfect_<wbr>power</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_square_free/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>square_<wbr>free</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_smooth/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>smooth</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_powersmooth/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>powersmooth</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../primes/"><span class="md-ellipsis">Primes</span></a>
+          
+            <label for="__nav_6_9">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Primes" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Primes</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_9_1" type="checkbox" id="__nav_6_9_1" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../primes/#prime-number-generation"><span title="prime number generation (reference label)" class="md-ellipsis">Prime number generation</span></a>
+          
+            <label for="__nav_6_9_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Prime number generation" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_9_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="prime number generation (reference label)" class="md-ellipsis">Prime number generation</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.primes/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>primes</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.kth_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>kth_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.prev_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>prev_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.next_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>next_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.random_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>random_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.mersenne_exponents/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>mersenne_<wbr>exponents</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.mersenne_primes/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>mersenne_<wbr>primes</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_9_2" type="checkbox" id="__nav_6_9_2" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../primes/#primality-tests"><span title="primality tests (reference label)" class="md-ellipsis">Primality tests</span></a>
+          
+            <label for="__nav_6_9_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Primality tests" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_9_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="primality tests (reference label)" class="md-ellipsis">Primality tests</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_prime/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>prime</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_prime_power/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>prime_<wbr>power</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_perfect_power/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>perfect_<wbr>power</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_composite/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>composite</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_square_free/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>square_<wbr>free</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_smooth/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>smooth</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.is_powersmooth/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>is_<wbr>powersmooth</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_9_3" type="checkbox" id="__nav_6_9_3" >
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../primes/#specific-primality-tests"><span title="specific primality tests (reference label)" class="md-ellipsis">Specific primality tests</span></a>
+          
+            <label for="__nav_6_9_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Specific primality tests" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_9_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="specific primality tests (reference label)" class="md-ellipsis">Specific primality tests</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.fermat_primality_test/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>fermat_<wbr>primality_<wbr>test</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.miller_rabin_primality_test/" class="md-nav__link">
+        <span class="md-ellipsis">galois.<wbr>miller_<wbr>rabin_<wbr>primality_<wbr>test</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          <span class="md-ellipsis">Release Notes</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Release Notes" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Release Notes</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/versioning/" class="md-nav__link">
+        <span class="md-ellipsis">Versioning</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.26/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>26</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.25/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>25</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.24/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>24</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.23/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>23</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.22/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>22</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.21/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>21</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.20/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>20</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.19/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>19</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.18/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>18</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.17/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>17</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.16/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>16</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.15/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>15</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/v0.0.14/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>0.<wbr>14</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#galois.primitive_polys" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.primitive_polys (Python function) — Iterates through all monic primitive polynomials f(x) over \mathrm{GF}(q) with degree m." class="md-ellipsis">galois.<wbr>primitive_<wbr>polys</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="galois.primitive_polys">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.order" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.order (Python parameter) — The prime power order q of the field \mathrm{GF}(q) that the polynomial is over." class="md-ellipsis">order</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.degree" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.degree (Python parameter) — The degree m of the desired primitive polynomial." class="md-ellipsis">degree</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys.reverse" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.primitive_polys.reverse (Python parameter) — Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is False." class="md-ellipsis">reverse</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galois.primitive_polys-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset" role="main">
+                
+
+
+  <h1 id="galois-primitive-polys">galois.primitive_polys<a class="headerlink" href="#galois-primitive-polys" title="Permalink to this heading">¶</a></h1>
+<dl class="py function objdesc">
+<dt class="sig sig-object highlight py" id="galois.primitive_polys">
+<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">primitive_polys</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.primitive_polys.order" title="galois.primitive_polys.order (Python parameter) — The prime power order q of the field \mathrm{GF}(q) that the polynomial is over."><span class="n"><span class="pre">order</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.primitive_polys.degree" title="galois.primitive_polys.degree (Python parameter) — The degree m of the desired primitive polynomial."><span class="n"><span class="pre">degree</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.primitive_polys.reverse" title="galois.primitive_polys.reverse (Python parameter) — Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is False."><span class="n"><span class="pre">reverse</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.primitive_polys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates through all monic primitive polynomials <span class="math notranslate nohighlight">\(f(x)\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> with degree <span class="math notranslate nohighlight">\(m\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd" id="galois.primitive_polys-parameters">Parameters<a class="headerlink" href="#galois.primitive_polys-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple api-field highlight">
+<dt id="galois.primitive_polys.order"><span class="sig-name descname">order</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.primitive_polys.order" title="Permalink to this definition">¶</a></dt><dd><p>The prime power order <span class="math notranslate nohighlight">\(q\)</span> of the field <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> that the polynomial is over.</p>
+</dd>
+<dt id="galois.primitive_polys.degree"><span class="sig-name descname">degree</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.primitive_polys.degree" title="Permalink to this definition">¶</a></dt><dd><p>The degree <span class="math notranslate nohighlight">\(m\)</span> of the desired primitive polynomial.</p>
+</dd>
+<dt id="galois.primitive_polys.reverse"><span class="sig-name descname">reverse</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></span></span><a class="headerlink" href="#galois.primitive_polys.reverse" title="Permalink to this definition">¶</a></dt><dd><p>Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is <code class="samp docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="galois.primitive_polys-returns">Returns<a class="headerlink" href="#galois.primitive_polys-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator over all degree-<span class="math notranslate nohighlight">\(m\)</span> monic primitive polynomials over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
+</dd>
+<dt class="field-odd" id="galois.primitive_polys-return-type">Return type<a class="headerlink" href="#galois.primitive_polys-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><em>Iterator</em></a>[<a class="reference internal" href="../galois.Poly/#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a>]</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../galois.is_primitive/#galois.is_primitive" title="galois.is_primitive (Python function) — Determines whether the polynomial f(x) over \mathrm{GF}(q) is primitive."><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_primitive</span></code></a>, <a class="reference internal" href="../galois.irreducible_polys/#galois.irreducible_polys" title="galois.irreducible_polys (Python function) — Iterates through all monic irreducible polynomials f(x) over \mathrm{GF}(q) with degree m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">irreducible_polys</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<p>If <span class="math notranslate nohighlight">\(f(x)\)</span> is a primitive polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> and <span class="math notranslate nohighlight">\(a \in \mathrm{GF}(q) \backslash \{0\}\)</span>,
+then <span class="math notranslate nohighlight">\(a \cdot f(x)\)</span> is also primitive.</p>
+<p>In addition to other applications, <span class="math notranslate nohighlight">\(f(x)\)</span> produces the field extension <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</span>
+of <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>. Since <span class="math notranslate nohighlight">\(f(x)\)</span> is primitive, <span class="math notranslate nohighlight">\(x\)</span> is a primitive element <span class="math notranslate nohighlight">\(\alpha\)</span>
+of <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</span> such that <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}\)</span>.</p>
+<p class="example rubric">Examples</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-0">
+Return full list</label><div class="sd-tab-content docutils">
+<p>All monic primitive polynomials over <span class="math notranslate nohighlight">\(\mathrm{GF}(3)\)</span> with degree <span class="math notranslate nohighlight">\(4\)</span>. You may also use <code class="xref py py-func docutils literal notranslate"><span class="pre">tuple()</span></code> on
+the returned generator.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="nb">list</span><span class="p">(</span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_polys</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="gh">Out[1]: </span><span class="go"></span>
+<span class="go">[Poly(x^4 + x + 2, GF(3)),</span>
+<span class="go"> Poly(x^4 + 2x + 2, GF(3)),</span>
+<span class="go"> Poly(x^4 + x^3 + 2, GF(3)),</span>
+<span class="go"> Poly(x^4 + x^3 + x^2 + 2x + 2, GF(3)),</span>
+<span class="go"> Poly(x^4 + x^3 + 2x^2 + 2x + 2, GF(3)),</span>
+<span class="go"> Poly(x^4 + 2x^3 + 2, GF(3)),</span>
+<span class="go"> Poly(x^4 + 2x^3 + x^2 + x + 2, GF(3)),</span>
+<span class="go"> Poly(x^4 + 2x^3 + 2x^2 + x + 2, GF(3))]</span>
+</code></pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-1">
+For loop</label><div class="sd-tab-content docutils">
+<p>Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
+have been found after the <code class="samp docutils literal notranslate"><span class="pre">break</span></code> condition is never incurred.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [2]: </span><span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_polys</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="gp">   ...: </span>    <span class="k">if</span> <span class="n">poly</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Early exit condition</span>
+<span class="gp">   ...: </span>        <span class="k">break</span>
+<span class="gp">   ...: </span>    <span class="nb">print</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="go">x^4 + 2x^3 + 2x^2 + x + 2</span>
+<span class="go">x^4 + 2x^3 + x^2 + x + 2</span>
+<span class="go">x^4 + 2x^3 + 2</span>
+</code></pre></div>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-2">
+Manual iteration</label><div class="sd-tab-content docutils">
+<p>Or, manually iterate over the generator.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">generator</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_polys</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">generator</span>
+<span class="gh">Out[3]: </span><span class="go">&lt;generator object primitive_polys at 0x7fb004f44b30&gt;</span>
+
+<span class="gp">In [4]: </span><span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(x^4 + 2x^3 + 2x^2 + x + 2, GF(3))</span>
+
+<span class="gp">In [5]: </span><span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(x^4 + 2x^3 + x^2 + x + 2, GF(3))</span>
+
+<span class="gp">In [6]: </span><span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(x^4 + 2x^3 + 2, GF(3))</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</dd></dl>
+
+
+
+
+  <hr>
+<div class="md-source-file">
+  <small>
+    
+      Last update:
+      Aug 29, 2022
+    
+  </small>
+</div>
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../galois.primitive_poly/" class="md-footer__link md-footer__link--prev" aria-label="Previous: galois.primitive_poly" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              galois.primitive_poly
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../galois.primitive_root/" class="md-footer__link md-footer__link--next" aria-label="Next: galois.primitive_root" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              galois.primitive_root
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2020-2022, Matt Hostetter.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    5.1.1.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
+    
+    
+      <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+        <script src="../../_static/design-tabs.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+  </body>
+</html>

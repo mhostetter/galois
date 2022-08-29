@@ -1,0 +1,71 @@
+﻿galois.Poly
+===========
+
+.. currentmodule:: galois
+
+.. autoclass:: Poly
+   
+
+   
+
+   
+   
+
+   
+   
+   .. rubric:: Constructors
+   .. autosummary::
+   
+      __init__
+      Degrees
+      Identity
+      Int
+      One
+      Random
+      Roots
+      Str
+      Zero
+   
+   
+
+   
+   
+   .. rubric:: Special Methods
+   .. autosummary::
+   
+      __call__
+      __eq__
+      __int__
+      __len__
+      __repr__
+      __str__
+   
+   
+
+   
+   
+   .. rubric:: Methods
+   .. autosummary::
+   
+      coefficients
+      derivative
+      reverse
+      roots
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   .. autosummary::
+   
+      coeffs
+      degree
+      degrees
+      field
+      nonzero_coeffs
+      nonzero_degrees
+   
+   
+
+   .. automethod:: __init__

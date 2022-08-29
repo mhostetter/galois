@@ -1,0 +1,6 @@
+﻿galois.primitive\_poly
+======================
+
+.. currentmodule:: galois
+
+.. autofunction:: primitive_poly

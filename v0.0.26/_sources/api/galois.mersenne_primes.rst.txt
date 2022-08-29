@@ -1,0 +1,6 @@
+﻿galois.mersenne\_primes
+=======================
+
+.. currentmodule:: galois
+
+.. autofunction:: mersenne_primes

@@ -1,0 +1,60 @@
+﻿galois.GLFSR
+============
+
+.. currentmodule:: galois
+
+.. autoclass:: GLFSR
+   
+
+   
+
+   
+   
+
+   
+   
+   .. rubric:: Constructors
+   .. autosummary::
+   
+      __init__
+      Taps
+   
+   
+
+   
+   
+   .. rubric:: Special Methods
+   .. autosummary::
+   
+      __repr__
+      __str__
+   
+   
+
+   
+   
+   .. rubric:: Methods
+   .. autosummary::
+   
+      reset
+      step
+      to_fibonacci_lfsr
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   .. autosummary::
+   
+      characteristic_poly
+      feedback_poly
+      field
+      initial_state
+      order
+      state
+      taps
+   
+   
+
+   .. automethod:: __init__
