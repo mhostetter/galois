@@ -1,0 +1,80 @@
+# v0.0.32
+
+*Released July 28, 2022*
+
+## Breaking changes
+
+- Changed "quadratic residue" language in Galois fields to "square". This seems to be more canonical. Quadratic residue connotes quadratic residue modulo $p$, which is a square in $\mathrm{GF}(p)$. However, a quadratic residue modulo $p^m$ is *not* a square in $\mathrm{GF}(p^m)$. Hopefully the "square" language is more clear. ([#392](https://github.com/mhostetter/galois/pull/392))
+  - Renamed `FieldArray.is_quadratic_residue` to `FieldArray.is_square`.
+  - Renamed `FieldArray.quadratic_residues` to `FieldArray.squares`.
+  - Renamed `FieldArray.quadratic_non_residues` to `FieldArray.non_squares`.
+
+## Changes
+
+- Added support for Numba 0.56.x. ([#389](https://github.com/mhostetter/galois/pull/389))
+- Added general logarithm base any primitive element in `FieldArray.log()`. ([#385](https://github.com/mhostetter/galois/pull/385))
+  ```python
+  >>> GF = galois.GF(3**5)
+  >>> x = GF.Random(10, low=1); x
+  GF([215, 176,  52,  20, 236,  48, 217, 131,  13,  57], order=3^5)
+  >>> beta = GF.primitive_elements[-1]; beta
+  GF(242, order=3^5)
+  >>> i = x.log(beta); i
+  array([171, 240, 109,  65, 162,  57,  34, 166,  72,  56])
+  >>> np.array_equal(beta ** i, x)
+  True
+  ```
+- Added Pollard-$\rho$ discrete logarithm for certain $\mathrm{GF}(2^m)$ fields. The algorithm is only applicable to fields whose multiplicative group has prime order. It has complexity $O(\sqrt{n})$ compared to $O(n)$ for the brute-force algorithm. In this example, Pollard-$\rho$ is **1650%** faster than brute force. ([#385](https://github.com/mhostetter/galois/pull/385))
+  ```ipython
+  In [3]: GF = galois.GF(2**19, compile="jit-calculate")
+
+  In [4]: galois.is_prime(GF.order - 1)
+  Out[4]: True
+
+  In [5]: x = GF.Random(100, low=1, seed=1)
+
+  # v0.0.31
+  In [6]: %timeit np.log(x)
+  80.3 ms ± 55.8 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.0.32
+  In [6]: %timeit np.log(x)
+  4.59 ms ± 90.5 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  ```
+- Added Pohlig-Hellman discrete logarithm to replace the brute-force search. It has complexity $O(\sum_{i=1}^{r} e_i(\textrm{lg}\ n + \sqrt{p_i}))$ compared to $O(n)$ for the brute-force algorithm. It is especially efficient for fields whose multiplicative group has smooth order. In this example with $p^m - 1$ smooth, Pohlig-Hellman is **~3,000,000%** faster than brute force. ([#387](https://github.com/mhostetter/galois/pull/387))
+  ```ipython
+  In [3]: GF = galois.GF(491954233)
+
+  # The multiplicative group's order is smooth
+  In [4]: galois.factors(GF.order - 1)
+  Out[4]: ([2, 3, 7, 11, 19, 14011], [3, 1, 1, 1, 1, 1])
+
+  In [5]: x = GF.Random(1, low=1, seed=1)
+
+  # v0.0.31
+  In [6]: %timeit np.log(x)
+  1.82 s ± 2.95 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.0.32
+  In [6]: %timeit np.log(x)
+  61.3 µs ± 14.6 µs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+  ```
+- Added Itoh-Tsujii inversion algorithm for extension fields, which is **35%** faster than inversion with Fermat's Little Theorem. ([#383](https://github.com/mhostetter/galois/pull/383))
+  ```ipython
+  In [3]: GF = galois.GF(109987**4)
+
+  In [4]: x = GF.Random(100, low=1, seed=1)
+
+  # v0.0.31
+  In [5]: %timeit np.reciprocal(x)
+  646 ms ± 834 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.0.32
+  In [5]: %timeit np.reciprocal(x)
+  479 ms ± 26.9 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  ```
+- Fixed a bug where `FieldArray` subclasses and instances could not be pickled. ([#393](https://github.com/mhostetter/galois/pull/393))
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
