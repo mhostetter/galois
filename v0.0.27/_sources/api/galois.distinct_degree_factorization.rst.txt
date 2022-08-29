@@ -1,0 +1,6 @@
+﻿galois.distinct\_degree\_factorization
+======================================
+
+.. currentmodule:: galois
+
+.. autofunction:: distinct_degree_factorization

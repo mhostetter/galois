@@ -1,0 +1,6 @@
+﻿galois.primitive\_root
+======================
+
+.. currentmodule:: galois
+
+.. autofunction:: primitive_root

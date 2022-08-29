@@ -1,0 +1,6 @@
+﻿galois.is\_composite
+====================
+
+.. currentmodule:: galois
+
+.. autofunction:: is_composite

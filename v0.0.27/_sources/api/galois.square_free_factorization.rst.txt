@@ -1,0 +1,6 @@
+﻿galois.square\_free\_factorization
+==================================
+
+.. currentmodule:: galois
+
+.. autofunction:: square_free_factorization

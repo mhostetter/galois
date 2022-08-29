@@ -1,0 +1,6 @@
+﻿galois.berlekamp\_massey
+========================
+
+.. currentmodule:: galois
+
+.. autofunction:: berlekamp_massey

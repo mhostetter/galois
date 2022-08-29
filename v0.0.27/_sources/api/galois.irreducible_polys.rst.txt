@@ -1,0 +1,6 @@
+﻿galois.irreducible\_polys
+=========================
+
+.. currentmodule:: galois
+
+.. autofunction:: irreducible_polys

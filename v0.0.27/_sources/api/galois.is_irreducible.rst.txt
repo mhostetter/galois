@@ -1,0 +1,6 @@
+﻿galois.is\_irreducible
+======================
+
+.. currentmodule:: galois
+
+.. autofunction:: is_irreducible

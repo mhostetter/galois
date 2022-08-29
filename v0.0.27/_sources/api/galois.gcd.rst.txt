@@ -1,0 +1,6 @@
+﻿galois.gcd
+==========
+
+.. currentmodule:: galois
+
+.. autofunction:: gcd

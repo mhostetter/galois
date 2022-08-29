@@ -1,0 +1,6 @@
+﻿galois.carmichael\_lambda
+=========================
+
+.. currentmodule:: galois
+
+.. autofunction:: carmichael_lambda

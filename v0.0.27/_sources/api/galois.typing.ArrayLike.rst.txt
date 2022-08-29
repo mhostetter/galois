@@ -1,0 +1,6 @@
+﻿galois.typing.ArrayLike
+=======================
+
+.. currentmodule:: galois.typing
+
+.. autodata:: ArrayLike

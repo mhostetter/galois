@@ -1,0 +1,6 @@
+﻿galois.totatives
+================
+
+.. currentmodule:: galois
+
+.. autofunction:: totatives

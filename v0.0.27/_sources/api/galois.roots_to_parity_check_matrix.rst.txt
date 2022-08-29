@@ -1,0 +1,6 @@
+﻿galois.roots\_to\_parity\_check\_matrix
+=======================================
+
+.. currentmodule:: galois
+
+.. autofunction:: roots_to_parity_check_matrix

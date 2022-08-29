@@ -1,0 +1,6 @@
+﻿galois.Field
+============
+
+.. currentmodule:: galois
+
+.. autofunction:: Field

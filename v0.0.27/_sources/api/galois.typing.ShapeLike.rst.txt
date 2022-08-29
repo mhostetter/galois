@@ -1,0 +1,6 @@
+﻿galois.typing.ShapeLike
+=======================
+
+.. currentmodule:: galois.typing
+
+.. autodata:: ShapeLike
