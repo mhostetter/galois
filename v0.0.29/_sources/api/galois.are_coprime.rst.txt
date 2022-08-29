@@ -1,0 +1,6 @@
+﻿galois.are\_coprime
+===================
+
+.. currentmodule:: galois
+
+.. autofunction:: are_coprime

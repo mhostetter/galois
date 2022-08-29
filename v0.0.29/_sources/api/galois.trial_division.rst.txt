@@ -1,0 +1,6 @@
+﻿galois.trial\_division
+======================
+
+.. currentmodule:: galois
+
+.. autofunction:: trial_division

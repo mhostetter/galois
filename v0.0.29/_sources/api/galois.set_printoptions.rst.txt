@@ -1,0 +1,6 @@
+﻿galois.set\_printoptions
+========================
+
+.. currentmodule:: galois
+
+.. autofunction:: set_printoptions

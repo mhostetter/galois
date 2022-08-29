@@ -1,0 +1,6 @@
+﻿galois.prev\_prime
+==================
+
+.. currentmodule:: galois
+
+.. autofunction:: prev_prime

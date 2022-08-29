@@ -1,0 +1,6 @@
+﻿galois.prod
+===========
+
+.. currentmodule:: galois
+
+.. autofunction:: prod

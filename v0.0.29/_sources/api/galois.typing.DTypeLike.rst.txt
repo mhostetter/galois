@@ -1,0 +1,6 @@
+﻿galois.typing.DTypeLike
+=======================
+
+.. currentmodule:: galois.typing
+
+.. autodata:: DTypeLike
