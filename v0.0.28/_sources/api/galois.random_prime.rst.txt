@@ -1,0 +1,6 @@
+﻿galois.random\_prime
+====================
+
+.. currentmodule:: galois
+
+.. autofunction:: random_prime

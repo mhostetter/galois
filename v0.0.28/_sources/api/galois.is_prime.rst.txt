@@ -1,0 +1,6 @@
+﻿galois.is\_prime
+================
+
+.. currentmodule:: galois
+
+.. autofunction:: is_prime

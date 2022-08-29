@@ -1,0 +1,6 @@
+﻿galois.miller\_rabin\_primality\_test
+=====================================
+
+.. currentmodule:: galois
+
+.. autofunction:: miller_rabin_primality_test

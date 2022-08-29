@@ -1,0 +1,6 @@
+﻿galois.pollard\_p1
+==================
+
+.. currentmodule:: galois
+
+.. autofunction:: pollard_p1

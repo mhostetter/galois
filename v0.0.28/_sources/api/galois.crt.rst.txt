@@ -1,0 +1,6 @@
+﻿galois.crt
+==========
+
+.. currentmodule:: galois
+
+.. autofunction:: crt

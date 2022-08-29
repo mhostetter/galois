@@ -1,0 +1,6 @@
+﻿galois.divisor\_sigma
+=====================
+
+.. currentmodule:: galois
+
+.. autofunction:: divisor_sigma
