@@ -1,0 +1,44 @@
+# v0.0.31
+
+*Released July 24, 2022*
+
+## Breaking changes
+
+- Renamed `FieldArray.Elements()` classmethod to `FieldArray.elements` class property. This naming convention is more consistent with `primitive_elements`, `units`, `quadratic_residues`, and `quadratic_non_residues`. ([#373](https://github.com/mhostetter/galois/pull/373))
+  ```python
+  >>> GF = galois.GF(3**2, display="poly")
+  >>> GF.elements
+  GF([     0,      1,      2,      α,  α + 1,  α + 2,     2α, 2α + 1,
+      2α + 2], order=3^2)
+  ```
+- Renamed `BCH.systematic` to `BCH.is_systematic`. ([#376](https://github.com/mhostetter/galois/pull/376))
+- Renamed `ReedSolomon.systematic` to `ReedSolomon.is_systematic`. ([#376](https://github.com/mhostetter/galois/pull/376))
+
+## Changes
+
+- Added support for polynomial composition in `Poly.__call__()`. ([#377](https://github.com/mhostetter/galois/pull/377))
+  ```python
+  >>> GF = galois.GF(3**5)
+  >>> f = galois.Poly([37, 123, 0, 201], field=GF); f
+  Poly(37x^3 + 123x^2 + 201, GF(3^5))
+  >>> g = galois.Poly([55, 0, 1], field=GF); g
+  Poly(55x^2 + 1, GF(3^5))
+  >>> f(g)
+  Poly(77x^6 + 5x^4 + 104x^2 + 1, GF(3^5))
+  ```
+- Added `FieldArray.units` class property. ([#373](https://github.com/mhostetter/galois/pull/373))
+  ```python
+  >>> GF = galois.GF(3**2, display="poly")
+  >>> GF.units
+  GF([     1,      2,      α,  α + 1,  α + 2,     2α, 2α + 1, 2α + 2],
+     order=3^2)
+  ```
+
+## Documentation
+
+- Reworked API reference using Sphinx Immaterial's `python-apigen`. ([#370](https://github.com/mhostetter/galois/pull/370))
+- Shortened website URLs to use directories. [https://galois.readthedocs.io/en/v0.0.30/getting-started.html](https://galois.readthedocs.io/en/v0.0.30/getting-started.html) is converted to [https://galois.readthedocs.io/en/v0.0.31/getting-started/](https://galois.readthedocs.io/en/v0.0.31/getting-started/). ([#370](https://github.com/mhostetter/galois/pull/370))
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
