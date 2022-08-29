@@ -1,0 +1,6 @@
+﻿galois.is\_primitive\_root
+==========================
+
+.. currentmodule:: galois
+
+.. autofunction:: is_primitive_root

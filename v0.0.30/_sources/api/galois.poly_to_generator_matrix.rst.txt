@@ -1,0 +1,6 @@
+﻿galois.poly\_to\_generator\_matrix
+==================================
+
+.. currentmodule:: galois
+
+.. autofunction:: poly_to_generator_matrix

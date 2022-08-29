@@ -1,0 +1,6 @@
+﻿galois.fermat\_primality\_test
+==============================
+
+.. currentmodule:: galois
+
+.. autofunction:: fermat_primality_test

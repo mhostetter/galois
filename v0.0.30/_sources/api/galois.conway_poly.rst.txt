@@ -1,0 +1,6 @@
+﻿galois.conway\_poly
+===================
+
+.. currentmodule:: galois
+
+.. autofunction:: conway_poly

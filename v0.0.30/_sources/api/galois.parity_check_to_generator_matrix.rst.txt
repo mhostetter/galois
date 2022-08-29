@@ -1,0 +1,6 @@
+﻿galois.parity\_check\_to\_generator\_matrix
+===========================================
+
+.. currentmodule:: galois
+
+.. autofunction:: parity_check_to_generator_matrix

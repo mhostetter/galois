@@ -1,0 +1,6 @@
+﻿galois.ntt
+==========
+
+.. currentmodule:: galois
+
+.. autofunction:: ntt

@@ -1,0 +1,6 @@
+﻿galois.is\_cyclic
+=================
+
+.. currentmodule:: galois
+
+.. autofunction:: is_cyclic
