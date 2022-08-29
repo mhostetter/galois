@@ -1,0 +1,35 @@
+# v0.0.17
+
+*Released June 15, 2021*
+
+## Breaking changes
+
+- Rename `FieldMeta` to `FieldClass`.
+- Remove `target` keyword from `FieldClass.compile()` until there is better support for GPUs.
+- Consolidate `verify_irreducible` and `verify_primitive` keyword arguments into `verify` for the `galois.GF()` class factory function.
+- Remove group arrays until there is more complete support.
+
+## Changes
+
+- Speed-up Galois field class creation time.
+- Speed-up JIT compilation time by caching functions.
+- Speed-up `Poly.roots()` by JIT compiling it.
+- Add BCH codes with `galois.BCH`.
+- Add ability to generate irreducible polynomials with `irreducible_poly()` and `irreducible_polys()`.
+- Add ability to generate primitive polynomials with `primitive_poly()` and `primitive_polys()`.
+- Add computation of the minimal polynomial of an element of an extension field with `minimal_poly()`.
+- Add display of arithmetic tables with `FieldClass.arithmetic_table()`.
+- Add display of field element representation table with `FieldClass.repr_table()`.
+- Add Berlekamp-Massey algorithm in `berlekamp_massey()`.
+- Enable ipython tab-completion of Galois field classes.
+- Cleanup API reference page.
+- Add introduction to Galois fields tutorials.
+- Fix bug in `is_primitive()` where some reducible polynomials were marked irreducible.
+- Fix bug in integer<-->polynomial conversions for large binary polynomials.
+- Fix bug in "power" display mode of 0.
+- Other minor bug fixes.
+
+## Contributors
+
+- Dominik Wernberger ([@Werni2A](https://github.com/Werni2A))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
