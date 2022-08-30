@@ -102,6 +102,11 @@ jobs:
             versions = sorted((item.name for item in cwd.iterdir() if item.is_dir() and not item.name.startswith(".")), reverse=True)
             print(versions)
 
+            # Move "latest" version to first alphabetically in versions.json file
+            if "latest" in versions:
+                versions.remove("latest")
+                versions.insert(0, "latest")
+
             list_of_dict = [{"version": version, "title": version, "aliases": []} for version in versions]
             print(list_of_dict)
 
