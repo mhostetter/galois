@@ -59,9 +59,9 @@ dev = [
 Homepage = "https://github.com/mhostetter/galois"
 Source = "https://github.com/mhostetter/galois"
 Issues = "https://github.com/mhostetter/galois/issues"
-Documentation = "https://galois.readthedocs.io/en/stable/"
+Documentation = "https://mhostetter.github.io/galois/latest/"
 Discuss = "https://github.com/mhostetter/galois/discussions"
-Changelog = "https://galois.readthedocs.io/en/stable/release-notes/versioning/"
+Changelog = "https://mhostetter.github.io/galois/latest/release-notes/versioning/"
 Twitter = "https://twitter.com/galois_py"
 
 [tool.setuptools_scm]
