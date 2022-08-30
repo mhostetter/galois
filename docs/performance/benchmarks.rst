@@ -9,7 +9,7 @@ Install dependencies
 
 First, `pytest` and `pytest-benchmark` must be installed on your system. Easily install them by installing the development dependencies.
 
-.. code-block:: sh
+.. code-block:: console
 
    $ python3 -m pip install -r requirements-dev.txt
 
@@ -19,7 +19,7 @@ Create a benchmark
 To create a benchmark, invoke `pytest` on the `benchmarks/` folder or a specific test set (e.g., `benchmarks/test_field_arithmetic.py`). It is also
 advised to pass extra arguments to format the display `--benchmark-columns=min,max,mean,stddev,median` and `--benchmark-sort=name`.
 
-.. code-block::
+.. code-block:: console
 
    $ python3 -m pytest benchmarks/test_field_arithmetic.py --benchmark-columns=min,max,mean,stddev,median --benchmark-sort=name
    ===================================================================== test session starts =====================================================================platform linux -- Python 3.8.10, pytest-4.6.9, py-1.8.1, pluggy-0.13.0
@@ -132,21 +132,21 @@ Compare with a previous benchmark
 If you would like to compare the performance impact of a branch, first run a benchmark on `master` using the `--benchmark-save` option.
 This will save the file `.benchmarks/0001_master.json`.
 
-.. code-block::
+.. code-block:: console
 
    $ git checkout master
    $ python3 -m pytest benchmarks/test_field_arithmetic.py --benchmark-save=master --benchmark-columns=min,max,mean,stddev,median --benchmark-sort=name
 
 Next, run a benchmark on the branch under test while comparing against the benchmark from `master`.
 
-.. code-block::
+.. code-block:: console
 
    $ git checkout branch
    $ python3 -m pytest benchmarks/test_field_arithmetic.py --benchmark-compare=0001_master --benchmark-columns=min,max,mean,stddev,median --benchmark-sort=name
 
 Or, save a benchmark run from `branch` and compare it explicitly against the one from `master`. This benchmark run will save the file `.benchmarks/0001_branch.json`.
 
-.. code-block::
+.. code-block:: console
 
    $ git checkout branch
    $ python3 -m pytest benchmarks/test_field_arithmetic.py --benchmark-save=branch --benchmark-columns=min,max,mean,stddev,median --benchmark-sort=name

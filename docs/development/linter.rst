@@ -9,7 +9,7 @@ Install
 
 First, `pylint` needs to be installed on your system. Easily install it by installing the development dependencies.
 
-.. code-block:: sh
+.. code-block:: console
 
    $ python3 -m pip install .[dev]
 
@@ -29,7 +29,7 @@ Run from the command line
 
 Run the linter manually from the command line.
 
-.. code-block:: sh
+.. code-block:: console
 
     $ python3 -m pylint src/galois/
 

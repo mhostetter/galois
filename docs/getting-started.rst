@@ -10,7 +10,7 @@ Install the package
 
 The latest version of :obj:`galois` can be installed from `PyPI <https://pypi.org/project/galois/>`_ using `pip`.
 
-.. code-block:: sh
+.. code-block:: console
 
    $ python3 -m pip install galois
 
