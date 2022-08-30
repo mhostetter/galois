@@ -1,9 +1,10 @@
 name: Test
 
 on:
-  push:
-    branches:
-      - master
+  # The CI runs on an up-to-date PR branch, so re-running once --ff-only merged onto `master` is unnecessary
+  # push:
+  #   branches:
+  #     - master
   pull_request:
     branches:
       - master
