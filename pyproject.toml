@@ -52,6 +52,7 @@ dev = [
     "pylint>=2.14",
     "pytest",
     "pytest-cov[toml]",
+    "pytest-xdist",
     "pytest-benchmark",
 ]
 
