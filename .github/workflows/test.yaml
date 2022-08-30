@@ -67,7 +67,7 @@ jobs:
         run: python3 -m pip install ${{ steps.glob.outputs.paths }}[dev]
 
       - name: Test with pytest
-        run: python3 -m pytest --showlocals --cov=galois --cov-report=xml tests/
+        run: python3 -m pytest --showlocals -n auto --cov=galois --cov-report=xml tests/
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v2
@@ -112,7 +112,7 @@ jobs:
         run: python3 -m pip install --upgrade ${{ steps.glob.outputs.paths }}[dev]
 
       - name: Test with pytest
-        run: python3 -m pytest --showlocals --cov=galois --cov-report=xml tests/
+        run: python3 -m pytest --showlocals -n auto --cov=galois --cov-report=xml tests/
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v2
