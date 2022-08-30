@@ -1,8 +1,5 @@
-import builtins
 import inspect
 import sys
-
-SPHINX_BUILD = hasattr(builtins, "__sphinx_build__")
 
 
 def verify_isinstance(argument, types, optional=False):

@@ -9,7 +9,7 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._domains import Array, _linalg
-from .._helper import export, extend_docstring, verify_isinstance, SPHINX_BUILD
+from .._helper import export, extend_docstring, verify_isinstance
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
 from .._prime import divisors
@@ -61,7 +61,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
     ) -> FieldArray:
-        if not SPHINX_BUILD and cls is FieldArray:
+        if cls is FieldArray:
             raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
         return super().__new__(cls, x, dtype, copy, order, ndmin)
 
