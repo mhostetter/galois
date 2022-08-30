@@ -220,3 +220,9 @@ A :obj:`~typing.Union` representing objects that can be coerced into a polynomia
 
 .. rubric:: Alias
 """
+
+
+# Remove imported objects from public galois.typing namespace
+del annotations
+del Sequence, Union, TYPE_CHECKING
+del np
