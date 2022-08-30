@@ -7551,13 +7551,13 @@ exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th ro
 <span class="gh">Out[64]: </span><span class="go">0</span>
 
 <span class="gp">In [65]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">n</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[65]: </span><span class="go">GF([ 6863,  3993,  6820, 13390,  1306,   405], order=7^5)</span>
+<span class="gh">Out[65]: </span><span class="go">GF([10039, 10758,  8979, 16206, 16749, 12959], order=7^5)</span>
 
 <span class="gp">In [66]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">X</span>
-<span class="gh">Out[66]: </span><span class="go">GF([ 8011, 11683,  9477, 14015,  2832,  7949], order=7^5)</span>
+<span class="gh">Out[66]: </span><span class="go">GF([  412,  5035, 15690, 12994,  7221,  2628], order=7^5)</span>
 
 <span class="gp">In [67]: </span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="gh">Out[67]: </span><span class="go">GF([ 6863,  3993,  6820, 13390,  1306,   405], order=7^5)</span>
+<span class="gh">Out[67]: </span><span class="go">GF([10039, 10758,  8979, 16206, 16749, 12959], order=7^5)</span>
 </code></pre></div>
 </div>
 <p>See also <a class="reference internal" href="../../api/galois.ntt/" title="galois.ntt (Python function) — Computes the Number-Theoretic Transform (NTT) of x."><code class="xref py py-func docutils literal notranslate"><span class="pre">ntt()</span></code></a> and <a class="reference internal" href="../../api/galois.FieldArray.primitive_root_of_unity/" title="galois.FieldArray.primitive_root_of_unity (Python method) — Finds a primitive n-th root of unity in the finite field."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_root_of_unity</span></code></a>.</p>
@@ -7575,13 +7575,13 @@ exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th ro
 <span class="gh">Out[70]: </span><span class="go">0</span>
 
 <span class="gp">In [71]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">n</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[71]: </span><span class="go">GF([  953,  2207,   596, 13392,  4718,  3406], order=7^5)</span>
+<span class="gh">Out[71]: </span><span class="go">GF([ 7710, 14040,  9398, 15118, 11475, 14509], order=7^5)</span>
 
 <span class="gp">In [72]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">X</span>
-<span class="gh">Out[72]: </span><span class="go">GF([  177, 10864,  9735,  6477, 11129,   621], order=7^5)</span>
+<span class="gh">Out[72]: </span><span class="go">GF([16222,  4030,  1850,  1730,  2329, 10495], order=7^5)</span>
 
 <span class="gp">In [73]: </span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="gh">Out[73]: </span><span class="go">GF([  953,  2207,   596, 13392,  4718,  3406], order=7^5)</span>
+<span class="gh">Out[73]: </span><span class="go">GF([ 7710, 14040,  9398, 15118, 11475, 14509], order=7^5)</span>
 </code></pre></div>
 </div>
 <p>See also <a class="reference internal" href="../../api/galois.ntt/" title="galois.ntt (Python function) — Computes the Number-Theoretic Transform (NTT) of x."><code class="xref py py-func docutils literal notranslate"><span class="pre">ntt()</span></code></a> and <a class="reference internal" href="../../api/galois.FieldArray.primitive_root_of_unity/" title="galois.FieldArray.primitive_root_of_unity (Python method) — Finds a primitive n-th root of unity in the finite field."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_root_of_unity</span></code></a>.</p>

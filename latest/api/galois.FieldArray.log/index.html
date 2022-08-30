@@ -7275,14 +7275,14 @@ of the field.</p>
 
 <span class="gp">In [3]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([         2α^4 + 2α^3 + 2α,            2α^3 + α^2 + α,</span>
-<span class="go">         2α^4 + 2α^3 + 2α + 1,           2α^4 + 2α^3 + 2,</span>
-<span class="go">              2α^4 + 2α^3 + 1, 2α^4 + 2α^3 + α^2 + α + 2,</span>
-<span class="go">                  2α^3 + 2α^2, 2α^4 + α^3 + 2α^2 + α + 2,</span>
-<span class="go">               2α^4 + α^3 + α,            2α^3 + α^2 + α], order=3^5)</span>
+<span class="go">GF([          α^3 + 2α + 1, 2α^4 + 2α^3 + α^2 + 2α,</span>
+<span class="go">            2α^4 + α^3 + α,                  α + 2,</span>
+<span class="go">                     α + 1,                α^4 + 1,</span>
+<span class="go">     2α^4 + α^3 + 2α^2 + 2, 2α^4 + α^3 + 2α^2 + 2α,</span>
+<span class="go">        α^4 + 2α^2 + α + 1,           α^3 + 2α + 1], order=3^5)</span>
 
 <span class="gp">In [4]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">();</span> <span class="n">i</span>
-<span class="gh">Out[4]: </span><span class="go">array([107, 102, 134,  44, 240,  81, 192,  53, 158, 102])</span>
+<span class="gh">Out[4]: </span><span class="go">array([198, 152, 158,   5,  69, 189,  58, 183, 181, 198])</span>
 
 <span class="gp">In [5]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">alpha</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[5]: </span><span class="go">True</span>
@@ -7299,7 +7299,7 @@ of the field.</p>
 <span class="gh">Out[7]: </span><span class="go">GF(2α^4 + 2α^3 + 2α^2 + 2α + 2, order=3^5)</span>
 
 <span class="gp">In [8]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">beta</span><span class="p">);</span> <span class="n">i</span>
-<span class="gh">Out[8]: </span><span class="go">array([117, 202, 142, 220,  34,  75, 124,  67, 218, 202])</span>
+<span class="gh">Out[8]: </span><span class="go">array([ 22,  78, 218, 157,  37, 175, 224,  35,  69,  22])</span>
 
 <span class="gp">In [9]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">beta</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[9]: </span><span class="go">True</span>
@@ -7307,21 +7307,21 @@ of the field.</p>
 </div>
 <p>Compute the logarithm of a single finite field element base all of the primitive elements of the field.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[10]: </span><span class="go">GF(2α^4 + 2α^3 + 2α^2 + α + 2, order=3^5)</span>
+<span class="gh">Out[10]: </span><span class="go">GF(2α^3 + 2, order=3^5)</span>
 
 <span class="gp">In [11]: </span><span class="n">bases</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
 
 <span class="gp">In [12]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">bases</span><span class="p">);</span> <span class="n">i</span>
 <span class="gh">Out[12]: </span><span class="go"></span>
-<span class="go">array([162,  76, 226, 202,  12, 114, 148,   4,  38,  68, 234,  54, 106,</span>
-<span class="go">       156, 230,  28, 128, 170,  50,  86,  94, 196, 130,  82, 174, 208,</span>
-<span class="go">        48,  72, 186, 224,  60, 168, 184,  78, 152,  70,  96,  42, 236,</span>
-<span class="go">        62, 138, 136,  56,  30, 160,  46, 126,  40, 180, 104,  20, 100,</span>
-<span class="go">       122,  36,  26, 142, 216, 118,  10, 134,  24,  32,  14,  92, 212,</span>
-<span class="go">       158, 240, 182, 222,  80, 116,  52,  18, 102, 190, 178,  64,   8,</span>
-<span class="go">       200,  98,   6, 192, 146, 232,  90, 238, 164, 112, 210, 120,  34,</span>
-<span class="go">       166, 172, 108,  58, 124, 214, 218, 204, 144, 140, 228, 194,   2,</span>
-<span class="go">        84, 206,  74, 188,  16, 150])</span>
+<span class="go">array([ 86, 124, 114, 164,  96, 186, 216,  32,  62,  60, 178, 190, 122,</span>
+<span class="go">        38, 146, 224,  56, 150, 158, 204,  26, 116,  72, 172, 182, 212,</span>
+<span class="go">       142,  92,  36,  98, 238, 134,  20, 140,   6,  76,  42,  94, 194,</span>
+<span class="go">        12, 136, 120, 206, 240,  70, 126,  40,  78, 230, 106, 160,  74,</span>
+<span class="go">         8,  46, 208, 168,  34, 218,  80, 104, 192,  14, 112,  10,   2,</span>
+<span class="go">        54, 226,   4,  82, 156, 202, 174, 144,  90,  68, 214,  28,  64,</span>
+<span class="go">       148,  58,  48,  84, 200, 162, 236, 210, 102, 170, 228, 234,  30,</span>
+<span class="go">       118, 166, 138, 222,  24,  18,  50, 180, 184, 152, 130, 100,  16,</span>
+<span class="go">       188, 196, 108,  52, 128, 232])</span>
 
 <span class="gp">In [13]: </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bases</span> <span class="o">**</span> <span class="n">i</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[13]: </span><span class="go">True</span>
