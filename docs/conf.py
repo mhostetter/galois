@@ -19,12 +19,6 @@ sys.path.insert(0, os.path.abspath(".."))
 # Need to build docs with Python 3.8 or higher for proper typing annotations, including from __future__ import annotations
 assert sys.version_info.major == 3 and sys.version_info.minor >= 8
 
-# Assign a build variable to the builtin module that inerts the @set_module decorator. This is done because set_module
-# confuses Sphinx when parsing overloaded functions. When not building the documentation, the @set_module("galois")
-# decorator works as intended.
-import builtins
-setattr(builtins, "__sphinx_build__", True)
-
 import galois
 import numpy
 

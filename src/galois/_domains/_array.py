@@ -11,7 +11,7 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._helper import export, verify_isinstance, SPHINX_BUILD
+from .._helper import export, verify_isinstance
 from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 
 from ._function import FunctionMixin
@@ -40,7 +40,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
     ) -> Array:
-        if not SPHINX_BUILD and cls is Array:
+        if cls is Array:
             raise NotImplementedError("Array is an abstract base class that cannot be directly instantiated. Instead, create a Array subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
 
         dtype = cls._get_dtype(dtype)
