@@ -11,7 +11,6 @@ The documentation dependencies are stored in `docs/requirements.txt`.
 
 .. literalinclude:: ../requirements.txt
    :caption: docs/requirements.txt
-   :language: txt
 
 Install the documentation dependencies by passing the `-r` switch to `pip install`.
 
