@@ -61,6 +61,8 @@ def test_next_prime(next_prime):
 def test_random_prime_exceptions():
     with pytest.raises(TypeError):
         galois.random_prime(10.0)
+    with pytest.raises(TypeError):
+        galois.random_prime(10, seed=1.0)
     with pytest.raises(ValueError):
         galois.random_prime(0)
     with pytest.raises(ValueError):
@@ -72,6 +74,13 @@ def test_random_prime():
         bits = random.randint(1, 10)
         n = galois.random_prime(bits)
         assert galois.is_prime(n) == True
+
+
+def test_random_prime_deterministic():
+    p1 = galois.random_prime(10, seed=1)
+    p2 = galois.random_prime(10, seed=1)
+    assert p1 == 1153
+    assert p2 == 1153
 
 
 def test_mersenne_exponents_exceptions():
