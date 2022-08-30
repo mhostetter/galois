@@ -19,9 +19,9 @@
 
 The `galois` library is a Python 3 package that extends NumPy arrays to operate over finite fields.
 
-The user creates a [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/) subclass using `GF = galois.GF(p**m)`.
+The user creates a [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) subclass using `GF = galois.GF(p**m)`.
 `GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)` mimics the signature of `np.array()`. The
-[`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/) `x` is operated on like any other NumPy array except
+[`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) `x` is operated on like any other NumPy array except
 all arithmetic is performed in $\mathrm{GF}(p^m)$, not $\mathbb{R}$.
 
 Internally, the finite field arithmetic is implemented by replacing [NumPy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html).
@@ -33,18 +33,18 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 ## Features
 
-- Supports all [Galois fields](https://galois.readthedocs.io/en/latest/api/galois.GF/) $\mathrm{GF}(p^m)$, even arbitrarily-large fields!
-- [**Faster**](https://galois.readthedocs.io/en/latest/performance/prime-fields/) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for $\mathrm{GF}(p)$.
-- Seamless integration with NumPy -- normal NumPy functions work on [`FieldArray`s](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/).
+- Supports all [Galois fields](https://mhostetter.github.io/galois/latest/api/galois.GF/) $\mathrm{GF}(p^m)$, even arbitrarily-large fields!
+- [**Faster**](https://mhostetter.github.io/galois/latest/performance/prime-fields/) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for $\mathrm{GF}(p)$.
+- Seamless integration with NumPy -- normal NumPy functions work on [`FieldArray`s](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/).
 - Linear algebra over finite fields using normal `np.linalg` functions.
-- Linear transforms over finite fields, such as the FFT with `np.fft.fft()` and the NTT with [`ntt()`](https://galois.readthedocs.io/en/latest/api/galois.ntt/).
-- Functions to generate [irreducible](https://galois.readthedocs.io/en/latest/api/#irreducible-polynomials), [primitive](https://galois.readthedocs.io/en/latest/api/#primitive-polynomials), and [Conway](https://galois.readthedocs.io/en/latest/api/galois.conway_poly/) polynomials.
-- Univariate polynomials over finite fields with [`Poly`](https://galois.readthedocs.io/en/latest/api/galois.Poly/).
-- Forward error correction codes with [`BCH`](https://galois.readthedocs.io/en/latest/api/galois.BCH/) and [`ReedSolomon`](https://galois.readthedocs.io/en/latest/api/galois.ReedSolomon/).
-- Fibonacci and Galois linear-feedback shift registers over any finite field with [`FLFSR`](https://galois.readthedocs.io/en/latest/api/galois.FLFSR/) and [`GLFSR`](https://galois.readthedocs.io/en/latest/api/galois.GLFSR/).
-- Various [number theoretic functions](https://galois.readthedocs.io/en/latest/api/#number-theory).
-- [Integer factorization](https://galois.readthedocs.io/en/latest/api/#factorization) and accompanying algorithms.
-- [Prime number generation](https://galois.readthedocs.io/en/latest/api/#prime-number-generation) and [primality testing](https://galois.readthedocs.io/en/latest/api/#primality-tests).
+- Linear transforms over finite fields, such as the FFT with `np.fft.fft()` and the NTT with [`ntt()`](https://mhostetter.github.io/galois/latest/api/galois.ntt/).
+- Functions to generate [irreducible](https://mhostetter.github.io/galois/latest/api/#irreducible-polynomials), [primitive](https://mhostetter.github.io/galois/latest/api/#primitive-polynomials), and [Conway](https://mhostetter.github.io/galois/latest/api/galois.conway_poly/) polynomials.
+- Univariate polynomials over finite fields with [`Poly`](https://mhostetter.github.io/galois/latest/api/galois.Poly/).
+- Forward error correction codes with [`BCH`](https://mhostetter.github.io/galois/latest/api/galois.BCH/) and [`ReedSolomon`](https://mhostetter.github.io/galois/latest/api/galois.ReedSolomon/).
+- Fibonacci and Galois linear-feedback shift registers over any finite field with [`FLFSR`](https://mhostetter.github.io/galois/latest/api/galois.FLFSR/) and [`GLFSR`](https://mhostetter.github.io/galois/latest/api/galois.GLFSR/).
+- Various [number theoretic functions](https://mhostetter.github.io/galois/latest/api/#number-theory).
+- [Integer factorization](https://mhostetter.github.io/galois/latest/api/#factorization) and accompanying algorithms.
+- [Prime number generation](https://mhostetter.github.io/galois/latest/api/#prime-number-generation) and [primality testing](https://mhostetter.github.io/galois/latest/api/#primality-tests).
 
 ## Roadmap
 
@@ -54,12 +54,12 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 ## Documentation
 
-The documentation for `galois` is located at https://galois.readthedocs.io/en/latest/.
+The documentation for `galois` is located at https://mhostetter.github.io/galois/latest/.
 
 ## Getting Started
 
-The [Getting Started](https://galois.readthedocs.io/en/latest/getting-started/) guide is intended to assist the user with installing the
-library, creating two example arrays, and performing basic array arithmetic. See [Basic Usage](https://galois.readthedocs.io/en/latest/basic-usage/array-classes/)
+The [Getting Started](https://mhostetter.github.io/galois/latest/getting-started/) guide is intended to assist the user with installing the
+library, creating two example arrays, and performing basic array arithmetic. See [Basic Usage](https://mhostetter.github.io/galois/latest/basic-usage/array-classes/)
 for more detailed discussions and examples.
 
 ### Install the package
@@ -79,9 +79,9 @@ In [2]: galois.__version__
 Out[2]: '0.1.0'
 ```
 
-### Create a [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/) subclass
+### Create a [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) subclass
 
-Next, create a [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/) subclass
+Next, create a [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) subclass
 for the specific finite field you'd like to work in. This is created using the `galois.GF()` class factory. In this example, we are
 working in $\mathrm{GF}(3^5)$.
 
@@ -99,7 +99,7 @@ Galois Field:
   primitive_element: x
 ```
 
-The [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/) subclass `GF` is a subclass of
+The [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) subclass `GF` is a subclass of
 `np.ndarray` that performs all arithmetic in the Galois field $\mathrm{GF}(3^5)$, not in $\mathbb{R}$.
 
 ```python
@@ -110,19 +110,19 @@ In [6]: issubclass(GF, np.ndarray)
 Out[6]: True
 ```
 
-See [Array Classes](https://galois.readthedocs.io/en/latest/basic-usage/array-classes/) for more details.
+See [Array Classes](https://mhostetter.github.io/galois/latest/basic-usage/array-classes/) for more details.
 
-### Create two [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/) instances
+### Create two [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) instances
 
-Next, create a new [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/) `x` by passing an
-[`ArrayLike`](https://galois.readthedocs.io/en/latest/api/galois.typing.ArrayLike/) object to `GF`'s constructor.
+Next, create a new [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) `x` by passing an
+[`ArrayLike`](https://mhostetter.github.io/galois/latest/api/galois.typing.ArrayLike/) object to `GF`'s constructor.
 
 ```python
 In [7]: x = GF([236, 87, 38, 112]); x
 Out[7]: GF([236,  87,  38, 112], order=3^5)
 ```
 
-The array `x` is an instance of [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/) and also
+The array `x` is an instance of [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) and also
 an instance of `np.ndarray`.
 
 ```python
@@ -133,7 +133,7 @@ In [9]: isinstance(x, np.ndarray)
 Out[9]: True
 ```
 
-Create a second [`FieldArray`](https://galois.readthedocs.io/en/latest/api/galois.FieldArray/) `y` by converting an existing
+Create a second [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) `y` by converting an existing
 NumPy array (without copying it) by invoking `.view()`. When finished working in the finite field, view it back as a NumPy array
 with `.view(np.ndarray)`.
 
@@ -146,7 +146,7 @@ In [11]: y = y.view(GF); y
 Out[11]: GF([109,  17, 108, 224], order=3^5)
 ```
 
-See [Array Creation](https://galois.readthedocs.io/en/latest/basic-usage/array-creation/) for more details.
+See [Array Creation](https://mhostetter.github.io/galois/latest/basic-usage/array-creation/) for more details.
 
 ### Change the element representation
 
@@ -174,7 +174,7 @@ Out[14]: GF([α^204,  α^16, α^230,  α^34], order=3^5)
 In [15]: GF.display("int");
 ```
 
-See [Element Representation](https://galois.readthedocs.io/en/latest/basic-usage/element-representation/) for more details.
+See [Element Representation](https://mhostetter.github.io/galois/latest/basic-usage/element-representation/) for more details.
 
 ### Perform array arithmetic
 
@@ -207,7 +207,7 @@ In [21]: np.log(x)
 Out[21]: array([204,  16, 230,  34])
 ```
 
-See [Array Arithmetic](https://galois.readthedocs.io/en/latest/basic-usage/array-arithmetic/) for more details.
+See [Array Arithmetic](https://mhostetter.github.io/galois/latest/basic-usage/array-arithmetic/) for more details.
 
 ## Acknowledgements
 
