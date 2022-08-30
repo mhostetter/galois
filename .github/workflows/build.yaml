@@ -22,7 +22,10 @@ jobs:
           python-version: 3.7
 
       - name: Upgrade pip and other packaging tools
-        run: python3 -m pip install --upgrade pip setuptools wheel build twine
+        run: python3 -m pip install --upgrade pip setuptools setuptools_scm wheel build twine
+
+      - name: Show package version
+        run: python3 -m setuptools_scm
 
       - name: Build the `galois` package
         run: python3 -m build
