@@ -7217,9 +7217,7 @@
 
   <dl class="py function objdesc">
 <dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">prod</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></span></dt>
-<dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">prod</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a></span></span></span></dt>
+<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">prod</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Computes the product of the arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
@@ -7254,21 +7252,21 @@ Polynomials</label><div class="sd-tab-content docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [3]: </span><span class="n">f1</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f1</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^2 + 3x + 4, GF(7))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(2x^2 + x + 6, GF(7))</span>
 
 <span class="gp">In [4]: </span><span class="n">f2</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f2</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(2x^3 + 2x^2 + 2x + 5, GF(7))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(2x^3 + 5x^2 + 1, GF(7))</span>
 
 <span class="gp">In [5]: </span><span class="n">f3</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f3</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(2x^4 + 2x^3 + 2x^2 + 5x + 1, GF(7))</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(4x^4 + x^3 + 4x^2 + x + 3, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Compute the product of three polynomials.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">galois</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">)</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(4x^9 + 6x^8 + 3x^7 + 5x^6 + 4x^5 + 2x^4 + x^3 + 6x^2 + 4x + 6, GF(7))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(2x^9 + 3x^8 + 5x^7 + x^6 + 2x^5 + 3x^4 + 2x^3 + 2x^2 + 2x + 4, GF(7))</span>
 
 <span class="gp">In [7]: </span><span class="n">f1</span> <span class="o">*</span> <span class="n">f2</span> <span class="o">*</span> <span class="n">f3</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(4x^9 + 6x^8 + 3x^7 + 5x^6 + 4x^5 + 2x^4 + x^3 + 6x^2 + 4x + 6, GF(7))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(2x^9 + 3x^8 + 5x^7 + x^6 + 2x^5 + 3x^4 + 2x^3 + 2x^2 + 2x + 4, GF(7))</span>
 </code></pre></div>
 </div>
 </div>

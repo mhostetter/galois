@@ -6405,6 +6405,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#p-seed" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.random_prime.seed (Python parameter) — Non-negative integer used to initialize the PRNG. The default is None which means that unpredictable entropy will be pulled from the OS to be used as the seed." class="md-ellipsis">seed</span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -7216,6 +7223,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#p-seed" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.random_prime.seed (Python parameter) — Non-negative integer used to initialize the PRNG. The default is None which means that unpredictable entropy will be pulled from the OS to be used as the seed." class="md-ellipsis">seed</span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -7257,7 +7271,7 @@
 
   <dl class="py function objdesc">
 <dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">random_prime</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-bits" title="galois.random_prime.bits (Python parameter) — The number of bits in the prime p."><span class="n"><span class="pre">bits</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></span></dt>
+<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">random_prime</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-bits" title="galois.random_prime.bits (Python parameter) — The number of bits in the prime p."><span class="n"><span class="pre">bits</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-seed" title="galois.random_prime.seed (Python parameter) — Non-negative integer used to initialize the PRNG. The default is None which means that unpredictable entropy will be pulled from the OS to be used as the seed."><span class="n"><span class="pre">seed</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></span></dt>
 <dd><p>Returns a random prime <span class="math notranslate nohighlight">\(p\)</span> with <span class="math notranslate nohighlight">\(b\)</span> bits, such that <span class="math notranslate nohighlight">\(2^b \le p &lt; 2^{b+1}\)</span>.</p>
 <p>This function randomly generates integers with <span class="math notranslate nohighlight">\(b\)</span> bits and uses the primality tests in
 <a class="reference internal" href="../galois.is_prime/" title="galois.is_prime (Python function) — Determines if n is prime."><code class="xref py py-func docutils literal notranslate"><span class="pre">is_prime()</span></code></a> to determine if <span class="math notranslate nohighlight">\(p\)</span> is prime.</p>
@@ -7265,6 +7279,9 @@
 <dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="p-bits"><span class="n sig-name">bits</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#p-bits" title="Permalink to this definition">¶</a></dt><dd><p>The number of bits in the prime <span class="math notranslate nohighlight">\(p\)</span>.</p>
+</dd>
+<dt id="p-seed"><span class="n sig-name">seed</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#p-seed" title="Permalink to this definition">¶</a></dt><dd><p>Non-negative integer used to initialize the PRNG. The default is <code class="code highlight python docutils literal highlight-python"><span class="kc">None</span></code> which means that unpredictable
+entropy will be pulled from the OS to be used as the seed.</p>
 </dd>
 </dl>
 </dd>
@@ -7282,15 +7299,16 @@
 </ul>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Generate a random 1024-bit prime.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">random_prime</span><span class="p">(</span><span class="mi">1024</span><span class="p">);</span> <span class="n">p</span>
-<span class="gh">Out[1]: </span><span class="go">280560847663536893660544927694365261745240828420727804177417462362311460279510363089291324786354747620526660043167704832556841430872528753215499708007064589224432412543237810560226263155185617541556866977678714051761429455386425289829533228973658004815585542231591407542924711220462506675584326850792830921051</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">random_prime</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">p</span>
+<span class="gh">Out[1]: </span><span class="go">327845897586213436751081882871255331286648902836386839087617368608439574698192016043769533823474001379935585889197488144338014865193967937011638431094821943416361149113909692569658970713864593781874423564706915495970135894084612689487074397782022398597547611189482697523681694691585678818112329605903872356773</span>
 
 <span class="gp">In [2]: </span><span class="n">galois</span><span class="o">.</span><span class="n">is_prime</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 <span class="gh">Out[2]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code>$ openssl prime 236861787926957382206996886087214592029752524078026392358936844479667423570833116126506927878773110287700754280996224768092589904231910149528080012692722763539766058401127758399272786475279348968866620857161889678512852050561604969208679095086283103827661300743342847921567132587459205365243815835763830067933
-1514D68EDB7C650F1FF713531A1A43255A4BE6D66EE1FDBD96F4EB32757C1B1BAF16A5933E24D45FAD6C6A814F3C8C14F3CB98F24FEA74C43C349D6FA3AB76EB0156811A1FBAA64EB4AC525CCEF9278AF78886DC6DBF46C4463A34C0E53B0FA2F784BB2DC5FDF076BB6E145AA15AA6D616ACC1D5F95B8BE757670B9AAF53292DD (236861787926957382206996886087214592029752524078026392358936844479667423570833116126506927878773110287700754280996224768092589904231910149528080012692722763539766058401127758399272786475279348968866620857161889678512852050561604969208679095086283103827661300743342847921567132587459205365243815835763830067933) is prime
+<p>Verify that <span class="math notranslate nohighlight">\(p\)</span> is prime using the OpenSSL library.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>openssl prime <span class="m">327845897586213436751081882871255331286648902836386839087617368608439574698192016043769533823474001379935585889197488144338014865193967937011638431094821943416361149113909692569658970713864593781874423564706915495970135894084612689487074397782022398597547611189482697523681694691585678818112329605903872356773</span>
+<span class="go">1D2DE38DE88C67E1EAFDEEAE77C40B8709ED9C275522C6D5578976B1ABCBE7E0F8C6DE1271EEC6EB3827649164189788F9F3A622AEA5F4039761EC708B5841DE88566D9B5BAF49BA92DCE5A300297A9E0E890E4103ED2AD4B5E0553CE56E8C34758CD45900125DBA1553AE73AA0CBD6018A2A8713D46E475BF058D1AAA52EF1A5 (327845897586213436751081882871255331286648902836386839087617368608439574698192016043769533823474001379935585889197488144338014865193967937011638431094821943416361149113909692569658970713864593781874423564706915495970135894084612689487074397782022398597547611189482697523681694691585678818112329605903872356773) is prime</span>
 </code></pre></div>
 </div>
 </dd></dl>

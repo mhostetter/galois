@@ -7226,27 +7226,27 @@
   <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <h2 id="install-from-pypi">Install from PyPI<a class="headerlink" href="#install-from-pypi" title="Permalink to this heading">¶</a></h2>
 <p>The latest released version of <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> can be installed from <a class="reference external" href="https://pypi.org/project/galois/">PyPI</a> using <code class="code highlight python docutils literal highlight-python"><span class="n">pip</span></code>.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pip install galois
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pip install galois
 </code></pre></div>
 </div>
 <h2 id="install-from-github">Install from GitHub<a class="headerlink" href="#install-from-github" title="Permalink to this heading">¶</a></h2>
 <p>The latest code on <code class="code highlight python docutils literal highlight-python"><span class="n">master</span></code> can be installed using <code class="code highlight python docutils literal highlight-python"><span class="n">pip</span></code> in this way.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pip install git+https://github.com/mhostetter/galois.git
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pip install git+https://github.com/mhostetter/galois.git
 </code></pre></div>
 </div>
 <p>Or from a specific branch.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pip install git+https://github.com/mhostetter/galois.git@branch
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pip install git+https://github.com/mhostetter/galois.git@branch
 </code></pre></div>
 </div>
 <h2 id="editable-install-from-local-folder">Editable install from local folder<a class="headerlink" href="#editable-install-from-local-folder" title="Permalink to this heading">¶</a></h2>
 <p>To actively develop the library, it is beneficial to <code class="code highlight python docutils literal highlight-python"><span class="n">pip</span> <span class="n">install</span></code> the library in an <a class="reference external" href="https://pip.pypa.io/en/stable/cli/pip_install/?highlight=--editable#editable-installs">editable</a>
 fashion from a local folder. This allows any changes in the current directory to be immediately seen upon the next <code class="code highlight python docutils literal highlight-python"><span class="kn">import</span> <span class="nn">galois</span></code>.</p>
 <p>Clone the repo wherever you’d like.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ git clone https://github.com/mhostetter/galois.git
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>git clone https://github.com/mhostetter/galois.git
 </code></pre></div>
 </div>
 <p>Install the local folder using the <code class="code highlight python docutils literal highlight-python"><span class="o">-</span><span class="n">e</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="o">--</span><span class="n">editable</span></code> flag.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pip install -e galois/
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pip install -e galois/
 </code></pre></div>
 </div>
 <h2 id="install-the-dev-dependencies">Install the <code class="code highlight python docutils literal highlight-python"><span class="n">dev</span></code> dependencies<a class="headerlink" href="#install-the-dev-dependencies" title="Permalink to this heading">¶</a></h2>
@@ -7266,7 +7266,7 @@ pyproject.toml<a class="headerlink" href="#id1" title="Permalink to this code">�
 </div>
 </div>
 <p>Install the development dependencies by passing the <code class="code highlight python docutils literal highlight-python"><span class="p">[</span><span class="n">dev</span><span class="p">]</span></code> extras to <code class="code highlight python docutils literal highlight-python"><span class="n">pip</span> <span class="n">install</span></code>.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pip install galois<span class="o">[</span>dev<span class="o">]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pip install galois<span class="o">[</span>dev<span class="o">]</span>
 </code></pre></div>
 </div>
 

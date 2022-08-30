@@ -69,7 +69,7 @@ If this library was useful to you in your research, please cite us. Following th
 
    .. tab-item:: BibTeX
 
-      .. code-block:: TeX
+      .. code-block:: latex
 
          @software{Hostetter_Galois_2020,
             title = {{Galois: A performant NumPy extension for Galois fields}},

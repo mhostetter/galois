@@ -7295,7 +7295,7 @@
 <p>The <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> library uses <a class="reference external" href="https://docs.pytest.org/en/7.0.x/">pytest</a> for unit testing.</p>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permalink to this heading">¶</a></h2>
 <p>First, <code class="code highlight python docutils literal highlight-python"><span class="n">pytest</span></code> needs to be installed on your system. Easily install it by installing the development dependencies.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pip install .<span class="o">[</span>dev<span class="o">]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pip install .<span class="o">[</span>dev<span class="o">]</span>
 </code></pre></div>
 </div>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">¶</a></h2>
@@ -7314,15 +7314,15 @@ pyproject.toml<a class="headerlink" href="#id1" title="Permalink to this code">�
 </div>
 <h2 id="run-from-the-command-line">Run from the command line<a class="headerlink" href="#run-from-the-command-line" title="Permalink to this heading">¶</a></h2>
 <p>Execute all of the unit tests manually from the command line.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pytest tests/
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pytest tests/
 </code></pre></div>
 </div>
 <p>Or only run a specific test file.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pytest tests/test_math.py
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pytest tests/test_math.py
 </code></pre></div>
 </div>
 <p>Or only run a specific unit test.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pytest tests/test_math.py::test_gcd
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pytest tests/test_math.py::test_gcd
 </code></pre></div>
 </div>
 <h2 id="run-from-vs-code">Run from VS Code<a class="headerlink" href="#run-from-vs-code" title="Permalink to this heading">¶</a></h2>
@@ -7342,17 +7342,17 @@ VS Code’s integrated test infrastructure will locate the tests and allow you t
 </ul>
 <p>The two primary third-party tools are <a class="reference external" href="https://www.sagemath.org/">Sage</a> and <a class="reference external" href="https://www.sympy.org/en/index.html">SymPy</a>.</p>
 <h3 id="install-sage">Install Sage<a class="headerlink" href="#install-sage" title="Permalink to this heading">¶</a></h3>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ sudo apt install sagemath
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>sudo apt install sagemath
 </code></pre></div>
 </div>
 <h3 id="install-sympy">Install SymPy<a class="headerlink" href="#install-sympy" title="Permalink to this heading">¶</a></h3>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pip install sympy
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pip install sympy
 </code></pre></div>
 </div>
 <h3 id="generate-test-vectors">Generate test vectors<a class="headerlink" href="#generate-test-vectors" title="Permalink to this heading">¶</a></h3>
 <p>To re-generate the test vectors locally, run:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 scripts/generate_int_test_vectors.py
-$ python3 scripts/generate_field_test_vectors.py
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 scripts/generate_int_test_vectors.py
+<span class="gp">$ </span>python3 scripts/generate_field_test_vectors.py
 </code></pre></div>
 </div>
 <p>The scripts use random number generator seeds to generate reproducible test vectors. To generate <em>different</em>

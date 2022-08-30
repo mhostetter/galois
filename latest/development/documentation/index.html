@@ -7217,29 +7217,29 @@
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption highlight"><span class="caption-text filename">
 docs/requirements.txt<a class="headerlink" href="#id1" title="Permalink to this code">¶</a></span></div>
-<div class="highlight-txt notranslate"><div class="highlight"><pre><span></span><code>sphinx==5
-git+https://github.com/jbms/sphinx-immaterial@bf169751fba59362bcd06da96bfa65b2728cbbae
-myst-parser
-sphinx-design
-sphinxcontrib-details-directive
-ipykernel
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">sphinx</span><span class="o">==</span><span class="mi">5</span>
+<span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">jbms</span><span class="o">/</span><span class="n">sphinx</span><span class="o">-</span><span class="n">immaterial</span><span class="nd">@bf169751fba59362bcd06da96bfa65b2728cbbae</span>
+<span class="n">myst</span><span class="o">-</span><span class="n">parser</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">design</span>
+<span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">details</span><span class="o">-</span><span class="n">directive</span>
+<span class="n">ipykernel</span>
 </code></pre></div>
 </div>
 </div>
 <p>Install the documentation dependencies by passing the <code class="code highlight python docutils literal highlight-python"><span class="o">-</span><span class="n">r</span></code> switch to <code class="code highlight python docutils literal highlight-python"><span class="n">pip</span> <span class="n">install</span></code>.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m pip install -r docs/requirements.txt
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m pip install -r docs/requirements.txt
 </code></pre></div>
 </div>
 <h2 id="build-the-docs">Build the docs<a class="headerlink" href="#build-the-docs" title="Permalink to this heading">¶</a></h2>
 <p>The documentation is built by running the <code class="code highlight python docutils literal highlight-python"><span class="n">sphinx</span><span class="o">-</span><span class="n">build</span></code> command.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ sphinx-build -b dirhtml -v docs/ docs/build/
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>sphinx-build -b dirhtml -v docs/ docs/build/
 </code></pre></div>
 </div>
 <p>The HTML output is located in <code class="code highlight python docutils literal highlight-python"><span class="n">docs</span><span class="o">/</span><span class="n">build</span><span class="o">/</span></code>. The home page is <code class="code highlight python docutils literal highlight-python"><span class="n">docs</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">index</span><span class="o">.</span><span class="n">html</span></code>.</p>
 <h2 id="serve-the-docs">Serve the docs<a class="headerlink" href="#serve-the-docs" title="Permalink to this heading">¶</a></h2>
 <p>Since the site is built to use directories (<code class="code highlight python docutils literal highlight-python"><span class="o">*/</span><span class="n">getting</span><span class="o">-</span><span class="n">started</span><span class="o">/</span></code> not <code class="code highlight python docutils literal highlight-python"><span class="o">*/</span><span class="n">getting</span><span class="o">-</span><span class="n">started</span><span class="o">.</span><span class="n">html</span></code>), it is necessary
 to serve the webpages locally with a webserver. This is easily done using the built-in Python <code class="code highlight python docutils literal highlight-python"><span class="n">http</span></code> module.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><code>$ python3 -m http.server <span class="m">8080</span> -d docs/build/
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3 -m http.server <span class="m">8080</span> -d docs/build/
 </code></pre></div>
 </div>
 <p>The documentation is accessible from a web browser at <code class="code highlight python docutils literal highlight-python"><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span></code>.</p>

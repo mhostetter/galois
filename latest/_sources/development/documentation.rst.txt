@@ -11,11 +11,10 @@ The documentation dependencies are stored in `docs/requirements.txt`.
 
 .. literalinclude:: ../requirements.txt
    :caption: docs/requirements.txt
-   :language: txt
 
 Install the documentation dependencies by passing the `-r` switch to `pip install`.
 
-.. code-block:: sh
+.. code-block:: console
 
    $ python3 -m pip install -r docs/requirements.txt
 
@@ -24,7 +23,7 @@ Build the docs
 
 The documentation is built by running the `sphinx-build` command.
 
-.. code-block:: sh
+.. code-block:: console
 
    $ sphinx-build -b dirhtml -v docs/ docs/build/
 
@@ -36,7 +35,7 @@ Serve the docs
 Since the site is built to use directories (`*/getting-started/` not `*/getting-started.html`), it is necessary
 to serve the webpages locally with a webserver. This is easily done using the built-in Python `http` module.
 
-.. code-block:: sh
+.. code-block:: console
 
    $ python3 -m http.server 8080 -d docs/build/
 
