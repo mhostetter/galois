@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  workflow_call:
   pull_request:
     branches:
       - master
@@ -31,3 +32,85 @@ jobs:
 
       - name: Run Sphinx to build docs
         run: sphinx-build -b dirhtml -v docs/ docs/build/
+
+      # Tarring is needed because upload-artifact does not preserve case sensitivity
+      - name: Tar files
+        run: tar -czvf docs.tar.gz -C docs/build/ .
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: docs
+          path: docs.tar.gz
+          retention-days: 30
+
+  publish:
+    name: Publish
+    needs: build
+    # Only publish new docs to GitHub pages if on master or a released version
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_call'}}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: docs
+
+      - name: Determine folder name
+        id: folder
+        uses: jannekem/run-python-script-action@v1
+        with:
+          script: |
+            import os
+            import re
+
+            github_ref = os.environ.get('GITHUB_REF')
+            if os.environ.get("GITHUB_EVENT_NAME") == "push" and github_ref == "refs/heads/master":
+                name = "latest"
+            elif os.environ.get("GITHUB_EVENT_NAME") == "workflow_call" and github_ref.startswith("refs/tags/"):
+                name = github_ref.split("refs/tags/")[1]
+            else:
+                raise RuntimeError
+
+            set_output("name", name)
+
+      - name: Clear old version folder
+        run: |
+          rm -rf ${{ steps.folder.outputs.name }}
+          mkdir ${{ steps.folder.outputs.name }}
+
+      # Un-tarring is needed because upload-artifact does not preserve case sensitivity
+      - name: Untar files
+        run: tar -xzvf docs.tar.gz -C ${{ steps.folder.outputs.name }}
+
+      - name: Remove artifacts
+        run: rm docs.tar.gz
+
+      - name: Update versions.json file
+        uses: jannekem/run-python-script-action@v1
+        with:
+          script: |
+            import pathlib
+            import json
+
+            # Determine the version folders
+            cwd = pathlib.Path.cwd()
+            versions = sorted((item.name for item in cwd.iterdir() if item.is_dir() and not item.name.startswith(".")), reverse=True)
+            print(versions)
+
+            list_of_dict = [{"version": version, "title": version, "aliases": []} for version in versions]
+            print(list_of_dict)
+
+            with (cwd / "versions.json").open("w") as f:
+                json.dump(list_of_dict, f, indent=4)
+
+      - name: Publish to GitHub pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          keep_files: true

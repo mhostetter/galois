@@ -10,8 +10,9 @@ jobs:
     name: Build the package
     uses: ./.github/workflows/build.yaml
 
-  # TODO: Add other CI workflows here: lint, docs, test?
-  # Here would also be the place to build the docs and then add a GitHub pages release job
+  docs:
+    name: Build the docs
+    uses: ./.github/workflows/docs.yaml
 
   release:
     name: Create GitHub release
