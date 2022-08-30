@@ -7241,16 +7241,16 @@ is the vector space <span class="math notranslate nohighlight">\(\{\mathbf{x} \i
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[ 3, 20,  1],</span>
-<span class="go">    [25, 11, 18],</span>
-<span class="go">    [28, 16,  3],</span>
-<span class="go">    [21,  5, 21],</span>
-<span class="go">    [17, 28, 18]], order=31)</span>
+<span class="go">GF([[22, 12, 18],</span>
+<span class="go">    [ 5, 17,  0],</span>
+<span class="go">    [27, 14,  4],</span>
+<span class="go">    [18, 28, 20],</span>
+<span class="go">    [26, 13, 14]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">LN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">();</span> <span class="n">LN</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0, 16,  0, 30],</span>
-<span class="go">    [ 0,  1,  0,  2,  7]], order=31)</span>
+<span class="go">GF([[ 1,  0, 21, 10,  5],</span>
+<span class="go">    [ 0,  1, 30, 27,  6]], order=31)</span>
 </code></pre></div>
 </div>
 <p>The left null space is the set of vectors that sum the rows to 0.</p>
