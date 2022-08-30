@@ -5,9 +5,7 @@ import math
 import sys
 from typing import Tuple
 
-from ._helper import set_module, verify_isinstance
-
-__all__ = ["isqrt", "iroot", "ilog"]
+from ._helper import export, verify_isinstance
 
 
 ###############################################################################
@@ -72,7 +70,7 @@ def prod(*args: int) -> int:
 # Integer (floor) arithmetic
 ###############################################################################
 
-@set_module("galois")
+@export
 def isqrt(n: int) -> int:
     r"""
     Computes :math:`x = \lfloor\sqrt{n}\rfloor` such that :math:`x^2 \le n < (x + 1)^2`.
@@ -125,7 +123,7 @@ def isqrt(n: int) -> int:
         return x + 1
 
 
-@set_module("galois")
+@export
 def iroot(n: int, k: int) -> int:
     r"""
     Computes :math:`x = \lfloor n^{\frac{1}{k}} \rfloor` such that :math:`x^k \le n < (x + 1)^k`.
@@ -180,7 +178,7 @@ def iroot(n: int, k: int) -> int:
     return x
 
 
-@set_module("galois")
+@export
 def ilog(n: int, b: int) -> int:
     r"""
     Computes :math:`x = \lfloor\textrm{log}_b(n)\rfloor` such that :math:`b^x \le n < b^{x + 1}`.

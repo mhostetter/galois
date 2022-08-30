@@ -1,5 +1,6 @@
 import builtins
 import inspect
+import sys
 
 SPHINX_BUILD = hasattr(builtins, "__sphinx_build__")
 
@@ -36,25 +37,27 @@ def verify_issubclass(argument, types, optional=False):
         raise TypeError(f"Argument {argument_name!r} must be a subclass of {types}, not {type(type(argument))}.")
 
 
-def set_module(module):
+def export(obj):
     """
-    A decorator to update the __module__ variable as is done in NumPy.
+    Marks an object for exporting into the public API.
 
-    References
-    ----------
-    * https://numpy.org/devdocs/release/1.16.0-notes.html#module-attribute-now-points-to-public-modules
-    * https://github.com/numpy/numpy/blob/544094aed5fdca536b300d0820fe41f22729ec66/numpy/core/overrides.py#L94-L109
+    This decorator appends the object's name to the private module's __all__ list. The private module should
+    then be imported in galois/__init__.py using from ._private_module import *. It also modifies the object's
+    __module__ to "galois".
     """
-    def decorator(obj):
-        if not SPHINX_BUILD:
-            # Sphinx gets confused when parsing overloaded functions when the module is modified using this decorator.
-            # We set the __sphinx_build__ variable in conf.py and avoid modifying the module when building the docs.
-            if module is not None:
-                obj.__module__ = module
+    # Determine the private module that defined the object
+    module = sys.modules[obj.__module__]
 
-        return obj
+    # Set the object's module to the package name. This way the REPL will display the object
+    # as galois.obj and not galois._private_module.obj
+    obj.__module__ = "galois"
 
-    return decorator
+    # Append this object to the private module's "all" list
+    public_members = getattr(module, "__all__", [])
+    public_members.append(obj.__name__)
+    setattr(module, "__all__", public_members)
+
+    return obj
 
 
 def extend_docstring(method, replace={}, docstring=""):  # pylint: disable=dangerous-default-value

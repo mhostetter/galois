@@ -10,17 +10,8 @@ from typing import Tuple, List, Optional
 
 import numpy as np
 
-from ._helper import set_module, verify_isinstance
+from ._helper import export, verify_isinstance
 from ._math import prod, isqrt, iroot, ilog
-
-__all__ = [
-    "primes", "kth_prime", "prev_prime", "next_prime", "random_prime", "mersenne_exponents", "mersenne_primes",
-    "fermat_primality_test", "miller_rabin_primality_test",
-    "legendre_symbol", "jacobi_symbol", "kronecker_symbol",
-    "perfect_power", "trial_division", "pollard_p1", "pollard_rho",
-    "divisors", "divisor_sigma",
-    "is_prime", "is_composite", "is_prime_power", "is_perfect_power", "is_smooth", "is_powersmooth",
-]
 
 # Global variables to store the prime lookup table (will generate a larger list after defining the `primes()` function)
 PRIMES = [2, 3, 5, 7]
@@ -32,7 +23,7 @@ MAX_N = 10  # The max value for which all primes <= N are contained in the looku
 # Prime generation
 ###############################################################################
 
-@set_module("galois")
+@export
 def primes(n: int) -> List[int]:
     r"""
     Returns all primes :math:`p` for :math:`p \le n`.
@@ -116,7 +107,7 @@ MAX_K = len(PRIMES)
 MAX_N = 10_000_000
 
 
-@set_module("galois")
+@export
 def kth_prime(k: int) -> int:
     r"""
     Returns the :math:`k`-th prime, where :math:`k = \{1,2,3,4,\dots\}` for primes :math:`p = \{2,3,5,7,\dots\}`.
@@ -153,7 +144,7 @@ def kth_prime(k: int) -> int:
     return PRIMES[k - 1]
 
 
-@set_module("galois")
+@export
 def prev_prime(n: int) -> int:
     r"""
     Returns the nearest prime :math:`p`, such that :math:`p \le n`.
@@ -200,7 +191,7 @@ def prev_prime(n: int) -> int:
     return n
 
 
-@set_module("galois")
+@export
 def next_prime(n: int) -> int:
     r"""
     Returns the nearest prime :math:`p`, such that :math:`p > n`.
@@ -245,7 +236,7 @@ def next_prime(n: int) -> int:
     return n
 
 
-@set_module("galois")
+@export
 def random_prime(bits: int) -> int:
     r"""
     Returns a random prime :math:`p` with :math:`b` bits, such that :math:`2^b \le p < 2^{b+1}`.
@@ -305,7 +296,7 @@ def random_prime(bits: int) -> int:
 MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3217,4253,4423,9689,9941,11213,19937,21701,23209,44497,86243,110503,132049,216091,756839,859433,1257787,1398269,2976221,3021377,6972593,13466917,20996011,24036583,25964951,30402457,32582657,37156667,42643801,43112609]
 
 
-@set_module("galois")
+@export
 def mersenne_exponents(n: Optional[int] = None) -> List[int]:
     r"""
     Returns all known Mersenne exponents :math:`e` for :math:`e \le n`.
@@ -353,7 +344,7 @@ def mersenne_exponents(n: Optional[int] = None) -> List[int]:
     return MERSENNE_EXPONENTS[0:bisect.bisect_right(MERSENNE_EXPONENTS, n)]
 
 
-@set_module("galois")
+@export
 def mersenne_primes(n: Optional[int] = None) -> List[int]:
     r"""
     Returns all known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
@@ -395,7 +386,7 @@ def mersenne_primes(n: Optional[int] = None) -> List[int]:
 # Primality tests
 ###############################################################################
 
-@set_module("galois")
+@export
 def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> bool:
     r"""
     Determines if :math:`n` is composite using Fermat's primality test.
@@ -495,7 +486,7 @@ def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> b
     return True  # n is a probable prime
 
 
-@set_module("galois")
+@export
 def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
     r"""
     Determines if :math:`n` is composite using the Miller-Rabin primality test.
@@ -610,7 +601,7 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
 # Legendre, Jacobi, and Kronecker symbols
 ###############################################################################
 
-@set_module("galois")
+@export
 def legendre_symbol(a: int, p: int) -> int:
     r"""
     Computes the Legendre symbol :math:`(\frac{a}{p})`.
@@ -672,7 +663,7 @@ def legendre_symbol(a: int, p: int) -> int:
     return jacobi_symbol(a, p)
 
 
-@set_module("galois")
+@export
 def jacobi_symbol(a: int, n: int) -> int:
     r"""
     Computes the Jacobi symbol :math:`(\frac{a}{n})`.
@@ -752,7 +743,7 @@ def jacobi_symbol(a: int, n: int) -> int:
         return s * jacobi_symbol(n1, a1)
 
 
-@set_module("galois")
+@export
 def kronecker_symbol(a: int, n: int) -> int:
     r"""
     Computes the Kronecker symbol :math:`(\frac{a}{n})`.
@@ -870,7 +861,7 @@ def factors(n: int) -> Tuple[List[int], List[int]]:
     return p, e
 
 
-@set_module("galois")
+@export
 def perfect_power(n: int) -> Tuple[int, int]:
     r"""
     Returns the integer base :math:`c` and exponent :math:`e` of :math:`n = c^e`.
@@ -982,7 +973,7 @@ def _perfect_power(n: int) -> Tuple[int, int]:
     return n, 1
 
 
-@set_module("galois")
+@export
 def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int], int]:
     r"""
     Finds all the prime factors :math:`p_i^{e_i}` of :math:`n` for :math:`p_i \le B`.
@@ -1050,7 +1041,7 @@ def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int
     return p, e, n
 
 
-@set_module("galois")
+@export
 def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
     r"""
     Attempts to find a non-trivial factor of :math:`n` if it has a prime factor :math:`p` such that
@@ -1182,7 +1173,7 @@ def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
     raise RuntimeError(f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}.")
 
 
-@set_module("galois")
+@export
 # @functools.lru_cache(maxsize=1024)
 def pollard_rho(n: int, c: int = 1) -> int:
     r"""
@@ -1277,7 +1268,7 @@ def pollard_rho(n: int, c: int = 1) -> int:
 # Compsite factorization
 ###############################################################################
 
-@set_module("galois")
+@export
 def divisors(n: int) -> List[int]:
     r"""
     Computes all positive integer divisors :math:`d` of the integer :math:`n` such that :math:`d\ |\ n`.
@@ -1345,7 +1336,7 @@ def divisors(n: int) -> List[int]:
     return d
 
 
-@set_module("galois")
+@export
 def divisor_sigma(n: int, k: int = 1) -> int:
     r"""
     Returns the sum of :math:`k`-th powers of the positive divisors of :math:`n`.
@@ -1399,7 +1390,7 @@ def divisor_sigma(n: int, k: int = 1) -> int:
 # Integer tests
 ###############################################################################
 
-@set_module("galois")
+@export
 def is_prime(n: int) -> bool:
     r"""
     Determines if :math:`n` is prime.
@@ -1464,7 +1455,7 @@ def is_prime(n: int) -> bool:
     return True  # n is a probable prime with high confidence
 
 
-@set_module("galois")
+@export
 def is_composite(n: int) -> bool:
     r"""
     Determines if :math:`n` is composite.
@@ -1500,7 +1491,7 @@ def is_composite(n: int) -> bool:
     return not is_prime(n)
 
 
-@set_module("galois")
+@export
 def is_prime_power(n: int) -> bool:
     r"""
     Determines if :math:`n` is a prime power :math:`n = p^k` for prime :math:`p` and :math:`k \ge 1`.
@@ -1548,7 +1539,7 @@ def is_prime_power(n: int) -> bool:
     return is_prime(c)
 
 
-@set_module("galois")
+@export
 def is_perfect_power(n: int) -> bool:
     r"""
     Determines if :math:`n` is a perfect power :math:`n = c^e` with :math:`e > 1`.
@@ -1642,7 +1633,7 @@ def is_square_free(n: int) -> bool:
     return e == [1,]*len(e)
 
 
-@set_module("galois")
+@export
 def is_smooth(n: int, B: int) -> bool:
     r"""
     Determines if the integer :math:`n` is :math:`B`-smooth.
@@ -1706,7 +1697,7 @@ def is_smooth(n: int, B: int) -> bool:
     return False
 
 
-@set_module("galois")
+@export
 def is_powersmooth(n: int, B: int) -> bool:
     r"""
     Determines if the integer :math:`n` is :math:`B`-powersmooth.

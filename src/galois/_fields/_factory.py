@@ -8,7 +8,7 @@ import types
 from typing import Union, Optional, Type
 from typing_extensions import Literal
 
-from .._helper import set_module, verify_isinstance
+from .._helper import export, verify_isinstance
 from .._modular import primitive_root, is_primitive_root
 from .._polys import Poly, conway_poly
 from .._prime import factors
@@ -19,10 +19,8 @@ from ._gf2 import GF2
 from ._primitive_element import primitive_element, is_primitive_element
 from ._ufunc import UFuncMixin_2_m, UFuncMixin_p_1, UFuncMixin_p_m
 
-__all__ = ["GF", "Field"]
 
-
-@set_module("galois")
+@export
 def GF(
     order: int,
     irreducible_poly: Optional[PolyLike] = None,
@@ -221,7 +219,7 @@ def GF(
         return _GF_extension(p, m, irreducible_poly_=irreducible_poly, alpha=primitive_element, verify=verify, compile=compile, display=display)
 
 
-@set_module("galois")
+@export
 def Field(
     order: int,
     irreducible_poly: Optional[PolyLike] = None,

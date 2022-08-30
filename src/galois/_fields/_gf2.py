@@ -7,11 +7,9 @@ import numpy as np
 
 from .._domains._lookup import add_ufunc, negative_ufunc, subtract_ufunc, multiply_ufunc, reciprocal_ufunc, divide_ufunc, power_ufunc, log_ufunc, sqrt_ufunc
 from .._domains._ufunc import UFuncMixin
-from .._helper import set_module
+from .._helper import export
 
 from ._array import FieldArray
-
-__all__ = ["GF2"]
 
 
 class reciprocal(reciprocal_ufunc):
@@ -94,7 +92,7 @@ class UFuncMixin_2_1(UFuncMixin):
 # document class properties... :(
 
 
-@set_module("galois")
+@export
 class GF2(FieldArray, UFuncMixin_2_1, characteristic=2, degree=1, order=2, irreducible_poly_int=3, is_primitive_poly=True, primitive_element=1):
     r"""
     A :obj:`~galois.FieldArray` subclass over :math:`\mathrm{GF}(2)`.

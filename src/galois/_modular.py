@@ -4,17 +4,12 @@ import random
 from typing import List, Optional, Iterator
 from typing_extensions import Literal
 
-from ._helper import set_module, verify_isinstance
+from ._helper import export, verify_isinstance
 from ._math import lcm
 from ._prime import factors
 
-__all__ = [
-    "totatives", "euler_phi", "carmichael_lambda", "is_cyclic",
-    "primitive_root", "primitive_roots", "is_primitive_root"
-]
 
-
-@set_module("galois")
+@export
 def totatives(n: int) -> List[int]:
     r"""
     Returns the positive integers (totatives) in :math:`[1, n)` that are coprime to :math:`n`.
@@ -68,7 +63,7 @@ def totatives(n: int) -> List[int]:
         return [t for t in range(1, n) if math.gcd(n, t) == 1]
 
 
-@set_module("galois")
+@export
 def euler_phi(n: int) -> int:
     r"""
     Counts the positive integers (totatives) in :math:`[1, n)` that are coprime to :math:`n`.
@@ -148,7 +143,7 @@ def _euler_phi(n: int) -> int:
     return phi
 
 
-@set_module("galois")
+@export
 def carmichael_lambda(n: int) -> int:
     r"""
     Finds the smallest positive integer :math:`m` such that :math:`a^m \equiv 1\ (\textrm{mod}\ n)` for
@@ -240,7 +235,7 @@ def carmichael_lambda(n: int) -> int:
     return lcm(*lambdas)
 
 
-@set_module("galois")
+@export
 def is_cyclic(n: int) -> bool:
     r"""
     Determines whether the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic.
@@ -403,7 +398,7 @@ def is_cyclic(n: int) -> bool:
         return False
 
 
-@set_module("galois")
+@export
 def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: Literal["min", "max", "random"] = "min") -> int:
     r"""
     Finds a primitive root modulo :math:`n` in the range :math:`[\textrm{start}, \textrm{stop})`.
@@ -577,7 +572,7 @@ def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: L
         raise RuntimeError(f"No primitive roots modulo {n} exist in the range [{start}, {stop}).") from e
 
 
-@set_module("galois")
+@export
 def primitive_roots(n: int, start: int = 1, stop: Optional[int] = None, reverse: bool = False) -> Iterator[int]:
     r"""
     Iterates through all primitive roots modulo :math:`n` in the range :math:`[\textrm{start}, \textrm{stop})`.
@@ -729,7 +724,7 @@ def _primitive_root_random_search(n, start, stop) -> int:
             raise StopIteration
 
 
-@set_module("galois")
+@export
 def is_primitive_root(g: int, n: int) -> bool:
     r"""
     Determines if :math:`g` is a primitive root modulo :math:`n`.

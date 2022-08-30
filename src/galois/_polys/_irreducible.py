@@ -7,15 +7,13 @@ from typing import Iterator, Optional
 from typing_extensions import Literal
 
 from .._domains import _factory
-from .._helper import set_module, verify_isinstance
+from .._helper import export, verify_isinstance
 from .._prime import is_prime_power
 
 from ._poly import Poly
 
-__all__ = ["irreducible_poly", "irreducible_polys"]
 
-
-@set_module("galois")
+@export
 def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "random"] = "min") -> Poly:
     r"""
     Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
@@ -89,7 +87,7 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
         return _random_search(order, degree)
 
 
-@set_module("galois")
+@export
 def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterator[Poly]:
     r"""
     Iterates through all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.

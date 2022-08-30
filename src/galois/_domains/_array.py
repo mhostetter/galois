@@ -11,7 +11,7 @@ from typing_extensions import Literal
 
 import numpy as np
 
-from .._helper import set_module, verify_isinstance, SPHINX_BUILD
+from .._helper import export, verify_isinstance, SPHINX_BUILD
 from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 
 from ._function import FunctionMixin
@@ -19,10 +19,8 @@ from ._linalg import LinalgFunctionMixin
 from ._lookup import UFuncMixin
 from ._meta import ArrayMeta
 
-__all__ = ["Array"]
 
-
-@set_module("galois")
+@export
 class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclass=ArrayMeta):
     r"""
     An abstract :obj:`~numpy.ndarray` subclass over a Galois field or Galois ring.

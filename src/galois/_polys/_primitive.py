@@ -8,15 +8,13 @@ from typing_extensions import Literal
 
 from .._domains import _factory
 from .._databases import ConwayPolyDatabase
-from .._helper import set_module, verify_isinstance
+from .._helper import export, verify_isinstance
 from .._prime import is_prime, is_prime_power
 
 from ._poly import Poly
 
-__all__ = ["primitive_poly", "primitive_polys", "conway_poly", "matlab_primitive_poly"]
 
-
-@set_module("galois")
+@export
 def primitive_poly(order: int, degree: int, method: Literal["min", "max", "random"] = "min") -> Poly:
     r"""
     Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
@@ -109,7 +107,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
         return _random_search(order, degree)
 
 
-@set_module("galois")
+@export
 def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[Poly]:
     r"""
     Iterates through all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
@@ -229,7 +227,7 @@ def _random_search(order, degree) -> Poly:
             return poly
 
 
-@set_module("galois")
+@export
 def conway_poly(characteristic: int, degree: int) -> Poly:
     r"""
     Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
@@ -304,7 +302,7 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     return poly
 
 
-@set_module("galois")
+@export
 def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     r"""
     Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
