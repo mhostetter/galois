@@ -8,14 +8,12 @@ from typing import Optional
 import numpy as np
 
 from ._fields import Field, FieldArray
-from ._helper import set_module, verify_isinstance
+from ._helper import export, verify_isinstance
 from ._prime import is_prime
 from .typing import ArrayLike
 
-__all__ = ["ntt", "intt"]
 
-
-@set_module("galois")
+@export
 def ntt(
     x: ArrayLike,
     size: Optional[int] = None,
@@ -126,7 +124,7 @@ def ntt(
     return _ntt(x, size=size, modulus=modulus, forward=True)
 
 
-@set_module("galois")
+@export
 def intt(
     X: ArrayLike,
     size: Optional[int] = None,

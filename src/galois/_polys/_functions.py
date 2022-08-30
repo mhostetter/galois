@@ -6,13 +6,9 @@ from typing import Tuple
 import numpy as np
 
 from .._domains import Array
-from .._helper import set_module, verify_isinstance
+from .._helper import export, verify_isinstance
 
 from ._poly import Poly
-
-__all__ = [
-    "lagrange_poly",
-]
 
 
 ###############################################################################
@@ -106,7 +102,7 @@ def prod(*args: Poly) -> Poly:
 # Special polynomials
 ###############################################################################
 
-@set_module("galois")
+@export
 def lagrange_poly(x: Array, y: Array) -> Poly:
     r"""
     Computes the Lagrange interpolating polynomial :math:`L(x)` such that :math:`L(x_i) = y_i`.

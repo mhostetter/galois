@@ -12,7 +12,7 @@ import numpy as np
 
 from .._domains._function import Function
 from .._fields import Field, FieldArray
-from .._helper import set_module, verify_isinstance
+from .._helper import export, verify_isinstance
 from .._lfsr import berlekamp_massey_jit
 from .._polys import Poly, matlab_primitive_poly
 from .._polys._dense import divmod_jit, roots_jit, evaluate_elementwise_jit
@@ -21,10 +21,8 @@ from ..typing import ArrayLike, PolyLike
 
 from ._cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
 
-__all__ = ["ReedSolomon"]
 
-
-@set_module("galois")
+@export
 class ReedSolomon:
     r"""
     A general :math:`\textrm{RS}(n, k)` code.

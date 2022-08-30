@@ -13,7 +13,7 @@ import numpy as np
 
 from .._domains._function import Function
 from .._fields import Field, FieldArray, GF2
-from .._helper import set_module, verify_isinstance
+from .._helper import export, verify_isinstance
 from .._lfsr import berlekamp_massey_jit
 from .._polys import Poly, matlab_primitive_poly
 from .._polys._dense import roots_jit, divmod_jit
@@ -21,8 +21,6 @@ from .._prime import factors
 from ..typing import ArrayLike, PolyLike
 
 from ._cyclic import poly_to_generator_matrix, roots_to_parity_check_matrix
-
-__all__ = ["BCH", "bch_valid_codes"]
 
 
 def _check_and_compute_field(
@@ -55,7 +53,7 @@ def _check_and_compute_field(
     return GF
 
 
-@set_module("galois")
+@export
 def bch_valid_codes(n: int, t_min: int = 1) -> List[Tuple[int, int, int]]:
     r"""
     Returns a list of :math:`(n, k, t)` tuples of valid primitive binary BCH codes.
@@ -125,7 +123,7 @@ def bch_valid_codes(n: int, t_min: int = 1) -> List[Tuple[int, int, int]]:
     return codes
 
 
-@set_module("galois")
+@export
 class BCH:
     r"""
     A primitive, narrow-sense binary :math:`\textrm{BCH}(n, k)` code.

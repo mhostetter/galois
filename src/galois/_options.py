@@ -5,15 +5,13 @@ import contextlib
 from typing import Dict, Generator, Any
 from typing_extensions import Literal
 
-from ._helper import set_module
-
-__all__ = ["set_printoptions", "get_printoptions", "printoptions"]
+from ._helper import export
 
 # The default print options for the package
 PRINTOPTIONS = {}
 
 
-@set_module("galois")
+@export
 def set_printoptions(
     coeffs: Literal["desc", "asc"] = "desc"
 ):
@@ -63,7 +61,7 @@ def set_printoptions(
 set_printoptions()
 
 
-@set_module("galois")
+@export
 def get_printoptions() -> Dict[str, Any]:
     """
     Returns the current print options for the package. This function is the :obj:`galois` equivalent of :func:`numpy.get_printoptions`.
@@ -95,7 +93,7 @@ def get_printoptions() -> Dict[str, Any]:
     return PRINTOPTIONS.copy()
 
 
-@set_module("galois")
+@export
 @contextlib.contextmanager
 def printoptions(**kwargs) -> Generator[None, None, None]:
     """

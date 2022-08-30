@@ -7,17 +7,14 @@ import random
 from typing import List
 from typing_extensions import Literal
 
-from .._helper import set_module, verify_isinstance
+from .._helper import export, verify_isinstance
 from .._modular import totatives
 from .._polys import Poly
 from .._prime import factors
 from ..typing import PolyLike
 
 
-__all__ = ["is_primitive_element", "primitive_element", "primitive_elements"]
-
-
-@set_module("galois")
+@export
 def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
     r"""
     Determines if :math:`g` is a primitive element of the Galois field :math:`\mathrm{GF}(q^m)` with
@@ -100,7 +97,7 @@ def _is_primitive_element(element: Poly, irreducible_poly: Poly) -> bool:
     return True
 
 
-@set_module("galois")
+@export
 def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "random"] = "min") -> Poly:
     r"""
     Finds a primitive element :math:`g` of the Galois field :math:`\mathrm{GF}(q^m)` with degree-:math:`m` irreducible polynomial
@@ -202,7 +199,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
     return element
 
 
-@set_module("galois")
+@export
 def primitive_elements(irreducible_poly: Poly) -> List[Poly]:
     r"""
     Finds all primitive elements :math:`g` of the Galois field :math:`\mathrm{GF}(q^m)` with

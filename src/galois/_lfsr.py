@@ -12,11 +12,9 @@ from numba import int64
 
 from ._domains._function import Function
 from ._fields import FieldArray
-from ._helper import set_module, verify_isinstance
+from ._helper import export, verify_isinstance
 from ._polys import Poly
 from .typing import ArrayLike
-
-__all__ = ["FLFSR", "GLFSR", "berlekamp_massey"]
 
 
 ###############################################################################
@@ -167,7 +165,7 @@ class _LFSR:
 # Fibonacci LFSR
 ###############################################################################
 
-@set_module("galois")
+@export
 class FLFSR(_LFSR):
     r"""
     A Fibonacci linear-feedback shift register (LFSR).
@@ -834,7 +832,7 @@ class fibonacci_lfsr_step_backward_jit(Function):
 # Galois LFSR
 ###############################################################################
 
-@set_module("galois")
+@export
 class GLFSR(_LFSR):
     r"""
     A Galois linear-feedback shift register (LFSR).
@@ -1493,7 +1491,7 @@ def berlekamp_massey(sequence: FieldArray, output: Literal["fibonacci"]) -> FLFS
 @overload
 def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR:
     ...
-@set_module("galois")
+@export
 def berlekamp_massey(sequence, output="minimal"):
     r"""
     Finds the minimal polynomial :math:`c(x)` that produces the linear recurrent sequence :math:`y`.

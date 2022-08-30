@@ -9,7 +9,7 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._domains import Array, _linalg
-from .._helper import set_module, extend_docstring, verify_isinstance, SPHINX_BUILD
+from .._helper import export, extend_docstring, verify_isinstance, SPHINX_BUILD
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
 from .._prime import divisors
@@ -17,15 +17,12 @@ from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 
 from ._meta import FieldArrayMeta
 
-__all__ = ["FieldArray"]
-
-
 DOCSTRING_MAP = {
     "Array": "FieldArray"
 }
 
 
-@set_module("galois")
+@export
 class FieldArray(Array, metaclass=FieldArrayMeta):
     r"""
     An abstract :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.

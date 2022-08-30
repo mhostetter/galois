@@ -5,7 +5,7 @@ from typing import Tuple, List, Sequence, overload
 
 import numpy as np
 
-from ._helper import set_module
+from ._helper import export
 from ._math import gcd as int_gcd
 from ._math import egcd as int_egcd
 from ._math import lcm as int_lcm
@@ -18,12 +18,6 @@ from ._polys._functions import prod as poly_prod
 from ._prime import factors as int_factors
 from ._prime import is_square_free as int_is_square_free
 
-__all__ = [
-    "gcd", "egcd", "lcm", "prod", "are_coprime",
-    "crt",
-    "factors", "is_square_free",
-]
-
 
 ###############################################################################
 # Divisibility
@@ -35,7 +29,7 @@ def gcd(a: int, b: int) -> int:
 @overload
 def gcd(a: Poly, b: Poly) -> Poly:
     ...
-@set_module("galois")
+@export
 def gcd(a, b):
     r"""
     Finds the greatest common divisor of :math:`a` and :math:`b`.
@@ -110,7 +104,7 @@ def egcd(a: int, b: int) -> Tuple[int, int, int]:
 @overload
 def egcd(a: Poly, b: Poly) -> Tuple[Poly, Poly, Poly]:
     ...
-@set_module("galois")
+@export
 def egcd(a, b):
     r"""
     Finds the multiplicands of :math:`a` and :math:`b` such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
@@ -197,7 +191,7 @@ def lcm(*values: int) -> int:
 @overload
 def lcm(*values: Poly) -> Poly:
     ...
-@set_module("galois")
+@export
 def lcm(*values):
     r"""
     Computes the least common multiple of the arguments.
@@ -266,7 +260,7 @@ def prod(*values: int) -> int:
 @overload
 def prod(*values: Poly) -> Poly:
     ...
-@set_module("galois")
+@export
 def prod(*values):
     r"""
     Computes the product of the arguments.
@@ -334,7 +328,7 @@ def are_coprime(*values: int) -> bool:
 @overload
 def are_coprime(*values: Poly) -> bool:
     ...
-@set_module("galois")
+@export
 def are_coprime(*values):
     r"""
     Determines if the arguments are pairwise coprime.
@@ -408,7 +402,7 @@ def crt(remainders: Sequence[int], moduli: Sequence[int]) -> int:
 @overload
 def crt(remainders: Sequence[Poly], moduli: Sequence[Poly]) -> Poly:
     ...
-@set_module("galois")
+@export
 def crt(remainders, moduli):
     r"""
     Solves the simultaneous system of congruences for :math:`x`.
@@ -543,7 +537,7 @@ def factors(value: int) -> Tuple[List[int], List[int]]:
 @overload
 def factors(value: Poly) -> Tuple[List[Poly], List[int]]:
     ...
-@set_module("galois")
+@export
 def factors(value):
     r"""
     Computes the prime factors of a positive integer or the irreducible factors of a non-constant, monic polynomial.
@@ -661,7 +655,7 @@ def is_square_free(value: int) -> bool:
 @overload
 def is_square_free(value: Poly) -> bool:
     ...
-@set_module("galois")
+@export
 def is_square_free(value):
     r"""
     Determines if an integer or polynomial is square-free.

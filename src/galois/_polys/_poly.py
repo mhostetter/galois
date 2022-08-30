@@ -9,14 +9,12 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._domains import Array, _factory
-from .._helper import set_module, verify_isinstance, verify_issubclass
+from .._helper import export, verify_isinstance, verify_issubclass
 from .._prime import factors
 from ..typing import ElementLike, ArrayLike, PolyLike
 
 from . import _binary, _dense, _sparse
 from ._conversions import integer_to_poly, integer_to_degree, poly_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
-
-__all__ = ["Poly"]
 
 # Values were obtained by running scripts/sparse_poly_performance_test.py
 SPARSE_VS_DENSE_POLY_FACTOR = 0.00_125  # 1.25% density
@@ -28,7 +26,7 @@ SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
 GCD = lambda x, y: x
 
 
-@set_module("galois")
+@export
 class Poly:
     r"""
     A univariate polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
