@@ -1,0 +1,75 @@
+# v0.0.27
+
+*Released April 22, 2022*
+
+## Breaking changes
+
+- Sunsetted support for Python 3.6. This was necessary to support forward references with `from __future__ import annotations` (available in
+  Python 3.7+). That import is required to support the type aliases in the new `galois.typing` subpackage. ([#339](https://github.com/mhostetter/galois/pull/339))
+- Removed the `FieldClass` metaclass from the public API. It was previously included due to an inability of Sphinx to document class
+  properties. In this release, we monkey patched Sphinx to document all classmethods, class properties, and instance methods
+  in `FieldArray` itself. ([#343](https://github.com/mhostetter/galois/pull/343))
+  - Use `issubclass(GF, galois.FieldArray)` anywhere `isinstance(GF, galois.FieldClass)` was previously used.
+  - Annotate with `Type[galois.FieldArray]` anywhere `galois.FieldClass` was previously used.
+
+## Changes
+
+- Added the `galois.typing` subpackage, similar to `np.typing`. It contains type hints for common coercible data types used
+  throughout the library, including `ElementLike`, `ArrayLike`, and `PolyLike`. With these type hints, the annotations are simpler and
+  more clear. ([#339](https://github.com/mhostetter/galois/pull/339))
+- Modified functions to accept coercible data types wherever possible. For example, functions now accept `PolyLike` objects instead
+  of strictly `Poly` instances. ([#339](https://github.com/mhostetter/galois/pull/339))
+- Added `Array` which is an abstract base class of `FieldArray` (and `RingArray` in a future release). ([#336](https://github.com/mhostetter/galois/pull/336))
+- Added support for the DFT over any finite field using `np.fft.fft()` and `np.fft.ifft()`. ([#335](https://github.com/mhostetter/galois/pull/335))
+    ```python
+    >>> x
+    GF([127, 191,  69,  35, 221, 242, 193, 108,  72, 102,  80, 163,  13,  74,
+        218, 159, 207,  12, 159, 129,  92,  71], order=3^5)
+    >>> X = np.fft.fft(x); X
+    GF([ 16,  17,  20, 137,  58, 166, 178,  52,  19, 109, 115,  93,  99, 214,
+        187, 235, 195,  96, 232,  45, 241,  24], order=3^5)
+    >>> np.fft.ifft(X)
+    GF([127, 191,  69,  35, 221, 242, 193, 108,  72, 102,  80, 163,  13,  74,
+        218, 159, 207,  12, 159, 129,  92,  71], order=3^5)
+    ```
+- Implemented the Cooley-Tukey radix-2 $O(N\ \textrm{log}(N))$ algorithm for the NTT and JIT compiled it. ([#333](https://github.com/mhostetter/galois/pull/333))
+    ```ipython
+    In [2]: x = list(range(1, 1024 + 1))
+
+    # v0.0.26
+    In [4]: %timeit X = galois.ntt(x)
+    5.2 ms ± 121 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+    # v0.0.27
+    In [4]: %timeit X = galois.ntt(x)
+    695 µs ± 4.56 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+    ```
+- Added the `FieldArray.primitive_root_of_unity()` classmethod. ([#333](https://github.com/mhostetter/galois/pull/333))
+    ```python
+    >>> GF = galois.GF(3**5)
+    >>> GF.primitive_root_of_unity(22)
+    GF(39, order=3^5)
+    ```
+- Added the `FieldArray.primitive_roots_of_unity()` classmethod. ([#333](https://github.com/mhostetter/galois/pull/333))
+    ```python
+    >>> GF = galois.GF(3**5)
+    >>> GF.primitive_roots_of_unity(22)
+    GF([ 14,  39,  44,  59, 109, 114, 136, 200, 206, 226], order=3^5)
+    ```
+- Made 0-th degree coefficients more differentiated when using the polynomial element representation. ([#328](https://github.com/mhostetter/galois/issues/328))
+    ```python
+    # v0.0.26
+    >>> print(f)
+    (α^2 + α + 1)x^4 + (α^3)x + α^3 + 2α^2 + 2α + 2
+    # v0.0.27
+    >>> print(f)
+    (α^2 + α + 1)x^4 + (α^3)x + (α^3 + 2α^2 + 2α + 2)
+    ```
+- Restructured code base for clarity. ([#336](https://github.com/mhostetter/galois/pull/336))
+- Fixed display of overloaded functions in API reference. ([#337](https://github.com/mhostetter/galois/issues/337))
+- Fixed broken "References" sections in API reference. ([#281](https://github.com/mhostetter/galois/issues/281))
+- Fixed other small bugs.
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))

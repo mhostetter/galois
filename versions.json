@@ -48,5 +48,10 @@
         "version": "v0.0.25",
         "title": "v0.0.25",
         "aliases": []
+    },
+    {
+        "version": "latest",
+        "title": "latest",
+        "aliases": []
     }
 ]

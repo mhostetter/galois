@@ -1,0 +1,19 @@
+# v0.0.16
+
+*Released May 19, 2021*
+
+## Changes
+
+- Add `Field()` alias of `GF()` class factory.
+- Add finite groups modulo `n` with `Group()` class factory.
+- Add `is_group()`, `is_field()`, `is_prime_field()`, `is_extension_field()`.
+- Add polynomial constructor `Poly.String()`.
+- Add polynomial factorization in `poly_factors()`.
+- Add `np.vdot()` support.
+- Fix PyPI packaging issue from v0.0.15.
+- Fix bug in creation of 0-degree polynomials.
+- Fix bug in `poly_gcd()` not returning monic GCD polynomials.
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
