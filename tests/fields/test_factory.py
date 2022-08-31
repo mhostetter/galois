@@ -16,8 +16,11 @@ def test_defaults(characteristic, degree):
 
 
 def test_defaults_dont_modify_ufunc_mode():
-    # Ensure display=None (the default) doesn't modify the current ufunc mode
+    """
+    Ensures ufunc_mode=None (the default) doesn't modify the current ufunc mode.
+    """
     GF = galois.GF(2**8)
+    GF.compile("auto")  # Reset to default
     assert GF.ufunc_mode == "jit-lookup"
     GF.compile("jit-calculate")
     assert GF.ufunc_mode == "jit-calculate"
@@ -29,6 +32,7 @@ def test_defaults_dont_modify_ufunc_mode():
 
 def test_can_modify_ufunc_mode():
     GF = galois.GF(2**8)
+    GF.compile("auto")  # Reset to default
     assert GF.ufunc_mode == "jit-lookup"
     GF = galois.GF(2**8, compile="jit-calculate")
     assert GF.ufunc_mode == "jit-calculate"
@@ -37,8 +41,11 @@ def test_can_modify_ufunc_mode():
 
 
 def test_defaults_dont_modify_display_mode():
-    # Ensure display=None (the default) doesn't modify the current display mode
+    """
+    Ensures display=None (the default) doesn't modify the current display mode.
+    """
     GF = galois.GF(2**8)
+    GF.display()  # Reset to default
     assert GF.display_mode == "int"
     GF.display("poly")
     assert GF.display_mode == "poly"
@@ -50,6 +57,7 @@ def test_defaults_dont_modify_display_mode():
 
 def test_can_modify_display_mode():
     GF = galois.GF(2**8)
+    GF.display()  # Reset to default
     assert GF.display_mode == "int"
     GF = galois.GF(2**8, display="poly")
     assert GF.display_mode == "poly"
