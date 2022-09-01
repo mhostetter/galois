@@ -207,7 +207,7 @@ The readability is improved by increasing the line width using :func:`numpy.set_
 
     @suppress
     width = np.get_printoptions()["linewidth"]
-    np.set_printoptions(linewidth=150)
+    np.set_printoptions(linewidth=200)
     x
     @suppress
     np.set_printoptions(linewidth=width)
