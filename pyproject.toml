@@ -47,6 +47,7 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Security :: Cryptography",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -55,7 +56,7 @@ classifiers = [
 requires-python = ">=3.7"
 dependencies = [
     "numpy >= 1.21.0, < 1.24",  # v1.21.0 is needed for dtype support of ufuncs, see https://numpy.org/devdocs/release/1.21.0-notes.html#ufunc-signature-and-dtype-generalization-and-casting
-    "numba >= 0.55, < 0.57",  # v0.55 is needed for support of NumPy 1.21
+    "numba >= 0.55, < 0.58",  # v0.55 is needed for support of NumPy 1.21
     "typing_extensions >= 4.0.0",  # v4.0.0 is needed for use of Self (Python 3.11+) and Literal (Python 3.8+)
 ]
 dynamic = ["version"]
