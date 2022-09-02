@@ -111,7 +111,7 @@ jobs:
         run: python3 -m pip install dist/${{ steps.glob.outputs.paths }}[dev]
 
       - name: Test with pytest
-        run: python3 -m pytest --showlocals -n auto tests/
+        run: python3 -m pytest -n auto tests/
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
@@ -158,7 +158,7 @@ jobs:
         run: python3 -m pip install --upgrade dist/${{ steps.glob.outputs.paths }}[dev]
 
       - name: Test with pytest
-        run: python3 -m pytest --showlocals -n auto tests/
+        run: python3 -m pytest -n auto tests/
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v3

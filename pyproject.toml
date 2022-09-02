@@ -106,7 +106,7 @@ min-similarity-lines = 100
 
 [tool.pytest.ini_options]
 minversion = "6.2"
-# addopts = "-v"
+addopts = "-vv --showlocals"
 testpaths = [
     "tests"
 ]
