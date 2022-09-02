@@ -50,7 +50,7 @@ def vector_to_int(a_vec: np.ndarray, characteristic: int, degree: int) -> int:
 
 
 @numba.jit(["int64[:](int64, int64)"], nopython=True, cache=True)
-def egcd(a: int, b: int) -> np.ndarray:
+def egcd(a: int, b: int) -> np.ndarray:  # pragma: no cover
     """
     Computes the Extended Euclidean Algorithm. Returns (d, s, t).
 
@@ -79,7 +79,7 @@ def egcd(a: int, b: int) -> np.ndarray:
 EGCD = egcd
 
 @numba.jit(["int64(int64[:], int64[:])"], nopython=True, cache=True)
-def crt(remainders: np.ndarray, moduli: np.ndarray) -> int:
+def crt(remainders: np.ndarray, moduli: np.ndarray) -> int:  # pragma: no cover
     """
     Computes the simultaneous solution to the system of congruences xi == ai (mod mi).
     """
@@ -405,29 +405,31 @@ class reciprocal_modular_egcd(_lookup.reciprocal_ufunc):
         return t2
 
 
-class reciprocal_fermat(_lookup.reciprocal_ufunc):
-    """
-    A ufunc dispatcher that provides the multiplicative inverse using Fermat's Little Theorem.
+# NOTE: Commented out because it's not currently being used. This prevents it from being
+#       flagged as "not covered".
+# class reciprocal_fermat(_lookup.reciprocal_ufunc):
+#     """
+#     A ufunc dispatcher that provides the multiplicative inverse using Fermat's Little Theorem.
 
-    Algorithm:
-        a in GF(p^m)
-        a^(p^m - 1) = 1
+#     Algorithm:
+#         a in GF(p^m)
+#         a^(p^m - 1) = 1
 
-        a * a^-1 = 1
-        a * a^-1 = a^(p^m - 1)
-            a^-1 = a^(p^m - 2)
-    """
-    def set_calculate_globals(self):
-        global ORDER, POSITIVE_POWER
-        ORDER = self.field.order
-        POSITIVE_POWER = self.field._positive_power.ufunc
+#         a * a^-1 = 1
+#         a * a^-1 = a^(p^m - 1)
+#             a^-1 = a^(p^m - 2)
+#     """
+#     def set_calculate_globals(self):
+#         global ORDER, POSITIVE_POWER
+#         ORDER = self.field.order
+#         POSITIVE_POWER = self.field._positive_power.ufunc
 
-    @staticmethod
-    def calculate(a: int) -> int:
-        if a == 0:
-            raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
+#     @staticmethod
+#     def calculate(a: int) -> int:
+#         if a == 0:
+#             raise ZeroDivisionError("Cannot compute the multiplicative inverse of 0 in a Galois field.")
 
-        return POSITIVE_POWER(a, ORDER - 2)
+#         return POSITIVE_POWER(a, ORDER - 2)
 
 
 class reciprocal_itoh_tsujii(_lookup.reciprocal_ufunc):
@@ -584,7 +586,7 @@ class log_brute_force(_lookup.log_ufunc):
         MULTIPLY = self.field._multiply.ufunc
 
     @staticmethod
-    def calculate(beta: int, alpha: int) -> int:
+    def calculate(beta: int, alpha: int) -> int:  # pragma: no cover
         """
         beta is an element of GF(p^m)
         alpha is a primitive element of GF(p^m)
@@ -615,7 +617,7 @@ class log_pollard_rho(_lookup.log_ufunc):
         set_helper_globals(self.field)
 
     @staticmethod
-    def calculate(beta: int, alpha: int) -> int:
+    def calculate(beta: int, alpha: int) -> int:  # pragma: no cover
         """
         beta is an element of GF(p^m)
         alpha is a primitive element of GF(p^m)
@@ -701,7 +703,7 @@ class log_pohlig_hellman(_lookup.log_ufunc):
         MULTIPLICITIES = np.array(MULTIPLICITIES, dtype=DTYPE)
 
     @staticmethod
-    def calculate(beta: int, alpha: int) -> int:
+    def calculate(beta: int, alpha: int) -> int:  # pragma: no cover
         """
         beta is an element of GF(p^m)
         alpha is a primitive element of GF(p^m)
