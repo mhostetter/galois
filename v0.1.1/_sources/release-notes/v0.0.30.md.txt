@@ -1,0 +1,68 @@
+# v0.0.30
+
+*Released July 12, 2022*
+
+## Changes
+
+- Added support for NumPy 1.22 with Numba 0.55.2. This allows users to upgrade NumPy and avoid recently-discovered vulnerabilities [CVE-2021-34141](https://nvd.nist.gov/vuln/detail/CVE-2021-34141), [CVE-2021-41496](https://nvd.nist.gov/vuln/detail/CVE-2021-41496), and [CVE-2021-41495](https://nvd.nist.gov/vuln/detail/CVE-2021-41495). ([#366](https://github.com/mhostetter/galois/pull/366))
+- Made `FieldArray.repr_table()` more compact. ([#367](https://github.com/mhostetter/galois/pull/367))
+  ```ipython
+  In [2]: GF = galois.GF(3**3)
+
+  In [3]: print(GF.repr_table())
+   Power     Polynomial      Vector    Integer
+  ------- --------------- ----------- ---------
+     0           0         [0, 0, 0]      0
+    x^0          1         [0, 0, 1]      1
+    x^1          x         [0, 1, 0]      3
+    x^2         x^2        [1, 0, 0]      9
+    x^3        x + 2       [0, 1, 2]      5
+    x^4       x^2 + 2x     [1, 2, 0]      15
+    x^5     2x^2 + x + 2   [2, 1, 2]      23
+    x^6     x^2 + x + 1    [1, 1, 1]      13
+    x^7     x^2 + 2x + 2   [1, 2, 2]      17
+    x^8       2x^2 + 2     [2, 0, 2]      20
+    x^9        x + 1       [0, 1, 1]      4
+    x^10      x^2 + x      [1, 1, 0]      12
+    x^11    x^2 + x + 2    [1, 1, 2]      14
+    x^12      x^2 + 2      [1, 0, 2]      11
+    x^13         2         [0, 0, 2]      2
+    x^14         2x        [0, 2, 0]      6
+    x^15        2x^2       [2, 0, 0]      18
+    x^16       2x + 1      [0, 2, 1]      7
+    x^17      2x^2 + x     [2, 1, 0]      21
+    x^18    x^2 + 2x + 1   [1, 2, 1]      16
+    x^19   2x^2 + 2x + 2   [2, 2, 2]      26
+    x^20    2x^2 + x + 1   [2, 1, 1]      22
+    x^21      x^2 + 1      [1, 0, 1]      10
+    x^22       2x + 2      [0, 2, 2]      8
+    x^23     2x^2 + 2x     [2, 2, 0]      24
+    x^24   2x^2 + 2x + 1   [2, 2, 1]      25
+    x^25      2x^2 + 1     [2, 0, 1]      19
+  ```
+- Made `FieldArray.arithmetic_table()` more compact. ([#367](https://github.com/mhostetter/galois/pull/367))
+  ```ipython
+  In [2]: GF = galois.GF(13)
+
+  In [3]: print(GF.arithmetic_table("*"))
+  x * y |  0   1   2   3   4   5   6   7   8   9  10  11  12
+  ------|----------------------------------------------------
+      0 |  0   0   0   0   0   0   0   0   0   0   0   0   0
+      1 |  0   1   2   3   4   5   6   7   8   9  10  11  12
+      2 |  0   2   4   6   8  10  12   1   3   5   7   9  11
+      3 |  0   3   6   9  12   2   5   8  11   1   4   7  10
+      4 |  0   4   8  12   3   7  11   2   6  10   1   5   9
+      5 |  0   5  10   2   7  12   4   9   1   6  11   3   8
+      6 |  0   6  12   5  11   4  10   3   9   2   8   1   7
+      7 |  0   7   1   8   2   9   3  10   4  11   5  12   6
+      8 |  0   8   3  11   6   1   9   4  12   7   2  10   5
+      9 |  0   9   5   1  10   6   2  11   7   3  12   8   4
+     10 |  0  10   7   4   1  11   8   5   2  12   9   6   3
+     11 |  0  11   9   7   5   3   1  12  10   8   6   4   2
+     12 |  0  12  11  10   9   8   7   6   5   4   3   2   1
+  ```
+
+## Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
