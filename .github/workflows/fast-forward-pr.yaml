@@ -12,7 +12,7 @@ jobs:
     steps:
       # To use this repository's private action, you must check out the repository
       - name: Checkout code into workspace directory
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
