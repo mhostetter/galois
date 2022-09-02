@@ -4,18 +4,28 @@ on:
   push:
     branches:
       - master
-  workflow_call:
   pull_request:
     branches:
       - master
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The version's tag of the docs to build
+        required: true
+        type: string
+env:
+  WORKFLOW_DISPATCH_TAG: ${{ github.event.inputs.tag }}
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref }}
+          # NOTE: Fake ternary operator, see https://github.com/actions/runner/issues/409
           fetch-depth: 0  # Fetch all commits and tags, needed for intermediate versions
 
       - name: Set up Python 3.8
@@ -50,7 +60,7 @@ jobs:
     name: Publish
     needs: build
     # Only publish new docs to GitHub pages if on master or a released version
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_call'}}
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_call' || github.event_name == 'workflow_dispatch'}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -71,9 +81,19 @@ jobs:
             import re
 
             github_ref = os.environ.get('GITHUB_REF')
-            if os.environ.get("GITHUB_EVENT_NAME") == "push" and github_ref == "refs/heads/master":
+            print("github_ref:", github_ref)
+
+            github_event_name = os.environ.get("GITHUB_EVENT_NAME")
+            print("github_event_name:", github_event_name)
+
+            workflow_dispatch_tag = os.environ.get("WORKFLOW_DISPATCH_TAG")
+            print("workflow_dispatch_tag:", workflow_dispatch_tag)
+
+            if github_event_name == "push" and github_ref == "refs/heads/master":
                 name = "latest"
-            elif os.environ.get("GITHUB_EVENT_NAME") == "workflow_call" and github_ref.startswith("refs/tags/"):
+            elif github_event_name == "workflow_dispatch":
+                name = workflow_dispatch_tag
+            elif github_event_name == "workflow_call" and github_ref.startswith("refs/tags/"):
                 name = github_ref.split("refs/tags/")[1]
             else:
                 raise RuntimeError
