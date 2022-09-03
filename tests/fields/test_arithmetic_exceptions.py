@@ -6,7 +6,7 @@ import numpy as np
 
 import galois
 
-from ..helper import randint
+from .conftest import randint
 
 
 def test_add_int_scalar(field):

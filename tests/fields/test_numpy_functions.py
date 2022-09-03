@@ -10,7 +10,7 @@ import pytest
 
 import galois
 
-from ..helper import randint, array_equal
+from .conftest import randint, array_equal
 
 
 ###############################################################################

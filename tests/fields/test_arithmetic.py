@@ -8,7 +8,7 @@ import numpy as np
 
 import galois
 
-from ..helper import randint
+from .conftest import randint
 
 
 # TODO: Add scalar arithmetic and array/scalar and radd, etc
