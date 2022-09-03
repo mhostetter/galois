@@ -6,7 +6,7 @@ import pytest
 
 import galois
 
-from ..helper import randint
+from .conftest import randint
 
 
 # TODO: Test using "out" keyword argument

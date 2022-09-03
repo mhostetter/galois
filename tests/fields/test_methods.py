@@ -6,7 +6,7 @@ import numpy as np
 
 import galois
 
-from .helper import valid_dtype, invalid_dtype
+from .conftest import valid_dtype, invalid_dtype
 
 
 def test_repr():

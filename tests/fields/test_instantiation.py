@@ -6,8 +6,7 @@ import numpy as np
 
 import galois
 
-from ..helper import array_equal
-from .helper import DTYPES, valid_dtype, invalid_dtype
+from .conftest import array_equal, valid_dtype, invalid_dtype
 
 
 def test_cant_instantiate_GF():
