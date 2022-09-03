@@ -4,6 +4,7 @@ A pytest conftest module that provides pytest fixtures for galois/fields/ tests.
 import json
 import os
 import pickle
+import random
 
 import pytest
 import numpy as np
@@ -436,3 +437,38 @@ def field_norm(field_folder):
     d["X"] = GF(d["X"])
     d["Z"] = GF.prime_subfield(d["Z"])
     return d
+
+
+###############################################################################
+# Helper functions
+###############################################################################
+
+DTYPES = [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64, np.object_]
+
+
+def array_equal(a, b):
+    # Weird NumPy comparison bug, see https://github.com/mhostetter/galois/issues/37
+    if a.dtype == np.object_:
+        return np.array_equal(a, np.array(b, dtype=np.object_))
+    else:
+        return np.array_equal(a, b)
+
+
+def randint(low, high, shape, dtype):
+    if np.issubdtype(dtype, np.integer):
+        array = np.random.default_rng().integers(low, high, shape, dtype=np.int64)
+    else:
+        # For dtype=object
+        array = np.empty(shape, dtype=dtype)
+        iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
+        for _ in iterator:
+            array[iterator.multi_index] = random.randint(low, high - 1)
+    return array
+
+
+def valid_dtype(field):
+    return random.choice(field.dtypes)
+
+
+def invalid_dtype(field):
+    return random.choice([dtype for dtype in DTYPES if dtype not in field.dtypes])

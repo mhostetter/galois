@@ -8,7 +8,7 @@ import numpy as np
 
 import galois
 
-from ..helper import array_equal
+from .conftest import array_equal
 
 
 def test_dot_exceptions():
