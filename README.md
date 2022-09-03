@@ -66,7 +66,7 @@ for more detailed discussions and examples.
 
 The latest version of `galois` can be installed from [PyPI](https://pypi.org/project/galois/) using `pip`.
 
-```sh
+```console
 $ python3 -m pip install galois
 ```
 
