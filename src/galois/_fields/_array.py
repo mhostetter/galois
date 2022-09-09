@@ -3,7 +3,7 @@ A module that defines the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-from typing import Tuple, Optional, Union
+from typing import Tuple, Optional
 from typing_extensions import Literal
 
 import numpy as np
@@ -55,7 +55,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def __new__(
         cls,
-        x: Union[ElementLike, ArrayLike],
+        x: ElementLike | ArrayLike,
         dtype: Optional[DTypeLike] = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
@@ -67,7 +67,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def __init__(
         self,
-        x: Union[ElementLike, ArrayLike],
+        x: ElementLike | ArrayLike,
         dtype: Optional[DTypeLike] = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
@@ -99,7 +99,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     ###############################################################################
 
     @classmethod
-    def _verify_array_like_types_and_values(cls, x: Union[ElementLike, ArrayLike]) -> Union[ElementLike, ArrayLike]:
+    def _verify_array_like_types_and_values(cls, x: ElementLike | ArrayLike) -> ElementLike | ArrayLike:
         if isinstance(x, (int, np.integer)):
             cls._verify_scalar_value(x)
         elif isinstance(x, cls):
@@ -278,7 +278,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         shape: ShapeLike = (),
         low: ElementLike = 0,
         high: Optional[ElementLike] = None,
-        seed: Optional[Union[int, np.random.Generator]] = None,
+        seed: Optional[int | np.random.Generator] = None,
         dtype: Optional[DTypeLike] = None
     ) -> FieldArray:
         return super().Random(shape=shape, low=low, high=high, seed=seed, dtype=dtype)
@@ -764,7 +764,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     # Instance methods
     ###############################################################################
 
-    def additive_order(self) -> Union[np.integer, np.ndarray]:
+    def additive_order(self) -> np.integer | np.ndarray:
         r"""
         Computes the additive order of each element in :math:`x`.
 
@@ -804,7 +804,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return order
 
-    def multiplicative_order(self) -> Union[np.integer, np.ndarray]:
+    def multiplicative_order(self) -> np.integer | np.ndarray:
         r"""
         Computes the multiplicative order :math:`\textrm{ord}(x)` of each element in :math:`x`.
 
@@ -870,7 +870,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return order
 
-    def is_square(self) -> Union[np.bool_, np.ndarray]:
+    def is_square(self) -> np.bool_ | np.ndarray:
         r"""
         Determines if the elements of :math:`x` are squares in the finite field.
 
@@ -1501,7 +1501,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         else:
             raise ValueError(f"The array must be either 0-D to return the minimal polynomial of a single element or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}.")
 
-    def log(self, base: Optional[Union[ElementLike, ArrayLike]] = None) -> np.ndarray:
+    def log(self, base: Optional[ElementLike | ArrayLike] = None) -> np.ndarray:
         r"""
         Computes the logarithm of the array :math:`x` base :math:`\beta`.
 

@@ -6,7 +6,7 @@ from __future__ import annotations
 import abc
 import contextlib
 import random
-from typing import Optional, Union, Generator
+from typing import Optional, Generator
 from typing_extensions import Literal
 
 import numpy as np
@@ -34,7 +34,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
     def __new__(
         cls,
-        x: Union[ElementLike, ArrayLike],
+        x: ElementLike | ArrayLike,
         dtype: Optional[DTypeLike] = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
@@ -70,7 +70,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
     @classmethod
     @abc.abstractmethod
-    def _verify_array_like_types_and_values(cls, x: Union[ElementLike, ArrayLike]) -> Union[ElementLike, ArrayLike]:
+    def _verify_array_like_types_and_values(cls, x: ElementLike | ArrayLike) -> ElementLike | ArrayLike:
         """
         Verify the types of the array-like object. Also verify the values of the array are within the range [0, order).
         """
@@ -237,7 +237,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         shape: ShapeLike = (),
         low: ElementLike = 0,
         high: Optional[ElementLike] = None,
-        seed: Optional[Union[int, np.random.Generator]] = None,
+        seed: Optional[int | np.random.Generator] = None,
         dtype: Optional[DTypeLike] = None
     ) -> Array:
         """
