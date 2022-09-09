@@ -8,7 +8,7 @@ import functools
 import itertools
 import math
 import random
-from typing import Tuple, List
+from typing import List
 
 import numpy as np
 
@@ -817,7 +817,7 @@ def kronecker_symbol(a: int, n: int) -> int:
 ###############################################################################
 
 @functools.lru_cache(maxsize=2048)
-def factors(n: int) -> Tuple[List[int], List[int]]:
+def factors(n: int) -> tuple[List[int], List[int]]:
     """
     This function is wrapped and documented in `_polymorphic.factors()`.
     """
@@ -868,7 +868,7 @@ def factors(n: int) -> Tuple[List[int], List[int]]:
 
 
 @export
-def perfect_power(n: int) -> Tuple[int, int]:
+def perfect_power(n: int) -> tuple[int, int]:
     r"""
     Returns the integer base :math:`c` and exponent :math:`e` of :math:`n = c^e`.
 
@@ -946,7 +946,7 @@ def perfect_power(n: int) -> Tuple[int, int]:
 
 
 @functools.lru_cache(maxsize=512)
-def _perfect_power(n: int) -> Tuple[int, int]:
+def _perfect_power(n: int) -> tuple[int, int]:
     verify_isinstance(n, int)
 
     if n == 0:
@@ -980,7 +980,7 @@ def _perfect_power(n: int) -> Tuple[int, int]:
 
 
 @export
-def trial_division(n: int, B: int | None = None) -> Tuple[List[int], List[int], int]:
+def trial_division(n: int, B: int | None = None) -> tuple[List[int], List[int], int]:
     r"""
     Finds all the prime factors :math:`p_i^{e_i}` of :math:`n` for :math:`p_i \le B`.
 

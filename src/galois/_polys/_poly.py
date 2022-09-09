@@ -3,7 +3,7 @@ A module containing a class for univariate polynomials over finite fields.
 """
 from __future__ import annotations
 
-from typing import Tuple, List, Sequence, Type, overload
+from typing import List, Sequence, Type, overload
 from typing_extensions import Literal
 
 import numpy as np
@@ -705,7 +705,7 @@ class Poly:
     def roots(self, multiplicity: Literal[False] = False) -> Array:
         ...
     @overload
-    def roots(self, multiplicity: Literal[True]) -> Tuple[Array, np.ndarray]:
+    def roots(self, multiplicity: Literal[True]) -> tuple[Array, np.ndarray]:
         ...
     def roots(self, multiplicity=False):
         r"""
@@ -788,7 +788,7 @@ class Poly:
             multiplicities = np.array([_root_multiplicity(self, root) for root in roots])
             return roots, multiplicities
 
-    def square_free_factors(self) -> Tuple[List[Poly], List[int]]:
+    def square_free_factors(self) -> tuple[List[Poly], List[int]]:
         r"""
         Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
 
@@ -884,7 +884,7 @@ class Poly:
 
         return list(factors_), list(multiplicities)
 
-    def distinct_degree_factors(self) -> Tuple[List[Poly], List[int]]:
+    def distinct_degree_factors(self) -> tuple[List[Poly], List[int]]:
         r"""
         Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors all have
         the same degree.
@@ -1077,7 +1077,7 @@ class Poly:
 
         return factors_
 
-    def factors(self) -> Tuple[List[Poly], List[int]]:
+    def factors(self) -> tuple[List[Poly], List[int]]:
         r"""
         Computes the irreducible factors of the non-constant, monic polynomial :math:`f(x)`.
 
@@ -1863,7 +1863,7 @@ class Poly:
             c = _dense.multiply(a, b)
             return Poly(c, field=self.field)
 
-    def __divmod__(self, other: Poly | Array) -> Tuple[Poly, Poly]:
+    def __divmod__(self, other: Poly | Array) -> tuple[Poly, Poly]:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1878,7 +1878,7 @@ class Poly:
             q, r = _dense.divmod_jit(self.field)(a, b)
             return Poly(q, field=self.field), Poly(r, field=self.field)
 
-    def __rdivmod__(self, other: Poly | Array) -> Tuple[Poly, Poly]:
+    def __rdivmod__(self, other: Poly | Array) -> tuple[Poly, Poly]:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -2139,7 +2139,7 @@ class Poly:
         return self.nonzero_coeffs[0] == 1
 
 
-def _convert_coeffs(coeffs: ArrayLike, field: Type[Array] | None = None) -> Tuple[Array, Type[Array]]:
+def _convert_coeffs(coeffs: ArrayLike, field: Type[Array] | None = None) -> tuple[Array, Type[Array]]:
     """
     Converts the coefficient-like input into a Galois field array based on the `field` keyword argument.
     """
@@ -2278,7 +2278,7 @@ def _convert_to_integer(a: Poly | Array | int, field: Type[Array]) -> int:
         return int(a)
 
 
-def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> Tuple[np.ndarray, Array]:
+def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> tuple[np.ndarray, Array]:
     """
     Convert the polynomial or finite field scalar into its non-zero degrees and coefficients.
     """
