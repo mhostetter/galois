@@ -4,7 +4,7 @@ A module containing classes and functions for generating and analyzing linear fe
 from __future__ import annotations
 
 from typing import Type, overload
-from typing_extensions import Literal
+from typing_extensions import Self, Literal
 
 import numba
 import numpy as np
@@ -58,7 +58,7 @@ class _LFSR:
         self._state = self.initial_state.copy()
 
     @classmethod
-    def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> _LFSR:
+    def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> Self:
         verify_isinstance(taps, FieldArray)
 
         if cls._type == "fibonacci":
@@ -321,7 +321,7 @@ class FLFSR(_LFSR):
         super().__init__(feedback_poly, state=state)
 
     @classmethod
-    def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> FLFSR:
+    def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> Self:
         r"""
         Constructs a Fibonacci LFSR from its taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
 
@@ -987,7 +987,7 @@ class GLFSR(_LFSR):
         super().__init__(feedback_poly, state=state)
 
     @classmethod
-    def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> GLFSR:
+    def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> Self:
         r"""
         Constructs a Galois LFSR from its taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
 

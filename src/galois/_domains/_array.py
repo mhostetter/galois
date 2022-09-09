@@ -7,7 +7,7 @@ import abc
 import contextlib
 import random
 from typing import Generator
-from typing_extensions import Literal
+from typing_extensions import Self, Literal
 
 import numpy as np
 
@@ -39,7 +39,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
-    ) -> Array:
+    ) -> Self:
         if cls is Array:
             raise NotImplementedError("Array is an abstract base class that cannot be directly instantiated. Instead, create a Array subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
 
@@ -119,7 +119,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     ###############################################################################
 
     @classmethod
-    def _view(cls, array: np.ndarray) -> Array:
+    def _view(cls, array: np.ndarray) -> Self:
         """
         View the input array to the Array subclass `A` using the `_view_without_verification()` context manager. This disables
         bounds checking on the array elements. Instead of `x.view(A)` use `A._view(x)`. For internal library use only.
@@ -144,7 +144,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     ###############################################################################
 
     @classmethod
-    def Zeros(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Array:
+    def Zeros(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Self:
         """
         Creates an array of all zeros.
 
@@ -166,7 +166,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         return cls._view(array)
 
     @classmethod
-    def Ones(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Array:
+    def Ones(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Self:
         """
         Creates an array of all ones.
 
@@ -194,7 +194,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         stop: ElementLike,
         step: int = 1,
         dtype: DTypeLike | None = None
-    ) -> Array:
+    ) -> Self:
         """
         Creates a 1-D array with a range of elements.
 
@@ -239,7 +239,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         high: ElementLike | None = None,
         seed: int | np.random.Generator | None = None,
         dtype: DTypeLike | None = None
-    ) -> Array:
+    ) -> Self:
         """
         Creates an array with random elements.
 
@@ -303,7 +303,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         return cls._view(array)
 
     @classmethod
-    def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Array:
+    def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
         r"""
         Creates an :math:`n \times n` identity matrix.
 
