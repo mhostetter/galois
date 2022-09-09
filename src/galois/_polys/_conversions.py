@@ -3,8 +3,6 @@ A module that contains various functions to convert between polynomial strings, 
 """
 from __future__ import annotations
 
-from typing import List
-
 import numpy as np
 
 from .._math import ilog
@@ -21,7 +19,7 @@ def integer_to_degree(integer: int, order: int) -> int:
         return ilog(integer, order)
 
 
-def integer_to_poly(integer: int, order: int, degree: int | None = None) -> List[int]:
+def integer_to_poly(integer: int, order: int, degree: int | None = None) -> list[int]:
     """
     Converts the integer representation of the polynomial to its coefficients in descending order.
     """
@@ -48,7 +46,7 @@ def integer_to_poly(integer: int, order: int, degree: int | None = None) -> List
     return c
 
 
-def poly_to_integer(coeffs: List[int], order: int) -> int:
+def poly_to_integer(coeffs: list[int], order: int) -> int:
     """
     Converts the polynomial coefficients (descending order) to its integer representation.
     """
@@ -63,7 +61,7 @@ def poly_to_integer(coeffs: List[int], order: int) -> int:
     return integer
 
 
-def sparse_poly_to_integer(degrees: List[int], coeffs: List[int], order: int) -> int:
+def sparse_poly_to_integer(degrees: list[int], coeffs: list[int], order: int) -> int:
     """
     Converts the polynomial non-zero degrees and coefficients to its integer representation.
     """
@@ -76,7 +74,7 @@ def sparse_poly_to_integer(degrees: List[int], coeffs: List[int], order: int) ->
     return integer
 
 
-def poly_to_str(coeffs: List[int], poly_var: str = "x") -> str:
+def poly_to_str(coeffs: list[int], poly_var: str = "x") -> str:
     """
     Converts the polynomial coefficients (descending order) into its string representation.
     """
@@ -85,7 +83,7 @@ def poly_to_str(coeffs: List[int], poly_var: str = "x") -> str:
     return sparse_poly_to_str(degrees, coeffs, poly_var=poly_var)
 
 
-def sparse_poly_to_str(degrees: List[int], coeffs: List[int], poly_var: str = "x") -> str:
+def sparse_poly_to_str(degrees: list[int], coeffs: list[int], poly_var: str = "x") -> str:
     """
     Converts the polynomial non-zero degrees and coefficients into its string representation.
     """
@@ -129,7 +127,7 @@ def sparse_poly_to_str(degrees: List[int], coeffs: List[int], poly_var: str = "x
     return " + ".join(x) if x else "0"
 
 
-def str_to_sparse_poly(poly_str: str) -> tuple[List[int], List[int]]:
+def str_to_sparse_poly(poly_str: str) -> tuple[list[int], list[int]]:
     """
     Converts the polynomial string into its non-zero degrees and coefficients.
     """

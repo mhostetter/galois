@@ -3,7 +3,7 @@ from __future__ import annotations
 import functools
 import math
 import random
-from typing import List, Iterator
+from typing import Iterator
 from typing_extensions import Literal
 
 from ._helper import export, verify_isinstance
@@ -12,7 +12,7 @@ from ._prime import factors
 
 
 @export
-def totatives(n: int) -> List[int]:
+def totatives(n: int) -> list[int]:
     r"""
     Returns the positive integers (totatives) in :math:`[1, n)` that are coprime to :math:`n`.
 

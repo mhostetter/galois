@@ -3,7 +3,7 @@ A module that contains polymorphic math functions that work on integers and poly
 """
 from __future__ import annotations
 
-from typing import List, Sequence, overload
+from typing import Sequence, overload
 
 import numpy as np
 
@@ -534,10 +534,10 @@ def crt(remainders, moduli):
 ###############################################################################
 
 @overload
-def factors(value: int) -> tuple[List[int], List[int]]:
+def factors(value: int) -> tuple[list[int], list[int]]:
     ...
 @overload
-def factors(value: Poly) -> tuple[List[Poly], List[int]]:
+def factors(value: Poly) -> tuple[list[Poly], list[int]]:
     ...
 @export
 def factors(value):

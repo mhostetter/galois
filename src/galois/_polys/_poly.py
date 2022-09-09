@@ -3,7 +3,7 @@ A module containing a class for univariate polynomials over finite fields.
 """
 from __future__ import annotations
 
-from typing import List, Sequence, Type, overload
+from typing import Sequence, Type, overload
 from typing_extensions import Literal
 
 import numpy as np
@@ -788,7 +788,7 @@ class Poly:
             multiplicities = np.array([_root_multiplicity(self, root) for root in roots])
             return roots, multiplicities
 
-    def square_free_factors(self) -> tuple[List[Poly], List[int]]:
+    def square_free_factors(self) -> tuple[list[Poly], list[int]]:
         r"""
         Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
 
@@ -884,7 +884,7 @@ class Poly:
 
         return list(factors_), list(multiplicities)
 
-    def distinct_degree_factors(self) -> tuple[List[Poly], List[int]]:
+    def distinct_degree_factors(self) -> tuple[list[Poly], list[int]]:
         r"""
         Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors all have
         the same degree.
@@ -986,7 +986,7 @@ class Poly:
 
         return factors_, degrees
 
-    def equal_degree_factors(self, degree: int) -> List[Poly]:
+    def equal_degree_factors(self, degree: int) -> list[Poly]:
         r"""
         Factors the monic, square-free polynomial :math:`f(x)` of degree :math:`rd` into a product of :math:`r` irreducible factors with
         degree :math:`d`.
@@ -1077,7 +1077,7 @@ class Poly:
 
         return factors_
 
-    def factors(self) -> tuple[List[Poly], List[int]]:
+    def factors(self) -> tuple[list[Poly], list[int]]:
         r"""
         Computes the irreducible factors of the non-constant, monic polynomial :math:`f(x)`.
 
