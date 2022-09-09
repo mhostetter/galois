@@ -6,4 +6,4 @@ numba==0.55; python_version=="3.10"
 numba==0.53; python_version=="3.9"
 numba==0.53; python_version=="3.8"
 numba==0.53; python_version=="3.7"
-typing_extensions
+typing_extensions==4.0.0
