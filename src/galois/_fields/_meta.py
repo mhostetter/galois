@@ -3,7 +3,7 @@ A module that defines the metaclass for the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-from typing import List, Type, TYPE_CHECKING
+from typing import Type, TYPE_CHECKING
 from typing_extensions import Literal
 
 import numpy as np
@@ -411,7 +411,7 @@ class FieldArrayMeta(ArrayMeta):
         return cls._prime_subfield
 
     @property
-    def dtypes(cls) -> List[np.dtype]:
+    def dtypes(cls) -> list[np.dtype]:
         r"""
         List of valid integer :obj:`numpy.dtype` values that are compatible with this finite field. Creating an array with an
         unsupported dtype will raise a `TypeError` exception.
@@ -504,7 +504,7 @@ class FieldArrayMeta(ArrayMeta):
         return super().ufunc_mode
 
     @property
-    def ufunc_modes(cls) -> List[str]:
+    def ufunc_modes(cls) -> list[str]:
         """
         All supported ufunc compilation modes for this :obj:`~galois.FieldArray` subclass.
 

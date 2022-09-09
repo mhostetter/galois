@@ -8,7 +8,6 @@ import functools
 import itertools
 import math
 import random
-from typing import List
 
 import numpy as np
 
@@ -26,7 +25,7 @@ MAX_N = 10  # The max value for which all primes <= N are contained in the looku
 ###############################################################################
 
 @export
-def primes(n: int) -> List[int]:
+def primes(n: int) -> list[int]:
     r"""
     Returns all primes :math:`p` for :math:`p \le n`.
 
@@ -303,7 +302,7 @@ MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3
 
 
 @export
-def mersenne_exponents(n: int | None = None) -> List[int]:
+def mersenne_exponents(n: int | None = None) -> list[int]:
     r"""
     Returns all known Mersenne exponents :math:`e` for :math:`e \le n`.
 
@@ -351,7 +350,7 @@ def mersenne_exponents(n: int | None = None) -> List[int]:
 
 
 @export
-def mersenne_primes(n: int | None = None) -> List[int]:
+def mersenne_primes(n: int | None = None) -> list[int]:
     r"""
     Returns all known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
 
@@ -817,7 +816,7 @@ def kronecker_symbol(a: int, n: int) -> int:
 ###############################################################################
 
 @functools.lru_cache(maxsize=2048)
-def factors(n: int) -> tuple[List[int], List[int]]:
+def factors(n: int) -> tuple[list[int], list[int]]:
     """
     This function is wrapped and documented in `_polymorphic.factors()`.
     """
@@ -980,7 +979,7 @@ def _perfect_power(n: int) -> tuple[int, int]:
 
 
 @export
-def trial_division(n: int, B: int | None = None) -> tuple[List[int], List[int], int]:
+def trial_division(n: int, B: int | None = None) -> tuple[list[int], list[int], int]:
     r"""
     Finds all the prime factors :math:`p_i^{e_i}` of :math:`n` for :math:`p_i \le B`.
 
@@ -1275,7 +1274,7 @@ def pollard_rho(n: int, c: int = 1) -> int:
 ###############################################################################
 
 @export
-def divisors(n: int) -> List[int]:
+def divisors(n: int) -> list[int]:
     r"""
     Computes all positive integer divisors :math:`d` of the integer :math:`n` such that :math:`d\ |\ n`.
 

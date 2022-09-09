@@ -3,8 +3,6 @@ A module that defines a mixin classes for Galois field arithmetic.
 """
 from __future__ import annotations
 
-from typing import List
-
 import numpy as np
 
 from .._domains import _calculate, _lookup
@@ -33,7 +31,7 @@ class UFuncMixin_p_1(UFuncMixin):
         cls._positive_power = _calculate.positive_power_square_and_multiply(cls)
 
     @classmethod
-    def _determine_dtypes(cls) -> List[np.dtype]:
+    def _determine_dtypes(cls) -> list[np.dtype]:
         """
         The only valid dtypes are ones that can hold x*x for x in [0, order).
         """
@@ -89,7 +87,7 @@ class UFuncMixin_p_m(UFuncMixin):
         cls._positive_power = _calculate.positive_power_square_and_multiply(cls)
 
     @classmethod
-    def _determine_dtypes(cls) -> List[np.dtype]:
+    def _determine_dtypes(cls) -> list[np.dtype]:
         """
         The only valid dtypes are ones that can hold x*x for x in [0, order).
         """

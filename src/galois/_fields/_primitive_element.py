@@ -4,7 +4,6 @@ A module containing functions to generate and test primitive elements of finite 
 from __future__ import annotations
 
 import random
-from typing import List
 from typing_extensions import Literal
 
 from .._helper import export, verify_isinstance
@@ -200,7 +199,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
 
 
 @export
-def primitive_elements(irreducible_poly: Poly) -> List[Poly]:
+def primitive_elements(irreducible_poly: Poly) -> list[Poly]:
     r"""
     Finds all primitive elements :math:`g` of the Galois field :math:`\mathrm{GF}(q^m)` with
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.

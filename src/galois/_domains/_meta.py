@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import abc
 import inspect
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from typing_extensions import Literal
 
 import numpy as np
@@ -66,7 +66,7 @@ class ArrayMeta(abc.ABCMeta):
 
         cls._assign_ufuncs()
 
-    def __dir__(cls) -> List[str]:
+    def __dir__(cls) -> list[str]:
         """
         Add class properties from the metaclass onto the new Array class's dir().
         """
@@ -78,7 +78,7 @@ class ArrayMeta(abc.ABCMeta):
     # Helper methods
     ###############################################################################
 
-    def _determine_dtypes(cls) -> List[np.dtype]:
+    def _determine_dtypes(cls) -> list[np.dtype]:
         """
         Determine which NumPy integer data types are valid for this finite field. At a minimum, valid dtypes are ones that
         can hold x for x in [0, order).
@@ -155,7 +155,7 @@ class ArrayMeta(abc.ABCMeta):
         return cls(cls._primitive_element)
 
     @property
-    def dtypes(cls) -> List[np.dtype]:
+    def dtypes(cls) -> list[np.dtype]:
         """
         List of valid integer :obj:`numpy.dtype` values that are compatible with this Galois field or Galois ring.
         """
@@ -176,7 +176,7 @@ class ArrayMeta(abc.ABCMeta):
         return cls._ufunc_mode
 
     @property
-    def ufunc_modes(cls) -> List[str]:
+    def ufunc_modes(cls) -> list[str]:
         """
         All supported compilation modes of the Galois field or Galois ring.
         """
