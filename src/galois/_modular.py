@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import functools
 import math
 import random
-from typing import List, Optional, Iterator
+from typing import List, Iterator
 from typing_extensions import Literal
 
 from ._helper import export, verify_isinstance
@@ -399,7 +401,7 @@ def is_cyclic(n: int) -> bool:
 
 
 @export
-def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: Literal["min", "max", "random"] = "min") -> int:
+def primitive_root(n: int, start: int = 1, stop: int | None = None, method: Literal["min", "max", "random"] = "min") -> int:
     r"""
     Finds a primitive root modulo :math:`n` in the range :math:`[\textrm{start}, \textrm{stop})`.
 
@@ -573,7 +575,7 @@ def primitive_root(n: int, start: int = 1, stop: Optional[int] = None, method: L
 
 
 @export
-def primitive_roots(n: int, start: int = 1, stop: Optional[int] = None, reverse: bool = False) -> Iterator[int]:
+def primitive_roots(n: int, start: int = 1, stop: int | None = None, reverse: bool = False) -> Iterator[int]:
     r"""
     Iterates through all primitive roots modulo :math:`n` in the range :math:`[\textrm{start}, \textrm{stop})`.
 
@@ -697,7 +699,7 @@ def primitive_roots(n: int, start: int = 1, stop: Optional[int] = None, reverse:
 
 
 # @functools.lru_cache(maxsize=4096)
-def _primitive_root_deterministic_search(n, start, stop, step) -> Optional[int]:
+def _primitive_root_deterministic_search(n, start, stop, step) -> int | None:
     """
     Searches for a primitive root in the range using the specified deterministic method.
     """

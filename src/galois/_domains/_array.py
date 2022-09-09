@@ -6,7 +6,7 @@ from __future__ import annotations
 import abc
 import contextlib
 import random
-from typing import Optional, Generator
+from typing import Generator
 from typing_extensions import Literal
 
 import numpy as np
@@ -35,7 +35,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     def __new__(
         cls,
         x: ElementLike | ArrayLike,
-        dtype: Optional[DTypeLike] = None,
+        dtype: DTypeLike | None = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
@@ -144,7 +144,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     ###############################################################################
 
     @classmethod
-    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> Array:
+    def Zeros(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Array:
         """
         Creates an array of all zeros.
 
@@ -166,7 +166,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         return cls._view(array)
 
     @classmethod
-    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> Array:
+    def Ones(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Array:
         """
         Creates an array of all ones.
 
@@ -193,7 +193,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         start: ElementLike,
         stop: ElementLike,
         step: int = 1,
-        dtype: Optional[DTypeLike] = None
+        dtype: DTypeLike | None = None
     ) -> Array:
         """
         Creates a 1-D array with a range of elements.
@@ -236,9 +236,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         cls,
         shape: ShapeLike = (),
         low: ElementLike = 0,
-        high: Optional[ElementLike] = None,
-        seed: Optional[int | np.random.Generator] = None,
-        dtype: Optional[DTypeLike] = None
+        high: ElementLike | None = None,
+        seed: int | np.random.Generator | None = None,
+        dtype: DTypeLike | None = None
     ) -> Array:
         """
         Creates an array with random elements.
@@ -303,7 +303,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         return cls._view(array)
 
     @classmethod
-    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> Array:
+    def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Array:
         r"""
         Creates an :math:`n \times n` identity matrix.
 

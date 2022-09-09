@@ -4,7 +4,7 @@ A module containing arbitrary Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(2).
 from __future__ import annotations
 
 import math
-from typing import Tuple, List, Optional, Type, overload
+from typing import Tuple, List, Type, overload
 from typing_extensions import Literal
 
 import numba
@@ -27,8 +27,8 @@ def _check_and_compute_field(
     n: int,
     k: int,
     c: int,
-    primitive_poly: Optional[PolyLike] = None,
-    primitive_element: Optional[PolyLike] = None
+    primitive_poly: PolyLike | None = None,
+    primitive_element: PolyLike | None = None
 ) -> Type[FieldArray]:
     verify_isinstance(n, int)
     verify_isinstance(k, int)
@@ -174,8 +174,8 @@ class BCH:
         self,
         n: int,
         k: int,
-        primitive_poly: Optional[PolyLike] = None,
-        primitive_element: Optional[PolyLike] = None,
+        primitive_poly: PolyLike | None = None,
+        primitive_element: PolyLike | None = None,
         systematic: bool = True
     ):
         r"""

@@ -3,8 +3,6 @@ A module that contains functions to perform the forward and reverse Number-Theor
 """
 from __future__ import annotations
 
-from typing import Optional
-
 import numpy as np
 
 from ._fields import Field, FieldArray
@@ -16,8 +14,8 @@ from .typing import ArrayLike
 @export
 def ntt(
     x: ArrayLike,
-    size: Optional[int] = None,
-    modulus: Optional[int] = None
+    size: int | None = None,
+    modulus: int | None = None
 ) -> FieldArray:
     r"""
     Computes the Number-Theoretic Transform (NTT) of :math:`x`.
@@ -127,8 +125,8 @@ def ntt(
 @export
 def intt(
     X: ArrayLike,
-    size: Optional[int] = None,
-    modulus: Optional[int] = None,
+    size: int | None = None,
+    modulus: int | None = None,
     scaled: bool = True
 ) -> FieldArray:
     r"""

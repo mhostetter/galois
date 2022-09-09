@@ -3,7 +3,7 @@ A module containing classes and functions for generating and analyzing linear fe
 """
 from __future__ import annotations
 
-from typing import Optional, Type, overload
+from typing import Type, overload
 from typing_extensions import Literal
 
 import numba
@@ -31,7 +31,7 @@ class _LFSR:
     def __init__(
         self,
         feedback_poly: Poly,
-        state: Optional[ArrayLike] = None,
+        state: ArrayLike | None = None,
     ):
         verify_isinstance(feedback_poly, Poly)
         if not feedback_poly.coeffs[-1] == 1:
@@ -58,7 +58,7 @@ class _LFSR:
         self._state = self.initial_state.copy()
 
     @classmethod
-    def Taps(cls, taps: FieldArray, state: Optional[ArrayLike] = None) -> _LFSR:
+    def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> _LFSR:
         verify_isinstance(taps, FieldArray)
 
         if cls._type == "fibonacci":
@@ -87,7 +87,7 @@ class _LFSR:
 
         return state
 
-    def reset(self, state: Optional[ArrayLike] = None):
+    def reset(self, state: ArrayLike | None = None):
         state = self.initial_state if state is None else state
         self._state = self._verify_and_convert_state(state)
 
@@ -296,7 +296,7 @@ class FLFSR(_LFSR):
     def __init__(
         self,
         feedback_poly: Poly,
-        state: Optional[ArrayLike] = None,
+        state: ArrayLike | None = None,
     ):
         r"""
         Constructs a Fibonacci LFSR from its feedback polynomial :math:`f(x)`.
@@ -321,7 +321,7 @@ class FLFSR(_LFSR):
         super().__init__(feedback_poly, state=state)
 
     @classmethod
-    def Taps(cls, taps: FieldArray, state: Optional[ArrayLike] = None) -> FLFSR:
+    def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> FLFSR:
         r"""
         Constructs a Fibonacci LFSR from its taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
 
@@ -386,7 +386,7 @@ class FLFSR(_LFSR):
 
         return string
 
-    def reset(self, state: Optional[ArrayLike] = None):
+    def reset(self, state: ArrayLike | None = None):
         r"""
         Resets the Fibonacci LFSR state to the specified state.
 
@@ -962,7 +962,7 @@ class GLFSR(_LFSR):
     def __init__(
         self,
         feedback_poly: Poly,
-        state: Optional[ArrayLike] = None,
+        state: ArrayLike | None = None,
     ):
         r"""
         Constructs a Galois LFSR from its feedback polynomial :math:`f(x)`.
@@ -987,7 +987,7 @@ class GLFSR(_LFSR):
         super().__init__(feedback_poly, state=state)
 
     @classmethod
-    def Taps(cls, taps: FieldArray, state: Optional[ArrayLike] = None) -> GLFSR:
+    def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> GLFSR:
         r"""
         Constructs a Galois LFSR from its taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
 
@@ -1052,7 +1052,7 @@ class GLFSR(_LFSR):
 
         return string
 
-    def reset(self, state: Optional[ArrayLike] = None):
+    def reset(self, state: ArrayLike | None = None):
         r"""
         Resets the Galois LFSR state to the specified state.
 
