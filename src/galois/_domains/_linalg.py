@@ -4,7 +4,7 @@ in NumPy are also included.
 """
 from __future__ import annotations
 
-from typing import Tuple, Type, TYPE_CHECKING
+from typing import Type, TYPE_CHECKING
 
 import numba
 from numba import int64
@@ -245,7 +245,7 @@ class row_reduce_jit(Function):
     Converts the matrix into its row-reduced echelon form using Gaussian elimination.
     """
 
-    def __call__(self, A: Array, ncols: int | None = None) -> Tuple[Array, int]:
+    def __call__(self, A: Array, ncols: int | None = None) -> tuple[Array, int]:
         verify_isinstance(A, self.field)
         if not A.ndim == 2:
             raise ValueError(f"Only 2-D matrices can be converted to reduced row echelon form, not {A.ndim}-D.")
@@ -284,7 +284,7 @@ class lu_decompose_jit(Function):
     Decomposes the matrix into its LU decomposition.
     """
 
-    def __call__(self, A: Array) -> Tuple[Array, Array]:
+    def __call__(self, A: Array) -> tuple[Array, Array]:
         verify_isinstance(A, self.field)
         if not A.ndim == 2:
             raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")
@@ -316,7 +316,7 @@ class plu_decompose_jit(Function):
     Decomposes the matrix into its PLU decomposition.
     """
 
-    def __call__(self, A: Array) -> Tuple[Array, Array, Array, int]:
+    def __call__(self, A: Array) -> tuple[Array, Array, Array, int]:
         verify_isinstance(A, self.field)
         if not A.ndim == 2:
             raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")

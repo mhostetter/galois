@@ -4,7 +4,7 @@ A module containing arbitrary Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(2).
 from __future__ import annotations
 
 import math
-from typing import Tuple, List, Type, overload
+from typing import List, Type, overload
 from typing_extensions import Literal
 
 import numba
@@ -54,7 +54,7 @@ def _check_and_compute_field(
 
 
 @export
-def bch_valid_codes(n: int, t_min: int = 1) -> List[Tuple[int, int, int]]:
+def bch_valid_codes(n: int, t_min: int = 1) -> List[tuple[int, int, int]]:
     r"""
     Returns a list of :math:`(n, k, t)` tuples of valid primitive binary BCH codes.
 
@@ -577,7 +577,7 @@ class BCH:
     def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> GF2:
         ...
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[GF2, np.integer | np.ndarray]:
+    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> tuple[GF2, np.integer | np.ndarray]:
         ...
     def decode(self, codeword, errors=False):
         r"""

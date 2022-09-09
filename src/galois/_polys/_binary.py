@@ -3,8 +3,6 @@ A module containing polynomial arithmetic for polynomials over GF(2).
 """
 from __future__ import annotations
 
-from typing import Tuple
-
 
 def add(a: int, b: int) -> int:
     """
@@ -47,7 +45,7 @@ def multiply(a: int, b: int) -> int:
     return c
 
 
-def divmod(a: int, b: int) -> Tuple[int, int]:  # pylint: disable=redefined-builtin
+def divmod(a: int, b: int) -> tuple[int, int]:  # pylint: disable=redefined-builtin
     """
     a(x) = q(x)*b(x) + r(x)
     """

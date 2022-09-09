@@ -3,7 +3,6 @@ A module that defines the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-from typing import Tuple
 from typing_extensions import Literal
 
 import numpy as np
@@ -1023,7 +1022,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         A_rre, _ = _linalg.row_reduce_jit(type(self))(self, ncols=ncols)
         return A_rre
 
-    def lu_decompose(self) -> Tuple[FieldArray, FieldArray]:
+    def lu_decompose(self) -> tuple[FieldArray, FieldArray]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices.
 
@@ -1055,7 +1054,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         L, U = _linalg.lu_decompose_jit(field)(A)
         return L, U
 
-    def plu_decompose(self) -> Tuple[FieldArray, FieldArray, FieldArray]:
+    def plu_decompose(self) -> tuple[FieldArray, FieldArray, FieldArray]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
 

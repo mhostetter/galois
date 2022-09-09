@@ -1,7 +1,9 @@
 """
 A module that contains polymorphic math functions that work on integers and polynomials.
 """
-from typing import Tuple, List, Sequence, overload
+from __future__ import annotations
+
+from typing import List, Sequence, overload
 
 import numpy as np
 
@@ -99,10 +101,10 @@ def gcd(a, b):
 
 
 @overload
-def egcd(a: int, b: int) -> Tuple[int, int, int]:
+def egcd(a: int, b: int) -> tuple[int, int, int]:
     ...
 @overload
-def egcd(a: Poly, b: Poly) -> Tuple[Poly, Poly, Poly]:
+def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
     ...
 @export
 def egcd(a, b):
@@ -532,10 +534,10 @@ def crt(remainders, moduli):
 ###############################################################################
 
 @overload
-def factors(value: int) -> Tuple[List[int], List[int]]:
+def factors(value: int) -> tuple[List[int], List[int]]:
     ...
 @overload
-def factors(value: Poly) -> Tuple[List[Poly], List[int]]:
+def factors(value: Poly) -> tuple[List[Poly], List[int]]:
     ...
 @export
 def factors(value):

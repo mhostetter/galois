@@ -1,9 +1,10 @@
 """
 A module containing math and arithmetic routines on integers. Some of these functions are polymorphic and wrapped in `_polymorphic.py`.
 """
+from __future__ import annotations
+
 import math
 import sys
-from typing import Tuple
 
 from ._helper import export, verify_isinstance
 
@@ -19,7 +20,7 @@ def gcd(a: int, b: int) -> int:
     return math.gcd(a, b)
 
 
-def egcd(a: int, b: int) -> Tuple[int, int, int]:
+def egcd(a: int, b: int) -> tuple[int, int, int]:
     """
     This function is wrapped and documented in `_polymorphic.egcd()`.
     """

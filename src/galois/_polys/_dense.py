@@ -3,8 +3,6 @@ A module containing polynomial arithmetic for polynomials with dense coefficient
 """
 from __future__ import annotations
 
-from typing import Tuple
-
 import numba
 from numba import int64, uint64
 import numpy as np
@@ -70,7 +68,7 @@ class divmod_jit(Function):
     Algorithm:
         a(x) = q(x)*b(x) + r(x)
     """
-    def __call__(self, a: Array, b: Array) -> Tuple[Array, Array]:
+    def __call__(self, a: Array, b: Array) -> tuple[Array, Array]:
         verify_isinstance(a, self.field)
         verify_isinstance(b, self.field)
 

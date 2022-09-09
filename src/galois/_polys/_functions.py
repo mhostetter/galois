@@ -1,7 +1,7 @@
 """
 A module with functions for polynomials over Galois fields.
 """
-from typing import Tuple
+from __future__ import annotations
 
 import numpy as np
 
@@ -34,7 +34,7 @@ def gcd(a: Poly, b: Poly) -> Poly:
     return r2
 
 
-def egcd(a: Poly, b: Poly) -> Tuple[Poly, Poly, Poly]:
+def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
     """
     This function is wrapped and documented in `_polymorphic.egcd()`.
     """

@@ -3,7 +3,7 @@ A module that contains various functions to convert between polynomial strings, 
 """
 from __future__ import annotations
 
-from typing import Tuple, List
+from typing import List
 
 import numpy as np
 
@@ -129,7 +129,7 @@ def sparse_poly_to_str(degrees: List[int], coeffs: List[int], poly_var: str = "x
     return " + ".join(x) if x else "0"
 
 
-def str_to_sparse_poly(poly_str: str) -> Tuple[List[int], List[int]]:
+def str_to_sparse_poly(poly_str: str) -> tuple[List[int], List[int]]:
     """
     Converts the polynomial string into its non-zero degrees and coefficients.
     """
