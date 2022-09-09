@@ -3,7 +3,7 @@ A module containing arbitrary Reed-Solomon (RS) codes.
 """
 from __future__ import annotations
 
-from typing import Tuple, Optional, Type, overload
+from typing import Tuple, Type, overload
 from typing_extensions import Literal
 
 import numba
@@ -74,8 +74,8 @@ class ReedSolomon:
         n: int,
         k: int,
         c: int = 1,
-        primitive_poly: Optional[PolyLike] = None,
-        primitive_element: Optional[PolyLike] = None,
+        primitive_poly: PolyLike | None = None,
+        primitive_element: PolyLike | None = None,
         systematic: bool = True
     ):
         r"""

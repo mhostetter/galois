@@ -1,9 +1,11 @@
 """
 A module containing functions to generate and test irreducible polynomials.
 """
+from __future__ import annotations
+
 import functools
 import random
-from typing import Iterator, Optional
+from typing import Iterator
 from typing_extensions import Literal
 
 from .._domains import _factory
@@ -175,7 +177,7 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
 
 
 @functools.lru_cache(maxsize=4096)
-def _deterministic_search(field, start, stop, step) -> Optional[Poly]:
+def _deterministic_search(field, start, stop, step) -> Poly | None:
     """
     Searches for an irreducible polynomial in the range using the specified deterministic method.
     """

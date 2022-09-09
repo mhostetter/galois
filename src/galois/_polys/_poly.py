@@ -3,7 +3,7 @@ A module containing a class for univariate polynomials over finite fields.
 """
 from __future__ import annotations
 
-from typing import Tuple, List, Sequence, Optional, Type, overload
+from typing import Tuple, List, Sequence, Type, overload
 from typing_extensions import Literal
 
 import numpy as np
@@ -69,7 +69,7 @@ class Poly:
     # Increase my array priority so numpy will call my __radd__ instead of its own __add__
     __array_priority__ = 100
 
-    def __init__(self, coeffs: ArrayLike, field: Optional[Type[Array]] = None, order: Literal["desc", "asc"] = "desc"):
+    def __init__(self, coeffs: ArrayLike, field: Type[Array] | None = None, order: Literal["desc", "asc"] = "desc"):
         r"""
         Creates a polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
@@ -122,7 +122,7 @@ class Poly:
             self._type = "dense"
 
     @classmethod
-    def _PolyLike(cls, poly_like: PolyLike, field: Optional[Type[Array]] = None) -> Poly:
+    def _PolyLike(cls, poly_like: PolyLike, field: Type[Array] | None = None) -> Poly:
         """
         A private alternate constructor that converts a poly-like object into a polynomial, given a finite field.
         """
@@ -144,7 +144,7 @@ class Poly:
     ###############################################################################
 
     @classmethod
-    def Zero(cls, field: Optional[Type[Array]] = None) -> Poly:
+    def Zero(cls, field: Type[Array] | None = None) -> Poly:
         r"""
         Constructs the polynomial :math:`f(x) = 0` over :math:`\mathrm{GF}(p^m)`.
 
@@ -176,7 +176,7 @@ class Poly:
         return Poly([0], field=field)
 
     @classmethod
-    def One(cls, field: Optional[Type[Array]] = None) -> Poly:
+    def One(cls, field: Type[Array] | None = None) -> Poly:
         r"""
         Constructs the polynomial :math:`f(x) = 1` over :math:`\mathrm{GF}(p^m)`.
 
@@ -208,7 +208,7 @@ class Poly:
         return Poly([1], field=field)
 
     @classmethod
-    def Identity(cls, field: Optional[Type[Array]] = None) -> Poly:
+    def Identity(cls, field: Type[Array] | None = None) -> Poly:
         r"""
         Constructs the polynomial :math:`f(x) = x` over :math:`\mathrm{GF}(p^m)`.
 
@@ -240,7 +240,7 @@ class Poly:
         return Poly([1, 0], field=field)
 
     @classmethod
-    def Random(cls, degree: int, seed: Optional[int | np.integer | np.random.Generator] = None, field: Optional[Type[Array]] = None) -> Poly:
+    def Random(cls, degree: int, seed: int | np.integer | np.random.Generator | None = None, field: Type[Array] | None = None) -> Poly:
         r"""
         Constructs a random polynomial over :math:`\mathrm{GF}(p^m)` with degree :math:`d`.
 
@@ -302,7 +302,7 @@ class Poly:
         return Poly(coeffs)
 
     @classmethod
-    def Str(cls, string: str, field: Optional[Type[Array]] = None) -> Poly:
+    def Str(cls, string: str, field: Type[Array] | None = None) -> Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its string representation.
 
@@ -356,7 +356,7 @@ class Poly:
         return Poly.Degrees(degrees, coeffs, field=field)
 
     @classmethod
-    def Int(cls, integer: int, field: Optional[Type[Array]] = None) -> Poly:
+    def Int(cls, integer: int, field: Type[Array] | None = None) -> Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its integer representation.
 
@@ -438,8 +438,8 @@ class Poly:
     def Degrees(
         cls,
         degrees: Sequence[int] | np.ndarray,
-        coeffs: Optional[ArrayLike] = None,
-        field: Optional[Type[Array]] = None
+        coeffs: ArrayLike | None = None,
+        field: Type[Array] | None = None
     ) -> Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its non-zero degrees.
@@ -529,8 +529,8 @@ class Poly:
     def Roots(
         cls,
         roots: ArrayLike,
-        multiplicities: Optional[Sequence[int] | np.ndarray] = None,
-        field: Optional[Type[Array]] = None
+        multiplicities: Sequence[int] | np.ndarray | None = None,
+        field: Type[Array] | None = None
     ) -> Poly:
         r"""
         Constructs a monic polynomial over :math:`\mathrm{GF}(p^m)` from its roots.
@@ -610,7 +610,7 @@ class Poly:
 
     def coefficients(
         self,
-        size: Optional[int] = None,
+        size: int | None = None,
         order: Literal["desc", "asc"] = "desc"
     ) -> Array:
         """
@@ -1567,7 +1567,7 @@ class Poly:
         return hash(t)
 
     @overload
-    def __call__(self, at: ElementLike | ArrayLike, field: Optional[Type[Array]] = None, elementwise: bool = True) -> Array:
+    def __call__(self, at: ElementLike | ArrayLike, field: Type[Array] | None = None, elementwise: bool = True) -> Array:
         ...
     @overload
     def __call__(self, at: Poly) -> Poly:
@@ -1959,7 +1959,7 @@ class Poly:
             r = _dense.mod_jit(self.field)(a, b)
             return Poly(r, field=self.field)
 
-    def __pow__(self, exponent: int, modulus: Optional[Poly] = None) -> Poly:
+    def __pow__(self, exponent: int, modulus: Poly | None = None) -> Poly:
         _check_input_is_poly_or_none(modulus, self.field)
         types = [getattr(self, "_type", None), getattr(modulus, "_type", None)]
 
@@ -2139,7 +2139,7 @@ class Poly:
         return self.nonzero_coeffs[0] == 1
 
 
-def _convert_coeffs(coeffs: ArrayLike, field: Optional[Type[Array]] = None) -> Tuple[Array, Type[Array]]:
+def _convert_coeffs(coeffs: ArrayLike, field: Type[Array] | None = None) -> Tuple[Array, Type[Array]]:
     """
     Converts the coefficient-like input into a Galois field array based on the `field` keyword argument.
     """
@@ -2245,7 +2245,7 @@ def _check_input_is_poly_or_int(a: Poly | Array | int, field: Type[Array]):
     _check_input_is_poly(a, field)
 
 
-def _check_input_is_poly_or_none(a: Optional[Poly | Array], field: Type[Array]):
+def _check_input_is_poly_or_none(a: Poly | Array | None, field: Type[Array]):
     """
     Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or None.
     """

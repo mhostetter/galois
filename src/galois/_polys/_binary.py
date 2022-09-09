@@ -1,7 +1,9 @@
 """
 A module containing polynomial arithmetic for polynomials over GF(2).
 """
-from typing import Tuple, Optional
+from __future__ import annotations
+
+from typing import Tuple
 
 
 def add(a: int, b: int) -> int:
@@ -87,7 +89,7 @@ def mod(a: int, b: int) -> int:
     return divmod(a, b)[1]
 
 
-def pow(a: int, b: int, c: Optional[int] = None) -> int:  # pylint: disable=redefined-builtin
+def pow(a: int, b: int, c: int | None = None) -> int:  # pylint: disable=redefined-builtin
     """
     d(x) = a(x)^b % c(x)
     """

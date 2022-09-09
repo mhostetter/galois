@@ -1,7 +1,9 @@
 """
 A module containing polynomial arithmetic for polynomials with dense coefficients.
 """
-from typing import Tuple, Optional
+from __future__ import annotations
+
+from typing import Tuple
 
 import numba
 from numba import int64, uint64
@@ -265,7 +267,7 @@ class pow_jit(Function):
     Algorithm:
         d(x) = a(x)^b % c(x)
     """
-    def __call__(self, a: Array, b: int, c: Optional[Array] = None) -> Array:
+    def __call__(self, a: Array, b: int, c: Array | None = None) -> Array:
         verify_isinstance(a, self.field)
         verify_isinstance(b, int)
         verify_isinstance(c, self.field, optional=True)

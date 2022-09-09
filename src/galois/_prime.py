@@ -1,12 +1,14 @@
 """
 A module containing routines for prime number generation, prime factorization, and primality testing.
 """
+from __future__ import annotations
+
 import bisect
 import functools
 import itertools
 import math
 import random
-from typing import Tuple, List, Optional
+from typing import Tuple, List
 
 import numpy as np
 
@@ -237,7 +239,7 @@ def next_prime(n: int) -> int:
 
 
 @export
-def random_prime(bits: int, seed: Optional[int] = None) -> int:
+def random_prime(bits: int, seed: int | None = None) -> int:
     r"""
     Returns a random prime :math:`p` with :math:`b` bits, such that :math:`2^b \le p < 2^{b+1}`.
 
@@ -301,7 +303,7 @@ MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3
 
 
 @export
-def mersenne_exponents(n: Optional[int] = None) -> List[int]:
+def mersenne_exponents(n: int | None = None) -> List[int]:
     r"""
     Returns all known Mersenne exponents :math:`e` for :math:`e \le n`.
 
@@ -349,7 +351,7 @@ def mersenne_exponents(n: Optional[int] = None) -> List[int]:
 
 
 @export
-def mersenne_primes(n: Optional[int] = None) -> List[int]:
+def mersenne_primes(n: int | None = None) -> List[int]:
     r"""
     Returns all known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
 
@@ -391,7 +393,7 @@ def mersenne_primes(n: Optional[int] = None) -> List[int]:
 ###############################################################################
 
 @export
-def fermat_primality_test(n: int, a: Optional[int] = None, rounds: int = 1) -> bool:
+def fermat_primality_test(n: int, a: int | None = None, rounds: int = 1) -> bool:
     r"""
     Determines if :math:`n` is composite using Fermat's primality test.
 
@@ -978,7 +980,7 @@ def _perfect_power(n: int) -> Tuple[int, int]:
 
 
 @export
-def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int], int]:
+def trial_division(n: int, B: int | None = None) -> Tuple[List[int], List[int], int]:
     r"""
     Finds all the prime factors :math:`p_i^{e_i}` of :math:`n` for :math:`p_i \le B`.
 
@@ -1046,7 +1048,7 @@ def trial_division(n: int, B: Optional[int] = None) -> Tuple[List[int], List[int
 
 
 @export
-def pollard_p1(n: int, B: int, B2: Optional[int] = None) -> int:
+def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
     r"""
     Attempts to find a non-trivial factor of :math:`n` if it has a prime factor :math:`p` such that
     :math:`p-1` is :math:`B`-smooth.

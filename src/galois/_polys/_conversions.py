@@ -1,7 +1,9 @@
 """
 A module that contains various functions to convert between polynomial strings, coefficients, and integer representations.
 """
-from typing import Tuple, List, Optional
+from __future__ import annotations
+
+from typing import Tuple, List
 
 import numpy as np
 
@@ -19,7 +21,7 @@ def integer_to_degree(integer: int, order: int) -> int:
         return ilog(integer, order)
 
 
-def integer_to_poly(integer: int, order: int, degree: Optional[int] = None) -> List[int]:
+def integer_to_poly(integer: int, order: int, degree: int | None = None) -> List[int]:
     """
     Converts the integer representation of the polynomial to its coefficients in descending order.
     """

@@ -3,7 +3,7 @@ A module that defines the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-from typing import Tuple, Optional
+from typing import Tuple
 from typing_extensions import Literal
 
 import numpy as np
@@ -56,7 +56,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     def __new__(
         cls,
         x: ElementLike | ArrayLike,
-        dtype: Optional[DTypeLike] = None,
+        dtype: DTypeLike | None = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
@@ -68,7 +68,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     def __init__(
         self,
         x: ElementLike | ArrayLike,
-        dtype: Optional[DTypeLike] = None,
+        dtype: DTypeLike | None = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
@@ -195,7 +195,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.Zeros((2, 5))
         """
     )
-    def Zeros(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def Zeros(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> FieldArray:
         return super().Zeros(shape, dtype=dtype)
 
     @classmethod
@@ -209,7 +209,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.Ones((2, 5))
         """
     )
-    def Ones(cls, shape: ShapeLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def Ones(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> FieldArray:
         return super().Ones(shape, dtype=dtype)
 
     @classmethod
@@ -241,7 +241,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         start: ElementLike,
         stop: ElementLike,
         step: int = 1,
-        dtype: Optional[DTypeLike] = None
+        dtype: DTypeLike | None = None
     ) -> FieldArray:
         return super().Range(start, stop, step=step, dtype=dtype)
 
@@ -277,9 +277,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         cls,
         shape: ShapeLike = (),
         low: ElementLike = 0,
-        high: Optional[ElementLike] = None,
-        seed: Optional[int | np.random.Generator] = None,
-        dtype: Optional[DTypeLike] = None
+        high: ElementLike | None = None,
+        seed: int | np.random.Generator | None = None,
+        dtype: DTypeLike | None = None
     ) -> FieldArray:
         return super().Random(shape=shape, low=low, high=high, seed=seed, dtype=dtype)
 
@@ -294,11 +294,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.Identity(4)
         """
     )
-    def Identity(cls, size: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def Identity(cls, size: int, dtype: DTypeLike | None = None) -> FieldArray:
         return super().Identity(size, dtype=dtype)
 
     @classmethod
-    def Vandermonde(cls, element: ElementLike, rows: int, cols: int, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def Vandermonde(cls, element: ElementLike, rows: int, cols: int, dtype: DTypeLike | None = None) -> FieldArray:
         r"""
         Creates an :math:`m \times n` Vandermonde matrix of :math:`a \in \mathrm{GF}(q)`.
 
@@ -348,7 +348,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return V
 
     @classmethod
-    def Vector(cls, array: ArrayLike, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def Vector(cls, array: ArrayLike, dtype: DTypeLike | None = None) -> FieldArray:
         r"""
         Creates an array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
@@ -402,7 +402,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     ###############################################################################
 
     @classmethod
-    def repr_table(cls, element: Optional[ElementLike] = None, sort: Literal["power", "poly", "vector", "int"] = "power") -> str:
+    def repr_table(cls, element: ElementLike | None = None, sort: Literal["power", "poly", "vector", "int"] = "power") -> str:
         r"""
         Generates a finite field element representation table comparing the power, polynomial, vector, and integer representations.
 
@@ -497,8 +497,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     def arithmetic_table(
         cls,
         operation: Literal["+", "-", "*", "/"],
-        x: Optional[FieldArray] = None,
-        y: Optional[FieldArray] = None
+        x: FieldArray | None = None,
+        y: FieldArray | None = None
     ) -> str:
         r"""
         Generates the specified arithmetic table for the finite field.
@@ -927,7 +927,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             # Compute the Legendre symbol on each element
             return x ** ((field.order - 1)//2) != field.characteristic - 1
 
-    def vector(self, dtype: Optional[DTypeLike] = None) -> FieldArray:
+    def vector(self, dtype: DTypeLike | None = None) -> FieldArray:
         r"""
         Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
 
@@ -979,7 +979,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return y
 
-    def row_reduce(self, ncols: Optional[int] = None) -> FieldArray:
+    def row_reduce(self, ncols: int | None = None) -> FieldArray:
         r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form (RREF).
 
@@ -1501,7 +1501,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         else:
             raise ValueError(f"The array must be either 0-D to return the minimal polynomial of a single element or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}.")
 
-    def log(self, base: Optional[ElementLike | ArrayLike] = None) -> np.ndarray:
+    def log(self, base: ElementLike | ArrayLike | None = None) -> np.ndarray:
         r"""
         Computes the logarithm of the array :math:`x` base :math:`\beta`.
 

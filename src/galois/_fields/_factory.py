@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import sys
 import types
-from typing import Optional, Type
+from typing import Type
 from typing_extensions import Literal
 
 from .._helper import export, verify_isinstance
@@ -23,11 +23,11 @@ from ._ufunc import UFuncMixin_2_m, UFuncMixin_p_1, UFuncMixin_p_m
 @export
 def GF(
     order: int,
-    irreducible_poly: Optional[PolyLike] = None,
-    primitive_element: Optional[int | PolyLike] = None,  # pylint: disable=redefined-outer-name
+    irreducible_poly: PolyLike | None = None,
+    primitive_element: int | PolyLike | None = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
-    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
-    display: Optional[Literal["int", "poly", "power"]] = None
+    compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
+    display: Literal["int", "poly", "power"] | None = None
 ) -> Type[FieldArray]:
     r"""
     Creates a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
@@ -222,11 +222,11 @@ def GF(
 @export
 def Field(
     order: int,
-    irreducible_poly: Optional[PolyLike] = None,
-    primitive_element: Optional[int | PolyLike] = None,  # pylint: disable=redefined-outer-name
+    irreducible_poly: PolyLike | None = None,
+    primitive_element: int | PolyLike | None = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
-    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
-    display: Optional[Literal["int", "poly", "power"]] = None
+    compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
+    display: Literal["int", "poly", "power"] | None = None
 ) -> Type[FieldArray]:
     """
     Alias of :func:`~galois.GF`.
@@ -238,10 +238,10 @@ def Field(
 
 def _GF_prime(
     p: int,
-    alpha: Optional[int] = None,
+    alpha: int | None = None,
     verify: bool = True,
-    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
-    display: Optional[Literal["int", "poly", "power"]] = None
+    compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
+    display: Literal["int", "poly", "power"] | None = None
 ) -> Type[FieldArray]:
     """
     Class factory for prime fields GF(p).
@@ -302,11 +302,11 @@ _GF_prime._classes = {}
 def _GF_extension(
     p: int,
     m: int,
-    irreducible_poly_: Optional[PolyLike] = None,
-    alpha: Optional[PolyLike] = None,
+    irreducible_poly_: PolyLike | None = None,
+    alpha: PolyLike | None = None,
     verify: bool = True,
-    compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
-    display: Optional[Literal["int", "poly", "power"]] = None
+    compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
+    display: Literal["int", "poly", "power"] | None = None
 ) -> Type[FieldArray]:
     """
     Class factory for extension fields GF(p^m).
