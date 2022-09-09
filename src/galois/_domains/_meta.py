@@ -4,7 +4,6 @@ A module that defines the metaclass for the abstract base class Array.
 from __future__ import annotations
 
 import abc
-import contextlib
 import inspect
 from typing import List, TYPE_CHECKING
 from typing_extensions import Literal
@@ -92,29 +91,6 @@ class ArrayMeta(abc.ABCMeta):
     def _assign_ufuncs(cls):
         # This will be implemented in UFuncMixin and its children
         return
-
-    ###############################################################################
-    # View methods
-    ###############################################################################
-
-    def _view(cls, array: np.ndarray) -> Array:
-        """
-        View the input array to the Array subclass `A` using the `_view_without_verification()` context manager. This disables
-        bounds checking on the array elements. Instead of `x.view(A)` use `A._view(x)`. For internal library use only.
-        """
-        with cls._view_without_verification():
-            array = array.view(cls)
-        return array
-
-    @contextlib.contextmanager
-    def _view_without_verification(cls):
-        """
-        A context manager to disable verifying array element values are within [0, order). For internal library use only.
-        """
-        prev_value = cls._verify_on_view
-        cls._verify_on_view = False
-        yield
-        cls._verify_on_view = prev_value
 
     ###############################################################################
     # Class properties
