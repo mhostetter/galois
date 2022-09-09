@@ -3,7 +3,7 @@ A module that defines the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-from typing_extensions import Literal
+from typing_extensions import Self, Literal
 
 import numpy as np
 
@@ -59,7 +59,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0
-    ) -> FieldArray:
+    ) -> Self:
         if cls is FieldArray:
             raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
         return super().__new__(cls, x, dtype, copy, order, ndmin)
@@ -194,7 +194,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.Zeros((2, 5))
         """
     )
-    def Zeros(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> FieldArray:
+    def Zeros(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Self:
         return super().Zeros(shape, dtype=dtype)
 
     @classmethod
@@ -208,7 +208,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.Ones((2, 5))
         """
     )
-    def Ones(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> FieldArray:
+    def Ones(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Self:
         return super().Ones(shape, dtype=dtype)
 
     @classmethod
@@ -241,7 +241,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         stop: ElementLike,
         step: int = 1,
         dtype: DTypeLike | None = None
-    ) -> FieldArray:
+    ) -> Self:
         return super().Range(start, stop, step=step, dtype=dtype)
 
     @classmethod
@@ -279,7 +279,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         high: ElementLike | None = None,
         seed: int | np.random.Generator | None = None,
         dtype: DTypeLike | None = None
-    ) -> FieldArray:
+    ) -> Self:
         return super().Random(shape=shape, low=low, high=high, seed=seed, dtype=dtype)
 
     @classmethod
@@ -293,11 +293,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.Identity(4)
         """
     )
-    def Identity(cls, size: int, dtype: DTypeLike | None = None) -> FieldArray:
+    def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
         return super().Identity(size, dtype=dtype)
 
     @classmethod
-    def Vandermonde(cls, element: ElementLike, rows: int, cols: int, dtype: DTypeLike | None = None) -> FieldArray:
+    def Vandermonde(cls, element: ElementLike, rows: int, cols: int, dtype: DTypeLike | None = None) -> Self:
         r"""
         Creates an :math:`m \times n` Vandermonde matrix of :math:`a \in \mathrm{GF}(q)`.
 
@@ -629,7 +629,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return string
 
     @classmethod
-    def primitive_root_of_unity(cls, n: int) -> FieldArray:
+    def primitive_root_of_unity(cls, n: int) -> Self:
         r"""
         Finds a primitive :math:`n`-th root of unity in the finite field.
 
@@ -693,7 +693,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return cls.primitive_element ** ((cls.order - 1) // n)
 
     @classmethod
-    def primitive_roots_of_unity(cls, n: int) -> FieldArray:
+    def primitive_roots_of_unity(cls, n: int) -> Self:
         r"""
         Finds all primitive :math:`n`-th roots of unity in the finite field.
 
@@ -978,7 +978,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return y
 
-    def row_reduce(self, ncols: int | None = None) -> FieldArray:
+    def row_reduce(self, ncols: int | None = None) -> Self:
         r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form (RREF).
 
@@ -1022,7 +1022,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         A_rre, _ = _linalg.row_reduce_jit(type(self))(self, ncols=ncols)
         return A_rre
 
-    def lu_decompose(self) -> tuple[FieldArray, FieldArray]:
+    def lu_decompose(self) -> tuple[Self, Self]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices.
 
@@ -1054,7 +1054,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         L, U = _linalg.lu_decompose_jit(field)(A)
         return L, U
 
-    def plu_decompose(self) -> tuple[FieldArray, FieldArray, FieldArray]:
+    def plu_decompose(self) -> tuple[Self, Self, Self]:
         r"""
         Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.
 
@@ -1090,7 +1090,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         P, L, U, _ = _linalg.plu_decompose_jit(field)(A)
         return P, L, U
 
-    def row_space(self) -> FieldArray:
+    def row_space(self) -> Self:
         r"""
         Computes the row space of the matrix :math:`\mathbf{A}`.
 
@@ -1137,7 +1137,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return R
 
-    def column_space(self) -> FieldArray:
+    def column_space(self) -> Self:
         r"""
         Computes the column space of the matrix :math:`\mathbf{A}`.
 
@@ -1180,7 +1180,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return (A.T).row_space()  # pylint: disable=no-member
 
-    def left_null_space(self) -> FieldArray:
+    def left_null_space(self) -> Self:
         r"""
         Computes the left null space of the matrix :math:`\mathbf{A}`.
 
@@ -1243,7 +1243,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return LN
 
-    def null_space(self) -> FieldArray:
+    def null_space(self) -> Self:
         r"""
         Computes the null space of the matrix :math:`\mathbf{A}`.
 
@@ -1500,7 +1500,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         else:
             raise ValueError(f"The array must be either 0-D to return the minimal polynomial of a single element or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}.")
 
-    def log(self, base: ElementLike | ArrayLike | None = None) -> np.ndarray:
+    def log(self, base: ElementLike | ArrayLike | None = None) -> np.integer | np.ndarray:
         r"""
         Computes the logarithm of the array :math:`x` base :math:`\beta`.
 
@@ -1719,7 +1719,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return formatter
 
     @classmethod
-    def _print_int(cls, element):
+    def _print_int(cls, element: Self) -> str:
         """
         Prints a single element in the integer representation. This is only needed for dtype=object arrays.
         """
@@ -1733,7 +1733,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return s
 
     @classmethod
-    def _print_poly(cls, element):
+    def _print_poly(cls, element: Self) -> str:
         """
         Prints a single element in the polynomial representation.
         """
@@ -1749,7 +1749,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return s
 
     @classmethod
-    def _print_power(cls, element):
+    def _print_power(cls, element: Self) -> str:
         """
         Prints a single element in the power representation.
         """
