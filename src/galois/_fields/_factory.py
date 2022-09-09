@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import sys
 import types
-from typing import Union, Optional, Type
+from typing import Optional, Type
 from typing_extensions import Literal
 
 from .._helper import export, verify_isinstance
@@ -24,7 +24,7 @@ from ._ufunc import UFuncMixin_2_m, UFuncMixin_p_1, UFuncMixin_p_m
 def GF(
     order: int,
     irreducible_poly: Optional[PolyLike] = None,
-    primitive_element: Optional[Union[int, PolyLike]] = None,  # pylint: disable=redefined-outer-name
+    primitive_element: Optional[int | PolyLike] = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
     compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
     display: Optional[Literal["int", "poly", "power"]] = None
@@ -223,7 +223,7 @@ def GF(
 def Field(
     order: int,
     irreducible_poly: Optional[PolyLike] = None,
-    primitive_element: Optional[Union[int, PolyLike]] = None,  # pylint: disable=redefined-outer-name
+    primitive_element: Optional[int | PolyLike] = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
     compile: Optional[Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]] = None,  # pylint: disable=redefined-builtin
     display: Optional[Literal["int", "poly", "power"]] = None

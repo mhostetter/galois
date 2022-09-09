@@ -3,7 +3,7 @@ A module containing arbitrary Reed-Solomon (RS) codes.
 """
 from __future__ import annotations
 
-from typing import Tuple, Optional, Union, Type, overload
+from typing import Tuple, Optional, Type, overload
 from typing_extensions import Literal
 
 import numba
@@ -307,7 +307,7 @@ class ReedSolomon:
             codeword = message @ self.G
             return codeword
 
-    def detect(self, codeword: ArrayLike) -> Union[np.bool_, np.ndarray]:
+    def detect(self, codeword: ArrayLike) -> np.bool_ | np.ndarray:
         r"""
         Detects if errors are present in the Reed-Solomon codeword :math:`\mathbf{c}`.
 
@@ -466,7 +466,7 @@ class ReedSolomon:
     def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> FieldArray:
         ...
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[FieldArray, Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[FieldArray, np.integer | np.ndarray]:
         ...
     def decode(self, codeword, errors=False):
         r"""

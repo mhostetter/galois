@@ -4,7 +4,7 @@ A module containing arbitrary Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(2).
 from __future__ import annotations
 
 import math
-from typing import Tuple, List, Optional, Union, Type, overload
+from typing import Tuple, List, Optional, Type, overload
 from typing_extensions import Literal
 
 import numba
@@ -420,7 +420,7 @@ class BCH:
             codeword = message @ self.G
             return codeword
 
-    def detect(self, codeword: ArrayLike) -> Union[np.bool_, np.ndarray]:
+    def detect(self, codeword: ArrayLike) -> np.bool_ | np.ndarray:
         r"""
         Detects if errors are present in the BCH codeword :math:`\mathbf{c}`.
 
@@ -577,7 +577,7 @@ class BCH:
     def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> GF2:
         ...
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[GF2, Union[np.integer, np.ndarray]]:
+    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[GF2, np.integer | np.ndarray]:
         ...
     def decode(self, codeword, errors=False):
         r"""

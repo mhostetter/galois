@@ -3,7 +3,7 @@ A module containing a class for univariate polynomials over finite fields.
 """
 from __future__ import annotations
 
-from typing import Tuple, List, Sequence, Optional, Union, Type, overload
+from typing import Tuple, List, Sequence, Optional, Type, overload
 from typing_extensions import Literal
 
 import numpy as np
@@ -240,7 +240,7 @@ class Poly:
         return Poly([1, 0], field=field)
 
     @classmethod
-    def Random(cls, degree: int, seed: Optional[Union[int, np.integer, np.random.Generator]] = None, field: Optional[Type[Array]] = None) -> Poly:
+    def Random(cls, degree: int, seed: Optional[int | np.integer | np.random.Generator] = None, field: Optional[Type[Array]] = None) -> Poly:
         r"""
         Constructs a random polynomial over :math:`\mathrm{GF}(p^m)` with degree :math:`d`.
 
@@ -437,7 +437,7 @@ class Poly:
     @classmethod
     def Degrees(
         cls,
-        degrees: Union[Sequence[int], np.ndarray],
+        degrees: Sequence[int] | np.ndarray,
         coeffs: Optional[ArrayLike] = None,
         field: Optional[Type[Array]] = None
     ) -> Poly:
@@ -529,7 +529,7 @@ class Poly:
     def Roots(
         cls,
         roots: ArrayLike,
-        multiplicities: Optional[Union[Sequence[int], np.ndarray]] = None,
+        multiplicities: Optional[Sequence[int] | np.ndarray] = None,
         field: Optional[Type[Array]] = None
     ) -> Poly:
         r"""
@@ -1567,7 +1567,7 @@ class Poly:
         return hash(t)
 
     @overload
-    def __call__(self, at: Union[ElementLike, ArrayLike], field: Optional[Type[Array]] = None, elementwise: bool = True) -> Array:
+    def __call__(self, at: ElementLike | ArrayLike, field: Optional[Type[Array]] = None, elementwise: bool = True) -> Array:
         ...
     @overload
     def __call__(self, at: Poly) -> Poly:
@@ -1729,7 +1729,7 @@ class Poly:
     # Arithmetic
     ###############################################################################
 
-    def __add__(self, other: Union[Poly, Array]) -> Poly:
+    def __add__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1749,7 +1749,7 @@ class Poly:
             c = _dense.add(a, b)
             return Poly(c, field=self.field)
 
-    def __radd__(self, other: Union[Poly, Array]) -> Poly:
+    def __radd__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1783,7 +1783,7 @@ class Poly:
             c = _dense.negative(a)
             return Poly(c, field=self.field)
 
-    def __sub__(self, other: Union[Poly, Array]) -> Poly:
+    def __sub__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1803,7 +1803,7 @@ class Poly:
             c = _dense.subtract(a, b)
             return Poly(c, field=self.field)
 
-    def __rsub__(self, other: Union[Poly, Array]) -> Poly:
+    def __rsub__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1823,7 +1823,7 @@ class Poly:
             c = _dense.subtract(a, b)
             return Poly(c, field=self.field)
 
-    def __mul__(self, other: Union[Poly, Array, int]) -> Poly:
+    def __mul__(self, other: Poly | Array | int) -> Poly:
         _check_input_is_poly_or_int(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1843,7 +1843,7 @@ class Poly:
             c = _dense.multiply(a, b)
             return Poly(c, field=self.field)
 
-    def __rmul__(self, other: Union[Poly, Array, int]) -> Poly:
+    def __rmul__(self, other: Poly | Array | int) -> Poly:
         _check_input_is_poly_or_int(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1863,7 +1863,7 @@ class Poly:
             c = _dense.multiply(a, b)
             return Poly(c, field=self.field)
 
-    def __divmod__(self, other: Union[Poly, Array]) -> Tuple[Poly, Poly]:
+    def __divmod__(self, other: Poly | Array) -> Tuple[Poly, Poly]:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1878,7 +1878,7 @@ class Poly:
             q, r = _dense.divmod_jit(self.field)(a, b)
             return Poly(q, field=self.field), Poly(r, field=self.field)
 
-    def __rdivmod__(self, other: Union[Poly, Array]) -> Tuple[Poly, Poly]:
+    def __rdivmod__(self, other: Poly | Array) -> Tuple[Poly, Poly]:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1899,7 +1899,7 @@ class Poly:
     def __rtruediv__(self, other):
         raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
 
-    def __floordiv__(self, other: Union[Poly, Array]) -> Poly:
+    def __floordiv__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1914,7 +1914,7 @@ class Poly:
             q = _dense.floordiv_jit(self.field)(a, b)
             return Poly(q, field=self.field)
 
-    def __rfloordiv__(self, other: Union[Poly, Array]) -> Poly:
+    def __rfloordiv__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1929,7 +1929,7 @@ class Poly:
             q = _dense.floordiv_jit(self.field)(a, b)
             return Poly(q, field=self.field)
 
-    def __mod__(self, other: Union[Poly, Array]) -> Poly:
+    def __mod__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -1944,7 +1944,7 @@ class Poly:
             r = _dense.mod_jit(self.field)(a, b)
             return Poly(r, field=self.field)
 
-    def __rmod__(self, other: Union[Poly, Array]) -> Poly:
+    def __rmod__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
@@ -2219,7 +2219,7 @@ def _evaluate_poly(f: Poly, g: Poly) -> Poly:
     return h
 
 
-def _check_input_is_poly(a: Union[Poly, Array], field: Type[Array]):
+def _check_input_is_poly(a: Poly | Array, field: Type[Array]):
     """
     Verify polynomial arithmetic operands are either galois.Poly or scalars in a finite field.
     """
@@ -2236,7 +2236,7 @@ def _check_input_is_poly(a: Union[Poly, Array], field: Type[Array]):
         raise TypeError(f"Both polynomial operands must be over the same field, not {a_field.name} and {field.name}.")
 
 
-def _check_input_is_poly_or_int(a: Union[Poly, Array, int], field: Type[Array]):
+def _check_input_is_poly_or_int(a: Poly | Array | int, field: Type[Array]):
     """
     Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or an integer scalar.
     """
@@ -2245,7 +2245,7 @@ def _check_input_is_poly_or_int(a: Union[Poly, Array, int], field: Type[Array]):
     _check_input_is_poly(a, field)
 
 
-def _check_input_is_poly_or_none(a: Optional[Union[Poly, Array]], field: Type[Array]):
+def _check_input_is_poly_or_none(a: Optional[Poly | Array], field: Type[Array]):
     """
     Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or None.
     """
@@ -2254,7 +2254,7 @@ def _check_input_is_poly_or_none(a: Optional[Union[Poly, Array]], field: Type[Ar
     _check_input_is_poly(a, field)
 
 
-def _convert_to_coeffs(a: Union[Poly, Array, int], field: Type[Array]) -> Array:
+def _convert_to_coeffs(a: Poly | Array | int, field: Type[Array]) -> Array:
     """
     Convert the polynomial or finite field scalar into a coefficient array.
     """
@@ -2267,7 +2267,7 @@ def _convert_to_coeffs(a: Union[Poly, Array, int], field: Type[Array]) -> Array:
         return np.atleast_1d(a)
 
 
-def _convert_to_integer(a: Union[Poly, Array, int], field: Type[Array]) -> int:
+def _convert_to_integer(a: Poly | Array | int, field: Type[Array]) -> int:
     """
     Convert the polynomial or finite field scalar into its integer representation.
     """
@@ -2278,7 +2278,7 @@ def _convert_to_integer(a: Union[Poly, Array, int], field: Type[Array]) -> int:
         return int(a)
 
 
-def _convert_to_sparse_coeffs(a: Union[Poly, Array, int], field: Type[Array]) -> Tuple[np.ndarray, Array]:
+def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> Tuple[np.ndarray, Array]:
     """
     Convert the polynomial or finite field scalar into its non-zero degrees and coefficients.
     """
