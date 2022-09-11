@@ -7380,13 +7380,13 @@ Often <span class="math notranslate nohighlight">\(B_2\)</span> is chosen such t
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">galois</span><span class="o">.</span><span class="n">pollard_p1</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
 <span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">RuntimeError</span><span class="g g-Whitespace">                              </span>Traceback (most recent call last)
-<span class="nn">Input In [4],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
+<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">galois</span><span class="o">.</span><span class="n">pollard_p1</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
 
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.13/x64/lib/python3.8/site-packages/galois/_prime.py:1177,</span> in <span class="ni">pollard_p1</span><span class="nt">(n, B, B2)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1174</span>     <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">]:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1175</span>         <span class="k">return</span> <span class="n">d</span>
-<span class="ne">-&gt; </span><span class="mi">1177</span> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;A non-trivial factor of </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> could not be found using the Pollard p-1 algorithm with smoothness bound </span><span class="si">{</span><span class="n">B</span><span class="si">}</span><span class="s2"> and secondary bound </span><span class="si">{</span><span class="n">B2</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nn">File /opt/hostedtoolcache/Python/3.8.13/x64/lib/python3.8/site-packages/galois/_prime.py:1178,</span> in <span class="ni">pollard_p1</span><span class="nt">(n, B, B2)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1175</span>     <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">]:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1176</span>         <span class="k">return</span> <span class="n">d</span>
+<span class="ne">-&gt; </span><span class="mi">1178</span> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;A non-trivial factor of </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> could not be found using the Pollard p-1 algorithm with smoothness bound </span><span class="si">{</span><span class="n">B</span><span class="si">}</span><span class="s2"> and secondary bound </span><span class="si">{</span><span class="n">B2</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
 <span class="ne">RuntimeError</span>: A non-trivial factor of 1934313240757 could not be found using the Pollard p-1 algorithm with smoothness bound 15 and secondary bound None.
 </code></pre></div>
@@ -7425,7 +7425,7 @@ step because <span class="math notranslate nohighlight">\(p_{k+1} = 17\)</span> 
   <small>
     
       Last update:
-      Sep 02, 2022
+      Sep 11, 2022
     
   </small>
 </div>

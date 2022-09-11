@@ -7329,14 +7329,14 @@ element of the field.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_root_of_unity</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 <span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
-<span class="nn">Input In [5],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
+<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_root_of_unity</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.13/x64/lib/python3.8/site-packages/galois/_fields/_array.py:692,</span> in <span class="ni">FieldArray.primitive_root_of_unity</span><span class="nt">(cls, n)</span>
-<span class="g g-Whitespace">    </span><span class="mi">690</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Argument `n` must be in [1, </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2">), not </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">691</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">692</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are no primitive </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">-th roots of unity in </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">694</span> <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">primitive_element</span> <span class="o">**</span> <span class="p">((</span><span class="bp">cls</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">n</span><span class="p">)</span>
+<span class="nn">File /opt/hostedtoolcache/Python/3.8.13/x64/lib/python3.8/site-packages/galois/_fields/_array.py:691,</span> in <span class="ni">FieldArray.primitive_root_of_unity</span><span class="nt">(cls, n)</span>
+<span class="g g-Whitespace">    </span><span class="mi">689</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Argument &#39;n&#39; must be in [1, </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2">), not </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">690</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">691</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are no primitive </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">-th roots of unity in </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">693</span> <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">primitive_element</span> <span class="o">**</span> <span class="p">((</span><span class="bp">cls</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">n</span><span class="p">)</span>
 
 <span class="ne">ValueError</span>: There are no primitive 7-th roots of unity in GF(31).
 </code></pre></div>
@@ -7362,7 +7362,7 @@ element of the field.</p>
   <small>
     
       Last update:
-      Sep 02, 2022
+      Sep 11, 2022
     
   </small>
 </div>
