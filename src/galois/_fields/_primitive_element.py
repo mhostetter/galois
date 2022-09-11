@@ -182,20 +182,20 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
         for integer in range(start, stop):
             element = Poly.Int(integer, field=field)
             if _is_primitive_element(element, irreducible_poly):
-                break
+                return element
     elif method == "max":
         for integer in range(stop - 1, start - 1, -1):
             element = Poly.Int(integer, field=field)
             if _is_primitive_element(element, irreducible_poly):
-                break
+                return element
     else:
         while True:
             integer = random.randint(start, stop - 1)
             element = Poly.Int(integer, field=field)
             if _is_primitive_element(element, irreducible_poly):
-                break
+                return element
 
-    return element
+    raise RuntimeError(f"No primitive elements in GF({q}^{m}) were found with irreducible polynomial {irreducible_poly}.")
 
 
 @export
