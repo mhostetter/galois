@@ -95,11 +95,11 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     verify_isinstance(degree, int)
 
     if not is_prime_power(order):
-        raise ValueError(f"Argument `order` must be a prime power, not {order}.")
+        raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
     if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
+        raise ValueError(f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
     if not method in ["min", "max", "random"]:
-        raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
+        raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
     if method == "min":
         return next(primitive_polys(order, degree))
@@ -176,9 +176,9 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
     verify_isinstance(reverse, bool)
 
     if not is_prime_power(order):
-        raise ValueError(f"Argument `order` must be a prime power, not {order}.")
+        raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
     if not degree >= 0:
-        raise ValueError(f"Argument `degree` must be at least 0, not {degree}.")
+        raise ValueError(f"Argument 'degree' must be at least 0, not {degree}.")
 
     field = _factory.FIELD_FACTORY(order)
 
@@ -293,9 +293,9 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     verify_isinstance(degree, int)
 
     if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+        raise ValueError(f"Argument 'characteristic' must be prime, not {characteristic}.")
     if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
+        raise ValueError(f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
 
     coeffs = ConwayPolyDatabase().fetch(characteristic, degree)
     field = _factory.FIELD_FACTORY(characteristic)
@@ -363,9 +363,9 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     verify_isinstance(degree, int)
 
     if not is_prime(characteristic):
-        raise ValueError(f"Argument `characteristic` must be prime, not {characteristic}.")
+        raise ValueError(f"Argument 'characteristic' must be prime, not {characteristic}.")
     if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
+        raise ValueError(f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
 
     # Textbooks and Matlab use the lexicographically-minimal primitive polynomial for the default. But for some
     # reason, there are three exceptions. I can't determine why.

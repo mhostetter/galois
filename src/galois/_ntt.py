@@ -12,11 +12,7 @@ from .typing import ArrayLike
 
 
 @export
-def ntt(
-    x: ArrayLike,
-    size: int | None = None,
-    modulus: int | None = None
-) -> FieldArray:
+def ntt(x: ArrayLike, size: int | None = None, modulus: int | None = None) -> FieldArray:
     r"""
     Computes the Number-Theoretic Transform (NTT) of :math:`x`.
 
@@ -123,12 +119,7 @@ def ntt(
 
 
 @export
-def intt(
-    X: ArrayLike,
-    size: int | None = None,
-    modulus: int | None = None,
-    scaled: bool = True
-) -> FieldArray:
+def intt(X: ArrayLike, size: int | None = None, modulus: int | None = None, scaled: bool = True) -> FieldArray:
     r"""
     Computes the Inverse Number-Theoretic Transform (INTT) of :math:`X`.
 
@@ -264,13 +255,13 @@ def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
     m = (modulus - 1) // size
 
     if not size >= len(x):
-        raise ValueError(f"Argument `size` must be at least the length of the input which is {len(x)}, not {size}.")
+        raise ValueError(f"Argument 'size' must be at least the length of the input which is {len(x)}, not {size}.")
     if not is_prime(modulus):
-        raise ValueError(f"Argument `modulus` must be prime, {modulus} is not.")
+        raise ValueError(f"Argument 'modulus' must be prime, {modulus} is not.")
     if not (modulus - 1) % size == 0:
-        raise ValueError("Argument `modulus` must satisfy `modulus = m*size + 1` where `size` is the size of the NTT transform.")
+        raise ValueError("Argument 'modulus' must equal m * size + 1, where 'size' is the size of the NTT transform.")
     if not modulus > np.max(x):
-        raise ValueError(f"Argument `modulus` must be at least the max value of the input which is {np.max(x)}, not {modulus}.")
+        raise ValueError(f"Argument 'modulus' must be at least the max value of the input which is {np.max(x)}, not {modulus}.")
 
     field = Field(modulus)  # The prime field GF(p)
 

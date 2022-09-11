@@ -164,15 +164,15 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
     verify_isinstance(x, Array)
     verify_isinstance(y, Array)
     if not type(x) == type(y):  # pylint: disable=unidiomatic-typecheck
-        raise TypeError(f"Arguments `x` and `y` must be over the same Galois field, not {type(x)} and {type(y)}.")
+        raise TypeError(f"Arguments 'x' and 'y' must be over the same Galois field, not {type(x)} and {type(y)}.")
     if not x.ndim == 1:
-        raise ValueError(f"Argument `x` must be 1-D, not have shape {x.shape}.")
+        raise ValueError(f"Argument 'x' must be 1-D, not have shape {x.shape}.")
     if not y.ndim == 1:
-        raise ValueError(f"Argument `y` must be 1-D, not have shape {y.shape}.")
+        raise ValueError(f"Argument 'y' must be 1-D, not have shape {y.shape}.")
     if not x.size == y.size:
-        raise ValueError(f"Arguments `x` and `y` must be the same size, not {x.size} and {y.size}.")
+        raise ValueError(f"Arguments 'x' and 'y' must be the same size, not {x.size} and {y.size}.")
     if not x.size == np.unique(x).size:
-        raise ValueError(f"Argument `x` must have unique entries, not {x}.")
+        raise ValueError(f"Argument 'x' must have unique entries, not {x}.")
 
     field = type(x)
     L = Poly.Zero(field)  # The Lagrange polynomial L(x)

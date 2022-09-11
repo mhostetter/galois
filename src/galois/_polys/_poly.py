@@ -98,9 +98,9 @@ class Poly:
         verify_issubclass(field, Array, optional=True)
         verify_isinstance(order, str)
         if isinstance(coeffs, (Array, np.ndarray)) and not coeffs.ndim <= 1:
-            raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
+            raise ValueError(f"Argument 'coeffs' can have dimension at most 1, not {coeffs.ndim}.")
         if not order in ["desc", "asc"]:
-            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order!r}.")
+            raise ValueError(f"Argument 'order' must be either 'desc' or 'asc', not {order!r}.")
 
         self._coeffs, self._field = _convert_coeffs(coeffs, field)
 
@@ -290,9 +290,9 @@ class Poly:
         field = _factory.DEFAULT_ARRAY if field is None else field
         if seed is not None:
             if isinstance(seed, int) and not seed >= 0:
-                raise ValueError(f"Argument `seed` must be non-negative, not {seed}.")
+                raise ValueError(f"Argument 'seed' must be non-negative, not {seed}.")
         if not degree >= 0:
-            raise ValueError(f"Argument `degree` must be non-negative, not {degree}.")
+            raise ValueError(f"Argument 'degree' must be non-negative, not {degree}.")
 
         rng = np.random.default_rng(seed)  # Make the seed a PRNG object so it can "step" its state if the below "if" statement is invoked
         coeffs = field.Random(degree + 1, seed=rng)
@@ -421,7 +421,7 @@ class Poly:
 
         field = _factory.DEFAULT_ARRAY if field is None else field
         if not integer >= 0:
-            raise ValueError(f"Argument `integer` must be non-negative, not {integer}.")
+            raise ValueError(f"Argument 'integer' must be non-negative, not {integer}.")
 
         obj = object.__new__(cls)
         obj._integer = integer
@@ -481,22 +481,22 @@ class Poly:
         verify_isinstance(degrees, (list, tuple, np.ndarray))
         verify_isinstance(coeffs, (list, tuple, np.ndarray, Array), optional=True)
         if not (field is None or issubclass(field, Array)):
-            raise TypeError(f"Argument `field` must be a Array subclass, not {type(field)}.")
+            raise TypeError(f"Argument 'field' must be a Array subclass, not {type(field)}.")
 
         degrees = np.array(degrees, dtype=np.int64)
         coeffs = [1,]*len(degrees) if coeffs is None else coeffs
         coeffs, field = _convert_coeffs(coeffs, field)
 
         if not degrees.ndim <= 1:
-            raise ValueError(f"Argument `degrees` can have dimension at most 1, not {degrees.ndim}.")
+            raise ValueError(f"Argument 'degrees' can have dimension at most 1, not {degrees.ndim}.")
         if not degrees.size == np.unique(degrees).size:
-            raise ValueError(f"Argument `degrees` must have unique entries, not {degrees}.")
+            raise ValueError(f"Argument 'degrees' must have unique entries, not {degrees}.")
         if not np.all(degrees >= 0):
-            raise ValueError(f"Argument `degrees` must have non-negative values, not {degrees}.")
+            raise ValueError(f"Argument 'degrees' must have non-negative values, not {degrees}.")
         if not coeffs.ndim <= 1:
-            raise ValueError(f"Argument `coeffs` can have dimension at most 1, not {coeffs.ndim}.")
+            raise ValueError(f"Argument 'coeffs' can have dimension at most 1, not {coeffs.ndim}.")
         if not degrees.size == coeffs.size:
-            raise ValueError(f"Arguments `degrees` and `coeffs` must have the same length, not {degrees.size} and {coeffs.size}.")
+            raise ValueError(f"Arguments 'degrees' and 'coeffs' must have the same length, not {degrees.size} and {coeffs.size}.")
 
         # Only keep non-zero coefficients
         idxs = np.nonzero(coeffs)
@@ -589,13 +589,13 @@ class Poly:
         verify_isinstance(roots, (tuple, list, np.ndarray, Array))
         verify_isinstance(multiplicities, (tuple, list, np.ndarray))
         if not (field is None or issubclass(field, Array)):
-            raise TypeError(f"Argument `field` must be a Array subclass, not {field}.")
+            raise TypeError(f"Argument 'field' must be a Array subclass, not {field}.")
 
         roots, field = _convert_coeffs(roots, field)
 
         roots = field(roots).flatten()
         if not len(roots) == len(multiplicities):
-            raise ValueError(f"Arguments `roots` and `multiplicities` must have the same length, not {len(roots)} and {len(multiplicities)}.")
+            raise ValueError(f"Arguments 'roots' and 'multiplicities' must have the same length, not {len(roots)} and {len(multiplicities)}.")
 
         poly = Poly.One(field=field)
         x = Poly.Identity(field=field)
@@ -660,9 +660,9 @@ class Poly:
         verify_isinstance(order, str)
         size = len(self) if size is None else size
         if not size >= len(self):
-            raise ValueError(f"Argument `size` must be at least `degree + 1` which is {len(self)}, not {size}.")
+            raise ValueError(f"Argument 'size' must be at least degree + 1 ({len(self)}), not {size}.")
         if not order in ["desc", "asc"]:
-            raise ValueError(f"Argument `order` must be either 'desc' or 'asc', not {order!r}.")
+            raise ValueError(f"Argument 'order' must be either 'desc' or 'asc', not {order!r}.")
 
         coeffs = self.field.Zeros(size)
         coeffs[-len(self):] = self.coeffs
@@ -1046,7 +1046,7 @@ class Poly:
         if not self.is_monic:
             raise ValueError(f"The polynomial must be monic, not {self}.")
         if not self.degree % degree == 0:
-            raise ValueError(f"Argument `degree` must be divide the degree of the polynomial, {degree} does not divide {self.degree}.")
+            raise ValueError(f"Argument 'degree' must be divide the degree of the polynomial, {degree} does not divide {self.degree}.")
         if not self.is_square_free():
             raise ValueError(f"The polynomial must be square-free, not {self}.")
 
@@ -1233,7 +1233,7 @@ class Poly:
         """
         verify_isinstance(k, int)
         if not k > 0:
-            raise ValueError(f"Argument `k` must be a positive integer, not {k}.")
+            raise ValueError(f"Argument 'k' must be a positive integer, not {k}.")
 
         if 0 in self.nonzero_degrees:
             # Cut off the 0th degree
@@ -1637,7 +1637,7 @@ class Poly:
             return _evaluate_poly(self, at)
 
         if not (field is None or issubclass(field, Array)):
-            raise TypeError(f"Argument `field` must be a Array subclass, not {type(field)}.")
+            raise TypeError(f"Argument 'field' must be a Array subclass, not {type(field)}.")
 
         field = self.field if field is None else field
         coeffs = field(self.coeffs)
@@ -1647,7 +1647,7 @@ class Poly:
             return _dense.evaluate_elementwise_jit(field)(coeffs, x)
         else:
             if not (x.ndim == 2 and x.shape[0] == x.shape[1]):
-                raise ValueError(f"Argument `x` must be a square matrix when evaluating the polynomial not element-wise, not have shape {x.shape}.")
+                raise ValueError(f"Argument 'x' must be a square matrix when evaluating the polynomial not element-wise, not have shape {x.shape}.")
             return _evaluate_matrix(coeffs, x)
 
     def __len__(self) -> int:

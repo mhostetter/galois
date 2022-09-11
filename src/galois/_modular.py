@@ -57,7 +57,7 @@ def totatives(n: int) -> list[int]:
     """
     verify_isinstance(n, int)
     if not n > 0:
-        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+        raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
 
     if n == 1:
         return [0]
@@ -131,7 +131,7 @@ def euler_phi(n: int) -> int:
 def _euler_phi(n: int) -> int:
     verify_isinstance(n, int)
     if not n > 0:
-        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+        raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
 
     if n == 1:
         return 1
@@ -218,7 +218,7 @@ def carmichael_lambda(n: int) -> int:
     """
     verify_isinstance(n, int)
     if not n > 0:
-        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+        raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
 
     if n == 1:
         return 1
@@ -380,7 +380,7 @@ def is_cyclic(n: int) -> bool:
     """
     verify_isinstance(n, int)
     if not n > 0:
-        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+        raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
 
     if n == 1:
         return True
@@ -559,9 +559,9 @@ def primitive_root(n: int, start: int = 1, stop: int | None = None, method: Lite
 
     stop = n if stop is None else stop
     if not 1 <= start < stop <= n:
-        raise ValueError(f"Arguments must satisfy `1 <= start < stop <= n`, not `1 <= {start} < {stop} <= {n}`.")
+        raise ValueError(f"Arguments must satisfy 1 <= start < stop <= n, not 1 <= {start} < {stop} <= {n}.")
     if not method in ["min", "max", "random"]:
-        raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
+        raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
     try:
         if method == "min":
@@ -775,9 +775,9 @@ def is_primitive_root(g: int, n: int) -> bool:
     verify_isinstance(g, int)
     verify_isinstance(n, int)
     if not n > 0:
-        raise ValueError(f"Argument `n` must be a positive integer, not {n}.")
+        raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
     if not 0 < g < n:
-        raise ValueError(f"Argument `g` must be a positive integer less than `n`, not {g}.")
+        raise ValueError(f"Argument 'g' must be a positive integer less than 'n', not {g}.")
 
     return _is_primitive_root(g, n)
 

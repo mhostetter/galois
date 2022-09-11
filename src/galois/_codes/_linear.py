@@ -43,7 +43,7 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
     field = type(G)
     k, n = G.shape
     if not np.array_equal(G[:,0:k], np.eye(k)):
-        raise ValueError("Argument `G` must be in systematic form [I | P].")
+        raise ValueError("Argument 'G' must be in systematic form [I | P].")
 
     P = G[:, k:]
     I = field.Identity(n-k)
@@ -88,7 +88,7 @@ def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
     n_k, n = H.shape
     k = n - n_k
     if not np.array_equal(H[:,k:], np.eye(n - k)):
-        raise ValueError("Argument `H` must be in systematic form [-P^T | I].")
+        raise ValueError("Argument 'H' must be in systematic form [-P^T | I].")
 
     P = -H[:, 0:k].T
     I = field.Identity(k)

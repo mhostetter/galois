@@ -223,9 +223,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         dtype = cls._get_dtype(dtype)
 
         if not 0 <= start <= cls.order:
-            raise ValueError(f"Argument `start` must be within the field's order {cls.order}, not {start}.")
+            raise ValueError(f"Argument 'start' must be within the field's order {cls.order}, not {start}.")
         if not 0 <= stop <= cls.order:
-            raise ValueError(f"Argument `stop` must be within the field's order {cls.order}, not {stop}.")
+            raise ValueError(f"Argument 'stop' must be within the field's order {cls.order}, not {stop}.")
 
         array = np.arange(start, stop, step=step, dtype=dtype)
 
@@ -351,10 +351,10 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         verify_isinstance(mode, str)
         if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
-            raise ValueError(f"Argument `mode` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode!r}.")
+            raise ValueError(f"Argument 'mode' must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode!r}.")
         mode = cls.default_ufunc_mode if mode == "auto" else mode
         if mode not in cls.ufunc_modes:
-            raise ValueError(f"Argument `mode` must be in {cls.ufunc_modes} for {cls._name}, not {mode!r}.")
+            raise ValueError(f"Argument 'mode' must be in {cls.ufunc_modes} for {cls._name}, not {mode!r}.")
 
         if mode == cls.ufunc_mode:
             # Don't need to rebuild these ufuncs
@@ -456,7 +456,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         verify_isinstance(mode, str, optional=True)
         if mode not in ["int", "poly", "power"]:
-            raise ValueError(f"Argument `mode` must be in ['int', 'poly', 'power'], not {mode!r}.")
+            raise ValueError(f"Argument 'mode' must be in ['int', 'poly', 'power'], not {mode!r}.")
 
         prev_mode = cls.display_mode
         cls._display_mode = mode  # Set the new display mode

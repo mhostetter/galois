@@ -110,12 +110,12 @@ class ReedSolomon:
         verify_isinstance(systematic, bool)
 
         if not (n - k) % 2 == 0:
-            raise ValueError("Arguments `n - k` must be even.")
+            raise ValueError("Arguments 'n - k' must be even.")
         p, m = factors(n + 1)
         if not (len(p) == 1 and len(m) == 1):
-            raise ValueError(f"Argument `n` must have value `q - 1` for a prime power `q`, not {n}.")
+            raise ValueError(f"Argument 'n' must equal q - 1 for a prime power q, not {n}.")
         if not c >= 1:
-            raise ValueError(f"Argument `c` must be at least 1, not {c}.")
+            raise ValueError(f"Argument 'c' must be at least 1, not {c}.")
         p, m = p[0], m[0]
 
         if primitive_poly is None and m > 1:
@@ -286,13 +286,13 @@ class ReedSolomon:
         """
         message = self.field(message)  # This performs type/value checking
         if parity_only and not self.is_systematic:
-            raise ValueError("Argument `parity_only=True` only applies to systematic codes.")
+            raise ValueError("Argument 'parity_only=True' only applies to systematic codes.")
         if self.is_systematic:
             if not message.shape[-1] <= self.k:
-                raise ValueError(f"For a systematic code, argument `message` must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}.")
+                raise ValueError(f"For a systematic code, argument 'message' must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}.")
         else:
             if not message.shape[-1] == self.k:
-                raise ValueError(f"For a non-systematic code, argument `message` must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}.")
+                raise ValueError(f"For a non-systematic code, argument 'message' must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}.")
 
         ks = message.shape[-1]  # The number of input message symbols (could be less than self.k for shortened codes)
 

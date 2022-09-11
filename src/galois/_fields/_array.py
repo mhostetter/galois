@@ -332,14 +332,14 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         verify_isinstance(rows, int)
         verify_isinstance(cols, int)
         if not rows > 0:
-            raise ValueError(f"Argument `rows` must be non-negative, not {rows}.")
+            raise ValueError(f"Argument 'rows' must be non-negative, not {rows}.")
         if not cols > 0:
-            raise ValueError(f"Argument `cols` must be non-negative, not {cols}.")
+            raise ValueError(f"Argument 'cols' must be non-negative, not {cols}.")
 
         dtype = cls._get_dtype(dtype)
         element = cls(element, dtype=dtype)
         if not element.ndim == 0:
-            raise ValueError(f"Argument `element` must be element scalar, not {element.ndim}-D.")
+            raise ValueError(f"Argument 'element' must be element scalar, not {element.ndim}-D.")
 
         v = element ** np.arange(0, rows)
         V = np.power.outer(v, np.arange(0, cols))
@@ -455,7 +455,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF("x^2").multiplicative_order()
         """
         if sort not in ["power", "poly", "vector", "int"]:
-            raise ValueError(f"Argument `sort` must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
+            raise ValueError(f"Argument 'sort' must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
         if element is None:
             element = cls.primitive_element
 
@@ -582,7 +582,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                     GF.display()
         """
         if not operation in ["+", "-", "*", "/"]:
-            raise ValueError(f"Argument `operation` must be in ['+', '-', '*', '/'], not {operation!r}.")
+            raise ValueError(f"Argument 'operation' must be in ['+', '-', '*', '/'], not {operation!r}.")
 
         if cls.display_mode == "power":
             # Order elements by powers of the primitive element
@@ -686,7 +686,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         verify_isinstance(n, (int, np.ndarray))
         if not 1 <= n < cls.order:
-            raise ValueError(f"Argument `n` must be in [1, {cls.order}), not {n}.")
+            raise ValueError(f"Argument 'n' must be in [1, {cls.order}), not {n}.")
         if not (cls.order - 1) % n == 0:
             raise ValueError(f"There are no primitive {n}-th roots of unity in {cls.name}.")
 
@@ -750,7 +750,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             np.power.outer(root, powers)
         """
         if not isinstance(n, (int, np.ndarray)):
-            raise TypeError(f"Argument `n` must be an int, not {type(n)!r}.")
+            raise TypeError(f"Argument 'n' must be an int, not {type(n)!r}.")
         if not (cls.order - 1) % n == 0:
             raise ValueError(f"There are no primitive {n}-th roots of unity in {cls.name}.")
 

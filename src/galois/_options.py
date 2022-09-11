@@ -52,7 +52,7 @@ def set_printoptions(
     :group: config
     """
     if not coeffs in ["desc", "asc"]:
-        raise ValueError(f"Argument `coeffs` must be in ['desc', 'asc'], not {coeffs}.")
+        raise ValueError(f"Argument 'coeffs' must be in ['desc', 'asc'], not {coeffs}.")
 
     PRINTOPTIONS["coeffs"] = coeffs
 
