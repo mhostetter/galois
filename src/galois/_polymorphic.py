@@ -490,11 +490,11 @@ def crt(remainders, moduli):
                     print(ai, ai == a[i])
     """
     if not (isinstance(remainders, (tuple, list)) and (all(isinstance(x, (int, np.integer)) for x in remainders) or all(isinstance(x, Poly) for x in remainders))):
-        raise TypeError(f"Argument `remainders` must be a tuple or list of int or galois.Poly, not {remainders}.")
+        raise TypeError(f"Argument 'remainders' must be a tuple or list of int or Poly, not {remainders}.")
     if not (isinstance(moduli, (tuple, list)) and (all(isinstance(x, (int, np.integer)) for x in moduli) or all(isinstance(x, Poly) for x in moduli))):
-        raise TypeError(f"Argument `moduli` must be a tuple or list of int or galois.Poly, not {moduli}.")
+        raise TypeError(f"Argument 'moduli' must be a tuple or list of int or Poly, not {moduli}.")
     if not len(remainders) == len(moduli) >= 2:
-        raise ValueError(f"Arguments `remainders` and `moduli` must be the same length of at least 2, not {len(remainders)} and {len(moduli)}.")
+        raise ValueError(f"Arguments 'remainders' and 'moduli' must be the same length of at least 2, not {len(remainders)} and {len(moduli)}.")
 
     # Ensure polynomial arguments have each remainder have degree less than its modulus
     if isinstance(remainders[0], Poly):
@@ -648,7 +648,7 @@ def factors(value):
     elif isinstance(value, Poly):
         return value.factors()
     else:
-        raise TypeError(f"Argument `value` must be either int or galois.Poly, not {type(value)}.")
+        raise TypeError(f"Argument 'value' must be either int or Poly, not {type(value)}.")
 
 
 @overload
@@ -739,4 +739,4 @@ def is_square_free(value):
     elif isinstance(value, Poly):
         return value.is_square_free()
     else:
-        raise TypeError(f"Argument `value` must be either int or galois.Poly, not {type(value)}.")
+        raise TypeError(f"Argument 'value' must be either int or Poly, not {type(value)}.")

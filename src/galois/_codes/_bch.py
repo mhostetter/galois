@@ -36,9 +36,9 @@ def _check_and_compute_field(
 
     p, m = factors(n + 1)
     if not (len(p) == 1 and p[0] == 2):
-        raise ValueError(f"Argument `n` must have value `2^m - 1` for some positive m, not {n}.")
+        raise ValueError(f"Argument 'n' must equal 2^m - 1 for some positive m, not {n}.")
     if not c >= 1:
-        raise ValueError(f"Argument `c` must be at least 1, not {c}.")
+        raise ValueError(f"Argument 'c' must be at least 1, not {c}.")
     p, m = p[0], m[0]
 
     if primitive_poly is None:
@@ -93,7 +93,7 @@ def bch_valid_codes(n: int, t_min: int = 1) -> list[tuple[int, int, int]]:
     verify_isinstance(n, int)
     verify_isinstance(t_min, int)
     if not t_min >= 1:
-        raise ValueError(f"Argument `t_min` must be at least 1, not {t_min}.")
+        raise ValueError(f"Argument 't_min' must be at least 1, not {t_min}.")
 
     GF = _check_and_compute_field(n, 0, 1, None, None)  # NOTE: k isn't needed for generating the field
     alpha = GF.primitive_element
@@ -399,13 +399,13 @@ class BCH:
         """
         message = GF2(message)  # This performs type/value checking
         if parity_only and not self.is_systematic:
-            raise ValueError("Argument `parity_only=True` only applies to systematic codes.")
+            raise ValueError("Argument 'parity_only=True' only applies to systematic codes.")
         if self.is_systematic:
             if not message.shape[-1] <= self.k:
-                raise ValueError(f"For a systematic code, argument `message` must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}.")
+                raise ValueError(f"For a systematic code, argument 'message' must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}.")
         else:
             if not message.shape[-1] == self.k:
-                raise ValueError(f"For a non-systematic code, argument `message` must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}.")
+                raise ValueError(f"For a non-systematic code, argument 'message' must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}.")
 
         ks = message.shape[-1]  # The number of input message bits (could be less than self.k for shortened codes)
 

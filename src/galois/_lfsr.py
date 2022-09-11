@@ -35,7 +35,7 @@ class _LFSR:
     ):
         verify_isinstance(feedback_poly, Poly)
         if not feedback_poly.coeffs[-1] == 1:
-            raise ValueError(f"Argument `feedback_poly` must have a 0-th degree term of 1, not {feedback_poly}.")
+            raise ValueError(f"Argument 'feedback_poly' must have a 0-th degree term of 1, not {feedback_poly}.")
 
         self._field = feedback_poly.field
         self._feedback_poly = feedback_poly
@@ -83,7 +83,7 @@ class _LFSR:
 
         # if not state.size == self.order:
         if not state.size == self.order:
-            raise ValueError(f"Argument `state` must have size equal to the degree of the characteristic polynomial, not {state.size} and {self.characteristic_poly.degree}.")
+            raise ValueError(f"Argument 'state' must have size equal to the degree of the characteristic polynomial, not {state.size} and {self.characteristic_poly.degree}.")
 
         return state
 
@@ -1572,9 +1572,9 @@ def berlekamp_massey(sequence, output="minimal"):
     verify_isinstance(sequence, FieldArray)
     verify_isinstance(output, str)
     if not sequence.ndim == 1:
-        raise ValueError(f"Argument `sequence` must be 1-D, not {sequence.ndim}-D.")
+        raise ValueError(f"Argument 'sequence' must be 1-D, not {sequence.ndim}-D.")
     if not output in ["minimal", "fibonacci", "galois"]:
-        raise ValueError(f"Argument `output` must be in ['minimal', 'fibonacci', 'galois'], not {output!r}.")
+        raise ValueError(f"Argument 'output' must be in ['minimal', 'fibonacci', 'galois'], not {output!r}.")
 
     field = type(sequence)
     coeffs = berlekamp_massey_jit(field)(sequence)

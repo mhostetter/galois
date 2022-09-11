@@ -287,7 +287,7 @@ class lu_decompose_jit(Function):
     def __call__(self, A: Array) -> tuple[Array, Array]:
         verify_isinstance(A, self.field)
         if not A.ndim == 2:
-            raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")
+            raise ValueError(f"Argument 'A' must be a 2-D matrix, not have shape {A.shape}.")
 
         n = A.shape[0]
         Ai = A.copy()
@@ -300,7 +300,7 @@ class lu_decompose_jit(Function):
                     L[i,i] = 1
                     continue
                 else:
-                    raise ValueError("The LU decomposition of `A` does not exist. Use the LUP decomposition instead.")
+                    raise ValueError("The LU decomposition of 'A' does not exist. Use the LUP decomposition instead.")
 
             l = Ai[i+1:,i] / Ai[i,i]
             Ai[i+1:,:] -= np.multiply.outer(l, Ai[i,:])
@@ -319,7 +319,7 @@ class plu_decompose_jit(Function):
     def __call__(self, A: Array) -> tuple[Array, Array, Array, int]:
         verify_isinstance(A, self.field)
         if not A.ndim == 2:
-            raise ValueError(f"Argument `A` must be a 2-D matrix, not have shape {A.shape}.")
+            raise ValueError(f"Argument 'A' must be a 2-D matrix, not have shape {A.shape}.")
 
         n = A.shape[0]
         Ai = A.copy()
@@ -365,7 +365,7 @@ class triangular_det_jit(Function):
     def __call__(self, A: Array) -> Array:
         verify_isinstance(A, self.field)
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
-            raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
+            raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
         idxs = np.arange(0, A.shape[0])
         return np.multiply.reduce(A[idxs,idxs])
 
@@ -378,7 +378,7 @@ class det_jit(Function):
     def __call__(self, A: Array) -> Array:
         verify_isinstance(A, self.field)
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
-            raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
+            raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
 
         n = A.shape[0]
 
@@ -419,7 +419,7 @@ class inv_jit(Function):
     def __call__(self, A: Array) -> Array:
         verify_isinstance(A, self.field)
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
-            raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
+            raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
 
         n = A.shape[0]
         I = self.field.Identity(n, dtype=A.dtype)
@@ -433,7 +433,7 @@ class inv_jit(Function):
         # The rank is the number of non-zero rows of the row reduced echelon form
         rank = np.sum(~np.all(AI_rre[:,0:n] == 0, axis=1))
         if not rank == n:
-            raise np.linalg.LinAlgError(f"Argument `A` is singular and not invertible because it does not have full rank of {n}, but rank of {rank}.")
+            raise np.linalg.LinAlgError(f"Argument 'A' is singular and not invertible because it does not have full rank of {n}, but rank of {rank}.")
 
         A_inv = AI_rre[:,-n:]
 
@@ -449,11 +449,11 @@ class solve_jit(Function):
         verify_isinstance(A, self.field)
         verify_isinstance(b, self.field)
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
-            raise np.linalg.LinAlgError(f"Argument `A` must be square, not {A.shape}.")
+            raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
         if not b.ndim in [1, 2]:
-            raise np.linalg.LinAlgError(f"Argument `b` must have dimension equal to A or one less, not {b.ndim}.")
+            raise np.linalg.LinAlgError(f"Argument 'b' must have dimension equal to 'A' or one less, not {b.ndim}.")
         if not A.shape[-1] == b.shape[0]:
-            raise np.linalg.LinAlgError(f"The last dimension of `A` must equal the first dimension of `b`, not {A.shape} and {b.shape}.")
+            raise np.linalg.LinAlgError(f"The last dimension of 'A' must equal the first dimension of 'b', not {A.shape} and {b.shape}.")
 
         A_inv = inv_jit(self.field)(A)
         x = A_inv @ b

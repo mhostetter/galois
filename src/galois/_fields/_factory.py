@@ -203,17 +203,17 @@ def GF(
     p, e = factors(order)
     if not len(p) == len(e) == 1:
         s = " + ".join([f"{pi}**{ei}" for pi, ei in zip(p, e)])
-        raise ValueError(f"Argument `order` must be a prime power, not {order} = {s}.")
+        raise ValueError(f"Argument 'order' must be a prime power, not {order} = {s}.")
     if not compile in [None, "auto", "jit-lookup", "jit-calculate", "python-calculate"]:
-        raise ValueError(f"Argument `compile` must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {compile!r}.")
+        raise ValueError(f"Argument 'compile' must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {compile!r}.")
     if not display in [None, "int", "poly", "power"]:
-        raise ValueError(f"Argument `display` must be in ['int', 'poly', 'power'], not {display!r}.")
+        raise ValueError(f"Argument 'display' must be in ['int', 'poly', 'power'], not {display!r}.")
 
     p, m = p[0], e[0]
 
     if m == 1:
         if not irreducible_poly is None:
-            raise ValueError(f"Argument `irreducible_poly` can only be specified for extension fields, not the prime field GF({p}).")
+            raise ValueError(f"Argument 'irreducible_poly' can only be specified for extension fields, not the prime field GF({p}).")
         return _GF_prime(p, alpha=primitive_element, verify=verify, compile=compile, display=display)
     else:
         return _GF_extension(p, m, irreducible_poly_=irreducible_poly, alpha=primitive_element, verify=verify, compile=compile, display=display)
@@ -252,7 +252,7 @@ def _GF_prime(
 
     # Check primitive element range
     if not 0 < alpha < p:
-        raise ValueError(f"Argument `primitive_element` must be non-zero in the field 0 < x < {p}, not {alpha}.")
+        raise ValueError(f"Argument 'primitive_element' must be non-zero in the field 0 < x < {p}, not {alpha}.")
 
     # If the requested field has already been constructed, return it
     name = f"FieldArray_{p}_{alpha}"
@@ -266,7 +266,7 @@ def _GF_prime(
         return field
 
     if verify and not is_primitive_root(alpha, p):
-        raise ValueError(f"Argument `primitive_element` must be a primitive root modulo {p}, {alpha} is not.")
+        raise ValueError(f"Argument 'primitive_element' must be a primitive root modulo {p}, {alpha} is not.")
 
     if p == 2:
         field = GF2
@@ -337,13 +337,13 @@ def _GF_extension(
 
     # Check polynomial fields and degrees
     if not irreducible_poly_.field.order == p:
-        raise ValueError(f"Argument `irreducible_poly` must be over {prime_subfield.name}, not {irreducible_poly_.field.name}.")
+        raise ValueError(f"Argument 'irreducible_poly' must be over {prime_subfield.name}, not {irreducible_poly_.field.name}.")
     if not irreducible_poly_.degree == m:
-        raise ValueError(f"Argument `irreducible_poly` must have degree equal to {m}, not {irreducible_poly_.degree}.")
+        raise ValueError(f"Argument 'irreducible_poly' must have degree equal to {m}, not {irreducible_poly_.degree}.")
     if not alpha.field.order == p:
-        raise ValueError(f"Argument `primitive_element` must be a polynomial over {prime_subfield.name}, not {alpha.field.name}.")
+        raise ValueError(f"Argument 'primitive_element' must be a polynomial over {prime_subfield.name}, not {alpha.field.name}.")
     if not alpha.degree < m:
-        raise ValueError(f"Argument `primitive_element` must have degree strictly less than {m}, not {alpha.degree}.")
+        raise ValueError(f"Argument 'primitive_element' must have degree strictly less than {m}, not {alpha.degree}.")
 
     # If the requested field has already been constructed, return it
     name = f"FieldArray_{p}_{m}_{int(alpha)}_{int(irreducible_poly_)}"
@@ -357,9 +357,9 @@ def _GF_extension(
         return field
 
     if verify_poly and not irreducible_poly_.is_irreducible():
-        raise ValueError(f"Argument `irreducible_poly` must be irreducible, {irreducible_poly_} is not.")
+        raise ValueError(f"Argument 'irreducible_poly' must be irreducible, {irreducible_poly_} is not.")
     if verify_element and not is_primitive_element(alpha, irreducible_poly_):
-        raise ValueError(f"Argument `primitive_element` must be a multiplicative generator of {name}, {alpha} is not.")
+        raise ValueError(f"Argument 'primitive_element' must be a multiplicative generator of {name}, {alpha} is not.")
 
     ufunc_mixin = UFuncMixin_2_m if p == 2 else UFuncMixin_p_m
 

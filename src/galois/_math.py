@@ -110,7 +110,7 @@ def isqrt(n: int) -> int:
 
     verify_isinstance(n, int)
     if not n >= 0:
-        raise ValueError(f"Argument `n` must be non-negative, not {n}.")
+        raise ValueError(f"Argument 'n' must be non-negative, not {n}.")
 
     if n < 2:
         return n
@@ -158,9 +158,9 @@ def iroot(n: int, k: int) -> int:
     verify_isinstance(n, int)
     verify_isinstance(k, int)
     if not n >= 0:
-        raise ValueError(f"Argument `n` must be non-negative, not {n}.")
+        raise ValueError(f"Argument 'n' must be non-negative, not {n}.")
     if not k >= 1:
-        raise ValueError(f"Argument `k` must be at least 1, not {k}.")
+        raise ValueError(f"Argument 'k' must be at least 1, not {k}.")
 
     if n == 0:
         return 0
@@ -213,9 +213,9 @@ def ilog(n: int, b: int) -> int:
     verify_isinstance(n, int)
     verify_isinstance(b, int)
     if not n > 0:
-        raise ValueError(f"Argument `n` must be positive, not {n}.")
+        raise ValueError(f"Argument 'n' must be positive, not {n}.")
     if not b >= 2:
-        raise ValueError(f"Argument `b` must be at least 2, not {b}.")
+        raise ValueError(f"Argument 'b' must be at least 2, not {b}.")
 
     # https://stackoverflow.com/a/39191163/11694321
     low, b_low, high, b_high = 0, 1, 1, b

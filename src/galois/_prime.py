@@ -140,7 +140,7 @@ def kth_prime(k: int) -> int:
     """
     verify_isinstance(k, int)
     if not 1 <= k <= MAX_K:
-        raise ValueError(f"Argument `k` is out of range of the prime lookup table. The lookup table only contains the first {MAX_K} primes (up to {MAX_N}).")
+        raise ValueError(f"Argument 'k' is out of range of the prime lookup table. The lookup table only contains the first {MAX_K} primes (up to {MAX_N}).")
 
     return PRIMES[k - 1]
 
@@ -287,7 +287,7 @@ def random_prime(bits: int, seed: int | None = None) -> int:
     verify_isinstance(bits, int)
     verify_isinstance(seed, int, optional=True)
     if not bits > 0:
-        raise ValueError(f"Argument `bits` must be positive, not {bits}.")
+        raise ValueError(f"Argument 'bits' must be positive, not {bits}.")
 
     random.seed(seed)
     while True:
@@ -344,7 +344,7 @@ def mersenne_exponents(n: int | None = None) -> list[int]:
 
     verify_isinstance(n, int)
     if not n > 0:
-        raise ValueError(f"Argument `n` must be positive, not {n}.")
+        raise ValueError(f"Argument 'n' must be positive, not {n}.")
 
     return MERSENNE_EXPONENTS[0:bisect.bisect_right(MERSENNE_EXPONENTS, n)]
 
@@ -477,11 +477,11 @@ def fermat_primality_test(n: int, a: int | None = None, rounds: int = 1) -> bool
 
     a = random.randint(2, n - 2) if a is None else a
     if not (n > 2 and n % 2 == 1):
-        raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
+        raise ValueError(f"Argument 'n' must be odd and greater than 2, not {n}.")
     if not 2 <= a <= n - 2:
-        raise ValueError(f"Argument `a` must satisfy 2 <= a <= {n - 2}, not {a}.")
+        raise ValueError(f"Argument 'a' must satisfy 2 <= a <= {n - 2}, not {a}.")
     if not rounds >= 1:
-        raise ValueError(f"Argument `rounds` must be at least 1, not {rounds}.")
+        raise ValueError(f"Argument 'rounds' must be at least 1, not {rounds}.")
 
     for _ in range(rounds):
         if pow(a, n - 1, n) != 1:
@@ -572,11 +572,11 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
         return True
 
     if not (n > 2 and n % 2 == 1):
-        raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
+        raise ValueError(f"Argument 'n' must be odd and greater than 2, not {n}.")
     if not 2 <= a <= n - 2:
-        raise ValueError(f"Argument `a` must satisfy 2 <= a <= {n - 2}, not {a}.")
+        raise ValueError(f"Argument 'a' must satisfy 2 <= a <= {n - 2}, not {a}.")
     if not rounds >= 1:
-        raise ValueError(f"Argument `rounds` must be at least 1, not {rounds}.")
+        raise ValueError(f"Argument 'rounds' must be at least 1, not {rounds}.")
 
     # Write (n - 1) = 2^s * r, for odd r
     r, s = n - 1, 0
@@ -663,7 +663,7 @@ def legendre_symbol(a: int, p: int) -> int:
     verify_isinstance(a, int)
     verify_isinstance(p, int)
     if not (is_prime(p) and p > 2):
-        raise ValueError(f"Argument `p` must be an odd prime greater than 2, not {p}.")
+        raise ValueError(f"Argument 'p' must be an odd prime greater than 2, not {p}.")
 
     return jacobi_symbol(a, p)
 
@@ -716,7 +716,7 @@ def jacobi_symbol(a: int, n: int) -> int:
     verify_isinstance(a, int)
     verify_isinstance(n, int)
     if not (n > 2 and n % 2 == 1):
-        raise ValueError(f"Argument `n` must be an odd integer greater than 2, not {n}.")
+        raise ValueError(f"Argument 'n' must be an odd integer greater than 2, not {n}.")
 
     a = a % n
     if a == 0:
@@ -822,7 +822,7 @@ def factors(n: int) -> tuple[list[int], list[int]]:
     """
     verify_isinstance(n, int)
     if not n > 1:
-        raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
+        raise ValueError(f"Argument 'n' must be greater than 1, not {n}.")
 
     # Step 1
     if is_prime(n):
@@ -1024,9 +1024,9 @@ def trial_division(n: int, B: int | None = None) -> tuple[list[int], list[int], 
 
     B = isqrt(n) if B is None else B
     if not n > 1:
-        raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
+        raise ValueError(f"Argument 'n' must be greater than 1, not {n}.")
     if not B > 2:
-        raise ValueError(f"Argument `B` must be greater than 2, not {B}.")
+        raise ValueError(f"Argument 'B' must be greater than 2, not {B}.")
     B = min(isqrt(n), B)  # There cannot be a prime factor greater than sqrt(n)
 
     p, e = [], []
@@ -1136,9 +1136,9 @@ def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
     verify_isinstance(B2, int, optional=True)
 
     if not (n % 2 == 1 and n > 2):
-        raise ValueError(f"Argument `n` must be odd and greater than 2, not {n}.")
+        raise ValueError(f"Argument 'n' must be odd and greater than 2, not {n}.")
     if not B > 2:
-        raise ValueError(f"Argument `B` must be greater than 2, not {B}.")
+        raise ValueError(f"Argument 'B' must be greater than 2, not {B}.")
 
     a = 2  # A value that is coprime to n (since n is odd)
     check_stride = 10
@@ -1240,9 +1240,9 @@ def pollard_rho(n: int, c: int = 1) -> int:
     verify_isinstance(c, int, optional=True)
 
     if not n > 1:
-        raise ValueError(f"Argument `n` must be greater than 1, not {n}.")
+        raise ValueError(f"Argument 'n' must be greater than 1, not {n}.")
     if not c not in [0, -2]:
-        raise ValueError("Argument `c` cannot be -2 or 0.")
+        raise ValueError("Argument 'c' cannot be -2 or 0.")
     n = abs(n)
 
     f = lambda x: (x**2 + c) % n
@@ -1679,7 +1679,7 @@ def is_smooth(n: int, B: int) -> bool:
     verify_isinstance(n, int)
     verify_isinstance(B, int)
     if not B >= 2:
-        raise ValueError(f"Argument `B` must be at least 2, not {B}.")
+        raise ValueError(f"Argument 'B' must be at least 2, not {B}.")
 
     # Since -1 can factored out of the prime factorization is_square_free(-n) == is_square_free(n)
     n = abs(n)
@@ -1743,7 +1743,7 @@ def is_powersmooth(n: int, B: int) -> bool:
     verify_isinstance(n, int)
     verify_isinstance(B, int)
     if not B >= 2:
-        raise ValueError(f"Argument `B` must be at least 2, not {B}.")
+        raise ValueError(f"Argument 'B' must be at least 2, not {B}.")
 
     # Since -1 can factored out of the prime factorization is_square_free(-n) == is_square_free(n)
     n = abs(n)

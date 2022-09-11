@@ -75,11 +75,11 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
     verify_isinstance(order, int)
     verify_isinstance(degree, int)
     if not is_prime_power(order):
-        raise ValueError(f"Argument `order` must be a prime power, not {order}.")
+        raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
     if not degree >= 1:
-        raise ValueError(f"Argument `degree` must be at least 1, not {degree}. There are no irreducible polynomials with degree 0.")
+        raise ValueError(f"Argument 'degree' must be at least 1, not {degree}. There are no irreducible polynomials with degree 0.")
     if not method in ["min", "max", "random"]:
-        raise ValueError(f"Argument `method` must be in ['min', 'max', 'random'], not {method!r}.")
+        raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
     if method == "min":
         return next(irreducible_polys(order, degree))
@@ -153,9 +153,9 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
     verify_isinstance(degree, int)
     verify_isinstance(reverse, bool)
     if not is_prime_power(order):
-        raise ValueError(f"Argument `order` must be a prime power, not {order}.")
+        raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
     if not degree >= 0:
-        raise ValueError(f"Argument `degree` must be at least 0, not {degree}.")
+        raise ValueError(f"Argument 'degree' must be at least 0, not {degree}.")
 
     field = _factory.FIELD_FACTORY(order)
 
