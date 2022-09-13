@@ -1,5 +1,8 @@
+import builtins
 import inspect
 import sys
+
+SPHINX_BUILD = hasattr(builtins, "__sphinx_build__")
 
 
 def verify_isinstance(argument, types, optional=False):
@@ -45,9 +48,10 @@ def export(obj):
     # Determine the private module that defined the object
     module = sys.modules[obj.__module__]
 
-    # Set the object's module to the package name. This way the REPL will display the object
-    # as galois.obj and not galois._private_module.obj
-    obj.__module__ = "galois"
+    if not SPHINX_BUILD:
+        # Set the object's module to the package name. This way the REPL will display the object
+        # as galois.obj and not galois._private_module.obj
+        obj.__module__ = "galois"
 
     # Append this object to the private module's "all" list
     public_members = getattr(module, "__all__", [])
