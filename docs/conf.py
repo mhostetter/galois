@@ -215,11 +215,11 @@ myst_enable_extensions = ["dollarmath"]
 
 # -- Sphinx Immaterial configs -------------------------------------------------
 
+# Python apigen configuration
 python_apigen_modules = {
     "galois": "api/galois.",
     "galois.typing": "api/galois.typing.",
 }
-
 python_apigen_default_groups = [
     ("class:.*", "Classes"),
     ("data:.*", "Variables"),
@@ -248,14 +248,15 @@ python_apigen_default_order = [
     # (r"method:.*\.is_[a-z,_]*", 31),
     # (r"property:.*\.is_[a-z,_]*", 32),
 ]
-
 python_apigen_order_tiebreaker = "alphabetical"
 python_apigen_case_insensitive_filesystem = False
 python_apigen_show_base_classes = True
 
+# Python domain directive configuration
 python_type_aliases = autodoc_type_aliases
-python_transform_type_annotations_pep585 = False
+python_module_names_to_strip_from_xrefs = ["collections.abc"]
 
+# General API configuration
 object_description_options = [
     ("py:.*", dict(include_rubrics_in_toc=True)),
 ]
