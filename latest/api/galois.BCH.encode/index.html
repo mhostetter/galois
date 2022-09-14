@@ -7288,7 +7288,7 @@
 
   <dl class="py method objdesc">
 <dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">BCH.</span></span><span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-message" title="galois.BCH.encode.message (Python parameter) — The message as either a k-length vector or (N, k) matrix, where N is the number of messages. For systematic codes, message lengths less than k may be provided to produce shortened codewords."><span class="n"><span class="pre">message</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.ArrayLike/" title="galois.typing.ArrayLike (Python data) — A Union representing objects that can be coerced into a Galois field array."><span class="pre">ArrayLike</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-parity_only" title="galois.BCH.encode.parity_only (Python parameter) — Optionally specify whether to return only the parity bits. This only applies to systematic codes. The default is False."><span class="n"><span class="pre">parity_only</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.GF2/" title="galois.GF2 (Python class) — A FieldArray subclass over \mathrm{GF}(2)."><span class="pre">GF2</span></a></span></span></span></dt>
+<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">BCH.</span></span><span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-message" title="galois.BCH.encode.message (Python parameter) — The message as either a k-length vector or (N, k) matrix, where N is the number of messages. For systematic codes, message lengths less than k may be provided to produce shortened codewords."><span class="n"><span class="pre">message</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.ArrayLike/" title="galois.typing.ArrayLike (Python data) — A Union representing objects that can be coerced into a Galois field array."><span class="pre">ArrayLike</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-parity_only" title="galois.BCH.encode.parity_only (Python parameter) — Optionally specify whether to return only the parity bits. This only applies to systematic codes. The default is False."><span class="n"><span class="pre">parity_only</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.GF2/" title="galois._fields._gf2.GF2 (Python class)"><span class="pre">GF2</span></a></span></span></span></dt>
 <dd><p>Encodes the message <span class="math notranslate nohighlight">\(\mathbf{m}\)</span> into the BCH codeword <span class="math notranslate nohighlight">\(\mathbf{c}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
@@ -7330,15 +7330,15 @@ Vector</label><div class="sd-tab-content docutils">
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([0, 1, 0, 1, 1, 1, 1], order=2)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([0, 1, 0, 1, 0, 0, 0], order=2)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1], order=2)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1], order=2)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity bits only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
-<span class="gh">Out[5]: </span><span class="go">GF([0, 0, 1, 0, 1, 1, 0, 1], order=2)</span>
+<span class="gh">Out[5]: </span><span class="go">GF([0, 1, 1, 0, 1, 0, 0, 1], order=2)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7351,15 +7351,15 @@ Vector (shortened)</label><div class="sd-tab-content docutils">
 <span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="gp">In [8]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[8]: </span><span class="go">GF([0, 0, 0, 1], order=2)</span>
+<span class="gh">Out[8]: </span><span class="go">GF([0, 1, 0, 0], order=2)</span>
 
 <span class="gp">In [9]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[9]: </span><span class="go">GF([0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1], order=2)</span>
+<span class="gh">Out[9]: </span><span class="go">GF([0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0], order=2)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity bits only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
-<span class="gh">Out[10]: </span><span class="go">GF([1, 1, 0, 1, 0, 0, 0, 1], order=2)</span>
+<span class="gh">Out[10]: </span><span class="go">GF([1, 1, 1, 0, 0, 1, 1, 0], order=2)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7373,23 +7373,23 @@ Matrix</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [13]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[13]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 1, 1, 1, 1],</span>
-<span class="go">    [0, 1, 1, 0, 0, 0, 0],</span>
-<span class="go">    [1, 1, 1, 0, 1, 0, 1]], order=2)</span>
+<span class="go">GF([[1, 0, 1, 1, 0, 0, 1],</span>
+<span class="go">    [1, 0, 1, 1, 1, 1, 0],</span>
+<span class="go">    [0, 1, 0, 0, 0, 1, 0]], order=2)</span>
 
 <span class="gp">In [14]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[14]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1],</span>
-<span class="go">    [0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0],</span>
-<span class="go">    [1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1]], order=2)</span>
+<span class="go">GF([[1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0],</span>
+<span class="go">    [1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0],</span>
+<span class="go">    [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity bits only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [15]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
 <span class="gh">Out[15]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 0, 0, 1, 0, 1],</span>
-<span class="go">    [0, 1, 0, 0, 1, 1, 1, 0],</span>
-<span class="go">    [1, 0, 0, 1, 0, 0, 0, 1]], order=2)</span>
+<span class="go">GF([[0, 0, 0, 1, 1, 1, 1, 0],</span>
+<span class="go">    [0, 1, 0, 1, 1, 0, 1, 0],</span>
+<span class="go">    [0, 0, 0, 0, 0, 1, 1, 1]], order=2)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7403,23 +7403,23 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [18]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[18]: </span><span class="go"></span>
-<span class="go">GF([[0, 0, 1, 0],</span>
-<span class="go">    [1, 0, 0, 1],</span>
-<span class="go">    [0, 1, 0, 1]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 0],</span>
+<span class="go">    [1, 0, 0, 0],</span>
+<span class="go">    [0, 1, 0, 0]], order=2)</span>
 
 <span class="gp">In [19]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[19]: </span><span class="go"></span>
-<span class="go">GF([[0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1],</span>
-<span class="go">    [1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0],</span>
-<span class="go">    [0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],</span>
+<span class="go">    [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],</span>
+<span class="go">    [0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity bits only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [20]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
 <span class="gh">Out[20]: </span><span class="go"></span>
-<span class="go">GF([[0, 1, 1, 1, 0, 0, 1, 1],</span>
-<span class="go">    [1, 1, 0, 0, 1, 1, 0, 0],</span>
-<span class="go">    [0, 0, 1, 1, 0, 1, 1, 1]], order=2)</span>
+<span class="go">GF([[0, 0, 0, 1, 1, 1, 0, 1],</span>
+<span class="go">    [0, 0, 0, 1, 1, 1, 0, 1],</span>
+<span class="go">    [1, 1, 1, 0, 0, 1, 1, 0]], order=2)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7434,7 +7434,7 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
   <small>
     
       Last update:
-      Sep 11, 2022
+      Sep 14, 2022
     
   </small>
 </div>
