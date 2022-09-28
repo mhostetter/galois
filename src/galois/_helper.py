@@ -28,7 +28,14 @@ def verify_issubclass(argument, types, optional=False):
     if optional and argument is None:
         return
 
-    if not issubclass(argument, types):
+    # Need this try/except because issubclass(instance, (classes,)) will itself raise a TypeError.
+    # Instead, we'd like to raise our own TypeError.
+    try:
+        valid = issubclass(argument, types)
+    except TypeError:
+        valid = False
+
+    if not valid:
         frame = inspect.currentframe()
         frame = inspect.getouterframes(frame)[1]
         string = inspect.getframeinfo(frame[0]).code_context[0].strip()
