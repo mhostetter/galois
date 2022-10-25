@@ -91,11 +91,15 @@ jobs:
 
             if github_event_name == "push" and github_ref == "refs/heads/master":
                 name = "latest"
+                print("name 1:", name)
             elif github_event_name == "workflow_dispatch":
                 name = workflow_dispatch_tag
+                print("name 2:", name)
             elif github_event_name == "workflow_call" and github_ref.startswith("refs/tags/"):
                 name = github_ref.split("refs/tags/")[1]
+                print("name 3:", name)
             else:
+                print("name 4:")
                 raise RuntimeError
 
             set_output("name", name)
