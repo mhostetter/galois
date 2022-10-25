@@ -51,13 +51,14 @@ jobs:
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
-        uses: tj-actions/glob@v10
+        uses: tj-actions/glob@v15
         id: glob
         with:
-          files: dist/galois-*.whl
+          files: galois-*.whl
+          working-directory: dist/
 
       - name: Install the `galois` package wheel with upgraded [dev]
-        run: python3 -m pip install --upgrade ${{ steps.glob.outputs.paths }}[dev]
+        run: python3 -m pip install --upgrade dist/${{ steps.glob.outputs.paths }}[dev]
 
       - name: Test with pytest
         run: python3 -m pytest --showlocals -n auto --cov=galois --cov-report=xml tests/
@@ -97,16 +98,17 @@ jobs:
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
-        uses: tj-actions/glob@v10
+        uses: tj-actions/glob@v15
         id: glob
         with:
-          files: dist/galois-*.whl
+          files: galois-*.whl
+          working-directory: dist/
 
       - name: Install minimum package dependencies
         run: python3 -m pip install -r requirements-min.txt
 
       - name: Install the `galois` package wheel with [dev]
-        run: python3 -m pip install ${{ steps.glob.outputs.paths }}[dev]
+        run: python3 -m pip install dist/${{ steps.glob.outputs.paths }}[dev]
 
       - name: Test with pytest
         run: python3 -m pytest --showlocals -n auto tests/
@@ -146,13 +148,14 @@ jobs:
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
-        uses: tj-actions/glob@v10
+        uses: tj-actions/glob@v15
         id: glob
         with:
-          files: dist/galois-*.whl
+          files: galois-*.whl
+          working-directory: dist/
 
       - name: Install the `galois` package wheel with upgraded [dev]
-        run: python3 -m pip install --upgrade ${{ steps.glob.outputs.paths }}[dev]
+        run: python3 -m pip install --upgrade dist/${{ steps.glob.outputs.paths }}[dev]
 
       - name: Test with pytest
         run: python3 -m pytest --showlocals -n auto tests/
