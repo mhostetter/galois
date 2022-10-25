@@ -53,7 +53,7 @@ dev = [
     "pytest",
     "pytest-cov[toml]",
     "pytest-xdist",
-    "pytest-benchmark",
+    # "pytest-benchmark",  # Remove until py dependency is fixed (https://github.com/ionelmc/pytest-benchmark/issues/226)
 ]
 
 [project.urls]
