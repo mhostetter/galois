@@ -7288,10 +7288,10 @@ Vector</label><div class="sd-tab-content docutils">
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([ 5,  2, 11, 10, 13,  0,  2,  0, 14], order=2^4)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([11,  6,  6,  8, 11,  7,  2, 11,  1], order=2^4)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([ 5,  2, 11, 10, 13,  0,  2,  0, 14,  1, 10, 13,  1, 13,  8], order=2^4)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([11,  6,  6,  8, 11,  7,  2, 11,  1,  4,  2, 10,  3,  7,  1], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codeword.</p>
@@ -7304,10 +7304,10 @@ Vector</label><div class="sd-tab-content docutils">
 <span class="gh">Out[6]: </span><span class="go">7</span>
 
 <span class="gp">In [7]: </span><span class="n">e</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">e</span>
-<span class="gh">Out[7]: </span><span class="go">GF([11,  1,  3,  1, 15,  7], order=2^4)</span>
+<span class="gh">Out[7]: </span><span class="go">GF([ 4,  9, 14, 13,  3, 10], order=2^4)</span>
 
 <span class="gp">In [8]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rs</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[8]: </span><span class="go">GF([14,  3,  8, 11,  2,  7,  2,  0, 14,  1, 10, 13,  1, 13,  8], order=2^4)</span>
+<span class="gh">Out[8]: </span><span class="go">GF([15, 15,  8,  5,  8, 13,  2, 11,  1,  4,  2, 10,  3,  7,  1], order=2^4)</span>
 
 <span class="gp">In [9]: </span><span class="n">rs</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[9]: </span><span class="go">True</span>
@@ -7323,10 +7323,10 @@ Vector (shortened)</label><div class="sd-tab-content docutils">
 <span class="gp">In [11]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [12]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[12]: </span><span class="go">GF([13, 10,  7, 11, 11], order=2^4)</span>
+<span class="gh">Out[12]: </span><span class="go">GF([ 6,  8, 11, 14, 11], order=2^4)</span>
 
 <span class="gp">In [13]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[13]: </span><span class="go">GF([13, 10,  7, 11, 11,  9, 13, 13,  0,  6,  8], order=2^4)</span>
+<span class="gh">Out[13]: </span><span class="go">GF([ 6,  8, 11, 14, 11,  0, 12, 14,  9, 10,  1], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codeword.</p>
@@ -7339,10 +7339,10 @@ Vector (shortened)</label><div class="sd-tab-content docutils">
 <span class="gh">Out[15]: </span><span class="go">7</span>
 
 <span class="gp">In [16]: </span><span class="n">e</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">e</span>
-<span class="gh">Out[16]: </span><span class="go">GF([14,  8,  5, 15,  7,  7], order=2^4)</span>
+<span class="gh">Out[16]: </span><span class="go">GF([ 8, 11, 15,  5,  9, 15], order=2^4)</span>
 
 <span class="gp">In [17]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rs</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[17]: </span><span class="go">GF([ 3,  2,  2,  4, 12, 14, 13, 13,  0,  6,  8], order=2^4)</span>
+<span class="gh">Out[17]: </span><span class="go">GF([14,  3,  4, 11,  2, 15, 12, 14,  9, 10,  1], order=2^4)</span>
 
 <span class="gp">In [18]: </span><span class="n">rs</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[18]: </span><span class="go">True</span>
@@ -7359,15 +7359,15 @@ Matrix</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [21]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[21]: </span><span class="go"></span>
-<span class="go">GF([[ 0,  3,  7,  2,  7,  0, 11,  1,  2],</span>
-<span class="go">    [ 6,  7,  7,  1,  4, 11, 15,  9,  2],</span>
-<span class="go">    [ 2, 15,  3, 13,  2,  7, 13, 10,  1]], order=2^4)</span>
+<span class="go">GF([[ 3, 10,  2,  0, 10,  2, 12,  9,  0],</span>
+<span class="go">    [ 8,  6,  0,  2,  4, 14, 15,  0, 14],</span>
+<span class="go">    [12, 14, 13, 14, 14, 13,  2,  9,  7]], order=2^4)</span>
 
 <span class="gp">In [22]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[22]: </span><span class="go"></span>
-<span class="go">GF([[ 0,  3,  7,  2,  7,  0, 11,  1,  2, 13,  1,  5,  5, 15,  8],</span>
-<span class="go">    [ 6,  7,  7,  1,  4, 11, 15,  9,  2,  5,  3, 10,  1, 15,  1],</span>
-<span class="go">    [ 2, 15,  3, 13,  2,  7, 13, 10,  1, 11,  7,  1,  7,  2,  4]],</span>
+<span class="go">GF([[ 3, 10,  2,  0, 10,  2, 12,  9,  0,  6,  7, 13,  4, 11,  5],</span>
+<span class="go">    [ 8,  6,  0,  2,  4, 14, 15,  0, 14,  3, 11, 13,  7,  2,  5],</span>
+<span class="go">    [12, 14, 13, 14, 14, 13,  2,  9,  7,  2,  2,  2,  4,  9,  8]],</span>
 <span class="go">   order=2^4)</span>
 </code></pre></div>
 </div>
@@ -7388,9 +7388,9 @@ Matrix</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [28]: </span><span class="n">c</span>
 <span class="gh">Out[28]: </span><span class="go"></span>
-<span class="go">GF([[14,  3,  7,  2,  7,  0, 11,  1,  2, 13,  1,  5,  5, 15,  8],</span>
-<span class="go">    [ 4,  4,  7,  1,  4, 11, 15,  9,  2,  5,  3, 10,  1, 15,  1],</span>
-<span class="go">    [ 7, 11,  8,  1, 11,  0, 13, 10,  1, 11,  7,  1,  7,  2,  4]],</span>
+<span class="go">GF([[ 6, 10,  2,  0, 10,  2, 12,  9,  0,  6,  7, 13,  4, 11,  5],</span>
+<span class="go">    [12,  7,  0,  2,  4, 14, 15,  0, 14,  3, 11, 13,  7,  2,  5],</span>
+<span class="go">    [ 3,  0, 15, 10,  2, 14,  2,  9,  7,  2,  2,  2,  4,  9,  8]],</span>
 <span class="go">   order=2^4)</span>
 
 <span class="gp">In [29]: </span><span class="n">rs</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
@@ -7408,15 +7408,15 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [32]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[32]: </span><span class="go"></span>
-<span class="go">GF([[ 9,  9, 14, 13,  7],</span>
-<span class="go">    [ 9, 11,  6,  3,  6],</span>
-<span class="go">    [ 5, 10,  1,  5, 12]], order=2^4)</span>
+<span class="go">GF([[11, 12,  2,  4,  2],</span>
+<span class="go">    [ 2,  0, 10,  5,  3],</span>
+<span class="go">    [ 8,  4, 13,  5, 12]], order=2^4)</span>
 
 <span class="gp">In [33]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[33]: </span><span class="go"></span>
-<span class="go">GF([[ 9,  9, 14, 13,  7, 13,  4, 15,  4, 15,  3],</span>
-<span class="go">    [ 9, 11,  6,  3,  6,  6,  8,  2,  6,  4,  9],</span>
-<span class="go">    [ 5, 10,  1,  5, 12, 13,  0,  1, 15,  3,  4]], order=2^4)</span>
+<span class="go">GF([[11, 12,  2,  4,  2,  4,  9,  8,  5, 10,  1],</span>
+<span class="go">    [ 2,  0, 10,  5,  3, 14,  6,  8,  6,  0,  3],</span>
+<span class="go">    [ 8,  4, 13,  5, 12,  1, 14,  5,  6,  5,  9]], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codewords.</p>
@@ -7436,9 +7436,9 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [39]: </span><span class="n">c</span>
 <span class="gh">Out[39]: </span><span class="go"></span>
-<span class="go">GF([[ 2,  9, 14, 13,  7, 13,  4, 15,  4, 15,  3],</span>
-<span class="go">    [ 8, 15,  6,  3,  6,  6,  8,  2,  6,  4,  9],</span>
-<span class="go">    [ 9,  1, 14, 11, 13,  8,  0,  1, 15,  3,  4]], order=2^4)</span>
+<span class="go">GF([[ 9, 12,  2,  4,  2,  4,  9,  8,  5, 10,  1],</span>
+<span class="go">    [14, 10, 10,  5,  3, 14,  6,  8,  6,  0,  3],</span>
+<span class="go">    [10,  1, 10, 12, 10,  0, 14,  5,  6,  5,  9]], order=2^4)</span>
 
 <span class="gp">In [40]: </span><span class="n">rs</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[40]: </span><span class="go">array([ True,  True,  True])</span>
@@ -7456,7 +7456,7 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
   <small>
     
       Last update:
-      Sep 14, 2022
+      Oct 25, 2022
     
   </small>
 </div>

@@ -7343,7 +7343,7 @@ polynomial.</p>
 <span class="gh">Out[2]: </span><span class="go">Poly(x^3 + 6x^2 + 6x + 4, GF(7))</span>
 
 <span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + 2x^2 + x + 4, GF(7))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + 5x^2 + 4, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Notice <a class="reference internal" href="#" title="galois.primitive_poly (Python function) — Returns a monic primitive polynomial f(x) over \mathrm{GF}(q) with degree m."><code class="xref py py-func docutils literal notranslate"><span class="pre">primitive_poly()</span></code></a> returns the lexicographically-minimal primitive polynomial but
@@ -7368,13 +7368,13 @@ with smaller Conway polynomials. This is sometimes the same polynomial.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [9]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[9]: </span><span class="go">Poly(x^5 + 2x^4 + 3x^3 + x^2 + 2x + 4, GF(7))</span>
+<span class="gh">Out[9]: </span><span class="go">Poly(x^5 + 6x^4 + 6x^3 + x^2 + 3x + 2, GF(7))</span>
 
 <span class="gp">In [10]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_primitive</span><span class="p">()</span>
 <span class="gh">Out[10]: </span><span class="go">True</span>
 
 <span class="gp">In [11]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[11]: </span><span class="go">Poly(3x^5 + 6x^4 + 2x^3 + 3x^2 + 6x + 5, GF(7))</span>
+<span class="gh">Out[11]: </span><span class="go">Poly(3x^5 + 4x^4 + 4x^3 + 3x^2 + 2x + 6, GF(7))</span>
 
 <span class="gp">In [12]: </span><span class="n">g</span><span class="o">.</span><span class="n">is_primitive</span><span class="p">()</span>
 <span class="gh">Out[12]: </span><span class="go">True</span>
@@ -7390,7 +7390,7 @@ with smaller Conway polynomials. This is sometimes the same polynomial.</p>
   <small>
     
       Last update:
-      Sep 14, 2022
+      Oct 25, 2022
     
   </small>
 </div>
