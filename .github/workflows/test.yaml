@@ -64,7 +64,7 @@ jobs:
         run: python3 -m pytest --showlocals -n auto --cov=galois --cov-report=xml tests/
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: false
           verbose: true
@@ -114,7 +114,7 @@ jobs:
         run: python3 -m pytest --showlocals -n auto tests/
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: false
           verbose: true
@@ -161,7 +161,7 @@ jobs:
         run: python3 -m pytest --showlocals -n auto tests/
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: false
           verbose: true
