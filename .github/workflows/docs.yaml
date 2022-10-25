@@ -50,7 +50,7 @@ jobs:
         run: tar -czvf docs.tar.gz -C docs/build/ .
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: docs
           path: docs.tar.gz
