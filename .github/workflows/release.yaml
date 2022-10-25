@@ -27,13 +27,13 @@ jobs:
         id: current
         run: |
           version=$(git tag --sort=-version:refname | head -n 1)
-          echo "::set-output name=version::${version}"
+          echo "version=${version}" >> $GITHUB_OUTPUT
 
       - name: Get previous version
         id: previous
         run: |
           version=$(git tag --sort=-version:refname | head -n 2 | tail -1)
-          echo "::set-output name=version::${version}"
+          echo "version=${version}" >> $GITHUB_OUTPUT
 
       - name: Construct release notes
         run: |
