@@ -62,27 +62,27 @@ Create a polynomial by specifying its non-zero degrees and coefficients using :f
 Create a polynomial from its integer representation using :func:`~galois.Poly.Int`. Additionally, one may create a polynomial from
 a binary, octal, or hexadecimal string of its integer representation.
 
-.. tab-set::
+.. md-tab-set::
 
-   .. tab-item:: Integer
+   .. md-tab-item:: Integer
 
       .. ipython:: python
 
          galois.Poly.Int(268, field=GF)
 
-   .. tab-item:: Binary string
+   .. md-tab-item:: Binary string
 
       .. ipython:: python
 
          galois.Poly.Int(int("0b1011", 2))
 
-   .. tab-item:: Octal string
+   .. md-tab-item:: Octal string
 
       .. ipython:: python
 
          galois.Poly.Int(int("0o5034", 8), field=galois.GF(2**3))
 
-   .. tab-item:: Hex string
+   .. md-tab-item:: Hex string
 
       .. ipython:: python
 
@@ -153,29 +153,29 @@ and :obj:`~galois.Poly.nonzero_coeffs`.
 Find the integer equivalent of the polynomial using `int()`, see :func:`~galois.Poly.__int__`. Additionally, one may
 convert a polynomial into the binary, octal, or hexadecimal string of its integer representation.
 
-.. tab-set::
+.. md-tab-set::
 
-   .. tab-item:: Integer
+   .. md-tab-item:: Integer
 
       .. ipython:: python
 
          int(f)
 
-   .. tab-item:: Binary string
+   .. md-tab-item:: Binary string
 
       .. ipython:: python
 
          g = galois.Poly([1, 0, 1, 1]); g
          bin(g)
 
-   .. tab-item:: Octal string
+   .. md-tab-item:: Octal string
 
       .. ipython:: python
 
          g = galois.Poly([5, 0, 3, 4], field=galois.GF(2**3)); g
          oct(g)
 
-   .. tab-item:: Hex string
+   .. md-tab-item:: Hex string
 
       .. ipython:: python
 

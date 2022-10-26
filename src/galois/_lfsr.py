@@ -216,9 +216,9 @@ class FLFSR(_LFSR):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: GF(2)
+        .. md-tab-item:: GF(2)
 
             Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2)`.
 
@@ -236,7 +236,7 @@ class FLFSR(_LFSR):
                 lfsr.step(10)
                 lfsr.state
 
-        .. tab-item:: GF(p)
+        .. md-tab-item:: GF(p)
 
             Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(7)`.
 
@@ -254,7 +254,7 @@ class FLFSR(_LFSR):
                 lfsr.step(10)
                 lfsr.state
 
-        .. tab-item:: GF(2^m)
+        .. md-tab-item:: GF(2^m)
 
             Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2^3)`.
 
@@ -272,7 +272,7 @@ class FLFSR(_LFSR):
                 lfsr.step(10)
                 lfsr.state
 
-        .. tab-item:: GF(p^m)
+        .. md-tab-item:: GF(p^m)
 
             Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(3^3)`.
 
@@ -398,9 +398,9 @@ class FLFSR(_LFSR):
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Initial state
+            .. md-tab-item:: Initial state
 
                 Step the Fibonacci LFSR 10 steps to modify its state.
 
@@ -419,7 +419,7 @@ class FLFSR(_LFSR):
                     lfsr.reset()
                     lfsr.state
 
-            .. tab-item:: Specific state
+            .. md-tab-item:: Specific state
 
                 Create an Fibonacci LFSR and view its initial state.
 
@@ -458,9 +458,9 @@ class FLFSR(_LFSR):
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Scalar output
+            .. md-tab-item:: Scalar output
 
                 Step the Fibonacci LFSR one output at a time. Notice the first :math:`n` outputs of a Fibonacci LFSR are its
                 state reversed.
@@ -477,7 +477,7 @@ class FLFSR(_LFSR):
                     # Ending state
                     lfsr.state
 
-            .. tab-item:: Vector output
+            .. md-tab-item:: Vector output
 
                 Step the Fibonacci LFSR 5 steps in one call. This is more efficient than iterating one output at a time. Notice
                 the output and ending state are the same from the *Scalar output* tab.
@@ -491,7 +491,7 @@ class FLFSR(_LFSR):
                     # Ending state
                     lfsr.state
 
-            .. tab-item:: Step backwards
+            .. md-tab-item:: Step backwards
 
                 Step the Fibonacci LFSR 10 steps forward.
 
@@ -880,9 +880,9 @@ class GLFSR(_LFSR):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: GF(2)
+        .. md-tab-item:: GF(2)
 
             Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2)`.
 
@@ -900,7 +900,7 @@ class GLFSR(_LFSR):
                 lfsr.step(10)
                 lfsr.state
 
-        .. tab-item:: GF(p)
+        .. md-tab-item:: GF(p)
 
             Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(7)`.
 
@@ -918,7 +918,7 @@ class GLFSR(_LFSR):
                 lfsr.step(10)
                 lfsr.state
 
-        .. tab-item:: GF(2^m)
+        .. md-tab-item:: GF(2^m)
 
             Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2^3)`.
 
@@ -936,7 +936,7 @@ class GLFSR(_LFSR):
                 lfsr.step(10)
                 lfsr.state
 
-        .. tab-item:: GF(p^m)
+        .. md-tab-item:: GF(p^m)
 
             Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(3^3)`.
 
@@ -1064,9 +1064,9 @@ class GLFSR(_LFSR):
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Initial state
+            .. md-tab-item:: Initial state
 
                 Step the Galois LFSR 10 steps to modify its state.
 
@@ -1085,7 +1085,7 @@ class GLFSR(_LFSR):
                     lfsr.reset()
                     lfsr.state
 
-            .. tab-item:: Specific state
+            .. md-tab-item:: Specific state
 
                 Create an Galois LFSR and view its initial state.
 
@@ -1124,9 +1124,9 @@ class GLFSR(_LFSR):
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Scalar output
+            .. md-tab-item:: Scalar output
 
                 Step the Galois LFSR one output at a time.
 
@@ -1142,7 +1142,7 @@ class GLFSR(_LFSR):
                     # Ending state
                     lfsr.state
 
-            .. tab-item:: Vector output
+            .. md-tab-item:: Vector output
 
                 Step the Galois LFSR 5 steps in one call. This is more efficient than iterating one output at a time. Notice
                 the output and ending state are the same from the *Scalar output* tab.
@@ -1156,7 +1156,7 @@ class GLFSR(_LFSR):
                     # Ending state
                     lfsr.state
 
-            .. tab-item:: Step backwards
+            .. md-tab-item:: Step backwards
 
                 Step the Galois LFSR 10 steps forward.
 

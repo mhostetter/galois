@@ -98,9 +98,9 @@ def GF(
     --------
     Create a :obj:`~galois.FieldArray` subclass for each type of finite field.
 
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: GF(2)
+        .. md-tab-item:: GF(2)
 
             Construct the binary field.
 
@@ -109,7 +109,7 @@ def GF(
                 GF = galois.GF(2)
                 print(GF.properties)
 
-        .. tab-item:: GF(p)
+        .. md-tab-item:: GF(p)
 
             Construct a prime field.
 
@@ -118,7 +118,7 @@ def GF(
                 GF = galois.GF(31)
                 print(GF.properties)
 
-        .. tab-item:: GF(2^m)
+        .. md-tab-item:: GF(2^m)
 
             Construct a binary extension field. Notice the default irreducible polynomial is primitive and :math:`x`
             is a primitive element.
@@ -128,7 +128,7 @@ def GF(
                 GF = galois.GF(2**8)
                 print(GF.properties)
 
-        .. tab-item:: GF(p^m)
+        .. md-tab-item:: GF(p^m)
 
             Construct a prime extension field. Notice the default irreducible polynomial is primitive and :math:`x`
             is a primitive element.
@@ -140,9 +140,9 @@ def GF(
 
     Create a :obj:`~galois.FieldArray` subclass for extension fields and specify their irreducible polynomials.
 
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: GF(2^m)
+        .. md-tab-item:: GF(2^m)
 
             Construct the :math:`\mathrm{GF}(2^8)` field that is used in AES. Notice the irreducible polynomial is not primitive and
             :math:`x` is not a primitive element.
@@ -152,7 +152,7 @@ def GF(
                 GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
                 print(GF.properties)
 
-        .. tab-item:: GF(p^m)
+        .. md-tab-item:: GF(p^m)
 
             Construct :math:`\mathrm{GF}(3^5)` with an irreducible, but not primitive, polynomial. Notice that :math:`x` is not a
             primitive element.
@@ -164,9 +164,9 @@ def GF(
 
     Finite fields with arbitrarily-large orders are supported.
 
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: GF(p)
+        .. md-tab-item:: GF(p)
 
             Construct a large prime field.
 
@@ -175,7 +175,7 @@ def GF(
                 GF = galois.GF(36893488147419103183)
                 print(GF.properties)
 
-        .. tab-item:: GF(2^m)
+        .. md-tab-item:: GF(2^m)
 
             Construct a large binary extension field.
 
@@ -184,7 +184,7 @@ def GF(
                 GF = galois.GF(2**100)
                 print(GF.properties)
 
-        .. tab-item:: GF(p^m)
+        .. md-tab-item:: GF(p^m)
 
             Construct a large prime extension field.
 

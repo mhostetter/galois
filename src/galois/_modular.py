@@ -271,9 +271,9 @@ def is_cyclic(n: int) -> bool:
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: n = 14
+        .. md-tab-item:: n = 14
 
             The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives of 14.
 
@@ -313,7 +313,7 @@ def is_cyclic(n: int) -> bool:
                 g = galois.primitive_root(n, method="max"); g
                 [pow(g, i, n) for i in range(0, phi)]
 
-        .. tab-item:: n = 15
+        .. md-tab-item:: n = 15
 
             A non-cyclic group is :math:`(\mathbb{Z}/15\mathbb{Z}){^\times} = \{1, 2, 4, 7, 8, 11, 13, 14\}`.
 
@@ -353,7 +353,7 @@ def is_cyclic(n: int) -> bool:
 
                 galois.primitive_root(n)
 
-        .. tab-item:: Prime fields
+        .. md-tab-item:: Prime fields
 
             For prime :math:`n`, a primitive root modulo :math:`n` is also a primitive element of the Galois field :math:`\mathrm{GF}(n)`.
 
@@ -451,9 +451,9 @@ def primitive_root(n: int, start: int = 1, stop: int | None = None, method: Lite
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: n = 14
+        .. md-tab-item:: n = 14
 
             The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives of 14.
 
@@ -493,7 +493,7 @@ def primitive_root(n: int, start: int = 1, stop: int | None = None, method: Lite
                 g = galois.primitive_root(n, method="max"); g
                 [pow(g, i, n) for i in range(0, phi)]
 
-        .. tab-item:: n = 15
+        .. md-tab-item:: n = 15
 
             A non-cyclic group is :math:`(\mathbb{Z}/15\mathbb{Z}){^\times} = \{1, 2, 4, 7, 8, 11, 13, 14\}`.
 
@@ -533,7 +533,7 @@ def primitive_root(n: int, start: int = 1, stop: int | None = None, method: Lite
 
                 galois.primitive_root(n)
 
-        .. tab-item:: Very large n
+        .. md-tab-item:: Very large n
 
             The algorithm is also efficient for very large :math:`n`.
 

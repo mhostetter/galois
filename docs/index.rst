@@ -65,9 +65,9 @@ Citation
 
 If this library was useful to you in your research, please cite us. Following the `GitHub citation standards <https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/about-citation-files>`_, here is the recommended citation.
 
-.. tab-set::
+.. md-tab-set::
 
-   .. tab-item:: BibTeX
+   .. md-tab-item:: BibTeX
 
       .. code-block:: latex
 
@@ -79,7 +79,7 @@ If this library was useful to you in your research, please cite us. Following th
             url = {https://github.com/mhostetter/galois},
          }
 
-   .. tab-item:: APA
+   .. md-tab-item:: APA
 
       .. code-block:: text
 

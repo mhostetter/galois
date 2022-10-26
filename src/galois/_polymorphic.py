@@ -65,9 +65,9 @@ def gcd(a, b):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
+        .. md-tab-item:: Integers
 
             Compute the GCD of two integers.
 
@@ -75,7 +75,7 @@ def gcd(a, b):
 
                 galois.gcd(12, 16)
 
-        .. tab-item:: Polynomials
+        .. md-tab-item:: Polynomials
 
             Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
 
@@ -145,9 +145,9 @@ def egcd(a, b):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
+        .. md-tab-item:: Integers
 
             Compute the extended GCD of two integers.
 
@@ -158,7 +158,7 @@ def egcd(a, b):
                 gcd, s, t
                 a*s + b*t == gcd
 
-        .. tab-item:: Polynomials
+        .. md-tab-item:: Polynomials
 
             Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
 
@@ -216,9 +216,9 @@ def lcm(*values):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
+        .. md-tab-item:: Integers
 
             Compute the LCM of three integers.
 
@@ -226,7 +226,7 @@ def lcm(*values):
 
                 galois.lcm(2, 4, 14)
 
-        .. tab-item:: Polynomials
+        .. md-tab-item:: Polynomials
 
             Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
 
@@ -285,9 +285,9 @@ def prod(*values):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
+        .. md-tab-item:: Integers
 
             Compute the product of three integers.
 
@@ -295,7 +295,7 @@ def prod(*values):
 
                 galois.prod(2, 4, 14)
 
-        .. tab-item:: Polynomials
+        .. md-tab-item:: Polynomials
 
             Generate random polynomials over :math:`\mathrm{GF}(7)`.
 
@@ -357,9 +357,9 @@ def are_coprime(*values):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
+        .. md-tab-item:: Integers
 
             Determine if a set of integers are pairwise coprime.
 
@@ -368,7 +368,7 @@ def are_coprime(*values):
                 galois.are_coprime(3, 4, 5)
                 galois.are_coprime(3, 7, 9, 11)
 
-        .. tab-item:: Polynomials
+        .. md-tab-item:: Polynomials
 
             Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
 
@@ -439,9 +439,9 @@ def crt(remainders, moduli):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
+        .. md-tab-item:: Integers
 
             Define a system of integer congruences.
 
@@ -464,7 +464,7 @@ def crt(remainders, moduli):
                     ai = x % m[i]
                     print(ai, ai == a[i])
 
-        .. tab-item:: Polynomials
+        .. md-tab-item:: Polynomials
 
             Define a system of polynomial congruences over :math:`\mathrm{GF}(7)`.
 
@@ -561,10 +561,9 @@ def factors(value):
 
     Notes
     -----
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
-            :sync: integers
+        .. md-tab-item:: Integers
 
             This function factors a positive integer :math:`n` into its :math:`k` prime factors such that :math:`n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}`.
 
@@ -578,8 +577,7 @@ def factors(value):
             4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are found.
                See :func:`~galois.pollard_rho`.
 
-        .. tab-item:: Polynomials
-            :sync: polynomials
+        .. md-tab-item:: Polynomials
 
             This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
 
@@ -601,10 +599,9 @@ def factors(value):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
-            :sync: integers
+        .. md-tab-item:: Integers
 
             Construct a composite integer from prime factors.
 
@@ -618,8 +615,7 @@ def factors(value):
 
                 galois.factors(n)
 
-        .. tab-item:: Polynomials
-            :sync: polynomials
+        .. md-tab-item:: Polynomials
 
             Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
 
@@ -680,10 +676,9 @@ def is_square_free(value):
 
     Notes
     -----
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
-            :sync: integers
+        .. md-tab-item:: Integers
 
             A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
             of a square-free integer :math:`n` is
@@ -691,8 +686,7 @@ def is_square_free(value):
             .. math::
                 n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
 
-        .. tab-item:: Polynomials
-            :sync: polynomials
+        .. md-tab-item:: Polynomials
 
             A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one. Therefore,
             its canonical factorization is
@@ -704,10 +698,9 @@ def is_square_free(value):
 
     Examples
     --------
-    .. tab-set::
+    .. md-tab-set::
 
-        .. tab-item:: Integers
-            :sync: integers
+        .. md-tab-item:: Integers
 
             Determine if integers are square-free.
 
@@ -716,8 +709,7 @@ def is_square_free(value):
                 galois.is_square_free(10)
                 galois.is_square_free(18)
 
-        .. tab-item:: Polynomials
-            :sync: polynomials
+        .. md-tab-item:: Polynomials
 
             Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
 
