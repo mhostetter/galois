@@ -145,7 +145,8 @@ html_theme_options = {
         "navigation.top",
         "navigation.tracking",
         "toc.follow",
-        "toc.sticky"
+        "toc.sticky",
+        "content.tabs.link",
     ],
     "palette": [
         {

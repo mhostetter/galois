@@ -327,9 +327,9 @@ class BCH:
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Vector
+            .. md-tab-item:: Vector
 
                 Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
 
@@ -346,7 +346,7 @@ class BCH:
 
                     p = bch.encode(m, parity_only=True); p
 
-            .. tab-item:: Vector (shortened)
+            .. md-tab-item:: Vector (shortened)
 
                 Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
@@ -363,7 +363,7 @@ class BCH:
 
                     p = bch.encode(m, parity_only=True); p
 
-            .. tab-item:: Matrix
+            .. md-tab-item:: Matrix
 
                 Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
 
@@ -380,7 +380,7 @@ class BCH:
 
                     p = bch.encode(m, parity_only=True); p
 
-            .. tab-item:: Matrix (shortened)
+            .. md-tab-item:: Matrix (shortened)
 
                 Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
@@ -441,9 +441,9 @@ class BCH:
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Vector
+            .. md-tab-item:: Vector
 
                 Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
 
@@ -468,7 +468,7 @@ class BCH:
                     c[0:bch.d - 1] ^= 1; c
                     bch.detect(c)
 
-            .. tab-item:: Vector (shortened)
+            .. md-tab-item:: Vector (shortened)
 
                 Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
@@ -493,7 +493,7 @@ class BCH:
                     c[0:bch.d - 1] ^= 1; c
                     bch.detect(c)
 
-            .. tab-item:: Matrix
+            .. md-tab-item:: Matrix
 
                 Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
 
@@ -521,7 +521,7 @@ class BCH:
                     c
                     bch.detect(c)
 
-            .. tab-item:: Matrix (shortened)
+            .. md-tab-item:: Matrix (shortened)
 
                 Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
@@ -618,9 +618,9 @@ class BCH:
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Vector
+            .. md-tab-item:: Vector
 
                 Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
 
@@ -652,7 +652,7 @@ class BCH:
                     d, e = bch.decode(c, errors=True); d, e
                     np.array_equal(d, m)
 
-            .. tab-item:: Vector (shortened)
+            .. md-tab-item:: Vector (shortened)
 
                 Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
@@ -684,7 +684,7 @@ class BCH:
                     d, e = bch.decode(c, errors=True); d, e
                     np.array_equal(d, m)
 
-            .. tab-item:: Matrix
+            .. md-tab-item:: Matrix
 
                 Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
 
@@ -717,7 +717,7 @@ class BCH:
                     d, e = bch.decode(c, errors=True); d, e
                     np.array_equal(d, m)
 
-            .. tab-item:: Matrix (shortened)
+            .. md-tab-item:: Matrix (shortened)
 
                 Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
 

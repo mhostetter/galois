@@ -410,16 +410,16 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         Permanently set the display mode by calling :func:`display`.
 
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Polynomial
+            .. md-tab-item:: Polynomial
 
                 .. ipython:: python
 
                     GF.display("poly");
                     x
 
-            .. tab-item:: Power
+            .. md-tab-item:: Power
 
                 .. ipython:: python
 
@@ -430,9 +430,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         Temporarily modify the display mode by using :func:`display` as a context manager.
 
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Polynomial
+            .. md-tab-item:: Polynomial
 
                 .. ipython:: python
 
@@ -442,7 +442,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                     # Outside the context manager, the display mode reverts to its previous value
                     print(x)
 
-            .. tab-item:: Power
+            .. md-tab-item:: Power
 
                 .. ipython:: python
 

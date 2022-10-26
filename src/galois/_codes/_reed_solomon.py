@@ -214,9 +214,9 @@ class ReedSolomon:
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Vector
+            .. md-tab-item:: Vector
 
                 Encode a single message using the :math:`\textrm{RS}(15, 9)` code.
 
@@ -233,7 +233,7 @@ class ReedSolomon:
 
                     p = rs.encode(m, parity_only=True); p
 
-            .. tab-item:: Vector (shortened)
+            .. md-tab-item:: Vector (shortened)
 
                 Encode a single message using the shortened :math:`\textrm{RS}(11, 5)` code.
 
@@ -250,7 +250,7 @@ class ReedSolomon:
 
                     p = rs.encode(m, parity_only=True); p
 
-            .. tab-item:: Matrix
+            .. md-tab-item:: Matrix
 
                 Encode a matrix of three messages using the :math:`\textrm{RS}(15, 9)` code.
 
@@ -267,7 +267,7 @@ class ReedSolomon:
 
                     p = rs.encode(m, parity_only=True); p
 
-            .. tab-item:: Matrix (shortened)
+            .. md-tab-item:: Matrix (shortened)
 
                 Encode a matrix of three messages using the shortened :math:`\textrm{RS}(11, 5)` code.
 
@@ -328,9 +328,9 @@ class ReedSolomon:
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Vector
+            .. md-tab-item:: Vector
 
                 Encode a single message using the :math:`\textrm{RS}(15, 9)` code.
 
@@ -356,7 +356,7 @@ class ReedSolomon:
                     c[0:rs.d - 1] += e; c
                     rs.detect(c)
 
-            .. tab-item:: Vector (shortened)
+            .. md-tab-item:: Vector (shortened)
 
                 Encode a single message using the shortened :math:`\textrm{RS}(11, 5)` code.
 
@@ -382,7 +382,7 @@ class ReedSolomon:
                     c[0:rs.d - 1] += e; c
                     rs.detect(c)
 
-            .. tab-item:: Matrix
+            .. md-tab-item:: Matrix
 
                 Encode a matrix of three messages using the :math:`\textrm{RS}(15, 9)` code.
 
@@ -410,7 +410,7 @@ class ReedSolomon:
                     c
                     rs.detect(c)
 
-            .. tab-item:: Matrix (shortened)
+            .. md-tab-item:: Matrix (shortened)
 
                 Encode a matrix of three messages using the shortened :math:`\textrm{RS}(11, 5)` code.
 
@@ -508,9 +508,9 @@ class ReedSolomon:
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Vector
+            .. md-tab-item:: Vector
 
                 Encode a single message using the :math:`\textrm{RS}(15, 9)` code.
 
@@ -542,7 +542,7 @@ class ReedSolomon:
                     d, e = rs.decode(c, errors=True); d, e
                     np.array_equal(d, m)
 
-            .. tab-item:: Vector (shortened)
+            .. md-tab-item:: Vector (shortened)
 
                 Encode a single message using the shortened :math:`\textrm{RS}(11, 5)` code.
 
@@ -574,7 +574,7 @@ class ReedSolomon:
                     d, e = rs.decode(c, errors=True); d, e
                     np.array_equal(d, m)
 
-            .. tab-item:: Matrix
+            .. md-tab-item:: Matrix
 
                 Encode a matrix of three messages using the :math:`\textrm{RS}(15, 9)` code.
 
@@ -608,7 +608,7 @@ class ReedSolomon:
                     d, e = rs.decode(c, errors=True); d, e
                     np.array_equal(d, m)
 
-            .. tab-item:: Matrix (shortened)
+            .. md-tab-item:: Matrix (shortened)
 
                 Encode a matrix of three messages using the shortened :math:`\textrm{RS}(11, 5)` code.
 

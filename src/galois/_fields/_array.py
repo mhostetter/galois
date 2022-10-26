@@ -523,23 +523,23 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         --------
         Arithmetic tables can be displayed using any element representation.
 
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Integer
+            .. md-tab-item:: Integer
 
                 .. ipython:: python
 
                     GF = galois.GF(3**2)
                     print(GF.arithmetic_table("+"))
 
-            .. tab-item:: Polynomial
+            .. md-tab-item:: Polynomial
 
                 .. ipython:: python
 
                     GF = galois.GF(3**2, display="poly")
                     print(GF.arithmetic_table("+"))
 
-            .. tab-item:: Power
+            .. md-tab-item:: Power
 
                 .. ipython:: python
 
@@ -550,9 +550,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         An arithmetic table may also be constructed from arbitrary :math:`x` and :math:`y`.
 
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Integer
+            .. md-tab-item:: Integer
 
                 .. ipython:: python
 
@@ -561,7 +561,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                     y = GF([1, 4, 5, 3]); y
                     print(GF.arithmetic_table("+", x=x, y=y))
 
-            .. tab-item:: Polynomial
+            .. md-tab-item:: Polynomial
 
                 .. ipython:: python
 
@@ -570,7 +570,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                     y = GF([1, 4, 5, 3]); y
                     print(GF.arithmetic_table("+", x=x, y=y))
 
-            .. tab-item:: Power
+            .. md-tab-item:: Power
 
                 .. ipython:: python
 
@@ -1594,9 +1594,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Integer
+            .. md-tab-item:: Integer
 
                 .. ipython:: python
 
@@ -1604,7 +1604,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                     x = GF([4, 2, 7, 5])
                     x
 
-            .. tab-item:: Polynomial
+            .. md-tab-item:: Polynomial
 
                 .. ipython:: python
 
@@ -1612,7 +1612,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                     x = GF([4, 2, 7, 5])
                     x
 
-            .. tab-item:: Power
+            .. md-tab-item:: Power
 
                 .. ipython:: python
 
@@ -1632,9 +1632,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. tab-set::
+        .. md-tab-set::
 
-            .. tab-item:: Integer
+            .. md-tab-item:: Integer
 
                 .. ipython:: python
 
@@ -1642,7 +1642,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                     x = GF([4, 2, 7, 5])
                     print(x)
 
-            .. tab-item:: Polynomial
+            .. md-tab-item:: Polynomial
 
                 .. ipython:: python
 
@@ -1650,7 +1650,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                     x = GF([4, 2, 7, 5])
                     print(x)
 
-            .. tab-item:: Power
+            .. md-tab-item:: Power
 
                 .. ipython:: python
 
