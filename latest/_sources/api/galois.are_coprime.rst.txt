@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.are_coprime
+.. python-apigen-entity-page::  galois.are_coprime
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.gcd
+.. python-apigen-entity-page::  galois.gcd
 

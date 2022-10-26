@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Array.order
+.. python-apigen-entity-page::  galois.Array.order
 

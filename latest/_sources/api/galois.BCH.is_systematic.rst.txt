@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.BCH.is_systematic
+.. python-apigen-entity-page::  galois.BCH.is_systematic
 

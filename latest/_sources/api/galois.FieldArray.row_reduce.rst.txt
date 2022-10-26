@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.row_reduce
+.. python-apigen-entity-page::  galois.FieldArray.row_reduce
 

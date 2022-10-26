@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.coeffs
+.. python-apigen-entity-page::  galois.Poly.coeffs
 

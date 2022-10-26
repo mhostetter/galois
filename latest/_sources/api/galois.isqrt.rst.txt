@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.isqrt
+.. python-apigen-entity-page::  galois.isqrt
 

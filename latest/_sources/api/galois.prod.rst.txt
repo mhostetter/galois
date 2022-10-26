@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.prod
+.. python-apigen-entity-page::  galois.prod
 

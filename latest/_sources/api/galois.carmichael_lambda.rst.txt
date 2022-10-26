@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.carmichael_lambda
+.. python-apigen-entity-page::  galois.carmichael_lambda
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.pollard_p1
+.. python-apigen-entity-page::  galois.pollard_p1
 

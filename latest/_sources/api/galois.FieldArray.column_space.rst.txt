@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.column_space
+.. python-apigen-entity-page::  galois.FieldArray.column_space
 

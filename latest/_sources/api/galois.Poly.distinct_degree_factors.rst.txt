@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.distinct_degree_factors
+.. python-apigen-entity-page::  galois.Poly.distinct_degree_factors
 

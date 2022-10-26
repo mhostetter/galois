@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.GLFSR.state
+.. python-apigen-entity-page::  galois.GLFSR.state
 

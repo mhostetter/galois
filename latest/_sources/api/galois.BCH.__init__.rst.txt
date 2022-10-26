@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.BCH.__init__
+.. python-apigen-entity-page::  galois.BCH.__init__
 

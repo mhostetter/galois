@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.GF2
+.. python-apigen-entity-page::  galois.GF2
 

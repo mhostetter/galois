@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.GLFSR.characteristic_poly
+.. python-apigen-entity-page::  galois.GLFSR.characteristic_poly
 

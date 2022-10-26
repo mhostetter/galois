@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.degree
+.. python-apigen-entity-page::  galois.FieldArray.degree
 

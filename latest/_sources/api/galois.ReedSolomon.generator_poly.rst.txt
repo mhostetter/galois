@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.ReedSolomon.generator_poly
+.. python-apigen-entity-page::  galois.ReedSolomon.generator_poly
 

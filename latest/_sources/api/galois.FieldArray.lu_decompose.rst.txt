@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.lu_decompose
+.. python-apigen-entity-page::  galois.FieldArray.lu_decompose
 

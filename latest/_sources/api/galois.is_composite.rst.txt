@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.is_composite
+.. python-apigen-entity-page::  galois.is_composite
 

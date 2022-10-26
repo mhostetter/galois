@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.matlab_primitive_poly
+.. python-apigen-entity-page::  galois.matlab_primitive_poly
 

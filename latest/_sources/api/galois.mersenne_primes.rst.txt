@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.mersenne_primes
+.. python-apigen-entity-page::  galois.mersenne_primes
 

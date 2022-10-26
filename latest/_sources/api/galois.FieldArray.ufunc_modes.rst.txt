@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.ufunc_modes
+.. python-apigen-entity-page::  galois.FieldArray.ufunc_modes
 

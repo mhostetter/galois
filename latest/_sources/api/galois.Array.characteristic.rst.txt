@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Array.characteristic
+.. python-apigen-entity-page::  galois.Array.characteristic
 

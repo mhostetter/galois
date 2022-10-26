@@ -18,26 +18,27 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.a280224b.min.css">
+      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.92c9fe4a.min.css">
+        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
+      
+
     
     
     
       
         
         
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -47,10 +48,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-4FW9NCNFZH",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-4FW9NCNFZH",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
 
@@ -88,9 +92,7 @@
     </div>
     
       <div data-md-component="outdated" hidden>
-        <aside class="md-banner md-banner--warning">
-          
-        </aside>
+        
       </div>
     
     
@@ -159,7 +161,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -183,7 +185,7 @@
         <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -336,7 +338,7 @@
       <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -7437,18 +7439,23 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset" role="main">
-                
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
 
 
-  <h1 id="array-creation">Array Creation<a class="headerlink" href="#array-creation" title="Permalink to this heading">¶</a></h1>
+<h1 id="array-creation">Array Creation<a class="headerlink" href="#array-creation" title="Permalink to this heading">¶</a></h1>
 <p>This page discusses the multiple ways to create arrays over finite fields. For this discussion, we are working in
 the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(3^5)\)</span>.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-0">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3">
+<input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><input type="radio" id="__tabbed_1_3" name="__tabbed_1"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_1_1">
+Integer</label><label class="tabbed-label" for="__tabbed_1_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_1_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
@@ -7463,9 +7470,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-1">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
 <span class="gp">In [4]: </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
@@ -7480,9 +7485,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-2">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 
 <span class="gp">In [6]: </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
@@ -7498,13 +7501,17 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h2 id="create-a-scalar">Create a scalar<a class="headerlink" href="#create-a-scalar" title="Permalink to this heading">¶</a></h2>
+</div><h2 id="create-a-scalar">Create a scalar<a class="headerlink" href="#create-a-scalar" title="Permalink to this heading">¶</a></h2>
 <p>A single finite field element (a scalar) is a 0-D <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>. They are created by passing a single
 <a class="reference internal" href="../../api/galois.typing.ElementLike/" title="galois.typing.ElementLike (Python data) — A Union representing objects that can be coerced into a Galois field element."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementLike</span></code></a> object to <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code>’s constructor.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-3">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3">
+<input checked type="radio" id="__tabbed_2_1" name="__tabbed_2"><input type="radio" id="__tabbed_2_2" name="__tabbed_2"><input type="radio" id="__tabbed_2_3" name="__tabbed_2"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_2_1">
+Integer</label><label class="tabbed-label" for="__tabbed_2_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_2_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">);</span> <span class="n">a</span>
 <span class="gh">Out[7]: </span><span class="go">GF(17, order=3^5)</span>
 
@@ -7516,9 +7523,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-4">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">);</span> <span class="n">a</span>
 <span class="gh">Out[10]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
 
@@ -7530,9 +7535,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-5">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">);</span> <span class="n">a</span>
 <span class="gh">Out[13]: </span><span class="go">GF(α^222, order=3^5)</span>
 
@@ -7545,13 +7548,17 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h2 id="create-a-new-array">Create a new array<a class="headerlink" href="#create-a-new-array" title="Permalink to this heading">¶</a></h2>
+</div><h2 id="create-a-new-array">Create a new array<a class="headerlink" href="#create-a-new-array" title="Permalink to this heading">¶</a></h2>
 <h3 id="array-like-objects">Array-Like objects<a class="headerlink" href="#array-like-objects" title="Permalink to this heading">¶</a></h3>
 <p>A <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> can be created from various <a class="reference internal" href="../../api/galois.typing.ArrayLike/" title="galois.typing.ArrayLike (Python data) — A Union representing objects that can be coerced into a Galois field array."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a> objects.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-2" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-6">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="3:3">
+<input checked type="radio" id="__tabbed_3_1" name="__tabbed_3"><input type="radio" id="__tabbed_3_2" name="__tabbed_3"><input type="radio" id="__tabbed_3_3" name="__tabbed_3"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_3_1">
+Integer</label><label class="tabbed-label" for="__tabbed_3_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_3_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">])</span>
 <span class="gh">Out[16]: </span><span class="go">GF([ 17,   4, 148, 205], order=3^5)</span>
 
@@ -7562,9 +7569,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-7" name="sd-tab-set-2" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-7">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [18]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">])</span>
 <span class="gh">Out[18]: </span><span class="go"></span>
 <span class="go">GF([             α^2 + 2α + 2,                     α + 1,</span>
@@ -7577,9 +7582,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-8" name="sd-tab-set-2" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-8">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [20]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">])</span>
 <span class="gh">Out[20]: </span><span class="go">GF([α^222,  α^69,  α^54,  α^24], order=3^5)</span>
 
@@ -7591,41 +7594,45 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h3 id="polynomial-coefficients">Polynomial coefficients<a class="headerlink" href="#polynomial-coefficients" title="Permalink to this heading">¶</a></h3>
+</div><h3 id="polynomial-coefficients">Polynomial coefficients<a class="headerlink" href="#polynomial-coefficients" title="Permalink to this heading">¶</a></h3>
 <p>Rather than strings, the polynomial coefficients may be passed into <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code>’s constructor as length-<span class="math notranslate nohighlight">\(m\)</span> vectors using
 the <a class="reference internal" href="../../api/galois.FieldArray.Vector/" title="galois.FieldArray.Vector (Python method) — Creates an array over \mathrm{GF}(p^m) from length-m vectors over the prime subfield \mathrm{GF}(p)."><code class="xref py py-func docutils literal notranslate"><span class="pre">Vector()</span></code></a> classmethod.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-9" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-9">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="4:3">
+<input checked type="radio" id="__tabbed_4_1" name="__tabbed_4"><input type="radio" id="__tabbed_4_2" name="__tabbed_4"><input type="radio" id="__tabbed_4_3" name="__tabbed_4"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_4_1">
+Integer</label><label class="tabbed-label" for="__tabbed_4_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_4_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [22]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Vector</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 <span class="gh">Out[22]: </span><span class="go">GF([17,  4], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-10" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-10">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Vector</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 <span class="gh">Out[23]: </span><span class="go">GF([α^2 + 2α + 2,        α + 1], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-11" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-11">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [24]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Vector</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 <span class="gh">Out[24]: </span><span class="go">GF([α^222,  α^69], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
-<p>The <a class="reference internal" href="../../api/galois.FieldArray.vector/" title="galois.FieldArray.vector (Python method) — Converts an array over \mathrm{GF}(p^m) to length-m vectors over the prime subfield \mathrm{GF}(p)."><code class="xref py py-func docutils literal notranslate"><span class="pre">vector()</span></code></a> method is the opposite operation. It converts extension field elements from <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>
+</div><p>The <a class="reference internal" href="../../api/galois.FieldArray.vector/" title="galois.FieldArray.vector (Python method) — Converts an array over \mathrm{GF}(p^m) to length-m vectors over the prime subfield \mathrm{GF}(p)."><code class="xref py py-func docutils literal notranslate"><span class="pre">vector()</span></code></a> method is the opposite operation. It converts extension field elements from <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>
 into length-<span class="math notranslate nohighlight">\(m\)</span> vectors over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-12" name="sd-tab-set-4" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-12">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="5:3">
+<input checked type="radio" id="__tabbed_5_1" name="__tabbed_5"><input type="radio" id="__tabbed_5_2" name="__tabbed_5"><input type="radio" id="__tabbed_5_3" name="__tabbed_5"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_5_1">
+Integer</label><label class="tabbed-label" for="__tabbed_5_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_5_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
 <span class="gh">Out[25]: </span><span class="go"></span>
 <span class="go">GF([[0, 0, 1, 2, 2],</span>
@@ -7633,9 +7640,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-13" name="sd-tab-set-4" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-13">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [26]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
 <span class="gh">Out[26]: </span><span class="go"></span>
 <span class="go">GF([[0, 0, 1, 2, 2],</span>
@@ -7643,9 +7648,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-14" name="sd-tab-set-4" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-14">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [27]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
 <span class="gh">Out[27]: </span><span class="go"></span>
 <span class="go">GF([[0, 0, 1, 2, 2],</span>
@@ -7654,12 +7657,16 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h3 id="primitive-element-powers">Primitive element powers<a class="headerlink" href="#primitive-element-powers" title="Permalink to this heading">¶</a></h3>
+</div><h3 id="primitive-element-powers">Primitive element powers<a class="headerlink" href="#primitive-element-powers" title="Permalink to this heading">¶</a></h3>
 <p>A <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> can also be created from the powers of a primitive element <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-15" name="sd-tab-set-5" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-15">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="6:3">
+<input checked type="radio" id="__tabbed_6_1" name="__tabbed_6"><input type="radio" id="__tabbed_6_2" name="__tabbed_6"><input type="radio" id="__tabbed_6_3" name="__tabbed_6"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_6_1">
+Integer</label><label class="tabbed-label" for="__tabbed_6_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_6_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [28]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
 <span class="gh">Out[28]: </span><span class="go">GF(3, order=3^5)</span>
 
@@ -7671,9 +7678,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-16" name="sd-tab-set-5" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-16">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [31]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
 <span class="gh">Out[31]: </span><span class="go">GF(α, order=3^5)</span>
 
@@ -7687,9 +7692,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-17" name="sd-tab-set-5" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-17">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [34]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
 <span class="gh">Out[34]: </span><span class="go">GF(α, order=3^5)</span>
 
@@ -7702,13 +7705,17 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h3 id="numpy-array">NumPy array<a class="headerlink" href="#numpy-array" title="Permalink to this heading">¶</a></h3>
+</div><h3 id="numpy-array">NumPy array<a class="headerlink" href="#numpy-array" title="Permalink to this heading">¶</a></h3>
 <p>An integer NumPy array may also be passed into <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code>. The default keyword argument <code class="code highlight python docutils literal highlight-python"><span class="n">copy</span><span class="o">=</span><span class="kc">True</span></code> of the <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>
 constructor will create a copy of the array.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-18" name="sd-tab-set-6" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-18">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="7:3">
+<input checked type="radio" id="__tabbed_7_1" name="__tabbed_7"><input type="radio" id="__tabbed_7_2" name="__tabbed_7"><input type="radio" id="__tabbed_7_3" name="__tabbed_7"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_7_1">
+Integer</label><label class="tabbed-label" for="__tabbed_7_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_7_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [37]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">]);</span> <span class="n">x_np</span>
 <span class="gh">Out[37]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
@@ -7721,9 +7728,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-19" name="sd-tab-set-6" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-19">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [40]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">]);</span> <span class="n">x_np</span>
 <span class="gh">Out[40]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
@@ -7739,9 +7744,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-20" name="sd-tab-set-6" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-20">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [43]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">]);</span> <span class="n">x_np</span>
 <span class="gh">Out[43]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
@@ -7755,15 +7758,19 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h2 id="view-an-existing-array">View an existing array<a class="headerlink" href="#view-an-existing-array" title="Permalink to this heading">¶</a></h2>
+</div><h2 id="view-an-existing-array">View an existing array<a class="headerlink" href="#view-an-existing-array" title="Permalink to this heading">¶</a></h2>
 <p>Instead of creating a <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> explicitly, you can convert an existing NumPy array into a <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>
 temporarily and work with it in-place.</p>
 <p>Simply call <code class="code highlight python docutils literal highlight-python"><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">GF</span><span class="p">)</span></code> to <em>view</em> the NumPy array as a <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>. When finished working in the
 finite field, call <code class="code highlight python docutils literal highlight-python"><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span></code> to <em>view</em> it back to a NumPy array.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-21" name="sd-tab-set-7" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-21">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="8:3">
+<input checked type="radio" id="__tabbed_8_1" name="__tabbed_8"><input type="radio" id="__tabbed_8_2" name="__tabbed_8"><input type="radio" id="__tabbed_8_3" name="__tabbed_8"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_8_1">
+Integer</label><label class="tabbed-label" for="__tabbed_8_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_8_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [46]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">);</span> <span class="n">x_np</span>
 <span class="gh">Out[46]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
@@ -7776,9 +7783,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-22" name="sd-tab-set-7" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-22">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [49]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">);</span> <span class="n">x_np</span>
 <span class="gh">Out[49]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
@@ -7794,9 +7799,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-23" name="sd-tab-set-7" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-23">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [52]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">);</span> <span class="n">x_np</span>
 <span class="gh">Out[52]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
@@ -7810,15 +7813,19 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h2 id="classmethods">Classmethods<a class="headerlink" href="#classmethods" title="Permalink to this heading">¶</a></h2>
+</div><h2 id="classmethods">Classmethods<a class="headerlink" href="#classmethods" title="Permalink to this heading">¶</a></h2>
 <p>Several classmethods are provided in <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> to assist with creating arrays.</p>
 <h3 id="constant-arrays">Constant arrays<a class="headerlink" href="#constant-arrays" title="Permalink to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../../api/galois.FieldArray.Zeros/" title="galois.FieldArray.Zeros (Python method) — Creates an array of all zeros."><code class="xref py py-func docutils literal notranslate"><span class="pre">Zeros()</span></code></a> and <a class="reference internal" href="../../api/galois.FieldArray.Ones/" title="galois.FieldArray.Ones (Python method) — Creates an array of all ones."><code class="xref py py-func docutils literal notranslate"><span class="pre">Ones()</span></code></a> classmethods provide constant arrays that are
 useful for initializing empty arrays.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-24" name="sd-tab-set-8" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-24">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="9:3">
+<input checked type="radio" id="__tabbed_9_1" name="__tabbed_9"><input type="radio" id="__tabbed_9_2" name="__tabbed_9"><input type="radio" id="__tabbed_9_3" name="__tabbed_9"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_9_1">
+Integer</label><label class="tabbed-label" for="__tabbed_9_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_9_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [55]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 <span class="gh">Out[55]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
 
@@ -7827,9 +7834,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-25" name="sd-tab-set-8" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-25">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [57]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 <span class="gh">Out[57]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
 
@@ -7838,9 +7843,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-26" name="sd-tab-set-8" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-26">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [59]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 <span class="gh">Out[59]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
 
@@ -7850,7 +7853,7 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<div class="admonition note">
+</div><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>There is no <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.empty.html#numpy.empty" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.empty()</span></code></a> equivalent. This is because <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances must have values in
 <span class="math notranslate nohighlight">\([0, p^m)\)</span>. Empty NumPy arrays have whatever values are currently in memory, and therefore would fail those
@@ -7859,10 +7862,14 @@ bounds checks.</p>
 <h3 id="ordered-arrays">Ordered arrays<a class="headerlink" href="#ordered-arrays" title="Permalink to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../../api/galois.FieldArray.Range/" title="galois.FieldArray.Range (Python method) — Creates a 1-D array with a range of elements."><code class="xref py py-func docutils literal notranslate"><span class="pre">Range()</span></code></a> classmethod produces a range of elements similar to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.arange()</span></code></a>. The integer <code class="code highlight python docutils literal highlight-python"><span class="n">start</span></code>
 and <code class="code highlight python docutils literal highlight-python"><span class="n">stop</span></code> values are the <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a> of the polynomial field elements.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-27" name="sd-tab-set-9" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-27">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="10:3">
+<input checked type="radio" id="__tabbed_10_1" name="__tabbed_10"><input type="radio" id="__tabbed_10_2" name="__tabbed_10"><input type="radio" id="__tabbed_10_3" name="__tabbed_10"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_10_1">
+Integer</label><label class="tabbed-label" for="__tabbed_10_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_10_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [61]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="gh">Out[61]: </span><span class="go">GF([10, 11, 12, 13, 14, 15, 16, 17, 18, 19], order=3^5)</span>
 
@@ -7871,9 +7878,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-28" name="sd-tab-set-9" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-28">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [63]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="gh">Out[63]: </span><span class="go"></span>
 <span class="go">GF([     α^2 + 1,      α^2 + 2,      α^2 + α,  α^2 + α + 1,  α^2 + α + 2,</span>
@@ -7887,9 +7892,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-29" name="sd-tab-set-9" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-29">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [65]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="gh">Out[65]: </span><span class="go"></span>
 <span class="go">GF([ α^46,  α^74,  α^70,  α^10, α^209,   α^6, α^138, α^222, α^123, α^195],</span>
@@ -7901,14 +7904,18 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h3 id="random-arrays">Random arrays<a class="headerlink" href="#random-arrays" title="Permalink to this heading">¶</a></h3>
+</div><h3 id="random-arrays">Random arrays<a class="headerlink" href="#random-arrays" title="Permalink to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../../api/galois.FieldArray.Random/" title="galois.FieldArray.Random (Python method) — Creates an array with random elements."><code class="xref py py-func docutils literal notranslate"><span class="pre">Random()</span></code></a> classmethod provides a random array of the specified shape. This is convenient
 for testing. The integer <code class="code highlight python docutils literal highlight-python"><span class="n">low</span></code> and <code class="code highlight python docutils literal highlight-python"><span class="n">high</span></code> values are the <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a> of
 the polynomial field elements.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-30" name="sd-tab-set-10" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-30">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="11:3">
+<input checked type="radio" id="__tabbed_11_1" name="__tabbed_11"><input type="radio" id="__tabbed_11_2" name="__tabbed_11"><input type="radio" id="__tabbed_11_3" name="__tabbed_11"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_11_1">
+Integer</label><label class="tabbed-label" for="__tabbed_11_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_11_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [67]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
 <span class="gh">Out[67]: </span><span class="go">GF([176, 177, 172, 237], order=3^5)</span>
 
@@ -7917,9 +7924,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-31" name="sd-tab-set-10" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-31">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [69]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
 <span class="gh">Out[69]: </span><span class="go"></span>
 <span class="go">GF([    2α^4 + α^2 + α + 2,        2α^4 + α^2 + 2α,</span>
@@ -7930,9 +7935,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-32" name="sd-tab-set-10" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-32">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [71]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
 <span class="gh">Out[71]: </span><span class="go">GF([α^114,  α^78, α^206,  α^96], order=3^5)</span>
 
@@ -7942,13 +7945,17 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h2 id="class-properties">Class properties<a class="headerlink" href="#class-properties" title="Permalink to this heading">¶</a></h2>
+</div><h2 id="class-properties">Class properties<a class="headerlink" href="#class-properties" title="Permalink to this heading">¶</a></h2>
 <p>Certain class properties, such as <a class="reference internal" href="../../api/galois.FieldArray.elements/" title="galois.FieldArray.elements (Python property) — All of the finite field's elements \{0, \dots, p^m-1\}."><code class="xref py py-obj docutils literal notranslate"><span class="pre">elements</span></code></a>, <a class="reference internal" href="../../api/galois.FieldArray.units/" title="galois.FieldArray.units (Python property) — All of the finite field's units \{1, \dots, p^m-1\}. A unit is an element with a multiplicative inverse."><code class="xref py py-obj docutils literal notranslate"><span class="pre">units</span></code></a>, <a class="reference internal" href="../../api/galois.FieldArray.squares/" title="galois.FieldArray.squares (Python property) — All squares in the finite field."><code class="xref py py-obj docutils literal notranslate"><span class="pre">squares</span></code></a>,
 and <a class="reference internal" href="../../api/galois.FieldArray.primitive_elements/" title="galois.FieldArray.primitive_elements (Python property) — All primitive elements \alpha of the Galois field \mathrm{GF}(p^m). A primitive element is a multiplicative generator of the field, such that \mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_elements</span></code></a>, provide an array of elements with the specified properties.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-33" name="sd-tab-set-11" type="radio">
-</input><label class="sd-tab-label" data-sync-id="int" for="sd-tab-item-33">
-Integer</label><div class="sd-tab-content docutils">
+<div class="tabbed-set tabbed-alternate" data-tabs="12:3">
+<input checked type="radio" id="__tabbed_12_1" name="__tabbed_12"><input type="radio" id="__tabbed_12_2" name="__tabbed_12"><input type="radio" id="__tabbed_12_3" name="__tabbed_12"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_12_1">
+Integer</label><label class="tabbed-label" for="__tabbed_12_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_12_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [73]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="gp">In [74]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
@@ -7965,9 +7972,7 @@ Integer</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-34" name="sd-tab-set-11" type="radio">
-</input><label class="sd-tab-label" data-sync-id="poly" for="sd-tab-item-34">
-Polynomial</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [78]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
 <span class="gp">In [79]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
@@ -7988,9 +7993,7 @@ Polynomial</label><div class="sd-tab-content docutils">
 </code></pre></div>
 </div>
 </div>
-<input id="sd-tab-item-35" name="sd-tab-set-11" type="radio">
-</input><label class="sd-tab-label" data-sync-id="power" for="sd-tab-item-35">
-Power</label><div class="sd-tab-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [83]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 
 <span class="gp">In [84]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
@@ -8008,7 +8011,7 @@ Power</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<h2 id="data-types">Data types<a class="headerlink" href="#data-types" title="Permalink to this heading">¶</a></h2>
+</div><h2 id="data-types">Data types<a class="headerlink" href="#data-types" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances support a fixed set of NumPy data types (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>). The data type must be
 able to store all the field elements (in their <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a>).</p>
 <h3 id="valid-data-types">Valid data types<a class="headerlink" href="#valid-data-types" title="Permalink to this heading">¶</a></h3>
@@ -8052,7 +8055,7 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 <span class="gh">Out[95]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
 
 <span class="gp">In [96]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[96]: </span><span class="go">GF([301, 712, 107, 812], order=2^10)</span>
+<span class="gh">Out[96]: </span><span class="go">GF([340, 945,  72,  62], order=2^10)</span>
 
 <span class="gp">In [97]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
 <span class="gh">Out[97]: </span><span class="go">dtype(&#39;uint16&#39;)</span>
@@ -8065,8 +8068,8 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 
 <span class="gp">In [100]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
 <span class="gh">Out[100]: </span><span class="go"></span>
-<span class="go">GF([ 576184670534373646527373744393,  101619353359079119565429653851,</span>
-<span class="go">     582437061599634862628550996951, 1086893590345009439166730083065],</span>
+<span class="go">GF([159198493492763904736735853031, 910906894551428066602272966124,</span>
+<span class="go">    852809259576106385802229128914, 778754243126379304646076095585],</span>
 <span class="go">   order=2^100)</span>
 
 <span class="gp">In [101]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
@@ -8097,23 +8100,32 @@ constructor.</p>
 </div>
 
 
-
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      Oct 25, 2022
+      Oct 26, 2022
     
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
@@ -8122,7 +8134,8 @@ constructor.</p>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../element-representation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Element Representation" rel="prev">
@@ -8185,7 +8198,7 @@ constructor.</p>
       
     
     <a href="https://github.com/mhostetter/galois" target="_blank" rel="noopener" title="github.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
     </a>
   
     
@@ -8194,7 +8207,7 @@ constructor.</p>
       
     
     <a href="https://pypi.org/project/galois/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z"/></svg>
     </a>
   
     
@@ -8203,7 +8216,7 @@ constructor.</p>
       
     
     <a href="https://twitter.com/galois_py" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
     </a>
   
 </div>
@@ -8217,10 +8230,11 @@ constructor.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky", "content.tabs.link"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+      <script src="../../_static/javascripts/bundle.309d5c42.min.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

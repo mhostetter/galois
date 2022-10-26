@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.ReedSolomon.H
+.. python-apigen-entity-page::  galois.ReedSolomon.H
 

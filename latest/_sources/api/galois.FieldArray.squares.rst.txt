@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.squares
+.. python-apigen-entity-page::  galois.FieldArray.squares
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.mersenne_exponents
+.. python-apigen-entity-page::  galois.mersenne_exponents
 

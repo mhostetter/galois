@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.BCH.roots
+.. python-apigen-entity-page::  galois.BCH.roots
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.GLFSR.reset
+.. python-apigen-entity-page::  galois.GLFSR.reset
 

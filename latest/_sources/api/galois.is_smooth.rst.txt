@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.is_smooth
+.. python-apigen-entity-page::  galois.is_smooth
 

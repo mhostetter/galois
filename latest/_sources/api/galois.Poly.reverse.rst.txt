@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.reverse
+.. python-apigen-entity-page::  galois.Poly.reverse
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.typing.ElementLike
+.. python-apigen-entity-page::  galois.typing.ElementLike
 

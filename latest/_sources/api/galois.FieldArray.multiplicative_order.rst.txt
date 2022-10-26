@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.multiplicative_order
+.. python-apigen-entity-page::  galois.FieldArray.multiplicative_order
 

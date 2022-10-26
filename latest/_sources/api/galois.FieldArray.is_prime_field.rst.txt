@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.is_prime_field
+.. python-apigen-entity-page::  galois.FieldArray.is_prime_field
 

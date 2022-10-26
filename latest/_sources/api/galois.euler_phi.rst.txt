@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.euler_phi
+.. python-apigen-entity-page::  galois.euler_phi
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.jacobi_symbol
+.. python-apigen-entity-page::  galois.jacobi_symbol
 

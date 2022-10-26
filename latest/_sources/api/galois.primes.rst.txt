@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.primes
+.. python-apigen-entity-page::  galois.primes
 

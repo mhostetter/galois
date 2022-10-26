@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.primitive_elements
+.. python-apigen-entity-page::  galois.FieldArray.primitive_elements
 

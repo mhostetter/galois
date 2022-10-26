@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.Zero
+.. python-apigen-entity-page::  galois.Poly.Zero
 

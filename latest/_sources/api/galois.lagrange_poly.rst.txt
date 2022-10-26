@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.lagrange_poly
+.. python-apigen-entity-page::  galois.lagrange_poly
 

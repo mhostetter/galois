@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.typing.DTypeLike
+.. python-apigen-entity-page::  galois.typing.DTypeLike
 

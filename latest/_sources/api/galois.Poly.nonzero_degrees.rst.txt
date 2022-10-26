@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.nonzero_degrees
+.. python-apigen-entity-page::  galois.Poly.nonzero_degrees
 

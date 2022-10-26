@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.set_printoptions
+.. python-apigen-entity-page::  galois.set_printoptions
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.irreducible_poly
+.. python-apigen-entity-page::  galois.irreducible_poly
 

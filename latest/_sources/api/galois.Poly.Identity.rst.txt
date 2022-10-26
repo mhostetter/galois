@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.Identity
+.. python-apigen-entity-page::  galois.Poly.Identity
 

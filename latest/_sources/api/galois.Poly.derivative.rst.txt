@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.derivative
+.. python-apigen-entity-page::  galois.Poly.derivative
 

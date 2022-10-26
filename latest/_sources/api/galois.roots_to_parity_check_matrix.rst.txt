@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.roots_to_parity_check_matrix
+.. python-apigen-entity-page::  galois.roots_to_parity_check_matrix
 

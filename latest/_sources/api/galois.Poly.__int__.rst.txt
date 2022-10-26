@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.__int__
+.. python-apigen-entity-page::  galois.Poly.__int__
 

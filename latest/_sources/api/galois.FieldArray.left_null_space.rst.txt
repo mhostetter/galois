@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.left_null_space
+.. python-apigen-entity-page::  galois.FieldArray.left_null_space
 

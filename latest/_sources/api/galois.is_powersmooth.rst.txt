@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.is_powersmooth
+.. python-apigen-entity-page::  galois.is_powersmooth
 

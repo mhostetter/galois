@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.is_prime_power
+.. python-apigen-entity-page::  galois.is_prime_power
 

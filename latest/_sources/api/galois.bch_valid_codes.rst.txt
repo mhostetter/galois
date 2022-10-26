@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.bch_valid_codes
+.. python-apigen-entity-page::  galois.bch_valid_codes
 

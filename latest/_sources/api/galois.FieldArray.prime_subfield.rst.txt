@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.prime_subfield
+.. python-apigen-entity-page::  galois.FieldArray.prime_subfield
 

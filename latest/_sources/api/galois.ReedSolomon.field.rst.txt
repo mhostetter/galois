@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.ReedSolomon.field
+.. python-apigen-entity-page::  galois.ReedSolomon.field
 

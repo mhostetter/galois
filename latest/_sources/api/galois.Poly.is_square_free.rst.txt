@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.is_square_free
+.. python-apigen-entity-page::  galois.Poly.is_square_free
 

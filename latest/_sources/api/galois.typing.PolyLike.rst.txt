@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.typing.PolyLike
+.. python-apigen-entity-page::  galois.typing.PolyLike
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Array.Random
+.. python-apigen-entity-page::  galois.Array.Random
 

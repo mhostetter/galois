@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.is_primitive
+.. python-apigen-entity-page::  galois.Poly.is_primitive
 

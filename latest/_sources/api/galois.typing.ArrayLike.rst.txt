@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.typing.ArrayLike
+.. python-apigen-entity-page::  galois.typing.ArrayLike
 

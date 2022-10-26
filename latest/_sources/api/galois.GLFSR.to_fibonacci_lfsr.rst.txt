@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.GLFSR.to_fibonacci_lfsr
+.. python-apigen-entity-page::  galois.GLFSR.to_fibonacci_lfsr
 

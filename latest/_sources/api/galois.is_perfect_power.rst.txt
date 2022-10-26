@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.is_perfect_power
+.. python-apigen-entity-page::  galois.is_perfect_power
 

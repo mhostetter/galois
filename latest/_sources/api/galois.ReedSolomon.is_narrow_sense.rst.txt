@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.ReedSolomon.is_narrow_sense
+.. python-apigen-entity-page::  galois.ReedSolomon.is_narrow_sense
 

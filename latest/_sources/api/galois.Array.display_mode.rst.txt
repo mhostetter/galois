@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Array.display_mode
+.. python-apigen-entity-page::  galois.Array.display_mode
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.One
+.. python-apigen-entity-page::  galois.Poly.One
 

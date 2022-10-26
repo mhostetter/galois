@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.divisors
+.. python-apigen-entity-page::  galois.divisors
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.__str__
+.. python-apigen-entity-page::  galois.FieldArray.__str__
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.fermat_primality_test
+.. python-apigen-entity-page::  galois.fermat_primality_test
 

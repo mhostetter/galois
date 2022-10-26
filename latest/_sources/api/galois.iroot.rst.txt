@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.iroot
+.. python-apigen-entity-page::  galois.iroot
 

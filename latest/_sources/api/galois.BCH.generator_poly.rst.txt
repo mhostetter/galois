@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.BCH.generator_poly
+.. python-apigen-entity-page::  galois.BCH.generator_poly
 

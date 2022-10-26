@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.GLFSR.feedback_poly
+.. python-apigen-entity-page::  galois.GLFSR.feedback_poly
 

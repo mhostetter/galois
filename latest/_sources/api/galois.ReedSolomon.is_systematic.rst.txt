@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.ReedSolomon.is_systematic
+.. python-apigen-entity-page::  galois.ReedSolomon.is_systematic
 

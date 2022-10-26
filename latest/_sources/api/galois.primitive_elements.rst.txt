@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.primitive_elements
+.. python-apigen-entity-page::  galois.primitive_elements
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.miller_rabin_primality_test
+.. python-apigen-entity-page::  galois.miller_rabin_primality_test
 

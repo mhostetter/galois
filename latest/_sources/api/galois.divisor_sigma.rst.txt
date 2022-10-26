@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.divisor_sigma
+.. python-apigen-entity-page::  galois.divisor_sigma
 

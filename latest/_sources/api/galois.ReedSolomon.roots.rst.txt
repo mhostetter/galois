@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.ReedSolomon.roots
+.. python-apigen-entity-page::  galois.ReedSolomon.roots
 

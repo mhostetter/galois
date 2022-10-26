@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FLFSR.order
+.. python-apigen-entity-page::  galois.FLFSR.order
 

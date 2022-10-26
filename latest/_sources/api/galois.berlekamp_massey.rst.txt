@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.berlekamp_massey
+.. python-apigen-entity-page::  galois.berlekamp_massey
 

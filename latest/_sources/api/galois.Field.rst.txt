@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Field
+.. python-apigen-entity-page::  galois.Field
 

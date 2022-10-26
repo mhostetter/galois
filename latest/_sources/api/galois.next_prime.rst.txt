@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.next_prime
+.. python-apigen-entity-page::  galois.next_prime
 

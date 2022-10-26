@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.Identity
+.. python-apigen-entity-page::  galois.FieldArray.Identity
 

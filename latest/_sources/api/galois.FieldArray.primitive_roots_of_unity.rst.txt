@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.primitive_roots_of_unity
+.. python-apigen-entity-page::  galois.FieldArray.primitive_roots_of_unity
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.BCH.decode
+.. python-apigen-entity-page::  galois.BCH.decode
 

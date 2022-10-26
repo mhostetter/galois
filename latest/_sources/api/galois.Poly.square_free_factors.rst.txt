@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.square_free_factors
+.. python-apigen-entity-page::  galois.Poly.square_free_factors
 

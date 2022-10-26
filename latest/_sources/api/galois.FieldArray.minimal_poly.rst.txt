@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.minimal_poly
+.. python-apigen-entity-page::  galois.FieldArray.minimal_poly
 

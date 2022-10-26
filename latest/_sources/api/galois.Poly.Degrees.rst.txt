@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.Poly.Degrees
+.. python-apigen-entity-page::  galois.Poly.Degrees
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.FieldArray.field_trace
+.. python-apigen-entity-page::  galois.FieldArray.field_trace
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.trial_division
+.. python-apigen-entity-page::  galois.trial_division
 

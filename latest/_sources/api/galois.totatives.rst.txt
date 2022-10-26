@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.totatives
+.. python-apigen-entity-page::  galois.totatives
 

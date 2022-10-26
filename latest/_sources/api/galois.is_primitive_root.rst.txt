@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: galois.is_primitive_root
+.. python-apigen-entity-page::  galois.is_primitive_root
 
