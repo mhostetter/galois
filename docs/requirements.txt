@@ -1,4 +1,4 @@
-sphinx==5
+sphinx < 5.4
 git+https://github.com/jbms/sphinx-immaterial@4b9133ede174bb9477a72f129384f0ab1859ac8d
 myst-parser
 sphinx-design
