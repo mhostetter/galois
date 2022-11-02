@@ -47,28 +47,28 @@ def test_str():
     assert str(GF(0)) == "0"
     assert str(GF(5)) == "5"
     assert str(GF(2)) == "2"
-    assert str(GF([1, 0, 5, 2])) == "[1, 0, 5, 2]"
+    assert str(GF([1, 0, 5, 2])) == "[1 0 5 2]"
 
     GF.display("poly")
     assert str(GF(1)) == "1"
     assert str(GF(0)) == "0"
     assert str(GF(5)) == "α^2 + 1"
     assert str(GF(2)) == "α"
-    assert str(GF([1, 0, 5, 2])) == "[      1,       0, α^2 + 1,       α]"
+    assert str(GF([1, 0, 5, 2])) == "[      1       0 α^2 + 1       α]"
 
     GF.display("power")
     assert str(GF(1)) == "1"
     assert str(GF(0)) == "0"
     assert str(GF(5)) == "α^6"
     assert str(GF(2)) == "α"
-    assert str(GF([1, 0, 5, 2])) == "[  1,   0, α^6,   α]"
+    assert str(GF([1, 0, 5, 2])) == "[  1   0 α^6   α]"
 
     GF.display()
     assert str(GF(1)) == "1"
     assert str(GF(0)) == "0"
     assert str(GF(5)) == "5"
     assert str(GF(2)) == "2"
-    assert str(GF([1, 0, 5, 2])) == "[1, 0, 5, 2]"
+    assert str(GF([1, 0, 5, 2])) == "[1 0 5 2]"
 
 
 def test_display_context_manager():
@@ -76,18 +76,18 @@ def test_display_context_manager():
     a = GF([1, 0, 5, 2])
 
     assert repr(a) == "GF([1, 0, 5, 2], order=2^3)"
-    assert str(a) == "[1, 0, 5, 2]"
+    assert str(a) == "[1 0 5 2]"
 
     with GF.display("poly"):
         assert repr(a) == "GF([      1,       0, α^2 + 1,       α], order=2^3)"
-        assert str(a) == "[      1,       0, α^2 + 1,       α]"
+        assert str(a) == "[      1       0 α^2 + 1       α]"
 
     with GF.display("power"):
         assert repr(a) == "GF([  1,   0, α^6,   α], order=2^3)"
-        assert str(a) == "[  1,   0, α^6,   α]"
+        assert str(a) == "[  1   0 α^6   α]"
 
     assert repr(a) == "GF([1, 0, 5, 2], order=2^3)"
-    assert str(a) == "[1, 0, 5, 2]"
+    assert str(a) == "[1 0 5 2]"
 
 
 def test_display_exceptions():

@@ -1587,13 +1587,13 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             x = GF([4, 2, 7, 5])
             x
         """
-        return self._display("repr")
+        return self._display("repr", separator=", ")
 
     def __str__(self) -> str:
         """
         Displays the array without specifying the class or finite field order.
 
-        This function does not prepend `GF(` and or append `, order=p^m)`.
+        This function does not prepend `GF(` and or append `, order=p^m)`. It also omits the comma separators.
 
         Examples
         --------
@@ -1603,15 +1603,14 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             x = GF([4, 2, 7, 5])
             print(x)
         """
-        return self._display("str")
+        return self._display("str", separator=" ")
 
-    def _display(self, mode: Literal["repr", "str"]) -> str:
+    def _display(self, mode: Literal["repr", "str"], separator=", ") -> str:
         # View the array as an ndarray so that the scalar -> 0-D array conversion in __array_finalize__() for Galois field
         # arrays isn't continually invoked. This improves performance slightly.
         x = self.view(np.ndarray)
         field = type(self)
 
-        separator = ", "
         prefix = "GF(" if mode == "repr" else ""
         order = field._order_str if mode == "repr" else ""
         suffix = ")" if mode == "repr" else ""
