@@ -117,7 +117,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        x / y, x % y
+        x // y, x % y
         divmod(x, y)
         np.divmod(x, y)
 
