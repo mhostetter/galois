@@ -7237,7 +7237,7 @@
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">FieldArray.</span></span><span class="sig-name descname"><span class="pre">column_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">Self</span></span></span></span></dt>
+<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">FieldArray.</span></span><span class="sig-name descname"><span class="pre">column_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Self" title="(in Python v3.11)"><span class="pre">Self</span></a></span></span></span></dt>
 <dd><p>Computes the column space of the matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
@@ -7259,9 +7259,9 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The column 
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[27, 26, 22, 11, 28],</span>
-<span class="go">    [ 5, 26, 30, 10, 26],</span>
-<span class="go">    [30, 18, 24, 15, 13]], order=31)</span>
+<span class="go">GF([[16, 20, 10,  4, 12],</span>
+<span class="go">    [ 4,  8,  6, 17, 21],</span>
+<span class="go">    [ 8, 21, 29, 23, 18]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">C</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">column_space</span><span class="p">();</span> <span class="n">C</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
@@ -7273,8 +7273,8 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The column 
 <p>The dimension of the column space and null space sum to <span class="math notranslate nohighlight">\(n\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">();</span> <span class="n">N</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0,  5, 16,  1],</span>
-<span class="go">    [ 0,  1, 22, 20, 16]], order=31)</span>
+<span class="go">GF([[ 1,  0,  0, 21,  2],</span>
+<span class="go">    [ 0,  1, 22, 28, 12]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">C</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">n</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>
@@ -7289,7 +7289,7 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The column 
   <small>
     
       Last update:
-      Oct 26, 2022
+      Nov 02, 2022
     
   </small>
 </div>
@@ -7368,7 +7368,7 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The column 
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.0.0.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -7418,7 +7418,8 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The column 
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky", "content.tabs.link"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.309d5c42.min.js"></script>
+      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

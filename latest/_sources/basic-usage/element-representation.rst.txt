@@ -113,7 +113,6 @@ This is useful, however it can become cluttered for large arrays.
 .. tip::
 
     Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
-
     Use :func:`numpy.set_printoptions` to increase the line width to display large arrays more clearly. See :ref:`numpy-print-options`
     for more details.
 
@@ -124,7 +123,7 @@ Power representation
 
 The power display mode represents the elements as powers of the finite field's primitive element :math:`\alpha`.
 
-.. warning::
+.. danger::
 
     To display elements in the power representation, :obj:`galois` must compute the discrete logarithm of each element displayed.
     For large fields (or fields using :ref:`explicit calculation <explicit-calculation>`), this process can take a while. However, when

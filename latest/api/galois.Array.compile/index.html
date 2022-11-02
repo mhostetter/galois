@@ -7250,7 +7250,7 @@ In the few cases where explicit calculation is faster than table lookup, explici
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-calculate&quot;</span></code>: JIT compiles arithmetic ufuncs to use explicit calculation. The <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-calculate&quot;</span></code> mode is designed for large
 fields that cannot or should not store lookup tables in RAM. Generally, the <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-calculate&quot;</span></code> mode is slower than <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-lookup&quot;</span></code>.</p></li>
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code>: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
-represented with <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> and instead use <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a> with Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a> (which has arbitrary precision).</p></li>
+represented with <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> and instead use <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a> with Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a> (which has arbitrary precision).</p></li>
 </ul>
 </p>
 </dd>
@@ -7266,7 +7266,7 @@ represented with <a class="reference external" href="https://numpy.org/doc/stabl
   <small>
     
       Last update:
-      Oct 26, 2022
+      Nov 02, 2022
     
   </small>
 </div>
@@ -7345,7 +7345,7 @@ represented with <a class="reference external" href="https://numpy.org/doc/stabl
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.0.0.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -7395,7 +7395,8 @@ represented with <a class="reference external" href="https://numpy.org/doc/stabl
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky", "content.tabs.link"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.309d5c42.min.js"></script>
+      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

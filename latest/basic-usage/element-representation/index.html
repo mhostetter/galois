@@ -7391,14 +7391,14 @@ This is useful, however it can become cluttered for large arrays.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Use <a class="reference internal" href="../../api/galois.set_printoptions/" title="galois.set_printoptions (Python function) — Modifies the print options for the package. This function is the galois equivalent of numpy.set_printoptions()."><code class="xref py py-func docutils literal notranslate"><span class="pre">set_printoptions()</span></code></a> to display the polynomial coefficients in degree-ascending order.</p>
-<p>Use <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html#numpy.set_printoptions" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.set_printoptions()</span></code></a> to increase the line width to display large arrays more clearly. See <a class="reference internal" href="#numpy-print-options"><span class="std std-ref">NumPy print options</span></a>
+<p>Use <a class="reference internal" href="../../api/galois.set_printoptions/" title="galois.set_printoptions (Python function) — Modifies the print options for the package. This function is the galois equivalent of numpy.set_printoptions()."><code class="xref py py-func docutils literal notranslate"><span class="pre">set_printoptions()</span></code></a> to display the polynomial coefficients in degree-ascending order.
+Use <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html#numpy.set_printoptions" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.set_printoptions()</span></code></a> to increase the line width to display large arrays more clearly. See <a class="reference internal" href="#numpy-print-options"><span class="std std-ref">NumPy print options</span></a>
 for more details.</p>
 </div>
 <h2 id="power-representation"><span id="power-repr"></span>Power representation<a class="headerlink" href="#power-representation" title="Permalink to this heading">¶</a></h2>
 <p>The power display mode represents the elements as powers of the finite field’s primitive element <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
 <p>To display elements in the power representation, <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> must compute the discrete logarithm of each element displayed.
 For large fields (or fields using <a class="reference internal" href="../compilation-modes/#explicit-calculation"><span class="std std-ref">explicit calculation</span></a>), this process can take a while. However, when
 using <a class="reference internal" href="../compilation-modes/#lookup-tables"><span class="std std-ref">lookup tables</span></a> this display mode is just as fast as the others.</p>
@@ -7474,21 +7474,21 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [40]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[40]: </span><span class="go"></span>
-<span class="go">GF([[2α^4 + 2α^3 + 2α^2 + α + 1,       α^4 + 2α^3 + α^2 + 2,</span>
-<span class="go">                       2α^3 + 2,  α^4 + 2α^3 + α^2 + 2α + 2,</span>
-<span class="go">                            α^3],</span>
-<span class="go">    [       2α^3 + α^2 + 2α + 1,  2α^4 + α^3 + 2α^2 + α + 1,</span>
-<span class="go">                   α^4 + 2α + 2,        2α^3 + 2α^2 + α + 2,</span>
-<span class="go">            2α^4 + α^3 + 2α + 1],</span>
-<span class="go">    [           α^4 + 2α^3 + 2α,                   2α^2 + 2,</span>
-<span class="go">     2α^4 + 2α^3 + 2α^2 + α + 1,         2α^4 + α^2 + α + 1,</span>
-<span class="go">                 α^4 + α^3 + 2α],</span>
-<span class="go">    [                 α^4 + α^3,                  α^3 + α^2,</span>
-<span class="go">           2α^4 + α^3 + α^2 + 2,             2α^4 + α^3 + 1,</span>
-<span class="go">          α^4 + 2α^3 + 2α^2 + 1],</span>
-<span class="go">    [             2α^3 + 2α + 2,       α^4 + 2α^3 + α^2 + 2,</span>
-<span class="go">                  α^4 + α^3 + α,            2α^4 + 2α^3 + 2,</span>
-<span class="go">                  2α^3 + 2α + 1]], order=3^5)</span>
+<span class="go">GF([[      α^4 + α^3 + 2α^2 + 2,                α^2 + α + 2,</span>
+<span class="go">          2α^4 + 2α^3 + α^2 + 1,     2α^4 + 2α^3 + 2α^2 + 1,</span>
+<span class="go">           2α^4 + 2α^2 + 2α + 1],</span>
+<span class="go">    [            α^3 + 2α^2 + 1,  2α^4 + α^3 + α^2 + 2α + 2,</span>
+<span class="go">        2α^4 + 2α^3 + 2α^2 + 2α,             α^4 + 2α^3 + 1,</span>
+<span class="go">                      α^4 + α^2],</span>
+<span class="go">    [ 2α^4 + α^3 + α^2 + 2α + 2,             2α^4 + α^3 + α,</span>
+<span class="go">           α^4 + 2α^3 + α^2 + α,               2α^4 + α + 1,</span>
+<span class="go">                    2α^3 + 2α^2],</span>
+<span class="go">    [           2α^4 + α^3 + 2α,             2α^4 + α^2 + 2,</span>
+<span class="go">            2α^4 + 2α^2 + α + 1,       α^4 + 2α^3 + α^2 + α,</span>
+<span class="go">                     α^4 + 2α^3],</span>
+<span class="go">    [2α^4 + α^3 + 2α^2 + 2α + 1,          α^4 + α^3 + α + 2,</span>
+<span class="go">                α^4 + α^3 + α^2,  α^4 + α^3 + 2α^2 + 2α + 2,</span>
+<span class="go">                   2α^3 + α + 2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <p>The readability is improved by increasing the line width using <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html#numpy.set_printoptions" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.set_printoptions()</span></code></a>.</p>
@@ -7496,11 +7496,11 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [42]: </span><span class="n">x</span>
 <span class="gh">Out[42]: </span><span class="go"></span>
-<span class="go">GF([[2α^4 + 2α^3 + 2α^2 + α + 1,       α^4 + 2α^3 + α^2 + 2,                   2α^3 + 2,  α^4 + 2α^3 + α^2 + 2α + 2,                        α^3],</span>
-<span class="go">    [       2α^3 + α^2 + 2α + 1,  2α^4 + α^3 + 2α^2 + α + 1,               α^4 + 2α + 2,        2α^3 + 2α^2 + α + 2,        2α^4 + α^3 + 2α + 1],</span>
-<span class="go">    [           α^4 + 2α^3 + 2α,                   2α^2 + 2, 2α^4 + 2α^3 + 2α^2 + α + 1,         2α^4 + α^2 + α + 1,             α^4 + α^3 + 2α],</span>
-<span class="go">    [                 α^4 + α^3,                  α^3 + α^2,       2α^4 + α^3 + α^2 + 2,             2α^4 + α^3 + 1,      α^4 + 2α^3 + 2α^2 + 1],</span>
-<span class="go">    [             2α^3 + 2α + 2,       α^4 + 2α^3 + α^2 + 2,              α^4 + α^3 + α,            2α^4 + 2α^3 + 2,              2α^3 + 2α + 1]], order=3^5)</span>
+<span class="go">GF([[      α^4 + α^3 + 2α^2 + 2,                α^2 + α + 2,      2α^4 + 2α^3 + α^2 + 1,     2α^4 + 2α^3 + 2α^2 + 1,       2α^4 + 2α^2 + 2α + 1],</span>
+<span class="go">    [            α^3 + 2α^2 + 1,  2α^4 + α^3 + α^2 + 2α + 2,    2α^4 + 2α^3 + 2α^2 + 2α,             α^4 + 2α^3 + 1,                  α^4 + α^2],</span>
+<span class="go">    [ 2α^4 + α^3 + α^2 + 2α + 2,             2α^4 + α^3 + α,       α^4 + 2α^3 + α^2 + α,               2α^4 + α + 1,                2α^3 + 2α^2],</span>
+<span class="go">    [           2α^4 + α^3 + 2α,             2α^4 + α^2 + 2,        2α^4 + 2α^2 + α + 1,       α^4 + 2α^3 + α^2 + α,                 α^4 + 2α^3],</span>
+<span class="go">    [2α^4 + α^3 + 2α^2 + 2α + 1,          α^4 + α^3 + α + 2,            α^4 + α^3 + α^2,  α^4 + α^3 + 2α^2 + 2α + 2,               2α^3 + α + 2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <h2 id="representation-comparisons">Representation comparisons<a class="headerlink" href="#representation-comparisons" title="Permalink to this heading">¶</a></h2>
@@ -7546,7 +7546,7 @@ With the default line width, the array is quite difficult to read.</p>
   <small>
     
       Last update:
-      Oct 26, 2022
+      Nov 02, 2022
     
   </small>
 </div>
@@ -7625,7 +7625,7 @@ With the default line width, the array is quite difficult to read.</p>
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.0.0.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -7675,7 +7675,8 @@ With the default line width, the array is quite difficult to read.</p>
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky", "content.tabs.link"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.309d5c42.min.js"></script>
+      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

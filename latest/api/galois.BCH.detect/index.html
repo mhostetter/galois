@@ -7296,10 +7296,10 @@ Matrix (shortened)</label></div>
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([1, 0, 1, 1, 0, 0, 1], order=2)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([0, 0, 0, 0, 0, 1, 0], order=2)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0], order=2)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1], order=2)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codeword.</p>
@@ -7312,7 +7312,7 @@ Matrix (shortened)</label></div>
 <span class="gh">Out[6]: </span><span class="go">5</span>
 
 <span class="gp">In [7]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">bch</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[7]: </span><span class="go">GF([0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0], order=2)</span>
+<span class="gh">Out[7]: </span><span class="go">GF([1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1], order=2)</span>
 
 <span class="gp">In [8]: </span><span class="n">bch</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[8]: </span><span class="go">True</span>
@@ -7326,10 +7326,10 @@ Matrix (shortened)</label></div>
 <span class="gp">In [10]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="gp">In [11]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[11]: </span><span class="go">GF([0, 0, 0, 0], order=2)</span>
+<span class="gh">Out[11]: </span><span class="go">GF([0, 1, 0, 1], order=2)</span>
 
 <span class="gp">In [12]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[12]: </span><span class="go">GF([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], order=2)</span>
+<span class="gh">Out[12]: </span><span class="go">GF([0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1], order=2)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codeword.</p>
@@ -7342,7 +7342,7 @@ Matrix (shortened)</label></div>
 <span class="gh">Out[14]: </span><span class="go">5</span>
 
 <span class="gp">In [15]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">bch</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[15]: </span><span class="go">GF([1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], order=2)</span>
+<span class="gh">Out[15]: </span><span class="go">GF([1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1], order=2)</span>
 
 <span class="gp">In [16]: </span><span class="n">bch</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[16]: </span><span class="go">True</span>
@@ -7357,15 +7357,15 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [19]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[19]: </span><span class="go"></span>
-<span class="go">GF([[0, 1, 1, 1, 0, 0, 0],</span>
-<span class="go">    [1, 1, 1, 1, 0, 1, 0],</span>
-<span class="go">    [1, 1, 0, 0, 0, 1, 0]], order=2)</span>
+<span class="go">GF([[1, 1, 0, 0, 0, 1, 1],</span>
+<span class="go">    [0, 0, 0, 0, 1, 1, 0],</span>
+<span class="go">    [1, 0, 0, 0, 1, 1, 1]], order=2)</span>
 
 <span class="gp">In [20]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[20]: </span><span class="go"></span>
-<span class="go">GF([[0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1],</span>
-<span class="go">    [1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0],</span>
-<span class="go">    [1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1]], order=2)</span>
+<span class="go">GF([[1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0],</span>
+<span class="go">    [0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1],</span>
+<span class="go">    [1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codewords.</p>
@@ -7385,9 +7385,9 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [26]: </span><span class="n">c</span>
 <span class="gh">Out[26]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1],</span>
-<span class="go">    [0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0],</span>
-<span class="go">    [0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1]], order=2)</span>
+<span class="go">GF([[0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0],</span>
+<span class="go">    [1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1],</span>
+<span class="go">    [0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0]], order=2)</span>
 
 <span class="gp">In [27]: </span><span class="n">bch</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[27]: </span><span class="go">array([ True,  True,  True])</span>
@@ -7402,15 +7402,15 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [30]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[30]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 0],</span>
-<span class="go">    [0, 0, 1, 1],</span>
-<span class="go">    [0, 0, 0, 0]], order=2)</span>
+<span class="go">GF([[0, 0, 0, 1],</span>
+<span class="go">    [0, 1, 0, 1],</span>
+<span class="go">    [0, 0, 0, 1]], order=2)</span>
 
 <span class="gp">In [31]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[31]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1],</span>
-<span class="go">    [0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0],</span>
-<span class="go">    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], order=2)</span>
+<span class="go">GF([[0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1],</span>
+<span class="go">    [0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1],</span>
+<span class="go">    [0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codewords.</p>
@@ -7430,9 +7430,9 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [37]: </span><span class="n">c</span>
 <span class="gh">Out[37]: </span><span class="go"></span>
-<span class="go">GF([[0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1],</span>
-<span class="go">    [1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0],</span>
-<span class="go">    [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1],</span>
+<span class="go">    [1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1],</span>
+<span class="go">    [1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1]], order=2)</span>
 
 <span class="gp">In [38]: </span><span class="n">bch</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[38]: </span><span class="go">array([ True,  True,  True])</span>
@@ -7449,7 +7449,7 @@ Matrix (shortened)</label></div>
   <small>
     
       Last update:
-      Oct 26, 2022
+      Nov 02, 2022
     
   </small>
 </div>
@@ -7528,7 +7528,7 @@ Matrix (shortened)</label></div>
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.0.0.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -7578,7 +7578,8 @@ Matrix (shortened)</label></div>
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky", "content.tabs.link"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.309d5c42.min.js"></script>
+      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
