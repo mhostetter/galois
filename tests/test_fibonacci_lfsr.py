@@ -46,7 +46,7 @@ def test_repr():
 def test_str():
     c = galois.primitive_poly(7, 4)
     lfsr = galois.FLFSR(c.reverse())
-    assert str(lfsr) == "Fibonacci LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [0, 6, 4, 2]\n  order: 4\n  state: [1, 1, 1, 1]\n  initial_state: [1, 1, 1, 1]"
+    assert str(lfsr) == "Fibonacci LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [0 6 4 2]\n  order: 4\n  state: [1 1 1 1]\n  initial_state: [1 1 1 1]"
 
 
 @pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
