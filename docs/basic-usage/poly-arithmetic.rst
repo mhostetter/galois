@@ -18,6 +18,8 @@ In the sections below, the finite field :math:`\mathrm{GF}(7)` and polynomials :
 Expand any section for more details.
 
 .. details:: Addition: `f + g`
+    :class: example
+    :open:
 
     Add two polynomials.
 
@@ -33,6 +35,7 @@ Expand any section for more details.
         GF(3) + f
 
 .. details:: Additive inverse: `-f`
+    :class: example
 
     .. ipython:: python
 
@@ -45,6 +48,7 @@ Expand any section for more details.
         f + -f
 
 .. details:: Subtraction: `f - g`
+    :class: example
 
     Subtract one polynomial from another.
 
@@ -60,6 +64,7 @@ Expand any section for more details.
         GF(3) - f
 
 .. details:: Multiplication: `f * g`
+    :class: example
 
     Multiply two polynomials.
 
@@ -75,6 +80,7 @@ Expand any section for more details.
         GF(3) * f
 
 .. details:: Scalar multiplication: `f * 3`
+    :class: example
 
     Scalar multiplication is essentially *repeated addition*. It is the "multiplication" of finite field elements
     and integers. The integer value indicates how many additions of the field element to sum.
@@ -93,6 +99,7 @@ Expand any section for more details.
         f * p
 
 .. details:: Division: `f // g`
+    :class: example
 
     Divide one polynomial by another. Floor division is supported. True division is not supported since fractional polynomials are not
     currently supported.
@@ -109,6 +116,7 @@ Expand any section for more details.
         GF(3) // g
 
 .. details:: Remainder: `f % g`
+    :class: example
 
     Divide one polynomial by another and keep the remainder.
 
@@ -124,6 +132,7 @@ Expand any section for more details.
         GF(3) % g
 
 .. details:: Divmod: `divmod(f, g)`
+    :class: example
 
     Divide one polynomial by another and return the quotient and remainder.
 
@@ -139,6 +148,7 @@ Expand any section for more details.
         divmod(GF(3), g)
 
 .. details:: Exponentiation: `f ** 3`
+    :class: example
 
     Exponentiate a polynomial to a non-negative exponent.
 
@@ -149,6 +159,7 @@ Expand any section for more details.
         f * f * f
 
 .. details:: Modular exponentiation: `pow(f, 123456789, g)`
+    :class: example
 
     Exponentiate a polynomial to a non-negative exponent and reduce modulo another polynomial. This performs efficient modular exponentiation.
 
@@ -156,6 +167,53 @@ Expand any section for more details.
 
         # Efficiently computes (f ** 123456789) % g
         pow(f, 123456789, g)
+
+.. details:: Evaluation (element-wise): `f(x)` or `f(X)`
+    :class: example
+
+    Polynomials are evaluated by invoking :func:`~galois.Poly.__call__`. They can be evaluated at scalars.
+
+    .. ipython:: python
+
+        GF = galois.GF(31)
+        f = galois.Poly([1, 0, 0, 15], field=GF); f
+        f(26)
+
+        # The equivalent field calculation
+        GF(26)**3 + GF(15)
+
+    Or they can be evaluated at arrays element-wise.
+
+    .. ipython:: python
+
+        x = GF([26, 13, 24, 4])
+
+        # Evaluate f(x) element-wise at a 1-D array
+        f(x)
+
+    .. ipython:: python
+
+        X = GF([[26, 13], [24, 4]])
+
+        # Evaluate f(x) element-wise at a 2-D array
+        f(X)
+
+.. details:: Evaluation (square matrix): `f(X, elementwise=False)`
+    :class: example
+
+    Polynomials can also be evaluated at square matrices. Note, this is different than element-wise array evaluation. Here,
+    the square matrix indeterminate is exponentiated using matrix multiplication. So :math:`f(x) = x^3` evaluated
+    at the square matrix `X` equals `X @ X @ X`.
+
+    .. ipython:: python
+
+        f
+
+        # Evaluate f(x) at the 2-D square matrix
+        f(X, elementwise=False)
+
+        # The equivalent matrix operation
+        np.linalg.matrix_power(X, 3) + GF(15)*GF.Identity(X.shape[0])
 
 Special arithmetic
 ------------------
@@ -168,59 +226,37 @@ Polynomial objects also work on several special arithmetic operations. Below are
     f = galois.Poly([1, 30, 0, 26, 6], field=GF); f
     g = galois.Poly([4, 17, 3], field=GF); g
 
-Compute the polynomial greatest common divisor using :func:`~galois.gcd` and :func:`~galois.egcd`.
+Expand any section for more details.
 
-.. ipython:: python
+.. details:: Greatest common denominator: `galois.gcd(f, g)`
+    :class: example
+    :open:
 
-    galois.gcd(f, g)
-    galois.egcd(f, g)
+    .. ipython:: python
 
-Factor a polynomial into its irreducible polynomial factors using :func:`~galois.factors`.
+        d = galois.gcd(f, g); d
+        f % d
+        g % d
 
-.. ipython:: python
+    See :func:`~galois.gcd` for more details.
 
-    galois.factors(f)
+.. details:: Extended greatest common denominator: `galois.egcd(f, g)`
+    :class: example
 
-Polynomial evaluation
----------------------
+    .. ipython:: python
 
-Polynomials are evaluated by invoking :func:`~galois.Poly.__call__`. They can be evaluated at scalars.
+        d, s, t = galois.egcd(f, g)
+        d, s, t
+        f*s + g*t == d
 
-.. ipython:: python
+    See :func:`~galois.egcd` for more details.
 
-    GF = galois.GF(31)
-    f = galois.Poly([1, 0, 0, 15], field=GF); f
-    f(26)
+.. details:: Factor into irreducible polynomials: `galois.factors(f) == f.factors()`
+    :class: example
 
-    # The equivalent field calculation
-    GF(26)**3 + GF(15)
+    .. ipython:: python
 
-Or they can be evaluated at arrays element-wise.
+        galois.factors(f)
+        f.factors()
 
-.. ipython:: python
-
-    x = GF([26, 13, 24, 4])
-
-    # Evaluate f(x) element-wise at a 1-D array
-    f(x)
-
-.. ipython:: python
-
-    X = GF([[26, 13], [24, 4]])
-
-    # Evaluate f(x) element-wise at a 2-D array
-    f(X)
-
-Or they can also be evaluated at square matrices. Note, this is different than element-wise array evaluation. Here,
-the square matrix indeterminate is exponentiated using matrix multiplication. So :math:`f(x) = x^3` evaluated
-at the square matrix `X` equals `X @ X @ X`.
-
-.. ipython:: python
-
-    f
-
-    # Evaluate f(x) at the 2-D square matrix
-    f(X, elementwise=False)
-
-    # The equivalent matrix operation
-    np.linalg.matrix_power(X, 3) + GF(15)*GF.Identity(X.shape[0])
+    See :func:`~galois.factors` or :func:`galois.Poly.factors` for more details.
