@@ -16,21 +16,11 @@ Prime field
 In this tutorial, we will consider the prime field :math:`\mathrm{GF}(7)`. Using the :obj:`galois` library, the :obj:`~galois.FieldArray`
 subclass `GF7` is created using the class factory :func:`~galois.GF`.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         GF7 = galois.GF(7)
-         print(GF7.properties)
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         GF7 = galois.GF(7, display="power")
-         print(GF7.properties)
+   GF7 = galois.GF(7)
+   print(GF7.properties)
 
 .. note::
 
@@ -49,23 +39,10 @@ The elements of the finite field :math:`\mathrm{GF}(p)` are naturally represente
 
 The elements of the finite field are retrieved in a 1-D array using the :func:`~galois.FieldArray.Elements` classmethod.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         GF7.elements
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         GF7.elements
+   GF7.elements
 
 Arithmetic
 ----------
@@ -86,117 +63,51 @@ Here are :math:`a` and :math:`b` represented as Python integers.
 
 Here are :math:`a` and :math:`b` represented as prime field elements. See :doc:`/basic-usage/array-creation` for more details.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
+   a = GF7(3); a
+   b = GF7(5); b
 
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         a = GF7(3); a
-         b = GF7(5); b
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         a = GF7(3); a
-         b = GF7(5); b
 
 Addition
 ........
 
 We can see that :math:`3 + 5 \equiv 1\ (\textrm{mod}\ 7)`. So accordingly, :math:`3 + 5 = 1` in :math:`\mathrm{GF}(7)`.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
+   (a_int + b_int) % p
+   a + b
 
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         (a_int + b_int) % p
-         a + b
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         (a_int + b_int) % p
-         a + b
 
 The :obj:`galois` library includes the ability to display the arithmetic tables for any finite field. The table is only readable
 for small fields, but nonetheless the capability is provided. Select a few computations at random and convince yourself the
 answers are correct.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         print(GF7.arithmetic_table("+"))
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         print(GF7.arithmetic_table("+"))
+   print(GF7.arithmetic_table("+"))
 
 Subtraction
 ...........
 
 As with addition, we can see that :math:`3 - 5 \equiv 5\ (\textrm{mod}\ 7)`. So accordingly, :math:`3 - 5 = 5` in :math:`\mathrm{GF}(7)`.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         (a_int - b_int) % p
-         a - b
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         (a_int - b_int) % p
-         a - b
+   (a_int - b_int) % p
+   a - b
 
 Here is the subtraction table for completeness.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         print(GF7.arithmetic_table("-"))
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         print(GF7.arithmetic_table("-"))
+   print(GF7.arithmetic_table("-"))
 
 Multiplication
 ..............
@@ -204,45 +115,18 @@ Multiplication
 Similarly, we can see that :math:`3 \cdot 5 \equiv 1\ (\textrm{mod}\ 7)`. So accordingly, :math:`3 \cdot 5 = 1`
 in :math:`\mathrm{GF}(7)`.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         (a_int * b_int) % p
-         a * b
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         (a_int * b_int) % p
-         a * b
+   (a_int * b_int) % p
+   a * b
 
 Here is the multiplication table for completeness.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         print(GF7.arithmetic_table("*"))
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         print(GF7.arithmetic_table("*"))
+   print(GF7.arithmetic_table("*"))
 
 Multiplicative inverse
 ......................
@@ -267,25 +151,11 @@ in :math:`\mathrm{GF}(7)`. Note, the GCD will always be 1 because :math:`y` is p
 The :obj:`galois` library uses the Extended Euclidean Algorithm to compute multiplicative inverses (and division) in prime fields.
 The inverse of 5 in :math:`\mathrm{GF}(7)` can be easily computed in the following way.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         b ** -1
-         np.reciprocal(b)
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         b ** -1
-         np.reciprocal(b)
+   b ** -1
+   np.reciprocal(b)
 
 Division
 ........
@@ -295,49 +165,20 @@ already learned multiplication and multiplicative inversion in finite fields.
 
 To compute :math:`3 / 5` in :math:`\mathrm{GF}(7)`, we can equivalently compute :math:`3 \cdot 5^{-1}` in :math:`\mathrm{GF}(7)`.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         _, b_inv_int, _ = galois.egcd(b_int, p)
-         (a_int * b_inv_int) % p
-         a * b**-1
-         a / b
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         _, b_inv_int, _ = galois.egcd(b_int, p)
-         (a_int * b_inv_int) % p
-         a * b**-1
-         a / b
+   _, b_inv_int, _ = galois.egcd(b_int, p)
+   (a_int * b_inv_int) % p
+   a * b**-1
+   a / b
 
 Here is the division table for completeness. Notice that division is not defined for :math:`y = 0`.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         print(GF7.arithmetic_table("/"))
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         print(GF7.arithmetic_table("/"))
+   print(GF7.arithmetic_table("/"))
 
 Primitive elements
 ------------------
@@ -369,25 +210,11 @@ A primitive element
 In :obj:`galois`, a primitive element of a finite field is provided by the :obj:`~galois.FieldArray.primitive_element`
 class property.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         print(GF7.properties)
-         g = GF7.primitive_element; g
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         print(GF7.properties)
-         g = GF7.primitive_element; g
+   print(GF7.properties)
+   g = GF7.primitive_element; g
 
 The :obj:`galois` package allows you to easily display all powers of an element and their equivalent polynomial, vector, and integer
 representations using :func:`~galois.FieldArray.repr_table`. Let's ignore the polynomial and vector representations for now.
@@ -406,27 +233,12 @@ Other primitive elements
 There are multiple primitive elements of any finite field. All primitive elements are provided in the
 :obj:`~galois.FieldArray.primitive_elements` class property.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         list(galois.primitive_roots(7))
-         GF7.primitive_elements
-         g = GF7(5); g
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         list(galois.primitive_roots(7))
-         GF7.primitive_elements
-         g = GF7(5); g
+   list(galois.primitive_roots(7))
+   GF7.primitive_elements
+   g = GF7(5); g
 
 This means that 3 and 5 generate the multiplicative group :math:`\mathrm{GF}(7)^\times`.
 We can examine this by viewing the representation table using different generators.
@@ -447,23 +259,10 @@ orders less than :math:`p - 1`.
 
 For example, the element :math:`e = 2` is not a primitive element.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,power
+   :name: GF7
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("int")
-         e = GF7(2); e
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF7.display("power")
-         e = GF7(2); e
+   e = GF7(2); e
 
 It has :math:`\textrm{ord}(e) = 3`. Notice elements 3, 5, and 6 are not represented by the powers of :math:`e`.
 
@@ -471,10 +270,3 @@ It has :math:`\textrm{ord}(e) = 3`. Notice elements 3, 5, and 6 are not represen
 
    e.multiplicative_order()
    print(GF7.repr_table(e))
-
-..
-   Reset the display mode to the integer representation so other pages aren't affected
-.. ipython:: python
-   :suppress:
-
-   GF7.display("int")
