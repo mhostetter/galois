@@ -14,6 +14,7 @@
 import inspect
 import os
 import sys
+sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath(".."))
 
 # Need to build docs with Python 3.8 or higher for proper typing annotations, including from __future__ import annotations
@@ -53,7 +54,8 @@ extensions = [
     "sphinx_design",
     "sphinxcontrib.details.directive",
     "IPython.sphinxext.ipython_console_highlighting",
-    "IPython.sphinxext.ipython_directive"
+    "IPython.sphinxext.ipython_directive",
+    "ipython_with_reprs",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
