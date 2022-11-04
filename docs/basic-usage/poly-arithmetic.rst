@@ -1,12 +1,6 @@
 Polynomial Arithmetic
 =====================
 
-Standard arithmetic
--------------------
-
-After creating a :doc:`polynomial over a finite field <poly>`, nearly any polynomial arithmetic operation can be
-performed using Python operators.
-
 In the sections below, the finite field :math:`\mathrm{GF}(7)` and polynomials :math:`f(x)` and :math:`g(x)` are used.
 
 .. ipython:: python
@@ -15,16 +9,21 @@ In the sections below, the finite field :math:`\mathrm{GF}(7)` and polynomials :
     f = galois.Poly([1, 0, 4, 3], field=GF); f
     g = galois.Poly([2, 1, 3], field=GF); g
 
-Expand any section for more details.
+Standard arithmetic
+-------------------
+
+After creating a :doc:`polynomial over a finite field <poly>`, nearly any polynomial arithmetic operation can be
+performed using Python operators. Expand any section for more details.
 
 .. details:: Addition: `f + g`
     :class: example
-    :open:
 
     Add two polynomials.
 
     .. ipython:: python
 
+        f
+        g
         f + g
 
     Add a polynomial and a finite field scalar. The scalar is treated as a 0-degree polynomial.
@@ -39,12 +38,14 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
         -f
 
     Any polynomial added to its additive inverse results in zero.
 
     .. ipython:: python
 
+        f
         f + -f
 
 .. details:: Subtraction: `f - g`
@@ -54,6 +55,8 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
+        g
         f - g
 
     Subtract finite field scalar from a polynomial, or vice versa. The scalar is treated as a 0-degree polynomial.
@@ -70,6 +73,8 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
+        g
         f * g
 
     Multiply a polynomial and a finite field scalar. The scalar is treated as a 0-degree polynomial.
@@ -106,6 +111,8 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
+        g
         f // g
 
     Divide a polynomial by a finite field scalar, or vice versa. The scalar is treated as a 0-degree polynomial.
@@ -122,6 +129,8 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
+        g
         f % g
 
     Divide a polynomial by a finite field scalar, or vice versa, and keep the remainder. The scalar is treated as a 0-degree polynomial.
@@ -138,6 +147,8 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
+        g
         divmod(f, g)
 
     Divide a polynomial by a finite field scalar, or vice versa, and keep the remainder. The scalar is treated as a 0-degree polynomial.
@@ -154,6 +165,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
         f ** 3
         pow(f, 3)
         f * f * f
@@ -165,8 +177,15 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
+        g
         # Efficiently computes (f ** 123456789) % g
         pow(f, 123456789, g)
+
+Evaluation
+----------
+
+Polynomial objects may also be evaluated at scalars, arrays, or square matrices. Expand any section for more details.
 
 .. details:: Evaluation (element-wise): `f(x)` or `f(X)`
     :class: example
@@ -175,25 +194,24 @@ Expand any section for more details.
 
     .. ipython:: python
 
-        GF = galois.GF(31)
-        f = galois.Poly([1, 0, 0, 15], field=GF); f
-        f(26)
+        f
+        f(5)
 
         # The equivalent field calculation
-        GF(26)**3 + GF(15)
+        GF(5)**3 + 4*GF(5) + GF(3)
 
     Or they can be evaluated at arrays element-wise.
 
     .. ipython:: python
 
-        x = GF([26, 13, 24, 4])
+        x = GF([5, 6, 3, 4])
 
         # Evaluate f(x) element-wise at a 1-D array
         f(x)
 
     .. ipython:: python
 
-        X = GF([[26, 13], [24, 4]])
+        X = GF([[5, 6], [3, 4]])
 
         # Evaluate f(x) element-wise at a 2-D array
         f(X)
@@ -208,32 +226,23 @@ Expand any section for more details.
     .. ipython:: python
 
         f
-
-        # Evaluate f(x) at the 2-D square matrix
         f(X, elementwise=False)
 
         # The equivalent matrix operation
-        np.linalg.matrix_power(X, 3) + GF(15)*GF.Identity(X.shape[0])
+        np.linalg.matrix_power(X, 3) + 4*X + GF(3)*GF.Identity(X.shape[0])
 
 Special arithmetic
 ------------------
 
-Polynomial objects also work on several special arithmetic operations. Below are some examples.
-
-.. ipython:: python
-
-    GF = galois.GF(31)
-    f = galois.Poly([1, 30, 0, 26, 6], field=GF); f
-    g = galois.Poly([4, 17, 3], field=GF); g
-
-Expand any section for more details.
+Polynomial objects also work on several special arithmetic operations. Expand any section for more details.
 
 .. details:: Greatest common denominator: `galois.gcd(f, g)`
     :class: example
-    :open:
 
     .. ipython:: python
 
+        f
+        g
         d = galois.gcd(f, g); d
         f % d
         g % d
@@ -245,6 +254,8 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
+        g
         d, s, t = galois.egcd(f, g)
         d, s, t
         f*s + g*t == d
@@ -256,6 +267,7 @@ Expand any section for more details.
 
     .. ipython:: python
 
+        f
         galois.factors(f)
         f.factors()
 
