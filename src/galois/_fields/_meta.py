@@ -203,19 +203,17 @@ class FieldArrayMeta(ArrayMeta):
         --------
         All elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,power
 
             GF = galois.GF(31)
             GF.elements
 
         All elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(5**2, display="poly")
+            GF = galois.GF(5**2)
             GF.elements
-            @suppress
-            GF.display()
         """
         return super().elements
 
@@ -228,19 +226,17 @@ class FieldArrayMeta(ArrayMeta):
         --------
         All units of the prime field :math:`\mathrm{GF}(31)` in increasing order.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,power
 
             GF = galois.GF(31)
             GF.units
 
         All units of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(5**2, display="poly")
+            GF = galois.GF(5**2)
             GF.units
-            @suppress
-            GF.display()
         """
         return super().units
 
@@ -255,12 +251,19 @@ class FieldArrayMeta(ArrayMeta):
 
         Examples
         --------
-        .. ipython:: python
+        The smallest primitive element of the prime field :math:`\mathrm{GF}(31)`.
 
-            galois.GF(2).primitive_element
-            galois.GF(2**8).primitive_element
-            galois.GF(31).primitive_element
-            galois.GF(7**5).primitive_element
+        .. ipython-with-reprs:: int,power
+
+            GF = galois.GF(31)
+            GF.elements
+
+        The smallest primitive element of the extension field :math:`\mathrm{GF}(5^2)`.
+
+        .. ipython-with-reprs:: int,poly,power
+
+            GF = galois.GF(5**2)
+            GF.elements
         """
         return super().primitive_element
 
@@ -272,12 +275,19 @@ class FieldArrayMeta(ArrayMeta):
 
         Examples
         --------
-        .. ipython:: python
+        All primitive elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
 
-            galois.GF(2).primitive_elements
-            galois.GF(2**8).primitive_elements
-            galois.GF(31).primitive_elements
-            galois.GF(7**5).primitive_elements
+        .. ipython-with-reprs:: int,power
+
+            GF = galois.GF(31)
+            GF.elements
+
+        All primitive elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
+
+        .. ipython-with-reprs:: int,poly,power
+
+            GF = galois.GF(5**2)
+            GF.elements
         """
         if not hasattr(cls, "_primitive_elements"):
             n = cls.order - 1
@@ -301,21 +311,19 @@ class FieldArrayMeta(ArrayMeta):
         --------
         In fields with characteristic 2, every element is a square (with two identical square roots).
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(2**3, display="poly")
+            GF = galois.GF(2**3)
             x = GF.squares; x
             y1 = np.sqrt(x); y1
             y2 = -y1; y2
             np.array_equal(y1 ** 2, x)
             np.array_equal(y2 ** 2, x)
-            @suppress
-            GF.display()
 
         In fields with characteristic greater than 2, exactly half of the nonzero elements are squares
         (with two unique square roots).
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,power
 
             GF = galois.GF(11)
             x = GF.squares; x
@@ -344,16 +352,14 @@ class FieldArrayMeta(ArrayMeta):
         --------
         In fields with characteristic 2, no elements are non-squares.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(2**3, display="poly")
+            GF = galois.GF(2**3)
             GF.non_squares
-            @suppress
-            GF.display()
 
         In fields with characteristic greater than 2, exactly half of the nonzero elements are non-squares.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,power
 
             GF = galois.GF(11)
             GF.non_squares

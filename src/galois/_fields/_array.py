@@ -35,7 +35,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     --------
     Create a :obj:`~galois.FieldArray` subclass over :math:`\mathrm{GF}(3^5)` using the class factory :func:`~galois.GF`.
 
-    .. ipython:: python
+    .. ipython-with-reprs:: int,poly,power
 
         GF = galois.GF(3**5)
         issubclass(GF, galois.FieldArray)
@@ -43,7 +43,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     Create a :obj:`~galois.FieldArray` instance using `GF`'s constructor.
 
-    .. ipython:: python
+    .. ipython-with-reprs:: int,poly,power
 
         x = GF([44, 236, 206, 138]); x
         isinstance(x, GF)
@@ -88,6 +88,34 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             The `order` keyword argument from :func:`numpy.array`. The default is `"K"`.
         ndmin
             The `ndmin` keyword argument from :func:`numpy.array`. The default is 0.
+
+        Examples
+        --------
+        Create a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(3^5)`.
+
+        .. ipython-with-reprs:: int,poly,power
+
+            GF = galois.GF(3**5)
+            print(GF.properties)
+            alpha = GF.primitive_element; alpha
+
+        Create a finite field scalar from its integer representation, polynomial representation,
+        or a power of the primitive element.
+
+        .. ipython-with-reprs:: int,poly,power
+
+            GF(17)
+            GF("x^2 + 2x + 2")
+            alpha ** 222
+
+        Create a finite field array from its integer representation, polynomial representation,
+        or powers of the primitive element.
+
+        .. ipython-with-reprs:: int,poly,power
+
+            GF([17, 4, 148, 205])
+            GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
+            alpha ** np.array([[222, 69], [54, 24]])
         """
         # pylint: disable=unused-argument,super-init-not-called
         # Adding __init__ and not doing anything is done to overwrite the superclass's __init__ docstring
@@ -226,13 +254,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         For extension fields, the increment is the integer increment between finite field elements in their :ref:`integer representation <int-repr>`.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly
 
-            GF = galois.GF(3**3, display="poly")
+            GF = galois.GF(3**3)
             GF.Range(10, 20)
             GF.Range(10, 20, 2)
-            @suppress
-            GF.display()
         """
     )
     def Range(
@@ -320,13 +346,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(2**3, display="power")
+            @suppress
+            np.set_printoptions(linewidth=200)
+            GF = galois.GF(2**3)
             a = GF.primitive_element; a
             V = GF.Vandermonde(a, 7, 7); V
             @suppress
-            GF.display()
+            np.set_printoptions(linewidth=75)
         """
         verify_isinstance(element, (int, np.integer, cls))
         verify_isinstance(rows, int)
@@ -369,13 +397,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(3**3, display="poly")
+            GF = galois.GF(3**3)
             a = GF.Vector([[1, 0, 2], [0, 2, 1]]); a
             a.vector()
-            @suppress
-            GF.display()
         """
         dtype = cls._get_dtype(dtype)
         order = cls.prime_subfield.order
@@ -523,63 +549,19 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         --------
         Arithmetic tables can be displayed using any element representation.
 
-        .. md-tab-set::
+        .. ipython-with-reprs:: int,poly,power
 
-            .. md-tab-item:: Integer
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2)
-                    print(GF.arithmetic_table("+"))
-
-            .. md-tab-item:: Polynomial
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="poly")
-                    print(GF.arithmetic_table("+"))
-
-            .. md-tab-item:: Power
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="power")
-                    print(GF.arithmetic_table("+"))
-                    @suppress
-                    GF.display()
+            GF = galois.GF(3**2)
+            print(GF.arithmetic_table("+"))
 
         An arithmetic table may also be constructed from arbitrary :math:`x` and :math:`y`.
 
-        .. md-tab-set::
+        .. ipython-with-reprs:: int,poly,power
 
-            .. md-tab-item:: Integer
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2)
-                    x = GF([7, 2, 8]); x
-                    y = GF([1, 4, 5, 3]); y
-                    print(GF.arithmetic_table("+", x=x, y=y))
-
-            .. md-tab-item:: Polynomial
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="poly")
-                    x = GF([7, 2, 8]); x
-                    y = GF([1, 4, 5, 3]); y
-                    print(GF.arithmetic_table("+", x=x, y=y))
-
-            .. md-tab-item:: Power
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="power")
-                    x = GF([7, 2, 8]); x
-                    y = GF([1, 4, 5, 3]); y
-                    print(GF.arithmetic_table("+", x=x, y=y))
-                    @suppress
-                    GF.display()
+            GF = galois.GF(3**2)
+            x = GF([7, 2, 8]); x
+            y = GF([1, 4, 5, 3]); y
+            print(GF.arithmetic_table("+", x=x, y=y))
         """
         if not operation in ["+", "-", "*", "/"]:
             raise ValueError(f"Argument 'operation' must be in ['+', '-', '*', '/'], not {operation!r}.")
@@ -783,14 +765,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         --------
         Compute the additive order of each element of :math:`\mathrm{GF}(3^2)`.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(3**2, display="poly")
+            GF = galois.GF(3**2)
             x = GF.elements; x
             order = x.additive_order(); order
             x * order
-            @suppress
-            GF.display()
         """
         x = self
         field = type(self)
@@ -832,9 +812,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         --------
         Compute the multiplicative order of each non-zero element of :math:`\mathrm{GF}(3^2)`.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(3**2, display="poly")
+            GF = galois.GF(3**2)
             x = GF.units; x
             order = x.multiplicative_order(); order
             x ** order
@@ -842,11 +822,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         The elements with :math:`\textrm{ord}(x) = 8` are multiplicative generators of :math:`\mathrm{GF}(3^2)^\times`,
         which are also called primitive elements.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
             GF.primitive_elements
-            @suppress
-            GF.display()
         """
         if not np.count_nonzero(self) == self.size:
             raise ArithmeticError("The multiplicative order of 0 is not defined.")
@@ -899,9 +877,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         --------
         Since :math:`\mathrm{GF}(2^3)` has characteristic 2, every element has a square root.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(2**3, display="poly")
+            GF = galois.GF(2**3)
             x = GF.elements; x
             x.is_square()
             @suppress
@@ -910,7 +888,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         In :math:`\mathrm{GF}(11)`, the characteristic is greater than 2 so only half of the elements have square
         roots.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,power
 
             GF = galois.GF(11)
             x = GF.elements; x
@@ -946,14 +924,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(3**3, display="poly")
+            GF = galois.GF(3**3)
             a = GF([11, 7]); a
             vec = a.vector(); vec
             GF.Vector(vec)
-            @suppress
-            GF.display()
         """
         field = type(self)
         subfield = field.prime_subfield
@@ -1337,13 +1313,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         --------
         Compute the field trace of the elements of :math:`\mathrm{GF}(3^2)`.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(3**2, display="poly")
+            GF = galois.GF(3**2)
             x = GF.elements; x
             y = x.field_trace(); y
-            @suppress
-            GF.display()
         """
         field = type(self)
         x = self
@@ -1386,13 +1360,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         --------
         Compute the field norm of the elements of :math:`\mathrm{GF}(3^2)`.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(3**2, display="poly")
+            GF = galois.GF(3**2)
             x = GF.elements; x
             y = x.field_norm(); y
-            @suppress
-            GF.display()
         """
         field = type(self)
         x = self
@@ -1442,7 +1414,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         --------
         The characteristic polynomial of the element :math:`a`.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
             GF = galois.GF(3**5)
             a = GF.Random(); a
@@ -1452,7 +1424,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         The characteristic polynomial of the square matrix :math:`\mathbf{A}`.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
             GF = galois.GF(3**5)
             A = GF.Random((3,3)); A
@@ -1500,7 +1472,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         --------
         The minimal polynomial of the element :math:`a`.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
             GF = galois.GF(3**5)
             a = GF.Random(); a
@@ -1543,9 +1515,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Compute the logarithm of :math:`x` with default base :math:`\alpha`, which is the specified primitive element
         of the field.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(3**5, display="poly")
+            GF = galois.GF(3**5)
             alpha = GF.primitive_element; alpha
             x = GF.Random(10, low=1); x
             i = x.log(); i
@@ -1560,7 +1532,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Compute the logarithm of :math:`x` with a different base :math:`\beta`, which is another primitive element
         of the field.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
             beta = GF.primitive_elements[-1]; beta
             i = x.log(beta); i
@@ -1568,14 +1540,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Compute the logarithm of a single finite field element base all of the primitive elements of the field.
 
-        .. ipython:: python
+        .. ipython-with-reprs:: int,poly,power
 
             x = GF.Random(low=1); x
             bases = GF.primitive_elements
             i = x.log(bases); i
             np.all(bases ** i == x)
-            @suppress
-            GF.display()
         """
         x = self
         field = type(self)
@@ -1611,33 +1581,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. md-tab-set::
+        .. ipython-with-reprs:: int,poly,power
 
-            .. md-tab-item:: Integer
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2)
-                    x = GF([4, 2, 7, 5])
-                    x
-
-            .. md-tab-item:: Polynomial
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="poly")
-                    x = GF([4, 2, 7, 5])
-                    x
-
-            .. md-tab-item:: Power
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="power")
-                    x = GF([4, 2, 7, 5])
-                    x
-                    @suppress
-                    GF.display()
+            GF = galois.GF(3**2)
+            x = GF([4, 2, 7, 5])
+            x
         """
         return self._display("repr")
 
@@ -1649,31 +1597,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Examples
         --------
-        .. md-tab-set::
+        .. ipython-with-reprs:: int,poly,power
 
-            .. md-tab-item:: Integer
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2)
-                    x = GF([4, 2, 7, 5])
-                    print(x)
-
-            .. md-tab-item:: Polynomial
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="poly")
-                    x = GF([4, 2, 7, 5])
-                    print(x)
-
-            .. md-tab-item:: Power
-
-                .. ipython:: python
-
-                    GF = galois.GF(3**2, display="power")
-                    x = GF([4, 2, 7, 5])
-                    print(x)
+            GF = galois.GF(3**2)
+            x = GF([4, 2, 7, 5])
+            print(x)
         """
         return self._display("str")
 
