@@ -231,6 +231,17 @@ Polynomial objects may also be evaluated at scalars, arrays, or square matrices.
         # The equivalent matrix operation
         np.linalg.matrix_power(X, 3) + 4*X + GF(3)*GF.Identity(X.shape[0])
 
+.. details:: Composition: `f(g)`
+    :class: example
+
+    Polynomial composition :math:`f(g(x))` is easily performed using an overload to :func:`~galois.Poly.__call__`.
+
+    .. ipython:: python
+
+        f
+        g
+        f(g)
+
 Special arithmetic
 ------------------
 
