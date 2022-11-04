@@ -25,7 +25,7 @@ Scalars are 0-D :obj:`~galois.Array` objects.
 
 - :obj:`int`: A finite field element in its :ref:`integer representation <int-repr>`.
 
-  .. ipython:: python
+  .. ipython-with-reprs:: int,poly,power
 
       GF = galois.GF(3**5)
       GF(17)
@@ -34,17 +34,22 @@ Scalars are 0-D :obj:`~galois.Array` objects.
   accepted, including: with/without `*`, with/without spaces, `^` or `**`, any indeterminate variable, increasing/decreasing
   degrees, etc. Or any combination of the above.
 
-  .. ipython:: python
+  .. ipython-with-reprs:: int,poly,power
 
       GF("x^2 + 2x + 2")
+
       # Add explicit * for multiplication
       GF("x^2 + 2*x + 2")
+
       # No spaces
       GF("x^2+2x+2")
+
       # ** instead of ^
       GF("x**2 + 2x + 2")
+
       # Different indeterminate
       GF("α^2 + 2α + 2")
+
       # Ascending degrees
       GF("2 + 2x + x^2")
 
@@ -64,7 +69,7 @@ A :obj:`~typing.Union` representing iterable objects that can be coerced into a 
 
 - :obj:`~typing.Sequence` [ :obj:`~galois.typing.ElementLike` ]: An iterable of elements.
 
-  .. ipython:: python
+  .. ipython-with-reprs:: int,poly,power
 
       GF = galois.GF(3**5)
       GF([17, 4])
@@ -73,7 +78,7 @@ A :obj:`~typing.Union` representing iterable objects that can be coerced into a 
 
 - :obj:`~typing.Sequence` [ :obj:`~galois.typing.IterableLike` ]: A recursive iterable of iterables of elements.
 
-  .. ipython:: python
+  .. ipython-with-reprs:: int,poly,power
 
       GF = galois.GF(3**5)
       GF([[17, 4], [148, 205]])
@@ -94,7 +99,7 @@ A :obj:`~typing.Union` representing objects that can be coerced into a Galois fi
 
 - :obj:`~galois.typing.IterableLike`: A recursive iterable of iterables of elements.
 
-  .. ipython:: python
+  .. ipython-with-reprs:: int,poly,power
 
       GF = galois.GF(3**5)
       GF([[17, 4], [148, 205]])
@@ -103,7 +108,7 @@ A :obj:`~typing.Union` representing objects that can be coerced into a Galois fi
 
 - :obj:`~numpy.ndarray`: A NumPy array of integers, representing finite field elements in their :ref:`integer representation <int-repr>`.
 
-  .. ipython:: python
+  .. ipython-with-reprs:: int,poly,power
 
       x = np.array([[17, 4], [148, 205]]); x
       GF(x)

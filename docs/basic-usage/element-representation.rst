@@ -80,7 +80,7 @@ coefficient as the most-significant digit and zero-degree coefficient as the lea
 
     GF = galois.GF(3**5)
     GF(17)
-    GF("α^2 + 2α + 2")
+    GF("x^2 + 2x + 2")
     # Integer/polynomial equivalence
     p = 3; p**2 + 2*p + 2 == 17
 
@@ -106,7 +106,7 @@ This is useful, however it can become cluttered for large arrays.
 
     GF = galois.GF(3**5, display="poly")
     GF(17)
-    GF("α^2 + 2α + 2")
+    GF("x^2 + 2x + 2")
     # Integer/polynomial equivalence
     p = 3; p**2 + 2*p + 2 == 17
 
@@ -139,8 +139,8 @@ In prime fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha^2, 
 .. ipython:: python
 
     GF.display("int");
-    α = GF.primitive_element; α
-    α**23
+    alpha = GF.primitive_element; alpha
+    alpha ** 23
 
 In extension fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
 
@@ -152,8 +152,8 @@ In extension fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha
 .. ipython:: python
 
     GF.display("int");
-    α = GF.primitive_element; α
-    α**222
+    alpha = GF.primitive_element; alpha
+    alpha ** 222
 
 Vector representation
 ---------------------
@@ -166,16 +166,16 @@ The vector representation is accessed using the :func:`~galois.FieldArray.vector
 .. ipython:: python
 
     GF = galois.GF(3**5, display="poly")
-    GF("α^2 + 2α + 2")
-    GF("α^2 + 2α + 2").vector()
+    GF("x^2 + 2x + 2")
+    GF("x^2 + 2x + 2").vector()
 
 An N-D array over :math:`\mathrm{GF}(p^m)` is converted to a (N + 1)-D array over :math:`\mathrm{GF}(p)` with the added dimension having
 size :math:`m`. The first value of the vector is the highest-degree coefficient.
 
 .. ipython:: python
 
-    GF(["α^2 + 2α + 2", "2α^4 + α"])
-    GF(["α^2 + 2α + 2", "2α^4 + α"]).vector()
+    GF(["x^2 + 2x + 2", "2x^4 + x"])
+    GF(["x^2 + 2x + 2", "2x^4 + x"]).vector()
 
 Arrays can be created from the vector representation using the :func:`~galois.FieldArray.Vector` classmethod.
 

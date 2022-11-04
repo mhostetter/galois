@@ -16,7 +16,7 @@ and :func:`~galois.GR` (future).
 
 A :obj:`~galois.FieldArray` subclass is created using the class factory function :func:`~galois.GF`.
 
-.. ipython:: python
+.. ipython-with-reprs:: int,poly,power
 
     GF = galois.GF(3**5)
     print(GF.properties)
@@ -66,7 +66,7 @@ with :obj:`~galois.FieldArray.irreducible_poly`.
 
 A :obj:`~galois.FieldArray` instance is created using `GF`'s constructor.
 
-.. ipython:: python
+.. ipython-with-reprs:: int,poly,power
 
     x = GF([23, 78, 163, 124])
     x
@@ -94,13 +94,13 @@ alternate constructors use `PascalCase` while other classmethods use `snake_case
 
 For example, to generate a random array of given shape call :func:`~galois.FieldArray.Random`.
 
-.. ipython:: python
+.. ipython-with-reprs:: int,poly,power
 
-    GF.Random((2, 3))
+    GF.Random((3, 2), seed=1)
 
 Or, create an identity matrix using :func:`~galois.FieldArray.Identity`.
 
-.. ipython:: python
+.. ipython-with-reprs:: int,poly,power
 
     GF.Identity(4)
 

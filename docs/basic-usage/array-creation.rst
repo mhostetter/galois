@@ -8,31 +8,35 @@ the finite field :math:`\mathrm{GF}(3^5)`.
 
    GF = galois.GF(3**5)
    print(GF.properties)
+   alpha = GF.primitive_element; alpha
 
 Create a scalar
 ---------------
 
 A single finite field element (a scalar) is a 0-D :obj:`~galois.FieldArray`. They are created by passing a single
-:obj:`~galois.typing.ElementLike` object to `GF`'s constructor.
+:obj:`~galois.typing.ElementLike` object to `GF`'s constructor. A finite field scalar may also be created by exponentiating
+the primitive element to a scalar power.
 
 .. ipython-with-reprs:: int,poly,power
 
-   a = GF(17); a
-   a = GF("x^2 + 2x + 2"); a
-   a.ndim
+   GF(17)
+   GF("x^2 + 2x + 2")
+   alpha ** 222
 
 Create a new array
 ------------------
 
-Array-Like objects
+Array-like objects
 ..................
 
 A :obj:`~galois.FieldArray` can be created from various :obj:`~galois.typing.ArrayLike` objects.
+A finite field array may also be created by exponentiating the primitive element to a an array of powers.
 
 .. ipython-with-reprs:: int,poly,power
 
    GF([17, 4, 148, 205])
    GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
+   alpha ** np.array([[222, 69], [54, 24]])
 
 Polynomial coefficients
 .......................
@@ -50,17 +54,6 @@ into length-:math:`m` vectors over :math:`\mathrm{GF}(p)`.
 .. ipython-with-reprs:: int,poly,power
 
    GF([17, 4]).vector()
-
-Primitive element powers
-........................
-
-A :obj:`~galois.FieldArray` can also be created from the powers of a primitive element :math:`\alpha`.
-
-.. ipython-with-reprs:: int,poly,power
-
-   alpha = GF.primitive_element; alpha
-   powers = np.array([222, 69, 54, 24]); powers
-   alpha ** powers
 
 NumPy array
 ...........
