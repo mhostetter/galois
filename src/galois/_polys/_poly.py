@@ -1746,7 +1746,7 @@ class Poly:
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
-            c = _dense.add(a, b)
+            c = _dense.add_jit(self.field)(a, b)
             return Poly(c, field=self.field)
 
     def __radd__(self, other: Poly | Array) -> Poly:
@@ -1766,7 +1766,7 @@ class Poly:
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
-            c = _dense.add(a, b)
+            c = _dense.add_jit(self.field)(a, b)
             return Poly(c, field=self.field)
 
     def __neg__(self):
