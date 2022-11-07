@@ -74,6 +74,44 @@ def subtract(a: Array, b: Array) -> Array:
     return c
 
 
+class subtract_jit(Function):
+    """
+    Computes polynomial subtraction of two polynomials.
+
+    Algorithm:
+        c(x) = a(x) - b(x)
+    """
+    def __call__(self, a: Array, b: Array) -> Array:
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
+        assert a.ndim == 1 and b.ndim == 1
+        dtype = a.dtype
+
+        if self.field.ufunc_mode != "python-calculate":
+            r = self.jit(a.astype(np.int64), b.astype(np.int64))
+            r = r.astype(dtype)
+        else:
+            r = self.python(a.view(np.ndarray), b.view(np.ndarray))
+        r = self.field._view(r)
+
+        return r
+
+    def set_globals(self):
+        # pylint: disable=global-variable-undefined
+        global SUBTRACT
+        SUBTRACT = self.field._subtract.ufunc
+
+    _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
+
+    @staticmethod
+    def implementation(a, b):
+        dtype = a.dtype
+        c = np.zeros(max(a.size, b.size), dtype=dtype)
+        c[-a.size:] = a
+        c[-b.size:] = SUBTRACT(c[-b.size:], b)
+        return c
+
+
 def multiply(a: Array, b: Array) -> Array:
     """
     c(x) = a(x) * b(x)
