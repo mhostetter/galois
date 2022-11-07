@@ -1800,7 +1800,7 @@ class Poly:
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
-            c = _dense.subtract(a, b)
+            c = _dense.subtract_jit(self.field)(a, b)
             return Poly(c, field=self.field)
 
     def __rsub__(self, other: Poly | Array) -> Poly:
@@ -1820,7 +1820,7 @@ class Poly:
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
-            c = _dense.subtract(a, b)
+            c = _dense.subtract_jit(self.field)(a, b)
             return Poly(c, field=self.field)
 
     def __mul__(self, other: Poly | Array | int) -> Poly:
