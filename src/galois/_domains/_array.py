@@ -11,7 +11,7 @@ from typing_extensions import Self, Literal
 
 import numpy as np
 
-from .._helper import export, verify_isinstance
+from .._helper import export, verify_isinstance, verify_literal
 from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 
 from ._function import FunctionMixin
@@ -454,9 +454,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                     @suppress
                     GF.display()
         """
-        verify_isinstance(mode, str, optional=True)
-        if mode not in ["int", "poly", "power"]:
-            raise ValueError(f"Argument 'mode' must be in ['int', 'poly', 'power'], not {mode!r}.")
+        verify_literal(mode, ["int", "poly", "power"])
 
         prev_mode = cls.display_mode
         cls._display_mode = mode  # Set the new display mode
