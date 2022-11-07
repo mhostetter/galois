@@ -2043,6 +2043,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#p-eye" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.FieldArray.row_reduce.eye (Python parameter) — The location of the identity matrix \mathbf{I}, either on the left or the right." class="md-ellipsis">eye</span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -7235,6 +7242,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#p-eye" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.FieldArray.row_reduce.eye (Python parameter) — The location of the identity matrix \mathbf{I}, either on the left or the right." class="md-ellipsis">eye</span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -7276,14 +7290,16 @@
 
 
 <dl class="py method objdesc">
-<dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">FieldArray.</span></span><span class="sig-name descname"><span class="pre">row_reduce</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-ncols" title="galois.FieldArray.row_reduce.ncols (Python parameter) — The number of columns to perform Gaussian elimination over. The default is None which represents the number of columns of the matrix."><span class="n"><span class="pre">ncols</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">Self</span></span></span></span></dt>
+<dt class="sig sig-object highlight sig-wrap py">
+<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">FieldArray.</span></span><span class="sig-name descname"><span class="pre">row_reduce</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-ncols" title="galois.FieldArray.row_reduce.ncols (Python parameter) — The number of columns to perform Gaussian elimination over. The default is None which represents the number of columns of the matrix."><span class="n"><span class="pre">ncols</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-eye" title="galois.FieldArray.row_reduce.eye (Python parameter) — The location of the identity matrix \mathbf{I}, either on the left or the right."><span class="n"><span class="pre">eye</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="s"><span class="pre">'left'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'right'</span></span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;left&#39;</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">Self</span></span></span></span></dt>
 <dd><p>Performs Gaussian elimination on the matrix to achieve reduced row echelon form (RREF).</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="p-ncols"><span class="n sig-name">ncols</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#p-ncols" title="Permalink to this definition">¶</a></dt><dd><p>The number of columns to perform Gaussian elimination over. The default is <code class="code highlight python docutils literal highlight-python"><span class="kc">None</span></code> which represents
 the number of columns of the matrix.</p>
+</dd>
+<dt id="p-eye"><span class="n sig-name">eye</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="s">'left'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'right'</span></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;left&#39;</span></code><a class="headerlink" href="#p-eye" title="Permalink to this definition">¶</a></dt><dd><p>The location of the identity matrix <span class="math notranslate nohighlight">\(\mathbf{I}\)</span>, either on the left or the right.</p>
 </dd>
 </dl>
 </dd>
@@ -7318,9 +7334,17 @@ the number of columns of the matrix.</p>
 <span class="gh">Out[4]: </span><span class="go">3</span>
 </code></pre></div>
 </div>
-<p>Or only perform Gaussian elimination over 2 columns.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">A</span><span class="o">.</span><span class="n">row_reduce</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<p>Perform Gaussian elimination to get an <span class="math notranslate nohighlight">\(\mathbf{I}\)</span> on the right side of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">A</span><span class="o">.</span><span class="n">row_reduce</span><span class="p">(</span><span class="n">eye</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
+<span class="go">GF([[ 5,  1,  0,  0],</span>
+<span class="go">    [27,  0,  1,  0],</span>
+<span class="go">    [17,  0,  0,  1]], order=31)</span>
+</code></pre></div>
+</div>
+<p>Or only perform Gaussian elimination over 2 columns.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">A</span><span class="o">.</span><span class="n">row_reduce</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
 <span class="go">GF([[ 1,  0,  5, 14],</span>
 <span class="go">    [ 0,  1, 27, 17],</span>
 <span class="go">    [ 0,  0, 29,  5]], order=31)</span>
@@ -7335,7 +7359,7 @@ the number of columns of the matrix.</p>
   <small>
     
       Last update:
-      Nov 02, 2022
+      Nov 07, 2022
     
   </small>
 </div>
