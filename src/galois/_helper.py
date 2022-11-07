@@ -37,6 +37,16 @@ def verify_issubclass(argument, types, optional=False):
         raise TypeError(f"Argument {argument_name!r} must be a subclass of {types}, not {type(type(argument))}.")
 
 
+def verify_literal(argument, literals):
+    if not argument in literals:
+        frame = inspect.currentframe()
+        frame = inspect.getouterframes(frame)[1]
+        string = inspect.getframeinfo(frame[0]).code_context[0].strip()
+        args = string[string.find("(") + 1:-1].split(",")
+        argument_name = args[0]
+        raise ValueError(f"Argument {argument_name!r} must be one of {literals}, not {argument!r}.")
+
+
 def export(obj):
     """
     Marks an object for exporting into the public API.

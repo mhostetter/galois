@@ -8,7 +8,7 @@ from typing_extensions import Self, Literal
 import numpy as np
 
 from .._domains import Array, _linalg
-from .._helper import export, extend_docstring, verify_isinstance
+from .._helper import export, extend_docstring, verify_isinstance, verify_literal
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
 from .._prime import divisors
@@ -454,8 +454,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             print(GF.repr_table("x^2"))
             GF("x^2").multiplicative_order()
         """
-        if sort not in ["power", "poly", "vector", "int"]:
-            raise ValueError(f"Argument 'sort' must be in ['power', 'poly', 'vector', 'int'], not {sort!r}.")
+        verify_literal(sort, ["power", "poly", "vector", "int"])
+
         if element is None:
             element = cls.primitive_element
 
