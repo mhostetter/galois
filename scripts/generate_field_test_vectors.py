@@ -964,6 +964,25 @@ def make_luts(field, sub_folder, seed, sparse=False):
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "crt.pkl")
 
+    set_seed(seed + 406)
+    X = [0,]*3  # The x values
+    Y = [0,]*3  # The y values
+    Z = [0,]*3  # The lagrange polynomial
+    for i in range(3):
+        N = min(10, order)
+        if dtype == object:
+            x = randint_matrix(0, order, (N,))
+        else:
+            x = np.array(random.sample(range(0, order), N), dtype=dtype)
+        y = randint_matrix(0, order, (N,))
+        points = [(F(x[i]), F(y[i])) for i in range(N)]
+        z = RING.lagrange_polynomial(points)
+        X[i] = x
+        Y[i] = y
+        Z[i] = poly_to_list(z)
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "lagrange_poly.pkl")
+
     ###############################################################################
     # Special polynomials
     ###############################################################################

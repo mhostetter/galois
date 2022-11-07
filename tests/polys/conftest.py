@@ -208,6 +208,16 @@ def poly_modular_power(field_folder):
     return d
 
 
+@pytest.fixture(scope="session")
+def poly_lagrange_poly(field_folder):
+    GF, d = read_pickle(field_folder, "lagrange_poly.pkl")
+    d["GF"] = GF
+    d["X"] = [GF(X) for X in d["X"]]
+    d["Y"] = [GF(Y) for Y in d["Y"]]
+    d["Z"] = [galois.Poly(p, field=GF) for p in d["Z"]]
+    return d
+
+
 ###############################################################################
 # Fixtures for special polynomials
 ###############################################################################
