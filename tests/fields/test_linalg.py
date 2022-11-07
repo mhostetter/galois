@@ -301,6 +301,14 @@ def test_row_reduce(field_row_reduce):
         assert type(z) is GF
 
 
+def test_row_reduce_eye_right():
+    GF = galois.GF(2)
+    H = GF([[1,0,1,0,1,0,1,0], [0,1,1,0,0,1,1,0], [0,0,0,1,1,1,1,0], [1,1,1,1,1,1,1,1]])
+    H_rre = H.row_reduce(eye="right")
+    assert type(H_rre) is GF
+    assert np.array_equal(H_rre, [[0,1,1,1,1,0,0,0], [1,0,1,1,0,1,0,0], [1,1,0,1,0,0,1,0], [1,1,1,0,0,0,0,1]])
+
+
 def test_lu_decompose_exceptions():
     GF = galois.GF(2**8)
     with pytest.raises(ValueError):

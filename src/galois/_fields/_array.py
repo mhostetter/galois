@@ -978,7 +978,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return y
 
-    def row_reduce(self, ncols: int | None = None) -> Self:
+    def row_reduce(self, ncols: int | None = None, eye: Literal["left", "right"] = "left") -> Self:
         r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form (RREF).
 
@@ -987,6 +987,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         ncols
             The number of columns to perform Gaussian elimination over. The default is `None` which represents
             the number of columns of the matrix.
+        eye
+            The location of the identity matrix :math:`\mathbf{I}`, either on the left or the right.
 
         Returns
         -------
@@ -1013,13 +1015,28 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             A.row_reduce()
             np.linalg.matrix_rank(A)
 
+        Perform Gaussian elimination to get an :math:`\mathbf{I}` on the right side of :math:`\mathbf{A}`.
+
+        .. ipython:: python
+
+            A.row_reduce(eye="right")
+
         Or only perform Gaussian elimination over 2 columns.
 
         .. ipython:: python
 
             A.row_reduce(ncols=2)
         """
-        A_rre, _ = _linalg.row_reduce_jit(type(self))(self, ncols=ncols)
+        verify_literal(eye, ["left", "right"])
+
+        if eye == "left":
+            A = self
+            A_rre, _ = _linalg.row_reduce_jit(type(A))(A, ncols=ncols)
+        else:
+            A = self[::-1, ::-1]
+            A_rre, _ = _linalg.row_reduce_jit(type(A))(A, ncols=ncols)
+            A_rre = A_rre[::-1, ::-1]
+
         return A_rre
 
     def lu_decompose(self) -> tuple[Self, Self]:
