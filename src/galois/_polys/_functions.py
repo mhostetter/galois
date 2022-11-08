@@ -3,12 +3,11 @@ A module with functions for polynomials over Galois fields.
 """
 from __future__ import annotations
 
-import numpy as np
-
 from .._domains import Array
 from .._helper import export, verify_isinstance
 
 from ._poly import Poly
+from ._dense import lagrange_poly_jit
 
 
 ###############################################################################
@@ -163,27 +162,8 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
     """
     verify_isinstance(x, Array)
     verify_isinstance(y, Array)
-    if not type(x) == type(y):  # pylint: disable=unidiomatic-typecheck
-        raise TypeError(f"Arguments 'x' and 'y' must be over the same Galois field, not {type(x)} and {type(y)}.")
-    if not x.ndim == 1:
-        raise ValueError(f"Argument 'x' must be 1-D, not have shape {x.shape}.")
-    if not y.ndim == 1:
-        raise ValueError(f"Argument 'y' must be 1-D, not have shape {y.shape}.")
-    if not x.size == y.size:
-        raise ValueError(f"Arguments 'x' and 'y' must be the same size, not {x.size} and {y.size}.")
-    if not x.size == np.unique(x).size:
-        raise ValueError(f"Argument 'x' must have unique entries, not {x}.")
 
-    field = type(x)
-    L = Poly.Zero(field)  # The Lagrange polynomial L(x)
-    k = x.size  # The number of coordinates
+    coeffs = lagrange_poly_jit(type(x))(x, y)
+    poly = Poly(coeffs)
 
-    for j in range(k):
-        lj = Poly.One(field)
-        for m in range(k):
-            if m == j:
-                continue
-            lj *= Poly([1, -x[m]], field=field) // (x[j] - x[m])
-        L += y[j] * lj
-
-    return L
+    return poly
