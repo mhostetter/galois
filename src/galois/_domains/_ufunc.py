@@ -352,7 +352,13 @@ class divide_ufunc(UFunc):
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_operands_in_same_field(ufunc, inputs, meta)
         inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
-        output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        if method == "__call__":
+            # When dividing two arrays, instead multiply by the reciprocal. This is vastly
+            # more efficient when the denominator is a scalar or smaller (broadcasted) array.
+            inputs[1] = getattr(self.field._reciprocal.ufunc, "__call__")(inputs[1])
+            output = getattr(self.field._multiply.ufunc, method)(*inputs, **kwargs)
+        else:
+            output = getattr(self.ufunc, method)(*inputs, **kwargs)
         output = self._view_output_as_field(output, self.field, meta["dtype"])
         return output
 
