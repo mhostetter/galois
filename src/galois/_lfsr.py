@@ -801,10 +801,10 @@ class fibonacci_lfsr_step_backward_jit(Function):
 
     def set_globals(self):
         # pylint: disable=global-variable-undefined
-        global SUBTRACT, MULTIPLY, DIVIDE
+        global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc
         MULTIPLY = self.field._multiply.ufunc
-        DIVIDE = self.field._divide.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -820,7 +820,7 @@ class fibonacci_lfsr_step_backward_jit(Function):
             s = f  # The unknown previous state value
             for j in range(n - 1):
                 s = SUBTRACT(s, MULTIPLY(state[j], taps[j]))
-            s = DIVIDE(s, taps[n - 1])
+            s = MULTIPLY(s, RECIPROCAL(taps[n - 1]))
 
             y[i] = s  # The previous output was the last value in the shift register
             state[-1] = s  # Assign recovered state to the leftmost position
@@ -1454,10 +1454,10 @@ class galois_lfsr_step_backward_jit(Function):
 
     def set_globals(self):
         # pylint: disable=global-variable-undefined
-        global SUBTRACT, MULTIPLY, DIVIDE
+        global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc
         MULTIPLY = self.field._multiply.ufunc
-        DIVIDE = self.field._divide.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -1467,7 +1467,7 @@ class galois_lfsr_step_backward_jit(Function):
         y = np.zeros(steps, dtype=state.dtype)  # The output array
 
         for i in range(steps):
-            f = DIVIDE(state[0], taps[0])  # The feedback value
+            f = MULTIPLY(state[0], RECIPROCAL(taps[0]))  # The feedback value
 
             for j in range(0, n - 1):
                 state[j] = SUBTRACT(state[j + 1], MULTIPLY(f, taps[j + 1]))

@@ -110,10 +110,10 @@ class divmod_jit(Function):
 
     def set_globals(self):
         # pylint: disable=global-variable-undefined
-        global SUBTRACT, MULTIPLY, DIVIDE
+        global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc
         MULTIPLY = self.field._multiply.ufunc
-        DIVIDE = self.field._divide.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:]))
 
@@ -128,7 +128,7 @@ class divmod_jit(Function):
         for k in range(a.shape[0]):
             for i in range(q_degree + 1):
                 if qr[k,i] > 0:
-                    q = DIVIDE(qr[k,i], b[0])
+                    q = MULTIPLY(qr[k,i], RECIPROCAL(b[0]))
                     for j in range(1, b.size):
                         qr[k, i + j] = SUBTRACT(qr[k, i + j], MULTIPLY(q, b[j]))
                     qr[k,i] = q
@@ -160,10 +160,10 @@ class floordiv_jit(Function):
 
     def set_globals(self):
         # pylint: disable=global-variable-undefined
-        global SUBTRACT, MULTIPLY, DIVIDE
+        global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc
         MULTIPLY = self.field._multiply.ufunc
-        DIVIDE = self.field._divide.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -181,7 +181,7 @@ class floordiv_jit(Function):
 
         for i in range(q_degree + 1):
             if aa[i] > 0:
-                q[i] = DIVIDE(aa[i], b[0])
+                q[i] = MULTIPLY(aa[i], RECIPROCAL(b[0]))
                 N = min(b.size, q_degree + 1 - i)  # We don't need to subtract in the "remainder" range
                 for j in range(1, N):
                     aa[i + j] = SUBTRACT(aa[i + j], MULTIPLY(q[i], b[j]))
@@ -213,10 +213,10 @@ class mod_jit(Function):
 
     def set_globals(self):
         # pylint: disable=global-variable-undefined
-        global SUBTRACT, MULTIPLY, DIVIDE
+        global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc
         MULTIPLY = self.field._multiply.ufunc
-        DIVIDE = self.field._divide.ufunc
+        RECIPROCAL = self.field._reciprocal.ufunc
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -241,7 +241,7 @@ class mod_jit(Function):
             r[-1] = a[i + r_degree]
 
             if r[0] > 0:
-                q = DIVIDE(r[0], b[0])
+                q = MULTIPLY(r[0], RECIPROCAL(b[0]))
                 for j in range(1, b.size):
                     r[j] = SUBTRACT(r[j], MULTIPLY(q, b[j]))
 
