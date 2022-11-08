@@ -100,11 +100,11 @@ useful for initializing empty arrays.
    GF.Zeros(4)
    GF.Ones(4)
 
-.. note::
+.. details:: There is no :func:`numpy.empty` equivalent.
+   :class: note
 
-   There is no :func:`numpy.empty` equivalent. This is because :obj:`~galois.FieldArray` instances must have values in
-   :math:`[0, p^m)`. Empty NumPy arrays have whatever values are currently in memory, and therefore would fail those
-   bounds checks.
+   This is because :obj:`~galois.FieldArray` instances must have values in :math:`[0, p^m)`. Empty NumPy arrays have whatever values
+   are currently in memory, and therefore would fail those bounds checks during instantiation.
 
 Ordered arrays
 ..............
@@ -126,8 +126,8 @@ the polynomial field elements.
 
 .. ipython-with-reprs:: int,poly,power
 
-   GF.Random(4, seed=1234)
-   GF.Random(4, low=10, high=20, seed=5678)
+   GF.Random(4, seed=1)
+   GF.Random(4, low=10, high=20, seed=2)
 
 Class properties
 ----------------
