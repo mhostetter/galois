@@ -7283,10 +7283,10 @@ polynomial is <span class="math notranslate nohighlight">\(-\textrm{Tr}(\mathbf{
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[2]: </span><span class="go">GF(154, order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF(131, order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x^3 + x^2 + 2x + 2, GF(3))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + x^4 + x + 2, GF(3))</span>
 
 <span class="go"># The characteristic polynomial annihilates a</span>
 <span class="gp">In [4]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -7298,12 +7298,12 @@ polynomial is <span class="math notranslate nohighlight">\(-\textrm{Tr}(\mathbf{
 
 <span class="gp">In [6]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[6]: </span><span class="go"></span>
-<span class="go">GF([[140, 174, 158],</span>
-<span class="go">    [ 58,  50, 195],</span>
-<span class="go">    [ 31,  88, 125]], order=3^5)</span>
+<span class="go">GF([[ 83, 158, 206],</span>
+<span class="go">    [212, 116,   6],</span>
+<span class="go">    [170, 165,  51]], order=3^5)</span>
 
 <span class="gp">In [7]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(x^3 + 141x^2 + 207x + 66, GF(3^5))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(x^3 + 125x^2 + 84x + 123, GF(3^5))</span>
 
 <span class="go"># The x^0 coefficient is det(-A)</span>
 <span class="gp">In [8]: </span><span class="n">poly</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="o">-</span><span class="n">A</span><span class="p">)</span>
@@ -7330,7 +7330,7 @@ polynomial is <span class="math notranslate nohighlight">\(-\textrm{Tr}(\mathbf{
   <small>
     
       Last update:
-      Nov 07, 2022
+      Nov 08, 2022
     
   </small>
 </div>
