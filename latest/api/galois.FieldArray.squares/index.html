@@ -7219,22 +7219,24 @@
 </div>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>In fields with characteristic 2, every element is a square (with two identical square roots).</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3">
+<input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><input type="radio" id="__tabbed_1_3" name="__tabbed_1"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_1_1">
+Integer</label><label class="tabbed-label" for="__tabbed_1_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_1_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">squares</span><span class="p">;</span> <span class="n">x</span>
-<span class="gh">Out[2]: </span><span class="go"></span>
-<span class="go">GF([          0,           1,           α,       α + 1,         α^2,</span>
-<span class="go">        α^2 + 1,     α^2 + α, α^2 + α + 1], order=2^3)</span>
+<span class="gh">Out[2]: </span><span class="go">GF([0, 1, 2, 3, 4, 5, 6, 7], order=2^3)</span>
 
 <span class="gp">In [3]: </span><span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">y1</span>
-<span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([          0,           1,     α^2 + α, α^2 + α + 1,           α,</span>
-<span class="go">          α + 1,         α^2,     α^2 + 1], order=2^3)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([0, 1, 6, 7, 2, 3, 4, 5], order=2^3)</span>
 
 <span class="gp">In [4]: </span><span class="n">y2</span> <span class="o">=</span> <span class="o">-</span><span class="n">y1</span><span class="p">;</span> <span class="n">y2</span>
-<span class="gh">Out[4]: </span><span class="go"></span>
-<span class="go">GF([          0,           1,     α^2 + α, α^2 + α + 1,           α,</span>
-<span class="go">          α + 1,         α^2,     α^2 + 1], order=2^3)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([0, 1, 6, 7, 2, 3, 4, 5], order=2^3)</span>
 
 <span class="gp">In [5]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[5]: </span><span class="go">True</span>
@@ -7243,18 +7245,24 @@
 <span class="gh">Out[6]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-<p>In fields with characteristic greater than 2, exactly half of the nonzero elements are squares
-(with two unique square roots).</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
 <span class="gp">In [8]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">squares</span><span class="p">;</span> <span class="n">x</span>
-<span class="gh">Out[8]: </span><span class="go">GF([0, 1, 3, 4, 5, 9], order=11)</span>
+<span class="gh">Out[8]: </span><span class="go"></span>
+<span class="go">GF([          0,           1,           α,       α + 1,         α^2,</span>
+<span class="go">        α^2 + 1,     α^2 + α, α^2 + α + 1], order=2^3)</span>
 
 <span class="gp">In [9]: </span><span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">y1</span>
-<span class="gh">Out[9]: </span><span class="go">GF([0, 1, 5, 2, 4, 3], order=11)</span>
+<span class="gh">Out[9]: </span><span class="go"></span>
+<span class="go">GF([          0,           1,     α^2 + α, α^2 + α + 1,           α,</span>
+<span class="go">          α + 1,         α^2,     α^2 + 1], order=2^3)</span>
 
 <span class="gp">In [10]: </span><span class="n">y2</span> <span class="o">=</span> <span class="o">-</span><span class="n">y1</span><span class="p">;</span> <span class="n">y2</span>
-<span class="gh">Out[10]: </span><span class="go">GF([ 0, 10,  6,  9,  7,  8], order=11)</span>
+<span class="gh">Out[10]: </span><span class="go"></span>
+<span class="go">GF([          0,           1,     α^2 + α, α^2 + α + 1,           α,</span>
+<span class="go">          α + 1,         α^2,     α^2 + 1], order=2^3)</span>
 
 <span class="gp">In [11]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[11]: </span><span class="go">True</span>
@@ -7263,7 +7271,78 @@
 <span class="gh">Out[12]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-</dd></dl>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+
+<span class="gp">In [14]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">squares</span><span class="p">;</span> <span class="n">x</span>
+<span class="gh">Out[14]: </span><span class="go">GF([  0,   1,   α, α^3, α^2, α^6, α^4, α^5], order=2^3)</span>
+
+<span class="gp">In [15]: </span><span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">y1</span>
+<span class="gh">Out[15]: </span><span class="go">GF([  0,   1, α^4, α^5,   α, α^3, α^2, α^6], order=2^3)</span>
+
+<span class="gp">In [16]: </span><span class="n">y2</span> <span class="o">=</span> <span class="o">-</span><span class="n">y1</span><span class="p">;</span> <span class="n">y2</span>
+<span class="gh">Out[16]: </span><span class="go">GF([  0,   1, α^4, α^5,   α, α^3, α^2, α^6], order=2^3)</span>
+
+<span class="gp">In [17]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[17]: </span><span class="go">True</span>
+
+<span class="gp">In [18]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[18]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div><p>In fields with characteristic greater than 2, exactly half of the nonzero elements are squares
+(with two unique square roots).</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2">
+<input checked type="radio" id="__tabbed_2_1" name="__tabbed_2"><input type="radio" id="__tabbed_2_2" name="__tabbed_2"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_2_1">
+Integer</label><label class="tabbed-label" for="__tabbed_2_2">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+
+<span class="gp">In [20]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">squares</span><span class="p">;</span> <span class="n">x</span>
+<span class="gh">Out[20]: </span><span class="go">GF([0, 1, 3, 4, 5, 9], order=11)</span>
+
+<span class="gp">In [21]: </span><span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">y1</span>
+<span class="gh">Out[21]: </span><span class="go">GF([0, 1, 5, 2, 4, 3], order=11)</span>
+
+<span class="gp">In [22]: </span><span class="n">y2</span> <span class="o">=</span> <span class="o">-</span><span class="n">y1</span><span class="p">;</span> <span class="n">y2</span>
+<span class="gh">Out[22]: </span><span class="go">GF([ 0, 10,  6,  9,  7,  8], order=11)</span>
+
+<span class="gp">In [23]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[23]: </span><span class="go">True</span>
+
+<span class="gp">In [24]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[24]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+
+<span class="gp">In [26]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">squares</span><span class="p">;</span> <span class="n">x</span>
+<span class="gh">Out[26]: </span><span class="go">GF([  0,   1, α^8, α^2, α^4, α^6], order=11)</span>
+
+<span class="gp">In [27]: </span><span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">y1</span>
+<span class="gh">Out[27]: </span><span class="go">GF([  0,   1, α^4,   α, α^2, α^8], order=11)</span>
+
+<span class="gp">In [28]: </span><span class="n">y2</span> <span class="o">=</span> <span class="o">-</span><span class="n">y1</span><span class="p">;</span> <span class="n">y2</span>
+<span class="gh">Out[28]: </span><span class="go">GF([  0, α^5, α^9, α^6, α^7, α^3], order=11)</span>
+
+<span class="gp">In [29]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[29]: </span><span class="go">True</span>
+
+<span class="gp">In [30]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[30]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div></dd></dl>
 
 
 

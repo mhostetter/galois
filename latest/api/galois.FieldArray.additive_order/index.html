@@ -7251,12 +7251,18 @@ such that <span class="math notranslate nohighlight">\(x a = 0\)</span>. With th
 the finite field’s characteristic.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Compute the additive order of each element of <span class="math notranslate nohighlight">\(\mathrm{GF}(3^2)\)</span>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3">
+<input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><input type="radio" id="__tabbed_1_3" name="__tabbed_1"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_1_1">
+Integer</label><label class="tabbed-label" for="__tabbed_1_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_1_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">elements</span><span class="p">;</span> <span class="n">x</span>
-<span class="gh">Out[2]: </span><span class="go"></span>
-<span class="go">GF([     0,      1,      2,      α,  α + 1,  α + 2,     2α, 2α + 1,</span>
-<span class="go">    2α + 2], order=3^2)</span>
+<span class="gh">Out[2]: </span><span class="go">GF([0, 1, 2, 3, 4, 5, 6, 7, 8], order=3^2)</span>
 
 <span class="gp">In [3]: </span><span class="n">order</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">additive_order</span><span class="p">();</span> <span class="n">order</span>
 <span class="gh">Out[3]: </span><span class="go">array([1, 3, 3, 3, 3, 3, 3, 3, 3])</span>
@@ -7265,7 +7271,39 @@ the finite field’s characteristic.</p>
 <span class="gh">Out[4]: </span><span class="go">GF([0, 0, 0, 0, 0, 0, 0, 0, 0], order=3^2)</span>
 </code></pre></div>
 </div>
-</dd></dl>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">elements</span><span class="p">;</span> <span class="n">x</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">GF([     0,      1,      2,      α,  α + 1,  α + 2,     2α, 2α + 1,</span>
+<span class="go">    2α + 2], order=3^2)</span>
+
+<span class="gp">In [7]: </span><span class="n">order</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">additive_order</span><span class="p">();</span> <span class="n">order</span>
+<span class="gh">Out[7]: </span><span class="go">array([1, 3, 3, 3, 3, 3, 3, 3, 3])</span>
+
+<span class="gp">In [8]: </span><span class="n">x</span> <span class="o">*</span> <span class="n">order</span>
+<span class="gh">Out[8]: </span><span class="go">GF([0, 0, 0, 0, 0, 0, 0, 0, 0], order=3^2)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+
+<span class="gp">In [10]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">elements</span><span class="p">;</span> <span class="n">x</span>
+<span class="gh">Out[10]: </span><span class="go">GF([  0,   1, α^4,   α, α^2, α^7, α^5, α^3, α^6], order=3^2)</span>
+
+<span class="gp">In [11]: </span><span class="n">order</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">additive_order</span><span class="p">();</span> <span class="n">order</span>
+<span class="gh">Out[11]: </span><span class="go">array([1, 3, 3, 3, 3, 3, 3, 3, 3])</span>
+
+<span class="gp">In [12]: </span><span class="n">x</span> <span class="o">*</span> <span class="n">order</span>
+<span class="gh">Out[12]: </span><span class="go">GF([0, 0, 0, 0, 0, 0, 0, 0, 0], order=3^2)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div></dd></dl>
 
 
 

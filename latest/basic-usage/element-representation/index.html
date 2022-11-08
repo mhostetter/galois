@@ -7356,7 +7356,7 @@ coefficient as the most-significant digit and zero-degree coefficient as the lea
 <span class="gp">In [14]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
 <span class="gh">Out[14]: </span><span class="go">GF(17, order=3^5)</span>
 
-<span class="gp">In [15]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">)</span>
+<span class="gp">In [15]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
 <span class="gh">Out[15]: </span><span class="go">GF(17, order=3^5)</span>
 
 <span class="go"># Integer/polynomial equivalence</span>
@@ -7381,7 +7381,7 @@ This is useful, however it can become cluttered for large arrays.</p>
 <span class="gp">In [20]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
 <span class="gh">Out[20]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
 
-<span class="gp">In [21]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">)</span>
+<span class="gp">In [21]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
 <span class="gh">Out[21]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
 
 <span class="go"># Integer/polynomial equivalence</span>
@@ -7412,10 +7412,10 @@ using <a class="reference internal" href="../compilation-modes/#lookup-tables"><
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="n">GF</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">);</span>
 
-<span class="gp">In [26]: </span><span class="n">α</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">α</span>
+<span class="gp">In [26]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
 <span class="gh">Out[26]: </span><span class="go">GF(3, order=31)</span>
 
-<span class="gp">In [27]: </span><span class="n">α</span><span class="o">**</span><span class="mi">23</span>
+<span class="gp">In [27]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="mi">23</span>
 <span class="gh">Out[27]: </span><span class="go">GF(11, order=31)</span>
 </code></pre></div>
 </div>
@@ -7428,10 +7428,10 @@ using <a class="reference internal" href="../compilation-modes/#lookup-tables"><
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [30]: </span><span class="n">GF</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">);</span>
 
-<span class="gp">In [31]: </span><span class="n">α</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">α</span>
+<span class="gp">In [31]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
 <span class="gh">Out[31]: </span><span class="go">GF(3, order=3^5)</span>
 
-<span class="gp">In [32]: </span><span class="n">α</span><span class="o">**</span><span class="mi">222</span>
+<span class="gp">In [32]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="mi">222</span>
 <span class="gh">Out[32]: </span><span class="go">GF(17, order=3^5)</span>
 </code></pre></div>
 </div>
@@ -7441,19 +7441,19 @@ as vectors of their polynomial coefficients.</p>
 <p>The vector representation is accessed using the <a class="reference internal" href="../../api/galois.FieldArray.vector/" title="galois.FieldArray.vector (Python method) — Converts an array over \mathrm{GF}(p^m) to length-m vectors over the prime subfield \mathrm{GF}(p)."><code class="xref py py-func docutils literal notranslate"><span class="pre">vector()</span></code></a> method.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [33]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
-<span class="gp">In [34]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">)</span>
+<span class="gp">In [34]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
 <span class="gh">Out[34]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
 
-<span class="gp">In [35]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
+<span class="gp">In [35]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
 <span class="gh">Out[35]: </span><span class="go">GF([0, 0, 1, 2, 2], order=3)</span>
 </code></pre></div>
 </div>
 <p>An N-D array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> is converted to a (N + 1)-D array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> with the added dimension having
 size <span class="math notranslate nohighlight">\(m\)</span>. The first value of the vector is the highest-degree coefficient.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [36]: </span><span class="n">GF</span><span class="p">([</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">,</span> <span class="s2">&quot;2α^4 + α&quot;</span><span class="p">])</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [36]: </span><span class="n">GF</span><span class="p">([</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">,</span> <span class="s2">&quot;2x^4 + x&quot;</span><span class="p">])</span>
 <span class="gh">Out[36]: </span><span class="go">GF([α^2 + 2α + 2,     2α^4 + α], order=3^5)</span>
 
-<span class="gp">In [37]: </span><span class="n">GF</span><span class="p">([</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">,</span> <span class="s2">&quot;2α^4 + α&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
+<span class="gp">In [37]: </span><span class="n">GF</span><span class="p">([</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">,</span> <span class="s2">&quot;2x^4 + x&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
 <span class="gh">Out[37]: </span><span class="go"></span>
 <span class="go">GF([[0, 0, 1, 2, 2],</span>
 <span class="go">    [2, 0, 0, 1, 0]], order=3)</span>
@@ -7474,21 +7474,21 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [40]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[40]: </span><span class="go"></span>
-<span class="go">GF([[       2α^4 + 2α^3 + α^2,  α^4 + α^3 + α^2 + α + 1,</span>
-<span class="go">              2α^3 + 2α^2 + 2,          2α^4 + 2α^2 + α,</span>
-<span class="go">          2α^4 + 2α^2 + α + 1],</span>
-<span class="go">    [          α^3 + 2α^2 + 2,       2α^3 + α^2 + α + 2,</span>
-<span class="go">          2α^4 + 2α^3 + α + 2,      2α^4 + 2α^3 + α + 1,</span>
-<span class="go">                        α + 1],</span>
-<span class="go">    [     2α^4 + α^3 + 2α + 1,          α^3 + 2α^2 + 2α,</span>
-<span class="go">                2α^4 + 2α + 1,                α^4 + α^3,</span>
-<span class="go">                α^4 + α^3 + 1],</span>
-<span class="go">    [α^4 + 2α^3 + α^2 + α + 2,            α^4 + α^3 + 1,</span>
-<span class="go">                 α^2 + 2α + 2,       α^4 + 2α^3 + α + 2,</span>
-<span class="go">                    α^4 + α^2],</span>
-<span class="go">    [      2α^3 + α^2 + α + 2,                   2α + 2,</span>
-<span class="go">              α^4 + α^3 + α^2,     2α^4 + 2α^2 + 2α + 2,</span>
-<span class="go">                          α^3]], order=3^5)</span>
+<span class="go">GF([[  α^4 + α^3 + 2α^2 + α + 1,                  2α^4 + 2α,</span>
+<span class="go">                 α^4 + 2α^2 + 1,             α^4 + 2α^3 + 1,</span>
+<span class="go">         2α^4 + 2α^3 + 2α^2 + 1],</span>
+<span class="go">    [                      2α^4,  α^4 + 2α^3 + 2α^2 + α + 2,</span>
+<span class="go">      α^4 + α^3 + 2α^2 + 2α + 1,                  α^4 + α^3,</span>
+<span class="go">                2α^4 + 2α^3 + 1],</span>
+<span class="go">    [       α^4 + 2α^2 + 2α + 1,           2α^4 + 2α^2 + 2α,</span>
+<span class="go">     α^4 + 2α^3 + 2α^2 + 2α + 1,                        α^4,</span>
+<span class="go">           2α^4 + α^3 + α^2 + 1],</span>
+<span class="go">    [               2α^3 + 2α^2,      2α^4 + 2α^3 + α^2 + α,</span>
+<span class="go">                      α^3 + α^2,        2α^4 + α^3 + 2α + 1,</span>
+<span class="go">                  2α^3 + 2α + 2],</span>
+<span class="go">    [                  2α^4 + α,            2α^4 + 2α^2 + 1,</span>
+<span class="go">             α^3 + 2α^2 + α + 2,                  2α^2 + 2α,</span>
+<span class="go">            2α^3 + 2α^2 + α + 2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <p>The readability is improved by increasing the line width using <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html#numpy.set_printoptions" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.set_printoptions()</span></code></a>.</p>
@@ -7496,11 +7496,11 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [42]: </span><span class="n">x</span>
 <span class="gh">Out[42]: </span><span class="go"></span>
-<span class="go">GF([[       2α^4 + 2α^3 + α^2,  α^4 + α^3 + α^2 + α + 1,          2α^3 + 2α^2 + 2,          2α^4 + 2α^2 + α,      2α^4 + 2α^2 + α + 1],</span>
-<span class="go">    [          α^3 + 2α^2 + 2,       2α^3 + α^2 + α + 2,      2α^4 + 2α^3 + α + 2,      2α^4 + 2α^3 + α + 1,                    α + 1],</span>
-<span class="go">    [     2α^4 + α^3 + 2α + 1,          α^3 + 2α^2 + 2α,            2α^4 + 2α + 1,                α^4 + α^3,            α^4 + α^3 + 1],</span>
-<span class="go">    [α^4 + 2α^3 + α^2 + α + 2,            α^4 + α^3 + 1,             α^2 + 2α + 2,       α^4 + 2α^3 + α + 2,                α^4 + α^2],</span>
-<span class="go">    [      2α^3 + α^2 + α + 2,                   2α + 2,          α^4 + α^3 + α^2,     2α^4 + 2α^2 + 2α + 2,                      α^3]], order=3^5)</span>
+<span class="go">GF([[  α^4 + α^3 + 2α^2 + α + 1,                  2α^4 + 2α,             α^4 + 2α^2 + 1,             α^4 + 2α^3 + 1,     2α^4 + 2α^3 + 2α^2 + 1],</span>
+<span class="go">    [                      2α^4,  α^4 + 2α^3 + 2α^2 + α + 2,  α^4 + α^3 + 2α^2 + 2α + 1,                  α^4 + α^3,            2α^4 + 2α^3 + 1],</span>
+<span class="go">    [       α^4 + 2α^2 + 2α + 1,           2α^4 + 2α^2 + 2α, α^4 + 2α^3 + 2α^2 + 2α + 1,                        α^4,       2α^4 + α^3 + α^2 + 1],</span>
+<span class="go">    [               2α^3 + 2α^2,      2α^4 + 2α^3 + α^2 + α,                  α^3 + α^2,        2α^4 + α^3 + 2α + 1,              2α^3 + 2α + 2],</span>
+<span class="go">    [                  2α^4 + α,            2α^4 + 2α^2 + 1,         α^3 + 2α^2 + α + 2,                  2α^2 + 2α,        2α^3 + 2α^2 + α + 2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <h2 id="representation-comparisons">Representation comparisons<a class="headerlink" href="#representation-comparisons" title="Permalink to this heading">¶</a></h2>

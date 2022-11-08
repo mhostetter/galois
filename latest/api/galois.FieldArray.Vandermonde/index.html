@@ -7326,13 +7326,57 @@ data type for this <a class="reference internal" href="../galois.FieldArray/" ti
 </dd>
 </dl>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3">
+<input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><input type="radio" id="__tabbed_1_3" name="__tabbed_1"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_1_1">
+Integer</label><label class="tabbed-label" for="__tabbed_1_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_1_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">a</span>
-<span class="gh">Out[2]: </span><span class="go">GF(α, order=2^3)</span>
+<span class="gh">Out[2]: </span><span class="go">GF(2, order=2^3)</span>
 
 <span class="gp">In [3]: </span><span class="n">V</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Vandermonde</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span> <span class="n">V</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
+<span class="go">GF([[1, 1, 1, 1, 1, 1, 1],</span>
+<span class="go">    [1, 2, 4, 3, 6, 7, 5],</span>
+<span class="go">    [1, 4, 6, 5, 2, 3, 7],</span>
+<span class="go">    [1, 3, 5, 4, 7, 2, 6],</span>
+<span class="go">    [1, 6, 2, 7, 4, 5, 3],</span>
+<span class="go">    [1, 7, 3, 2, 5, 6, 4],</span>
+<span class="go">    [1, 5, 7, 6, 3, 4, 2]], order=2^3)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="gp">In [5]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">a</span>
+<span class="gh">Out[5]: </span><span class="go">GF(α, order=2^3)</span>
+
+<span class="gp">In [6]: </span><span class="n">V</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Vandermonde</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span> <span class="n">V</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">GF([[          1,           1,           1,           1,           1,           1,           1],</span>
+<span class="go">    [          1,           α,         α^2,       α + 1,     α^2 + α, α^2 + α + 1,     α^2 + 1],</span>
+<span class="go">    [          1,         α^2,     α^2 + α,     α^2 + 1,           α,       α + 1, α^2 + α + 1],</span>
+<span class="go">    [          1,       α + 1,     α^2 + 1,         α^2, α^2 + α + 1,           α,     α^2 + α],</span>
+<span class="go">    [          1,     α^2 + α,           α, α^2 + α + 1,         α^2,     α^2 + 1,       α + 1],</span>
+<span class="go">    [          1, α^2 + α + 1,       α + 1,           α,     α^2 + 1,     α^2 + α,         α^2],</span>
+<span class="go">    [          1,     α^2 + 1, α^2 + α + 1,     α^2 + α,       α + 1,         α^2,           α]], order=2^3)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="gp">In [8]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">a</span>
+<span class="gh">Out[8]: </span><span class="go">GF(α, order=2^3)</span>
+
+<span class="gp">In [9]: </span><span class="n">V</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Vandermonde</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span> <span class="n">V</span>
+<span class="gh">Out[9]: </span><span class="go"></span>
 <span class="go">GF([[  1,   1,   1,   1,   1,   1,   1],</span>
 <span class="go">    [  1,   α, α^2, α^3, α^4, α^5, α^6],</span>
 <span class="go">    [  1, α^2, α^4, α^6,   α, α^3, α^5],</span>
@@ -7342,7 +7386,9 @@ data type for this <a class="reference internal" href="../galois.FieldArray/" ti
 <span class="go">    [  1, α^6, α^5, α^4, α^3, α^2,   α]], order=2^3)</span>
 </code></pre></div>
 </div>
-</dd></dl>
+</div>
+</div>
+</div></dd></dl>
 
 
 

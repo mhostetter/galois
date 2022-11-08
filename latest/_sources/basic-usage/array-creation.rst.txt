@@ -4,103 +4,39 @@ Array Creation
 This page discusses the multiple ways to create arrays over finite fields. For this discussion, we are working in
 the finite field :math:`\mathrm{GF}(3^5)`.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         GF = galois.GF(3**5)
-         print(GF.properties)
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         GF = galois.GF(3**5, display="poly")
-         print(GF.properties)
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         GF = galois.GF(3**5, display="power")
-         print(GF.properties)
+   GF = galois.GF(3**5)
+   print(GF.properties)
+   alpha = GF.primitive_element; alpha
 
 Create a scalar
 ---------------
 
 A single finite field element (a scalar) is a 0-D :obj:`~galois.FieldArray`. They are created by passing a single
-:obj:`~galois.typing.ElementLike` object to `GF`'s constructor.
+:obj:`~galois.typing.ElementLike` object to `GF`'s constructor. A finite field scalar may also be created by exponentiating
+the primitive element to a scalar power.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         a = GF(17); a
-         a = GF("x^2 + 2x + 2"); a
-         a.ndim
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         a = GF(17); a
-         a = GF("x^2 + 2x + 2"); a
-         a.ndim
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         a = GF(17); a
-         a = GF("x^2 + 2x + 2"); a
-         a.ndim
+   GF(17)
+   GF("x^2 + 2x + 2")
+   alpha ** 222
 
 Create a new array
 ------------------
 
-Array-Like objects
+Array-like objects
 ..................
 
 A :obj:`~galois.FieldArray` can be created from various :obj:`~galois.typing.ArrayLike` objects.
+A finite field array may also be created by exponentiating the primitive element to a an array of powers.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         GF([17, 4, 148, 205])
-         GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF([17, 4, 148, 205])
-         GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF([17, 4, 148, 205])
-         GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
+   GF([17, 4, 148, 205])
+   GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
+   alpha ** np.array([[222, 69], [54, 24]])
 
 Polynomial coefficients
 .......................
@@ -108,97 +44,16 @@ Polynomial coefficients
 Rather than strings, the polynomial coefficients may be passed into `GF`'s constructor as length-:math:`m` vectors using
 the :func:`~galois.FieldArray.Vector` classmethod.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         GF.Vector([[0, 0, 1, 2, 2], [0, 0, 0, 1, 1]])
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF.Vector([[0, 0, 1, 2, 2], [0, 0, 0, 1, 1]])
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF.Vector([[0, 0, 1, 2, 2], [0, 0, 0, 1, 1]])
+   GF.Vector([[0, 0, 1, 2, 2], [0, 0, 0, 1, 1]])
 
 The :func:`~galois.FieldArray.vector` method is the opposite operation. It converts extension field elements from :math:`\mathrm{GF}(p^m)`
 into length-:math:`m` vectors over :math:`\mathrm{GF}(p)`.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         GF([17, 4]).vector()
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF([17, 4]).vector()
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF([17, 4]).vector()
-
-Primitive element powers
-........................
-
-A :obj:`~galois.FieldArray` can also be created from the powers of a primitive element :math:`\alpha`.
-
-.. md-tab-set::
-
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         alpha = GF.primitive_element; alpha
-         powers = np.array([222, 69, 54, 24]); powers
-         alpha ** powers
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         alpha = GF.primitive_element; alpha
-         powers = np.array([222, 69, 54, 24]); powers
-         alpha ** powers
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         alpha = GF.primitive_element; alpha
-         powers = np.array([222, 69, 54, 24]); powers
-         alpha ** powers
+   GF([17, 4]).vector()
 
 NumPy array
 ...........
@@ -206,40 +61,12 @@ NumPy array
 An integer NumPy array may also be passed into `GF`. The default keyword argument `copy=True` of the :obj:`~galois.FieldArray`
 constructor will create a copy of the array.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         x_np = np.array([213, 167, 4, 214, 209]); x_np
-         x = GF(x_np); x
-         # Modifying x does not modify x_np
-         x[0] = 0; x_np
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         x_np = np.array([213, 167, 4, 214, 209]); x_np
-         x = GF(x_np); x
-         # Modifying x does not modify x_np
-         x[0] = 0; x_np
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         x_np = np.array([213, 167, 4, 214, 209]); x_np
-         x = GF(x_np); x
-         # Modifying x does not modify x_np
-         x[0] = 0; x_np
+   x_np = np.array([213, 167, 4, 214, 209]); x_np
+   x = GF(x_np); x
+   # Modifying x does not modify x_np
+   x[0] = 0; x_np
 
 View an existing array
 ----------------------
@@ -250,40 +77,12 @@ temporarily and work with it in-place.
 Simply call `.view(GF)` to *view* the NumPy array as a :obj:`~galois.FieldArray`. When finished working in the
 finite field, call `.view(np.ndarray)` to *view* it back to a NumPy array.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         x_np = np.array([213, 167, 4, 214, 209], dtype=int); x_np
-         x = x_np.view(GF); x
-         # Modifying x does modify x_np!
-         x[0] = 0; x_np
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         x_np = np.array([213, 167, 4, 214, 209], dtype=int); x_np
-         x = x_np.view(GF); x
-         # Modifying x does modify x_np!
-         x[0] = 0; x_np
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         x_np = np.array([213, 167, 4, 214, 209], dtype=int); x_np
-         x = x_np.view(GF); x
-         # Modifying x does modify x_np!
-         x[0] = 0; x_np
+   x_np = np.array([213, 167, 4, 214, 209], dtype=int); x_np
+   x = x_np.view(GF); x
+   # Modifying x does modify x_np!
+   x[0] = 0; x_np
 
 Classmethods
 ------------
@@ -296,40 +95,16 @@ Constant arrays
 The :func:`~galois.FieldArray.Zeros` and :func:`~galois.FieldArray.Ones` classmethods provide constant arrays that are
 useful for initializing empty arrays.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
+   GF.Zeros(4)
+   GF.Ones(4)
 
-      .. ipython:: python
+.. details:: There is no :func:`numpy.empty` equivalent.
+   :class: note
 
-         @suppress
-         GF.display("int")
-         GF.Zeros(4)
-         GF.Ones(4)
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF.Zeros(4)
-         GF.Ones(4)
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF.Zeros(4)
-         GF.Ones(4)
-
-.. note::
-
-   There is no :func:`numpy.empty` equivalent. This is because :obj:`~galois.FieldArray` instances must have values in
-   :math:`[0, p^m)`. Empty NumPy arrays have whatever values are currently in memory, and therefore would fail those
-   bounds checks.
+   This is because :obj:`~galois.FieldArray` instances must have values in :math:`[0, p^m)`. Empty NumPy arrays have whatever values
+   are currently in memory, and therefore would fail those bounds checks during instantiation.
 
 Ordered arrays
 ..............
@@ -337,34 +112,10 @@ Ordered arrays
 The :func:`~galois.FieldArray.Range` classmethod produces a range of elements similar to :func:`numpy.arange`. The integer `start`
 and `stop` values are the :ref:`integer representation <int-repr>` of the polynomial field elements.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         GF.Range(10, 20)
-         GF.Range(10, 20, 2)
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF.Range(10, 20)
-         GF.Range(10, 20, 2)
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF.Range(10, 20)
-         GF.Range(10, 20, 2)
+   GF.Range(10, 20)
+   GF.Range(10, 20, 2)
 
 Random arrays
 .............
@@ -373,41 +124,10 @@ The :func:`~galois.FieldArray.Random` classmethod provides a random array of the
 for testing. The integer `low` and `high` values are the :ref:`integer representation <int-repr>` of
 the polynomial field elements.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("int")
-         GF.Random(4, seed=1234)
-         GF.Random(4, low=10, high=20, seed=5678)
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("poly")
-         GF.Random(4, seed=1234)
-         GF.Random(4, low=10, high=20, seed=5678)
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         @suppress
-         GF.display("power")
-         GF.Random(4, seed=1234)
-         GF.Random(4, low=10, high=20, seed=5678)
-
-..
-   Reset the display mode to the integer representation so other pages aren't affected
-.. ipython:: python
-   :suppress:
-
-   GF.display("int")
+   GF.Random(4, seed=1)
+   GF.Random(4, low=10, high=20, seed=2)
 
 Class properties
 ----------------
@@ -415,39 +135,13 @@ Class properties
 Certain class properties, such as :obj:`~galois.FieldArray.elements`, :obj:`~galois.FieldArray.units`, :obj:`~galois.FieldArray.squares`,
 and :obj:`~galois.FieldArray.primitive_elements`, provide an array of elements with the specified properties.
 
-.. md-tab-set::
+.. ipython-with-reprs:: int,poly,power
 
-   .. md-tab-item:: Integer
-
-      .. ipython:: python
-
-         GF = galois.GF(3**2)
-         GF.elements
-         GF.units
-         GF.squares
-         GF.primitive_elements
-
-   .. md-tab-item:: Polynomial
-
-      .. ipython:: python
-
-         GF = galois.GF(3**2, display="poly")
-         GF.elements
-         GF.units
-         GF.squares
-         GF.primitive_elements
-
-   .. md-tab-item:: Power
-
-      .. ipython:: python
-
-         GF = galois.GF(3**2, display="power")
-         GF.elements
-         GF.units
-         GF.squares
-         GF.primitive_elements
-         @suppress
-         GF.display()
+   GF = galois.GF(3**2)
+   GF.elements
+   GF.units
+   GF.squares
+   GF.primitive_elements
 
 Data types
 ----------

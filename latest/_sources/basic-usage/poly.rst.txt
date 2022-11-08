@@ -20,9 +20,15 @@ Or pass a :obj:`~galois.FieldArray` of coefficients without explicitly specifyin
    coeffs = GF([1, 0, 0, 55, 23]); coeffs
    galois.Poly(coeffs)
 
-.. tip::
+.. details:: Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
+   :class: tip
 
-   Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
+   .. ipython:: python
+
+      galois.set_printoptions(coeffs="asc")
+      galois.Poly(coeffs)
+      @suppress
+      galois.set_printoptions(coeffs="desc")
 
 Element representation
 ----------------------

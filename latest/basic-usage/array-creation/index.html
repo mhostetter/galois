@@ -525,7 +525,7 @@
         
           <li class="md-nav__item">
   <a href="#array-like-objects" class="md-nav__link">
-    <span class="md-ellipsis">Array-<wbr>Like objects</span>
+    <span class="md-ellipsis">Array-<wbr>like objects</span>
   </a>
   
 </li>
@@ -533,13 +533,6 @@
           <li class="md-nav__item">
   <a href="#polynomial-coefficients" class="md-nav__link">
     <span class="md-ellipsis">Polynomial coefficients</span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#primitive-element-powers" class="md-nav__link">
-    <span class="md-ellipsis">Primitive element powers</span>
   </a>
   
 </li>
@@ -7318,7 +7311,7 @@
         
           <li class="md-nav__item">
   <a href="#array-like-objects" class="md-nav__link">
-    <span class="md-ellipsis">Array-<wbr>Like objects</span>
+    <span class="md-ellipsis">Array-<wbr>like objects</span>
   </a>
   
 </li>
@@ -7326,13 +7319,6 @@
           <li class="md-nav__item">
   <a href="#polynomial-coefficients" class="md-nav__link">
     <span class="md-ellipsis">Polynomial coefficients</span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#primitive-element-powers" class="md-nav__link">
-    <span class="md-ellipsis">Primitive element powers</span>
   </a>
   
 </li>
@@ -7467,13 +7453,16 @@ Power</label></div>
 <span class="go">  irreducible_poly: x^5 + 2x + 1</span>
 <span class="go">  is_primitive_poly: True</span>
 <span class="go">  primitive_element: x</span>
+
+<span class="gp">In [3]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
+<span class="gh">Out[3]: </span><span class="go">GF(3, order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
-<span class="gp">In [4]: </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
+<span class="gp">In [5]: </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
 <span class="go">Galois Field:</span>
 <span class="go">  name: GF(3^5)</span>
 <span class="go">  characteristic: 3</span>
@@ -7482,13 +7471,16 @@ Power</label></div>
 <span class="go">  irreducible_poly: x^5 + 2x + 1</span>
 <span class="go">  is_primitive_poly: True</span>
 <span class="go">  primitive_element: x</span>
+
+<span class="gp">In [6]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
+<span class="gh">Out[6]: </span><span class="go">GF(α, order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 
-<span class="gp">In [6]: </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
+<span class="gp">In [8]: </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
 <span class="go">Galois Field:</span>
 <span class="go">  name: GF(3^5)</span>
 <span class="go">  characteristic: 3</span>
@@ -7497,13 +7489,17 @@ Power</label></div>
 <span class="go">  irreducible_poly: x^5 + 2x + 1</span>
 <span class="go">  is_primitive_poly: True</span>
 <span class="go">  primitive_element: x</span>
+
+<span class="gp">In [9]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
+<span class="gh">Out[9]: </span><span class="go">GF(α, order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 </div><h2 id="create-a-scalar">Create a scalar<a class="headerlink" href="#create-a-scalar" title="Permalink to this heading">¶</a></h2>
 <p>A single finite field element (a scalar) is a 0-D <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>. They are created by passing a single
-<a class="reference internal" href="../../api/galois.typing.ElementLike/" title="galois.typing.ElementLike (Python data) — A Union representing objects that can be coerced into a Galois field element."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementLike</span></code></a> object to <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code>’s constructor.</p>
+<a class="reference internal" href="../../api/galois.typing.ElementLike/" title="galois.typing.ElementLike (Python data) — A Union representing objects that can be coerced into a Galois field element."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementLike</span></code></a> object to <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code>’s constructor. A finite field scalar may also be created by exponentiating
+the primitive element to a scalar power.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3">
 <input checked type="radio" id="__tabbed_2_1" name="__tabbed_2"><input type="radio" id="__tabbed_2_2" name="__tabbed_2"><input type="radio" id="__tabbed_2_3" name="__tabbed_2"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_2_1">
@@ -7512,45 +7508,46 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_2_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">);</span> <span class="n">a</span>
-<span class="gh">Out[7]: </span><span class="go">GF(17, order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+<span class="gh">Out[10]: </span><span class="go">GF(17, order=3^5)</span>
 
-<span class="gp">In [8]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">);</span> <span class="n">a</span>
-<span class="gh">Out[8]: </span><span class="go">GF(17, order=3^5)</span>
+<span class="gp">In [11]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[11]: </span><span class="go">GF(17, order=3^5)</span>
 
-<span class="gp">In [9]: </span><span class="n">a</span><span class="o">.</span><span class="n">ndim</span>
-<span class="gh">Out[9]: </span><span class="go">0</span>
+<span class="gp">In [12]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="mi">222</span>
+<span class="gh">Out[12]: </span><span class="go">GF(17, order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">);</span> <span class="n">a</span>
-<span class="gh">Out[10]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+<span class="gh">Out[13]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
 
-<span class="gp">In [11]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">);</span> <span class="n">a</span>
-<span class="gh">Out[11]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
+<span class="gp">In [14]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[14]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
 
-<span class="gp">In [12]: </span><span class="n">a</span><span class="o">.</span><span class="n">ndim</span>
-<span class="gh">Out[12]: </span><span class="go">0</span>
+<span class="gp">In [15]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="mi">222</span>
+<span class="gh">Out[15]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">);</span> <span class="n">a</span>
-<span class="gh">Out[13]: </span><span class="go">GF(α^222, order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+<span class="gh">Out[16]: </span><span class="go">GF(α^222, order=3^5)</span>
 
-<span class="gp">In [14]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">);</span> <span class="n">a</span>
-<span class="gh">Out[14]: </span><span class="go">GF(α^222, order=3^5)</span>
+<span class="gp">In [17]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[17]: </span><span class="go">GF(α^222, order=3^5)</span>
 
-<span class="gp">In [15]: </span><span class="n">a</span><span class="o">.</span><span class="n">ndim</span>
-<span class="gh">Out[15]: </span><span class="go">0</span>
+<span class="gp">In [18]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="mi">222</span>
+<span class="gh">Out[18]: </span><span class="go">GF(α^222, order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 </div><h2 id="create-a-new-array">Create a new array<a class="headerlink" href="#create-a-new-array" title="Permalink to this heading">¶</a></h2>
-<h3 id="array-like-objects">Array-Like objects<a class="headerlink" href="#array-like-objects" title="Permalink to this heading">¶</a></h3>
-<p>A <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> can be created from various <a class="reference internal" href="../../api/galois.typing.ArrayLike/" title="galois.typing.ArrayLike (Python data) — A Union representing objects that can be coerced into a Galois field array."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a> objects.</p>
+<h3 id="array-like-objects">Array-like objects<a class="headerlink" href="#array-like-objects" title="Permalink to this heading">¶</a></h3>
+<p>A <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> can be created from various <a class="reference internal" href="../../api/galois.typing.ArrayLike/" title="galois.typing.ArrayLike (Python data) — A Union representing objects that can be coerced into a Galois field array."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a> objects.
+A finite field array may also be created by exponentiating the primitive element to a an array of powers.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:3">
 <input checked type="radio" id="__tabbed_3_1" name="__tabbed_3"><input type="radio" id="__tabbed_3_2" name="__tabbed_3"><input type="radio" id="__tabbed_3_3" name="__tabbed_3"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_3_1">
@@ -7559,35 +7556,50 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_3_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">])</span>
-<span class="gh">Out[16]: </span><span class="go">GF([ 17,   4, 148, 205], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">])</span>
+<span class="gh">Out[19]: </span><span class="go">GF([ 17,   4, 148, 205], order=3^5)</span>
 
-<span class="gp">In [17]: </span><span class="n">GF</span><span class="p">([[</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x^4 + 2x^3 + x^2 + x + 1&quot;</span><span class="p">,</span> <span class="mi">205</span><span class="p">]])</span>
-<span class="gh">Out[17]: </span><span class="go"></span>
+<span class="gp">In [20]: </span><span class="n">GF</span><span class="p">([[</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x^4 + 2x^3 + x^2 + x + 1&quot;</span><span class="p">,</span> <span class="mi">205</span><span class="p">]])</span>
+<span class="gh">Out[20]: </span><span class="go"></span>
+<span class="go">GF([[ 17,   4],</span>
+<span class="go">    [148, 205]], order=3^5)</span>
+
+<span class="gp">In [21]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">222</span><span class="p">,</span> <span class="mi">69</span><span class="p">],</span> <span class="p">[</span><span class="mi">54</span><span class="p">,</span> <span class="mi">24</span><span class="p">]])</span>
+<span class="gh">Out[21]: </span><span class="go"></span>
 <span class="go">GF([[ 17,   4],</span>
 <span class="go">    [148, 205]], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [18]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">])</span>
-<span class="gh">Out[18]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [22]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">])</span>
+<span class="gh">Out[22]: </span><span class="go"></span>
 <span class="go">GF([             α^2 + 2α + 2,                     α + 1,</span>
 <span class="go">     α^4 + 2α^3 + α^2 + α + 1, 2α^4 + α^3 + α^2 + 2α + 1], order=3^5)</span>
 
-<span class="gp">In [19]: </span><span class="n">GF</span><span class="p">([[</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x^4 + 2x^3 + x^2 + x + 1&quot;</span><span class="p">,</span> <span class="mi">205</span><span class="p">]])</span>
-<span class="gh">Out[19]: </span><span class="go"></span>
+<span class="gp">In [23]: </span><span class="n">GF</span><span class="p">([[</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x^4 + 2x^3 + x^2 + x + 1&quot;</span><span class="p">,</span> <span class="mi">205</span><span class="p">]])</span>
+<span class="gh">Out[23]: </span><span class="go"></span>
+<span class="go">GF([[             α^2 + 2α + 2,                     α + 1],</span>
+<span class="go">    [ α^4 + 2α^3 + α^2 + α + 1, 2α^4 + α^3 + α^2 + 2α + 1]], order=3^5)</span>
+
+<span class="gp">In [24]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">222</span><span class="p">,</span> <span class="mi">69</span><span class="p">],</span> <span class="p">[</span><span class="mi">54</span><span class="p">,</span> <span class="mi">24</span><span class="p">]])</span>
+<span class="gh">Out[24]: </span><span class="go"></span>
 <span class="go">GF([[             α^2 + 2α + 2,                     α + 1],</span>
 <span class="go">    [ α^4 + 2α^3 + α^2 + α + 1, 2α^4 + α^3 + α^2 + 2α + 1]], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [20]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">])</span>
-<span class="gh">Out[20]: </span><span class="go">GF([α^222,  α^69,  α^54,  α^24], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">])</span>
+<span class="gh">Out[25]: </span><span class="go">GF([α^222,  α^69,  α^54,  α^24], order=3^5)</span>
 
-<span class="gp">In [21]: </span><span class="n">GF</span><span class="p">([[</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x^4 + 2x^3 + x^2 + x + 1&quot;</span><span class="p">,</span> <span class="mi">205</span><span class="p">]])</span>
-<span class="gh">Out[21]: </span><span class="go"></span>
+<span class="gp">In [26]: </span><span class="n">GF</span><span class="p">([[</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x^4 + 2x^3 + x^2 + x + 1&quot;</span><span class="p">,</span> <span class="mi">205</span><span class="p">]])</span>
+<span class="gh">Out[26]: </span><span class="go"></span>
+<span class="go">GF([[α^222,  α^69],</span>
+<span class="go">    [ α^54,  α^24]], order=3^5)</span>
+
+<span class="gp">In [27]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">222</span><span class="p">,</span> <span class="mi">69</span><span class="p">],</span> <span class="p">[</span><span class="mi">54</span><span class="p">,</span> <span class="mi">24</span><span class="p">]])</span>
+<span class="gh">Out[27]: </span><span class="go"></span>
 <span class="go">GF([[α^222,  α^69],</span>
 <span class="go">    [ α^54,  α^24]], order=3^5)</span>
 </code></pre></div>
@@ -7605,20 +7617,20 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_4_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [22]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Vector</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-<span class="gh">Out[22]: </span><span class="go">GF([17,  4], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [28]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Vector</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gh">Out[28]: </span><span class="go">GF([17,  4], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Vector</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-<span class="gh">Out[23]: </span><span class="go">GF([α^2 + 2α + 2,        α + 1], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [29]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Vector</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gh">Out[29]: </span><span class="go">GF([α^2 + 2α + 2,        α + 1], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [24]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Vector</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-<span class="gh">Out[24]: </span><span class="go">GF([α^222,  α^69], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [30]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Vector</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gh">Out[30]: </span><span class="go">GF([α^222,  α^69], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7633,32 +7645,33 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_5_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
-<span class="gh">Out[25]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [31]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
+<span class="gh">Out[31]: </span><span class="go"></span>
 <span class="go">GF([[0, 0, 1, 2, 2],</span>
 <span class="go">    [0, 0, 0, 1, 1]], order=3)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [26]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
-<span class="gh">Out[26]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [32]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
+<span class="gh">Out[32]: </span><span class="go"></span>
 <span class="go">GF([[0, 0, 1, 2, 2],</span>
 <span class="go">    [0, 0, 0, 1, 1]], order=3)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [27]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
-<span class="gh">Out[27]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [33]: </span><span class="n">GF</span><span class="p">([</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>
+<span class="gh">Out[33]: </span><span class="go"></span>
 <span class="go">GF([[0, 0, 1, 2, 2],</span>
 <span class="go">    [0, 0, 0, 1, 1]], order=3)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
-</div><h3 id="primitive-element-powers">Primitive element powers<a class="headerlink" href="#primitive-element-powers" title="Permalink to this heading">¶</a></h3>
-<p>A <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> can also be created from the powers of a primitive element <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
+</div><h3 id="numpy-array">NumPy array<a class="headerlink" href="#numpy-array" title="Permalink to this heading">¶</a></h3>
+<p>An integer NumPy array may also be passed into <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code>. The default keyword argument <code class="code highlight python docutils literal highlight-python"><span class="n">copy</span><span class="o">=</span><span class="kc">True</span></code> of the <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>
+constructor will create a copy of the array.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:3">
 <input checked type="radio" id="__tabbed_6_1" name="__tabbed_6"><input type="radio" id="__tabbed_6_2" name="__tabbed_6"><input type="radio" id="__tabbed_6_3" name="__tabbed_6"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_6_1">
@@ -7667,60 +7680,27 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_6_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [28]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
-<span class="gh">Out[28]: </span><span class="go">GF(3, order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [34]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">]);</span> <span class="n">x_np</span>
+<span class="gh">Out[34]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
-<span class="gp">In [29]: </span><span class="n">powers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">222</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mi">24</span><span class="p">]);</span> <span class="n">powers</span>
-<span class="gh">Out[29]: </span><span class="go">array([222,  69,  54,  24])</span>
+<span class="gp">In [35]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="n">x_np</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[35]: </span><span class="go">GF([213, 167,   4, 214, 209], order=3^5)</span>
 
-<span class="gp">In [30]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="n">powers</span>
-<span class="gh">Out[30]: </span><span class="go">GF([ 17,   4, 148, 205], order=3^5)</span>
+<span class="go"># Modifying x does not modify x_np</span>
+<span class="gp">In [36]: </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x_np</span>
+<span class="gh">Out[36]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 </code></pre></div>
 </div>
 </div>
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [31]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
-<span class="gh">Out[31]: </span><span class="go">GF(α, order=3^5)</span>
-
-<span class="gp">In [32]: </span><span class="n">powers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">222</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mi">24</span><span class="p">]);</span> <span class="n">powers</span>
-<span class="gh">Out[32]: </span><span class="go">array([222,  69,  54,  24])</span>
-
-<span class="gp">In [33]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="n">powers</span>
-<span class="gh">Out[33]: </span><span class="go"></span>
-<span class="go">GF([             α^2 + 2α + 2,                     α + 1,</span>
-<span class="go">     α^4 + 2α^3 + α^2 + α + 1, 2α^4 + α^3 + α^2 + 2α + 1], order=3^5)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [34]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
-<span class="gh">Out[34]: </span><span class="go">GF(α, order=3^5)</span>
-
-<span class="gp">In [35]: </span><span class="n">powers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">222</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mi">24</span><span class="p">]);</span> <span class="n">powers</span>
-<span class="gh">Out[35]: </span><span class="go">array([222,  69,  54,  24])</span>
-
-<span class="gp">In [36]: </span><span class="n">alpha</span> <span class="o">**</span> <span class="n">powers</span>
-<span class="gh">Out[36]: </span><span class="go">GF([α^222,  α^69,  α^54,  α^24], order=3^5)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-</div><h3 id="numpy-array">NumPy array<a class="headerlink" href="#numpy-array" title="Permalink to this heading">¶</a></h3>
-<p>An integer NumPy array may also be passed into <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code>. The default keyword argument <code class="code highlight python docutils literal highlight-python"><span class="n">copy</span><span class="o">=</span><span class="kc">True</span></code> of the <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>
-constructor will create a copy of the array.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:3">
-<input checked type="radio" id="__tabbed_7_1" name="__tabbed_7"><input type="radio" id="__tabbed_7_2" name="__tabbed_7"><input type="radio" id="__tabbed_7_3" name="__tabbed_7"><div class="tabbed-labels docutils">
-<label class="tabbed-label" for="__tabbed_7_1">
-Integer</label><label class="tabbed-label" for="__tabbed_7_2">
-Polynomial</label><label class="tabbed-label" for="__tabbed_7_3">
-Power</label></div>
-<div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [37]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">]);</span> <span class="n">x_np</span>
 <span class="gh">Out[37]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
 <span class="gp">In [38]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="n">x_np</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[38]: </span><span class="go">GF([213, 167,   4, 214, 209], order=3^5)</span>
+<span class="gh">Out[38]: </span><span class="go"></span>
+<span class="go">GF([    2α^4 + α^3 + 2α^2 + 2α,               2α^4 + α + 2,</span>
+<span class="go">                         α + 1, 2α^4 + α^3 + 2α^2 + 2α + 1,</span>
+<span class="go">         2α^4 + α^3 + 2α^2 + 2], order=3^5)</span>
 
 <span class="go"># Modifying x does not modify x_np</span>
 <span class="gp">In [39]: </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x_np</span>
@@ -7733,27 +7713,11 @@ Power</label></div>
 <span class="gh">Out[40]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
 <span class="gp">In [41]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="n">x_np</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[41]: </span><span class="go"></span>
-<span class="go">GF([    2α^4 + α^3 + 2α^2 + 2α,               2α^4 + α + 2,</span>
-<span class="go">                         α + 1, 2α^4 + α^3 + 2α^2 + 2α + 1,</span>
-<span class="go">         2α^4 + α^3 + 2α^2 + 2], order=3^5)</span>
+<span class="gh">Out[41]: </span><span class="go">GF([α^183,   α^9,  α^69, α^153,  α^58], order=3^5)</span>
 
 <span class="go"># Modifying x does not modify x_np</span>
 <span class="gp">In [42]: </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x_np</span>
 <span class="gh">Out[42]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
-</code></pre></div>
-</div>
-</div>
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [43]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">]);</span> <span class="n">x_np</span>
-<span class="gh">Out[43]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
-
-<span class="gp">In [44]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="n">x_np</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[44]: </span><span class="go">GF([α^183,   α^9,  α^69, α^153,  α^58], order=3^5)</span>
-
-<span class="go"># Modifying x does not modify x_np</span>
-<span class="gp">In [45]: </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x_np</span>
-<span class="gh">Out[45]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 </code></pre></div>
 </div>
 </div>
@@ -7763,19 +7727,35 @@ Power</label></div>
 temporarily and work with it in-place.</p>
 <p>Simply call <code class="code highlight python docutils literal highlight-python"><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">GF</span><span class="p">)</span></code> to <em>view</em> the NumPy array as a <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>. When finished working in the
 finite field, call <code class="code highlight python docutils literal highlight-python"><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span></code> to <em>view</em> it back to a NumPy array.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:3">
-<input checked type="radio" id="__tabbed_8_1" name="__tabbed_8"><input type="radio" id="__tabbed_8_2" name="__tabbed_8"><input type="radio" id="__tabbed_8_3" name="__tabbed_8"><div class="tabbed-labels docutils">
-<label class="tabbed-label" for="__tabbed_8_1">
-Integer</label><label class="tabbed-label" for="__tabbed_8_2">
-Polynomial</label><label class="tabbed-label" for="__tabbed_8_3">
+<div class="tabbed-set tabbed-alternate" data-tabs="7:3">
+<input checked type="radio" id="__tabbed_7_1" name="__tabbed_7"><input type="radio" id="__tabbed_7_2" name="__tabbed_7"><input type="radio" id="__tabbed_7_3" name="__tabbed_7"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_7_1">
+Integer</label><label class="tabbed-label" for="__tabbed_7_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_7_3">
 Power</label></div>
 <div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [43]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">);</span> <span class="n">x_np</span>
+<span class="gh">Out[43]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
+
+<span class="gp">In [44]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">x_np</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">GF</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[44]: </span><span class="go">GF([213, 167,   4, 214, 209], order=3^5)</span>
+
+<span class="go"># Modifying x does modify x_np!</span>
+<span class="gp">In [45]: </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x_np</span>
+<span class="gh">Out[45]: </span><span class="go">array([  0, 167,   4, 214, 209])</span>
+</code></pre></div>
+</div>
+</div>
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [46]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">);</span> <span class="n">x_np</span>
 <span class="gh">Out[46]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
 <span class="gp">In [47]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">x_np</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">GF</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[47]: </span><span class="go">GF([213, 167,   4, 214, 209], order=3^5)</span>
+<span class="gh">Out[47]: </span><span class="go"></span>
+<span class="go">GF([    2α^4 + α^3 + 2α^2 + 2α,               2α^4 + α + 2,</span>
+<span class="go">                         α + 1, 2α^4 + α^3 + 2α^2 + 2α + 1,</span>
+<span class="go">         2α^4 + α^3 + 2α^2 + 2], order=3^5)</span>
 
 <span class="go"># Modifying x does modify x_np!</span>
 <span class="gp">In [48]: </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x_np</span>
@@ -7788,27 +7768,11 @@ Power</label></div>
 <span class="gh">Out[49]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
 
 <span class="gp">In [50]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">x_np</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">GF</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[50]: </span><span class="go"></span>
-<span class="go">GF([    2α^4 + α^3 + 2α^2 + 2α,               2α^4 + α + 2,</span>
-<span class="go">                         α + 1, 2α^4 + α^3 + 2α^2 + 2α + 1,</span>
-<span class="go">         2α^4 + α^3 + 2α^2 + 2], order=3^5)</span>
+<span class="gh">Out[50]: </span><span class="go">GF([α^183,   α^9,  α^69, α^153,  α^58], order=3^5)</span>
 
 <span class="go"># Modifying x does modify x_np!</span>
 <span class="gp">In [51]: </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x_np</span>
 <span class="gh">Out[51]: </span><span class="go">array([  0, 167,   4, 214, 209])</span>
-</code></pre></div>
-</div>
-</div>
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [52]: </span><span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">213</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">209</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">);</span> <span class="n">x_np</span>
-<span class="gh">Out[52]: </span><span class="go">array([213, 167,   4, 214, 209])</span>
-
-<span class="gp">In [53]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">x_np</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">GF</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[53]: </span><span class="go">GF([α^183,   α^9,  α^69, α^153,  α^58], order=3^5)</span>
-
-<span class="go"># Modifying x does modify x_np!</span>
-<span class="gp">In [54]: </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x_np</span>
-<span class="gh">Out[54]: </span><span class="go">array([  0, 167,   4, 214, 209])</span>
 </code></pre></div>
 </div>
 </div>
@@ -7818,6 +7782,48 @@ Power</label></div>
 <h3 id="constant-arrays">Constant arrays<a class="headerlink" href="#constant-arrays" title="Permalink to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../../api/galois.FieldArray.Zeros/" title="galois.FieldArray.Zeros (Python method) — Creates an array of all zeros."><code class="xref py py-func docutils literal notranslate"><span class="pre">Zeros()</span></code></a> and <a class="reference internal" href="../../api/galois.FieldArray.Ones/" title="galois.FieldArray.Ones (Python method) — Creates an array of all ones."><code class="xref py py-func docutils literal notranslate"><span class="pre">Ones()</span></code></a> classmethods provide constant arrays that are
 useful for initializing empty arrays.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:3">
+<input checked type="radio" id="__tabbed_8_1" name="__tabbed_8"><input type="radio" id="__tabbed_8_2" name="__tabbed_8"><input type="radio" id="__tabbed_8_3" name="__tabbed_8"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_8_1">
+Integer</label><label class="tabbed-label" for="__tabbed_8_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_8_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [52]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gh">Out[52]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
+
+<span class="gp">In [53]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Ones</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gh">Out[53]: </span><span class="go">GF([1, 1, 1, 1], order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [54]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gh">Out[54]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
+
+<span class="gp">In [55]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Ones</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gh">Out[55]: </span><span class="go">GF([1, 1, 1, 1], order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [56]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gh">Out[56]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
+
+<span class="gp">In [57]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Ones</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gh">Out[57]: </span><span class="go">GF([1, 1, 1, 1], order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div><details class="note">
+<summary>
+There is no <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.empty.html#numpy.empty" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.empty()</span></code></a> equivalent.</summary><p>This is because <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances must have values in <span class="math notranslate nohighlight">\([0, p^m)\)</span>. Empty NumPy arrays have whatever values
+are currently in memory, and therefore would fail those bounds checks during instantiation.</p>
+</details><h3 id="ordered-arrays">Ordered arrays<a class="headerlink" href="#ordered-arrays" title="Permalink to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="../../api/galois.FieldArray.Range/" title="galois.FieldArray.Range (Python method) — Creates a 1-D array with a range of elements."><code class="xref py py-func docutils literal notranslate"><span class="pre">Range()</span></code></a> classmethod produces a range of elements similar to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.arange()</span></code></a>. The integer <code class="code highlight python docutils literal highlight-python"><span class="n">start</span></code>
+and <code class="code highlight python docutils literal highlight-python"><span class="n">stop</span></code> values are the <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a> of the polynomial field elements.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="9:3">
 <input checked type="radio" id="__tabbed_9_1" name="__tabbed_9"><input type="radio" id="__tabbed_9_2" name="__tabbed_9"><input type="radio" id="__tabbed_9_3" name="__tabbed_9"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_9_1">
@@ -7826,80 +7832,36 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_9_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [55]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[55]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [58]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="gh">Out[58]: </span><span class="go">GF([10, 11, 12, 13, 14, 15, 16, 17, 18, 19], order=3^5)</span>
 
-<span class="gp">In [56]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Ones</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[56]: </span><span class="go">GF([1, 1, 1, 1], order=3^5)</span>
+<span class="gp">In [59]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[59]: </span><span class="go">GF([10, 12, 14, 16, 18], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [57]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[57]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
-
-<span class="gp">In [58]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Ones</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[58]: </span><span class="go">GF([1, 1, 1, 1], order=3^5)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [59]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[59]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
-
-<span class="gp">In [60]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Ones</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[60]: </span><span class="go">GF([1, 1, 1, 1], order=3^5)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-</div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>There is no <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.empty.html#numpy.empty" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.empty()</span></code></a> equivalent. This is because <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances must have values in
-<span class="math notranslate nohighlight">\([0, p^m)\)</span>. Empty NumPy arrays have whatever values are currently in memory, and therefore would fail those
-bounds checks.</p>
-</div>
-<h3 id="ordered-arrays">Ordered arrays<a class="headerlink" href="#ordered-arrays" title="Permalink to this heading">¶</a></h3>
-<p>The <a class="reference internal" href="../../api/galois.FieldArray.Range/" title="galois.FieldArray.Range (Python method) — Creates a 1-D array with a range of elements."><code class="xref py py-func docutils literal notranslate"><span class="pre">Range()</span></code></a> classmethod produces a range of elements similar to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.arange()</span></code></a>. The integer <code class="code highlight python docutils literal highlight-python"><span class="n">start</span></code>
-and <code class="code highlight python docutils literal highlight-python"><span class="n">stop</span></code> values are the <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a> of the polynomial field elements.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:3">
-<input checked type="radio" id="__tabbed_10_1" name="__tabbed_10"><input type="radio" id="__tabbed_10_2" name="__tabbed_10"><input type="radio" id="__tabbed_10_3" name="__tabbed_10"><div class="tabbed-labels docutils">
-<label class="tabbed-label" for="__tabbed_10_1">
-Integer</label><label class="tabbed-label" for="__tabbed_10_2">
-Polynomial</label><label class="tabbed-label" for="__tabbed_10_3">
-Power</label></div>
-<div class="tabbed-content docutils">
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [61]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="gh">Out[61]: </span><span class="go">GF([10, 11, 12, 13, 14, 15, 16, 17, 18, 19], order=3^5)</span>
-
-<span class="gp">In [62]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[62]: </span><span class="go">GF([10, 12, 14, 16, 18], order=3^5)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [63]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="gh">Out[63]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [60]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="gh">Out[60]: </span><span class="go"></span>
 <span class="go">GF([     α^2 + 1,      α^2 + 2,      α^2 + α,  α^2 + α + 1,  α^2 + α + 2,</span>
 <span class="go">        α^2 + 2α, α^2 + 2α + 1, α^2 + 2α + 2,         2α^2,     2α^2 + 1],</span>
 <span class="go">   order=3^5)</span>
 
-<span class="gp">In [64]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[64]: </span><span class="go"></span>
+<span class="gp">In [61]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[61]: </span><span class="go"></span>
 <span class="go">GF([     α^2 + 1,      α^2 + α,  α^2 + α + 2, α^2 + 2α + 1,         2α^2],</span>
 <span class="go">   order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [65]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="gh">Out[65]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [62]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="gh">Out[62]: </span><span class="go"></span>
 <span class="go">GF([ α^46,  α^74,  α^70,  α^10, α^209,   α^6, α^138, α^222, α^123, α^195],</span>
 <span class="go">   order=3^5)</span>
 
-<span class="gp">In [66]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[66]: </span><span class="go">GF([ α^46,  α^70, α^209, α^138, α^123], order=3^5)</span>
+<span class="gp">In [63]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[63]: </span><span class="go">GF([ α^46,  α^70, α^209, α^138, α^123], order=3^5)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7908,6 +7870,46 @@ Power</label></div>
 <p>The <a class="reference internal" href="../../api/galois.FieldArray.Random/" title="galois.FieldArray.Random (Python method) — Creates an array with random elements."><code class="xref py py-func docutils literal notranslate"><span class="pre">Random()</span></code></a> classmethod provides a random array of the specified shape. This is convenient
 for testing. The integer <code class="code highlight python docutils literal highlight-python"><span class="n">low</span></code> and <code class="code highlight python docutils literal highlight-python"><span class="n">high</span></code> values are the <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a> of
 the polynomial field elements.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:3">
+<input checked type="radio" id="__tabbed_10_1" name="__tabbed_10"><input type="radio" id="__tabbed_10_2" name="__tabbed_10"><input type="radio" id="__tabbed_10_3" name="__tabbed_10"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_10_1">
+Integer</label><label class="tabbed-label" for="__tabbed_10_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_10_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [64]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gh">Out[64]: </span><span class="go">GF([242, 216,  32, 114], order=3^5)</span>
+
+<span class="gp">In [65]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[65]: </span><span class="go">GF([17, 13, 14, 18], order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [66]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gh">Out[66]: </span><span class="go"></span>
+<span class="go">GF([2α^4 + 2α^3 + 2α^2 + 2α + 2,                 2α^4 + 2α^3,</span>
+<span class="go">                    α^3 + α + 2,              α^4 + α^3 + 2α], order=3^5)</span>
+
+<span class="gp">In [67]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[67]: </span><span class="go">GF([α^2 + 2α + 2,  α^2 + α + 1,  α^2 + α + 2,         2α^2], order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [68]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gh">Out[68]: </span><span class="go">GF([α^185, α^193,  α^49, α^231], order=3^5)</span>
+
+<span class="gp">In [69]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[69]: </span><span class="go">GF([α^222,  α^10, α^209, α^123], order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div><h2 id="class-properties">Class properties<a class="headerlink" href="#class-properties" title="Permalink to this heading">¶</a></h2>
+<p>Certain class properties, such as <a class="reference internal" href="../../api/galois.FieldArray.elements/" title="galois.FieldArray.elements (Python property) — All of the finite field's elements \{0, \dots, p^m-1\}."><code class="xref py py-obj docutils literal notranslate"><span class="pre">elements</span></code></a>, <a class="reference internal" href="../../api/galois.FieldArray.units/" title="galois.FieldArray.units (Python property) — All of the finite field's units \{1, \dots, p^m-1\}. A unit is an element with a multiplicative inverse."><code class="xref py py-obj docutils literal notranslate"><span class="pre">units</span></code></a>, <a class="reference internal" href="../../api/galois.FieldArray.squares/" title="galois.FieldArray.squares (Python property) — All squares in the finite field."><code class="xref py py-obj docutils literal notranslate"><span class="pre">squares</span></code></a>,
+and <a class="reference internal" href="../../api/galois.FieldArray.primitive_elements/" title="galois.FieldArray.primitive_elements (Python property) — All primitive elements \alpha of the Galois field \mathrm{GF}(p^m). A primitive element is a multiplicative generator of the field, such that \mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_elements</span></code></a>, provide an array of elements with the specified properties.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="11:3">
 <input checked type="radio" id="__tabbed_11_1" name="__tabbed_11"><input type="radio" id="__tabbed_11_2" name="__tabbed_11"><input type="radio" id="__tabbed_11_3" name="__tabbed_11"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_11_1">
@@ -7916,97 +7918,57 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_11_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [67]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
-<span class="gh">Out[67]: </span><span class="go">GF([176, 177, 172, 237], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [70]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="gp">In [68]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">5678</span><span class="p">)</span>
-<span class="gh">Out[68]: </span><span class="go">GF([11, 18, 12, 10], order=3^5)</span>
+<span class="gp">In [71]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
+<span class="gh">Out[71]: </span><span class="go">GF([0, 1, 2, 3, 4, 5, 6, 7, 8], order=3^2)</span>
+
+<span class="gp">In [72]: </span><span class="n">GF</span><span class="o">.</span><span class="n">units</span>
+<span class="gh">Out[72]: </span><span class="go">GF([1, 2, 3, 4, 5, 6, 7, 8], order=3^2)</span>
+
+<span class="gp">In [73]: </span><span class="n">GF</span><span class="o">.</span><span class="n">squares</span>
+<span class="gh">Out[73]: </span><span class="go">GF([0, 1, 2, 4, 8], order=3^2)</span>
+
+<span class="gp">In [74]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
+<span class="gh">Out[74]: </span><span class="go">GF([3, 5, 6, 7], order=3^2)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [69]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
-<span class="gh">Out[69]: </span><span class="go"></span>
-<span class="go">GF([    2α^4 + α^2 + α + 2,        2α^4 + α^2 + 2α,</span>
-<span class="go">            2α^4 + α^2 + 1, 2α^4 + 2α^3 + 2α^2 + α], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [75]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
-<span class="gp">In [70]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">5678</span><span class="p">)</span>
-<span class="gh">Out[70]: </span><span class="go">GF([α^2 + 2,    2α^2, α^2 + α, α^2 + 1], order=3^5)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [71]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
-<span class="gh">Out[71]: </span><span class="go">GF([α^114,  α^78, α^206,  α^96], order=3^5)</span>
-
-<span class="gp">In [72]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">5678</span><span class="p">)</span>
-<span class="gh">Out[72]: </span><span class="go">GF([ α^74, α^123,  α^70,  α^46], order=3^5)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-</div><h2 id="class-properties">Class properties<a class="headerlink" href="#class-properties" title="Permalink to this heading">¶</a></h2>
-<p>Certain class properties, such as <a class="reference internal" href="../../api/galois.FieldArray.elements/" title="galois.FieldArray.elements (Python property) — All of the finite field's elements \{0, \dots, p^m-1\}."><code class="xref py py-obj docutils literal notranslate"><span class="pre">elements</span></code></a>, <a class="reference internal" href="../../api/galois.FieldArray.units/" title="galois.FieldArray.units (Python property) — All of the finite field's units \{1, \dots, p^m-1\}. A unit is an element with a multiplicative inverse."><code class="xref py py-obj docutils literal notranslate"><span class="pre">units</span></code></a>, <a class="reference internal" href="../../api/galois.FieldArray.squares/" title="galois.FieldArray.squares (Python property) — All squares in the finite field."><code class="xref py py-obj docutils literal notranslate"><span class="pre">squares</span></code></a>,
-and <a class="reference internal" href="../../api/galois.FieldArray.primitive_elements/" title="galois.FieldArray.primitive_elements (Python property) — All primitive elements \alpha of the Galois field \mathrm{GF}(p^m). A primitive element is a multiplicative generator of the field, such that \mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_elements</span></code></a>, provide an array of elements with the specified properties.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="12:3">
-<input checked type="radio" id="__tabbed_12_1" name="__tabbed_12"><input type="radio" id="__tabbed_12_2" name="__tabbed_12"><input type="radio" id="__tabbed_12_3" name="__tabbed_12"><div class="tabbed-labels docutils">
-<label class="tabbed-label" for="__tabbed_12_1">
-Integer</label><label class="tabbed-label" for="__tabbed_12_2">
-Polynomial</label><label class="tabbed-label" for="__tabbed_12_3">
-Power</label></div>
-<div class="tabbed-content docutils">
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [73]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="gp">In [74]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
-<span class="gh">Out[74]: </span><span class="go">GF([0, 1, 2, 3, 4, 5, 6, 7, 8], order=3^2)</span>
-
-<span class="gp">In [75]: </span><span class="n">GF</span><span class="o">.</span><span class="n">units</span>
-<span class="gh">Out[75]: </span><span class="go">GF([1, 2, 3, 4, 5, 6, 7, 8], order=3^2)</span>
-
-<span class="gp">In [76]: </span><span class="n">GF</span><span class="o">.</span><span class="n">squares</span>
-<span class="gh">Out[76]: </span><span class="go">GF([0, 1, 2, 4, 8], order=3^2)</span>
-
-<span class="gp">In [77]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
-<span class="gh">Out[77]: </span><span class="go">GF([3, 5, 6, 7], order=3^2)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [78]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
-
-<span class="gp">In [79]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
-<span class="gh">Out[79]: </span><span class="go"></span>
+<span class="gp">In [76]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
+<span class="gh">Out[76]: </span><span class="go"></span>
 <span class="go">GF([     0,      1,      2,      α,  α + 1,  α + 2,     2α, 2α + 1,</span>
 <span class="go">    2α + 2], order=3^2)</span>
 
-<span class="gp">In [80]: </span><span class="n">GF</span><span class="o">.</span><span class="n">units</span>
-<span class="gh">Out[80]: </span><span class="go"></span>
+<span class="gp">In [77]: </span><span class="n">GF</span><span class="o">.</span><span class="n">units</span>
+<span class="gh">Out[77]: </span><span class="go"></span>
 <span class="go">GF([     1,      2,      α,  α + 1,  α + 2,     2α, 2α + 1, 2α + 2],</span>
 <span class="go">   order=3^2)</span>
 
-<span class="gp">In [81]: </span><span class="n">GF</span><span class="o">.</span><span class="n">squares</span>
-<span class="gh">Out[81]: </span><span class="go">GF([     0,      1,      2,  α + 1, 2α + 2], order=3^2)</span>
+<span class="gp">In [78]: </span><span class="n">GF</span><span class="o">.</span><span class="n">squares</span>
+<span class="gh">Out[78]: </span><span class="go">GF([     0,      1,      2,  α + 1, 2α + 2], order=3^2)</span>
 
-<span class="gp">In [82]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
-<span class="gh">Out[82]: </span><span class="go">GF([     α,  α + 2,     2α, 2α + 1], order=3^2)</span>
+<span class="gp">In [79]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
+<span class="gh">Out[79]: </span><span class="go">GF([     α,  α + 2,     2α, 2α + 1], order=3^2)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [83]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [80]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 
-<span class="gp">In [84]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
-<span class="gh">Out[84]: </span><span class="go">GF([  0,   1, α^4,   α, α^2, α^7, α^5, α^3, α^6], order=3^2)</span>
+<span class="gp">In [81]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
+<span class="gh">Out[81]: </span><span class="go">GF([  0,   1, α^4,   α, α^2, α^7, α^5, α^3, α^6], order=3^2)</span>
 
-<span class="gp">In [85]: </span><span class="n">GF</span><span class="o">.</span><span class="n">units</span>
-<span class="gh">Out[85]: </span><span class="go">GF([  1, α^4,   α, α^2, α^7, α^5, α^3, α^6], order=3^2)</span>
+<span class="gp">In [82]: </span><span class="n">GF</span><span class="o">.</span><span class="n">units</span>
+<span class="gh">Out[82]: </span><span class="go">GF([  1, α^4,   α, α^2, α^7, α^5, α^3, α^6], order=3^2)</span>
 
-<span class="gp">In [86]: </span><span class="n">GF</span><span class="o">.</span><span class="n">squares</span>
-<span class="gh">Out[86]: </span><span class="go">GF([  0,   1, α^4, α^2, α^6], order=3^2)</span>
+<span class="gp">In [83]: </span><span class="n">GF</span><span class="o">.</span><span class="n">squares</span>
+<span class="gh">Out[83]: </span><span class="go">GF([  0,   1, α^4, α^2, α^6], order=3^2)</span>
 
-<span class="gp">In [87]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
-<span class="gh">Out[87]: </span><span class="go">GF([  α, α^7, α^5, α^3], order=3^2)</span>
+<span class="gp">In [84]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
+<span class="gh">Out[84]: </span><span class="go">GF([  α, α^7, α^5, α^3], order=3^2)</span>
 </code></pre></div>
 </div>
 </div>
@@ -8016,10 +7978,10 @@ Power</label></div>
 able to store all the field elements (in their <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a>).</p>
 <h3 id="valid-data-types">Valid data types<a class="headerlink" href="#valid-data-types" title="Permalink to this heading">¶</a></h3>
 <p>For small finite fields, like <span class="math notranslate nohighlight">\(\mathrm{GF}(2^4)\)</span>, every NumPy integer data type is supported.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [88]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [85]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
 
-<span class="gp">In [89]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
-<span class="gh">Out[89]: </span><span class="go"></span>
+<span class="gp">In [86]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
+<span class="gh">Out[86]: </span><span class="go"></span>
 <span class="go">[numpy.uint8,</span>
 <span class="go"> numpy.uint16,</span>
 <span class="go"> numpy.uint32,</span>
@@ -8031,71 +7993,71 @@ able to store all the field elements (in their <a class="reference internal" hre
 </div>
 <p>For medium finite fields, like <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{10})\)</span>, some NumPy integer data types are not supported. Here,
 <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uint8" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.uint8</span></code></a> and <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int8" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int8</span></code></a> are not supported.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [90]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [87]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span><span class="p">)</span>
 
-<span class="gp">In [91]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
-<span class="gh">Out[91]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
+<span class="gp">In [88]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
+<span class="gh">Out[88]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
 </code></pre></div>
 </div>
 <p>For large finite fields, like <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{100})\)</span>, only the “object” data type (<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a>) is
 supported. This uses arrays of Python objects, rather than integer data types. The Python objects used are Python integers,
 which have unlimited size.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [92]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">100</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [89]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">100</span><span class="p">)</span>
 
-<span class="gp">In [93]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
-<span class="gh">Out[93]: </span><span class="go">[numpy.object_]</span>
+<span class="gp">In [90]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
+<span class="gh">Out[90]: </span><span class="go">[numpy.object_]</span>
 </code></pre></div>
 </div>
 <h3 id="default-data-type">Default data type<a class="headerlink" href="#default-data-type" title="Permalink to this heading">¶</a></h3>
 <p>When arrays are created, unless otherwise specified, they use the default data type. The default data type is
 the smallest unsigned data type (the first in the <a class="reference internal" href="../../api/galois.FieldArray.dtypes/" title="galois.FieldArray.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtypes</span></code></a> list).</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [94]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [91]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span><span class="p">)</span>
 
-<span class="gp">In [95]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
-<span class="gh">Out[95]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
+<span class="gp">In [92]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
+<span class="gh">Out[92]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
 
-<span class="gp">In [96]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[96]: </span><span class="go">GF([820, 514, 736, 596], order=2^10)</span>
+<span class="gp">In [93]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[93]: </span><span class="go">GF([105, 819, 324, 266], order=2^10)</span>
 
-<span class="gp">In [97]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
-<span class="gh">Out[97]: </span><span class="go">dtype(&#39;uint16&#39;)</span>
+<span class="gp">In [94]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+<span class="gh">Out[94]: </span><span class="go">dtype(&#39;uint16&#39;)</span>
 </code></pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [98]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">100</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [95]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">100</span><span class="p">)</span>
 
-<span class="gp">In [99]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
-<span class="gh">Out[99]: </span><span class="go">[numpy.object_]</span>
+<span class="gp">In [96]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
+<span class="gh">Out[96]: </span><span class="go">[numpy.object_]</span>
 
-<span class="gp">In [100]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[100]: </span><span class="go"></span>
-<span class="go">GF([926627232670300295939515825776, 939401772679883989765394398040,</span>
-<span class="go">    483502586758038390369221176237, 704809771175096208154352541850],</span>
+<span class="gp">In [97]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[97]: </span><span class="go"></span>
+<span class="go">GF([ 533544570738797149806262776772,   66775681186789437089677371146,</span>
+<span class="go">    1256665001889490125223686986072,  755337613624405760157862583385],</span>
 <span class="go">   order=2^100)</span>
 
-<span class="gp">In [101]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
-<span class="gh">Out[101]: </span><span class="go">dtype(&#39;O&#39;)</span>
+<span class="gp">In [98]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+<span class="gh">Out[98]: </span><span class="go">dtype(&#39;O&#39;)</span>
 </code></pre></div>
 </div>
 <h3 id="changing-data-types">Changing data types<a class="headerlink" href="#changing-data-types" title="Permalink to this heading">¶</a></h3>
 <p>The data type may be explicitly set during array creation by setting the <code class="code highlight python docutils literal highlight-python"><span class="n">dtype</span></code> keyword argument of the <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>
 constructor.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [102]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [99]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span><span class="p">)</span>
 
-<span class="gp">In [103]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">273</span><span class="p">,</span> <span class="mi">388</span><span class="p">,</span> <span class="mi">124</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[103]: </span><span class="go">GF([273, 388, 124, 400], order=2^10)</span>
+<span class="gp">In [100]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">273</span><span class="p">,</span> <span class="mi">388</span><span class="p">,</span> <span class="mi">124</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[100]: </span><span class="go">GF([273, 388, 124, 400], order=2^10)</span>
 
-<span class="gp">In [104]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
-<span class="gh">Out[104]: </span><span class="go">dtype(&#39;uint32&#39;)</span>
+<span class="gp">In [101]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+<span class="gh">Out[101]: </span><span class="go">dtype(&#39;uint32&#39;)</span>
 </code></pre></div>
 </div>
 <p>Arrays may also have their data types changed using <code class="code highlight python docutils literal highlight-python"><span class="o">.</span><span class="n">astype</span><span class="p">()</span></code>. The data type must be valid, however.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [105]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
-<span class="gh">Out[105]: </span><span class="go">dtype(&#39;uint32&#39;)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [102]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+<span class="gh">Out[102]: </span><span class="go">dtype(&#39;uint32&#39;)</span>
 
-<span class="gp">In [106]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+<span class="gp">In [103]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
 
-<span class="gp">In [107]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
-<span class="gh">Out[107]: </span><span class="go">dtype(&#39;int64&#39;)</span>
+<span class="gp">In [104]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+<span class="gh">Out[104]: </span><span class="go">dtype(&#39;int64&#39;)</span>
 </code></pre></div>
 </div>
 

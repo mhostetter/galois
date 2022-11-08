@@ -7337,21 +7337,41 @@ data type for this <a class="reference internal" href="../galois.FieldArray/" ti
 </code></pre></div>
 </div>
 <p>For extension fields, the increment is the integer increment between finite field elements in their <a class="reference internal" href="../../basic-usage/element-representation/#int-repr"><span class="std std-ref">integer representation</span></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2">
+<input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_1_1">
+Integer</label><label class="tabbed-label" for="__tabbed_1_2">
+Polynomial</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="gp">In [5]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="gh">Out[5]: </span><span class="go">GF([10, 11, 12, 13, 14, 15, 16, 17, 18, 19], order=3^3)</span>
+
+<span class="gp">In [6]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[6]: </span><span class="go">GF([10, 12, 14, 16, 18], order=3^3)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+
+<span class="gp">In [8]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="gh">Out[8]: </span><span class="go"></span>
 <span class="go">GF([     α^2 + 1,      α^2 + 2,      α^2 + α,  α^2 + α + 1,  α^2 + α + 2,</span>
 <span class="go">        α^2 + 2α, α^2 + 2α + 1, α^2 + 2α + 2,         2α^2,     2α^2 + 1],</span>
 <span class="go">   order=3^3)</span>
 
-<span class="gp">In [6]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="gp">In [9]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[9]: </span><span class="go"></span>
 <span class="go">GF([     α^2 + 1,      α^2 + α,  α^2 + α + 2, α^2 + 2α + 1,         2α^2],</span>
 <span class="go">   order=3^3)</span>
 </code></pre></div>
 </div>
-</dd></dl>
+</div>
+</div>
+</div></dd></dl>
 
 
 

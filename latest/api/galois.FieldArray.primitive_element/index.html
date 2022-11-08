@@ -7215,20 +7215,78 @@ generator of the field, such that <span class="math notranslate nohighlight">\(\
 <p>A primitive element is a root of the primitive polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>, such that <span class="math notranslate nohighlight">\(f(\alpha) = 0\)</span> over
 <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">primitive_element</span>
-<span class="gh">Out[1]: </span><span class="go">GF(1, order=2)</span>
+<p>The smallest primitive element of the prime field <span class="math notranslate nohighlight">\(\mathrm{GF}(31)\)</span>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2">
+<input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_1_1">
+Integer</label><label class="tabbed-label" for="__tabbed_1_2">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
-<span class="gp">In [2]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">primitive_element</span>
-<span class="gh">Out[2]: </span><span class="go">GF(2, order=2^8)</span>
-
-<span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span><span class="o">.</span><span class="n">primitive_element</span>
-<span class="gh">Out[3]: </span><span class="go">GF(3, order=31)</span>
-
-<span class="gp">In [4]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">primitive_element</span>
-<span class="gh">Out[4]: </span><span class="go">GF(7, order=7^5)</span>
+<span class="gp">In [2]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
+<span class="gh">Out[2]: </span><span class="go"></span>
+<span class="go">GF([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,</span>
+<span class="go">    17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], order=31)</span>
 </code></pre></div>
 </div>
-</dd></dl>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+
+<span class="gp">In [4]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
+<span class="gh">Out[4]: </span><span class="go"></span>
+<span class="go">GF([   0,    1, α^24,    α, α^18, α^20, α^25, α^28, α^12,  α^2, α^14,</span>
+<span class="go">    α^23, α^19, α^11, α^22, α^21,  α^6,  α^7, α^26,  α^4,  α^8, α^29,</span>
+<span class="go">    α^17, α^27, α^13, α^10,  α^5,  α^3, α^16,  α^9, α^15], order=31)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div><p>The smallest primitive element of the extension field <span class="math notranslate nohighlight">\(\mathrm{GF}(5^2)\)</span>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3">
+<input checked type="radio" id="__tabbed_2_1" name="__tabbed_2"><input type="radio" id="__tabbed_2_2" name="__tabbed_2"><input type="radio" id="__tabbed_2_3" name="__tabbed_2"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_2_1">
+Integer</label><label class="tabbed-label" for="__tabbed_2_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_2_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">5</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">GF([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,</span>
+<span class="go">    17, 18, 19, 20, 21, 22, 23, 24], order=5^2)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">5</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+
+<span class="gp">In [8]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
+<span class="gh">Out[8]: </span><span class="go"></span>
+<span class="go">GF([     0,      1,      2,      3,      4,      α,  α + 1,  α + 2,</span>
+<span class="go">     α + 3,  α + 4,     2α, 2α + 1, 2α + 2, 2α + 3, 2α + 4,     3α,</span>
+<span class="go">    3α + 1, 3α + 2, 3α + 3, 3α + 4,     4α, 4α + 1, 4α + 2, 4α + 3,</span>
+<span class="go">    4α + 4], order=5^2)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">5</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+
+<span class="gp">In [10]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
+<span class="gh">Out[10]: </span><span class="go"></span>
+<span class="go">GF([   0,    1,  α^6, α^18, α^12,    α, α^22, α^15,  α^2, α^17,  α^7,</span>
+<span class="go">     α^8,  α^4, α^23, α^21, α^19,  α^9, α^11, α^16, α^20, α^13,  α^5,</span>
+<span class="go">    α^14,  α^3, α^10], order=5^2)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div></dd></dl>
 
 
 

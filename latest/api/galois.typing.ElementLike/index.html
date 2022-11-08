@@ -7225,41 +7225,129 @@
 <p class="rubric" id="union">Union<a class="headerlink" href="#union" title="Permalink to this headline">¶</a></p>
 <ul>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>: A finite field element in its <a class="reference internal" href="../../basic-usage/element-representation/#int-repr"><span class="std std-ref">integer representation</span></a>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3">
+<input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><input type="radio" id="__tabbed_1_3" name="__tabbed_1"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_1_1">
+Integer</label><label class="tabbed-label" for="__tabbed_1_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_1_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
 <span class="gh">Out[2]: </span><span class="go">GF(17, order=3^5)</span>
 </code></pre></div>
 </div>
-</li>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+
+<span class="gp">In [4]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+<span class="gh">Out[4]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+<span class="gh">Out[6]: </span><span class="go">GF(α^222, order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>: A finite field element in its <a class="reference internal" href="../../basic-usage/element-representation/#poly-repr"><span class="std std-ref">polynomial representation</span></a>. Many string conventions are
 accepted, including: with/without <code class="code highlight python docutils literal highlight-python"><span class="o">*</span></code>, with/without spaces, <code class="code highlight python docutils literal highlight-python"><span class="o">^</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="o">**</span></code>, any indeterminate variable, increasing/decreasing
 degrees, etc. Or any combination of the above.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">GF(17, order=3^5)</span>
-
-<span class="go"># Add explicit * for multiplication</span>
-<span class="gp">In [4]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2*x + 2&quot;</span><span class="p">)</span>
-<span class="gh">Out[4]: </span><span class="go">GF(17, order=3^5)</span>
-
-<span class="go"># No spaces</span>
-<span class="gp">In [5]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2+2x+2&quot;</span><span class="p">)</span>
-<span class="gh">Out[5]: </span><span class="go">GF(17, order=3^5)</span>
-
-<span class="go"># ** instead of ^</span>
-<span class="gp">In [6]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x**2 + 2x + 2&quot;</span><span class="p">)</span>
-<span class="gh">Out[6]: </span><span class="go">GF(17, order=3^5)</span>
-
-<span class="go"># Different indeterminate</span>
-<span class="gp">In [7]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">)</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3">
+<input checked type="radio" id="__tabbed_2_1" name="__tabbed_2"><input type="radio" id="__tabbed_2_2" name="__tabbed_2"><input type="radio" id="__tabbed_2_3" name="__tabbed_2"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_2_1">
+Integer</label><label class="tabbed-label" for="__tabbed_2_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_2_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
 <span class="gh">Out[7]: </span><span class="go">GF(17, order=3^5)</span>
 
-<span class="go"># Ascending degrees</span>
-<span class="gp">In [8]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;2 + 2x + x^2&quot;</span><span class="p">)</span>
+<span class="go"># Add explicit * for multiplication</span>
+<span class="gp">In [8]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2*x + 2&quot;</span><span class="p">)</span>
 <span class="gh">Out[8]: </span><span class="go">GF(17, order=3^5)</span>
+
+<span class="go"># No spaces</span>
+<span class="gp">In [9]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2+2x+2&quot;</span><span class="p">)</span>
+<span class="gh">Out[9]: </span><span class="go">GF(17, order=3^5)</span>
+
+<span class="go"># ** instead of ^</span>
+<span class="gp">In [10]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x**2 + 2x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[10]: </span><span class="go">GF(17, order=3^5)</span>
+
+<span class="go"># Different indeterminate</span>
+<span class="gp">In [11]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[11]: </span><span class="go">GF(17, order=3^5)</span>
+
+<span class="go"># Ascending degrees</span>
+<span class="gp">In [12]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;2 + 2x + x^2&quot;</span><span class="p">)</span>
+<span class="gh">Out[12]: </span><span class="go">GF(17, order=3^5)</span>
 </code></pre></div>
 </div>
-</li>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[13]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
+
+<span class="go"># Add explicit * for multiplication</span>
+<span class="gp">In [14]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2*x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[14]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
+
+<span class="go"># No spaces</span>
+<span class="gp">In [15]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2+2x+2&quot;</span><span class="p">)</span>
+<span class="gh">Out[15]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
+
+<span class="go"># ** instead of ^</span>
+<span class="gp">In [16]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x**2 + 2x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[16]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
+
+<span class="go"># Different indeterminate</span>
+<span class="gp">In [17]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[17]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
+
+<span class="go"># Ascending degrees</span>
+<span class="gp">In [18]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;2 + 2x + x^2&quot;</span><span class="p">)</span>
+<span class="gh">Out[18]: </span><span class="go">GF(α^2 + 2α + 2, order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[19]: </span><span class="go">GF(α^222, order=3^5)</span>
+
+<span class="go"># Add explicit * for multiplication</span>
+<span class="gp">In [20]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2 + 2*x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[20]: </span><span class="go">GF(α^222, order=3^5)</span>
+
+<span class="go"># No spaces</span>
+<span class="gp">In [21]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x^2+2x+2&quot;</span><span class="p">)</span>
+<span class="gh">Out[21]: </span><span class="go">GF(α^222, order=3^5)</span>
+
+<span class="go"># ** instead of ^</span>
+<span class="gp">In [22]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;x**2 + 2x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[22]: </span><span class="go">GF(α^222, order=3^5)</span>
+
+<span class="go"># Different indeterminate</span>
+<span class="gp">In [23]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;α^2 + 2α + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[23]: </span><span class="go">GF(α^222, order=3^5)</span>
+
+<span class="go"># Ascending degrees</span>
+<span class="gp">In [24]: </span><span class="n">GF</span><span class="p">(</span><span class="s2">&quot;2 + 2x + x^2&quot;</span><span class="p">)</span>
+<span class="gh">Out[24]: </span><span class="go">GF(α^222, order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div></li>
 <li><p><a class="reference internal" href="../galois.Array/" title="galois.Array (Python class) — An abstract ndarray subclass over a Galois field or Galois ring."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Array</span></code></a>: A previously-created scalar <a class="reference internal" href="../galois.Array/" title="galois.Array (Python class) — An abstract ndarray subclass over a Galois field or Galois ring."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Array</span></code></a> object. No coercion is necessary.</p></li>
 </ul>
 <p class="rubric" id="alias">Alias<a class="headerlink" href="#alias" title="Permalink to this headline">¶</a></p>

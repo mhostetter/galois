@@ -561,6 +561,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#evaluation" class="md-nav__link">
+    <span class="md-ellipsis">Evaluation</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#special-arithmetic" class="md-nav__link">
     <span class="md-ellipsis">Special arithmetic</span>
   </a>
@@ -7193,6 +7200,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#evaluation" class="md-nav__link">
+    <span class="md-ellipsis">Evaluation</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#special-arithmetic" class="md-nav__link">
     <span class="md-ellipsis">Special arithmetic</span>
   </a>
@@ -7214,9 +7228,6 @@
 
 
 <h1 id="polynomial-arithmetic">Polynomial Arithmetic<a class="headerlink" href="#polynomial-arithmetic" title="Permalink to this heading">¶</a></h1>
-<h2 id="standard-arithmetic">Standard arithmetic<a class="headerlink" href="#standard-arithmetic" title="Permalink to this heading">¶</a></h2>
-<p>After creating a <a class="reference internal" href="../poly/"><span class="doc">polynomial over a finite field</span></a>, nearly any polynomial arithmetic operation can be
-performed using Python operators.</p>
 <p>In the sections below, the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(7)\)</span> and polynomials <span class="math notranslate nohighlight">\(f(x)\)</span> and <span class="math notranslate nohighlight">\(g(x)\)</span> are used.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
@@ -7227,181 +7238,234 @@ performed using Python operators.</p>
 <span class="gh">Out[3]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
 </code></pre></div>
 </div>
-<p>Expand any section for more details.</p>
-<details class="example" open="open">
+<h2 id="standard-arithmetic">Standard arithmetic<a class="headerlink" href="#standard-arithmetic" title="Permalink to this heading">¶</a></h2>
+<p>After creating a <a class="reference internal" href="../poly/"><span class="doc">polynomial over a finite field</span></a>, nearly any polynomial arithmetic operation can be
+performed using Python operators. Expand any section for more details.</p>
+<details class="example">
 <summary>
 Addition: <code class="code highlight python docutils literal highlight-python"><span class="n">f</span> <span class="o">+</span> <span class="n">g</span></code></summary><p>Add two polynomials.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">f</span> <span class="o">+</span> <span class="n">g</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(x^3 + 2x^2 + 5x + 6, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">f</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [5]: </span><span class="n">g</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
+
+<span class="gp">In [6]: </span><span class="n">f</span> <span class="o">+</span> <span class="n">g</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(x^3 + 2x^2 + 5x + 6, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Add a polynomial and a finite field scalar. The scalar is treated as a 0-degree polynomial.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">f</span> <span class="o">+</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(x^3 + 4x + 6, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">f</span> <span class="o">+</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(x^3 + 4x + 6, GF(7))</span>
 
-<span class="gp">In [6]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">f</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(x^3 + 4x + 6, GF(7))</span>
+<span class="gp">In [8]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">f</span>
+<span class="gh">Out[8]: </span><span class="go">Poly(x^3 + 4x + 6, GF(7))</span>
 </code></pre></div>
 </div>
 </details><details class="example">
 <summary>
-Additive inverse: <code class="code highlight python docutils literal highlight-python"><span class="o">-</span><span class="n">f</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="o">-</span><span class="n">f</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(6x^3 + 3x + 4, GF(7))</span>
+Additive inverse: <code class="code highlight python docutils literal highlight-python"><span class="o">-</span><span class="n">f</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">f</span>
+<span class="gh">Out[9]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [10]: </span><span class="o">-</span><span class="n">f</span>
+<span class="gh">Out[10]: </span><span class="go">Poly(6x^3 + 3x + 4, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Any polynomial added to its additive inverse results in zero.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="n">f</span> <span class="o">+</span> <span class="o">-</span><span class="n">f</span>
-<span class="gh">Out[8]: </span><span class="go">Poly(0, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [11]: </span><span class="n">f</span>
+<span class="gh">Out[11]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [12]: </span><span class="n">f</span> <span class="o">+</span> <span class="o">-</span><span class="n">f</span>
+<span class="gh">Out[12]: </span><span class="go">Poly(0, GF(7))</span>
 </code></pre></div>
 </div>
 </details><details class="example">
 <summary>
 Subtraction: <code class="code highlight python docutils literal highlight-python"><span class="n">f</span> <span class="o">-</span> <span class="n">g</span></code></summary><p>Subtract one polynomial from another.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">f</span> <span class="o">-</span> <span class="n">g</span>
-<span class="gh">Out[9]: </span><span class="go">Poly(x^3 + 5x^2 + 3x, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">f</span>
+<span class="gh">Out[13]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [14]: </span><span class="n">g</span>
+<span class="gh">Out[14]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
+
+<span class="gp">In [15]: </span><span class="n">f</span> <span class="o">-</span> <span class="n">g</span>
+<span class="gh">Out[15]: </span><span class="go">Poly(x^3 + 5x^2 + 3x, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Subtract finite field scalar from a polynomial, or vice versa. The scalar is treated as a 0-degree polynomial.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">f</span> <span class="o">-</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gh">Out[10]: </span><span class="go">Poly(x^3 + 4x, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">f</span> <span class="o">-</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gh">Out[16]: </span><span class="go">Poly(x^3 + 4x, GF(7))</span>
 
-<span class="gp">In [11]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">f</span>
-<span class="gh">Out[11]: </span><span class="go">Poly(6x^3 + 3x, GF(7))</span>
+<span class="gp">In [17]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">f</span>
+<span class="gh">Out[17]: </span><span class="go">Poly(6x^3 + 3x, GF(7))</span>
 </code></pre></div>
 </div>
 </details><details class="example">
 <summary>
 Multiplication: <code class="code highlight python docutils literal highlight-python"><span class="n">f</span> <span class="o">*</span> <span class="n">g</span></code></summary><p>Multiply two polynomials.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [12]: </span><span class="n">f</span> <span class="o">*</span> <span class="n">g</span>
-<span class="gh">Out[12]: </span><span class="go">Poly(2x^5 + x^4 + 4x^3 + 3x^2 + x + 2, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [18]: </span><span class="n">f</span>
+<span class="gh">Out[18]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [19]: </span><span class="n">g</span>
+<span class="gh">Out[19]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
+
+<span class="gp">In [20]: </span><span class="n">f</span> <span class="o">*</span> <span class="n">g</span>
+<span class="gh">Out[20]: </span><span class="go">Poly(2x^5 + x^4 + 4x^3 + 3x^2 + x + 2, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Multiply a polynomial and a finite field scalar. The scalar is treated as a 0-degree polynomial.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">f</span> <span class="o">*</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gh">Out[13]: </span><span class="go">Poly(3x^3 + 5x + 2, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [21]: </span><span class="n">f</span> <span class="o">*</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gh">Out[21]: </span><span class="go">Poly(3x^3 + 5x + 2, GF(7))</span>
 
-<span class="gp">In [14]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">f</span>
-<span class="gh">Out[14]: </span><span class="go">Poly(3x^3 + 5x + 2, GF(7))</span>
+<span class="gp">In [22]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">f</span>
+<span class="gh">Out[22]: </span><span class="go">Poly(3x^3 + 5x + 2, GF(7))</span>
 </code></pre></div>
 </div>
 </details><details class="example">
 <summary>
 Scalar multiplication: <code class="code highlight python docutils literal highlight-python"><span class="n">f</span> <span class="o">*</span> <span class="mi">3</span></code></summary><p>Scalar multiplication is essentially <em>repeated addition</em>. It is the “multiplication” of finite field elements
 and integers. The integer value indicates how many additions of the field element to sum.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [15]: </span><span class="n">f</span> <span class="o">*</span> <span class="mi">4</span>
-<span class="gh">Out[15]: </span><span class="go">Poly(4x^3 + 2x + 5, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="n">f</span> <span class="o">*</span> <span class="mi">4</span>
+<span class="gh">Out[23]: </span><span class="go">Poly(4x^3 + 2x + 5, GF(7))</span>
 
-<span class="gp">In [16]: </span><span class="n">f</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">f</span>
-<span class="gh">Out[16]: </span><span class="go">Poly(4x^3 + 2x + 5, GF(7))</span>
+<span class="gp">In [24]: </span><span class="n">f</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">f</span>
+<span class="gh">Out[24]: </span><span class="go">Poly(4x^3 + 2x + 5, GF(7))</span>
 </code></pre></div>
 </div>
 <p>In finite fields <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>, the characteristic <span class="math notranslate nohighlight">\(p\)</span> is the smallest value when multiplied by
 any non-zero field element that always results in 0.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [17]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">;</span> <span class="n">p</span>
-<span class="gh">Out[17]: </span><span class="go">7</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">;</span> <span class="n">p</span>
+<span class="gh">Out[25]: </span><span class="go">7</span>
 
-<span class="gp">In [18]: </span><span class="n">f</span> <span class="o">*</span> <span class="n">p</span>
-<span class="gh">Out[18]: </span><span class="go">Poly(0, GF(7))</span>
+<span class="gp">In [26]: </span><span class="n">f</span> <span class="o">*</span> <span class="n">p</span>
+<span class="gh">Out[26]: </span><span class="go">Poly(0, GF(7))</span>
 </code></pre></div>
 </div>
 </details><details class="example">
 <summary>
 Division: <code class="code highlight python docutils literal highlight-python"><span class="n">f</span> <span class="o">//</span> <span class="n">g</span></code></summary><p>Divide one polynomial by another. Floor division is supported. True division is not supported since fractional polynomials are not
 currently supported.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">f</span> <span class="o">//</span> <span class="n">g</span>
-<span class="gh">Out[19]: </span><span class="go">Poly(4x + 5, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [27]: </span><span class="n">f</span>
+<span class="gh">Out[27]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [28]: </span><span class="n">g</span>
+<span class="gh">Out[28]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
+
+<span class="gp">In [29]: </span><span class="n">f</span> <span class="o">//</span> <span class="n">g</span>
+<span class="gh">Out[29]: </span><span class="go">Poly(4x + 5, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Divide a polynomial by a finite field scalar, or vice versa. The scalar is treated as a 0-degree polynomial.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [20]: </span><span class="n">f</span> <span class="o">//</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gh">Out[20]: </span><span class="go">Poly(5x^3 + 6x + 1, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [30]: </span><span class="n">f</span> <span class="o">//</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gh">Out[30]: </span><span class="go">Poly(5x^3 + 6x + 1, GF(7))</span>
 
-<span class="gp">In [21]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">//</span> <span class="n">g</span>
-<span class="gh">Out[21]: </span><span class="go">Poly(0, GF(7))</span>
+<span class="gp">In [31]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">//</span> <span class="n">g</span>
+<span class="gh">Out[31]: </span><span class="go">Poly(0, GF(7))</span>
 </code></pre></div>
 </div>
 </details><details class="example">
 <summary>
 Remainder: <code class="code highlight python docutils literal highlight-python"><span class="n">f</span> <span class="o">%</span> <span class="n">g</span></code></summary><p>Divide one polynomial by another and keep the remainder.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [22]: </span><span class="n">f</span> <span class="o">%</span> <span class="n">g</span>
-<span class="gh">Out[22]: </span><span class="go">Poly(x + 2, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [32]: </span><span class="n">f</span>
+<span class="gh">Out[32]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [33]: </span><span class="n">g</span>
+<span class="gh">Out[33]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
+
+<span class="gp">In [34]: </span><span class="n">f</span> <span class="o">%</span> <span class="n">g</span>
+<span class="gh">Out[34]: </span><span class="go">Poly(x + 2, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Divide a polynomial by a finite field scalar, or vice versa, and keep the remainder. The scalar is treated as a 0-degree polynomial.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="n">f</span> <span class="o">%</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gh">Out[23]: </span><span class="go">Poly(0, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [35]: </span><span class="n">f</span> <span class="o">%</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gh">Out[35]: </span><span class="go">Poly(0, GF(7))</span>
 
-<span class="gp">In [24]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">%</span> <span class="n">g</span>
-<span class="gh">Out[24]: </span><span class="go">Poly(3, GF(7))</span>
+<span class="gp">In [36]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">%</span> <span class="n">g</span>
+<span class="gh">Out[36]: </span><span class="go">Poly(3, GF(7))</span>
 </code></pre></div>
 </div>
 </details><details class="example">
 <summary>
 Divmod: <code class="code highlight python docutils literal highlight-python"><span class="nb">divmod</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span></code></summary><p>Divide one polynomial by another and return the quotient and remainder.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="nb">divmod</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
-<span class="gh">Out[25]: </span><span class="go">(Poly(4x + 5, GF(7)), Poly(x + 2, GF(7)))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [37]: </span><span class="n">f</span>
+<span class="gh">Out[37]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [38]: </span><span class="n">g</span>
+<span class="gh">Out[38]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
+
+<span class="gp">In [39]: </span><span class="nb">divmod</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+<span class="gh">Out[39]: </span><span class="go">(Poly(4x + 5, GF(7)), Poly(x + 2, GF(7)))</span>
 </code></pre></div>
 </div>
 <p>Divide a polynomial by a finite field scalar, or vice versa, and keep the remainder. The scalar is treated as a 0-degree polynomial.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [26]: </span><span class="nb">divmod</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="gh">Out[26]: </span><span class="go">(Poly(5x^3 + 6x + 1, GF(7)), Poly(0, GF(7)))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [40]: </span><span class="nb">divmod</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="gh">Out[40]: </span><span class="go">(Poly(5x^3 + 6x + 1, GF(7)), Poly(0, GF(7)))</span>
 
-<span class="gp">In [27]: </span><span class="nb">divmod</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">g</span><span class="p">)</span>
-<span class="gh">Out[27]: </span><span class="go">(Poly(0, GF(7)), Poly(3, GF(7)))</span>
+<span class="gp">In [41]: </span><span class="nb">divmod</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">g</span><span class="p">)</span>
+<span class="gh">Out[41]: </span><span class="go">(Poly(0, GF(7)), Poly(3, GF(7)))</span>
 </code></pre></div>
 </div>
 </details><details class="example">
 <summary>
 Exponentiation: <code class="code highlight python docutils literal highlight-python"><span class="n">f</span> <span class="o">**</span> <span class="mi">3</span></code></summary><p>Exponentiate a polynomial to a non-negative exponent.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [28]: </span><span class="n">f</span> <span class="o">**</span> <span class="mi">3</span>
-<span class="gh">Out[28]: </span><span class="go">Poly(x^9 + 5x^7 + 2x^6 + 6x^5 + 2x^4 + 4x^2 + 3x + 6, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [42]: </span><span class="n">f</span>
+<span class="gh">Out[42]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
 
-<span class="gp">In [29]: </span><span class="nb">pow</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="gh">Out[29]: </span><span class="go">Poly(x^9 + 5x^7 + 2x^6 + 6x^5 + 2x^4 + 4x^2 + 3x + 6, GF(7))</span>
+<span class="gp">In [43]: </span><span class="n">f</span> <span class="o">**</span> <span class="mi">3</span>
+<span class="gh">Out[43]: </span><span class="go">Poly(x^9 + 5x^7 + 2x^6 + 6x^5 + 2x^4 + 4x^2 + 3x + 6, GF(7))</span>
 
-<span class="gp">In [30]: </span><span class="n">f</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">f</span>
-<span class="gh">Out[30]: </span><span class="go">Poly(x^9 + 5x^7 + 2x^6 + 6x^5 + 2x^4 + 4x^2 + 3x + 6, GF(7))</span>
+<span class="gp">In [44]: </span><span class="nb">pow</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gh">Out[44]: </span><span class="go">Poly(x^9 + 5x^7 + 2x^6 + 6x^5 + 2x^4 + 4x^2 + 3x + 6, GF(7))</span>
+
+<span class="gp">In [45]: </span><span class="n">f</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">f</span>
+<span class="gh">Out[45]: </span><span class="go">Poly(x^9 + 5x^7 + 2x^6 + 6x^5 + 2x^4 + 4x^2 + 3x + 6, GF(7))</span>
 </code></pre></div>
 </div>
 </details><details class="example">
 <summary>
 Modular exponentiation: <code class="code highlight python docutils literal highlight-python"><span class="nb">pow</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">123456789</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span></code></summary><p>Exponentiate a polynomial to a non-negative exponent and reduce modulo another polynomial. This performs efficient modular exponentiation.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="go"># Efficiently computes (f ** 123456789) % g</span>
-<span class="gp">In [31]: </span><span class="nb">pow</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">123456789</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
-<span class="gh">Out[31]: </span><span class="go">Poly(x + 2, GF(7))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [46]: </span><span class="n">f</span>
+<span class="gh">Out[46]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [47]: </span><span class="n">g</span>
+<span class="gh">Out[47]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
+
+<span class="go"># Efficiently computes (f ** 123456789) % g</span>
+<span class="gp">In [48]: </span><span class="nb">pow</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">123456789</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+<span class="gh">Out[48]: </span><span class="go">Poly(x + 2, GF(7))</span>
 </code></pre></div>
 </div>
-</details><details class="example">
+</details><h2 id="evaluation">Evaluation<a class="headerlink" href="#evaluation" title="Permalink to this heading">¶</a></h2>
+<p>Polynomial objects may also be evaluated at scalars, arrays, or square matrices. Expand any section for more details.</p>
+<details class="example">
 <summary>
 Evaluation (element-wise): <code class="code highlight python docutils literal highlight-python"><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code></summary><p>Polynomials are evaluated by invoking <a class="reference internal" href="../../api/galois.Poly.__call__/" title="galois.Poly.__call__ (Python method) — Evaluates the polynomial f(x) at x_0 or the polynomial composition f(g(x))."><code class="xref py py-func docutils literal notranslate"><span class="pre">__call__()</span></code></a>. They can be evaluated at scalars.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [32]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [49]: </span><span class="n">f</span>
+<span class="gh">Out[49]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
 
-<span class="gp">In [33]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[33]: </span><span class="go">Poly(x^3 + 15, GF(31))</span>
-
-<span class="gp">In [34]: </span><span class="n">f</span><span class="p">(</span><span class="mi">26</span><span class="p">)</span>
-<span class="gh">Out[34]: </span><span class="go">GF(14, order=31)</span>
+<span class="gp">In [50]: </span><span class="n">f</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gh">Out[50]: </span><span class="go">GF(1, order=7)</span>
 
 <span class="go"># The equivalent field calculation</span>
-<span class="gp">In [35]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">26</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">GF</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
-<span class="gh">Out[35]: </span><span class="go">GF(14, order=31)</span>
+<span class="gp">In [51]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">GF</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gh">Out[51]: </span><span class="go">GF(1, order=7)</span>
 </code></pre></div>
 </div>
 <p>Or they can be evaluated at arrays element-wise.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [36]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">26</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [52]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
 
 <span class="go"># Evaluate f(x) element-wise at a 1-D array</span>
-<span class="gp">In [37]: </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[37]: </span><span class="go">GF([14, 11, 13, 17], order=31)</span>
+<span class="gp">In [53]: </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[53]: </span><span class="go">GF([1, 5, 0, 6], order=7)</span>
 </code></pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [38]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">26</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [54]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
 
 <span class="go"># Evaluate f(x) element-wise at a 2-D array</span>
-<span class="gp">In [39]: </span><span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="gh">Out[39]: </span><span class="go"></span>
-<span class="go">GF([[14, 11],</span>
-<span class="go">    [13, 17]], order=31)</span>
+<span class="gp">In [55]: </span><span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gh">Out[55]: </span><span class="go"></span>
+<span class="go">GF([[1, 5],</span>
+<span class="go">    [0, 6]], order=7)</span>
 </code></pre></div>
 </div>
 </details><details class="example">
@@ -7409,69 +7473,83 @@ Evaluation (element-wise): <code class="code highlight python docutils literal h
 Evaluation (square matrix): <code class="code highlight python docutils literal highlight-python"><span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">elementwise</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code></summary><p>Polynomials can also be evaluated at square matrices. Note, this is different than element-wise array evaluation. Here,
 the square matrix indeterminate is exponentiated using matrix multiplication. So <span class="math notranslate nohighlight">\(f(x) = x^3\)</span> evaluated
 at the square matrix <code class="code highlight python docutils literal highlight-python"><span class="n">X</span></code> equals <code class="code highlight python docutils literal highlight-python"><span class="n">X</span> <span class="o">@</span> <span class="n">X</span> <span class="o">@</span> <span class="n">X</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [40]: </span><span class="n">f</span>
-<span class="gh">Out[40]: </span><span class="go">Poly(x^3 + 15, GF(31))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [56]: </span><span class="n">f</span>
+<span class="gh">Out[56]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
 
-<span class="go"># Evaluate f(x) at the 2-D square matrix</span>
-<span class="gp">In [41]: </span><span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">elementwise</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gh">Out[41]: </span><span class="go"></span>
-<span class="go">GF([[ 2, 20],</span>
-<span class="go">    [25, 23]], order=31)</span>
+<span class="gp">In [57]: </span><span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">elementwise</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gh">Out[57]: </span><span class="go"></span>
+<span class="go">GF([[1, 1],</span>
+<span class="go">    [4, 2]], order=7)</span>
 
 <span class="go"># The equivalent matrix operation</span>
-<span class="gp">In [42]: </span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">GF</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span><span class="o">*</span><span class="n">GF</span><span class="o">.</span><span class="n">Identity</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="gh">Out[42]: </span><span class="go"></span>
-<span class="go">GF([[ 2, 20],</span>
-<span class="go">    [25, 23]], order=31)</span>
+<span class="gp">In [58]: </span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">X</span> <span class="o">+</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">GF</span><span class="o">.</span><span class="n">Identity</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gh">Out[58]: </span><span class="go"></span>
+<span class="go">GF([[1, 1],</span>
+<span class="go">    [4, 2]], order=7)</span>
+</code></pre></div>
+</div>
+</details><details class="example">
+<summary>
+Composition: <code class="code highlight python docutils literal highlight-python"><span class="n">f</span><span class="p">(</span><span class="n">g</span><span class="p">)</span></code></summary><p>Polynomial composition <span class="math notranslate nohighlight">\(f(g(x))\)</span> is easily performed using an overload to <a class="reference internal" href="../../api/galois.Poly.__call__/" title="galois.Poly.__call__ (Python method) — Evaluates the polynomial f(x) at x_0 or the polynomial composition f(g(x))."><code class="xref py py-func docutils literal notranslate"><span class="pre">__call__()</span></code></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [59]: </span><span class="n">f</span>
+<span class="gh">Out[59]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
+
+<span class="gp">In [60]: </span><span class="n">g</span>
+<span class="gh">Out[60]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
+
+<span class="gp">In [61]: </span><span class="n">f</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="gh">Out[61]: </span><span class="go">Poly(x^6 + 5x^5 + 2x^3 + x^2 + 3x, GF(7))</span>
 </code></pre></div>
 </div>
 </details><h2 id="special-arithmetic">Special arithmetic<a class="headerlink" href="#special-arithmetic" title="Permalink to this heading">¶</a></h2>
-<p>Polynomial objects also work on several special arithmetic operations. Below are some examples.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [43]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
-
-<span class="gp">In [44]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[44]: </span><span class="go">Poly(x^4 + 30x^3 + 26x + 6, GF(31))</span>
-
-<span class="gp">In [45]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[45]: </span><span class="go">Poly(4x^2 + 17x + 3, GF(31))</span>
-</code></pre></div>
-</div>
-<p>Expand any section for more details.</p>
-<details class="example" open="open">
+<p>Polynomial objects also work on several special arithmetic operations. Expand any section for more details.</p>
+<details class="example">
 <summary>
-Greatest common denominator: <code class="code highlight python docutils literal highlight-python"><span class="n">galois</span><span class="o">.</span><span class="n">gcd</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [46]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">gcd</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">);</span> <span class="n">d</span>
-<span class="gh">Out[46]: </span><span class="go">Poly(1, GF(31))</span>
+Greatest common denominator: <code class="code highlight python docutils literal highlight-python"><span class="n">galois</span><span class="o">.</span><span class="n">gcd</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [62]: </span><span class="n">f</span>
+<span class="gh">Out[62]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
 
-<span class="gp">In [47]: </span><span class="n">f</span> <span class="o">%</span> <span class="n">d</span>
-<span class="gh">Out[47]: </span><span class="go">Poly(0, GF(31))</span>
+<span class="gp">In [63]: </span><span class="n">g</span>
+<span class="gh">Out[63]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
 
-<span class="gp">In [48]: </span><span class="n">g</span> <span class="o">%</span> <span class="n">d</span>
-<span class="gh">Out[48]: </span><span class="go">Poly(0, GF(31))</span>
+<span class="gp">In [64]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">gcd</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">);</span> <span class="n">d</span>
+<span class="gh">Out[64]: </span><span class="go">Poly(1, GF(7))</span>
+
+<span class="gp">In [65]: </span><span class="n">f</span> <span class="o">%</span> <span class="n">d</span>
+<span class="gh">Out[65]: </span><span class="go">Poly(0, GF(7))</span>
+
+<span class="gp">In [66]: </span><span class="n">g</span> <span class="o">%</span> <span class="n">d</span>
+<span class="gh">Out[66]: </span><span class="go">Poly(0, GF(7))</span>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.gcd/" title="galois.gcd (Python function) — Finds the greatest common divisor of a and b."><code class="xref py py-func docutils literal notranslate"><span class="pre">gcd()</span></code></a> for more details.</p>
 </details><details class="example">
 <summary>
-Extended greatest common denominator: <code class="code highlight python docutils literal highlight-python"><span class="n">galois</span><span class="o">.</span><span class="n">egcd</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [49]: </span><span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">egcd</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+Extended greatest common denominator: <code class="code highlight python docutils literal highlight-python"><span class="n">galois</span><span class="o">.</span><span class="n">egcd</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [67]: </span><span class="n">f</span>
+<span class="gh">Out[67]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
 
-<span class="gp">In [50]: </span><span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span>
-<span class="gh">Out[50]: </span><span class="go"></span>
-<span class="go">(Poly(1, GF(31)),</span>
-<span class="go"> Poly(14x + 13, GF(31)),</span>
-<span class="go"> Poly(12x^3 + 19x^2 + 22x + 26, GF(31)))</span>
+<span class="gp">In [68]: </span><span class="n">g</span>
+<span class="gh">Out[68]: </span><span class="go">Poly(2x^2 + x + 3, GF(7))</span>
 
-<span class="gp">In [51]: </span><span class="n">f</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="n">g</span><span class="o">*</span><span class="n">t</span> <span class="o">==</span> <span class="n">d</span>
-<span class="gh">Out[51]: </span><span class="go">True</span>
+<span class="gp">In [69]: </span><span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">egcd</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+
+<span class="gp">In [70]: </span><span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span>
+<span class="gh">Out[70]: </span><span class="go">(Poly(1, GF(7)), Poly(6x + 5, GF(7)), Poly(4x^2 + 6x, GF(7)))</span>
+
+<span class="gp">In [71]: </span><span class="n">f</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="n">g</span><span class="o">*</span><span class="n">t</span> <span class="o">==</span> <span class="n">d</span>
+<span class="gh">Out[71]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.egcd/" title="galois.egcd (Python function) — Finds the multiplicands of a and b such that a s + b t = \mathrm{gcd}(a, b)."><code class="xref py py-func docutils literal notranslate"><span class="pre">egcd()</span></code></a> for more details.</p>
 </details><details class="example">
 <summary>
-Factor into irreducible polynomials: <code class="code highlight python docutils literal highlight-python"><span class="n">galois</span><span class="o">.</span><span class="n">factors</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="n">f</span><span class="o">.</span><span class="n">factors</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [52]: </span><span class="n">galois</span><span class="o">.</span><span class="n">factors</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-<span class="gh">Out[52]: </span><span class="go">([Poly(x^2 + 5, GF(31)), Poly(x^2 + 30x + 26, GF(31))], [1, 1])</span>
+Factor into irreducible polynomials: <code class="code highlight python docutils literal highlight-python"><span class="n">galois</span><span class="o">.</span><span class="n">factors</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="n">f</span><span class="o">.</span><span class="n">factors</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [72]: </span><span class="n">f</span>
+<span class="gh">Out[72]: </span><span class="go">Poly(x^3 + 4x + 3, GF(7))</span>
 
-<span class="gp">In [53]: </span><span class="n">f</span><span class="o">.</span><span class="n">factors</span><span class="p">()</span>
-<span class="gh">Out[53]: </span><span class="go">([Poly(x^2 + 5, GF(31)), Poly(x^2 + 30x + 26, GF(31))], [1, 1])</span>
+<span class="gp">In [73]: </span><span class="n">galois</span><span class="o">.</span><span class="n">factors</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="gh">Out[73]: </span><span class="go">([Poly(x + 4, GF(7)), Poly(x^2 + 3x + 6, GF(7))], [1, 1])</span>
+
+<span class="gp">In [74]: </span><span class="n">f</span><span class="o">.</span><span class="n">factors</span><span class="p">()</span>
+<span class="gh">Out[74]: </span><span class="go">([Poly(x + 4, GF(7)), Poly(x^2 + 3x + 6, GF(7))], [1, 1])</span>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.factors/" title="galois.factors (Python function) — Computes the prime factors of a positive integer or the irreducible factors of a non-constant, monic polynomial."><code class="xref py py-func docutils literal notranslate"><span class="pre">factors()</span></code></a> or <a class="reference internal" href="../../api/galois.Poly.factors/" title="galois.Poly.factors (Python method) — Computes the irreducible factors of the non-constant, monic polynomial f(x)."><code class="xref py py-func docutils literal notranslate"><span class="pre">galois.Poly.factors()</span></code></a> for more details.</p>

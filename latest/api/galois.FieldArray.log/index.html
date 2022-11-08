@@ -7286,65 +7286,202 @@ shape obeys NumPy broadcasting rules.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Compute the logarithm of <span class="math notranslate nohighlight">\(x\)</span> with default base <span class="math notranslate nohighlight">\(\alpha\)</span>, which is the specified primitive element
 of the field.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3">
+<input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><input type="radio" id="__tabbed_1_3" name="__tabbed_1"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_1_1">
+Integer</label><label class="tabbed-label" for="__tabbed_1_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_1_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
-<span class="gh">Out[2]: </span><span class="go">GF(α, order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF(3, order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([              α^4 + 1,         α^4 + α^3 + 2, α^4 + 2α^3 + 2α^2 + α,</span>
-<span class="go">       α^4 + 2α^2 + α + 1,       2α^4 + 2α^3 + 1,    α^3 + 2α^2 + α + 1,</span>
-<span class="go">           α^3 + 2α^2 + 1,           α^2 + α + 1,       2α^4 + 2α^2 + 1,</span>
-<span class="go">          α^4 + 2α^3 + 2α], order=3^5)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([242, 213, 234, 191, 192, 109, 237,  25, 220, 160], order=3^5)</span>
 
 <span class="gp">In [4]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">();</span> <span class="n">i</span>
-<span class="gh">Out[4]: </span><span class="go">array([189, 119,  80, 181, 240,  61, 112,  10, 135,  37])</span>
+<span class="gh">Out[4]: </span><span class="go">array([185, 183, 133, 220, 158, 165,  96,  88, 205, 184])</span>
 
 <span class="gp">In [5]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">alpha</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[5]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-<p>With the default argument, <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.log()</span></code> and <a class="reference internal" href="#" title="galois.FieldArray.log (Python method) — Computes the logarithm of the array x base \beta."><code class="xref py py-func docutils literal notranslate"><span class="pre">log()</span></code></a> are equivalent.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">())</span>
-<span class="gh">Out[6]: </span><span class="go">True</span>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+
+<span class="gp">In [7]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
+<span class="gh">Out[7]: </span><span class="go">GF(α, order=3^5)</span>
+
+<span class="gp">In [8]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[8]: </span><span class="go"></span>
+<span class="go">GF([       2α^3 + α^2 + 2α + 2,                   2α^2 + 2,</span>
+<span class="go">         α^4 + 2α^3 + α^2 + 2α, 2α^4 + α^3 + 2α^2 + 2α + 2,</span>
+<span class="go">              α^4 + 2α^3 + α^2,                2α^3 + 2α^2,</span>
+<span class="go">                  α^3 + 2α + 2,        2α^3 + 2α^2 + α + 2,</span>
+<span class="go">                   α^4 + α + 1,        α^3 + 2α^2 + 2α + 2], order=3^5)</span>
+
+<span class="gp">In [9]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">();</span> <span class="n">i</span>
+<span class="gh">Out[9]: </span><span class="go">array([182, 167,  52, 175, 140, 192, 149, 151, 221, 160])</span>
+
+<span class="gp">In [10]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">alpha</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[10]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [11]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+
+<span class="gp">In [12]: </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">;</span> <span class="n">alpha</span>
+<span class="gh">Out[12]: </span><span class="go">GF(α, order=3^5)</span>
+
+<span class="gp">In [13]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[13]: </span><span class="go"></span>
+<span class="go">GF([ α^85, α^238, α^213, α^140,   α^3,  α^77, α^160, α^214,  α^60, α^195],</span>
+<span class="go">   order=3^5)</span>
+
+<span class="gp">In [14]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">();</span> <span class="n">i</span>
+<span class="gh">Out[14]: </span><span class="go">array([ 85, 238, 213, 140,   3,  77, 160, 214,  60, 195])</span>
+
+<span class="gp">In [15]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">alpha</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[15]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div><p>With the default argument, <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.log()</span></code> and <a class="reference internal" href="#" title="galois.FieldArray.log (Python method) — Computes the logarithm of the array x base \beta."><code class="xref py py-func docutils literal notranslate"><span class="pre">log()</span></code></a> are equivalent.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">())</span>
+<span class="gh">Out[16]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
 <p>Compute the logarithm of <span class="math notranslate nohighlight">\(x\)</span> with a different base <span class="math notranslate nohighlight">\(\beta\)</span>, which is another primitive element
 of the field.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">beta</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span> <span class="n">beta</span>
-<span class="gh">Out[7]: </span><span class="go">GF(2α^4 + 2α^3 + 2α^2 + 2α + 2, order=3^5)</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3">
+<input checked type="radio" id="__tabbed_2_1" name="__tabbed_2"><input type="radio" id="__tabbed_2_2" name="__tabbed_2"><input type="radio" id="__tabbed_2_3" name="__tabbed_2"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_2_1">
+Integer</label><label class="tabbed-label" for="__tabbed_2_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_2_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [17]: </span><span class="n">beta</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span> <span class="n">beta</span>
+<span class="gh">Out[17]: </span><span class="go">GF(242, order=3^5)</span>
 
-<span class="gp">In [8]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">beta</span><span class="p">);</span> <span class="n">i</span>
-<span class="gh">Out[8]: </span><span class="go">array([175, 155,  92,  69,  34, 173,  32,  72, 125,  97])</span>
+<span class="gp">In [18]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">beta</span><span class="p">);</span> <span class="n">i</span>
+<span class="gh">Out[18]: </span><span class="go">array([  7,  68,   9,  40, 191, 143, 184, 234, 190,  73])</span>
 
-<span class="gp">In [9]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">beta</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[9]: </span><span class="go">True</span>
+<span class="gp">In [19]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">beta</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[19]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-<p>Compute the logarithm of a single finite field element base all of the primitive elements of the field.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[10]: </span><span class="go">GF(α^3 + α + 1, order=3^5)</span>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [20]: </span><span class="n">beta</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span> <span class="n">beta</span>
+<span class="gh">Out[20]: </span><span class="go">GF(2α^4 + 2α^3 + 2α^2 + 2α + 2, order=3^5)</span>
 
-<span class="gp">In [11]: </span><span class="n">bases</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
+<span class="gp">In [21]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">beta</span><span class="p">);</span> <span class="n">i</span>
+<span class="gh">Out[21]: </span><span class="go">array([  7,  68,   9,  40, 191, 143, 184, 234, 190,  73])</span>
 
-<span class="gp">In [12]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">bases</span><span class="p">);</span> <span class="n">i</span>
-<span class="gh">Out[12]: </span><span class="go"></span>
-<span class="go">array([214, 196, 188, 228, 222,  52,  76,  74,  98,  48,  94, 152, 146,</span>
-<span class="go">       224,  20,  34, 190, 120,  78,  18, 166, 238, 106, 186, 194, 218,</span>
-<span class="go">       162, 122, 174,  30, 142, 204,  16, 112, 150, 206,  82, 172,  10,</span>
-<span class="go">        58,  12,  96,  68, 192,  56,   4,  32,  14, 184, 230, 128, 156,</span>
-<span class="go">       200, 182, 118,  86, 124, 126,  64, 180, 202, 108, 138,   8,  50,</span>
-<span class="go">       140,  84, 100, 114,  28, 210, 236, 212,  72,   6,  26, 216, 148,</span>
-<span class="go">        70, 240, 232, 164, 160, 178,  92, 168, 130, 136, 134,  42,  24,</span>
-<span class="go">        46,  36,  62, 226, 116, 208,  40, 144,   2, 170, 104,  80, 158,</span>
-<span class="go">       102,  60,  38,  90,  54, 234])</span>
-
-<span class="gp">In [13]: </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bases</span> <span class="o">**</span> <span class="n">i</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[13]: </span><span class="go">True</span>
+<span class="gp">In [22]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">beta</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[22]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-</dd></dl>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="n">beta</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span> <span class="n">beta</span>
+<span class="gh">Out[23]: </span><span class="go">GF(α^185, order=3^5)</span>
+
+<span class="gp">In [24]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">beta</span><span class="p">);</span> <span class="n">i</span>
+<span class="gh">Out[24]: </span><span class="go">array([  7,  68,   9,  40, 191, 143, 184, 234, 190,  73])</span>
+
+<span class="gp">In [25]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">beta</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[25]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div><p>Compute the logarithm of a single finite field element base all of the primitive elements of the field.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:3">
+<input checked type="radio" id="__tabbed_3_1" name="__tabbed_3"><input type="radio" id="__tabbed_3_2" name="__tabbed_3"><input type="radio" id="__tabbed_3_3" name="__tabbed_3"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_3_1">
+Integer</label><label class="tabbed-label" for="__tabbed_3_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_3_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [26]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[26]: </span><span class="go">GF(90, order=3^5)</span>
+
+<span class="gp">In [27]: </span><span class="n">bases</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
+
+<span class="gp">In [28]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">bases</span><span class="p">);</span> <span class="n">i</span>
+<span class="gh">Out[28]: </span><span class="go"></span>
+<span class="go">array([ 48, 148,  58,  24, 138, 222,   8,  46,  74,  56, 150,  16, 130,</span>
+<span class="go">       100, 104,  80,  20, 140, 212, 142, 234,  76, 164,  96, 186, 214,</span>
+<span class="go">        68, 102,  82, 156, 206, 238, 180,  50,  54, 200, 136, 120,  52,</span>
+<span class="go">       108,  14, 112, 160, 224, 146, 166, 118, 218, 134, 228, 230, 182,</span>
+<span class="go">        72, 172, 178,  60,  64,  26, 236, 210,  34, 126,  40,  90,  18,</span>
+<span class="go">         2,  98,  36,  12, 194, 124, 114,  86,  84, 128, 232,  10,  92,</span>
+<span class="go">       122,  38, 190,  30, 106,   6, 188, 196, 192,  78, 116, 170,  28,</span>
+<span class="go">        94,  42,  32,  62, 216, 162, 208, 168, 204, 158, 202, 174, 144,</span>
+<span class="go">       240,  70,   4, 226, 184, 152])</span>
+
+<span class="gp">In [29]: </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bases</span> <span class="o">**</span> <span class="n">i</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[29]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [30]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[30]: </span><span class="go">GF(2α^4 + α^3 + 2α^2 + α + 1, order=3^5)</span>
+
+<span class="gp">In [31]: </span><span class="n">bases</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
+
+<span class="gp">In [32]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">bases</span><span class="p">);</span> <span class="n">i</span>
+<span class="gh">Out[32]: </span><span class="go"></span>
+<span class="go">array([178, 206,  84, 210,  58, 188,  70, 100, 224,   6,  42, 140, 230,</span>
+<span class="go">        28, 184, 216,  54, 136,  40, 214, 172,  60, 104, 114, 236, 118,</span>
+<span class="go">       232, 106,  52,  34,  48,  86,   2,  14, 170,  56, 222,  82,  92,</span>
+<span class="go">        98,  62,  12, 190,  24, 128, 182,   4,  32, 144, 180,  16,  80,</span>
+<span class="go">       146, 174, 166, 162,  76,  46,   8, 204, 116,  74, 108, 122, 218,</span>
+<span class="go">        78, 192, 194, 226,  64, 238,  90, 208, 130, 152,  94, 148, 200,</span>
+<span class="go">       160,  30, 150, 202,  20, 234,  72, 142, 228, 138, 168,  96, 124,</span>
+<span class="go">        36, 186,  38, 240, 196,  26, 126,  18, 212, 112, 134,  10,  50,</span>
+<span class="go">       164,  68, 156, 102, 158, 120])</span>
+
+<span class="gp">In [33]: </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bases</span> <span class="o">**</span> <span class="n">i</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[33]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [34]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[34]: </span><span class="go">GF(α^106, order=3^5)</span>
+
+<span class="gp">In [35]: </span><span class="n">bases</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
+
+<span class="gp">In [36]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">bases</span><span class="p">);</span> <span class="n">i</span>
+<span class="gh">Out[36]: </span><span class="go"></span>
+<span class="go">array([106, 226, 118, 174, 214, 218,  58, 152, 234, 164, 180, 116, 156,</span>
+<span class="go">       120,  28,  96,  24, 168, 206, 122, 184, 188, 100, 212,  78, 160,</span>
+<span class="go">       130,  74,  50,  42, 102,  92, 216,  60, 210, 240,  18, 144,  14,</span>
+<span class="go">       178, 162,  86, 192, 172,  30,  54, 190,  68,  64,  80,  34, 170,</span>
+<span class="go">        38, 158,  20,  72, 222, 128, 138,  10, 186,   6,  48, 108,  70,</span>
+<span class="go">       196, 166, 140, 208, 136,  52,  40, 200,   4, 202, 230,  12,  62,</span>
+<span class="go">        98,  94, 228,  36, 224, 104,  32,  90, 182, 142, 236, 204,  82,</span>
+<span class="go">        16,   2, 232,  26, 114, 146,  56,   8, 148, 238, 194, 112,  76,</span>
+<span class="go">        46,  84, 150, 126, 124, 134])</span>
+
+<span class="gp">In [37]: </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bases</span> <span class="o">**</span> <span class="n">i</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[37]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div></dd></dl>
 
 
 
