@@ -12,7 +12,7 @@ import shutil
 
 import sage
 import numpy as np
-from sage.all import GF, PolynomialRing, copy, log, matrix, vector, xgcd, lcm, prod, crt
+from sage.all import GF, PolynomialRing, copy, log, matrix, vector, xgcd, lcm, prod, crt, convolution
 
 FIELD = None
 RING = None
@@ -187,6 +187,10 @@ def make_luts(field, sub_folder, seed, sparse=False):
     }
     save_json(d, folder, "properties.json", indent=True)
 
+    ###############################################################################
+    # Arithmetic
+    ###############################################################################
+
     set_seed(seed + 1)
     X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
@@ -339,6 +343,27 @@ def make_luts(field, sub_folder, seed, sparse=False):
         Z[i] = int(z)
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "field_norm.pkl")
+
+    ###############################################################################
+    # Advanced arithmetic
+    ###############################################################################
+
+    set_seed(seed + 101)
+    X = []
+    Y = []
+    Z = []
+    for i in range(3):
+        x = randint_matrix(0, order, (10,))
+        y = randint_matrix(0, order, (10,))
+        X.append(x)
+        Y.append(y)
+        x = vector(FIELD, [F(xi) for xi in x])
+        y = vector(FIELD, [F(yi) for yi in y])
+        z = convolution(x, y)
+        z = np.array([I(zi) for zi in z], dtype)
+        Z.append(z)
+    d = {"X": X, "Y": Y, "Z": Z}
+    save_pickle(d, folder, "convolve.pkl")
 
     ###############################################################################
     # Linear algebra

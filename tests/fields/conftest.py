@@ -255,6 +255,20 @@ def field_log(field_folder):
 
 
 ###############################################################################
+# Fixtures for advanced arithmetic over finite fields
+###############################################################################
+
+@pytest.fixture(scope="session")
+def field_convolve(field_folder):
+    GF, d = read_pickle(field_folder, "convolve.pkl")
+    d["GF"] = GF
+    d["X"] = [GF(x) for x in d["X"]]
+    d["Y"] = [GF(y) for y in d["Y"]]
+    d["Z"] = [GF(z) for z in d["Z"]]
+    return d
+
+
+###############################################################################
 # Fixtures for linear algebra over finite fields
 ###############################################################################
 
