@@ -215,3 +215,31 @@ Arrays may also have their data types changed using `.astype()`. The data type m
     x.dtype
     x = x.astype(np.int64)
     x.dtype
+
+NumPy functions
+---------------
+
+Most native NumPy functions work on :obj:`~galois.FieldArray` instances as expected. For example, reshaping a `(10,)`-shape array
+into a `(2, 5)`-shape array works as desired and returns a :obj:`~galois.FieldArray` instance.
+
+.. ipython:: python
+
+   GF = galois.GF(7)
+   x = GF.Random(10, seed=1); x
+   np.reshape(x, (2, 5))
+
+However, some functions have a `subok` keyword argument. This indicates whether to return a :obj:`numpy.ndarray` subclass
+from the function. Most notably, :func:`numpy.copy` defaults `subok` to `False`.
+
+.. ipython:: python
+
+   x
+   # Returns np.ndarray!
+   np.copy(x)
+   np.copy(x, subok=True)
+
+The :func:`numpy.ndarray.copy` method will, however, return a subclass. Be mindful of the `subok` keyword argument!
+
+.. ipython:: python
+
+   x.copy()

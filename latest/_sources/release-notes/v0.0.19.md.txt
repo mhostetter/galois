@@ -7,7 +7,7 @@
 - Remove unnecessary `is_field()` function. Use `isinstance(x, galois.FieldClass)` or `isinstance(x, galois.FieldArray)` instead.
 - Remove `log_naive()` function. Might be re-added later through `np.log()` on a multiplicative group array.
 - Rename `mode` kwarg in `galois.GF()` to `compile`.
-- Revert `np.copy()` override that always returns a subclass. Now, by default it does not return a sublcass. To return a Galois field array, use `x.copy()` or `np.copy(x, subok=True)` instead.
+- Revert `np.copy()` override that always returns a subclass. Now, by default it does not return a subclass. To return a Galois field array, use `x.copy()` or `np.copy(x, subok=True)` instead.
 
 ## Changes
 

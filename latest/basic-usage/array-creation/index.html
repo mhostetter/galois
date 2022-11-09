@@ -631,6 +631,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#numpy-functions" class="md-nav__link">
+    <span class="md-ellipsis">Num<wbr>Py functions</span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -7417,6 +7424,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#numpy-functions" class="md-nav__link">
+    <span class="md-ellipsis">Num<wbr>Py functions</span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -8017,7 +8031,7 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 <span class="gh">Out[92]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
 
 <span class="gp">In [93]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[93]: </span><span class="go">GF([189, 138, 727, 630], order=2^10)</span>
+<span class="gh">Out[93]: </span><span class="go">GF([967, 235, 556, 804], order=2^10)</span>
 
 <span class="gp">In [94]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
 <span class="gh">Out[94]: </span><span class="go">dtype(&#39;uint16&#39;)</span>
@@ -8030,8 +8044,8 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 
 <span class="gp">In [97]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
 <span class="gh">Out[97]: </span><span class="go"></span>
-<span class="go">GF([ 70816741041336243743736305266, 534759151142422257091702099078,</span>
-<span class="go">    216075694201167873518948342521,  84935949944340678657480234599],</span>
+<span class="go">GF([ 780443030093586616469625464835,  505417314414700507490184518114,</span>
+<span class="go">    1246561380660655706123388976123,  953000480817862240560343833906],</span>
 <span class="go">   order=2^100)</span>
 
 <span class="gp">In [98]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
@@ -8060,6 +8074,38 @@ constructor.</p>
 <span class="gh">Out[104]: </span><span class="go">dtype(&#39;int64&#39;)</span>
 </code></pre></div>
 </div>
+<h2 id="numpy-functions">NumPy functions<a class="headerlink" href="#numpy-functions" title="Permalink to this heading">¶</a></h2>
+<p>Most native NumPy functions work on <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances as expected. For example, reshaping a <code class="code highlight python docutils literal highlight-python"><span class="p">(</span><span class="mi">10</span><span class="p">,)</span></code>-shape array
+into a <code class="code highlight python docutils literal highlight-python"><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span></code>-shape array works as desired and returns a <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instance.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [105]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+<span class="gp">In [106]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
+<span class="gh">Out[106]: </span><span class="go">GF([6, 6, 0, 3, 6, 5, 0, 3, 2, 4], order=7)</span>
+
+<span class="gp">In [107]: </span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gh">Out[107]: </span><span class="go"></span>
+<span class="go">GF([[6, 6, 0, 3, 6],</span>
+<span class="go">    [5, 0, 3, 2, 4]], order=7)</span>
+</code></pre></div>
+</div>
+<p>However, some functions have a <code class="code highlight python docutils literal highlight-python"><span class="n">subok</span></code> keyword argument. This indicates whether to return a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> subclass
+from the function. Most notably, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.copy.html#numpy.copy" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.copy()</span></code></a> defaults <code class="code highlight python docutils literal highlight-python"><span class="n">subok</span></code> to <code class="code highlight python docutils literal highlight-python"><span class="kc">False</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [108]: </span><span class="n">x</span>
+<span class="gh">Out[108]: </span><span class="go">GF([6, 6, 0, 3, 6, 5, 0, 3, 2, 4], order=7)</span>
+
+<span class="go"># Returns np.ndarray!</span>
+<span class="gp">In [109]: </span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[109]: </span><span class="go">array([6, 6, 0, 3, 6, 5, 0, 3, 2, 4], dtype=uint8)</span>
+
+<span class="gp">In [110]: </span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gh">Out[110]: </span><span class="go">GF([6, 6, 0, 3, 6, 5, 0, 3, 2, 4], order=7)</span>
+</code></pre></div>
+</div>
+<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.ndarray.copy()</span></code> method will, however, return a subclass. Be mindful of the <code class="code highlight python docutils literal highlight-python"><span class="n">subok</span></code> keyword argument!</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [111]: </span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="gh">Out[111]: </span><span class="go">GF([6, 6, 0, 3, 6, 5, 0, 3, 2, 4], order=7)</span>
+</code></pre></div>
+</div>
 
 
   <hr>
@@ -8067,7 +8113,7 @@ constructor.</p>
   <small>
     
       Last update:
-      Nov 08, 2022
+      Nov 09, 2022
     
   </small>
 </div>

@@ -7234,7 +7234,7 @@
 <li><p>Remove unnecessary <code class="docutils literal notranslate"><span class="pre">is_field()</span></code> function. Use <code class="docutils literal notranslate"><span class="pre">isinstance(x,</span> <span class="pre">galois.FieldClass)</span></code> or <code class="docutils literal notranslate"><span class="pre">isinstance(x,</span> <span class="pre">galois.FieldArray)</span></code> instead.</p></li>
 <li><p>Remove <code class="docutils literal notranslate"><span class="pre">log_naive()</span></code> function. Might be re-added later through <code class="docutils literal notranslate"><span class="pre">np.log()</span></code> on a multiplicative group array.</p></li>
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">mode</span></code> kwarg in <code class="docutils literal notranslate"><span class="pre">galois.GF()</span></code> to <code class="docutils literal notranslate"><span class="pre">compile</span></code>.</p></li>
-<li><p>Revert <code class="docutils literal notranslate"><span class="pre">np.copy()</span></code> override that always returns a subclass. Now, by default it does not return a sublcass. To return a Galois field array, use <code class="docutils literal notranslate"><span class="pre">x.copy()</span></code> or <code class="docutils literal notranslate"><span class="pre">np.copy(x,</span> <span class="pre">subok=True)</span></code> instead.</p></li>
+<li><p>Revert <code class="docutils literal notranslate"><span class="pre">np.copy()</span></code> override that always returns a subclass. Now, by default it does not return a subclass. To return a Galois field array, use <code class="docutils literal notranslate"><span class="pre">x.copy()</span></code> or <code class="docutils literal notranslate"><span class="pre">np.copy(x,</span> <span class="pre">subok=True)</span></code> instead.</p></li>
 </ul>
 <h2 id="changes">Changes<a class="headerlink" href="#changes" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -7260,7 +7260,7 @@
   <small>
     
       Last update:
-      Nov 08, 2022
+      Nov 09, 2022
     
   </small>
 </div>
