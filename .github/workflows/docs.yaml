@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - master
+      - '[0-9]+.[0-9x]+.[0-9x]+'
   workflow_call:
   workflow_dispatch:
     inputs:
