@@ -129,12 +129,12 @@ def verify_encode(
     assert np.array_equal(codewords, CODEWORDS)
 
     if is_systematic:
-        parities = code.encode(MESSAGES, parity_only=True)
+        parities = code.encode(MESSAGES, output="parity")
         assert isinstance(parities, code.field)
         assert np.array_equal(parities, CODEWORDS[..., code.k:])
     else:
         with pytest.raises(ValueError):
-            code.encode(MESSAGES, parity_only=True)
+            code.encode(MESSAGES, output="parity")
 
 
 def verify_encode_shortened(
@@ -156,7 +156,7 @@ def verify_encode_shortened(
         assert isinstance(codewords, code.field)
         assert np.array_equal(codewords, CODEWORDS)
 
-        parities = code.encode(MESSAGES, parity_only=True)
+        parities = code.encode(MESSAGES, output="parity")
         assert isinstance(parities, code.field)
         assert np.array_equal(parities, CODEWORDS[..., -(code.n - code.k):])
     else:
@@ -165,7 +165,7 @@ def verify_encode_shortened(
         with pytest.raises(ValueError):
             code.encode(MESSAGES)
         with pytest.raises(ValueError):
-            code.encode(MESSAGES, parity_only=True)
+            code.encode(MESSAGES, output="parity")
 
 
 def verify_decode(code: galois._codes._linear.LinearCode, N: int):
