@@ -3,7 +3,7 @@ A module containing common functions for cyclic codes.
 """
 from __future__ import annotations
 
-from typing import Tuple, Union, overload
+from typing import overload
 from typing_extensions import Literal
 
 import numpy as np
@@ -81,10 +81,10 @@ class _CyclicCode(_LinearCode):
         return super().encode(message, output=output)
 
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> FieldArray:
+    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[False] = False) -> FieldArray:
         ...
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[FieldArray, Union[int, np.ndarray]]:  # pylint: disable=signature-differs
+    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[True] = True) -> tuple[FieldArray, int | np.ndarray]:
         ...
     @extend_docstring(_LinearCode.decode, {},
         r"""
@@ -110,8 +110,8 @@ class _CyclicCode(_LinearCode):
             c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0 \in \mathrm{GF}(q)[x]
         """
     )
-    def decode(self, codeword, errors=False):
-        return super().decode(codeword, errors=errors)
+    def decode(self, codeword, output="message", errors=False):
+        return super().decode(codeword, output=output, errors=errors)
 
     def _convert_codeword_to_message(self, codeword: FieldArray) -> FieldArray:
         if self.is_systematic:

@@ -482,10 +482,10 @@ class BCH(_CyclicCode):
         return super().detect(codeword)
 
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> FieldArray:
+    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[False] = False) -> FieldArray:
         ...
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> tuple[FieldArray, int | np.ndarray]:  # pylint: disable=signature-differs
+    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[True] = True) -> tuple[FieldArray, int | np.ndarray]:
         ...
     @extend_docstring(_CyclicCode.decode, {},
         r"""
@@ -644,8 +644,8 @@ class BCH(_CyclicCode):
                     np.array_equal(d, m)
         """
     )
-    def decode(self, codeword, errors=False):
-        return super().decode(codeword, errors=errors)
+    def decode(self, codeword, output="message", errors=False):
+        return super().decode(codeword, output=output, errors=errors)
 
     def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
         dec_codeword, N_errors = decode_jit(self.field, self.extension_field)(codeword, self.n, int(self.alpha), self.c, self.roots)

@@ -3,7 +3,7 @@ A module containing common functions for linear block codes.
 """
 from __future__ import annotations
 
-from typing import Tuple, Union, Type, overload
+from typing import Type, overload
 from typing_extensions import Literal
 
 import numpy as np
@@ -85,7 +85,7 @@ class _LinearCode:
             parity = self._convert_codeword_to_parity(codeword)
             return parity
 
-    def detect(self, codeword: ArrayLike) -> Union[bool, np.ndarray]:
+    def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
         r"""
         Detects if errors are present in the codeword :math:`\mathbf{c}`.
 
@@ -115,12 +115,12 @@ class _LinearCode:
         return detected
 
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> FieldArray:
+    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[False] = False) -> FieldArray:
         ...
     @overload
-    def decode(self, codeword: ArrayLike, errors: Literal[True]) -> Tuple[FieldArray, Union[int, np.ndarray]]:
+    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[True] = True) -> tuple[FieldArray, int | np.ndarray]:
         ...
-    def decode(self, codeword, errors=False):
+    def decode(self, codeword, output="message", errors=False):
         r"""
         Decodes the codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
 
@@ -130,14 +130,16 @@ class _LinearCode:
             The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
             number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
             shortened codewords.
-
+        output
+            Specify whether to return the error-corrected message or entire codeword. The default is `"message"`.
         errors
             Optionally specify whether to return the number of corrected errors. The default is `False`.
 
         Returns
         -------
         :
-            The decoded message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
+            If `output="message"`, the error-corrected message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
+            If `output="codeword"`, the error-corrected codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix.
         :
             Optional return argument of the number of corrected symbol errors as either a scalar or :math:`N`-length array.
             Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
@@ -148,22 +150,27 @@ class _LinearCode:
         For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
         :func:`decode` to return the :math:`k-s`-symbol message.
         """
+        verify_literal(output, ["message", "codeword"])
+
         codeword, is_codeword_1d = self._check_and_convert_codeword(codeword)
         dec_codeword, N_errors = self._decode_codeword(codeword)
 
         ns = codeword.shape[-1]  # The number of codeword symbols (could be less than self.n for shortened codes)
         ks = self.k - (self.n - ns)  # The number of message symbols (could be less than self.k for shortened codes)
 
-        dec_message = self._convert_codeword_to_message(dec_codeword)
-        dec_message = dec_message[:, :ks]
+        if output == "message":
+            decoded = self._convert_codeword_to_message(dec_codeword)
+            decoded = decoded[:, :ks]
+        else:
+            decoded = dec_codeword[:, :ns]
 
         if is_codeword_1d:
-            dec_message, N_errors = dec_message[0,:], int(N_errors[0])
+            decoded, N_errors = decoded[0,:], int(N_errors[0])
 
-        if errors:
-            return dec_message, N_errors
+        if not errors:
+            return decoded
         else:
-            return dec_message
+            return decoded, N_errors
 
     # def dual_code(self) -> _LinearCode:
     #     n = self.n
@@ -179,7 +186,7 @@ class _LinearCode:
     # Helper functions
     ###############################################################################
 
-    def _check_and_convert_message(self, message: ArrayLike) -> Tuple[FieldArray, bool]:
+    def _check_and_convert_message(self, message: ArrayLike) -> tuple[FieldArray, bool]:
         """
         Converts the array-like message into a 2-D FieldArray with shape (N, ks).
         """
@@ -266,7 +273,7 @@ class _LinearCode:
 
         return detected
 
-    def _decode_codeword(self, codeword: FieldArray) -> Tuple[FieldArray, np.ndarray]:
+    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
         """
         Decodes errors in the received codeword. Returns the corrected codeword (N, ns) and array of number of corrected
         errors (N,).

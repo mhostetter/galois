@@ -190,6 +190,10 @@ def verify_decode(code: galois._codes._linear.LinearCode, N: int):
     assert np.array_equal(decoded_messages, MESSAGES)
     assert np.array_equal(N_corrected, N_errors)
 
+    decoded_codewords = code.decode(RECEIVED_CODEWORDS, output="codeword")
+    assert type(decoded_codewords) is GF
+    assert np.array_equal(decoded_codewords, CODEWORDS)
+
 
 def verify_decode_shortened(code: galois._codes._linear.LinearCode, N: int, is_systematic: bool):
     if is_systematic:
