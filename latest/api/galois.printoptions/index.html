@@ -6787,6 +6787,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../release-notes/v0.1.2/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>1.<wbr>2</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../release-notes/v0.1.1/" class="md-nav__link">
         <span class="md-ellipsis">v0.<wbr>1.<wbr>1</span>
       </a>
@@ -7242,17 +7257,17 @@
 </div>
 <p>Modify the print options only inside the context manager.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-<span class="go">[α^4 + α^3 + 1,       α^4 + 2]</span>
+<span class="go">[α^4 + α^3 + 1       α^4 + 2]</span>
 <span class="go">3x^3 + 5x + 2</span>
 
 <span class="gp">In [5]: </span><span class="k">with</span> <span class="n">galois</span><span class="o">.</span><span class="n">printoptions</span><span class="p">(</span><span class="n">coeffs</span><span class="o">=</span><span class="s2">&quot;asc&quot;</span><span class="p">):</span>
 <span class="gp">   ...: </span>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="go">[1 + α^3 + α^4,       2 + α^4]</span>
+<span class="go">[1 + α^3 + α^4       2 + α^4]</span>
 <span class="go">2 + 5x + 3x^3</span>
 
 <span class="gp">In [6]: </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-<span class="go">[α^4 + α^3 + 1,       α^4 + 2]</span>
+<span class="go">[α^4 + α^3 + 1       α^4 + 2]</span>
 <span class="go">3x^3 + 5x + 2</span>
 </code></pre></div>
 </div>
@@ -7265,7 +7280,7 @@
   <small>
     
       Last update:
-      Nov 09, 2022
+      Nov 10, 2022
     
   </small>
 </div>

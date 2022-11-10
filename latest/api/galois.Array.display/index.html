@@ -6811,6 +6811,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../release-notes/v0.1.2/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>1.<wbr>2</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../release-notes/v0.1.1/" class="md-nav__link">
         <span class="md-ellipsis">v0.<wbr>1.<wbr>1</span>
       </a>
@@ -7334,31 +7349,31 @@ Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">[0, 1, 2, 3, 4, 5, 6, 7, 8]</span>
+<span class="go">[0 1 2 3 4 5 6 7 8]</span>
 
 <span class="gp">In [8]: </span><span class="k">with</span> <span class="n">GF</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="s2">&quot;poly&quot;</span><span class="p">):</span>
 <span class="gp">   ...: </span>    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="go">[     0,      1,      2,      α,  α + 1,  α + 2,     2α, 2α + 1, 2α + 2]</span>
+<span class="go">[     0      1      2      α  α + 1  α + 2     2α 2α + 1 2α + 2]</span>
 
 <span class="go"># Outside the context manager, the display mode reverts to its previous value</span>
 <span class="gp">In [9]: </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">[0, 1, 2, 3, 4, 5, 6, 7, 8]</span>
+<span class="go">[0 1 2 3 4 5 6 7 8]</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">[0, 1, 2, 3, 4, 5, 6, 7, 8]</span>
+<span class="go">[0 1 2 3 4 5 6 7 8]</span>
 
 <span class="gp">In [11]: </span><span class="k">with</span> <span class="n">GF</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="s2">&quot;power&quot;</span><span class="p">):</span>
 <span class="gp">   ....: </span>    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">   ....: </span>
-<span class="go">[  0,   1, α^4,   α, α^2, α^7, α^5, α^3, α^6]</span>
+<span class="go">[  0   1 α^4   α α^2 α^7 α^5 α^3 α^6]</span>
 
 <span class="go"># Outside the context manager, the display mode reverts to its previous value</span>
 <span class="gp">In [12]: </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">[0, 1, 2, 3, 4, 5, 6, 7, 8]</span>
+<span class="go">[0 1 2 3 4 5 6 7 8]</span>
 </code></pre></div>
 </div>
 </div>
@@ -7372,7 +7387,7 @@ Power</label></div>
   <small>
     
       Last update:
-      Nov 09, 2022
+      Nov 10, 2022
     
   </small>
 </div>

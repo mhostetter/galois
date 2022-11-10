@@ -6805,6 +6805,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../release-notes/v0.1.2/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>1.<wbr>2</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../release-notes/v0.1.1/" class="md-nav__link">
         <span class="md-ellipsis">v0.<wbr>1.<wbr>1</span>
       </a>
@@ -7296,13 +7311,13 @@ the <span class="math notranslate nohighlight">\(k\)</span> prime divisors <span
 </code></pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(x^2 + 3x + 9, GF(2^4))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(x^2 + 9x + 3, GF(2^4))</span>
 
 <span class="gp">In [5]: </span><span class="n">h</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">h</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(x^3 + 13x^2 + 6x + 6, GF(2^4))</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(x^3 + 13x^2 + 12x + 1, GF(2^4))</span>
 
 <span class="gp">In [6]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span><span class="p">;</span> <span class="n">f</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(x^5 + 14x^4 + 11x^3 + 3x^2 + 9x + 3, GF(2^4))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(x^5 + 4x^4 + 3x^2 + 14x + 3, GF(2^4))</span>
 
 <span class="gp">In [7]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_irreducible</span><span class="p">()</span>
 <span class="gh">Out[7]: </span><span class="go">False</span>
@@ -7317,7 +7332,7 @@ the <span class="math notranslate nohighlight">\(k\)</span> prime divisors <span
   <small>
     
       Last update:
-      Nov 09, 2022
+      Nov 10, 2022
     
   </small>
 </div>

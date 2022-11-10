@@ -6798,6 +6798,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../release-notes/v0.1.2/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>1.<wbr>2</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../release-notes/v0.1.1/" class="md-nav__link">
         <span class="md-ellipsis">v0.<wbr>1.<wbr>1</span>
       </a>
@@ -7259,11 +7274,11 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The row spa
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[20,  5, 22],</span>
-<span class="go">    [21,  4,  6],</span>
-<span class="go">    [ 6, 16,  1],</span>
-<span class="go">    [22,  5,  7],</span>
-<span class="go">    [14,  5, 20]], order=31)</span>
+<span class="go">GF([[22, 12, 12],</span>
+<span class="go">    [23, 15,  6],</span>
+<span class="go">    [13, 30,  2],</span>
+<span class="go">    [23, 17,  0],</span>
+<span class="go">    [26, 29,  3]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">R</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">();</span> <span class="n">R</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
@@ -7275,8 +7290,8 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The row spa
 <p>The dimension of the row space and left null space sum to <span class="math notranslate nohighlight">\(m\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">LN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">();</span> <span class="n">LN</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0,  8, 21,  2],</span>
-<span class="go">    [ 0,  1,  1, 23,  4]], order=31)</span>
+<span class="go">GF([[ 1,  0, 11, 29, 30],</span>
+<span class="go">    [ 0,  1,  0,  8, 29]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">LN</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>
@@ -7291,7 +7306,7 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The row spa
   <small>
     
       Last update:
-      Nov 09, 2022
+      Nov 10, 2022
     
   </small>
 </div>
