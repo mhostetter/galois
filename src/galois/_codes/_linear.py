@@ -9,7 +9,7 @@ from typing_extensions import Literal
 import numpy as np
 
 from .._fields import FieldArray
-from .._helper import verify_isinstance
+from .._helper import verify_isinstance, verify_literal
 from ..typing import ArrayLike
 
 
@@ -45,7 +45,7 @@ class _LinearCode:
         self._H = H
         self._is_systematic = systematic
 
-    def encode(self, message: ArrayLike, parity_only: bool = False) -> FieldArray:
+    def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
         r"""
         Encodes the message :math:`\mathbf{m}` into the codeword :math:`\mathbf{c}`.
 
@@ -55,35 +55,35 @@ class _LinearCode:
             The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the number
             of messages. For systematic codes, message lengths less than :math:`k` may be provided to produce
             shortened codewords.
-
-        parity_only
-            Optionally specify whether to return only the parity symbols. This only applies to systematic codes.
-            The default is `False`.
+        output
+            Specify whether to return the codeword or parity symbols only. The default is `"codeword"`.
 
         Returns
         -------
         :
-            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix. If `parity_only=True`, the parity
-            symbols are returned as either a :math:`n-k`-length vector or :math:`(N, n-k)` matrix.
+            If `output="codeword"`, the codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix.
+            If `output="parity"`, the parity symbols as either a :math:`n-k`-length vector or :math:`(N, n-k)` matrix.
 
         Important
         ---------
         For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`k-s` symbols into
         :func:`encode` to return the :math:`n-s`-symbol message.
         """
-        if parity_only and not self.is_systematic:
-            raise ValueError("Argument `parity_only=True` only applies to systematic codes.")
+        verify_literal(output, ["codeword", "parity"])
+
+        if output == "parity" and not self.is_systematic:
+            raise ValueError("Argument `output` may only be 'parity' for systematic codes.")
 
         message, is_message_1d = self._check_and_convert_message(message)
         codeword = self._encode_message(message)
         if is_message_1d:
             codeword = codeword[0,:]
 
-        if parity_only:
+        if output == "codeword":
+            return codeword
+        else:
             parity = self._convert_codeword_to_parity(codeword)
             return parity
-        else:
-            return codeword
 
     def detect(self, codeword: ArrayLike) -> Union[bool, np.ndarray]:
         r"""

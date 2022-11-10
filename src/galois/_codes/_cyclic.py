@@ -77,8 +77,8 @@ class _CyclicCode(_LinearCode):
             c(x) = m(x) g(x)
         """
     )
-    def encode(self, message: ArrayLike, parity_only: bool = False) -> FieldArray:
-        return super().encode(message, parity_only=parity_only)
+    def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
+        return super().encode(message, output=output)
 
     @overload
     def decode(self, codeword: ArrayLike, errors: Literal[False] = False) -> FieldArray:

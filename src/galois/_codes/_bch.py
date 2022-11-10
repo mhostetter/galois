@@ -303,11 +303,11 @@ class BCH(_CyclicCode):
                     m = GF.Random(bch.k); m
                     c = bch.encode(m); c
 
-                Compute the parity bits only.
+                Compute the parity symbols only.
 
                 .. ipython:: python
 
-                    p = bch.encode(m, parity_only=True); p
+                    p = bch.encode(m, output="parity"); p
 
             .. md-tab-item:: Vector (shortened)
 
@@ -320,11 +320,11 @@ class BCH(_CyclicCode):
                     m = GF.Random(bch.k - 3); m
                     c = bch.encode(m); c
 
-                Compute the parity bits only.
+                Compute the parity symbols only.
 
                 .. ipython:: python
 
-                    p = bch.encode(m, parity_only=True); p
+                    p = bch.encode(m, output="parity"); p
 
             .. md-tab-item:: Matrix
 
@@ -337,11 +337,11 @@ class BCH(_CyclicCode):
                     m = GF.Random((3, bch.k)); m
                     c = bch.encode(m); c
 
-                Compute the parity bits only.
+                Compute the parity symbols only.
 
                 .. ipython:: python
 
-                    p = bch.encode(m, parity_only=True); p
+                    p = bch.encode(m, output="parity"); p
 
             .. md-tab-item:: Matrix (shortened)
 
@@ -354,15 +354,15 @@ class BCH(_CyclicCode):
                     m = GF.Random((3, bch.k - 3)); m
                     c = bch.encode(m); c
 
-                Compute the parity bits only.
+                Compute the parity symbols only.
 
                 .. ipython:: python
 
-                    p = bch.encode(m, parity_only=True); p
+                    p = bch.encode(m, output="parity"); p
         """
     )
-    def encode(self, message: ArrayLike, parity_only: bool = False) -> FieldArray:
-        return super().encode(message, parity_only=parity_only)
+    def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
+        return super().encode(message, output=output)
 
     @extend_docstring(_CyclicCode.detect, {},
         r"""
@@ -524,7 +524,7 @@ class BCH(_CyclicCode):
                     m = GF.Random(bch.k); m
                     c = bch.encode(m); c
 
-                Corrupt :math:`t` bits of the codeword.
+                Corrupt :math:`t` symbols of the codeword.
 
                 .. ipython:: python
 
@@ -556,7 +556,7 @@ class BCH(_CyclicCode):
                     m = GF.Random(bch.k - 3); m
                     c = bch.encode(m); c
 
-                Corrupt :math:`t` bits of the codeword.
+                Corrupt :math:`t` symbols of the codeword.
 
                 .. ipython:: python
 
