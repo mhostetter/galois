@@ -48,6 +48,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.mathjax",
     "sphinx.ext.intersphinx",
+    "sphinx_last_updated_by_git",
     "sphinx_immaterial",
     "sphinx_immaterial.apidoc.python.apigen",
     "myst_parser",

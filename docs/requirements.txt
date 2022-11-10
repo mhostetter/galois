@@ -3,4 +3,5 @@ git+https://github.com/jbms/sphinx-immaterial@1293f243d4e2214fa25837d698e6a69b7f
 myst-parser
 sphinx-design
 sphinxcontrib-details-directive
+sphinx-last-updated-by-git
 ipykernel
