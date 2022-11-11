@@ -33,7 +33,7 @@ def set_printoptions(
 
     .. ipython:: python
 
-        GF = galois.GF(3**5, display="poly")
+        GF = galois.GF(3**5, repr="poly")
         a = GF([109, 83]); a
         f = galois.Poly([3, 0, 5, 2], field=galois.GF(7)); f
 
@@ -45,7 +45,7 @@ def set_printoptions(
         a
         f
         @suppress
-        GF.display()
+        GF.repr()
         @suppress
         galois.set_printoptions()
 
@@ -116,7 +116,7 @@ def printoptions(**kwargs) -> Generator[None, None, None]:
 
     .. ipython:: python
 
-        GF = galois.GF(3**5, display="poly")
+        GF = galois.GF(3**5, repr="poly")
         a = GF([109, 83])
         f = galois.Poly([3, 0, 5, 2], field=galois.GF(7))
 
@@ -129,7 +129,7 @@ def printoptions(**kwargs) -> Generator[None, None, None]:
             print(a); print(f)
         print(a); print(f)
         @suppress
-        GF.display()
+        GF.repr()
 
     :group: config
     """

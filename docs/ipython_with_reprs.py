@@ -1,5 +1,5 @@
 """
-Sphinx extension that adds `ipython-with-reprs` directive.
+Sphinx extension that adds `ipython-with-element_reprs` directive.
 """
 from typing import List
 
@@ -11,7 +11,7 @@ import sphinx.util.logging
 
 logger = sphinx.util.logging.getLogger(__name__)
 
-DISPLAY_MODE_TO_TITLE = {
+ELEMENT_REPR_TO_TITLE = {
     "int": "Integer",
     "poly": "Polynomial",
     "power": "Power",
@@ -31,8 +31,8 @@ class IPythonWithReprsDirective(sphinx.util.docutils.SphinxDirective):
         self.assert_has_content()
 
         # Parse input parameters
-        display_modes = self.arguments[0].split(",")
-        titles = [DISPLAY_MODE_TO_TITLE[mode] for mode in display_modes]
+        element_reprs = self.arguments[0].split(",")
+        titles = [ELEMENT_REPR_TO_TITLE[element_repr] for element_repr in element_reprs]
         field = self.options.get("name", "GF")
 
         ws = "    "
@@ -41,7 +41,7 @@ class IPythonWithReprsDirective(sphinx.util.docutils.SphinxDirective):
             ""
         ]
 
-        for mode, title in zip(display_modes, titles):
+        for element_repr, title in zip(element_reprs, titles):
             new_lines += [
                 f"{ws}.. md-tab-item:: {title}",
                 "",
@@ -49,16 +49,16 @@ class IPythonWithReprsDirective(sphinx.util.docutils.SphinxDirective):
                 "",
             ]
 
-            # Set the Galois field display mode
+            # Set the Galois field element representation
             first_code_line = self.content[0]
             if first_code_line.startswith(f"{field} = "):
-                assert "display=" not in first_code_line
-                if mode == "int":
+                assert "repr=" not in first_code_line
+                if element_repr == "int":
                     new_first_code_line = first_code_line
                 else:
                     items = first_code_line.rsplit(")", 1)
                     assert len(items) == 2
-                    items.insert(1, f", display=\"{mode}\")")
+                    items.insert(1, f", repr=\"{element_repr}\")")
                     new_first_code_line = "".join(items)
                 new_lines += [
                     f"{ws}{ws}{ws}{new_first_code_line}",
@@ -66,7 +66,7 @@ class IPythonWithReprsDirective(sphinx.util.docutils.SphinxDirective):
             else:
                 new_lines += [
                     f"{ws}{ws}{ws}@suppress",
-                    f"{ws}{ws}{ws}{field}.display(\"{mode}\")",
+                    f"{ws}{ws}{ws}{field}.repr(\"{element_repr}\")",
                     f"{ws}{ws}{ws}{first_code_line}",
                 ]
 
@@ -76,10 +76,10 @@ class IPythonWithReprsDirective(sphinx.util.docutils.SphinxDirective):
                     f"{ws}{ws}{ws}{code_line}",
                 ]
 
-            # Reset the Galois field display mode
+            # Reset the element representation
             new_lines += [
                 f"{ws}{ws}{ws}@suppress",
-                f"{ws}{ws}{ws}{field}.display()",
+                f"{ws}{ws}{ws}{field}.repr()",
                 ""
             ]
 

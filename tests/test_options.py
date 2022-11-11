@@ -22,7 +22,7 @@ def test_set_exceptions():
 
 
 def test_set_coeffs():
-    GF = galois.GF(3**5, display="poly")
+    GF = galois.GF(3**5, repr="poly")
     a = GF(83)
     f = galois.Poly([3, 0, 5, 2], field=galois.GF(7))
 
@@ -41,7 +41,7 @@ def test_set_coeffs():
 
 
 def test_context_manager():
-    GF = galois.GF(3**5, display="poly")
+    GF = galois.GF(3**5, repr="poly")
     a = GF(83)
     f = galois.Poly([3, 0, 5, 2], field=galois.GF(7))
     galois.set_printoptions()  # Ensure the default options are set

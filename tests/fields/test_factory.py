@@ -40,29 +40,29 @@ def test_can_modify_ufunc_mode():
     assert GF.ufunc_mode == "jit-lookup"
 
 
-def test_defaults_dont_modify_display_mode():
+def test_defaults_dont_modify_element_repr():
     """
-    Ensures display=None (the default) doesn't modify the current display mode.
+    Ensures repr=None (the default) doesn't modify the current element representation.
     """
     GF = galois.GF(2**8)
-    GF.display()  # Reset to default
-    assert GF.display_mode == "int"
-    GF.display("poly")
-    assert GF.display_mode == "poly"
+    GF.repr()  # Reset to default
+    assert GF.element_repr == "int"
+    GF.repr("poly")
+    assert GF.element_repr == "poly"
     GF = galois.GF(2**8)
-    assert GF.display_mode == "poly"
-    GF.display()    # Reset to default
-    assert GF.display_mode == "int"
+    assert GF.element_repr == "poly"
+    GF.repr()  # Reset to default
+    assert GF.element_repr == "int"
 
 
-def test_can_modify_display_mode():
+def test_can_modify_element_repr():
     GF = galois.GF(2**8)
-    GF.display()  # Reset to default
-    assert GF.display_mode == "int"
-    GF = galois.GF(2**8, display="poly")
-    assert GF.display_mode == "poly"
-    GF.display()    # Reset to default
-    assert GF.display_mode == "int"
+    GF.repr()  # Reset to default
+    assert GF.element_repr == "int"
+    GF = galois.GF(2**8, repr="poly")
+    assert GF.element_repr == "poly"
+    GF.repr()  # Reset to default
+    assert GF.element_repr == "int"
 
 
 def test_basic_exceptions():
@@ -73,14 +73,14 @@ def test_basic_exceptions():
     with pytest.raises(TypeError):
         galois.GF(2**8, compile=True)
     with pytest.raises(TypeError):
-        galois.GF(2**8, display=True)
+        galois.GF(2**8, repr=True)
 
     with pytest.raises(ValueError):
         galois.GF(2**3 * 5**3)
     with pytest.raises(ValueError):
         galois.GF(2**8, compile="invalid-argument")
     with pytest.raises(ValueError):
-        galois.GF(2**8, display="invalid-argument")
+        galois.GF(2**8, repr="invalid-argument")
 
 
 def test_irreducible_poly_exceptions():

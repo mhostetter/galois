@@ -566,7 +566,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         if not operation in ["+", "-", "*", "/"]:
             raise ValueError(f"Argument 'operation' must be in ['+', '-', '*', '/'], not {operation!r}.")
 
-        if cls.display_mode == "power":
+        if cls.element_repr == "power":
             # Order elements by powers of the primitive element
             x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1, dtype=cls.dtypes[-1])))
         else:
@@ -586,9 +586,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         else:
             Z = X / Y
 
-        if cls.display_mode == "int":
+        if cls.element_repr == "int":
             print_element = cls._print_int
-        elif cls.display_mode == "poly":
+        elif cls.element_repr == "poly":
             print_element = cls._print_poly
         else:
             print_element = cls._print_power
@@ -883,7 +883,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             x = GF.elements; x
             x.is_square()
             @suppress
-            GF.display()
+            GF.repr()
 
         In :math:`\mathrm{GF}(11)`, the characteristic is greater than 2 so only half of the elements have square
         roots.
@@ -1650,11 +1650,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         formatter = {}
 
-        if cls.display_mode == "poly" and cls.is_extension_field:
-            # The "poly" display mode for prime field's is the same as the integer representation
+        if cls.element_repr == "poly" and cls.is_extension_field:
+            # The polynomial representation for prime fields is the same as the integer representation
             formatter["int"] = cls._print_poly
             formatter["object"] = cls._print_poly
-        elif cls.display_mode == "power":
+        elif cls.element_repr == "power":
             formatter["int"] = cls._print_power
             formatter["object"] = cls._print_power
         elif array.dtype == np.object_:
