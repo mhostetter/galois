@@ -27,7 +27,7 @@ def GF(
     primitive_element: int | PolyLike | None = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
-    display: Literal["int", "poly", "power"] | None = None
+    repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
     r"""
     Creates a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
@@ -74,15 +74,15 @@ def GF(
         - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
           represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
 
-    display
-        The field element display representation. This can be modified after class construction with the :func:`~galois.FieldArray.display` method.
+    repr
+        The field element representation. This can be modified after class construction with the :func:`~galois.FieldArray.repr` method.
         See :doc:`/basic-usage/element-representation` for a further discussion.
 
         - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"int"`. If the
-          :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current display mode.
-        - `"int"`: Sets the display mode to the :ref:`integer representation <int-repr>`.
-        - `"poly"`: Sets the display mode to the :ref:`polynomial representation <poly-repr>`.
-        - `"power"`: Sets the display mode to the :ref:`power representation <power-repr>`.
+          :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current element representation.
+        - `"int"`: Sets the element representation to the :ref:`integer representation <int-repr>`.
+        - `"poly"`: Sets the element representation to the :ref:`polynomial representation <poly-repr>`.
+        - `"power"`: Sets the element representation to the :ref:`power representation <power-repr>`.
 
     Returns
     -------
@@ -198,7 +198,7 @@ def GF(
     verify_isinstance(order, int)
     verify_isinstance(verify, bool)
     verify_isinstance(compile, str, optional=True)
-    verify_isinstance(display, str, optional=True)
+    verify_isinstance(repr, str, optional=True)
 
     p, e = factors(order)
     if not len(p) == len(e) == 1:
@@ -206,17 +206,17 @@ def GF(
         raise ValueError(f"Argument 'order' must be a prime power, not {order} = {s}.")
     if not compile in [None, "auto", "jit-lookup", "jit-calculate", "python-calculate"]:
         raise ValueError(f"Argument 'compile' must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {compile!r}.")
-    if not display in [None, "int", "poly", "power"]:
-        raise ValueError(f"Argument 'display' must be in ['int', 'poly', 'power'], not {display!r}.")
+    if not repr in [None, "int", "poly", "power"]:
+        raise ValueError(f"Argument 'repr' must be in ['int', 'poly', 'power'], not {repr!r}.")
 
     p, m = p[0], e[0]
 
     if m == 1:
         if not irreducible_poly is None:
             raise ValueError(f"Argument 'irreducible_poly' can only be specified for extension fields, not the prime field GF({p}).")
-        return _GF_prime(p, alpha=primitive_element, verify=verify, compile=compile, display=display)
+        return _GF_prime(p, alpha=primitive_element, verify=verify, compile=compile, repr=repr)
     else:
-        return _GF_extension(p, m, irreducible_poly_=irreducible_poly, alpha=primitive_element, verify=verify, compile=compile, display=display)
+        return _GF_extension(p, m, irreducible_poly_=irreducible_poly, alpha=primitive_element, verify=verify, compile=compile, repr=repr)
 
 
 @export
@@ -226,14 +226,14 @@ def Field(
     primitive_element: int | PolyLike | None = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
-    display: Literal["int", "poly", "power"] | None = None
+    repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
     """
     Alias of :func:`~galois.GF`.
 
     :group: galois-fields
     """
-    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, display=display)
+    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, repr=repr)
 
 
 def _GF_prime(
@@ -241,7 +241,7 @@ def _GF_prime(
     alpha: int | None = None,
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
-    display: Literal["int", "poly", "power"] | None = None
+    repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
     """
     Class factory for prime fields GF(p).
@@ -261,8 +261,8 @@ def _GF_prime(
         field = _GF_prime._classes[key]
         if compile is not None:
             field.compile(compile)
-        if display is not None:
-            field.display(display)
+        if repr is not None:
+            field.repr(repr)
         return field
 
     if verify and not is_primitive_root(alpha, p):
@@ -285,9 +285,9 @@ def _GF_prime(
     field.__module__ = __name__
     setattr(sys.modules[__name__], name, field)
 
-    # Since this is a new class, compile the ufuncs and set the display mode
+    # Since this is a new class, compile the ufuncs and set the element representation
     field.compile("auto" if compile is None else compile)
-    field.display("int" if display is None else display)
+    field.repr("int" if repr is None else repr)
 
     field._is_primitive_poly = field._irreducible_poly(field._primitive_element, field=field) == 0
 
@@ -306,7 +306,7 @@ def _GF_extension(
     alpha: PolyLike | None = None,
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
-    display: Literal["int", "poly", "power"] | None = None
+    repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
     """
     Class factory for extension fields GF(p^m).
@@ -352,8 +352,8 @@ def _GF_extension(
         field = _GF_extension._classes[key]
         if compile is not None:
             field.compile(compile)
-        if display is not None:
-            field.display(display)
+        if repr is not None:
+            field.repr(repr)
         return field
 
     if verify_poly and not irreducible_poly_.is_irreducible():
@@ -378,9 +378,9 @@ def _GF_extension(
     field.__module__ = __name__
     setattr(sys.modules[__name__], name, field)
 
-    # Since this is a new class, compile the ufuncs and set the display mode
+    # Since this is a new class, compile the ufuncs and set the element representation
     field.compile("auto" if compile is None else compile)
-    field.display("int" if display is None else display)
+    field.repr("int" if repr is None else repr)
 
     if is_primitive_poly is not None:
         field._is_primitive_poly = is_primitive_poly

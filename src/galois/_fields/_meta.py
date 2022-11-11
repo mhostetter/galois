@@ -64,7 +64,7 @@ class FieldArrayMeta(ArrayMeta):
             GF = galois.GF(7**5)
             print(GF.properties)
         """
-        with cls.prime_subfield.display("int"):
+        with cls.prime_subfield.repr("int"):
             irreducible_poly_str = str(cls._irreducible_poly)
 
         string = "Galois Field:"
@@ -442,33 +442,33 @@ class FieldArrayMeta(ArrayMeta):
         return super().dtypes
 
     @property
-    def display_mode(cls) -> Literal["int", "poly", "power"]:
+    def element_repr(cls) -> Literal["int", "poly", "power"]:
         r"""
-        The current finite field element representation. This can be changed with :func:`~galois.FieldArray.display`.
+        The current finite field element representation. This can be changed with :func:`~galois.FieldArray.repr`.
 
         See :doc:`/basic-usage/element-representation` for a further discussion.
 
         Examples
         --------
-        The default display mode is the integer representation.
+        The default element representation is the integer representation.
 
         .. ipython:: python
 
             GF = galois.GF(3**2)
             x = GF.elements; x
-            GF.display_mode
+            GF.element_repr
 
-        Permanently modify the display mode by calling :func:`~galois.FieldArray.display`.
+        Permanently modify the element representation by calling :func:`~galois.FieldArray.repr`.
 
         .. ipython:: python
 
-            GF.display("poly");
+            GF.repr("poly");
             x
-            GF.display_mode
+            GF.element_repr
             @suppress
-            GF.display()
+            GF.repr()
         """
-        return super().display_mode
+        return super().element_repr
 
     @property
     def ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:

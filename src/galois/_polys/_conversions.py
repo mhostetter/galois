@@ -89,8 +89,8 @@ def sparse_poly_to_str(degrees: list[int], coeffs: list[int], poly_var: str = "x
     """
     x = []
 
-    # Use brackets around coefficients only when using the "poly" or "power" display mode
-    brackets = hasattr(type(coeffs), "_display_mode") and getattr(type(coeffs), "_display_mode") in ["poly", "power"]
+    # Use brackets around coefficients only when using the "poly" or "power" element representation
+    brackets = hasattr(type(coeffs), "_element_repr") and getattr(type(coeffs), "_element_repr") in ["poly", "power"]
 
     for degree, coeff in zip(degrees, coeffs):
         if coeff == 0:
@@ -113,7 +113,7 @@ def sparse_poly_to_str(degrees: list[int], coeffs: list[int], poly_var: str = "x
                 c = f"{coeff!s}"
             s = f"{c}{poly_var}"
         else:
-            # Use () around 0-degree term only if it has a + separator in it ("poly" display mode)
+            # Use () around 0-degree term only if it has a + separator in it ("poly" element representation)
             if "+" in str(coeff):
                 s = f"({coeff!s})"
             else:

@@ -1,61 +1,56 @@
 Element Representation
 ======================
 
-The display representation of finite field elements can be set to either their integer (`"int"`), polynomial (`"poly"`),
+The representation of finite field elements can be set to either their integer (`"int"`), polynomial (`"poly"`),
 or power (`"power"`) representation.
 
 In prime fields :math:`\mathrm{GF}(p)`, elements are integers in :math:`\{0, 1, \dots, p-1\}`. Their two useful representations
 are the integer and power representation.
 
 In extension fields :math:`\mathrm{GF}(p^m)`, elements are polynomials over :math:`\mathrm{GF}(p)` with degree less than :math:`m`.
-All display representations are useful. The polynomial representation allows *proper* representation of the element as a polynomial
+All element representations are useful. The polynomial representation allows *proper* representation of the element as a polynomial
 over its prime subfield. However, the integer representation is more compact for displaying large arrays.
 
-Set the display mode
---------------------
+Set the element representation
+------------------------------
 
-The field element display mode can be set during :obj:`~galois.FieldArray` subclass creation by passing the `display` keyword
+The field element representation can be set during :obj:`~galois.FieldArray` subclass creation by passing the `repr` keyword
 argument to the :func:`~galois.GF` class factory.
 
 .. ipython:: python
 
-    GF = galois.GF(3**5, display="poly")
+    GF = galois.GF(3**5, repr="poly")
     x = GF([17, 4])
     x
     print(x)
 
-.. note::
-
-    Notice :func:`~galois.FieldArray.__repr__` displays `GF([...], order=p^m)` where :func:`~galois.FieldArray.__str__` only displays
-    `[...]`. This is designed to be consistent with NumPy's use of `repr()` and `str()`.
-
-The current display mode is accessed with the :obj:`~galois.FieldArray.display_mode` class property.
+The current element representation is accessed with the :obj:`~galois.FieldArray.element_repr` class property.
 
 .. ipython:: python
 
-    GF.display_mode
+    GF.element_repr
 
-The display mode can be temporarily changed using the :func:`~galois.FieldArray.display` classmethod as a context manager.
+The element representation can be temporarily changed using the :func:`~galois.FieldArray.repr` classmethod as a context manager.
 
 .. ipython:: python
 
     # Inside the context manager, x prints using the power representation
-    with GF.display("power"):
+    with GF.repr("power"):
         print(x)
 
     # Outside the context manager, x prints using the previous representation
     print(x)
 
-The display mode can be permanently changed using the :func:`~galois.FieldArray.display` method.
+The element representation can be permanently changed using the :func:`~galois.FieldArray.repr` method.
 
 .. ipython:: python
 
-    # The old polynomial display mode
+    # The old polynomial representation
     x
 
-    GF.display("int");
+    GF.repr("int");
 
-    # The new integer display mode
+    # The new integer representation
     x
 
 .. _int-repr:
@@ -63,7 +58,7 @@ The display mode can be permanently changed using the :func:`~galois.FieldArray.
 Integer representation
 ----------------------
 
-The integer display mode (the default) displays all finite field elements as integers in :math:`\{0, 1, \dots, p^m-1\}`.
+The integer representation (the default) displays all finite field elements as integers in :math:`\{0, 1, \dots, p^m-1\}`.
 
 In prime fields, the integer representation is simply the integer element in :math:`\{0, 1, \dots, p-1\}`.
 
@@ -89,14 +84,14 @@ coefficient as the most-significant digit and zero-degree coefficient as the lea
 Polynomial representation
 -------------------------
 
-The polynomial display mode displays all finite field elements as polynomials over their prime subfield with degree less than :math:`m`.
+The polynomial representation displays all finite field elements as polynomials over their prime subfield with degree less than :math:`m`.
 
-In prime fields, :math:`m = 1` and, therefore, the polynomial representation is equivalent to the integer representation because the
+In prime fields :math:`m = 1`, therefore the polynomial representation is equivalent to the integer representation because the
 polynomials all have degree 0.
 
 .. ipython:: python
 
-    GF = galois.GF(31, display="poly")
+    GF = galois.GF(31, repr="poly")
     GF(11)
 
 In extension fields, the polynomial representation displays the elements naturally as polynomials over their prime subfield.
@@ -104,7 +99,7 @@ This is useful, however it can become cluttered for large arrays.
 
 .. ipython:: python
 
-    GF = galois.GF(3**5, display="poly")
+    GF = galois.GF(3**5, repr="poly")
     GF(17)
     GF("x^2 + 2x + 2")
     # Integer/polynomial equivalence
@@ -121,24 +116,24 @@ This is useful, however it can become cluttered for large arrays.
 Power representation
 --------------------
 
-The power display mode represents the elements as powers of the finite field's primitive element :math:`\alpha`.
+The power representation displays all finite field elements as powers of the field's primitive element :math:`\alpha`.
 
 .. danger::
 
     To display elements in the power representation, :obj:`galois` must compute the discrete logarithm of each element displayed.
     For large fields (or fields using :ref:`explicit calculation <explicit-calculation>`), this process can take a while. However, when
-    using :ref:`lookup tables <lookup-tables>` this display mode is just as fast as the others.
+    using :ref:`lookup tables <lookup-tables>` this representation is just as fast as the others.
 
 In prime fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p-2}\}`.
 
 .. ipython:: python
 
-    GF = galois.GF(31, display="power")
+    GF = galois.GF(31, repr="power")
     GF(11)
 
 .. ipython:: python
 
-    GF.display("int");
+    GF.repr("int");
     alpha = GF.primitive_element; alpha
     alpha ** 23
 
@@ -146,26 +141,26 @@ In extension fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha
 
 .. ipython:: python
 
-    GF = galois.GF(3**5, display="power")
+    GF = galois.GF(3**5, repr="power")
     GF(17)
 
 .. ipython:: python
 
-    GF.display("int");
+    GF.repr("int");
     alpha = GF.primitive_element; alpha
     alpha ** 222
 
 Vector representation
 ---------------------
 
-The vector representation, while not a proper display mode of :func:`~galois.FieldArray.display`, represents finite field elements
+The vector representation, while not a valid input to :func:`~galois.FieldArray.repr`, represents finite field elements
 as vectors of their polynomial coefficients.
 
 The vector representation is accessed using the :func:`~galois.FieldArray.vector` method.
 
 .. ipython:: python
 
-    GF = galois.GF(3**5, display="poly")
+    GF = galois.GF(3**5, repr="poly")
     GF("x^2 + 2x + 2")
     GF("x^2 + 2x + 2").vector()
 
@@ -197,7 +192,7 @@ With the default line width, the array is quite difficult to read.
 
 .. ipython:: python
 
-    GF = galois.GF(3**5, display="poly")
+    GF = galois.GF(3**5, repr="poly")
     x = GF.Random((5, 5)); x
 
 The readability is improved by increasing the line width using :func:`numpy.set_printoptions`.
@@ -211,12 +206,12 @@ The readability is improved by increasing the line width using :func:`numpy.set_
     @suppress
     np.set_printoptions(linewidth=width)
     @suppress
-    GF.display("int");
+    GF.repr("int");
 
 Representation comparisons
 --------------------------
 
-For any finite field, each of the four representations can be easily compared using the :func:`~galois.FieldArray.repr_table` classmethod.
+For any finite field, each of the four element representations can be easily compared using the :func:`~galois.FieldArray.repr_table` classmethod.
 
 .. ipython:: python
 

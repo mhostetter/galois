@@ -34,7 +34,7 @@ Element representation
 ----------------------
 
 As with :obj:`~galois.FieldArray` instances, the finite field element representation of the polynomial coefficients may be changed
-by setting the `display` keyword argument of :func:`~galois.GF` or using the :func:`~galois.FieldArray.display` classmethod.
+by setting the `repr` keyword argument of :func:`~galois.GF` or using the :func:`~galois.FieldArray.repr` classmethod.
 
 .. ipython:: python
 
@@ -44,12 +44,12 @@ by setting the `display` keyword argument of :func:`~galois.GF` or using the :fu
    f = galois.Poly([13, 0, 4, 2], field=GF); print(f)
 
    # Display f(x) using the polynomial representation
-   GF.display("poly"); print(f)
+   GF.repr("poly"); print(f)
 
    # Display f(x) using the power representation
-   GF.display("power"); print(f)
+   GF.repr("power"); print(f)
 
-   GF.display("int");
+   GF.repr("int");
 
 See :doc:`element-representation` for more details.
 

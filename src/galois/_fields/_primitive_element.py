@@ -128,7 +128,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
     .. ipython:: python
 
         f = galois.irreducible_poly(7, 5, method="max"); f
-        GF = galois.GF(7**5, irreducible_poly=f, display="poly")
+        GF = galois.GF(7**5, irreducible_poly=f, repr="poly")
         print(GF.properties)
 
     Find the smallest primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible polynomial
@@ -161,7 +161,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
         g = GF(int(g)); g
         g.multiplicative_order() == GF.order - 1
         @suppress
-        GF.display()
+        GF.repr()
     """
     verify_isinstance(irreducible_poly, Poly)
     if not irreducible_poly.degree > 1:
@@ -234,7 +234,7 @@ def primitive_elements(irreducible_poly: Poly) -> list[Poly]:
     .. ipython:: python
 
         f = galois.irreducible_poly(3, 4, method="max"); f
-        GF = galois.GF(3**4, irreducible_poly=f, display="poly")
+        GF = galois.GF(3**4, irreducible_poly=f, repr="poly")
         print(GF.properties)
 
     Find all primitive elements for the degree-4 extension of :math:`\mathrm{GF}(3)`.
@@ -258,7 +258,7 @@ def primitive_elements(irreducible_poly: Poly) -> list[Poly]:
         g = GF([int(gi) for gi in g]); g
         np.all(g.multiplicative_order() == GF.order - 1)
         @suppress
-        GF.display()
+        GF.repr()
     """
     # Find one primitive element first
     element = primitive_element(irreducible_poly)

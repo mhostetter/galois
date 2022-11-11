@@ -59,7 +59,7 @@ def test_sparse_poly_to_str():
     assert galois._polys._conversions.sparse_poly_to_str([3, 1, 0], [1, 1, 1], poly_var="y") == "y^3 + y + 1"
 
     GF = galois.GF(2**8)
-    with GF.display("poly"):
+    with GF.repr("poly"):
         assert galois._polys._conversions.sparse_poly_to_str([0], GF([0])) == "0"
         assert galois._polys._conversions.sparse_poly_to_str([3, 1, 0], GF([1, 2, 3])) == "x^3 + (α)x + (α + 1)"
 

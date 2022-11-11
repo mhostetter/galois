@@ -64,8 +64,7 @@ ATTRIBUTES = [
     "name", "characteristic", "degree", "order",
     "irreducible_poly", "is_primitive_poly", "primitive_element", "primitive_elements",
     "is_prime_field", "is_extension_field", "prime_subfield",
-    "dtypes", "display_mode",
-    "ufunc_mode", "ufunc_modes",
+    "dtypes", "element_repr", "ufunc_mode", "ufunc_modes",
 ]
 
 @pytest.mark.parametrize("attribute", ATTRIBUTES)

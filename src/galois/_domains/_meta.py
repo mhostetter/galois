@@ -57,7 +57,7 @@ class ArrayMeta(abc.ABCMeta):
         cls._ZECH_E = 0
 
         # Class variables needed when displaying elements with fixed width
-        cls._display_mode = kwargs.get("display", "int")  # TODO: Do this here?
+        cls._element_repr = kwargs.get("repr", "int")  # TODO: Do this here?
         cls._element_fixed_width = None
         cls._element_fixed_width_counter = 0
 
@@ -173,11 +173,11 @@ class ArrayMeta(abc.ABCMeta):
         return cls._dtypes
 
     @property
-    def display_mode(cls) -> Literal["int", "poly", "power"]:
+    def element_repr(cls) -> Literal["int", "poly", "power"]:
         """
         The current element representation of the Galois field or Galois ring.
         """
-        return cls._display_mode
+        return cls._element_repr
 
     @property
     def ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:

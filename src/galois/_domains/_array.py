@@ -370,45 +370,45 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     ###############################################################################
 
     @classmethod
-    def display(cls, mode: Literal["int", "poly", "power"] = "int") -> Generator[None, None, None]:
+    def repr(cls, element_repr: Literal["int", "poly", "power"] = "int") -> Generator[None, None, None]:
         r"""
-        Sets the display mode for all arrays from this :obj:`~galois.FieldArray` subclass.
+        Sets the element representation for all arrays from this :obj:`~galois.FieldArray` subclass.
 
-        The display mode can be set to either the integer representation, polynomial representation, or power
-        representation. See :doc:`/basic-usage/element-representation` for a further discussion.
+        The element representation can be set to either the integer, polynomial, or power representation.
+        See :doc:`/basic-usage/element-representation` for a further discussion.
 
-        This function updates :obj:`~galois.FieldArray.display_mode`.
+        This function updates :obj:`~galois.FieldArray.element_repr`.
 
-        Warning
-        -------
-        For the power representation, :func:`numpy.log` is computed on each element. So for large fields without lookup
-        tables, displaying arrays in the power representation may take longer than expected.
+        .. danger::
+
+            For the power representation, :func:`numpy.log` is computed on each element. So for large fields without lookup
+            tables, displaying arrays in the power representation may take longer than expected.
 
         Parameters
         ----------
-        mode
+        element_repr
             The field element representation.
 
-            - `"int"`: Sets the display mode to the :ref:`integer representation <int-repr>`.
-            - `"poly"`: Sets the display mode to the :ref:`polynomial representation <poly-repr>`.
-            - `"power"`: Sets the display mode to the :ref:`power representation <power-repr>`.
+            - `"int"` (default): Sets the representation to the :ref:`integer representation <int-repr>`.
+            - `"poly"`: Sets the representation to the :ref:`polynomial representation <poly-repr>`.
+            - `"power"`: Sets the representation to the :ref:`power representation <power-repr>`.
 
         Returns
         -------
         :
-            A context manager for use in a `with` statement. If permanently setting the display mode, disregard the
+            A context manager for use in a `with` statement. If permanently setting the element representation, disregard the
             return value.
 
         Examples
         --------
-        The default display mode is the integer representation.
+        The default element representation is the integer representation.
 
         .. ipython:: python
 
             GF = galois.GF(3**2)
             x = GF.elements; x
 
-        Permanently set the display mode by calling :func:`display`.
+        Permanently set the element representation by calling :func:`repr`.
 
         .. md-tab-set::
 
@@ -416,19 +416,19 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
                 .. ipython:: python
 
-                    GF.display("poly");
+                    GF.repr("poly");
                     x
 
             .. md-tab-item:: Power
 
                 .. ipython:: python
 
-                    GF.display("power");
+                    GF.repr("power");
                     x
                     @suppress
-                    GF.display()
+                    GF.repr()
 
-        Temporarily modify the display mode by using :func:`display` as a context manager.
+        Temporarily modify the element representation by using :func:`repr` as a context manager.
 
         .. md-tab-set::
 
@@ -437,9 +437,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                 .. ipython:: python
 
                     print(x)
-                    with GF.display("poly"):
+                    with GF.repr("poly"):
                         print(x)
-                    # Outside the context manager, the display mode reverts to its previous value
+                    # Outside the context manager, the element representation reverts to its previous value
                     print(x)
 
             .. md-tab-item:: Power
@@ -447,27 +447,27 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                 .. ipython:: python
 
                     print(x)
-                    with GF.display("power"):
+                    with GF.repr("power"):
                         print(x)
-                    # Outside the context manager, the display mode reverts to its previous value
+                    # Outside the context manager, the element representation reverts to its previous value
                     print(x)
                     @suppress
-                    GF.display()
+                    GF.repr()
         """
-        verify_literal(mode, ["int", "poly", "power"])
+        verify_literal(element_repr, ["int", "poly", "power"])
 
-        prev_mode = cls.display_mode
-        cls._display_mode = mode  # Set the new display mode
+        prev_element_repr = cls.element_repr
+        cls._element_repr = element_repr
 
-        # Return a context manager for optional use in a `with` statement that will reset the display mode
+        # Return a context manager for optional use in a `with` statement that will reset the element representation
         # to its original value
-        return cls._display_context_manager(prev_mode)
+        return cls._repr_context_manager(prev_element_repr)
 
     @classmethod
     @contextlib.contextmanager
-    def _display_context_manager(cls, mode):
+    def _repr_context_manager(cls, element_repr: Literal["int", "poly", "power"]):
         yield
-        cls._display_mode = mode
+        cls._element_repr = element_repr
 
     ###############################################################################
     # Override getters/setters and type conversion functions

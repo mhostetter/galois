@@ -72,21 +72,21 @@ See :doc:`/basic-usage/array-creation` for more details.
 Change the element representation
 ---------------------------------
 
-The display representation of finite field elements can be set to either the integer (`"int"`), polynomial (`"poly"`),
-or power (`"power"`) representation. The default representation is the integer representation since that is natural when
+The representation of finite field elements can be set to either the integer (`"int"`), polynomial (`"poly"`),
+or power (`"power"`) representation. The default representation is the integer representation since integers are natural when
 working with integer NumPy arrays.
 
-Set the display mode by passing the `display` keyword argument to :func:`~galois.GF` or by calling the :func:`~galois.FieldArray.display`
-classmethod. Choose whichever element representation is most convenient for you.
+Set the element representation by passing the `repr` keyword argument to :func:`~galois.GF` or by calling the :func:`~galois.FieldArray.repr`
+classmethod. Choose whichever element representation is most convenient.
 
 .. ipython:: python
 
-   # The default representation is the integer representation
+   # The default is the integer representation
    x
-   GF.display("poly"); x
-   GF.display("power"); x
+   GF.repr("poly"); x
+   GF.repr("power"); x
    # Reset to the integer representation
-   GF.display("int");
+   GF.repr("int");
 
 See :doc:`/basic-usage/element-representation` for more details.
 

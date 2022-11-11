@@ -150,28 +150,28 @@ See [Array Creation](https://mhostetter.github.io/galois/latest/basic-usage/arra
 
 ### Change the element representation
 
-The display representation of finite field elements can be set to either the integer (`"int"`), polynomial (`"poly"`),
-or power (`"power"`) representation. The default representation is the integer representation since that is natural when
+The representation of finite field elements can be set to either the integer (`"int"`), polynomial (`"poly"`),
+or power (`"power"`) representation. The default representation is the integer representation since integers are natural when
 working with integer NumPy arrays.
 
-Set the display mode by passing the `display` keyword argument to `galois.GF()` or by calling the `display()` classmethod.
-Choose whichever element representation is most convenient for you.
+Set the element representation by passing the `repr` keyword argument to `galois.GF()` or by calling the `repr()`
+classmethod. Choose whichever element representation is most convenient.
 
 ```python
-# The default representation is the integer representation
+# The default is the integer representation
 In [12]: x
 Out[12]: GF([236,  87,  38, 112], order=3^5)
 
-In [13]: GF.display("poly"); x
+In [13]: GF.repr("poly"); x
 Out[13]: 
 GF([2α^4 + 2α^3 + 2α^2 + 2,               α^4 + 2α,
              α^3 + α^2 + 2,      α^4 + α^3 + α + 1], order=3^5)
 
-In [14]: GF.display("power"); x
+In [14]: GF.repr("power"); x
 Out[14]: GF([α^204,  α^16, α^230,  α^34], order=3^5)
 
 # Reset to the integer representation
-In [15]: GF.display("int");
+In [15]: GF.repr("int");
 ```
 
 See [Element Representation](https://mhostetter.github.io/galois/latest/basic-usage/element-representation/) for more details.
