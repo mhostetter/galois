@@ -114,10 +114,14 @@ class _CyclicCode(_LinearCode):
         return super().decode(codeword, output=output, errors=errors)
 
     def _convert_codeword_to_message(self, codeword: FieldArray) -> FieldArray:
+        ns = codeword.shape[-1]  # The number of codeword symbols (could be less than self.n for shortened codes)
+        ks = self.k - (self.n - ns)  # The number of message symbols (could be less than self.k for shortened codes)
+
         if self.is_systematic:
-            message = codeword[..., 0:self.k]
+            message = codeword[..., 0:ks]
         else:
             message, _ = divmod_jit(self.field)(codeword, self.generator_poly.coeffs)
+
         return message
 
     def _convert_codeword_to_parity(self, codeword: FieldArray) -> FieldArray:
@@ -125,6 +129,7 @@ class _CyclicCode(_LinearCode):
             parity = codeword[..., -(self.n - self.k):]
         else:
             _, parity = divmod_jit(self.field)(codeword, self.generator_poly.coeffs)
+
         return parity
 
     @property
