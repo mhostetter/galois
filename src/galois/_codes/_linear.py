@@ -76,6 +76,7 @@ class _LinearCode:
 
         message, is_message_1d = self._check_and_convert_message(message)
         codeword = self._encode_message(message)
+
         if is_message_1d:
             codeword = codeword[0,:]
 
@@ -155,14 +156,10 @@ class _LinearCode:
         codeword, is_codeword_1d = self._check_and_convert_codeword(codeword)
         dec_codeword, N_errors = self._decode_codeword(codeword)
 
-        ns = codeword.shape[-1]  # The number of codeword symbols (could be less than self.n for shortened codes)
-        ks = self.k - (self.n - ns)  # The number of message symbols (could be less than self.k for shortened codes)
-
         if output == "message":
             decoded = self._convert_codeword_to_message(dec_codeword)
-            decoded = decoded[:, :ks]
         else:
-            decoded = dec_codeword[:, :ns]
+            decoded = dec_codeword
 
         if is_codeword_1d:
             decoded, N_errors = decoded[0,:], int(N_errors[0])
