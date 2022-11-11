@@ -142,7 +142,7 @@ class _LinearCode:
             If `output="message"`, the error-corrected message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
             If `output="codeword"`, the error-corrected codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix.
         :
-            Optional return argument of the number of corrected symbol errors as either a scalar or :math:`N`-length array.
+            If `errors=True`, returns the number of corrected symbol errors as either a scalar or :math:`N`-length array.
             Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
             -1 will be returned.
 
