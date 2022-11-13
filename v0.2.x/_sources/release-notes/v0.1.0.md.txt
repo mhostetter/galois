@@ -1,0 +1,12 @@
+# v0.1.0
+
+*Released August 27, 2022*
+
+## Changes
+
+- First beta release!
+- Fixed PyPI package metadata.
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))

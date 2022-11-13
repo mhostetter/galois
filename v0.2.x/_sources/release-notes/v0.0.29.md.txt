@@ -1,0 +1,43 @@
+# v0.0.29
+
+*Released May 18, 2022*
+
+## Breaking changes
+
+- Moved `galois.square_free_factorization()` function into `Poly.square_free_factors()` method. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.distinct_degree_factorization()` function into `Poly.distinct_degree_factors()` method. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.equal_degree_factorization()` function into `Poly.equal_degree_factors()` method. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.is_irreducible()` function into `Poly.is_irreducible()` method. This is a method, not property, to indicate it is a computationally-expensive operation. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.is_primitive()` function into `Poly.is_primitive()` method. This is a method, not property, to indicate it is a computationally-expensive operation. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.is_monic()` function into `Poly.is_monic` property. ([#362](https://github.com/mhostetter/galois/pull/362))
+
+## Changes
+
+- Added `galois.set_printoptions()` function to modify package-wide printing options. This is the equivalent of `np.set_printoptions()`. ([#363](https://github.com/mhostetter/galois/pull/363))
+  ```ipython
+  In [1]: GF = galois.GF(3**5, display="poly")
+
+  In [2]: a = GF([109, 83]); a
+  Out[2]: GF([α^4 + α^3 + 1,       α^4 + 2], order=3^5)
+
+  In [3]: f = galois.Poly([3, 0, 5, 2], field=galois.GF(7)); f
+  Out[3]: Poly(3x^3 + 5x + 2, GF(7))
+
+  In [4]: galois.set_printoptions(coeffs="asc")
+
+  In [5]: a
+  Out[5]: GF([1 + α^3 + α^4,       2 + α^4], order=3^5)
+
+  In [6]: f
+  Out[6]: Poly(2 + 5x + 3x^3, GF(7))
+  ```
+- Added `galois.get_printoptions()` function to return the current package-wide printing options. This is the equivalent of `np.get_printoptions()`. ([#363](https://github.com/mhostetter/galois/pull/363))
+- Added `galois.printoptions()` context manager to modify printing options inside of a `with` statement. This is the equivalent of `np.printoptions()`. ([#363](https://github.com/mhostetter/galois/pull/363))
+- Added a separate `Poly.factors()` method, in addition to the polymorphic `galois.factors()`. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Added a separate `Poly.is_square_free()` method, in addition to the polymorphic `galois.is_square_free()`. This is a method, not property, to indicate it is a computationally-expensive operation. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Fixed a bug (believed to be introduced in v0.0.26) where `Poly.degree` occasionally returned `np.int64` instead of `int`. This could cause overflow in certain large integer operations (e.g., computing $q^m$ when determining if a degree-$m$ polynomial over $\mathrm{GF}(q)$ is irreducible). When the integer overflowed, this created erroneous results. ([#360](https://github.com/mhostetter/galois/issues/360), [#361](https://github.com/mhostetter/galois/pull/361))
+- Increased code coverage.
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
