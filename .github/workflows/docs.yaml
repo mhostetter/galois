@@ -75,35 +75,35 @@ jobs:
 
       - name: Determine folder name
         id: folder
-        uses: jannekem/run-python-script-action@v1
-        with:
-          script: |
-            import os
-            import re
+        shell: python
+        run: |
+          import os
+          import re
 
-            github_ref = os.environ.get('GITHUB_REF')
-            print("github_ref:", github_ref)
+          github_ref = os.environ.get('GITHUB_REF')
+          print("github_ref:", github_ref)
 
-            github_event_name = os.environ.get("GITHUB_EVENT_NAME")
-            print("github_event_name:", github_event_name)
+          github_event_name = os.environ.get("GITHUB_EVENT_NAME")
+          print("github_event_name:", github_event_name)
 
-            workflow_dispatch_tag = os.environ.get("WORKFLOW_DISPATCH_TAG")
-            print("workflow_dispatch_tag:", workflow_dispatch_tag)
+          workflow_dispatch_tag = os.environ.get("WORKFLOW_DISPATCH_TAG")
+          print("workflow_dispatch_tag:", workflow_dispatch_tag)
 
-            if github_event_name == "push" and github_ref.startswith("refs/heads/release/"):
-                name = "v" + github_ref.split("refs/heads/release/")[1]
-                print("name 1:", name)
-            elif github_event_name == "push" and github_ref.startswith("refs/tags/"):
-                name = github_ref.split("refs/tags/")[1]
-                print("name 2:", name)
-            elif github_event_name == "workflow_dispatch":
-                name = workflow_dispatch_tag
-                print("name 3:", name)
-            else:
-                print("name 4:")
-                raise RuntimeError
+          if github_event_name == "push" and github_ref.startswith("refs/heads/release/"):
+              name = "v" + github_ref.split("refs/heads/release/")[1]
+              print("name 1:", name)
+          elif github_event_name == "push" and github_ref.startswith("refs/tags/"):
+              name = github_ref.split("refs/tags/")[1]
+              print("name 2:", name)
+          elif github_event_name == "workflow_dispatch":
+              name = workflow_dispatch_tag
+              print("name 3:", name)
+          else:
+              print("name 4:")
+              raise RuntimeError
 
-            set_output("name", name)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+            f.write(f"name={name}")
 
       - name: Clear old version folder
         run: |
@@ -118,34 +118,33 @@ jobs:
         run: rm docs.tar.gz
 
       - name: Update versions.json file
-        uses: jannekem/run-python-script-action@v1
-        with:
-          script: |
-            import json
-            import pathlib
-            import os
+        shell: python
+        run: |
+          import json
+          import pathlib
+          import os
 
-            # Determine the version folders
-            cwd = pathlib.Path.cwd()
-            versions = sorted((item.name for item in cwd.iterdir() if item.is_dir() and not item.name.startswith(".")), reverse=True)
-            print(versions)
+          # Determine the version folders
+          cwd = pathlib.Path.cwd()
+          versions = sorted((item.name for item in cwd.iterdir() if item.is_dir() and not item.name.startswith(".")), reverse=True)
+          print(versions)
 
-            list_of_dicts = []
-            latest = None
-            for version in versions:
-              title = version
-              aliases = []
-              if "x" in version:
-                title += " (pre-release)"
-              elif latest is None:
-                latest = version
-                aliases = ["latest"]
-                os.system(f"ln -s {version} latest")
-              list_of_dicts.append({"version": version, "title": title, "aliases": aliases})
-            print(list_of_dicts)
+          list_of_dicts = []
+          latest = None
+          for version in versions:
+            title = version
+            aliases = []
+            if "x" in version:
+              title += " (pre-release)"
+            elif latest is None:
+              latest = version
+              aliases = ["latest"]
+              os.system(f"ln -s {version} latest")
+            list_of_dicts.append({"version": version, "title": title, "aliases": aliases})
+          print(list_of_dicts)
 
-            with (cwd / "versions.json").open("w") as f:
-                json.dump(list_of_dicts, f, indent=4)
+          with (cwd / "versions.json").open("w") as f:
+              json.dump(list_of_dicts, f, indent=4)
 
       - name: Publish to GitHub pages
         uses: peaceiris/actions-gh-pages@v3
