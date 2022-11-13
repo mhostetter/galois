@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - master
+      - 'release/*'
   pull_request:
     branches:
       - master
-      - '[0-9]+.[0-9x]+.[0-9x]+'
+      - 'release/*'
   workflow_call:
   workflow_dispatch:
     inputs:
@@ -93,14 +94,17 @@ jobs:
             if github_event_name == "push" and github_ref == "refs/heads/master":
                 name = "latest"
                 print("name 1:", name)
+            elif github_event_name == "push" and github_ref.startswith("refs/heads/release/"):
+                name = "v" + github_ref.split("refs/heads/release/")[1]
+                print("name 2:", name)
             elif github_event_name == "push" and github_ref.startswith("refs/tags/"):
                 name = github_ref.split("refs/tags/")[1]
-                print("name 2:", name)
+                print("name 3:", name)
             elif github_event_name == "workflow_dispatch":
                 name = workflow_dispatch_tag
-                print("name 3:", name)
+                print("name 4:", name)
             else:
-                print("name 4:")
+                print("name 5:")
                 raise RuntimeError
 
             set_output("name", name)
@@ -134,11 +138,16 @@ jobs:
                 versions.remove("latest")
                 versions.insert(0, "latest")
 
-            list_of_dict = [{"version": version, "title": version, "aliases": []} for version in versions]
-            print(list_of_dict)
+            list_of_dicts = []
+            for version in versions:
+              title = version
+              if "x" in version:
+                title += " (pre-release)"
+              list_of_dicts.append({"version": version, "title": title, "aliases": []})
+            print(list_of_dicts)
 
             with (cwd / "versions.json").open("w") as f:
-                json.dump(list_of_dict, f, indent=4)
+                json.dump(list_of_dicts, f, indent=4)
 
       - name: Publish to GitHub pages
         uses: peaceiris/actions-gh-pages@v3
