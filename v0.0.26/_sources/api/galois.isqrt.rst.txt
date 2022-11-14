@@ -1,6 +1,0 @@
-﻿galois.isqrt
-============
-
-.. currentmodule:: galois
-
-.. autofunction:: isqrt

@@ -1,6 +1,0 @@
-﻿galois.primes
-=============
-
-.. currentmodule:: galois
-
-.. autofunction:: primes

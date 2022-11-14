@@ -18,26 +18,27 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.5aa58769.min.css">
+      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.92c9fe4a.min.css">
+        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
+      
+
     
     
     
       
         
         
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -47,10 +48,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-4FW9NCNFZH",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-4FW9NCNFZH",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
 
@@ -88,9 +92,19 @@
     </div>
     
       <div data-md-component="outdated" hidden>
-        <aside class="md-banner md-banner--warning">
-          
-        </aside>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -159,7 +173,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -183,7 +197,7 @@
         <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -324,7 +338,7 @@
       <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -7205,12 +7219,13 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset" role="main">
-                
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
 
 
-  <h1 id="galois-glfsr">galois.GLFSR<a class="headerlink" href="#galois-glfsr" title="Permalink to this heading">¶</a></h1>
+<h1 id="galois-glfsr">galois.GLFSR<a class="headerlink" href="#galois-glfsr" title="Permalink to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight py" id="galois.GLFSR">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">GLFSR</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.GLFSR.__init__.feedback_poly" title="galois.GLFSR.__init__.feedback_poly (Python parameter) — The feedback polynomial f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1."><span class="n"><span class="pre">feedback_poly</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.GLFSR.__init__.state" title="galois.GLFSR.__init__.state (Python parameter) — The initial state vector S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]. The default is None which corresponds to all ones."><span class="n"><span class="pre">state</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.GLFSR" title="Permalink to this definition">¶</a></dt>
@@ -7382,6 +7397,10 @@ GF(p^m)</label><div class="sd-tab-content docutils">
 </div>
 <p class="rubric">Constructors</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.GLFSR.__init__" title="galois.GLFSR.__init__ (Python method) — Constructs a Galois LFSR from its feedback polynomial f(x)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(feedback_poly[, state])</p></td>
 <td><p>Constructs a Galois LFSR from its feedback polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p></td>
@@ -7393,6 +7412,10 @@ GF(p^m)</label><div class="sd-tab-content docutils">
 </table>
 <p class="rubric">Special Methods</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.GLFSR.__repr__" title="galois.GLFSR.__repr__ (Python method) — A terse representation of the Galois LFSR."><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
 <td><p>A terse representation of the Galois LFSR.</p></td>
@@ -7404,6 +7427,10 @@ GF(p^m)</label><div class="sd-tab-content docutils">
 </table>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.GLFSR.reset" title="galois.GLFSR.reset (Python method) — Resets the Galois LFSR state to the specified state."><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset</span></code></a>([state])</p></td>
 <td><p>Resets the Galois LFSR state to the specified state.</p></td>
@@ -7418,6 +7445,10 @@ GF(p^m)</label><div class="sd-tab-content docutils">
 </table>
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.GLFSR.characteristic_poly" title="galois.GLFSR.characteristic_poly (Python property) — The characteristic polynomial c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0} that defines the linear recurrent sequence. The characteristic polynomial is the reciprocal of the feedback polynomial c(x) = x^n f(x^{-1})."><code class="xref py py-obj docutils literal notranslate"><span class="pre">characteristic_poly</span></code></a></p></td>
 <td><p>The characteristic polynomial <span class="math notranslate nohighlight">\(c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}\)</span> that defines the linear recurrent sequence.</p></td>
@@ -7449,11 +7480,11 @@ GF(p^m)</label><div class="sd-tab-content docutils">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.GLFSR.__init__.feedback_poly" title="galois.GLFSR.__init__.feedback_poly (Python parameter) — The feedback polynomial f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1."><span class="n"><span class="pre">feedback_poly</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.GLFSR.__init__.state" title="galois.GLFSR.__init__.state (Python parameter) — The initial state vector S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]. The default is None which corresponds to all ones."><span class="n"><span class="pre">state</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.GLFSR.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a Galois LFSR from its feedback polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.GLFSR.__init__-parameters">Parameters<a class="headerlink" href="#galois.GLFSR.__init__-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="galois.GLFSR.__init__-parameters">Parameters<a class="headerlink" href="#galois.GLFSR.__init__-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="galois.GLFSR.__init__.feedback_poly"><span class="sig-name descname">feedback_poly</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference internal" href="../galois.Poly/#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m).">Poly</a></span></span><a class="headerlink" href="#galois.GLFSR.__init__.feedback_poly" title="Permalink to this definition">¶</a></dt><dd><p>The feedback polynomial <span class="math notranslate nohighlight">\(f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1\)</span>.</p>
 </dd>
-<dt id="galois.GLFSR.__init__.state"><span class="sig-name descname">state</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]]</span></span><a class="headerlink" href="#galois.GLFSR.__init__.state" title="Permalink to this definition">¶</a></dt><dd><p>The initial state vector <span class="math notranslate nohighlight">\(S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]\)</span>. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds to
+<dt id="galois.GLFSR.__init__.state"><span class="sig-name descname">state</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]]</span></span><a class="headerlink" href="#galois.GLFSR.__init__.state" title="Permalink to this definition">¶</a></dt><dd><p>The initial state vector <span class="math notranslate nohighlight">\(S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]\)</span>. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds to
 all ones.</p>
 </dd>
 </dl>
@@ -7473,19 +7504,19 @@ polynomial. This is because <span class="math notranslate nohighlight">\(f(x) = 
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Taps</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.GLFSR.Taps.taps" title="galois.GLFSR.Taps.taps (Python parameter) — The shift register taps T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]."><span class="n"><span class="pre">taps</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.GLFSR.Taps.state" title="galois.GLFSR.Taps.state (Python parameter) — The initial state vector S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]. The default is None which corresponds to all ones."><span class="n"><span class="pre">state</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.GLFSR.Taps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a Galois LFSR from its taps <span class="math notranslate nohighlight">\(T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.GLFSR.Taps-parameters">Parameters<a class="headerlink" href="#galois.GLFSR.Taps-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="galois.GLFSR.Taps-parameters">Parameters<a class="headerlink" href="#galois.GLFSR.Taps-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="galois.GLFSR.Taps.taps"><span class="sig-name descname">taps</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a></span></span><a class="headerlink" href="#galois.GLFSR.Taps.taps" title="Permalink to this definition">¶</a></dt><dd><p>The shift register taps <span class="math notranslate nohighlight">\(T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]\)</span>.</p>
 </dd>
-<dt id="galois.GLFSR.Taps.state"><span class="sig-name descname">state</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]]</span></span><a class="headerlink" href="#galois.GLFSR.Taps.state" title="Permalink to this definition">¶</a></dt><dd><p>The initial state vector <span class="math notranslate nohighlight">\(S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]\)</span>. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds to
+<dt id="galois.GLFSR.Taps.state"><span class="sig-name descname">state</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]]</span></span><a class="headerlink" href="#galois.GLFSR.Taps.state" title="Permalink to this definition">¶</a></dt><dd><p>The initial state vector <span class="math notranslate nohighlight">\(S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]\)</span>. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds to
 all ones.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.GLFSR.Taps-returns">Returns<a class="headerlink" href="#galois.GLFSR.Taps-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.GLFSR.Taps-returns">Returns<a class="headerlink" href="#galois.GLFSR.Taps-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>A Galois LFSR with taps <span class="math notranslate nohighlight">\(T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.GLFSR.Taps-return-type">Return type<a class="headerlink" href="#galois.GLFSR.Taps-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.GLFSR.Taps-return-type">Return type<a class="headerlink" href="#galois.GLFSR.Taps-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.GLFSR" title="galois.GLFSR (Python class) — A Galois linear-feedback shift register (LFSR)."><em>GLFSR</em></a></p>
 </dd>
 </dl>
@@ -7559,9 +7590,9 @@ all ones.</p>
 <span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.GLFSR.reset.state" title="galois.GLFSR.reset.state (Python parameter) — The state vector S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]. The default is None which corresponds to the initial state."><span class="n"><span class="pre">state</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.GLFSR.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets the Galois LFSR state to the specified state.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.GLFSR.reset-parameters">Parameters<a class="headerlink" href="#galois.GLFSR.reset-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.GLFSR.reset.state"><span class="sig-name descname">state</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]]</span></span><a class="headerlink" href="#galois.GLFSR.reset.state" title="Permalink to this definition">¶</a></dt><dd><p>The state vector <span class="math notranslate nohighlight">\(S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]\)</span>. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds to
+<dt class="field-odd" id="galois.GLFSR.reset-parameters">Parameters<a class="headerlink" href="#galois.GLFSR.reset-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.GLFSR.reset.state"><span class="sig-name descname">state</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]]</span></span><a class="headerlink" href="#galois.GLFSR.reset.state" title="Permalink to this definition">¶</a></dt><dd><p>The state vector <span class="math notranslate nohighlight">\(S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]\)</span>. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds to
 the initial state.</p>
 </dd>
 </dl>
@@ -7629,16 +7660,16 @@ Specific state</label><div class="sd-tab-content docutils">
 <p>Negative values may be passed which reverses the direction of the shift registers and produces outputs
 in reverse order.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.GLFSR.step-parameters">Parameters<a class="headerlink" href="#galois.GLFSR.step-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.GLFSR.step.steps"><span class="sig-name descname">steps</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.GLFSR.step.steps" title="Permalink to this definition">¶</a></dt><dd><p>The direction and number of output symbols to produce. The default is 1. If negative, the Galois LFSR will step backward.</p>
+<dt class="field-odd" id="galois.GLFSR.step-parameters">Parameters<a class="headerlink" href="#galois.GLFSR.step-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.GLFSR.step.steps"><span class="sig-name descname">steps</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.GLFSR.step.steps" title="Permalink to this definition">¶</a></dt><dd><p>The direction and number of output symbols to produce. The default is 1. If negative, the Galois LFSR will step backward.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.GLFSR.step-returns">Returns<a class="headerlink" href="#galois.GLFSR.step-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.GLFSR.step-returns">Returns<a class="headerlink" href="#galois.GLFSR.step-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>An array of output symbols of type <a class="reference internal" href="#galois.GLFSR.field" title="galois.GLFSR.field (Python property) — The Galois field array class for the finite field that defines the linear arithmetic."><code class="xref py py-obj docutils literal notranslate"><span class="pre">field</span></code></a> with size <code class="samp docutils literal notranslate"><span class="pre">abs(steps)</span></code>.</p>
 </dd>
-<dt class="field-odd" id="galois.GLFSR.step-return-type">Return type<a class="headerlink" href="#galois.GLFSR.step-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.GLFSR.step-return-type">Return type<a class="headerlink" href="#galois.GLFSR.step-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -7733,10 +7764,10 @@ the ending state is the same as the initial state.</p>
 <span class="sig-name descname"><span class="pre">to_fibonacci_lfsr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.GLFSR.to_fibonacci_lfsr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the Galois LFSR to a Fibonacci LFSR that produces the same output.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.GLFSR.to_fibonacci_lfsr-returns">Returns<a class="headerlink" href="#galois.GLFSR.to_fibonacci_lfsr-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.GLFSR.to_fibonacci_lfsr-returns">Returns<a class="headerlink" href="#galois.GLFSR.to_fibonacci_lfsr-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>An equivalent Fibonacci LFSR.</p>
 </dd>
-<dt class="field-even" id="galois.GLFSR.to_fibonacci_lfsr-return-type">Return type<a class="headerlink" href="#galois.GLFSR.to_fibonacci_lfsr-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.GLFSR.to_fibonacci_lfsr-return-type">Return type<a class="headerlink" href="#galois.GLFSR.to_fibonacci_lfsr-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="../galois.FLFSR/#galois.FLFSR" title="galois.FLFSR (Python class) — A Fibonacci linear-feedback shift register (LFSR)."><em>FLFSR</em></a></p>
 </dd>
 </dl>
@@ -7869,7 +7900,7 @@ polynomial <span class="math notranslate nohighlight">\(f(x) = x^n c(x^{-1})\)</
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.GLFSR.order">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">order</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.GLFSR.order" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">order</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.GLFSR.order" title="Permalink to this definition">¶</a></dt>
 <dd><p>The order of the linear recurrence/linear recurrent sequence. The order of a sequence is defined by the
 degree of the minimal polynomial that produces it.</p>
 </dd></dl>
@@ -7923,23 +7954,30 @@ the linear recurrence relation.</p>
 
 
 
-
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      Aug 29, 2022
+      Mar 30, 2022
     
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
@@ -7948,7 +7986,8 @@ the linear recurrence relation.</p>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../galois.GF2/" class="md-footer__link md-footer__link--prev" aria-label="Previous: galois.GF2" rel="prev">
@@ -7997,7 +8036,7 @@ the linear recurrence relation.</p>
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.1.1.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -8012,10 +8051,12 @@ the linear recurrence relation.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
+    
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     

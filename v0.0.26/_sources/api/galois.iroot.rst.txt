@@ -1,6 +1,0 @@
-﻿galois.iroot
-============
-
-.. currentmodule:: galois
-
-.. autofunction:: iroot
