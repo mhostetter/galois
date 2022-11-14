@@ -1,6 +1,0 @@
-﻿galois.typing.IterableLike
-==========================
-
-.. currentmodule:: galois.typing
-
-.. autodata:: IterableLike

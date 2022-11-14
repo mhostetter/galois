@@ -1,6 +1,0 @@
-﻿galois.next\_prime
-==================
-
-.. currentmodule:: galois
-
-.. autofunction:: next_prime

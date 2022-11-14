@@ -1,6 +1,0 @@
-﻿galois.bch\_valid\_codes
-========================
-
-.. currentmodule:: galois
-
-.. autofunction:: bch_valid_codes

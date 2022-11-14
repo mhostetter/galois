@@ -1,6 +1,0 @@
-﻿galois.mersenne\_exponents
-==========================
-
-.. currentmodule:: galois
-
-.. autofunction:: mersenne_exponents
