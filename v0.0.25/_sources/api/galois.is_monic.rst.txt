@@ -1,6 +1,0 @@
-﻿galois.is\_monic
-================
-
-.. currentmodule:: galois
-
-.. autofunction:: is_monic

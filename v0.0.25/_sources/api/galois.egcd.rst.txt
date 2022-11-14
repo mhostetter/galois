@@ -1,6 +1,0 @@
-﻿galois.egcd
-===========
-
-.. currentmodule:: galois
-
-.. autofunction:: egcd

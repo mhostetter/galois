@@ -18,26 +18,27 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.5aa58769.min.css">
+      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.92c9fe4a.min.css">
+        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
+      
+
     
     
     
       
         
         
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -47,10 +48,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-4FW9NCNFZH",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-4FW9NCNFZH",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
 
@@ -88,9 +92,19 @@
     </div>
     
       <div data-md-component="outdated" hidden>
-        <aside class="md-banner md-banner--warning">
-          
-        </aside>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -159,7 +173,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -183,7 +197,7 @@
         <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -324,7 +338,7 @@
       <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -11210,12 +11224,13 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset" role="main">
-                
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
 
 
-  <h1 id="galois-fieldarray">galois.FieldArray<a class="headerlink" href="#galois-fieldarray" title="Permalink to this heading">¶</a></h1>
+<h1 id="galois-fieldarray">galois.FieldArray<a class="headerlink" href="#galois-fieldarray" title="Permalink to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="galois.FieldArray">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">FieldArray</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.array" title="galois.FieldArray.__init__.array (Python parameter) — The input array-like object to be converted to a Galois field array. See Array Creation for a detailed discussion about creating new arrays and array-like objects."><span class="n"><span class="pre">array</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.dtype" title="galois.FieldArray.__init__.dtype (Python parameter) — The numpy.dtype of the array elements. The default is None which represents the smallest unsigned data type for this class (the first element in galois.FieldClass.dtypes)."><span class="n"><span class="pre">dtype</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.copy" title="galois.FieldArray.__init__.copy (Python parameter) — The copy keyword argument from numpy.array(). The default is True which makes a copy of the input array."><span class="n"><span class="pre">copy</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.order" title="galois.FieldArray.__init__.order (Python parameter) — The order keyword argument from numpy.array(). Valid values are &quot;K&quot; (default), &quot;A&quot;, &quot;C&quot;, or &quot;F&quot;."><span class="n"><span class="pre">order</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;K&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.ndmin" title="galois.FieldArray.__init__.ndmin (Python parameter) — The ndmin keyword argument from numpy.array(). The minimum number of dimensions of the output. The default is 0."><span class="n"><span class="pre">ndmin</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">0</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray" title="Permalink to this definition">¶</a></dt>
@@ -11278,6 +11293,10 @@ metaclass.</p>
 </div>
 <p class="rubric">Constructors</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.FieldArray.__init__" title="galois.FieldArray.__init__ (Python method) — Creates a Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(array[, dtype, copy, order, ndmin])</p></td>
 <td><p>Creates a <a class="reference internal" href="../../basic-usage/galois-field-classes/#galois-field-array"><span class="std std-ref">Galois field array</span></a> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p></td>
@@ -11310,6 +11329,10 @@ metaclass.</p>
 </table>
 <p class="rubric">Special Methods</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.FieldArray.__repr__" title="galois.FieldArray.__repr__ (Python method) — Displays the array specifying the class and finite field order."><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
 <td><p>Displays the array specifying the class and finite field order.</p></td>
@@ -11321,6 +11344,10 @@ metaclass.</p>
 </table>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.FieldArray.additive_order" title="galois.FieldArray.additive_order (Python method) — Computes the additive order of each element in x."><code class="xref py py-obj docutils literal notranslate"><span class="pre">additive_order</span></code></a>()</p></td>
 <td><p>Computes the additive order of each element in <span class="math notranslate nohighlight">\(x\)</span>.</p></td>
@@ -11376,29 +11403,29 @@ metaclass.</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.array" title="galois.FieldArray.__init__.array (Python parameter) — The input array-like object to be converted to a Galois field array. See Array Creation for a detailed discussion about creating new arrays and array-like objects."><span class="n"><span class="pre">array</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.dtype" title="galois.FieldArray.__init__.dtype (Python parameter) — The numpy.dtype of the array elements. The default is None which represents the smallest unsigned data type for this class (the first element in galois.FieldClass.dtypes)."><span class="n"><span class="pre">dtype</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.copy" title="galois.FieldArray.__init__.copy (Python parameter) — The copy keyword argument from numpy.array(). The default is True which makes a copy of the input array."><span class="n"><span class="pre">copy</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.order" title="galois.FieldArray.__init__.order (Python parameter) — The order keyword argument from numpy.array(). Valid values are &quot;K&quot; (default), &quot;A&quot;, &quot;C&quot;, or &quot;F&quot;."><span class="n"><span class="pre">order</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;K&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.__init__.ndmin" title="galois.FieldArray.__init__.ndmin (Python parameter) — The ndmin keyword argument from numpy.array(). The minimum number of dimensions of the output. The default is 0."><span class="n"><span class="pre">ndmin</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">0</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a <a class="reference internal" href="../../basic-usage/galois-field-classes/#galois-field-array"><span class="std std-ref">Galois field array</span></a> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.__init__-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.__init__-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.__init__.array"><span class="sig-name descname">array</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)">Iterable</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.FieldArray.__init__.array" title="Permalink to this definition">¶</a></dt><dd><p><p>The input array-like object to be converted to a <em>Galois field array</em>. See <a class="reference internal" href="../../basic-usage/array-creation/#array-creation"><span class="std std-ref">Array Creation</span></a> for a detailed discussion
+<dt class="field-odd" id="galois.FieldArray.__init__-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.__init__-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.__init__.array"><span class="sig-name descname">array</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.11)">Iterable</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.FieldArray.__init__.array" title="Permalink to this definition">¶</a></dt><dd><p><p>The input array-like object to be converted to a <em>Galois field array</em>. See <a class="reference internal" href="../../basic-usage/array-creation/#array-creation"><span class="std std-ref">Array Creation</span></a> for a detailed discussion
 about creating new arrays and array-like objects.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>: A single integer, which is the <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a> of a finite field element,
+<li><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>: A single integer, which is the <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a> of a finite field element,
 creates a 0-D array (scalar).</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>: A single string, which is the <a class="reference internal" href="../../basic-usage/field-element-representation/#polynomial-representation"><span class="std std-ref">polynomial representation</span></a> of a finite field element,
+<li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>: A single string, which is the <a class="reference internal" href="../../basic-usage/field-element-representation/#polynomial-representation"><span class="std std-ref">polynomial representation</span></a> of a finite field element,
 creates a 0-D array (scalar).</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a>: A list or tuple (or nested lists/tuples) of integers or strings (which can be mixed and matched) creates
+<li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a>: A list or tuple (or nested lists/tuples) of integers or strings (which can be mixed and matched) creates
 an array of finite field elements from their integer or polynomial representations.</p></li>
 <li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>: A NumPy array of integers creates a copy of the array over this specific field.</p></li>
 </ul>
 </p>
 </dd>
-<dt id="galois.FieldArray.__init__.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.__init__.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt id="galois.FieldArray.__init__.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.__init__.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 data type for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
-<dt id="galois.FieldArray.__init__.copy"><span class="sig-name descname">copy</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></span></span><a class="headerlink" href="#galois.FieldArray.__init__.copy" title="Permalink to this definition">¶</a></dt><dd><p>The <code class="samp docutils literal notranslate"><span class="pre">copy</span></code> keyword argument from <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.array()</span></code></a>. The default is <code class="samp docutils literal notranslate"><span class="pre">True</span></code> which makes a copy of the input array.</p>
+<dt id="galois.FieldArray.__init__.copy"><span class="sig-name descname">copy</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></span></span><a class="headerlink" href="#galois.FieldArray.__init__.copy" title="Permalink to this definition">¶</a></dt><dd><p>The <code class="samp docutils literal notranslate"><span class="pre">copy</span></code> keyword argument from <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.array()</span></code></a>. The default is <code class="samp docutils literal notranslate"><span class="pre">True</span></code> which makes a copy of the input array.</p>
 </dd>
-<dt id="galois.FieldArray.__init__.order"><span class="sig-name descname">order</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)">Literal</a>['K', 'A', 'C', 'F']</span></span><a class="headerlink" href="#galois.FieldArray.__init__.order" title="Permalink to this definition">¶</a></dt><dd><p>The <code class="samp docutils literal notranslate"><span class="pre">order</span></code> keyword argument from <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.array()</span></code></a>. Valid values are <code class="samp docutils literal notranslate"><span class="pre">&quot;K&quot;</span></code> (default), <code class="samp docutils literal notranslate"><span class="pre">&quot;A&quot;</span></code>, <code class="samp docutils literal notranslate"><span class="pre">&quot;C&quot;</span></code>, or <code class="samp docutils literal notranslate"><span class="pre">&quot;F&quot;</span></code>.</p>
+<dt id="galois.FieldArray.__init__.order"><span class="sig-name descname">order</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)">Literal</a>['K', 'A', 'C', 'F']</span></span><a class="headerlink" href="#galois.FieldArray.__init__.order" title="Permalink to this definition">¶</a></dt><dd><p>The <code class="samp docutils literal notranslate"><span class="pre">order</span></code> keyword argument from <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.array()</span></code></a>. Valid values are <code class="samp docutils literal notranslate"><span class="pre">&quot;K&quot;</span></code> (default), <code class="samp docutils literal notranslate"><span class="pre">&quot;A&quot;</span></code>, <code class="samp docutils literal notranslate"><span class="pre">&quot;C&quot;</span></code>, or <code class="samp docutils literal notranslate"><span class="pre">&quot;F&quot;</span></code>.</p>
 </dd>
-<dt id="galois.FieldArray.__init__.ndmin"><span class="sig-name descname">ndmin</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.__init__.ndmin" title="Permalink to this definition">¶</a></dt><dd><p>The <code class="samp docutils literal notranslate"><span class="pre">ndmin</span></code> keyword argument from <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.array()</span></code></a>. The minimum number of dimensions of the output.
+<dt id="galois.FieldArray.__init__.ndmin"><span class="sig-name descname">ndmin</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.__init__.ndmin" title="Permalink to this definition">¶</a></dt><dd><p>The <code class="samp docutils literal notranslate"><span class="pre">ndmin</span></code> keyword argument from <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.array()</span></code></a>. The minimum number of dimensions of the output.
 The default is 0.</p>
 </dd>
 </dl>
@@ -11411,17 +11438,17 @@ The default is 0.</p>
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Elements</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Elements.dtype" title="galois.FieldArray.Elements.dtype (Python parameter) — The numpy.dtype of the array elements. The default is None which represents the smallest unsigned dtype for this class (the first element in galois.FieldClass.dtypes)."><span class="n"><span class="pre">dtype</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.Elements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a 1-D array of the finite field’s elements <span class="math notranslate nohighlight">\(\{0, \dots, p^m-1\}\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.Elements-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Elements-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.Elements.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Elements.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt class="field-odd" id="galois.FieldArray.Elements-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Elements-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.Elements.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Elements.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 dtype for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.Elements-returns">Returns<a class="headerlink" href="#galois.FieldArray.Elements-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.Elements-returns">Returns<a class="headerlink" href="#galois.FieldArray.Elements-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>A 1-D array of all the finite field’s elements.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.Elements-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Elements-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.Elements-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Elements-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11449,19 +11476,19 @@ dtype for this class (the first element in <a class="reference internal" href=".
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Identity</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Identity.size" title="galois.FieldArray.Identity.size (Python parameter) — The size n along one axis of the matrix. The resulting array has shape (size, size)."><span class="n"><span class="pre">size</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Identity.dtype" title="galois.FieldArray.Identity.dtype (Python parameter) — The numpy.dtype of the array elements. The default is None which represents the smallest unsigned dtype for this class (the first element in galois.FieldClass.dtypes)."><span class="n"><span class="pre">dtype</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.Identity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an <span class="math notranslate nohighlight">\(n \times n\)</span> identity matrix.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.Identity-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Identity-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.Identity.size"><span class="sig-name descname">size</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Identity.size" title="Permalink to this definition">¶</a></dt><dd><p>The size <span class="math notranslate nohighlight">\(n\)</span> along one axis of the matrix. The resulting array has shape <code class="samp docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">size)</span></code>.</p>
+<dt class="field-odd" id="galois.FieldArray.Identity-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Identity-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.Identity.size"><span class="sig-name descname">size</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Identity.size" title="Permalink to this definition">¶</a></dt><dd><p>The size <span class="math notranslate nohighlight">\(n\)</span> along one axis of the matrix. The resulting array has shape <code class="samp docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">size)</span></code>.</p>
 </dd>
-<dt id="galois.FieldArray.Identity.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Identity.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt id="galois.FieldArray.Identity.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Identity.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 dtype for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.Identity-returns">Returns<a class="headerlink" href="#galois.FieldArray.Identity-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.Identity-returns">Returns<a class="headerlink" href="#galois.FieldArray.Identity-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>A 2-D identity matrix with shape <code class="samp docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">size)</span></code>.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.Identity-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Identity-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.Identity-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Identity-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11483,21 +11510,21 @@ dtype for this class (the first element in <a class="reference internal" href=".
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Ones</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Ones.shape" title="galois.FieldArray.Ones.shape (Python parameter) — A NumPy-compliant shape tuple, see numpy.ndarray.shape. An empty tuple () represents a scalar. A single integer or 1-tuple, e.g. N or (N,), represents the size of a 1-D array. A 2-tuple, e.g. (M, N), represents a 2-D array with each element indicating the size in each dimension."><span class="n"><span class="pre">shape</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Ones.dtype" title="galois.FieldArray.Ones.dtype (Python parameter) — The numpy.dtype of the array elements. The default is None which represents the smallest unsigned dtype for this class (the first element in galois.FieldClass.dtypes)."><span class="n"><span class="pre">dtype</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.Ones" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an array of all ones.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.Ones-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Ones-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.Ones.shape"><span class="sig-name descname">shape</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Ones.shape" title="Permalink to this definition">¶</a></dt><dd><p>A NumPy-compliant <code class="samp docutils literal notranslate"><span class="pre">shape</span></code> tuple, see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray.shape</span></code></a>. An empty tuple <code class="samp docutils literal notranslate"><span class="pre">()</span></code> represents a scalar.
+<dt class="field-odd" id="galois.FieldArray.Ones-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Ones-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.Ones.shape"><span class="sig-name descname">shape</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Ones.shape" title="Permalink to this definition">¶</a></dt><dd><p>A NumPy-compliant <code class="samp docutils literal notranslate"><span class="pre">shape</span></code> tuple, see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray.shape</span></code></a>. An empty tuple <code class="samp docutils literal notranslate"><span class="pre">()</span></code> represents a scalar.
 A single integer or 1-tuple, e.g. <code class="samp docutils literal notranslate"><span class="pre">N</span></code> or <code class="samp docutils literal notranslate"><span class="pre">(N,)</span></code>, represents the size of a 1-D array. A 2-tuple, e.g.
 <code class="samp docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N)</span></code>, represents a 2-D array with each element indicating the size in each dimension.</p>
 </dd>
-<dt id="galois.FieldArray.Ones.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Ones.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt id="galois.FieldArray.Ones.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Ones.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 dtype for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.Ones-returns">Returns<a class="headerlink" href="#galois.FieldArray.Ones-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.Ones-returns">Returns<a class="headerlink" href="#galois.FieldArray.Ones-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>An array of ones.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.Ones-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Ones-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.Ones-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Ones-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11517,30 +11544,30 @@ dtype for this class (the first element in <a class="reference internal" href=".
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Random</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Random.shape" title="galois.FieldArray.Random.shape (Python parameter) — A NumPy-compliant shape tuple, see numpy.ndarray.shape. An empty tuple () represents a scalar. A single integer or 1-tuple, e.g. N or (N,), represents the size of a 1-D array. A 2-tuple, e.g. (M, N), represents a 2-D array with each element indicating the size in each dimension."><span class="n"><span class="pre">shape</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="p">()</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Random.low" title="galois.FieldArray.Random.low (Python parameter) — The smallest finite field element (inclusive) in its integer representation. The default is 0."><span class="n"><span class="pre">low</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">0</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Random.high" title="galois.FieldArray.Random.high (Python parameter) — The largest finite field element (exclusive) in its integer representation. The default is None which represents the field's order p^m."><span class="n"><span class="pre">high</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Random.seed" title="galois.FieldArray.Random.seed (Python parameter) — Non-negative integer used to initialize the PRNG. The default is None which means that unpredictable entropy will be pulled from the OS to be used as the seed. A numpy.random.Generator can also be passed."><span class="n"><span class="pre">seed</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Random.dtype" title="galois.FieldArray.Random.dtype (Python parameter) — The numpy.dtype of the array elements. The default is None which represents the smallest unsigned dtype for this class (the first element in galois.FieldClass.dtypes)."><span class="n"><span class="pre">dtype</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.Random" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an array with random field elements.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.Random-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Random-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.Random.shape"><span class="sig-name descname">shape</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Random.shape" title="Permalink to this definition">¶</a></dt><dd><p>A NumPy-compliant <code class="samp docutils literal notranslate"><span class="pre">shape</span></code> tuple, see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray.shape</span></code></a>. An empty tuple <code class="samp docutils literal notranslate"><span class="pre">()</span></code> represents a scalar.
+<dt class="field-odd" id="galois.FieldArray.Random-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Random-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.Random.shape"><span class="sig-name descname">shape</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Random.shape" title="Permalink to this definition">¶</a></dt><dd><p>A NumPy-compliant <code class="samp docutils literal notranslate"><span class="pre">shape</span></code> tuple, see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray.shape</span></code></a>. An empty tuple <code class="samp docutils literal notranslate"><span class="pre">()</span></code> represents a scalar.
 A single integer or 1-tuple, e.g. <code class="samp docutils literal notranslate"><span class="pre">N</span></code> or <code class="samp docutils literal notranslate"><span class="pre">(N,)</span></code>, represents the size of a 1-D array. A 2-tuple, e.g.
 <code class="samp docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N)</span></code>, represents a 2-D array with each element indicating the size in each dimension.</p>
 </dd>
-<dt id="galois.FieldArray.Random.low"><span class="sig-name descname">low</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Random.low" title="Permalink to this definition">¶</a></dt><dd><p>The smallest finite field element (inclusive) in its <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a>.
+<dt id="galois.FieldArray.Random.low"><span class="sig-name descname">low</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Random.low" title="Permalink to this definition">¶</a></dt><dd><p>The smallest finite field element (inclusive) in its <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a>.
 The default is 0.</p>
 </dd>
-<dt id="galois.FieldArray.Random.high"><span class="sig-name descname">high</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Random.high" title="Permalink to this definition">¶</a></dt><dd><p>The largest finite field element (exclusive) in its <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a>.
+<dt id="galois.FieldArray.Random.high"><span class="sig-name descname">high</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Random.high" title="Permalink to this definition">¶</a></dt><dd><p>The largest finite field element (exclusive) in its <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a>.
 The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the field’s order <span class="math notranslate nohighlight">\(p^m\)</span>.</p>
 </dd>
-<dt id="galois.FieldArray.Random.seed"><span class="sig-name descname">seed</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/random/generator.html#numpy.random.Generator" title="(in NumPy v1.23)">Generator</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Random.seed" title="Permalink to this definition">¶</a></dt><dd><p>Non-negative integer used to initialize the PRNG. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which means that unpredictable
+<dt id="galois.FieldArray.Random.seed"><span class="sig-name descname">seed</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/random/generator.html#numpy.random.Generator" title="(in NumPy v1.23)">Generator</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Random.seed" title="Permalink to this definition">¶</a></dt><dd><p>Non-negative integer used to initialize the PRNG. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which means that unpredictable
 entropy will be pulled from the OS to be used as the seed. A <a class="reference external" href="https://numpy.org/doc/stable/reference/random/generator.html#numpy.random.Generator" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.random.Generator</span></code></a> can also be passed.</p>
 </dd>
-<dt id="galois.FieldArray.Random.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Random.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt id="galois.FieldArray.Random.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Random.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 dtype for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.Random-returns">Returns<a class="headerlink" href="#galois.FieldArray.Random-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.Random-returns">Returns<a class="headerlink" href="#galois.FieldArray.Random-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>An array of random finite field elements.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.Random-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Random-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.Random-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Random-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11550,8 +11577,8 @@ dtype for this class (the first element in <a class="reference internal" href=".
 
 <span class="gp">In [2]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="gh">Out[2]: </span><span class="go"></span>
-<span class="go">GF([[30,  1,  2, 25,  1],</span>
-<span class="go">    [21, 20, 22, 11, 11]], order=31)</span>
+<span class="go">GF([[15, 26, 29,  9,  2],</span>
+<span class="go">    [22, 23,  6, 28, 14]], order=31)</span>
 </code></pre></div>
 </div>
 <p>Generate a random array with a specified seed. This produces repeatable outputs.</p>
@@ -11579,23 +11606,23 @@ dtype for this class (the first element in <a class="reference internal" href=".
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Range</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Range.start" title="galois.FieldArray.Range.start (Python parameter) — The starting finite field element (inclusive) in its integer representation."><span class="n"><span class="pre">start</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Range.stop" title="galois.FieldArray.Range.stop (Python parameter) — The stopping finite field element (exclusive) in its integer representation."><span class="n"><span class="pre">stop</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Range.step" title="galois.FieldArray.Range.step (Python parameter) — The increment between finite field element. The default is 1."><span class="n"><span class="pre">step</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Range.dtype" title="galois.FieldArray.Range.dtype (Python parameter) — The numpy.dtype of the array elements. The default is None which represents the smallest unsigned dtype for this class (the first element in galois.FieldClass.dtypes)."><span class="n"><span class="pre">dtype</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.Range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a 1-D array with a range of field elements.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.Range-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Range-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.Range.start"><span class="sig-name descname">start</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Range.start" title="Permalink to this definition">¶</a></dt><dd><p>The starting finite field element (inclusive) in its <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a>.</p>
+<dt class="field-odd" id="galois.FieldArray.Range-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Range-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.Range.start"><span class="sig-name descname">start</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Range.start" title="Permalink to this definition">¶</a></dt><dd><p>The starting finite field element (inclusive) in its <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a>.</p>
 </dd>
-<dt id="galois.FieldArray.Range.stop"><span class="sig-name descname">stop</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Range.stop" title="Permalink to this definition">¶</a></dt><dd><p>The stopping finite field element (exclusive) in its <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a>.</p>
+<dt id="galois.FieldArray.Range.stop"><span class="sig-name descname">stop</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Range.stop" title="Permalink to this definition">¶</a></dt><dd><p>The stopping finite field element (exclusive) in its <a class="reference internal" href="../../basic-usage/field-element-representation/#integer-representation"><span class="std std-ref">integer representation</span></a>.</p>
 </dd>
-<dt id="galois.FieldArray.Range.step"><span class="sig-name descname">step</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Range.step" title="Permalink to this definition">¶</a></dt><dd><p>The increment between finite field element. The default is 1.</p>
+<dt id="galois.FieldArray.Range.step"><span class="sig-name descname">step</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Range.step" title="Permalink to this definition">¶</a></dt><dd><p>The increment between finite field element. The default is 1.</p>
 </dd>
-<dt id="galois.FieldArray.Range.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Range.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt id="galois.FieldArray.Range.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Range.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 dtype for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.Range-returns">Returns<a class="headerlink" href="#galois.FieldArray.Range-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.Range-returns">Returns<a class="headerlink" href="#galois.FieldArray.Range-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>A 1-D array of a range of finite field elements.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.Range-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Range-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.Range-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Range-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11632,23 +11659,23 @@ dtype for this class (the first element in <a class="reference internal" href=".
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Vandermonde</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Vandermonde.a" title="galois.FieldArray.Vandermonde.a (Python parameter) — An element of \mathrm{GF}(q)."><span class="n"><span class="pre">a</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Vandermonde.m" title="galois.FieldArray.Vandermonde.m (Python parameter) — The number of rows in the Vandermonde matrix."><span class="n"><span class="pre">m</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Vandermonde.n" title="galois.FieldArray.Vandermonde.n (Python parameter) — The number of columns in the Vandermonde matrix."><span class="n"><span class="pre">n</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Vandermonde.dtype" title="galois.FieldArray.Vandermonde.dtype (Python parameter) — The numpy.dtype of the array elements. The default is None which represents the smallest unsigned dtype for this class (the first element in galois.FieldClass.dtypes)."><span class="n"><span class="pre">dtype</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.Vandermonde" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an <span class="math notranslate nohighlight">\(m \times n\)</span> Vandermonde matrix of <span class="math notranslate nohighlight">\(a \in \mathrm{GF}(q)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.Vandermonde-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Vandermonde-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.Vandermonde.a"><span class="sig-name descname">a</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Vandermonde.a" title="Permalink to this definition">¶</a></dt><dd><p>An element of <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
+<dt class="field-odd" id="galois.FieldArray.Vandermonde-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Vandermonde-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.Vandermonde.a"><span class="sig-name descname">a</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Vandermonde.a" title="Permalink to this definition">¶</a></dt><dd><p>An element of <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
 </dd>
-<dt id="galois.FieldArray.Vandermonde.m"><span class="sig-name descname">m</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Vandermonde.m" title="Permalink to this definition">¶</a></dt><dd><p>The number of rows in the Vandermonde matrix.</p>
+<dt id="galois.FieldArray.Vandermonde.m"><span class="sig-name descname">m</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Vandermonde.m" title="Permalink to this definition">¶</a></dt><dd><p>The number of rows in the Vandermonde matrix.</p>
 </dd>
-<dt id="galois.FieldArray.Vandermonde.n"><span class="sig-name descname">n</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Vandermonde.n" title="Permalink to this definition">¶</a></dt><dd><p>The number of columns in the Vandermonde matrix.</p>
+<dt id="galois.FieldArray.Vandermonde.n"><span class="sig-name descname">n</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.FieldArray.Vandermonde.n" title="Permalink to this definition">¶</a></dt><dd><p>The number of columns in the Vandermonde matrix.</p>
 </dd>
-<dt id="galois.FieldArray.Vandermonde.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Vandermonde.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt id="galois.FieldArray.Vandermonde.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Vandermonde.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 dtype for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.Vandermonde-returns">Returns<a class="headerlink" href="#galois.FieldArray.Vandermonde-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.Vandermonde-returns">Returns<a class="headerlink" href="#galois.FieldArray.Vandermonde-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>A <span class="math notranslate nohighlight">\(m \times n\)</span> Vandermonde matrix.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.Vandermonde-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Vandermonde-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.Vandermonde-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Vandermonde-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11677,20 +11704,20 @@ dtype for this class (the first element in <a class="reference internal" href=".
 <dd><p>Creates an array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> from length-<span class="math notranslate nohighlight">\(m\)</span> vectors over the prime subfield <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>.</p>
 <p>This function is the inverse operation of the <a class="reference internal" href="#galois.FieldArray.vector" title="galois.FieldArray.vector (Python method) — Converts an array over \mathrm{GF}(p^m) to length-m vectors over the prime subfield \mathrm{GF}(p)."><code class="xref py py-func docutils literal notranslate"><span class="pre">vector()</span></code></a> method.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.Vector-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Vector-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.Vector.array"><span class="sig-name descname">array</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)">Iterable</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Vector.array" title="Permalink to this definition">¶</a></dt><dd><p>An array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> with last dimension <span class="math notranslate nohighlight">\(m\)</span>. An array with shape <code class="samp docutils literal notranslate"><span class="pre">(n1,</span> <span class="pre">n2,</span> <span class="pre">m)</span></code> has output shape
+<dt class="field-odd" id="galois.FieldArray.Vector-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Vector-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.Vector.array"><span class="sig-name descname">array</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.11)">Iterable</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.FieldArray.Vector.array" title="Permalink to this definition">¶</a></dt><dd><p>An array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> with last dimension <span class="math notranslate nohighlight">\(m\)</span>. An array with shape <code class="samp docutils literal notranslate"><span class="pre">(n1,</span> <span class="pre">n2,</span> <span class="pre">m)</span></code> has output shape
 <code class="samp docutils literal notranslate"><span class="pre">(n1,</span> <span class="pre">n2)</span></code>. By convention, the vectors are ordered from highest degree to 0-th degree.</p>
 </dd>
-<dt id="galois.FieldArray.Vector.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Vector.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt id="galois.FieldArray.Vector.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Vector.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 dtype for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.Vector-returns">Returns<a class="headerlink" href="#galois.FieldArray.Vector-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.Vector-returns">Returns<a class="headerlink" href="#galois.FieldArray.Vector-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>An array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.Vector-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Vector-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.Vector-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Vector-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11713,21 +11740,21 @@ dtype for this class (the first element in <a class="reference internal" href=".
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Zeros</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Zeros.shape" title="galois.FieldArray.Zeros.shape (Python parameter) — A NumPy-compliant shape tuple, see numpy.ndarray.shape. An empty tuple () represents a scalar. A single integer or 1-tuple, e.g. N or (N,), represents the size of a 1-D array. A 2-tuple, e.g. (M, N), represents a 2-D array with each element indicating the size in each dimension."><span class="n"><span class="pre">shape</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.Zeros.dtype" title="galois.FieldArray.Zeros.dtype (Python parameter) — The numpy.dtype of the array elements. The default is None which represents the smallest unsigned dtype for this class (the first element in galois.FieldClass.dtypes)."><span class="n"><span class="pre">dtype</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.Zeros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an array of all zeros.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.Zeros-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Zeros-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.Zeros.shape"><span class="sig-name descname">shape</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Zeros.shape" title="Permalink to this definition">¶</a></dt><dd><p>A NumPy-compliant <code class="samp docutils literal notranslate"><span class="pre">shape</span></code> tuple, see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray.shape</span></code></a>. An empty tuple <code class="samp docutils literal notranslate"><span class="pre">()</span></code> represents a scalar.
+<dt class="field-odd" id="galois.FieldArray.Zeros-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.Zeros-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.Zeros.shape"><span class="sig-name descname">shape</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Zeros.shape" title="Permalink to this definition">¶</a></dt><dd><p>A NumPy-compliant <code class="samp docutils literal notranslate"><span class="pre">shape</span></code> tuple, see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray.shape</span></code></a>. An empty tuple <code class="samp docutils literal notranslate"><span class="pre">()</span></code> represents a scalar.
 A single integer or 1-tuple, e.g. <code class="samp docutils literal notranslate"><span class="pre">N</span></code> or <code class="samp docutils literal notranslate"><span class="pre">(N,)</span></code>, represents the size of a 1-D array. A 2-tuple, e.g.
 <code class="samp docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N)</span></code>, represents a 2-D array with each element indicating the size in each dimension.</p>
 </dd>
-<dt id="galois.FieldArray.Zeros.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Zeros.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt id="galois.FieldArray.Zeros.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.Zeros.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 dtype for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.Zeros-returns">Returns<a class="headerlink" href="#galois.FieldArray.Zeros-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.Zeros-returns">Returns<a class="headerlink" href="#galois.FieldArray.Zeros-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>An array of zeros.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.Zeros-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Zeros-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.Zeros-return-type">Return type<a class="headerlink" href="#galois.FieldArray.Zeros-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11843,12 +11870,12 @@ Power</label><div class="sd-tab-content docutils">
 <span class="sig-name descname"><span class="pre">additive_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.additive_order" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the additive order of each element in <span class="math notranslate nohighlight">\(x\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.additive_order-returns">Returns<a class="headerlink" href="#galois.FieldArray.additive_order-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.additive_order-returns">Returns<a class="headerlink" href="#galois.FieldArray.additive_order-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>An integer array of the additive order of each element in <span class="math notranslate nohighlight">\(x\)</span>. The return value is a single integer if the
 input array <span class="math notranslate nohighlight">\(x\)</span> is a scalar.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.additive_order-return-type">Return type<a class="headerlink" href="#galois.FieldArray.additive_order-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><em>Union</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.integer" title="(in NumPy v1.23)"><em>integer</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>]</p>
+<dt class="field-even" id="galois.FieldArray.additive_order-return-type">Return type<a class="headerlink" href="#galois.FieldArray.additive_order-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><em>Union</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.integer" title="(in NumPy v1.23)"><em>integer</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -11880,12 +11907,12 @@ the finite field’s characteristic.</p>
 <p>This function can be invoked on single finite field elements (scalar 0-D arrays) or square <span class="math notranslate nohighlight">\(n \times n\)</span>
 matrices (2-D arrays).</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.characteristic_poly-returns">Returns<a class="headerlink" href="#galois.FieldArray.characteristic_poly-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.characteristic_poly-returns">Returns<a class="headerlink" href="#galois.FieldArray.characteristic_poly-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>For scalar inputs, the degree-<span class="math notranslate nohighlight">\(m\)</span> characteristic polynomial <span class="math notranslate nohighlight">\(p_a(x)\)</span> of <span class="math notranslate nohighlight">\(a\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>.
 For square <span class="math notranslate nohighlight">\(n \times n\)</span> matrix inputs, the degree-<span class="math notranslate nohighlight">\(n\)</span> characteristic polynomial <span class="math notranslate nohighlight">\(p_A(x)\)</span> of
 <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.characteristic_poly-return-type">Return type<a class="headerlink" href="#galois.FieldArray.characteristic_poly-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.characteristic_poly-return-type">Return type<a class="headerlink" href="#galois.FieldArray.characteristic_poly-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="../galois.Poly/#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -11907,10 +11934,10 @@ polynomial is <span class="math notranslate nohighlight">\(-\textrm{Tr}(\mathbf{
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[2]: </span><span class="go">GF(164, order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF(184, order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x^3 + 2x^2 + 2, GF(3))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x^4 + 2x^3 + 2x^2 + x + 2, GF(3))</span>
 
 <span class="go"># The characteristic polynomial annihilates a</span>
 <span class="gp">In [4]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -11922,12 +11949,12 @@ polynomial is <span class="math notranslate nohighlight">\(-\textrm{Tr}(\mathbf{
 
 <span class="gp">In [6]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[6]: </span><span class="go"></span>
-<span class="go">GF([[185,  61,  83],</span>
-<span class="go">    [ 21, 185,  64],</span>
-<span class="go">    [ 98,  35, 199]], order=3^5)</span>
+<span class="go">GF([[ 83,  87,  64],</span>
+<span class="go">    [ 29,   1,  31],</span>
+<span class="go">    [188, 211, 128]], order=3^5)</span>
 
 <span class="gp">In [7]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(x^3 + 67x^2 + 123x + 220, GF(3^5))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(x^3 + 145x^2 + 37x + 101, GF(3^5))</span>
 
 <span class="go"># The x^0 coefficient is det(-A)</span>
 <span class="gp">In [8]: </span><span class="n">poly</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="o">-</span><span class="n">A</span><span class="p">)</span>
@@ -11952,11 +11979,11 @@ polynomial is <span class="math notranslate nohighlight">\(-\textrm{Tr}(\mathbf{
 <span class="sig-name descname"><span class="pre">column_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.column_space" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the column space of the matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.column_space-returns">Returns<a class="headerlink" href="#galois.FieldArray.column_space-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.column_space-returns">Returns<a class="headerlink" href="#galois.FieldArray.column_space-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>The column space basis matrix. The rows of the basis matrix are the basis vectors that span the column space.
 The number of rows of the basis matrix is the dimension of the column space.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.column_space-return-type">Return type<a class="headerlink" href="#galois.FieldArray.column_space-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.column_space-return-type">Return type<a class="headerlink" href="#galois.FieldArray.column_space-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11975,9 +12002,9 @@ The dimension of the column space and null space sum to <span class="math notran
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[ 9, 18,  6,  1, 18],</span>
-<span class="go">    [16, 13, 17, 25, 17],</span>
-<span class="go">    [ 3, 19,  6,  0, 22]], order=31)</span>
+<span class="go">GF([[13, 16, 14,  0, 27],</span>
+<span class="go">    [29,  5,  4,  1, 12],</span>
+<span class="go">    [11,  7, 11,  4, 27]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">C</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">column_space</span><span class="p">();</span> <span class="n">C</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
@@ -11987,8 +12014,8 @@ The dimension of the column space and null space sum to <span class="math notran
 
 <span class="gp">In [5]: </span><span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">();</span> <span class="n">N</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0,  1, 29,  1],</span>
-<span class="go">    [ 0,  1, 28, 29,  7]], order=31)</span>
+<span class="go">GF([[ 1,  0,  5, 12, 13],</span>
+<span class="go">    [ 0,  1, 27,  7, 21]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">C</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">n</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>
@@ -12001,10 +12028,10 @@ The dimension of the column space and null space sum to <span class="math notran
 <span class="sig-name descname"><span class="pre">field_norm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.field_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the field norm <span class="math notranslate nohighlight">\(\mathrm{N}_{L / K}(x)\)</span> of the elements of <span class="math notranslate nohighlight">\(x\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.field_norm-returns">Returns<a class="headerlink" href="#galois.FieldArray.field_norm-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.field_norm-returns">Returns<a class="headerlink" href="#galois.FieldArray.field_norm-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>The field norm of <span class="math notranslate nohighlight">\(x\)</span> in the prime subfield <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.field_norm-return-type">Return type<a class="headerlink" href="#galois.FieldArray.field_norm-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.field_norm-return-type">Return type<a class="headerlink" href="#galois.FieldArray.field_norm-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -12039,10 +12066,10 @@ of the Galois conjugates of <span class="math notranslate nohighlight">\(x\)</sp
 <span class="sig-name descname"><span class="pre">field_trace</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.field_trace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the field trace <span class="math notranslate nohighlight">\(\mathrm{Tr}_{L / K}(x)\)</span> of the elements of <span class="math notranslate nohighlight">\(x\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.field_trace-returns">Returns<a class="headerlink" href="#galois.FieldArray.field_trace-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.field_trace-returns">Returns<a class="headerlink" href="#galois.FieldArray.field_trace-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>The field trace of <span class="math notranslate nohighlight">\(x\)</span> in the prime subfield <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.field_trace-return-type">Return type<a class="headerlink" href="#galois.FieldArray.field_trace-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.field_trace-return-type">Return type<a class="headerlink" href="#galois.FieldArray.field_trace-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -12077,12 +12104,12 @@ of the Galois conjugates of <span class="math notranslate nohighlight">\(x\)</sp
 <span class="sig-name descname"><span class="pre">is_quadratic_residue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.is_quadratic_residue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines if the elements of <span class="math notranslate nohighlight">\(x\)</span> are quadratic residues in the finite field.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.is_quadratic_residue-returns">Returns<a class="headerlink" href="#galois.FieldArray.is_quadratic_residue-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.is_quadratic_residue-returns">Returns<a class="headerlink" href="#galois.FieldArray.is_quadratic_residue-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>A boolean array indicating if each element in <span class="math notranslate nohighlight">\(x\)</span> is a quadratic residue. The return value is a single boolean if the
 input array <span class="math notranslate nohighlight">\(x\)</span> is a scalar.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.is_quadratic_residue-return-type">Return type<a class="headerlink" href="#galois.FieldArray.is_quadratic_residue-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><em>Union</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bool_" title="(in NumPy v1.23)"><em>bool_</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>]</p>
+<dt class="field-even" id="galois.FieldArray.is_quadratic_residue-return-type">Return type<a class="headerlink" href="#galois.FieldArray.is_quadratic_residue-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><em>Union</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bool_" title="(in NumPy v1.23)"><em>bool_</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -12127,11 +12154,11 @@ roots.</p>
 <span class="sig-name descname"><span class="pre">left_null_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.left_null_space" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the left null space of the matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.left_null_space-returns">Returns<a class="headerlink" href="#galois.FieldArray.left_null_space-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.left_null_space-returns">Returns<a class="headerlink" href="#galois.FieldArray.left_null_space-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>The left null space basis matrix. The rows of the basis matrix are the basis vectors that span the left null space.
 The number of rows of the basis matrix is the dimension of the left null space.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.left_null_space-return-type">Return type<a class="headerlink" href="#galois.FieldArray.left_null_space-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.left_null_space-return-type">Return type<a class="headerlink" href="#galois.FieldArray.left_null_space-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -12150,11 +12177,11 @@ The dimension of the row space and left null space sum to <span class="math notr
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[ 8, 19,  0],</span>
-<span class="go">    [10,  2, 22],</span>
-<span class="go">    [16,  8,  3],</span>
-<span class="go">    [ 6, 21, 28],</span>
-<span class="go">    [22, 27, 23]], order=31)</span>
+<span class="go">GF([[29, 27, 19],</span>
+<span class="go">    [20, 30, 10],</span>
+<span class="go">    [ 3, 29, 28],</span>
+<span class="go">    [23, 12,  2],</span>
+<span class="go">    [27,  2, 20]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">R</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">();</span> <span class="n">R</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
@@ -12164,8 +12191,8 @@ The dimension of the row space and left null space sum to <span class="math notr
 
 <span class="gp">In [5]: </span><span class="n">LN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">();</span> <span class="n">LN</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0, 25, 25,  0],</span>
-<span class="go">    [ 0,  1, 17,  1,  1]], order=31)</span>
+<span class="go">GF([[ 1,  0, 12, 13, 29],</span>
+<span class="go">    [ 0,  1, 26, 16,  8]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">LN</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>
@@ -12185,15 +12212,15 @@ The dimension of the row space and left null space sum to <span class="math notr
 <span class="sig-name descname"><span class="pre">lu_decompose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.lu_decompose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decomposes the input array into the product of lower and upper triangular matrices.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.lu_decompose-returns">Returns<a class="headerlink" href="#galois.FieldArray.lu_decompose-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.lu_decompose-returns">Returns<a class="headerlink" href="#galois.FieldArray.lu_decompose-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><em>L</em> – The lower triangular matrix.</p></li>
 <li><p><em>U</em> – The upper triangular matrix.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.lu_decompose-return-type">Return type<a class="headerlink" href="#galois.FieldArray.lu_decompose-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><em>Tuple</em></a>[<a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>]</p>
+<dt class="field-even" id="galois.FieldArray.lu_decompose-return-type">Return type<a class="headerlink" href="#galois.FieldArray.lu_decompose-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a>[<a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>]</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -12234,10 +12261,10 @@ The dimension of the row space and left null space sum to <span class="math notr
 <dd><p>Computes the minimal polynomial of a finite field element <span class="math notranslate nohighlight">\(a\)</span>.</p>
 <p>This function can be invoked only on single finite field elements (scalar 0-D arrays).</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.minimal_poly-returns">Returns<a class="headerlink" href="#galois.FieldArray.minimal_poly-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.minimal_poly-returns">Returns<a class="headerlink" href="#galois.FieldArray.minimal_poly-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>For scalar inputs, the minimal polynomial <span class="math notranslate nohighlight">\(p_a(x)\)</span> of <span class="math notranslate nohighlight">\(a\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.minimal_poly-return-type">Return type<a class="headerlink" href="#galois.FieldArray.minimal_poly-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.minimal_poly-return-type">Return type<a class="headerlink" href="#galois.FieldArray.minimal_poly-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="../galois.Poly/#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -12256,10 +12283,10 @@ minimal polynomial of <span class="math notranslate nohighlight">\(a\)</span> is
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[2]: </span><span class="go">GF(205, order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF(153, order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x^4 + 2x + 2, GF(3))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x^4 + 2x^2 + 2, GF(3))</span>
 
 <span class="go"># The minimal polynomial annihilates a</span>
 <span class="gp">In [4]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -12277,19 +12304,19 @@ minimal polynomial of <span class="math notranslate nohighlight">\(a\)</span> is
 <span class="sig-name descname"><span class="pre">multiplicative_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.multiplicative_order" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the multiplicative order <span class="math notranslate nohighlight">\(\textrm{ord}(x)\)</span> of each element in <span class="math notranslate nohighlight">\(x\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.multiplicative_order-returns">Returns<a class="headerlink" href="#galois.FieldArray.multiplicative_order-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.multiplicative_order-returns">Returns<a class="headerlink" href="#galois.FieldArray.multiplicative_order-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>An integer array of the multiplicative order of each element in <span class="math notranslate nohighlight">\(x\)</span>. The return value is a single integer if the
 input array <span class="math notranslate nohighlight">\(x\)</span> is a scalar.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.multiplicative_order-return-type">Return type<a class="headerlink" href="#galois.FieldArray.multiplicative_order-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><em>Union</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.integer" title="(in NumPy v1.23)"><em>integer</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>]</p>
+<dt class="field-even" id="galois.FieldArray.multiplicative_order-return-type">Return type<a class="headerlink" href="#galois.FieldArray.multiplicative_order-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><em>Union</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.integer" title="(in NumPy v1.23)"><em>integer</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>The multiplicative order <span class="math notranslate nohighlight">\(\textrm{ord}(x) = a\)</span> of <span class="math notranslate nohighlight">\(x\)</span> in <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> is the smallest power <span class="math notranslate nohighlight">\(a\)</span>
 such that <span class="math notranslate nohighlight">\(x^a = 1\)</span>. If <span class="math notranslate nohighlight">\(a = p^m - 1\)</span>, <span class="math notranslate nohighlight">\(a\)</span> is said to be a generator of the multiplicative group
 <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)^\times\)</span>.</p>
-<p>The multiplicative order of <span class="math notranslate nohighlight">\(0\)</span> is not defined and will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ArithmeticError" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArithmeticError</span></code></a>.</p>
+<p>The multiplicative order of <span class="math notranslate nohighlight">\(0\)</span> is not defined and will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ArithmeticError" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArithmeticError</span></code></a>.</p>
 <p><a class="reference internal" href="#galois.FieldArray.multiplicative_order" title="galois.FieldArray.multiplicative_order (Python method) — Computes the multiplicative order \textrm{ord}(x) of each element in x."><code class="xref py py-func docutils literal notranslate"><span class="pre">FieldArray.multiplicative_order()</span></code></a> should not be confused with <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.order" title="galois.FieldClass.order (Python property) — The order p^m of the Galois field \mathrm{GF}(p^m). The order of the field is equal to the field's size."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldClass.order</span></code></a>. The former is a method on a
 <em>Galois field array</em> that returns the multiplicative order of elements. The latter is a property of the field, namely
 the finite field’s order or size.</p>
@@ -12322,11 +12349,11 @@ the finite field’s order or size.</p>
 <span class="sig-name descname"><span class="pre">null_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.null_space" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the null space of the matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.null_space-returns">Returns<a class="headerlink" href="#galois.FieldArray.null_space-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.null_space-returns">Returns<a class="headerlink" href="#galois.FieldArray.null_space-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>The null space basis matrix. The rows of the basis matrix are the basis vectors that span the null space.
 The number of rows of the basis matrix is the dimension of the null space.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.null_space-return-type">Return type<a class="headerlink" href="#galois.FieldArray.null_space-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.null_space-return-type">Return type<a class="headerlink" href="#galois.FieldArray.null_space-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -12345,9 +12372,9 @@ The dimension of the column space and null space sum to <span class="math notran
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[ 4, 21, 14,  8, 25],</span>
-<span class="go">    [16, 19,  1,  0, 16],</span>
-<span class="go">    [22, 28, 13, 21, 10]], order=31)</span>
+<span class="go">GF([[21, 22, 24, 19,  6],</span>
+<span class="go">    [ 3, 17,  0, 15,  7],</span>
+<span class="go">    [ 2, 13,  2, 19,  2]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">C</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">column_space</span><span class="p">();</span> <span class="n">C</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
@@ -12357,8 +12384,8 @@ The dimension of the column space and null space sum to <span class="math notran
 
 <span class="gp">In [5]: </span><span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">();</span> <span class="n">N</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0, 27,  4,  7],</span>
-<span class="go">    [ 0,  1, 25,  0,  5]], order=31)</span>
+<span class="go">GF([[ 1,  0, 20, 27, 17],</span>
+<span class="go">    [ 0,  1, 12, 24, 17]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">C</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">n</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>
@@ -12379,7 +12406,7 @@ The dimension of the column space and null space sum to <span class="math notran
 <span class="sig-name descname"><span class="pre">plu_decompose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.plu_decompose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.plu_decompose-returns">Returns<a class="headerlink" href="#galois.FieldArray.plu_decompose-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.plu_decompose-returns">Returns<a class="headerlink" href="#galois.FieldArray.plu_decompose-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><em>P</em> – The column permutation matrix.</p></li>
 <li><p><em>L</em> – The lower triangular matrix.</p></li>
@@ -12387,8 +12414,8 @@ The dimension of the column space and null space sum to <span class="math notran
 </ul>
 </p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.plu_decompose-return-type">Return type<a class="headerlink" href="#galois.FieldArray.plu_decompose-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><em>Tuple</em></a>[<a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>]</p>
+<dt class="field-even" id="galois.FieldArray.plu_decompose-return-type">Return type<a class="headerlink" href="#galois.FieldArray.plu_decompose-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a>[<a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>, <a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a>]</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -12437,17 +12464,17 @@ The dimension of the column space and null space sum to <span class="math notran
 <span class="sig-name descname"><span class="pre">row_reduce</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.FieldArray.row_reduce.ncols" title="galois.FieldArray.row_reduce.ncols (Python parameter) — The number of columns to perform Gaussian elimination over. The default is None which represents the number of columns of the matrix."><span class="n"><span class="pre">ncols</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.row_reduce" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs Gaussian elimination on the matrix to achieve reduced row echelon form.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.row_reduce-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.row_reduce-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.row_reduce.ncols"><span class="sig-name descname">ncols</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]</span></span><a class="headerlink" href="#galois.FieldArray.row_reduce.ncols" title="Permalink to this definition">¶</a></dt><dd><p>The number of columns to perform Gaussian elimination over. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents
+<dt class="field-odd" id="galois.FieldArray.row_reduce-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.row_reduce-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.row_reduce.ncols"><span class="sig-name descname">ncols</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>]</span></span><a class="headerlink" href="#galois.FieldArray.row_reduce.ncols" title="Permalink to this definition">¶</a></dt><dd><p>The number of columns to perform Gaussian elimination over. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents
 the number of columns of the matrix.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.row_reduce-returns">Returns<a class="headerlink" href="#galois.FieldArray.row_reduce-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.row_reduce-returns">Returns<a class="headerlink" href="#galois.FieldArray.row_reduce-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The reduced row echelon form of the input matrix.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.row_reduce-return-type">Return type<a class="headerlink" href="#galois.FieldArray.row_reduce-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.row_reduce-return-type">Return type<a class="headerlink" href="#galois.FieldArray.row_reduce-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -12480,11 +12507,11 @@ a non-zero scalar, and add any row to a scalar multiple of another row.</p>
 <span class="sig-name descname"><span class="pre">row_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.FieldArray.row_space" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the row space of the matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.row_space-returns">Returns<a class="headerlink" href="#galois.FieldArray.row_space-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.row_space-returns">Returns<a class="headerlink" href="#galois.FieldArray.row_space-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>The row space basis matrix. The rows of the basis matrix are the basis vectors that span the row space.
 The number of rows of the basis matrix is the dimension of the row space.</p>
 </dd>
-<dt class="field-even" id="galois.FieldArray.row_space-return-type">Return type<a class="headerlink" href="#galois.FieldArray.row_space-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.row_space-return-type">Return type<a class="headerlink" href="#galois.FieldArray.row_space-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -12503,11 +12530,11 @@ The dimension of the row space and left null space sum to <span class="math notr
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[30,  9, 14],</span>
-<span class="go">    [ 1, 11, 14],</span>
-<span class="go">    [ 8, 10, 14],</span>
-<span class="go">    [23, 10, 24],</span>
-<span class="go">    [ 5,  8,  0]], order=31)</span>
+<span class="go">GF([[14, 13,  7],</span>
+<span class="go">    [ 8, 18, 15],</span>
+<span class="go">    [17, 23, 16],</span>
+<span class="go">    [ 0, 27, 10],</span>
+<span class="go">    [20, 26, 18]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">R</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">();</span> <span class="n">R</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
@@ -12517,8 +12544,8 @@ The dimension of the row space and left null space sum to <span class="math notr
 
 <span class="gp">In [5]: </span><span class="n">LN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">();</span> <span class="n">LN</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0, 11, 24, 21],</span>
-<span class="go">    [ 0,  1,  9, 20,  5]], order=31)</span>
+<span class="go">GF([[ 1,  0,  0,  8, 21],</span>
+<span class="go">    [ 0,  1,  3,  8, 11]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">LN</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>
@@ -12533,17 +12560,17 @@ The dimension of the row space and left null space sum to <span class="math notr
 <p>This function is the inverse operation of the <a class="reference internal" href="#galois.FieldArray.Vector" title="galois.FieldArray.Vector (Python method) — Creates an array over \mathrm{GF}(p^m) from length-m vectors over the prime subfield \mathrm{GF}(p)."><code class="xref py py-func docutils literal notranslate"><span class="pre">Vector()</span></code></a> constructor. For an array with shape <code class="samp docutils literal notranslate"><span class="pre">(n1,</span> <span class="pre">n2)</span></code>, the output shape
 is <code class="samp docutils literal notranslate"><span class="pre">(n1,</span> <span class="pre">n2,</span> <span class="pre">m)</span></code>. By convention, the vectors are ordered from highest degree to 0-th degree.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.FieldArray.vector-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.vector-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.FieldArray.vector.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.vector.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
+<dt class="field-odd" id="galois.FieldArray.vector-parameters">Parameters<a class="headerlink" href="#galois.FieldArray.vector-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.FieldArray.vector.dtype"><span class="sig-name descname">dtype</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)">dtype</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>]]</span></span><a class="headerlink" href="#galois.FieldArray.vector.dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents the smallest unsigned
 dtype for this class (the first element in <a class="reference internal" href="../galois.FieldClass/#galois.FieldClass.dtypes" title="galois.FieldClass.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass.dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.FieldArray.vector-returns">Returns<a class="headerlink" href="#galois.FieldArray.vector-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.FieldArray.vector-returns">Returns<a class="headerlink" href="#galois.FieldArray.vector-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>An array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> with last dimension <span class="math notranslate nohighlight">\(m\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.FieldArray.vector-return-type">Return type<a class="headerlink" href="#galois.FieldArray.vector-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.FieldArray.vector-return-type">Return type<a class="headerlink" href="#galois.FieldArray.vector-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -12568,23 +12595,30 @@ dtype for this class (the first element in <a class="reference internal" href=".
 
 
 
-
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      Aug 29, 2022
+      Mar 21, 2022
     
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
@@ -12593,7 +12627,8 @@ dtype for this class (the first element in <a class="reference internal" href=".
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../galois.FLFSR/" class="md-footer__link md-footer__link--prev" aria-label="Previous: galois.FLFSR" rel="prev">
@@ -12642,7 +12677,7 @@ dtype for this class (the first element in <a class="reference internal" href=".
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.1.1.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -12657,10 +12692,12 @@ dtype for this class (the first element in <a class="reference internal" href=".
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
+    
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     

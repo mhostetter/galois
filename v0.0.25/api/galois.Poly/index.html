@@ -18,26 +18,27 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.5aa58769.min.css">
+      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.92c9fe4a.min.css">
+        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
+      
+
     
     
     
       
         
         
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -47,10 +48,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-4FW9NCNFZH",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-4FW9NCNFZH",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
 
@@ -88,9 +92,19 @@
     </div>
     
       <div data-md-component="outdated" hidden>
-        <aside class="md-banner md-banner--warning">
-          
-        </aside>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -159,7 +173,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -183,7 +197,7 @@
         <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -324,7 +338,7 @@
       <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -10165,12 +10179,13 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset" role="main">
-                
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
 
 
-  <h1 id="galois-poly">galois.Poly<a class="headerlink" href="#galois-poly" title="Permalink to this heading">¶</a></h1>
+<h1 id="galois-poly">galois.Poly<a class="headerlink" href="#galois-poly" title="Permalink to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight py" id="galois.Poly">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">Poly</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.__init__.coeffs" title="galois.Poly.__init__.coeffs (Python parameter) — The polynomial coefficients \{a_d, a_{d-1}, \dots, a_1, a_0\} with type galois.FieldArray. Alternatively, an iterable tuple, list, or numpy.ndarray may be provided and the Galois field domain is taken from the field keyword argument."><span class="n"><span class="pre">coeffs</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.__init__.field" title="galois.Poly.__init__.field (Python parameter) — The Galois field \mathrm{GF}(p^m) the polynomial is over."><span class="n"><span class="pre">field</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.__init__.order" title="galois.Poly.__init__.order (Python parameter) — The interpretation of the coefficient degrees."><span class="n"><span class="pre">order</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;desc&#39;</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly" title="Permalink to this definition">¶</a></dt>
@@ -10191,6 +10206,10 @@
 <p>See <a class="reference internal" href="../../basic-usage/poly-creation/#polynomial-creation"><span class="std std-ref">Polynomial Creation</span></a> and <a class="reference internal" href="../../basic-usage/poly-arithmetic/#polynomial-arithmetic"><span class="std std-ref">Polynomial Arithmetic</span></a> for more examples.</p>
 <p class="rubric">Constructors</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.Poly.__init__" title="galois.Poly.__init__ (Python method) — Creates a polynomial f(x) over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(coeffs[, field, order])</p></td>
 <td><p>Creates a polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p></td>
@@ -10223,6 +10242,10 @@
 </table>
 <p class="rubric">Special Methods</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.Poly.__call__" title="galois.Poly.__call__ (Python method) — Evaluates the polynomial f(x) at x."><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a>(x[, field, elementwise])</p></td>
 <td><p>Evaluates the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> at <code class="samp docutils literal notranslate"><span class="pre">x</span></code>.</p></td>
@@ -10246,6 +10269,10 @@
 </table>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.Poly.coefficients" title="galois.Poly.coefficients (Python method) — Returns the polynomial coefficients in the order and size specified."><code class="xref py py-obj docutils literal notranslate"><span class="pre">coefficients</span></code></a>([size, order])</p></td>
 <td><p>Returns the polynomial coefficients in the order and size specified.</p></td>
@@ -10266,6 +10293,10 @@
 </table>
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils data align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#galois.Poly.coeffs" title="galois.Poly.coeffs (Python property) — The coefficients of the polynomial in degree-descending order. The entries of degrees are paired with coeffs."><code class="xref py py-obj docutils literal notranslate"><span class="pre">coeffs</span></code></a></p></td>
 <td><p>The coefficients of the polynomial in degree-descending order.</p></td>
@@ -10296,22 +10327,22 @@
 <p>The polynomial <span class="math notranslate nohighlight">\(f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0\)</span> with degree <span class="math notranslate nohighlight">\(d\)</span> has coefficients
 <span class="math notranslate nohighlight">\(\{a_{d}, a_{d-1}, \dots, a_1, a_0\}\)</span> in <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.__init__-parameters">Parameters<a class="headerlink" href="#galois.Poly.__init__-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.__init__.coeffs"><span class="sig-name descname">coeffs</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.Poly.__init__.coeffs" title="Permalink to this definition">¶</a></dt><dd><p>The polynomial coefficients <span class="math notranslate nohighlight">\(\{a_d, a_{d-1}, \dots, a_1, a_0\}\)</span> with type <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>. Alternatively,
-an iterable <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> may be provided and the Galois field domain is taken from
+<dt class="field-odd" id="galois.Poly.__init__-parameters">Parameters<a class="headerlink" href="#galois.Poly.__init__-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.__init__.coeffs"><span class="sig-name descname">coeffs</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.Poly.__init__.coeffs" title="Permalink to this definition">¶</a></dt><dd><p>The polynomial coefficients <span class="math notranslate nohighlight">\(\{a_d, a_{d-1}, \dots, a_1, a_0\}\)</span> with type <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>. Alternatively,
+an iterable <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> may be provided and the Galois field domain is taken from
 the <code class="samp docutils literal notranslate"><span class="pre">field</span></code> keyword argument.</p>
 </dd>
-<dt id="galois.Poly.__init__.field"><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span><a class="headerlink" href="#galois.Poly.__init__.field" title="Permalink to this definition">¶</a></dt><dd><p><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over.</p>
+<dt id="galois.Poly.__init__.field"><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span><a class="headerlink" href="#galois.Poly.__init__.field" title="Permalink to this definition">¶</a></dt><dd><p><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> (default): If the coefficients are a <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>, they won’t be modified. If the coefficients
+<li><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> (default): If the coefficients are a <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>, they won’t be modified. If the coefficients
 are not explicitly in a Galois field, they are assumed to be from <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span> and are converted using
 <code class="samp docutils literal notranslate"><span class="pre">galois.GF2(coeffs)</span></code>.</p></li>
 <li><p><a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass</span></code></a>: The coefficients are explicitly converted to this Galois field <code class="samp docutils literal notranslate"><span class="pre">field(coeffs)</span></code>.</p></li>
 </ul>
 </p>
 </dd>
-<dt id="galois.Poly.__init__.order"><span class="sig-name descname">order</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)">Literal</a>['desc', 'asc']</span></span><a class="headerlink" href="#galois.Poly.__init__.order" title="Permalink to this definition">¶</a></dt><dd><p><p>The interpretation of the coefficient degrees.</p>
+<dt id="galois.Poly.__init__.order"><span class="sig-name descname">order</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)">Literal</a>['desc', 'asc']</span></span><a class="headerlink" href="#galois.Poly.__init__.order" title="Permalink to this definition">¶</a></dt><dd><p><p>The interpretation of the coefficient degrees.</p>
 <ul class="simple">
 <li><p><code class="samp docutils literal notranslate"><span class="pre">&quot;desc&quot;</span></code> (default): The first element of <code class="samp docutils literal notranslate"><span class="pre">coeffs</span></code> is the highest degree coefficient, i.e. <span class="math notranslate nohighlight">\(\{a_d, a_{d-1}, \dots, a_1, a_0\}\)</span>.</p></li>
 <li><p><code class="samp docutils literal notranslate"><span class="pre">&quot;asc&quot;</span></code>: The first element of <code class="samp docutils literal notranslate"><span class="pre">coeffs</span></code> is the lowest degree coefficient, i.e. <span class="math notranslate nohighlight">\(\{a_0, a_1, \dots,  a_{d-1}, a_d\}\)</span>.</p></li>
@@ -10328,17 +10359,17 @@ are not explicitly in a Galois field, they are assumed to be from <span class="m
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Degrees</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.Degrees.degrees" title="galois.Poly.Degrees.degrees (Python parameter) — The polynomial degrees with non-zero coefficients."><span class="n"><span class="pre">degrees</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.Degrees.coeffs" title="galois.Poly.Degrees.coeffs (Python parameter) — The corresponding non-zero polynomial coefficients with type galois.FieldArray. Alternatively, an iterable tuple, list, or numpy.ndarray may be provided and the Galois field domain is taken from the field keyword argument. The default is None which corresponds to all ones."><span class="n"><span class="pre">coeffs</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.Degrees.field" title="galois.Poly.Degrees.field (Python parameter) — The Galois field \mathrm{GF}(p^m) the polynomial is over."><span class="n"><span class="pre">field</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.Degrees" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> from its non-zero degrees.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.Degrees-parameters">Parameters<a class="headerlink" href="#galois.Poly.Degrees-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.Degrees.degrees"><span class="sig-name descname">degrees</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>]</span></span><a class="headerlink" href="#galois.Poly.Degrees.degrees" title="Permalink to this definition">¶</a></dt><dd><p>The polynomial degrees with non-zero coefficients.</p>
+<dt class="field-odd" id="galois.Poly.Degrees-parameters">Parameters<a class="headerlink" href="#galois.Poly.Degrees-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.Degrees.degrees"><span class="sig-name descname">degrees</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>]</span></span><a class="headerlink" href="#galois.Poly.Degrees.degrees" title="Permalink to this definition">¶</a></dt><dd><p>The polynomial degrees with non-zero coefficients.</p>
 </dd>
-<dt id="galois.Poly.Degrees.coeffs"><span class="sig-name descname">coeffs</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]]</span></span><a class="headerlink" href="#galois.Poly.Degrees.coeffs" title="Permalink to this definition">¶</a></dt><dd><p>The corresponding non-zero polynomial coefficients with type <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>. Alternatively, an iterable <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>,
-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> may be provided and the Galois field domain is taken from the <code class="samp docutils literal notranslate"><span class="pre">field</span></code> keyword argument. The
+<dt id="galois.Poly.Degrees.coeffs"><span class="sig-name descname">coeffs</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]]</span></span><a class="headerlink" href="#galois.Poly.Degrees.coeffs" title="Permalink to this definition">¶</a></dt><dd><p>The corresponding non-zero polynomial coefficients with type <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>. Alternatively, an iterable <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>,
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> may be provided and the Galois field domain is taken from the <code class="samp docutils literal notranslate"><span class="pre">field</span></code> keyword argument. The
 default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds to all ones.</p>
 </dd>
-<dt id="galois.Poly.Degrees.field"><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span><a class="headerlink" href="#galois.Poly.Degrees.field" title="Permalink to this definition">¶</a></dt><dd><p><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over.</p>
+<dt id="galois.Poly.Degrees.field"><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span><a class="headerlink" href="#galois.Poly.Degrees.field" title="Permalink to this definition">¶</a></dt><dd><p><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> (default): If the coefficients are a <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>, they won’t be modified. If the coefficients are not explicitly
+<li><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> (default): If the coefficients are a <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>, they won’t be modified. If the coefficients are not explicitly
 in a Galois field, they are assumed to be from <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span> and are converted using <code class="samp docutils literal notranslate"><span class="pre">galois.GF2(coeffs)</span></code>.</p></li>
 <li><p><a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass</span></code></a>: The coefficients are explicitly converted to this Galois field <code class="samp docutils literal notranslate"><span class="pre">field(coeffs)</span></code>.</p></li>
 </ul>
@@ -10346,10 +10377,10 @@ in a Galois field, they are assumed to be from <span class="math notranslate noh
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.Degrees-returns">Returns<a class="headerlink" href="#galois.Poly.Degrees-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.Degrees-returns">Returns<a class="headerlink" href="#galois.Poly.Degrees-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.Degrees-return-type">Return type<a class="headerlink" href="#galois.Poly.Degrees-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.Degrees-return-type">Return type<a class="headerlink" href="#galois.Poly.Degrees-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -10373,16 +10404,16 @@ in a Galois field, they are assumed to be from <span class="math notranslate noh
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Identity</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">field=&lt;class</span> <span class="pre">'numpy.ndarray</span> <span class="pre">over</span> <span class="pre">GF(2)'&gt;</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.Identity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs the polynomial <span class="math notranslate nohighlight">\(f(x) = x\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.Identity-parameters">Parameters<a class="headerlink" href="#galois.Poly.Identity-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
+<dt class="field-odd" id="galois.Poly.Identity-parameters">Parameters<a class="headerlink" href="#galois.Poly.Identity-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.Identity-returns">Returns<a class="headerlink" href="#galois.Poly.Identity-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.Identity-returns">Returns<a class="headerlink" href="#galois.Poly.Identity-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The polynomial <span class="math notranslate nohighlight">\(f(x) = x\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.Identity-return-type">Return type<a class="headerlink" href="#galois.Poly.Identity-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.Identity-return-type">Return type<a class="headerlink" href="#galois.Poly.Identity-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -10407,18 +10438,18 @@ in a Galois field, they are assumed to be from <span class="math notranslate noh
 <dd><p>Constructs a polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> from its integer representation.</p>
 <p><a class="reference internal" href="#galois.Poly.Int" title="galois.Poly.Int (Python method) — Constructs a polynomial over \mathrm{GF}(p^m) from its integer representation."><code class="xref py py-func docutils literal notranslate"><span class="pre">galois.Poly.Int()</span></code></a> and <a class="reference internal" href="#galois.Poly.__int__" title="galois.Poly.__int__ (Python method) — The integer representation of the polynomial."><code class="xref py py-func docutils literal notranslate"><span class="pre">galois.Poly.__int__()</span></code></a> are inverse operations.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.Int-parameters">Parameters<a class="headerlink" href="#galois.Poly.Int-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.Int.integer"><span class="sig-name descname">integer</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.Poly.Int.integer" title="Permalink to this definition">¶</a></dt><dd><p>The integer representation of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
+<dt class="field-odd" id="galois.Poly.Int-parameters">Parameters<a class="headerlink" href="#galois.Poly.Int-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.Int.integer"><span class="sig-name descname">integer</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.Poly.Int.integer" title="Permalink to this definition">¶</a></dt><dd><p>The integer representation of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 </dd>
-<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
+<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.Int-returns">Returns<a class="headerlink" href="#galois.Poly.Int-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.Int-returns">Returns<a class="headerlink" href="#galois.Poly.Int-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.Int-return-type">Return type<a class="headerlink" href="#galois.Poly.Int-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.Int-return-type">Return type<a class="headerlink" href="#galois.Poly.Int-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -10498,16 +10529,16 @@ Hex string</label><div class="sd-tab-content docutils">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">One</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">field=&lt;class</span> <span class="pre">'numpy.ndarray</span> <span class="pre">over</span> <span class="pre">GF(2)'&gt;</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.One" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs the polynomial <span class="math notranslate nohighlight">\(f(x) = 1\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.One-parameters">Parameters<a class="headerlink" href="#galois.Poly.One-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
+<dt class="field-odd" id="galois.Poly.One-parameters">Parameters<a class="headerlink" href="#galois.Poly.One-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.One-returns">Returns<a class="headerlink" href="#galois.Poly.One-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.One-returns">Returns<a class="headerlink" href="#galois.Poly.One-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The polynomial <span class="math notranslate nohighlight">\(f(x) = 1\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.One-return-type">Return type<a class="headerlink" href="#galois.Poly.One-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.One-return-type">Return type<a class="headerlink" href="#galois.Poly.One-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -10531,28 +10562,28 @@ Hex string</label><div class="sd-tab-content docutils">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Random</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.Random.degree" title="galois.Poly.Random.degree (Python parameter) — The degree of the polynomial."><span class="n"><span class="pre">degree</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">seed=None</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">field=&lt;class</span> <span class="pre">'numpy.ndarray</span> <span class="pre">over</span> <span class="pre">GF(2)'&gt;</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.Random" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a random polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> with degree <span class="math notranslate nohighlight">\(d\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.Random-parameters">Parameters<a class="headerlink" href="#galois.Poly.Random-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.Random.degree"><span class="sig-name descname">degree</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.Poly.Random.degree" title="Permalink to this definition">¶</a></dt><dd><p>The degree of the polynomial.</p>
+<dt class="field-odd" id="galois.Poly.Random-parameters">Parameters<a class="headerlink" href="#galois.Poly.Random-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.Random.degree"><span class="sig-name descname">degree</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.Poly.Random.degree" title="Permalink to this definition">¶</a></dt><dd><p>The degree of the polynomial.</p>
 </dd>
-<dt><span class="sig-name descname">seed</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/random/generator.html#numpy.random.Generator" title="(in NumPy v1.23)">Generator</a>]]</span></span></dt><dd><p>Non-negative integer used to initialize the PRNG. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which means that unpredictable
+<dt><span class="sig-name descname">seed</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/random/generator.html#numpy.random.Generator" title="(in NumPy v1.23)">Generator</a>]]</span></span></dt><dd><p>Non-negative integer used to initialize the PRNG. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which means that unpredictable
 entropy will be pulled from the OS to be used as the seed. A <a class="reference external" href="https://numpy.org/doc/stable/reference/random/generator.html#numpy.random.Generator" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.random.Generator</span></code></a> can also be passed.</p>
 </dd>
-<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
+<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.Random-returns">Returns<a class="headerlink" href="#galois.Poly.Random-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.Random-returns">Returns<a class="headerlink" href="#galois.Poly.Random-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.Random-return-type">Return type<a class="headerlink" href="#galois.Poly.Random-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.Random-return-type">Return type<a class="headerlink" href="#galois.Poly.Random-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
 <p class="example rubric">Examples</p>
 <p>Construct a random degree-<span class="math notranslate nohighlight">\(5\)</span> polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x^4 + x^3 + x^2 + x, GF(2))</span>
+<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x^4 + x^3 + x + 1, GF(2))</span>
 </code></pre></div>
 </div>
 <p>Construct a random degree-<span class="math notranslate nohighlight">\(5\)</span> polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(3^5)\)</span> with a given seed. This produces repeatable results.</p>
@@ -10582,16 +10613,16 @@ entropy will be pulled from the OS to be used as the seed. A <a class="reference
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Roots</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.Roots.roots" title="galois.Poly.Roots.roots (Python parameter) — The roots of the desired polynomial with type galois.FieldArray. Alternatively, an iterable tuple, list, or numpy.ndarray may be provided and the Galois field domain is taken from the field keyword argument."><span class="n"><span class="pre">roots</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.Roots.multiplicities" title="galois.Poly.Roots.multiplicities (Python parameter) — The corresponding root multiplicities. The default is None which corresponds to all ones."><span class="n"><span class="pre">multiplicities</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.Roots.field" title="galois.Poly.Roots.field (Python parameter) — The Galois field \mathrm{GF}(p^m) the polynomial is over."><span class="n"><span class="pre">field</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.Roots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a monic polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> from its roots.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.Roots-parameters">Parameters<a class="headerlink" href="#galois.Poly.Roots-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.Roots.roots"><span class="sig-name descname">roots</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.Poly.Roots.roots" title="Permalink to this definition">¶</a></dt><dd><p>The roots of the desired polynomial with type <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>. Alternatively, an iterable <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>,
-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> may be provided and the Galois field domain is taken from the <code class="samp docutils literal notranslate"><span class="pre">field</span></code> keyword argument.</p>
+<dt class="field-odd" id="galois.Poly.Roots-parameters">Parameters<a class="headerlink" href="#galois.Poly.Roots-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.Roots.roots"><span class="sig-name descname">roots</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.Poly.Roots.roots" title="Permalink to this definition">¶</a></dt><dd><p>The roots of the desired polynomial with type <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>. Alternatively, an iterable <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>,
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> may be provided and the Galois field domain is taken from the <code class="samp docutils literal notranslate"><span class="pre">field</span></code> keyword argument.</p>
 </dd>
-<dt id="galois.Poly.Roots.multiplicities"><span class="sig-name descname">multiplicities</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>]]</span></span><a class="headerlink" href="#galois.Poly.Roots.multiplicities" title="Permalink to this definition">¶</a></dt><dd><p>The corresponding root multiplicities. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds to all ones.</p>
+<dt id="galois.Poly.Roots.multiplicities"><span class="sig-name descname">multiplicities</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>]]</span></span><a class="headerlink" href="#galois.Poly.Roots.multiplicities" title="Permalink to this definition">¶</a></dt><dd><p>The corresponding root multiplicities. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds to all ones.</p>
 </dd>
-<dt id="galois.Poly.Roots.field"><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span><a class="headerlink" href="#galois.Poly.Roots.field" title="Permalink to this definition">¶</a></dt><dd><p><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over.</p>
+<dt id="galois.Poly.Roots.field"><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span><a class="headerlink" href="#galois.Poly.Roots.field" title="Permalink to this definition">¶</a></dt><dd><p><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> (default): If the roots are a <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>, they won’t be modified. If the roots are not explicitly
+<li><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> (default): If the roots are a <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldArray</span></code></a>, they won’t be modified. If the roots are not explicitly
 in a Galois field, they are assumed to be from <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span> and are converted using <code class="samp docutils literal notranslate"><span class="pre">galois.GF2(roots)</span></code>.</p></li>
 <li><p><a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.FieldClass</span></code></a>: The roots are explicitly converted to this Galois field <code class="samp docutils literal notranslate"><span class="pre">field(roots)</span></code>.</p></li>
 </ul>
@@ -10599,10 +10630,10 @@ in a Galois field, they are assumed to be from <span class="math notranslate noh
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.Roots-returns">Returns<a class="headerlink" href="#galois.Poly.Roots-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.Roots-returns">Returns<a class="headerlink" href="#galois.Poly.Roots-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.Roots-return-type">Return type<a class="headerlink" href="#galois.Poly.Roots-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.Roots-return-type">Return type<a class="headerlink" href="#galois.Poly.Roots-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -10646,18 +10677,18 @@ in a Galois field, they are assumed to be from <span class="math notranslate noh
 <dd><p>Constructs a polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> from its string representation.</p>
 <p><a class="reference internal" href="#galois.Poly.Str" title="galois.Poly.Str (Python method) — Constructs a polynomial over \mathrm{GF}(p^m) from its string representation."><code class="xref py py-func docutils literal notranslate"><span class="pre">galois.Poly.Str()</span></code></a> and <a class="reference internal" href="#galois.Poly.__str__" title="galois.Poly.__str__ (Python method) — The string representation of the polynomial, without specifying the finite field it's over."><code class="xref py py-func docutils literal notranslate"><span class="pre">galois.Poly.__str__()</span></code></a> are inverse operations.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.Str-parameters">Parameters<a class="headerlink" href="#galois.Poly.Str-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.Str.string"><span class="sig-name descname">string</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></span></span><a class="headerlink" href="#galois.Poly.Str.string" title="Permalink to this definition">¶</a></dt><dd><p>The string representation of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
+<dt class="field-odd" id="galois.Poly.Str-parameters">Parameters<a class="headerlink" href="#galois.Poly.Str-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.Str.string"><span class="sig-name descname">string</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></span></span><a class="headerlink" href="#galois.Poly.Str.string" title="Permalink to this definition">¶</a></dt><dd><p>The string representation of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 </dd>
-<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
+<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.Str-returns">Returns<a class="headerlink" href="#galois.Poly.Str-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.Str-returns">Returns<a class="headerlink" href="#galois.Poly.Str-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.Str-return-type">Return type<a class="headerlink" href="#galois.Poly.Str-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.Str-return-type">Return type<a class="headerlink" href="#galois.Poly.Str-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -10698,16 +10729,16 @@ in a Galois field, they are assumed to be from <span class="math notranslate noh
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Zero</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">field=&lt;class</span> <span class="pre">'numpy.ndarray</span> <span class="pre">over</span> <span class="pre">GF(2)'&gt;</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.Zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs the polynomial <span class="math notranslate nohighlight">\(f(x) = 0\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.Zero-parameters">Parameters<a class="headerlink" href="#galois.Poly.Zero-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
+<dt class="field-odd" id="galois.Poly.Zero-parameters">Parameters<a class="headerlink" href="#galois.Poly.Zero-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span></dt><dd><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over. The default is <a class="reference internal" href="../galois.GF2/#galois.GF2" title="galois.GF2 (Python class) — A Galois field array over \mathrm{GF}(2)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois.GF2</span></code></a>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.Zero-returns">Returns<a class="headerlink" href="#galois.Poly.Zero-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.Zero-returns">Returns<a class="headerlink" href="#galois.Poly.Zero-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The polynomial <span class="math notranslate nohighlight">\(f(x) = 0\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.Zero-return-type">Return type<a class="headerlink" href="#galois.Poly.Zero-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.Zero-return-type">Return type<a class="headerlink" href="#galois.Poly.Zero-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -10731,23 +10762,23 @@ in a Galois field, they are assumed to be from <span class="math notranslate noh
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.__call__.x" title="galois.Poly.__call__.x (Python parameter) — An array (or 0-D scalar) x of finite field elements to evaluate the polynomial at."><span class="n"><span class="pre">x</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.__call__.field" title="galois.Poly.__call__.field (Python parameter) — The Galois field to evaluate the polynomial over. The default is None which represents the polynomial's current field, i.e. field."><span class="n"><span class="pre">field</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.__call__.elementwise" title="galois.Poly.__call__.elementwise (Python parameter) — Indicates whether to evaluate x elementwise. The default is True. If False (only valid for square matrices), the polynomial indeterminate x is exponentiated using matrix powers (repeated matrix multiplication)."><span class="n"><span class="pre">elementwise</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluates the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> at <code class="samp docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.__call__-parameters">Parameters<a class="headerlink" href="#galois.Poly.__call__-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.__call__.x"><span class="sig-name descname">x</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.Poly.__call__.x" title="Permalink to this definition">¶</a></dt><dd><p>An array (or 0-D scalar) <span class="math notranslate nohighlight">\(x\)</span> of finite field elements to evaluate the polynomial at.</p>
+<dt class="field-odd" id="galois.Poly.__call__-parameters">Parameters<a class="headerlink" href="#galois.Poly.__call__-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.__call__.x"><span class="sig-name descname">x</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)">Sequence</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">ndarray</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>]</span></span><a class="headerlink" href="#galois.Poly.__call__.x" title="Permalink to this definition">¶</a></dt><dd><p>An array (or 0-D scalar) <span class="math notranslate nohighlight">\(x\)</span> of finite field elements to evaluate the polynomial at.</p>
 </dd>
-<dt id="galois.Poly.__call__.field"><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span><a class="headerlink" href="#galois.Poly.__call__.field" title="Permalink to this definition">¶</a></dt><dd><p>The Galois field to evaluate the polynomial over. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents
+<dt id="galois.Poly.__call__.field"><span class="sig-name descname">field</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference internal" href="../galois.FieldClass/#galois.FieldClass" title="galois.FieldClass (Python class) — Defines a metaclass for all galois.FieldArray classes.">FieldClass</a>]</span></span><a class="headerlink" href="#galois.Poly.__call__.field" title="Permalink to this definition">¶</a></dt><dd><p>The Galois field to evaluate the polynomial over. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which represents
 the polynomial’s current field, i.e. <a class="reference internal" href="#galois.Poly.field" title="galois.Poly.field (Python property) — The Galois field array class for the finite field the coefficients are over."><code class="xref py py-obj docutils literal notranslate"><span class="pre">field</span></code></a>.</p>
 </dd>
-<dt id="galois.Poly.__call__.elementwise"><span class="sig-name descname">elementwise</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></span></span><a class="headerlink" href="#galois.Poly.__call__.elementwise" title="Permalink to this definition">¶</a></dt><dd><p>Indicates whether to evaluate <span class="math notranslate nohighlight">\(x\)</span> elementwise. The default is <code class="samp docutils literal notranslate"><span class="pre">True</span></code>. If <code class="samp docutils literal notranslate"><span class="pre">False</span></code> (only valid
+<dt id="galois.Poly.__call__.elementwise"><span class="sig-name descname">elementwise</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></span></span><a class="headerlink" href="#galois.Poly.__call__.elementwise" title="Permalink to this definition">¶</a></dt><dd><p>Indicates whether to evaluate <span class="math notranslate nohighlight">\(x\)</span> elementwise. The default is <code class="samp docutils literal notranslate"><span class="pre">True</span></code>. If <code class="samp docutils literal notranslate"><span class="pre">False</span></code> (only valid
 for square matrices), the polynomial indeterminate <span class="math notranslate nohighlight">\(x\)</span> is exponentiated using matrix powers
 (repeated matrix multiplication).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.__call__-returns">Returns<a class="headerlink" href="#galois.Poly.__call__-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.__call__-returns">Returns<a class="headerlink" href="#galois.Poly.__call__-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The result of the polynomial evaluation <span class="math notranslate nohighlight">\(f(x)\)</span>. The resulting array has the same shape as <code class="samp docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.__call__-return-type">Return type<a class="headerlink" href="#galois.Poly.__call__-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.__call__-return-type">Return type<a class="headerlink" href="#galois.Poly.__call__-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -10798,18 +10829,18 @@ for square matrices), the polynomial indeterminate <span class="math notranslate
 <span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.__eq__.other" title="galois.Poly.__eq__.other (Python parameter) — The polynomial b(x) or a finite field scalar (equivalently a degree-0 polynomial). An integer may be passed and is interpreted as a degree-0 polynomial in the field a(x) is over."><span class="n"><span class="pre">other</span></span></a></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines if two polynomials over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> are equal.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.__eq__-parameters">Parameters<a class="headerlink" href="#galois.Poly.__eq__-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.__eq__.other"><span class="sig-name descname">other</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)">Union</a>[<a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m).">Poly</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]</span></span><a class="headerlink" href="#galois.Poly.__eq__.other" title="Permalink to this definition">¶</a></dt><dd><p>The polynomial <span class="math notranslate nohighlight">\(b(x)\)</span> or a finite field scalar (equivalently a degree-<span class="math notranslate nohighlight">\(0\)</span> polynomial). An integer
+<dt class="field-odd" id="galois.Poly.__eq__-parameters">Parameters<a class="headerlink" href="#galois.Poly.__eq__-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.__eq__.other"><span class="sig-name descname">other</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)">Union</a>[<a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m).">Poly</a>, <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m).">FieldArray</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>]</span></span><a class="headerlink" href="#galois.Poly.__eq__.other" title="Permalink to this definition">¶</a></dt><dd><p>The polynomial <span class="math notranslate nohighlight">\(b(x)\)</span> or a finite field scalar (equivalently a degree-<span class="math notranslate nohighlight">\(0\)</span> polynomial). An integer
 may be passed and is interpreted as a degree-<span class="math notranslate nohighlight">\(0\)</span> polynomial in the field <span class="math notranslate nohighlight">\(a(x)\)</span> is over.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.__eq__-returns">Returns<a class="headerlink" href="#galois.Poly.__eq__-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.__eq__-returns">Returns<a class="headerlink" href="#galois.Poly.__eq__-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><code class="samp docutils literal notranslate"><span class="pre">True</span></code> if the two polynomials have the same coefficients and are over the same finite field.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.__eq__-return-type">Return type<a class="headerlink" href="#galois.Poly.__eq__-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+<dt class="field-odd" id="galois.Poly.__eq__-return-type">Return type<a class="headerlink" href="#galois.Poly.__eq__-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
 </dd>
 </dl>
 <p class="example rubric">Examples</p>
@@ -10887,11 +10918,11 @@ value. The polynomial’s integer representation is that value in decimal (radix
 <span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.__len__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the length of the coefficient array <code class="samp docutils literal notranslate"><span class="pre">Poly.degree</span> <span class="pre">+</span> <span class="pre">1</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.__len__-returns">Returns<a class="headerlink" href="#galois.Poly.__len__-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.__len__-returns">Returns<a class="headerlink" href="#galois.Poly.__len__-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>The length of the coefficient array.</p>
 </dd>
-<dt class="field-even" id="galois.Poly.__len__-return-type">Return type<a class="headerlink" href="#galois.Poly.__len__-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
+<dt class="field-even" id="galois.Poly.__len__-return-type">Return type<a class="headerlink" href="#galois.Poly.__len__-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
 <p class="example rubric">Examples</p>
@@ -10957,20 +10988,20 @@ value. The polynomial’s integer representation is that value in decimal (radix
 <span class="sig-name descname"><span class="pre">coefficients</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.coefficients.size" title="galois.Poly.coefficients.size (Python parameter) — The fixed size of the coefficient array. Zeros will be added for higher-order terms. This value must be at least degree + 1 or a ValueError will be raised. The default is None which corresponds to degree + 1."><span class="n"><span class="pre">size</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.coefficients.order" title="galois.Poly.coefficients.order (Python parameter) — The order of the coefficient degrees, either descending (default) or ascending."><span class="n"><span class="pre">order</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;desc&#39;</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.coefficients" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the polynomial coefficients in the order and size specified.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.coefficients-parameters">Parameters<a class="headerlink" href="#galois.Poly.coefficients-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.coefficients.size"><span class="sig-name descname">size</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]</span></span><a class="headerlink" href="#galois.Poly.coefficients.size" title="Permalink to this definition">¶</a></dt><dd><p>The fixed size of the coefficient array. Zeros will be added for higher-order terms. This value must be
-at least <code class="samp docutils literal notranslate"><span class="pre">degree</span> <span class="pre">+</span> <span class="pre">1</span></code> or a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ValueError</span></code></a> will be raised. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds
+<dt class="field-odd" id="galois.Poly.coefficients-parameters">Parameters<a class="headerlink" href="#galois.Poly.coefficients-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.coefficients.size"><span class="sig-name descname">size</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)">Optional</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>]</span></span><a class="headerlink" href="#galois.Poly.coefficients.size" title="Permalink to this definition">¶</a></dt><dd><p>The fixed size of the coefficient array. Zeros will be added for higher-order terms. This value must be
+at least <code class="samp docutils literal notranslate"><span class="pre">degree</span> <span class="pre">+</span> <span class="pre">1</span></code> or a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ValueError</span></code></a> will be raised. The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which corresponds
 to <code class="samp docutils literal notranslate"><span class="pre">degree</span> <span class="pre">+</span> <span class="pre">1</span></code>.</p>
 </dd>
-<dt id="galois.Poly.coefficients.order"><span class="sig-name descname">order</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.10)">Literal</a>['desc', 'asc']</span></span><a class="headerlink" href="#galois.Poly.coefficients.order" title="Permalink to this definition">¶</a></dt><dd><p>The order of the coefficient degrees, either descending (default) or ascending.</p>
+<dt id="galois.Poly.coefficients.order"><span class="sig-name descname">order</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)">Literal</a>['desc', 'asc']</span></span><a class="headerlink" href="#galois.Poly.coefficients.order" title="Permalink to this definition">¶</a></dt><dd><p>The order of the coefficient degrees, either descending (default) or ascending.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.coefficients-returns">Returns<a class="headerlink" href="#galois.Poly.coefficients-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.coefficients-returns">Returns<a class="headerlink" href="#galois.Poly.coefficients-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>An array of the polynomial coefficients with length <code class="samp docutils literal notranslate"><span class="pre">size</span></code>, either in descending order or ascending order.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.coefficients-return-type">Return type<a class="headerlink" href="#galois.Poly.coefficients-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.coefficients-return-type">Return type<a class="headerlink" href="#galois.Poly.coefficients-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A Galois field array over \mathrm{GF}(p^m)."><em>FieldArray</em></a></p>
 </dd>
 </dl>
@@ -11004,10 +11035,10 @@ to <code class="samp docutils literal notranslate"><span class="pre">degree</spa
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deep copies the polynomial.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.copy-returns">Returns<a class="headerlink" href="#galois.Poly.copy-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.copy-returns">Returns<a class="headerlink" href="#galois.Poly.copy-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>A copy of the original polynomial.</p>
 </dd>
-<dt class="field-even" id="galois.Poly.copy-return-type">Return type<a class="headerlink" href="#galois.Poly.copy-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.copy-return-type">Return type<a class="headerlink" href="#galois.Poly.copy-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m).">galois.Poly</a></p>
 </dd>
 </dl>
@@ -11018,17 +11049,17 @@ to <code class="samp docutils literal notranslate"><span class="pre">degree</spa
 <span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.derivative.k" title="galois.Poly.derivative.k (Python parameter) — The number of derivatives to compute. 1 corresponds to p'(x), 2 corresponds to p''(x), etc. The default is 1."><span class="n"><span class="pre">k</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.derivative" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the <span class="math notranslate nohighlight">\(k\)</span>-th formal derivative <span class="math notranslate nohighlight">\(\frac{d^k}{dx^k} f(x)\)</span> of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.derivative-parameters">Parameters<a class="headerlink" href="#galois.Poly.derivative-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.derivative.k"><span class="sig-name descname">k</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.Poly.derivative.k" title="Permalink to this definition">¶</a></dt><dd><p>The number of derivatives to compute. 1 corresponds to <span class="math notranslate nohighlight">\(p'(x)\)</span>, 2 corresponds to <span class="math notranslate nohighlight">\(p''(x)\)</span>, etc.
+<dt class="field-odd" id="galois.Poly.derivative-parameters">Parameters<a class="headerlink" href="#galois.Poly.derivative-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.derivative.k"><span class="sig-name descname">k</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.Poly.derivative.k" title="Permalink to this definition">¶</a></dt><dd><p>The number of derivatives to compute. 1 corresponds to <span class="math notranslate nohighlight">\(p'(x)\)</span>, 2 corresponds to <span class="math notranslate nohighlight">\(p''(x)\)</span>, etc.
 The default is 1.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.derivative-returns">Returns<a class="headerlink" href="#galois.Poly.derivative-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.derivative-returns">Returns<a class="headerlink" href="#galois.Poly.derivative-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The <span class="math notranslate nohighlight">\(k\)</span>-th formal derivative of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 </dd>
-<dt class="field-odd" id="galois.Poly.derivative-return-type">Return type<a class="headerlink" href="#galois.Poly.derivative-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.derivative-return-type">Return type<a class="headerlink" href="#galois.Poly.derivative-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -11049,10 +11080,10 @@ For example, <span class="math notranslate nohighlight">\(3 \cdot a = a + a + a\
 <p class="example rubric">Examples</p>
 <p>Compute the derivatives of a polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[1]: </span><span class="go">Poly(x^7 + x^6 + x^3 + x^2 + x, GF(2))</span>
+<span class="gh">Out[1]: </span><span class="go">Poly(x^7 + x^6 + x^5 + 1, GF(2))</span>
 
 <span class="gp">In [2]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
-<span class="gh">Out[2]: </span><span class="go">Poly(x^6 + x^2 + 1, GF(2))</span>
+<span class="gh">Out[2]: </span><span class="go">Poly(x^6 + x^4, GF(2))</span>
 
 <span class="go"># p derivatives of a polynomial, where p is the field&#39;s characteristic, will always result in 0</span>
 <span class="gp">In [3]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">)</span>
@@ -11063,16 +11094,16 @@ For example, <span class="math notranslate nohighlight">\(3 \cdot a = a + a + a\
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [5]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(2x^11 + 2x^10 + 2x^9 + 3x^8 + x^7 + 6x^5 + 3x^4 + 6x^3 + x^2 + 6x + 3, GF(7))</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(3x^11 + x^10 + 2x^9 + x^8 + 4x^7 + 3x^6 + 4x^5 + 2x^4 + 3x^3 + 4x^2 + 5x + 6, GF(7))</span>
 
 <span class="gp">In [6]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(x^10 + 6x^9 + 4x^8 + 3x^7 + 2x^4 + 5x^3 + 4x^2 + 2x + 6, GF(7))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(5x^10 + 3x^9 + 4x^8 + x^7 + 4x^5 + 6x^4 + x^3 + 2x^2 + x + 5, GF(7))</span>
 
 <span class="gp">In [7]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(3x^9 + 5x^8 + 4x^7 + x^3 + x^2 + x + 2, GF(7))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(x^9 + 6x^8 + 4x^7 + 6x^4 + 3x^3 + 3x^2 + 4x + 1, GF(7))</span>
 
 <span class="gp">In [8]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gh">Out[8]: </span><span class="go">Poly(6x^8 + 5x^7 + 3x^2 + 2x + 1, GF(7))</span>
+<span class="gh">Out[8]: </span><span class="go">Poly(2x^8 + 6x^7 + 3x^3 + 2x^2 + 6x + 4, GF(7))</span>
 
 <span class="go"># p derivatives of a polynomial, where p is the field&#39;s characteristic, will always result in 0</span>
 <span class="gp">In [9]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">)</span>
@@ -11083,13 +11114,13 @@ For example, <span class="math notranslate nohighlight">\(3 \cdot a = a + a + a\
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [11]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[11]: </span><span class="go">Poly(182x^7 + 26x^6 + 35x^5 + 109x^4 + 20x^3 + 211x^2 + 90x + 180, GF(3^5))</span>
+<span class="gh">Out[11]: </span><span class="go">Poly(91x^7 + 45x^6 + 166x^5 + 127x^4 + 221x^3 + 137x^2 + 94x + 167, GF(3^5))</span>
 
 <span class="gp">In [12]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
-<span class="gh">Out[12]: </span><span class="go">Poly(182x^6 + 58x^4 + 109x^3 + 152x + 90, GF(3^5))</span>
+<span class="gh">Out[12]: </span><span class="go">Poly(91x^6 + 89x^4 + 127x^3 + 190x + 94, GF(3^5))</span>
 
 <span class="gp">In [13]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[13]: </span><span class="go">Poly(58x^3 + 152, GF(3^5))</span>
+<span class="gh">Out[13]: </span><span class="go">Poly(89x^3 + 190, GF(3^5))</span>
 
 <span class="go"># p derivatives of a polynomial, where p is the field&#39;s characteristic, will always result in 0</span>
 <span class="gp">In [14]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">)</span>
@@ -11103,10 +11134,10 @@ For example, <span class="math notranslate nohighlight">\(3 \cdot a = a + a + a\
 <span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.reverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <span class="math notranslate nohighlight">\(d\)</span>-th reversal <span class="math notranslate nohighlight">\(x^d f(\frac{1}{x})\)</span> of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> with degree <span class="math notranslate nohighlight">\(d\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.reverse-returns">Returns<a class="headerlink" href="#galois.Poly.reverse-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-odd" id="galois.Poly.reverse-returns">Returns<a class="headerlink" href="#galois.Poly.reverse-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>The <span class="math notranslate nohighlight">\(n\)</span>-th reversal <span class="math notranslate nohighlight">\(x^n f(\frac{1}{x})\)</span>.</p>
 </dd>
-<dt class="field-even" id="galois.Poly.reverse-return-type">Return type<a class="headerlink" href="#galois.Poly.reverse-return-type" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.reverse-return-type">Return type<a class="headerlink" href="#galois.Poly.reverse-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference internal" href="#galois.Poly" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><em>Poly</em></a></p>
 </dd>
 </dl>
@@ -11132,14 +11163,14 @@ reversal is equivalent to reversing the coefficients.</p>
 <span class="sig-name descname"><span class="pre">roots</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.Poly.roots.multiplicity" title="galois.Poly.roots.multiplicity (Python parameter) — Optionally return the multiplicity of each root. The default is False which only returns the unique roots."><span class="n"><span class="pre">multiplicity</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.Poly.roots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the roots <span class="math notranslate nohighlight">\(r\)</span> of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>, such that <span class="math notranslate nohighlight">\(f(r) = 0\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="galois.Poly.roots-parameters">Parameters<a class="headerlink" href="#galois.Poly.roots-parameters" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="galois.Poly.roots.multiplicity"><span class="sig-name descname">multiplicity</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a>, optional</span></span><a class="headerlink" href="#galois.Poly.roots.multiplicity" title="Permalink to this definition">¶</a></dt><dd><p>Optionally return the multiplicity of each root. The default is <code class="samp docutils literal notranslate"><span class="pre">False</span></code> which only returns the unique
+<dt class="field-odd" id="galois.Poly.roots-parameters">Parameters<a class="headerlink" href="#galois.Poly.roots-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="galois.Poly.roots.multiplicity"><span class="sig-name descname">multiplicity</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a>, optional</span></span><a class="headerlink" href="#galois.Poly.roots.multiplicity" title="Permalink to this definition">¶</a></dt><dd><p>Optionally return the multiplicity of each root. The default is <code class="samp docutils literal notranslate"><span class="pre">False</span></code> which only returns the unique
 roots.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="galois.Poly.roots-returns">Returns<a class="headerlink" href="#galois.Poly.roots-returns" title="Permalink to this headline">¶</a><span class="colon">:</span></dt>
+<dt class="field-even" id="galois.Poly.roots-returns">Returns<a class="headerlink" href="#galois.Poly.roots-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>galois.FieldArray</em> – Galois field array of roots of <span class="math notranslate nohighlight">\(f(x)\)</span>. The roots are ordered in increasing order.</p></li>
 <li><p><em>numpy.ndarray</em> – The multiplicity of each root. This is only returned if <code class="samp docutils literal notranslate"><span class="pre">multiplicity=True</span></code>.</p></li>
@@ -11220,7 +11251,7 @@ where <span class="math notranslate nohighlight">\(\alpha^i\)</span> is a root o
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.Poly.degree">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">degree</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.Poly.degree" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">degree</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.Poly.degree" title="Permalink to this definition">¶</a></dt>
 <dd><p>The degree of the polynomial. The degree of a polynomial is the highest degree with a non-zero coefficient.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
@@ -11256,7 +11287,7 @@ where <span class="math notranslate nohighlight">\(\alpha^i\)</span> is a root o
 <dd><p>The <em>Galois field array class</em> for the finite field the coefficients are over.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span> <span class="n">a</span>
-<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x^4 + x^3 + x, GF(2))</span>
+<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x^3 + x, GF(2))</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span><span class="o">.</span><span class="n">field</span>
 <span class="gh">Out[2]: </span><span class="go">&lt;class &#39;numpy.ndarray over GF(2)&#39;&gt;</span>
@@ -11265,7 +11296,7 @@ where <span class="math notranslate nohighlight">\(\alpha^i\)</span> is a root o
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">8</span><span class="p">)</span>
 
 <span class="gp">In [4]: </span><span class="n">b</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">b</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(88x^5 + 219x^4 + 64x^3 + 14x^2 + 23x + 11, GF(2^8))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(154x^5 + 38x^4 + 144x^3 + 50x^2 + 206x + 241, GF(2^8))</span>
 
 <span class="gp">In [5]: </span><span class="n">b</span><span class="o">.</span><span class="n">field</span>
 <span class="gh">Out[5]: </span><span class="go">&lt;class &#39;numpy.ndarray over GF(2^8)&#39;&gt;</span>
@@ -11311,23 +11342,30 @@ are paired with <a class="reference internal" href="#galois.Poly.nonzero_coeffs"
 
 
 
-
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      Aug 29, 2022
+      Mar 21, 2022
     
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
@@ -11336,7 +11374,8 @@ are paired with <a class="reference internal" href="#galois.Poly.nonzero_coeffs"
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../galois.GLFSR/" class="md-footer__link md-footer__link--prev" aria-label="Previous: galois.GLFSR" rel="prev">
@@ -11385,7 +11424,7 @@ are paired with <a class="reference internal" href="#galois.Poly.nonzero_coeffs"
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.1.1.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -11400,10 +11439,12 @@ are paired with <a class="reference internal" href="#galois.Poly.nonzero_coeffs"
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
+    
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     

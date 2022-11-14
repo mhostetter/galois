@@ -1,6 +1,0 @@
-﻿galois.euler\_phi
-=================
-
-.. currentmodule:: galois
-
-.. autofunction:: euler_phi

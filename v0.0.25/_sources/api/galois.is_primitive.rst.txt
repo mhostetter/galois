@@ -1,6 +1,0 @@
-﻿galois.is\_primitive
-====================
-
-.. currentmodule:: galois
-
-.. autofunction:: is_primitive

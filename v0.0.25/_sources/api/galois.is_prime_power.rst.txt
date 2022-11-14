@@ -1,6 +1,0 @@
-﻿galois.is\_prime\_power
-=======================
-
-.. currentmodule:: galois
-
-.. autofunction:: is_prime_power

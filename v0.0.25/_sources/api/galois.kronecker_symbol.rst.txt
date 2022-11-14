@@ -1,6 +1,0 @@
-﻿galois.kronecker\_symbol
-========================
-
-.. currentmodule:: galois
-
-.. autofunction:: kronecker_symbol
