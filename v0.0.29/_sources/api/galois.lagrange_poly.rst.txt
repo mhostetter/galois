@@ -1,6 +1,0 @@
-﻿galois.lagrange\_poly
-=====================
-
-.. currentmodule:: galois
-
-.. autofunction:: lagrange_poly

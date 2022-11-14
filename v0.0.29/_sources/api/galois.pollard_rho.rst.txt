@@ -1,6 +1,0 @@
-﻿galois.pollard\_rho
-===================
-
-.. currentmodule:: galois
-
-.. autofunction:: pollard_rho

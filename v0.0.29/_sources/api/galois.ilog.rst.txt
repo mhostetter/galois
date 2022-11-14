@@ -1,6 +1,0 @@
-﻿galois.ilog
-===========
-
-.. currentmodule:: galois
-
-.. autofunction:: ilog

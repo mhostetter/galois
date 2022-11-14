@@ -1,6 +1,0 @@
-﻿galois.typing.PolyLike
-======================
-
-.. currentmodule:: galois.typing
-
-.. autodata:: PolyLike

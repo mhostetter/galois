@@ -1,6 +1,0 @@
-﻿galois.get\_printoptions
-========================
-
-.. currentmodule:: galois
-
-.. autofunction:: get_printoptions

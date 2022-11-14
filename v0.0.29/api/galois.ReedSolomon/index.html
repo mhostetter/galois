@@ -18,26 +18,27 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.5aa58769.min.css">
+      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.92c9fe4a.min.css">
+        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
+      
+
     
     
     
       
         
         
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -47,10 +48,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-4FW9NCNFZH",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-4FW9NCNFZH",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
 
@@ -88,9 +92,19 @@
     </div>
     
       <div data-md-component="outdated" hidden>
-        <aside class="md-banner md-banner--warning">
-          
-        </aside>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -159,7 +173,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -183,7 +197,7 @@
         <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -336,7 +350,7 @@
       <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -3353,15 +3367,16 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset" role="main">
-                
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
 
 
-  <h1 id="galois-reedsolomon">galois.ReedSolomon<a class="headerlink" href="#galois-reedsolomon" title="Permalink to this headline">¶</a></h1>
+<h1 id="galois-reedsolomon">galois.ReedSolomon<a class="headerlink" href="#galois-reedsolomon" title="Permalink to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="galois.ReedSolomon">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">ReedSolomon</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.n" title="galois.ReedSolomon.__init__.n (Python parameter) — The codeword size n, must be n = q - 1 where q is a prime power."><span class="n"><span class="pre">n</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.k" title="galois.ReedSolomon.__init__.k (Python parameter) — The message size k. The error-correcting capability t is defined by n - k = 2t."><span class="n"><span class="pre">k</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.c" title="galois.ReedSolomon.__init__.c (Python parameter) — The first consecutive power of \alpha. The default is 1."><span class="n"><span class="pre">c</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.primitive_poly" title="galois.ReedSolomon.__init__.primitive_poly (Python parameter) — Optionally specify the primitive polynomial that defines the extension field \mathrm{GF}(q). The default is None which uses Matlab's default, see matlab_primitive_poly()."><span class="n"><span class="pre">primitive_poly</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.primitive_element" title="galois.ReedSolomon.__init__.primitive_element (Python parameter) — Optionally specify the primitive element \alpha of \mathrm{GF}(q) whose powers are roots of the generator polynomial g(x). The default is None which uses the lexicographically-minimal primitive element in \mathrm{GF}(q), see primitive_element()."><span class="n"><span class="pre">primitive_element</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.systematic" title="galois.ReedSolomon.__init__.systematic (Python parameter) — Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity appended. The default is True."><span class="n"><span class="pre">systematic</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.ReedSolomon" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">ReedSolomon</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.n" title="galois.ReedSolomon.__init__.n (Python parameter) — The codeword size n, must be n = q - 1 where q is a prime power."><span class="n"><span class="pre">n</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.k" title="galois.ReedSolomon.__init__.k (Python parameter) — The message size k. The error-correcting capability t is defined by n - k = 2t."><span class="n"><span class="pre">k</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.c" title="galois.ReedSolomon.__init__.c (Python parameter) — The first consecutive power of \alpha. The default is 1."><span class="n"><span class="pre">c</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.primitive_poly" title="galois.ReedSolomon.__init__.primitive_poly (Python parameter) — Optionally specify the primitive polynomial that defines the extension field \mathrm{GF}(q). The default is None which uses Matlab's default, see matlab_primitive_poly()."><span class="n"><span class="pre">primitive_poly</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.primitive_element" title="galois.ReedSolomon.__init__.primitive_element (Python parameter) — Optionally specify the primitive element \alpha of \mathrm{GF}(q) whose powers are roots of the generator polynomial g(x). The default is None which uses the lexicographically-minimal primitive element in \mathrm{GF}(q), see primitive_element()."><span class="n"><span class="pre">primitive_element</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.systematic" title="galois.ReedSolomon.__init__.systematic (Python parameter) — Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity appended. The default is True."><span class="n"><span class="pre">systematic</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.ReedSolomon" title="Permalink to this definition">¶</a></dt>
 <dd><p>A general <span class="math notranslate nohighlight">\(\textrm{RS}(n, k)\)</span> code.</p>
 <p>A <span class="math notranslate nohighlight">\(\textrm{RS}(n, k)\)</span> code is a <span class="math notranslate nohighlight">\([n, k, d]_q\)</span> linear block code with codeword size <span class="math notranslate nohighlight">\(n\)</span>, message
 size <span class="math notranslate nohighlight">\(k\)</span>, minimum distance <span class="math notranslate nohighlight">\(d\)</span>, and symbols taken from an alphabet of size <span class="math notranslate nohighlight">\(q\)</span> (a prime power).</p>
@@ -3377,10 +3392,10 @@ applicable for systematic codes.</p>
 </div>
 <p>Encode a message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([10,  8,  5, 10, 13,  7,  9,  0, 15], order=2^4)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([ 0,  4, 11,  5, 14,  8,  5,  6,  0], order=2^4)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([10,  8,  5, 10, 13,  7,  9,  0, 15,  3, 14, 12,  4,  9,  1], order=2^4)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([ 0,  4, 11,  5, 14,  8,  5,  6,  0, 14,  4, 15, 14,  1, 15], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Corrupt the codeword and decode the message.</p>
@@ -3388,7 +3403,7 @@ applicable for systematic codes.</p>
 <span class="gp">In [5]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">13</span>
 
 <span class="gp">In [6]: </span><span class="n">dec_m</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">dec_m</span>
-<span class="gh">Out[6]: </span><span class="go">GF([10,  8,  5, 10, 13,  7,  9,  0, 15], order=2^4)</span>
+<span class="gh">Out[6]: </span><span class="go">GF([ 0,  4, 11,  5, 14,  8,  5,  6,  0], order=2^4)</span>
 
 <span class="gp">In [7]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">dec_m</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[7]: </span><span class="go">True</span>
@@ -3396,7 +3411,7 @@ applicable for systematic codes.</p>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="go"># Instruct the decoder to return the number of corrected symbol errors</span>
 <span class="gp">In [8]: </span><span class="n">dec_m</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">dec_m</span><span class="p">,</span> <span class="n">N</span>
-<span class="gh">Out[8]: </span><span class="go">(GF([10,  8,  5, 10, 13,  7,  9,  0, 15], order=2^4), 1)</span>
+<span class="gh">Out[8]: </span><span class="go">(GF([ 0,  4, 11,  5, 14,  8,  5,  6,  0], order=2^4), 1)</span>
 
 <span class="gp">In [9]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">dec_m</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[9]: </span><span class="go">True</span>
@@ -3494,25 +3509,25 @@ applicable for systematic codes.</p>
 </table>
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="galois.ReedSolomon.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.n" title="galois.ReedSolomon.__init__.n (Python parameter) — The codeword size n, must be n = q - 1 where q is a prime power."><span class="n"><span class="pre">n</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.k" title="galois.ReedSolomon.__init__.k (Python parameter) — The message size k. The error-correcting capability t is defined by n - k = 2t."><span class="n"><span class="pre">k</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.c" title="galois.ReedSolomon.__init__.c (Python parameter) — The first consecutive power of \alpha. The default is 1."><span class="n"><span class="pre">c</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.primitive_poly" title="galois.ReedSolomon.__init__.primitive_poly (Python parameter) — Optionally specify the primitive polynomial that defines the extension field \mathrm{GF}(q). The default is None which uses Matlab's default, see matlab_primitive_poly()."><span class="n"><span class="pre">primitive_poly</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.primitive_element" title="galois.ReedSolomon.__init__.primitive_element (Python parameter) — Optionally specify the primitive element \alpha of \mathrm{GF}(q) whose powers are roots of the generator polynomial g(x). The default is None which uses the lexicographically-minimal primitive element in \mathrm{GF}(q), see primitive_element()."><span class="n"><span class="pre">primitive_element</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.systematic" title="galois.ReedSolomon.__init__.systematic (Python parameter) — Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity appended. The default is True."><span class="n"><span class="pre">systematic</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.ReedSolomon.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.n" title="galois.ReedSolomon.__init__.n (Python parameter) — The codeword size n, must be n = q - 1 where q is a prime power."><span class="n"><span class="pre">n</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.k" title="galois.ReedSolomon.__init__.k (Python parameter) — The message size k. The error-correcting capability t is defined by n - k = 2t."><span class="n"><span class="pre">k</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.c" title="galois.ReedSolomon.__init__.c (Python parameter) — The first consecutive power of \alpha. The default is 1."><span class="n"><span class="pre">c</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.primitive_poly" title="galois.ReedSolomon.__init__.primitive_poly (Python parameter) — Optionally specify the primitive polynomial that defines the extension field \mathrm{GF}(q). The default is None which uses Matlab's default, see matlab_primitive_poly()."><span class="n"><span class="pre">primitive_poly</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.primitive_element" title="galois.ReedSolomon.__init__.primitive_element (Python parameter) — Optionally specify the primitive element \alpha of \mathrm{GF}(q) whose powers are roots of the generator polynomial g(x). The default is None which uses the lexicographically-minimal primitive element in \mathrm{GF}(q), see primitive_element()."><span class="n"><span class="pre">primitive_element</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.__init__.systematic" title="galois.ReedSolomon.__init__.systematic (Python parameter) — Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity appended. The default is True."><span class="n"><span class="pre">systematic</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#galois.ReedSolomon.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a general <span class="math notranslate nohighlight">\(\textrm{RS}(n, k)\)</span> code.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="api-field highlight simple">
-<dt id="galois.ReedSolomon.__init__.n"><span class="n sig-name">n</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.ReedSolomon.__init__.n" title="Permalink to this definition">¶</a></dt><dd><p>The codeword size <span class="math notranslate nohighlight">\(n\)</span>, must be <span class="math notranslate nohighlight">\(n = q - 1\)</span> where <span class="math notranslate nohighlight">\(q\)</span> is a prime power.</p>
+<dt id="galois.ReedSolomon.__init__.n"><span class="n sig-name">n</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.ReedSolomon.__init__.n" title="Permalink to this definition">¶</a></dt><dd><p>The codeword size <span class="math notranslate nohighlight">\(n\)</span>, must be <span class="math notranslate nohighlight">\(n = q - 1\)</span> where <span class="math notranslate nohighlight">\(q\)</span> is a prime power.</p>
 </dd>
-<dt id="galois.ReedSolomon.__init__.k"><span class="n sig-name">k</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><a class="headerlink" href="#galois.ReedSolomon.__init__.k" title="Permalink to this definition">¶</a></dt><dd><p>The message size <span class="math notranslate nohighlight">\(k\)</span>. The error-correcting capability <span class="math notranslate nohighlight">\(t\)</span> is defined by <span class="math notranslate nohighlight">\(n - k = 2t\)</span>.</p>
+<dt id="galois.ReedSolomon.__init__.k"><span class="n sig-name">k</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#galois.ReedSolomon.__init__.k" title="Permalink to this definition">¶</a></dt><dd><p>The message size <span class="math notranslate nohighlight">\(k\)</span>. The error-correcting capability <span class="math notranslate nohighlight">\(t\)</span> is defined by <span class="math notranslate nohighlight">\(n - k = 2t\)</span>.</p>
 </dd>
-<dt id="galois.ReedSolomon.__init__.c"><span class="n sig-name">c</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code><a class="headerlink" href="#galois.ReedSolomon.__init__.c" title="Permalink to this definition">¶</a></dt><dd><p>The first consecutive power of <span class="math notranslate nohighlight">\(\alpha\)</span>. The default is 1.</p>
+<dt id="galois.ReedSolomon.__init__.c"><span class="n sig-name">c</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code><a class="headerlink" href="#galois.ReedSolomon.__init__.c" title="Permalink to this definition">¶</a></dt><dd><p>The first consecutive power of <span class="math notranslate nohighlight">\(\alpha\)</span>. The default is 1.</p>
 </dd>
-<dt id="galois.ReedSolomon.__init__.primitive_poly"><span class="n sig-name">primitive_poly</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial.">PolyLike</a><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#galois.ReedSolomon.__init__.primitive_poly" title="Permalink to this definition">¶</a></dt><dd><p>Optionally specify the primitive polynomial that defines the extension field <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>. The default is
+<dt id="galois.ReedSolomon.__init__.primitive_poly"><span class="n sig-name">primitive_poly</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial.">PolyLike</a><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#galois.ReedSolomon.__init__.primitive_poly" title="Permalink to this definition">¶</a></dt><dd><p>Optionally specify the primitive polynomial that defines the extension field <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>. The default is
 <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which uses Matlab’s default, see <a class="reference internal" href="../galois.matlab_primitive_poly/#galois.matlab_primitive_poly" title="galois.matlab_primitive_poly (Python function) — Returns Matlab's default primitive polynomial f(x) over \mathrm{GF}(p) with degree m."><code class="xref py py-func docutils literal notranslate"><span class="pre">matlab_primitive_poly()</span></code></a>.</p>
 </dd>
-<dt id="galois.ReedSolomon.__init__.primitive_element"><span class="n sig-name">primitive_element</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial.">PolyLike</a><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#galois.ReedSolomon.__init__.primitive_element" title="Permalink to this definition">¶</a></dt><dd><p>Optionally specify the primitive element <span class="math notranslate nohighlight">\(\alpha\)</span> of <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> whose powers are roots of the generator polynomial <span class="math notranslate nohighlight">\(g(x)\)</span>.
+<dt id="galois.ReedSolomon.__init__.primitive_element"><span class="n sig-name">primitive_element</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/#galois.typing.PolyLike" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial.">PolyLike</a><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#galois.ReedSolomon.__init__.primitive_element" title="Permalink to this definition">¶</a></dt><dd><p>Optionally specify the primitive element <span class="math notranslate nohighlight">\(\alpha\)</span> of <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> whose powers are roots of the generator polynomial <span class="math notranslate nohighlight">\(g(x)\)</span>.
 The default is <code class="samp docutils literal notranslate"><span class="pre">None</span></code> which uses the lexicographically-minimal primitive element in <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>, see
 <a class="reference internal" href="../galois.primitive_element/#galois.primitive_element" title="galois.primitive_element (Python function) — Finds a primitive element g of the Galois field \mathrm{GF}(q^m) with degree-m irreducible polynomial f(x) over \mathrm{GF}(q)."><code class="xref py py-func docutils literal notranslate"><span class="pre">primitive_element()</span></code></a>.</p>
 </dd>
-<dt id="galois.ReedSolomon.__init__.systematic"><span class="n sig-name">systematic</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code><a class="headerlink" href="#galois.ReedSolomon.__init__.systematic" title="Permalink to this definition">¶</a></dt><dd><p>Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
+<dt id="galois.ReedSolomon.__init__.systematic"><span class="n sig-name">systematic</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code><a class="headerlink" href="#galois.ReedSolomon.__init__.systematic" title="Permalink to this definition">¶</a></dt><dd><p>Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity
 appended. The default is <code class="samp docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 </dl>
@@ -3526,7 +3541,7 @@ appended. The default is <code class="samp docutils literal notranslate"><span c
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span></span><a class="headerlink" href="#galois.ReedSolomon.__repr__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span></span><a class="headerlink" href="#galois.ReedSolomon.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>A terse representation of the Reed-Solomon code.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">rs</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">ReedSolomon</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
@@ -3539,7 +3554,7 @@ appended. The default is <code class="samp docutils literal notranslate"><span c
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.__str__">
-<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span></span><a class="headerlink" href="#galois.ReedSolomon.__str__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span></span><a class="headerlink" href="#galois.ReedSolomon.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>A formatted string with relevant properties of the Reed-Solomon code.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">rs</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">ReedSolomon</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
@@ -3560,7 +3575,7 @@ appended. The default is <code class="samp docutils literal notranslate"><span c
 <dt class="sig sig-object highlight sig-wrap py" id="galois.ReedSolomon.decode">
 <span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.decode.codeword" title="galois.ReedSolomon.decode.codeword (Python parameter) — The codeword as either a n-length vector or (N, n) matrix, where N is the number of codewords. For systematic codes, codeword lengths less than n may be provided for shortened codewords."><span class="n"><span class="pre">codeword</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.decode.errors" title="galois.ReedSolomon.decode.errors (Python parameter) — Optionally specify whether to return the number of corrected errors. The default is False."><span class="n"><span class="pre">errors</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="k"><span class="pre">False</span></span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a></span></span></span><a class="headerlink" href="#galois.ReedSolomon.decode" title="Permalink to this definition">¶</a></dt>
 <dt class="sig sig-object highlight sig-wrap py">
-<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.decode.codeword" title="galois.ReedSolomon.decode.codeword (Python parameter) — The codeword as either a n-length vector or (N, n) matrix, where N is the number of codewords. For systematic codes, codeword lengths less than n may be provided for shortened codewords."><span class="n"><span class="pre">codeword</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.decode.errors" title="galois.ReedSolomon.decode.errors (Python parameter) — Optionally specify whether to return the number of corrected errors. The default is False."><span class="n"><span class="pre">errors</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="k"><span class="pre">True</span></span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.integer" title="(in NumPy v1.23)"><span class="pre">integer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span></span></dt>
+<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.decode.codeword" title="galois.ReedSolomon.decode.codeword (Python parameter) — The codeword as either a n-length vector or (N, n) matrix, where N is the number of codewords. For systematic codes, codeword lengths less than n may be provided for shortened codewords."><span class="n"><span class="pre">codeword</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.decode.errors" title="galois.ReedSolomon.decode.errors (Python parameter) — Optionally specify whether to return the number of corrected errors. The default is False."><span class="n"><span class="pre">errors</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="k"><span class="pre">True</span></span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.integer" title="(in NumPy v1.23)"><span class="pre">integer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span></span></dt>
 <dd><p>Decodes the Reed-Solomon codeword <span class="math notranslate nohighlight">\(\mathbf{c}\)</span> into the message <span class="math notranslate nohighlight">\(\mathbf{m}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3606,23 +3621,23 @@ Vector</label><div class="sd-tab-content docutils">
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([ 2,  0,  2, 11, 13, 13, 14,  6,  0], order=2^4)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([12,  2, 13, 12,  6,  8,  8, 15,  7], order=2^4)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([ 2,  0,  2, 11, 13, 13, 14,  6,  0, 15,  0,  0,  5,  0,  5], order=2^4)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([12,  2, 13, 12,  6,  8,  8, 15,  7,  6,  5,  8,  4, 13,  3], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Corrupt <span class="math notranslate nohighlight">\(t\)</span> symbols of the codeword.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">e</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">e</span>
-<span class="gh">Out[5]: </span><span class="go">GF([7, 4, 5], order=2^4)</span>
+<span class="gh">Out[5]: </span><span class="go">GF([5, 4, 6], order=2^4)</span>
 
 <span class="gp">In [6]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rs</span><span class="o">.</span><span class="n">t</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[6]: </span><span class="go">GF([ 5,  4,  7, 11, 13, 13, 14,  6,  0, 15,  0,  0,  5,  0,  5], order=2^4)</span>
+<span class="gh">Out[6]: </span><span class="go">GF([ 9,  6, 11, 12,  6,  8,  8, 15,  7,  6,  5,  8,  4, 13,  3], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
-<span class="gh">Out[7]: </span><span class="go">GF([ 2,  0,  2, 11, 13, 13, 14,  6,  0], order=2^4)</span>
+<span class="gh">Out[7]: </span><span class="go">GF([12,  2, 13, 12,  6,  8,  8, 15,  7], order=2^4)</span>
 
 <span class="gp">In [8]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[8]: </span><span class="go">True</span>
@@ -3630,7 +3645,7 @@ Vector</label><div class="sd-tab-content docutils">
 </div>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
-<span class="gh">Out[9]: </span><span class="go">(GF([ 2,  0,  2, 11, 13, 13, 14,  6,  0], order=2^4), 3)</span>
+<span class="gh">Out[9]: </span><span class="go">(GF([12,  2, 13, 12,  6,  8,  8, 15,  7], order=2^4), 3)</span>
 
 <span class="gp">In [10]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[10]: </span><span class="go">True</span>
@@ -3646,23 +3661,23 @@ Vector (shortened)</label><div class="sd-tab-content docutils">
 <span class="gp">In [12]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [13]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[13]: </span><span class="go">GF([4, 7, 3, 2, 3], order=2^4)</span>
+<span class="gh">Out[13]: </span><span class="go">GF([10, 11,  6, 13, 12], order=2^4)</span>
 
 <span class="gp">In [14]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[14]: </span><span class="go">GF([ 4,  7,  3,  2,  3,  6, 13, 11, 14,  3, 14], order=2^4)</span>
+<span class="gh">Out[14]: </span><span class="go">GF([10, 11,  6, 13, 12,  5,  7,  1,  4, 11, 15], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Corrupt <span class="math notranslate nohighlight">\(t\)</span> symbols of the codeword.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [15]: </span><span class="n">e</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">e</span>
-<span class="gh">Out[15]: </span><span class="go">GF([14,  5,  1], order=2^4)</span>
+<span class="gh">Out[15]: </span><span class="go">GF([11, 14,  2], order=2^4)</span>
 
 <span class="gp">In [16]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rs</span><span class="o">.</span><span class="n">t</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[16]: </span><span class="go">GF([10,  2,  2,  2,  3,  6, 13, 11, 14,  3, 14], order=2^4)</span>
+<span class="gh">Out[16]: </span><span class="go">GF([ 1,  5,  4, 13, 12,  5,  7,  1,  4, 11, 15], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [17]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
-<span class="gh">Out[17]: </span><span class="go">GF([4, 7, 3, 2, 3], order=2^4)</span>
+<span class="gh">Out[17]: </span><span class="go">GF([10, 11,  6, 13, 12], order=2^4)</span>
 
 <span class="gp">In [18]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[18]: </span><span class="go">True</span>
@@ -3670,7 +3685,7 @@ Vector (shortened)</label><div class="sd-tab-content docutils">
 </div>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
-<span class="gh">Out[19]: </span><span class="go">(GF([4, 7, 3, 2, 3], order=2^4), 3)</span>
+<span class="gh">Out[19]: </span><span class="go">(GF([10, 11,  6, 13, 12], order=2^4), 3)</span>
 
 <span class="gp">In [20]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[20]: </span><span class="go">True</span>
@@ -3687,15 +3702,15 @@ Matrix</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [23]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[23]: </span><span class="go"></span>
-<span class="go">GF([[ 3,  8, 14,  0,  5,  2,  3,  3,  9],</span>
-<span class="go">    [15, 12,  4,  2,  5,  8, 14,  9,  8],</span>
-<span class="go">    [10, 11, 14, 13, 10,  6,  5, 12,  4]], order=2^4)</span>
+<span class="go">GF([[15,  4, 13,  2, 11, 15, 10,  4,  3],</span>
+<span class="go">    [12,  7,  1, 11, 14,  2,  3, 12, 10],</span>
+<span class="go">    [13, 10,  5, 11,  4,  5,  0,  6,  5]], order=2^4)</span>
 
 <span class="gp">In [24]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[24]: </span><span class="go"></span>
-<span class="go">GF([[ 3,  8, 14,  0,  5,  2,  3,  3,  9, 15, 15, 11, 11,  6,  0],</span>
-<span class="go">    [15, 12,  4,  2,  5,  8, 14,  9,  8,  5,  2,  8, 11, 13, 13],</span>
-<span class="go">    [10, 11, 14, 13, 10,  6,  5, 12,  4, 10,  5,  3, 15,  1, 10]],</span>
+<span class="go">GF([[15,  4, 13,  2, 11, 15, 10,  4,  3, 10, 13,  8,  4,  0,  4],</span>
+<span class="go">    [12,  7,  1, 11, 14,  2,  3, 12, 10,  9,  0,  2, 11, 13, 15],</span>
+<span class="go">    [13, 10,  5, 11,  4,  5,  0,  6,  5, 10, 13, 12,  0,  8,  3]],</span>
 <span class="go">   order=2^4)</span>
 </code></pre></div>
 </div>
@@ -3708,18 +3723,18 @@ Matrix</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [28]: </span><span class="n">c</span>
 <span class="gh">Out[28]: </span><span class="go"></span>
-<span class="go">GF([[13,  8, 14,  0,  5,  2,  3,  3,  9, 15, 15, 11, 11,  6,  0],</span>
-<span class="go">    [ 2,  3,  4,  2,  5,  8, 14,  9,  8,  5,  2,  8, 11, 13, 13],</span>
-<span class="go">    [ 5,  9, 10, 13, 10,  6,  5, 12,  4, 10,  5,  3, 15,  1, 10]],</span>
+<span class="go">GF([[ 8,  4, 13,  2, 11, 15, 10,  4,  3, 10, 13,  8,  4,  0,  4],</span>
+<span class="go">    [15,  0,  1, 11, 14,  2,  3, 12, 10,  9,  0,  2, 11, 13, 15],</span>
+<span class="go">    [ 2,  5, 14, 11,  4,  5,  0,  6,  5, 10, 13, 12,  0,  8,  3]],</span>
 <span class="go">   order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [29]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
 <span class="gh">Out[29]: </span><span class="go"></span>
-<span class="go">GF([[ 3,  8, 14,  0,  5,  2,  3,  3,  9],</span>
-<span class="go">    [15, 12,  4,  2,  5,  8, 14,  9,  8],</span>
-<span class="go">    [10, 11, 14, 13, 10,  6,  5, 12,  4]], order=2^4)</span>
+<span class="go">GF([[15,  4, 13,  2, 11, 15, 10,  4,  3],</span>
+<span class="go">    [12,  7,  1, 11, 14,  2,  3, 12, 10],</span>
+<span class="go">    [13, 10,  5, 11,  4,  5,  0,  6,  5]], order=2^4)</span>
 
 <span class="gp">In [30]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[30]: </span><span class="go">True</span>
@@ -3728,9 +3743,9 @@ Matrix</label><div class="sd-tab-content docutils">
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [31]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
 <span class="gh">Out[31]: </span><span class="go"></span>
-<span class="go">(GF([[ 3,  8, 14,  0,  5,  2,  3,  3,  9],</span>
-<span class="go">     [15, 12,  4,  2,  5,  8, 14,  9,  8],</span>
-<span class="go">     [10, 11, 14, 13, 10,  6,  5, 12,  4]], order=2^4),</span>
+<span class="go">(GF([[15,  4, 13,  2, 11, 15, 10,  4,  3],</span>
+<span class="go">     [12,  7,  1, 11, 14,  2,  3, 12, 10],</span>
+<span class="go">     [13, 10,  5, 11,  4,  5,  0,  6,  5]], order=2^4),</span>
 <span class="go"> array([1, 2, 3]))</span>
 
 <span class="gp">In [32]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
@@ -3748,15 +3763,15 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [35]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[35]: </span><span class="go"></span>
-<span class="go">GF([[15, 10, 10, 13,  2],</span>
-<span class="go">    [ 9, 12, 11,  0,  7],</span>
-<span class="go">    [ 6,  5,  3,  4, 12]], order=2^4)</span>
+<span class="go">GF([[ 1,  6,  7,  8, 11],</span>
+<span class="go">    [ 5,  7,  4, 12,  8],</span>
+<span class="go">    [ 5, 15,  7,  0,  9]], order=2^4)</span>
 
 <span class="gp">In [36]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[36]: </span><span class="go"></span>
-<span class="go">GF([[15, 10, 10, 13,  2,  8,  2,  4, 10,  0,  1],</span>
-<span class="go">    [ 9, 12, 11,  0,  7,  2, 11,  2, 12, 13,  5],</span>
-<span class="go">    [ 6,  5,  3,  4, 12,  5,  2,  1,  5, 11, 14]], order=2^4)</span>
+<span class="go">GF([[ 1,  6,  7,  8, 11,  5,  9, 15, 12,  4,  5],</span>
+<span class="go">    [ 5,  7,  4, 12,  8, 10,  8, 15, 10,  7,  8],</span>
+<span class="go">    [ 5, 15,  7,  0,  9, 13, 14,  0, 11,  5,  3]], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the third.</p>
@@ -3768,17 +3783,17 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [40]: </span><span class="n">c</span>
 <span class="gh">Out[40]: </span><span class="go"></span>
-<span class="go">GF([[ 1, 10, 10, 13,  2,  8,  2,  4, 10,  0,  1],</span>
-<span class="go">    [ 8, 13, 11,  0,  7,  2, 11,  2, 12, 13,  5],</span>
-<span class="go">    [14,  7,  2,  4, 12,  5,  2,  1,  5, 11, 14]], order=2^4)</span>
+<span class="go">GF([[ 2,  6,  7,  8, 11,  5,  9, 15, 12,  4,  5],</span>
+<span class="go">    [10, 12,  4, 12,  8, 10,  8, 15, 10,  7,  8],</span>
+<span class="go">    [14,  1,  8,  0,  9, 13, 14,  0, 11,  5,  3]], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [41]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
 <span class="gh">Out[41]: </span><span class="go"></span>
-<span class="go">GF([[15, 10, 10, 13,  2],</span>
-<span class="go">    [ 9, 12, 11,  0,  7],</span>
-<span class="go">    [ 6,  5,  3,  4, 12]], order=2^4)</span>
+<span class="go">GF([[ 1,  6,  7,  8, 11],</span>
+<span class="go">    [ 5,  7,  4, 12,  8],</span>
+<span class="go">    [ 5, 15,  7,  0,  9]], order=2^4)</span>
 
 <span class="gp">In [42]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[42]: </span><span class="go">True</span>
@@ -3787,9 +3802,9 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [43]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
 <span class="gh">Out[43]: </span><span class="go"></span>
-<span class="go">(GF([[15, 10, 10, 13,  2],</span>
-<span class="go">     [ 9, 12, 11,  0,  7],</span>
-<span class="go">     [ 6,  5,  3,  4, 12]], order=2^4),</span>
+<span class="go">(GF([[ 1,  6,  7,  8, 11],</span>
+<span class="go">     [ 5,  7,  4, 12,  8],</span>
+<span class="go">     [ 5, 15,  7,  0,  9]], order=2^4),</span>
 <span class="go"> array([1, 2, 3]))</span>
 
 <span class="gp">In [44]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
@@ -3830,10 +3845,10 @@ Vector</label><div class="sd-tab-content docutils">
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([14,  7,  8, 13,  4,  4, 13,  4, 14], order=2^4)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([0, 5, 9, 3, 5, 9, 2, 0, 5], order=2^4)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([14,  7,  8, 13,  4,  4, 13,  4, 14,  9, 15,  7, 14, 13,  2], order=2^4)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([ 0,  5,  9,  3,  5,  9,  2,  0,  5,  7,  9,  3, 10,  8,  2], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codeword.</p>
@@ -3846,10 +3861,10 @@ Vector</label><div class="sd-tab-content docutils">
 <span class="gh">Out[6]: </span><span class="go">7</span>
 
 <span class="gp">In [7]: </span><span class="n">e</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">e</span>
-<span class="gh">Out[7]: </span><span class="go">GF([ 2,  1,  3,  4,  6, 10], order=2^4)</span>
+<span class="gh">Out[7]: </span><span class="go">GF([15,  6, 11,  4, 14,  9], order=2^4)</span>
 
 <span class="gp">In [8]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rs</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[8]: </span><span class="go">GF([12,  6, 11,  9,  2, 14, 13,  4, 14,  9, 15,  7, 14, 13,  2], order=2^4)</span>
+<span class="gh">Out[8]: </span><span class="go">GF([15,  3,  2,  7, 11,  0,  2,  0,  5,  7,  9,  3, 10,  8,  2], order=2^4)</span>
 
 <span class="gp">In [9]: </span><span class="n">rs</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[9]: </span><span class="go">True</span>
@@ -3865,10 +3880,10 @@ Vector (shortened)</label><div class="sd-tab-content docutils">
 <span class="gp">In [11]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [12]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[12]: </span><span class="go">GF([13,  0, 11, 12, 12], order=2^4)</span>
+<span class="gh">Out[12]: </span><span class="go">GF([ 7,  4, 13, 15, 14], order=2^4)</span>
 
 <span class="gp">In [13]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[13]: </span><span class="go">GF([13,  0, 11, 12, 12, 11,  2,  7,  9,  6, 12], order=2^4)</span>
+<span class="gh">Out[13]: </span><span class="go">GF([ 7,  4, 13, 15, 14,  1,  6, 11,  6,  4, 11], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codeword.</p>
@@ -3881,10 +3896,10 @@ Vector (shortened)</label><div class="sd-tab-content docutils">
 <span class="gh">Out[15]: </span><span class="go">7</span>
 
 <span class="gp">In [16]: </span><span class="n">e</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">e</span>
-<span class="gh">Out[16]: </span><span class="go">GF([ 7, 12,  1,  8,  7, 10], order=2^4)</span>
+<span class="gh">Out[16]: </span><span class="go">GF([ 1, 11,  8,  8,  2, 15], order=2^4)</span>
 
 <span class="gp">In [17]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rs</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[17]: </span><span class="go">GF([10, 12, 10,  4, 11,  1,  2,  7,  9,  6, 12], order=2^4)</span>
+<span class="gh">Out[17]: </span><span class="go">GF([ 6, 15,  5,  7, 12, 14,  6, 11,  6,  4, 11], order=2^4)</span>
 
 <span class="gp">In [18]: </span><span class="n">rs</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[18]: </span><span class="go">True</span>
@@ -3901,15 +3916,15 @@ Matrix</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [21]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[21]: </span><span class="go"></span>
-<span class="go">GF([[13, 12,  2,  7, 13,  9, 10, 13,  0],</span>
-<span class="go">    [15, 11, 10,  6, 11,  7,  6, 10,  1],</span>
-<span class="go">    [ 9,  1,  3,  6,  1,  4,  3, 11,  9]], order=2^4)</span>
+<span class="go">GF([[10, 11,  9,  5,  5,  1,  8,  2,  7],</span>
+<span class="go">    [10, 14, 10,  3,  3, 11,  3,  2, 10],</span>
+<span class="go">    [ 8,  2,  1,  0,  8,  4,  6,  5,  6]], order=2^4)</span>
 
 <span class="gp">In [22]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[22]: </span><span class="go"></span>
-<span class="go">GF([[13, 12,  2,  7, 13,  9, 10, 13,  0,  0,  9,  9,  5,  4, 12],</span>
-<span class="go">    [15, 11, 10,  6, 11,  7,  6, 10,  1,  6,  2, 10, 14,  1,  3],</span>
-<span class="go">    [ 9,  1,  3,  6,  1,  4,  3, 11,  9,  5,  4,  2,  1, 11, 10]],</span>
+<span class="go">GF([[10, 11,  9,  5,  5,  1,  8,  2,  7, 10,  3, 11, 13,  7,  1],</span>
+<span class="go">    [10, 14, 10,  3,  3, 11,  3,  2, 10,  6,  9, 12,  1,  8,  0],</span>
+<span class="go">    [ 8,  2,  1,  0,  8,  4,  6,  5,  6, 14,  0,  0, 12, 13, 13]],</span>
 <span class="go">   order=2^4)</span>
 </code></pre></div>
 </div>
@@ -3930,9 +3945,9 @@ Matrix</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [28]: </span><span class="n">c</span>
 <span class="gh">Out[28]: </span><span class="go"></span>
-<span class="go">GF([[ 8, 12,  2,  7, 13,  9, 10, 13,  0,  0,  9,  9,  5,  4, 12],</span>
-<span class="go">    [13,  2, 10,  6, 11,  7,  6, 10,  1,  6,  2, 10, 14,  1,  3],</span>
-<span class="go">    [ 0,  3,  9,  2,  3, 15,  3, 11,  9,  5,  4,  2,  1, 11, 10]],</span>
+<span class="go">GF([[12, 11,  9,  5,  5,  1,  8,  2,  7, 10,  3, 11, 13,  7,  1],</span>
+<span class="go">    [15,  5, 10,  3,  3, 11,  3,  2, 10,  6,  9, 12,  1,  8,  0],</span>
+<span class="go">    [12,  0,  9, 15,  5,  6,  6,  5,  6, 14,  0,  0, 12, 13, 13]],</span>
 <span class="go">   order=2^4)</span>
 
 <span class="gp">In [29]: </span><span class="n">rs</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
@@ -3950,15 +3965,15 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [32]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[32]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  9,  2,  6, 13],</span>
-<span class="go">    [12,  5,  8, 10,  8],</span>
-<span class="go">    [ 4,  6,  7,  4,  6]], order=2^4)</span>
+<span class="go">GF([[10, 14,  6,  2,  8],</span>
+<span class="go">    [ 5, 11,  9,  3,  9],</span>
+<span class="go">    [ 2, 15, 10,  4,  0]], order=2^4)</span>
 
 <span class="gp">In [33]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[33]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  9,  2,  6, 13, 13, 15, 13,  5,  1,  9],</span>
-<span class="go">    [12,  5,  8, 10,  8,  7,  6,  4,  4,  4,  6],</span>
-<span class="go">    [ 4,  6,  7,  4,  6,  7,  4,  6,  8,  1,  6]], order=2^4)</span>
+<span class="go">GF([[10, 14,  6,  2,  8,  2, 10, 14,  2,  9,  6],</span>
+<span class="go">    [ 5, 11,  9,  3,  9,  7,  4, 13, 11,  5,  6],</span>
+<span class="go">    [ 2, 15, 10,  4,  0, 14,  4,  7, 15,  8,  5]], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codewords.</p>
@@ -3978,9 +3993,9 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [39]: </span><span class="n">c</span>
 <span class="gh">Out[39]: </span><span class="go"></span>
-<span class="go">GF([[ 7,  9,  2,  6, 13, 13, 15, 13,  5,  1,  9],</span>
-<span class="go">    [15, 11,  8, 10,  8,  7,  6,  4,  4,  4,  6],</span>
-<span class="go">    [ 5,  7,  2, 10, 15,  9,  4,  6,  8,  1,  6]], order=2^4)</span>
+<span class="go">GF([[14, 14,  6,  2,  8,  2, 10, 14,  2,  9,  6],</span>
+<span class="go">    [15,  3,  9,  3,  9,  7,  4, 13, 11,  5,  6],</span>
+<span class="go">    [ 1,  9,  9,  8,  3, 10,  4,  7, 15,  8,  5]], order=2^4)</span>
 
 <span class="gp">In [40]: </span><span class="n">rs</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[40]: </span><span class="go">array([ True,  True,  True])</span>
@@ -3992,7 +4007,7 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="galois.ReedSolomon.encode">
-<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.encode.message" title="galois.ReedSolomon.encode.message (Python parameter) — The message as either a k-length vector or (N, k) matrix, where N is the number of messages. For systematic codes, message lengths less than k may be provided to produce shortened codewords."><span class="n"><span class="pre">message</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.encode.parity_only" title="galois.ReedSolomon.encode.parity_only (Python parameter) — Optionally specify whether to return only the parity symbols. This only applies to systematic codes. The default is False."><span class="n"><span class="pre">parity_only</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a></span></span></span><a class="headerlink" href="#galois.ReedSolomon.encode" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.encode.message" title="galois.ReedSolomon.encode.message (Python parameter) — The message as either a k-length vector or (N, k) matrix, where N is the number of messages. For systematic codes, message lengths less than k may be provided to produce shortened codewords."><span class="n"><span class="pre">message</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#galois.ReedSolomon.encode.parity_only" title="galois.ReedSolomon.encode.parity_only (Python parameter) — Optionally specify whether to return only the parity symbols. This only applies to systematic codes. The default is False."><span class="n"><span class="pre">parity_only</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a></span></span></span><a class="headerlink" href="#galois.ReedSolomon.encode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes the message <span class="math notranslate nohighlight">\(\mathbf{m}\)</span> into the Reed-Solomon codeword <span class="math notranslate nohighlight">\(\mathbf{c}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4001,7 +4016,7 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 of messages. For systematic codes, message lengths less than <span class="math notranslate nohighlight">\(k\)</span> may be provided to produce
 shortened codewords.</p>
 </dd>
-<dt id="galois.ReedSolomon.encode.parity_only"><span class="n sig-name">parity_only</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code><a class="headerlink" href="#galois.ReedSolomon.encode.parity_only" title="Permalink to this definition">¶</a></dt><dd><p>Optionally specify whether to return only the parity symbols. This only applies to systematic codes.
+<dt id="galois.ReedSolomon.encode.parity_only"><span class="n sig-name">parity_only</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code><a class="headerlink" href="#galois.ReedSolomon.encode.parity_only" title="Permalink to this definition">¶</a></dt><dd><p>Optionally specify whether to return only the parity symbols. This only applies to systematic codes.
 The default is <code class="samp docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
 </dl>
@@ -4035,15 +4050,15 @@ Vector</label><div class="sd-tab-content docutils">
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([ 3, 11, 13,  1, 15,  6,  6, 13, 10], order=2^4)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([13, 12, 15,  1, 12,  7,  7, 15,  6], order=2^4)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([ 3, 11, 13,  1, 15,  6,  6, 13, 10, 12, 12,  6,  7, 14,  3], order=2^4)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([13, 12, 15,  1, 12,  7,  7, 15,  6,  9,  5,  2,  9,  0,  1], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity symbols only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
-<span class="gh">Out[5]: </span><span class="go">GF([12, 12,  6,  7, 14,  3], order=2^4)</span>
+<span class="gh">Out[5]: </span><span class="go">GF([9, 5, 2, 9, 0, 1], order=2^4)</span>
 </code></pre></div>
 </div>
 </div>
@@ -4056,15 +4071,15 @@ Vector (shortened)</label><div class="sd-tab-content docutils">
 <span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [8]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[8]: </span><span class="go">GF([ 7,  2, 12,  5,  0], order=2^4)</span>
+<span class="gh">Out[8]: </span><span class="go">GF([ 7,  7,  2, 11,  8], order=2^4)</span>
 
 <span class="gp">In [9]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[9]: </span><span class="go">GF([ 7,  2, 12,  5,  0, 14,  0,  2,  7,  4, 15], order=2^4)</span>
+<span class="gh">Out[9]: </span><span class="go">GF([ 7,  7,  2, 11,  8, 11, 10,  9, 10,  3,  2], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity symbols only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
-<span class="gh">Out[10]: </span><span class="go">GF([14,  0,  2,  7,  4, 15], order=2^4)</span>
+<span class="gh">Out[10]: </span><span class="go">GF([11, 10,  9, 10,  3,  2], order=2^4)</span>
 </code></pre></div>
 </div>
 </div>
@@ -4078,24 +4093,24 @@ Matrix</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [13]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[13]: </span><span class="go"></span>
-<span class="go">GF([[ 9,  1,  1, 11,  6, 15,  9,  9, 15],</span>
-<span class="go">    [ 7,  1, 12, 10, 10,  3,  2, 15,  8],</span>
-<span class="go">    [ 5, 11, 15, 11, 12, 15,  6,  3,  8]], order=2^4)</span>
+<span class="go">GF([[15,  3,  3,  8,  9,  9,  7,  3,  7],</span>
+<span class="go">    [ 6,  7,  6,  3, 15, 15, 15,  6, 10],</span>
+<span class="go">    [10,  2,  6, 12, 14,  9, 11,  5,  2]], order=2^4)</span>
 
 <span class="gp">In [14]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[14]: </span><span class="go"></span>
-<span class="go">GF([[ 9,  1,  1, 11,  6, 15,  9,  9, 15,  7,  2, 15, 11,  7,  7],</span>
-<span class="go">    [ 7,  1, 12, 10, 10,  3,  2, 15,  8, 13, 11, 10,  9,  9, 14],</span>
-<span class="go">    [ 5, 11, 15, 11, 12, 15,  6,  3,  8,  8,  3, 14,  5, 15, 11]],</span>
+<span class="go">GF([[15,  3,  3,  8,  9,  9,  7,  3,  7,  2,  3,  4,  0,  6,  9],</span>
+<span class="go">    [ 6,  7,  6,  3, 15, 15, 15,  6, 10,  6, 14, 10,  2,  2,  9],</span>
+<span class="go">    [10,  2,  6, 12, 14,  9, 11,  5,  2, 10,  2, 11, 13, 14,  8]],</span>
 <span class="go">   order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity symbols only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [15]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
 <span class="gh">Out[15]: </span><span class="go"></span>
-<span class="go">GF([[ 7,  2, 15, 11,  7,  7],</span>
-<span class="go">    [13, 11, 10,  9,  9, 14],</span>
-<span class="go">    [ 8,  3, 14,  5, 15, 11]], order=2^4)</span>
+<span class="go">GF([[ 2,  3,  4,  0,  6,  9],</span>
+<span class="go">    [ 6, 14, 10,  2,  2,  9],</span>
+<span class="go">    [10,  2, 11, 13, 14,  8]], order=2^4)</span>
 </code></pre></div>
 </div>
 </div>
@@ -4109,23 +4124,23 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <span class="gp">In [18]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[18]: </span><span class="go"></span>
-<span class="go">GF([[ 6,  5,  7,  5, 12],</span>
-<span class="go">    [ 1,  8,  7,  1, 12],</span>
-<span class="go">    [12,  7, 13,  1,  8]], order=2^4)</span>
+<span class="go">GF([[14, 12, 10, 11, 11],</span>
+<span class="go">    [ 9,  6,  2, 12,  6],</span>
+<span class="go">    [10,  5, 14, 15, 13]], order=2^4)</span>
 
 <span class="gp">In [19]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[19]: </span><span class="go"></span>
-<span class="go">GF([[ 6,  5,  7,  5, 12,  2,  1, 10,  2,  9, 10],</span>
-<span class="go">    [ 1,  8,  7,  1, 12, 14,  6,  3,  9, 12, 14],</span>
-<span class="go">    [12,  7, 13,  1,  8,  4, 14,  3,  1,  9,  8]], order=2^4)</span>
+<span class="go">GF([[14, 12, 10, 11, 11,  8,  9, 13,  2, 10, 13],</span>
+<span class="go">    [ 9,  6,  2, 12,  6,  8, 10,  7,  4,  4,  4],</span>
+<span class="go">    [10,  5, 14, 15, 13, 15,  0,  9,  5,  0,  3]], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity symbols only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [20]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parity_only</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">p</span>
 <span class="gh">Out[20]: </span><span class="go"></span>
-<span class="go">GF([[ 2,  1, 10,  2,  9, 10],</span>
-<span class="go">    [14,  6,  3,  9, 12, 14],</span>
-<span class="go">    [ 4, 14,  3,  1,  9,  8]], order=2^4)</span>
+<span class="go">GF([[ 8,  9, 13,  2, 10, 13],</span>
+<span class="go">    [ 8, 10,  7,  4,  4,  4],</span>
+<span class="go">    [15,  0,  9,  5,  0,  3]], order=2^4)</span>
 </code></pre></div>
 </div>
 </div>
@@ -4179,7 +4194,7 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.c">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">c</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.c" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">c</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.c" title="Permalink to this definition">¶</a></dt>
 <dd><p>The degree of the first consecutive root.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">rs</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">ReedSolomon</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">);</span> <span class="n">rs</span>
@@ -4193,7 +4208,7 @@ Matrix (shortened)</label><div class="sd-tab-content docutils">
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.d">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">d</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.d" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">d</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.d" title="Permalink to this definition">¶</a></dt>
 <dd><p>The design distance <span class="math notranslate nohighlight">\(d\)</span> of the <span class="math notranslate nohighlight">\([n, k, d]_q\)</span> code. The minimum distance of a Reed-Solomon code
 is exactly equal to the design distance, <span class="math notranslate nohighlight">\(d_{min} = d\)</span>.</p>
 <p class="example rubric">Examples</p>
@@ -4208,7 +4223,7 @@ is exactly equal to the design distance, <span class="math notranslate nohighlig
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.field">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">field</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#galois.ReedSolomon.field" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">field</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.11)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#galois.ReedSolomon.field" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <a class="reference internal" href="../galois.FieldArray/#galois.FieldArray" title="galois.FieldArray (Python class) — A ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass for the <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> field that defines the Reed-Solomon code.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">rs</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">ReedSolomon</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">);</span> <span class="n">rs</span>
@@ -4244,7 +4259,7 @@ is exactly equal to the design distance, <span class="math notranslate nohighlig
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.is_narrow_sense">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_narrow_sense</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><a class="headerlink" href="#galois.ReedSolomon.is_narrow_sense" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_narrow_sense</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><a class="headerlink" href="#galois.ReedSolomon.is_narrow_sense" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicates if the Reed-Solomon code is narrow sense, meaning the roots of the generator polynomial are consecutive
 powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting at 1, i.e. <span class="math notranslate nohighlight">\(\alpha, \alpha^2, \dots, \alpha^{2t - 1}\)</span>.</p>
 <p class="example rubric">Examples</p>
@@ -4265,7 +4280,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.k">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">k</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.k" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">k</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.k" title="Permalink to this definition">¶</a></dt>
 <dd><p>The message size <span class="math notranslate nohighlight">\(k\)</span> of the <span class="math notranslate nohighlight">\([n, k, d]_q\)</span> code.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">rs</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">ReedSolomon</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">);</span> <span class="n">rs</span>
@@ -4279,7 +4294,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.n">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.n" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.n" title="Permalink to this definition">¶</a></dt>
 <dd><p>The codeword size <span class="math notranslate nohighlight">\(n\)</span> of the <span class="math notranslate nohighlight">\([n, k, d]_q\)</span> code.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">rs</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">ReedSolomon</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">);</span> <span class="n">rs</span>
@@ -4313,7 +4328,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.systematic">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">systematic</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><a class="headerlink" href="#galois.ReedSolomon.systematic" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">systematic</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><a class="headerlink" href="#galois.ReedSolomon.systematic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicates if the code is configured to return codewords in systematic form.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">rs</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">ReedSolomon</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">);</span> <span class="n">rs</span>
@@ -4327,7 +4342,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="galois.ReedSolomon.t">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">t</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.t" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">t</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><a class="headerlink" href="#galois.ReedSolomon.t" title="Permalink to this definition">¶</a></dt>
 <dd><p>The error-correcting capability of the code. The code can correct <span class="math notranslate nohighlight">\(t\)</span> symbol errors in a codeword.</p>
 <p class="example rubric">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">rs</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">ReedSolomon</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">);</span> <span class="n">rs</span>
@@ -4343,23 +4358,30 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
 
 
 
-
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      Aug 29, 2022
+      May 06, 2022
     
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
@@ -4368,7 +4390,8 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../galois.Poly/" class="md-footer__link md-footer__link--prev" aria-label="Previous: galois.Poly" rel="prev">
@@ -4417,7 +4440,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    4.5.0.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -4431,7 +4454,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
       
     
     <a href="https://github.com/mhostetter/galois" target="_blank" rel="noopener" title="github.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
     </a>
   
     
@@ -4440,7 +4463,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
       
     
     <a href="https://pypi.org/project/galois/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z"/></svg>
     </a>
   
     
@@ -4449,7 +4472,7 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
       
     
     <a href="https://twitter.com/galois_py" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
     </a>
   
 </div>
@@ -4463,10 +4486,12 @@ powers of <span class="math notranslate nohighlight">\(\alpha\)</span> starting 
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
+    
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     

@@ -1,6 +1,0 @@
-﻿galois.primitive\_element
-=========================
-
-.. currentmodule:: galois
-
-.. autofunction:: primitive_element

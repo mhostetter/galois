@@ -1,6 +1,0 @@
-﻿galois.legendre\_symbol
-=======================
-
-.. currentmodule:: galois
-
-.. autofunction:: legendre_symbol

@@ -1,6 +1,0 @@
-﻿galois.is\_powersmooth
-======================
-
-.. currentmodule:: galois
-
-.. autofunction:: is_powersmooth
