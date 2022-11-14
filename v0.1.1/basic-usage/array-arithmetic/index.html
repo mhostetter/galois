@@ -18,26 +18,27 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.a280224b.min.css">
+      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.92c9fe4a.min.css">
+        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
+      
+
     
     
     
       
         
         
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -47,10 +48,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-4FW9NCNFZH",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-4FW9NCNFZH"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-4FW9NCNFZH",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-4FW9NCNFZH",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
 
@@ -88,9 +92,19 @@
     </div>
     
       <div data-md-component="outdated" hidden>
-        <aside class="md-banner md-banner--warning">
-          
-        </aside>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -159,7 +173,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -183,7 +197,7 @@
         <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -336,7 +350,7 @@
       <a href="https://github.com/mhostetter/galois" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
   </div>
   <div class="md-source__repository">
     mhostetter/galois
@@ -7247,12 +7261,13 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset" role="main">
-                
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
 
 
-  <h1 id="array-arithmetic">Array Arithmetic<a class="headerlink" href="#array-arithmetic" title="Permalink to this heading">¶</a></h1>
+<h1 id="array-arithmetic">Array Arithmetic<a class="headerlink" href="#array-arithmetic" title="Permalink to this heading">¶</a></h1>
 <p>After creating a <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass and one or two arrays, nearly any arithmetic operation can be
 performed using normal NumPy ufuncs or Python operators.</p>
 <p>In the sections below, the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(3^5)\)</span> and arrays <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> are used.</p>
@@ -7270,19 +7285,18 @@ performed using normal NumPy ufuncs or Python operators.</p>
 a single scalar and binary ufuncs operate on two scalars. NumPy extends the scalar operation of ufuncs to operate on arrays in various ways.
 This extensibility enables <a class="reference external" href="https://numpy.org/doc/stable/user/basics.broadcasting.html">NumPy broadcasting</a>.</p>
 <p>Expand any section for more details.</p>
-<div class="docutils container">
-<p>Addition: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+<details>
+<summary>
+Addition: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 <span class="gh">Out[4]: </span><span class="go">GF([ 81,   7, 215,  58], order=3^5)</span>
 
 <span class="gp">In [5]: </span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gh">Out[5]: </span><span class="go">GF([ 81,   7, 215,  58], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Additive inverse: <code class="code highlight python docutils literal highlight-python"><span class="o">-</span><span class="n">x</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="o">-</span><span class="n">x</span>
+</details><details>
+<summary>
+Additive inverse: <code class="code highlight python docutils literal highlight-python"><span class="o">-</span><span class="n">x</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="o">-</span><span class="n">x</span>
 <span class="gh">Out[6]: </span><span class="go">GF([ 98,  14, 206,  62], order=3^5)</span>
 
 <span class="gp">In [7]: </span><span class="n">np</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -7294,30 +7308,27 @@ This extensibility enables <a class="reference external" href="https://numpy.org
 <span class="gh">Out[8]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Subtraction: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
+</details><details>
+<summary>
+Subtraction: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
 <span class="gh">Out[9]: </span><span class="go">GF([17, 16, 18,  4], order=3^5)</span>
 
 <span class="gp">In [10]: </span><span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gh">Out[10]: </span><span class="go">GF([17, 16, 18,  4], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Multiplication: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [11]: </span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span>
+</details><details>
+<summary>
+Multiplication: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [11]: </span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span>
 <span class="gh">Out[11]: </span><span class="go">GF([ 41, 225, 106, 123], order=3^5)</span>
 
 <span class="gp">In [12]: </span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gh">Out[12]: </span><span class="go">GF([ 41, 225, 106, 123], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Scalar multiplication: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">*</span> <span class="n">z</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></code></p>
-<p>Scalar multiplication is essentially <em>repeated addition</em>. It is the “multiplication” of finite field elements
+</details><details>
+<summary>
+Scalar multiplication: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">*</span> <span class="n">z</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></code></summary><p>Scalar multiplication is essentially <em>repeated addition</em>. It is the “multiplication” of finite field elements
 and integers. The integer value indicates how many additions of the field element to sum.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">x</span> <span class="o">*</span> <span class="mi">4</span>
 <span class="gh">Out[13]: </span><span class="go">GF([184,  25, 157,  31], order=3^5)</span>
@@ -7338,10 +7349,9 @@ any non-zero field element that results in 0.</p>
 <span class="gh">Out[17]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Multiplicative inverse: <code class="code highlight python docutils literal highlight-python"><span class="n">y</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">reciprocal</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [18]: </span><span class="n">y</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+</details><details>
+<summary>
+Multiplicative inverse: <code class="code highlight python docutils literal highlight-python"><span class="n">y</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">reciprocal</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [18]: </span><span class="n">y</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
 <span class="gh">Out[18]: </span><span class="go">GF([ 71, 217, 213, 235], order=3^5)</span>
 
 <span class="gp">In [19]: </span><span class="n">GF</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">y</span>
@@ -7356,10 +7366,9 @@ any non-zero field element that results in 0.</p>
 <span class="gh">Out[21]: </span><span class="go">GF([1, 1, 1, 1], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Division: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">/</span> <span class="n">y</span> <span class="o">==</span> <span class="n">x</span> <span class="o">//</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [22]: </span><span class="n">x</span> <span class="o">/</span> <span class="n">y</span>
+</details><details>
+<summary>
+Division: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">/</span> <span class="n">y</span> <span class="o">==</span> <span class="n">x</span> <span class="o">//</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [22]: </span><span class="n">x</span> <span class="o">/</span> <span class="n">y</span>
 <span class="gh">Out[22]: </span><span class="go">GF([237,  56, 122, 126], order=3^5)</span>
 
 <span class="gp">In [23]: </span><span class="n">x</span> <span class="o">//</span> <span class="n">y</span>
@@ -7369,20 +7378,18 @@ any non-zero field element that results in 0.</p>
 <span class="gh">Out[24]: </span><span class="go">GF([237,  56, 122, 126], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Remainder: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">%</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="n">x</span> <span class="o">%</span> <span class="n">y</span>
+</details><details>
+<summary>
+Remainder: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">%</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="n">x</span> <span class="o">%</span> <span class="n">y</span>
 <span class="gh">Out[25]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
 
 <span class="gp">In [26]: </span><span class="n">np</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gh">Out[26]: </span><span class="go">GF([0, 0, 0, 0], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Divmod: <code class="code highlight python docutils literal highlight-python"><span class="nb">divmod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [27]: </span><span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">%</span> <span class="n">y</span>
+</details><details>
+<summary>
+Divmod: <code class="code highlight python docutils literal highlight-python"><span class="nb">divmod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [27]: </span><span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">%</span> <span class="n">y</span>
 <span class="gh">Out[27]: </span><span class="go">(GF([237,  56, 122, 126], order=3^5), GF([0, 0, 0, 0], order=3^5))</span>
 
 <span class="gp">In [28]: </span><span class="nb">divmod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -7398,10 +7405,9 @@ any non-zero field element that results in 0.</p>
 <span class="gh">Out[31]: </span><span class="go">array([ True,  True,  True,  True])</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Exponentiation: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">**</span> <span class="n">z</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [32]: </span><span class="n">x</span> <span class="o">**</span> <span class="mi">3</span>
+</details><details>
+<summary>
+Exponentiation: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">**</span> <span class="n">z</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [32]: </span><span class="n">x</span> <span class="o">**</span> <span class="mi">3</span>
 <span class="gh">Out[32]: </span><span class="go">GF([175,  76, 218, 192], order=3^5)</span>
 
 <span class="gp">In [33]: </span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -7411,10 +7417,9 @@ any non-zero field element that results in 0.</p>
 <span class="gh">Out[34]: </span><span class="go">GF([175,  76, 218, 192], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Square root: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [35]: </span><span class="n">x</span><span class="o">.</span><span class="n">is_square</span><span class="p">()</span>
+</details><details>
+<summary>
+Square root: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [35]: </span><span class="n">x</span><span class="o">.</span><span class="n">is_square</span><span class="p">()</span>
 <span class="gh">Out[35]: </span><span class="go">array([ True,  True,  True,  True])</span>
 
 <span class="gp">In [36]: </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">z</span>
@@ -7425,10 +7430,9 @@ any non-zero field element that results in 0.</p>
 </code></pre></div>
 </div>
 <p>See also <a class="reference internal" href="../../api/galois.FieldArray.is_square/" title="galois.FieldArray.is_square (Python method) — Determines if the elements of x are squares in the finite field."><code class="xref py py-func docutils literal notranslate"><span class="pre">is_square()</span></code></a>, <a class="reference internal" href="../../api/galois.FieldArray.squares/" title="galois.FieldArray.squares (Python property) — All squares in the finite field."><code class="xref py py-func docutils literal notranslate"><span class="pre">squares()</span></code></a>, and <a class="reference internal" href="../../api/galois.FieldArray.non_squares/" title="galois.FieldArray.non_squares (Python property) — All non-squares in the Galois field."><code class="xref py py-func docutils literal notranslate"><span class="pre">non_squares()</span></code></a>.</p>
-</div>
-<div class="docutils container">
-<p>Logarithm: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">()</span></code></p>
-<p>Compute the logarithm base <span class="math notranslate nohighlight">\(\alpha\)</span>, the primitive element of the field.</p>
+</details><details>
+<summary>
+Logarithm: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">()</span></code></summary><p>Compute the logarithm base <span class="math notranslate nohighlight">\(\alpha\)</span>, the primitive element of the field.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [38]: </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">);</span> <span class="n">z</span>
 <span class="gh">Out[38]: </span><span class="go">array([60,  2, 59,  3])</span>
 
@@ -7451,14 +7455,13 @@ details.</p>
 <span class="gh">Out[43]: </span><span class="go">array([ True,  True,  True,  True])</span>
 </code></pre></div>
 </div>
-</div>
-<h2 id="ufunc-methods">Ufunc methods<a class="headerlink" href="#ufunc-methods" title="Permalink to this heading">¶</a></h2>
+</details><h2 id="ufunc-methods">Ufunc methods<a class="headerlink" href="#ufunc-methods" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances support <a class="reference external" href="https://numpy.org/devdocs/reference/ufuncs.html#methods">NumPy ufunc methods</a>. Ufunc methods allow
 a user to apply a NumPy ufunc in a unique way across the target array. All arithmetic ufuncs are supported.</p>
 <p>Expand any section for more details.</p>
-<div class="docutils container">
-<p><code class="code highlight python docutils literal highlight-python"><span class="n">reduce</span><span class="p">()</span></code></p>
-<p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduce.html#numpy.ufunc.reduce" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code></a> methods reduce the input array’s dimension by one, applying the ufunc across one axis.</p>
+<details>
+<summary>
+<code class="code highlight python docutils literal highlight-python"><span class="n">reduce</span><span class="p">()</span></code></summary><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduce.html#numpy.ufunc.reduce" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code></a> methods reduce the input array’s dimension by one, applying the ufunc across one axis.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [44]: </span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[44]: </span><span class="go">GF(7, order=3^5)</span>
 
@@ -7473,10 +7476,9 @@ a user to apply a NumPy ufunc in a unique way across the target array. All arith
 <span class="gh">Out[47]: </span><span class="go">GF(105, order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p><code class="code highlight python docutils literal highlight-python"><span class="n">accumulate</span><span class="p">()</span></code></p>
-<p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.accumulate.html#numpy.ufunc.accumulate" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">accumulate</span></code></a> methods accumulate the result of the ufunc across a specified axis.</p>
+</details><details>
+<summary>
+<code class="code highlight python docutils literal highlight-python"><span class="n">accumulate</span><span class="p">()</span></code></summary><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.accumulate.html#numpy.ufunc.accumulate" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">accumulate</span></code></a> methods accumulate the result of the ufunc across a specified axis.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [48]: </span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[48]: </span><span class="go">GF([184, 173,  57,   7], order=3^5)</span>
 
@@ -7491,10 +7493,9 @@ a user to apply a NumPy ufunc in a unique way across the target array. All arith
 <span class="gh">Out[51]: </span><span class="go">GF([184,   9, 211, 105], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p><code class="code highlight python docutils literal highlight-python"><span class="n">reduceat</span><span class="p">()</span></code></p>
-<p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduceat.html#numpy.ufunc.reduceat" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduceat</span></code></a> methods reduces the input array’s dimension by one, applying the ufunc across one axis
+</details><details>
+<summary>
+<code class="code highlight python docutils literal highlight-python"><span class="n">reduceat</span><span class="p">()</span></code></summary><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduceat.html#numpy.ufunc.reduceat" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduceat</span></code></a> methods reduces the input array’s dimension by one, applying the ufunc across one axis
 in-between certain indices.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [52]: </span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">reduceat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="gh">Out[52]: </span><span class="go">GF([57, 31], order=3^5)</span>
@@ -7510,10 +7511,9 @@ in-between certain indices.</p>
 <span class="gh">Out[55]: </span><span class="go">GF([211,  31], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p><code class="code highlight python docutils literal highlight-python"><span class="n">outer</span><span class="p">()</span></code></p>
-<p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.outer.html#numpy.ufunc.outer" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer</span></code></a> methods applies the ufunc to each pair of inputs.</p>
+</details><details>
+<summary>
+<code class="code highlight python docutils literal highlight-python"><span class="n">outer</span><span class="p">()</span></code></summary><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.outer.html#numpy.ufunc.outer" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer</span></code></a> methods applies the ufunc to each pair of inputs.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [56]: </span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
 <span class="go">GF([[ 81, 166,  80, 211],</span>
@@ -7530,10 +7530,9 @@ in-between certain indices.</p>
 <span class="go">    [149,  41, 129, 123]], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p><code class="code highlight python docutils literal highlight-python"><span class="n">at</span><span class="p">()</span></code></p>
-<p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html#numpy.ufunc.at" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></a> methods performs the ufunc in-place at the specified indices.</p>
+</details><details>
+<summary>
+<code class="code highlight python docutils literal highlight-python"><span class="n">at</span><span class="p">()</span></code></summary><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html#numpy.ufunc.at" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></a> methods performs the ufunc in-place at the specified indices.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [58]: </span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 <span class="go"># Negate indices 0 and 1 in-place</span>
@@ -7544,18 +7543,16 @@ in-between certain indices.</p>
 <span class="gh">Out[60]: </span><span class="go">GF([ 98,  25, 157,  31], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<h2 id="advanced-arithmetic"><span id="id1"></span>Advanced arithmetic<a class="headerlink" href="#advanced-arithmetic" title="Permalink to this heading">¶</a></h2>
-<div class="docutils container">
-<p>Convolution: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [61]: </span><span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</details><h2 id="advanced-arithmetic"><span id="id1"></span>Advanced arithmetic<a class="headerlink" href="#advanced-arithmetic" title="Permalink to this heading">¶</a></h2>
+<details>
+<summary>
+Convolution: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [61]: </span><span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gh">Out[61]: </span><span class="go">GF([ 79,  80,   5,  79, 167, 166, 123], order=3^5)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>FFT: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></p>
-<p>The Discrete Fourier Transform (DFT) of size <span class="math notranslate nohighlight">\(n\)</span> over the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> exists when there
+</details><details>
+<summary>
+FFT: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></summary><p>The Discrete Fourier Transform (DFT) of size <span class="math notranslate nohighlight">\(n\)</span> over the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> exists when there
 exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th root of unity. This occurs when <span class="math notranslate nohighlight">\(n\ |\ p^m - 1\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [62]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
@@ -7566,20 +7563,19 @@ exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th ro
 <span class="gh">Out[64]: </span><span class="go">0</span>
 
 <span class="gp">In [65]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">n</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[65]: </span><span class="go">GF([11903,  6371,    38,   836,  6303,  8713], order=7^5)</span>
+<span class="gh">Out[65]: </span><span class="go">GF([ 1775,  1097,  9789, 16732, 15606, 11723], order=7^5)</span>
 
 <span class="gp">In [66]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">X</span>
-<span class="gh">Out[66]: </span><span class="go">GF([11757, 13192,  9251,  2618, 14066, 15242], order=7^5)</span>
+<span class="gh">Out[66]: </span><span class="go">GF([15100, 10021,  4240,    26, 11429, 15502], order=7^5)</span>
 
 <span class="gp">In [67]: </span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="gh">Out[67]: </span><span class="go">GF([11903,  6371,    38,   836,  6303,  8713], order=7^5)</span>
+<span class="gh">Out[67]: </span><span class="go">GF([ 1775,  1097,  9789, 16732, 15606, 11723], order=7^5)</span>
 </code></pre></div>
 </div>
 <p>See also <a class="reference internal" href="../../api/galois.ntt/" title="galois.ntt (Python function) — Computes the Number-Theoretic Transform (NTT) of x."><code class="xref py py-func docutils literal notranslate"><span class="pre">ntt()</span></code></a> and <a class="reference internal" href="../../api/galois.FieldArray.primitive_root_of_unity/" title="galois.FieldArray.primitive_root_of_unity (Python method) — Finds a primitive n-th root of unity in the finite field."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_root_of_unity</span></code></a>.</p>
-</div>
-<div class="docutils container">
-<p>Inverse FFT: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code></p>
-<p>The inverse Discrete Fourier Transform (DFT) of size <span class="math notranslate nohighlight">\(n\)</span> over the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> exists when there
+</details><details>
+<summary>
+Inverse FFT: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code></summary><p>The inverse Discrete Fourier Transform (DFT) of size <span class="math notranslate nohighlight">\(n\)</span> over the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> exists when there
 exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th root of unity. This occurs when <span class="math notranslate nohighlight">\(n\ |\ p^m - 1\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [68]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
@@ -7590,24 +7586,23 @@ exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th ro
 <span class="gh">Out[70]: </span><span class="go">0</span>
 
 <span class="gp">In [71]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">n</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[71]: </span><span class="go">GF([ 9632, 11362, 15937,   811,  9961, 13205], order=7^5)</span>
+<span class="gh">Out[71]: </span><span class="go">GF([14718, 13926,   671, 14406,   448,  5866], order=7^5)</span>
 
 <span class="gp">In [72]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">X</span>
-<span class="gh">Out[72]: </span><span class="go">GF([ 5230, 16381,  2679, 12952,  6557,  3031], order=7^5)</span>
+<span class="gh">Out[72]: </span><span class="go">GF([13278, 10098,  4808,   497,  3773,  9199], order=7^5)</span>
 
 <span class="gp">In [73]: </span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="gh">Out[73]: </span><span class="go">GF([ 9632, 11362, 15937,   811,  9961, 13205], order=7^5)</span>
+<span class="gh">Out[73]: </span><span class="go">GF([14718, 13926,   671, 14406,   448,  5866], order=7^5)</span>
 </code></pre></div>
 </div>
 <p>See also <a class="reference internal" href="../../api/galois.ntt/" title="galois.ntt (Python function) — Computes the Number-Theoretic Transform (NTT) of x."><code class="xref py py-func docutils literal notranslate"><span class="pre">ntt()</span></code></a> and <a class="reference internal" href="../../api/galois.FieldArray.primitive_root_of_unity/" title="galois.FieldArray.primitive_root_of_unity (Python method) — Finds a primitive n-th root of unity in the finite field."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_root_of_unity</span></code></a>.</p>
-</div>
-<h2 id="linear-algebra">Linear algebra<a class="headerlink" href="#linear-algebra" title="Permalink to this heading">¶</a></h2>
+</details><h2 id="linear-algebra">Linear algebra<a class="headerlink" href="#linear-algebra" title="Permalink to this heading">¶</a></h2>
 <p>Linear algebra on <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> arrays/matrices is supported through both native NumPy linear algebra functions
 in <a class="reference external" href="https://numpy.org/doc/stable/reference/routines.linalg.html#module-numpy.linalg" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.linalg</span></code></a> and additional linear algebra routines not included in NumPy.</p>
 <p>Expand any section for more details.</p>
-<div class="docutils container">
-<p>Dot product: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [74]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+<details>
+<summary>
+Dot product: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [74]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [75]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">21</span><span class="p">]);</span> <span class="n">a</span>
 <span class="gh">Out[75]: </span><span class="go">GF([29,  0,  2, 21], order=31)</span>
@@ -7619,10 +7614,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="gh">Out[77]: </span><span class="go">GF(19, order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Vector dot product: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [78]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Vector dot product: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [78]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [79]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">21</span><span class="p">]);</span> <span class="n">a</span>
 <span class="gh">Out[79]: </span><span class="go">GF([29,  0,  2, 21], order=31)</span>
@@ -7634,10 +7628,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="gh">Out[81]: </span><span class="go">GF(19, order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Inner product: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [82]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Inner product: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [82]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [83]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">21</span><span class="p">]);</span> <span class="n">a</span>
 <span class="gh">Out[83]: </span><span class="go">GF([29,  0,  2, 21], order=31)</span>
@@ -7649,10 +7642,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="gh">Out[85]: </span><span class="go">GF(19, order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Outer product: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [86]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Outer product: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [86]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [87]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">21</span><span class="p">]);</span> <span class="n">a</span>
 <span class="gh">Out[87]: </span><span class="go">GF([29,  0,  2, 21], order=31)</span>
@@ -7668,10 +7660,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="go">    [18, 12,  5,  4]], order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Matrix multiplication: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span> <span class="o">@</span> <span class="n">B</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [90]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Matrix multiplication: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span> <span class="o">@</span> <span class="n">B</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [90]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [91]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">30</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[91]: </span><span class="go"></span>
@@ -7699,10 +7690,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="go">    [19,  8]], order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Matrix exponentiation: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [95]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Matrix exponentiation: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [95]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [96]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[96]: </span><span class="go"></span>
@@ -7723,10 +7713,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="go">    [ 8, 24, 29]], order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Matrix determinant: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [99]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Matrix determinant: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [99]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [100]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[100]: </span><span class="go"></span>
@@ -7739,10 +7728,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="gh">Out[101]: </span><span class="go">GF(0, order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Matrix rank: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [102]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Matrix rank: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [102]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [103]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[103]: </span><span class="go"></span>
@@ -7762,10 +7750,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="go">    [ 0,  0,  0,  0]], order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Matrix trace: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">A</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [106]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Matrix trace: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">A</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [106]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [107]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[107]: </span><span class="go"></span>
@@ -7781,10 +7768,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="gh">Out[109]: </span><span class="go">GF(0, order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Solve a system of equations: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [110]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Solve a system of equations: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [110]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [111]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">28</span><span class="p">],</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[111]: </span><span class="go"></span>
@@ -7802,10 +7788,9 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="gh">Out[114]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-</div>
-<div class="docutils container">
-<p>Matrix inverse: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [115]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Matrix inverse: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [115]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [116]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">28</span><span class="p">],</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[116]: </span><span class="go"></span>
@@ -7829,13 +7814,12 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 <span class="go">    [0, 0, 0, 1]], order=31)</span>
 </code></pre></div>
 </div>
-</div>
-<h2 id="additional-linear-algebra">Additional linear algebra<a class="headerlink" href="#additional-linear-algebra" title="Permalink to this heading">¶</a></h2>
+</details><h2 id="additional-linear-algebra">Additional linear algebra<a class="headerlink" href="#additional-linear-algebra" title="Permalink to this heading">¶</a></h2>
 <p>Below are additional linear algebra routines provided for <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> arrays/matrices that are
 not included in NumPy.</p>
-<div class="docutils container">
-<p>Row space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">()</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [119]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+<details>
+<summary>
+Row space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [119]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [120]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[120]: </span><span class="go"></span>
@@ -7852,10 +7836,9 @@ not included in NumPy.</p>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.FieldArray.row_space/" title="galois.FieldArray.row_space (Python method) — Computes the row space of the matrix \mathbf{A}."><code class="xref py py-func docutils literal notranslate"><span class="pre">row_space()</span></code></a> for more details.</p>
-</div>
-<div class="docutils container">
-<p>Column space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">column_space</span><span class="p">()</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [122]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Column space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">column_space</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [122]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [123]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[123]: </span><span class="go"></span>
@@ -7872,10 +7855,9 @@ not included in NumPy.</p>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.FieldArray.column_space/" title="galois.FieldArray.column_space (Python method) — Computes the column space of the matrix \mathbf{A}."><code class="xref py py-func docutils literal notranslate"><span class="pre">column_space()</span></code></a> for more details.</p>
-</div>
-<div class="docutils container">
-<p>Left null space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">()</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [125]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Left null space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [125]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [126]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[126]: </span><span class="go"></span>
@@ -7889,10 +7871,9 @@ not included in NumPy.</p>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.FieldArray.left_null_space/" title="galois.FieldArray.left_null_space (Python method) — Computes the left null space of the matrix \mathbf{A}."><code class="xref py py-func docutils literal notranslate"><span class="pre">left_null_space()</span></code></a> for more details.</p>
-</div>
-<div class="docutils container">
-<p>Null space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">()</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [128]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Null space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [128]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [129]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[129]: </span><span class="go"></span>
@@ -7906,10 +7887,9 @@ not included in NumPy.</p>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.FieldArray.null_space/" title="galois.FieldArray.null_space (Python method) — Computes the null space of the matrix \mathbf{A}."><code class="xref py py-func docutils literal notranslate"><span class="pre">null_space()</span></code></a> for more details.</p>
-</div>
-<div class="docutils container">
-<p>Gaussian elimination: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">row_reduce</span><span class="p">()</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [131]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+Gaussian elimination: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">row_reduce</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [131]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [132]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[132]: </span><span class="go"></span>
@@ -7927,10 +7907,9 @@ not included in NumPy.</p>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.FieldArray.row_reduce/" title="galois.FieldArray.row_reduce (Python method) — Performs Gaussian elimination on the matrix to achieve reduced row echelon form (RREF)."><code class="xref py py-func docutils literal notranslate"><span class="pre">row_reduce()</span></code></a> for more details.</p>
-</div>
-<div class="docutils container">
-<p>LU decomposition: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">lu_decompose</span><span class="p">()</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [134]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+LU decomposition: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">lu_decompose</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [134]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [135]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[135]: </span><span class="go"></span>
@@ -7957,10 +7936,9 @@ not included in NumPy.</p>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.FieldArray.lu_decompose/" title="galois.FieldArray.lu_decompose (Python method) — Decomposes the input array into the product of lower and upper triangular matrices."><code class="xref py py-func docutils literal notranslate"><span class="pre">lu_decompose()</span></code></a> for more details.</p>
-</div>
-<div class="docutils container">
-<p>PLU decomposition: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">plu_decompose</span><span class="p">()</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [140]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+</details><details>
+<summary>
+PLU decomposition: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">plu_decompose</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [140]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
 <span class="gp">In [141]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]);</span> <span class="n">A</span>
 <span class="gh">Out[141]: </span><span class="go"></span>
@@ -7993,26 +7971,32 @@ not included in NumPy.</p>
 </code></pre></div>
 </div>
 <p>See <a class="reference internal" href="../../api/galois.FieldArray.plu_decompose/" title="galois.FieldArray.plu_decompose (Python method) — Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting."><code class="xref py py-func docutils literal notranslate"><span class="pre">plu_decompose()</span></code></a> for more details.</p>
-</div>
-
-
+</details>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      Sep 02, 2022
+      Jul 26, 2022
     
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
@@ -8021,7 +8005,8 @@ not included in NumPy.</p>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../array-creation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Array Creation" rel="prev">
@@ -8070,7 +8055,7 @@ not included in NumPy.</p>
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.0.0.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -8084,7 +8069,7 @@ not included in NumPy.</p>
       
     
     <a href="https://github.com/mhostetter/galois" target="_blank" rel="noopener" title="github.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
     </a>
   
     
@@ -8093,7 +8078,7 @@ not included in NumPy.</p>
       
     
     <a href="https://pypi.org/project/galois/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z"/></svg>
     </a>
   
     
@@ -8102,7 +8087,7 @@ not included in NumPy.</p>
       
     
     <a href="https://twitter.com/galois_py" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
     </a>
   
 </div>
@@ -8116,10 +8101,12 @@ not included in NumPy.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
+    
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
     
-      <script src="../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
