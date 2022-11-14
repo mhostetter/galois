@@ -1,6 +1,0 @@
-﻿galois.intt
-===========
-
-.. currentmodule:: galois
-
-.. autofunction:: intt

@@ -1,6 +1,0 @@
-﻿galois.divisors
-===============
-
-.. currentmodule:: galois
-
-.. autofunction:: divisors

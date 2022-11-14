@@ -1,6 +1,0 @@
-﻿galois.GF
-=========
-
-.. currentmodule:: galois
-
-.. autofunction:: GF

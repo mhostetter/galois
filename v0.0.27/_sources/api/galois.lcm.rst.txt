@@ -1,6 +1,0 @@
-﻿galois.lcm
-==========
-
-.. currentmodule:: galois
-
-.. autofunction:: lcm

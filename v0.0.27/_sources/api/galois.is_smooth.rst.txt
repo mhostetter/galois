@@ -1,6 +1,0 @@
-﻿galois.is\_smooth
-=================
-
-.. currentmodule:: galois
-
-.. autofunction:: is_smooth

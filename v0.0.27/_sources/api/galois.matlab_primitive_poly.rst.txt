@@ -1,6 +1,0 @@
-﻿galois.matlab\_primitive\_poly
-==============================
-
-.. currentmodule:: galois
-
-.. autofunction:: matlab_primitive_poly

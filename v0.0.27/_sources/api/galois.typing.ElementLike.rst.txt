@@ -1,6 +1,0 @@
-﻿galois.typing.ElementLike
-=========================
-
-.. currentmodule:: galois.typing
-
-.. autodata:: ElementLike
