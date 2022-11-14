@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7283,14 +7295,14 @@
 <span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">Poly.</span></span><span class="sig-name descname"><span class="pre">square_free_factors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../galois.Poly/" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m)."><span class="pre">Poly</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span></span></dt>
 <dd><p>Factors the monic polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> into a product of square-free polynomials.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-odd" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p>The list of non-constant, square-free polynomials <span class="math notranslate nohighlight">\(h_j(x)\)</span> in the factorization.</p></li>
 <li><p>The list of corresponding multiplicities <span class="math notranslate nohighlight">\(j\)</span>.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-even" id="raises">Raises<span class="colon">:</span><a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="raises">Raises<a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If <span class="math notranslate nohighlight">\(f(x)\)</span> is not monic or has degree 0.</p>
 </dd>
 </dl>
@@ -7335,16 +7347,6 @@ and <span class="math notranslate nohighlight">\(x^2 + 4x + 1\)</span> are all i
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

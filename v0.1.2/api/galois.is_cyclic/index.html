@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7293,13 +7305,13 @@
 <span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">is_cyclic</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-n" title="galois.is_cyclic.n (Python parameter) — A positive integer."><span class="n"><span class="pre">n</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span></span></dt>
 <dd><p>Determines whether the multiplicative group <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is cyclic.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-n"><span class="n sig-name">n</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-n" title="Permalink to this definition">¶</a></dt><dd><p>A positive integer.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><code class="code highlight python docutils literal highlight-python"><span class="kc">True</span></code> if the multiplicative group <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is cyclic.</p>
 </dd>
 </dl>
@@ -7408,23 +7420,25 @@ is not cyclic, meaning no elements exist whose powers generate the group.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">StopIteration</span><span class="g g-Whitespace">                             </span>Traceback (most recent call last)
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.14/x64/lib/python3.8/site-packages/galois/_modular.py:568,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
-<span class="g g-Whitespace">    </span><span class="mi">567</span> <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">568</span>     <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">primitive_roots</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">))</span>
-<span class="g g-Whitespace">    </span><span class="mi">569</span> <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
+<span class="nn">~/.local/lib/python3.8/site-packages/galois/_modular.py</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
+<span class="g g-Whitespace">    </span><span class="mi">567</span>         <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">568</span>             <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">primitive_roots</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">))</span>
+<span class="g g-Whitespace">    </span><span class="mi">569</span>         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
 
 <span class="ne">StopIteration</span>: 
 
 <span class="n">The</span> <span class="n">above</span> <span class="n">exception</span> <span class="n">was</span> <span class="n">the</span> <span class="n">direct</span> <span class="n">cause</span> <span class="n">of</span> <span class="n">the</span> <span class="n">following</span> <span class="n">exception</span><span class="p">:</span>
 
 <span class="ne">RuntimeError</span><span class="g g-Whitespace">                              </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="n">bb1af462e9d6</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.14/x64/lib/python3.8/site-packages/galois/_modular.py:574,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
-<span class="g g-Whitespace">    </span><span class="mi">572</span>         <span class="k">return</span> <span class="n">_primitive_root_random_search</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">573</span> <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">574</span>     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No primitive roots modulo </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> exist in the range [</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">stop</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+<span class="nn">~/.local/lib/python3.8/site-packages/galois/_modular.py</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
+<span class="g g-Whitespace">    </span><span class="mi">572</span>             <span class="k">return</span> <span class="n">_primitive_root_random_search</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">573</span>     <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">574</span>         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No primitive roots modulo </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> exist in the range [</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">stop</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+<span class="g g-Whitespace">    </span><span class="mi">575</span> 
+<span class="g g-Whitespace">    </span><span class="mi">576</span> 
 
 <span class="ne">RuntimeError</span>: No primitive roots modulo 15 exist in the range [1, 15).
 </code></pre></div>
@@ -7464,16 +7478,6 @@ is not cyclic, meaning no elements exist whose powers generate the group.</p>
 </div></dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7309,8 +7321,8 @@
 <p>This function randomly generates integers with <span class="math notranslate nohighlight">\(b\)</span> bits and uses the primality tests in
 <a class="reference internal" href="../galois.is_prime/" title="galois.is_prime (Python function) — Determines if n is prime."><code class="xref py py-func docutils literal notranslate"><span class="pre">is_prime()</span></code></a> to determine if <span class="math notranslate nohighlight">\(p\)</span> is prime.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-bits"><span class="n sig-name">bits</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-bits" title="Permalink to this definition">¶</a></dt><dd><p>The number of bits in the prime <span class="math notranslate nohighlight">\(p\)</span>.</p>
 </dd>
 <dt id="p-seed"><span class="n sig-name">seed</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#p-seed" title="Permalink to this definition">¶</a></dt><dd><p>Non-negative integer used to initialize the PRNG. The default is <code class="code highlight python docutils literal highlight-python"><span class="kc">None</span></code> which means that unpredictable
@@ -7318,7 +7330,7 @@ entropy will be pulled from the OS to be used as the seed.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>A random prime in <span class="math notranslate nohighlight">\(2^b \le p &lt; 2^{b+1}\)</span>.</p>
 </dd>
 </dl>
@@ -7347,16 +7359,6 @@ entropy will be pulled from the OS to be used as the seed.</p>
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

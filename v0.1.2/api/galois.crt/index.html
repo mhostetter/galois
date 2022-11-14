@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7323,15 +7335,15 @@
 <span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">crt</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-remainders" title="galois.crt.remainders (Python parameter) — The integer or polynomial remainders a_i."><span class="n"><span class="pre">remainders</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.11)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a><span class="p"><span class="pre">]</span></span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-moduli" title="galois.crt.moduli (Python parameter) — The integer or polynomial moduli m_i."><span class="n"><span class="pre">moduli</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.11)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a><span class="p"><span class="pre">]</span></span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a></span></span></span></dt>
 <dd><p>Solves the simultaneous system of congruences for <span class="math notranslate nohighlight">\(x\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-remainders"><span class="n sig-name">remainders</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.11)">Sequence</a><span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a><span class="p">]</span></span></span><a class="headerlink" href="#p-remainders" title="Permalink to this definition">¶</a></dt><dt><span class="n sig-name">remainders</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.11)">Sequence</a><span class="p">[</span><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)">Poly</a><span class="p">]</span></span></span></dt><dd><p>The integer or polynomial remainders <span class="math notranslate nohighlight">\(a_i\)</span>.</p>
 </dd>
 <dt id="p-moduli"><span class="n sig-name">moduli</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.11)">Sequence</a><span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a><span class="p">]</span></span></span><a class="headerlink" href="#p-moduli" title="Permalink to this definition">¶</a></dt><dt><span class="n sig-name">moduli</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.11)">Sequence</a><span class="p">[</span><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)">Poly</a><span class="p">]</span></span></span></dt><dd><p>The integer or polynomial moduli <span class="math notranslate nohighlight">\(m_i\)</span>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The simultaneous solution <span class="math notranslate nohighlight">\(x\)</span> to the system of congruences.</p>
 </dd>
 </dl>
@@ -7381,24 +7393,24 @@ Polynomials</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [6]: </span><span class="n">x_truth</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">x_truth</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(x^6 + 6x^5 + 4x^4 + 3x^3 + 5x^2 + 5x + 1, GF(7))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(2x^6 + 4x^5 + 5x^4 + x^3 + 2x^2 + 4x + 3, GF(7))</span>
 
 <span class="gp">In [7]: </span><span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">),</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">),</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)];</span> <span class="n">m</span>
 <span class="gh">Out[7]: </span><span class="go"></span>
-<span class="go">[Poly(4x^3 + 5x^2 + x + 6, GF(7)),</span>
-<span class="go"> Poly(3x^4 + 6x^3 + 6x^2 + 3x, GF(7)),</span>
-<span class="go"> Poly(5x^5 + 2x^4 + x^3 + 2x, GF(7))]</span>
+<span class="go">[Poly(2x^3 + 2x^2 + 6x + 2, GF(7)),</span>
+<span class="go"> Poly(3x^4 + 5x^3 + x^2 + 6x, GF(7)),</span>
+<span class="go"> Poly(5x^5 + 2x^4 + x^3 + 4x^2 + 6x + 4, GF(7))]</span>
 
 <span class="gp">In [8]: </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_truth</span> <span class="o">%</span> <span class="n">mi</span> <span class="k">for</span> <span class="n">mi</span> <span class="ow">in</span> <span class="n">m</span><span class="p">];</span> <span class="n">a</span>
 <span class="gh">Out[8]: </span><span class="go"></span>
-<span class="go">[Poly(6, GF(7)),</span>
-<span class="go"> Poly(6x^3 + 6x^2 + 4x + 1, GF(7)),</span>
-<span class="go"> Poly(x^4 + 3x^3 + 6x^2 + 5x + 1, GF(7))]</span>
+<span class="go">[Poly(6x^2 + 5x, GF(7)),</span>
+<span class="go"> Poly(x^3 + 4x^2 + 3x + 3, GF(7)),</span>
+<span class="go"> Poly(5x^4 + x^3 + 6x^2 + 5x + 1, GF(7))]</span>
 </code></pre></div>
 </div>
 <p>Solve the system of congruences.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">crt</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">m</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[9]: </span><span class="go">Poly(x^6 + 6x^5 + 4x^4 + 3x^3 + 5x^2 + 5x + 1, GF(7))</span>
+<span class="gh">Out[9]: </span><span class="go">Poly(2x^6 + 4x^5 + 5x^4 + x^3 + 2x^2 + 4x + 3, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Show that the solution satisfies each congruence.</p>
@@ -7406,9 +7418,9 @@ Polynomials</label></div>
 <span class="gp">   ....: </span>    <span class="n">ai</span> <span class="o">=</span> <span class="n">x</span> <span class="o">%</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 <span class="gp">   ....: </span>    <span class="nb">print</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="n">ai</span> <span class="o">==</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 <span class="gp">   ....: </span>
-<span class="go">6 True</span>
-<span class="go">6x^3 + 6x^2 + 4x + 1 True</span>
-<span class="go">x^4 + 3x^3 + 6x^2 + 5x + 1 True</span>
+<span class="go">6x^2 + 5x True</span>
+<span class="go">x^3 + 4x^2 + 3x + 3 True</span>
+<span class="go">5x^4 + x^3 + 6x^2 + 5x + 1 True</span>
 </code></pre></div>
 </div>
 </div>
@@ -7416,16 +7428,6 @@ Polynomials</label></div>
 </div></dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

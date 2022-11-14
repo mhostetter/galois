@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7401,7 +7413,7 @@ simple polynomials. They are included for convenience.</p>
 </div>
 <p>Random polynomials of a given degree are easily created with <a class="reference internal" href="../../api/galois.Poly.Random/" title="galois.Poly.Random (Python method) — Constructs a random polynomial over \mathrm{GF}(p^m) with degree d."><code class="xref py py-func docutils literal notranslate"><span class="pre">Random()</span></code></a>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
-<span class="gh">Out[23]: </span><span class="go">Poly(209x^4 + 182x^3 + 213x^2 + 216x + 109, GF(3^5))</span>
+<span class="gh">Out[23]: </span><span class="go">Poly(45x^4 + 206x^3 + 76x^2 + 182x + 2, GF(3^5))</span>
 </code></pre></div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
@@ -7528,7 +7540,7 @@ Hex string</label></div>
   <small>
     
       Last update:
-      Nov 10, 2022
+      Nov 08, 2022
     
   </small>
 </div>

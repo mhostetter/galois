@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7283,8 +7295,8 @@
 <p>The polynomial <span class="math notranslate nohighlight">\(f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0\)</span> with degree <span class="math notranslate nohighlight">\(d\)</span> has coefficients
 <span class="math notranslate nohighlight">\(\{a_{d}, a_{d-1}, \dots, a_1, a_0\}\)</span> in <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-coeffs"><span class="n sig-name">coeffs</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.ArrayLike/" title="galois.typing.ArrayLike (Python data) — A Union representing objects that can be coerced into a Galois field array.">ArrayLike</a></span></span><a class="headerlink" href="#p-coeffs" title="Permalink to this definition">¶</a></dt><dd><p>The polynomial coefficients <span class="math notranslate nohighlight">\(\{a_d, a_{d-1}, \dots, a_1, a_0\}\)</span>.</p>
 </dd>
 <dt id="p-field"><span class="n sig-name">field</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.11)">type</a><span class="p">[</span><a class="reference internal" href="../galois.Array/" title="galois.Array (Python class) — An abstract ndarray subclass over a Galois field or Galois ring.">Array</a><span class="p">]</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#p-field" title="Permalink to this definition">¶</a></dt><dd><p><p>The Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> the polynomial is over.</p>
@@ -7309,16 +7321,6 @@ are not explicitly in a Galois field, they are assumed to be from <span class="m
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

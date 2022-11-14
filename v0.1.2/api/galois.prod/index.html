@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7255,13 +7267,13 @@
 <span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">prod</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a></span></span></span></dt>
 <dd><p>Computes the product of the arguments.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt><span class="sig-name descname">*values</span></dt><dd><p>Each argument must be an integer or polynomial.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The product of the arguments.</p>
 </dd>
 </dl>
@@ -7288,21 +7300,21 @@ Polynomials</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [3]: </span><span class="n">f1</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f1</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(4x^2 + 6, GF(7))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(5x^2 + x, GF(7))</span>
 
 <span class="gp">In [4]: </span><span class="n">f2</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f2</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(2x^3 + 3x^2 + 3x + 3, GF(7))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(5x^3 + 4x^2, GF(7))</span>
 
 <span class="gp">In [5]: </span><span class="n">f3</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f3</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(4x^4 + 6x^3 + x + 1, GF(7))</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(6x^4 + 6x^3 + 3x^2 + 4x, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Compute the product of three polynomials.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">galois</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">)</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(4x^9 + 5x^8 + 6x^6 + 6x^5 + 6x^4 + x^3 + 6x^2 + x + 4, GF(7))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(3x^9 + 6x^8 + 4x^7 + 3x^6 + 2x^4, GF(7))</span>
 
 <span class="gp">In [7]: </span><span class="n">f1</span> <span class="o">*</span> <span class="n">f2</span> <span class="o">*</span> <span class="n">f3</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(4x^9 + 5x^8 + 6x^6 + 6x^5 + 6x^4 + x^3 + 6x^2 + x + 4, GF(7))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(3x^9 + 6x^8 + 4x^7 + 3x^6 + 2x^4, GF(7))</span>
 </code></pre></div>
 </div>
 </div>
@@ -7310,16 +7322,6 @@ Polynomials</label></div>
 </div></dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

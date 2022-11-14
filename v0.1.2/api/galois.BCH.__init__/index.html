@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7309,8 +7321,8 @@
 <span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">BCH</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-n" title="galois.BCH.__init__.n (Python parameter) — The codeword size n, must be n = 2^m - 1."><span class="n"><span class="pre">n</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-k" title="galois.BCH.__init__.k (Python parameter) — The message size k."><span class="n"><span class="pre">k</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-primitive_poly" title="galois.BCH.__init__.primitive_poly (Python parameter) — Optionally specify the primitive polynomial that defines the extension field \mathrm{GF}(2^m). The default is None which uses Matlab's default, see matlab_primitive_poly()."><span class="n"><span class="pre">primitive_poly</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-primitive_element" title="galois.BCH.__init__.primitive_element (Python parameter) — Optionally specify the primitive element \alpha whose powers are roots of the generator polynomial g(x). The default is None which uses the lexicographically-minimal primitive element in \mathrm{GF}(2^m), see primitive_element()."><span class="n"><span class="pre">primitive_element</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.PolyLike/" title="galois.typing.PolyLike (Python data) — A Union representing objects that can be coerced into a polynomial."><span class="pre">PolyLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-systematic" title="galois.BCH.__init__.systematic (Python parameter) — Optionally specify if the encoding should be systematic, meaning the codeword is the message with parity appended. The default is True."><span class="n"><span class="pre">systematic</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Constructs a primitive, narrow-sense binary <span class="math notranslate nohighlight">\(\textrm{BCH}(n, k)\)</span> code.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-n"><span class="n sig-name">n</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-n" title="Permalink to this definition">¶</a></dt><dd><p>The codeword size <span class="math notranslate nohighlight">\(n\)</span>, must be <span class="math notranslate nohighlight">\(n = 2^m - 1\)</span>.</p>
 </dd>
 <dt id="p-k"><span class="n sig-name">k</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-k" title="Permalink to this definition">¶</a></dt><dd><p>The message size <span class="math notranslate nohighlight">\(k\)</span>.</p>
@@ -7335,16 +7347,6 @@ appended. The default is <code class="code highlight python docutils literal hig
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

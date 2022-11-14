@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7254,8 +7266,8 @@
 <dd><p>Recompile the just-in-time compiled ufuncs for a new calculation mode.</p>
 <p>This function updates <a class="reference internal" href="../galois.Array.ufunc_mode/" title="galois.Array.ufunc_mode (Python property) — The current compilation mode of the Galois field or Galois ring."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ufunc_mode</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-mode"><span class="n sig-name">mode</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="s">'auto'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'jit-lookup'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'jit-calculate'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'python-calculate'</span></span></span><a class="headerlink" href="#p-mode" title="Permalink to this definition">¶</a></dt><dd><p><p>The ufunc calculation mode.</p>
 <ul class="simple">
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;auto&quot;</span></code>: Selects <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-lookup&quot;</span></code> for fields with order less than <span class="math notranslate nohighlight">\(2^{20}\)</span>, <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-calculate&quot;</span></code> for larger fields, and <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code>
@@ -7275,16 +7287,6 @@ represented with <a class="reference external" href="https://numpy.org/doc/stabl
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

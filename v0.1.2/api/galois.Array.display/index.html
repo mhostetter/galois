@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7289,8 +7301,8 @@ representation. See <a class="reference internal" href="../../basic-usage/elemen
 tables, displaying arrays in the power representation may take longer than expected.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-mode"><span class="n sig-name">mode</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="s">'int'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'poly'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'power'</span></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;int&#39;</span></code><a class="headerlink" href="#p-mode" title="Permalink to this definition">¶</a></dt><dd><p><p>The field element representation.</p>
 <ul class="simple">
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;int&quot;</span></code>: Sets the display mode to the <a class="reference internal" href="../../basic-usage/element-representation/#int-repr"><span class="std std-ref">integer representation</span></a>.</p></li>
@@ -7301,7 +7313,7 @@ tables, displaying arrays in the power representation may take longer than expec
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>A context manager for use in a <code class="code highlight python docutils literal highlight-python"><span class="k">with</span></code> statement. If permanently setting the display mode, disregard the
 return value.</p>
 </dd>
@@ -7381,16 +7393,6 @@ Power</label></div>
 </div></dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

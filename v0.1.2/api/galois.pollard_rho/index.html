@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7335,8 +7347,8 @@
 <span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">pollard_rho</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-n" title="galois.pollard_rho.n (Python parameter) — An odd composite integer n &gt; 2 that is not a prime power."><span class="n"><span class="pre">n</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-c" title="galois.pollard_rho.c (Python parameter) — The constant offset in the function f(x) = x^2 + c\ \textrm{mod}\ n. The default is 1. A requirement of the algorithm is that c \not\in \{0, -2\}."><span class="n"><span class="pre">c</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></span></dt>
 <dd><p>Attempts to find a non-trivial factor of <span class="math notranslate nohighlight">\(n\)</span> using cycle detection.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-n"><span class="n sig-name">n</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-n" title="Permalink to this definition">¶</a></dt><dd><p>An odd composite integer <span class="math notranslate nohighlight">\(n &gt; 2\)</span> that is not a prime power.</p>
 </dd>
 <dt id="p-c"><span class="n sig-name">c</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code><a class="headerlink" href="#p-c" title="Permalink to this definition">¶</a></dt><dd><p>The constant offset in the function <span class="math notranslate nohighlight">\(f(x) = x^2 + c\ \textrm{mod}\ n\)</span>. The default is 1. A requirement
@@ -7344,10 +7356,10 @@ of the algorithm is that <span class="math notranslate nohighlight">\(c \not\in 
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>A non-trivial factor <span class="math notranslate nohighlight">\(m\)</span> of <span class="math notranslate nohighlight">\(n\)</span>, if found. <code class="code highlight python docutils literal highlight-python"><span class="kc">None</span></code> if not found.</p>
 </dd>
-<dt class="field-odd" id="raises">Raises<span class="colon">:</span><a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
+<dt class="field-odd" id="raises">Raises<a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If a non-trivial factor cannot be found.</p>
 </dd>
 </dl>
@@ -7383,16 +7395,6 @@ Because <span class="math notranslate nohighlight">\(p\)</span> is unknown, this
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

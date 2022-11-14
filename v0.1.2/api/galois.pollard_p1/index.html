@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7350,8 +7362,8 @@
 <dd><p>Attempts to find a non-trivial factor of <span class="math notranslate nohighlight">\(n\)</span> if it has a prime factor <span class="math notranslate nohighlight">\(p\)</span> such that
 <span class="math notranslate nohighlight">\(p-1\)</span> is <span class="math notranslate nohighlight">\(B\)</span>-smooth.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-n"><span class="n sig-name">n</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-n" title="Permalink to this definition">¶</a></dt><dd><p>An odd composite integer <span class="math notranslate nohighlight">\(n &gt; 2\)</span> that is not a prime power.</p>
 </dd>
 <dt id="p-B"><span class="n sig-name">B</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-B" title="Permalink to this definition">¶</a></dt><dd><p>The smoothness bound <span class="math notranslate nohighlight">\(B &gt; 2\)</span>.</p>
@@ -7361,10 +7373,10 @@ will not perform the second step.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>A non-trivial factor of <span class="math notranslate nohighlight">\(n\)</span>, if found. <code class="code highlight python docutils literal highlight-python"><span class="kc">None</span></code> if not found.</p>
 </dd>
-<dt class="field-odd" id="raises">Raises<span class="colon">:</span><a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
+<dt class="field-odd" id="raises">Raises<a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If a non-trivial factor cannot be found.</p>
 </dd>
 </dl>
@@ -7398,13 +7410,15 @@ Often <span class="math notranslate nohighlight">\(B_2\)</span> is chosen such t
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">galois</span><span class="o">.</span><span class="n">pollard_p1</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
 <span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">RuntimeError</span><span class="g g-Whitespace">                              </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mi">01</span><span class="n">f0edd40f44</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">galois</span><span class="o">.</span><span class="n">pollard_p1</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
 
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.14/x64/lib/python3.8/site-packages/galois/_prime.py:1178,</span> in <span class="ni">pollard_p1</span><span class="nt">(n, B, B2)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1175</span>     <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">]:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1176</span>         <span class="k">return</span> <span class="n">d</span>
-<span class="ne">-&gt; </span><span class="mi">1178</span> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;A non-trivial factor of </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> could not be found using the Pollard p-1 algorithm with smoothness bound </span><span class="si">{</span><span class="n">B</span><span class="si">}</span><span class="s2"> and secondary bound </span><span class="si">{</span><span class="n">B2</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nn">~/.local/lib/python3.8/site-packages/galois/_prime.py</span> in <span class="ni">pollard_p1</span><span class="nt">(n, B, B2)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1176</span>             <span class="k">return</span> <span class="n">d</span>
+<span class="g g-Whitespace">   </span><span class="mi">1177</span> 
+<span class="ne">-&gt; </span><span class="mi">1178</span>     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;A non-trivial factor of </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> could not be found using the Pollard p-1 algorithm with smoothness bound </span><span class="si">{</span><span class="n">B</span><span class="si">}</span><span class="s2"> and secondary bound </span><span class="si">{</span><span class="n">B2</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1179</span> 
+<span class="g g-Whitespace">   </span><span class="mi">1180</span> 
 
 <span class="ne">RuntimeError</span>: A non-trivial factor of 1934313240757 could not be found using the Pollard p-1 algorithm with smoothness bound 15 and secondary bound None.
 </code></pre></div>
@@ -7436,16 +7450,6 @@ step because <span class="math notranslate nohighlight">\(p_{k+1} = 17\)</span> 
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

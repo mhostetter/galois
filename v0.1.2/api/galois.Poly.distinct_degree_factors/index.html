@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7284,14 +7296,14 @@
 <dd><p>Factors the monic, square-free polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> into a product of polynomials whose irreducible factors all have
 the same degree.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-odd" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p>The list of polynomials <span class="math notranslate nohighlight">\(f_i(x)\)</span> whose irreducible factors all have degree <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
 <li><p>The list of corresponding distinct degrees <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-even" id="raises">Raises<span class="colon">:</span><a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="raises">Raises<a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If <span class="math notranslate nohighlight">\(f(x)\)</span> is not monic, has degree 0, or is not square-free.</p>
 </dd>
 </dl>
@@ -7357,16 +7369,6 @@ have degrees <span class="math notranslate nohighlight">\(\{1, 2, 3\}\)</span>.<
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

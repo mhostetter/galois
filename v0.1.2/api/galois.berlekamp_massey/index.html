@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7324,8 +7336,8 @@
 <dd><p>Finds the minimal polynomial <span class="math notranslate nohighlight">\(c(x)\)</span> that produces the linear recurrent sequence <span class="math notranslate nohighlight">\(y\)</span>.</p>
 <p>This function implements the Berlekamp-Massey algorithm.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-sequence"><span class="n sig-name">sequence</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)">FieldArray</a></span></span><a class="headerlink" href="#p-sequence" title="Permalink to this definition">¶</a></dt><dd><p>A linear recurrent sequence <span class="math notranslate nohighlight">\(y\)</span> in <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 </dd>
 <dt id="p-output"><span class="n sig-name">output</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="s">'minimal'</span></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;minimal&#39;</span></code><a class="headerlink" href="#p-output" title="Permalink to this definition">¶</a></dt><dt><span class="n sig-name">output</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="s">'fibonacci'</span></span></span></dt><dt><span class="n sig-name">output</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="s">'galois'</span></span></span></dt><dd><p><p>The output object type.</p>
@@ -7339,7 +7351,7 @@ is a characteristic polynomial <span class="math notranslate nohighlight">\(c(x)
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The minimal polynomial <span class="math notranslate nohighlight">\(c(x)\)</span>, a Fibonacci LFSR, or a Galois LFSR, depending on the value of <code class="code highlight python docutils literal highlight-python"><span class="n">output</span></code>.</p>
 </dd>
 </dl>
@@ -7412,16 +7424,6 @@ sequence <span class="math notranslate nohighlight">\(y\)</span>.</p>
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

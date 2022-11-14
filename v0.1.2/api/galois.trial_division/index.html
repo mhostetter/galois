@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7295,8 +7307,8 @@
 <p>The trial division factorization will find all prime factors <span class="math notranslate nohighlight">\(p_i \le B\)</span> such that <span class="math notranslate nohighlight">\(n\)</span> factors
 as <span class="math notranslate nohighlight">\(n = p_1^{e_1} \dots p_k^{e_k} n_r\)</span> where <span class="math notranslate nohighlight">\(n_r\)</span> is a residual factor (which may be composite).</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-n"><span class="n sig-name">n</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-n" title="Permalink to this definition">¶</a></dt><dd><p>A positive integer.</p>
 </dd>
 <dt id="p-B"><span class="n sig-name">B</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#p-B" title="Permalink to this definition">¶</a></dt><dd><p>The max divisor in the trial division. The default is <code class="code highlight python docutils literal highlight-python"><span class="kc">None</span></code> which corresponds to <span class="math notranslate nohighlight">\(B = \sqrt{n}\)</span>.
@@ -7305,7 +7317,7 @@ cannot be larger than <span class="math notranslate nohighlight">\(\sqrt{n}\)</s
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>The discovered prime factors <span class="math notranslate nohighlight">\(\{p_1, \dots, p_k\}\)</span>.</p></li>
 <li><p>The corresponding prime exponents <span class="math notranslate nohighlight">\(\{e_1, \dots, e_k\}\)</span>.</p></li>
@@ -7334,16 +7346,6 @@ cannot be larger than <span class="math notranslate nohighlight">\(\sqrt{n}\)</s
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

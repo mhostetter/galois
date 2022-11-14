@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7283,14 +7295,14 @@
 <p>This function is the inverse operation of the <a class="reference internal" href="../galois.FieldArray.Vector/" title="galois.FieldArray.Vector (Python method) — Creates an array over \mathrm{GF}(p^m) from length-m vectors over the prime subfield \mathrm{GF}(p)."><code class="xref py py-func docutils literal notranslate"><span class="pre">Vector()</span></code></a> constructor. For an array with shape <code class="code highlight python docutils literal highlight-python"><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span></code>, the output shape
 is <code class="code highlight python docutils literal highlight-python"><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></code>. By convention, the vectors are ordered from degree <span class="math notranslate nohighlight">\(m-1\)</span> to degree 0.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-dtype"><span class="n sig-name">dtype</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.DTypeLike/" title="galois.typing.DTypeLike (Python data) — A Union representing objects that can be coerced into a NumPy data type.">DTypeLike</a><span class="w">   </span><span class="p">|</span><span class="w">   </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)">None</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#p-dtype" title="Permalink to this definition">¶</a></dt><dd><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> of the array elements. The default is <code class="code highlight python docutils literal highlight-python"><span class="kc">None</span></code> which represents the smallest unsigned
 data type for this <a class="reference internal" href="../galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass (the first element in <a class="reference internal" href="../galois.FieldArray.dtypes/" title="galois.FieldArray.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this finite field. Creating an array with an unsupported dtype will raise a TypeError exception."><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtypes</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>An array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> with last dimension <span class="math notranslate nohighlight">\(m\)</span>.</p>
 </dd>
 </dl>
@@ -7354,16 +7366,6 @@ Power</label></div>
 </div></dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

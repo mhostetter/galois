@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7291,15 +7303,15 @@
 <span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">roots_to_parity_check_matrix</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-n" title="galois.roots_to_parity_check_matrix.n (Python parameter) — The codeword size n."><span class="n"><span class="pre">n</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-roots" title="galois.roots_to_parity_check_matrix.roots (Python parameter) — The 2t roots of the generator polynomial g(x)."><span class="n"><span class="pre">roots</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)"><span class="pre">FieldArray</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)"><span class="pre">FieldArray</span></a></span></span></span></dt>
 <dd><p>Converts the generator polynomial roots into the parity-check matrix <span class="math notranslate nohighlight">\(\mathbf{H}\)</span> for an <span class="math notranslate nohighlight">\([n, k]\)</span> cyclic code.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-n"><span class="n sig-name">n</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-n" title="Permalink to this definition">¶</a></dt><dd><p>The codeword size <span class="math notranslate nohighlight">\(n\)</span>.</p>
 </dd>
 <dt id="p-roots"><span class="n sig-name">roots</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)">FieldArray</a></span></span><a class="headerlink" href="#p-roots" title="Permalink to this definition">¶</a></dt><dd><p>The <span class="math notranslate nohighlight">\(2t\)</span> roots of the generator polynomial <span class="math notranslate nohighlight">\(g(x)\)</span>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The <span class="math notranslate nohighlight">\((2t, n)\)</span> parity-check matrix <span class="math notranslate nohighlight">\(\mathbf{H}\)</span>, such that given a codeword <span class="math notranslate nohighlight">\(\mathbf{c}\)</span>, the syndrome is defined by
 <span class="math notranslate nohighlight">\(\mathbf{s} = \mathbf{c}\mathbf{H}^T\)</span>.</p>
 </dd>
@@ -7332,16 +7344,6 @@
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

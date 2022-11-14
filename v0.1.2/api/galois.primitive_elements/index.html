@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7294,14 +7306,14 @@
 <dd><p>Finds all primitive elements <span class="math notranslate nohighlight">\(g\)</span> of the Galois field <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</span> with
 degree-<span class="math notranslate nohighlight">\(m\)</span> irreducible polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-irreducible_poly"><span class="n sig-name">irreducible_poly</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois.Poly (Python class) — A univariate polynomial f(x) over \mathrm{GF}(p^m).">Poly</a></span></span><a class="headerlink" href="#p-irreducible_poly" title="Permalink to this definition">¶</a></dt><dd><p>The degree-<span class="math notranslate nohighlight">\(m\)</span> irreducible polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> that defines the extension
 field <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</span>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>List of all primitive elements of <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</span> with irreducible polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>. Each primitive
 element <span class="math notranslate nohighlight">\(g\)</span> is a polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> with degree less than <span class="math notranslate nohighlight">\(m\)</span>.</p>
 </dd>
@@ -7399,16 +7411,6 @@ element <span class="math notranslate nohighlight">\(g\)</span> is a polynomial 
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7297,14 +7309,14 @@
 <span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">Poly.</span></span><span class="sig-name descname"><span class="pre">roots</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-multiplicity" title="galois.Poly.roots.multiplicity (Python parameter) — Optionally return the multiplicity of each root. The default is False which only returns the unique roots."><span class="n"><span class="pre">multiplicity</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="k"><span class="pre">True</span></span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../galois.Array/" title="galois.Array (Python class) — An abstract ndarray subclass over a Galois field or Galois ring."><span class="pre">Array</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span></span></span></span></dt>
 <dd><p>Calculates the roots <span class="math notranslate nohighlight">\(r\)</span> of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>, such that <span class="math notranslate nohighlight">\(f(r) = 0\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-multiplicity"><span class="n sig-name">multiplicity</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="k">False</span></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code><a class="headerlink" href="#p-multiplicity" title="Permalink to this definition">¶</a></dt><dt><span class="n sig-name">multiplicity</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="k">True</span></span></span></dt><dd><p>Optionally return the multiplicity of each root. The default is <code class="code highlight python docutils literal highlight-python"><span class="kc">False</span></code> which only returns the unique
 roots.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>An array of roots of <span class="math notranslate nohighlight">\(f(x)\)</span>. The roots are ordered in increasing order.</p></li>
 <li><p>The multiplicity of each root. This is only returned if <code class="code highlight python docutils literal highlight-python"><span class="n">multiplicity</span><span class="o">=</span><span class="kc">True</span></code>.</p></li>
@@ -7364,16 +7376,6 @@ where <span class="math notranslate nohighlight">\(\alpha^i\)</span> is a root o
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

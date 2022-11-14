@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -4544,7 +4556,7 @@
         
           <li class="md-nav__item">
   <a href="#p-H" class="md-nav__link">
-    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.parity_check_to_generator_matrix.H (Python parameter) — The (n-k, n) parity-check matrix \mathbf{G} in systematic form \mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]`." class="md-ellipsis">H</span>
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.parity_check_to_generator_matrix.H (Python parameter) — The (n-k, n) parity-check matrix \mathbf{G} in systematic form \mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]." class="md-ellipsis">H</span>
   </a>
   
 </li>
@@ -7234,7 +7246,7 @@
         
           <li class="md-nav__item">
   <a href="#p-H" class="md-nav__link">
-    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.parity_check_to_generator_matrix.H (Python parameter) — The (n-k, n) parity-check matrix \mathbf{G} in systematic form \mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]`." class="md-ellipsis">H</span>
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.parity_check_to_generator_matrix.H (Python parameter) — The (n-k, n) parity-check matrix \mathbf{G} in systematic form \mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]." class="md-ellipsis">H</span>
   </a>
   
 </li>
@@ -7274,18 +7286,18 @@
 
 <dl class="py function objdesc">
 <dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">parity_check_to_generator_matrix</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-H" title="galois.parity_check_to_generator_matrix.H (Python parameter) — The (n-k, n) parity-check matrix \mathbf{G} in systematic form \mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]`."><span class="n"><span class="pre">H</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)"><span class="pre">FieldArray</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)"><span class="pre">FieldArray</span></a></span></span></span></dt>
+<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">parity_check_to_generator_matrix</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-H" title="galois.parity_check_to_generator_matrix.H (Python parameter) — The (n-k, n) parity-check matrix \mathbf{G} in systematic form \mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]."><span class="n"><span class="pre">H</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)"><span class="pre">FieldArray</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)"><span class="pre">FieldArray</span></a></span></span></span></dt>
 <dd><p>Converts the parity-check matrix <span class="math notranslate nohighlight">\(\mathbf{H}\)</span> of a linear <span class="math notranslate nohighlight">\([n, k]\)</span> code into its generator matrix <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>.</p>
 <p>The generator and parity-check matrices satisfy the equations <span class="math notranslate nohighlight">\(\mathbf{G}\mathbf{H}^T = \mathbf{0}\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-H"><span class="n sig-name">H</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)">FieldArray</a></span></span><a class="headerlink" href="#p-H" title="Permalink to this definition">¶</a></dt><dd><p>The <span class="math notranslate nohighlight">\((n-k, n)\)</span> parity-check matrix <span class="math notranslate nohighlight">\(\mathbf{G}\)</span> in systematic form
-<span class="math notranslate nohighlight">\(\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]`\)</span>.</p>
+<span class="math notranslate nohighlight">\(\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]\)</span>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The <span class="math notranslate nohighlight">\((k, n)\)</span> generator matrix <span class="math notranslate nohighlight">\(\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]\)</span>.</p>
 </dd>
 </dl>
@@ -7324,16 +7336,6 @@
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7278,15 +7290,15 @@
 <dd><p>Converts the generator matrix <span class="math notranslate nohighlight">\(\mathbf{G}\)</span> of a linear <span class="math notranslate nohighlight">\([n, k]\)</span> code into its parity-check matrix <span class="math notranslate nohighlight">\(\mathbf{H}\)</span>.</p>
 <p>The generator and parity-check matrices satisfy the equations <span class="math notranslate nohighlight">\(\mathbf{G}\mathbf{H}^T = \mathbf{0}\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-G"><span class="n sig-name">G</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.FieldArray/" title="galois._fields._array.FieldArray (Python class)">FieldArray</a></span></span><a class="headerlink" href="#p-G" title="Permalink to this definition">¶</a></dt><dd><p>The <span class="math notranslate nohighlight">\((k, n)\)</span> generator matrix <span class="math notranslate nohighlight">\(\mathbf{G}\)</span> in systematic form
 <span class="math notranslate nohighlight">\(\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]\)</span>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
-<dd class="field-even"><p>The <span class="math notranslate nohighlight">\((n-k, n)\)</span> parity-check matrix <span class="math notranslate nohighlight">\(\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]`\)</span>.</p>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p>The <span class="math notranslate nohighlight">\((n-k, n)\)</span> parity-check matrix <span class="math notranslate nohighlight">\(\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]\)</span>.</p>
 </dd>
 </dl>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
@@ -7317,16 +7329,6 @@
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

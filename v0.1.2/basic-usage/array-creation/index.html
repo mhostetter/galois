@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -8046,7 +8058,7 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 <span class="gh">Out[92]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
 
 <span class="gp">In [93]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[93]: </span><span class="go">GF([ 62, 558, 506,  15], order=2^10)</span>
+<span class="gh">Out[93]: </span><span class="go">GF([808,   8, 257, 737], order=2^10)</span>
 
 <span class="gp">In [94]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
 <span class="gh">Out[94]: </span><span class="go">dtype(&#39;uint16&#39;)</span>
@@ -8059,8 +8071,8 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 
 <span class="gp">In [97]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
 <span class="gh">Out[97]: </span><span class="go"></span>
-<span class="go">GF([  3495689211689035741395868768, 170036726975962295062653085648,</span>
-<span class="go">    501205698436566757548419261450, 275418835932709860220193547173],</span>
+<span class="go">GF([846299610731648032830357143545, 592998010963909752742663176030,</span>
+<span class="go">     55869884567132438715686174909, 963956547402684494381000469346],</span>
 <span class="go">   order=2^100)</span>
 
 <span class="gp">In [98]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
@@ -8128,7 +8140,7 @@ from the function. Most notably, <a class="reference external" href="https://num
   <small>
     
       Last update:
-      Nov 10, 2022
+      Nov 09, 2022
     
   </small>
 </div>

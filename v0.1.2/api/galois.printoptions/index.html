@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7238,7 +7250,7 @@
 <dd><p>A context manager to temporarily modify the print options for the package. This function is the <a class="reference internal" href="../#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> equivalent of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.printoptions.html#numpy.printoptions" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.printoptions()</span></code></a>.</p>
 <p>See <a class="reference internal" href="../galois.set_printoptions/" title="galois.set_printoptions (Python function) — Modifies the print options for the package. This function is the galois equivalent of numpy.set_printoptions()."><code class="xref py py-func docutils literal notranslate"><span class="pre">set_printoptions()</span></code></a> for the full list of available options.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-odd" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>A context manager for use in a <code class="code highlight python docutils literal highlight-python"><span class="k">with</span></code> statement. The print options are only modified inside the <code class="code highlight python docutils literal highlight-python"><span class="k">with</span></code> block.</p>
 </dd>
 </dl>
@@ -7274,16 +7286,6 @@
 </dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   

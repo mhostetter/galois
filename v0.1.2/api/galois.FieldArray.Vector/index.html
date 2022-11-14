@@ -93,6 +93,18 @@
     
       <div data-md-component="outdated" hidden>
         
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
       </div>
     
     
@@ -7296,8 +7308,8 @@
 <dd><p>Creates an array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> from length-<span class="math notranslate nohighlight">\(m\)</span> vectors over the prime subfield <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>.</p>
 <p>This function is the inverse operation of the <a class="reference internal" href="../galois.FieldArray.vector/" title="galois.FieldArray.vector (Python method) — Converts an array over \mathrm{GF}(p^m) to length-m vectors over the prime subfield \mathrm{GF}(p)."><code class="xref py py-func docutils literal notranslate"><span class="pre">vector()</span></code></a> method.</p>
 <dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
+<dt class="field-odd" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
 <dt id="p-array"><span class="n sig-name">array</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.ArrayLike/" title="galois.typing.ArrayLike (Python data) — A Union representing objects that can be coerced into a Galois field array.">ArrayLike</a></span></span><a class="headerlink" href="#p-array" title="Permalink to this definition">¶</a></dt><dd><p>An array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> with last dimension <span class="math notranslate nohighlight">\(m\)</span>. An array with shape <code class="code highlight python docutils literal highlight-python"><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></code> has output shape
 <code class="code highlight python docutils literal highlight-python"><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span></code>. By convention, the vectors are ordered from degree <span class="math notranslate nohighlight">\(m-1\)</span> to degree 0.</p>
 </dd>
@@ -7306,7 +7318,7 @@ data type for this <a class="reference internal" href="../galois.FieldArray/" ti
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dt class="field-even" id="returns">Returns<a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>An array over <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>.</p>
 </dd>
 </dl>
@@ -7361,16 +7373,6 @@ Power</label></div>
 </div></dd></dl>
 
 
-
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      Nov 10, 2022
-    
-  </small>
-</div>
 
 
   
