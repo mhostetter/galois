@@ -1,6 +1,0 @@
-﻿galois.perfect\_power
-=====================
-
-.. currentmodule:: galois
-
-.. autofunction:: perfect_power

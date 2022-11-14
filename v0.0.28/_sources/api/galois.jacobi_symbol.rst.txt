@@ -1,6 +1,0 @@
-﻿galois.jacobi\_symbol
-=====================
-
-.. currentmodule:: galois
-
-.. autofunction:: jacobi_symbol

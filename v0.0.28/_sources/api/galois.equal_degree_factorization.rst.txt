@@ -1,6 +1,0 @@
-﻿galois.equal\_degree\_factorization
-===================================
-
-.. currentmodule:: galois
-
-.. autofunction:: equal_degree_factorization
