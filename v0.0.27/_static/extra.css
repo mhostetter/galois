@@ -35,3 +35,16 @@
 .sd-tab-content {
   box-shadow: 0 -0.05rem var(--md-default-fg-color--lightest), 0 0.05rem var(--md-default-fg-color--lightest);
 }
+
+/* Modify Sphinx Immaterial python-apigen linkable parameter coloring. */
+.sig-param a.reference span .pre {
+  color: var(--md-code-hl-generic-color);
+}
+.sig-param a.reference span .pre:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* Override version outdated banner colors */
+[data-md-color-scheme="slate"] .md-banner--warning {
+  background: var(--md-footer-bg-color);
+}
