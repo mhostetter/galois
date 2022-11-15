@@ -175,9 +175,9 @@ class BCH(_CyclicCode):
         verify_isinstance(c, int)
 
         if d is not None and not d >= 1:
-            raise ValueError(f"Argument `d` must be at least 1, not {d}.")
+            raise ValueError(f"Argument 'd' must be at least 1, not {d}.")
         if not c >= 0:
-            raise ValueError(f"Argument `c` must be at least 0, not {c}.")
+            raise ValueError(f"Argument 'c' must be at least 0, not {c}.")
 
         if field is None:
             field = GF2
@@ -208,7 +208,7 @@ class BCH(_CyclicCode):
             # We know `d` wasn't provided, otherwise the previous `if` would have executed
             d = roots.size + 1
         else:
-            raise ValueError("Argument `k` or `d` must be provided to define the code size.")
+            raise ValueError("Argument 'k' or 'd' must be provided to define the code size.")
 
         # Set BCH specific attributes
         self._extension_field = extension_field
