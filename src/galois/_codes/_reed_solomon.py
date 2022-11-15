@@ -150,9 +150,9 @@ class ReedSolomon(_CyclicCode):
         verify_isinstance(systematic, bool)
 
         if d is not None and not d >= 1:
-            raise ValueError(f"Argument `d` must be at least 1, not {d}.")
+            raise ValueError(f"Argument 'd' must be at least 1, not {d}.")
         if not c >= 0:
-            raise ValueError(f"Argument `c` must be at least 0, not {c}.")
+            raise ValueError(f"Argument 'c' must be at least 0, not {c}.")
 
         if field is None:
             q = 2
@@ -170,13 +170,13 @@ class ReedSolomon(_CyclicCode):
         # Singleton bound, so the relationship between n, k, and d is precise.
         if d is not None and k is not None:
             if not d == n - k + 1:
-                raise ValueError("Arguments `k` and `d` were provided but are inconsistent. For Reed-Solomon codes, d = n - k + 1.")
+                raise ValueError("Arguments 'k' and 'd' were provided but are inconsistent. For Reed-Solomon codes, d = n - k + 1.")
         elif d is not None:
             k = n - (d - 1)
         elif k is not None:
             d = (n - k) + 1
         else:
-            raise ValueError("Argument `k` or `d` must be provided to define the code size.")
+            raise ValueError("Argument 'k' or 'd' must be provided to define the code size.")
 
         roots = alpha ** (c + np.arange(0, d - 1))
         generator_poly = Poly.Roots(roots)
