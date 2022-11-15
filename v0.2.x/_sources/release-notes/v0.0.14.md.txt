@@ -1,0 +1,19 @@
+# v0.0.14
+
+*Released May 7, 2021*
+
+## Breaking changes
+
+- Rename `GFArray.Eye()` to `GFArray.Identity()`.
+- Rename `chinese_remainder_theorem()` to `crt()`.
+
+## Changes
+
+- Lots of performance improvements.
+- Additional linear algebra support.
+- Various bug fixes.
+
+## Contributors
+
+- Baalateja Kataru ([@BK-Modding](https://github.com/BK-Modding))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))

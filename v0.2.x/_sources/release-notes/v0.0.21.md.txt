@@ -1,0 +1,12 @@
+# v0.0.21
+
+*Released September 2, 2021*
+
+## Changes
+
+- Fix docstrings and code completion for Python classes that weren't rendering correctly in an IDE.
+- Various documentation improvements.
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
