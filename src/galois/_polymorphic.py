@@ -202,7 +202,7 @@ def lcm(*values):
 
     Parameters
     ----------
-    *values
+    values
         Each argument must be an integer or polynomial.
 
     Returns
@@ -271,7 +271,7 @@ def prod(*values):
 
     Parameters
     ----------
-    *values
+    values
         Each argument must be an integer or polynomial.
 
     Returns
@@ -339,7 +339,7 @@ def are_coprime(*values):
 
     Parameters
     ----------
-    *values
+    values
         Each argument must be an integer or polynomial.
 
     Returns
