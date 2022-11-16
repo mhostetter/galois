@@ -745,7 +745,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     # Instance methods
     ###############################################################################
 
-    def additive_order(self) -> np.integer | np.ndarray:
+    def additive_order(self) -> int | np.ndarray:
         r"""
         Computes the additive order of each element in :math:`x`.
 
@@ -776,14 +776,14 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         field = type(self)
 
         if x.ndim == 0:
-            order = np.int64(1) if x == 0 else np.int64(field.characteristic)
+            order = 1 if x == 0 else field.characteristic
         else:
             order = field.characteristic * np.ones(x.shape, dtype=np.int64)
             order[np.where(x == 0)] = 1
 
         return order
 
-    def multiplicative_order(self) -> np.integer | np.ndarray:
+    def multiplicative_order(self) -> int | np.ndarray:
         r"""
         Computes the multiplicative order :math:`\textrm{ord}(x)` of each element in :math:`x`.
 
@@ -845,9 +845,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             idxs = np.argmin(y, axis=-1)  # First index of divisors, which is the order of x
             order = d[idxs]  # The order of each element of x
 
+        if np.isscalar(order):
+            order = int(order)
+
         return order
 
-    def is_square(self) -> np.bool_ | np.ndarray:
+    def is_square(self) -> bool | np.ndarray:
         r"""
         Determines if the elements of :math:`x` are squares in the finite field.
 
@@ -899,10 +902,16 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         if field.characteristic == 2:
             # All elements are squares if the field's characteristic is 2
-            return np.ones(x.shape, dtype=bool) if x.ndim > 0 else np.bool_(True)
+            output = np.ones(x.shape, dtype=bool)
+            if output.ndim == 0:
+                output = bool(output)
         else:
             # Compute the Legendre symbol on each element
-            return x ** ((field.order - 1)//2) != field.characteristic - 1
+            output = x ** ((field.order - 1)//2) != field.characteristic - 1
+            if np.isscalar(output):
+                output = bool(output)
+
+        return output
 
     def vector(self, dtype: DTypeLike | None = None) -> FieldArray:
         r"""
@@ -1489,7 +1498,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         else:
             raise ValueError(f"The array must be either 0-D to return the minimal polynomial of a single element or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}.")
 
-    def log(self, base: ElementLike | ArrayLike | None = None) -> np.integer | np.ndarray:
+    def log(self, base: ElementLike | ArrayLike | None = None) -> int | np.ndarray:
         r"""
         Computes the logarithm of the array :math:`x` base :math:`\beta`.
 
@@ -1566,6 +1575,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         output = getattr(ufunc, "__call__")(*inputs, **kwargs)
 
         # TODO: Could add a method keyword argument to the function to allow different modes.
+
+        if np.isscalar(output):
+            output = int(output)
 
         return output
 
