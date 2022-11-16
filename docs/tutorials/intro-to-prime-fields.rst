@@ -6,6 +6,13 @@ one of the fathers of group theory. A *field* is a set that is closed under addi
 To be *closed* under an operation means that performing the operation on any two elements of the set will result in another
 element from the set. A *finite field* is a field with a finite set of elements.
 
+.. quote:: Évariste Galois
+
+   Ask Jacobi or Gauss publicly to give their opinion, not as to the truth, but as to the importance of these theorems.
+   Later there will be, I hope, some people who will find it to their advantage to decipher all this mess.
+
+   *- May 29, 1832 (two days before his death)*
+
 Galois proved that finite fields exist only when their *order* (or size of the set) is a prime power :math:`p^m`. Accordingly,
 finite fields can be broken into two categories: prime fields :math:`\mathrm{GF}(p)` and extension fields :math:`\mathrm{GF}(p^m)`.
 This tutorial will focus on prime fields.
