@@ -41,7 +41,7 @@ The element representation can be temporarily changed using the :func:`~galois.F
     # Outside the context manager, x prints using the previous representation
     print(x)
 
-The element representation can be permanently changed using the :func:`~galois.FieldArray.repr` method.
+The element representation can be permanently changed using the :func:`~galois.FieldArray.repr` classmethod (not as a context manager).
 
 .. ipython:: python
 
