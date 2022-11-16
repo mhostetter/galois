@@ -265,6 +265,16 @@ object_description_options = [
     ("py:.*", dict(include_rubrics_in_toc=True)),
 ]
 
+sphinx_immaterial_custom_admonitions = [
+    {
+        "name": "seealso",
+        "title": "See also",
+        "classes": ["collapsible"],
+        "icon": "fontawesome/regular/eye",
+        "override": True,
+    },
+]
+
 
 # -- Monkey-patching ---------------------------------------------------------
 
