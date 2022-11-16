@@ -26,10 +26,10 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     r"""
     An abstract :obj:`~numpy.ndarray` subclass over :math:`\mathrm{GF}(p^m)`.
 
-    Important
-    ---------
-    :obj:`~galois.FieldArray` is an abstract base class and cannot be instantiated directly. Instead, :obj:`~galois.FieldArray`
-    subclasses are created using the class factory :func:`~galois.GF`.
+    .. abstract::
+
+        :obj:`~galois.FieldArray` is an abstract base class and cannot be instantiated directly. Instead, :obj:`~galois.FieldArray`
+        subclasses are created using the class factory :func:`~galois.GF`.
 
     Examples
     --------
