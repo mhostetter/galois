@@ -100,8 +100,9 @@ useful for initializing empty arrays.
    GF.Zeros(4)
    GF.Ones(4)
 
-.. details:: There is no :func:`numpy.empty` equivalent.
-   :class: note
+.. note::
+   :title: There is no :func:`numpy.empty` equivalent.
+   :collapsible:
 
    This is because :obj:`~galois.FieldArray` instances must have values in :math:`[0, p^m)`. Empty NumPy arrays have whatever values
    are currently in memory, and therefore would fail those bounds checks during instantiation.

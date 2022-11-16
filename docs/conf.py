@@ -53,7 +53,6 @@ extensions = [
     "sphinx_immaterial.apidoc.python.apigen",
     "myst_parser",
     "sphinx_design",
-    "sphinxcontrib.details.directive",
     "IPython.sphinxext.ipython_console_highlighting",
     "IPython.sphinxext.ipython_directive",
     "ipython_with_reprs",

@@ -15,8 +15,8 @@ Standard arithmetic
 After creating a :doc:`polynomial over a finite field <poly>`, nearly any polynomial arithmetic operation can be
 performed using Python operators. Expand any section for more details.
 
-.. details:: Addition: `f + g`
-    :class: example
+.. example:: Addition: `f + g`
+    :collapsible:
 
     Add two polynomials.
 
@@ -33,8 +33,8 @@ performed using Python operators. Expand any section for more details.
         f + GF(3)
         GF(3) + f
 
-.. details:: Additive inverse: `-f`
-    :class: example
+.. example:: Additive inverse: `-f`
+    :collapsible:
 
     .. ipython:: python
 
@@ -48,8 +48,8 @@ performed using Python operators. Expand any section for more details.
         f
         f + -f
 
-.. details:: Subtraction: `f - g`
-    :class: example
+.. example:: Subtraction: `f - g`
+    :collapsible:
 
     Subtract one polynomial from another.
 
@@ -66,8 +66,8 @@ performed using Python operators. Expand any section for more details.
         f - GF(3)
         GF(3) - f
 
-.. details:: Multiplication: `f * g`
-    :class: example
+.. example:: Multiplication: `f * g`
+    :collapsible:
 
     Multiply two polynomials.
 
@@ -84,8 +84,8 @@ performed using Python operators. Expand any section for more details.
         f * GF(3)
         GF(3) * f
 
-.. details:: Scalar multiplication: `f * 3`
-    :class: example
+.. example:: Scalar multiplication: `f * 3`
+    :collapsible:
 
     Scalar multiplication is essentially *repeated addition*. It is the "multiplication" of finite field elements
     and integers. The integer value indicates how many additions of the field element to sum.
@@ -103,8 +103,8 @@ performed using Python operators. Expand any section for more details.
         p = GF.characteristic; p
         f * p
 
-.. details:: Division: `f // g`
-    :class: example
+.. example:: Division: `f // g`
+    :collapsible:
 
     Divide one polynomial by another. Floor division is supported. True division is not supported since fractional polynomials are not
     currently supported.
@@ -122,8 +122,8 @@ performed using Python operators. Expand any section for more details.
         f // GF(3)
         GF(3) // g
 
-.. details:: Remainder: `f % g`
-    :class: example
+.. example:: Remainder: `f % g`
+    :collapsible:
 
     Divide one polynomial by another and keep the remainder.
 
@@ -140,8 +140,8 @@ performed using Python operators. Expand any section for more details.
         f % GF(3)
         GF(3) % g
 
-.. details:: Divmod: `divmod(f, g)`
-    :class: example
+.. example:: Divmod: `divmod(f, g)`
+    :collapsible:
 
     Divide one polynomial by another and return the quotient and remainder.
 
@@ -158,8 +158,8 @@ performed using Python operators. Expand any section for more details.
         divmod(f, GF(3))
         divmod(GF(3), g)
 
-.. details:: Exponentiation: `f ** 3`
-    :class: example
+.. example:: Exponentiation: `f ** 3`
+    :collapsible:
 
     Exponentiate a polynomial to a non-negative exponent.
 
@@ -170,8 +170,8 @@ performed using Python operators. Expand any section for more details.
         pow(f, 3)
         f * f * f
 
-.. details:: Modular exponentiation: `pow(f, 123456789, g)`
-    :class: example
+.. example:: Modular exponentiation: `pow(f, 123456789, g)`
+    :collapsible:
 
     Exponentiate a polynomial to a non-negative exponent and reduce modulo another polynomial. This performs efficient modular exponentiation.
 
@@ -187,8 +187,8 @@ Evaluation
 
 Polynomial objects may also be evaluated at scalars, arrays, or square matrices. Expand any section for more details.
 
-.. details:: Evaluation (element-wise): `f(x)` or `f(X)`
-    :class: example
+.. example:: Evaluation (element-wise): `f(x)` or `f(X)`
+    :collapsible:
 
     Polynomials are evaluated by invoking :func:`~galois.Poly.__call__`. They can be evaluated at scalars.
 
@@ -216,8 +216,8 @@ Polynomial objects may also be evaluated at scalars, arrays, or square matrices.
         # Evaluate f(x) element-wise at a 2-D array
         f(X)
 
-.. details:: Evaluation (square matrix): `f(X, elementwise=False)`
-    :class: example
+.. example:: Evaluation (square matrix): `f(X, elementwise=False)`
+    :collapsible:
 
     Polynomials can also be evaluated at square matrices. Note, this is different than element-wise array evaluation. Here,
     the square matrix indeterminate is exponentiated using matrix multiplication. So :math:`f(x) = x^3` evaluated
@@ -231,8 +231,8 @@ Polynomial objects may also be evaluated at scalars, arrays, or square matrices.
         # The equivalent matrix operation
         np.linalg.matrix_power(X, 3) + 4*X + GF(3)*GF.Identity(X.shape[0])
 
-.. details:: Composition: `f(g)`
-    :class: example
+.. example:: Composition: `f(g)`
+    :collapsible:
 
     Polynomial composition :math:`f(g(x))` is easily performed using an overload to :func:`~galois.Poly.__call__`.
 
@@ -247,8 +247,8 @@ Special arithmetic
 
 Polynomial objects also work on several special arithmetic operations. Expand any section for more details.
 
-.. details:: Greatest common denominator: `galois.gcd(f, g)`
-    :class: example
+.. example:: Greatest common denominator: `galois.gcd(f, g)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -260,8 +260,8 @@ Polynomial objects also work on several special arithmetic operations. Expand an
 
     See :func:`~galois.gcd` for more details.
 
-.. details:: Extended greatest common denominator: `galois.egcd(f, g)`
-    :class: example
+.. example:: Extended greatest common denominator: `galois.egcd(f, g)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -273,8 +273,8 @@ Polynomial objects also work on several special arithmetic operations. Expand an
 
     See :func:`~galois.egcd` for more details.
 
-.. details:: Factor into irreducible polynomials: `galois.factors(f) == f.factors()`
-    :class: example
+.. example:: Factor into irreducible polynomials: `galois.factors(f) == f.factors()`
+    :collapsible:
 
     .. ipython:: python
 
