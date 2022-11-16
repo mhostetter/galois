@@ -46,7 +46,7 @@ import galois
 def test_shapes():
     GF = galois.GF(31)
     x = GF.Random()
-    assert isinstance(x.is_square(), np.bool_)
+    assert isinstance(x.is_square(), bool)
     x = GF.Random((2,))
     assert x.is_square().shape == x.shape
     x = GF.Random((2,2))
@@ -56,7 +56,7 @@ def test_shapes():
 
     GF = galois.GF(2**4)
     x = GF.Random()
-    assert isinstance(x.is_square(), np.bool_)
+    assert isinstance(x.is_square(), bool)
     x = GF.Random((2,))
     assert x.is_square().shape == x.shape
     x = GF.Random((2,2))
