@@ -29,7 +29,7 @@ subclass `GF7` is created using the class factory :func:`~galois.GF`.
    GF7 = galois.GF(7)
    print(GF7.properties)
 
-.. note::
+.. info::
 
    In this tutorial, we suggest using the integer representation to display the elements. However, sometimes it is useful to view elements
    in their power representation :math:`\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`. Switch the display between these two

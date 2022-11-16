@@ -23,7 +23,7 @@ Polynomials
 
 .. python-apigen-group:: polys
 
-.. important::
+.. seealso::
 
     The :ref:`number-theory` section contains many functions that operate on polynomials.
 

@@ -100,7 +100,7 @@ useful for initializing empty arrays.
    GF.Zeros(4)
    GF.Ones(4)
 
-.. note::
+.. info::
    :title: There is no :func:`numpy.empty` equivalent.
    :collapsible:
 

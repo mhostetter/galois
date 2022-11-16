@@ -20,7 +20,7 @@ In this tutorial, we will consider the extension field :math:`\mathrm{GF}(3^2)`.
    GF9 = galois.GF(3**2)
    print(GF9.properties)
 
-.. note::
+.. info::
 
    In this tutorial, we suggest using the polynomial representation to display the elements. Although, it is common to use the default
    integer representation :math:`\{0, 1, \dots, p^m - 1\}` to display the arrays more compactly. Switch the display between the three

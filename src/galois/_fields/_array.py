@@ -1493,10 +1493,10 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         r"""
         Computes the logarithm of the array :math:`x` base :math:`\beta`.
 
-        Important
-        ---------
-        If the Galois field is configured to use lookup tables, `ufunc_mode == "jit-lookup"`, and this function is invoked
-        with a base different from :obj:`~FieldArray.primitive_element`, then explicit calculation will be used.
+        .. warning::
+
+            If the Galois field is configured to use lookup tables, `ufunc_mode == "jit-lookup"`, and this function is invoked
+            with a base different from :obj:`~FieldArray.primitive_element`, then explicit calculation will be used.
 
         Parameters
         ----------

@@ -99,10 +99,10 @@ class GF2(FieldArray, UFuncMixin_2_1, characteristic=2, degree=1, order=2, irred
 
     :group: galois-fields
 
-    Important
-    ---------
-    This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
-    for convenience.
+    .. info::
+
+        This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
+        for convenience.
 
     Examples
     --------

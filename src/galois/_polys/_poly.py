@@ -1255,14 +1255,14 @@ class Poly:
         r"""
         Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
 
+        .. info::
+
+            This is a method, not a property, to indicate this test is computationally expensive.
+
         Returns
         -------
         :
             `True` if the polynomial is irreducible.
-
-        Important
-        ---------
-        This is a method, not a property, to indicate this test is computationally expensive.
 
         See Also
         --------
@@ -1354,14 +1354,14 @@ class Poly:
         r"""
         Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
 
+        .. info::
+
+            This is a method, not a property, to indicate this test is computationally expensive.
+
         Returns
         -------
         :
             `True` if the polynomial is primitive.
-
-        Important
-        ---------
-        This is a method, not a property, to indicate this test is computationally expensive.
 
         See Also
         --------
@@ -1435,14 +1435,14 @@ class Poly:
         r"""
         Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is square-free.
 
+        .. info::
+
+            This is a method, not a property, to indicate this test is computationally expensive.
+
         Returns
         -------
         :
             `True` if the polynomial is square-free.
-
-        Important
-        ---------
-        This is a method, not a property, to indicate this test is computationally expensive.
 
         Notes
         -----

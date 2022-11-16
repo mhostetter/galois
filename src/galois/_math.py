@@ -78,10 +78,10 @@ def isqrt(n: int) -> int:
 
     :group: number-theory-integer
 
-    Note
-    ----
-    This function is included for Python versions before 3.8. For Python 3.8 and later, this function
-    calls :func:`math.isqrt` from the standard library.
+    .. info::
+
+        This function is included for Python versions before 3.8. For Python 3.8 and later, this function
+        calls :func:`math.isqrt` from the standard library.
 
     Parameters
     ----------

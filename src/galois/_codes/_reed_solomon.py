@@ -26,8 +26,8 @@ class ReedSolomon(_CyclicCode):
     A :math:`\textrm{RS}(n, k)` code is a :math:`[n, k, n - k + 1]_q` linear block code with codeword size :math:`n`, message
     size :math:`k`, minimum distance :math:`d = n - k + 1`, and symbols taken from an alphabet of size :math:`q`.
 
-    .. admonition:: Shortened codes
-        :class: important
+    .. info::
+        :title: Shortened codes
 
         To create the shortened :math:`\textrm{RS}(n-s, k-s)` code, construct the full-sized :math:`\textrm{RS}(n, k)` code
         and then pass :math:`k-s` symbols into :func:`encode` and :math:`n-s` symbols into :func:`decode()`. Shortened codes are only

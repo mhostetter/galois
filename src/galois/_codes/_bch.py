@@ -30,8 +30,8 @@ class BCH(_CyclicCode):
     A :math:`\textrm{BCH}(n, k)` code is a :math:`[n, k, d]_q` linear block code with codeword size :math:`n`, message
     size :math:`k`, minimum distance :math:`d`, and symbols taken from an alphabet of size :math:`q`.
 
-    .. admonition:: Shortened codes
-        :class: important
+    .. info::
+        :title: Shortened codes
 
         To create the shortened :math:`\textrm{BCH}(n-s, k-s)` code, construct the full-sized :math:`\textrm{BCH}(n, k)` code
         and then pass :math:`k-s` symbols into :func:`encode` and :math:`n-s` symbols into :func:`decode()`. Shortened codes are only

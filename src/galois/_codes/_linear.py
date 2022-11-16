@@ -49,6 +49,12 @@ class _LinearCode:
         r"""
         Encodes the message :math:`\mathbf{m}` into the codeword :math:`\mathbf{c}`.
 
+        .. info::
+            :title: Shortened codes
+
+            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`k-s` symbols into
+            :func:`encode` to return the :math:`n-s`-symbol message.
+
         Parameters
         ----------
         message
@@ -63,11 +69,6 @@ class _LinearCode:
         :
             If `output="codeword"`, the codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix.
             If `output="parity"`, the parity symbols as either a :math:`n-k`-length vector or :math:`(N, n-k)` matrix.
-
-        Important
-        ---------
-        For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`k-s` symbols into
-        :func:`encode` to return the :math:`n-s`-symbol message.
         """
         verify_literal(output, ["codeword", "parity"])
 
@@ -90,6 +91,12 @@ class _LinearCode:
         r"""
         Detects if errors are present in the codeword :math:`\mathbf{c}`.
 
+        .. info::
+            :title: Shortened codes
+
+            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
+            :func:`detect`.
+
         Parameters
         ----------
         codeword
@@ -101,11 +108,6 @@ class _LinearCode:
         -------
         :
             A boolean scalar or :math:`N`-length array indicating if errors were detected in the corresponding codeword.
-
-        Important
-        ---------
-        For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
-        :func:`detect`.
         """
         codeword, is_codeword_1d = self._check_and_convert_codeword(codeword)
         detected = self._detect_errors(codeword)
@@ -124,6 +126,12 @@ class _LinearCode:
     def decode(self, codeword, output="message", errors=False):
         r"""
         Decodes the codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
+
+        .. info::
+            :title: Shortened codes
+
+            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
+            :func:`decode` to return the :math:`k-s`-symbol message.
 
         Parameters
         ----------
@@ -145,11 +153,6 @@ class _LinearCode:
             If `errors=True`, returns the number of corrected symbol errors as either a scalar or :math:`N`-length array.
             Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
             -1 will be returned.
-
-        Important
-        ---------
-        For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
-        :func:`decode` to return the :math:`k-s`-symbol message.
         """
         verify_literal(output, ["message", "codeword"])
 
