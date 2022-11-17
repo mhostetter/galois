@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7884,11 +7883,11 @@ Power</label></div>
 </div>
 </div>
 </div>
-</div><details class="note">
-<summary>
-There is no <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.empty.html#numpy.empty" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.empty()</span></code></a> equivalent.</summary><p>This is because <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances must have values in <span class="math notranslate nohighlight">\([0, p^m)\)</span>. Empty NumPy arrays have whatever values
+</div><details class="info admonition">
+<summary class="admonition-title">There is no <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.empty.html#numpy.empty" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.empty()</span></code></a> equivalent.</summary><p>This is because <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances must have values in <span class="math notranslate nohighlight">\([0, p^m)\)</span>. Empty NumPy arrays have whatever values
 are currently in memory, and therefore would fail those bounds checks during instantiation.</p>
-</details><h3 id="ordered-arrays">Ordered arrays<a class="headerlink" href="#ordered-arrays" title="Permalink to this heading">¶</a></h3>
+</details>
+<h3 id="ordered-arrays">Ordered arrays<a class="headerlink" href="#ordered-arrays" title="Permalink to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../../api/galois.FieldArray.Range/" title="galois.FieldArray.Range (Python method) — Creates a 1-D array with a range of elements."><code class="xref py py-func docutils literal notranslate"><span class="pre">Range()</span></code></a> classmethod produces a range of elements similar to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.arange()</span></code></a>. The integer <code class="code highlight python docutils literal highlight-python"><span class="n">start</span></code>
 and <code class="code highlight python docutils literal highlight-python"><span class="n">stop</span></code> values are the <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a> of the polynomial field elements.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="9:3">
@@ -8084,7 +8083,7 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 <span class="gh">Out[92]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
 
 <span class="gp">In [93]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[93]: </span><span class="go">GF([703, 675, 593, 344], order=2^10)</span>
+<span class="gh">Out[93]: </span><span class="go">GF([816, 480, 272, 282], order=2^10)</span>
 
 <span class="gp">In [94]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
 <span class="gh">Out[94]: </span><span class="go">dtype(&#39;uint16&#39;)</span>
@@ -8097,8 +8096,8 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 
 <span class="gp">In [97]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
 <span class="gh">Out[97]: </span><span class="go"></span>
-<span class="go">GF([218038907135414108311631916327, 639298514001675686599888006623,</span>
-<span class="go">    996612878930957084199630884657, 411453320321723681707236789998],</span>
+<span class="go">GF([ 148443320855611733314128620578, 1151808806598887619142267395172,</span>
+<span class="go">     371391970990913973299481525410,  440012229925105337500962084140],</span>
 <span class="go">   order=2^100)</span>
 
 <span class="gp">In [98]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
@@ -8166,7 +8165,7 @@ from the function. Most notably, <a class="reference external" href="https://num
   <small>
     
       Last update:
-      Nov 09, 2022
+      Nov 16, 2022
     
   </small>
 </div>

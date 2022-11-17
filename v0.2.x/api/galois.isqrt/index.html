@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7316,8 +7315,8 @@
 <dt class="sig sig-object highlight py">
 <span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">isqrt</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-n" title="galois.isqrt.n (Python parameter) — A non-negative integer."><span class="n"><span class="pre">n</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></span></dt>
 <dd><p>Computes <span class="math notranslate nohighlight">\(x = \lfloor\sqrt{n}\rfloor\)</span> such that <span class="math notranslate nohighlight">\(x^2 \le n &lt; (x + 1)^2\)</span>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="info admonition">
+<p class="admonition-title">Info</p>
 <p>This function is included for Python versions before 3.8. For Python 3.8 and later, this function
 calls <a class="reference external" href="https://docs.python.org/3/library/math.html#math.isqrt" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">math.isqrt()</span></code></a> from the standard library.</p>
 </div>
@@ -7332,7 +7331,7 @@ calls <a class="reference external" href="https://docs.python.org/3/library/math
 <dd class="field-even"><p>The integer square root of <span class="math notranslate nohighlight">\(n\)</span>.</p>
 </dd>
 </dl>
-<div class="admonition seealso">
+<div class="seealso collapsible admonition">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.iroot/" title="galois.iroot (Python function) — Computes x = \lfloor n^{\frac{1}{k}} \rfloor such that x^k \le n &lt; (x + 1)^k."><code class="xref py py-obj docutils literal notranslate"><span class="pre">iroot</span></code></a>, <a class="reference internal" href="../galois.ilog/" title="galois.ilog (Python function) — Computes x = \lfloor\textrm{log}_b(n)\rfloor such that b^x \le n &lt; b^{x + 1}."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ilog</span></code></a></p>
 </div>

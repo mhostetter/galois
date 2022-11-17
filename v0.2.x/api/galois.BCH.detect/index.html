@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7318,6 +7317,11 @@
 <dt class="sig sig-object highlight py">
 <span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">BCH.</span></span><span class="sig-name descname"><span class="pre">detect</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-codeword" title="galois.BCH.detect.codeword (Python parameter) — The codeword as either a n-length vector or (N, n) matrix, where N is the number of codewords. For systematic codes, codeword lengths less than n may be provided for shortened codewords."><span class="n"><span class="pre">codeword</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.ArrayLike/" title="galois.typing.ArrayLike (Python data) — A Union representing objects that can be coerced into a Galois field array."><span class="pre">ArrayLike</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span></span></dt>
 <dd><p>Detects if errors are present in the codeword <span class="math notranslate nohighlight">\(\mathbf{c}\)</span>.</p>
+<div class="info admonition">
+<p class="admonition-title">Shortened codes</p>
+<p>For the shortened <span class="math notranslate nohighlight">\([n-s,\ k-s,\ d]\)</span> code (only applicable for systematic codes), pass <span class="math notranslate nohighlight">\(n-s\)</span> symbols into
+<a class="reference internal" href="#" title="galois.BCH.detect (Python method) — Detects if errors are present in the codeword \mathbf{c}."><code class="xref py py-func docutils literal notranslate"><span class="pre">detect()</span></code></a>.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
@@ -7331,11 +7335,6 @@ shortened codewords.</p>
 <dd class="field-even"><p>A boolean scalar or <span class="math notranslate nohighlight">\(N\)</span>-length array indicating if errors were detected in the corresponding codeword.</p>
 </dd>
 </dl>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>For the shortened <span class="math notranslate nohighlight">\([n-s,\ k-s,\ d]\)</span> code (only applicable for systematic codes), pass <span class="math notranslate nohighlight">\(n-s\)</span> symbols into
-<a class="reference internal" href="#" title="galois.BCH.detect (Python method) — Detects if errors are present in the codeword \mathbf{c}."><code class="xref py py-func docutils literal notranslate"><span class="pre">detect()</span></code></a>.</p>
-</div>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4">
 <input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><input type="radio" id="__tabbed_1_3" name="__tabbed_1"><input type="radio" id="__tabbed_1_4" name="__tabbed_1"><div class="tabbed-labels docutils">
@@ -7352,10 +7351,10 @@ Matrix (shortened)</label></div>
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([0, 0, 0, 0, 0, 1, 1], order=2)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([0, 1, 1, 0, 0, 0, 0], order=2)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0], order=2)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0], order=2)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codeword.</p>
@@ -7368,7 +7367,7 @@ Matrix (shortened)</label></div>
 <span class="gh">Out[6]: </span><span class="go">5</span>
 
 <span class="gp">In [7]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">bch</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[7]: </span><span class="go">GF([1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0], order=2)</span>
+<span class="gh">Out[7]: </span><span class="go">GF([1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0], order=2)</span>
 
 <span class="gp">In [8]: </span><span class="n">bch</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[8]: </span><span class="go">True</span>
@@ -7382,10 +7381,10 @@ Matrix (shortened)</label></div>
 <span class="gp">In [10]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [11]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[11]: </span><span class="go">GF([0, 0, 0, 0], order=2)</span>
+<span class="gh">Out[11]: </span><span class="go">GF([1, 1, 0, 0], order=2)</span>
 
 <span class="gp">In [12]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[12]: </span><span class="go">GF([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], order=2)</span>
+<span class="gh">Out[12]: </span><span class="go">GF([1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1], order=2)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codeword.</p>
@@ -7398,7 +7397,7 @@ Matrix (shortened)</label></div>
 <span class="gh">Out[14]: </span><span class="go">5</span>
 
 <span class="gp">In [15]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">bch</span><span class="o">.</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[15]: </span><span class="go">GF([1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], order=2)</span>
+<span class="gh">Out[15]: </span><span class="go">GF([0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1], order=2)</span>
 
 <span class="gp">In [16]: </span><span class="n">bch</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[16]: </span><span class="go">True</span>
@@ -7413,15 +7412,15 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [19]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[19]: </span><span class="go"></span>
-<span class="go">GF([[0, 1, 1, 0, 1, 0, 1],</span>
-<span class="go">    [0, 1, 0, 0, 1, 1, 1],</span>
-<span class="go">    [1, 1, 1, 0, 1, 1, 1]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 0, 1, 0, 1],</span>
+<span class="go">    [1, 0, 1, 1, 1, 1, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 1]], order=2)</span>
 
 <span class="gp">In [20]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[20]: </span><span class="go"></span>
-<span class="go">GF([[0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1],</span>
-<span class="go">    [0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0],</span>
-<span class="go">    [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1],</span>
+<span class="go">    [1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codewords.</p>
@@ -7441,9 +7440,9 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [26]: </span><span class="n">c</span>
 <span class="gh">Out[26]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1],</span>
-<span class="go">    [1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0],</span>
-<span class="go">    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0]], order=2)</span>
+<span class="go">GF([[0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1],</span>
+<span class="go">    [0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0],</span>
+<span class="go">    [1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]], order=2)</span>
 
 <span class="gp">In [27]: </span><span class="n">bch</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[27]: </span><span class="go">array([ True,  True,  True])</span>
@@ -7458,15 +7457,15 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [30]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[30]: </span><span class="go"></span>
-<span class="go">GF([[0, 0, 0, 0],</span>
-<span class="go">    [1, 0, 0, 1],</span>
-<span class="go">    [1, 0, 0, 0]], order=2)</span>
+<span class="go">GF([[0, 0, 1, 1],</span>
+<span class="go">    [1, 0, 1, 0],</span>
+<span class="go">    [0, 1, 0, 1]], order=2)</span>
 
 <span class="gp">In [31]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[31]: </span><span class="go"></span>
-<span class="go">GF([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],</span>
-<span class="go">    [1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0],</span>
-<span class="go">    [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1]], order=2)</span>
+<span class="go">GF([[0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0],</span>
+<span class="go">    [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0],</span>
+<span class="go">    [0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Detect no errors in the valid codewords.</p>
@@ -7486,9 +7485,9 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [37]: </span><span class="n">c</span>
 <span class="gh">Out[37]: </span><span class="go"></span>
-<span class="go">GF([[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],</span>
-<span class="go">    [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0],</span>
-<span class="go">    [0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1]], order=2)</span>
+<span class="go">GF([[1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0],</span>
+<span class="go">    [0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0],</span>
+<span class="go">    [1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1]], order=2)</span>
 
 <span class="gp">In [38]: </span><span class="n">bch</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="gh">Out[38]: </span><span class="go">array([ True,  True,  True])</span>

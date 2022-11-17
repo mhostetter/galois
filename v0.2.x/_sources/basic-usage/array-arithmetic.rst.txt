@@ -21,8 +21,8 @@ This extensibility enables `NumPy broadcasting <https://numpy.org/doc/stable/use
 
 Expand any section for more details.
 
-.. details:: Addition: `x + y == np.add(x, y)`
-    :class: example
+.. example:: Addition: `x + y == np.add(x, y)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -31,8 +31,8 @@ Expand any section for more details.
         x + y
         np.add(x, y)
 
-.. details:: Additive inverse: `-x == np.negative(x)`
-    :class: example
+.. example:: Additive inverse: `-x == np.negative(x)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -47,8 +47,8 @@ Expand any section for more details.
         x
         x + np.negative(x)
 
-.. details:: Subtraction: `x - y == np.subtract(x, y)`
-    :class: example
+.. example:: Subtraction: `x - y == np.subtract(x, y)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -57,8 +57,8 @@ Expand any section for more details.
         x - y
         np.subtract(x, y)
 
-.. details:: Multiplication: `x * y == np.multiply(x, y)`
-    :class: example
+.. example:: Multiplication: `x * y == np.multiply(x, y)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -67,8 +67,8 @@ Expand any section for more details.
         x * y
         np.multiply(x, y)
 
-.. details:: Scalar multiplication: `x * 4 == np.multiply(x, 4)`
-    :class: example
+.. example:: Scalar multiplication: `x * 4 == np.multiply(x, 4)`
+    :collapsible:
 
     Scalar multiplication is essentially *repeated addition*. It is the "multiplication" of finite field elements
     and integers. The integer value indicates how many additions of the field element to sum.
@@ -88,8 +88,8 @@ Expand any section for more details.
         p = GF.characteristic; p
         x * p
 
-.. details:: Multiplicative inverse: `y ** -1 == np.reciprocal(y)`
-    :class: example
+.. example:: Multiplicative inverse: `y ** -1 == np.reciprocal(y)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -104,8 +104,8 @@ Expand any section for more details.
 
         y * np.reciprocal(y)
 
-.. details:: Division: `x / y == x // y == np.divide(x, y)`
-    :class: example
+.. example:: Division: `x / y == x // y == np.divide(x, y)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -115,8 +115,8 @@ Expand any section for more details.
         x // y
         np.divide(x, y)
 
-.. details:: Remainder: `x % y == np.remainder(x, y)`
-    :class: example
+.. example:: Remainder: `x % y == np.remainder(x, y)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -125,8 +125,8 @@ Expand any section for more details.
         x % y
         np.remainder(x, y)
 
-.. details:: Divmod: `divmod(x, y) == np.divmod(x, y)`
-    :class: example
+.. example:: Divmod: `divmod(x, y) == np.divmod(x, y)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -141,8 +141,8 @@ Expand any section for more details.
         q, r = divmod(x, y)
         q*y + r == x
 
-.. details:: Exponentiation: `x ** 3 == np.power(x, 3)`
-    :class: example
+.. example:: Exponentiation: `x ** 3 == np.power(x, 3)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -151,8 +151,8 @@ Expand any section for more details.
         np.power(x, 3)
         x * x * x
 
-.. details:: Square root: `np.sqrt(x)`
-    :class: example
+.. example:: Square root: `np.sqrt(x)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -163,8 +163,8 @@ Expand any section for more details.
 
     See also :func:`~galois.FieldArray.is_square`, :func:`~galois.FieldArray.squares`, and :func:`~galois.FieldArray.non_squares`.
 
-.. details:: Logarithm: `np.log(x)` or `x.log()`
-    :class: example
+.. example:: Logarithm: `np.log(x)` or `x.log()`
+    :collapsible:
 
     Compute the logarithm base :math:`\alpha`, the primitive element of the field.
 
@@ -193,8 +193,8 @@ a user to apply a NumPy ufunc in a unique way across the target array. All arith
 
 Expand any section for more details.
 
-.. details:: `reduce()`
-    :class: example
+.. example:: `reduce()`
+    :collapsible:
 
     The :obj:`~numpy.ufunc.reduce` methods reduce the input array's dimension by one, applying the ufunc across one axis.
 
@@ -209,8 +209,8 @@ Expand any section for more details.
         np.multiply.reduce(x)
         x[0] * x[1] * x[2] * x[3]
 
-.. details:: `accumulate()`
-    :class: example
+.. example:: `accumulate()`
+    :collapsible:
 
     The :obj:`~numpy.ufunc.accumulate` methods accumulate the result of the ufunc across a specified axis.
 
@@ -225,8 +225,8 @@ Expand any section for more details.
         np.multiply.accumulate(x)
         GF([x[0], x[0] * x[1], x[0] * x[1] * x[2], x[0] * x[1] * x[2] * x[3]])
 
-.. details:: `reduceat()`
-    :class: example
+.. example:: `reduceat()`
+    :collapsible:
 
     The :obj:`~numpy.ufunc.reduceat` methods reduces the input array's dimension by one, applying the ufunc across one axis
     in-between certain indices.
@@ -242,8 +242,8 @@ Expand any section for more details.
         np.multiply.reduceat(x, [0, 3])
         GF([x[0] * x[1] * x[2], x[3]])
 
-.. details:: `outer()`
-    :class: example
+.. example:: `outer()`
+    :collapsible:
 
     The :obj:`~numpy.ufunc.outer` methods applies the ufunc to each pair of inputs.
 
@@ -257,8 +257,8 @@ Expand any section for more details.
 
         np.multiply.outer(x, y)
 
-.. details:: `at()`
-    :class: example
+.. example:: `at()`
+    :collapsible:
 
     The :obj:`~numpy.ufunc.at` methods performs the ufunc in-place at the specified indices.
 
@@ -275,8 +275,8 @@ Expand any section for more details.
 Advanced arithmetic
 -------------------
 
-.. details:: Convolution: `np.convolve(x, y)`
-    :class: example
+.. example:: Convolution: `np.convolve(x, y)`
+    :collapsible:
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -284,8 +284,8 @@ Advanced arithmetic
         y
         np.convolve(x, y)
 
-.. details:: FFT: `np.fft.fft(x)`
-    :class: example
+.. example:: FFT: `np.fft.fft(x)`
+    :collapsible:
 
     The Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)` exists when there
     exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
@@ -302,8 +302,8 @@ Advanced arithmetic
 
     See also :func:`~galois.ntt` and :obj:`~galois.FieldArray.primitive_root_of_unity`.
 
-.. details:: Inverse FFT: `np.fft.ifft(X)`
-    :class: example
+.. example:: Inverse FFT: `np.fft.ifft(X)`
+    :collapsible:
 
     The inverse Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)` exists when there
     exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
@@ -328,8 +328,8 @@ in :obj:`numpy.linalg` and additional linear algebra routines not included in Nu
 
 Expand any section for more details.
 
-.. details:: Dot product: `np.dot(a, b)`
-    :class: example
+.. example:: Dot product: `np.dot(a, b)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -338,8 +338,8 @@ Expand any section for more details.
         b = GF([23, 5, 15, 12]); b
         np.dot(a, b)
 
-.. details:: Vector dot product: `np.vdot(a, b)`
-    :class: example
+.. example:: Vector dot product: `np.vdot(a, b)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -348,8 +348,8 @@ Expand any section for more details.
         b = GF([23, 5, 15, 12]); b
         np.vdot(a, b)
 
-.. details:: Inner product: `np.inner(a, b)`
-    :class: example
+.. example:: Inner product: `np.inner(a, b)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -358,8 +358,8 @@ Expand any section for more details.
         b = GF([23, 5, 15, 12]); b
         np.inner(a, b)
 
-.. details:: Outer product: `np.outer(a, b)`
-    :class: example
+.. example:: Outer product: `np.outer(a, b)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -368,8 +368,8 @@ Expand any section for more details.
         b = GF([23, 5, 15, 12]); b
         np.outer(a, b)
 
-.. details:: Matrix multiplication: `A @ B == np.matmul(A, B)`
-    :class: example
+.. example:: Matrix multiplication: `A @ B == np.matmul(A, B)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -379,8 +379,8 @@ Expand any section for more details.
         A @ B
         np.matmul(A, B)
 
-.. details:: Matrix exponentiation: `np.linalg.matrix_power(A, 3)`
-    :class: example
+.. example:: Matrix exponentiation: `np.linalg.matrix_power(A, 3)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -389,8 +389,8 @@ Expand any section for more details.
         np.linalg.matrix_power(A, 3)
         A @ A @ A
 
-.. details:: Matrix determinant: `np.linalg.det(A)`
-    :class: example
+.. example:: Matrix determinant: `np.linalg.det(A)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -398,8 +398,8 @@ Expand any section for more details.
         A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
         np.linalg.det(A)
 
-.. details:: Matrix rank: `np.linalg.matrix_rank(A)`
-    :class: example
+.. example:: Matrix rank: `np.linalg.matrix_rank(A)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -408,8 +408,8 @@ Expand any section for more details.
         np.linalg.matrix_rank(A)
         A.row_reduce()
 
-.. details:: Matrix trace: `np.trace(A)`
-    :class: example
+.. example:: Matrix trace: `np.trace(A)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -418,8 +418,8 @@ Expand any section for more details.
         np.trace(A)
         A[0,0] + A[1,1] + A[2,2] + A[3,3]
 
-.. details:: Solve a system of equations: `np.linalg.solve(A, b)`
-    :class: example
+.. example:: Solve a system of equations: `np.linalg.solve(A, b)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -429,8 +429,8 @@ Expand any section for more details.
         x = np.linalg.solve(A, b)
         np.array_equal(A @ x, b)
 
-.. details:: Matrix inverse: `np.linalg.inv(A)`
-    :class: example
+.. example:: Matrix inverse: `np.linalg.inv(A)`
+    :collapsible:
 
     .. ipython:: python
 
@@ -445,8 +445,8 @@ Additional linear algebra
 Below are additional linear algebra routines provided for :obj:`~galois.FieldArray` arrays/matrices that are
 not included in NumPy.
 
-.. details:: Row space: `A.row_space()`
-    :class: example
+.. example:: Row space: `A.row_space()`
+    :collapsible:
 
     .. ipython:: python
 
@@ -456,8 +456,8 @@ not included in NumPy.
 
     See :func:`~galois.FieldArray.row_space` for more details.
 
-.. details:: Column space: `A.column_space()`
-    :class: example
+.. example:: Column space: `A.column_space()`
+    :collapsible:
 
     .. ipython:: python
 
@@ -467,8 +467,8 @@ not included in NumPy.
 
     See :func:`~galois.FieldArray.column_space` for more details.
 
-.. details:: Left null space: `A.left_null_space()`
-    :class: example
+.. example:: Left null space: `A.left_null_space()`
+    :collapsible:
 
     .. ipython:: python
 
@@ -478,8 +478,8 @@ not included in NumPy.
 
     See :func:`~galois.FieldArray.left_null_space` for more details.
 
-.. details:: Null space: `A.null_space()`
-    :class: example
+.. example:: Null space: `A.null_space()`
+    :collapsible:
 
     .. ipython:: python
 
@@ -489,8 +489,8 @@ not included in NumPy.
 
     See :func:`~galois.FieldArray.null_space` for more details.
 
-.. details:: Gaussian elimination: `A.row_reduce()`
-    :class: example
+.. example:: Gaussian elimination: `A.row_reduce()`
+    :collapsible:
 
     .. ipython:: python
 
@@ -500,8 +500,8 @@ not included in NumPy.
 
     See :func:`~galois.FieldArray.row_reduce` for more details.
 
-.. details:: LU decomposition: `A.lu_decompose()`
-    :class: example
+.. example:: LU decomposition: `A.lu_decompose()`
+    :collapsible:
 
     .. ipython:: python
 
@@ -514,8 +514,8 @@ not included in NumPy.
 
     See :func:`~galois.FieldArray.lu_decompose` for more details.
 
-.. details:: PLU decomposition: `A.plu_decompose()`
-    :class: example
+.. example:: PLU decomposition: `A.plu_decompose()`
+    :collapsible:
 
     .. ipython:: python
 

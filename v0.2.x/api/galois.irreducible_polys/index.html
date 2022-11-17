@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7373,7 +7372,7 @@
 <dd class="field-even"><p>An iterator over all degree-<span class="math notranslate nohighlight">\(m\)</span> monic irreducible polynomials over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
 </dd>
 </dl>
-<div class="admonition seealso">
+<div class="seealso collapsible admonition">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.Poly.is_irreducible/" title="galois.Poly.is_irreducible (Python method) — Determines whether the polynomial f(x) over \mathrm{GF}(p^m) is irreducible."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Poly.is_irreducible</span></code></a>, <a class="reference internal" href="../galois.primitive_polys/" title="galois.primitive_polys (Python function) — Iterates through all monic primitive polynomials f(x) over \mathrm{GF}(q) with degree m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_polys</span></code></a></p>
 </div>
@@ -7423,7 +7422,7 @@ have been found after the <code class="code highlight python docutils literal hi
 </div>
 <p>Or, manually iterate over the generator.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">generator</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_polys</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">generator</span>
-<span class="gh">Out[3]: </span><span class="go">&lt;generator object irreducible_polys at 0x7f7ab5de7580&gt;</span>
+<span class="gh">Out[3]: </span><span class="go">&lt;generator object irreducible_polys at 0x7f9bc2fd32e0&gt;</span>
 
 <span class="gp">In [4]: </span><span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
 <span class="gh">Out[4]: </span><span class="go">Poly(x^4 + 2x^3 + 2x^2 + x + 2, GF(3))</span>

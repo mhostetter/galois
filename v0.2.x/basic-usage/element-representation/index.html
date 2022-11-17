@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7437,7 +7436,7 @@ This is useful, however it can become cluttered for large arrays.</p>
 <span class="gh">Out[22]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-<div class="admonition tip">
+<div class="tip admonition">
 <p class="admonition-title">Tip</p>
 <p>Use <a class="reference internal" href="../../api/galois.set_printoptions/" title="galois.set_printoptions (Python function) — Modifies the print options for the package. This function is the galois equivalent of numpy.set_printoptions()."><code class="xref py py-func docutils literal notranslate"><span class="pre">set_printoptions()</span></code></a> to display the polynomial coefficients in degree-ascending order.
 Use <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html#numpy.set_printoptions" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.set_printoptions()</span></code></a> to increase the line width to display large arrays more clearly. See <a class="reference internal" href="#numpy-print-options"><span class="std std-ref">NumPy print options</span></a>
@@ -7445,7 +7444,7 @@ for more details.</p>
 </div>
 <h2 id="power-representation"><span id="power-repr"></span>Power representation<a class="headerlink" href="#power-representation" title="Permalink to this heading">¶</a></h2>
 <p>The power representation displays all finite field elements as powers of the field’s primitive element <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
-<div class="admonition danger">
+<div class="danger admonition">
 <p class="admonition-title">Danger</p>
 <p>To display elements in the power representation, <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> must compute the discrete logarithm of each element displayed.
 For large fields (or fields using <a class="reference internal" href="../compilation-modes/#explicit-calculation"><span class="std std-ref">explicit calculation</span></a>), this process can take a while. However, when
@@ -7522,21 +7521,21 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [40]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[40]: </span><span class="go"></span>
-<span class="go">GF([[      α^4 + α^3 + α^2 + 1,      2α^4 + α^3 + α^2 + 2,</span>
-<span class="go">          α^4 + 2α^3 + α^2 + α,  α^4 + 2α^3 + α^2 + α + 2,</span>
-<span class="go">      α^4 + 2α^3 + α^2 + α + 2],</span>
-<span class="go">    [     α^4 + 2α^3 + α^2 + α,                  2α^4 + 1,</span>
-<span class="go">               2α^4 + 2α^3 + α,       α^4 + α^3 + α^2 + 1,</span>
-<span class="go">               α^4 + α^3 + α^2],</span>
-<span class="go">    [2α^4 + α^3 + α^2 + 2α + 1,               α^2 + α + 1,</span>
-<span class="go">        α^4 + 2α^3 + 2α^2 + 2α,                         0,</span>
-<span class="go">       α^4 + α^3 + α^2 + α + 1],</span>
-<span class="go">    [ α^4 + 2α^3 + α^2 + α + 2, α^4 + 2α^3 + 2α^2 + α + 2,</span>
-<span class="go">        2α^4 + 2α^3 + 2α^2 + 1,                  2α^3 + α,</span>
-<span class="go">          2α^4 + α^3 + α^2 + α],</span>
-<span class="go">    [       α^4 + 2α^3 + α + 2, α^4 + 2α^3 + α^2 + 2α + 1,</span>
-<span class="go">                       α^2 + 1,             α^4 + α^2 + α,</span>
-<span class="go">                  α^3 + 2α + 1]], order=3^5)</span>
+<span class="go">GF([[                α^4 + α^3,            2α^4 + α^3 + 2,</span>
+<span class="go">                         α + 2,             α^3 + α^2 + 1,</span>
+<span class="go">                  α^4 + 2α + 2],</span>
+<span class="go">    [       α^3 + α^2 + 2α + 2, 2α^4 + 2α^3 + α^2 + α + 1,</span>
+<span class="go">               2α^4 + 2α^3 + 2,     2α^4 + α^3 + 2α^2 + α,</span>
+<span class="go">         α^4 + 2α^3 + α^2 + 2α],</span>
+<span class="go">    [            α^4 + α^2 + 2,              2α^3 + α + 1,</span>
+<span class="go">                   α^3 + α + 2,  α^4 + α^3 + 2α^2 + α + 1,</span>
+<span class="go">            α^3 + 2α^2 + α + 1],</span>
+<span class="go">    [        2α^4 + 2α^3 + α^2,     α^4 + 2α^3 + 2α^2 + 2,</span>
+<span class="go">               2α^4 + 2α^2 + 1,       α^3 + 2α^2 + 2α + 1,</span>
+<span class="go">               α^4 + 2α^2 + 2α],</span>
+<span class="go">    [          2α^4 + α^2 + 2α,       α^4 + 2α^3 + 2α + 1,</span>
+<span class="go">            2α^4 + 2α^3 + 2α^2,               2α^4 + 2α^2,</span>
+<span class="go">                 α^3 + α^2 + 2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <p>The readability is improved by increasing the line width using <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html#numpy.set_printoptions" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.set_printoptions()</span></code></a>.</p>
@@ -7544,11 +7543,11 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [42]: </span><span class="n">x</span>
 <span class="gh">Out[42]: </span><span class="go"></span>
-<span class="go">GF([[      α^4 + α^3 + α^2 + 1,      2α^4 + α^3 + α^2 + 2,      α^4 + 2α^3 + α^2 + α,  α^4 + 2α^3 + α^2 + α + 2,  α^4 + 2α^3 + α^2 + α + 2],</span>
-<span class="go">    [     α^4 + 2α^3 + α^2 + α,                  2α^4 + 1,           2α^4 + 2α^3 + α,       α^4 + α^3 + α^2 + 1,           α^4 + α^3 + α^2],</span>
-<span class="go">    [2α^4 + α^3 + α^2 + 2α + 1,               α^2 + α + 1,    α^4 + 2α^3 + 2α^2 + 2α,                         0,   α^4 + α^3 + α^2 + α + 1],</span>
-<span class="go">    [ α^4 + 2α^3 + α^2 + α + 2, α^4 + 2α^3 + 2α^2 + α + 2,    2α^4 + 2α^3 + 2α^2 + 1,                  2α^3 + α,      2α^4 + α^3 + α^2 + α],</span>
-<span class="go">    [       α^4 + 2α^3 + α + 2, α^4 + 2α^3 + α^2 + 2α + 1,                   α^2 + 1,             α^4 + α^2 + α,              α^3 + 2α + 1]], order=3^5)</span>
+<span class="go">GF([[                α^4 + α^3,            2α^4 + α^3 + 2,                     α + 2,             α^3 + α^2 + 1,              α^4 + 2α + 2],</span>
+<span class="go">    [       α^3 + α^2 + 2α + 2, 2α^4 + 2α^3 + α^2 + α + 1,           2α^4 + 2α^3 + 2,     2α^4 + α^3 + 2α^2 + α,     α^4 + 2α^3 + α^2 + 2α],</span>
+<span class="go">    [            α^4 + α^2 + 2,              2α^3 + α + 1,               α^3 + α + 2,  α^4 + α^3 + 2α^2 + α + 1,        α^3 + 2α^2 + α + 1],</span>
+<span class="go">    [        2α^4 + 2α^3 + α^2,     α^4 + 2α^3 + 2α^2 + 2,           2α^4 + 2α^2 + 1,       α^3 + 2α^2 + 2α + 1,           α^4 + 2α^2 + 2α],</span>
+<span class="go">    [          2α^4 + α^2 + 2α,       α^4 + 2α^3 + 2α + 1,        2α^4 + 2α^3 + 2α^2,               2α^4 + 2α^2,             α^3 + α^2 + 2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <h2 id="representation-comparisons">Representation comparisons<a class="headerlink" href="#representation-comparisons" title="Permalink to this heading">¶</a></h2>

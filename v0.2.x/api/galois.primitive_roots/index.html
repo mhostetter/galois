@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7403,7 +7402,7 @@
 <dd class="field-even"><p>An iterator over the primitive roots modulo <span class="math notranslate nohighlight">\(n\)</span> in the specified range.</p>
 </dd>
 </dl>
-<div class="admonition seealso">
+<div class="seealso collapsible admonition">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.primitive_root/" title="galois.primitive_root (Python function) — Finds a primitive root modulo n in the range [\textrm{start}, \textrm{stop})."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_root</span></code></a>, <a class="reference internal" href="../galois.is_primitive_root/" title="galois.is_primitive_root (Python function) — Determines if g is a primitive root modulo n."><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_primitive_root</span></code></a>, <a class="reference internal" href="../galois.is_cyclic/" title="galois.is_cyclic (Python function) — Determines whether the multiplicative group (\mathbb{Z}/n\mathbb{Z}){^\times} is cyclic."><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_cyclic</span></code></a>, <a class="reference internal" href="../galois.totatives/" title="galois.totatives (Python function) — Returns the positive integers (totatives) in [1, n) that are coprime to n."><code class="xref py py-obj docutils literal notranslate"><span class="pre">totatives</span></code></a>, <a class="reference internal" href="../galois.euler_phi/" title="galois.euler_phi (Python function) — Counts the positive integers (totatives) in [1, n) that are coprime to n."><code class="xref py py-obj docutils literal notranslate"><span class="pre">euler_phi</span></code></a>, <a class="reference internal" href="../galois.carmichael_lambda/" title="galois.carmichael_lambda (Python function) — Finds the smallest positive integer m such that a^m \equiv 1\ (\textrm{mod}\ n) for every integer a in [1, n) that is coprime to n."><code class="xref py py-obj docutils literal notranslate"><span class="pre">carmichael_lambda</span></code></a></p>
 </div>
@@ -7452,7 +7451,7 @@ where <span class="math notranslate nohighlight">\(\phi(n)\)</span> is order of 
 </div>
 <p>Find the three largest primitive roots modulo 31 in reversed order.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">generator</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_roots</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">generator</span>
-<span class="gh">Out[7]: </span><span class="go">&lt;generator object primitive_roots at 0x7f7ab4346cf0&gt;</span>
+<span class="gh">Out[7]: </span><span class="go">&lt;generator object primitive_roots at 0x7f9bc1d474a0&gt;</span>
 
 <span class="gp">In [8]: </span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
 <span class="gh">Out[8]: </span><span class="go">[24, 22, 21]</span>

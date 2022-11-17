@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7379,7 +7378,7 @@
 <dd class="field-even"><p>The degree-<span class="math notranslate nohighlight">\(m\)</span> monic primitive polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
 </dd>
 </dl>
-<div class="admonition seealso">
+<div class="seealso collapsible admonition">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.Poly.is_primitive/" title="galois.Poly.is_primitive (Python method) — Determines whether the polynomial f(x) over \mathrm{GF}(q) is primitive."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Poly.is_primitive</span></code></a>, <a class="reference internal" href="../galois.matlab_primitive_poly/" title="galois.matlab_primitive_poly (Python function) — Returns Matlab's default primitive polynomial f(x) over \mathrm{GF}(p) with degree m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">matlab_primitive_poly</span></code></a>, <a class="reference internal" href="../galois.conway_poly/" title="galois.conway_poly (Python function) — Returns the Conway polynomial C_{p,m}(x) over \mathrm{GF}(p) with degree m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">conway_poly</span></code></a></p>
 </div>
@@ -7399,7 +7398,7 @@ polynomial.</p>
 <span class="gh">Out[2]: </span><span class="go">Poly(x^3 + 6x^2 + 6x + 4, GF(7))</span>
 
 <span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + x^2 + 5x + 2, GF(7))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + 3x + 2, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Notice <a class="reference internal" href="#" title="galois.primitive_poly (Python function) — Returns a monic primitive polynomial f(x) over \mathrm{GF}(q) with degree m."><code class="xref py py-func docutils literal notranslate"><span class="pre">primitive_poly()</span></code></a> returns the lexicographically-minimal primitive polynomial but
@@ -7424,13 +7423,13 @@ with smaller Conway polynomials. This is sometimes the same polynomial.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [9]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[9]: </span><span class="go">Poly(x^5 + 3x^4 + 4x^2 + x + 4, GF(7))</span>
+<span class="gh">Out[9]: </span><span class="go">Poly(x^5 + 6x^4 + x^3 + 3x^2 + 2x + 4, GF(7))</span>
 
 <span class="gp">In [10]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_primitive</span><span class="p">()</span>
 <span class="gh">Out[10]: </span><span class="go">True</span>
 
 <span class="gp">In [11]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[11]: </span><span class="go">Poly(3x^5 + 2x^4 + 5x^2 + 3x + 5, GF(7))</span>
+<span class="gh">Out[11]: </span><span class="go">Poly(3x^5 + 4x^4 + 3x^3 + 2x^2 + 6x + 5, GF(7))</span>
 
 <span class="gp">In [12]: </span><span class="n">g</span><span class="o">.</span><span class="n">is_primitive</span><span class="p">()</span>
 <span class="gh">Out[12]: </span><span class="go">True</span>

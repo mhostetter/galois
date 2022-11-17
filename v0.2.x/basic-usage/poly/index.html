@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7340,15 +7339,15 @@
 <span class="gh">Out[4]: </span><span class="go">Poly(x^4 + 55x + 23, GF(2^8))</span>
 </code></pre></div>
 </div>
-<details class="tip">
-<summary>
-Use <a class="reference internal" href="../../api/galois.set_printoptions/" title="galois.set_printoptions (Python function) — Modifies the print options for the package. This function is the galois equivalent of numpy.set_printoptions()."><code class="xref py py-func docutils literal notranslate"><span class="pre">set_printoptions()</span></code></a> to display the polynomial coefficients in degree-ascending order.</summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">galois</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">coeffs</span><span class="o">=</span><span class="s2">&quot;asc&quot;</span><span class="p">)</span>
+<details class="tip admonition">
+<summary class="admonition-title">Use <a class="reference internal" href="../../api/galois.set_printoptions/" title="galois.set_printoptions (Python function) — Modifies the print options for the package. This function is the galois equivalent of numpy.set_printoptions()."><code class="xref py py-func docutils literal notranslate"><span class="pre">set_printoptions()</span></code></a> to display the polynomial coefficients in degree-ascending order.</summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">galois</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">coeffs</span><span class="o">=</span><span class="s2">&quot;asc&quot;</span><span class="p">)</span>
 
 <span class="gp">In [6]: </span><span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
 <span class="gh">Out[6]: </span><span class="go">Poly(23 + 55x + x^4, GF(2^8))</span>
 </code></pre></div>
 </div>
-</details><h2 id="element-representation">Element representation<a class="headerlink" href="#element-representation" title="Permalink to this heading">¶</a></h2>
+</details>
+<h2 id="element-representation">Element representation<a class="headerlink" href="#element-representation" title="Permalink to this heading">¶</a></h2>
 <p>As with <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances, the finite field element representation of the polynomial coefficients may be changed
 by setting the <code class="code highlight python docutils literal highlight-python"><span class="nb">repr</span></code> keyword argument of <a class="reference internal" href="../../api/galois.GF/" title="galois.GF (Python function) — Creates a FieldArray subclass for \mathrm{GF}(p^m)."><code class="xref py py-func docutils literal notranslate"><span class="pre">GF()</span></code></a> or using the <code class="xref py py-func docutils literal notranslate"><span class="pre">repr()</span></code> classmethod.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
@@ -7439,7 +7438,7 @@ simple polynomials. They are included for convenience.</p>
 </div>
 <p>Random polynomials of a given degree are easily created with <a class="reference internal" href="../../api/galois.Poly.Random/" title="galois.Poly.Random (Python method) — Constructs a random polynomial over \mathrm{GF}(p^m) with degree d."><code class="xref py py-func docutils literal notranslate"><span class="pre">Random()</span></code></a>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
-<span class="gh">Out[23]: </span><span class="go">Poly(208x^4 + 116x^3 + 99x^2 + 161x + 99, GF(3^5))</span>
+<span class="gh">Out[23]: </span><span class="go">Poly(239x^4 + 57x^3 + 175x^2 + 73x + 198, GF(3^5))</span>
 </code></pre></div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
@@ -7566,7 +7565,7 @@ Hex string</label></div>
   <small>
     
       Last update:
-      Nov 11, 2022
+      Nov 16, 2022
     
   </small>
 </div>

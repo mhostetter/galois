@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7388,7 +7387,7 @@ a new <span class="math notranslate nohighlight">\(a\)</span>. The default is 1.
 <dd class="field-even"><p><code class="code highlight python docutils literal highlight-python"><span class="kc">False</span></code> if <span class="math notranslate nohighlight">\(n\)</span> is shown to be composite. <code class="code highlight python docutils literal highlight-python"><span class="kc">True</span></code> if <span class="math notranslate nohighlight">\(n\)</span> is a probable prime.</p>
 </dd>
 </dl>
-<div class="admonition seealso">
+<div class="seealso collapsible admonition">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.is_prime/" title="galois.is_prime (Python function) — Determines if n is prime."><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_prime</span></code></a>, <a class="reference internal" href="../galois.miller_rabin_primality_test/" title="galois.miller_rabin_primality_test (Python function) — Determines if n is composite using the Miller-Rabin primality test."><code class="xref py py-obj docutils literal notranslate"><span class="pre">miller_rabin_primality_test</span></code></a></p>
 </div>
@@ -7429,7 +7428,7 @@ to <span class="math notranslate nohighlight">\(2 \le a \le n - 2\)</span>.</p>
 
 <span class="go"># But they may not satisfy a^(p-1) = 1 (mod p) for other a</span>
 <span class="gp">In [7]: </span><span class="p">[</span><span class="n">galois</span><span class="o">.</span><span class="n">fermat_primality_test</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pseudoprimes</span><span class="p">]</span>
-<span class="gh">Out[7]: </span><span class="go">[False, True, False]</span>
+<span class="gh">Out[7]: </span><span class="go">[False, False, True]</span>
 </code></pre></div>
 </div>
 <p>And the pseudoprimes base 3 from <a class="reference external" href="https://oeis.org/A005935">A005935</a>.</p>
@@ -7445,7 +7444,7 @@ to <span class="math notranslate nohighlight">\(2 \le a \le n - 2\)</span>.</p>
 
 <span class="go"># But they may not satisfy a^(p-1) = 1 (mod p) for other a</span>
 <span class="gp">In [11]: </span><span class="p">[</span><span class="n">galois</span><span class="o">.</span><span class="n">fermat_primality_test</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pseudoprimes</span><span class="p">]</span>
-<span class="gh">Out[11]: </span><span class="go">[True, False, False]</span>
+<span class="gh">Out[11]: </span><span class="go">[False, False, False]</span>
 </code></pre></div>
 </div>
 </dd></dl>

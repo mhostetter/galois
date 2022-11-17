@@ -17,10 +17,8 @@
       
     
     
-      <link rel="stylesheet" href="../../_static/stylesheets/main.95d89437.min.css">
       
         
-        <link rel="stylesheet" href="../../_static/stylesheets/palette.ae371752.min.css">
         
       
       
@@ -36,6 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7362,6 +7361,11 @@
 <dt class="sig sig-object highlight sig-wrap py">
 <span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">BCH.</span></span><span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-codeword" title="galois.BCH.decode.codeword (Python parameter) — The codeword as either a n-length vector or (N, n) matrix, where N is the number of codewords. For systematic codes, codeword lengths less than n may be provided for shortened codewords."><span class="n"><span class="pre">codeword</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../galois.typing.ArrayLike/" title="galois.typing.ArrayLike (Python data) — A Union representing objects that can be coerced into a Galois field array."><span class="pre">ArrayLike</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-output" title="galois.BCH.decode.output (Python parameter) — Specify whether to return the error-corrected message or entire codeword. The default is &quot;message&quot;."><span class="n"><span class="pre">output</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="s"><span class="pre">'message'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'codeword'</span></span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;message&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-errors" title="galois.BCH.decode.errors (Python parameter) — Optionally specify whether to return the number of corrected errors. The default is False."><span class="n"><span class="pre">errors</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="k"><span class="pre">True</span></span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><span class="pre">FieldArray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span></span></span></span></dt>
 <dd><p>Decodes the codeword <span class="math notranslate nohighlight">\(\mathbf{c}\)</span> into the message <span class="math notranslate nohighlight">\(\mathbf{m}\)</span>.</p>
+<div class="info admonition">
+<p class="admonition-title">Shortened codes</p>
+<p>For the shortened <span class="math notranslate nohighlight">\([n-s,\ k-s,\ d]\)</span> code (only applicable for systematic codes), pass <span class="math notranslate nohighlight">\(n-s\)</span> symbols into
+<a class="reference internal" href="#" title="galois.BCH.decode (Python method) — Decodes the codeword \mathbf{c} into the message \mathbf{m}."><code class="xref py py-func docutils literal notranslate"><span class="pre">decode()</span></code></a> to return the <span class="math notranslate nohighlight">\(k-s\)</span>-symbol message.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
@@ -7386,11 +7390,6 @@ Valid number of corrections are in <span class="math notranslate nohighlight">\(
 </p>
 </dd>
 </dl>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>For the shortened <span class="math notranslate nohighlight">\([n-s,\ k-s,\ d]\)</span> code (only applicable for systematic codes), pass <span class="math notranslate nohighlight">\(n-s\)</span> symbols into
-<a class="reference internal" href="#" title="galois.BCH.decode (Python method) — Decodes the codeword \mathbf{c} into the message \mathbf{m}."><code class="xref py py-func docutils literal notranslate"><span class="pre">decode()</span></code></a> to return the <span class="math notranslate nohighlight">\(k-s\)</span>-symbol message.</p>
-</div>
 <p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
 <p>The message vector <span class="math notranslate nohighlight">\(\mathbf{m}\)</span> is a member of <span class="math notranslate nohighlight">\(\mathrm{GF}(q)^k\)</span>. The corresponding
 message polynomial <span class="math notranslate nohighlight">\(m(x)\)</span> is a degree-<span class="math notranslate nohighlight">\(k\)</span> polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
@@ -7416,7 +7415,7 @@ of <span class="math notranslate nohighlight">\(r(x)\)</span> by <span class="ma
 <p>A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome
 is non-zero, the decoder will find an error-locator polynomial <span class="math notranslate nohighlight">\(\sigma(x)\)</span> and the corresponding error
 locations and values.</p>
-<div class="admonition note">
+<div class="note admonition">
 <p class="admonition-title">Note</p>
 <p>The <span class="math notranslate nohighlight">\([n, k, d]_q\)</span> code has <span class="math notranslate nohighlight">\(d_{min} \ge d\)</span> minimum distance. It can detect up
 to <span class="math notranslate nohighlight">\(d_{min}-1\)</span> errors.</p>
@@ -7437,10 +7436,10 @@ Matrix (shortened)</label></div>
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([1, 1, 0, 0, 1, 0, 0], order=2)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([0, 1, 0, 1, 0, 0, 1], order=2)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0], order=2)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0], order=2)</span>
 </code></pre></div>
 </div>
 <p>Corrupt <span class="math notranslate nohighlight">\(t\)</span> symbols of the codeword.</p>
@@ -7448,12 +7447,12 @@ Matrix (shortened)</label></div>
 <span class="gh">Out[5]: </span><span class="go">2</span>
 
 <span class="gp">In [6]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">bch</span><span class="o">.</span><span class="n">t</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[6]: </span><span class="go">GF([0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0], order=2)</span>
+<span class="gh">Out[6]: </span><span class="go">GF([1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0], order=2)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
-<span class="gh">Out[7]: </span><span class="go">GF([1, 1, 0, 0, 1, 0, 0], order=2)</span>
+<span class="gh">Out[7]: </span><span class="go">GF([0, 1, 0, 1, 0, 0, 1], order=2)</span>
 
 <span class="gp">In [8]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[8]: </span><span class="go">True</span>
@@ -7461,7 +7460,7 @@ Matrix (shortened)</label></div>
 </div>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
-<span class="gh">Out[9]: </span><span class="go">(GF([1, 1, 0, 0, 1, 0, 0], order=2), 2)</span>
+<span class="gh">Out[9]: </span><span class="go">(GF([0, 1, 0, 1, 0, 0, 1], order=2), 2)</span>
 
 <span class="gp">In [10]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[10]: </span><span class="go">True</span>
@@ -7475,10 +7474,10 @@ Matrix (shortened)</label></div>
 <span class="gp">In [12]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [13]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[13]: </span><span class="go">GF([0, 1, 1, 0], order=2)</span>
+<span class="gh">Out[13]: </span><span class="go">GF([1, 1, 0, 0], order=2)</span>
 
 <span class="gp">In [14]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[14]: </span><span class="go">GF([0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1], order=2)</span>
+<span class="gh">Out[14]: </span><span class="go">GF([1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1], order=2)</span>
 </code></pre></div>
 </div>
 <p>Corrupt <span class="math notranslate nohighlight">\(t\)</span> symbols of the codeword.</p>
@@ -7486,12 +7485,12 @@ Matrix (shortened)</label></div>
 <span class="gh">Out[15]: </span><span class="go">2</span>
 
 <span class="gp">In [16]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">bch</span><span class="o">.</span><span class="n">t</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[16]: </span><span class="go">GF([1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1], order=2)</span>
+<span class="gh">Out[16]: </span><span class="go">GF([0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1], order=2)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [17]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
-<span class="gh">Out[17]: </span><span class="go">GF([0, 1, 1, 0], order=2)</span>
+<span class="gh">Out[17]: </span><span class="go">GF([1, 1, 0, 0], order=2)</span>
 
 <span class="gp">In [18]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[18]: </span><span class="go">True</span>
@@ -7499,7 +7498,7 @@ Matrix (shortened)</label></div>
 </div>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
-<span class="gh">Out[19]: </span><span class="go">(GF([0, 1, 1, 0], order=2), 2)</span>
+<span class="gh">Out[19]: </span><span class="go">(GF([1, 1, 0, 0], order=2), 2)</span>
 
 <span class="gp">In [20]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[20]: </span><span class="go">True</span>
@@ -7514,15 +7513,15 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [23]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[23]: </span><span class="go"></span>
-<span class="go">GF([[0, 0, 1, 0, 1, 0, 1],</span>
-<span class="go">    [1, 0, 1, 0, 0, 1, 1],</span>
-<span class="go">    [0, 0, 0, 0, 1, 1, 0]], order=2)</span>
+<span class="go">GF([[0, 1, 0, 1, 0, 0, 0],</span>
+<span class="go">    [0, 1, 0, 1, 0, 0, 1],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0]], order=2)</span>
 
 <span class="gp">In [24]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[24]: </span><span class="go"></span>
-<span class="go">GF([[0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1],</span>
-<span class="go">    [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0],</span>
-<span class="go">    [0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1]], order=2)</span>
+<span class="go">GF([[0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1],</span>
+<span class="go">    [0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.</p>
@@ -7532,17 +7531,17 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [27]: </span><span class="n">c</span>
 <span class="gh">Out[27]: </span><span class="go"></span>
-<span class="go">GF([[0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1],</span>
-<span class="go">    [0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0],</span>
-<span class="go">    [1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1]], order=2)</span>
+<span class="go">GF([[0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1],</span>
+<span class="go">    [1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0],</span>
+<span class="go">    [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [28]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
 <span class="gh">Out[28]: </span><span class="go"></span>
-<span class="go">GF([[0, 0, 1, 0, 1, 0, 1],</span>
-<span class="go">    [1, 0, 1, 0, 0, 1, 1],</span>
-<span class="go">    [0, 0, 0, 0, 1, 1, 0]], order=2)</span>
+<span class="go">GF([[0, 1, 0, 1, 0, 0, 0],</span>
+<span class="go">    [0, 1, 0, 1, 0, 0, 1],</span>
+<span class="go">    [0, 0, 1, 1, 1, 0, 0]], order=2)</span>
 
 <span class="gp">In [29]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[29]: </span><span class="go">True</span>
@@ -7551,9 +7550,9 @@ Matrix (shortened)</label></div>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [30]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
 <span class="gh">Out[30]: </span><span class="go"></span>
-<span class="go">(GF([[0, 0, 1, 0, 1, 0, 1],</span>
-<span class="go">     [1, 0, 1, 0, 0, 1, 1],</span>
-<span class="go">     [0, 0, 0, 0, 1, 1, 0]], order=2),</span>
+<span class="go">(GF([[0, 1, 0, 1, 0, 0, 0],</span>
+<span class="go">     [0, 1, 0, 1, 0, 0, 1],</span>
+<span class="go">     [0, 0, 1, 1, 1, 0, 0]], order=2),</span>
 <span class="go"> array([0, 1, 2]))</span>
 
 <span class="gp">In [31]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
@@ -7569,15 +7568,15 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [34]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">bch</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">3</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[34]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 0],</span>
-<span class="go">    [0, 1, 0, 1],</span>
-<span class="go">    [0, 0, 1, 0]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 0],</span>
+<span class="go">    [1, 0, 0, 1],</span>
+<span class="go">    [0, 1, 1, 1]], order=2)</span>
 
 <span class="gp">In [35]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[35]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1],</span>
-<span class="go">    [0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1],</span>
-<span class="go">    [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],</span>
+<span class="go">    [1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0],</span>
+<span class="go">    [0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.</p>
@@ -7587,17 +7586,17 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [38]: </span><span class="n">c</span>
 <span class="gh">Out[38]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1],</span>
-<span class="go">    [1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1],</span>
-<span class="go">    [1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],</span>
+<span class="go">    [0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0],</span>
+<span class="go">    [1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0]], order=2)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [39]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
 <span class="gh">Out[39]: </span><span class="go"></span>
-<span class="go">GF([[1, 1, 0, 0],</span>
-<span class="go">    [0, 1, 0, 1],</span>
-<span class="go">    [0, 0, 1, 0]], order=2)</span>
+<span class="go">GF([[1, 0, 0, 0],</span>
+<span class="go">    [1, 0, 0, 1],</span>
+<span class="go">    [0, 1, 1, 1]], order=2)</span>
 
 <span class="gp">In [40]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[40]: </span><span class="go">True</span>
@@ -7606,9 +7605,9 @@ Matrix (shortened)</label></div>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [41]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
 <span class="gh">Out[41]: </span><span class="go"></span>
-<span class="go">(GF([[1, 1, 0, 0],</span>
-<span class="go">     [0, 1, 0, 1],</span>
-<span class="go">     [0, 0, 1, 0]], order=2),</span>
+<span class="go">(GF([[1, 0, 0, 0],</span>
+<span class="go">     [1, 0, 0, 1],</span>
+<span class="go">     [0, 1, 1, 1]], order=2),</span>
 <span class="go"> array([0, 1, 2]))</span>
 
 <span class="gp">In [42]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
