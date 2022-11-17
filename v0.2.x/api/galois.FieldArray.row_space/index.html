@@ -7311,11 +7311,11 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The row spa
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[20, 18,  2],</span>
-<span class="go">    [ 7,  1,  0],</span>
-<span class="go">    [16, 18,  1],</span>
-<span class="go">    [23, 29,  6],</span>
-<span class="go">    [ 7, 26,  9]], order=31)</span>
+<span class="go">GF([[13,  6, 27],</span>
+<span class="go">    [27, 28, 12],</span>
+<span class="go">    [17, 30,  3],</span>
+<span class="go">    [30, 26, 18],</span>
+<span class="go">    [20,  6, 28]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">R</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">();</span> <span class="n">R</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
@@ -7327,8 +7327,8 @@ of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The row spa
 <p>The dimension of the row space and left null space sum to <span class="math notranslate nohighlight">\(m\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">LN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">();</span> <span class="n">LN</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0, 20,  7, 17],</span>
-<span class="go">    [ 0,  1, 28, 10,  4]], order=31)</span>
+<span class="go">GF([[ 1,  0, 19, 18, 12],</span>
+<span class="go">    [ 0,  1,  2, 30,  0]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">LN</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>
