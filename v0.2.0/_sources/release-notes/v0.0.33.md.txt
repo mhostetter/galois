@@ -1,0 +1,17 @@
+# v0.0.33
+
+*Released August 26, 2022*
+
+## Breaking changes
+
+- Modified FEC `encode()`, `detect()`, and `decode()` methods to always return `FieldArray` instances, not `np.ndarray`. ([#397](https://github.com/mhostetter/galois/pull/397))
+  - Invoke `.view(np.ndarray)` on the output to convert it back to a NumPy array, if needed.
+
+## Changes
+
+- Added support for `ArrayLike` inputs to FEC `encode()`, `detect()`, and `decode()` methods. ([#397](https://github.com/mhostetter/galois/pull/397))
+- Modified library packaging to use `pyproject.toml` and a `src/` source code folder. ([#404](https://github.com/mhostetter/galois/pull/404))
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
