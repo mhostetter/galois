@@ -45,6 +45,9 @@ class Function:
     _SIGNATURE: numba.types.FunctionType
     """The function's Numba signature."""
 
+    _PARALLEL = False
+    """Indicates if parallel processing should be performed."""
+
     implementation: Callable
     """The function's implementation in pure Python."""
 
@@ -78,7 +81,7 @@ class Function:
 
         if key_2 not in self._CACHE[key_1]:
             self.set_globals()  # Set the globals once before JIT compiling the function
-            self._CACHE[key_1][key_2] = numba.jit(self._SIGNATURE.signature, nopython=True)(self.implementation)
+            self._CACHE[key_1][key_2] = numba.jit(self._SIGNATURE.signature, parallel=self._PARALLEL, nopython=True)(self.implementation)
 
         return self._CACHE[key_1][key_2]
 
