@@ -428,11 +428,12 @@ class evaluate_elementwise_jit(Function):
         MULTIPLY = self.field._multiply.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
+    _PARALLEL = True
 
     @staticmethod
     def implementation(coeffs, values):
         y = np.zeros(values.size, dtype=values.dtype)
-        for i in range(values.size):
+        for i in numba.prange(values.size):  # pylint: disable=not-an-iterable
             y[i] = coeffs[0]
             for j in range(1, coeffs.size):
                 y[i] = ADD(coeffs[j], MULTIPLY(y[i], values[i]))
