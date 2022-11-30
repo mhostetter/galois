@@ -219,6 +219,7 @@ class matmul_jit(Function):
         MULTIPLY = self.field._multiply.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:]))
+    _PARALLEL = True
 
     @staticmethod
     def implementation(A, B):
@@ -228,8 +229,8 @@ class matmul_jit(Function):
         M, K = A.shape
         K, N = B.shape
         C = np.zeros((M, N), dtype=A.dtype)
-        for i in range(M):
-            for j in range(N):
+        for i in numba.prange(M):  # pylint: disable=not-an-iterable
+            for j in numba.prange(N):  # pylint: disable=not-an-iterable
                 for k in range(K):
                     C[i,j] = ADD(C[i,j], MULTIPLY(A[i,k], B[k,j]))
 
