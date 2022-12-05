@@ -215,8 +215,8 @@ class matmul_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
-        ADD = self.field._add.ufunc
-        MULTIPLY = self.field._multiply.ufunc
+        ADD = self.field._add.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:]))
 

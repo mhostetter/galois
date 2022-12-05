@@ -77,6 +77,24 @@ class UFunc:
             return self.jit_calculate
 
     @property
+    def ufunc_call_only(self):
+        """
+        A ufunc (that only supports the `__call__()` method) based on the current state of `ufunc_mode`.
+
+        This ufunc is the same as `ufunc`, however it fixes a bug in overridden pure-Python ufuncs
+        (see https://github.com/mhostetter/galois/issues/358). This ufunc should be used in JIT function
+        implementations (`Function.implementation`) to ensure bug #358 does not manifest.
+        """
+        if self.field.ufunc_mode == "jit-lookup" and not self.always_calculate:
+            return self.jit_lookup
+        elif self.field.ufunc_mode == "python-calculate":
+            # Specify `dtype=np.object_` for overridden ufuncs so Python int objects are returned, not np.intc (which
+            # will eventually overflow and produce incorrect results).
+            return self.python_calculate_call_only
+        else:
+            return self.jit_calculate
+
+    @property
     def jit_calculate(self) -> numba.types.FunctionType:
         """
         A JIT-compiled ufunc implemented using explicit calculation.
@@ -138,6 +156,21 @@ class UFunc:
             return np.frompyfunc(self.calculate, 1, 1)
         else:
             return np.frompyfunc(self.calculate, 2, 1)
+
+    @property
+    def python_calculate_call_only(self) -> Callable:
+        """
+        A pure-Python ufunc (that only supports the `__call__()` method) implemented using explicit calculation.
+
+        This ufunc is the same as `python_calculate_call_only`, however it fixes a bug in overridden pure-Python ufuncs
+        (see https://github.com/mhostetter/galois/issues/358).
+        """
+        if self.override:
+            # Specify `dtype=np.object_` for overridden ufuncs so Python int objects are returned, not np.intc (which
+            # will eventually overflow and produce incorrect results).
+            return lambda *args, **kwargs: self.override(*args, **kwargs, dtype=np.object_)
+        else:
+            return self.python_calculate
 
     ###############################################################################
     # Input/output verification

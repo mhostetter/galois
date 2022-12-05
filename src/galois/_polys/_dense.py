@@ -39,7 +39,7 @@ class add_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global ADD
-        ADD = self.field._add.ufunc
+        ADD = self.field._add.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -99,7 +99,7 @@ class subtract_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global SUBTRACT
-        SUBTRACT = self.field._subtract.ufunc
+        SUBTRACT = self.field._subtract.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -174,9 +174,9 @@ class divmod_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
-        SUBTRACT = self.field._subtract.ufunc
-        MULTIPLY = self.field._multiply.ufunc
-        RECIPROCAL = self.field._reciprocal.ufunc
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        RECIPROCAL = self.field._reciprocal.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:]))
 
@@ -224,9 +224,9 @@ class floordiv_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
-        SUBTRACT = self.field._subtract.ufunc
-        MULTIPLY = self.field._multiply.ufunc
-        RECIPROCAL = self.field._reciprocal.ufunc
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        RECIPROCAL = self.field._reciprocal.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -277,9 +277,9 @@ class mod_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
-        SUBTRACT = self.field._subtract.ufunc
-        MULTIPLY = self.field._multiply.ufunc
-        RECIPROCAL = self.field._reciprocal.ufunc
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        RECIPROCAL = self.field._reciprocal.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -424,8 +424,8 @@ class evaluate_elementwise_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
-        ADD = self.field._add.ufunc
-        MULTIPLY = self.field._multiply.ufunc
+        ADD = self.field._add.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -435,10 +435,7 @@ class evaluate_elementwise_jit(Function):
         for i in range(values.size):
             y[i] = coeffs[0]
             for j in range(1, coeffs.size):
-                # NOTE: This workaround, using y[i:i+1] instead of y[i], is needed because if ADD = np.bitwise_xor for
-                # GF(2^m) will return np.intc instead of np.object_ with int. However, if the input to the ufunc is a dtype=object
-                # array, then the type is preserved. There may be a better way to do this.
-                y[i:i+1] = ADD(coeffs[j], MULTIPLY(y[i:i+1], values[i]))
+                y[i] = ADD(coeffs[j], MULTIPLY(y[i], values[i]))
 
         return y
 
@@ -466,9 +463,9 @@ class roots_jit(Function):
         # pylint: disable=global-variable-undefined
         global ORDER, ADD, MULTIPLY, POWER
         ORDER = self.field.order
-        ADD = self.field._add.ufunc
-        MULTIPLY = self.field._multiply.ufunc
-        POWER = self.field._power.ufunc
+        ADD = self.field._add.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        POWER = self.field._power.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64))
 
@@ -543,10 +540,10 @@ class lagrange_poly_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global NEGATIVE, SUBTRACT, MULTIPLY, RECIPROCAL, POLY_ADD, POLY_FLOORDIV, POLY_MULTIPLY
-        NEGATIVE = self.field._negative.ufunc
-        SUBTRACT = self.field._subtract.ufunc
-        MULTIPLY = self.field._multiply.ufunc
-        RECIPROCAL = self.field._reciprocal.ufunc
+        NEGATIVE = self.field._negative.ufunc_call_only
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        RECIPROCAL = self.field._reciprocal.ufunc_call_only
         POLY_ADD = add_jit(self.field).function
         POLY_FLOORDIV = floordiv_jit(self.field).function
         POLY_MULTIPLY = self.field._convolve.function
