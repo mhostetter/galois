@@ -1187,12 +1187,12 @@ class decode_jit(Function):
         # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, CONVOLVE, POLY_ROOTS, POLY_EVALUATE, BERLEKAMP_MASSEY
 
-        SUBTRACT = self.field._subtract.ufunc
+        SUBTRACT = self.field._subtract.ufunc_call_only
 
         CHARACTERISTIC = self.extension_field.characteristic
-        MULTIPLY = self.extension_field._multiply.ufunc
-        RECIPROCAL = self.extension_field._reciprocal.ufunc
-        POWER = self.extension_field._power.ufunc
+        MULTIPLY = self.extension_field._multiply.ufunc_call_only
+        RECIPROCAL = self.extension_field._reciprocal.ufunc_call_only
+        POWER = self.extension_field._power.ufunc_call_only
         CONVOLVE = self.extension_field._convolve.function
         POLY_ROOTS = roots_jit(self.extension_field).function
         POLY_EVALUATE = evaluate_elementwise_jit(self.extension_field).function

@@ -735,8 +735,8 @@ class fibonacci_lfsr_step_forward_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
-        ADD = self.field._add.ufunc
-        MULTIPLY = self.field._multiply.ufunc
+        ADD = self.field._add.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -802,9 +802,9 @@ class fibonacci_lfsr_step_backward_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
-        SUBTRACT = self.field._subtract.ufunc
-        MULTIPLY = self.field._multiply.ufunc
-        RECIPROCAL = self.field._reciprocal.ufunc
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        RECIPROCAL = self.field._reciprocal.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -1385,8 +1385,8 @@ class galois_lfsr_step_forward_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
-        ADD = self.field._add.ufunc
-        MULTIPLY = self.field._multiply.ufunc
+        ADD = self.field._add.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -1455,9 +1455,9 @@ class galois_lfsr_step_backward_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
-        SUBTRACT = self.field._subtract.ufunc
-        MULTIPLY = self.field._multiply.ufunc
-        RECIPROCAL = self.field._reciprocal.ufunc
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        RECIPROCAL = self.field._reciprocal.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64))
 
@@ -1611,10 +1611,10 @@ class berlekamp_massey_jit(Function):
     def set_globals(self):
         # pylint: disable=global-variable-undefined
         global ADD, SUBTRACT, MULTIPLY, RECIPROCAL
-        ADD = self.field._add.ufunc
-        SUBTRACT = self.field._subtract.ufunc
-        MULTIPLY = self.field._multiply.ufunc
-        RECIPROCAL = self.field._reciprocal.ufunc
+        ADD = self.field._add.ufunc_call_only
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        RECIPROCAL = self.field._reciprocal.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:]))
 

@@ -119,8 +119,8 @@ class convolve_jit(Function):
         global IS_PRIME_FIELD, CHARACTERISTIC, ADD, MULTIPLY
         IS_PRIME_FIELD = self.field._is_prime_field
         CHARACTERISTIC = self.field.characteristic
-        ADD = self.field._add.ufunc
-        MULTIPLY = self.field._multiply.ufunc
+        ADD = self.field._add.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:]))
 
@@ -191,9 +191,9 @@ class fft_jit(Function):
 
     def set_globals(self):
         global ADD, SUBTRACT, MULTIPLY
-        ADD = self.field._add.ufunc
-        SUBTRACT = self.field._subtract.ufunc
-        MULTIPLY = self.field._multiply.ufunc
+        ADD = self.field._add.ufunc_call_only
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
 
     _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64))
 
