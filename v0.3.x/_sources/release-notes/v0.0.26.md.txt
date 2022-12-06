@@ -1,0 +1,149 @@
+# v0.0.26
+
+*Released March 30, 2022*
+
+## Breaking changes
+
+- Removed the `Poly.copy()` method as it was unnecessary. Polynomial objects are immutable. Use `g = f` wherever `g = f.copy()` was previously used. ([#320](https://github.com/mhostetter/galois/pull/320))
+- Disabled true division `f / g` on polynomials since true division was not actually being performed. Use floor division `f // g` moving forward. ([#312](https://github.com/mhostetter/galois/pull/312))
+- Refactored `irreducible_polys()` to return an iterator rather than list. Use `list(irreducible_polys(...))` to obtain the previous output. ([#325](https://github.com/mhostetter/galois/pull/325))
+- Refactored `primitive_polys()` to return an iterator rather than list. Use `list(primitive_polys(...))` to obtain the previous output. ([#325](https://github.com/mhostetter/galois/pull/325))
+- Refactored `primitive_root()` and `primitive_roots()`. ([#325](https://github.com/mhostetter/galois/pull/325))
+    - Added `method` keyword argument and removed `reverse` from `primitive_root()`. Use `primitive_root(..., method="max")` where `primitive_root(..., reverse=True)` was previously used.
+    - Refactored `primitive_roots()` to now return an iterator rather than list. Use `list(primitive_roots(...))` to obtain the previous output.
+- Refactored `primitive_element()` and `primitive_elements()`. ([#325](https://github.com/mhostetter/galois/pull/325))
+    - Added `method` keyword argument to `primitive_element()`.
+    - Removed `start`, `stop`, and `reverse` arguments from both functions.
+- Search functions now raise `RuntimeError` instead of returning `None` when failing to find an answer. This applies to `primitive_root()`, `pollard_p1()`, and `pollard_rho()`. ([#312](https://github.com/mhostetter/galois/pull/312))
+
+## Changes
+
+- The `galois.Poly` class no longer returns subclasses `BinaryPoly`, `DensePoly`, and `SparsePoly`. Instead, only `Poly` classes are returned. The classes otherwise operate the same. ([#320](https://github.com/mhostetter/galois/pull/320))
+- Made *Galois field array* creation much more efficient by avoiding redundant element verification. ([#317](https://github.com/mhostetter/galois/pull/317))
+    - Scalar creation is **625% faster**.
+        ```ipython
+        In [2]: GF = galois.GF(3**5)
+
+        # v0.0.25
+        In [3]: %timeit GF(10)
+        21.2 µs ± 181 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+        # v0.0.26
+        In [3]: %timeit GF(10)
+        2.88 µs ± 8.03 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+        ```
+    - Nested iterable array creation is **150% faster**.
+        ```ipython
+        # v0.0.25
+        In [4]: %timeit GF([[10, 20], [30, 40]])
+        53.6 µs ± 436 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+        # v0.0.26
+        In [4]: %timeit GF([[10, 20], [30, 40]])
+        20.9 µs ± 11.2 µs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+        ```
+    - Nested iterable (with strings) array creation is **25% faster**.
+        ```ipython
+        # v0.0.25
+        In [5]: %timeit GF([[10, "2x^2 + 2"], ["x^3 + x", 40]])
+        67.9 µs ± 910 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+        # v0.0.26
+        In [5]: %timeit GF([[10, "2x^2 + 2"], ["x^3 + x", 40]])
+        54.7 µs ± 16.3 µs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+        ```
+- Made array arithmetic **35% faster** by avoiding unnecessary element verification of outputs. ([#309](https://github.com/mhostetter/galois/pull/309))
+    ```ipython
+    In [2]: GF = galois.GF(3**5)
+
+    In [3]: x = GF.Random((10_000), seed=1)
+
+    In [4]: y = GF.Random((10_000), seed=2)
+
+    # v0.0.25
+    In [6]: %timeit x * y
+    39.4 µs ± 237 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+    # v0.0.26
+    In [6]: %timeit x * y
+    28.8 µs ± 172 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+    ```
+- Made polynomial arithmetic over binary fields **10,900% faster** by making polynomial creation from integers much more efficient. ([#320](https://github.com/mhostetter/galois/pull/320))
+    ```ipython
+    In [5]: f
+    Out[5]: Poly(x^10 + x^9 + x^6 + x^5 + x^3 + x, GF(2))
+
+    In [6]: g
+    Out[6]: Poly(x^10 + x^7 + x^4 + 1, GF(2))
+
+    # v0.0.25
+    In [7]: %timeit f * g
+    283 µs ± 6.31 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+
+    # v0.0.26
+    In [7]: %timeit f * g
+    2.57 µs ± 54.4 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+    ```
+- JIT-compiled polynomial modular exponentiation. ([#306](https://github.com/mhostetter/galois/pull/306))
+    - Binary fields are **14,225% faster**.
+        ```ipython
+        In [5]: f
+        Out[5]: Poly(x^10 + x^9 + x^6 + x^5 + x^3 + x, GF(2))
+
+        In [6]: g
+        Out[6]: Poly(x^5 + x^2, GF(2))
+
+        # v0.0.25
+        In [7]: %timeit pow(f, 123456789, g)
+        19.2 ms ± 206 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+
+        # v0.0.26
+        In [7]: %timeit pow(f, 123456789, g)
+        134 µs ± 2.21 µs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+        ```
+    - Other fields are **325% faster**.
+        ```ipython
+        In [6]: f
+        Out[6]: Poly(242x^10 + 216x^9 + 32x^8 + 114x^7 + 230x^6 + 179x^5 + 5x^4 + 124x^3 + 96x^2 + 159x + 77, GF(3^5))
+
+        In [7]: g
+        Out[7]: Poly(183x^5 + 83x^4 + 101x^3 + 203x^2 + 68x + 2, GF(3^5))
+
+        # v0.0.25
+        In [8]: %timeit pow(f, 123456789, g)
+        17.6 ms ± 61.7 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+        # v0.0.26
+        In [8]: %timeit pow(f, 123456789, g)
+        4.19 ms ± 11.9 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+        ```
+- Made irreducible and primitive polynomial search routines faster. ([#306](https://github.com/mhostetter/galois/pull/306), [#309](https://github.com/mhostetter/galois/pull/309), [#317](https://github.com/mhostetter/galois/pull/317), [#320](https://github.com/mhostetter/galois/pull/320))
+    - Binary fields are **1,950% faster**.
+        ```ipython
+        # v0.0.25
+        In [2]: %time f = galois.primitive_poly(2, 14)
+        CPU times: user 296 ms, sys: 70.9 ms, total: 367 ms
+        Wall time: 313 ms
+
+        # v0.0.26
+        In [2]: %time f = galois.primitive_poly(2, 14)
+        CPU times: user 14.7 ms, sys: 5.53 ms, total: 20.2 ms
+        Wall time: 15.3 ms
+        ```
+    - Other fields are **400% faster**.
+        ```ipython
+        # v0.0.25
+        In [5]: %time f = galois.primitive_poly(7, 10)
+        CPU times: user 2.22 s, sys: 0 ns, total: 2.22 s
+        Wall time: 2.21 s
+
+        # v0.0.26
+        In [4]: %time f = galois.primitive_poly(7, 10)
+        CPU times: user 442 ms, sys: 0 ns, total: 442 ms
+        Wall time: 439 ms
+        ```
+- Made `FieldArray.Vector()` **100% faster** and `FieldArray.vector()` **25% faster** by making better use of `divmod()` when converting between integer and vector representations. ([#322](https://github.com/mhostetter/galois/pull/322))
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))

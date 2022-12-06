@@ -1,0 +1,36 @@
+# v0.0.24
+
+*Released February 12, 2022*
+
+## Breaking changes
+
+- Move `galois.minimal_poly()` functionality into `FieldArray.minimal_poly()`.
+- Refactor `FieldArray.lup_decompose()` into `FieldArray.plu_decompose()`.
+- Raise `ValueError` instead of returning `None` for `prev_prime(2)`.
+- Return `(n, 1)` from `perfect_power(n)` if `n` is not a perfect power rather than returning `None`.
+
+## Changes
+
+- Compute a finite field element's square root (if it exists) with `np.sqrt()`.
+- Test if finite field elements have a square root with `FieldArray.is_quadratic_residue()`.
+- List which finite field elements are/aren't quadratic residues (have a square root) with `FieldClass.quadratic_residues` and `FieldClass.quadratic_non_residues`.
+- Compute standard vector spaces with `FieldArray.row_space()`, `FieldArray.column_space()`, `FieldArray.left_null_space()`, and `FieldArray.null_space()`.
+- Compute a finite field element's additive and multiplicative orders with `FieldArray.additive_order()` and `FieldArray.multiplicative_order()`.
+- Evaluate polynomials at square matrix inputs using `f(X, elementwise=False)`.
+- Compute the characteristic polynomial of a single element or square matrix with `FieldArray.characteristic_poly()`.
+- Compute the minimal polynomial of a single element with `FieldArray.minimal_poly()`.
+- Compute a Lagrange interpolating polynomial with `lagrange_poly(x, y)`.
+- Support non-square matrix inputs to `FieldArray.lu_decompose()` and `FieldArray.plu_decompose()`.
+- Support polynomial scalar multiplication. Now `p * 3` is valid syntax and represents `p + p + p`.
+- Allow polynomial comparison with integers and field scalars. Now `galois.Poly([0]) == 0` and `galois.Poly([0]) == GF(0)` return `True` rather than raising `TypeError`.
+- Support testing 0-degree polynomials for irreducibility and primitivity.
+- Extend `crt()` to work over non co-prime moduli.
+- Extend `prev_prime()` and `next_prime()` to work over arbitrarily-large inputs.
+- Allow negative integer inputs to `primes()`, `is_prime()`, `is_composite()`, `is_prime_power()`, `is_perfect_power()`, `is_square_free()`, `is_smooth()`, and `is_powersmooth()`.
+- Fix various type hinting errors.
+- Various other bug fixes.
+
+## Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
