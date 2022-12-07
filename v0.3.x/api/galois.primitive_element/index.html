@@ -7410,11 +7410,11 @@ a polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)<
 <p>Find a random primitive element for the degree-5 extension of <span class="math notranslate nohighlight">\(\mathrm{GF}(7)\)</span> with irreducible polynomial
 <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[10]: </span><span class="go">Poly(4x^4 + 2x^2 + 6x + 3, GF(7))</span>
+<span class="gh">Out[10]: </span><span class="go">Poly(6x^4 + 5x^3 + 4x^2 + 4x + 2, GF(7))</span>
 
 <span class="go"># Convert the polynomial over GF(7) into an element of GF(7^5)</span>
 <span class="gp">In [11]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">g</span><span class="p">));</span> <span class="n">g</span>
-<span class="gh">Out[11]: </span><span class="go">GF(4x^4 + 2x^2 + 6x + 3, order=7^5)</span>
+<span class="gh">Out[11]: </span><span class="go">GF(6x^4 + 5x^3 + 4x^2 + 4x + 2, order=7^5)</span>
 
 <span class="gp">In [12]: </span><span class="n">g</span><span class="o">.</span><span class="n">multiplicative_order</span><span class="p">()</span> <span class="o">==</span> <span class="n">GF</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span>
 <span class="gh">Out[12]: </span><span class="go">True</span>
