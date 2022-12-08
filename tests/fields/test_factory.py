@@ -14,6 +14,21 @@ def test_defaults(characteristic, degree):
     assert GF.characteristic == characteristic
     assert GF.degree == degree
 
+    GF = galois.GF(characteristic, degree)
+    assert issubclass(GF, galois.FieldArray)
+    assert GF.characteristic == characteristic
+    assert GF.degree == degree
+
+
+def test_mandatory_kwargs():
+    GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 1")
+    with pytest.raises(TypeError):
+        GF = galois.GF(3**5, "x^5 + 2x + 1")
+
+    GF = galois.GF(3, 5, irreducible_poly="x^5 + 2x + 1")
+    with pytest.raises(TypeError):
+        GF = galois.GF(3, 5, "x^5 + 2x + 1")
+
 
 def test_defaults_dont_modify_ufunc_mode():
     """
