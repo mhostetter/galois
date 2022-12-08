@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import sys
 import types
-from typing import Type
+from typing import Type, overload
 from typing_extensions import Literal
 
 from .._helper import export, verify_isinstance
@@ -20,15 +20,38 @@ from ._primitive_element import primitive_element, is_primitive_element
 from ._ufunc import UFuncMixin_2_m, UFuncMixin_p_1, UFuncMixin_p_m
 
 
-@export
+@overload
 def GF(
     order: int,
+    *,
     irreducible_poly: PolyLike | None = None,
     primitive_element: int | PolyLike | None = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
     repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
+    ...
+@overload
+def GF(
+    characteristic: int,
+    degree: int,
+    *,
+    irreducible_poly: PolyLike | None = None,
+    primitive_element: int | PolyLike | None = None,  # pylint: disable=redefined-outer-name
+    verify: bool = True,
+    compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
+    repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
+) -> Type[FieldArray]:
+    ...
+@export
+def GF(
+    *args,
+    irreducible_poly = None,
+    primitive_element = None,  # pylint: disable=redefined-outer-name
+    verify = True,
+    compile = None,  # pylint: disable=redefined-builtin
+    repr = None,  # pylint: disable=redefined-builtin
+):
     r"""
     Creates a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
 
@@ -36,6 +59,10 @@ def GF(
     ----------
     order
         The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
+    characteristic
+        The characteristic :math:`p` of the field :math:`\mathrm{GF}(p^m)`. The characteristic must be prime.
+    degree
+        The degree :math:`m` of the field :math:`\mathrm{GF}(p^m)`. The degree must be a positive integer.
     irreducible_poly
         Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that
         defines the finite field arithmetic. The default is `None` which uses the Conway polynomial :math:`C_{p,m}`,
@@ -184,6 +211,14 @@ def GF(
                 GF = galois.GF(2**100)
                 print(GF.properties)
 
+            The construction of large fields can be sped up by explicitly specifying :math:`p` and :math:`m`. This avoids the
+            need to factor the order :math:`p^m`.
+
+            .. ipython:: python
+
+                GF = galois.GF(2, 100)
+                print(GF.properties)
+
         .. md-tab-item:: GF(p^m)
 
             Construct a large prime extension field.
@@ -193,47 +228,86 @@ def GF(
                 GF = galois.GF(109987**4)
                 print(GF.properties)
 
+            The construction of large fields can be sped up by explicitly specifying :math:`p` and :math:`m`. This avoids the
+            need to factor the order :math:`p^m`.
+
+            .. ipython:: python
+
+                GF = galois.GF(109987, 4)
+                print(GF.properties)
+
     :group: galois-fields
     """
-    verify_isinstance(order, int)
+    if len(args) == 1:
+        order = args[0]
+        verify_isinstance(order, int)
+        p, e = factors(order)
+        if not len(p) == len(e) == 1:
+            s = " + ".join([f"{pi}**{ei}" for pi, ei in zip(p, e)])
+            raise ValueError(f"Argument 'order' must be a prime power, not {order} = {s}.")
+        characteristic, degree = p[0], e[0]
+    elif len(args) == 2:
+        characteristic, degree = args
+        verify_isinstance(characteristic, int)
+        verify_isinstance(degree, int)
+    else:
+        raise TypeError("Only 'order' or 'characteristic' and 'degree' may be specified as positional arguments. Other arguments must be specified as keyword arguments.")
+
     verify_isinstance(verify, bool)
     verify_isinstance(compile, str, optional=True)
     verify_isinstance(repr, str, optional=True)
 
-    p, e = factors(order)
-    if not len(p) == len(e) == 1:
-        s = " + ".join([f"{pi}**{ei}" for pi, ei in zip(p, e)])
-        raise ValueError(f"Argument 'order' must be a prime power, not {order} = {s}.")
     if not compile in [None, "auto", "jit-lookup", "jit-calculate", "python-calculate"]:
         raise ValueError(f"Argument 'compile' must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {compile!r}.")
     if not repr in [None, "int", "poly", "power"]:
         raise ValueError(f"Argument 'repr' must be in ['int', 'poly', 'power'], not {repr!r}.")
 
-    p, m = p[0], e[0]
-
-    if m == 1:
+    if degree == 1:
         if not irreducible_poly is None:
-            raise ValueError(f"Argument 'irreducible_poly' can only be specified for extension fields, not the prime field GF({p}).")
-        return _GF_prime(p, alpha=primitive_element, verify=verify, compile=compile, repr=repr)
+            raise ValueError(f"Argument 'irreducible_poly' can only be specified for extension fields, not the prime field GF({characteristic}).")
+        return _GF_prime(characteristic, alpha=primitive_element, verify=verify, compile=compile, repr=repr)
     else:
-        return _GF_extension(p, m, irreducible_poly_=irreducible_poly, alpha=primitive_element, verify=verify, compile=compile, repr=repr)
+        return _GF_extension(characteristic, degree, irreducible_poly_=irreducible_poly, alpha=primitive_element, verify=verify, compile=compile, repr=repr)
 
 
-@export
+@overload
 def Field(
     order: int,
+    *,
     irreducible_poly: PolyLike | None = None,
     primitive_element: int | PolyLike | None = None,  # pylint: disable=redefined-outer-name
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
     repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
+    ...
+@overload
+def Field(
+    characteristic: int,
+    degree: int,
+    *,
+    irreducible_poly: PolyLike | None = None,
+    primitive_element: int | PolyLike | None = None,  # pylint: disable=redefined-outer-name
+    verify: bool = True,
+    compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,  # pylint: disable=redefined-builtin
+    repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
+) -> Type[FieldArray]:
+    ...
+@export
+def Field(
+    *args,
+    irreducible_poly = None,
+    primitive_element = None,  # pylint: disable=redefined-outer-name
+    verify = True,
+    compile = None,  # pylint: disable=redefined-builtin
+    repr = None,  # pylint: disable=redefined-builtin
+):
     """
     Alias of :func:`~galois.GF`.
 
     :group: galois-fields
     """
-    return GF(order, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, repr=repr)
+    return GF(*args, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, repr=repr)
 
 
 def _GF_prime(
