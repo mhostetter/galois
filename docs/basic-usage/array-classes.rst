@@ -21,6 +21,27 @@ A :obj:`~galois.FieldArray` subclass is created using the class factory function
     GF = galois.GF(3**5)
     print(GF.properties)
 
+.. tip::
+    :title: Speed up creation of large finite field classes
+    :collapsible:
+
+    For very large finite fields, the :obj:`~galois.FieldArray` subclass creation time can be reduced by explicitly specifying
+    :math:`p` and :math:`m`. This eliminates the need to factor the order :math:`p^m`.
+
+    .. ipython:: python
+
+        GF = galois.GF(2, 100)
+        print(GF.properties)
+
+    Furthermore, if you already know the desired irreducible polynomial is irreducible and the primitive element is a generator of
+    the multiplicative group, you can specify `verify=False` to skip the verification step. This eliminates the need to factor
+    :math:`p^m - 1`.
+
+    .. ipython:: python
+
+        GF = galois.GF(109987, 4, irreducible_poly="x^4 + 3x^2 + 100525x + 3", primitive_element="x", verify=False)
+        print(GF.properties)
+
 The `GF` class is a subclass of :obj:`~galois.FieldArray` and a subclasses of :obj:`~numpy.ndarray`.
 
 .. ipython:: python
