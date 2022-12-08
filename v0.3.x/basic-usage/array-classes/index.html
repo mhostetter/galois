@@ -7436,38 +7436,71 @@ Power</label></div>
 </div>
 </div>
 </div>
-</div><p>The <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code> class is a subclass of <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> and a subclasses of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">GF</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">FieldArray</span><span class="p">)</span>
-<span class="gh">Out[7]: </span><span class="go">True</span>
+</div><details class="tip admonition">
+<summary class="admonition-title">Speed up creation of large finite field classes</summary><p>For very large finite fields, the <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass creation time can be reduced by explicitly specifying
+<span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(m\)</span>. This eliminates the need to factor the order <span class="math notranslate nohighlight">\(p^m\)</span>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 
-<span class="gp">In [8]: </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">GF</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
-<span class="gh">Out[8]: </span><span class="go">True</span>
+<span class="gp">In [8]: </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
+<span class="go">Galois Field:</span>
+<span class="go">  name: GF(2^100)</span>
+<span class="go">  characteristic: 2</span>
+<span class="go">  degree: 100</span>
+<span class="go">  order: 1267650600228229401496703205376</span>
+<span class="go">  irreducible_poly: x^100 + x^57 + x^56 + x^55 + x^52 + x^48 + x^47 + x^46 + x^45 + x^44 + x^43 + x^41 + x^37 + x^36 + x^35 + x^34 + x^31 + x^30 + x^27 + x^25 + x^24 + x^22 + x^20 + x^19 + x^16 + x^15 + x^11 + x^9 + x^8 + x^6 + x^5 + x^3 + 1</span>
+<span class="go">  is_primitive_poly: True</span>
+<span class="go">  primitive_element: x</span>
+</code></pre></div>
+</div>
+<p>Furthermore, if you already know the desired irreducible polynomial is irreducible and the primitive element is a generator of
+the multiplicative group, you can specify <code class="code highlight python docutils literal highlight-python"><span class="n">verify</span><span class="o">=</span><span class="kc">False</span></code> to skip the verification step. This eliminates the need to factor
+<span class="math notranslate nohighlight">\(p^m - 1\)</span>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">109987</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">irreducible_poly</span><span class="o">=</span><span class="s2">&quot;x^4 + 3x^2 + 100525x + 3&quot;</span><span class="p">,</span> <span class="n">primitive_element</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="gp">In [9]: </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">GF</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-<span class="gh">Out[9]: </span><span class="go">True</span>
+<span class="gp">In [10]: </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
+<span class="go">Galois Field:</span>
+<span class="go">  name: GF(109987^4)</span>
+<span class="go">  characteristic: 109987</span>
+<span class="go">  degree: 4</span>
+<span class="go">  order: 146340800268433348561</span>
+<span class="go">  irreducible_poly: x^4 + 3x^2 + 100525x + 3</span>
+<span class="go">  is_primitive_poly: True</span>
+<span class="go">  primitive_element: x</span>
+</code></pre></div>
+</div>
+</details>
+<p>The <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code> class is a subclass of <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> and a subclasses of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [11]: </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">GF</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">FieldArray</span><span class="p">)</span>
+<span class="gh">Out[11]: </span><span class="go">True</span>
+
+<span class="gp">In [12]: </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">GF</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+<span class="gh">Out[12]: </span><span class="go">True</span>
+
+<span class="gp">In [13]: </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">GF</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+<span class="gh">Out[13]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
 <h3 id="class-singletons">Class singletons<a class="headerlink" href="#class-singletons" title="Permalink to this heading">¶</a></h3>
 <p><a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclasses of the same type (order, irreducible polynomial, and primitive element) are singletons.</p>
 <p>Here is the creation (twice) of the field <span class="math notranslate nohighlight">\(\mathrm{GF}(3^5)\)</span> defined with the default irreducible
 polynomial <span class="math notranslate nohighlight">\(x^5 + 2x + 1\)</span>. They <em>are</em> the same class (a singleton), not just equivalent classes.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span> <span class="ow">is</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
-<span class="gh">Out[10]: </span><span class="go">True</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [14]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span> <span class="ow">is</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
+<span class="gh">Out[14]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
 <p>The expense of class creation is incurred only once. So, subsequent calls of <code class="code highlight python docutils literal highlight-python"><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span></code> are extremely inexpensive.</p>
 <p>However, the field <span class="math notranslate nohighlight">\(\mathrm{GF}(3^5)\)</span> defined with irreducible polynomial <span class="math notranslate nohighlight">\(x^5 + x^2 + x + 2\)</span>, while isomorphic to the
 first field, has different arithmetic. As such, <a class="reference internal" href="../../api/galois.GF/" title="galois.GF (Python function) — Creates a FieldArray subclass for \mathrm{GF}(p^m)."><code class="xref py py-func docutils literal notranslate"><span class="pre">GF()</span></code></a> returns a unique <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [11]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span> <span class="ow">is</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">irreducible_poly</span><span class="o">=</span><span class="s2">&quot;x^5 + x^2 + x + 2&quot;</span><span class="p">)</span>
-<span class="gh">Out[11]: </span><span class="go">False</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [15]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span> <span class="ow">is</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">irreducible_poly</span><span class="o">=</span><span class="s2">&quot;x^5 + x^2 + x + 2&quot;</span><span class="p">)</span>
+<span class="gh">Out[15]: </span><span class="go">False</span>
 </code></pre></div>
 </div>
 <h3 id="methods-and-properties">Methods and properties<a class="headerlink" href="#methods-and-properties" title="Permalink to this heading">¶</a></h3>
 <p>All of the methods and properties related to <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>, not one of its arrays, are documented as class methods
 and class properties in <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>. For example, the irreducible polynomial of the finite field is accessed
 with <a class="reference internal" href="../../api/galois.FieldArray.irreducible_poly/" title="galois.FieldArray.irreducible_poly (Python property) — The irreducible polynomial f(x) of the Galois field \mathrm{GF}(p^m). The irreducible polynomial is of degree m over \mathrm{GF}(p)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">irreducible_poly</span></code></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [12]: </span><span class="n">GF</span><span class="o">.</span><span class="n">irreducible_poly</span>
-<span class="gh">Out[12]: </span><span class="go">Poly(x^5 + 2x + 1, GF(3))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">GF</span><span class="o">.</span><span class="n">irreducible_poly</span>
+<span class="gh">Out[16]: </span><span class="go">Poly(x^4 + 3x^2 + 100525x + 3, GF(109987))</span>
 </code></pre></div>
 </div>
 <h2 id="fieldarray-instances"><a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances<a class="headerlink" href="#fieldarray-instances" title="Permalink to this heading">¶</a></h2>
@@ -7480,49 +7513,49 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_2_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">23</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">124</span><span class="p">])</span>
-
-<span class="gp">In [14]: </span><span class="n">x</span>
-<span class="gh">Out[14]: </span><span class="go">GF([ 23,  78, 163, 124], order=3^5)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [15]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">23</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">124</span><span class="p">])</span>
-
-<span class="gp">In [16]: </span><span class="n">x</span>
-<span class="gh">Out[16]: </span><span class="go"></span>
-<span class="go">GF([            2α^2 + α + 2,         2α^3 + 2α^2 + 2α,</span>
-<span class="go">                    2α^4 + 1, α^4 + α^3 + α^2 + 2α + 1], order=3^5)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [17]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">23</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">124</span><span class="p">])</span>
 
 <span class="gp">In [18]: </span><span class="n">x</span>
-<span class="gh">Out[18]: </span><span class="go">GF([ α^17, α^132, α^241,  α^41], order=3^5)</span>
+<span class="gh">Out[18]: </span><span class="go">GF([ 23,  78, 163, 124], order=109987^4)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">23</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">124</span><span class="p">])</span>
+
+<span class="gp">In [20]: </span><span class="n">x</span>
+<span class="gh">Out[20]: </span><span class="go">GF([ 23,  78, 163, 124], order=109987^4)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [21]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([</span><span class="mi">23</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">124</span><span class="p">])</span>
+
+<span class="gp">In [22]: </span><span class="n">x</span>
+<span class="gh">Out[22]: </span><span class="go"></span>
+<span class="go">GF([α^120899540090476935400,  α^66680024779995065400,</span>
+<span class="go">     α^12131866027017759280,  α^59549659564071817760], order=109987^4)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 </div><p>The array <code class="code highlight python docutils literal highlight-python"><span class="n">x</span></code> is an instance of <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> and also an instance of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GF</span><span class="p">)</span>
-<span class="gh">Out[19]: </span><span class="go">True</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GF</span><span class="p">)</span>
+<span class="gh">Out[23]: </span><span class="go">True</span>
 
-<span class="gp">In [20]: </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">FieldArray</span><span class="p">)</span>
-<span class="gh">Out[20]: </span><span class="go">True</span>
+<span class="gp">In [24]: </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">FieldArray</span><span class="p">)</span>
+<span class="gh">Out[24]: </span><span class="go">True</span>
 
-<span class="gp">In [21]: </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
-<span class="gh">Out[21]: </span><span class="go">True</span>
+<span class="gp">In [25]: </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+<span class="gh">Out[25]: </span><span class="go">True</span>
 
-<span class="gp">In [22]: </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-<span class="gh">Out[22]: </span><span class="go">True</span>
+<span class="gp">In [26]: </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+<span class="gh">Out[26]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
 <p>The <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass is easily recovered from a <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instance using <code class="xref py py-func docutils literal notranslate"><span class="pre">type()</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="n">GF</span>
-<span class="gh">Out[23]: </span><span class="go">True</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [27]: </span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="n">GF</span>
+<span class="gh">Out[27]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
 <h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permalink to this heading">¶</a></h3>
@@ -7537,29 +7570,32 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_3_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [24]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gh">Out[24]: </span><span class="go"></span>
-<span class="go">GF([[242, 216],</span>
-<span class="go">    [ 32, 114],</span>
-<span class="go">    [230, 179]], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [28]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gh">Out[28]: </span><span class="go"></span>
+<span class="go">GF([[121180422573922824693,  14089154938208861744],</span>
+<span class="go">    [ 57515448340910453820,  63631878807954026308],</span>
+<span class="go">    [117683129302280752155,  57071635982607948077]], order=109987^4)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [25]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gh">Out[25]: </span><span class="go"></span>
-<span class="go">GF([[2α^4 + 2α^3 + 2α^2 + 2α + 2,                 2α^4 + 2α^3],</span>
-<span class="go">    [                α^3 + α + 2,              α^4 + α^3 + 2α],</span>
-<span class="go">    [  2α^4 + 2α^3 + α^2 + α + 2,         2α^4 + α^2 + 2α + 2]], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [29]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gh">Out[29]: </span><span class="go"></span>
+<span class="go">GF([[91076α^3 + 102524α^2 + 109246α + 72307,</span>
+<span class="go">        10589α^3 + 15896α^2 + 5850α + 45403],</span>
+<span class="go">    [  43227α^3 + 58505α^2 + 75918α + 53128,</span>
+<span class="go">       47824α^3 + 57888α^2 + 66048α + 91188],</span>
+<span class="go">    [  88448α^3 + 47530α^2 + 35075α + 85816,</span>
+<span class="go">       42893α^3 + 106785α^2 + 37701α + 7446]], order=109987^4)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [26]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gh">Out[26]: </span><span class="go"></span>
-<span class="go">GF([[α^185, α^193],</span>
-<span class="go">    [ α^49, α^231],</span>
-<span class="go">    [ α^81,  α^60]], order=3^5)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [30]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gh">Out[30]: </span><span class="go"></span>
+<span class="go">GF([[ α^62959969285241582896,  α^19051981541550155267],</span>
+<span class="go">    [α^140820594777191213359,  α^78987245404885970980],</span>
+<span class="go">    [α^130777419878136939275,  α^19703112833107190626]], order=109987^4)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7573,32 +7609,32 @@ Polynomial</label><label class="tabbed-label" for="__tabbed_4_3">
 Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [27]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[27]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [31]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gh">Out[31]: </span><span class="go"></span>
 <span class="go">GF([[1, 0, 0, 0],</span>
 <span class="go">    [0, 1, 0, 0],</span>
 <span class="go">    [0, 0, 1, 0],</span>
-<span class="go">    [0, 0, 0, 1]], order=3^5)</span>
+<span class="go">    [0, 0, 0, 1]], order=109987^4)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [28]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[28]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [32]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gh">Out[32]: </span><span class="go"></span>
 <span class="go">GF([[1, 0, 0, 0],</span>
 <span class="go">    [0, 1, 0, 0],</span>
 <span class="go">    [0, 0, 1, 0],</span>
-<span class="go">    [0, 0, 0, 1]], order=3^5)</span>
+<span class="go">    [0, 0, 0, 1]], order=109987^4)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [29]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[29]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [33]: </span><span class="n">GF</span><span class="o">.</span><span class="n">Identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gh">Out[33]: </span><span class="go"></span>
 <span class="go">GF([[1, 0, 0, 0],</span>
 <span class="go">    [0, 1, 0, 0],</span>
 <span class="go">    [0, 0, 1, 0],</span>
-<span class="go">    [0, 0, 0, 1]], order=3^5)</span>
+<span class="go">    [0, 0, 0, 1]], order=109987^4)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7606,8 +7642,8 @@ Power</label></div>
 </div><h3 id="methods">Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h3>
 <p>All of the methods that act on <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances are documented as instance methods in <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a>.
 For example, the multiplicative order of each finite field element is calculated using <a class="reference internal" href="../../api/galois.FieldArray.multiplicative_order/" title="galois.FieldArray.multiplicative_order (Python method) — Computes the multiplicative order \textrm{ord}(x) of each element in x."><code class="xref py py-func docutils literal notranslate"><span class="pre">multiplicative_order()</span></code></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [30]: </span><span class="n">x</span><span class="o">.</span><span class="n">multiplicative_order</span><span class="p">()</span>
-<span class="gh">Out[30]: </span><span class="go">array([242,  11, 242, 242])</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [34]: </span><span class="n">x</span><span class="o">.</span><span class="n">multiplicative_order</span><span class="p">()</span>
+<span class="gh">Out[34]: </span><span class="go">array([109986, 36662, 54993, 54993], dtype=object)</span>
 </code></pre></div>
 </div>
 
@@ -7617,7 +7653,7 @@ For example, the multiplicative order of each finite field element is calculated
   <small>
     
       Last update:
-      Nov 04, 2022
+      Dec 08, 2022
     
   </small>
 </div>

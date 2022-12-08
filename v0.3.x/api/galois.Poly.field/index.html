@@ -7280,7 +7280,7 @@
 <dd><p>The <a class="reference internal" href="../galois.Array/" title="galois.Array (Python class) — An abstract ndarray subclass over a Galois field or Galois ring."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Array</span></code></a> subclass for the finite field the coefficients are over.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span> <span class="n">a</span>
-<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x^4 + x^3 + x^2 + x + 1, GF(2))</span>
+<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x^4 + x^3 + x + 1, GF(2))</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span><span class="o">.</span><span class="n">field</span>
 <span class="gh">Out[2]: </span><span class="go">&lt;class &#39;galois.GF(2)&#39;&gt;</span>
@@ -7289,7 +7289,7 @@
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">8</span><span class="p">)</span>
 
 <span class="gp">In [4]: </span><span class="n">b</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">b</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(241x^5 + 118x^4 + 152x^3 + 182x^2 + 143, GF(2^8))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(229x^5 + 87x^4 + 144x^3 + 108x^2 + 66x + 1, GF(2^8))</span>
 
 <span class="gp">In [5]: </span><span class="n">b</span><span class="o">.</span><span class="n">field</span>
 <span class="gh">Out[5]: </span><span class="go">&lt;class &#39;galois.GF(2^8)&#39;&gt;</span>
