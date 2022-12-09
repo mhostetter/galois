@@ -1,0 +1,68 @@
+# v0.3.0
+
+*Released December 9, 2022*
+
+## Breaking changes
+
+- Increased minimum NumPy version to 1.21.0. ([#441](https://github.com/mhostetter/galois/pull/441))
+- Increased minimum Numba version to 0.55.0 ([#441](https://github.com/mhostetter/galois/pull/441))
+- Modified `galois.GF()` and `galois.Field()` so that keyword arguments `irreducible_poly`, `primitive_element`, `verify`, `compile`, and `repr` may no longer be passed as positional arguments. ([#442](https://github.com/mhostetter/galois/pull/442))
+
+## Changes
+
+- Added a `galois.GF(p, m)` call signature in addition to `galois.GF(p**m)`. This also applies to `galois.Field()`. Separately specifying $p$ and $m$ eliminates the need to factor the order $p^m$ in very large finite fields. ([#442](https://github.com/mhostetter/galois/pull/442))
+  ```python
+  >>> import galois
+  # This is faster than galois.GF(2**409)
+  >>> GF = galois.GF(2, 409)
+  >>> print(GF.properties)
+  Galois Field:
+    name: GF(2^409)
+    characteristic: 2
+    degree: 409
+    order: 1322111937580497197903830616065542079656809365928562438569297590548811582472622691650378420879430569695182424050046716608512
+    irreducible_poly: x^409 + x^7 + x^5 + x^3 + 1
+    is_primitive_poly: True
+    primitive_element: x
+  ```
+- Optimized matrix multiplication by parallelizing across multiple cores. ([#440](https://github.com/mhostetter/galois/pull/440))
+  ```ipython
+  In [1]: import galois
+
+  In [2]: GF = galois.GF(3**5)
+
+  In [3]: A = GF.Random((300, 400), seed=1)
+
+  In [4]: B = GF.Random((400, 500), seed=2)
+
+  # v0.2.0
+  In [5]: %timeit A @ B
+  664 ms ± 3.31 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.3.0
+  In [5]: %timeit A @ B
+  79.1 ms ± 7.32 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  ```
+- Optimized polynomial evaluation by parallelizing across multiple cores. ([#440](https://github.com/mhostetter/galois/pull/440))
+  ```ipython
+  In [1]: import galois
+
+  In [2]: GF = galois.GF(3**5)
+
+  In [3]: f = galois.Poly.Random(100, seed=1, field=GF)
+
+  In [4]: x = GF.Random(100_000, seed=1)
+
+  # v0.2.0
+  In [5]: %timeit f(x)
+  776 ms ± 2.12 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.3.0
+  In [5]: %timeit f(x)
+  13.9 ms ± 2.51 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  ```
+- Fixed an occasional arithmetic type error in binary extension fields $\mathrm{GF}(2^m)$ when using the built-in `np.bitwise_xor()`. ([#441](https://github.com/mhostetter/galois/pull/441))
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
