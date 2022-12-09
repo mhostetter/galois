@@ -41,6 +41,8 @@ A :obj:`~galois.FieldArray` subclass is created using the class factory function
 
         GF = galois.GF(109987, 4, irreducible_poly="x^4 + 3x^2 + 100525x + 3", primitive_element="x", verify=False)
         print(GF.properties)
+        @suppress
+        GF = galois.GF(3**5)
 
 The `GF` class is a subclass of :obj:`~galois.FieldArray` and a subclasses of :obj:`~numpy.ndarray`.
 
