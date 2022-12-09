@@ -1,0 +1,76 @@
+# v0.0.28
+
+*Released May 11, 2022*
+
+## Changes
+
+- Modified JIT-compiled functions to use explicit calculation *or* lookup tables. Previously, JIT functions only used explicit
+  calculation routines. Now all ufuncs and functions are JIT-compiled once on first invocation, but use the current `ufunc_mode` to
+  determine the arithmetic used. This provides a significant performance boost for fields which use lookup tables by default. The
+  greatest performance improvement can be seen in $\mathrm{GF}(p^m)$ fields. ([#354](https://github.com/mhostetter/galois/pull/354))
+  - Polynomial multiplication is **210% faster**.
+    ```ipython
+    In [2]: GF = galois.GF(7**5)
+
+    In [3]: f = galois.Poly.Random(10, seed=1, field=GF)
+
+    In [4]: g = galois.Poly.Random(5, seed=2, field=GF)
+
+    # v0.0.27
+    In [6]: %timeit f * g
+    168 µs ± 722 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+    # v0.0.28
+    In [6]: %timeit f * g
+    54 µs ± 574 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+    ```
+  - Polynomial modular exponentiation is **5,310% faster**.
+    ```ipython
+    # v0.0.27
+    In [8]: %timeit pow(f, 123456789, g)
+    5.9 ms ± 9.4 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+    # v0.0.28
+    In [8]: %timeit pow(f, 123456789, g)
+    109 µs ± 527 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+    ```
+  - Matrix multiplication is **6,690% faster**.
+    ```ipython
+    In [9]: A = GF.Random((100, 100), seed=1)
+
+    In [10]: B = GF.Random((100, 100), seed=2)
+
+    # v0.0.27
+    In [12]: %timeit A @ B
+    1.1 s ± 4.76 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+    # v0.0.28
+    In [12]: %timeit A @ B
+    16.2 ms ± 50.1 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    ```
+- Simplified `FieldArray` subclasses' `repr()` and `str()`. Since these classes may be displayed in error logs, a concise
+  representation is necessary. ([#350](https://github.com/mhostetter/galois/pull/350))
+  ```python
+  >>> GF = galois.GF(3**5)
+  >>> GF
+  <class 'galois.GF(3^5)'>
+  ```
+- Added back `FieldArray.properties` for a detailed description of the finite field's relevant properties. ([#350](https://github.com/mhostetter/galois/pull/350))
+  ```python
+  >>> GF = galois.GF(3**5)
+  >>> print(GF.properties)
+  Galois Field:
+    name: GF(3^5)
+    characteristic: 3
+    degree: 5
+    order: 243
+    irreducible_poly: x^5 + 2x + 1
+    is_primitive_poly: True
+    primitive_element: x
+  ```
+- Increased code coverage.
+- Various documentation fixes.
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))

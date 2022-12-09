@@ -1,0 +1,85 @@
+# v0.0.25
+
+*Released March 21, 2022*
+
+## Breaking changes
+
+- Separated `LFSR` into `FLFSR`/`GLFSR` and fixed/redefined terms (feedback poly, characteristic poly, state). ([#285](https://github.com/mhostetter/galois/pull/285))
+- Removed `galois.pow()` and replaced it with the built-in `pow()`. ([#300](https://github.com/mhostetter/galois/pull/300))
+    ```python
+    >>> f = galois.Poly([6, 3, 0, 1], field=galois.GF(7))
+    >>> g = galois.Poly([5, 0, 3], field=galois.GF(7))
+    >>> pow(f, 123456789, g)
+    Poly(6x + 2, GF(7))
+    ```
+- Removed `FieldClass.properties` and replaced with `FieldClass.__str__`. ([#289](https://github.com/mhostetter/galois/issues/289))
+    ```python
+    >>> GF = galois.GF(3**5)
+    >>> print(GF)
+    Galois Field:
+      name: GF(3^5)
+      characteristic: 3
+      degree: 5
+      order: 243
+      irreducible_poly: x^5 + 2x + 1
+      is_primitive_poly: True
+      primitive_element: x
+    ```
+- Differentiated `repr()` and `str()` for *Galois field arrays*, like NumPy. `repr()` displays the finite field's order, but `str()` does not.
+    ```python
+    >>> GF = galois.GF(31, display="power")
+    >>> x = GF([1, 23, 0, 15])
+    >>> x
+    GF([   1, α^27,    0, α^21], order=31)
+    >>> print(x)
+    [   1, α^27,    0, α^21]
+    ```
+- Renamed `Poly.String()` to `Poly.Str()`. Removed `Poly.string` and replaced it with `Poly.__str__`. ([#300](https://github.com/mhostetter/galois/pull/300))
+    ```python
+    >>> f = galois.Poly.Str("x^3 + x + 1"); f
+    Poly(x^3 + x + 1, GF(2))
+    >>> str(f)
+    'x^3 + x + 1'
+    ```
+- Renamed `Poly.Integer()` to `Poly.Int()`. Removed `Poly.integer` and replaced it with `Poly.__int__`. ([#300](https://github.com/mhostetter/galois/pull/300))
+    ```python
+    >>> f = galois.Poly.Int(11); f
+    Poly(x^3 + x + 1, GF(2))
+    >>> int(f)
+    11
+    ```
+
+## Changes
+
+- Fixed bug in Fibonacci/Galois LFSRs where feedback polynomial wasn't interpreted correctly for fields with characteristic greater than 2. ([#299](https://github.com/mhostetter/galois/issues/299))
+- Utilized memoization for expensive search routines (`irreducible_poly()` and `primitive_poly()`) to speed-up subsequent calls. ([#295](https://github.com/mhostetter/galois/issues/295))
+    ```ipython
+    In [2]: %time galois.primitive_poly(7, 4)
+    CPU times: user 675 ms, sys: 6.24 ms, total: 682 ms
+    Wall time: 741 ms
+    Out[2]: Poly(x^4 + x^2 + 3x + 5, GF(7))
+
+    In [3]: %time galois.primitive_poly(7, 4)
+    CPU times: user 30 µs, sys: 0 ns, total: 30 µs
+    Wall time: 31.7 µs
+    Out[3]: Poly(x^4 + x^2 + 3x + 5, GF(7))
+    ```
+- Added support for `bin()`, `oct()`, and `hex()` on `Poly` objects. ([#300](https://github.com/mhostetter/galois/pull/300))
+    ```python
+    >>> f = galois.Poly.Int(11); f
+    Poly(x^3 + x + 1, GF(2))
+    >>> bin(f)
+    '0b1011'
+    >>> oct(f)
+    '0o13'
+    >>> hex(f)
+    '0xb'
+    ```
+- Made *Galois field arrays* display with fixed-width elements, like NumPy. ([#270](https://github.com/mhostetter/galois/pull/270))
+- Achieved speed-up of `repr()` and `str()` on *Galois field arrays* of at least 25x. Achieved a much greater speed-up for large arrays, since now elements converted to `...` are no longer needlessly converted to their string representation. ([#270](https://github.com/mhostetter/galois/pull/270))
+- Overhauled documentation and website. Type hints are now displayed in the API reference. ([#263](https://github.com/mhostetter/galois/pull/263))
+- Various bug fixes.
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))

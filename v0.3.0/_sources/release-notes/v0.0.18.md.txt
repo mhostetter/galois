@@ -1,0 +1,39 @@
+# v0.0.18
+
+*Released July 6, 2021*
+
+## Breaking changes
+
+- Make API more consistent with software like Matlab and Wolfram:
+  - Rename `galois.prime_factors()` to `galois.factors()`.
+  - Rename `galois.gcd()` to `galois.egcd()` and add `galois.gcd()` for conventional GCD.
+  - Rename `galois.poly_gcd()` to `galois.poly_egcd()` and add `galois.poly_gcd()` for conventional GCD.
+  - Rename `galois.euler_totient()` to `galois.euler_phi()`.
+  - Rename `galois.carmichael()` to `galois.carmichael_lambda()`.
+  - Rename `galois.is_prime_fermat()` to `galois.fermat_primality_test()`.
+  - Rename `galois.is_prime_miller_rabin()` to `galois.miller_rabin_primality_test()`.
+- Rename polynomial search `method` keyword argument values from `["smallest", "largest", "random"]` to `["min", "max", "random"]`.
+
+## Changes
+
+- Clean up `galois` API and `dir()` so only public classes and functions are displayed.
+- Speed-up `galois.is_primitive()` test and search for primitive polynomials in `galois.primitive_poly()`.
+- Speed-up `galois.is_smooth()`.
+- Add Reed-Solomon codes in `galois.ReedSolomon`.
+- Add shortened BCH and Reed-Solomon codes.
+- Add error detection for BCH and Reed-Solomon with the `detect()` method.
+- Add general cyclic linear block code functions.
+- Add Matlab default primitive polynomial with `galois.matlab_primitive_poly()`.
+- Add number theoretic functions:
+  - Add `galois.legendre_symbol()`, `galois.jacobi_symbol()`, `galois.kronecker_symbol()`.
+  - Add `galois.divisors()`, `galois.divisor_sigma()`.
+  - Add `galois.is_composite()`, `galois.is_prime_power()`, `galois.is_perfect_power()`, `galois.is_square_free()`, `galois.is_powersmooth()`.
+  - Add `galois.are_coprime()`.
+- Clean up integer factorization algorithms and add some to public API:
+  - Add `galois.perfect_power()`, `galois.trial_division()`, `galois.pollard_p1()`, `galois.pollard_rho()`.
+- Clean up API reference structure and hierarchy.
+- Fix minor bugs in BCH codes.
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
