@@ -140,7 +140,7 @@ def _euler_phi(n: int) -> int:
 
     phi = 1
     for pi, ei in zip(p, e):
-        phi *= pi**(ei - 1) * (pi - 1)
+        phi *= pi ** (ei - 1) * (pi - 1)
 
     return phi
 
@@ -229,9 +229,9 @@ def carmichael_lambda(n: int) -> int:
     for i in range(len(p)):
         # Carmichael function for prime powers
         if p[i] == 2 and e[i] > 2:
-            l = euler_phi(p[i]**e[i]) // 2
+            l = euler_phi(p[i] ** e[i]) // 2
         else:
-            l = euler_phi(p[i]**e[i])
+            l = euler_phi(p[i] ** e[i])
         lambdas.append(l)
 
     return lcm(*lambdas)
@@ -401,7 +401,12 @@ def is_cyclic(n: int) -> bool:
 
 
 @export
-def primitive_root(n: int, start: int = 1, stop: int | None = None, method: Literal["min", "max", "random"] = "min") -> int:
+def primitive_root(
+    n: int,
+    start: int = 1,
+    stop: int | None = None,
+    method: Literal["min", "max", "random"] = "min",
+) -> int:
     r"""
     Finds a primitive root modulo :math:`n` in the range :math:`[\textrm{start}, \textrm{stop})`.
 
@@ -575,7 +580,12 @@ def primitive_root(n: int, start: int = 1, stop: int | None = None, method: Lite
 
 
 @export
-def primitive_roots(n: int, start: int = 1, stop: int | None = None, reverse: bool = False) -> Iterator[int]:
+def primitive_roots(
+    n: int,
+    start: int = 1,
+    stop: int | None = None,
+    reverse: bool = False,
+) -> Iterator[int]:
     r"""
     Iterates through all primitive roots modulo :math:`n` in the range :math:`[\textrm{start}, \textrm{stop})`.
 
@@ -721,7 +731,7 @@ def _primitive_root_random_search(n, start, stop) -> int:
             return root
 
         i += 1
-        if i > 2*(stop - start):
+        if i > 2 * (stop - start):
             # A primitive root should have been found given 2*N tries
             raise StopIteration
 

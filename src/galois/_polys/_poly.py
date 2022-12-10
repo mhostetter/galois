@@ -14,7 +14,15 @@ from .._prime import factors
 from ..typing import ElementLike, ArrayLike, PolyLike
 
 from . import _binary, _dense, _sparse
-from ._conversions import integer_to_poly, integer_to_degree, poly_to_integer, poly_to_str, sparse_poly_to_integer, sparse_poly_to_str, str_to_sparse_poly
+from ._conversions import (
+    integer_to_poly,
+    integer_to_degree,
+    poly_to_integer,
+    poly_to_str,
+    sparse_poly_to_integer,
+    sparse_poly_to_str,
+    str_to_sparse_poly,
+)
 
 # Values were obtained by running scripts/sparse_poly_performance_test.py
 SPARSE_VS_DENSE_POLY_FACTOR = 0.00_125  # 1.25% density
@@ -69,7 +77,12 @@ class Poly:
     # Increase my array priority so numpy will call my __radd__ instead of its own __add__
     __array_priority__ = 100
 
-    def __init__(self, coeffs: ArrayLike, field: Type[Array] | None = None, order: Literal["desc", "asc"] = "desc"):
+    def __init__(
+        self,
+        coeffs: ArrayLike,
+        field: Type[Array] | None = None,
+        order: Literal["desc", "asc"] = "desc",
+    ):
         r"""
         Creates a polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
@@ -240,7 +253,12 @@ class Poly:
         return Poly([1, 0], field=field)
 
     @classmethod
-    def Random(cls, degree: int, seed: int | np.integer | np.random.Generator | None = None, field: Type[Array] | None = None) -> Self:
+    def Random(
+        cls,
+        degree: int,
+        seed: int | np.integer | np.random.Generator | None = None,
+        field: Type[Array] | None = None,
+    ) -> Self:
         r"""
         Constructs a random polynomial over :math:`\mathrm{GF}(p^m)` with degree :math:`d`.
 
@@ -439,7 +457,7 @@ class Poly:
         cls,
         degrees: Sequence[int] | np.ndarray,
         coeffs: ArrayLike | None = None,
-        field: Type[Array] | None = None
+        field: Type[Array] | None = None,
     ) -> Self:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its non-zero degrees.
@@ -484,7 +502,7 @@ class Poly:
             raise TypeError(f"Argument 'field' must be a Array subclass, not {type(field)}.")
 
         degrees = np.array(degrees, dtype=np.int64)
-        coeffs = [1,]*len(degrees) if coeffs is None else coeffs
+        coeffs = [1] * len(degrees) if coeffs is None else coeffs
         coeffs, field = _convert_coeffs(coeffs, field)
 
         if not degrees.ndim <= 1:
@@ -518,7 +536,7 @@ class Poly:
             obj._type = "binary"
             # Compute the integer value so we're ready for arithmetic computations
             int(obj)
-        elif len(degrees) > 0 and len(degrees) < SPARSE_VS_DENSE_POLY_FACTOR*max(degrees):
+        elif len(degrees) > 0 and len(degrees) < SPARSE_VS_DENSE_POLY_FACTOR * max(degrees):
             obj._type = "sparse"
         else:
             obj._type = "dense"
@@ -530,7 +548,7 @@ class Poly:
         cls,
         roots: ArrayLike,
         multiplicities: Sequence[int] | np.ndarray | None = None,
-        field: Type[Array] | None = None
+        field: Type[Array] | None = None,
     ) -> Self:
         r"""
         Constructs a monic polynomial over :math:`\mathrm{GF}(p^m)` from its roots.
@@ -585,7 +603,7 @@ class Poly:
             # Evaluate the polynomial at its roots
             f(roots)
         """
-        multiplicities = [1,]*len(roots) if multiplicities is None else multiplicities
+        multiplicities = [1] * len(roots) if multiplicities is None else multiplicities
         verify_isinstance(roots, (tuple, list, np.ndarray, Array))
         verify_isinstance(multiplicities, (tuple, list, np.ndarray))
         if not (field is None or issubclass(field, Array)):
@@ -595,12 +613,14 @@ class Poly:
 
         roots = field(roots).flatten()
         if not len(roots) == len(multiplicities):
-            raise ValueError(f"Arguments 'roots' and 'multiplicities' must have the same length, not {len(roots)} and {len(multiplicities)}.")
+            raise ValueError(
+                f"Arguments 'roots' and 'multiplicities' must have the same length, not {len(roots)} and {len(multiplicities)}."
+            )
 
         poly = Poly.One(field=field)
         x = Poly.Identity(field=field)
         for root, multiplicity in zip(roots, multiplicities):
-            poly *= (x - root)**multiplicity
+            poly *= (x - root) ** multiplicity
 
         return poly
 
@@ -611,7 +631,7 @@ class Poly:
     def coefficients(
         self,
         size: int | None = None,
-        order: Literal["desc", "asc"] = "desc"
+        order: Literal["desc", "asc"] = "desc",
     ) -> Array:
         """
         Returns the polynomial coefficients in the order and size specified.
@@ -665,7 +685,7 @@ class Poly:
             raise ValueError(f"Argument 'order' must be either 'desc' or 'asc', not {order!r}.")
 
         coeffs = self.field.Zeros(size)
-        coeffs[-len(self):] = self.coeffs
+        coeffs[-len(self) :] = self.coeffs
         if order == "asc":
             coeffs = np.flip(coeffs)
 
@@ -704,9 +724,11 @@ class Poly:
     @overload
     def roots(self, multiplicity: Literal[False] = False) -> Array:
         ...
+
     @overload
     def roots(self, multiplicity: Literal[True]) -> tuple[Array, np.ndarray]:
         ...
+
     def roots(self, multiplicity=False):
         r"""
         Calculates the roots :math:`r` of the polynomial :math:`f(x)`, such that :math:`f(r) = 0`.
@@ -873,11 +895,12 @@ class Poly:
         # Step 2: Find all remaining factors (their multiplicities are divisible by p)
         if d != one:
             degrees = [degree // p for degree in d.nonzero_degrees]
-            coeffs = d.nonzero_coeffs ** (field.characteristic**(field.degree - 1))  # The inverse Frobenius automorphism of the coefficients
+            # The inverse Frobenius automorphism of the coefficients
+            coeffs = d.nonzero_coeffs ** (field.characteristic ** (field.degree - 1))
             delta = Poly.Degrees(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
             f, m = delta.square_free_factors()
             factors_.extend(f)
-            multiplicities.extend([mi*p for mi in m])
+            multiplicities.extend([mi * p for mi in m])
 
         # Sort the factors in increasing-multiplicity order
         factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: item[1]))
@@ -1060,7 +1083,7 @@ class Poly:
             h = Poly.Random(degree, field=field)
             g = GCD(self, h)
             if g == one:
-                g = pow(h, (q**degree - 1)//2, self) - one
+                g = pow(h, (q**degree - 1) // 2, self) - one
             i = 0
             for u in list(factors_):
                 if u.degree <= degree:
@@ -1155,7 +1178,7 @@ class Poly:
             for df_factor, df_degree in zip(df_factors, df_degrees):
                 f = df_factor.equal_degree_factors(df_degree)
                 factors_.extend(f)
-                multiplicities.extend([sf_multiplicity,]*len(f))
+                multiplicities.extend([sf_multiplicity] * len(f))
 
         # Sort the factors in increasing-multiplicity order
         factors_, multiplicities = zip(*sorted(zip(factors_, multiplicities), key=lambda item: int(item[0])))
@@ -1336,14 +1359,14 @@ class Poly:
         n0 = 0
         for ni in sorted([m // pi for pi in primes]):
             # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the prime factors of m
-            hi = pow(h0, q**(ni - n0), self)
+            hi = pow(h0, q ** (ni - n0), self)
             g = GCD(self, hi - x)
             if g != 1:
                 return False
             h0, n0 = hi, ni
 
         # f(x) must divide (x^(q^m) - x) to be irreducible
-        h = pow(h0, q**(m - n0), self)
+        h = pow(h0, q ** (m - n0), self)
         g = (h - x) % self
         if g != 0:
             return False
@@ -1478,7 +1501,7 @@ class Poly:
 
         _, multiplicities = self.square_free_factors()
 
-        return multiplicities == [1,]
+        return multiplicities == [1]
 
     ###############################################################################
     # Overridden dunder methods
@@ -1563,15 +1586,17 @@ class Poly:
         return self.__index__()
 
     def __hash__(self):
-        t = tuple([self.field.order,] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
+        t = tuple([self.field.order] + self.nonzero_degrees.tolist() + self.nonzero_coeffs.tolist())
         return hash(t)
 
     @overload
     def __call__(self, at: ElementLike | ArrayLike, field: Type[Array] | None = None, elementwise: bool = True) -> Array:
         ...
+
     @overload
     def __call__(self, at: Poly) -> Poly:
         ...
+
     def __call__(self, at, field=None, elementwise=True):
         r"""
         Evaluates the polynomial :math:`f(x)` at :math:`x_0` or the polynomial composition :math:`f(g(x))`.
@@ -1647,7 +1672,9 @@ class Poly:
             return _dense.evaluate_elementwise_jit(field)(coeffs, x)
         else:
             if not (x.ndim == 2 and x.shape[0] == x.shape[1]):
-                raise ValueError(f"Argument 'x' must be a square matrix when evaluating the polynomial not element-wise, not have shape {x.shape}.")
+                raise ValueError(
+                    f"Argument 'x' must be a square matrix when evaluating the polynomial not element-wise, not have shape {x.shape}."
+                )
             return _evaluate_matrix(coeffs, x)
 
     def __len__(self) -> int:
@@ -1723,7 +1750,11 @@ class Poly:
             field = None
         other = Poly._PolyLike(other, field=field)
 
-        return self.field is other.field and np.array_equal(self.nonzero_degrees, other.nonzero_degrees) and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
+        return (
+            self.field is other.field
+            and np.array_equal(self.nonzero_degrees, other.nonzero_degrees)
+            and np.array_equal(self.nonzero_coeffs, other.nonzero_coeffs)
+        )
 
     ###############################################################################
     # Arithmetic
@@ -1894,10 +1925,14 @@ class Poly:
             return Poly(q, field=self.field), Poly(r, field=self.field)
 
     def __truediv__(self, other):
-        raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
+        raise NotImplementedError(
+            "Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead."
+        )
 
     def __rtruediv__(self, other):
-        raise NotImplementedError("Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead.")
+        raise NotImplementedError(
+            "Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead."
+        )
 
     def __floordiv__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
@@ -2180,7 +2215,7 @@ def _root_multiplicity(poly: Poly, root: Array) -> int:
             # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
             # greater than the field's characteristic, we need factor to the polynomial. Here we factor out (x - root)^m,
             # where m is the current multiplicity.
-            p = poly // (Poly([1, -root], field=field)**multiplicity)
+            p = poly // (Poly([1, -root], field=field) ** multiplicity)
 
         if p(root) == 0:
             multiplicity += 1
@@ -2198,9 +2233,9 @@ def _evaluate_matrix(coeffs: Array, X: Array) -> Array:
     field = type(coeffs)
     I = field.Identity(X.shape[0])
 
-    y = coeffs[0]*I
+    y = coeffs[0] * I
     for j in range(1, coeffs.size):
-        y = coeffs[j]*I + y @ X
+        y = coeffs[j] * I + y @ X
 
     return y
 
@@ -2214,7 +2249,7 @@ def _evaluate_poly(f: Poly, g: Poly) -> Poly:
 
     h = Poly(coeffs[0])
     for j in range(1, coeffs.size):
-        h = coeffs[j] + h*g
+        h = coeffs[j] + h * g
 
     return h
 
@@ -2227,7 +2262,9 @@ def _check_input_is_poly(a: Poly | Array, field: Type[Array]):
         a_field = a.field
     elif isinstance(a, Array):
         if not a.size == 1:
-            raise ValueError(f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {a.size}.")
+            raise ValueError(
+                f"Arguments that are Galois field elements must have size 1 (equivalently a 0-degree polynomial), not size {a.size}."
+            )
         a_field = type(a)
     else:
         raise TypeError(f"Both operands must be a galois.Poly or a single element of its field {field.name}, not {type(a)}.")

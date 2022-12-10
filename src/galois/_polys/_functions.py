@@ -14,6 +14,7 @@ from ._dense import lagrange_poly_jit
 # Divisibility
 ###############################################################################
 
+
 def gcd(a: Poly, b: Poly) -> Poly:
     """
     This function is wrapped and documented in `_polymorphic.gcd()`.
@@ -50,9 +51,9 @@ def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
 
     while r1 != 0:
         q = r2 // r1
-        r2, r1 = r1, r2 - q*r1
-        s2, s1 = s1, s2 - q*s1
-        t2, t1 = t1, t2 - q*t1
+        r2, r1 = r1, r2 - q * r1
+        s2, s1 = s1, s2 - q * s1
+        t2, t1 = t1, t2 - q * t1
 
     # Make the GCD polynomial monic
     c = r2.coeffs[0]  # The leading coefficient
@@ -70,7 +71,7 @@ def lcm(*args: Poly) -> Poly:
     """
     field = args[0].field
 
-    lcm_  = Poly.One(field)
+    lcm_ = Poly.One(field)
     for arg in args:
         if not arg.field == field:
             raise ValueError(f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}.")
@@ -88,7 +89,7 @@ def prod(*args: Poly) -> Poly:
     """
     field = args[0].field
 
-    prod_  = Poly.One(field)
+    prod_ = Poly.One(field)
     for arg in args:
         if not arg.field == field:
             raise ValueError(f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}.")
@@ -100,6 +101,7 @@ def prod(*args: Poly) -> Poly:
 ###############################################################################
 # Special polynomials
 ###############################################################################
+
 
 @export
 def lagrange_poly(x: Array, y: Array) -> Poly:

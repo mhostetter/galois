@@ -19,7 +19,7 @@ class Base:
         np.random.seed(123456789)
         self.x = self.GF.Random(self.N)
         self.y = self.GF.Random(self.N, low=1)
-        self.z = np.random.randint(0, 2*self.GF.order, self.N)
+        self.z = np.random.randint(0, 2 * self.GF.order, self.N)
 
     def test_add(self, benchmark):
         benchmark(np.add, self.x, self.y)

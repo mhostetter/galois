@@ -16,7 +16,7 @@ def verify_isinstance(argument, types, optional=False):
         frame = inspect.currentframe()
         frame = inspect.getouterframes(frame)[1]
         string = inspect.getframeinfo(frame[0]).code_context[0].strip()
-        args = string[string.find("(") + 1:-1].split(",")
+        args = string[string.find("(") + 1 : -1].split(",")
         argument_name = args[0]
         raise TypeError(f"Argument {argument_name!r} must be an instance of {types}, not {type(argument)}.")
 
@@ -39,7 +39,7 @@ def verify_issubclass(argument, types, optional=False):
         frame = inspect.currentframe()
         frame = inspect.getouterframes(frame)[1]
         string = inspect.getframeinfo(frame[0]).code_context[0].strip()
-        args = string[string.find("(") + 1:-1].split(",")
+        args = string[string.find("(") + 1 : -1].split(",")
         argument_name = args[0]
         raise TypeError(f"Argument {argument_name!r} must be a subclass of {types}, not {type(type(argument))}.")
 
@@ -49,7 +49,7 @@ def verify_literal(argument, literals):
         frame = inspect.currentframe()
         frame = inspect.getouterframes(frame)[1]
         string = inspect.getframeinfo(frame[0]).code_context[0].strip()
-        args = string[string.find("(") + 1:-1].split(",")
+        args = string[string.find("(") + 1 : -1].split(",")
         argument_name = args[0]
         raise ValueError(f"Argument {argument_name!r} must be one of {literals}, not {argument!r}.")
 
@@ -84,6 +84,7 @@ def extend_docstring(method, replace=None, docstring=""):
     and replaces and key-value pair in `replace`.
     """
     replace = {} if replace is None else replace
+
     def decorator(obj):
         parent_docstring = getattr(method, "__doc__", "")
         for from_str, to_str in replace.items():

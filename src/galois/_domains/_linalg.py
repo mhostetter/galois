@@ -38,7 +38,7 @@ def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n
     # Determine the minimum dtype to hold the entire product and summation without overflowing
     if n_sum is None:
         n_sum = 1 if len(a.shape) == 0 else max(a.shape)
-    max_value = n_sum * (field.characteristic - 1)**2
+    max_value = n_sum * (field.characteristic - 1) ** 2
     dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= max_value]
     dtype = np.object_ if len(dtypes) == 0 else dtypes[0]
     a = a.astype(dtype)
@@ -65,6 +65,7 @@ def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n
 # Matrix products
 ###############################################################################
 
+
 class dot_jit(Function):
     """
     Computes the dot product of two arrays.
@@ -89,7 +90,9 @@ class dot_jit(Function):
             return np.sum(a * b, axis=-1, out=out)
         # elif a.dnim >= 2 and b.ndim >= 2:
         else:
-            raise NotImplementedError("Currently 'dot' is only supported up to 2-D matrices. Please open a GitHub issue at https://github.com/mhostetter/galois/issues.")
+            raise NotImplementedError(
+                "Currently 'dot' is only supported up to 2-D matrices. Please open a GitHub issue at https://github.com/mhostetter/galois/issues."
+            )
 
 
 class vdot_jit(Function):
@@ -166,7 +169,9 @@ class matmul_jit(Function):
         if not (A.ndim >= 1 and B.ndim >= 1):
             raise ValueError(f"Operation 'matmul' requires both arrays have dimension at least 1, not {A.ndim}-D and {B.ndim}-D.")
         if not (A.ndim <= 2 and B.ndim <= 2):
-            raise ValueError("Operation 'matmul' currently only supports matrix multiplication up to 2-D. If you would like matrix multiplication of N-D arrays, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+            raise ValueError(
+                "Operation 'matmul' currently only supports matrix multiplication up to 2-D. If you would like matrix multiplication of N-D arrays, please submit a GitHub issue at https://github.com/mhostetter/galois/issues."
+            )
         dtype = A.dtype
 
         if self.field._is_prime_field:
@@ -174,14 +179,16 @@ class matmul_jit(Function):
 
         prepend, append = False, False
         if A.ndim == 1:
-            A = A.reshape((1,A.size))
+            A = A.reshape((1, A.size))
             prepend = True
         if B.ndim == 1:
-            B = B.reshape((B.size,1))
+            B = B.reshape((B.size, 1))
             append = True
 
         if not A.shape[-1] == B.shape[-2]:
-            raise ValueError(f"Operation 'matmul' requires the last dimension of A to match the second-to-last dimension of B, not {A.shape} and {B.shape}.")
+            raise ValueError(
+                f"Operation 'matmul' requires the last dimension of A to match the second-to-last dimension of B, not {A.shape} and {B.shape}."
+            )
 
         # if A.ndim > 2 and B.ndim == 2:
         #     new_shape = list(A.shape[:-2]) + list(B.shape)
@@ -218,7 +225,7 @@ class matmul_jit(Function):
         ADD = self.field._add.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
 
-    _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:,:]))
+    _SIGNATURE = numba.types.FunctionType(int64[:, :](int64[:, :], int64[:, :]))
     _PARALLEL = True
 
     @staticmethod
@@ -232,7 +239,7 @@ class matmul_jit(Function):
         for i in numba.prange(M):  # pylint: disable=not-an-iterable
             for j in numba.prange(N):  # pylint: disable=not-an-iterable
                 for k in range(K):
-                    C[i,j] = ADD(C[i,j], MULTIPLY(A[i,k], B[k,j]))
+                    C[i, j] = ADD(C[i, j], MULTIPLY(A[i, k], B[k, j]))
 
         return C
 
@@ -240,6 +247,7 @@ class matmul_jit(Function):
 ###############################################################################
 # Matrix decomposition routines
 ###############################################################################
+
 
 class row_reduce_jit(Function):
     """
@@ -257,21 +265,21 @@ class row_reduce_jit(Function):
 
         for j in range(ncols):
             # Find a pivot in column `j` at or below row `p`
-            idxs = np.nonzero(A_rre[p:,j])[0]
+            idxs = np.nonzero(A_rre[p:, j])[0]
             if idxs.size == 0:
                 continue
             i = p + idxs[0]  # Row with a pivot
 
             # Swap row `p` and `i`. The pivot is now located at row `p`.
-            A_rre[[p,i],:] = A_rre[[i,p],:]
+            A_rre[[p, i], :] = A_rre[[i, p], :]
 
             # Force pivot value to be 1
-            A_rre[p,:] /= A_rre[p,j]
+            A_rre[p, :] /= A_rre[p, j]
 
             # Force zeros above and below the pivot
-            idxs = np.nonzero(A_rre[:,j])[0].tolist()
+            idxs = np.nonzero(A_rre[:, j])[0].tolist()
             idxs.remove(p)
-            A_rre[idxs,:] -= np.multiply.outer(A_rre[idxs,j], A_rre[p,:])
+            A_rre[idxs, :] -= np.multiply.outer(A_rre[idxs, j], A_rre[p, :])
 
             p += 1
             if p == A_rre.shape[0]:
@@ -294,18 +302,18 @@ class lu_decompose_jit(Function):
         Ai = A.copy()
         L = self.field.Identity(n)
 
-        for i in range(0, n-1):
-            if Ai[i,i] == 0:
-                idxs = np.nonzero(Ai[i:,i])[0]  # The first non-zero entry in column `i` below row `i`
+        for i in range(0, n - 1):
+            if Ai[i, i] == 0:
+                idxs = np.nonzero(Ai[i:, i])[0]  # The first non-zero entry in column `i` below row `i`
                 if idxs.size == 0:  # pylint: disable=no-else-continue
-                    L[i,i] = 1
+                    L[i, i] = 1
                     continue
                 else:
                     raise ValueError("The LU decomposition of 'A' does not exist. Use the LUP decomposition instead.")
 
-            l = Ai[i+1:,i] / Ai[i,i]
-            Ai[i+1:,:] -= np.multiply.outer(l, Ai[i,:])
-            L[i+1:,i] = l
+            l = Ai[i + 1 :, i] / Ai[i, i]
+            Ai[i + 1 :, :] -= np.multiply.outer(l, Ai[i, :])
+            L[i + 1 :, i] = l
 
         U = Ai
 
@@ -324,30 +332,30 @@ class plu_decompose_jit(Function):
 
         n = A.shape[0]
         Ai = A.copy()
-        L = self.field.Zeros((n,n))
+        L = self.field.Zeros((n, n))
         P = self.field.Identity(n)  # Row permutation matrix
         N_permutations = 0  # Number of permutations
 
-        for i in range(0, n-1):
-            if Ai[i,i] == 0:
-                idxs = np.nonzero(Ai[i:,i])[0]  # The first non-zero entry in column `i` below row `i`
+        for i in range(0, n - 1):
+            if Ai[i, i] == 0:
+                idxs = np.nonzero(Ai[i:, i])[0]  # The first non-zero entry in column `i` below row `i`
                 if idxs.size == 0:
-                    L[i,i] = 1
+                    L[i, i] = 1
                     continue
                 j = i + idxs[0]
 
                 # Swap rows `i` and `j`
-                P[[i,j],:] = P[[j,i],:]
-                Ai[[i,j],:] = Ai[[j,i],:]
-                L[[i,j],:] = L[[j,i],:]
+                P[[i, j], :] = P[[j, i], :]
+                Ai[[i, j], :] = Ai[[j, i], :]
+                L[[i, j], :] = L[[j, i], :]
                 N_permutations += 1
 
-            l = Ai[i+1:,i] / Ai[i,i]
-            Ai[i+1:,:] -= np.multiply.outer(l, Ai[i,:])  # Zero out rows below row `i`
-            L[i,i] = 1  # Set 1 on the diagonal
-            L[i+1:,i] = l
+            l = Ai[i + 1 :, i] / Ai[i, i]
+            Ai[i + 1 :, :] -= np.multiply.outer(l, Ai[i, :])  # Zero out rows below row `i`
+            L[i, i] = 1  # Set 1 on the diagonal
+            L[i + 1 :, i] = l
 
-        L[-1,-1] = 1  # Set the final diagonal to 1
+        L[-1, -1] = 1  # Set the final diagonal to 1
         U = Ai
 
         # NOTE: Return column permutation matrix
@@ -357,6 +365,7 @@ class plu_decompose_jit(Function):
 ###############################################################################
 # Matrix inversions, solutions, rank, etc
 ###############################################################################
+
 
 class triangular_det_jit(Function):
     """
@@ -368,7 +377,7 @@ class triangular_det_jit(Function):
         if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
             raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
         idxs = np.arange(0, A.shape[0])
-        return np.multiply.reduce(A[idxs,idxs])
+        return np.multiply.reduce(A[idxs, idxs])
 
 
 class det_jit(Function):
@@ -384,9 +393,13 @@ class det_jit(Function):
         n = A.shape[0]
 
         if n == 2:
-            return A[0,0]*A[1,1] - A[0,1]*A[1,0]
+            return A[0, 0] * A[1, 1] - A[0, 1] * A[1, 0]
         elif n == 3:
-            return A[0,0]*(A[1,1]*A[2,2] - A[1,2]*A[2,1]) - A[0,1]*(A[1,0]*A[2,2] - A[1,2]*A[2,0]) + A[0,2]*(A[1,0]*A[2,1] - A[1,1]*A[2,0])
+            return (
+                A[0, 0] * (A[1, 1] * A[2, 2] - A[1, 2] * A[2, 1])
+                - A[0, 1] * (A[1, 0] * A[2, 2] - A[1, 2] * A[2, 0])
+                + A[0, 2] * (A[1, 0] * A[2, 1] - A[1, 1] * A[2, 0])
+            )
         else:
             P, L, U, N_permutations = plu_decompose_jit(self.field)(A)
             P = P.T  # Convert row permutation matrix into column permutation matrix
@@ -399,6 +412,7 @@ class det_jit(Function):
 ###############################################################################
 # Matrix inversions, solutions, rank, etc
 ###############################################################################
+
 
 class matrix_rank_jit(Function):
     """
@@ -432,11 +446,13 @@ class inv_jit(Function):
         AI_rre, _ = row_reduce_jit(self.field)(AI, ncols=n)
 
         # The rank is the number of non-zero rows of the row reduced echelon form
-        rank = np.sum(~np.all(AI_rre[:,0:n] == 0, axis=1))
+        rank = np.sum(~np.all(AI_rre[:, 0:n] == 0, axis=1))
         if not rank == n:
-            raise np.linalg.LinAlgError(f"Argument 'A' is singular and not invertible because it does not have full rank of {n}, but rank of {rank}.")
+            raise np.linalg.LinAlgError(
+                f"Argument 'A' is singular and not invertible because it does not have full rank of {n}, but rank of {rank}."
+            )
 
-        A_inv = AI_rre[:,-n:]
+        A_inv = AI_rre[:, -n:]
 
         return A_inv
 
@@ -466,23 +482,27 @@ class solve_jit(Function):
 # Array mixin class
 ###############################################################################
 
+
 class LinalgFunctionMixin(FunctionMixin):
     """
     A mixin base class that overrides NumPy linear algebra functions to perform self.field arithmetic (+, -, *, /), using *only* explicit
     calculation.
     """
 
-    _OVERRIDDEN_FUNCTIONS = {**FunctionMixin._OVERRIDDEN_FUNCTIONS, **{
-        np.dot: "_dot",
-        np.vdot: "_vdot",
-        np.inner: "_inner",
-        np.outer: "_outer",
-        # np.tensordot: "_tensordot",
-        np.linalg.det: "_det",
-        np.linalg.matrix_rank: "_matrix_rank",
-        np.linalg.solve: "_solve",
-        np.linalg.inv: "_inv",
-    }}
+    _OVERRIDDEN_FUNCTIONS = {
+        **FunctionMixin._OVERRIDDEN_FUNCTIONS,
+        **{
+            np.dot: "_dot",
+            np.vdot: "_vdot",
+            np.inner: "_inner",
+            np.outer: "_outer",
+            # np.tensordot: "_tensordot",
+            np.linalg.det: "_det",
+            np.linalg.matrix_rank: "_matrix_rank",
+            np.linalg.solve: "_solve",
+            np.linalg.inv: "_inv",
+        },
+    }
 
     _dot: Function
     _vdot: Function

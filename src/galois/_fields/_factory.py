@@ -31,6 +31,8 @@ def GF(
     repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
     ...
+
+
 @overload
 def GF(
     characteristic: int,
@@ -43,14 +45,16 @@ def GF(
     repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
     ...
+
+
 @export
 def GF(
     *args,
-    irreducible_poly = None,
-    primitive_element = None,  # pylint: disable=redefined-outer-name
-    verify = True,
-    compile = None,  # pylint: disable=redefined-builtin
-    repr = None,  # pylint: disable=redefined-builtin
+    irreducible_poly=None,
+    primitive_element=None,  # pylint: disable=redefined-outer-name
+    verify=True,
+    compile=None,  # pylint: disable=redefined-builtin
+    repr=None,  # pylint: disable=redefined-builtin
 ):
     r"""
     Creates a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
@@ -251,7 +255,9 @@ def GF(
         verify_isinstance(characteristic, int)
         verify_isinstance(degree, int)
     else:
-        raise TypeError("Only 'order' or 'characteristic' and 'degree' may be specified as positional arguments. Other arguments must be specified as keyword arguments.")
+        raise TypeError(
+            "Only 'order' or 'characteristic' and 'degree' may be specified as positional arguments. Other arguments must be specified as keyword arguments."
+        )
 
     verify_isinstance(verify, bool)
     verify_isinstance(compile, str, optional=True)
@@ -264,10 +270,26 @@ def GF(
 
     if degree == 1:
         if not irreducible_poly is None:
-            raise ValueError(f"Argument 'irreducible_poly' can only be specified for extension fields, not the prime field GF({characteristic}).")
-        return _GF_prime(characteristic, alpha=primitive_element, verify=verify, compile=compile, repr=repr)
+            raise ValueError(
+                f"Argument 'irreducible_poly' can only be specified for extension fields, not the prime field GF({characteristic})."
+            )
+        return _GF_prime(
+            characteristic,
+            alpha=primitive_element,
+            verify=verify,
+            compile=compile,
+            repr=repr,
+        )
     else:
-        return _GF_extension(characteristic, degree, irreducible_poly_=irreducible_poly, alpha=primitive_element, verify=verify, compile=compile, repr=repr)
+        return _GF_extension(
+            characteristic,
+            degree,
+            irreducible_poly_=irreducible_poly,
+            alpha=primitive_element,
+            verify=verify,
+            compile=compile,
+            repr=repr,
+        )
 
 
 @overload
@@ -281,6 +303,8 @@ def Field(
     repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
     ...
+
+
 @overload
 def Field(
     characteristic: int,
@@ -293,21 +317,30 @@ def Field(
     repr: Literal["int", "poly", "power"] | None = None,  # pylint: disable=redefined-builtin
 ) -> Type[FieldArray]:
     ...
+
+
 @export
 def Field(
     *args,
-    irreducible_poly = None,
-    primitive_element = None,  # pylint: disable=redefined-outer-name
-    verify = True,
-    compile = None,  # pylint: disable=redefined-builtin
-    repr = None,  # pylint: disable=redefined-builtin
+    irreducible_poly=None,
+    primitive_element=None,  # pylint: disable=redefined-outer-name
+    verify=True,
+    compile=None,  # pylint: disable=redefined-builtin
+    repr=None,  # pylint: disable=redefined-builtin
 ):
     """
     Alias of :func:`~galois.GF`.
 
     :group: galois-fields
     """
-    return GF(*args, irreducible_poly=irreducible_poly, primitive_element=primitive_element, verify=verify, compile=compile, repr=repr)
+    return GF(
+        *args,
+        irreducible_poly=irreducible_poly,
+        primitive_element=primitive_element,
+        verify=verify,
+        compile=compile,
+        repr=repr,
+    )
 
 
 def _GF_prime(
@@ -345,15 +378,19 @@ def _GF_prime(
     if p == 2:
         field = GF2
     else:
-        field = types.new_class(name, bases=(FieldArray, UFuncMixin_p_1), kwds={
-            "p": p,
-            "m": 1,
-            "characteristic": p,
-            "degree": 1,
-            "order": p,
-            "irreducible_poly_int": 2*p - alpha,  # f(x) = x - e
-            "primitive_element": alpha,
-        })
+        field = types.new_class(
+            name,
+            bases=(FieldArray, UFuncMixin_p_1),
+            kwds={
+                "p": p,
+                "m": 1,
+                "characteristic": p,
+                "degree": 1,
+                "order": p,
+                "irreducible_poly_int": 2 * p - alpha,  # f(x) = x - e
+                "primitive_element": alpha,
+            },
+        )
 
     # Add the class to this module's namespace
     field.__module__ = __name__
@@ -369,6 +406,7 @@ def _GF_prime(
     _GF_prime._classes[key] = field
 
     return field
+
 
 _GF_prime._classes = {}
 
@@ -437,16 +475,20 @@ def _GF_extension(
 
     ufunc_mixin = UFuncMixin_2_m if p == 2 else UFuncMixin_p_m
 
-    field = types.new_class(name, bases=(FieldArray, ufunc_mixin), kwds={
-        "p": p,
-        "m": m,
-        "characteristic": p,
-        "degree": m,
-        "order": p**m,
-        "irreducible_poly_int": int(irreducible_poly_),
-        "primitive_element": int(alpha),
-        "prime_subfield": prime_subfield,
-    })
+    field = types.new_class(
+        name,
+        bases=(FieldArray, ufunc_mixin),
+        kwds={
+            "p": p,
+            "m": m,
+            "characteristic": p,
+            "degree": m,
+            "order": p**m,
+            "irreducible_poly_int": int(irreducible_poly_),
+            "primitive_element": int(alpha),
+            "prime_subfield": prime_subfield,
+        },
+    )
 
     # Add the class to this module's namespace
     field.__module__ = __name__
@@ -465,5 +507,6 @@ def _GF_extension(
     _GF_extension._classes[key] = field
 
     return field
+
 
 _GF_extension._classes = {}

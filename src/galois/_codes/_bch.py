@@ -90,7 +90,7 @@ class BCH(_CyclicCode):
         extension_field: Type[FieldArray] | None = None,
         alpha: ElementLike | None = None,
         c: int = 1,
-        systematic: bool = True
+        systematic: bool = True,
     ):
         r"""
         Constructs a general :math:`\textrm{BCH}(n, k)` code over :math:`\mathrm{GF}(q)`.
@@ -182,12 +182,14 @@ class BCH(_CyclicCode):
         if field is None:
             field = GF2
         if not field.is_prime_field:
-            raise ValueError("Current BCH codes over GF(q) for prime power q are not supported. Proper Galois field towers are needed first.")
+            raise ValueError(
+                "Current BCH codes over GF(q) for prime power q are not supported. Proper Galois field towers are needed first."
+            )
         q = field.order  # The size of the codeword alphabet
 
         if extension_field is None:
             m = ilog(n, q) + 1
-            assert q**(m - 1) < n + 1 <= q**m
+            assert q ** (m - 1) < n + 1 <= q**m
             irreducible_poly = matlab_primitive_poly(q, m)
             extension_field = Field(q**m, irreducible_poly=irreducible_poly)
 
@@ -201,7 +203,9 @@ class BCH(_CyclicCode):
             # Check if both `k` and `d` were provided that the code is consistent
             kk = n - generator_poly.degree
             if not k in [None, kk]:
-                raise ValueError(f"The requested [{n}, {k}, {d}] code is not consistent. When designing the code with design distance {d}, the resulting code is [{n}, {kk}, {d}].")
+                raise ValueError(
+                    f"The requested [{n}, {k}, {d}] code is not consistent. When designing the code with design distance {d}, the resulting code is [{n}, {kk}, {d}]."
+                )
             k = kk
         elif k is not None:
             generator_poly, roots = _generator_poly_from_k(n, k, field, extension_field, alpha, c)
@@ -286,7 +290,9 @@ class BCH(_CyclicCode):
 
         return string
 
-    @extend_docstring(_CyclicCode.encode, {},
+    @extend_docstring(
+        _CyclicCode.encode,
+        {},
         r"""
         Examples
         --------
@@ -359,12 +365,14 @@ class BCH(_CyclicCode):
                 .. ipython:: python
 
                     p = bch.encode(m, output="parity"); p
-        """
+        """,
     )
     def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
         return super().encode(message, output=output)
 
-    @extend_docstring(_CyclicCode.detect, {},
+    @extend_docstring(
+        _CyclicCode.detect,
+        {},
         r"""
         Examples
         --------
@@ -475,19 +483,33 @@ class BCH(_CyclicCode):
                     c[2, 0:bch.d - 1] ^= 1
                     c
                     bch.detect(c)
-        """
+        """,
     )
     def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
         # pylint: disable=useless-super-delegation
         return super().detect(codeword)
 
     @overload
-    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[False] = False) -> FieldArray:
+    def decode(
+        self,
+        codeword: ArrayLike,
+        output: Literal["message", "codeword"] = "message",
+        errors: Literal[False] = False,
+    ) -> FieldArray:
         ...
+
     @overload
-    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[True] = True) -> tuple[FieldArray, int | np.ndarray]:
+    def decode(
+        self,
+        codeword: ArrayLike,
+        output: Literal["message", "codeword"] = "message",
+        errors: Literal[True] = True,
+    ) -> tuple[FieldArray, int | np.ndarray]:
         ...
-    @extend_docstring(_CyclicCode.decode, {},
+
+    @extend_docstring(
+        _CyclicCode.decode,
+        {},
         r"""
         In decoding, the syndrome vector :math:`\mathbf{s}` is computed by evaluating the received codeword
         :math:`\mathbf{r}` in the extension field :math:`\mathrm{GF}(q^m)` at the roots :math:`\alpha^c, \dots, \alpha^{c+d-2}`
@@ -642,7 +664,7 @@ class BCH(_CyclicCode):
 
                     d, e = bch.decode(c, errors=True); d, e
                     np.array_equal(d, m)
-        """
+        """,
     )
     def decode(self, codeword, output="message", errors=False):
         return super().decode(codeword, output=output, errors=errors)
@@ -653,7 +675,9 @@ class BCH(_CyclicCode):
         return dec_codeword, N_errors
 
     @property
-    @extend_docstring(_CyclicCode.field, {},
+    @extend_docstring(
+        _CyclicCode.field,
+        {},
         r"""
         Examples
         --------
@@ -672,7 +696,7 @@ class BCH(_CyclicCode):
             bch = galois.BCH(26, 14, field=galois.GF(3)); bch
             bch.field
             print(bch.field.properties)
-        """
+        """,
     )
     def field(self) -> Type[FieldArray]:
         return super().field
@@ -702,7 +726,9 @@ class BCH(_CyclicCode):
         """
         return self._extension_field
 
-    @extend_docstring(_CyclicCode.n, {},
+    @extend_docstring(
+        _CyclicCode.n,
+        {},
         r"""
         Examples
         --------
@@ -719,13 +745,15 @@ class BCH(_CyclicCode):
 
             bch = galois.BCH(26, 14, field=galois.GF(3)); bch
             bch.n
-        """
+        """,
     )
     @property
     def n(self) -> int:
         return super().n
 
-    @extend_docstring(_CyclicCode.k, {},
+    @extend_docstring(
+        _CyclicCode.k,
+        {},
         r"""
         Examples
         --------
@@ -742,13 +770,15 @@ class BCH(_CyclicCode):
 
             bch = galois.BCH(26, 14, field=galois.GF(3)); bch
             bch.k
-        """
+        """,
     )
     @property
     def k(self) -> int:
         return super().k
 
-    @extend_docstring(_CyclicCode.d, {},
+    @extend_docstring(
+        _CyclicCode.d,
+        {},
         r"""
         The minimum distance of a BCH code may be greater than the design distance, i.e. :math:`d_{min} \ge d`.
 
@@ -767,13 +797,15 @@ class BCH(_CyclicCode):
 
             bch = galois.BCH(26, 14, field=galois.GF(3)); bch
             bch.d
-        """
+        """,
     )
     @property
     def d(self) -> int:
         return super().d
 
-    @extend_docstring(_CyclicCode.t, {},
+    @extend_docstring(
+        _CyclicCode.t,
+        {},
         r"""
         Examples
         --------
@@ -790,13 +822,15 @@ class BCH(_CyclicCode):
 
             bch = galois.BCH(26, 14, field=galois.GF(3)); bch
             bch.t
-        """
+        """,
     )
     @property
     def t(self) -> int:
         return super().t
 
-    @extend_docstring(_CyclicCode.generator_poly, {},
+    @extend_docstring(
+        _CyclicCode.generator_poly,
+        {},
         r"""
         Examples
         --------
@@ -822,13 +856,15 @@ class BCH(_CyclicCode):
             bch.roots
             # Evaluate the generator polynomial at its roots in GF(q^m)
             bch.generator_poly(bch.roots, field=bch.extension_field)
-        """
+        """,
     )
     @property
     def generator_poly(self) -> Poly:
         return super().generator_poly
 
-    @extend_docstring(_CyclicCode.parity_check_poly, {},
+    @extend_docstring(
+        _CyclicCode.parity_check_poly,
+        {},
         r"""
         Examples
         --------
@@ -847,13 +883,15 @@ class BCH(_CyclicCode):
             bch = galois.BCH(13, 4, field=galois.GF(3)); bch
             bch.parity_check_poly
             bch.H
-        """
+        """,
     )
     @property
     def parity_check_poly(self) -> Poly:
         return super().parity_check_poly
 
-    @extend_docstring(_CyclicCode.roots, {},
+    @extend_docstring(
+        _CyclicCode.roots,
+        {},
         r"""
         These are consecutive powers of :math:`\alpha^c`, specifically :math:`\alpha^c, \dots, \alpha^{c+d-2}`.
 
@@ -881,7 +919,7 @@ class BCH(_CyclicCode):
             bch.generator_poly
             # Evaluate the generator polynomial at its roots in GF(q^m)
             bch.generator_poly(bch.roots, field=bch.extension_field)
-        """
+        """,
     )
     @property
     def roots(self) -> FieldArray:
@@ -944,7 +982,9 @@ class BCH(_CyclicCode):
         """
         return self._c
 
-    @extend_docstring(_CyclicCode.G, {},
+    @extend_docstring(
+        _CyclicCode.G,
+        {},
         r"""
         Examples
         --------
@@ -967,13 +1007,15 @@ class BCH(_CyclicCode):
             bch = galois.BCH(13, 4, field=galois.GF(3), systematic=False); bch
             bch.G
             bch.generator_poly
-        """
+        """,
     )
     @property
     def G(self) -> FieldArray:
         return super().G
 
-    @extend_docstring(_CyclicCode.H, {},
+    @extend_docstring(
+        _CyclicCode.H,
+        {},
         r"""
         Examples
         --------
@@ -992,7 +1034,7 @@ class BCH(_CyclicCode):
             bch = galois.BCH(13, 4, field=galois.GF(3)); bch
             bch.H
             bch.parity_check_poly
-        """
+        """,
     )
     @property
     def H(self) -> FieldArray:
@@ -1055,7 +1097,9 @@ class BCH(_CyclicCode):
         """
         return self._is_narrow_sense
 
-    @extend_docstring(_CyclicCode.is_systematic, {},
+    @extend_docstring(
+        _CyclicCode.is_systematic,
+        {},
         r"""
         Examples
         --------
@@ -1075,7 +1119,7 @@ class BCH(_CyclicCode):
             bch.is_systematic
             bch.G
             bch.generator_poly
-        """
+        """,
     )
     @property
     def is_systematic(self) -> bool:
@@ -1086,7 +1130,7 @@ def _generator_poly_from_d(
     d: int,
     field: Type[FieldArray],
     alpha: FieldArray,
-    c: int
+    c: int,
 ) -> tuple[Poly, FieldArray]:
     """
     Determines the BCH generator polynomial from the design distance d.
@@ -1110,14 +1154,14 @@ def _generator_poly_from_k(
     field: Type[FieldArray],
     extension_field: Type[FieldArray],
     alpha: FieldArray,
-    c: int
+    c: int,
 ) -> tuple[Poly, FieldArray]:
     """
     Determines the BCH generator polynomial from the message size k.
     """
     m = ilog(extension_field.order, field.order)
 
-    min_d = (n - k)//m + 1
+    min_d = (n - k) // m + 1
     max_d = (n - k) + 1
     possible_d = list(range(min_d, max_d + 1))
 
@@ -1129,7 +1173,7 @@ def _generator_poly_from_k(
 
         if generator_poly.degree < n - k:
             # This d is too small to produce the BCH code
-            possible_d = possible_d[idx + 1:]
+            possible_d = possible_d[idx + 1 :]
         elif generator_poly.degree == n - k:
             # This d produces the correct BCH code size and g(x) is its generator. However, there may also be a larger d that
             # generates a BCH code of the same size, so keep looking.
@@ -1167,6 +1211,7 @@ class decode_jit(Function):
     ----------
     * Lin, S. and Costello, D. Error Control Coding. Section 7.4.
     """
+
     def __init__(self, field: Type[FieldArray], extension_field: Type[FieldArray]):
         super().__init__(field)
         self.extension_field = extension_field
@@ -1177,7 +1222,7 @@ class decode_jit(Function):
         else:
             output = self.python(codeword.view(np.ndarray), design_n, alpha, c, roots.view(np.ndarray))
 
-        dec_codeword, N_errors = output[:,0:-1], output[:,-1]
+        dec_codeword, N_errors = output[:, 0:-1], output[:, -1]
         dec_codeword = dec_codeword.astype(codeword.dtype)
         dec_codeword = dec_codeword.view(self.field)
 
@@ -1198,7 +1243,7 @@ class decode_jit(Function):
         POLY_EVALUATE = evaluate_elementwise_jit(self.extension_field).function
         BERLEKAMP_MASSEY = berlekamp_massey_jit(self.extension_field).function
 
-    _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64, int64, int64, int64[:]))
+    _SIGNATURE = numba.types.FunctionType(int64[:, :](int64[:, :], int64, int64, int64, int64[:]))
 
     @staticmethod
     def implementation(codewords, design_n, alpha, c, roots):  # pragma: no cover
@@ -1210,12 +1255,12 @@ class decode_jit(Function):
 
         # The last column of the returned decoded codeword is the number of corrected errors
         dec_codewords = np.zeros((N, n + 1), dtype=dtype)
-        dec_codewords[:, 0:n] = codewords[:,:]
+        dec_codewords[:, 0:n] = codewords[:, :]
 
         for i in range(N):
             # Compute the syndrome by evaluating each codeword at the roots of the generator polynomial.
             # The syndrome vector is S = [S0, S1, ..., S2t-1]
-            syndrome = POLY_EVALUATE(codewords[i,:], roots)
+            syndrome = POLY_EVALUATE(codewords[i, :], roots)
 
             if np.all(syndrome == 0):
                 continue
@@ -1233,14 +1278,14 @@ class decode_jit(Function):
             v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
 
             if v > t:
-                dec_codewords[i,-1] = -1
+                dec_codewords[i, -1] = -1
                 continue
 
             # Compute βi^-1, the roots of σ(x)
             degrees = np.arange(sigma.size - 1, -1, -1)
             results = POLY_ROOTS(degrees, sigma, alpha)
-            beta_inv = results[0,:]  # The roots βi^-1 of σ(x)
-            error_locations_inv = results[1,:]  # The roots βi^-1 as powers of the primitive element α
+            beta_inv = results[0, :]  # The roots βi^-1 of σ(x)
+            error_locations_inv = results[1, :]  # The roots βi^-1 as powers of the primitive element α
             error_locations = -error_locations_inv % design_n  # The error locations as degrees of c(x)
 
             if np.any(error_locations > n - 1):
@@ -1266,13 +1311,15 @@ class decode_jit(Function):
             # The error value δi = -1 * βi^(1-c) * Z0(βi^-1) / σ'(βi^-1)
             for j in range(v):
                 beta_i = POWER(beta_inv[j], c - 1)
-                Z0_i = POLY_EVALUATE(Z0, np.array([beta_inv[j]], dtype=dtype))[0]  # NOTE: poly_eval() expects a 1-D array of values
-                sigma_prime_i = POLY_EVALUATE(sigma_prime, np.array([beta_inv[j]], dtype=dtype))[0]  # NOTE: poly_eval() expects a 1-D array of values
+                # NOTE: poly_eval() expects a 1-D array of values
+                Z0_i = POLY_EVALUATE(Z0, np.array([beta_inv[j]], dtype=dtype))[0]
+                # NOTE: poly_eval() expects a 1-D array of values
+                sigma_prime_i = POLY_EVALUATE(sigma_prime, np.array([beta_inv[j]], dtype=dtype))[0]
                 delta_i = MULTIPLY(beta_i, Z0_i)
                 delta_i = MULTIPLY(delta_i, RECIPROCAL(sigma_prime_i))
                 delta_i = SUBTRACT(0, delta_i)
                 dec_codewords[i, n - 1 - error_locations[j]] = SUBTRACT(dec_codewords[i, n - 1 - error_locations[j]], delta_i)
 
-            dec_codewords[i,-1] = v  # The number of corrected errors
+            dec_codewords[i, -1] = v  # The number of corrected errors
 
         return dec_codewords

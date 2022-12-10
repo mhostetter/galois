@@ -1,5 +1,6 @@
 import numpy as np
 from IPython import get_ipython
+
 ipython = get_ipython()
 assert ipython is not None, "Must run this script with ipython3"
 

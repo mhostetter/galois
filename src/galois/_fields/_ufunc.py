@@ -15,6 +15,7 @@ class UFuncMixin_p_1(UFuncMixin):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(p) classes.
     """
+
     @classmethod
     def _assign_ufuncs(cls):
         super()._assign_ufuncs()
@@ -36,7 +37,7 @@ class UFuncMixin_p_1(UFuncMixin):
         The only valid dtypes are ones that can hold x*x for x in [0, order).
         """
         max_dtype = DTYPES[-1]
-        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1)**2]
+        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1) ** 2]
         if len(dtypes) == 0:
             dtypes = [np.object_]
         return dtypes
@@ -46,6 +47,7 @@ class UFuncMixin_2_m(UFuncMixin):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(2^m) classes.
     """
+
     @classmethod
     def _assign_ufuncs(cls):
         super()._assign_ufuncs()
@@ -71,6 +73,7 @@ class UFuncMixin_p_m(UFuncMixin):
     """
     A mixin class that provides explicit calculation arithmetic for all GF(p^m) classes.
     """
+
     @classmethod
     def _assign_ufuncs(cls):
         super()._assign_ufuncs()
@@ -93,7 +96,7 @@ class UFuncMixin_p_m(UFuncMixin):
         """
         # TODO: Is this correct?
         max_dtype = DTYPES[-1]
-        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1)**2]
+        dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls.order - 1 and np.iinfo(max_dtype).max >= (cls.order - 1) ** 2]
         if len(dtypes) == 0:
             dtypes = [np.object_]
         return dtypes

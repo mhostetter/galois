@@ -85,7 +85,7 @@ class ReedSolomon(_CyclicCode):
         field: Type[FieldArray] | None = None,
         alpha: ElementLike | None = None,
         c: int = 1,
-        systematic: bool = True
+        systematic: bool = True,
     ):
         r"""
         Constructs a general :math:`\textrm{RS}(n, k)` code over :math:`\mathrm{GF}(q)`.
@@ -157,7 +157,7 @@ class ReedSolomon(_CyclicCode):
         if field is None:
             q = 2
             m = ilog(n, q) + 1
-            assert q**(m - 1) < n + 1 <= q**m
+            assert q ** (m - 1) < n + 1 <= q**m
             irreducible_poly = matlab_primitive_poly(q, m)
             field = Field(q**m, irreducible_poly=irreducible_poly)
 
@@ -244,7 +244,9 @@ class ReedSolomon(_CyclicCode):
 
         return string
 
-    @extend_docstring(_CyclicCode.encode, {},
+    @extend_docstring(
+        _CyclicCode.encode,
+        {},
         r"""
         Examples
         --------
@@ -317,12 +319,14 @@ class ReedSolomon(_CyclicCode):
                 .. ipython:: python
 
                     p = rs.encode(m, output="parity"); p
-        """
+        """,
     )
     def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
         return super().encode(message, output=output)
 
-    @extend_docstring(_CyclicCode.detect, {},
+    @extend_docstring(
+        _CyclicCode.detect,
+        {},
         r"""
         Examples
         --------
@@ -435,19 +439,33 @@ class ReedSolomon(_CyclicCode):
                     c[2, 0:rs.d - 1] += GF.Random(rs.d - 1, low=1)
                     c
                     rs.detect(c)
-        """
+        """,
     )
     def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
         # pylint: disable=useless-super-delegation
         return super().detect(codeword)
 
     @overload
-    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[False] = False) -> FieldArray:
+    def decode(
+        self,
+        codeword: ArrayLike,
+        output: Literal["message", "codeword"] = "message",
+        errors: Literal[False] = False,
+    ) -> FieldArray:
         ...
+
     @overload
-    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[True] = True) -> tuple[FieldArray, int | np.ndarray]:
+    def decode(
+        self,
+        codeword: ArrayLike,
+        output: Literal["message", "codeword"] = "message",
+        errors: Literal[True] = True,
+    ) -> tuple[FieldArray, int | np.ndarray]:
         ...
-    @extend_docstring(_CyclicCode.decode, {},
+
+    @extend_docstring(
+        _CyclicCode.decode,
+        {},
         r"""
         In decoding, the syndrome vector :math:`\mathbf{s}` is computed by evaluating the received codeword
         :math:`\mathbf{r}` at the roots :math:`\alpha^c, \dots, \alpha^{c+d-2}` of the generator polynomial :math:`g(x)`.
@@ -598,7 +616,7 @@ class ReedSolomon(_CyclicCode):
 
                     d, e = rs.decode(c, errors=True); d, e
                     np.array_equal(d, m)
-        """
+        """,
     )
     def decode(self, codeword, output="message", errors=False):
         return super().decode(codeword, output=output, errors=errors)
@@ -609,7 +627,9 @@ class ReedSolomon(_CyclicCode):
         return dec_codeword, N_errors
 
     @property
-    @extend_docstring(_CyclicCode.field, {},
+    @extend_docstring(
+        _CyclicCode.field,
+        {},
         r"""
         Examples
         --------
@@ -628,12 +648,14 @@ class ReedSolomon(_CyclicCode):
             rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
             rs.field
             print(rs.field.properties)
-        """
+        """,
     )
     def field(self) -> Type[FieldArray]:
         return super().field
 
-    @extend_docstring(_CyclicCode.n, {},
+    @extend_docstring(
+        _CyclicCode.n,
+        {},
         r"""
         Examples
         --------
@@ -650,13 +672,15 @@ class ReedSolomon(_CyclicCode):
 
             rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
             rs.n
-        """
+        """,
     )
     @property
     def n(self) -> int:
         return super().n
 
-    @extend_docstring(_CyclicCode.k, {},
+    @extend_docstring(
+        _CyclicCode.k,
+        {},
         r"""
         Examples
         --------
@@ -673,13 +697,15 @@ class ReedSolomon(_CyclicCode):
 
             rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
             rs.k
-        """
+        """,
     )
     @property
     def k(self) -> int:
         return super().k
 
-    @extend_docstring(_CyclicCode.d, {},
+    @extend_docstring(
+        _CyclicCode.d,
+        {},
         r"""
         Examples
         --------
@@ -696,13 +722,15 @@ class ReedSolomon(_CyclicCode):
 
             rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
             rs.d
-        """
+        """,
     )
     @property
     def d(self) -> int:
         return super().d
 
-    @extend_docstring(_CyclicCode.t, {},
+    @extend_docstring(
+        _CyclicCode.t,
+        {},
         r"""
         Examples
         --------
@@ -719,13 +747,15 @@ class ReedSolomon(_CyclicCode):
 
             rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
             rs.t
-        """
+        """,
     )
     @property
     def t(self) -> int:
         return super().t
 
-    @extend_docstring(_CyclicCode.generator_poly, {},
+    @extend_docstring(
+        _CyclicCode.generator_poly,
+        {},
         r"""
         Examples
         --------
@@ -750,13 +780,15 @@ class ReedSolomon(_CyclicCode):
             rs.roots
             # Evaluate the generator polynomial at its roots in GF(q)
             rs.generator_poly(rs.roots)
-        """
+        """,
     )
     @property
     def generator_poly(self) -> Poly:
         return super().generator_poly
 
-    @extend_docstring(_CyclicCode.parity_check_poly, {},
+    @extend_docstring(
+        _CyclicCode.parity_check_poly,
+        {},
         r"""
         Examples
         --------
@@ -775,13 +807,15 @@ class ReedSolomon(_CyclicCode):
             rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
             rs.parity_check_poly
             rs.H
-        """
+        """,
     )
     @property
     def parity_check_poly(self) -> Poly:
         return super().parity_check_poly
 
-    @extend_docstring(_CyclicCode.roots, {},
+    @extend_docstring(
+        _CyclicCode.roots,
+        {},
         r"""
         These are consecutive powers of :math:`\alpha^c`, specifically :math:`\alpha^c, \dots, \alpha^{c+d-2}`.
 
@@ -808,7 +842,7 @@ class ReedSolomon(_CyclicCode):
             rs.generator_poly
             # Evaluate the generator polynomial at its roots in GF(q)
             rs.generator_poly(rs.roots)
-        """
+        """,
     )
     @property
     def roots(self) -> FieldArray:
@@ -873,7 +907,9 @@ class ReedSolomon(_CyclicCode):
         """
         return self._c
 
-    @extend_docstring(_CyclicCode.G, {},
+    @extend_docstring(
+        _CyclicCode.G,
+        {},
         r"""
         Examples
         --------
@@ -896,13 +932,15 @@ class ReedSolomon(_CyclicCode):
             rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3), systematic=False); rs
             rs.G
             rs.generator_poly
-        """
+        """,
     )
     @property
     def G(self) -> FieldArray:
         return super().G
 
-    @extend_docstring(_CyclicCode.H, {},
+    @extend_docstring(
+        _CyclicCode.H,
+        {},
         r"""
         Examples
         --------
@@ -921,7 +959,7 @@ class ReedSolomon(_CyclicCode):
             rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
             rs.H
             rs.parity_check_poly
-        """
+        """,
     )
     @property
     def H(self) -> FieldArray:
@@ -985,7 +1023,9 @@ class ReedSolomon(_CyclicCode):
         """
         return self._is_narrow_sense
 
-    @extend_docstring(_CyclicCode.is_systematic, {},
+    @extend_docstring(
+        _CyclicCode.is_systematic,
+        {},
         r"""
         Examples
         --------
@@ -1005,7 +1045,7 @@ class ReedSolomon(_CyclicCode):
             rs.is_systematic
             rs.G
             rs.generator_poly
-        """
+        """,
     )
     @property
     def is_systematic(self) -> bool:

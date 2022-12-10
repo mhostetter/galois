@@ -184,7 +184,7 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
 
     # Only search monic polynomials of degree m over GF(q)
     start = order**degree
-    stop = 2*order**degree
+    stop = 2 * order**degree
     step = 1
 
     if reverse:
@@ -220,7 +220,7 @@ def _random_search(order, degree) -> Poly:
 
     # Only search monic polynomials of degree m over GF(p)
     start = order**degree
-    stop = 2*order**degree
+    stop = 2 * order**degree
 
     while True:
         integer = random.randint(start, stop - 1)

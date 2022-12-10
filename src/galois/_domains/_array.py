@@ -38,10 +38,12 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         dtype: DTypeLike | None = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
-        ndmin: int = 0
+        ndmin: int = 0,
     ) -> Self:
         if cls is Array:
-            raise NotImplementedError("Array is an abstract base class that cannot be directly instantiated. Instead, create a Array subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
+            raise NotImplementedError(
+                "Array is an abstract base class that cannot be directly instantiated. Instead, create a Array subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`."
+            )
 
         dtype = cls._get_dtype(dtype)
 
@@ -193,7 +195,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         start: ElementLike,
         stop: ElementLike,
         step: int = 1,
-        dtype: DTypeLike | None = None
+        dtype: DTypeLike | None = None,
     ) -> Self:
         """
         Creates a 1-D array with a range of elements.
@@ -238,7 +240,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         low: ElementLike = 0,
         high: ElementLike | None = None,
         seed: int | np.random.Generator | None = None,
-        dtype: DTypeLike | None = None
+        dtype: DTypeLike | None = None,
     ) -> Self:
         """
         Creates an array with random elements.
@@ -292,7 +294,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                     # np.integers not supported by random and seeding based on hashing deprecated since Python 3.9
                     _seed = seed.item()
                 elif isinstance(seed, np.random.Generator):
-                    _seed = seed.bit_generator.state['state']['state']
+                    _seed = seed.bit_generator.state["state"]["state"]
                     seed.bit_generator.advance(1)
                 else:  # int
                     _seed = seed

@@ -22,6 +22,7 @@ class FieldArrayMeta(ArrayMeta):
     """
     A metaclass that provides documented class properties for `FieldArray` subclasses.
     """
+
     # pylint: disable=no-value-for-parameter,too-many-public-methods
 
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
@@ -285,7 +286,7 @@ class FieldArrayMeta(ArrayMeta):
         if not hasattr(cls, "_primitive_elements"):
             n = cls.order - 1
             powers = np.array(totatives(n))
-            cls._primitive_elements = np.sort(cls.primitive_element ** powers)
+            cls._primitive_elements = np.sort(cls.primitive_element**powers)
         return cls._primitive_elements.copy()
 
     @property

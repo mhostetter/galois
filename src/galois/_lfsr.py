@@ -21,6 +21,7 @@ from .typing import ArrayLike
 # LFSR base class
 ###############################################################################
 
+
 class _LFSR:
     r"""
     A linear-feedback shift register base object.
@@ -83,7 +84,9 @@ class _LFSR:
 
         # if not state.size == self.order:
         if not state.size == self.order:
-            raise ValueError(f"Argument 'state' must have size equal to the degree of the characteristic polynomial, not {state.size} and {self.characteristic_poly.degree}.")
+            raise ValueError(
+                f"Argument 'state' must have size equal to the degree of the characteristic polynomial, not {state.size} and {self.characteristic_poly.degree}."
+            )
 
         return state
 
@@ -119,7 +122,9 @@ class _LFSR:
         assert steps > 0
 
         if not self.characteristic_poly.coeffs[-1] > 0:
-            raise ValueError(f"Can only step the shift register backwards if the c_0 tap is non-zero, not c(x) = {self.characteristic_poly}.")
+            raise ValueError(
+                f"Can only step the shift register backwards if the c_0 tap is non-zero, not c(x) = {self.characteristic_poly}."
+            )
 
         if self._type == "fibonacci":
             y, state = fibonacci_lfsr_step_backward_jit(self.field)(self.taps, self.state, steps)
@@ -164,6 +169,7 @@ class _LFSR:
 ###############################################################################
 # Fibonacci LFSR
 ###############################################################################
+
 
 @export
 class FLFSR(_LFSR):
@@ -560,7 +566,7 @@ class FLFSR(_LFSR):
         # the equivalence may be written as G_0*x^n = F(x)*P(x) + G_n or equivalently G_0 = (F(x)*P(x) + G_n) // x^n. The last equation
         # simplifies to G_0 = F(x)*P(x) // x^n because G_n has degree less than n, therefore G_n // x^n = 0.
         P = self.characteristic_poly
-        S = F * P // Poly.Identity(self.field)**self.order
+        S = F * P // Poly.Identity(self.field) ** self.order
         # state = S.coefficients(self.order)[::-1]  # Get coefficients in ascending order
         state = S.coefficients(self.order, order="asc")  # Get coefficients in ascending order
 
@@ -720,6 +726,7 @@ class fibonacci_lfsr_step_forward_jit(Function):
     y
         The output sequence of size `steps`.
     """
+
     def __call__(self, taps, state, steps):
         if self.field.ufunc_mode != "python-calculate":
             state_ = state.astype(np.int64)  # NOTE: This will be modified
@@ -787,6 +794,7 @@ class fibonacci_lfsr_step_backward_jit(Function):
     y
         The output sequence of size `steps`.
     """
+
     def __call__(self, taps, state, steps):
         if self.field.ufunc_mode != "python-calculate":
             state_ = state.astype(np.int64)  # NOTE: This will be modified
@@ -831,6 +839,7 @@ class fibonacci_lfsr_step_backward_jit(Function):
 ###############################################################################
 # Galois LFSR
 ###############################################################################
+
 
 @export
 class GLFSR(_LFSR):
@@ -1370,6 +1379,7 @@ class galois_lfsr_step_forward_jit(Function):
     y
         The output sequence of size `steps`.
     """
+
     def __call__(self, taps, state, steps):
         if self.field.ufunc_mode != "python-calculate":
             state_ = state.astype(np.int64)  # NOTE: This will be modified
@@ -1440,6 +1450,7 @@ class galois_lfsr_step_backward_jit(Function):
     y
         The output sequence of size `steps`.
     """
+
     def __call__(self, taps, state, steps):
         if self.field.ufunc_mode != "python-calculate":
             state_ = state.astype(np.int64)  # NOTE: This will be modified
@@ -1482,15 +1493,22 @@ class galois_lfsr_step_backward_jit(Function):
 # Berlekamp-Massey algorithm
 ###############################################################################
 
+
 @overload
 def berlekamp_massey(sequence: FieldArray, output: Literal["minimal"] = "minimal") -> Poly:
     ...
+
+
 @overload
 def berlekamp_massey(sequence: FieldArray, output: Literal["fibonacci"]) -> FLFSR:
     ...
+
+
 @overload
 def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR:
     ...
+
+
 @export
 def berlekamp_massey(sequence, output="minimal"):
     r"""
@@ -1585,7 +1603,7 @@ def berlekamp_massey(sequence, output="minimal"):
     else:
         # The first n outputs are the Fibonacci state reversed
         feedback_poly = characteristic_poly.reverse()
-        state_ = sequence[0:feedback_poly.degree][::-1]
+        state_ = sequence[0 : feedback_poly.degree][::-1]
         fibonacci_lfsr = FLFSR(feedback_poly, state=state_)
 
         if output == "fibonacci":
@@ -1598,6 +1616,7 @@ class berlekamp_massey_jit(Function):
     """
     Finds the minimal polynomial c(x) of the input sequence.
     """
+
     def __call__(self, sequence):
         if self.field.ufunc_mode != "python-calculate":
             coeffs = self.jit(sequence.astype(np.int64))
@@ -1637,7 +1656,7 @@ class berlekamp_massey_jit(Function):
 
             if d == 0:
                 m += 1
-            elif 2*L <= n:
+            elif 2 * L <= n:
                 t = c.copy()
                 d_bb = MULTIPLY(d, RECIPROCAL(bb))
                 for i in range(m, N):
@@ -1652,4 +1671,4 @@ class berlekamp_massey_jit(Function):
                     c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m]))
                 m += 1
 
-        return c[0:L + 1]
+        return c[0 : L + 1]

@@ -21,6 +21,7 @@ from ._array import Array
 
 DTYPE = np.int64
 
+
 @numba.jit(["int64[:](int64, int64, int64)"], nopython=True, cache=True)
 def int_to_vector(a: int, characteristic: int, degree: int) -> np.ndarray:
     """
@@ -63,9 +64,9 @@ def egcd(a: int, b: int) -> np.ndarray:  # pragma: no cover
 
     while r1 != 0:
         q = r2 // r1
-        r2, r1 = r1, r2 - q*r1
-        s2, s1 = s1, s2 - q*s1
-        t2, t1 = t1, t2 - q*t1
+        r2, r1 = r1, r2 - q * r1
+        s2, s1 = s1, s2 - q * s1
+        t2, t1 = t1, t2 - q * t1
 
     # Ensure the GCD is positive
     if r2 < 0:
@@ -77,6 +78,7 @@ def egcd(a: int, b: int) -> np.ndarray:  # pragma: no cover
 
 
 EGCD = egcd
+
 
 @numba.jit(["int64(int64[:], int64[:])"], nopython=True, cache=True)
 def crt(remainders: np.ndarray, moduli: np.ndarray) -> int:  # pragma: no cover
@@ -92,7 +94,7 @@ def crt(remainders: np.ndarray, moduli: np.ndarray) -> int:  # pragma: no cover
 
         if d == 1:
             # The moduli (m1, m2) are coprime
-            x = a1*b2*m2 + a2*b1*m1  # Compute x through explicit construction
+            x = (a1 * b2 * m2) + (a2 * b1 * m1)  # Compute x through explicit construction
             m1 = m1 * m2  # The new modulus
         else:
             # The moduli (m1, m2) are not coprime, however if a1 == b2 (mod d)
@@ -100,7 +102,7 @@ def crt(remainders: np.ndarray, moduli: np.ndarray) -> int:  # pragma: no cover
             if not (a1 % d) == (a2 % d):
                 raise ArithmeticError
                 # raise ValueError(f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, therefore a unique solution does not exist.")
-            x = (a1*b2*m2 + a2*b1*m1) // d  # Compute x through explicit construction
+            x = ((a1 * b2 * m2) + (a2 * b1 * m1)) // d  # Compute x through explicit construction
             m1 = (m1 * m2) // d  # The new modulus
 
         a1 = x % m1  # The new equivalent remainder
@@ -131,10 +133,12 @@ def set_helper_globals(field: Type[Array]):
 # Specific explicit calculation algorithms
 ###############################################################################
 
+
 class add_modular(_lookup.add_ufunc):
     """
     A ufunc dispatcher that provides addition modulo the characteristic.
     """
+
     def set_calculate_globals(self):
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
@@ -151,6 +155,7 @@ class add_vector(_lookup.add_ufunc):
     """
     A ufunc dispatcher that provides addition for extensions.
     """
+
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         if self.field.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
@@ -183,6 +188,7 @@ class negative_modular(_lookup.negative_ufunc):
     """
     A ufunc dispatcher that provides additive inverse modulo the characteristic.
     """
+
     def set_calculate_globals(self):
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
@@ -200,6 +206,7 @@ class negative_vector(_lookup.negative_ufunc):
     """
     A ufunc dispatcher that provides additive inverse for extensions.
     """
+
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         if self.field.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
@@ -231,6 +238,7 @@ class subtract_modular(_lookup.subtract_ufunc):
     """
     A ufunc dispatcher that provides subtraction modulo the characteristic.
     """
+
     def set_calculate_globals(self):
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
@@ -249,6 +257,7 @@ class subtract_vector(_lookup.subtract_ufunc):
     """
     A ufunc dispatcher that provides subtraction for extensions.
     """
+
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         if self.field.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
@@ -291,6 +300,7 @@ class multiply_binary(_lookup.multiply_ufunc):
               = c(x)
               = c
     """
+
     def set_calculate_globals(self):
         global ORDER, IRREDUCIBLE_POLY
         ORDER = self.field.order
@@ -319,6 +329,7 @@ class multiply_modular(_lookup.multiply_ufunc):
     """
     A ufunc dispatcher that provides multiplication modulo the characteristic.
     """
+
     def set_calculate_globals(self):
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
@@ -334,6 +345,7 @@ class multiply_vector(_lookup.multiply_ufunc):
     """
     A ufunc dispatcher that provides multiplication for extensions.
     """
+
     def set_calculate_globals(self):
         global CHARACTERISTIC, DEGREE, IRREDUCIBLE_POLY
         CHARACTERISTIC = self.field.characteristic
@@ -352,7 +364,7 @@ class multiply_vector(_lookup.multiply_ufunc):
         c_vec = np.zeros(DEGREE, dtype=DTYPE)
         for _ in range(DEGREE):
             if b_vec[-1] > 0:
-                c_vec = (c_vec + b_vec[-1]*a_vec) % CHARACTERISTIC
+                c_vec = (c_vec + b_vec[-1] * a_vec) % CHARACTERISTIC
 
             # Multiply a(x) by x
             q = a_vec[0]
@@ -361,7 +373,7 @@ class multiply_vector(_lookup.multiply_ufunc):
 
             # Reduce a(x) modulo the irreducible polynomial
             if q > 0:
-                a_vec = (a_vec - q*irreducible_poly_vec) % CHARACTERISTIC
+                a_vec = (a_vec - q * irreducible_poly_vec) % CHARACTERISTIC
 
             # Divide b(x) by x
             b_vec[1:] = b_vec[:-1]
@@ -376,6 +388,7 @@ class reciprocal_modular_egcd(_lookup.reciprocal_ufunc):
     """
     A ufunc dispatcher that provides the multiplicative inverse modulo the characteristic.
     """
+
     def set_calculate_globals(self):
         global CHARACTERISTIC
         CHARACTERISTIC = self.field.characteristic
@@ -396,8 +409,8 @@ class reciprocal_modular_egcd(_lookup.reciprocal_ufunc):
 
         while r1 != 0:
             q = r2 // r1
-            r2, r1 = r1, r2 - q*r1
-            t2, t1 = t1, t2 - q*t1
+            r2, r1 = r1, r2 - q * r1
+            t2, t1 = t1, t2 - q * t1
 
         if t2 < 0:
             t2 += CHARACTERISTIC
@@ -445,6 +458,7 @@ class reciprocal_itoh_tsujii(_lookup.reciprocal_ufunc):
         4. Compute (a^r)^-1 in GF(p)
         5. Compute a^-1 = (a^r)^-1 * a^(r - 1)
     """
+
     def set_calculate_globals(self):
         global CHARACTERISTIC, ORDER, MULTIPLY, POSITIVE_POWER, SUBFIELD_RECIPROCAL
         CHARACTERISTIC = self.field.characteristic
@@ -480,6 +494,7 @@ class divide(_lookup.divide_ufunc):
     """
     A ufunc dispatcher that provides division.
     """
+
     def set_calculate_globals(self):
         global MULTIPLY, RECIPROCAL
         MULTIPLY = self.field._multiply.ufunc
@@ -512,6 +527,7 @@ class positive_power_square_and_multiply(_lookup.power_ufunc):
              = (a * a^4) * (a^8)
            c = c_m * c_s
     """
+
     def set_calculate_globals(self):
         global MULTIPLY
         MULTIPLY = self.field._multiply.ufunc
@@ -555,6 +571,7 @@ class power_square_and_multiply(_lookup.power_ufunc):
              = (a * a^4) * (a^8)
              = result_m * result_s
     """
+
     def set_calculate_globals(self):
         global RECIPROCAL, POSITIVE_POWER
         RECIPROCAL = self.field._reciprocal.ufunc
@@ -580,6 +597,7 @@ class log_brute_force(_lookup.log_ufunc):
     """
     A ufunc dispatcher that provides logarithm calculation using a brute-force search.
     """
+
     def set_calculate_globals(self):
         global ORDER, MULTIPLY
         ORDER = self.field.order
@@ -610,6 +628,7 @@ class log_pollard_rho(_lookup.log_ufunc):
     """
     A ufunc dispatcher that provides logarithm calculation using the Pollard ρ algorithm.
     """
+
     def set_calculate_globals(self):
         global ORDER, MULTIPLY
         ORDER = self.field.order
@@ -647,7 +666,7 @@ class log_pollard_rho(_lookup.log_ufunc):
             if x % 3 == 1:
                 return a
             elif x % 3 == 2:
-                return (2*a) % n
+                return (2 * a) % n
             else:
                 return (a + 1) % n
 
@@ -656,7 +675,7 @@ class log_pollard_rho(_lookup.log_ufunc):
             if x % 3 == 1:
                 return (b + 1) % n
             elif x % 3 == 2:
-                return (2*b) % n
+                return (2 * b) % n
             else:
                 return b
 
@@ -686,6 +705,7 @@ class log_pohlig_hellman(_lookup.log_ufunc):
     """
     A ufunc dispatcher that provides logarithm calculation using the Pohlig-Hellman algorithm.
     """
+
     def set_calculate_globals(self):
         global ORDER, MULTIPLY, RECIPROCAL, POWER, BRUTE_FORCE_LOG, FACTORS, MULTIPLICITIES
         ORDER = self.field.order
@@ -723,18 +743,18 @@ class log_pohlig_hellman(_lookup.log_ufunc):
         for i in range(r):
             q = FACTORS[i]
             e = MULTIPLICITIES[i]
-            m[i] = q ** e
+            m[i] = q**e
             gamma = 1
             alpha_bar = POWER(alpha, n // q)
             l_prev = 0  # Starts as l_i-1
             q_prev = 0  # Starts as q^(-1)
             for j in range(e):
                 gamma = MULTIPLY(gamma, POWER(alpha, l_prev * q_prev))
-                beta_bar = POWER(MULTIPLY(beta, RECIPROCAL(gamma)), n // (q**(j + 1)))
+                beta_bar = POWER(MULTIPLY(beta, RECIPROCAL(gamma)), n // (q ** (j + 1)))
                 l = BRUTE_FORCE_LOG(beta_bar, alpha_bar)
                 x[i] += l * q**j
                 l_prev = l
-                q_prev = q ** j
+                q_prev = q**j
 
         return CRT(x, m)
 
@@ -743,17 +763,19 @@ class sqrt_binary(_lookup.sqrt_ufunc):
     """
     A ufunc dispatcher that provides the square root in binary extension fields.
     """
+
     def implementation(self, a: Array) -> Array:
         """
         Fact 3.42 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         """
-        return a ** (self.field.characteristic**(self.field.degree - 1))
+        return a ** (self.field.characteristic ** (self.field.degree - 1))
 
 
 class sqrt(_lookup.sqrt_ufunc):
     """
     A ufunc dispatcher that provides square root using NumPy array arithmetic.
     """
+
     def implementation(self, a: Array) -> Array:
         """
         Algorithm 3.34 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
@@ -765,17 +787,17 @@ class sqrt(_lookup.sqrt_ufunc):
         p = self.field.characteristic
 
         if p % 4 == 3:
-            roots = a ** ((self.field.order + 1)//4)
+            roots = a ** ((self.field.order + 1) // 4)
 
         elif p % 8 == 5:
-            d = a ** ((self.field.order - 1)//4)
+            d = a ** ((self.field.order - 1) // 4)
             roots = self.field.Zeros(a.shape)
 
             idxs = np.where(d == 1)
-            roots[idxs] = a[idxs] ** ((self.field.order + 3)//8)
+            roots[idxs] = a[idxs] ** ((self.field.order + 3) // 8)
 
             idxs = np.where(d == p - 1)
-            roots[idxs] = 2*a[idxs] * (4*a[idxs]) ** ((self.field.order - 5)//8)
+            roots[idxs] = 2 * a[idxs] * (4 * a[idxs]) ** ((self.field.order - 5) // 8)
 
         else:
             # Find a non-square element `b`
@@ -798,10 +820,10 @@ class sqrt(_lookup.sqrt_ufunc):
             # Compute a root `r` for the non-zero elements
             idxs = np.where(a > 0)  # Indices where a has a reciprocal
             a_inv = np.reciprocal(a[idxs])
-            c = b ** t
-            r = a[idxs] ** ((t + 1)//2)
+            c = b**t
+            r = a[idxs] ** ((t + 1) // 2)
             for i in range(1, s):
-                d = (r**2 * a_inv) ** (2**(s - i - 1))
+                d = (r**2 * a_inv) ** (2 ** (s - i - 1))
                 r[np.where(d == p - 1)] *= c
                 c = c**2
             roots[idxs] = r  # Assign non-zero roots to the original array

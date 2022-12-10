@@ -18,7 +18,15 @@ class _LinearCode:
     A FEC base class for linear codes.
     """
 
-    def __init__(self, n: int, k: int, d: int, G: FieldArray, H: FieldArray, systematic: bool):
+    def __init__(
+        self,
+        n: int,
+        k: int,
+        d: int,
+        G: FieldArray,
+        H: FieldArray,
+        systematic: bool,
+    ):
         verify_isinstance(n, int)
         verify_isinstance(k, int)
         verify_isinstance(d, int)
@@ -79,7 +87,7 @@ class _LinearCode:
         codeword = self._encode_message(message)
 
         if is_message_1d:
-            codeword = codeword[0,:]
+            codeword = codeword[0, :]
 
         if output == "codeword":
             return codeword
@@ -118,11 +126,23 @@ class _LinearCode:
         return detected
 
     @overload
-    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[False] = False) -> FieldArray:
+    def decode(
+        self,
+        codeword: ArrayLike,
+        output: Literal["message", "codeword"] = "message",
+        errors: Literal[False] = False,
+    ) -> FieldArray:
         ...
+
     @overload
-    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[True] = True) -> tuple[FieldArray, int | np.ndarray]:
+    def decode(
+        self,
+        codeword: ArrayLike,
+        output: Literal["message", "codeword"] = "message",
+        errors: Literal[True] = True,
+    ) -> tuple[FieldArray, int | np.ndarray]:
         ...
+
     def decode(self, codeword, output="message", errors=False):
         r"""
         Decodes the codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
@@ -165,7 +185,7 @@ class _LinearCode:
             decoded = dec_codeword
 
         if is_codeword_1d:
-            decoded, N_errors = decoded[0,:], int(N_errors[0])
+            decoded, N_errors = decoded[0, :], int(N_errors[0])
 
         if not errors:
             return decoded
@@ -197,10 +217,14 @@ class _LinearCode:
             raise ValueError(f"Argument `message` can be either 1-D or 2-D, not {message.ndim}-D.")
         if self.is_systematic:
             if not message.shape[-1] <= self.k:
-                raise ValueError(f"For a systematic code, argument `message` must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}.")
+                raise ValueError(
+                    f"For a systematic code, argument `message` must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}."
+                )
         else:
             if not message.shape[-1] == self.k:
-                raise ValueError(f"For a non-systematic code, argument `message` must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}.")
+                raise ValueError(
+                    f"For a non-systematic code, argument `message` must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}."
+                )
 
         # Record if the original message was 1-D and then convert to 2-D
         is_message_1d = message.ndim == 1
@@ -217,10 +241,14 @@ class _LinearCode:
 
         if self.is_systematic:
             if not codeword.shape[-1] <= self.n:
-                raise ValueError(f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}.")
+                raise ValueError(
+                    f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}."
+                )
         else:
             if not codeword.shape[-1] == self.n:
-                raise ValueError(f"For a non-systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension equal to {self.n}, not shape {codeword.shape}.")
+                raise ValueError(
+                    f"For a non-systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension equal to {self.n}, not shape {codeword.shape}."
+                )
 
         # Record if the original codeword was 1-D and then convert to 2-D
         is_codeword_1d = codeword.ndim == 1
@@ -252,7 +280,7 @@ class _LinearCode:
         ks = message.shape[-1]  # The number of input message symbols (could be less than self.k for shortened codes)
 
         if self.is_systematic:
-            parity = message @ self.G[-ks:, self.k:]
+            parity = message @ self.G[-ks:, self.k :]
             codeword = np.hstack((message, parity))
         else:
             codeword = message @ self.G
@@ -377,11 +405,11 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
 
     field = type(G)
     k, n = G.shape
-    if not np.array_equal(G[:,0:k], np.eye(k)):
+    if not np.array_equal(G[:, 0:k], np.eye(k)):
         raise ValueError("Argument 'G' must be in systematic form [I | P].")
 
     P = G[:, k:]
-    I = field.Identity(n-k)
+    I = field.Identity(n - k)
     H = np.hstack((-P.T, I))
 
     return H
@@ -421,7 +449,7 @@ def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
     field = type(H)
     n_k, n = H.shape
     k = n - n_k
-    if not np.array_equal(H[:,k:], np.eye(n - k)):
+    if not np.array_equal(H[:, k:], np.eye(n - k)):
         raise ValueError("Argument 'H' must be in systematic form [-P^T | I].")
 
     P = -H[:, 0:k].T

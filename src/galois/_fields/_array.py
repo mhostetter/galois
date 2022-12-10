@@ -17,7 +17,7 @@ from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
 from ._meta import FieldArrayMeta
 
 DOCSTRING_MAP = {
-    "Array": "FieldArray"
+    "Array": "FieldArray",
 }
 
 
@@ -58,10 +58,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         dtype: DTypeLike | None = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
-        ndmin: int = 0
+        ndmin: int = 0,
     ) -> Self:
         if cls is FieldArray:
-            raise NotImplementedError("FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`.")
+            raise NotImplementedError(
+                "FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`."
+            )
         return super().__new__(cls, x, dtype, copy, order, ndmin)
 
     def __init__(
@@ -70,7 +72,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         dtype: DTypeLike | None = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
-        ndmin: int = 0
+        ndmin: int = 0,
     ):
         r"""
         Creates an array over :math:`\mathrm{GF}(p^m)`.
@@ -212,7 +214,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     ###############################################################################
 
     @classmethod
-    @extend_docstring(Array.Zeros, DOCSTRING_MAP,
+    @extend_docstring(
+        Array.Zeros,
+        DOCSTRING_MAP,
         """
         Examples
         --------
@@ -220,13 +224,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
             GF = galois.GF(31)
             GF.Zeros((2, 5))
-        """
+        """,
     )
     def Zeros(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Self:
         return super().Zeros(shape, dtype=dtype)
 
     @classmethod
-    @extend_docstring(Array.Ones, DOCSTRING_MAP,
+    @extend_docstring(
+        Array.Ones,
+        DOCSTRING_MAP,
         """
         Examples
         --------
@@ -234,13 +240,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
             GF = galois.GF(31)
             GF.Ones((2, 5))
-        """
+        """,
     )
     def Ones(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Self:
         return super().Ones(shape, dtype=dtype)
 
     @classmethod
-    @extend_docstring(Array.Range, DOCSTRING_MAP,
+    @extend_docstring(
+        Array.Range,
+        DOCSTRING_MAP,
         """
         Examples
         --------
@@ -259,19 +267,21 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF = galois.GF(3**3)
             GF.Range(10, 20)
             GF.Range(10, 20, 2)
-        """
+        """,
     )
     def Range(
         cls,
         start: ElementLike,
         stop: ElementLike,
         step: int = 1,
-        dtype: DTypeLike | None = None
+        dtype: DTypeLike | None = None,
     ) -> Self:
         return super().Range(start, stop, step=step, dtype=dtype)
 
     @classmethod
-    @extend_docstring(Array.Random, DOCSTRING_MAP,
+    @extend_docstring(
+        Array.Random,
+        DOCSTRING_MAP,
         """
         Examples
         --------
@@ -296,7 +306,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             rng = np.random.default_rng(123456789)
             GF.Random(10, seed=rng)
             GF.Random(10, seed=rng)
-        """
+        """,
     )
     def Random(
         cls,
@@ -304,12 +314,14 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         low: ElementLike = 0,
         high: ElementLike | None = None,
         seed: int | np.random.Generator | None = None,
-        dtype: DTypeLike | None = None
+        dtype: DTypeLike | None = None,
     ) -> Self:
         return super().Random(shape=shape, low=low, high=high, seed=seed, dtype=dtype)
 
     @classmethod
-    @extend_docstring(Array.Identity, DOCSTRING_MAP,
+    @extend_docstring(
+        Array.Identity,
+        DOCSTRING_MAP,
         """
         Examples
         --------
@@ -317,7 +329,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
             GF = galois.GF(31)
             GF.Identity(4)
-        """
+        """,
     )
     def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
         return super().Identity(size, dtype=dtype)
@@ -500,7 +512,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         else:
             print_power = lambda power: "0" if power is None else f"{prim}^{power}"
         print_poly = lambda x: poly_to_str(integer_to_poly(int(x), cls.characteristic))
-        print_vec = lambda x: str(integer_to_poly(int(x), cls.characteristic, degree=cls.degree-1))
+        print_vec = lambda x: str(integer_to_poly(int(x), cls.characteristic, degree=cls.degree - 1))
         print_int = lambda x: str(int(x))
 
         # Determine column widths
@@ -510,11 +522,21 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         N_int = max([len(print_int(e)) for e in x] + [len("Integer")]) + 2
 
         string = "Power".center(N_power) + " " + "Polynomial".center(N_poly) + " " + "Vector".center(N_vec) + " " + "Integer".center(N_int)
-        string += "\n" + "-"*N_power + " " + "-"*N_poly + " " + "-"*N_vec + " " + "-"*N_int
+        string += "\n" + "-" * N_power + " " + "-" * N_poly + " " + "-" * N_vec + " " + "-" * N_int
 
         for i in range(x.size):
             d = None if i == 0 else degrees[i - 1]
-            string += "\n" + print_power(d).center(N_power) + " " + poly_to_str(integer_to_poly(int(x[i]), cls.characteristic)).center(N_poly) + " " + str(integer_to_poly(int(x[i]), cls.characteristic, degree=cls.degree-1)).center(N_vec) + " " + cls._print_int(x[i]).center(N_int) + " "
+            string += (
+                "\n"
+                + print_power(d).center(N_power)
+                + " "
+                + poly_to_str(integer_to_poly(int(x[i]), cls.characteristic)).center(N_poly)
+                + " "
+                + str(integer_to_poly(int(x[i]), cls.characteristic, degree=cls.degree - 1)).center(N_vec)
+                + " "
+                + cls._print_int(x[i]).center(N_int)
+                + " "
+            )
 
         return string
 
@@ -523,7 +545,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         cls,
         operation: Literal["+", "-", "*", "/"],
         x: FieldArray | None = None,
-        y: FieldArray | None = None
+        y: FieldArray | None = None,
     ) -> str:
         r"""
         Generates the specified arithmetic table for the finite field.
@@ -568,7 +590,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         if cls.element_repr == "power":
             # Order elements by powers of the primitive element
-            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element**np.arange(0, cls.order - 1, dtype=cls.dtypes[-1])))
+            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element ** np.arange(0, cls.order - 1, dtype=cls.dtypes[-1])))
         else:
             x_default = cls.elements
         y_default = x_default if operation != "/" else x_default[1:]
@@ -601,12 +623,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         string = operation_str.rjust(N_left - 1) + " |"
         for j in range(y.size):
             string += print_element(y[j]).rjust(N) + " "
-        string += "\n" + "-"*N_left + "|" + "-"*(N + 1)*y.size
+        string += "\n" + "-" * N_left + "|" + "-" * (N + 1) * y.size
 
         for i in range(x.size):
             string += "\n" + print_element(x[i]).rjust(N_left - 1) + " |"
             for j in range(y.size):
-                string += print_element(Z[i,j]).rjust(N) + " "
+                string += print_element(Z[i, j]).rjust(N) + " "
 
         return string
 
@@ -907,7 +929,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 output = bool(output)
         else:
             # Compute the Legendre symbol on each element
-            output = x ** ((field.order - 1)//2) != field.characteristic - 1
+            output = x ** ((field.order - 1) // 2) != field.characteristic - 1
             if np.isscalar(output):
                 output = bool(output)
 
@@ -946,7 +968,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         degree = field.degree
 
         x = np.array(self)  # The original array as an integer array
-        shape = list(self.shape) + [degree,]  # The new shape
+        shape = list(self.shape) + [degree]  # The new shape
         y = subfield.Zeros(shape, dtype=dtype)
 
         if self.dtype == np.object_:
@@ -1135,7 +1157,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         A_rre = A.row_reduce()
         rank = np.sum(~np.all(A_rre == 0, axis=1))
-        R = A_rre[0:rank,:]
+        R = A_rre[0:rank, :]
 
         return R
 
@@ -1240,7 +1262,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         AI_rre, p = _linalg.row_reduce_jit(field)(AI, ncols=n)
 
         # Row reduce the left null space so that it begins with an I
-        LN = AI_rre[p:,n:]
+        LN = AI_rre[p:, n:]
         LN = LN.row_reduce()
 
         return LN
@@ -1337,7 +1359,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             subfield = field.prime_subfield
             p = field.characteristic
             m = field.degree
-            conjugates = np.power.outer(x, p**np.arange(0, m, dtype=field.dtypes[-1]))
+            conjugates = np.power.outer(x, p ** np.arange(0, m, dtype=field.dtypes[-1]))
             trace = np.add.reduce(conjugates, axis=-1)
             return subfield._view(trace)
 
@@ -1384,7 +1406,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             subfield = field.prime_subfield
             p = field.characteristic
             m = field.degree
-            norm = x**((p**m - 1) // (p - 1))
+            norm = x ** ((p**m - 1) // (p - 1))
             return subfield._view(norm)
 
     def characteristic_poly(self) -> Poly:
@@ -1450,7 +1472,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         elif self.ndim == 2:
             return _characteristic_poly_matrix(self)
         else:
-            raise ValueError(f"The array must be either 0-D to return the characteristic polynomial of a single element or 2-D to return the characteristic polynomial of a square matrix, not have shape {self.shape}.")
+            raise ValueError(
+                f"The array must be either 0-D to return the characteristic polynomial of a single element or 2-D to return the characteristic polynomial of a square matrix, not have shape {self.shape}."
+            )
 
     def minimal_poly(self) -> Poly:
         r"""
@@ -1496,7 +1520,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         # elif self.ndim == 2:
         #     return _minimal_poly_matrix(self)
         else:
-            raise ValueError(f"The array must be either 0-D to return the minimal polynomial of a single element or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}.")
+            raise ValueError(
+                f"The array must be either 0-D to return the minimal polynomial of a single element or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}."
+            )
 
     def log(self, base: ElementLike | ArrayLike | None = None) -> int | np.ndarray:
         r"""
@@ -1652,7 +1678,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             if last_line_width <= np.get_printoptions()["linewidth"]:
                 return prefix + string + ", " + order + suffix
             else:
-                return prefix + string + ",\n" + " "*len(prefix) + order + suffix
+                return prefix + string + ",\n" + " " * len(prefix) + order + suffix
         else:
             return prefix + string + suffix
 
@@ -1733,16 +1759,16 @@ def _poly_det(A: np.ndarray) -> Poly:
     field = A.flatten()[0].field
 
     if A.shape == (2, 2):
-        return A[0,0]*A[1,1] - A[0,1]*A[1,0]
+        return A[0, 0] * A[1, 1] - A[0, 1] * A[1, 0]
 
     n = A.shape[0]  # Size of the n x n matrix
     det = Poly.Zero(field)
     for i in range(n):
         idxs = np.delete(np.arange(0, n), i)
         if i % 2 == 0:
-            det += A[0,i] * _poly_det(A[1:,idxs])
+            det += A[0, i] * _poly_det(A[1:, idxs])
         else:
-            det -= A[0,i] * _poly_det(A[1:,idxs])
+            det -= A[0, i] * _poly_det(A[1:, idxs])
 
     return det
 
@@ -1757,7 +1783,7 @@ def _characteristic_poly_element(a: FieldArray) -> Poly:
     if field.is_prime_field:
         return x - a
     else:
-        powers = a**(field.characteristic**np.arange(0, field.degree, dtype=field.dtypes[-1]))
+        powers = a ** (field.characteristic ** np.arange(0, field.degree, dtype=field.dtypes[-1]))
         poly = Poly.Roots(powers, field=field)
         poly = Poly(poly.coeffs, field=field.prime_subfield)
         return poly
@@ -1776,9 +1802,9 @@ def _characteristic_poly_matrix(A: FieldArray) -> Poly:
     for i in range(A.shape[0]):
         for j in range(A.shape[0]):
             if i == j:
-                P[i,j] = Poly([1, -A[i,j]], field=field)
+                P[i, j] = Poly([1, -A[i, j]], field=field)
             else:
-                P[i,j] = Poly([-A[i,j]], field=field)
+                P[i, j] = Poly([-A[i, j]], field=field)
 
     # Compute det(P)
     return _poly_det(P)
@@ -1794,7 +1820,7 @@ def _minimal_poly_element(a: FieldArray) -> Poly:
     if field.is_prime_field:
         return x - a
     else:
-        conjugates = np.unique(a**(field.characteristic**np.arange(0, field.degree, dtype=field.dtypes[-1])))
+        conjugates = np.unique(a ** (field.characteristic ** np.arange(0, field.degree, dtype=field.dtypes[-1])))
         poly = Poly.Roots(conjugates, field=field)
         poly = Poly(poly.coeffs, field=field.prime_subfield)
         return poly

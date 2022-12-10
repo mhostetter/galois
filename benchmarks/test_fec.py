@@ -20,8 +20,8 @@ class Base:
         self.C_sys = self.code_sys.encode(self.M)
         self.C_non_sys = self.code_non_sys.encode(self.M)
 
-        self.C_sys[:,0:self.code_sys.t] += self.GF.Random(low=1)  # Add t bit errors
-        self.C_non_sys[:,0:self.code_non_sys.t] += self.GF.Random(low=1)  # Add t bit errors
+        self.C_sys[:, 0 : self.code_sys.t] += self.GF.Random(low=1)  # Add t bit errors
+        self.C_non_sys[:, 0 : self.code_non_sys.t] += self.GF.Random(low=1)  # Add t bit errors
 
     def test_encode_systematic(self, benchmark):
         benchmark(self.code_sys.encode, self.M)

@@ -26,6 +26,7 @@ class UFunc:
     A ufunc dispatcher for Array objects. The dispatcher will invoke a JIT-compiled or pure-Python ufunc depending on the size
     of the Galois field or Galois ring.
     """
+
     type: Literal["unary", "binary"]
 
     _CACHE_CALCULATE = {}  # A cache of compiled ufuncs using explicit calculation
@@ -178,11 +179,15 @@ class UFunc:
 
     def _verify_unary_method_not_reduction(self, ufunc, method):
         if method in ["reduce", "accumulate", "reduceat", "outer"]:
-            raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Reduction methods are only supported on binary functions.")
+            raise ValueError(
+                f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Reduction methods are only supported on binary functions."
+            )
 
     def _verify_binary_method_not_reduction(self, ufunc, method):
         if method in ["reduce", "accumulate", "reduceat"]:
-            raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs with type {self.field.name} array and integer array. Different types do not support reduction.")
+            raise ValueError(
+                f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs with type {self.field.name} array and integer array. Different types do not support reduction."
+            )
 
     def _verify_method_only_call(self, ufunc, method):
         if not method == "__call__":
@@ -190,7 +195,9 @@ class UFunc:
 
     def _verify_operands_in_same_field(self, ufunc, inputs, meta):
         if len(meta["non_field_operands"]) > 0:
-            raise TypeError(f"Operation {ufunc.__name__!r} requires both operands to be {self.field.name} arrays, not {[inputs[i] for i in meta['operands']]}.")
+            raise TypeError(
+                f"Operation {ufunc.__name__!r} requires both operands to be {self.field.name} arrays, not {[inputs[i] for i in meta['operands']]}."
+            )
 
     def _verify_operands_in_field_or_int(self, ufunc, inputs, meta):
         for i in meta["non_field_operands"]:
@@ -199,21 +206,31 @@ class UFunc:
             elif isinstance(inputs[i], np.ndarray):
                 if self.field.dtypes == [np.object_]:
                     if not (inputs[i].dtype == np.object_ or np.issubdtype(inputs[i].dtype, np.integer)):
-                        raise ValueError(f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {inputs[i].dtype}.")
+                        raise ValueError(
+                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {inputs[i].dtype}."
+                        )
                 else:
                     if not np.issubdtype(inputs[i].dtype, np.integer):
-                        raise ValueError(f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {inputs[i].dtype}.")
+                        raise ValueError(
+                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {inputs[i].dtype}."
+                        )
             else:
-                raise TypeError(f"Operation {ufunc.__name__!r} requires operands that are not {self.field.name} arrays to be integers or an integer np.ndarray, not {type(inputs[i])}.")
+                raise TypeError(
+                    f"Operation {ufunc.__name__!r} requires operands that are not {self.field.name} arrays to be integers or an integer np.ndarray, not {type(inputs[i])}."
+                )
 
     def _verify_operands_first_field_second_int(self, ufunc, inputs, meta):
         if len(meta["operands"]) == 1:
             return
 
         if not meta["operands"][0] == meta["field_operands"][0]:
-            raise TypeError(f"Operation {ufunc.__name__!r} requires the first operand to be a {self.field.name} array, not {meta['types'][meta['operands'][0]]}.")
+            raise TypeError(
+                f"Operation {ufunc.__name__!r} requires the first operand to be a {self.field.name} array, not {meta['types'][meta['operands'][0]]}."
+            )
         if len(meta["field_operands"]) > 1 and meta["operands"][1] == meta["field_operands"][1]:
-            raise TypeError(f"Operation {ufunc.__name__!r} requires the second operand to be an integer array, not {meta['types'][meta['operands'][1]]}.")
+            raise TypeError(
+                f"Operation {ufunc.__name__!r} requires the second operand to be an integer array, not {meta['types'][meta['operands'][1]]}."
+            )
 
         second = inputs[meta["operands"][1]]
         if isinstance(second, (int, np.integer)):
@@ -224,12 +241,18 @@ class UFunc:
         elif isinstance(second, np.ndarray):
             if self.field.dtypes == [np.object_]:
                 if not (second.dtype == np.object_ or np.issubdtype(second.dtype, np.integer)):
-                    raise ValueError(f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {second.dtype}.")
+                    raise ValueError(
+                        f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {second.dtype}."
+                    )
             else:
                 if not np.issubdtype(second.dtype, np.integer):
-                    raise ValueError(f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {second.dtype}.")
+                    raise ValueError(
+                        f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {second.dtype}."
+                    )
         else:
-            raise TypeError(f"Operation {ufunc.__name__!r} requires the second operand to be an integer or integer np.ndarray, not {type(second)}.")
+            raise TypeError(
+                f"Operation {ufunc.__name__!r} requires the second operand to be an integer or integer np.ndarray, not {type(second)}."
+            )
 
     ###############################################################################
     # Input/output conversion
@@ -302,10 +325,12 @@ class UFunc:
 # arithmetic implemented
 ###############################################################################
 
+
 class add_ufunc(UFunc):
     """
     Default addition ufunc dispatcher.
     """
+
     type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -320,6 +345,7 @@ class negative_ufunc(UFunc):
     """
     Default additive inverse ufunc dispatcher.
     """
+
     type = "unary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -334,6 +360,7 @@ class subtract_ufunc(UFunc):
     """
     Default subtraction ufunc dispatcher.
     """
+
     type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -348,6 +375,7 @@ class multiply_ufunc(UFunc):
     """
     Default multiplication ufunc dispatcher.
     """
+
     type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -366,6 +394,7 @@ class reciprocal_ufunc(UFunc):
     """
     Default multiplicative inverse ufunc dispatcher.
     """
+
     type = "unary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -380,6 +409,7 @@ class divide_ufunc(UFunc):
     """
     Default division ufunc dispatcher.
     """
+
     type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -402,6 +432,7 @@ class divmod_ufunc(UFunc):
 
     NOTE: This does not need its own implementation. Instead, it invokes other ufuncs.
     """
+
     type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -418,6 +449,7 @@ class remainder_ufunc(UFunc):
 
     NOTE: This does not need its own implementation. Instead, it invokes other ufuncs.
     """
+
     type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -431,6 +463,7 @@ class power_ufunc(UFunc):
     """
     Default exponentiation ufunc dispatcher.
     """
+
     type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -448,6 +481,7 @@ class square_ufunc(UFunc):
 
     NOTE: This does not need its own implementation. Instead, it invokes other ufuncs.
     """
+
     type = "unary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
@@ -463,6 +497,7 @@ class log_ufunc(UFunc):
     """
     Default logarithm ufunc dispatcher.
     """
+
     type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
@@ -477,6 +512,7 @@ class sqrt_ufunc(UFunc):
     """
     Default square root ufunc dispatcher.
     """
+
     type = "unary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
@@ -494,6 +530,7 @@ class matmul_ufunc(UFunc):
     """
     Default matrix multiplication ufunc dispatcher.
     """
+
     type = "binary"
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
@@ -505,33 +542,57 @@ class matmul_ufunc(UFunc):
 # Array mixin class
 ###############################################################################
 
+
 class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
     """
     An Array mixin class that overrides the invocation of NumPy ufuncs on Array objects.
     """
 
     _UNSUPPORTED_UFUNCS = [
-    # Unary
+        # Unary
         np.invert,
-        np.log2, np.log10,
-        np.exp, np.expm1, np.exp2,
-        np.sin, np.cos, np.tan,
-        np.sinh, np.cosh, np.tanh,
-        np.arcsin, np.arccos, np.arctan,
-        np.arcsinh, np.arccosh, np.arctanh,
-        np.degrees, np.radians,
-        np.deg2rad, np.rad2deg,
-        np.floor, np.ceil, np.trunc, np.rint,
-    # Binary
-        np.hypot, np.arctan2,
-        np.logaddexp, np.logaddexp2,
-        np.fmod, np.modf,
-        np.fmin, np.fmax,
+        np.log2,
+        np.log10,
+        np.exp,
+        np.expm1,
+        np.exp2,
+        np.sin,
+        np.cos,
+        np.tan,
+        np.sinh,
+        np.cosh,
+        np.tanh,
+        np.arcsin,
+        np.arccos,
+        np.arctan,
+        np.arcsinh,
+        np.arccosh,
+        np.arctanh,
+        np.degrees,
+        np.radians,
+        np.deg2rad,
+        np.rad2deg,
+        np.floor,
+        np.ceil,
+        np.trunc,
+        np.rint,
+        # Binary
+        np.hypot,
+        np.arctan2,
+        np.logaddexp,
+        np.logaddexp2,
+        np.fmod,
+        np.modf,
+        np.fmin,
+        np.fmax,
     ]
 
     _UFUNCS_REQUIRING_VIEW = [
-        np.bitwise_and, np.bitwise_or, np.bitwise_xor,
-        np.left_shift, np.right_shift,
+        np.bitwise_and,
+        np.bitwise_or,
+        np.bitwise_xor,
+        np.left_shift,
+        np.right_shift,
         np.positive,
     ]
 
@@ -611,7 +672,9 @@ class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
             return getattr(field, field._OVERRIDDEN_UFUNCS[ufunc])(ufunc, method, inputs, kwargs, meta)
 
         elif ufunc in field._UNSUPPORTED_UFUNCS:
-            raise NotImplementedError(f"The NumPy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.")
+            raise NotImplementedError(
+                f"The NumPy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues."
+            )
 
         else:
             if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:

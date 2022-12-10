@@ -13,6 +13,7 @@ from ._helper import export, verify_isinstance
 # Divisibility
 ###############################################################################
 
+
 def gcd(a: int, b: int) -> int:
     """
     This function is wrapped and documented in `_polymorphic.gcd()`.
@@ -30,9 +31,9 @@ def egcd(a: int, b: int) -> tuple[int, int, int]:
 
     while r1 != 0:
         q = r2 // r1
-        r2, r1 = r1, r2 - q*r1
-        s2, s1 = s1, s2 - q*s1
-        t2, t1 = t1, t2 - q*t1
+        r2, r1 = r1, r2 - q * r1
+        s2, s1 = s1, s2 - q * s1
+        t2, t1 = t1, t2 - q * t1
 
     # Ensure the GCD is positive
     if r2 < 0:
@@ -47,7 +48,7 @@ def lcm(*args: int) -> int:
     """
     This function is wrapped and documented in `_polymorphic.lcm()`.
     """
-    lcm_  = 1
+    lcm_ = 1
     for arg in args:
         lcm_ = (lcm_ * arg) // gcd(lcm_, arg)
 
@@ -70,6 +71,7 @@ def prod(*args: int) -> int:
 ###############################################################################
 # Integer (floor) arithmetic
 ###############################################################################
+
 
 @export
 def isqrt(n: int) -> int:
@@ -118,7 +120,7 @@ def isqrt(n: int) -> int:
     # Recursively compute the integer square root
     x = isqrt(n >> 2) << 1
 
-    if (x + 1)**2 > n:
+    if (x + 1) ** 2 > n:
         return x
     else:
         return x + 1
@@ -174,7 +176,7 @@ def iroot(n: int, k: int) -> int:
 
     while u < x:
         x = u
-        u = (k1*u + n // u**k1) // k
+        u = (k1 * u + n // u**k1) // k
 
     return x
 
@@ -221,11 +223,11 @@ def ilog(n: int, b: int) -> int:
     low, b_low, high, b_high = 0, 1, 1, b
 
     while b_high < n:
-        low, b_low, high, b_high = high, b_high, high*2, b_high**2
+        low, b_low, high, b_high = high, b_high, high * 2, b_high**2
 
     while high - low > 1:
         mid = (low + high) // 2
-        b_mid = b_low * b**(mid - low)
+        b_mid = b_low * b ** (mid - low)
         if n < b_mid:
             high, b_high = mid, b_mid
         elif b_mid < n:

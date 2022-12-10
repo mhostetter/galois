@@ -24,6 +24,7 @@ MAX_N = 10  # The max value for which all primes <= N are contained in the looku
 # Prime generation
 ###############################################################################
 
+
 @export
 def primes(n: int) -> list[int]:
     r"""
@@ -65,19 +66,19 @@ def primes(n: int) -> list[int]:
 
     if n <= MAX_N:
         # Return a subset of the pre-computed global primes list
-        return PRIMES[0:bisect.bisect_right(PRIMES, n)]
+        return PRIMES[0 : bisect.bisect_right(PRIMES, n)]
 
-    N_odd = int(math.ceil(n/2)) - 1  # Number of odd integers (including n) to check starting at 3, i.e. skip 1
+    N_odd = int(math.ceil(n / 2)) - 1  # Number of odd integers (including n) to check starting at 3, i.e. skip 1
     composite = np.zeros(N_odd, dtype=bool)  # Indices correspond to integers 3,5,7,9,...
 
     # We only need to test integers for compositeness up to sqrt(n) because at that point the
     # integers above sqrt(n) have already been marked by the multiples of earlier primes
     max_composite = isqrt(n)  # Python 3.8 has math.isqrt(). Use this until the supported Python versions are bumped.
-    max_composite_idx = (max_composite - 3)//2
+    max_composite_idx = (max_composite - 3) // 2
 
     for i in range(0, max_composite_idx + 1):
         if not composite[i]:
-            prime = i*2 + 3  # Convert index back to integer value
+            prime = i * 2 + 3  # Convert index back to integer value
 
             # We want to mark `2*prime, 3*prime, 4*prime, ...` as composite. We don't need to mark the
             # even multiples because they're not in the composite array (which only has odds). So we'll
@@ -90,7 +91,7 @@ def primes(n: int) -> list[int]:
             composite[first_multiple::delta] = True
 
     prime_idxs = np.where(composite == False)[0]  # pylint: disable=singleton-comparison
-    p = (prime_idxs*2 + 3).tolist()  # Convert indices back to odd integers
+    p = (prime_idxs * 2 + 3).tolist()  # Convert indices back to odd integers
     p.insert(0, 2)  # Add the only even prime, 2
 
     # Replace the global primes lookup table with the newly-created, larger list
@@ -140,7 +141,9 @@ def kth_prime(k: int) -> int:
     """
     verify_isinstance(k, int)
     if not 1 <= k <= MAX_K:
-        raise ValueError(f"Argument 'k' is out of range of the prime lookup table. The lookup table only contains the first {MAX_K} primes (up to {MAX_N}).")
+        raise ValueError(
+            f"Argument 'k' is out of range of the prime lookup table. The lookup table only contains the first {MAX_K} primes (up to {MAX_N})."
+        )
 
     return PRIMES[k - 1]
 
@@ -291,14 +294,62 @@ def random_prime(bits: int, seed: int | None = None) -> int:
 
     random.seed(seed)
     while True:
-        p = random.randint(2**bits, 2**(bits + 1) - 1)
+        p = random.randint(2**bits, 2 ** (bits + 1) - 1)
         if is_prime(p):
             break
 
     return p
 
 
-MERSENNE_EXPONENTS = [2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3217,4253,4423,9689,9941,11213,19937,21701,23209,44497,86243,110503,132049,216091,756839,859433,1257787,1398269,2976221,3021377,6972593,13466917,20996011,24036583,25964951,30402457,32582657,37156667,42643801,43112609]
+MERSENNE_EXPONENTS = [
+    2,
+    3,
+    5,
+    7,
+    13,
+    17,
+    19,
+    31,
+    61,
+    89,
+    107,
+    127,
+    521,
+    607,
+    1279,
+    2203,
+    2281,
+    3217,
+    4253,
+    4423,
+    9689,
+    9941,
+    11213,
+    19937,
+    21701,
+    23209,
+    44497,
+    86243,
+    110503,
+    132049,
+    216091,
+    756839,
+    859433,
+    1257787,
+    1398269,
+    2976221,
+    3021377,
+    6972593,
+    13466917,
+    20996011,
+    24036583,
+    25964951,
+    30402457,
+    32582657,
+    37156667,
+    42643801,
+    43112609,
+]
 
 
 @export
@@ -346,7 +397,7 @@ def mersenne_exponents(n: int | None = None) -> list[int]:
     if not n > 0:
         raise ValueError(f"Argument 'n' must be positive, not {n}.")
 
-    return MERSENNE_EXPONENTS[0:bisect.bisect_right(MERSENNE_EXPONENTS, n)]
+    return MERSENNE_EXPONENTS[0 : bisect.bisect_right(MERSENNE_EXPONENTS, n)]
 
 
 @export
@@ -390,6 +441,7 @@ def mersenne_primes(n: int | None = None) -> list[int]:
 ###############################################################################
 # Primality tests
 ###############################################################################
+
 
 @export
 def fermat_primality_test(n: int, a: int | None = None, rounds: int = 1) -> bool:
@@ -606,6 +658,7 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
 # Legendre, Jacobi, and Kronecker symbols
 ###############################################################################
 
+
 @export
 def legendre_symbol(a: int, p: int) -> int:
     r"""
@@ -804,16 +857,17 @@ def kronecker_symbol(a: int, n: int) -> int:
     while n % 2 == 0:
         n, e = n // 2, e + 1
 
-    if n >=3 :
+    if n >= 3:
         # Handle the remaining odd n using the Jacobi symbol
-        return kronecker_symbol(a, u) * kronecker_symbol(a, 2)**e * jacobi_symbol(a, n)
+        return kronecker_symbol(a, u) * kronecker_symbol(a, 2) ** e * jacobi_symbol(a, n)
     else:
-        return kronecker_symbol(a, u) * kronecker_symbol(a, 2)**e
+        return kronecker_symbol(a, u) * kronecker_symbol(a, 2) ** e
 
 
 ###############################################################################
 # Prime factorization
 ###############################################################################
+
 
 @functools.lru_cache(maxsize=2048)
 def factors(n: int) -> tuple[list[int], list[int]]:
@@ -857,7 +911,9 @@ def factors(n: int) -> tuple[list[int], list[int]]:
             p.append(f)
             e.append(degree)
         else:
-            raise RuntimeError(f"Encountered a very large composite {f}. Please report this as a GitHub issue at https://github.com/mhostetter/galois/issues.")
+            raise RuntimeError(
+                f"Encountered a very large composite {f}. Please report this as a GitHub issue at https://github.com/mhostetter/galois/issues."
+            )
 
     if n > 1:
         p.append(n)
@@ -1157,12 +1213,14 @@ def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
     if d not in [1, n]:
         return d
     if d == n:
-        raise RuntimeError(f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}.")
+        raise RuntimeError(
+            f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}."
+        )
 
     # Try to find p such that p - 1 has a single prime factor larger than B
     if B2 is not None:
         P = primes(B2)
-        P = P[bisect.bisect_right(P, B):bisect.bisect_right(P, B2)]  # Only select primes between B < prime <= B2
+        P = P[bisect.bisect_right(P, B) : bisect.bisect_right(P, B2)]  # Only select primes between B < prime <= B2
         for i, p in enumerate(P):
             a = pow(a, p, n)
 
@@ -1175,7 +1233,9 @@ def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
         if d not in [1, n]:
             return d
 
-    raise RuntimeError(f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}.")
+    raise RuntimeError(
+        f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}."
+    )
 
 
 @export
@@ -1272,6 +1332,7 @@ def pollard_rho(n: int, c: int = 1) -> int:
 ###############################################################################
 # Composite factorization
 ###############################################################################
+
 
 @export
 def divisors(n: int) -> list[int]:
@@ -1394,6 +1455,7 @@ def divisor_sigma(n: int, k: int = 1) -> int:
 ###############################################################################
 # Integer tests
 ###############################################################################
+
 
 @export
 def is_prime(n: int) -> bool:
@@ -1635,7 +1697,7 @@ def is_square_free(n: int) -> bool:
     # For n to be square-free it must have no prime factors with exponent greater than 1
     _, e = factors(n)
 
-    return e == [1,]*len(e)
+    return e == [1] * len(e)
 
 
 @export

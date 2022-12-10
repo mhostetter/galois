@@ -25,6 +25,7 @@ class Function:
     A function dispatcher for Array objects. The dispatcher will invoke a JIT-compiled or pure-Python function depending on the size
     of the Galois field or Galois ring.
     """
+
     _CACHE = {}  # A cache of compiled functions
 
     def __init__(self, field: Type[Array]):
@@ -98,10 +99,12 @@ class Function:
 # Ndarray function wrappers
 ###############################################################################
 
+
 class convolve_jit(Function):
     """
     Function dispatcher to convolve two 1-D arrays.
     """
+
     def __call__(self, a: Array, b: Array, mode="full") -> Array:
         verify_isinstance(a, self.field)
         verify_isinstance(b, self.field)
@@ -133,7 +136,7 @@ class convolve_jit(Function):
 
         if IS_PRIME_FIELD:
             try:
-                max_sum = np.iinfo(dtype).max // (CHARACTERISTIC - 1)**2
+                max_sum = np.iinfo(dtype).max // (CHARACTERISTIC - 1) ** 2
                 n_sum = min(a.size, b.size)
                 overflow = n_sum > max_sum
             except:  # pylint: disable=bare-except
@@ -160,6 +163,7 @@ class fft_jit(Function):
     """
     Function dispatcher to compute the Discrete Fourier Transform of the input array.
     """
+
     _direction = "forward"
 
     def __call__(self, x: Array, n=None, axis=-1, norm=None) -> Array:
@@ -177,7 +181,7 @@ class fft_jit(Function):
 
         omega = self.field.primitive_root_of_unity(x.size)  # pylint: disable=no-member
         if self._direction == "backward":
-            omega = omega ** -1
+            omega = omega**-1
 
         if self.field.ufunc_mode != "python-calculate":
             y = self.jit(x.astype(np.int64), np.int64(omega))
@@ -214,13 +218,13 @@ class fft_jit(Function):
             ODD = implementation(x[1::2], omega2)  # pylint: disable=undefined-variable
 
             twiddle = 1
-            for k in range(0, N//2):
+            for k in range(0, N // 2):
                 ODD[k] = MULTIPLY(ODD[k], twiddle)
                 twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
 
-            for k in range(0, N//2):
+            for k in range(0, N // 2):
                 X[k] = ADD(EVEN[k], ODD[k])
-                X[k + N//2] = SUBTRACT(EVEN[k], ODD[k])
+                X[k + N // 2] = SUBTRACT(EVEN[k], ODD[k])
         else:
             # DFT with O(N^2) complexity
             twiddle = 1
@@ -249,13 +253,13 @@ class fft_jit(Function):
             ODD = fft_jit.implementation_2(x[1::2], omega2)  # pylint: disable=undefined-variable
 
             twiddle = 1
-            for k in range(0, N//2):
+            for k in range(0, N // 2):
                 ODD[k] = MULTIPLY(ODD[k], twiddle)
                 twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
 
-            for k in range(0, N//2):
+            for k in range(0, N // 2):
                 X[k] = ADD(EVEN[k], ODD[k])
-                X[k + N//2] = SUBTRACT(EVEN[k], ODD[k])
+                X[k + N // 2] = SUBTRACT(EVEN[k], ODD[k])
         else:
             # DFT with O(N^2) complexity
             twiddle = 1
@@ -278,6 +282,7 @@ class ifft_jit(fft_jit):
     """
     Function dispatcher to compute the Inverse Discrete Fourier Transform of the input array.
     """
+
     _direction = "backward"
 
 
@@ -285,20 +290,30 @@ class ifft_jit(fft_jit):
 # Array mixin class
 ###############################################################################
 
+
 class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
     """
     An Array mixin class that overrides the invocation of NumPy functions on Array objects.
     """
 
     _UNSUPPORTED_FUNCTIONS = [
-    # Unary
-        np.packbits, np.unpackbits,
+        # Unary
+        np.packbits,
+        np.unpackbits,
         np.unwrap,
-        np.around, np.round_, np.fix,
-        np.gradient, np.trapz,
-        np.i0, np.sinc,
-        np.angle, np.real, np.imag, np.conj, np.conjugate,
-    # Binary
+        np.around,
+        np.round_,
+        np.fix,
+        np.gradient,
+        np.trapz,
+        np.i0,
+        np.sinc,
+        np.angle,
+        np.real,
+        np.imag,
+        np.conj,
+        np.conjugate,
+        # Binary
         np.lib.scimath.logn,
         np.cross,
     ]
@@ -335,7 +350,9 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
             output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
 
         elif func in field._UNSUPPORTED_FUNCTIONS:
-            raise NotImplementedError(f"The NumPy function {func.__name__!r} is not supported on FieldArray. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data, you should first call `array = array.view(np.ndarray)` and then call the function.")
+            raise NotImplementedError(
+                f"The NumPy function {func.__name__!r} is not supported on FieldArray. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data, you should first call `array = array.view(np.ndarray)` and then call the function."
+            )
 
         else:
             if func is np.insert:

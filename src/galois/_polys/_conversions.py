@@ -41,7 +41,7 @@ def integer_to_poly(integer: int, order: int, degree: int | None = None) -> list
     # Set to a fixed degree if requested
     if degree is not None:
         assert degree >= len(c) - 1
-        c = [0,]*(degree - len(c) + 1) + c
+        c = [0] * (degree - len(c) + 1) + c
 
     return c
 
@@ -69,7 +69,7 @@ def sparse_poly_to_integer(degrees: list[int], coeffs: list[int], order: int) ->
 
     integer = 0
     for d, c in zip(degrees, coeffs):
-        integer += int(c) * order**int(d)
+        integer += int(c) * order ** int(d)
 
     return integer
 
