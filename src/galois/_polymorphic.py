@@ -531,11 +531,11 @@ def crt(remainders, moduli):
 
     # Ensure polynomial arguments have each remainder have degree less than its modulus
     if isinstance(remainders[0], Poly):
-        for i in range(len(remainders)):
-            if not (remainders[i] == 0 or remainders[i].degree < moduli[i].degree):
+        for remainder, modulus in zip(remainders, moduli):
+            if not (remainder == 0 or remainder.degree < modulus.degree):
                 raise ValueError(
                     f"Each remainder must have degree strictly less than its modulus. "
-                    f"Remainder {remainders[i]} with modulus {moduli[i]} does not satisfy that condition."
+                    f"Remainder {remainder} with modulus {modulus} does not satisfy that condition."
                 )
 
     # Iterate through the system of congruences reducing a pair of congruences into a

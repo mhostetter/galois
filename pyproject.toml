@@ -81,7 +81,6 @@ universal = false
 [tool.pylint]
 disable = [
     "comparison-with-callable",  # pylint doesn't understand metaclass properties
-    "consider-using-enumerate",
     "eval-used",
     "fixme",
     "global-statement",
@@ -114,12 +113,11 @@ exclude = '''
 )/
     | src/galois/_version.py
 '''
+# NOTE: You must use single-quoted strings in TOML for regular expressions. It's the equivalent of r-strings in Python.
+# For some reason, this exclude line doesn't work when on a single line.
 
 [tool.isort]
 profile = "black"
-
-# NOTE: You must use single-quoted strings in TOML for regular expressions. It's the equivalent of r-strings in Python.
-# For some reason, this exclude line doesn't work when on a single line.
 
 [tool.pytest.ini_options]
 minversion = "6.2"

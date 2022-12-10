@@ -270,7 +270,7 @@ class UFunc:
 
     def _convert_inputs_to_vector(self, inputs, kwargs):
         v_inputs = list(inputs)
-        for i in range(len(inputs)):
+        for i in range(len(inputs)):  # pylint: disable=consider-using-enumerate
             if issubclass(type(inputs[i]), self.field):
                 v_inputs[i] = inputs[i].vector()
 
@@ -301,7 +301,7 @@ class UFunc:
     def _view_inputs_as_ndarray(self, inputs, kwargs, dtype=None):
         # View all inputs that are FieldArrays as np.ndarray to avoid infinite recursion
         v_inputs = list(inputs)
-        for i in range(len(inputs)):
+        for i in range(len(inputs)):  # pylint: disable=consider-using-enumerate
             if issubclass(type(inputs[i]), self.field):
                 v_inputs[i] = inputs[i].view(np.ndarray) if dtype is None else inputs[i].view(np.ndarray).astype(dtype)
 
