@@ -12,7 +12,7 @@ on:
 
 jobs:
   run-linter:
-    name: Run
+    name: Lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -33,3 +33,23 @@ jobs:
 
       - name: Lint with pylint
         run: python3 -m pylint src/galois/
+
+  run-formatter:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Upgrade pip
+        run: python3 -m pip install --upgrade pip
+
+      - name: Install the `galois` package with [dev]
+        run: python3 -m pip install .[dev]
+
+      - name: Format with black
+        run: python3 -m black . --check
