@@ -227,12 +227,12 @@ def carmichael_lambda(n: int) -> int:
     p, e = factors(n)
 
     lambdas = []
-    for i in range(len(p)):
+    for pi, ei in zip(p, e):
         # Carmichael function for prime powers
-        if p[i] == 2 and e[i] > 2:
-            l = euler_phi(p[i] ** e[i]) // 2
+        if pi == 2 and ei > 2:
+            l = euler_phi(pi**ei) // 2
         else:
-            l = euler_phi(p[i] ** e[i])
+            l = euler_phi(pi**ei)
         lambdas.append(l)
 
     return lcm(*lambdas)
