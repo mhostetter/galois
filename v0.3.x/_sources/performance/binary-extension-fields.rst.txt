@@ -144,9 +144,9 @@ field :math:`\mathrm{GF}(2^{32})`.
         4278384359]], order=2^32)
 
     In [7]: %timeit A @ B
-    45.1 ms ± 264 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    3.88 ms ± 102 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
-The :obj:`galois` library is about ~65x slower than native NumPy (which isn't computing the correct product).
+The :obj:`galois` library is about ~5.5x slower than native NumPy (which isn't computing the correct product).
 
 .. code-block:: ipython
 
@@ -158,4 +158,4 @@ The :obj:`galois` library is about ~65x slower than native NumPy (which isn't co
 
     # This does not produce the correct result!
     In [11]: %timeit (AA @ BB) % pp
-    696 µs ± 3.3 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+    703 µs ± 1.9 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)

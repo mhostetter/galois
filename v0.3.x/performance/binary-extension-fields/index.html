@@ -34,7 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.af53380991695257c.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7430,10 +7430,10 @@ field <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{32})\)</span>.
 <span class="go">    4278384359]], order=2^32)</span>
 
 <span class="gp">In [7]: </span><span class="o">%</span><span class="k">timeit</span> A @ B
-<span class="go">45.1 ms ± 264 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)</span>
+<span class="go">3.88 ms ± 102 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)</span>
 </code></pre></div>
 </div>
-<p>The <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> library is about ~65x slower than native NumPy (which isn’t computing the correct product).</p>
+<p>The <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> library is about ~5.5x slower than native NumPy (which isn’t computing the correct product).</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="gp">In [9]: </span><span class="n">AA</span><span class="p">,</span> <span class="n">BB</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span> <span class="n">B</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
@@ -7442,7 +7442,7 @@ field <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{32})\)</span>.
 
 <span class="go"># This does not produce the correct result!</span>
 <span class="gp">In [11]: </span><span class="o">%</span><span class="k">timeit</span> (AA @ BB) % pp
-<span class="go">696 µs ± 3.3 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)</span>
+<span class="go">703 µs ± 1.9 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)</span>
 </code></pre></div>
 </div>
 
@@ -7452,7 +7452,7 @@ field <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{32})\)</span>.
   <small>
     
       Last update:
-      Mar 30, 2022
+      Dec 10, 2022
     
   </small>
 </div>

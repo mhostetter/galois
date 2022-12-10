@@ -34,7 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.27200a70a1f12e0d7.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.af53380991695257c.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7551,21 +7551,21 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [40]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[40]: </span><span class="go"></span>
-<span class="go">GF([[                   α^4 + 1,         α^3 + α^2 + 2α + 1,</span>
-<span class="go">          2α^4 + α^3 + 2α^2 + 1,       α^4 + 2α^3 + α^2 + α,</span>
-<span class="go">             α^4 + 2α^3 + α + 1],</span>
-<span class="go">    [       2α^4 + 2α^3 + α + 2,        α^4 + 2α^2 + 2α + 2,</span>
-<span class="go">            α^4 + 2α^3 + 2α + 1,  α^4 + α^3 + 2α^2 + 2α + 1,</span>
-<span class="go">                     α^4 + 2α^3],</span>
-<span class="go">    [2α^4 + 2α^3 + 2α^2 + α + 2,                α^4 + α + 2,</span>
-<span class="go">            α^4 + 2α^2 + 2α + 1,            2α^4 + 2α^3 + 1,</span>
-<span class="go">                       2α^3 + α],</span>
-<span class="go">    [    2α^4 + 2α^3 + 2α^2 + α,       2α^4 + α^3 + α^2 + α,</span>
-<span class="go">                 α^4 + 2α^3 + 2,                α^4 + α + 1,</span>
-<span class="go">            2α^4 + α^2 + 2α + 2],</span>
-<span class="go">    [           2α^4 + 2α^3 + 2,              α^4 + α^2 + 1,</span>
-<span class="go">      α^4 + 2α^3 + α^2 + 2α + 2,          α^4 + 2α^3 + 2α^2,</span>
-<span class="go">                       2α^2 + 1]], order=3^5)</span>
+<span class="go">GF([[ 2α^4 + α^3 + α^2 + 2α + 2,          α^4 + α^3 + α + 1,</span>
+<span class="go">                  2α^3 + 2α + 2,                       2α^3,</span>
+<span class="go">             2α^3 + α^2 + α + 1],</span>
+<span class="go">    [      α^4 + α^3 + 2α^2 + α,      2α^4 + α^3 + 2α^2 + 2,</span>
+<span class="go">                       2α^4 + 2,            2α^4 + 2α^2 + 1,</span>
+<span class="go">             α^3 + 2α^2 + α + 2],</span>
+<span class="go">    [     α^4 + 2α^3 + 2α^2 + 2,                     2α + 1,</span>
+<span class="go">          2α^4 + α^3 + 2α^2 + 2,         2α^4 + α^2 + α + 2,</span>
+<span class="go">                    α^4 + α + 1],</span>
+<span class="go">    [                     α + 2,     2α^4 + 2α^3 + 2α^2 + 1,</span>
+<span class="go">     α^4 + 2α^3 + 2α^2 + 2α + 2,                    α^4 + α,</span>
+<span class="go">                2α^4 + 2α^2 + 1],</span>
+<span class="go">    [              2α^3 + α + 2,        α^4 + 2α^3 + 2α + 1,</span>
+<span class="go">          2α^4 + 2α^3 + α^2 + 1,         α^3 + 2α^2 + α + 1,</span>
+<span class="go">              α^3 + α^2 + α + 1]], order=3^5)</span>
 </code></pre></div>
 </div>
 <p>The readability is improved by increasing the line width using <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html#numpy.set_printoptions" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.set_printoptions()</span></code></a>.</p>
@@ -7573,11 +7573,11 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [42]: </span><span class="n">x</span>
 <span class="gh">Out[42]: </span><span class="go"></span>
-<span class="go">GF([[                   α^4 + 1,         α^3 + α^2 + 2α + 1,      2α^4 + α^3 + 2α^2 + 1,       α^4 + 2α^3 + α^2 + α,         α^4 + 2α^3 + α + 1],</span>
-<span class="go">    [       2α^4 + 2α^3 + α + 2,        α^4 + 2α^2 + 2α + 2,        α^4 + 2α^3 + 2α + 1,  α^4 + α^3 + 2α^2 + 2α + 1,                 α^4 + 2α^3],</span>
-<span class="go">    [2α^4 + 2α^3 + 2α^2 + α + 2,                α^4 + α + 2,        α^4 + 2α^2 + 2α + 1,            2α^4 + 2α^3 + 1,                   2α^3 + α],</span>
-<span class="go">    [    2α^4 + 2α^3 + 2α^2 + α,       2α^4 + α^3 + α^2 + α,             α^4 + 2α^3 + 2,                α^4 + α + 1,        2α^4 + α^2 + 2α + 2],</span>
-<span class="go">    [           2α^4 + 2α^3 + 2,              α^4 + α^2 + 1,  α^4 + 2α^3 + α^2 + 2α + 2,          α^4 + 2α^3 + 2α^2,                   2α^2 + 1]], order=3^5)</span>
+<span class="go">GF([[ 2α^4 + α^3 + α^2 + 2α + 2,          α^4 + α^3 + α + 1,              2α^3 + 2α + 2,                       2α^3,         2α^3 + α^2 + α + 1],</span>
+<span class="go">    [      α^4 + α^3 + 2α^2 + α,      2α^4 + α^3 + 2α^2 + 2,                   2α^4 + 2,            2α^4 + 2α^2 + 1,         α^3 + 2α^2 + α + 2],</span>
+<span class="go">    [     α^4 + 2α^3 + 2α^2 + 2,                     2α + 1,      2α^4 + α^3 + 2α^2 + 2,         2α^4 + α^2 + α + 2,                α^4 + α + 1],</span>
+<span class="go">    [                     α + 2,     2α^4 + 2α^3 + 2α^2 + 1, α^4 + 2α^3 + 2α^2 + 2α + 2,                    α^4 + α,            2α^4 + 2α^2 + 1],</span>
+<span class="go">    [              2α^3 + α + 2,        α^4 + 2α^3 + 2α + 1,      2α^4 + 2α^3 + α^2 + 1,         α^3 + 2α^2 + α + 1,          α^3 + α^2 + α + 1]], order=3^5)</span>
 </code></pre></div>
 </div>
 <h2 id="representation-comparisons">Representation comparisons<a class="headerlink" href="#representation-comparisons" title="Permalink to this heading">¶</a></h2>
