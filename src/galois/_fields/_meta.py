@@ -3,10 +3,10 @@ A module that defines the metaclass for the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-from typing import Type, TYPE_CHECKING
-from typing_extensions import Literal
+from typing import TYPE_CHECKING, Type
 
 import numpy as np
+from typing_extensions import Literal
 
 from .._domains._array import ArrayMeta
 from .._modular import totatives

@@ -1,8 +1,8 @@
 """
 A pytest module to benchmark FieldArray arithmetic.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

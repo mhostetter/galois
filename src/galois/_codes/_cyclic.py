@@ -4,16 +4,15 @@ A module containing common functions for cyclic codes.
 from __future__ import annotations
 
 from typing import overload
-from typing_extensions import Literal
 
 import numpy as np
+from typing_extensions import Literal
 
 from .._fields import FieldArray
-from .._helper import verify_isinstance, extend_docstring
+from .._helper import extend_docstring, verify_isinstance
 from .._polys import Poly
 from .._polys._dense import divmod_jit
 from ..typing import ArrayLike
-
 from ._linear import _LinearCode
 
 

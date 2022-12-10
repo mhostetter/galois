@@ -4,8 +4,8 @@ A module containing polynomial arithmetic for polynomials with dense coefficient
 from __future__ import annotations
 
 import numba
-from numba import int64, uint64
 import numpy as np
+from numba import int64, uint64
 
 from .._domains import Array
 from .._domains._function import Function

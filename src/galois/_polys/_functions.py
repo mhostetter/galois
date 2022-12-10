@@ -5,10 +5,8 @@ from __future__ import annotations
 
 from .._domains import Array
 from .._helper import export, verify_isinstance
-
-from ._poly import Poly
 from ._dense import lagrange_poly_jit
-
+from ._poly import Poly
 
 ###############################################################################
 # Divisibility

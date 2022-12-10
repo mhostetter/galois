@@ -115,6 +115,9 @@ exclude = '''
     | src/galois/_version.py
 '''
 
+[tool.isort]
+profile = "black"
+
 # NOTE: You must use single-quoted strings in TOML for regular expressions. It's the equivalent of r-strings in Python.
 # For some reason, this exclude line doesn't work when on a single line.
 

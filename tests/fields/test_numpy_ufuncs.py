@@ -8,7 +8,6 @@ import galois
 
 from .conftest import randint
 
-
 # TODO: Test using "out" keyword argument
 
 class TestReduce:

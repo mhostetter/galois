@@ -1,12 +1,12 @@
 """
 A pytest module to test methods of FieldArray subclasses.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 
-from .conftest import valid_dtype, invalid_dtype
+from .conftest import invalid_dtype, valid_dtype
 
 
 def test_repr():

@@ -2,6 +2,7 @@
 A performant NumPy extension for Galois fields and their applications.
 """
 # pylint: disable=wrong-import-position
+# isort: skip_file
 
 try:
     from ._version import __version__, __version_tuple__

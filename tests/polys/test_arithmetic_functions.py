@@ -1,8 +1,8 @@
 """
 A pytest module to test polynomial arithmetic functions.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

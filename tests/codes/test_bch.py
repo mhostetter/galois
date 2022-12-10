@@ -3,12 +3,17 @@ A pytest module to test general BCH codes.
 """
 import random
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 
-from .conftest import verify_encode, verify_encode_shortened, verify_decode, verify_decode_shortened
+from .conftest import (
+    verify_decode,
+    verify_decode_shortened,
+    verify_encode,
+    verify_encode_shortened,
+)
 
 
 def test_exceptions():

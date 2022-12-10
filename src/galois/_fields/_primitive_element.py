@@ -4,6 +4,7 @@ A module containing functions to generate and test primitive elements of finite 
 from __future__ import annotations
 
 import random
+
 from typing_extensions import Literal
 
 from .._helper import export, verify_isinstance

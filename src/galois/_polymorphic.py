@@ -8,18 +8,17 @@ from typing import Sequence, overload
 import numpy as np
 
 from ._helper import export
-from ._math import gcd as int_gcd
 from ._math import egcd as int_egcd
+from ._math import gcd as int_gcd
 from ._math import lcm as int_lcm
 from ._math import prod as int_prod
 from ._polys import Poly
-from ._polys._functions import gcd as poly_gcd
 from ._polys._functions import egcd as poly_egcd
+from ._polys._functions import gcd as poly_gcd
 from ._polys._functions import lcm as poly_lcm
 from ._polys._functions import prod as poly_prod
 from ._prime import factors as int_factors
 from ._prime import is_square_free as int_is_square_free
-
 
 ###############################################################################
 # Divisibility

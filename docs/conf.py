@@ -28,9 +28,9 @@ import builtins
 
 setattr(builtins, "__sphinx_build__", True)
 
-import galois
 import numpy
 
+import galois
 
 # -- Project information -----------------------------------------------------
 

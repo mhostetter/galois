@@ -6,9 +6,9 @@ from __future__ import annotations
 import abc
 import inspect
 from typing import TYPE_CHECKING
-from typing_extensions import Literal
 
 import numpy as np
+from typing_extensions import Literal
 
 # Obtain forward references
 if TYPE_CHECKING:

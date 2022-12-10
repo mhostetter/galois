@@ -3,8 +3,8 @@ A pytest module to test linear algebra routines over Galois fields.
 """
 import random
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

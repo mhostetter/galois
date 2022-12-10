@@ -3,17 +3,15 @@ A module that defines the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-from typing_extensions import Self, Literal
-
 import numpy as np
+from typing_extensions import Literal, Self
 
 from .._domains import Array, _linalg
 from .._helper import export, extend_docstring, verify_isinstance, verify_literal
 from .._polys import Poly
-from .._polys._conversions import integer_to_poly, str_to_integer, poly_to_str
+from .._polys._conversions import integer_to_poly, poly_to_str, str_to_integer
 from .._prime import divisors
-from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
-
+from ..typing import ArrayLike, DTypeLike, ElementLike, IterableLike, ShapeLike
 from ._meta import FieldArrayMeta
 
 DOCSTRING_MAP = {

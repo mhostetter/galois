@@ -1,8 +1,8 @@
 """
 A pytest module to test the DFT over arbitrary finite fields.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

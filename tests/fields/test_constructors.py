@@ -1,13 +1,12 @@
 """
 A pytest module to test instantiation of new FieldArrays through alternate constructors.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 
-from .conftest import randint, valid_dtype, invalid_dtype
-
+from .conftest import invalid_dtype, randint, valid_dtype
 
 RANDOM_REPRODUCIBLE = {
     'GF(2)-42': galois.GF2([1, 0, 1, 0]),

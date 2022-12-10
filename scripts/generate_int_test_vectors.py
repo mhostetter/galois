@@ -9,24 +9,24 @@ import pickle
 import random
 import shutil
 
-import sympy
 import numpy as np
+import sympy
 from sage.all import (
     Integer,
     Integers,
-    xgcd,
-    lcm,
-    prod,
-    isqrt,
-    log,
     crt,
     euler_phi,
-    prime_range,
-    nth_prime,
-    previous_prime,
-    next_prime,
     is_prime,
     is_prime_power,
+    isqrt,
+    lcm,
+    log,
+    next_prime,
+    nth_prime,
+    previous_prime,
+    prime_range,
+    prod,
+    xgcd,
 )
 from sage.crypto.util import carmichael_lambda
 

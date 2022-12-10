@@ -4,14 +4,13 @@ dispatcher classes have snake_case naming because they are act like functions.
 """
 from __future__ import annotations
 
-from typing import Type, Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Type
 
 import numba
-from numba import int64
 import numpy as np
+from numba import int64
 
 from .._helper import verify_isinstance
-
 from ._meta import ArrayMeta
 
 if TYPE_CHECKING:

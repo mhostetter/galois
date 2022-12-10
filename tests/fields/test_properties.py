@@ -3,8 +3,8 @@ A pytest module to test various Galois field properties.
 """
 import random
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 
