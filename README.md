@@ -19,6 +19,8 @@
 
 The `galois` library is a Python 3 package that extends NumPy arrays to operate over finite fields.
 
+> Enjoying the library? Give us a :star: on [GitHub](https://github.com/mhostetter/galois)!
+
 The user creates a [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) subclass using `GF = galois.GF(p**m)`.
 `GF` is a subclass of `np.ndarray` and its constructor `x = GF(array_like)` mimics the signature of `np.array()`. The
 [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) `x` is operated on like any other NumPy array except

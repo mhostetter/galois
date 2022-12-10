@@ -272,6 +272,11 @@ sphinx_immaterial_custom_admonitions = [
         "icon": "fontawesome/regular/eye",
         "override": True,
     },
+    {
+        "name": "star",
+        "icon": "octicons/star-fill-24",
+        "color": (255, 233, 3),  # Gold
+    },
 ]
 
 
