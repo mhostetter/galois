@@ -21,6 +21,7 @@ class add_jit(Function):
     Algorithm:
         c(x) = a(x) + b(x)
     """
+
     def __call__(self, a: Array, b: Array) -> Array:
         verify_isinstance(a, self.field)
         verify_isinstance(b, self.field)
@@ -47,8 +48,8 @@ class add_jit(Function):
     def implementation(a, b):
         dtype = a.dtype
         c = np.zeros(max(a.size, b.size), dtype=dtype)
-        c[-a.size:] = a
-        c[-b.size:] = ADD(c[-b.size:], b)
+        c[-a.size :] = a
+        c[-b.size :] = ADD(c[-b.size :], b)
         return c
 
 
@@ -68,8 +69,8 @@ def subtract(a: Array, b: Array) -> Array:
 
     # c(x) = a(x) - b(x)
     c = field.Zeros(max(a.size, b.size))
-    c[-a.size:] = a
-    c[-b.size:] -= b
+    c[-a.size :] = a
+    c[-b.size :] -= b
 
     return c
 
@@ -81,6 +82,7 @@ class subtract_jit(Function):
     Algorithm:
         c(x) = a(x) - b(x)
     """
+
     def __call__(self, a: Array, b: Array) -> Array:
         verify_isinstance(a, self.field)
         verify_isinstance(b, self.field)
@@ -107,8 +109,8 @@ class subtract_jit(Function):
     def implementation(a, b):
         dtype = a.dtype
         c = np.zeros(max(a.size, b.size), dtype=dtype)
-        c[-a.size:] = a
-        c[-b.size:] = SUBTRACT(c[-b.size:], b)
+        c[-a.size :] = a
+        c[-b.size :] = SUBTRACT(c[-b.size :], b)
         return c
 
 
@@ -131,6 +133,7 @@ class divmod_jit(Function):
     Algorithm:
         a(x) = q(x)*b(x) + r(x)
     """
+
     def __call__(self, a: Array, b: Array) -> tuple[Array, Array]:
         verify_isinstance(a, self.field)
         verify_isinstance(b, self.field)
@@ -162,8 +165,8 @@ class divmod_jit(Function):
                 qr = self.python(a.view(np.ndarray), b.view(np.ndarray))
             qr = self.field._view(qr)
 
-            q = qr[:, 0:q_degree + 1]
-            r = qr[:, q_degree + 1:q_degree + 1 + r_degree + 1]
+            q = qr[:, 0 : q_degree + 1]
+            r = qr[:, q_degree + 1 : q_degree + 1 + r_degree + 1]
 
             if a_1d:
                 q = q.reshape(q.size)
@@ -178,7 +181,7 @@ class divmod_jit(Function):
         MULTIPLY = self.field._multiply.ufunc_call_only
         RECIPROCAL = self.field._reciprocal.ufunc_call_only
 
-    _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:,:], int64[:]))
+    _SIGNATURE = numba.types.FunctionType(int64[:, :](int64[:, :], int64[:]))
 
     @staticmethod
     def implementation(a, b):
@@ -190,11 +193,11 @@ class divmod_jit(Function):
 
         for k in range(a.shape[0]):
             for i in range(q_degree + 1):
-                if qr[k,i] > 0:
-                    q = MULTIPLY(qr[k,i], RECIPROCAL(b[0]))
+                if qr[k, i] > 0:
+                    q = MULTIPLY(qr[k, i], RECIPROCAL(b[0]))
                     for j in range(1, b.size):
                         qr[k, i + j] = SUBTRACT(qr[k, i + j], MULTIPLY(q, b[j]))
-                    qr[k,i] = q
+                    qr[k, i] = q
 
         return qr
 
@@ -206,6 +209,7 @@ class floordiv_jit(Function):
     Algorithm:
         a(x) = q(x)*b(x) + r(x)
     """
+
     def __call__(self, a: Array, b: Array) -> Array:
         verify_isinstance(a, self.field)
         verify_isinstance(b, self.field)
@@ -240,7 +244,7 @@ class floordiv_jit(Function):
 
         q_degree = a.size - b.size
         q = np.zeros(q_degree + 1, dtype=a.dtype)
-        aa = a[0:q_degree + 1].copy()
+        aa = a[0 : q_degree + 1].copy()
 
         for i in range(q_degree + 1):
             if aa[i] > 0:
@@ -259,6 +263,7 @@ class mod_jit(Function):
     Algorithm:
         a(x) = q(x)*b(x) + r(x)
     """
+
     def __call__(self, a: Array, b: Array) -> Array:
         verify_isinstance(a, self.field)
         verify_isinstance(b, self.field)
@@ -314,7 +319,7 @@ class mod_jit(Function):
         if r.size > 1:
             idxs = np.nonzero(r)[0]
             if idxs.size > 0:
-                r = r[idxs[0]:]
+                r = r[idxs[0] :]
             else:
                 r = r[-1:]
 
@@ -328,6 +333,7 @@ class pow_jit(Function):
     Algorithm:
         d(x) = a(x)^b % c(x)
     """
+
     def __call__(self, a: Array, b: int, c: Array | None = None) -> Array:
         verify_isinstance(a, self.field)
         verify_isinstance(b, int)
@@ -406,6 +412,7 @@ class evaluate_elementwise_jit(Function):
     """
     Evaluates the polynomial f(x) elementwise at xi.
     """
+
     def __call__(self, coeffs: Array, x: Array) -> Array:
         dtype = x.dtype
         shape = x.shape
@@ -445,16 +452,17 @@ class roots_jit(Function):
     """
     Finds the roots of the polynomial f(x).
     """
+
     def __call__(self, nonzero_degrees: np.ndarray, nonzero_coeffs: Array) -> Array:
         verify_isinstance(nonzero_degrees, np.ndarray)
         verify_isinstance(nonzero_coeffs, self.field)
         dtype = nonzero_coeffs.dtype
 
         if self.field.ufunc_mode != "python-calculate":
-            roots = self.jit(nonzero_degrees.astype(np.int64), nonzero_coeffs.astype(np.int64), int(self.field.primitive_element))[0,:]
+            roots = self.jit(nonzero_degrees.astype(np.int64), nonzero_coeffs.astype(np.int64), int(self.field.primitive_element))[0, :]
             roots = roots.astype(dtype)
         else:
-            roots = self.python(nonzero_degrees.view(np.ndarray), nonzero_coeffs.view(np.ndarray), int(self.field.primitive_element))[0,:]
+            roots = self.python(nonzero_degrees.view(np.ndarray), nonzero_coeffs.view(np.ndarray), int(self.field.primitive_element))[0, :]
         roots = self.field._view(roots)
         idxs = np.argsort(roots)
 
@@ -468,7 +476,7 @@ class roots_jit(Function):
         MULTIPLY = self.field._multiply.ufunc_call_only
         POWER = self.field._power.ufunc_call_only
 
-    _SIGNATURE = numba.types.FunctionType(int64[:,:](int64[:], int64[:], int64))
+    _SIGNATURE = numba.types.FunctionType(int64[:, :](int64[:], int64[:], int64))
 
     @staticmethod
     def implementation(nonzero_degrees, nonzero_coeffs, primitive_element):  # pragma: no cover
@@ -514,6 +522,7 @@ class lagrange_poly_jit(Function):
     """
     Finds the roots of the polynomial f(x).
     """
+
     def __call__(self, x: Array, y: Array) -> Array:
         verify_isinstance(x, Array)
         verify_isinstance(y, Array)

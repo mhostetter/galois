@@ -25,12 +25,17 @@ from ._prime import is_square_free as int_is_square_free
 # Divisibility
 ###############################################################################
 
+
 @overload
 def gcd(a: int, b: int) -> int:
     ...
+
+
 @overload
 def gcd(a: Poly, b: Poly) -> Poly:
     ...
+
+
 @export
 def gcd(a, b):
     r"""
@@ -103,9 +108,13 @@ def gcd(a, b):
 @overload
 def egcd(a: int, b: int) -> tuple[int, int, int]:
     ...
+
+
 @overload
 def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
     ...
+
+
 @export
 def egcd(a, b):
     r"""
@@ -190,9 +199,13 @@ def egcd(a, b):
 @overload
 def lcm(*values: int) -> int:
     ...
+
+
 @overload
 def lcm(*values: Poly) -> Poly:
     ...
+
+
 @export
 def lcm(*values):
     r"""
@@ -259,9 +272,13 @@ def lcm(*values):
 @overload
 def prod(*values: int) -> int:
     ...
+
+
 @overload
 def prod(*values: Poly) -> Poly:
     ...
+
+
 @export
 def prod(*values):
     r"""
@@ -327,9 +344,13 @@ def prod(*values):
 @overload
 def are_coprime(*values: int) -> bool:
     ...
+
+
 @overload
 def are_coprime(*values: Poly) -> bool:
     ...
+
+
 @export
 def are_coprime(*values):
     r"""
@@ -398,12 +419,17 @@ def are_coprime(*values):
 # Congruences
 ###############################################################################
 
+
 @overload
 def crt(remainders: Sequence[int], moduli: Sequence[int]) -> int:
     ...
+
+
 @overload
 def crt(remainders: Sequence[Poly], moduli: Sequence[Poly]) -> Poly:
     ...
+
+
 @export
 def crt(remainders, moduli):
     r"""
@@ -489,18 +515,28 @@ def crt(remainders, moduli):
                     ai = x % m[i]
                     print(ai, ai == a[i])
     """
-    if not (isinstance(remainders, (tuple, list)) and (all(isinstance(x, (int, np.integer)) for x in remainders) or all(isinstance(x, Poly) for x in remainders))):
+    if not (
+        isinstance(remainders, (tuple, list))
+        and (all(isinstance(x, (int, np.integer)) for x in remainders) or all(isinstance(x, Poly) for x in remainders))
+    ):
         raise TypeError(f"Argument 'remainders' must be a tuple or list of int or Poly, not {remainders}.")
-    if not (isinstance(moduli, (tuple, list)) and (all(isinstance(x, (int, np.integer)) for x in moduli) or all(isinstance(x, Poly) for x in moduli))):
+    if not (
+        isinstance(moduli, (tuple, list))
+        and (all(isinstance(x, (int, np.integer)) for x in moduli) or all(isinstance(x, Poly) for x in moduli))
+    ):
         raise TypeError(f"Argument 'moduli' must be a tuple or list of int or Poly, not {moduli}.")
     if not len(remainders) == len(moduli) >= 2:
-        raise ValueError(f"Arguments 'remainders' and 'moduli' must be the same length of at least 2, not {len(remainders)} and {len(moduli)}.")
+        raise ValueError(
+            f"Arguments 'remainders' and 'moduli' must be the same length of at least 2, not {len(remainders)} and {len(moduli)}."
+        )
 
     # Ensure polynomial arguments have each remainder have degree less than its modulus
     if isinstance(remainders[0], Poly):
         for i in range(len(remainders)):
             if not (remainders[i] == 0 or remainders[i].degree < moduli[i].degree):
-                raise ValueError(f"Each remainder have degree strictly less than its modulus, remainder {remainders[i]} with modulus {moduli[i]} does not satisfy that condition.")
+                raise ValueError(
+                    f"Each remainder have degree strictly less than its modulus, remainder {remainders[i]} with modulus {moduli[i]} does not satisfy that condition."
+                )
 
     # Iterate through the system of congruences reducing a pair of congruences into a
     # single one. The answer to the final congruence solves all the congruences.
@@ -511,14 +547,16 @@ def crt(remainders, moduli):
 
         if d == 1:
             # The moduli (m1, m2) are coprime
-            x = a1*b2*m2 + a2*b1*m1  # Compute x through explicit construction
+            x = (a1 * b2 * m2) + (a2 * b1 * m1)  # Compute x through explicit construction
             m1 = m1 * m2  # The new modulus
         else:
             # The moduli (m1, m2) are not coprime, however if a1 == b2 (mod d)
             # then a unique solution still exists.
             if not (a1 % d) == (a2 % d):
-                raise ValueError(f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, therefore a unique solution does not exist.")
-            x = (a1*b2*m2 + a2*b1*m1) // d  # Compute x through explicit construction
+                raise ValueError(
+                    f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, therefore a unique solution does not exist."
+                )
+            x = ((a1 * b2 * m2) + (a2 * b1 * m1)) // d  # Compute x through explicit construction
             m1 = (m1 * m2) // d  # The new modulus
 
         a1 = x % m1  # The new equivalent remainder
@@ -533,12 +571,17 @@ def crt(remainders, moduli):
 # Factorization
 ###############################################################################
 
+
 @overload
 def factors(value: int) -> tuple[list[int], list[int]]:
     ...
+
+
 @overload
 def factors(value: Poly) -> tuple[list[Poly], list[int]]:
     ...
+
+
 @export
 def factors(value):
     r"""
@@ -650,9 +693,13 @@ def factors(value):
 @overload
 def is_square_free(value: int) -> bool:
     ...
+
+
 @overload
 def is_square_free(value: Poly) -> bool:
     ...
+
+
 @export
 def is_square_free(value):
     r"""

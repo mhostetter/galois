@@ -19,6 +19,7 @@ class add_ufunc(_ufunc.add_ufunc):
     """
     Addition ufunc dispatcher with lookup table arithmetic added.
     """
+
     def set_lookup_globals(self):
         # pylint: disable=global-variable-undefined
         global EXP, LOG, ZECH_LOG, ZECH_E
@@ -63,6 +64,7 @@ class negative_ufunc(_ufunc.negative_ufunc):
     """
     Additive inverse ufunc dispatcher with lookup table arithmetic added.
     """
+
     def set_lookup_globals(self):
         # pylint: disable=global-variable-undefined
         global EXP, LOG, ZECH_E
@@ -92,6 +94,7 @@ class subtract_ufunc(_ufunc.subtract_ufunc):
     """
     Subtraction ufunc dispatcher with lookup table arithmetic added.
     """
+
     def set_lookup_globals(self):
         # pylint: disable=global-variable-undefined
         global ORDER, EXP, LOG, ZECH_LOG, ZECH_E
@@ -143,6 +146,7 @@ class multiply_ufunc(_ufunc.multiply_ufunc):
     """
     Multiplication ufunc dispatcher with lookup table arithmetic added.
     """
+
     def set_lookup_globals(self):
         # pylint: disable=global-variable-undefined
         global EXP, LOG
@@ -171,6 +175,7 @@ class reciprocal_ufunc(_ufunc.reciprocal_ufunc):
     """
     Multiplicative inverse ufunc dispatcher with lookup table arithmetic added.
     """
+
     def set_lookup_globals(self):
         # pylint: disable=global-variable-undefined
         global ORDER, EXP, LOG
@@ -201,6 +206,7 @@ class divide_ufunc(_ufunc.divide_ufunc):
     """
     Division ufunc dispatcher with lookup table arithmetic added.
     """
+
     def set_lookup_globals(self):
         # pylint: disable=global-variable-undefined
         global ORDER, EXP, LOG
@@ -236,6 +242,7 @@ class power_ufunc(_ufunc.power_ufunc):
     """
     Exponentiation ufunc dispatcher with lookup table arithmetic added.
     """
+
     def set_lookup_globals(self):
         # pylint: disable=global-variable-undefined
         global ORDER, EXP, LOG
@@ -273,6 +280,7 @@ class log_ufunc(_ufunc.log_ufunc):
     """
     Logarithm ufunc dispatcher with lookup table arithmetic added.
     """
+
     def set_lookup_globals(self):
         # pylint: disable=global-variable-undefined
         global LOG
@@ -298,6 +306,7 @@ class sqrt_ufunc(_ufunc.sqrt_ufunc):
     """
     Square root ufunc dispatcher with lookup table arithmetic added.
     """
+
     def implementation(self, a: Array) -> Array:
         """
         Computes the square root of an element in a Galois field or Galois ring.
@@ -308,6 +317,7 @@ class sqrt_ufunc(_ufunc.sqrt_ufunc):
 ###############################################################################
 # Array mixin class
 ###############################################################################
+
 
 class UFuncMixin(_ufunc.UFuncMixin):
     """
@@ -324,7 +334,7 @@ class UFuncMixin(_ufunc.UFuncMixin):
         add = cls._add.python_calculate
         multiply = cls._multiply.python_calculate
 
-        cls._EXP = np.zeros(2*cls.order, dtype=np.int64)
+        cls._EXP = np.zeros(2 * cls.order, dtype=np.int64)
         cls._LOG = np.zeros(cls.order, dtype=np.int64)
         cls._ZECH_LOG = np.zeros(cls.order, dtype=np.int64)
         if cls.characteristic == 2:
@@ -351,11 +361,15 @@ class UFuncMixin(_ufunc.UFuncMixin):
             cls._ZECH_LOG[i] = cls._LOG[one_plus_element]
 
         if not cls._EXP[cls.order - 1] == 1:
-            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not cyclic with size {cls.order - 1}, which means the primitive element {cls._primitive_element} does not have multiplicative order {cls.order - 1} and therefore isn't a multiplicative generator for {cls.name}.")
-        if not len(set(cls._EXP[0:cls.order - 1])) == cls.order - 1:
-            raise RuntimeError(f"The anti-log lookup table for {cls.name} is not unique, which means the primitive element {cls._primitive_element} has order less than {cls.order - 1} and is not a multiplicative generator of {cls.name}.")
-        if not len(set(cls._LOG[1:cls.order])) == cls.order - 1:
+            raise RuntimeError(
+                f"The anti-log lookup table for {cls.name} is not cyclic with size {cls.order - 1}, which means the primitive element {cls._primitive_element} does not have multiplicative order {cls.order - 1} and therefore isn't a multiplicative generator for {cls.name}."
+            )
+        if not len(set(cls._EXP[0 : cls.order - 1])) == cls.order - 1:
+            raise RuntimeError(
+                f"The anti-log lookup table for {cls.name} is not unique, which means the primitive element {cls._primitive_element} has order less than {cls.order - 1} and is not a multiplicative generator of {cls.name}."
+            )
+        if not len(set(cls._LOG[1 : cls.order])) == cls.order - 1:
             raise RuntimeError(f"The log lookup table for {cls.name} is not unique.")
 
         # Double the EXP table to prevent computing a `% (order - 1)` on every multiplication lookup
-        cls._EXP[cls.order:2*cls.order] = cls._EXP[1:1 + cls.order]
+        cls._EXP[cls.order : 2 * cls.order] = cls._EXP[1 : 1 + cls.order]

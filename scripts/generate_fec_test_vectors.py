@@ -22,7 +22,7 @@ def to_int(field, element):
     if isinstance(element, sage.rings.finite_rings.element_pari_ffelt.FiniteFieldElement_pari_ffelt):
         coeffs = element._vector_()
         characteristic = int(field.characteristic())
-        return sum(int(c)*characteristic**i for i, c in enumerate(coeffs))
+        return sum(int(c) * characteristic**i for i, c in enumerate(coeffs))
     try:
         return int(element)
     except TypeError:
@@ -38,7 +38,7 @@ def to_field(field, integer):
         for d in range(degree - 1, -1, -1):
             q = integer // characteristic**d
             l += [f"{q}*x^{d}"]
-            integer -= q*characteristic**d
+            integer -= q * characteristic**d
         return field(" + ".join(l))
     try:
         return field.fetch_int(int(integer))
@@ -57,7 +57,7 @@ def _convert_sage_generator_matrix(F, G, n, k, systematic=True):
     G = matrix(G).numpy()
     for i in range(G.shape[0]):
         for j in range(G.shape[1]):
-            G[i,j] = to_int(F, G[i,j])
+            G[i, j] = to_int(F, G[i, j])
     G = G.astype(np.int64)
 
     if systematic:
@@ -66,9 +66,9 @@ def _convert_sage_generator_matrix(F, G, n, k, systematic=True):
         G[:, k:] = np.fliplr(G[:, k:])
     else:
         for i in range(k):
-            idxs = np.nonzero(G[i,:])[0]
+            idxs = np.nonzero(G[i, :])[0]
             j, k = idxs[0], idxs[-1]
-            G[i, j:k+1] = np.flip(G[i, j:k+1])
+            G[i, j : k + 1] = np.flip(G[i, j : k + 1])
 
     return G
 
@@ -78,13 +78,13 @@ def _convert_sage_parity_check_matrix(F, H, n, k):
     H = matrix(H).numpy()
     for i in range(H.shape[0]):
         for j in range(H.shape[1]):
-            H[i,j] = to_int(F, H[i,j])
+            H[i, j] = to_int(F, H[i, j])
     H = H.astype(np.int64)
 
     for i in range(n - k):
-        idxs = np.nonzero(H[i,:])[0]
+        idxs = np.nonzero(H[i, :])[0]
         j, k = idxs[0], idxs[-1]
-        H[i, j:k+1] = np.flip(H[i, j:k+1])
+        H[i, j : k + 1] = np.flip(H[i, j : k + 1])
 
     if H.size == 0:
         # The array shape should be (0, n) not (0, 0)
@@ -169,16 +169,16 @@ def add_bch_lut(folder, q, m, n, d, alpha=None, c=1, systematic=True, rng=1):
     messages = rng.integers(0, q, (N, k), dtype=np.int64)
     codewords = np.zeros((N, n), dtype=np.int64)
     for i in range(N):
-        message_ = _convert_to_sage_message(F, messages[i,:], k)
+        message_ = _convert_to_sage_message(F, messages[i, :], k)
         if systematic:
             codeword_ = C.encode(message_, "Systematic")
         else:
             codeword_ = C.encode(message_)
         codeword = _convert_sage_codeword(F, codeword_, k, systematic=systematic)
-        codewords[i,:] = codeword
+        codewords[i, :] = codeword
     dict_["encode"] = {
         "messages": messages,
-        "codewords": codewords
+        "codewords": codewords,
     }
 
     # Add shortened encoding vectors
@@ -190,7 +190,7 @@ def add_bch_lut(folder, q, m, n, d, alpha=None, c=1, systematic=True, rng=1):
         messages[:, 0:s] = 0
         codewords = np.zeros((N, n), dtype=np.int64)
         for i in range(N):
-            message_ = _convert_to_sage_message(F, messages[i,:], k)
+            message_ = _convert_to_sage_message(F, messages[i, :], k)
             # print(C, list(range(0, s)))
             # CC = C.shortened(list(range(0, s)))  # The shortened code
             if systematic:
@@ -198,10 +198,10 @@ def add_bch_lut(folder, q, m, n, d, alpha=None, c=1, systematic=True, rng=1):
             else:
                 codeword_ = C.encode(message_)
             codeword = _convert_sage_codeword(F, codeword_, k, systematic=systematic)
-            codewords[i,:] = codeword
+            codewords[i, :] = codeword
         dict_["encode_shortened"] = {
             "messages": messages[:, s:],
-            "codewords": codewords[:, s:]
+            "codewords": codewords[:, s:],
         }
     else:
         dict_["encode_shortened"] = {}
@@ -252,7 +252,7 @@ def add_reed_solomon_lut(folder, q, n, d, alpha=None, c=1, systematic=True, rng=
         alpha = to_field(F, alpha)
     else:
         assert c == 1
-    alpha_c = alpha ** c
+    alpha_c = alpha**c
     C = codes.ReedSolomonCode(F, ZZ(n), k, primitive_root=alpha_c)
     C_cyclic = codes.CyclicCode(code=C)
 
@@ -293,16 +293,16 @@ def add_reed_solomon_lut(folder, q, n, d, alpha=None, c=1, systematic=True, rng=
     messages = rng.integers(0, q, (N, k), dtype=np.int64)
     codewords = np.zeros((N, n), dtype=np.int64)
     for i in range(N):
-        message_ = _convert_to_sage_message(F, messages[i,:], k)
+        message_ = _convert_to_sage_message(F, messages[i, :], k)
         if systematic:
             codeword_ = C_cyclic.encode(message_, "Systematic")
         else:
             codeword_ = C_cyclic.encode(message_)
         codeword = _convert_sage_codeword(F, codeword_, k, systematic=systematic)
-        codewords[i,:] = codeword
+        codewords[i, :] = codeword
     dict_["encode"] = {
         "messages": messages,
-        "codewords": codewords
+        "codewords": codewords,
     }
 
     # Add shortened encoding vectors
@@ -314,7 +314,7 @@ def add_reed_solomon_lut(folder, q, n, d, alpha=None, c=1, systematic=True, rng=
         messages[:, 0:s] = 0
         codewords = np.zeros((N, n), dtype=np.int64)
         for i in range(N):
-            message_ = _convert_to_sage_message(F, messages[i,:], k)
+            message_ = _convert_to_sage_message(F, messages[i, :], k)
             # print(C, list(range(0, s)))
             # CC = C.shortened(list(range(0, s)))  # The shortened code
             if systematic:
@@ -322,10 +322,10 @@ def add_reed_solomon_lut(folder, q, n, d, alpha=None, c=1, systematic=True, rng=
             else:
                 codeword_ = C.encode(message_)
             codeword = _convert_sage_codeword(F, codeword_, k, systematic=systematic)
-            codewords[i,:] = codeword
+            codewords[i, :] = codeword
         dict_["encode_shortened"] = {
             "messages": messages[:, s:],
-            "codewords": codewords[:, s:]
+            "codewords": codewords[:, s:],
         }
     else:
         dict_["encode_shortened"] = {}

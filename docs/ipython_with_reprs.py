@@ -38,7 +38,7 @@ class IPythonWithReprsDirective(sphinx.util.docutils.SphinxDirective):
         ws = "    "
         new_lines = [
             ".. md-tab-set::",
-            ""
+            "",
         ]
 
         for element_repr, title in zip(element_reprs, titles):
@@ -58,7 +58,7 @@ class IPythonWithReprsDirective(sphinx.util.docutils.SphinxDirective):
                 else:
                     items = first_code_line.rsplit(")", 1)
                     assert len(items) == 2
-                    items.insert(1, f", repr=\"{element_repr}\")")
+                    items.insert(1, f', repr="{element_repr}")')
                     new_first_code_line = "".join(items)
                 new_lines += [
                     f"{ws}{ws}{ws}{new_first_code_line}",
@@ -66,7 +66,7 @@ class IPythonWithReprsDirective(sphinx.util.docutils.SphinxDirective):
             else:
                 new_lines += [
                     f"{ws}{ws}{ws}@suppress",
-                    f"{ws}{ws}{ws}{field}.repr(\"{element_repr}\")",
+                    f'{ws}{ws}{ws}{field}.repr("{element_repr}")',
                     f"{ws}{ws}{ws}{first_code_line}",
                 ]
 
@@ -80,7 +80,7 @@ class IPythonWithReprsDirective(sphinx.util.docutils.SphinxDirective):
             new_lines += [
                 f"{ws}{ws}{ws}@suppress",
                 f"{ws}{ws}{ws}{field}.repr()",
-                ""
+                "",
             ]
 
         self.state_machine.insert_input(new_lines, self.state_machine.input_lines.source(0))

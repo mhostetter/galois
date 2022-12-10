@@ -31,7 +31,7 @@ def I(element):
     if isinstance(element, sage.rings.finite_rings.element_pari_ffelt.FiniteFieldElement_pari_ffelt):
         coeffs = element._vector_()
         characteristic = int(FIELD.characteristic())
-        return sum(int(c)*characteristic**i for i, c in enumerate(coeffs))
+        return sum(int(c) * characteristic**i for i, c in enumerate(coeffs))
     try:
         return int(element)
     except TypeError:
@@ -47,7 +47,7 @@ def F(integer):
         for d in range(degree - 1, -1, -1):
             q = integer // characteristic**d
             l += [f"{q}*x^{d}"]
-            integer -= q*characteristic**d
+            integer -= q * characteristic**d
         return FIELD(" + ".join(l))
     try:
         return FIELD.fetch_int(int(integer))
@@ -81,7 +81,7 @@ def randint_matrix(low, high, shape):
     else:
         X = np.empty(shape, dtype=object)
         iterator = np.nditer(X, flags=["multi_index", "refs_ok"])
-        for i in iterator:
+        for _ in iterator:
             X[iterator.multi_index] = random.randint(low, high - 1)
 
     return X
@@ -183,7 +183,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
         "degree": int(field.degree()),
         "order": int(field.order()),
         "primitive_element": I(field.primitive_element()),
-        "irreducible_poly": [int(c) for c in field.modulus().list()[::-1]]
+        "irreducible_poly": [int(c) for c in field.modulus().list()[::-1]],
     }
     save_json(d, folder, "properties.json", indent=True)
 
@@ -195,7 +195,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
-            ZZ[i,j] = I(F(XX[i,j]) + F(YY[i,j]))
+            ZZ[i, j] = I(F(XX[i, j]) + F(YY[i, j]))
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "add.pkl")
 
@@ -203,7 +203,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
-            ZZ[i,j] = I(F(XX[i,j]) -  F(YY[i,j]))
+            ZZ[i, j] = I(F(XX[i, j]) - F(YY[i, j]))
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "subtract.pkl")
 
@@ -211,15 +211,15 @@ def make_luts(field, sub_folder, seed, sparse=False):
     X, Y, XX, YY, ZZ = io_2d(0, order, 0, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
-            ZZ[i,j] = I(F(XX[i,j]) * F(YY[i,j]))
+            ZZ[i, j] = I(F(XX[i, j]) * F(YY[i, j]))
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "multiply.pkl")
 
     set_seed(seed + 4)
-    X, Y, XX, YY, ZZ = io_2d(0, order, -order-2, order+3, sparse=sparse)
+    X, Y, XX, YY, ZZ = io_2d(0, order, -order - 2, order + 3, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
-            ZZ[i,j] = I(F(XX[i,j]) * YY[i,j])
+            ZZ[i, j] = I(F(XX[i, j]) * YY[i, j])
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "scalar_multiply.pkl")
 
@@ -227,7 +227,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     X, Y, XX, YY, ZZ = io_2d(0, order, 1, order, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
-            ZZ[i,j] = I(F(XX[i,j]) /  F(YY[i,j]))
+            ZZ[i, j] = I(F(XX[i, j]) / F(YY[i, j]))
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "divide.pkl")
 
@@ -246,10 +246,10 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "multiplicative_inverse.pkl")
 
     set_seed(seed + 8)
-    X, Y, XX, YY, ZZ = io_2d(1, order, -order-2, order+3, sparse=sparse)
+    X, Y, XX, YY, ZZ = io_2d(1, order, -order - 2, order + 3, sparse=sparse)
     for i in range(ZZ.shape[0]):
         for j in range(ZZ.shape[1]):
-            ZZ[i,j] = I(F(XX[i,j]) **  YY[i,j])
+            ZZ[i, j] = I(F(XX[i, j]) ** YY[i, j])
     d = {"X": X, "Y": Y, "Z": ZZ}
     save_pickle(d, folder, "power.pkl")
 
@@ -289,7 +289,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "characteristic_poly_element.pkl")
 
     set_seed(seed + 13)
-    shapes = [(2,2), (3,3), (4,4), (5,5), (6,6)]
+    shapes = [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]
     X = []
     Z = []
     for i in range(len(shapes)):
@@ -370,8 +370,8 @@ def make_luts(field, sub_folder, seed, sparse=False):
     ###############################################################################
 
     set_seed(seed + 201)
-    X_shapes = [(2,2), (2,3), (3,2), (3,3), (3,4)]
-    Y_shapes = [(2,2), (3,3), (2,4), (3,3), (4,5)]
+    X_shapes = [(2, 2), (2, 3), (3, 2), (3, 3), (3, 4)]
+    Y_shapes = [(2, 2), (3, 3), (2, 4), (3, 3), (4, 5)]
     X = []
     Y = []
     Z = []
@@ -389,7 +389,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "matrix_multiply.pkl")
 
     set_seed(seed + 202)
-    shapes = [(2,2), (2,3), (3,2), (3,3), (3,4)]
+    shapes = [(2, 2), (2, 3), (3, 2), (3, 3), (3, 4)]
     X = []
     Z = []
     for i in range(len(shapes)):
@@ -403,7 +403,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "row_reduce.pkl")
 
     set_seed(seed + 203)
-    shapes = [(2,2), (2,3), (3,2), (3,3), (3,4), (4,3), (4,4), (4,5), (5,4), (5,5), (5,6), (6,5), (6,6)]
+    shapes = [(2, 2), (2, 3), (3, 2), (3, 3), (3, 4), (4, 3), (4, 4), (4, 5), (5, 4), (5, 5), (5, 6), (6, 5), (6, 6)]
     X = []
     L = []
     U = []
@@ -425,7 +425,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "lu_decompose.pkl")
 
     set_seed(seed + 204)
-    shapes = [(2,2), (2,3), (3,2), (3,3), (3,4), (4,3), (4,4), (4,5), (5,4), (5,5), (5,6), (6,5), (6,6)]
+    shapes = [(2, 2), (2, 3), (3, 2), (3, 3), (3, 4), (4, 3), (4, 4), (4, 5), (5, 4), (5, 5), (5, 6), (6, 5), (6, 6)]
     X = []
     L = []
     U = []
@@ -445,7 +445,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "plu_decompose.pkl")
 
     set_seed(seed + 205)
-    shapes = [(2,2), (3,3), (4,4), (5,5), (6,6)]
+    shapes = [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]
     X = []
     Z = []
     for i in range(len(shapes)):
@@ -463,7 +463,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "matrix_inverse.pkl")
 
     set_seed(seed + 206)
-    shapes = [(2,2), (2,2), (2,2), (3,3), (3,3), (3,3), (4,4), (4,4), (4,4), (5,5), (5,5), (5,5), (6,6), (6,6), (6,6)]
+    shapes = [(2, 2), (2, 2), (2, 2), (3, 3), (3, 3), (3, 3), (4, 4), (4, 4), (4, 4), (5, 5), (5, 5), (5, 5), (6, 6), (6, 6), (6, 6)]
     X = []
     Z = []
     for i in range(len(shapes)):
@@ -476,7 +476,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "matrix_determinant.pkl")
 
     set_seed(seed + 207)
-    shapes = [(2,2), (2,2), (2,2), (3,3), (3,3), (3,3), (4,4), (4,4), (4,4), (5,5), (5,5), (5,5), (6,6), (6,6), (6,6)]
+    shapes = [(2, 2), (2, 2), (2, 2), (3, 3), (3, 3), (3, 3), (4, 4), (4, 4), (4, 4), (5, 5), (5, 5), (5, 5), (6, 6), (6, 6), (6, 6)]
     X = []
     Y = []
     Z = []
@@ -498,7 +498,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "matrix_solve.pkl")
 
     set_seed(seed + 208)
-    shapes = [(2,2), (2,3), (2,4), (3,2), (4,2), (3,3)]
+    shapes = [(2, 2), (2, 3), (2, 4), (3, 2), (4, 2), (3, 3)]
     X = []
     Z = []
     for i in range(len(shapes)):
@@ -519,7 +519,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
         # Reduce the row space by 1 by copying the 0th row to the jth row
         for j in range(1, shapes[i][0]):
             x = copy(x)
-            x[j,:] = F(random.randint(0, order-1)) * x[0,:]
+            x[j, :] = F(random.randint(0, order - 1)) * x[0, :]
 
             z = x.row_space()
             if z.dimension() == 0:
@@ -546,7 +546,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "row_space.pkl")
 
     set_seed(seed + 209)
-    shapes = [(2,2), (2,3), (2,4), (3,2), (4,2), (3,3)]
+    shapes = [(2, 2), (2, 3), (2, 4), (3, 2), (4, 2), (3, 3)]
     X = []
     Z = []
     for i in range(len(shapes)):
@@ -567,7 +567,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
         # Reduce the column space by 1 by copying the 0th column to the jth column
         for j in range(1, shapes[i][1]):
             x = copy(x)
-            x[:,j] = F(random.randint(0, order-1)) * x[:,0]
+            x[:, j] = F(random.randint(0, order - 1)) * x[:, 0]
 
             z = x.column_space()
             if z.dimension() == 0:
@@ -594,7 +594,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "column_space.pkl")
 
     set_seed(seed + 210)
-    shapes = [(2,2), (2,3), (2,4), (3,2), (4,2), (3,3)]
+    shapes = [(2, 2), (2, 3), (2, 4), (3, 2), (4, 2), (3, 3)]
     X = []
     Z = []
     for i in range(len(shapes)):
@@ -615,7 +615,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
         # Reduce the left null space by 1 by copying the 0th row to the jth row
         for j in range(1, shapes[i][0]):
             x = copy(x)
-            x[j,:] = F(random.randint(0, order-1)) * x[0,:]
+            x[j, :] = F(random.randint(0, order - 1)) * x[0, :]
 
             z = x.left_kernel()
             if z.dimension() == 0:
@@ -642,7 +642,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "left_null_space.pkl")
 
     set_seed(seed + 211)
-    shapes = [(2,2), (2,3), (2,4), (3,2), (4,2), (3,3)]
+    shapes = [(2, 2), (2, 3), (2, 4), (3, 2), (4, 2), (3, 3)]
     X = []
     Z = []
     for i in range(len(shapes)):
@@ -663,7 +663,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
         # Reduce the null space by 1 by copying the 0th column to the jth column
         for j in range(1, shapes[i][1]):
             x = copy(x)
-            x[:,j] = F(random.randint(0, order-1)) * x[:,0]
+            x[:, j] = F(random.randint(0, order - 1)) * x[:, 0]
 
             z = x.right_kernel()
             if z.dimension() == 0:
@@ -741,7 +741,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
 
     set_seed(seed + 104)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
-    Y = [random.randint(1, 2*characteristic) for i in range(20)]
+    Y = [random.randint(1, 2 * characteristic) for i in range(20)]
     Z = []
     for i in range(len(X)):
         x = list_to_poly(X[i])
@@ -757,7 +757,9 @@ def make_luts(field, sub_folder, seed, sparse=False):
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     # Add some specific polynomial types
     X.append([0]), Y.append(random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS))  # 0 / y
-    X.append(random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS//2)), Y.append(random_coeffs(0, order, MAX_COEFFS//2, MAX_COEFFS))  # x / y with x.degree < y.degree
+    X.append(random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS // 2)), Y.append(
+        random_coeffs(0, order, MAX_COEFFS // 2, MAX_COEFFS)
+    )  # x / y with x.degree < y.degree
     X.append(random_coeffs(0, order, 2, MAX_COEFFS)), Y.append(random_coeffs(0, order, 1, 2))  # x / y with y.degree = 0
     Q = []
     R = []
@@ -783,7 +785,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
         ZZ = []
         for j in range(len(Y)):
             y = Y[j]
-            z = x ** y
+            z = x**y
             z = poly_to_list(z)
             ZZ.append(z)
         Z.append(ZZ)
@@ -793,19 +795,19 @@ def make_luts(field, sub_folder, seed, sparse=False):
     set_seed(seed + 107)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     Y = arange(0, order, sparse=sparse)
-    Z = np.array(np.zeros((len(X),len(Y))), dtype=dtype)
+    Z = np.array(np.zeros((len(X), len(Y))), dtype=dtype)
     for i in range(len(X)):
         for j in range(len(Y)):
             x = list_to_poly(X[i])
             y = F(Y[j])
             z = x(y)
-            Z[i,j] = I(z)
+            Z[i, j] = I(z)
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "evaluate.pkl")
 
     set_seed(seed + 108)
     X = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
-    Y = [randint_matrix(0, order, (2,2)) for i in range(20)]
+    Y = [randint_matrix(0, order, (2, 2)) for i in range(20)]
     Z = []
     for i in range(len(X)):
         x = list_to_poly(X[i])
@@ -866,8 +868,8 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "roots.pkl")
 
     set_seed(seed + 303)
-    X = [random_coeffs(0, order, 2*FIELD.degree(), 6*FIELD.degree()) for i in range(20)]
-    Y = [1,]*10 + [random.randint(2, FIELD.degree() + 1) for i in range(10)]
+    X = [random_coeffs(0, order, 2 * FIELD.degree(), 6 * FIELD.degree()) for i in range(20)]
+    Y = [1] * 10 + [random.randint(2, FIELD.degree() + 1) for i in range(10)]
     Z = []
     for i in range(len(X)):
         x = list_to_poly(X[i])
@@ -935,18 +937,18 @@ def make_luts(field, sub_folder, seed, sparse=False):
         x = list_to_poly(X[i])
         e = E[i]
         m = list_to_poly(M[i])
-        z = (x ** e) % m
+        z = (x**e) % m
         z = poly_to_list(z)
         Z.append(z)
     d = {"X": X, "E": E, "M": M, "Z": Z}
     save_pickle(d, folder, "modular_power.pkl")
 
     set_seed(seed + 405)
-    X = [0,]*20  # The remainder
-    Y = [0,]*20  # The modulus
-    Z = [0,]*20  # The solution
+    X = [0] * 20  # The remainder
+    Y = [0] * 20  # The modulus
+    Z = [0] * 20  # The solution
     for i in range(20):
-        n = random.randint(2, 4) # The number of polynomials
+        n = random.randint(2, 4)  # The number of polynomials
         x, y = [], []
         for j in range(n):
             d = random.randint(3, 5)
@@ -965,9 +967,9 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "crt.pkl")
 
     set_seed(seed + 406)
-    X = [0,]*3  # The x values
-    Y = [0,]*3  # The y values
-    Z = [0,]*3  # The lagrange polynomial
+    X = [0] * 3  # The x values
+    Y = [0] * 3  # The y values
+    Z = [0] * 3  # The lagrange polynomial
     for i in range(3):
         N = min(10, order)
         if dtype == object:
@@ -989,7 +991,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
 
     set_seed(seed + 501)
     X = [random_coeffs(0, order, 1, 6) for _ in range(20)]
-    Z = [False,]*len(X)
+    Z = [False] * len(X)
     for i in range(len(X)):
         if random.choice(["one", "other"]) == "one":
             X[i][0] = 1
@@ -1048,7 +1050,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     set_seed(seed + 504)
     if order <= 2**16:
         X = [random_coeffs(0, order, 1, 6) for _ in range(20)]
-        Z = [False,]*len(X)
+        Z = [False] * len(X)
         for i in range(len(X)):
             x = list_to_poly(X[i])
             z = x.is_squarefree()
@@ -1113,7 +1115,7 @@ if __name__ == "__main__":
     seed = 123456789 + 10000
     make_luts(field, sub_folder, seed)
 
-    field = GF(2**8, "x", modulus=[1,1,0,1,1,0,0,0,1], repr="int")
+    field = GF(2**8, "x", modulus=[1, 1, 0, 1, 1, 0, 0, 0, 1], repr="int")
     sub_folder = "GF(2^8, 283, 19)"
     seed = 123456789 + 11000
     make_luts(field, sub_folder, seed)
@@ -1133,7 +1135,7 @@ if __name__ == "__main__":
     seed = 123456789 + 14000
     make_luts(field, sub_folder, seed)
 
-    field = GF(7**3, "x", modulus=[6,0,6,1], repr="int")
+    field = GF(7**3, "x", modulus=[6, 0, 6, 1], repr="int")
     sub_folder = "GF(7^3, 643, 244)"
     seed = 123456789 + 15000
     make_luts(field, sub_folder, seed)

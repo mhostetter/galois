@@ -12,7 +12,11 @@ from .typing import ArrayLike
 
 
 @export
-def ntt(x: ArrayLike, size: int | None = None, modulus: int | None = None) -> FieldArray:
+def ntt(
+    x: ArrayLike,
+    size: int | None = None,
+    modulus: int | None = None,
+) -> FieldArray:
     r"""
     Computes the Number-Theoretic Transform (NTT) of :math:`x`.
 
@@ -119,7 +123,12 @@ def ntt(x: ArrayLike, size: int | None = None, modulus: int | None = None) -> Fi
 
 
 @export
-def intt(X: ArrayLike, size: int | None = None, modulus: int | None = None, scaled: bool = True) -> FieldArray:
+def intt(
+    X: ArrayLike,
+    size: int | None = None,
+    modulus: int | None = None,
+    scaled: bool = True,
+) -> FieldArray:
     r"""
     Computes the Inverse Number-Theoretic Transform (INTT) of :math:`X`.
 
@@ -249,9 +258,9 @@ def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
     # The prime modulus `p = m*N + 1` that defines the prime field GF(p)
     if modulus is None:
         m = int(np.ceil(np.max(x) / size))  # The smallest m such that modulus > max(x)
-        while not is_prime(m*size + 1):
+        while not is_prime(m * size + 1):
             m += 1
-        modulus = m*size + 1
+        modulus = m * size + 1
     m = (modulus - 1) // size
 
     if not size >= len(x):

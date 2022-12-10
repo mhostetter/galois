@@ -22,6 +22,7 @@ class ArrayMeta(abc.ABCMeta):
     """
     A metaclass that provides class properties for `Array` subclasses.
     """
+
     # pylint: disable=no-value-for-parameter
 
     def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument

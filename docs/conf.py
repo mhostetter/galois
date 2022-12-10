@@ -14,6 +14,7 @@
 import inspect
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath(".."))
 
@@ -24,6 +25,7 @@ assert sys.version_info.major == 3 and sys.version_info.minor >= 8
 # confuses Sphinx when parsing overloaded functions. When not building the documentation, the @set_module("galois")
 # decorator works as intended.
 import builtins
+
 setattr(builtins, "__sphinx_build__", True)
 
 import galois
@@ -124,15 +126,15 @@ html_theme_options = {
     "social": [
         {
             "icon": "fontawesome/brands/github",
-            "link": "https://github.com/mhostetter/galois"
+            "link": "https://github.com/mhostetter/galois",
         },
         {
             "icon": "fontawesome/brands/python",
-            "link": "https://pypi.org/project/galois/"
+            "link": "https://pypi.org/project/galois/",
         },
         {
             "icon": "fontawesome/brands/twitter",
-            "link": "https://twitter.com/galois_py"
+            "link": "https://twitter.com/galois_py",
         },
     ],
     "edit_uri": "",
@@ -172,7 +174,7 @@ html_theme_options = {
     ],
     "analytics": {
         "provider": "google",
-        "property": "G-4FW9NCNFZH"
+        "property": "G-4FW9NCNFZH",
     },
     "version_dropdown": True,
     "version_json": "../versions.json",
@@ -283,9 +285,14 @@ sphinx_immaterial_custom_admonitions = [
 # -- Monkey-patching ---------------------------------------------------------
 
 SPECIAL_MEMBERS = [
-    "__repr__", "__str__", "__int__",
-    "__call__", "__len__", "__eq__",
+    "__repr__",
+    "__str__",
+    "__int__",
+    "__call__",
+    "__len__",
+    "__eq__",
 ]
+
 
 def autodoc_skip_member(app, what, name, obj, skip, options):
     """
@@ -342,6 +349,7 @@ def autodoc_process_bases(app, name, obj, options, bases):
 # class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
 # in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
 
+
 def classproperty(obj):
     ret = classmethod(obj)
     ret.__doc__ = obj.__doc__
@@ -363,7 +371,9 @@ for p in ArrayMeta_properties:
     setattr(galois._domains._meta.ArrayMeta, p, ArrayMeta_property)
 
 
-FieldArrayMeta_properties = [member for member in dir(galois.FieldArray) if inspect.isdatadescriptor(getattr(type(galois.FieldArray), member, None))]
+FieldArrayMeta_properties = [
+    member for member in dir(galois.FieldArray) if inspect.isdatadescriptor(getattr(type(galois.FieldArray), member, None))
+]
 for p in FieldArrayMeta_properties:
     # Fetch the class properties from the private metaclasses
     if p in ArrayMeta_properties:

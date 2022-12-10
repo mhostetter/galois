@@ -5,7 +5,17 @@ from __future__ import annotations
 
 import numpy as np
 
-from .._domains._lookup import add_ufunc, negative_ufunc, subtract_ufunc, multiply_ufunc, reciprocal_ufunc, divide_ufunc, power_ufunc, log_ufunc, sqrt_ufunc
+from .._domains._lookup import (
+    add_ufunc,
+    negative_ufunc,
+    subtract_ufunc,
+    multiply_ufunc,
+    reciprocal_ufunc,
+    divide_ufunc,
+    power_ufunc,
+    log_ufunc,
+    sqrt_ufunc,
+)
 from .._domains._ufunc import UFuncMixin
 from .._helper import export
 
@@ -16,6 +26,7 @@ class reciprocal(reciprocal_ufunc):
     """
     A ufunc dispatcher for the multiplicative inverse in GF(2).
     """
+
     @staticmethod
     def calculate(a: int) -> int:  # pragma: no cover
         if a == 0:
@@ -27,6 +38,7 @@ class divide(divide_ufunc):
     """
     A ufunc dispatcher for division in GF(2).
     """
+
     @staticmethod
     def calculate(a: int, b: int) -> int:  # pragma: no cover
         if b == 0:
@@ -38,6 +50,7 @@ class power(power_ufunc):
     """
     A ufunc dispatcher for exponentiation in GF(2).
     """
+
     @staticmethod
     def calculate(a: int, b: int) -> int:  # pragma: no cover
         if a == 0 and b < 0:
@@ -51,6 +64,7 @@ class log(log_ufunc):
     """
     A ufunc dispatcher for the logarithm in GF(2).
     """
+
     @staticmethod
     def calculate(a: int, b: int) -> int:  # pragma: no cover
         if a == 0:
@@ -64,6 +78,7 @@ class sqrt(sqrt_ufunc):
     """
     A ufunc dispatcher for the square root in GF(2).
     """
+
     def implementation(self, a: FieldArray) -> FieldArray:
         return a.copy()
 
@@ -93,7 +108,16 @@ class UFuncMixin_2_1(UFuncMixin):
 
 
 @export
-class GF2(FieldArray, UFuncMixin_2_1, characteristic=2, degree=1, order=2, irreducible_poly_int=3, is_primitive_poly=True, primitive_element=1):
+class GF2(
+    FieldArray,
+    UFuncMixin_2_1,
+    characteristic=2,
+    degree=1,
+    order=2,
+    irreducible_poly_int=3,
+    is_primitive_poly=True,
+    primitive_element=1,
+):
     r"""
     A :obj:`~galois.FieldArray` subclass over :math:`\mathrm{GF}(2)`.
 

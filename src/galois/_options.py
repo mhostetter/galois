@@ -12,9 +12,7 @@ PRINTOPTIONS = {}
 
 
 @export
-def set_printoptions(
-    coeffs: Literal["desc", "asc"] = "desc"
-):
+def set_printoptions(coeffs: Literal["desc", "asc"] = "desc"):
     """
     Modifies the print options for the package. This function is the :obj:`galois` equivalent of :func:`numpy.set_printoptions`.
 

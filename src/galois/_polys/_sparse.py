@@ -54,6 +54,6 @@ def multiply(a_degrees: np.ndarray, a_coeffs: Array, b_degrees: np.ndarray, b_co
     c = {}
     for a_degree, a_coeff in zip(a_degrees, a_coeffs):
         for b_degree, b_coeff in zip(b_degrees, b_coeffs):
-            c[a_degree + b_degree] = c.get(a_degree + b_degree, field(0)) + a_coeff*b_coeff
+            c[a_degree + b_degree] = c.get(a_degree + b_degree, field(0)) + a_coeff * b_coeff
 
     return np.array(list(c.keys())), field(list(c.values()))

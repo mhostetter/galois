@@ -21,9 +21,18 @@ class _CyclicCode(_LinearCode):
     """
     A FEC base class for cyclic codes.
     """
+
     # pylint: disable=abstract-method
 
-    def __init__(self, n: int, k: int, d: int, generator_poly: Poly, roots: FieldArray, systematic: bool):
+    def __init__(
+        self,
+        n: int,
+        k: int,
+        d: int,
+        generator_poly: Poly,
+        roots: FieldArray,
+        systematic: bool,
+    ):
         verify_isinstance(n, int)
         verify_isinstance(k, int)
         verify_isinstance(d, int)
@@ -44,7 +53,9 @@ class _CyclicCode(_LinearCode):
 
         super().__init__(n, k, d, G, H, systematic)
 
-    @extend_docstring(_LinearCode.encode, {},
+    @extend_docstring(
+        _LinearCode.encode,
+        {},
         r"""
         Notes
         -----
@@ -75,18 +86,32 @@ class _CyclicCode(_LinearCode):
 
         .. math::
             c(x) = m(x) g(x)
-        """
+        """,
     )
     def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
         return super().encode(message, output=output)
 
     @overload
-    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[False] = False) -> FieldArray:
+    def decode(
+        self,
+        codeword: ArrayLike,
+        output: Literal["message", "codeword"] = "message",
+        errors: Literal[False] = False,
+    ) -> FieldArray:
         ...
+
     @overload
-    def decode(self, codeword: ArrayLike, output: Literal["message", "codeword"] = "message", errors: Literal[True] = True) -> tuple[FieldArray, int | np.ndarray]:
+    def decode(
+        self,
+        codeword: ArrayLike,
+        output: Literal["message", "codeword"] = "message",
+        errors: Literal[True] = True,
+    ) -> tuple[FieldArray, int | np.ndarray]:
         ...
-    @extend_docstring(_LinearCode.decode, {},
+
+    @extend_docstring(
+        _LinearCode.decode,
+        {},
         r"""
         Notes
         -----
@@ -108,7 +133,7 @@ class _CyclicCode(_LinearCode):
 
         .. math::
             c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0 \in \mathrm{GF}(q)[x]
-        """
+        """,
     )
     def decode(self, codeword, output="message", errors=False):
         return super().decode(codeword, output=output, errors=errors)
@@ -126,7 +151,7 @@ class _CyclicCode(_LinearCode):
 
     def _convert_codeword_to_parity(self, codeword: FieldArray) -> FieldArray:
         if self.is_systematic:
-            parity = codeword[..., -(self.n - self.k):]
+            parity = codeword[..., -(self.n - self.k) :]
         else:
             _, parity = divmod_jit(self.field)(codeword, self.generator_poly.coeffs)
 
@@ -173,19 +198,19 @@ def _poly_to_generator_matrix(n: int, generator_poly: Poly, systematic: bool) ->
         P = GF.Zeros((k, n - k))
         if n - k > 0:
             # Skip this section is n = k, which is the identity code (contains no parity)
-            P[0,:] = generator_poly.coeffs[0:-1] / generator_poly.coeffs[-1]
+            P[0, :] = generator_poly.coeffs[0:-1] / generator_poly.coeffs[-1]
             for i in range(1, k):
-                P[i,0] = 0
-                P[i,1:] = P[i-1,0:-1]
-                if P[i-1,-1] > 0:
-                    P[i,:] -= P[i-1,-1] * P[0,:]
+                P[i, 0] = 0
+                P[i, 1:] = P[i - 1, 0:-1]
+                if P[i - 1, -1] > 0:
+                    P[i, :] -= P[i - 1, -1] * P[0, :]
         G = np.hstack((I, P))
     else:
         # Assign the generator polynomial coefficients with highest degree starting along
         # the diagonals
         G = GF.Zeros((k, n))
         for i in range(k):
-            G[i, i:i + generator_poly.degree + 1] = generator_poly.coeffs
+            G[i, i : i + generator_poly.degree + 1] = generator_poly.coeffs
 
     return G
 

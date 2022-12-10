@@ -16,14 +16,15 @@ conn = sqlite3.connect(DATABASE_FILE)
 cursor = conn.cursor()
 
 cursor.execute(
-"""
+    """
     CREATE TABLE polys (
         characteristic INTEGER NOT NULL,
         degree INTEGER NOT NULL,
         coefficients TEXT NOT NULL,
         PRIMARY KEY (characteristic, degree)
     )
-""")
+    """
+)
 
 text = requests.get(POLY_TEXT_FILE_URL).text
 for line in text.splitlines():
@@ -35,7 +36,13 @@ for line in text.splitlines():
     characteristic, degree, coefficients = line.split(",", maxsplit=2)
     print(f"Conway polynomial for GF({characteristic}^{degree})")
 
-    cursor.execute("INSERT INTO polys (characteristic, degree, coefficients) VALUES (?,?,?)", (int(characteristic), int(degree), coefficients))
+    cursor.execute(
+        """
+        INSERT INTO polys (characteristic, degree, coefficients)
+        VALUES (?,?,?)
+        """,
+        (int(characteristic), int(degree), coefficients),
+    )
 
 conn.commit()
 conn.close()
