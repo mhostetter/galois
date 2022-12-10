@@ -142,7 +142,8 @@ def kth_prime(k: int) -> int:
     verify_isinstance(k, int)
     if not 1 <= k <= MAX_K:
         raise ValueError(
-            f"Argument 'k' is out of range of the prime lookup table. The lookup table only contains the first {MAX_K} primes (up to {MAX_N})."
+            f"Argument 'k' is out of range of the prime lookup table. "
+            f"The lookup table only contains the first {MAX_K} primes (up to {MAX_N})."
         )
 
     return PRIMES[k - 1]
@@ -284,6 +285,7 @@ def random_prime(bits: int, seed: int | None = None) -> int:
 
     .. code-block:: console
 
+        # pylint: disable=line-too-long
         $ openssl prime 327845897586213436751081882871255331286648902836386839087617368608439574698192016043769533823474001379935585889197488144338014865193967937011638431094821943416361149113909692569658970713864593781874423564706915495970135894084612689487074397782022398597547611189482697523681694691585678818112329605903872356773
         1D2DE38DE88C67E1EAFDEEAE77C40B8709ED9C275522C6D5578976B1ABCBE7E0F8C6DE1271EEC6EB3827649164189788F9F3A622AEA5F4039761EC708B5841DE88566D9B5BAF49BA92DCE5A300297A9E0E890E4103ED2AD4B5E0553CE56E8C34758CD45900125DBA1553AE73AA0CBD6018A2A8713D46E475BF058D1AAA52EF1A5 (327845897586213436751081882871255331286648902836386839087617368608439574698192016043769533823474001379935585889197488144338014865193967937011638431094821943416361149113909692569658970713864593781874423564706915495970135894084612689487074397782022398597547611189482697523681694691585678818112329605903872356773) is prime
     """
@@ -575,16 +577,17 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
     and integer :math:`a` such that :math:`\textrm{gcd}(a, n) = 1`, then either :math:`a^r \equiv 1\ (\textrm{mod}\ n)`
     or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for some :math:`j` in :math:`0 \le j \le s - 1`.
 
-    In the Miller-Rabin primality test, if :math:`a^r \not\equiv 1\ (\textrm{mod}\ n)` and :math:`a^{2^j r} \not\equiv -1\ (\textrm{mod}\ n)`
-    for all :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is called a *strong witness* to the compositeness of :math:`n`. If not, namely
-    :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for any :math:`j` in :math:`0 \le j \le s - 1`,
-    then :math:`a` is called a *strong liar* to the primality of :math:`n` and :math:`n` is called a *strong pseudoprime to the base a*.
+    In the Miller-Rabin primality test, if :math:`a^r \not\equiv 1\ (\textrm{mod}\ n)` and
+    :math:`a^{2^j r} \not\equiv -1\ (\textrm{mod}\ n)` for all :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is called a
+    *strong witness* to the compositeness of :math:`n`. If not, namely :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or
+    :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for any :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is called a
+    *strong liar* to the primality of :math:`n` and :math:`n` is called a *strong pseudoprime to the base a*.
 
     Since :math:`a = \{1, n-1\}` are strong liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
     to :math:`2 \le a \le n - 2`.
 
-    For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than :math:`(\frac{1}{4})^t`,
-    where :math:`t` is the number of rounds, and is often much lower.
+    For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than
+    :math:`(\frac{1}{4})^t`, where :math:`t` is the number of rounds, and is often much lower.
 
     References
     ----------
@@ -912,7 +915,8 @@ def factors(n: int) -> tuple[list[int], list[int]]:
             e.append(degree)
         else:
             raise RuntimeError(
-                f"Encountered a very large composite {f}. Please report this as a GitHub issue at https://github.com/mhostetter/galois/issues."
+                f"Encountered a very large composite {f}. "
+                f"Please report this in a GitHub issue at https://github.com/mhostetter/galois/issues."
             )
 
     if n > 1:
@@ -1136,9 +1140,9 @@ def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
 
     Notes
     -----
-    For a given odd composite :math:`n` with a prime factor :math:`p`, Pollard's :math:`p-1` algorithm can discover a non-trivial factor
-    of :math:`n` if :math:`p-1` is :math:`B`-smooth. Specifically, the prime factorization must satisfy :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}`
-    with each :math:`p_i \le B`.
+    For a given odd composite :math:`n` with a prime factor :math:`p`, Pollard's :math:`p-1` algorithm can discover a non-trivial
+    factor of :math:`n` if :math:`p-1` is :math:`B`-smooth. Specifically, the prime factorization must satisfy
+    :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}` with each :math:`p_i \le B`.
 
     A extension of Pollard's :math:`p-1` algorithm allows a prime factor :math:`p` to be :math:`B`-smooth with the exception of one
     prime factor :math:`B < p_{k+1} \le B_2`. In this case, the prime factorization is :math:`p-1 = p_1^{e_1} \dots p_k^{e_k} p_{k+1}`.
@@ -1214,7 +1218,8 @@ def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
         return d
     if d == n:
         raise RuntimeError(
-            f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}."
+            f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm "
+            f"with smoothness bound {B} and secondary bound {B2}."
         )
 
     # Try to find p such that p - 1 has a single prime factor larger than B
@@ -1234,7 +1239,8 @@ def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
             return d
 
     raise RuntimeError(
-        f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm with smoothness bound {B} and secondary bound {B2}."
+        f"A non-trivial factor of {n} could not be found using the Pollard p-1 algorithm "
+        f"with smoothness bound {B} and secondary bound {B2}."
     )
 
 

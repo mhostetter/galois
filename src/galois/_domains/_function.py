@@ -350,7 +350,11 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
 
         elif func in field._UNSUPPORTED_FUNCTIONS:
             raise NotImplementedError(
-                f"The NumPy function {func.__name__!r} is not supported on FieldArray. If you believe this function should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\nIf you'd like to perform this operation on the data, you should first call `array = array.view(np.ndarray)` and then call the function."
+                f"The NumPy function {func.__name__!r} is not supported on FieldArray. "
+                "If you believe this function should be supported, "
+                "please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\n"
+                "If you'd like to perform this operation on the data, you should first call `array = array.view(np.ndarray)` "
+                "and then call the function."
             )
 
         else:

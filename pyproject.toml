@@ -87,7 +87,6 @@ disable = [
     "global-statement",
     "invalid-name",
     "invalid-unary-operand-type",
-    "line-too-long",
     "missing-function-docstring",
     "missing-module-docstring",
     "no-else-return",
@@ -104,6 +103,7 @@ disable = [
     "unsubscriptable-object",  # pylint doesn't understand metaclass properties
 ]
 min-similarity-lines = 100
+max-line-length = 140
 
 [tool.black]
 line-length = 140

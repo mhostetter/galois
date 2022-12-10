@@ -203,7 +203,8 @@ class BCH(_CyclicCode):
             kk = n - generator_poly.degree
             if not k in [None, kk]:
                 raise ValueError(
-                    f"The requested [{n}, {k}, {d}] code is not consistent. When designing the code with design distance {d}, the resulting code is [{n}, {kk}, {d}]."
+                    f"The requested [{n}, {k}, {d}] code is not consistent. "
+                    f"When designing the code with design distance {d}, the resulting code is [{n}, {kk}, {d}]."
                 )
             k = kk
         elif k is not None:

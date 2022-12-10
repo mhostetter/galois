@@ -67,7 +67,8 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
 
     if not element.field == irreducible_poly.field:
         raise ValueError(
-            f"Arguments 'element' and 'irreducible_poly' must be over the same field, not {element.field.name} and {irreducible_poly.field.name}."
+            f"Arguments 'element' and 'irreducible_poly' must be over the same field, "
+            f"not {element.field.name} and {irreducible_poly.field.name}."
         )
     if not element.degree < irreducible_poly.degree:
         raise ValueError(
@@ -114,15 +115,16 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
     Parameters
     ----------
     irreducible_poly
-        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that defines the extension field :math:`\mathrm{GF}(q^m)`.
+        The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that defines the extension field
+        :math:`\mathrm{GF}(q^m)`.
     method
         The search method for finding the primitive element.
 
     Returns
     -------
     :
-        A primitive element :math:`g` of :math:`\mathrm{GF}(q^m)` with irreducible polynomial :math:`f(x)`. The primitive element :math:`g` is
-        a polynomial over :math:`\mathrm{GF}(q)` with degree less than :math:`m`.
+        A primitive element :math:`g` of :math:`\mathrm{GF}(q^m)` with irreducible polynomial :math:`f(x)`. The primitive element
+        :math:`g` is a polynomial over :math:`\mathrm{GF}(q)` with degree less than :math:`m`.
 
     See Also
     --------

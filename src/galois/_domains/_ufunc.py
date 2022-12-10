@@ -186,7 +186,8 @@ class UFunc:
     def _verify_binary_method_not_reduction(self, ufunc, method):
         if method in ["reduce", "accumulate", "reduceat"]:
             raise ValueError(
-                f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs with type {self.field.name} array and integer array. Different types do not support reduction."
+                f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs "
+                f"with type {self.field.name} array and integer array. Different types do not support reduction."
             )
 
     def _verify_method_only_call(self, ufunc, method):
@@ -196,7 +197,8 @@ class UFunc:
     def _verify_operands_in_same_field(self, ufunc, inputs, meta):
         if len(meta["non_field_operands"]) > 0:
             raise TypeError(
-                f"Operation {ufunc.__name__!r} requires both operands to be {self.field.name} arrays, not {[inputs[i] for i in meta['operands']]}."
+                f"Operation {ufunc.__name__!r} requires both operands to be {self.field.name} arrays, "
+                f"not {[inputs[i] for i in meta['operands']]}."
             )
 
     def _verify_operands_in_field_or_int(self, ufunc, inputs, meta):
@@ -207,16 +209,19 @@ class UFunc:
                 if self.field.dtypes == [np.object_]:
                     if not (inputs[i].dtype == np.object_ or np.issubdtype(inputs[i].dtype, np.integer)):
                         raise ValueError(
-                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {inputs[i].dtype}."
+                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, "
+                            f"not {inputs[i].dtype}."
                         )
                 else:
                     if not np.issubdtype(inputs[i].dtype, np.integer):
                         raise ValueError(
-                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {inputs[i].dtype}."
+                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, "
+                            f"not {inputs[i].dtype}."
                         )
             else:
                 raise TypeError(
-                    f"Operation {ufunc.__name__!r} requires operands that are not {self.field.name} arrays to be integers or an integer np.ndarray, not {type(inputs[i])}."
+                    f"Operation {ufunc.__name__!r} requires operands that are not {self.field.name} arrays to be integers "
+                    f"or an integer np.ndarray, not {type(inputs[i])}."
                 )
 
     def _verify_operands_first_field_second_int(self, ufunc, inputs, meta):
@@ -225,11 +230,13 @@ class UFunc:
 
         if not meta["operands"][0] == meta["field_operands"][0]:
             raise TypeError(
-                f"Operation {ufunc.__name__!r} requires the first operand to be a {self.field.name} array, not {meta['types'][meta['operands'][0]]}."
+                f"Operation {ufunc.__name__!r} requires the first operand to be a {self.field.name} array, "
+                f"not {meta['types'][meta['operands'][0]]}."
             )
         if len(meta["field_operands"]) > 1 and meta["operands"][1] == meta["field_operands"][1]:
             raise TypeError(
-                f"Operation {ufunc.__name__!r} requires the second operand to be an integer array, not {meta['types'][meta['operands'][1]]}."
+                f"Operation {ufunc.__name__!r} requires the second operand to be an integer array, "
+                f"not {meta['types'][meta['operands'][1]]}."
             )
 
         second = inputs[meta["operands"][1]]
@@ -237,7 +244,10 @@ class UFunc:
             return
         # elif type(second) is np.ndarray:
         #     if not np.issubdtype(second.dtype, np.integer):
-        #         raise ValueError(f"Operation {ufunc.__name__!r} requires the second operand with type np.ndarray to have integer dtype, not {second.dtype}.")
+        #         raise ValueError(
+        #             f"Operation {ufunc.__name__!r} requires the second operand with type np.ndarray to have integer dtype, "
+        #             f"not {second.dtype}."
+        #         )
         elif isinstance(second, np.ndarray):
             if self.field.dtypes == [np.object_]:
                 if not (second.dtype == np.object_ or np.issubdtype(second.dtype, np.integer)):
@@ -673,7 +683,9 @@ class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
 
         elif ufunc in field._UNSUPPORTED_UFUNCS:
             raise NotImplementedError(
-                f"The NumPy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. If you believe this ufunc should be supported, please submit a GitHub issue at https://github.com/mhostetter/galois/issues."
+                f"The NumPy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. "
+                "If you believe this ufunc should be supported, "
+                "please submit a GitHub issue at https://github.com/mhostetter/galois/issues."
             )
 
         else:

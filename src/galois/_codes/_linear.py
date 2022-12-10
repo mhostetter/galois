@@ -218,12 +218,14 @@ class _LinearCode:
         if self.is_systematic:
             if not message.shape[-1] <= self.k:
                 raise ValueError(
-                    f"For a systematic code, argument `message` must be a 1-D or 2-D array with last dimension less than or equal to {self.k}, not shape {message.shape}."
+                    f"For a systematic code, argument `message` must be a 1-D or 2-D array "
+                    f"with last dimension less than or equal to {self.k}, not shape {message.shape}."
                 )
         else:
             if not message.shape[-1] == self.k:
                 raise ValueError(
-                    f"For a non-systematic code, argument `message` must be a 1-D or 2-D array with last dimension equal to {self.k}, not shape {message.shape}."
+                    f"For a non-systematic code, argument `message` must be a 1-D or 2-D array "
+                    f"with last dimension equal to {self.k}, not shape {message.shape}."
                 )
 
         # Record if the original message was 1-D and then convert to 2-D
@@ -242,12 +244,14 @@ class _LinearCode:
         if self.is_systematic:
             if not codeword.shape[-1] <= self.n:
                 raise ValueError(
-                    f"For a systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension less than or equal to {self.n}, not shape {codeword.shape}."
+                    f"For a systematic code, argument `codeword` must be a 1-D or 2-D array "
+                    f"with last dimension less than or equal to {self.n}, not shape {codeword.shape}."
                 )
         else:
             if not codeword.shape[-1] == self.n:
                 raise ValueError(
-                    f"For a non-systematic code, argument `codeword` must be a 1-D or 2-D array with last dimension equal to {self.n}, not shape {codeword.shape}."
+                    f"For a non-systematic code, argument `codeword` must be a 1-D or 2-D array "
+                    f"with last dimension equal to {self.n}, not shape {codeword.shape}."
                 )
 
         # Record if the original codeword was 1-D and then convert to 2-D

@@ -534,7 +534,8 @@ def crt(remainders, moduli):
         for i in range(len(remainders)):
             if not (remainders[i] == 0 or remainders[i].degree < moduli[i].degree):
                 raise ValueError(
-                    f"Each remainder have degree strictly less than its modulus, remainder {remainders[i]} with modulus {moduli[i]} does not satisfy that condition."
+                    f"Each remainder must have degree strictly less than its modulus. "
+                    f"Remainder {remainders[i]} with modulus {moduli[i]} does not satisfy that condition."
                 )
 
     # Iterate through the system of congruences reducing a pair of congruences into a
@@ -553,7 +554,8 @@ def crt(remainders, moduli):
             # then a unique solution still exists.
             if not (a1 % d) == (a2 % d):
                 raise ValueError(
-                    f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, therefore a unique solution does not exist."
+                    f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, "
+                    "therefore a unique solution does not exist."
                 )
             x = ((a1 * b2 * m2) + (a2 * b1 * m1)) // d  # Compute x through explicit construction
             m1 = (m1 * m2) // d  # The new modulus
@@ -607,7 +609,8 @@ def factors(value):
 
         .. md-tab-item:: Integers
 
-            This function factors a positive integer :math:`n` into its :math:`k` prime factors such that :math:`n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}`.
+            This function factors a positive integer :math:`n` into its :math:`k` prime factors such that
+            :math:`n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}`.
 
             Steps:
 
@@ -621,7 +624,8 @@ def factors(value):
 
         .. md-tab-item:: Polynomials
 
-            This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
+            This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that
+            :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
 
             Steps:
 

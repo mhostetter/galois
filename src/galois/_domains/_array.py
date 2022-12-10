@@ -41,7 +41,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     ) -> Self:
         if cls is Array:
             raise NotImplementedError(
-                "Array is an abstract base class that cannot be directly instantiated. Instead, create a Array subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`."
+                "Array is an abstract base class that cannot be directly instantiated. "
+                "Instead, create an Array subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` "
+                "and instantiate an array using `x = GF(array_like)`."
             )
 
         dtype = cls._get_dtype(dtype)
@@ -341,14 +343,16 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         mode
             The ufunc calculation mode.
 
-            - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
-              for fields whose elements cannot be represented with :obj:`numpy.int64`.
+            - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields,
+              and `"python-calculate"` for fields whose elements cannot be represented with :obj:`numpy.int64`.
             - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
               In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
-            - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
-              fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower than `"jit-lookup"`.
-            - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
-              represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
+            - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed
+              for large fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower
+              than `"jit-lookup"`.
+            - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot
+              be represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int`
+              (which has arbitrary precision).
         """
         verify_isinstance(mode, str)
         if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
