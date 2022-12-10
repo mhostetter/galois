@@ -3,13 +3,12 @@ A pytest module to test the accuracy of FieldArray arithmetic.
 """
 import random
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 
 from .conftest import randint
-
 
 # TODO: Add scalar arithmetic and array/scalar and radd, etc
 

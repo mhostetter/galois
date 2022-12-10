@@ -10,8 +10,8 @@ import pickle
 import random
 import shutil
 
-import sage
 import numpy as np
+import sage
 from sage.all import GF, ZZ, codes, matrix, vector
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "codes")

@@ -7,8 +7,8 @@ import pathlib
 import pickle
 import random
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

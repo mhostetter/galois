@@ -3,8 +3,8 @@ A pytest module to test the Number-Theoretic Transform (NTT) implementation.
 
 Test vectors are generated using the `sympy` Python package and `sympy.ntt()` and `sympy.intt()` functions.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

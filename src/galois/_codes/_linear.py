@@ -4,9 +4,9 @@ A module containing common functions for linear block codes.
 from __future__ import annotations
 
 from typing import Type, overload
-from typing_extensions import Literal
 
 import numpy as np
+from typing_extensions import Literal
 
 from .._fields import FieldArray
 from .._helper import verify_isinstance, verify_literal

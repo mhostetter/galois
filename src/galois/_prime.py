@@ -12,7 +12,7 @@ import random
 import numpy as np
 
 from ._helper import export, verify_isinstance
-from ._math import prod, isqrt, iroot, ilog
+from ._math import ilog, iroot, isqrt, prod
 
 # Global variables to store the prime lookup table (will generate a larger list after defining the `primes()` function)
 PRIMES = [2, 3, 5, 7]

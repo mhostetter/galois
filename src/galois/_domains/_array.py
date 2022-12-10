@@ -7,13 +7,12 @@ import abc
 import contextlib
 import random
 from typing import Generator
-from typing_extensions import Self, Literal
 
 import numpy as np
+from typing_extensions import Literal, Self
 
 from .._helper import export, verify_isinstance, verify_literal
-from ..typing import ElementLike, IterableLike, ArrayLike, ShapeLike, DTypeLike
-
+from ..typing import ArrayLike, DTypeLike, ElementLike, IterableLike, ShapeLike
 from ._function import FunctionMixin
 from ._linalg import LinalgFunctionMixin
 from ._lookup import UFuncMixin

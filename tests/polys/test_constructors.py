@@ -1,11 +1,10 @@
 """
 A pytest module to test Galois field polynomial alternate constructors.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
-
 
 FIELDS = [
     galois.GF2,  # GF(2)

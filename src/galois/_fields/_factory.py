@@ -6,17 +6,17 @@ from __future__ import annotations
 import sys
 import types
 from typing import Type, overload
+
 from typing_extensions import Literal
 
 from .._helper import export, verify_isinstance
-from .._modular import primitive_root, is_primitive_root
+from .._modular import is_primitive_root, primitive_root
 from .._polys import Poly, conway_poly
 from .._prime import factors
 from ..typing import PolyLike
-
 from ._array import FieldArray
 from ._gf2 import GF2
-from ._primitive_element import primitive_element, is_primitive_element
+from ._primitive_element import is_primitive_element, primitive_element
 from ._ufunc import UFuncMixin_2_m, UFuncMixin_p_1, UFuncMixin_p_m
 
 

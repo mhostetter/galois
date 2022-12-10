@@ -10,9 +10,21 @@ import pickle
 import random
 import shutil
 
-import sage
 import numpy as np
-from sage.all import GF, PolynomialRing, copy, log, matrix, vector, xgcd, lcm, prod, crt, convolution
+import sage
+from sage.all import (
+    GF,
+    PolynomialRing,
+    convolution,
+    copy,
+    crt,
+    lcm,
+    log,
+    matrix,
+    prod,
+    vector,
+    xgcd,
+)
 
 FIELD = None
 RING = None

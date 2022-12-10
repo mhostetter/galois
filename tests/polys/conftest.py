@@ -4,13 +4,12 @@ A pytest conftest module that provides pytest fixtures for galois/polys/ tests.
 import os
 import pickle
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 
 from ..fields.conftest import field, field_folder
-
 
 ###############################################################################
 # Helper functions

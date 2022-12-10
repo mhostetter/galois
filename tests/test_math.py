@@ -1,8 +1,8 @@
 """
 A pytest module to test the functions in _math.py.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

@@ -1,8 +1,8 @@
 """
 A pytest module to test number theoretic functions.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

@@ -35,8 +35,8 @@ Sage:
     print(x)
     print(r)
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

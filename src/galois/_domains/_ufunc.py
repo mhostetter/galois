@@ -8,11 +8,11 @@ explicit calculation algorithms.
 """
 from __future__ import annotations
 
-from typing import Type, Callable, TYPE_CHECKING
-from typing_extensions import Literal
+from typing import TYPE_CHECKING, Callable, Type
 
 import numba
 import numpy as np
+from typing_extensions import Literal
 
 from ._linalg import matmul_jit
 from ._meta import ArrayMeta

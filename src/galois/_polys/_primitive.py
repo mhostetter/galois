@@ -6,13 +6,13 @@ from __future__ import annotations
 import functools
 import random
 from typing import Iterator
+
 from typing_extensions import Literal
 
-from .._domains import _factory
 from .._databases import ConwayPolyDatabase
+from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import is_prime, is_prime_power
-
 from ._poly import Poly
 
 

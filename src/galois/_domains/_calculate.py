@@ -8,7 +8,6 @@ import numba
 import numpy as np
 
 from .._prime import factors
-
 from . import _lookup
 from ._array import Array
 

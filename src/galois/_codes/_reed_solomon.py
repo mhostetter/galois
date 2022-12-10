@@ -4,16 +4,15 @@ A module containing general Reed-Solomon (RS) codes.
 from __future__ import annotations
 
 from typing import Type, overload
-from typing_extensions import Literal
 
 import numpy as np
+from typing_extensions import Literal
 
 from .._fields import Field, FieldArray
-from .._helper import export, verify_isinstance, verify_issubclass, extend_docstring
+from .._helper import export, extend_docstring, verify_isinstance, verify_issubclass
 from .._math import ilog
 from .._polys import Poly, matlab_primitive_poly
-from ..typing import ElementLike, ArrayLike
-
+from ..typing import ArrayLike, ElementLike
 from ._bch import decode_jit
 from ._cyclic import _CyclicCode
 

@@ -3,7 +3,7 @@ A public module containing type hints for the :obj:`galois` library.
 """
 from __future__ import annotations
 
-from typing import Sequence, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Sequence, Union
 
 import numpy as np
 

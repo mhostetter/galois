@@ -4,19 +4,18 @@ A module containing a class for univariate polynomials over finite fields.
 from __future__ import annotations
 
 from typing import Sequence, Type, overload
-from typing_extensions import Self, Literal
 
 import numpy as np
+from typing_extensions import Literal, Self
 
 from .._domains import Array, _factory
 from .._helper import export, verify_isinstance, verify_issubclass
 from .._prime import factors
-from ..typing import ElementLike, ArrayLike, PolyLike
-
+from ..typing import ArrayLike, ElementLike, PolyLike
 from . import _binary, _dense, _sparse
 from ._conversions import (
-    integer_to_poly,
     integer_to_degree,
+    integer_to_poly,
     poly_to_integer,
     poly_to_str,
     sparse_poly_to_integer,

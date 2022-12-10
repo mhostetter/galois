@@ -1,12 +1,12 @@
 """
 A pytest module to test instantiation of new FieldArrays.
 """
-import pytest
 import numpy as np
+import pytest
 
 import galois
 
-from .conftest import array_equal, valid_dtype, invalid_dtype
+from .conftest import array_equal, invalid_dtype, valid_dtype
 
 
 def test_cant_instantiate_GF():

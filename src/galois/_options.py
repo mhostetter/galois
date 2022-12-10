@@ -2,7 +2,8 @@
 A module to get or set package-wide options.
 """
 import contextlib
-from typing import Dict, Generator, Any
+from typing import Any, Dict, Generator
+
 from typing_extensions import Literal
 
 from ._helper import export

@@ -4,14 +4,13 @@ in NumPy are also included.
 """
 from __future__ import annotations
 
-from typing import Type, TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 import numba
-from numba import int64
 import numpy as np
+from numba import int64
 
 from .._helper import verify_isinstance
-
 from ._function import Function, FunctionMixin
 from ._meta import DTYPES
 

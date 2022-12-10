@@ -3,8 +3,8 @@ A pytest module to test the class attributes of FieldArray subclasses.
 """
 import pickle
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

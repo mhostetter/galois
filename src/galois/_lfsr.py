@@ -4,18 +4,17 @@ A module containing classes and functions for generating and analyzing linear fe
 from __future__ import annotations
 
 from typing import Type, overload
-from typing_extensions import Self, Literal
 
 import numba
 import numpy as np
 from numba import int64
+from typing_extensions import Literal, Self
 
 from ._domains._function import Function
 from ._fields import FieldArray
 from ._helper import export, verify_isinstance
 from ._polys import Poly
 from .typing import ArrayLike
-
 
 ###############################################################################
 # LFSR base class

@@ -3,8 +3,8 @@ A pytest module to test polynomial and non-polynomial arithmetic.
 """
 import random
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

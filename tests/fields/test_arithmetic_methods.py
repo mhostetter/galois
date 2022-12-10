@@ -3,8 +3,8 @@ A pytest module to test the accuracy of Galois field arithmetic methods/operatio
 """
 import random
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 

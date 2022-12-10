@@ -20,8 +20,8 @@ Sage:
 """
 import random
 
-import pytest
 import numpy as np
+import pytest
 
 import galois
 
