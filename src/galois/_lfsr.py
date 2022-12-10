@@ -84,7 +84,8 @@ class _LFSR:
         # if not state.size == self.order:
         if not state.size == self.order:
             raise ValueError(
-                f"Argument 'state' must have size equal to the degree of the characteristic polynomial, not {state.size} and {self.characteristic_poly.degree}."
+                f"Argument 'state' must have size equal to the degree of the characteristic polynomial, "
+                f"not {state.size} and {self.characteristic_poly.degree}."
             )
 
         return state
@@ -1547,8 +1548,9 @@ def berlekamp_massey(sequence, output="minimal"):
 
     References
     ----------
-    * Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
-    * Sachs, J. Linear Feedback Shift Registers for the Uninitiated, Part VI: Sing Along with the Berlekamp-Massey Algorithm. https://www.embeddedrelated.com/showarticle/1099.php
+    * Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. https://hdl.handle.net/2134/21932.
+    * Sachs, J. Linear Feedback Shift Registers for the Uninitiated, Part VI: Sing Along with the Berlekamp-Massey Algorithm.
+      https://www.embeddedrelated.com/showarticle/1099.php
     * https://crypto.stanford.edu/~mironov/cs359/massey.pdf
 
     Examples

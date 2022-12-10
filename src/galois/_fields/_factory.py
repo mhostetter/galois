@@ -96,8 +96,8 @@ def GF(
 
         - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"auto"`. If the
           :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current compilation mode.
-        - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and `"python-calculate"`
-          for fields whose elements cannot be represented with :obj:`numpy.int64`.
+        - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and
+          `"python-calculate"` for fields whose elements cannot be represented with :obj:`numpy.int64`.
         - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
           In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
         - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
@@ -256,7 +256,8 @@ def GF(
         verify_isinstance(degree, int)
     else:
         raise TypeError(
-            "Only 'order' or 'characteristic' and 'degree' may be specified as positional arguments. Other arguments must be specified as keyword arguments."
+            "Only 'order' or 'characteristic' and 'degree' may be specified as positional arguments. "
+            "Other arguments must be specified as keyword arguments."
         )
 
     verify_isinstance(verify, bool)
@@ -436,7 +437,8 @@ def _GF_extension(
         verify_poly = False  # We don't need to verify Conway polynomials are irreducible
         if alpha is None:
             alpha = Poly.Identity(prime_subfield)
-            verify_element = False  # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
+            # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are primitive polynomials
+            verify_element = False
     else:
         irreducible_poly_ = Poly._PolyLike(irreducible_poly_, field=prime_subfield)
 

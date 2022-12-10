@@ -60,7 +60,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     ) -> Self:
         if cls is FieldArray:
             raise NotImplementedError(
-                "FieldArray is an abstract base class that cannot be directly instantiated. Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` and instantiate an array using `x = GF(array_like)`."
+                "FieldArray is an abstract base class that cannot be directly instantiated. "
+                "Instead, create a FieldArray subclass for GF(p^m) arithmetic using `GF = galois.GF(p**m)` "
+                "and instantiate an array using `x = GF(array_like)`."
             )
         return super().__new__(cls, x, dtype, copy, order, ndmin)
 
@@ -258,7 +260,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             GF.Range(10, 20)
             GF.Range(10, 20, 2)
 
-        For extension fields, the increment is the integer increment between finite field elements in their :ref:`integer representation <int-repr>`.
+        For extension fields, the increment is the integer increment between finite field elements in their
+        :ref:`integer representation <int-repr>`.
 
         .. ipython-with-reprs:: int,poly
 
@@ -1091,8 +1094,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Notes
         -----
-        The PLU decomposition of :math:`\mathbf{A}` is defined as :math:`\mathbf{A} = \mathbf{P} \mathbf{L} \mathbf{U}`. This is equivalent to
-        :math:`\mathbf{P}^T \mathbf{A} = \mathbf{L} \mathbf{U}`.
+        The PLU decomposition of :math:`\mathbf{A}` is defined as :math:`\mathbf{A} = \mathbf{P} \mathbf{L} \mathbf{U}`. This is
+        equivalent to :math:`\mathbf{P}^T \mathbf{A} = \mathbf{L} \mathbf{U}`.
 
         Examples
         --------
@@ -1471,7 +1474,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             return _characteristic_poly_matrix(self)
         else:
             raise ValueError(
-                f"The array must be either 0-D to return the characteristic polynomial of a single element or 2-D to return the characteristic polynomial of a square matrix, not have shape {self.shape}."
+                f"The array must be either 0-D to return the characteristic polynomial of a single element "
+                f"or 2-D to return the characteristic polynomial of a square matrix, not have shape {self.shape}."
             )
 
     def minimal_poly(self) -> Poly:
@@ -1519,7 +1523,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         #     return _minimal_poly_matrix(self)
         else:
             raise ValueError(
-                f"The array must be either 0-D to return the minimal polynomial of a single element or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}."
+                f"The array must be either 0-D to return the minimal polynomial of a single element "
+                f"or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}."
             )
 
     def log(self, base: ElementLike | ArrayLike | None = None) -> int | np.ndarray:

@@ -103,8 +103,10 @@ class Poly:
         order
             The interpretation of the coefficient degrees.
 
-            - `"desc"` (default): The first element of `coeffs` is the highest degree coefficient, i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
-            - `"asc"`: The first element of `coeffs` is the lowest degree coefficient, i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
+            - `"desc"` (default): The first element of `coeffs` is the highest degree coefficient,
+              i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
+            - `"asc"`: The first element of `coeffs` is the lowest degree coefficient,
+              i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
         """
         verify_isinstance(coeffs, (list, tuple, np.ndarray, Array))
         verify_issubclass(field, Array, optional=True)
@@ -342,10 +344,11 @@ class Poly:
         The string parsing rules include:
 
         * Either `^` or `**` may be used for indicating the polynomial degrees. For example, `"13x^3 + 117"` or `"13x**3 + 117"`.
-        * Multiplication operators `*` may be used between coefficients and the polynomial indeterminate `x`, but are not required. For example,
-          `"13x^3 + 117"` or `"13*x^3 + 117"`.
+        * Multiplication operators `*` may be used between coefficients and the polynomial indeterminate `x`, but are not required.
+          For example, `"13x^3 + 117"` or `"13*x^3 + 117"`.
         * Polynomial coefficients of 1 may be specified or omitted. For example, `"x^3 + 117"` or `"1*x^3 + 117"`.
-        * The polynomial indeterminate can be any single character, but must be consistent. For example, `"13x^3 + 117"` or `"13y^3 + 117"`.
+        * The polynomial indeterminate can be any single character, but must be consistent. For example, `"13x^3 + 117"` or
+          `"13y^3 + 117"`.
         * Spaces are not required between terms. For example, `"13x^3 + 117"` or `"13x^3+117"`.
         * Any combination of the above rules is acceptable.
 
@@ -470,8 +473,9 @@ class Poly:
         field
             The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the coefficients are an :obj:`~galois.Array`, they won't be modified. If the coefficients are not explicitly
-              in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(coeffs)`.
+            * :obj:`None` (default): If the coefficients are an :obj:`~galois.Array`, they won't be modified. If the coefficients are
+              not explicitly in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using
+              `galois.GF2(coeffs)`.
             * :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field using `field(coeffs)`.
 
         Returns
@@ -844,8 +848,8 @@ class Poly:
 
         Examples
         --------
-        Suppose :math:`f(x) = x(x^3 + 2x + 4)(x^2 + 4x + 1)^3` over :math:`\mathrm{GF}(5)`. Each polynomial :math:`x`, :math:`x^3 + 2x + 4`,
-        and :math:`x^2 + 4x + 1` are all irreducible over :math:`\mathrm{GF}(5)`.
+        Suppose :math:`f(x) = x(x^3 + 2x + 4)(x^2 + 4x + 1)^3` over :math:`\mathrm{GF}(5)`. Each polynomial :math:`x`,
+        :math:`x^3 + 2x + 4`, and :math:`x^2 + 4x + 1` are all irreducible over :math:`\mathrm{GF}(5)`.
 
         .. ipython:: python
 
@@ -925,14 +929,15 @@ class Poly:
 
         Notes
         -----
-        The Distinct-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`d` into a product of :math:`d` polynomials
-        :math:`f_i(x)`, where :math:`f_i(x)` is the product of all irreducible factors of :math:`f(x)` with degree :math:`i`.
+        The Distinct-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`d` into a product
+        of :math:`d` polynomials :math:`f_i(x)`, where :math:`f_i(x)` is the product of all irreducible factors of :math:`f(x)` with
+        degree :math:`i`.
 
         .. math::
             f(x) = \prod_{i=1}^{d} f_i(x)
 
-        For example, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`, then the distinct-degree
-        factorization is
+        For example, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`, then the
+        distinct-degree factorization is
 
         .. math::
             f_1(x) &= x(x + 1) = x^2 + x \\
@@ -943,8 +948,8 @@ class Poly:
         Some :math:`f_i(x) = 1`, but those polynomials are not returned by this function. In this example, the function returns
         :math:`\{f_1(x), f_2(x), f_3(x)\}` and :math:`\{1, 2, 3\}`.
 
-        The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see :func:`~Poly.square_free_factors`.
-        A complete polynomial factorization is implemented in :func:`~Poly.factors`.
+        The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see
+        :func:`~Poly.square_free_factors`. A complete polynomial factorization is implemented in :func:`~Poly.factors`.
 
         References
         ----------
@@ -1030,11 +1035,12 @@ class Poly:
 
         Notes
         -----
-        The Equal-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`rd` into a product of :math:`r`
-        irreducible polynomials each with degree :math:`d`. This function implements the Cantor-Zassenhaus algorithm, which is probabilistic.
+        The Equal-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`rd` into a product of
+        :math:`r` irreducible polynomials each with degree :math:`d`. This function implements the Cantor-Zassenhaus algorithm, which
+        is probabilistic.
 
-        The Equal-Degree Factorization algorithm is often applied after the Distinct-Degree Factorization algorithm, see :func:`~Poly.distinct_degree_factors`.
-        A complete polynomial factorization is implemented in :func:`~Poly.factors`.
+        The Equal-Degree Factorization algorithm is often applied after the Distinct-Degree Factorization algorithm, see
+        :func:`~Poly.distinct_degree_factors`. A complete polynomial factorization is implemented in :func:`~Poly.factors`.
 
         References
         ----------
@@ -1304,8 +1310,10 @@ class Poly:
 
         References
         ----------
-        * Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273-280. https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
-        * Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields. https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
+        * Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273-280.
+          https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
+        * Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields.
+          https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
         * Section 4.5.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
         * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
 
@@ -1570,8 +1578,8 @@ class Poly:
         the integer representation is :math:`i = a_d (p^m)^{d} + a_{d-1} (p^m)^{d-1} + \dots + a_1 (p^m) + a_0` using integer arithmetic,
         not finite field arithmetic.
 
-        Said differently, the polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` are considered as the :math:`d` "digits" of a radix-:math:`p^m`
-        value. The polynomial's integer representation is that value in decimal (radix-10).
+        Said differently, the polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` are considered as the :math:`d` "digits"
+        of a radix-:math:`p^m` value. The polynomial's integer representation is that value in decimal (radix-10).
 
         Examples
         --------
@@ -1925,12 +1933,14 @@ class Poly:
 
     def __truediv__(self, other):
         raise NotImplementedError(
-            "Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead."
+            "Polynomial true division is not supported because fractional polynomials are not yet supported. "
+            "Use floor division //, modulo %, and/or divmod() instead."
         )
 
     def __rtruediv__(self, other):
         raise NotImplementedError(
-            "Polynomial true division is not supported because fractional polynomials are not yet supported. Use floor division //, modulo %, and/or divmod() instead."
+            "Polynomial true division is not supported because fractional polynomials are not yet supported. "
+            "Use floor division //, modulo %, and/or divmod() instead."
         )
 
     def __floordiv__(self, other: Poly | Array) -> Poly:

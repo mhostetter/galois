@@ -96,7 +96,8 @@ def get_printoptions() -> Dict[str, Any]:
 @contextlib.contextmanager
 def printoptions(**kwargs) -> Generator[None, None, None]:
     """
-    A context manager to temporarily modify the print options for the package. This function is the :obj:`galois` equivalent of :func:`numpy.printoptions`.
+    A context manager to temporarily modify the print options for the package. This function is the :obj:`galois` equivalent
+    of :func:`numpy.printoptions`.
 
     See :func:`~galois.set_printoptions` for the full list of available options.
 

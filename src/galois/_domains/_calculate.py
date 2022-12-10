@@ -100,7 +100,10 @@ def crt(remainders: np.ndarray, moduli: np.ndarray) -> int:  # pragma: no cover
             # then a unique solution still exists.
             if not (a1 % d) == (a2 % d):
                 raise ArithmeticError
-                # raise ValueError(f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, therefore a unique solution does not exist.")
+                # raise ValueError(
+                #     f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, "
+                #     "therefore a unique solution does not exist."
+                # )
             x = ((a1 * b2 * m2) + (a2 * b1 * m1)) // d  # Compute x through explicit construction
             m1 = (m1 * m2) // d  # The new modulus
 

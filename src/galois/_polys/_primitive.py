@@ -268,8 +268,8 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     of degree :math:`m` over :math:`\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n` dividing
     :math:`m`.
 
-    This function uses `Frank Luebeck's Conway polynomial database <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_
-    for fast lookup, not construction.
+    This function uses `Frank Luebeck's Conway polynomial database
+    <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_ for fast lookup, not construction.
 
     Examples
     --------

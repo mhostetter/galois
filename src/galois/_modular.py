@@ -264,8 +264,8 @@ def is_cyclic(n: int) -> bool:
     The multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is the set of positive integers :math:`1 \le a < n`
     that are coprime with :math:`n`. :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` being cyclic means that some primitive root of :math:`n`,
     or generator, :math:`g` can generate the group :math:`\{1, g, g^2, \dots, g^{\phi(n)-1}\}`, where
-    :math:`\phi(n)` is Euler's totient function and calculates the order of the group. If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic,
-    the number of primitive roots is found by :math:`\phi(\phi(n))`.
+    :math:`\phi(n)` is Euler's totient function and calculates the order of the group. If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is
+    cyclic, the number of primitive roots is found by :math:`\phi(\phi(n))`.
 
     :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is *cyclic* if and only if :math:`n` is 2, 4, :math:`p^k`, or :math:`2p^k`,
     where :math:`p` is an odd prime and :math:`k` is a positive integer.
@@ -324,8 +324,8 @@ def is_cyclic(n: int) -> bool:
                 Znx = galois.totatives(n); Znx
                 phi = galois.euler_phi(n); phi
 
-            Since 15 is not of the form 2, 4, :math:`p^k`, or :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}`
-            is not cyclic, meaning no elements exist whose powers generate the group.
+            Since 15 is not of the form 2, 4, :math:`p^k`, or :math:`2p^k`, the multiplicative group
+            :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}` is not cyclic, meaning no elements exist whose powers generate the group.
 
             .. ipython:: python
 
@@ -363,7 +363,8 @@ def is_cyclic(n: int) -> bool:
                 n = 31
                 galois.is_cyclic(n)
 
-            A primitive element is a generator of the multiplicative group :math:`\mathrm{GF}(p)^{\times} = \{1, 2, \dots, p-1\} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}`.
+            A primitive element is a generator of the multiplicative group
+            :math:`\mathrm{GF}(p)^{\times} = \{1, 2, \dots, p-1\} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}`.
 
             .. ipython:: python
 
@@ -447,12 +448,15 @@ def primitive_root(
     group of integers modulo :math:`n` :math:`(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}`,
     where :math:`\phi(n)` is order of the group.
 
-    If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by :math:`\phi(\phi(n))`.
+    If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
+    :math:`\phi(\phi(n))`.
 
     References
     ----------
-    * Shoup, V. Searching for primitive roots in finite fields. https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
-    * Hua, L.K. On the least primitive root of a prime. https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf
+    * Shoup, V. Searching for primitive roots in finite fields.
+      https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
+    * Hua, L.K. On the least primitive root of a prime.
+      https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf
     * http://www.numbertheory.org/courses/MP313/lectures/lecture7/page1.html
 
     Examples
@@ -509,8 +513,8 @@ def primitive_root(
                 Znx = galois.totatives(n); Znx
                 phi = galois.euler_phi(n); phi
 
-            Since 15 is not of the form 2, 4, :math:`p^k`, or :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}`
-            is not cyclic, meaning no elements exist whose powers generate the group.
+            Since 15 is not of the form 2, 4, :math:`p^k`, or :math:`2p^k`, the multiplicative group
+            :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}` is not cyclic, meaning no elements exist whose powers generate the group.
 
             .. ipython:: python
 
@@ -621,12 +625,15 @@ def primitive_roots(
     group of integers modulo :math:`n` :math:`(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}`,
     where :math:`\phi(n)` is order of the group.
 
-    If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by :math:`\phi(\phi(n))`.
+    If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
+    :math:`\phi(\phi(n))`.
 
     References
     ----------
-    * Shoup, V. Searching for primitive roots in finite fields. https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
-    * Hua, L.K. On the least primitive root of a prime. https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf
+    * Shoup, V. Searching for primitive roots in finite fields.
+      https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf
+    * Hua, L.K. On the least primitive root of a prime.
+      https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf
     * http://www.numbertheory.org/courses/MP313/lectures/lecture7/page1.html
 
     Examples
@@ -773,7 +780,8 @@ def is_primitive_root(g: int, n: int) -> bool:
 
     where :math:`\phi(n)` is order of the group.
 
-    If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by :math:`\phi(\phi(n))`.
+    If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
+    :math:`\phi(\phi(n))`.
 
     Examples
     --------

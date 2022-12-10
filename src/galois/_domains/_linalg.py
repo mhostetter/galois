@@ -90,7 +90,8 @@ class dot_jit(Function):
         # elif a.dnim >= 2 and b.ndim >= 2:
         else:
             raise NotImplementedError(
-                "Currently 'dot' is only supported up to 2-D matrices. Please open a GitHub issue at https://github.com/mhostetter/galois/issues."
+                "Currently 'dot' is only supported up to 2-D matrices. "
+                "Please open a GitHub issue at https://github.com/mhostetter/galois/issues."
             )
 
 
@@ -169,7 +170,8 @@ class matmul_jit(Function):
             raise ValueError(f"Operation 'matmul' requires both arrays have dimension at least 1, not {A.ndim}-D and {B.ndim}-D.")
         if not (A.ndim <= 2 and B.ndim <= 2):
             raise ValueError(
-                "Operation 'matmul' currently only supports matrix multiplication up to 2-D. If you would like matrix multiplication of N-D arrays, please submit a GitHub issue at https://github.com/mhostetter/galois/issues."
+                "Operation 'matmul' currently only supports matrix multiplication up to 2-D. "
+                "Please open a GitHub issue at https://github.com/mhostetter/galois/issues."
             )
         dtype = A.dtype
 
@@ -186,7 +188,8 @@ class matmul_jit(Function):
 
         if not A.shape[-1] == B.shape[-2]:
             raise ValueError(
-                f"Operation 'matmul' requires the last dimension of A to match the second-to-last dimension of B, not {A.shape} and {B.shape}."
+                f"Operation 'matmul' requires the last dimension of 'A' to match the second-to-last dimension of 'B', "
+                f"not {A.shape} and {B.shape}."
             )
 
         # if A.ndim > 2 and B.ndim == 2:
