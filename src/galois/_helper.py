@@ -1,3 +1,6 @@
+"""
+A module containing various helper functions for the library.
+"""
 import builtins
 import inspect
 import sys
