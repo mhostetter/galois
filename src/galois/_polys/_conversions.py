@@ -15,8 +15,8 @@ def integer_to_degree(integer: int, order: int) -> int:
     """
     if order == 2:
         return max(integer.bit_length() - 1, 0)
-    else:
-        return ilog(integer, order)
+
+    return ilog(integer, order)
 
 
 def integer_to_poly(integer: int, order: int, degree: int | None = None) -> list[int]:

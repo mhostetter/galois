@@ -98,11 +98,13 @@ class _LFSR:
         verify_isinstance(steps, int)
 
         if steps == 0:
-            return self.field([])
+            y = self.field([])
         elif steps > 0:
-            return self._step_forward(steps)
+            y = self._step_forward(steps)
         else:
-            return self._step_backward(abs(steps))
+            y = self._step_backward(abs(steps))
+
+        return y
 
     def _step_forward(self, steps):
         assert steps > 0
@@ -1601,16 +1603,16 @@ def berlekamp_massey(sequence, output="minimal"):
 
     if output == "minimal":
         return characteristic_poly
-    else:
-        # The first n outputs are the Fibonacci state reversed
-        feedback_poly = characteristic_poly.reverse()
-        state_ = sequence[0 : feedback_poly.degree][::-1]
-        fibonacci_lfsr = FLFSR(feedback_poly, state=state_)
 
-        if output == "fibonacci":
-            return fibonacci_lfsr
-        else:
-            return fibonacci_lfsr.to_galois_lfsr()
+    # The first n outputs are the Fibonacci state reversed
+    feedback_poly = characteristic_poly.reverse()
+    state_ = sequence[0 : feedback_poly.degree][::-1]
+    fibonacci_lfsr = FLFSR(feedback_poly, state=state_)
+
+    if output == "fibonacci":
+        return fibonacci_lfsr
+
+    return fibonacci_lfsr.to_galois_lfsr()
 
 
 class berlekamp_massey_jit(Function):

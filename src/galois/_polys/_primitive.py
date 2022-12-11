@@ -102,11 +102,13 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
     if method == "min":
-        return next(primitive_polys(order, degree))
+        poly = next(primitive_polys(order, degree))
     elif method == "max":
-        return next(primitive_polys(order, degree, reverse=True))
+        poly = next(primitive_polys(order, degree, reverse=True))
     else:
-        return _random_search(order, degree)
+        poly = _random_search(order, degree)
+
+    return poly
 
 
 @export
@@ -372,11 +374,13 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     if characteristic == 2 and degree == 7:
         # Not the lexicographically-minimal of `x^7 + x + 1`
         return Poly.Degrees([7, 3, 0])
-    elif characteristic == 2 and degree == 14:
+
+    if characteristic == 2 and degree == 14:
         # Not the lexicographically-minimal of `x^14 + x^5 + x^3 + x + 1`
         return Poly.Degrees([14, 10, 6, 1, 0])
-    elif characteristic == 2 and degree == 16:
+
+    if characteristic == 2 and degree == 16:
         # Not the lexicographically-minimal of `x^16 + x^5 + x^3 + x^2 + 1`
         return Poly.Degrees([16, 12, 3, 1, 0])
-    else:
-        return primitive_poly(characteristic, degree)
+
+    return primitive_poly(characteristic, degree)

@@ -60,10 +60,9 @@ class Function:
         """
         Returns a JIT-compiled or pure-Python function based on field size.
         """
-        if self.field.ufunc_mode != "python-calculate":
-            return self.jit
-        else:
+        if self.field.ufunc_mode == "python-calculate":
             return self.python
+        return self.jit
 
     @property
     def jit(self) -> numba.types.FunctionType:

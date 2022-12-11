@@ -62,8 +62,8 @@ def totatives(n: int) -> list[int]:
 
     if n == 1:
         return [0]
-    else:
-        return [t for t in range(1, n) if math.gcd(n, t) == 1]
+
+    return [t for t in range(1, n) if math.gcd(n, t) == 1]
 
 
 @export
@@ -391,15 +391,17 @@ def is_cyclic(n: int) -> bool:
 
     if n in [2, 4]:
         return True
-    elif len(p) == 2 and 2 in p and e[p.index(2)] == 1:
+
+    if len(p) == 2 and 2 in p and e[p.index(2)] == 1:
         # n = 2 * p^e
         return True
-    elif len(p) == 1 and p[0] != 2:
+
+    if len(p) == 1 and p[0] != 2:
         # n = p^e
         return True
-    else:
-        # n does not represent a cyclic group
-        return False
+
+    # n does not represent a cyclic group
+    return False
 
 
 @export
@@ -575,11 +577,12 @@ def primitive_root(
 
     try:
         if method == "min":
-            return next(primitive_roots(n, start, stop=stop))
+            root = next(primitive_roots(n, start, stop=stop))
         elif method == "max":
-            return next(primitive_roots(n, start, stop=stop, reverse=True))
+            root = next(primitive_roots(n, start, stop=stop, reverse=True))
         else:
-            return _primitive_root_random_search(n, start, stop)
+            root = _primitive_root_random_search(n, start, stop)
+        return root
     except StopIteration as e:
         raise RuntimeError(f"No primitive roots modulo {n} exist in the range [{start}, {stop}).") from e
 

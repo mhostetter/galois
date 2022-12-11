@@ -798,10 +798,10 @@ def jacobi_symbol(a: int, n: int) -> int:
         s = -s
 
     n1 = n % a1
-    if a1 == 1:
-        return s
-    else:
-        return s * jacobi_symbol(n1, a1)
+    if a1 != 1:
+        s *= jacobi_symbol(n1, a1)
+
+    return s
 
 
 @export
@@ -846,10 +846,9 @@ def kronecker_symbol(a: int, n: int) -> int:
     if n == 2:
         if a % 2 == 0:
             return 0
-        elif a % 8 in [1, 7]:
+        if a % 8 in [1, 7]:
             return 1
-        else:
-            return -1
+        return -1
 
     # Factor out the unit +/- 1
     u = -1 if n < 0 else 1
@@ -860,11 +859,12 @@ def kronecker_symbol(a: int, n: int) -> int:
     while n % 2 == 0:
         n, e = n // 2, e + 1
 
+    s = kronecker_symbol(a, u) * kronecker_symbol(a, 2) ** e
     if n >= 3:
         # Handle the remaining odd n using the Jacobi symbol
-        return kronecker_symbol(a, u) * kronecker_symbol(a, 2) ** e * jacobi_symbol(a, n)
-    else:
-        return kronecker_symbol(a, u) * kronecker_symbol(a, 2) ** e
+        s *= jacobi_symbol(a, n)
+
+    return s
 
 
 ###############################################################################
@@ -1454,8 +1454,8 @@ def divisor_sigma(n: int, k: int = 1) -> int:
 
     if n == 0:
         return len(d)
-    else:
-        return sum(di**k for di in d)
+
+    return sum(di**k for di in d)
 
 
 ###############################################################################
@@ -1516,7 +1516,7 @@ def is_prime(n: int) -> bool:
     for p in PRIMES[0:250]:
         if n == p:
             return True
-        elif n % p == 0:
+        if n % p == 0:
             return False
 
     if not fermat_primality_test(n):

@@ -159,10 +159,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     def _verify_element_types_and_convert(cls, array: np.ndarray, object_=False) -> np.ndarray:
         if array.size == 0:
             return array
-        elif object_:
+        if object_:
             return np.vectorize(cls._convert_to_element, otypes=[object])(array)
-        else:
-            return np.vectorize(cls._convert_to_element)(array)
+        return np.vectorize(cls._convert_to_element)(array)
 
     @classmethod
     def _verify_scalar_value(cls, scalar: int):
@@ -1355,14 +1354,16 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         x = self
 
         if field.is_prime_field:
-            return x.copy()
+            trace = x.copy()
         else:
             subfield = field.prime_subfield
             p = field.characteristic
             m = field.degree
             conjugates = np.power.outer(x, p ** np.arange(0, m, dtype=field.dtypes[-1]))
             trace = np.add.reduce(conjugates, axis=-1)
-            return subfield._view(trace)
+            trace = subfield._view(trace)
+
+        return trace
 
     def field_norm(self) -> FieldArray:
         r"""
@@ -1402,13 +1403,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         x = self
 
         if field.is_prime_field:
-            return x.copy()
+            norm = x.copy()
         else:
             subfield = field.prime_subfield
             p = field.characteristic
             m = field.degree
             norm = x ** ((p**m - 1) // (p - 1))
-            return subfield._view(norm)
+            norm = subfield._view(norm)
+
+        return norm
 
     def characteristic_poly(self) -> Poly:
         r"""
@@ -1470,13 +1473,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         if self.ndim == 0:
             return _characteristic_poly_element(self)
-        elif self.ndim == 2:
+        if self.ndim == 2:
             return _characteristic_poly_matrix(self)
-        else:
-            raise ValueError(
-                f"The array must be either 0-D to return the characteristic polynomial of a single element "
-                f"or 2-D to return the characteristic polynomial of a square matrix, not have shape {self.shape}."
-            )
+        raise ValueError(
+            f"The array must be either 0-D to return the characteristic polynomial of a single element "
+            f"or 2-D to return the characteristic polynomial of a square matrix, not have shape {self.shape}."
+        )
 
     def minimal_poly(self) -> Poly:
         r"""
@@ -1519,13 +1521,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         if self.ndim == 0:
             return _minimal_poly_element(self)
-        # elif self.ndim == 2:
+        # if self.ndim == 2:
         #     return _minimal_poly_matrix(self)
-        else:
-            raise ValueError(
-                f"The array must be either 0-D to return the minimal polynomial of a single element "
-                f"or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}."
-            )
+        raise ValueError(
+            f"The array must be either 0-D to return the minimal polynomial of a single element "
+            f"or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}."
+        )
 
     def log(self, base: ElementLike | ArrayLike | None = None) -> int | np.ndarray:
         r"""
@@ -1679,11 +1680,13 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             last_line_width = len(string[idx:] + ", " + order + suffix)
 
             if last_line_width <= np.get_printoptions()["linewidth"]:
-                return prefix + string + ", " + order + suffix
+                output = prefix + string + ", " + order + suffix
             else:
-                return prefix + string + ",\n" + " " * len(prefix) + order + suffix
+                output = prefix + string + ",\n" + " " * len(prefix) + order + suffix
         else:
-            return prefix + string + suffix
+            output = prefix + string + suffix
+
+        return output
 
     @classmethod
     def _formatter(cls, array):
@@ -1784,12 +1787,13 @@ def _characteristic_poly_element(a: FieldArray) -> Poly:
     x = Poly.Identity(field)
 
     if field.is_prime_field:
-        return x - a
+        poly = x - a
     else:
         powers = a ** (field.characteristic ** np.arange(0, field.degree, dtype=field.dtypes[-1]))
         poly = Poly.Roots(powers, field=field)
         poly = Poly(poly.coeffs, field=field.prime_subfield)
-        return poly
+
+    return poly
 
 
 def _characteristic_poly_matrix(A: FieldArray) -> Poly:
@@ -1821,9 +1825,10 @@ def _minimal_poly_element(a: FieldArray) -> Poly:
     x = Poly.Identity(field)
 
     if field.is_prime_field:
-        return x - a
+        poly = x - a
     else:
         conjugates = np.unique(a ** (field.characteristic ** np.arange(0, field.degree, dtype=field.dtypes[-1])))
         poly = Poly.Roots(conjugates, field=field)
         poly = Poly(poly.coeffs, field=field.prime_subfield)
-        return poly
+
+    return poly

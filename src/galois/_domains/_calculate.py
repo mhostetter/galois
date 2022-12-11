@@ -162,13 +162,13 @@ class add_vector(_lookup.add_ufunc):
         if self.field.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
             return super().__call__(ufunc, method, inputs, kwargs, meta)
-        else:
-            # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
-            self._verify_operands_in_same_field(ufunc, inputs, meta)
-            inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
-            output = getattr(ufunc, method)(*inputs, **kwargs)
-            output = self._convert_output_from_vector(output, meta["dtype"])
-            return output
+
+        # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+        self._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
+        output = getattr(ufunc, method)(*inputs, **kwargs)
+        output = self._convert_output_from_vector(output, meta["dtype"])
+        return output
 
     def set_calculate_globals(self):
         global CHARACTERISTIC, DEGREE
@@ -213,13 +213,13 @@ class negative_vector(_lookup.negative_ufunc):
         if self.field.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
             return super().__call__(ufunc, method, inputs, kwargs, meta)
-        else:
-            # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
-            self._verify_operands_in_same_field(ufunc, inputs, meta)
-            inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
-            output = getattr(ufunc, method)(*inputs, **kwargs)
-            output = self._convert_output_from_vector(output, meta["dtype"])
-            return output
+
+        # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+        self._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
+        output = getattr(ufunc, method)(*inputs, **kwargs)
+        output = self._convert_output_from_vector(output, meta["dtype"])
+        return output
 
     def set_calculate_globals(self):
         global CHARACTERISTIC, DEGREE
@@ -264,13 +264,13 @@ class subtract_vector(_lookup.subtract_ufunc):
         if self.field.ufunc_mode == "jit-lookup" or method != "__call__":
             # Use the lookup ufunc on each array entry
             return super().__call__(ufunc, method, inputs, kwargs, meta)
-        else:
-            # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
-            self._verify_operands_in_same_field(ufunc, inputs, meta)
-            inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
-            output = getattr(ufunc, method)(*inputs, **kwargs)
-            output = self._convert_output_from_vector(output, meta["dtype"])
-            return output
+
+        # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+        self._verify_operands_in_same_field(ufunc, inputs, meta)
+        inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
+        output = getattr(ufunc, method)(*inputs, **kwargs)
+        output = self._convert_output_from_vector(output, meta["dtype"])
+        return output
 
     def set_calculate_globals(self):
         global CHARACTERISTIC, DEGREE
@@ -658,28 +658,25 @@ class log_pollard_rho(_lookup.log_ufunc):
             # Equation 3.2
             if x % 3 == 1:
                 return MULTIPLY(beta, x)
-            elif x % 3 == 2:
+            if x % 3 == 2:
                 return MULTIPLY(x, x)
-            else:
-                return MULTIPLY(alpha, x)
+            return MULTIPLY(alpha, x)
 
         def compute_a(a, x):
             # Equation 3.3
             if x % 3 == 1:
                 return a
-            elif x % 3 == 2:
+            if x % 3 == 2:
                 return (2 * a) % n
-            else:
-                return (a + 1) % n
+            return (a + 1) % n
 
         def compute_b(b, x):
             # Equation 3.4
             if x % 3 == 1:
                 return (b + 1) % n
-            elif x % 3 == 2:
+            if x % 3 == 2:
                 return (2 * b) % n
-            else:
-                return b
+            return b
 
         while True:
             xi, ai, bi = compute_x(xi), compute_a(ai, xi), compute_b(bi, xi)
@@ -693,14 +690,14 @@ class log_pollard_rho(_lookup.log_ufunc):
                     d, r_inv = EGCD(r, n)[0:2]
                     assert d == 1
                     return (r_inv * (a2i - ai)) % n
-                else:
-                    # Re-try with different x0, a0, and b0
-                    a0 += 1
-                    b0 += 1
-                    x0 = MULTIPLY(x0, beta)
-                    x0 = MULTIPLY(x0, alpha)
-                    xi, ai, bi = x0, a0, b0
-                    x2i, a2i, b2i = xi, ai, bi
+
+                # Re-try with different x0, a0, and b0
+                a0 += 1
+                b0 += 1
+                x0 = MULTIPLY(x0, beta)
+                x0 = MULTIPLY(x0, alpha)
+                xi, ai, bi = x0, a0, b0
+                x2i, a2i, b2i = xi, ai, bi
 
 
 class log_pohlig_hellman(_lookup.log_ufunc):

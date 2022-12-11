@@ -122,8 +122,8 @@ def multiply(a: Array, b: Array) -> Array:
     # c(x) = a(x) * b(x)
     if a.ndim == 0 or b.ndim == 0:
         return a * b
-    else:
-        return np.convolve(a, b)
+
+    return np.convolve(a, b)
 
 
 class divmod_jit(Function):

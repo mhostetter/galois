@@ -80,19 +80,21 @@ class dot_jit(Function):
             return _lapack_linalg(self.field, a, b, np.dot, out=out)
 
         if a.ndim == 0 or b.ndim == 0:
-            return a * b
+            dot = a * b
         elif a.ndim == 1 and b.ndim == 1:
-            return np.sum(a * b)
+            dot = np.sum(a * b)
         elif a.ndim == 2 and b.ndim == 2:
-            return np.matmul(a, b, out=out)
+            dot = np.matmul(a, b, out=out)
         elif a.ndim >= 2 and b.ndim == 1:
-            return np.sum(a * b, axis=-1, out=out)
+            dot = np.sum(a * b, axis=-1, out=out)
         # elif a.dnim >= 2 and b.ndim >= 2:
         else:
             raise NotImplementedError(
                 "Currently 'dot' is only supported up to 2-D matrices. "
                 "Please open a GitHub issue at https://github.com/mhostetter/galois/issues."
             )
+
+        return dot
 
 
 class vdot_jit(Function):
@@ -150,8 +152,8 @@ class outer_jit(Function):
 
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, a, b, np.outer, out=out, n_sum=1)
-        else:
-            return np.multiply.outer(a.ravel(), b.ravel(), out=out)
+
+        return np.multiply.outer(a.ravel(), b.ravel(), out=out)
 
 
 class matmul_jit(Function):
@@ -395,9 +397,9 @@ class det_jit(Function):
         n = A.shape[0]
 
         if n == 2:
-            return A[0, 0] * A[1, 1] - A[0, 1] * A[1, 0]
+            det = A[0, 0] * A[1, 1] - A[0, 1] * A[1, 0]
         elif n == 3:
-            return (
+            det = (
                 A[0, 0] * (A[1, 1] * A[2, 2] - A[1, 2] * A[2, 1])
                 - A[0, 1] * (A[1, 0] * A[2, 2] - A[1, 2] * A[2, 0])
                 + A[0, 2] * (A[1, 0] * A[2, 1] - A[1, 1] * A[2, 0])
@@ -408,7 +410,9 @@ class det_jit(Function):
             det_P = (-self.field(1)) ** N_permutations
             det_L = triangular_det_jit(self.field)(L)
             det_U = triangular_det_jit(self.field)(U)
-            return det_P * det_L * det_U
+            det = det_P * det_L * det_U
+
+        return det
 
 
 ###############################################################################
