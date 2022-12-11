@@ -328,7 +328,7 @@ class FieldArrayMeta(ArrayMeta):
         """
         x = cls.elements
         is_square = x.is_square()
-        return x[is_square]
+        return x[is_square]  # pylint: disable=unsubscriptable-object
 
     @property
     def non_squares(cls) -> FieldArray:
@@ -360,7 +360,7 @@ class FieldArrayMeta(ArrayMeta):
         """
         x = cls.elements
         is_square = x.is_square()
-        return x[~is_square]
+        return x[~is_square]  # pylint: disable=unsubscriptable-object
 
     @property
     def is_prime_field(cls) -> bool:
