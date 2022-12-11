@@ -1,3 +1,6 @@
+"""
+A module that handles accessing the database of Conway polynomials.
+"""
 import os
 import sqlite3
 

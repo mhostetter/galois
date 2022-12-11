@@ -79,13 +79,15 @@ where = ["src"]
 universal = false
 
 [tool.pylint]
+ignore-paths = [
+    "src/galois/_version.py",
+]
 disable = [
     "comparison-with-callable",  # pylint doesn't understand metaclass properties
     "fixme",
     "global-statement",
     "invalid-name",
     "missing-function-docstring",
-    "missing-module-docstring",
     "protected-access",
     "too-many-ancestors",
     "too-many-arguments",
