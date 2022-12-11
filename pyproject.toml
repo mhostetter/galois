@@ -87,7 +87,6 @@ disable = [
     "invalid-unary-operand-type",
     "missing-function-docstring",
     "missing-module-docstring",
-    "not-callable",  # pylint doesn't understand metaclass properties
     "protected-access",
     "too-many-ancestors",
     "too-many-arguments",
