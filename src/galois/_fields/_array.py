@@ -597,7 +597,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         if cls.element_repr == "power":
             # Order elements by powers of the primitive element
-            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element ** np.arange(0, cls.order - 1, dtype=cls.dtypes[-1])))
+            dtype = cls.dtypes[-1]  # pylint: disable=unsubscriptable-object
+            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element ** np.arange(0, cls.order - 1, dtype=dtype)))
         else:
             x_default = cls.elements
         y_default = x_default if operation != "/" else x_default[1:]
@@ -1366,7 +1367,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             subfield = field.prime_subfield
             p = field.characteristic
             m = field.degree
-            conjugates = np.power.outer(x, p ** np.arange(0, m, dtype=field.dtypes[-1]))
+            dtype = field.dtypes[-1]  # pylint: disable=unsubscriptable-object
+            conjugates = np.power.outer(x, p ** np.arange(0, m, dtype=dtype))
             trace = np.add.reduce(conjugates, axis=-1)
             trace = subfield._view(trace)
 
