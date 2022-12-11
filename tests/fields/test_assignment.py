@@ -7,7 +7,11 @@ import pytest
 import galois
 
 
-class TestConstantIndex:
+class TestScalarIndex:
+    """
+    Tests for assigning to a FieldArray using a scalar index.
+    """
+
     def test_valid(self, field):
         a = field.Random(10)
         a[0] = 1
@@ -32,6 +36,10 @@ class TestConstantIndex:
 
 
 class TestSliceIndex:
+    """
+    Tests for assigning to a FieldArray using a slice index.
+    """
+
     def test_constant_valid(self, field):
         a = field.Random(10)
         a[0:2] = 1
@@ -88,6 +96,10 @@ class TestSliceIndex:
 
 
 class Test2DSliceIndex:
+    """
+    Tests for assigning to a 2D FieldArray using a slice index.
+    """
+
     def test_list_valid(self, field):
         a = field.Random((10, 10))
         a[0:2, 0:2] = [[1, 1], [1, 1]]

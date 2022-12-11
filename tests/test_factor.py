@@ -20,10 +20,11 @@ Sage:
 """
 import random
 
-import numpy as np
 import pytest
 
 import galois
+
+# pylint: disable=line-too-long
 
 FACTORS_SMALL = [
     (311633, [7, 44519], [1, 1]),

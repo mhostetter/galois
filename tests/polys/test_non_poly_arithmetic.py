@@ -1,111 +1,110 @@
 """
 A pytest module to test polynomial and non-polynomial arithmetic.
 """
-import random
-
-import numpy as np
 import pytest
 
 import galois
 
+# pylint: disable=pointless-statement,expression-not-assigned
+
 
 def test_add():
     GF = galois.GF(3)
-    poly = galois.Poly.Random(5, field=GF)
+    f = galois.Poly.Random(5, field=GF)
     e = GF.Random(low=1)  # Random field element
-    e_poly = galois.Poly(e)
-    assert poly + e == poly + e_poly
-    assert e + poly == e_poly + poly
+    g_e = galois.Poly(e)
+    assert f + e == f + g_e
+    assert e + f == g_e + f
 
     # Not a FieldArray
     with pytest.raises(TypeError):
-        poly + 1
+        f + 1
     with pytest.raises(TypeError):
-        1 + poly
+        1 + f
 
     # Not a 0-D FieldArray
     with pytest.raises(ValueError):
-        poly + GF.Random(3, low=1)
+        f + GF.Random(3, low=1)
     with pytest.raises(ValueError):
-        GF.Random(3, low=1) + poly
+        GF.Random(3, low=1) + f
 
 
 def test_subtract():
     GF = galois.GF(3)
-    poly = galois.Poly.Random(5, field=GF)
+    f = galois.Poly.Random(5, field=GF)
     e = GF.Random(low=1)  # Random field element
-    e_poly = galois.Poly(e)
-    assert poly - e == poly - e_poly
-    assert e - poly == e_poly - poly
+    g_e = galois.Poly(e)
+    assert f - e == f - g_e
+    assert e - f == g_e - f
 
     # Not a FieldArray
     with pytest.raises(TypeError):
-        poly - 1
+        f - 1
     with pytest.raises(TypeError):
-        1 - poly
+        1 - f
 
     # Not a 0-D FieldArray
     with pytest.raises(ValueError):
-        poly - GF.Random(3, low=1)
+        f - GF.Random(3, low=1)
     with pytest.raises(ValueError):
-        GF.Random(3, low=1) - poly
+        GF.Random(3, low=1) - f
 
 
 def test_multiply():
     GF = galois.GF(3)
-    poly = galois.Poly.Random(5, field=GF)
+    f = galois.Poly.Random(5, field=GF)
     e = GF.Random(low=1)  # Random field element
-    e_poly = galois.Poly(e)
-    assert poly * e == poly * e_poly
-    assert e * poly == e_poly * poly
+    g_e = galois.Poly(e)
+    assert f * e == f * g_e
+    assert e * f == g_e * f
 
     # Not a 0-D FieldArray
     with pytest.raises(ValueError):
-        poly * GF.Random(3, low=1)
+        f * GF.Random(3, low=1)
     with pytest.raises(ValueError):
-        GF.Random(3, low=1) * poly
+        GF.Random(3, low=1) * f
 
 
 def test_floor_divide():
     GF = galois.GF(3)
-    poly = galois.Poly.Random(5, field=GF)
+    f = galois.Poly.Random(5, field=GF)
     e = GF.Random(low=1)  # Random field element
-    e_poly = galois.Poly(e)
-    assert poly // e == poly // e_poly
-    assert e // poly == e_poly // poly
+    g_e = galois.Poly(e)
+    assert f // e == f // g_e
+    assert e // f == g_e // f
 
     # Not a FieldArray
     with pytest.raises(TypeError):
-        poly // 1
+        f // 1
     with pytest.raises(TypeError):
-        1 // poly
+        1 // f
 
     # Not a 0-D FieldArray
     with pytest.raises(ValueError):
-        poly // GF.Random(3, low=1)
+        f // GF.Random(3, low=1)
     with pytest.raises(ValueError):
-        GF.Random(3, low=1) // poly
+        GF.Random(3, low=1) // f
 
 
 def test_mod():
     GF = galois.GF(3)
-    poly = galois.Poly.Random(5, field=GF)
+    f = galois.Poly.Random(5, field=GF)
     e = GF.Random(low=1)  # Random field element
-    e_poly = galois.Poly(e)
-    assert poly % e == poly % e_poly
-    assert e % poly == e_poly % poly
+    g_e = galois.Poly(e)
+    assert f % e == f % g_e
+    assert e % f == g_e % f
 
     # Not a FieldArray
     with pytest.raises(TypeError):
-        poly % 1
+        f % 1
     with pytest.raises(TypeError):
-        1 % poly
+        1 % f
 
     # Not a 0-D FieldArray
     with pytest.raises(ValueError):
-        poly % GF.Random(3, low=1)
+        f % GF.Random(3, low=1)
     with pytest.raises(ValueError):
-        GF.Random(3, low=1) % poly
+        GF.Random(3, low=1) % f
 
 
 def test_equal_with_poly_like():

@@ -8,6 +8,8 @@ import pytest
 
 import galois
 
+# pylint: disable=line-too-long
+
 
 def test_repr_str():
     GF = galois.GF(7)
@@ -100,22 +102,22 @@ def test_is_primitive_poly():
     # GF(2^m) with integer dtype
     poly = galois.conway_poly(2, 32)
     GF = galois.GF(2**32, irreducible_poly=poly, primitive_element="x", verify=False)
-    assert GF.is_primitive_poly == True
+    assert GF.is_primitive_poly
 
     # GF(2^m) with object dtype
     poly = galois.conway_poly(2, 100)
     GF = galois.GF(2**100, irreducible_poly=poly, primitive_element="x", verify=False)
-    assert GF.is_primitive_poly == True
+    assert GF.is_primitive_poly
 
     # GF(p^m) with integer dtype
     poly = galois.conway_poly(3, 20)
     GF = galois.GF(3**20, irreducible_poly=poly, primitive_element="x", verify=False)
-    assert GF.is_primitive_poly == True
+    assert GF.is_primitive_poly
 
     # GF(p^m) with object dtype
     poly = galois.conway_poly(3, 101)
     GF = galois.GF(3**101, irreducible_poly=poly, primitive_element="x", verify=False)
-    assert GF.is_primitive_poly == True
+    assert GF.is_primitive_poly
 
 
 def test_pickle_class(tmp_path):

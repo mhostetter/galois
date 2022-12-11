@@ -6,6 +6,8 @@ import pytest
 
 import galois
 
+# pylint: disable=line-too-long,unidiomatic-typecheck
+
 # These two polys allow for testing JIT compiled and pure-Python implementations
 CHARACTERISTIC_POLYS = [
     galois.primitive_poly(7, 4),

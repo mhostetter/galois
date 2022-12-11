@@ -11,6 +11,8 @@ import pytest
 
 import galois
 
+# pylint: disable=redefined-outer-name
+
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 FIELDS = [
@@ -145,7 +147,7 @@ def field(request):
 @pytest.fixture(scope="session", params=FIELDS_DIFF_MODES)
 def field_folder(request):
     folder = request.param
-    field, ufunc_mode, folder = construct_field(folder)
+    field, _, folder = construct_field(folder)
     return field, folder
 
 
@@ -471,8 +473,7 @@ def array_equal(a, b):
     # Weird NumPy comparison bug, see https://github.com/mhostetter/galois/issues/37
     if a.dtype == np.object_:
         return np.array_equal(a, np.array(b, dtype=np.object_))
-    else:
-        return np.array_equal(a, b)
+    return np.array_equal(a, b)
 
 
 def randint(low, high, shape, dtype):
@@ -487,9 +488,9 @@ def randint(low, high, shape, dtype):
     return array
 
 
-def valid_dtype(field):
-    return random.choice(field.dtypes)
+def valid_dtype(GF):
+    return random.choice(GF.dtypes)
 
 
-def invalid_dtype(field):
-    return random.choice([dtype for dtype in DTYPES if dtype not in field.dtypes])
+def invalid_dtype(GF):
+    return random.choice([dtype for dtype in DTYPES if dtype not in GF.dtypes])

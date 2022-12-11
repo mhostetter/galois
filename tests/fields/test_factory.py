@@ -22,12 +22,18 @@ def test_defaults(characteristic, degree):
 
 def test_mandatory_kwargs():
     GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 1")
+    assert GF.order == 3**5
+    assert GF.irreducible_poly == "x^5 + 2x + 1"
+
     with pytest.raises(TypeError):
-        GF = galois.GF(3**5, "x^5 + 2x + 1")
+        galois.GF(3**5, "x^5 + 2x + 1")
 
     GF = galois.GF(3, 5, irreducible_poly="x^5 + 2x + 1")
+    assert GF.order == 3**5
+    assert GF.irreducible_poly == "x^5 + 2x + 1"
+
     with pytest.raises(TypeError):
-        GF = galois.GF(3, 5, "x^5 + 2x + 1")
+        galois.GF(3, 5, "x^5 + 2x + 1")
 
 
 def test_defaults_dont_modify_ufunc_mode():

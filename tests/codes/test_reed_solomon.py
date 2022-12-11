@@ -13,6 +13,8 @@ from .conftest import (
     verify_encode_shortened,
 )
 
+# pylint: disable=line-too-long
+
 
 def test_exceptions():
     with pytest.raises(TypeError):
@@ -20,13 +22,13 @@ def test_exceptions():
     with pytest.raises(TypeError):
         galois.ReedSolomon(15, 7.0)
     with pytest.raises(TypeError):
-        galois.ReedSolomon(15, 7, c=1.0)
+        galois.ReedSolomon(15, 7, d=9.0)
     with pytest.raises(TypeError):
-        galois.ReedSolomon(15, 7, field=2)
-    with pytest.raises(TypeError):
-        galois.ReedSolomon(15, 7, extension_field=2**4)
+        galois.ReedSolomon(15, 7, field=2**4)
     with pytest.raises(TypeError):
         galois.ReedSolomon(15, 7, alpha=2.0)
+    with pytest.raises(TypeError):
+        galois.ReedSolomon(15, 7, c=1.0)
     with pytest.raises(TypeError):
         galois.ReedSolomon(15, 7, systematic=1)
 

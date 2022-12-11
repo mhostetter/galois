@@ -5,15 +5,14 @@ import numpy as np
 
 import galois
 
+# pylint: disable=unidiomatic-typecheck
+
 
 def test_add(poly_add):
     GF, X, Y, Z = poly_add["GF"], poly_add["X"], poly_add["Y"], poly_add["Z"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
+    for x, y, z_truth in zip(X, Y, Z):
         z = x + y
-
-        assert z == Z[i]
+        assert z == z_truth
         assert isinstance(z, galois.Poly)
         assert z.field is GF
         assert type(z.coeffs) is GF
@@ -28,12 +27,9 @@ def test_right_add(poly_add):
 
 def test_subtract(poly_subtract):
     GF, X, Y, Z = poly_subtract["GF"], poly_subtract["X"], poly_subtract["Y"], poly_subtract["Z"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
+    for x, y, z_truth in zip(X, Y, Z):
         z = x - y
-
-        assert z == Z[i]
+        assert z == z_truth
         assert isinstance(z, galois.Poly)
         assert z.field is GF
         assert type(z.coeffs) is GF
@@ -48,12 +44,9 @@ def test_right_subtract(poly_subtract):
 
 def test_multiply(poly_multiply):
     GF, X, Y, Z = poly_multiply["GF"], poly_multiply["X"], poly_multiply["Y"], poly_multiply["Z"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
+    for x, y, z_truth in zip(X, Y, Z):
         z = x * y
-
-        assert z == Z[i]
+        assert z == z_truth
         assert isinstance(z, galois.Poly)
         assert z.field is GF
         assert type(z.coeffs) is GF
@@ -68,18 +61,15 @@ def test_right_multiply(poly_multiply):
 
 def test_scalar_multiply(poly_scalar_multiply):
     GF, X, Y, Z = poly_scalar_multiply["GF"], poly_scalar_multiply["X"], poly_scalar_multiply["Y"], poly_scalar_multiply["Z"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
-
+    for x, y, z_truth in zip(X, Y, Z):
         z = x * y
-        assert z == Z[i]
+        assert z == z_truth
         assert isinstance(z, galois.Poly)
         assert z.field is GF
         assert type(z.coeffs) is GF
 
         z = y * x
-        assert z == Z[i]
+        assert z == z_truth
         assert isinstance(z, galois.Poly)
         assert z.field is GF
         assert type(z.coeffs) is GF
@@ -87,12 +77,9 @@ def test_scalar_multiply(poly_scalar_multiply):
 
 def test_divide(poly_divmod):
     GF, X, Y, Q = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["Q"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
-
+    for x, y, q_truth in zip(X, Y, Q):
         q = x // y
-        assert q == Q[i]
+        assert q == q_truth
         assert isinstance(q, galois.Poly)
         assert q.field is GF
         assert type(q.coeffs) is GF
@@ -108,11 +95,9 @@ def test_right_divide(poly_divmod):
 def test_mod(poly_divmod):
     # NOTE: Test modulo separately because there's a separate method to compute it without the quotient for space spacings
     GF, X, Y, R = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["R"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
+    for x, y, r_truth in zip(X, Y, R):
         r = x % y
-        assert r == R[i]
+        assert r == r_truth
         assert isinstance(r, galois.Poly)
         assert r.field is GF
         assert type(r.coeffs) is GF
@@ -127,17 +112,15 @@ def test_right_mod(poly_divmod):
 
 def test_divmod(poly_divmod):
     GF, X, Y, Q, R = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["Q"], poly_divmod["R"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
+    for x, y, q_truth, r_truth in zip(X, Y, Q, R):
         q, r = divmod(x, y)
 
-        assert q == Q[i]
+        assert q == q_truth
         assert isinstance(q, galois.Poly)
         assert q.field is GF
         assert type(q.coeffs) is GF
 
-        assert r == R[i]
+        assert r == r_truth
         assert isinstance(r, galois.Poly)
         assert r.field is GF
         assert type(r.coeffs) is GF
@@ -152,12 +135,10 @@ def test_right_divmod(poly_divmod):
 
 def test_power(poly_power):
     GF, X, Y, Z = poly_power["GF"], poly_power["X"], poly_power["Y"], poly_power["Z"]
-    for i in range(len(X)):
-        x = X[i]  # Polynomial
-        for j in range(len(Y)):
-            y = Y[j]  # Integer exponent
+    for x, Zs in zip(X, Z):
+        for y, z_truth in zip(Y, Zs):
             z = x**y
-            assert z == Z[i][j]
+            assert z == z_truth
             assert isinstance(z, galois.Poly)
             assert z.field is GF
             assert type(z.coeffs) is GF
@@ -171,14 +152,12 @@ def test_modular_power(poly_modular_power):
         poly_modular_power["M"],
         poly_modular_power["Z"],
     )
-    for i in range(len(X)):
-        x = X[i]
-        e = E[i]
-        m = M[i]
+    for x, e, m, z_truth in zip(X, E, M, Z):
         z = pow(x, e, m)
-
-        assert z == Z[i]
+        assert z == z_truth
         assert isinstance(z, galois.Poly)
+        assert z.field is GF
+        assert type(z.coeffs) is GF
 
 
 def test_modular_power_large_exponent_jit():
@@ -267,7 +246,7 @@ def test_modular_power_large_exponent_python():
 
 def test_evaluate_constant(poly_evaluate):
     GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
-    for i in range(len(X)):
+    for i in range(len(X)):  # pylint: disable=consider-using-enumerate
         j = np.random.default_rng().integers(0, Y.size)
         x = X[i]  # Polynomial
         y = Y[j]  # GF element
@@ -278,7 +257,7 @@ def test_evaluate_constant(poly_evaluate):
 
 def test_evaluate_vector(poly_evaluate):
     GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
-    for i in range(len(X)):
+    for i in range(len(X)):  # pylint: disable=consider-using-enumerate
         x = X[i]  # Polynomial
         y = Y  # GF array
         z = x(y)  # GF array
@@ -288,7 +267,7 @@ def test_evaluate_vector(poly_evaluate):
 
 def test_evaluate_matrix(poly_evaluate_matrix):
     GF, X, Y, Z = poly_evaluate_matrix["GF"], poly_evaluate_matrix["X"], poly_evaluate_matrix["Y"], poly_evaluate_matrix["Z"]
-    for i in range(len(X)):
+    for i in range(len(X)):  # pylint: disable=consider-using-enumerate
         x = X[i]  # Polynomial
         y = Y[i]  # GF square matrix
         z = x(y, elementwise=False)  # GF square matrix
@@ -298,9 +277,9 @@ def test_evaluate_matrix(poly_evaluate_matrix):
 
 def test_evaluate_poly(poly_evaluate_poly):
     GF, X, Y, Z = poly_evaluate_poly["GF"], poly_evaluate_poly["X"], poly_evaluate_poly["Y"], poly_evaluate_poly["Z"]
-    for i in range(len(X)):
-        x = X[i]  # Polynomial f(x)
-        y = Y[i]  # Polynomial g(x)
+    for x, y, z_truth in zip(X, Y, Z):
         z = x(y)
-        assert z == Z[i]
+        assert z == z_truth
         assert isinstance(z, galois.Poly)
+        assert z.field == GF
+        assert type(z.coeffs) is GF

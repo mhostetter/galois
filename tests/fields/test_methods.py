@@ -8,6 +8,8 @@ import galois
 
 from .conftest import invalid_dtype, valid_dtype
 
+# pylint: disable=unidiomatic-typecheck,line-too-long
+
 
 def test_repr():
     GF = galois.GF(2**3)
@@ -92,8 +94,6 @@ def test_repr_context_manager():
 
 def test_repr_exceptions():
     GF = galois.GF(2**3)
-    a = GF([1, 0, 5, 2])
-
     with pytest.raises(ValueError):
         GF.repr("invalid-display-type")
 
@@ -212,4 +212,4 @@ def test_vector_invalid_dtype(field, shape):
 
     v_dtype = invalid_dtype(field.prime_subfield)
     with pytest.raises(TypeError):
-        v = a.vector(dtype=v_dtype)
+        a.vector(dtype=v_dtype)

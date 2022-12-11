@@ -8,6 +8,8 @@ import galois
 
 from .conftest import invalid_dtype, randint, valid_dtype
 
+# pylint: disable=unidiomatic-typecheck
+
 RANDOM_REPRODUCIBLE = {
     "GF(2)-42": galois.GF2([1, 0, 1, 0]),
     "GF(2)-1337": galois.GF2([1, 1, 1, 1]),
@@ -91,7 +93,7 @@ def test_zeros_valid_dtype(field, shape):
 def test_zeros_invalid_dtype(field, shape):
     dtype = invalid_dtype(field)
     with pytest.raises(TypeError):
-        a = field.Zeros(shape, dtype=dtype)
+        field.Zeros(shape, dtype=dtype)
 
 
 @pytest.mark.parametrize("shape", [(), (4,), (4, 4)])
@@ -117,7 +119,7 @@ def test_ones_valid_dtype(field, shape):
 def test_ones_invalid_dtype(field, shape):
     dtype = invalid_dtype(field)
     with pytest.raises(TypeError):
-        a = field.Ones(shape, dtype=dtype)
+        field.Ones(shape, dtype=dtype)
 
 
 def test_identity(field):
@@ -147,7 +149,7 @@ def test_identity_invalid_dtype(field):
     dtype = invalid_dtype(field)
     size = 4
     with pytest.raises(TypeError):
-        a = field.Identity(size, dtype=dtype)
+        field.Identity(size, dtype=dtype)
 
 
 @pytest.mark.parametrize("shape", [(), (4,), (4, 4)])
@@ -174,13 +176,13 @@ def test_random_valid_seed(field, seed):
 def test_random_invalid_seed(field, seed):
     shape = (4, 4)
     with pytest.raises(ValueError):
-        a = field.Random(shape, seed=seed)
+        field.Random(shape, seed=seed)
 
 
 def test_random_invalid_high(field):
     shape = (4,)
     with pytest.raises(ValueError):
-        a = field.Random(shape, high=field.order + 1)
+        field.Random(shape, high=field.order + 1)
 
 
 @pytest.mark.parametrize("seed", [42, 1337, 27182818284])
@@ -204,7 +206,7 @@ def test_random_valid_dtype(field, shape):
 def test_random_invalid_dtype(field, shape):
     dtype = invalid_dtype(field)
     with pytest.raises(TypeError):
-        a = field.Random(shape, dtype=dtype)
+        field.Random(shape, dtype=dtype)
 
 
 def test_vandermonde_exceptions():
@@ -269,4 +271,4 @@ def test_vector_invalid_dtype(field, shape):
     v = field.prime_subfield.Random(v_shape, dtype=v_dtype)
     dtype = invalid_dtype(field)
     with pytest.raises(TypeError):
-        a = field.Vector(v, dtype=dtype)
+        field.Vector(v, dtype=dtype)

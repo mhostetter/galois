@@ -8,9 +8,9 @@ import random
 import numpy as np
 import pytest
 
-import galois
-
 from .conftest import array_equal, randint
+
+# pylint: disable=unidiomatic-typecheck
 
 ###############################################################################
 # Basic operations
@@ -244,7 +244,7 @@ def test_split(field):
     shape = (6,)
     new_shape = (3,)
     a = field.Random(shape, dtype=dtype)
-    b1, b2 = np.split(a, 2)
+    b1, b2 = np.split(a, 2)  # pylint: disable=unbalanced-tuple-unpacking
     assert b1.shape == new_shape
     assert type(b1) is field
     assert b1.dtype == dtype
@@ -331,11 +331,10 @@ def test_insert_int(field):
 def test_insert_int_out_of_range(field):
     for dtype in [field.dtypes[0], field.dtypes[-1]]:
         shape = (2, 4)
-        new_shape = (2, 5)
         a = field.Random(shape, dtype=dtype)
         b = field.order
         with pytest.raises(ValueError):
-            c = np.insert(a, 1, b, axis=1)
+            np.insert(a, 1, b, axis=1)
 
 
 def test_insert_int_list(field):
@@ -371,11 +370,10 @@ def test_insert_int_array(field):
 def test_insert_int_array_out_of_range(field):
     dtype = field.dtypes[0]
     shape = (2, 4)
-    new_shape = (2, 5)
     a = field.Random(shape, dtype=dtype)
     b = randint(field.order, field.order + 2, 2, field.dtypes[-1])
     with pytest.raises(ValueError):
-        c = np.insert(a, 1, b, axis=1)
+        np.insert(a, 1, b, axis=1)
 
 
 def test_append(field):

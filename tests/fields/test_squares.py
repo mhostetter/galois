@@ -38,9 +38,10 @@ Sage:
     print(b)
 """
 import numpy as np
-import pytest
 
 import galois
+
+# pylint: disable=unidiomatic-typecheck,line-too-long
 
 
 def test_shapes():

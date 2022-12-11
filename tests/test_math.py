@@ -16,8 +16,8 @@ def test_gcd_exceptions():
 
 def test_gcd(egcd):
     X, Y, D = egcd["X"], egcd["Y"], egcd["D"]
-    for i in range(len(X)):
-        assert galois.gcd(X[i], Y[i]) == D[i]
+    for x, y, d in zip(X, Y, D):
+        assert galois.gcd(x, y) == d
 
 
 def test_egcd_exceptions():
@@ -29,8 +29,8 @@ def test_egcd_exceptions():
 
 def test_egcd(egcd):
     X, Y, D, S, T = egcd["X"], egcd["Y"], egcd["D"], egcd["S"], egcd["T"]
-    for i in range(len(X)):
-        assert galois.egcd(X[i], Y[i]) == (D[i], S[i], T[i])
+    for x, y, d, s, t in zip(X, Y, D, S, T):
+        assert galois.egcd(x, y) == (d, s, t)
 
 
 def test_lcm_exceptions():
@@ -46,8 +46,8 @@ def test_lcm_exceptions():
 
 def test_lcm(lcm):
     X, Z = lcm["X"], lcm["Z"]
-    for i in range(len(X)):
-        assert galois.lcm(*X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.lcm(*x) == z
 
 
 def test_prod_exceptions():
@@ -61,8 +61,8 @@ def test_prod_exceptions():
 
 def test_prod(prod):
     X, Z = prod["X"], prod["Z"]
-    for i in range(len(X)):
-        assert galois.prod(*X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.prod(*x) == z
 
 
 def test_are_coprime_exceptions():
@@ -77,9 +77,9 @@ def test_are_coprime_exceptions():
 
 
 def test_are_coprime():
-    assert galois.are_coprime(3, 4, 5) == True
-    assert galois.are_coprime(3, 5, 9, 11) == False
-    assert galois.are_coprime(2, 3, 7, 256) == False
+    assert galois.are_coprime(3, 4, 5)
+    assert not galois.are_coprime(3, 5, 9, 11)
+    assert not galois.are_coprime(2, 3, 7, 256)
 
 
 def test_crt_exceptions():
@@ -99,12 +99,12 @@ def test_crt_exceptions():
 
 def test_crt(crt):
     X, Y, Z = crt["X"], crt["Y"], crt["Z"]
-    for i in range(len(X)):
-        if Z[i] is not None:
-            assert galois.crt(X[i], Y[i]) == Z[i]
+    for x, y, z in zip(X, Y, Z):
+        if z is not None:
+            assert galois.crt(x, y) == z
         else:
             with pytest.raises(ValueError):
-                galois.crt(X[i], Y[i])
+                galois.crt(x, y)
 
 
 def test_isqrt_exceptions():
@@ -116,8 +116,8 @@ def test_isqrt_exceptions():
 
 def test_isqrt(isqrt):
     X, Z = isqrt["X"], isqrt["Z"]
-    for i in range(len(X)):
-        assert galois.isqrt(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.isqrt(x) == z
 
 
 def test_iroot_exceptions():
@@ -131,10 +131,10 @@ def test_iroot_exceptions():
 
 def test_iroot(iroot):
     X, R, Z = iroot["X"], iroot["R"], iroot["Z"]
-    for i in range(len(X)):
-        assert galois.iroot(X[i], R[i]) == Z[i]
+    for x, r, z in zip(X, R, Z):
+        assert galois.iroot(x, r) == z
 
-    galois.iroot(10, 1) == 10
+    assert galois.iroot(10, 1) == 10
     assert galois.iroot(0, 2) == 0
 
 
@@ -153,7 +153,7 @@ def test_ilog_exceptions():
 
 def test_ilog(ilog):
     X, B, Z = ilog["X"], ilog["B"], ilog["Z"]
-    for i in range(len(X)):
-        assert galois.ilog(X[i], B[i]) == Z[i]
+    for x, b, z in zip(X, B, Z):
+        assert galois.ilog(x, b) == z
 
     assert galois.ilog(10, 10) == 1
