@@ -30,7 +30,8 @@ SPARSE_VS_DENSE_POLY_MIN_COEFFS = int(1 / SPARSE_VS_DENSE_POLY_FACTOR)
 # Functions that will be monkey-patched in _polys/__init__.py to the actual implementations. This is required because the
 # implementations are in a different module that needs to import Poly. This monkey patching avoids the circular import.
 # If you have a better solution, please open a GitHub issue or pull request.
-GCD = lambda x, y: x
+def GCD(x: PolyLike, y: PolyLike) -> Poly:
+    raise NotImplementedError
 
 
 @export

@@ -506,14 +506,21 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         x = np.concatenate((np.atleast_1d(cls(0)), x))  # Add 0 = alpha**-Inf
         prim = poly_to_str(integer_to_poly(int(element), cls.characteristic))
 
-        # Define print helper functions
-        if len(prim) > 1:
-            print_power = lambda power: "0" if power is None else f"({prim})^{power}"
-        else:
-            print_power = lambda power: "0" if power is None else f"{prim}^{power}"
-        print_poly = lambda x: poly_to_str(integer_to_poly(int(x), cls.characteristic))
-        print_vec = lambda x: str(integer_to_poly(int(x), cls.characteristic, degree=cls.degree - 1))
-        print_int = lambda x: str(int(x))
+        def print_power(power):
+            if power is None:
+                return "0"
+            if len(prim) > 1:
+                return f"({prim})^{power}"
+            return f"{prim}^{power}"
+
+        def print_poly(x):
+            return poly_to_str(integer_to_poly(int(x), cls.characteristic))
+
+        def print_vec(x):
+            return str(integer_to_poly(int(x), cls.characteristic, degree=cls.degree - 1))
+
+        def print_int(x):
+            return str(int(x))
 
         # Determine column widths
         N_power = max([len(print_power(max(degrees))), len("Power")]) + 2

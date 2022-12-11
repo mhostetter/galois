@@ -96,7 +96,6 @@ disable = [
     "too-many-instance-attributes",
     "too-many-lines",
     "too-many-locals",
-    "unnecessary-lambda-assignment",
     "unneeded-not",
     "unsubscriptable-object",  # pylint doesn't understand metaclass properties
 ]
