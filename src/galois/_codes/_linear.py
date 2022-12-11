@@ -91,9 +91,9 @@ class _LinearCode:
 
         if output == "codeword":
             return codeword
-        else:
-            parity = self._convert_codeword_to_parity(codeword)
-            return parity
+
+        parity = self._convert_codeword_to_parity(codeword)
+        return parity
 
     def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
         r"""
@@ -187,10 +187,10 @@ class _LinearCode:
         if is_codeword_1d:
             decoded, N_errors = decoded[0, :], int(N_errors[0])
 
-        if not errors:
-            return decoded
-        else:
+        if errors:
             return decoded, N_errors
+
+        return decoded
 
     # def dual_code(self) -> _LinearCode:
     #     n = self.n

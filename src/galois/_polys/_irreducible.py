@@ -82,11 +82,13 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
     if method == "min":
-        return next(irreducible_polys(order, degree))
+        poly = next(irreducible_polys(order, degree))
     elif method == "max":
-        return next(irreducible_polys(order, degree, reverse=True))
+        poly = next(irreducible_polys(order, degree, reverse=True))
     else:
-        return _random_search(order, degree)
+        poly = _random_search(order, degree)
+
+    return poly
 
 
 @export

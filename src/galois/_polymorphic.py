@@ -98,10 +98,9 @@ def gcd(a, b):
     """
     if isinstance(a, (int, np.integer)) and isinstance(b, (int, np.integer)):
         return int_gcd(a, b)
-    elif isinstance(a, Poly) and isinstance(b, Poly):
+    if isinstance(a, Poly) and isinstance(b, Poly):
         return poly_gcd(a, b)
-    else:
-        raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
+    raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
 
 @overload
@@ -189,10 +188,9 @@ def egcd(a, b):
     """
     if isinstance(a, (int, np.integer)) and isinstance(b, (int, np.integer)):
         return int_egcd(a, b)
-    elif isinstance(a, Poly) and isinstance(b, Poly):
+    if isinstance(a, Poly) and isinstance(b, Poly):
         return poly_egcd(a, b)
-    else:
-        raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
+    raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
 
 @overload
@@ -262,10 +260,9 @@ def lcm(*values):
 
     if all(isinstance(value, (int, np.integer)) for value in values):
         return int_lcm(*values)
-    elif all(isinstance(value, Poly) for value in values):
+    if all(isinstance(value, Poly) for value in values):
         return poly_lcm(*values)
-    else:
-        raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
+    raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
 
 
 @overload
@@ -334,10 +331,9 @@ def prod(*values):
 
     if all(isinstance(value, (int, np.integer)) for value in values):
         return int_prod(*values)
-    elif all(isinstance(value, Poly) for value in values):
+    if all(isinstance(value, Poly) for value in values):
         return poly_prod(*values)
-    else:
-        raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
+    raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
 
 
 @overload
@@ -687,10 +683,9 @@ def factors(value):
     """
     if isinstance(value, (int, np.integer)):
         return int_factors(value)
-    elif isinstance(value, Poly):
+    if isinstance(value, Poly):
         return value.factors()
-    else:
-        raise TypeError(f"Argument 'value' must be either int or Poly, not {type(value)}.")
+    raise TypeError(f"Argument 'value' must be either int or Poly, not {type(value)}.")
 
 
 @overload
@@ -778,7 +773,6 @@ def is_square_free(value):
     """
     if isinstance(value, (int, np.integer)):
         return int_is_square_free(value)
-    elif isinstance(value, Poly):
+    if isinstance(value, Poly):
         return value.is_square_free()
-    else:
-        raise TypeError(f"Argument 'value' must be either int or Poly, not {type(value)}.")
+    raise TypeError(f"Argument 'value' must be either int or Poly, not {type(value)}.")

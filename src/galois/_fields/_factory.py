@@ -274,7 +274,7 @@ def GF(
             raise ValueError(
                 f"Argument 'irreducible_poly' can only be specified for extension fields, not the prime field GF({characteristic})."
             )
-        return _GF_prime(
+        field = _GF_prime(
             characteristic,
             alpha=primitive_element,
             verify=verify,
@@ -282,7 +282,7 @@ def GF(
             repr=repr,
         )
     else:
-        return _GF_extension(
+        field = _GF_extension(
             characteristic,
             degree,
             irreducible_poly_=irreducible_poly,
@@ -291,6 +291,8 @@ def GF(
             compile=compile,
             repr=repr,
         )
+
+    return field
 
 
 @overload

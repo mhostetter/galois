@@ -70,12 +70,11 @@ class UFunc:
         """
         A ufunc based on the current state of `ufunc_mode`.
         """
+        if self.field.ufunc_mode == "python-calculate":
+            return self.python_calculate
         if self.field.ufunc_mode == "jit-lookup" and not self.always_calculate:
             return self.jit_lookup
-        elif self.field.ufunc_mode == "python-calculate":
-            return self.python_calculate
-        else:
-            return self.jit_calculate
+        return self.jit_calculate
 
     @property
     def ufunc_call_only(self):
@@ -86,14 +85,13 @@ class UFunc:
         (see https://github.com/mhostetter/galois/issues/358). This ufunc should be used in JIT function
         implementations (`Function.implementation`) to ensure bug #358 does not manifest.
         """
-        if self.field.ufunc_mode == "jit-lookup" and not self.always_calculate:
-            return self.jit_lookup
-        elif self.field.ufunc_mode == "python-calculate":
+        if self.field.ufunc_mode == "python-calculate":
             # Specify `dtype=np.object_` for overridden ufuncs so Python int objects are returned, not np.intc (which
             # will eventually overflow and produce incorrect results).
             return self.python_calculate_call_only
-        else:
-            return self.jit_calculate
+        if self.field.ufunc_mode == "jit-lookup" and not self.always_calculate:
+            return self.jit_lookup
+        return self.jit_calculate
 
     @property
     def jit_calculate(self) -> numba.types.FunctionType:
@@ -155,8 +153,8 @@ class UFunc:
 
         if self.type == "unary":
             return np.frompyfunc(self.calculate, 1, 1)
-        else:
-            return np.frompyfunc(self.calculate, 2, 1)
+
+        return np.frompyfunc(self.calculate, 2, 1)
 
     @property
     def python_calculate_call_only(self) -> Callable:
@@ -170,8 +168,8 @@ class UFunc:
             # Specify `dtype=np.object_` for overridden ufuncs so Python int objects are returned, not np.intc (which
             # will eventually overflow and produce incorrect results).
             return lambda *args, **kwargs: self.override(*args, **kwargs, dtype=np.object_)
-        else:
-            return self.python_calculate
+
+        return self.python_calculate
 
     ###############################################################################
     # Input/output verification
@@ -242,13 +240,14 @@ class UFunc:
         second = inputs[meta["operands"][1]]
         if isinstance(second, (int, np.integer)):
             return
-        # elif type(second) is np.ndarray:
+
+        # if type(second) is np.ndarray:
         #     if not np.issubdtype(second.dtype, np.integer):
         #         raise ValueError(
         #             f"Operation {ufunc.__name__!r} requires the second operand with type np.ndarray to have integer dtype, "
         #             f"not {second.dtype}."
         #         )
-        elif isinstance(second, np.ndarray):
+        if isinstance(second, np.ndarray):
             if self.field.dtypes == [np.object_]:
                 if not (second.dtype == np.object_ or np.issubdtype(second.dtype, np.integer)):
                     raise ValueError(
@@ -291,8 +290,8 @@ class UFunc:
     def _convert_output_from_vector(self, output, dtype):
         if output is None:
             return None
-        else:
-            return self.field.Vector(output, dtype=dtype)
+
+        return self.field.Vector(output, dtype=dtype)
 
     ###############################################################################
     # Input/output type viewing
@@ -322,12 +321,11 @@ class UFunc:
     def _view_output_as_field(self, output, field, dtype):
         if isinstance(type(output), field):
             return output
-        elif isinstance(output, np.ndarray):
+        if isinstance(output, np.ndarray):
             return field._view(output.astype(dtype))
-        elif output is None:
+        if output is None:
             return None
-        else:
-            return field(output, dtype=dtype)
+        return field(output, dtype=dtype)
 
 
 ###############################################################################
@@ -681,24 +679,24 @@ class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
 
             return getattr(field, field._OVERRIDDEN_UFUNCS[ufunc])(ufunc, method, inputs, kwargs, meta)
 
-        elif ufunc in field._UNSUPPORTED_UFUNCS:
+        if ufunc in field._UNSUPPORTED_UFUNCS:
             raise NotImplementedError(
                 f"The NumPy ufunc {ufunc.__name__!r} is not supported on {field.name} arrays. "
                 "If you believe this ufunc should be supported, "
                 "please submit a GitHub issue at https://github.com/mhostetter/galois/issues."
             )
 
-        else:
-            if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:
-                kwargs["casting"] = "unsafe"
+        # Process with our custom ufuncs
+        if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:
+            kwargs["casting"] = "unsafe"
 
-            inputs, kwargs = UFunc(field)._view_inputs_as_ndarray(inputs, kwargs)
-            output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
+        inputs, kwargs = UFunc(field)._view_inputs_as_ndarray(inputs, kwargs)
+        output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
 
-            if ufunc in field._UFUNCS_REQUIRING_VIEW and output is not None:
-                output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
+        if ufunc in field._UFUNCS_REQUIRING_VIEW and output is not None:
+            output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
 
-            return output
+        return output
 
     def __pow__(self, other):
         # We call power here instead of `super().__pow__(other)` because when doing so `x ** GF(2)` will invoke `np.square(x)`

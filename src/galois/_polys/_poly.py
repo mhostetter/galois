@@ -721,8 +721,7 @@ class Poly:
         """
         if self._type == "sparse":
             return Poly.Degrees(self.degree - self._nonzero_degrees, self._nonzero_coeffs)
-        else:
-            return Poly(self.coeffs[::-1])
+        return Poly(self.coeffs[::-1])
 
     @overload
     def roots(self, multiplicity: Literal[False] = False) -> Array:
@@ -809,9 +808,9 @@ class Poly:
 
         if not multiplicity:
             return roots
-        else:
-            multiplicities = np.array([_root_multiplicity(self, root) for root in roots])
-            return roots, multiplicities
+
+        multiplicities = np.array([_root_multiplicity(self, root) for root in roots])
+        return roots, multiplicities
 
     def square_free_factors(self) -> tuple[list[Poly], list[int]]:
         r"""
@@ -1276,8 +1275,8 @@ class Poly:
         k -= 1
         if k > 0:
             return p_prime.derivative(k)
-        else:
-            return p_prime
+
+        return p_prime
 
     def is_irreducible(self) -> bool:
         r"""
@@ -1553,8 +1552,7 @@ class Poly:
         """
         if self._type == "sparse":
             return sparse_poly_to_str(self._nonzero_degrees, self._nonzero_coeffs)
-        else:
-            return poly_to_str(self.coeffs)
+        return poly_to_str(self.coeffs)
 
     def __index__(self) -> int:
         # Define __index__ to enable use of bin(), oct(), and hex()
@@ -1676,13 +1674,15 @@ class Poly:
         x = field(at)  # An array of finite field elements
 
         if elementwise:
-            return _dense.evaluate_elementwise_jit(field)(coeffs, x)
+            output = _dense.evaluate_elementwise_jit(field)(coeffs, x)
         else:
             if not (x.ndim == 2 and x.shape[0] == x.shape[1]):
                 raise ValueError(
                     f"Argument 'x' must be a square matrix when evaluating the polynomial not element-wise, not have shape {x.shape}."
                 )
-            return _evaluate_matrix(coeffs, x)
+            output = _evaluate_matrix(coeffs, x)
+
+        return output
 
     def __len__(self) -> int:
         """
@@ -1775,17 +1775,19 @@ class Poly:
             a = _convert_to_integer(self, self.field)
             b = _convert_to_integer(other, self.field)
             c = _binary.add(a, b)
-            return Poly.Int(c, field=self.field)
+            output = Poly.Int(c, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(self, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(other, self.field)
             c_degrees, c_coeffs = _sparse.add(a_degrees, a_coeffs, b_degrees, b_coeffs)
-            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+            output = Poly.Degrees(c_degrees, c_coeffs, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
             c = _dense.add_jit(self.field)(a, b)
-            return Poly(c, field=self.field)
+            output = Poly(c, field=self.field)
+
+        return output
 
     def __radd__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
@@ -1795,31 +1797,35 @@ class Poly:
             a = _convert_to_integer(other, self.field)
             b = _convert_to_integer(self, self.field)
             c = _binary.add(a, b)
-            return Poly.Int(c, field=self.field)
+            output = Poly.Int(c, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(other, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(self, self.field)
             c_degrees, c_coeffs = _sparse.add(a_degrees, a_coeffs, b_degrees, b_coeffs)
-            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+            output = Poly.Degrees(c_degrees, c_coeffs, field=self.field)
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
             c = _dense.add_jit(self.field)(a, b)
-            return Poly(c, field=self.field)
+            output = Poly(c, field=self.field)
+
+        return output
 
     def __neg__(self):
         if self._type == "binary":
             a = _convert_to_integer(self, self.field)
             c = _binary.negative(a)
-            return Poly.Int(c, field=self.field)
+            output = Poly.Int(c, field=self.field)
         elif self._type == "sparse":
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(self, self.field)
             c_degrees, c_coeffs = _sparse.negative(a_degrees, a_coeffs)
-            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+            output = Poly.Degrees(c_degrees, c_coeffs, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             c = _dense.negative(a)
-            return Poly(c, field=self.field)
+            output = Poly(c, field=self.field)
+
+        return output
 
     def __sub__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
@@ -1829,17 +1835,19 @@ class Poly:
             a = _convert_to_integer(self, self.field)
             b = _convert_to_integer(other, self.field)
             c = _binary.subtract(a, b)
-            return Poly.Int(c, field=self.field)
+            output = Poly.Int(c, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(self, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(other, self.field)
             c_degrees, c_coeffs = _sparse.subtract(a_degrees, a_coeffs, b_degrees, b_coeffs)
-            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+            output = Poly.Degrees(c_degrees, c_coeffs, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
             c = _dense.subtract_jit(self.field)(a, b)
-            return Poly(c, field=self.field)
+            output = Poly(c, field=self.field)
+
+        return output
 
     def __rsub__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
@@ -1849,17 +1857,19 @@ class Poly:
             a = _convert_to_integer(other, self.field)
             b = _convert_to_integer(self, self.field)
             c = _binary.subtract(a, b)
-            return Poly.Int(c, field=self.field)
+            output = Poly.Int(c, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(other, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(self, self.field)
             c_degrees, c_coeffs = _sparse.subtract(a_degrees, a_coeffs, b_degrees, b_coeffs)
-            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+            output = Poly.Degrees(c_degrees, c_coeffs, field=self.field)
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
             c = _dense.subtract_jit(self.field)(a, b)
-            return Poly(c, field=self.field)
+            output = Poly(c, field=self.field)
+
+        return output
 
     def __mul__(self, other: Poly | Array | int) -> Poly:
         _check_input_is_poly_or_int(other, self.field)
@@ -1869,17 +1879,19 @@ class Poly:
             a = _convert_to_integer(self, self.field)
             b = _convert_to_integer(other, self.field)
             c = _binary.multiply(a, b)
-            return Poly.Int(c, field=self.field)
+            output = Poly.Int(c, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(self, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(other, self.field)
             c_degrees, c_coeffs = _sparse.multiply(a_degrees, a_coeffs, b_degrees, b_coeffs)
-            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+            output = Poly.Degrees(c_degrees, c_coeffs, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
             c = _dense.multiply(a, b)
-            return Poly(c, field=self.field)
+            output = Poly(c, field=self.field)
+
+        return output
 
     def __rmul__(self, other: Poly | Array | int) -> Poly:
         _check_input_is_poly_or_int(other, self.field)
@@ -1889,17 +1901,19 @@ class Poly:
             a = _convert_to_integer(other, self.field)
             b = _convert_to_integer(self, self.field)
             c = _binary.multiply(a, b)
-            return Poly.Int(c, field=self.field)
+            output = Poly.Int(c, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(other, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(self, self.field)
             c_degrees, c_coeffs = _sparse.multiply(a_degrees, a_coeffs, b_degrees, b_coeffs)
-            return Poly.Degrees(c_degrees, c_coeffs, field=self.field)
+            output = Poly.Degrees(c_degrees, c_coeffs, field=self.field)
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
             c = _dense.multiply(a, b)
-            return Poly(c, field=self.field)
+            output = Poly(c, field=self.field)
+
+        return output
 
     def __divmod__(self, other: Poly | Array) -> tuple[Poly, Poly]:
         _check_input_is_poly(other, self.field)
@@ -1909,12 +1923,14 @@ class Poly:
             a = _convert_to_integer(self, self.field)
             b = _convert_to_integer(other, self.field)
             q, r = _binary.divmod(a, b)
-            return Poly.Int(q, field=self.field), Poly.Int(r, field=self.field)
+            output = Poly.Int(q, field=self.field), Poly.Int(r, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
             q, r = _dense.divmod_jit(self.field)(a, b)
-            return Poly(q, field=self.field), Poly(r, field=self.field)
+            output = Poly(q, field=self.field), Poly(r, field=self.field)
+
+        return output
 
     def __rdivmod__(self, other: Poly | Array) -> tuple[Poly, Poly]:
         _check_input_is_poly(other, self.field)
@@ -1924,12 +1940,14 @@ class Poly:
             a = _convert_to_integer(other, self.field)
             b = _convert_to_integer(self, self.field)
             q, r = _binary.divmod(a, b)
-            return Poly.Int(q, field=self.field), Poly.Int(r, field=self.field)
+            output = Poly.Int(q, field=self.field), Poly.Int(r, field=self.field)
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
             q, r = _dense.divmod_jit(self.field)(a, b)
-            return Poly(q, field=self.field), Poly(r, field=self.field)
+            output = Poly(q, field=self.field), Poly(r, field=self.field)
+
+        return output
 
     def __truediv__(self, other):
         raise NotImplementedError(
@@ -1951,12 +1969,14 @@ class Poly:
             a = _convert_to_integer(self, self.field)
             b = _convert_to_integer(other, self.field)
             q = _binary.floordiv(a, b)
-            return Poly.Int(q, field=self.field)
+            output = Poly.Int(q, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
             q = _dense.floordiv_jit(self.field)(a, b)
-            return Poly(q, field=self.field)
+            output = Poly(q, field=self.field)
+
+        return output
 
     def __rfloordiv__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
@@ -1966,12 +1986,14 @@ class Poly:
             a = _convert_to_integer(other, self.field)
             b = _convert_to_integer(self, self.field)
             q = _binary.floordiv(a, b)
-            return Poly.Int(q, field=self.field)
+            output = Poly.Int(q, field=self.field)
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
             q = _dense.floordiv_jit(self.field)(a, b)
-            return Poly(q, field=self.field)
+            output = Poly(q, field=self.field)
+
+        return output
 
     def __mod__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
@@ -1981,12 +2003,14 @@ class Poly:
             a = _convert_to_integer(self, self.field)
             b = _convert_to_integer(other, self.field)
             r = _binary.mod(a, b)
-            return Poly.Int(r, field=self.field)
+            output = Poly.Int(r, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
             r = _dense.mod_jit(self.field)(a, b)
-            return Poly(r, field=self.field)
+            output = Poly(r, field=self.field)
+
+        return output
 
     def __rmod__(self, other: Poly | Array) -> Poly:
         _check_input_is_poly(other, self.field)
@@ -1996,12 +2020,14 @@ class Poly:
             a = _convert_to_integer(other, self.field)
             b = _convert_to_integer(self, self.field)
             r = _binary.mod(a, b)
-            return Poly.Int(r, field=self.field)
+            output = Poly.Int(r, field=self.field)
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
             r = _dense.mod_jit(self.field)(a, b)
-            return Poly(r, field=self.field)
+            output = Poly(r, field=self.field)
+
+        return output
 
     def __pow__(self, exponent: int, modulus: Poly | None = None) -> Poly:
         _check_input_is_poly_or_none(modulus, self.field)
@@ -2015,12 +2041,14 @@ class Poly:
             a = _convert_to_integer(self, self.field)
             b = _convert_to_integer(modulus, self.field) if modulus is not None else None
             q = _binary.pow(a, exponent, b)
-            return Poly.Int(q, field=self.field)
+            output = Poly.Int(q, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(modulus, self.field) if modulus is not None else None
             q = _dense.pow_jit(self.field)(a, exponent, b)
-            return Poly(q, field=self.field)
+            output = Poly(q, field=self.field)
+
+        return output
 
     ###############################################################################
     # Instance properties
@@ -2305,12 +2333,14 @@ def _convert_to_coeffs(a: Poly | Array | int, field: Type[Array]) -> Array:
     Convert the polynomial or finite field scalar into a coefficient array.
     """
     if isinstance(a, Poly):
-        return a.coeffs
+        coeffs = a.coeffs
     elif isinstance(a, int):
         # Scalar multiplication
-        return np.atleast_1d(field(a % field.characteristic))
+        coeffs = np.atleast_1d(field(a % field.characteristic))
     else:
-        return np.atleast_1d(a)
+        coeffs = np.atleast_1d(a)
+
+    return coeffs
 
 
 def _convert_to_integer(a: Poly | Array | int, field: Type[Array]) -> int:
@@ -2319,9 +2349,11 @@ def _convert_to_integer(a: Poly | Array | int, field: Type[Array]) -> int:
     """
     if isinstance(a, int):
         # Scalar multiplication
-        return a % field.characteristic
+        integer = a % field.characteristic
     else:
-        return int(a)
+        integer = int(a)
+
+    return integer
 
 
 def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> tuple[np.ndarray, Array]:
@@ -2329,9 +2361,14 @@ def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> tupl
     Convert the polynomial or finite field scalar into its non-zero degrees and coefficients.
     """
     if isinstance(a, Poly):
-        return a.nonzero_degrees, a.nonzero_coeffs
+        degrees = a.nonzero_degrees
+        coeffs = a.nonzero_coeffs
     elif isinstance(a, int):
         # Scalar multiplication
-        return np.array([0]), np.atleast_1d(field(a % field.characteristic))
+        degrees = np.array([0])
+        coeffs = np.atleast_1d(field(a % field.characteristic))
     else:
-        return np.array([0]), np.atleast_1d(a)
+        degrees = np.array([0])
+        coeffs = np.atleast_1d(a)
+
+    return degrees, coeffs

@@ -42,7 +42,7 @@ class add_ufunc(_ufunc.add_ufunc):
         """
         if a == 0:
             return b
-        elif b == 0:
+        if b == 0:
             return a
 
         m = LOG[a]
@@ -56,8 +56,8 @@ class add_ufunc(_ufunc.add_ufunc):
         if n - m == ZECH_E:
             # zech_log(zech_e) = -Inf and α^(-Inf) = 0
             return 0
-        else:
-            return EXP[m + ZECH_LOG[n - m]]
+
+        return EXP[m + ZECH_LOG[n - m]]
 
 
 class negative_ufunc(_ufunc.negative_ufunc):
@@ -85,9 +85,9 @@ class negative_ufunc(_ufunc.negative_ufunc):
         """
         if a == 0:
             return 0
-        else:
-            m = LOG[a]
-            return EXP[ZECH_E + m]
+
+        m = LOG[a]
+        return EXP[ZECH_E + m]
 
 
 class subtract_ufunc(_ufunc.subtract_ufunc):
@@ -123,7 +123,7 @@ class subtract_ufunc(_ufunc.subtract_ufunc):
 
         if b == 0:
             return a
-        elif a == 0:
+        if a == 0:
             return EXP[n]
 
         if m > n:
@@ -165,10 +165,10 @@ class multiply_ufunc(_ufunc.multiply_ufunc):
         """
         if a == 0 or b == 0:
             return 0
-        else:
-            m = LOG[a]
-            n = LOG[b]
-            return EXP[m + n]
+
+        m = LOG[a]
+        n = LOG[b]
+        return EXP[m + n]
 
 
 class reciprocal_ufunc(_ufunc.reciprocal_ufunc):
@@ -232,10 +232,10 @@ class divide_ufunc(_ufunc.divide_ufunc):
 
         if a == 0:
             return 0
-        else:
-            m = LOG[a]
-            n = LOG[b]
-            return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
+
+        m = LOG[a]
+        n = LOG[b]
+        return EXP[(ORDER - 1) + m - n]  # We add `ORDER - 1` to guarantee the index is non-negative
 
 
 class power_ufunc(_ufunc.power_ufunc):
@@ -269,11 +269,11 @@ class power_ufunc(_ufunc.power_ufunc):
 
         if b == 0:
             return 1
-        elif a == 0:
+        if a == 0:
             return 0
-        else:
-            m = LOG[a]
-            return EXP[(m * b) % (ORDER - 1)]  # TODO: Do b % (ORDER - 1) first? b could be very large and overflow int64
+
+        m = LOG[a]
+        return EXP[(m * b) % (ORDER - 1)]  # TODO: Do b % (ORDER - 1) first? b could be very large and overflow int64
 
 
 class log_ufunc(_ufunc.log_ufunc):

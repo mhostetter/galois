@@ -119,10 +119,10 @@ def isqrt(n: int) -> int:
     # Recursively compute the integer square root
     x = isqrt(n >> 2) << 1
 
-    if (x + 1) ** 2 > n:
-        return x
-    else:
-        return x + 1
+    if (x + 1) ** 2 <= n:
+        x += 1
+
+    return x
 
 
 @export
