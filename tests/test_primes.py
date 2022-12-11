@@ -7,6 +7,8 @@ import pytest
 
 import galois
 
+# pylint: disable=line-too-long
+
 
 def test_primes_exceptions():
     with pytest.raises(TypeError):
@@ -15,8 +17,8 @@ def test_primes_exceptions():
 
 def test_primes(primes):
     X, Z = primes["X"], primes["Z"]
-    for i in range(len(X)):
-        assert galois.primes(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.primes(x) == z
 
 
 def test_kth_prime_exceptions():
@@ -30,8 +32,8 @@ def test_kth_prime_exceptions():
 
 def test_kth_prime(kth_prime):
     X, Z = kth_prime["X"], kth_prime["Z"]
-    for i in range(len(X)):
-        assert galois.kth_prime(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.kth_prime(x) == z
 
 
 def test_prev_prime_exceptions():
@@ -43,8 +45,8 @@ def test_prev_prime_exceptions():
 
 def test_prev_prime(prev_prime):
     X, Z = prev_prime["X"], prev_prime["Z"]
-    for i in range(len(X)):
-        assert galois.prev_prime(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.prev_prime(x) == z
 
 
 def test_next_prime_exceptions():
@@ -54,8 +56,8 @@ def test_next_prime_exceptions():
 
 def test_next_prime(next_prime):
     X, Z = next_prime["X"], next_prime["Z"]
-    for i in range(len(X)):
-        assert galois.next_prime(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.next_prime(x) == z
 
 
 def test_random_prime_exceptions():
@@ -73,7 +75,7 @@ def test_random_prime():
     for _ in range(5):
         bits = random.randint(1, 10)
         n = galois.random_prime(bits)
-        assert galois.is_prime(n) == True
+        assert galois.is_prime(n)
 
 
 def test_random_prime_deterministic():
@@ -135,8 +137,8 @@ def test_is_prime_oeis():
 
 def test_is_prime(is_prime):
     X, Z = is_prime["X"], is_prime["Z"]
-    for i in range(len(X)):
-        assert galois.is_prime(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.is_prime(x) == z
 
 
 def test_is_composite_exceptions():
@@ -161,8 +163,8 @@ def test_is_prime_power_exceptions():
 
 def test_is_prime_power(is_prime_power):
     X, Z = is_prime_power["X"], is_prime_power["Z"]
-    for i in range(len(X)):
-        assert galois.is_prime_power(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.is_prime_power(x) == z
 
 
 def test_is_perfect_power_exceptions():
@@ -172,8 +174,8 @@ def test_is_perfect_power_exceptions():
 
 def test_is_perfect_power(is_perfect_power):
     X, Z = is_perfect_power["X"], is_perfect_power["Z"]
-    for i in range(len(X)):
-        assert galois.is_perfect_power(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.is_perfect_power(x) == z
 
 
 def test_is_square_free_exceptions():
@@ -183,8 +185,8 @@ def test_is_square_free_exceptions():
 
 def test_is_square_free(is_square_free):
     X, Z = is_square_free["X"], is_square_free["Z"]
-    for i in range(len(X)):
-        assert galois.is_square_free(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.is_square_free(x) == z
 
 
 def test_is_smooth_exceptions():
@@ -198,8 +200,8 @@ def test_is_smooth_exceptions():
 
 def test_is_smooth(is_smooth):
     N, B, Z = is_smooth["N"], is_smooth["B"], is_smooth["Z"]
-    for i in range(len(N)):
-        assert galois.is_smooth(N[i], B[i]) == Z[i]
+    for n, b, z in zip(N, B, Z):
+        assert galois.is_smooth(n, b) == z
 
 
 def test_is_powersmooth_exceptions():
@@ -213,8 +215,8 @@ def test_is_powersmooth_exceptions():
 
 def test_is_powersmooth(is_powersmooth):
     N, B, Z = is_powersmooth["N"], is_powersmooth["B"], is_powersmooth["Z"]
-    for i in range(len(N)):
-        assert galois.is_powersmooth(N[i], B[i]) == Z[i]
+    for n, b, z in zip(N, B, Z):
+        assert galois.is_powersmooth(n, b) == z
 
 
 def test_fermat_primality_test_exceptions():
@@ -283,7 +285,7 @@ def test_miller_rabin_primality_test():
     assert [galois.miller_rabin_primality_test(91, a=a) for a in witnesses] == [False] * len(witnesses)
 
     # 105 has no strong liars
-    witnesses = [a for a in range(2, 104)]
+    witnesses = list(range(2, 104))
     assert [galois.miller_rabin_primality_test(105, a=a) for a in witnesses] == [False] * len(witnesses)
 
     # https://oeis.org/A001262

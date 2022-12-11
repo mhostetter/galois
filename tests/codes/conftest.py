@@ -12,21 +12,25 @@ import pytest
 
 import galois
 
+# pylint: disable=unidiomatic-typecheck
+
+
+def get_filenames(path: pathlib.Path) -> list[str]:
+    filenames = []
+    for file in path.iterdir():
+        if file.suffix != ".pkl":
+            continue
+        filenames.append(file.stem)
+    return filenames
+
+
 PATH = pathlib.Path(__file__).parent / "data"
 
 BCH_PATH = PATH / "bch"
-BCH_FILENAMES = []
-for file in BCH_PATH.iterdir():
-    if file.suffix != ".pkl":
-        continue
-    BCH_FILENAMES.append(file.stem)
+BCH_FILENAMES = get_filenames(BCH_PATH)
 
 REED_SOLOMON_PATH = PATH / "reed_solomon"
-REED_SOLOMON_FILENAMES = []
-for file in REED_SOLOMON_PATH.iterdir():
-    if file.suffix != ".pkl":
-        continue
-    REED_SOLOMON_FILENAMES.append(file.stem)
+REED_SOLOMON_FILENAMES = get_filenames(REED_SOLOMON_PATH)
 
 
 def read_pickle(file):
@@ -105,11 +109,10 @@ def random_type(array):
     if x == 0:
         # A FieldArray instance
         return array
-    elif x == 1:
+    if x == 1:
         # A np.ndarray instance
         return array.view(np.ndarray)
-    else:
-        return array.tolist()
+    return array.tolist()
 
 
 def verify_encode(

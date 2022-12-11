@@ -13,6 +13,8 @@ import pytest
 
 import galois
 
+# pylint: disable=unidiomatic-typecheck
+
 
 def test_exceptions():
     GF = galois.GF(251)
@@ -38,10 +40,8 @@ def test_exceptions():
 
 def test_lagrange_poly(poly_lagrange_poly):
     GF, X, Y, Z = poly_lagrange_poly["GF"], poly_lagrange_poly["X"], poly_lagrange_poly["Y"], poly_lagrange_poly["Z"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
+    for x, y, z in zip(X, Y, Z):
         poly = galois.lagrange_poly(x, y)
-        assert type(poly) == galois.Poly
-        assert poly.field == GF
-        assert poly == Z[i]
+        assert type(poly) is galois.Poly
+        assert poly.field is GF
+        assert poly == z

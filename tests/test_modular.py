@@ -2,11 +2,12 @@
 A pytest module to test modular arithmetic functions.
 """
 import math
-import random
 
 import pytest
 
 import galois
+
+# pylint: disable=line-too-long,use-implicit-booleaness-not-comparison
 
 
 def test_smallest_primitive_root():

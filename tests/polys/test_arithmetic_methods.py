@@ -6,14 +6,15 @@ import pytest
 
 import galois
 
+# pylint: disable=unidiomatic-typecheck
+
 
 def test_reverse(poly_reverse):
     GF, X, Z = poly_reverse["GF"], poly_reverse["X"], poly_reverse["Z"]
-    for i in range(len(X)):
-        x = X[i]
+    for x, z_truth in zip(X, Z):
         z = x.reverse()
 
-        assert z == Z[i]
+        assert z == z_truth
         assert isinstance(z, galois.Poly)
         assert z.field is GF
         assert type(z.coeffs) is GF
@@ -32,17 +33,15 @@ def test_roots(poly_roots):
     if GF.order > 2**16:
         return
 
-    for i in range(len(X)):
-        x = X[i]
-
+    for x, r_truth, m_truth in zip(X, R, M):
         r = x.roots()
-        assert np.array_equal(r, R[i])
+        assert np.array_equal(r, r_truth)
         assert type(r) is GF
 
         r, m = x.roots(multiplicity=True)
-        assert np.array_equal(r, R[i])
+        assert np.array_equal(r, r_truth)
         assert type(r) is GF
-        assert np.array_equal(m, M[i])
+        assert np.array_equal(m, m_truth)
         assert type(m) is np.ndarray
 
 
@@ -58,12 +57,10 @@ def test_derivative_exceptions():
 
 def test_derivative(poly_derivative):
     GF, X, Y, Z = poly_derivative["GF"], poly_derivative["X"], poly_derivative["Y"], poly_derivative["Z"]
-    for i in range(len(X)):
-        x = X[i]
-        y = Y[i]
+    for x, y, z_truth in zip(X, Y, Z):
         z = x.derivative(y)
 
-        assert z == Z[i]
+        assert z == z_truth
         assert isinstance(z, galois.Poly)
         assert z.field is GF
         assert type(z.coeffs) is GF

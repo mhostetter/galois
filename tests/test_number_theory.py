@@ -1,10 +1,11 @@
 """
 A pytest module to test number theoretic functions.
 """
-import numpy as np
 import pytest
 
 import galois
+
+# pylint: disable=line-too-long
 
 
 def test_totatives_exceptions():
@@ -39,8 +40,8 @@ def test_euler_phi_oeis():
 
 def test_euler_phi(euler_phi):
     X, Z = euler_phi["X"], euler_phi["Z"]
-    for i in range(len(X)):
-        assert galois.euler_phi(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.euler_phi(x) == z
 
 
 def test_carmichael_lambda_exceptions():
@@ -60,8 +61,8 @@ def test_carmichael_lambda_oeis():
 
 def test_carmichael_lambda(carmichael_lambda):
     X, Z = carmichael_lambda["X"], carmichael_lambda["Z"]
-    for i in range(len(X)):
-        assert galois.carmichael_lambda(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.carmichael_lambda(x) == z
 
 
 def test_is_cyclic_exceptions():
@@ -73,8 +74,8 @@ def test_is_cyclic_exceptions():
 
 def test_is_cyclic(is_cyclic):
     X, Z = is_cyclic["X"], is_cyclic["Z"]
-    for i in range(len(X)):
-        assert galois.is_cyclic(X[i]) == Z[i]
+    for x, z in zip(X, Z):
+        assert galois.is_cyclic(x) == z
 
 
 def test_legendre_symbol_exceptions():

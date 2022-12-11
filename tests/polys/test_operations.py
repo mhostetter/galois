@@ -6,6 +6,8 @@ import pytest
 
 import galois
 
+# pylint: disable=unidiomatic-typecheck
+
 
 def test_coefficients_exceptions():
     GF = galois.GF(7)

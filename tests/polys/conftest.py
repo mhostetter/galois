@@ -9,7 +9,9 @@ import pytest
 
 import galois
 
-from ..fields.conftest import field, field_folder
+from ..fields.conftest import field, field_folder  # pylint: disable=unused-import
+
+# pylint: disable=redefined-outer-name
 
 ###############################################################################
 # Helper functions

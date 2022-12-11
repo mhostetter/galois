@@ -10,6 +10,8 @@ import galois
 
 from .conftest import array_equal
 
+# pylint: disable=unidiomatic-typecheck,pointless-statement
+
 
 def test_dot_exceptions():
     with pytest.raises(TypeError):
@@ -271,13 +273,12 @@ def full_rank_matrix(field, n, dtype):
 
 def test_matrix_multiply(field_matrix_multiply):
     GF, X, Y, Z = field_matrix_multiply["GF"], field_matrix_multiply["X"], field_matrix_multiply["Y"], field_matrix_multiply["Z"]
-
-    for i in range(len(X)):
+    for x, y, z_truth in zip(X, Y, Z):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
-        y = Y[i].astype(dtype)
+        x = x.astype(dtype)
+        y = y.astype(dtype)
         z = x @ y
-        assert np.array_equal(z, Z[i])
+        assert np.array_equal(z, z_truth)
         assert type(z) is GF
 
 
@@ -293,12 +294,11 @@ def test_row_reduce_exceptions():
 
 def test_row_reduce(field_row_reduce):
     GF, X, Z = field_row_reduce["GF"], field_row_reduce["X"], field_row_reduce["Z"]
-
-    for i in range(len(X)):
+    for x, z_truth in zip(X, Z):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
+        x = x.astype(dtype)
         z = x.row_reduce()
-        assert np.array_equal(z, Z[i])
+        assert np.array_equal(z, z_truth)
         assert type(z) is GF
 
 
@@ -322,13 +322,12 @@ def test_lu_decompose_exceptions():
 
 def test_lu_decompose(field_lu_decompose):
     GF, X, L, U = field_lu_decompose["GF"], field_lu_decompose["X"], field_lu_decompose["L"], field_lu_decompose["U"]
-
-    for i in range(len(X)):
+    for x, l_truth, u_truth in zip(X, L, U):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
+        x = x.astype(dtype)
         l, u = x.lu_decompose()
-        assert np.array_equal(l, L[i])
-        assert np.array_equal(u, U[i])
+        assert np.array_equal(l, l_truth)
+        assert np.array_equal(u, u_truth)
         assert type(l) is GF
         assert type(u) is GF
 
@@ -351,14 +350,13 @@ def test_plu_decompose(field_plu_decompose):
         field_plu_decompose["L"],
         field_plu_decompose["U"],
     )
-
-    for i in range(len(X)):
+    for x, p_truth, l_truth, u_truth in zip(X, P, L, U):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
+        x = x.astype(dtype)
         p, l, u = x.plu_decompose()
-        assert np.array_equal(p, P[i])
-        assert np.array_equal(l, L[i])
-        assert np.array_equal(u, U[i])
+        assert np.array_equal(p, p_truth)
+        assert np.array_equal(l, l_truth)
+        assert np.array_equal(u, u_truth)
         assert type(p) is GF
         assert type(l) is GF
         assert type(u) is GF
@@ -376,12 +374,11 @@ def test_matrix_inverse_exceptions():
 
 def test_matrix_inverse(field_matrix_inverse):
     GF, X, Z = field_matrix_inverse["GF"], field_matrix_inverse["X"], field_matrix_inverse["Z"]
-
-    for i in range(len(X)):
+    for x, z_truth in zip(X, Z):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
+        x = x.astype(dtype)
         z = np.linalg.inv(x)
-        assert np.array_equal(z, Z[i])
+        assert np.array_equal(z, z_truth)
         assert type(z) is GF
 
 
@@ -397,12 +394,11 @@ def test_matrix_determinant_exceptions():
 
 def test_matrix_determinant(field_matrix_determinant):
     GF, X, Z = field_matrix_determinant["GF"], field_matrix_determinant["X"], field_matrix_determinant["Z"]
-
-    for i in range(len(X)):
+    for x, z_truth in zip(X, Z):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
+        x = x.astype(dtype)
         z = np.linalg.det(x)
-        assert z == Z[i]
+        assert z == z_truth
         assert type(z) is GF
 
 
@@ -432,14 +428,13 @@ def test_matrix_solve_exceptions():
 
 def test_matrix_solve(field_matrix_solve):
     GF, X, Y, Z = field_matrix_solve["GF"], field_matrix_solve["X"], field_matrix_solve["Y"], field_matrix_solve["Z"]
-
     # np.linalg.solve(x, y) = z corresponds to x @ z = y
-    for i in range(len(X)):
+    for x, y, z_truth in zip(X, Y, Z):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
-        y = Y[i].astype(dtype)
+        x = x.astype(dtype)
+        y = y.astype(dtype)
         z = np.linalg.solve(x, y)
-        assert np.array_equal(z, Z[i])
+        assert np.array_equal(z, z_truth)
         assert type(z) is GF
 
 
@@ -455,12 +450,11 @@ def test_row_space_exceptions():
 
 def test_row_space(field_row_space):
     GF, X, Z = field_row_space["GF"], field_row_space["X"], field_row_space["Z"]
-
-    for i in range(len(X)):
+    for x, z_truth in zip(X, Z):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
+        x = x.astype(dtype)
         z = x.row_space()
-        assert np.array_equal(z, Z[i])
+        assert np.array_equal(z, z_truth)
         assert type(z) is GF
 
 
@@ -476,12 +470,11 @@ def test_column_space_exceptions():
 
 def test_column_space(field_column_space):
     GF, X, Z = field_column_space["GF"], field_column_space["X"], field_column_space["Z"]
-
-    for i in range(len(X)):
+    for x, z_truth in zip(X, Z):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
+        x = x.astype(dtype)
         z = x.column_space()
-        assert np.array_equal(z, Z[i])
+        assert np.array_equal(z, z_truth)
         assert type(z) is GF
 
 
@@ -497,12 +490,11 @@ def test_left_null_space_exceptions():
 
 def test_left_null_space(field_left_null_space):
     GF, X, Z = field_left_null_space["GF"], field_left_null_space["X"], field_left_null_space["Z"]
-
-    for i in range(len(X)):
+    for x, z_truth in zip(X, Z):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
+        x = x.astype(dtype)
         z = x.left_null_space()
-        assert np.array_equal(z, Z[i])
+        assert np.array_equal(z, z_truth)
         assert type(z) is GF
 
 
@@ -518,10 +510,9 @@ def test_null_space_exceptions():
 
 def test_null_space(field_null_space):
     GF, X, Z = field_null_space["GF"], field_null_space["X"], field_null_space["Z"]
-
-    for i in range(len(X)):
+    for x, z_truth in zip(X, Z):
         dtype = random.choice(GF.dtypes)
-        x = X[i].astype(dtype)
+        x = x.astype(dtype)
         z = x.null_space()
-        assert np.array_equal(z, Z[i])
+        assert np.array_equal(z, z_truth)
         assert type(z) is GF

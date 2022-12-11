@@ -8,6 +8,8 @@ import pytest
 
 import galois
 
+# pylint: disable=redefined-outer-name
+
 FIELDS = [
     galois.GF2,  # GF(2)
     galois.GF(31),  # GF(p) with np.int dtypes

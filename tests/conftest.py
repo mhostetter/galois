@@ -4,7 +4,6 @@ A pytest conftest module that provides pytest fixtures for number theoretic func
 import os
 import pickle
 
-import numpy as np
 import pytest
 
 FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")

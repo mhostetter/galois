@@ -4,11 +4,12 @@ A pytest module to test the accuracy of FieldArray arithmetic.
 import random
 
 import numpy as np
-import pytest
 
 import galois
 
 from .conftest import randint
+
+# pylint: disable=unidiomatic-typecheck
 
 # TODO: Add scalar arithmetic and array/scalar and radd, etc
 

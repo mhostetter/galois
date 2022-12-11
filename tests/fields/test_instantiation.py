@@ -8,11 +8,13 @@ import galois
 
 from .conftest import array_equal, invalid_dtype, valid_dtype
 
+# pylint: disable=unidiomatic-typecheck
+
 
 def test_cant_instantiate_GF():
     v = [0, 1, 0, 1]
     with pytest.raises(NotImplementedError):
-        a = galois.FieldArray(v)
+        galois.FieldArray(v)
 
 
 def test_element_like_conversion():
@@ -22,6 +24,10 @@ def test_element_like_conversion():
 
 
 class Test0D:
+    """
+    Tests for instantiating 0D arrays.
+    """
+
     @pytest.mark.parametrize("type1", [int, list, tuple, np.array, galois.FieldArray])
     def test_new(self, field, type1):
         v = int(field.Random())
@@ -46,28 +52,28 @@ class Test0D:
         vt = convert_0d(v, type1, field)
         dtype = invalid_dtype(field)
         with pytest.raises(TypeError):
-            a = field(vt, dtype=dtype)
+            field(vt, dtype=dtype)
 
     @pytest.mark.parametrize("type1", [int, list, tuple, np.array])
     def test_non_integer(self, field, type1):
         v = float(field.order)
         vt = convert_0d(v, type1, field)
         with pytest.raises((TypeError, ValueError)):
-            a = field(vt)
+            field(vt)
 
     @pytest.mark.parametrize("type1", [int, list, tuple, np.array])
     def test_out_of_range_low(self, field, type1):
         v = -1
         vt = convert_0d(v, type1, field)
         with pytest.raises(ValueError):
-            a = field(vt)
+            field(vt)
 
     @pytest.mark.parametrize("type1", [int, list, tuple, np.array])
     def test_out_of_range_high(self, field, type1):
         v = field.order
         vt = convert_0d(v, type1, field)
         with pytest.raises(ValueError):
-            a = field(vt)
+            field(vt)
 
     def test_copy_true(self, field):
         v = int(field.Random(low=1))
@@ -118,6 +124,10 @@ class Test0D:
 
 
 class Test1D:
+    """
+    Tests for instantiating 1D arrays.
+    """
+
     @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
     def test_new(self, field, type1):
         v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
@@ -142,28 +152,28 @@ class Test1D:
         vt = convert_1d(v, type1, field)
         dtype = invalid_dtype(field)
         with pytest.raises(TypeError):
-            a = field(vt, dtype=dtype)
+            field(vt, dtype=dtype)
 
     @pytest.mark.parametrize("type1", [list, tuple, np.array])
     def test_non_integer(self, field, type1):
         v = [int(field.Random()), float(field.Random()), int(field.Random()), int(field.Random())]
         vt = convert_1d(v, type1, field)
         with pytest.raises((TypeError, ValueError)):
-            a = field(vt)
+            field(vt)
 
     @pytest.mark.parametrize("type1", [list, tuple, np.array])
     def test_out_of_range_low(self, field, type1):
         v = [int(field.Random()), -1, int(field.Random()), int(field.Random())]
         vt = convert_1d(v, type1, field)
         with pytest.raises(ValueError):
-            a = field(vt)
+            field(vt)
 
     @pytest.mark.parametrize("type1", [list, tuple, np.array])
     def test_out_of_range_high(self, field, type1):
         v = [int(field.Random()), field.order, int(field.Random()), int(field.Random())]
         vt = convert_1d(v, type1, field)
         with pytest.raises(ValueError):
-            a = field(vt)
+            field(vt)
 
     def test_copy_true(self, field):
         v = [int(field.Random(low=1)), int(field.Random()), int(field.Random()), int(field.Random())]
@@ -214,6 +224,10 @@ class Test1D:
 
 
 class Test2D:
+    """
+    Tests for instantiating 2D arrays.
+    """
+
     @pytest.mark.parametrize("type1", [list, tuple, np.array, galois.FieldArray])
     def test_new(self, field, type1):
         v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
@@ -238,28 +252,28 @@ class Test2D:
         vt = convert_2d(v, type1, field)
         dtype = invalid_dtype(field)
         with pytest.raises(TypeError):
-            a = field(vt, dtype=dtype)
+            field(vt, dtype=dtype)
 
     @pytest.mark.parametrize("type1", [list, tuple, np.array])
     def test_non_integer(self, field, type1):
         v = [[int(field.Random()), float(field.Random())], [int(field.Random()), int(field.Random())]]
         vt = convert_2d(v, type1, field)
         with pytest.raises((TypeError, ValueError)):
-            a = field(vt)
+            field(vt)
 
     @pytest.mark.parametrize("type1", [list, tuple, np.array])
     def test_out_of_range_low(self, field, type1):
         v = [[int(field.Random()), -1], [int(field.Random()), int(field.Random())]]
         vt = convert_2d(v, type1, field)
         with pytest.raises(ValueError):
-            a = field(vt)
+            field(vt)
 
     @pytest.mark.parametrize("type1", [list, tuple, np.array])
     def test_out_of_range_high(self, field, type1):
         v = [[int(field.Random()), field.order], [int(field.Random()), int(field.Random())]]
         vt = convert_2d(v, type1, field)
         with pytest.raises(ValueError):
-            a = field(vt)
+            field(vt)
 
     def test_copy_true(self, field):
         v = [[int(field.Random(low=1)), int(field.Random())], [int(field.Random()), int(field.Random())]]
@@ -345,7 +359,7 @@ def convert_2d(v, type1, field):
     elif type1 is np.array:
         vt = np.array(v)
     elif type1 in [list, tuple]:
-        vt = type1([type1([b for b in a]) for a in v])
+        vt = type1([type1(a) for a in v])
     else:
         raise NotImplementedError
     return vt

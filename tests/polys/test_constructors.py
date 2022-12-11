@@ -6,6 +6,8 @@ import pytest
 
 import galois
 
+# pylint: disable=line-too-long
+
 FIELDS = [
     galois.GF2,  # GF(2)
     galois.GF(31),  # GF(p) with np.int dtypes
@@ -130,9 +132,7 @@ def test_string_exceptions():
 def test_string(field):
     degrees = [10, 7, 4, 1, 0]
     coeffs = [field.Random(low=1), field.Random(low=1), field.Random(low=1), field.Random(low=1), field.Random(low=1)]
-    string = " + ".join(["{}x^{}".format(c if c > 1 else "", d) for d, c in zip(degrees[:-2], coeffs[:-2])])
-    string += " + {}x".format(coeffs[-2] if coeffs[-2] > 1 else "")
-    string += " + {}".format(coeffs[-1] if coeffs[-1] > 0 else "")
+    string = create_string(coeffs, degrees)
 
     p = galois.Poly.Str(string, field=field)
     assert isinstance(p, galois.Poly)
@@ -140,13 +140,11 @@ def test_string(field):
     assert p.degree == max(degrees)
     assert np.array_equal(p.nonzero_degrees, degrees)
     assert np.array_equal(p.nonzero_coeffs, coeffs)
-    assert str(p) == string
+    assert str(p) == create_string(coeffs, degrees)
 
     degrees = [105, 97, 48, 1, 0]
     coeffs = [field.Random(low=1), field.Random(low=1), field.Random(low=1), field.Random(low=1), field.Random(low=1)]
-    string = " + ".join(["{}x^{}".format(c if c > 1 else "", d) for d, c in zip(degrees[:-2], coeffs[:-2])])
-    string += " + {}x".format(coeffs[-2] if coeffs[-2] > 1 else "")
-    string += " + {}".format(coeffs[-1] if coeffs[-1] > 0 else "")
+    string = create_string(coeffs, degrees)
 
     p = galois.Poly.Str(string, field=field)
     assert isinstance(p, galois.Poly)
@@ -257,7 +255,7 @@ def test_roots(field):
     coeffs = [1, -a + -b, (-a) * (-b)]
     nonzero_degrees = [d for d, c in zip(degrees, coeffs) if c > 0]
     nonzero_coeffs = [c for d, c in zip(degrees, coeffs) if c > 0]
-    integer = sum([int(c) * field.order**d for d, c in zip(degrees, coeffs)])
+    integer = sum(int(c) * field.order**d for d, c in zip(degrees, coeffs))
 
     p = galois.Poly.Roots(roots, field=field)
     assert isinstance(p, galois.Poly)
@@ -290,7 +288,7 @@ def test_roots_with_multiplicity(field):
     coeffs = [1, -a + -a, (-a) * (-a)]
     nonzero_degrees = [d for d, c in zip(degrees, coeffs) if c > 0]
     nonzero_coeffs = [c for d, c in zip(degrees, coeffs) if c > 0]
-    integer = sum([int(c) * field.order**d for d, c in zip(degrees, coeffs)])
+    integer = sum(int(c) * field.order**d for d, c in zip(degrees, coeffs))
 
     p = galois.Poly.Roots(roots, multiplicities=multiplicities, field=field)
     assert isinstance(p, galois.Poly)
@@ -321,3 +319,10 @@ def test_roots_field_override():
     GF = galois.GF(2**8)
     p = galois.Poly.Roots(galois.GF2(roots), field=GF)
     assert p.field == GF
+
+
+def create_string(coeffs, degrees):
+    string = " + ".join([f"{c if c > 1 else ''}x^{d}" for d, c in zip(degrees[:-2], coeffs[:-2])])
+    string += f" + {coeffs[-2] if coeffs[-2] > 1 else ''}x"
+    string += f" + {coeffs[-1] if coeffs[-1] > 0 else ''}"
+    return string

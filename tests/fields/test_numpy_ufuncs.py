@@ -4,14 +4,18 @@ A pytest module to test ufunc methods on FieldArrays.
 import numpy as np
 import pytest
 
-import galois
-
 from .conftest import randint
 
 # TODO: Test using "out" keyword argument
 
+# pylint: disable=no-value-for-parameter
+
 
 class TestReduce:
+    """
+    Tests the `reduce` method.
+    """
+
     def test_add(self, field):
         a = field.Random(10)
         b = np.add.reduce(a)
@@ -23,7 +27,7 @@ class TestReduce:
     def test_negative(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.negative.reduce(a)
+            np.negative.reduce(a)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -44,7 +48,7 @@ class TestReduce:
     def test_reciprocal(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.reciprocal.reduce(a)
+            np.reciprocal.reduce(a)
 
     def test_divide(self, field):
         a = field.Random(10, low=1)
@@ -64,20 +68,24 @@ class TestReduce:
     def test_power(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.power.reduce(a)
+            np.power.reduce(a)
 
     def test_square(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.square.reduce(a)
+            np.square.reduce(a)
 
     def test_log(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.log.reduce(a)
+            np.log.reduce(a)
 
 
 class TestAccumulate:
+    """
+    Tests the `accumulate` method.
+    """
+
     def test_add(self, field):
         a = field.Random(10)
         b = np.add.accumulate(a)
@@ -90,7 +98,7 @@ class TestAccumulate:
     def test_negative(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.negative.accumulate(a)
+            np.negative.accumulate(a)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -113,7 +121,7 @@ class TestAccumulate:
     def test_reciprocal(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.reciprocal.accumulate(a)
+            np.reciprocal.accumulate(a)
 
     def test_divide(self, field):
         a = field.Random(10, low=1)
@@ -135,26 +143,30 @@ class TestAccumulate:
     def test_power(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.power.accumulate(a)
+            np.power.accumulate(a)
 
     def test_square(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.square.accumulate(a)
+            np.square.accumulate(a)
 
     def test_log(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.log.accumulate(a)
+            np.log.accumulate(a)
 
 
 class TestReduceAt:
+    """
+    Tests the `reduceat` method.
+    """
+
     def test_add(self, field):
         a = field.Random(10)
         idxs = [1, 4, 5, 8]
         b = np.add.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):
+        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
             if i == len(idxs) - 1:
                 b_truth[i] = np.add.reduce(a[idxs[i] :])
             else:
@@ -165,14 +177,14 @@ class TestReduceAt:
         a = field.Random(10)
         idxs = [1, 4, 5, 8]
         with pytest.raises(ValueError):
-            b = np.negative.reduceat(a, idxs)
+            np.negative.reduceat(a, idxs)
 
     def test_subtract(self, field):
         a = field.Random(10)
         idxs = [1, 4, 5, 8]
         b = np.subtract.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):
+        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
             if i == len(idxs) - 1:
                 b_truth[i] = np.subtract.reduce(a[idxs[i] :])
             else:
@@ -184,7 +196,7 @@ class TestReduceAt:
         idxs = [1, 4, 5, 8]
         b = np.multiply.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):
+        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
             if i == len(idxs) - 1:
                 b_truth[i] = np.multiply.reduce(a[idxs[i] :])
             else:
@@ -195,14 +207,14 @@ class TestReduceAt:
         a = field.Random(10)
         idxs = [1, 4, 5, 8]
         with pytest.raises(ValueError):
-            b = np.reciprocal.reduceat(a, idxs)
+            np.reciprocal.reduceat(a, idxs)
 
     def test_divide(self, field):
         a = field.Random(10, low=1)
         idxs = [1, 4, 5, 8]
         b = np.true_divide.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):
+        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
             if i == len(idxs) - 1:
                 b_truth[i] = np.true_divide.reduce(a[idxs[i] :])
             else:
@@ -213,7 +225,7 @@ class TestReduceAt:
         idxs = [1, 4, 5, 8]
         b = np.floor_divide.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):
+        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
             if i == len(idxs) - 1:
                 b_truth[i] = np.floor_divide.reduce(a[idxs[i] :])
             else:
@@ -224,22 +236,26 @@ class TestReduceAt:
         a = field.Random(10)
         idxs = [1, 4, 5, 8]
         with pytest.raises(ValueError):
-            b = np.power.reduceat(a, idxs)
+            np.power.reduceat(a, idxs)
 
     def test_square(self, field):
         a = field.Random(10)
         idxs = [1, 4, 5, 8]
         with pytest.raises(ValueError):
-            b = np.square.reduceat(a, idxs)
+            np.square.reduceat(a, idxs)
 
     def test_log(self, field):
         a = field.Random(10)
         idxs = [1, 4, 5, 8]
         with pytest.raises(ValueError):
-            b = np.log.reduceat(a, idxs)
+            np.log.reduceat(a, idxs)
 
 
 class TestOuter:
+    """
+    Tests the `outer` method.
+    """
+
     def test_add(self, field):
         a = field.Random(10)
         b = field.Random(12)
@@ -253,7 +269,7 @@ class TestOuter:
     def test_negative(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.negative.outer(a)
+            np.negative.outer(a)
 
     def test_subtract(self, field):
         a = field.Random(10)
@@ -279,7 +295,7 @@ class TestOuter:
     def test_reciprocal(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.reciprocal.outer(a)
+            np.reciprocal.outer(a)
 
     def test_divide(self, field):
         a = field.Random(10)
@@ -313,15 +329,19 @@ class TestOuter:
     def test_square(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.square.outer(a)
+            np.square.outer(a)
 
     def test_log(self, field):
         a = field.Random(10)
         with pytest.raises(ValueError):
-            b = np.log.outer(a)
+            np.log.outer(a)
 
 
 class TestAt:
+    """
+    Tests the `at` method.
+    """
+
     def test_add(self, field):
         a = field.Random(10)
         b = field.Random()

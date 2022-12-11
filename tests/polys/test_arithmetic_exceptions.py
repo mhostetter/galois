@@ -5,6 +5,8 @@ import pytest
 
 import galois
 
+# pylint: disable=pointless-statement
+
 
 def test_true_division_exceptions():
     GF = galois.GF(7)

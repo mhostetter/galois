@@ -36,9 +36,10 @@ Sage:
     print(r)
 """
 import numpy as np
-import pytest
 
 import galois
+
+# pylint: disable=line-too-long
 
 
 def test_binary_field():
