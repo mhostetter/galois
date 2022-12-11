@@ -68,8 +68,8 @@ def test_identity(field):
     assert p.degree == 1
     assert np.array_equal(p.nonzero_degrees, [1])
     assert np.array_equal(p.nonzero_coeffs, [1])
-    assert np.array_equal(p.degrees, [1,0])
-    assert np.array_equal(p.coeffs, [1,0])
+    assert np.array_equal(p.degrees, [1, 0])
+    assert np.array_equal(p.coeffs, [1, 0])
     assert int(p) == field.order
     assert str(p) == "x"
 
@@ -112,10 +112,10 @@ def test_integer(field):
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 1
-    assert np.array_equal(p.nonzero_degrees, [1,0])
-    assert np.array_equal(p.nonzero_coeffs, [1,1])
-    assert np.array_equal(p.degrees, [1,0])
-    assert np.array_equal(p.coeffs, [1,1])
+    assert np.array_equal(p.nonzero_degrees, [1, 0])
+    assert np.array_equal(p.nonzero_coeffs, [1, 1])
+    assert np.array_equal(p.degrees, [1, 0])
+    assert np.array_equal(p.coeffs, [1, 1])
     assert int(p) == integer
 
 
@@ -192,17 +192,17 @@ def test_degrees_exceptions():
 @pytest.mark.parametrize("field", FIELDS)
 def test_degrees(field):
     # Corresponds to p(x) = x^2 + 1
-    degrees = [2,0]
-    coeffs = [1,1]
+    degrees = [2, 0]
+    coeffs = [1, 1]
 
     p = galois.Poly.Degrees(degrees, coeffs, field=field)
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 2
-    assert np.array_equal(p.nonzero_degrees, [2,0])
-    assert np.array_equal(p.nonzero_coeffs, [1,1])
-    assert np.array_equal(p.degrees, [2,1,0])
-    assert np.array_equal(p.coeffs, [1,0,1])
+    assert np.array_equal(p.nonzero_degrees, [2, 0])
+    assert np.array_equal(p.nonzero_coeffs, [1, 1])
+    assert np.array_equal(p.degrees, [2, 1, 0])
+    assert np.array_equal(p.coeffs, [1, 0, 1])
     assert int(p) == field.order**2 + 1
     assert str(p) == "x^2 + 1"
 
@@ -210,10 +210,10 @@ def test_degrees(field):
     assert isinstance(p, galois.Poly)
     assert p.field is field
     assert p.degree == 2
-    assert np.array_equal(p.nonzero_degrees, [2,0])
-    assert np.array_equal(p.nonzero_coeffs, [1,1])
-    assert np.array_equal(p.degrees, [2,1,0])
-    assert np.array_equal(p.coeffs, [1,0,1])
+    assert np.array_equal(p.nonzero_degrees, [2, 0])
+    assert np.array_equal(p.nonzero_coeffs, [1, 1])
+    assert np.array_equal(p.degrees, [2, 1, 0])
+    assert np.array_equal(p.coeffs, [1, 0, 1])
     assert int(p) == field.order**2 + 1
     assert str(p) == "x^2 + 1"
 
@@ -254,10 +254,10 @@ def test_roots(field):
     roots = [a, b]  # p(x) = (x - a)*(x - b)
     degree = 2
     degrees = [2, 1, 0]
-    coeffs = [1, -a + -b, (-a)*(-b)]
+    coeffs = [1, -a + -b, (-a) * (-b)]
     nonzero_degrees = [d for d, c in zip(degrees, coeffs) if c > 0]
     nonzero_coeffs = [c for d, c in zip(degrees, coeffs) if c > 0]
-    integer = sum([int(c)*field.order**d for d, c in zip(degrees, coeffs)])
+    integer = sum([int(c) * field.order**d for d, c in zip(degrees, coeffs)])
 
     p = galois.Poly.Roots(roots, field=field)
     assert isinstance(p, galois.Poly)
@@ -287,10 +287,10 @@ def test_roots_with_multiplicity(field):
     multiplicities = [2]
     degree = 2
     degrees = [2, 1, 0]
-    coeffs = [1, -a + -a, (-a)*(-a)]
+    coeffs = [1, -a + -a, (-a) * (-a)]
     nonzero_degrees = [d for d, c in zip(degrees, coeffs) if c > 0]
     nonzero_coeffs = [c for d, c in zip(degrees, coeffs) if c > 0]
-    integer = sum([int(c)*field.order**d for d, c in zip(degrees, coeffs)])
+    integer = sum([int(c) * field.order**d for d, c in zip(degrees, coeffs)])
 
     p = galois.Poly.Roots(roots, multiplicities=multiplicities, field=field)
     assert isinstance(p, galois.Poly)

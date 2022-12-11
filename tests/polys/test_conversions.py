@@ -17,7 +17,7 @@ def test_integer_to_poly():
 
     for _ in range(5):
         order = random.randint(2, 1_000_000_000)
-        assert galois._polys._conversions.integer_to_poly(order**5 - 1, order) == [order - 1,]*5
+        assert galois._polys._conversions.integer_to_poly(order**5 - 1, order) == [order - 1] * 5
         assert galois._polys._conversions.integer_to_poly(order**5, order) == [1, 0, 0, 0, 0, 0]
         assert galois._polys._conversions.integer_to_poly(order**5 + 1, order) == [1, 0, 0, 0, 0, 1]
 
@@ -31,7 +31,7 @@ def test_poly_to_integer():
 
     for _ in range(5):
         order = random.randint(2, 1_000_000_000)
-        assert galois._polys._conversions.poly_to_integer([order - 1,]*5, order) == order**5 - 1
+        assert galois._polys._conversions.poly_to_integer([order - 1] * 5, order) == order**5 - 1
         assert galois._polys._conversions.poly_to_integer([1, 0, 0, 0, 0, 0], order) == order**5
         assert galois._polys._conversions.poly_to_integer([1, 0, 0, 0, 0, 1], order) == order**5 + 1
 
@@ -94,8 +94,8 @@ def test_str_to_integer():
     assert galois._polys._conversions.str_to_integer("y**2 + y**1 + 1*y**0", GF) == 7
 
     GF = galois.GF(3)
-    assert galois._polys._conversions.str_to_integer("2*x^2 + 2", GF) == 2*3**2 + 2
-    assert galois._polys._conversions.str_to_integer("2*x^2 - 1", GF) == 2*3**2 + 2
+    assert galois._polys._conversions.str_to_integer("2*x^2 + 2", GF) == 2 * 3**2 + 2
+    assert galois._polys._conversions.str_to_integer("2*x^2 - 1", GF) == 2 * 3**2 + 2
 
     GF = galois.GF2
     with pytest.raises(ValueError):

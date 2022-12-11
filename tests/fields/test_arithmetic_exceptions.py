@@ -151,7 +151,7 @@ def test_multiplicative_inverse_of_zero(field):
     x = field.Random(10)
     x[0] = 0  # Ensure one value is zero
     with pytest.raises(ZeroDivisionError):
-        z = x ** -1
+        z = x**-1
 
 
 # NOTE: Don't test power to integer because that's valid
@@ -162,10 +162,10 @@ def test_zero_to_negative_power(field):
     x[0] = 0  # Ensure one value is zero
     with pytest.raises(ZeroDivisionError):
         y = -3
-        z = x ** y
+        z = x**y
     with pytest.raises(ZeroDivisionError):
-        y = -3*np.ones(x.size, field.dtypes[-1])
-        z = x ** y
+        y = -3 * np.ones(x.size, field.dtypes[-1])
+        z = x**y
 
 
 def test_log_of_zero(field):

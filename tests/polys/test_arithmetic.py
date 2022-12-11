@@ -156,7 +156,7 @@ def test_power(poly_power):
         x = X[i]  # Polynomial
         for j in range(len(Y)):
             y = Y[j]  # Integer exponent
-            z = x ** y
+            z = x**y
             assert z == Z[i][j]
             assert isinstance(z, galois.Poly)
             assert z.field is GF
@@ -164,7 +164,13 @@ def test_power(poly_power):
 
 
 def test_modular_power(poly_modular_power):
-    GF, X, E, M, Z = poly_modular_power["GF"], poly_modular_power["X"], poly_modular_power["E"], poly_modular_power["M"], poly_modular_power["Z"]
+    GF, X, E, M, Z = (
+        poly_modular_power["GF"],
+        poly_modular_power["X"],
+        poly_modular_power["E"],
+        poly_modular_power["M"],
+        poly_modular_power["Z"],
+    )
     for i in range(len(X)):
         x = X[i]
         e = E[i]
@@ -217,10 +223,46 @@ def test_modular_power_large_exponent_python():
     f = galois.Poly([255, 228, 34, 121, 243, 189, 6, 131, 102, 168, 82], field=GF)
     g = galois.Poly([193, 88, 107, 214, 72, 3], field=GF)
 
-    assert pow(f, 2**70 + 0, g) == galois.Poly([420013998870488935594333531316, 467166943839280220379055289966, 186006824455335245843600812277, 96771878479768144633356244863, 157326613576996636293122695271], field=GF)
-    assert pow(f, 2**70 + 1234, g) == galois.Poly([22570526373096432759079317290, 1022650052301719787915054353024, 36488930895254982134146321994, 232103113155652429788397015469, 602929380923609768536867742066], field=GF)
-    assert pow(f, 2**70 + 7654, g) == galois.Poly([1157532413047205128638237902356, 731431734000747876200385228646, 311313764490655270029408542359, 81825181444198002714338087143, 68173155813012544552855134791], field=GF)
-    assert pow(f, 2**70 + 105030405, g) == galois.Poly([795758922378672681775973344546, 1221486083569158504745962352000, 474560121964431239726873721828, 1008821918134362696532498449793, 664177063731066580685161724661], field=GF)
+    assert pow(f, 2**70 + 0, g) == galois.Poly(
+        [
+            420013998870488935594333531316,
+            467166943839280220379055289966,
+            186006824455335245843600812277,
+            96771878479768144633356244863,
+            157326613576996636293122695271,
+        ],
+        field=GF,
+    )
+    assert pow(f, 2**70 + 1234, g) == galois.Poly(
+        [
+            22570526373096432759079317290,
+            1022650052301719787915054353024,
+            36488930895254982134146321994,
+            232103113155652429788397015469,
+            602929380923609768536867742066,
+        ],
+        field=GF,
+    )
+    assert pow(f, 2**70 + 7654, g) == galois.Poly(
+        [
+            1157532413047205128638237902356,
+            731431734000747876200385228646,
+            311313764490655270029408542359,
+            81825181444198002714338087143,
+            68173155813012544552855134791,
+        ],
+        field=GF,
+    )
+    assert pow(f, 2**70 + 105030405, g) == galois.Poly(
+        [
+            795758922378672681775973344546,
+            1221486083569158504745962352000,
+            474560121964431239726873721828,
+            1008821918134362696532498449793,
+            664177063731066580685161724661,
+        ],
+        field=GF,
+    )
 
 
 def test_evaluate_constant(poly_evaluate):
@@ -230,7 +272,7 @@ def test_evaluate_constant(poly_evaluate):
         x = X[i]  # Polynomial
         y = Y[j]  # GF element
         z = x(y)  # GF element
-        assert z == Z[i,j]
+        assert z == Z[i, j]
         assert type(z) is GF
 
 
@@ -240,7 +282,7 @@ def test_evaluate_vector(poly_evaluate):
         x = X[i]  # Polynomial
         y = Y  # GF array
         z = x(y)  # GF array
-        assert np.array_equal(z, Z[i,:])
+        assert np.array_equal(z, Z[i, :])
         assert type(z) is GF
 
 

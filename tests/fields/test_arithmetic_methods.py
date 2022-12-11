@@ -65,7 +65,7 @@ def test_characteristic_poly_matrix(field_characteristic_poly_matrix):
         A = GF.Random(5)
         A.characteristic_poly()
     with pytest.raises(ValueError):
-        A = GF.Random((2,3))
+        A = GF.Random((2, 3))
         A.characteristic_poly()
 
 

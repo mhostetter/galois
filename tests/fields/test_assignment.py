@@ -89,41 +89,41 @@ class TestSliceIndex:
 
 class Test2DSliceIndex:
     def test_list_valid(self, field):
-        a = field.Random((10,10))
+        a = field.Random((10, 10))
         a[0:2, 0:2] = [[1, 1], [1, 1]]
 
     def test_list_invalid_type(self, field):
-        a = field.Random((10,10))
+        a = field.Random((10, 10))
         with pytest.raises(TypeError):
             a[0:2, 0:2] = [[1.0, 1], [1, 1]]
 
     def test_list_out_of_range(self, field):
-        a = field.Random((10,10))
+        a = field.Random((10, 10))
         with pytest.raises(ValueError):
             a[0:2, 0:2] = [[field.order, 1], [1, 1]]
 
     def test_array_valid(self, field):
-        a = field.Random((10,10))
+        a = field.Random((10, 10))
         a[0:2, 0:2] = np.array([[1, 1], [1, 1]])
 
     def test_array_valid_small_dtype(self, field):
-        a = field.Random((10,10))
+        a = field.Random((10, 10))
         a[0:2, 0:2] = np.array([[1, 1], [1, 1]], dtype=np.int8)
 
     def test_array_invalid_type(self, field):
-        a = field.Random((10,10))
+        a = field.Random((10, 10))
         with pytest.raises(TypeError):
             a[0:2, 0:2] = np.array([[1.0, 1], [1, 1]])
 
     def test_array_out_of_range(self, field):
-        a = field.Random((10,10))
+        a = field.Random((10, 10))
         with pytest.raises(ValueError):
             a[0:2, 0:2] = np.array([[field.order, 1], [1, 1]])
 
     def test_always_int_object(self):
         # Ensure when assigning FieldArray elements to an array they are converted to ints
         GF = galois.GF(2**100)
-        a = GF.Random((10,10))
+        a = GF.Random((10, 10))
         assert np.all(is_int(a))
         a[0:2, 0:2] = [[GF(10), GF(20)], [GF(30), GF(40)]]
         assert np.all(is_int(a))

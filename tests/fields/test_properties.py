@@ -38,7 +38,7 @@ def test_element_order(field):
         # Only select some, not all, elements for very large fields
         a = field.Random(2**16, low=1)
     q = field.order
-    assert np.all(a**(q - 1) == 1)
+    assert np.all(a ** (q - 1) == 1)
 
 
 def test_primitive_element_is_generator(field):
@@ -57,11 +57,11 @@ def test_primitive_root_of_unity():
         if (GF.order - 1) % n == 0 and i < 5:
             r = GF.primitive_root_of_unity(n)
             assert not np.any(np.power.outer(r, np.arange(1, n)) == 1)
-            assert np.all(r ** n == 1)
+            assert np.all(r**n == 1)
             i += 1
         elif j < 5:
             x = GF.elements
-            assert np.any(x ** n == 1)
+            assert np.any(x**n == 1)
 
     # Large field
     GF = galois.GF(2**100)
@@ -71,7 +71,7 @@ def test_primitive_root_of_unity():
         if (GF.order - 1) % n == 0 and i < 5:
             r = GF.primitive_root_of_unity(n)
             assert not np.any(np.power.outer(r, np.arange(1, n)) == 1)
-            assert np.all(r ** n == 1)
+            assert np.all(r**n == 1)
             i += 1
 
 
@@ -83,11 +83,11 @@ def test_primitive_roots_of_unity():
         if (GF.order - 1) % n == 0 and i < 5:
             r = GF.primitive_roots_of_unity(n)
             assert not np.any(np.power.outer(r, np.arange(1, n)) == 1)
-            assert np.all(r ** n == 1)
+            assert np.all(r**n == 1)
             i += 1
         elif j < 5:
             x = GF.elements
-            assert np.any(x ** n == 1)
+            assert np.any(x**n == 1)
 
 
 def test_irreducible_poly(field):
@@ -100,7 +100,7 @@ def test_freshmans_dream(field):
     a = field.Random(10)
     b = field.Random(10)
     p = field.characteristic
-    assert np.all((a + b)**p == a**p + b**p)
+    assert np.all((a + b) ** p == a**p + b**p)
 
 
 def test_fermats_little_theorem(field):

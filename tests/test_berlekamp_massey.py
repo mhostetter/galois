@@ -40,7 +40,7 @@ def test_gf2_primitive():
         berlekamp_massey(y)
     """
     GF = galois.GF(2)
-    y = GF([0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0])
+    y = GF([0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0])  # fmt: skip
     c = galois.berlekamp_massey(y)
     assert c == galois.Poly.Str("x^4 + x + 1", field=GF)
 
@@ -59,7 +59,7 @@ def test_gf3_primitive():
         berlekamp_massey(y)
     """
     GF = galois.GF(3)
-    y = GF([1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 2, 1, 0, 1, 1, 1, 2, 0, 0, 2, 2, 0, 1, 0, 2, 2, 1, 1, 0, 1, 0, 1, 2, 1, 2, 2, 1, 2, 0, 1, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0])
+    y = GF([1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 2, 1, 0, 1, 1, 1, 2, 0, 0, 2, 2, 0, 1, 0, 2, 2, 1, 1, 0, 1, 0, 1, 2, 1, 2, 2, 1, 2, 0, 1, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0])  # fmt: skip
     c = galois.berlekamp_massey(y)
     assert c == galois.Poly.Str("x^4 + x + 2", field=GF)
 
@@ -78,7 +78,7 @@ def test_gf2_3_primitive():
         berlekamp_massey(y)
     """
     GF = galois.GF(2**3)
-    y = GF([1, 1, 1, 1, 2, 2, 2, 1, 4, 4, 7, 7, 3, 0, 5, 1, 5, 5, 5, 6, 1, 1, 2, 0, 2, 1, 6, 2, 7, 5, 3, 1, 7, 7, 4, 4, 5, 6, 3, 2, 2, 2, 7, 4, 4, 1, 6, 3, 6, 5])
+    y = GF([1, 1, 1, 1, 2, 2, 2, 1, 4, 4, 7, 7, 3, 0, 5, 1, 5, 5, 5, 6, 1, 1, 2, 0, 2, 1, 6, 2, 7, 5, 3, 1, 7, 7, 4, 4, 5, 6, 3, 2, 2, 2, 7, 4, 4, 1, 6, 3, 6, 5])  # fmt: skip
     c = galois.berlekamp_massey(y)
     assert c == galois.Poly.Str("x^4 + x + 3", field=GF)
 
@@ -97,7 +97,7 @@ def test_gf3_3_primitive():
         berlekamp_massey(y)
     """
     GF = galois.GF(3**3)
-    y = GF([1, 1, 1, 1, 19, 19, 19, 1, 25, 25, 16, 4, 24, 6, 6, 6, 26, 2, 2, 9, 4, 11, 1, 11, 13, 21, 9, 9, 12, 10, 3, 0, 6, 2, 4, 3, 6, 15, 18, 7, 20, 20, 20, 8, 17, 17, 2, 1, 13, 19])
+    y = GF([1, 1, 1, 1, 19, 19, 19, 1, 25, 25, 16, 4, 24, 6, 6, 6, 26, 2, 2, 9, 4, 11, 1, 11, 13, 21, 9, 9, 12, 10, 3, 0, 6, 2, 4, 3, 6, 15, 18, 7, 20, 20, 20, 8, 17, 17, 2, 1, 13, 19])  # fmt: skip
     c = galois.berlekamp_massey(y)
     assert c == galois.Poly.Str("x^4 + x + 10", field=GF)
 
@@ -115,9 +115,11 @@ def test_gf2_random():
         berlekamp_massey(y)
     """
     GF = galois.GF(2)
-    y = GF([0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1])
+    y = GF([0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1])  # fmt: skip
     c = galois.berlekamp_massey(y)
-    assert c == galois.Poly.Str("x^24 + x^21 + x^19 + x^18 + x^17 + x^15 + x^14 + x^13 + x^12 + x^11 + x^9 + x^8 + x^7 + x^6 + x^5 + x^4 + x^2 + x + 1", field=GF)
+    assert c == galois.Poly.Str(
+        "x^24 + x^21 + x^19 + x^18 + x^17 + x^15 + x^14 + x^13 + x^12 + x^11 + x^9 + x^8 + x^7 + x^6 + x^5 + x^4 + x^2 + x + 1", field=GF
+    )
 
 
 def test_gf3_random():
@@ -133,9 +135,12 @@ def test_gf3_random():
         berlekamp_massey(y)
     """
     GF = galois.GF(3)
-    y = GF([1, 0, 1, 2, 0, 0, 0, 0, 2, 0, 1, 0, 2, 2, 2, 0, 0, 2, 2, 2, 0, 1, 0, 2, 2, 0, 2, 0, 1, 0, 2, 2, 2, 0, 0, 0, 1, 2, 0, 2, 1, 1, 0, 2, 2, 2, 2, 1, 2, 1])
+    y = GF([1, 0, 1, 2, 0, 0, 0, 0, 2, 0, 1, 0, 2, 2, 2, 0, 0, 2, 2, 2, 0, 1, 0, 2, 2, 0, 2, 0, 1, 0, 2, 2, 2, 0, 0, 0, 1, 2, 0, 2, 1, 1, 0, 2, 2, 2, 2, 1, 2, 1])  # fmt: skip
     c = galois.berlekamp_massey(y)
-    assert c == galois.Poly.Str("x^25 + 2*x^24 + x^22 + x^20 + 2*x^18 + x^17 + 2*x^14 + 2*x^13 + x^12 + 2*x^11 + 2*x^10 + x^9 + 2*x^8 + x^7 + 2*x^6 + 2*x^2 + 2*x + 2", field=GF)
+    assert c == galois.Poly.Str(
+        "x^25 + 2*x^24 + x^22 + x^20 + 2*x^18 + x^17 + 2*x^14 + 2*x^13 + x^12 + 2*x^11 + 2*x^10 + x^9 + 2*x^8 + x^7 + 2*x^6 + 2*x^2 + 2*x + 2",
+        field=GF,
+    )
 
 
 def test_gf2_3_random():
@@ -203,9 +208,12 @@ def test_gf3_3_random():
         berlekamp_massey(y)
     """
     GF = galois.GF(3**3)
-    y = GF([1, 12, 12, 3, 23, 3, 17, 4, 16, 7, 19, 10, 16, 1, 25, 12, 13, 6, 1, 26, 17, 7, 15, 26, 10, 19, 22, 11, 19, 18, 18, 23, 22, 24, 13, 0, 11, 6, 11, 20, 23, 13, 5, 22, 8, 25, 0, 10, 7, 1])
+    y = GF([1, 12, 12, 3, 23, 3, 17, 4, 16, 7, 19, 10, 16, 1, 25, 12, 13, 6, 1, 26, 17, 7, 15, 26, 10, 19, 22, 11, 19, 18, 18, 23, 22, 24, 13, 0, 11, 6, 11, 20, 23, 13, 5, 22, 8, 25, 0, 10, 7, 1])  # fmt: skip
     c = galois.berlekamp_massey(y)
-    assert c == galois.Poly.Str("x^25 + 17*x^24 + 26*x^23 + 25*x^22 + 2*x^21 + 5*x^20 + 17*x^19 + 25*x^18 + 12*x^17 + 16*x^16 + 6*x^15 + 10*x^14 + 23*x^13 + x^12 + 3*x^11 + 12*x^10 + 4*x^9 + 3*x^8 + 24*x^7 + 26*x^6 + x^5 + 2*x^4 + 24*x^3 + 5*x^2 + 22*x + 24", field=GF)
+    assert c == galois.Poly.Str(
+        "x^25 + 17*x^24 + 26*x^23 + 25*x^22 + 2*x^21 + 5*x^20 + 17*x^19 + 25*x^18 + 12*x^17 + 16*x^16 + 6*x^15 + 10*x^14 + 23*x^13 + x^12 + 3*x^11 + 12*x^10 + 4*x^9 + 3*x^8 + 24*x^7 + 26*x^6 + x^5 + 2*x^4 + 24*x^3 + 5*x^2 + 22*x + 24",
+        field=GF,
+    )
 
 
 @pytest.mark.parametrize("order", [2, 3, 2**3, 3**3])
@@ -216,7 +224,7 @@ def test_fibonacci_lfsr_primitive(order):
     state = GF.Random(4)
     state[0] = GF.Random(low=1)  # Ensure state is non-zero
     lfsr = galois.FLFSR(c.reverse(), state=state)
-    y = lfsr.step(2*n)
+    y = lfsr.step(2 * n)
 
     lfsr_2 = galois.berlekamp_massey(y, output="fibonacci")
     assert type(lfsr_2) is galois.FLFSR
@@ -233,7 +241,7 @@ def test_galois_lfsr_primitive(order):
     state = GF.Random(4)
     state[0] = GF.Random(low=1)  # Ensure state is non-zero
     lfsr = galois.GLFSR(c.reverse(), state=state)
-    y = lfsr.step(2*n)
+    y = lfsr.step(2 * n)
 
     lfsr_2 = galois.berlekamp_massey(y, output="galois")
     assert type(lfsr_2) is galois.GLFSR

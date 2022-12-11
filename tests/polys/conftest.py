@@ -15,9 +15,11 @@ from ..fields.conftest import field, field_folder
 # Helper functions
 ###############################################################################
 
+
 def read_pickle(field_folder, filename):
     GF, folder = field_folder
-    folder = os.path.join(folder, "..", "..", "..", "polys", "data", os.path.basename(folder))  # Convert from folder in fields/data/ to polys/data/
+    # Convert from folder in fields/data/ to polys/data/
+    folder = os.path.join(folder, "..", "..", "..", "polys", "data", os.path.basename(folder))
     with open(os.path.join(folder, filename), "rb") as f:
         print(f"Loading {f}...")
         d = pickle.load(f)
@@ -27,6 +29,7 @@ def read_pickle(field_folder, filename):
 ###############################################################################
 # Fixtures for polynomial arithmetic over finite fields
 ###############################################################################
+
 
 @pytest.fixture(scope="session")
 def poly_add(field_folder):
@@ -123,6 +126,7 @@ def poly_evaluate_poly(field_folder):
 # Fixtures for polynomial arithmetic methods
 ###############################################################################
 
+
 @pytest.fixture(scope="session")
 def poly_reverse(field_folder):
     GF, d = read_pickle(field_folder, "reverse.pkl")
@@ -155,6 +159,7 @@ def poly_derivative(field_folder):
 ###############################################################################
 # Fixtures for polynomial arithmetic functions
 ###############################################################################
+
 
 @pytest.fixture(scope="session")
 def poly_egcd(field_folder):
@@ -221,6 +226,7 @@ def poly_lagrange_poly(field_folder):
 # Fixtures for special polynomials
 ###############################################################################
 
+
 @pytest.fixture(scope="session")
 def poly_is_monic(field_folder):
     GF, d = read_pickle(field_folder, "is_monic.pkl")
@@ -246,6 +252,7 @@ def poly_is_primitive(field_folder):
     d["IS"] = [galois.Poly(p, field=GF) for p in d["IS"]]
     d["IS_NOT"] = [galois.Poly(p, field=GF) for p in d["IS_NOT"]]
     return d
+
 
 @pytest.fixture(scope="session")
 def poly_is_square_free(field_folder):

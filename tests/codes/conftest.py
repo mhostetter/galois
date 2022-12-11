@@ -41,6 +41,7 @@ def read_pickle(file):
 # Fixtures for FEC codes
 ###############################################################################
 
+
 @pytest.fixture(scope="session", params=BCH_FILENAMES)
 def bch_codes(request):
     file = (BCH_PATH / request.param).with_suffix(".pkl")
@@ -83,6 +84,7 @@ def reed_solomon_codes(request):
 # Helper functions for unit tests
 ###############################################################################
 
+
 def random_errors(GF, N, n, max_errors) -> tuple[np.ndarray, np.ndarray]:
     max_errors = min(n, max_errors)
     N_errors = np.random.default_rng().integers(0, max_errors + 1, N)
@@ -115,12 +117,12 @@ def verify_encode(
     MESSAGES: np.ndarray,
     CODEWORDS: np.ndarray,
     is_systematic: bool,
-    vector: bool
+    vector: bool,
 ):
     if vector:
         idx = np.random.randint(0, MESSAGES.shape[0])
-        MESSAGES = MESSAGES[idx,:]
-        CODEWORDS = CODEWORDS[idx,:]
+        MESSAGES = MESSAGES[idx, :]
+        CODEWORDS = CODEWORDS[idx, :]
 
     MESSAGES = random_type(MESSAGES)
 
@@ -131,7 +133,7 @@ def verify_encode(
     if is_systematic:
         parities = code.encode(MESSAGES, output="parity")
         assert isinstance(parities, code.field)
-        assert np.array_equal(parities, CODEWORDS[..., code.k:])
+        assert np.array_equal(parities, CODEWORDS[..., code.k :])
     else:
         with pytest.raises(ValueError):
             code.encode(MESSAGES, output="parity")
@@ -142,13 +144,13 @@ def verify_encode_shortened(
     MESSAGES: np.ndarray,
     CODEWORDS: np.ndarray,
     is_systematic: bool,
-    vector: bool
+    vector: bool,
 ):
     if is_systematic:
         if vector:
             idx = np.random.randint(0, MESSAGES.shape[0])
-            MESSAGES = MESSAGES[idx,:]
-            CODEWORDS = CODEWORDS[idx,:]
+            MESSAGES = MESSAGES[idx, :]
+            CODEWORDS = CODEWORDS[idx, :]
 
         MESSAGES = random_type(MESSAGES)
 
@@ -158,7 +160,7 @@ def verify_encode_shortened(
 
         parities = code.encode(MESSAGES, output="parity")
         assert isinstance(parities, code.field)
-        assert np.array_equal(parities, CODEWORDS[..., -(code.n - code.k):])
+        assert np.array_equal(parities, CODEWORDS[..., -(code.n - code.k) :])
     else:
         MESSAGES = [] if vector else [[]]
 
@@ -174,8 +176,8 @@ def verify_decode(code: galois._codes._linear.LinearCode, N: int):
     MESSAGES = GF.Random((N, code.k))
     ERRORS, N_errors = random_errors(GF, N, code.n, code.t)
     if N == 1:
-        MESSAGES = MESSAGES[0,:]
-        ERRORS = ERRORS[0,:]
+        MESSAGES = MESSAGES[0, :]
+        ERRORS = ERRORS[0, :]
         N_errors = N_errors[0]
 
     CODEWORDS = code.encode(MESSAGES)
@@ -202,8 +204,8 @@ def verify_decode_shortened(code: galois._codes._linear.LinearCode, N: int, is_s
         MESSAGES = GF.Random((N, code.k - s))
         ERRORS, N_errors = random_errors(GF, N, code.n - s, code.t)
         if N == 1:
-            MESSAGES = MESSAGES[0,:]
-            ERRORS = ERRORS[0,:]
+            MESSAGES = MESSAGES[0, :]
+            ERRORS = ERRORS[0, :]
             N_errors = N_errors[0]
 
         CODEWORDS = code.encode(MESSAGES)

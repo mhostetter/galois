@@ -27,9 +27,9 @@ def test_exceptions():
         GF_other = galois.GF(2**8)
         galois.lagrange_poly(x, GF_other(y))
     with pytest.raises(ValueError):
-        galois.lagrange_poly(x.reshape((2,2)), y)
+        galois.lagrange_poly(x.reshape((2, 2)), y)
     with pytest.raises(ValueError):
-        galois.lagrange_poly(x, y.reshape((2,2)))
+        galois.lagrange_poly(x, y.reshape((2, 2)))
     with pytest.raises(ValueError):
         galois.lagrange_poly(x, np.append(y, 104))
     with pytest.raises(ValueError):

@@ -20,21 +20,21 @@ class TestBroadcasting:
         check_results(field, shape1, shape2, shape_result)
 
     def test_array_scalar(self, field):
-        shape1 = (2,2)
+        shape1 = (2, 2)
         shape2 = ()
-        shape_result = (2,2)
+        shape_result = (2, 2)
         check_results(field, shape1, shape2, shape_result)
 
     def test_scalar_array(self, field):
         shape1 = ()
-        shape2 = (2,2)
-        shape_result = (2,2)
+        shape2 = (2, 2)
+        shape_result = (2, 2)
         check_results(field, shape1, shape2, shape_result)
 
     def test_array_array(self, field):
-        shape1 = (2,4)
+        shape1 = (2, 4)
         shape2 = (4,)
-        shape_result = (2,4)
+        shape_result = (2, 4)
         check_results(field, shape1, shape2, shape_result)
 
 
@@ -42,7 +42,7 @@ def check_results(field, shape1, shape2, shape_result):
     a = field.Random(shape1)
     b = field.Random(shape2, low=1)
     c = randint(0, field.order, shape2, field.dtypes[-1])
-    d = 2*np.ones(shape2, field.dtypes[-1])
+    d = 2 * np.ones(shape2, field.dtypes[-1])
 
     # Test np.add ufunc
     z = a + b
@@ -75,12 +75,12 @@ def check_results(field, shape1, shape2, shape_result):
     assert z.shape == shape_result
 
     # Test np.power ufunc
-    z = a ** c
+    z = a**c
     assert isinstance(z, field)
     assert z.shape == shape_result
 
     # Test np.square ufunc
-    z = a ** d
+    z = a**d
     assert isinstance(z, field)
     assert z.shape == shape_result
 

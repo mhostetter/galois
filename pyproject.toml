@@ -105,7 +105,6 @@ line-length = 140
 exclude = '''
 /(
       build
-    | tests
 )/
     | src/galois/_version.py
 '''
