@@ -81,7 +81,6 @@ universal = false
 [tool.pylint]
 disable = [
     "comparison-with-callable",  # pylint doesn't understand metaclass properties
-    "eval-used",
     "fixme",
     "global-statement",
     "invalid-name",
