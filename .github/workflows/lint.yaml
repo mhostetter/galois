@@ -31,8 +31,11 @@ jobs:
       - name: Install the `galois` package with [dev]
         run: python3 -m pip install .[dev]
 
-      - name: Lint with pylint
+      - name: Lint code with pylint
         run: python3 -m pylint src/galois/
+
+      - name: Lint tests with pylint
+        run: python3 -m pylint tests/
 
   run-formatter:
     name: Format
