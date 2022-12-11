@@ -49,9 +49,9 @@ def test_shapes():
     assert isinstance(x.is_square(), bool)
     x = GF.Random((2,))
     assert x.is_square().shape == x.shape
-    x = GF.Random((2,2))
+    x = GF.Random((2, 2))
     assert x.is_square().shape == x.shape
-    x = GF.Random((2,2,2))
+    x = GF.Random((2, 2, 2))
     assert x.is_square().shape == x.shape
 
     GF = galois.GF(2**4)
@@ -59,9 +59,9 @@ def test_shapes():
     assert isinstance(x.is_square(), bool)
     x = GF.Random((2,))
     assert x.is_square().shape == x.shape
-    x = GF.Random((2,2))
+    x = GF.Random((2, 2))
     assert x.is_square().shape == x.shape
-    x = GF.Random((2,2,2))
+    x = GF.Random((2, 2, 2))
     assert x.is_square().shape == x.shape
 
 
@@ -112,7 +112,7 @@ def test_prime_field_2():
     assert type(non_squares) is GF
 
     b = x.is_square()
-    assert np.array_equal(b, [True, True, True, False, True, True, False, True, True, True, True, False, False, False, True, False, True, False, True, True, True, False, False, False, False, True, False, False, True, False, False])
+    assert np.array_equal(b, [True, True, True, False, True, True, False, True, True, True, True, False, False, False, True, False, True, False, True, True, True, False, False, False, False, True, False, False, True, False, False])  # fmt: skip
     assert isinstance(b, np.ndarray)
 
 
@@ -121,15 +121,15 @@ def test_prime_field_3():
     x = GF.elements
 
     squares = GF.squares
-    assert np.array_equal(squares, [0, 1, 2, 4, 5, 8, 9, 10, 11, 13, 16, 18, 19, 20, 21, 22, 23, 25, 26, 31, 32, 36, 38, 40, 42, 44, 45, 46, 49, 50, 51, 52, 55, 62, 64, 65, 67, 72, 73, 76])
+    assert np.array_equal(squares, [0, 1, 2, 4, 5, 8, 9, 10, 11, 13, 16, 18, 19, 20, 21, 22, 23, 25, 26, 31, 32, 36, 38, 40, 42, 44, 45, 46, 49, 50, 51, 52, 55, 62, 64, 65, 67, 72, 73, 76])  # fmt: skip
     assert type(squares) is GF
 
     non_squares = GF.non_squares
-    assert np.array_equal(non_squares, [3, 6, 7, 12, 14, 15, 17, 24, 27, 28, 29, 30, 33, 34, 35, 37, 39, 41, 43, 47, 48, 53, 54, 56, 57, 58, 59, 60, 61, 63, 66, 68, 69, 70, 71, 74, 75, 77, 78])
+    assert np.array_equal(non_squares, [3, 6, 7, 12, 14, 15, 17, 24, 27, 28, 29, 30, 33, 34, 35, 37, 39, 41, 43, 47, 48, 53, 54, 56, 57, 58, 59, 60, 61, 63, 66, 68, 69, 70, 71, 74, 75, 77, 78])  # fmt: skip
     assert type(non_squares) is GF
 
     b = x.is_square()
-    assert np.array_equal(b, [True, True, True, False, True, True, False, False, True, True, True, True, False, True, False, False, True, False, True, True, True, True, True, True, False, True, True, False, False, False, False, True, True, False, False, False, True, False, True, False, True, False, True, False, True, True, True, False, False, True, True, True, True, False, False, True, False, False, False, False, False, False, True, False, True, True, False, True, False, False, False, False, True, True, False, False, True, False, False])
+    assert np.array_equal(b, [True, True, True, False, True, True, False, False, True, True, True, True, False, True, False, False, True, False, True, True, True, True, True, True, False, True, True, False, False, False, False, True, True, False, False, False, True, False, True, False, True, False, True, False, True, True, True, False, False, True, True, True, True, False, False, True, False, False, False, False, False, False, True, False, True, True, False, True, False, False, False, False, True, True, False, False, True, False, False])  # fmt: skip
     assert isinstance(b, np.ndarray)
 
 
@@ -190,7 +190,7 @@ def test_binary_extension_field_4():
     x = GF.elements
 
     squares = GF.squares
-    assert np.array_equal(squares, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31])
+    assert np.array_equal(squares, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31])  # fmt: skip
     assert type(squares) is GF
 
     non_squares = GF.non_squares
@@ -198,7 +198,7 @@ def test_binary_extension_field_4():
     assert type(non_squares) is GF
 
     b = x.is_square()
-    assert np.array_equal(b, [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True])
+    assert np.array_equal(b, [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True])  # fmt: skip
     assert isinstance(b, np.ndarray)
 
 
@@ -232,7 +232,7 @@ def test_prime_extension_field_2():
     assert type(non_squares) is GF
 
     b = x.is_square()
-    assert np.array_equal(b, [True, True, False, False, False, False, True, True, True, True, False, True, True, True, False, True, True, False, False, False, True, False, True, False, False, True, False])
+    assert np.array_equal(b, [True, True, False, False, False, False, True, True, True, True, False, True, True, True, False, True, True, False, False, False, True, False, True, False, False, True, False])  # fmt: skip
     assert isinstance(b, np.ndarray)
 
 
@@ -249,5 +249,5 @@ def test_prime_extension_field_3():
     assert type(non_squares) is GF
 
     b = x.is_square()
-    assert np.array_equal(b, [True, True, True, True, True, False, True, False, True, False, False, True, True, False, False, False, False, False, True, True, False, False, True, False, True])
+    assert np.array_equal(b, [True, True, True, True, True, False, True, False, True, False, False, True, True, False, False, False, False, False, True, True, False, False, True, False, True])  # fmt: skip
     assert isinstance(b, np.ndarray)

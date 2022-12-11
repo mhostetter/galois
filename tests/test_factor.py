@@ -155,8 +155,8 @@ def test_factors_extremely_large():
 def test_perfect_power():
     assert galois.perfect_power(5) == (5, 1)
     assert galois.perfect_power(6) == (6, 1)
-    assert galois.perfect_power(6*16) == (6*16, 1)
-    assert galois.perfect_power(16*125) == (16*125, 1)
+    assert galois.perfect_power(6 * 16) == (6 * 16, 1)
+    assert galois.perfect_power(16 * 125) == (16 * 125, 1)
 
     assert galois.perfect_power(9) == (3, 2)
     assert galois.perfect_power(36) == (6, 2)
@@ -168,29 +168,29 @@ def test_trial_division():
     n = 2**4 * 17**3 * 113 * 15013
     assert galois.trial_division(n) == ([2, 17, 113, 15013], [4, 3, 1, 1], 1)
     assert galois.trial_division(n, B=500) == ([2, 17, 113], [4, 3, 1], 15013)
-    assert galois.trial_division(n, B=100) == ([2, 17], [4, 3], 113*15013)
+    assert galois.trial_division(n, B=100) == ([2, 17], [4, 3], 113 * 15013)
 
 
 def test_pollard_p1():
     p = 1458757  # p - 1 factors: [2, 3, 13, 1039], [2, 3, 1, 1]
     q = 1326001  # q - 1 factors: [2, 3, 5, 13, 17], [4, 1, 3, 1, 1]
     with pytest.raises(RuntimeError):
-        assert galois.pollard_p1(p*q, 15)
-    assert galois.pollard_p1(p*q, 19) == q
-    assert galois.pollard_p1(p*q, 15, B2=100) == q
+        assert galois.pollard_p1(p * q, 15)
+    assert galois.pollard_p1(p * q, 19) == q
+    assert galois.pollard_p1(p * q, 15, B2=100) == q
 
     p = 1598442007  # p - 1 factors: [2, 3, 7, 38058143], [1, 1, 1, 1]
     q = 1316659213  # q - 1 factors: [2, 3, 11, 83, 4451], [2, 4, 1, 1, 1]
     with pytest.raises(RuntimeError):
-        assert galois.pollard_p1(p*q, 31)
-    assert galois.pollard_p1(p*q, 31, B2=5000) == q
+        assert galois.pollard_p1(p * q, 31)
+    assert galois.pollard_p1(p * q, 31, B2=5000) == q
 
     p = 1636344139  # p - 1 factors: [2, 3, 11, 13, 1381], [1, 1, 1, 1, 2]
     q = 1476638609  # q - 1 factors: [2, 137, 673649], [4, 1, 1]
     with pytest.raises(RuntimeError):
-        assert galois.pollard_p1(p*q, 100)
+        assert galois.pollard_p1(p * q, 100)
     with pytest.raises(RuntimeError):
-        assert galois.pollard_p1(p*q, 100, B2=10_000)
+        assert galois.pollard_p1(p * q, 100, B2=10_000)
 
     n = 2133861346249  # n factors: [37, 41, 5471, 257107], [1, 1, 1, 1]
     assert galois.pollard_p1(n, 10) == 1517
@@ -199,21 +199,21 @@ def test_pollard_p1():
 def test_pollard_rho():
     p = 1458757
     q = 1326001
-    assert galois.pollard_rho(p*q) == p
-    assert galois.pollard_rho(p*q, c=4) == q
+    assert galois.pollard_rho(p * q) == p
+    assert galois.pollard_rho(p * q, c=4) == q
 
     p = 1598442007
     q = 1316659213
-    assert galois.pollard_rho(p*q) == p
-    assert galois.pollard_rho(p*q, c=3) == q
+    assert galois.pollard_rho(p * q) == p
+    assert galois.pollard_rho(p * q, c=3) == q
 
     p = 1636344139
     q = 1476638609
-    assert galois.pollard_rho(p*q) == q
-    assert galois.pollard_rho(p*q, c=6) == p
+    assert galois.pollard_rho(p * q) == q
+    assert galois.pollard_rho(p * q, c=6) == p
 
 
-@pytest.mark.parametrize("n", [0, 1, 2, 3, 4, 5, 31, 13*7, 120, 120*7])
+@pytest.mark.parametrize("n", [0, 1, 2, 3, 4, 5, 31, 13 * 7, 120, 120 * 7])
 def test_divisors(n):
     assert galois.divisors(n) == [d for d in range(1, n + 1) if n % d == 0]
     assert galois.divisors(-n) == [d for d in range(1, abs(n) + 1) if n % d == 0]
@@ -228,23 +228,23 @@ def test_divisors_random():
 
 def test_divisors_number():
     # https://oeis.org/A000005
-    d_n = [1,2,2,3,2,4,2,4,3,4,2,6,2,4,4,5,2,6,2,6,4,4,2,8,3,4,4,6,2,8,2,6,4,4,4,9,2,4,4,8,2,8,2,6,6,4,2,10,3,6,4,6,2,8,4,8,4,4,2,12,2,4,6,7,4,8,2,6,4,8,2,12,2,4,6,6,4,8,2,10,5,4,2,12,4,4,4,8,2,12,4,6,4,4,4,12,2,6,6,9,2,8,2,8]
+    d_n = [1, 2, 2, 3, 2, 4, 2, 4, 3, 4, 2, 6, 2, 4, 4, 5, 2, 6, 2, 6, 4, 4, 2, 8, 3, 4, 4, 6, 2, 8, 2, 6, 4, 4, 4, 9, 2, 4, 4, 8, 2, 8, 2, 6, 6, 4, 2, 10, 3, 6, 4, 6, 2, 8, 4, 8, 4, 4, 2, 12, 2, 4, 6, 7, 4, 8, 2, 6, 4, 8, 2, 12, 2, 4, 6, 6, 4, 8, 2, 10, 5, 4, 2, 12, 4, 4, 4, 8, 2, 12, 4, 6, 4, 4, 4, 12, 2, 6, 6, 9, 2, 8, 2, 8]  # fmt: skip
     assert [len(galois.divisors(n)) for n in range(1, 105)] == d_n
 
 
 def test_divisor_sigma():
     # https://oeis.org/A000005
-    sigma_0 = [1,2,2,3,2,4,2,4,3,4,2,6,2,4,4,5,2,6,2,6,4,4,2,8,3,4,4,6,2,8,2,6,4,4,4,9,2,4,4,8,2,8,2,6,6,4,2,10,3,6,4,6,2,8,4,8,4,4,2,12,2,4,6,7,4,8,2,6,4,8,2,12,2,4,6,6,4,8,2,10,5,4,2,12,4,4,4,8,2,12,4,6,4,4,4,12,2,6,6,9,2,8,2,8]
+    sigma_0 = [1, 2, 2, 3, 2, 4, 2, 4, 3, 4, 2, 6, 2, 4, 4, 5, 2, 6, 2, 6, 4, 4, 2, 8, 3, 4, 4, 6, 2, 8, 2, 6, 4, 4, 4, 9, 2, 4, 4, 8, 2, 8, 2, 6, 6, 4, 2, 10, 3, 6, 4, 6, 2, 8, 4, 8, 4, 4, 2, 12, 2, 4, 6, 7, 4, 8, 2, 6, 4, 8, 2, 12, 2, 4, 6, 6, 4, 8, 2, 10, 5, 4, 2, 12, 4, 4, 4, 8, 2, 12, 4, 6, 4, 4, 4, 12, 2, 6, 6, 9, 2, 8, 2, 8]  # fmt: skip
     assert [galois.divisor_sigma(n, k=0) for n in range(1, 105)] == sigma_0
 
     # https://oeis.org/A000203
-    sigma_1 = [1,3,4,7,6,12,8,15,13,18,12,28,14,24,24,31,18,39,20,42,32,36,24,60,31,42,40,56,30,72,32,63,48,54,48,91,38,60,56,90,42,96,44,84,78,72,48,124,57,93,72,98,54,120,72,120,80,90,60,168,62,96,104,127,84,144,68,126,96,144]
+    sigma_1 = [1, 3, 4, 7, 6, 12, 8, 15, 13, 18, 12, 28, 14, 24, 24, 31, 18, 39, 20, 42, 32, 36, 24, 60, 31, 42, 40, 56, 30, 72, 32, 63, 48, 54, 48, 91, 38, 60, 56, 90, 42, 96, 44, 84, 78, 72, 48, 124, 57, 93, 72, 98, 54, 120, 72, 120, 80, 90, 60, 168, 62, 96, 104, 127, 84, 144, 68, 126, 96, 144]  # fmt: skip
     assert [galois.divisor_sigma(n, k=1) for n in range(1, 71)] == sigma_1
 
     # https://oeis.org/A001157
-    sigma_2 = [1,5,10,21,26,50,50,85,91,130,122,210,170,250,260,341,290,455,362,546,500,610,530,850,651,850,820,1050,842,1300,962,1365,1220,1450,1300,1911,1370,1810,1700,2210,1682,2500,1850,2562,2366,2650,2210,3410,2451,3255]
+    sigma_2 = [1, 5, 10, 21, 26, 50, 50, 85, 91, 130, 122, 210, 170, 250, 260, 341, 290, 455, 362, 546, 500, 610, 530, 850, 651, 850, 820, 1050, 842, 1300, 962, 1365, 1220, 1450, 1300, 1911, 1370, 1810, 1700, 2210, 1682, 2500, 1850, 2562, 2366, 2650, 2210, 3410, 2451, 3255]  # fmt: skip
     assert [galois.divisor_sigma(n, k=2) for n in range(1, 51)] == sigma_2
 
     # https://oeis.org/A001158
-    sigma_3 = [1,9,28,73,126,252,344,585,757,1134,1332,2044,2198,3096,3528,4681,4914,6813,6860,9198,9632,11988,12168,16380,15751,19782,20440,25112,24390,31752,29792,37449,37296,44226,43344,55261,50654,61740,61544,73710,68922,86688]
+    sigma_3 = [1, 9, 28, 73, 126, 252, 344, 585, 757, 1134, 1332, 2044, 2198, 3096, 3528, 4681, 4914, 6813, 6860, 9198, 9632, 11988, 12168, 16380, 15751, 19782, 20440, 25112, 24390, 31752, 29792, 37449, 37296, 44226, 43344, 55261, 50654, 61740, 61544, 73710, 68922, 86688]  # fmt: skip
     assert [galois.divisor_sigma(n, k=3) for n in range(1, 43)] == sigma_3

@@ -115,7 +115,7 @@ def test_str():
 
 
 def test_int():
-    poly = galois.Poly([1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,1])
+    poly = galois.Poly([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1])
     assert int(poly) == 4295000729
 
     poly = galois.Poly.Degrees([32, 15, 9, 7, 4, 3, 0])
@@ -135,7 +135,7 @@ def test_oct():
 
 def test_hex():
     GF = galois.GF(2**8)
-    poly = galois.Poly([0xf7, 0x00, 0xa2, 0x75], field=GF)
+    poly = galois.Poly([0xF7, 0x00, 0xA2, 0x75], field=GF)
     assert hex(poly) == "0xf700a275"
 
 

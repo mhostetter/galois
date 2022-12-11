@@ -9,7 +9,10 @@ import galois
 # These two polys allow for testing JIT compiled and pure-Python implementations
 CHARACTERISTIC_POLYS = [
     galois.primitive_poly(7, 4),
-    galois.Poly.Str("x^4 + 414029366129716807589746234643x^3 + 713840634647528950143955598853x^2 + 178965232760409569156590479285x + 574717025925479275195710910921", field=galois.GF(2**100))
+    galois.Poly.Str(
+        "x^4 + 414029366129716807589746234643x^3 + 713840634647528950143955598853x^2 + 178965232760409569156590479285x + 574717025925479275195710910921",
+        field=galois.GF(2**100),
+    ),
 ]
 
 
@@ -46,7 +49,10 @@ def test_repr():
 def test_str():
     c = galois.primitive_poly(7, 4)
     lfsr = galois.FLFSR(c.reverse())
-    assert str(lfsr) == "Fibonacci LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [0 6 4 2]\n  order: 4\n  state: [1 1 1 1]\n  initial_state: [1 1 1 1]"
+    assert (
+        str(lfsr)
+        == "Fibonacci LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [0 6 4 2]\n  order: 4\n  state: [1 1 1 1]\n  initial_state: [1 1 1 1]"
+    )
 
 
 @pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
@@ -176,10 +182,11 @@ def test_step_gf2_primitive():
     """
     GF = galois.GF(2)
     key = GF([1, 1, 0, 0])
-    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    key = -key[::-1]
+    key = np.insert(key, 0, 1)  # Convert to c(x)
     c = galois.Poly(key)
     state = GF([1, 1, 1, 1])
-    y_truth = GF([1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0])
+    y_truth = GF([1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0])  # fmt: skip
 
     lfsr = galois.FLFSR(c.reverse(), state=state)
     y = lfsr.step(50)
@@ -205,10 +212,11 @@ def test_step_gf3_primitive():
     """
     GF = galois.GF(3)
     key = GF([1, 2, 0, 0])
-    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    key = -key[::-1]
+    key = np.insert(key, 0, 1)  # Convert to c(x)
     c = galois.Poly(key)
     state = GF([1, 1, 1, 1])
-    y_truth = GF([1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 2, 1, 0, 1, 1, 1, 2, 0, 0, 2, 2, 0, 1, 0, 2, 2, 1, 1, 0, 1, 0, 1, 2, 1, 2, 2, 1, 2, 0, 1, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0])
+    y_truth = GF([1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 2, 1, 0, 1, 1, 1, 2, 0, 0, 2, 2, 0, 1, 0, 2, 2, 1, 1, 0, 1, 0, 1, 2, 1, 2, 2, 1, 2, 0, 1, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0])  # fmt: skip
 
     lfsr = galois.FLFSR(c.reverse(), state=state)
     y = lfsr.step(50)
@@ -234,10 +242,11 @@ def test_step_gf2_3_primitive():
     """
     GF = galois.GF(2**3)
     key = GF([3, 1, 0, 0])
-    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    key = -key[::-1]
+    key = np.insert(key, 0, 1)  # Convert to c(x)
     c = galois.Poly(key)
     state = GF([1, 1, 1, 1])
-    y_truth = GF([1, 1, 1, 1, 2, 2, 2, 1, 4, 4, 7, 7, 3, 0, 5, 1, 5, 5, 5, 6, 1, 1, 2, 0, 2, 1, 6, 2, 7, 5, 3, 1, 7, 7, 4, 4, 5, 6, 3, 2, 2, 2, 7, 4, 4, 1, 6, 3, 6, 5])
+    y_truth = GF([1, 1, 1, 1, 2, 2, 2, 1, 4, 4, 7, 7, 3, 0, 5, 1, 5, 5, 5, 6, 1, 1, 2, 0, 2, 1, 6, 2, 7, 5, 3, 1, 7, 7, 4, 4, 5, 6, 3, 2, 2, 2, 7, 4, 4, 1, 6, 3, 6, 5])  # fmt: skip
 
     lfsr = galois.FLFSR(c.reverse(), state=state)
     y = lfsr.step(50)
@@ -263,10 +272,11 @@ def test_step_gf3_3_primitive():
     """
     GF = galois.GF(3**3)
     key = GF([20, 2, 0, 0])
-    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    key = -key[::-1]
+    key = np.insert(key, 0, 1)  # Convert to c(x)
     c = galois.Poly(key)
     state = GF([1, 1, 1, 1])
-    y_truth = GF([1, 1, 1, 1, 19, 19, 19, 1, 25, 25, 16, 4, 24, 6, 6, 6, 26, 2, 2, 9, 4, 11, 1, 11, 13, 21, 9, 9, 12, 10, 3, 0, 6, 2, 4, 3, 6, 15, 18, 7, 20, 20, 20, 8, 17, 17, 2, 1, 13, 19])
+    y_truth = GF([1, 1, 1, 1, 19, 19, 19, 1, 25, 25, 16, 4, 24, 6, 6, 6, 26, 2, 2, 9, 4, 11, 1, 11, 13, 21, 9, 9, 12, 10, 3, 0, 6, 2, 4, 3, 6, 15, 18, 7, 20, 20, 20, 8, 17, 17, 2, 1, 13, 19])  # fmt: skip
 
     lfsr = galois.FLFSR(c.reverse(), state=state)
     y = lfsr.step(50)
@@ -299,10 +309,11 @@ def test_step_gf2_reducible():
     """
     GF = galois.GF(2)
     key = GF([1, 0, 0, 0])
-    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    key = -key[::-1]
+    key = np.insert(key, 0, 1)  # Convert to c(x)
     c = galois.Poly(key)
     state = GF([1, 1, 1, 1])
-    y_truth = GF([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])  # fmt: skip
 
     lfsr = galois.FLFSR(c.reverse(), state=state)
     y = lfsr.step(50)
@@ -335,10 +346,11 @@ def test_step_gf3_reducible():
     """
     GF = galois.GF(3)
     key = GF([1, 2, 2, 1])
-    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    key = -key[::-1]
+    key = np.insert(key, 0, 1)  # Convert to c(x)
     c = galois.Poly(key)
     state = GF([1, 1, 1, 1])
-    y_truth = GF([1, 1, 1, 1, 0, 2, 2, 1, 0, 2, 0, 2, 0, 0, 1, 0, 2, 1, 0, 0, 1, 2, 1, 1, 2, 2, 0, 0, 0, 2, 2, 0, 2, 2, 2, 1, 2, 1, 0, 1, 2, 2, 2, 2, 0, 1, 1, 2, 0, 1])
+    y_truth = GF([1, 1, 1, 1, 0, 2, 2, 1, 0, 2, 0, 2, 0, 0, 1, 0, 2, 1, 0, 0, 1, 2, 1, 1, 2, 2, 0, 0, 0, 2, 2, 0, 2, 2, 2, 1, 2, 1, 0, 1, 2, 2, 2, 2, 0, 1, 1, 2, 0, 1])  # fmt: skip
 
     lfsr = galois.FLFSR(c.reverse(), state=state)
     y = lfsr.step(50)
@@ -371,10 +383,11 @@ def test_step_gf2_3_reducible():
     """
     GF = galois.GF(2**3)
     key = GF([4, 1, 1, 5])
-    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    key = -key[::-1]
+    key = np.insert(key, 0, 1)  # Convert to c(x)
     c = galois.Poly(key)
     state = GF([1, 1, 1, 1])
-    y_truth = GF([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    y_truth = GF([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])  # fmt: skip
 
     lfsr = galois.FLFSR(c.reverse(), state=state)
     y = lfsr.step(50)
@@ -407,10 +420,11 @@ def test_step_gf3_3_reducible():
     """
     GF = galois.GF(3**3)
     key = GF([5, 20, 23, 5])
-    key = -key[::-1]; key = np.insert(key, 0, 1)  # Convert to c(x)
+    key = -key[::-1]
+    key = np.insert(key, 0, 1)  # Convert to c(x)
     c = galois.Poly(key)
     state = GF([1, 1, 1, 1])
-    y_truth = GF([1, 1, 1, 1, 11, 6, 1, 16, 20, 13, 6, 13, 2, 9, 18, 8, 21, 6, 12, 6, 3, 3, 26, 7, 22, 16, 23, 13, 5, 6, 1, 7, 19, 3, 12, 16, 14, 16, 17, 6, 0, 24, 9, 26, 6, 23, 3, 22, 21, 8])
+    y_truth = GF([1, 1, 1, 1, 11, 6, 1, 16, 20, 13, 6, 13, 2, 9, 18, 8, 21, 6, 12, 6, 3, 3, 26, 7, 22, 16, 23, 13, 5, 6, 1, 7, 19, 3, 12, 16, 14, 16, 17, 6, 0, 24, 9, 26, 6, 23, 3, 22, 21, 8])  # fmt: skip
 
     lfsr = galois.FLFSR(c.reverse(), state=state)
     y = lfsr.step(50)

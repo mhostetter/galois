@@ -7,7 +7,7 @@ import pytest
 import galois
 
 
-@pytest.mark.parametrize("characteristic,degree", [(2,1), (2,8), (3,1), (3,5)])
+@pytest.mark.parametrize("characteristic,degree", [(2, 1), (2, 8), (3, 1), (3, 5)])
 def test_defaults(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     assert issubclass(GF, galois.FieldArray)
@@ -132,7 +132,7 @@ def test_primitive_element_exceptions():
         galois.GF(2**8, primitive_element=galois.Poly([1, 1, 1]))
 
 
-@pytest.mark.parametrize("characteristic,degree", [(2,8), (3,5)])
+@pytest.mark.parametrize("characteristic,degree", [(2, 8), (3, 5)])
 def test_specify_irreducible_poly(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     poly = GF.irreducible_poly
@@ -145,14 +145,14 @@ def test_specify_irreducible_poly(characteristic, degree):
     assert galois.GF(characteristic**degree, irreducible_poly=poly) is GF
 
 
-@pytest.mark.parametrize("characteristic,degree", [(2,1), (3,1)])
+@pytest.mark.parametrize("characteristic,degree", [(2, 1), (3, 1)])
 def test_specify_primitive_element_prime(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     alpha = GF.primitive_element
     assert galois.GF(characteristic**degree, primitive_element=int(alpha)) is GF
 
 
-@pytest.mark.parametrize("characteristic,degree", [(2,8), (3,5)])
+@pytest.mark.parametrize("characteristic,degree", [(2, 8), (3, 5)])
 def test_specify_primitive_element_extension(characteristic, degree):
     GF = galois.GF(characteristic**degree)
     poly = galois.Poly(GF.primitive_element.vector())

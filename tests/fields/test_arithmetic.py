@@ -92,7 +92,7 @@ def test_multiplicative_inverse(field_multiplicative_inverse):
     assert type(z) is GF
     assert z.dtype == dtype
 
-    z = x ** -1
+    z = x**-1
     assert np.array_equal(z, Z)
     assert type(z) is GF
     assert z.dtype == dtype
@@ -148,7 +148,7 @@ def test_power(field_power):
     x = X.astype(dtype)
     y = Y  # Don't convert this, it's not a field element
 
-    z = x ** y
+    z = x**y
     assert np.array_equal(z, Z)
     assert type(z) is GF
     assert z.dtype == dtype
@@ -159,7 +159,7 @@ def test_power_zero_to_zero(field_power):
     dtype = random.choice(GF.dtypes)
     x = GF.Zeros(10, dtype=dtype)
     y = np.zeros(10, GF.dtypes[-1])
-    z = x ** y
+    z = x**y
     Z = np.ones(10, GF.dtypes[-1])
     assert np.array_equal(z, Z)
     assert type(z) is GF
@@ -170,8 +170,8 @@ def test_power_zero_to_positive_integer(field_power):
     GF = field_power["GF"]
     dtype = random.choice(GF.dtypes)
     x = GF.Zeros(10, dtype=dtype)
-    y = randint(1, 2*GF.order, 10, GF.dtypes[-1])
-    z = x ** y
+    y = randint(1, 2 * GF.order, 10, GF.dtypes[-1])
+    z = x**y
     Z = np.zeros(10, GF.dtypes[-1])
     assert np.array_equal(z, Z)
     assert type(z) is GF
@@ -184,7 +184,7 @@ def test_square(field_power):
     x = GF.Random(10, dtype=dtype)
     x[0:2] = [0, 1]
 
-    z = x ** 2
+    z = x**2
     assert np.array_equal(z, x * x)
     assert type(z) is GF
     assert z.dtype == dtype
@@ -210,7 +210,7 @@ def test_log_different_base(field_log):
     x = X.astype(dtype)
     beta = GF.primitive_elements[-1]
     z = x.log(beta)
-    assert np.array_equal(beta ** z, x)
+    assert np.array_equal(beta**z, x)
 
 
 def test_log_pollard_rho():
@@ -224,13 +224,13 @@ def test_log_pollard_rho():
 
     alpha = GF.primitive_element
     z = np.log(x)
-    assert np.array_equal(alpha ** z, x)
+    assert np.array_equal(alpha**z, x)
     z = x.log()
-    assert np.array_equal(alpha ** z, x)
+    assert np.array_equal(alpha**z, x)
 
     beta = GF.primitive_elements[-1]
     z = x.log(beta)
-    assert np.array_equal(beta ** z, x)
+    assert np.array_equal(beta**z, x)
 
 
 # TODO: Skip slow log() for very large fields

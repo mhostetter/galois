@@ -14,6 +14,7 @@ FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 # Helper functions
 ###############################################################################
 
+
 def read_pickle(filename):
     with open(os.path.join(FOLDER, filename), "rb") as f:
         print(f"Loading {f}...")
@@ -24,6 +25,7 @@ def read_pickle(filename):
 ###############################################################################
 # Fixtures for integer math functions
 ###############################################################################
+
 
 @pytest.fixture(scope="session")
 def egcd():
@@ -64,6 +66,7 @@ def ilog():
 # Fixtures for Number Theory functions
 ###############################################################################
 
+
 @pytest.fixture(scope="session")
 def euler_phi():
     return read_pickle("euler_phi.pkl")
@@ -82,6 +85,7 @@ def is_cyclic():
 ###############################################################################
 # Fixtures for Number Theory functions
 ###############################################################################
+
 
 @pytest.fixture(scope="session")
 def primes():

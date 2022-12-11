@@ -32,7 +32,7 @@ def config(request):
 
     d["degrees"] = [5, 4, 3, 2, 1, 0]
     d["coeffs"] = [c1, 0, c2, 0, 0, c3]
-    d["integer"] = int(c1)*field.order**5 + int(c2)*field.order**3 + int(c3)*field.order**0
+    d["integer"] = int(c1) * field.order**5 + int(c2) * field.order**3 + int(c3) * field.order**0
     s1, s2, s3 = int(c1) if c1 > 1 else "", int(c2) if c2 > 1 else "", c3
     d["string"] = f"{s1}x^5 + {s2}x^3 + {s3}"
 

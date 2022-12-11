@@ -114,7 +114,7 @@ class Test0D:
         v = int(field.Random())
         a = field(v, ndmin=3)
         assert type(a) is field
-        assert a.shape == (1,1,1)
+        assert a.shape == (1, 1, 1)
 
 
 class Test1D:
@@ -210,7 +210,7 @@ class Test1D:
         v = [int(field.Random()), int(field.Random()), int(field.Random()), int(field.Random())]
         a = field(v, ndmin=3)
         assert type(a) is field
-        assert a.shape == (1,1,4)
+        assert a.shape == (1, 1, 4)
 
 
 class Test2D:
@@ -306,7 +306,7 @@ class Test2D:
         v = [[int(field.Random()), int(field.Random())], [int(field.Random()), int(field.Random())]]
         a = field(v, ndmin=3)
         assert type(a) is field
-        assert a.shape == (1,2,2)
+        assert a.shape == (1, 2, 2)
 
 
 def convert_0d(v, type1, field):

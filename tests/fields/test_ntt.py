@@ -13,7 +13,7 @@ NTT_LUTS = [
     ([1, 2, 3, 4], 5, [0, 4, 3, 2]),
     ([1, 2, 3, 4], 13, [10, 8, 11, 1]),
     ([1, 2, 3, 4], 17, [10, 6, 15, 7]),
-    ([1, 2, 3, 4], 3*256 + 1, [10, 643, 767, 122]),
+    ([1, 2, 3, 4], 3 * 256 + 1, [10, 643, 767, 122]),
 ]
 
 
@@ -23,7 +23,7 @@ def test_ntt_exceptions():
     with pytest.raises(TypeError):
         galois.ntt([1, 2, 3, 4], size=6.0)
     with pytest.raises(TypeError):
-        galois.ntt([1, 2, 3, 4], modulus=3*256 + 1.0)
+        galois.ntt([1, 2, 3, 4], modulus=3 * 256 + 1.0)
     with pytest.raises(TypeError):
         galois.ntt([1, 2, 3, 4], forward=1.0)
 
@@ -37,7 +37,7 @@ def test_ntt_exceptions():
     with pytest.raises(ValueError):
         galois.ntt([1, 2, 3, 40], modulus=43)
     with pytest.raises(ValueError):
-        galois.ntt([1, 2, 3, 4], modulus=3*256 + 2)
+        galois.ntt([1, 2, 3, 4], modulus=3 * 256 + 2)
 
 
 @pytest.mark.parametrize(["x", "p", "X"], NTT_LUTS)
@@ -64,12 +64,12 @@ def test_ntt(x, p, X):
 def test_ntt_zero_padding():
     x = [1, 2, 3, 4, 5, 6]
     X1 = galois.ntt(x, size=8)
-    X2 = galois.ntt(x + [0,]*2)
+    X2 = galois.ntt(x + [0] * 2)
     assert np.array_equal(X1, X2)
 
     x = [60, 50, 40, 30, 20, 10]
     X1 = galois.ntt(x, size=16)
-    X2 = galois.ntt(x + [0,]*10)
+    X2 = galois.ntt(x + [0] * 10)
     assert np.array_equal(X1, X2)
 
 
@@ -79,7 +79,7 @@ def test_intt_exceptions():
     with pytest.raises(TypeError):
         galois.intt([10, 643, 767, 122], size=6.0)
     with pytest.raises(TypeError):
-        galois.intt([10, 643, 767, 122], modulus=3*256 + 1.0)
+        galois.intt([10, 643, 767, 122], modulus=3 * 256 + 1.0)
     with pytest.raises(TypeError):
         galois.intt([10, 643, 767, 122], scaled=1)
 

@@ -94,8 +94,8 @@ def test_prod(poly_prod):
 
 
 def test_crt_exceptions():
-    a = [galois.Poly([1,1]), galois.Poly([1,1,1])]
-    m = [galois.Poly([1,0,1]), galois.Poly([1,1,0,1])]
+    a = [galois.Poly([1, 1]), galois.Poly([1, 1, 1])]
+    m = [galois.Poly([1, 0, 1]), galois.Poly([1, 1, 0, 1])]
 
     with pytest.raises(TypeError):
         galois.crt(np.array(a, dtype=object), m)
@@ -111,11 +111,11 @@ def test_crt_exceptions():
         galois.crt(a, mm)
     with pytest.raises(ValueError):
         aa = a.copy()
-        aa.append(galois.Poly([1,1,1]))
+        aa.append(galois.Poly([1, 1, 1]))
         galois.crt(aa, m)
     with pytest.raises(ValueError):
         mm = m.copy()
-        mm.append(galois.Poly([1,1,0,1]))
+        mm.append(galois.Poly([1, 1, 0, 1]))
         galois.crt(a, mm)
 
 

@@ -9,8 +9,12 @@ import galois
 # These two polys allow for testing JIT compiled and pure-Python implementations
 CHARACTERISTIC_POLYS = [
     galois.primitive_poly(7, 4),
-    galois.Poly.Str("x^4 + 414029366129716807589746234643x^3 + 713840634647528950143955598853x^2 + 178965232760409569156590479285x + 574717025925479275195710910921", field=galois.GF(2**100))
+    galois.Poly.Str(
+        "x^4 + 414029366129716807589746234643x^3 + 713840634647528950143955598853x^2 + 178965232760409569156590479285x + 574717025925479275195710910921",
+        field=galois.GF(2**100),
+    ),
 ]
+
 
 def test_exceptions():
     c = galois.primitive_poly(7, 4)
@@ -45,7 +49,10 @@ def test_repr():
 def test_str():
     c = galois.primitive_poly(7, 4)
     lfsr = galois.GLFSR(c.reverse())
-    assert str(lfsr) == "Galois LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [2 4 6 0]\n  order: 4\n  state: [1 1 1 1]\n  initial_state: [1 1 1 1]"
+    assert (
+        str(lfsr)
+        == "Galois LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [2 4 6 0]\n  order: 4\n  state: [1 1 1 1]\n  initial_state: [1 1 1 1]"
+    )
 
 
 @pytest.mark.parametrize("c", CHARACTERISTIC_POLYS)
