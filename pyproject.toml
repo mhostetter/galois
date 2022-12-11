@@ -84,7 +84,6 @@ disable = [
     "fixme",
     "global-statement",
     "invalid-name",
-    "invalid-unary-operand-type",
     "missing-function-docstring",
     "missing-module-docstring",
     "protected-access",
