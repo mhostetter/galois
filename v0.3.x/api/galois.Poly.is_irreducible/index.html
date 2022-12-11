@@ -7359,8 +7359,10 @@ and <span class="math notranslate nohighlight">\(\textrm{gcd}(f(x),\ x^{q^{m_i}}
 the <span class="math notranslate nohighlight">\(k\)</span> prime divisors <span class="math notranslate nohighlight">\(p_i\)</span> of <span class="math notranslate nohighlight">\(m\)</span>.</p>
 <p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
 <ul class="simple">
-<li><p>Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273-280. <a class="reference external" href="https://apps.dtic.mil/sti/pdfs/ADA078416.pdf">https://apps.dtic.mil/sti/pdfs/ADA078416.pdf</a></p></li>
-<li><p>Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields. <a class="reference external" href="https://www.math.clemson.edu/~sgao/papers/GP97a.pdf">https://www.math.clemson.edu/~sgao/papers/GP97a.pdf</a></p></li>
+<li><p>Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273-280.
+<a class="reference external" href="https://apps.dtic.mil/sti/pdfs/ADA078416.pdf">https://apps.dtic.mil/sti/pdfs/ADA078416.pdf</a></p></li>
+<li><p>Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields.
+<a class="reference external" href="https://www.math.clemson.edu/~sgao/papers/GP97a.pdf">https://www.math.clemson.edu/~sgao/papers/GP97a.pdf</a></p></li>
 <li><p>Section 4.5.1 from <a class="reference external" href="https://cacr.uwaterloo.ca/hac/about/chap4.pdf">https://cacr.uwaterloo.ca/hac/about/chap4.pdf</a></p></li>
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields">https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields</a></p></li>
 </ul>
@@ -7378,13 +7380,13 @@ the <span class="math notranslate nohighlight">\(k\)</span> prime divisors <span
 </code></pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(x^2 + 12x + 3, GF(2^4))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(x^2 + x + 13, GF(2^4))</span>
 
 <span class="gp">In [5]: </span><span class="n">h</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">h</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(x^3 + 13x + 14, GF(2^4))</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(x^3 + 8x^2 + 5x + 13, GF(2^4))</span>
 
 <span class="gp">In [6]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span><span class="p">;</span> <span class="n">f</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(x^5 + 12x^4 + 14x^3 + 13x^2 + 1, GF(2^4))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(x^5 + 9x^4 + 10x^2 + x + 14, GF(2^4))</span>
 
 <span class="gp">In [7]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_irreducible</span><span class="p">()</span>
 <span class="gh">Out[7]: </span><span class="go">False</span>

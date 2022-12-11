@@ -7337,19 +7337,15 @@ formatting.</p>
 <div class="code-block-caption highlight"><span class="caption-text filename">
 pyproject.toml<a class="headerlink" href="#id1" title="Permalink to this code">Â¶</a></span></div>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><code><span class="k">[tool.pylint]</span><span class="w"></span>
+<span class="n">ignore-paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="s">&quot;src/galois/_version.py&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
 <span class="n">disable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;comparison-with-callable&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1"># pylint doesn&#39;t understand metaclass properties</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;consider-using-enumerate&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;eval-used&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;fixme&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;global-statement&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;invalid-name&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;invalid-unary-operand-type&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;line-too-long&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;missing-function-docstring&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;missing-module-docstring&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;no-else-return&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;not-callable&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1"># pylint doesn&#39;t understand metaclass properties</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;protected-access&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;too-many-ancestors&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;too-many-arguments&quot;</span><span class="p">,</span><span class="w"></span>
@@ -7357,11 +7353,25 @@ pyproject.toml<a class="headerlink" href="#id1" title="Permalink to this code">Â
 <span class="w">    </span><span class="s">&quot;too-many-instance-attributes&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;too-many-lines&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;too-many-locals&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;unnecessary-lambda-assignment&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="s">&quot;unneeded-not&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;unsubscriptable-object&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1"># pylint doesn&#39;t understand metaclass properties</span><span class="w"></span>
 <span class="p">]</span><span class="w"></span>
 <span class="n">min-similarity-lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w"></span>
+<span class="n">max-line-length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">140</span><span class="w"></span>
+
+<span class="k">[tool.black]</span><span class="w"></span>
+<span class="n">line-length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">140</span><span class="w"></span>
+<span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;&#39;&#39;</span>
+<span class="s">/(</span>
+<span class="s">      build</span>
+<span class="s">    | tests</span>
+<span class="s">)/</span>
+<span class="s">    | src/galois/_version.py</span>
+<span class="s">&#39;&#39;&#39;</span><span class="w"></span>
+<span class="c1"># NOTE: You must use single-quoted strings in TOML for regular expressions. It&#39;s the equivalent of r-strings in Python.</span><span class="w"></span>
+<span class="c1"># For some reason, this exclude line doesn&#39;t work when on a single line.</span><span class="w"></span>
+
+<span class="k">[tool.isort]</span><span class="w"></span>
+<span class="n">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;black&quot;</span><span class="w"></span>
 </code></pre></div>
 </div>
 </div>
@@ -7380,7 +7390,7 @@ VS Code will run the linter as you view and edit files.</p>
   <small>
     
       Last update:
-      Dec 05, 2022
+      Dec 11, 2022
     
   </small>
 </div>

@@ -7442,11 +7442,14 @@ powers of <span class="math notranslate nohighlight">\(g\)</span>. The totatives
 <p>Alternatively said, <span class="math notranslate nohighlight">\(g\)</span> is a primitive root modulo <span class="math notranslate nohighlight">\(n\)</span> if and only if <span class="math notranslate nohighlight">\(g\)</span> is a generator of the multiplicative
 group of integers modulo <span class="math notranslate nohighlight">\(n\)</span> <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}\)</span>,
 where <span class="math notranslate nohighlight">\(\phi(n)\)</span> is order of the group.</p>
-<p>If <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is cyclic, the number of primitive roots modulo <span class="math notranslate nohighlight">\(n\)</span> is given by <span class="math notranslate nohighlight">\(\phi(\phi(n))\)</span>.</p>
+<p>If <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is cyclic, the number of primitive roots modulo <span class="math notranslate nohighlight">\(n\)</span> is given by
+<span class="math notranslate nohighlight">\(\phi(\phi(n))\)</span>.</p>
 <p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
 <ul class="simple">
-<li><p>Shoup, V. Searching for primitive roots in finite fields. <a class="reference external" href="https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf">https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf</a></p></li>
-<li><p>Hua, L.K. On the least primitive root of a prime. <a class="reference external" href="https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf">https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf</a></p></li>
+<li><p>Shoup, V. Searching for primitive roots in finite fields.
+<a class="reference external" href="https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf">https://www.ams.org/journals/mcom/1992-58-197/S0025-5718-1992-1106981-9/S0025-5718-1992-1106981-9.pdf</a></p></li>
+<li><p>Hua, L.K. On the least primitive root of a prime.
+<a class="reference external" href="https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf">https://www.ams.org/journals/bull/1942-48-10/S0002-9904-1942-07767-6/S0002-9904-1942-07767-6.pdf</a></p></li>
 <li><p><a class="reference external" href="http://www.numbertheory.org/courses/MP313/lectures/lecture7/page1.html">http://www.numbertheory.org/courses/MP313/lectures/lecture7/page1.html</a></p></li>
 </ul>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
@@ -7481,7 +7484,7 @@ where <span class="math notranslate nohighlight">\(\phi(n)\)</span> is order of 
 </div>
 <p>Find the three largest primitive roots modulo 31 in reversed order.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">generator</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_roots</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">generator</span>
-<span class="gh">Out[7]: </span><span class="go">&lt;generator object primitive_roots at 0x7f051445eeb0&gt;</span>
+<span class="gh">Out[7]: </span><span class="go">&lt;generator object primitive_roots at 0x7fb6179a1040&gt;</span>
 
 <span class="gp">In [8]: </span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
 <span class="gh">Out[8]: </span><span class="go">[24, 22, 21]</span>

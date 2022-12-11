@@ -7398,7 +7398,8 @@ group of integers modulo <span class="math notranslate nohighlight">\(n\)</span>
 <div class="math notranslate nohighlight">
 \[(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\phi(n)\)</span> is order of the group.</p>
-<p>If <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is cyclic, the number of primitive roots modulo <span class="math notranslate nohighlight">\(n\)</span> is given by <span class="math notranslate nohighlight">\(\phi(\phi(n))\)</span>.</p>
+<p>If <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is cyclic, the number of primitive roots modulo <span class="math notranslate nohighlight">\(n\)</span> is given by
+<span class="math notranslate nohighlight">\(\phi(\phi(n))\)</span>.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="nb">list</span><span class="p">(</span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_roots</span><span class="p">(</span><span class="mi">7</span><span class="p">))</span>
 <span class="gh">Out[1]: </span><span class="go">[3, 5]</span>

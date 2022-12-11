@@ -7378,8 +7378,8 @@
 <p>The multiplicative group <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is the set of positive integers <span class="math notranslate nohighlight">\(1 \le a &lt; n\)</span>
 that are coprime with <span class="math notranslate nohighlight">\(n\)</span>. <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> being cyclic means that some primitive root of <span class="math notranslate nohighlight">\(n\)</span>,
 or generator, <span class="math notranslate nohighlight">\(g\)</span> can generate the group <span class="math notranslate nohighlight">\(\{1, g, g^2, \dots, g^{\phi(n)-1}\}\)</span>, where
-<span class="math notranslate nohighlight">\(\phi(n)\)</span> is Euler’s totient function and calculates the order of the group. If <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is cyclic,
-the number of primitive roots is found by <span class="math notranslate nohighlight">\(\phi(\phi(n))\)</span>.</p>
+<span class="math notranslate nohighlight">\(\phi(n)\)</span> is Euler’s totient function and calculates the order of the group. If <span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is
+cyclic, the number of primitive roots is found by <span class="math notranslate nohighlight">\(\phi(\phi(n))\)</span>.</p>
 <p><span class="math notranslate nohighlight">\((\mathbb{Z}/n\mathbb{Z}){^\times}\)</span> is <em>cyclic</em> if and only if <span class="math notranslate nohighlight">\(n\)</span> is 2, 4, <span class="math notranslate nohighlight">\(p^k\)</span>, or <span class="math notranslate nohighlight">\(2p^k\)</span>,
 where <span class="math notranslate nohighlight">\(p\)</span> is an odd prime and <span class="math notranslate nohighlight">\(k\)</span> is a positive integer.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
@@ -7443,8 +7443,8 @@ in <span class="math notranslate nohighlight">\((\mathbb{Z}/14\mathbb{Z}){^\time
 <span class="gh">Out[12]: </span><span class="go">8</span>
 </code></pre></div>
 </div>
-<p>Since 15 is not of the form 2, 4, <span class="math notranslate nohighlight">\(p^k\)</span>, or <span class="math notranslate nohighlight">\(2p^k\)</span>, the multiplicative group <span class="math notranslate nohighlight">\((\mathbb{Z}/15\mathbb{Z}){^\times}\)</span>
-is not cyclic, meaning no elements exist whose powers generate the group.</p>
+<p>Since 15 is not of the form 2, 4, <span class="math notranslate nohighlight">\(p^k\)</span>, or <span class="math notranslate nohighlight">\(2p^k\)</span>, the multiplicative group
+<span class="math notranslate nohighlight">\((\mathbb{Z}/15\mathbb{Z}){^\times}\)</span> is not cyclic, meaning no elements exist whose powers generate the group.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">galois</span><span class="o">.</span><span class="n">is_cyclic</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="gh">Out[13]: </span><span class="go">False</span>
 </code></pre></div>
@@ -7475,10 +7475,10 @@ is not cyclic, meaning no elements exist whose powers generate the group.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">StopIteration</span><span class="g g-Whitespace">                             </span>Traceback (most recent call last)
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.15/x64/lib/python3.8/site-packages/galois/_modular.py:568,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
-<span class="g g-Whitespace">    </span><span class="mi">567</span> <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">568</span>     <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">primitive_roots</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">))</span>
-<span class="g g-Whitespace">    </span><span class="mi">569</span> <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
+<span class="nn">File /opt/hostedtoolcache/Python/3.8.15/x64/lib/python3.8/site-packages/galois/_modular.py:583,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
+<span class="g g-Whitespace">    </span><span class="mi">582</span> <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">583</span>     <span class="n">root</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">primitive_roots</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">))</span>
+<span class="g g-Whitespace">    </span><span class="mi">584</span> <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
 
 <span class="ne">StopIteration</span>: 
 
@@ -7488,10 +7488,10 @@ is not cyclic, meaning no elements exist whose powers generate the group.</p>
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.15/x64/lib/python3.8/site-packages/galois/_modular.py:574,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
-<span class="g g-Whitespace">    </span><span class="mi">572</span>         <span class="k">return</span> <span class="n">_primitive_root_random_search</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">573</span> <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">574</span>     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No primitive roots modulo </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> exist in the range [</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">stop</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+<span class="nn">File /opt/hostedtoolcache/Python/3.8.15/x64/lib/python3.8/site-packages/galois/_modular.py:590,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
+<span class="g g-Whitespace">    </span><span class="mi">588</span>     <span class="k">return</span> <span class="n">root</span>
+<span class="g g-Whitespace">    </span><span class="mi">589</span> <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">590</span>     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No primitive roots modulo </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> exist in the range [</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">stop</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
 <span class="ne">RuntimeError</span>: No primitive roots modulo 15 exist in the range [1, 15).
 </code></pre></div>
@@ -7505,7 +7505,8 @@ is not cyclic, meaning no elements exist whose powers generate the group.</p>
 <span class="gh">Out[18]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-<p>A primitive element is a generator of the multiplicative group <span class="math notranslate nohighlight">\(\mathrm{GF}(p)^{\times} = \{1, 2, \dots, p-1\} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}\)</span>.</p>
+<p>A primitive element is a generator of the multiplicative group
+<span class="math notranslate nohighlight">\(\mathrm{GF}(p)^{\times} = \{1, 2, \dots, p-1\} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
 <span class="gp">In [20]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>

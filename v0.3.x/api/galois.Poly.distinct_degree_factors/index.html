@@ -7363,12 +7363,13 @@ the same degree.</p>
 </dd>
 </dl>
 <p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
-<p>The Distinct-Degree Factorization algorithm factors a square-free polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> with degree <span class="math notranslate nohighlight">\(d\)</span> into a product of <span class="math notranslate nohighlight">\(d\)</span> polynomials
-<span class="math notranslate nohighlight">\(f_i(x)\)</span>, where <span class="math notranslate nohighlight">\(f_i(x)\)</span> is the product of all irreducible factors of <span class="math notranslate nohighlight">\(f(x)\)</span> with degree <span class="math notranslate nohighlight">\(i\)</span>.</p>
+<p>The Distinct-Degree Factorization algorithm factors a square-free polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> with degree <span class="math notranslate nohighlight">\(d\)</span> into a product
+of <span class="math notranslate nohighlight">\(d\)</span> polynomials <span class="math notranslate nohighlight">\(f_i(x)\)</span>, where <span class="math notranslate nohighlight">\(f_i(x)\)</span> is the product of all irreducible factors of <span class="math notranslate nohighlight">\(f(x)\)</span> with
+degree <span class="math notranslate nohighlight">\(i\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[f(x) = \prod_{i=1}^{d} f_i(x)\]</div>
-<p>For example, suppose <span class="math notranslate nohighlight">\(f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span>, then the distinct-degree
-factorization is</p>
+<p>For example, suppose <span class="math notranslate nohighlight">\(f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span>, then the
+distinct-degree factorization is</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}f_1(x) &amp;= x(x + 1) = x^2 + x \\
 f_2(x) &amp;= x^2 + x + 1 \\
@@ -7376,8 +7377,8 @@ f_3(x) &amp;= (x^3 + x + 1)(x^3 + x^2 + 1) = x^6 + x^5 + x^4 + x^3 + x^2 + x + 1
 f_i(x) &amp;= 1\ \textrm{for}\ i = 4, \dots, 10.\end{split}\]</div>
 <p>Some <span class="math notranslate nohighlight">\(f_i(x) = 1\)</span>, but those polynomials are not returned by this function. In this example, the function returns
 <span class="math notranslate nohighlight">\(\{f_1(x), f_2(x), f_3(x)\}\)</span> and <span class="math notranslate nohighlight">\(\{1, 2, 3\}\)</span>.</p>
-<p>The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see <a class="reference internal" href="../galois.Poly.square_free_factors/" title="galois.Poly.square_free_factors (Python method) — Factors the monic polynomial f(x) into a product of square-free polynomials."><code class="xref py py-func docutils literal notranslate"><span class="pre">square_free_factors()</span></code></a>.
-A complete polynomial factorization is implemented in <a class="reference internal" href="../galois.Poly.factors/" title="galois.Poly.factors (Python method) — Computes the irreducible factors of the non-constant, monic polynomial f(x)."><code class="xref py py-func docutils literal notranslate"><span class="pre">factors()</span></code></a>.</p>
+<p>The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see
+<a class="reference internal" href="../galois.Poly.square_free_factors/" title="galois.Poly.square_free_factors (Python method) — Factors the monic polynomial f(x) into a product of square-free polynomials."><code class="xref py py-func docutils literal notranslate"><span class="pre">square_free_factors()</span></code></a>. A complete polynomial factorization is implemented in <a class="reference internal" href="../galois.Poly.factors/" title="galois.Poly.factors (Python method) — Computes the irreducible factors of the non-constant, monic polynomial f(x)."><code class="xref py py-func docutils literal notranslate"><span class="pre">factors()</span></code></a>.</p>
 <p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
 <ul class="simple">
 <li><p>Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.2.2.</p></li>

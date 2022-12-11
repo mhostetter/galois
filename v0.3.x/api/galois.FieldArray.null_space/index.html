@@ -7341,14 +7341,14 @@ is the vector space <span class="math notranslate nohighlight">\(\{\mathbf{x} \i
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  2, 13, 18, 17],</span>
-<span class="go">    [ 4, 23, 24,  7, 24],</span>
-<span class="go">    [18,  3, 28, 18, 19]], order=31)</span>
+<span class="go">GF([[27, 25,  6, 29,  1],</span>
+<span class="go">    [20, 13,  1, 28, 11],</span>
+<span class="go">    [11, 25,  1, 28,  6]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">();</span> <span class="n">N</span>
 <span class="gh">Out[4]: </span><span class="go"></span>
-<span class="go">GF([[ 1,  0, 30, 24, 30],</span>
-<span class="go">    [ 0,  1,  6, 17,  1]], order=31)</span>
+<span class="go">GF([[ 1,  0, 17, 14, 23],</span>
+<span class="go">    [ 0,  1, 18, 15, 21]], order=31)</span>
 </code></pre></div>
 </div>
 <p>The null space is the set of vectors that sum the columns to 0.</p>
