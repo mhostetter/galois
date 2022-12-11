@@ -1311,7 +1311,8 @@ def pollard_rho(n: int, c: int = 1) -> int:
         raise ValueError("Argument 'c' cannot be -2 or 0.")
     n = abs(n)
 
-    f = lambda x: (x**2 + c) % n
+    def f(x):
+        return (x**2 + c) % n
 
     a, b, d = 2, 2, 1
     while d == 1:
