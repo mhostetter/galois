@@ -1,0 +1,25 @@
+# v0.3.1
+
+*Released December 12, 2022*
+
+## Changes
+
+- Fixed a bug in the Pollard $\rho$ factorization algorithm that caused an occasional infinite loop. ([#450](https://github.com/mhostetter/galois/pull/450))
+  ```ipython
+  In [1]: import galois
+
+  # v0.3.0
+  In [2]: %time galois.GF(2400610585866217)
+  # Never returns...
+
+  # v0.3.1
+  In [2]: %time galois.GF(2400610585866217)
+  Wall time: 96 ms
+  Out[2]: <class 'galois.GF(2400610585866217)'>
+  ```
+- Formatted the code and unit tests with `black` and `isort`. ([#446](https://github.com/mhostetter/galois/pull/446), [#449](https://github.com/mhostetter/galois/pull/449))
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+- [@pivis](https://github.com/pivis)
