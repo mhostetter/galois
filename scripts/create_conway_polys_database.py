@@ -3,13 +3,14 @@ Script to create a database of Conway polynomials using Frank Luebeck's compilat
 """
 import os
 import sqlite3
+from pathlib import Path
 
 import requests
 
 POLY_TEXT_FILE_URL = "http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/CPimport.txt"
-DATABASE_FILE = os.path.join(os.path.dirname(__file__), "..", "galois", "_databases", "conway_polys.db")
+DATABASE_FILE = Path(__file__).parent.parent / "src" / "galois" / "_databases" / "conway_polys.db"
 
-if os.path.exists(DATABASE_FILE):
+if DATABASE_FILE.exists():
     os.remove(DATABASE_FILE)
 
 conn = sqlite3.connect(DATABASE_FILE)
