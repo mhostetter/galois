@@ -840,8 +840,8 @@ def factors(n: int) -> tuple[list[int], list[int]]:
 
     # Step 4
     while n > 1 and not is_prime(n):
+        c = 1
         while True:
-            c = 1
             try:
                 f = pollard_rho(n, c=c)  # A non-trivial factor
                 break  # Found a factor
