@@ -1268,7 +1268,7 @@ def pollard_rho(n: int, c: int = 1) -> int:
     Returns
     -------
     :
-        A non-trivial factor :math:`m` of :math:`n`, if found. `None` if not found.
+        A non-trivial factor :math:`m` of :math:`n`.
 
     Raises
     ------
