@@ -610,6 +610,8 @@ def factors(value):
 
             Steps:
 
+            0. Test if :math:`n` is in the `Cunningham Book's <https://homes.cerias.purdue.edu/~ssw/cun/third/index.html>`_
+               database of :math:`n = p^m \pm 1` factorizations. If so, return the prime factorization.
             1. Test if :math:`n` is prime. If so, return `[n], [1]`. See :func:`~galois.is_prime`.
             2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and multiply the
                exponents by :math:`k`. See :func:`~galois.perfect_power`.
