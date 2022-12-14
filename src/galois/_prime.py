@@ -11,6 +11,7 @@ import random
 
 import numpy as np
 
+from ._databases import PrimeFactorsDatabase
 from ._helper import export, verify_isinstance
 from ._math import ilog, iroot, isqrt, prod
 
@@ -886,19 +887,35 @@ def factors(n: int) -> tuple[list[int], list[int]]:
     if not n > 1:
         raise ValueError(f"Argument 'n' must be greater than 1, not {n}.")
 
+    # Step 0: Check if n is in the prime factors database
+    try:
+        p, e, n = PrimeFactorsDatabase().fetch(n)
+        if n == 1:
+            return p, e
+        # Else, there still may be a residual composite
+        # Although, we're probably not powerful enough to factor it...
+    except LookupError:
+        p, e = [], []
+
     # Step 1
     if is_prime(n):
-        return [n], [1]
+        p.append(n)
+        e.append(1)
+        return p, e
 
     # Step 2
     base, exponent = perfect_power(n)
     if base != n:
-        p, e = factors(base)
-        e = [ei * exponent for ei in e]
+        pp, ee = factors(base)
+        ee = [eei * exponent for eei in ee]
+        p.extend(pp)
+        e.extend(ee)
         return p, e
 
     # Step 3
-    p, e, n = trial_division(n, 10_000_000)
+    pp, ee, n = trial_division(n, 10_000_000)
+    p.extend(pp)
+    e.extend(ee)
 
     # Step 4
     while n > 1 and not is_prime(n):
