@@ -59,6 +59,10 @@ of the finite field arithmetic.
 `Wolfram's compilation <https://datarepository.wolframcloud.com/resources/Primitive-Polynomials/>`_ of primitive polynomials are used
 for efficient polynomial lookup, when possible.
 
+`The Cunningham Book's tables <https://homes.cerias.purdue.edu/~ssw/cun/third/index.html>`_ of prime factorizations, :math:`b^n \pm 1`
+for :math:`b \in \{2, 3, 5, 6, 7, 10, 11, 12\}`, are used to generate factorization lookup tables. These lookup tables speed-up the
+creation of large finite fields by avoiding the need to factor large integers.
+
 `Sage <https://www.sagemath.org/>`_ is used extensively for generating test vectors for finite field arithmetic and polynomial arithmetic.
 `SymPy <https://www.sympy.org/en/index.html>`_ is used to generate some test vectors. `Octave <https://www.gnu.org/software/octave/index>`_
 is used to generate test vectors for forward error correction codes.
