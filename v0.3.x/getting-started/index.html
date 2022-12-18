@@ -7365,7 +7365,7 @@ and examples.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
 
 <span class="gp">In [2]: </span><span class="n">galois</span><span class="o">.</span><span class="n">__version__</span>
-<span class="gh">Out[2]: </span><span class="go">&#39;0.3.2.dev6+g50c4d479&#39;</span>
+<span class="gh">Out[2]: </span><span class="go">&#39;0.3.2.dev7+gc355e3c5&#39;</span>
 </code></pre></div>
 </div>
 <h2 id="create-a-fieldarray-subclass">Create a <a class="reference internal" href="../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass<a class="headerlink" href="#create-a-fieldarray-subclass" title="Permalink to this heading">¶</a></h2>
@@ -7384,7 +7384,7 @@ the <a class="reference internal" href="../api/galois.GF/" title="galois.GF (Pyt
 <span class="go">  primitive_element: x</span>
 </code></pre></div>
 </div>
-<p>The <a class="reference internal" href="../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code> is a subclass of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a> that performs all arithmetic in the Galois field
+<p>The <a class="reference internal" href="../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code> is a subclass of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a> that performs all arithmetic in the Galois field
 <span class="math notranslate nohighlight">\(\mathrm{GF}(3^5)\)</span>, not in <span class="math notranslate nohighlight">\(\mathbb{R}\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">GF</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">FieldArray</span><span class="p">)</span>
 <span class="gh">Out[5]: </span><span class="go">True</span>
@@ -7400,7 +7400,7 @@ the <a class="reference internal" href="../api/galois.GF/" title="galois.GF (Pyt
 <span class="gh">Out[7]: </span><span class="go">GF([236,  87,  38, 112], order=3^5)</span>
 </code></pre></div>
 </div>
-<p>The array <code class="code highlight python docutils literal highlight-python"><span class="n">x</span></code> is an instance of <a class="reference internal" href="../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> and also an instance of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a>.</p>
+<p>The array <code class="code highlight python docutils literal highlight-python"><span class="n">x</span></code> is an instance of <a class="reference internal" href="../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> and also an instance of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">galois</span><span class="o">.</span><span class="n">FieldArray</span><span class="p">)</span>
 <span class="gh">Out[8]: </span><span class="go">True</span>
 

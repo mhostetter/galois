@@ -7929,11 +7929,11 @@ Power</label></div>
 </div>
 </div>
 </div><details class="info admonition">
-<summary class="admonition-title">There is no <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.empty.html#numpy.empty" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.empty()</span></code></a> equivalent.</summary><p>This is because <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances must have values in <span class="math notranslate nohighlight">\([0, p^m)\)</span>. Empty NumPy arrays have whatever values
+<summary class="admonition-title">There is no <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.empty.html#numpy.empty" title="(in NumPy v1.24)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.empty()</span></code></a> equivalent.</summary><p>This is because <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances must have values in <span class="math notranslate nohighlight">\([0, p^m)\)</span>. Empty NumPy arrays have whatever values
 are currently in memory, and therefore would fail those bounds checks during instantiation.</p>
 </details>
 <h3 id="ordered-arrays">Ordered arrays<a class="headerlink" href="#ordered-arrays" title="Permalink to this heading">¶</a></h3>
-<p>The <a class="reference internal" href="../../api/galois.FieldArray.Range/" title="galois.FieldArray.Range (Python method) — Creates a 1-D array with a range of elements."><code class="xref py py-func docutils literal notranslate"><span class="pre">Range()</span></code></a> classmethod produces a range of elements similar to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.arange()</span></code></a>. The integer <code class="code highlight python docutils literal highlight-python"><span class="n">start</span></code>
+<p>The <a class="reference internal" href="../../api/galois.FieldArray.Range/" title="galois.FieldArray.Range (Python method) — Creates a 1-D array with a range of elements."><code class="xref py py-func docutils literal notranslate"><span class="pre">Range()</span></code></a> classmethod produces a range of elements similar to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="(in NumPy v1.24)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.arange()</span></code></a>. The integer <code class="code highlight python docutils literal highlight-python"><span class="n">start</span></code>
 and <code class="code highlight python docutils literal highlight-python"><span class="n">stop</span></code> values are the <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a> of the polynomial field elements.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="9:3">
 <input checked type="radio" id="__tabbed_9_1" name="__tabbed_9"><input type="radio" id="__tabbed_9_2" name="__tabbed_9"><input type="radio" id="__tabbed_9_3" name="__tabbed_9"><div class="tabbed-labels docutils">
@@ -8085,7 +8085,7 @@ Power</label></div>
 </div>
 </div>
 </div><h2 id="data-types">Data types<a class="headerlink" href="#data-types" title="Permalink to this heading">¶</a></h2>
-<p><a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances support a fixed set of NumPy data types (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>). The data type must be
+<p><a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances support a fixed set of NumPy data types (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>). The data type must be
 able to store all the field elements (in their <a class="reference internal" href="../element-representation/#int-repr"><span class="std std-ref">integer representation</span></a>).</p>
 <h3 id="valid-data-types">Valid data types<a class="headerlink" href="#valid-data-types" title="Permalink to this heading">¶</a></h3>
 <p>For small finite fields, like <span class="math notranslate nohighlight">\(\mathrm{GF}(2^4)\)</span>, every NumPy integer data type is supported.</p>
@@ -8103,14 +8103,14 @@ able to store all the field elements (in their <a class="reference internal" hre
 </code></pre></div>
 </div>
 <p>For medium finite fields, like <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{10})\)</span>, some NumPy integer data types are not supported. Here,
-<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uint8" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.uint8</span></code></a> and <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int8" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int8</span></code></a> are not supported.</p>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uint8" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.uint8</span></code></a> and <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int8" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int8</span></code></a> are not supported.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [87]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="gp">In [88]: </span><span class="n">GF</span><span class="o">.</span><span class="n">dtypes</span>
 <span class="gh">Out[88]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
 </code></pre></div>
 </div>
-<p>For large finite fields, like <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{100})\)</span>, only the “object” data type (<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a>) is
+<p>For large finite fields, like <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{100})\)</span>, only the “object” data type (<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a>) is
 supported. This uses arrays of Python objects, rather than integer data types. The Python objects used are Python integers,
 which have unlimited size.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [89]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">100</span><span class="p">)</span>
@@ -8128,7 +8128,7 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 <span class="gh">Out[92]: </span><span class="go">[numpy.uint16, numpy.uint32, numpy.int16, numpy.int32, numpy.int64]</span>
 
 <span class="gp">In [93]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[93]: </span><span class="go">GF([502, 659, 878,  53], order=2^10)</span>
+<span class="gh">Out[93]: </span><span class="go">GF([965, 819, 856,  68], order=2^10)</span>
 
 <span class="gp">In [94]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
 <span class="gh">Out[94]: </span><span class="go">dtype(&#39;uint16&#39;)</span>
@@ -8141,8 +8141,8 @@ the smallest unsigned data type (the first in the <a class="reference internal" 
 
 <span class="gp">In [97]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
 <span class="gh">Out[97]: </span><span class="go"></span>
-<span class="go">GF([  88018463306428948394530725066,  418396712422311301912658181423,</span>
-<span class="go">     325148387855531162367882991083, 1252262078453091056956332841488],</span>
+<span class="go">GF([1255726205713085757810120636008, 1153178602330925727373156362708,</span>
+<span class="go">     953362159909643504358643765795,  228532101896185562397565408143],</span>
 <span class="go">   order=2^100)</span>
 
 <span class="gp">In [98]: </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
@@ -8185,8 +8185,8 @@ into a <code class="code highlight python docutils literal highlight-python"><sp
 <span class="go">    [5, 0, 3, 2, 4]], order=7)</span>
 </code></pre></div>
 </div>
-<p>However, some functions have a <code class="code highlight python docutils literal highlight-python"><span class="n">subok</span></code> keyword argument. This indicates whether to return a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> subclass
-from the function. Most notably, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.copy.html#numpy.copy" title="(in NumPy v1.23)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.copy()</span></code></a> defaults <code class="code highlight python docutils literal highlight-python"><span class="n">subok</span></code> to <code class="code highlight python docutils literal highlight-python"><span class="kc">False</span></code>.</p>
+<p>However, some functions have a <code class="code highlight python docutils literal highlight-python"><span class="n">subok</span></code> keyword argument. This indicates whether to return a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> subclass
+from the function. Most notably, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.copy.html#numpy.copy" title="(in NumPy v1.24)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.copy()</span></code></a> defaults <code class="code highlight python docutils literal highlight-python"><span class="n">subok</span></code> to <code class="code highlight python docutils literal highlight-python"><span class="kc">False</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [108]: </span><span class="n">x</span>
 <span class="gh">Out[108]: </span><span class="go">GF([6, 6, 0, 3, 6, 5, 0, 3, 2, 4], order=7)</span>
 
