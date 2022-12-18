@@ -1,0 +1,52 @@
+# v0.3.2
+
+*Released December 18, 2022*
+
+## Changes
+
+- Added a prime factorization database for $n = b^k \pm 1$, with $b \in \{2, 3, 5, 6, 7, 10, 11, 12\}$.
+  The factorizations are from the [Cunningham Book](https://homes.cerias.purdue.edu/~ssw/cun/third/index.html).
+  This speeds up the creation of large finite fields. ([#452](https://github.com/mhostetter/galois/pull/452))
+  ```ipython
+  In [1]: import galois
+  
+  # v0.3.1
+  In [2]: %time galois.factors(2**256 - 1)
+  # Took forever...
+  
+  # v0.3.2
+  In [2]: %time galois.factors(2**256 - 1)
+  Wall time: 1 ms
+  Out[2]:
+  ([3,
+    5,
+    17,
+    257,
+    641,
+    65537,
+    274177,
+    6700417,
+    67280421310721,
+    59649589127497217,
+    5704689200685129054721],
+   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+  ```
+- Added speed-up when factoring powers of small primes. This speeds up the creation of large finite fields. ([#454](https://github.com/mhostetter/galois/pull/454))
+  ```ipython
+  In [1]: import galois
+  
+  # v0.3.1
+  In [2]: %time galois.factors(2**471)
+  Wall time: 4.18 s
+  Out[2]: ([2], [471])
+  
+  # v0.3.2
+  In [2]: %time galois.factors(2**471)
+  Wall time: 2 ms
+  Out[2]: ([2], [471])
+  ```
+- Added four additional Mersenne primes that were discovered between 2013-2018. ([#452](https://github.com/mhostetter/galois/pull/452))
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
