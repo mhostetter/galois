@@ -34,7 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.af53380991695257c.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.d6bd4a802b61eb4e7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7409,7 +7409,7 @@ entropy will be pulled from the OS to be used as the seed. A <a class="reference
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Construct a random degree-5 polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x^4 + x^3, GF(2))</span>
+<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x + 1, GF(2))</span>
 </code></pre></div>
 </div>
 <p>Construct a random degree-5 polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(3^5)\)</span> with a given seed. This produces repeatable results.</p>

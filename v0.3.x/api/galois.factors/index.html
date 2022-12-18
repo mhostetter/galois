@@ -34,7 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.af53380991695257c.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.d6bd4a802b61eb4e7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7417,7 +7417,9 @@ Polynomials</label></div>
 <p>This function factors a positive integer <span class="math notranslate nohighlight">\(n\)</span> into its <span class="math notranslate nohighlight">\(k\)</span> prime factors such that
 <span class="math notranslate nohighlight">\(n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}\)</span>.</p>
 <p>Steps:</p>
-<ol class="arabic simple">
+<ol class="arabic simple" start="0">
+<li><p>Test if <span class="math notranslate nohighlight">\(n\)</span> is in the <a class="reference external" href="https://homes.cerias.purdue.edu/~ssw/cun/third/index.html">Cunningham Book’s</a>
+database of <span class="math notranslate nohighlight">\(n = p^m \pm 1\)</span> factorizations. If so, return the prime factorization.</p></li>
 <li><p>Test if <span class="math notranslate nohighlight">\(n\)</span> is prime. If so, return <code class="code highlight python docutils literal highlight-python"><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span></code>. See <a class="reference internal" href="../galois.is_prime/" title="galois.is_prime (Python function) — Determines if n is prime."><code class="xref py py-func docutils literal notranslate"><span class="pre">is_prime()</span></code></a>.</p></li>
 <li><p>Test if <span class="math notranslate nohighlight">\(n\)</span> is a perfect power, such that <span class="math notranslate nohighlight">\(n = x^k\)</span>. If so, prime factor <span class="math notranslate nohighlight">\(x\)</span> and multiply the
 exponents by <span class="math notranslate nohighlight">\(k\)</span>. See <a class="reference internal" href="../galois.perfect_power/" title="galois.perfect_power (Python function) — Returns the integer base c and exponent e of n = c^e."><code class="xref py py-func docutils literal notranslate"><span class="pre">perfect_power()</span></code></a>.</p></li>
