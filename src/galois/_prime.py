@@ -887,7 +887,7 @@ def factors(n: int) -> tuple[list[int], list[int]]:
     if not n > 1:
         raise ValueError(f"Argument 'n' must be greater than 1, not {n}.")
 
-    # Step 0: Check if n is in the prime factors database
+    # Step 0: Check if n is in the prime factors database.
     try:
         p, e, n = PrimeFactorsDatabase().fetch(n)
         if n == 1:
@@ -897,13 +897,13 @@ def factors(n: int) -> tuple[list[int], list[int]]:
     except LookupError:
         p, e = [], []
 
-    # Step 1
+    # Step 1: Test is n is prime.
     if is_prime(n):
         p.append(n)
         e.append(1)
         return p, e
 
-    # Step 2
+    # Step 2: Test if n is a perfect power. The base may be composite.
     base, exponent = perfect_power(n)
     if base != n:
         pp, ee = factors(base)
@@ -912,12 +912,12 @@ def factors(n: int) -> tuple[list[int], list[int]]:
         e.extend(ee)
         return p, e
 
-    # Step 3
+    # Step 3: Perform trial division up to medium-sized primes.
     pp, ee, n = trial_division(n, 10_000_000)
     p.extend(pp)
     e.extend(ee)
 
-    # Step 4
+    # Step 4: Use Pollard's rho algorithm to find a non-trivial factor.
     while n > 1 and not is_prime(n):
         c = 1
         while True:
@@ -1035,29 +1035,44 @@ def _perfect_power(n: int) -> tuple[int, int]:
 
     abs_n = abs(n)
 
+    # Test if n is a prime power of small primes. This saves a very costly calculation below for n like 2^571.
+    # See https://github.com/mhostetter/galois/issues/443. There may be a bug remaining in perfect_power() still
+    # left to resolve.
+    for prime in primes(1_000):
+        exponent = ilog(abs_n, prime)
+        if prime**exponent == abs_n:
+            return _adjust_base_and_exponent(n, prime, exponent)
+
     for k in primes(ilog(abs_n, 2)):
         x = iroot(abs_n, k)
         if x**k == abs_n:
             # Recursively determine if x is a perfect power
             c, e = perfect_power(x)
             e *= k  # Multiply the exponent of c by the exponent of x
-
-            if n < 0:
-                # Try to convert the even exponent of a factored negative number into the next largest odd power
-                while e > 2:
-                    if e % 2 == 0:
-                        c *= 2
-                        e //= 2
-                    else:
-                        return -c, e
-
-                # Failed to convert the even exponent to and odd one, therefore there is no real factorization of this negative integer
-                return n, 1
-
-            return c, e
+            return _adjust_base_and_exponent(n, c, e)
 
     # n is composite and cannot be factored into a perfect power
     return n, 1
+
+
+def _adjust_base_and_exponent(n: int, base: int, exponent: int) -> tuple[int, int]:
+    """
+    Adjusts the base and exponent of a perfect power to account for negative integers.
+    """
+    if n < 0:
+        # Try to convert the even exponent of a factored negative number into the next largest odd power
+        while exponent > 2:
+            if exponent % 2 == 0:
+                base *= 2
+                exponent //= 2
+            else:
+                return -base, exponent
+
+        # Failed to convert the even exponent to and odd one, therefore there is no real factorization of
+        # this negative integer
+        return n, 1
+
+    return base, exponent
 
 
 @export
