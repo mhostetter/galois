@@ -1,0 +1,33 @@
+# v0.0.22
+
+*Released December 3, 2021*
+
+## Breaking changes
+
+- Random integer generation is handled using [new style](https://numpy.org/doc/stable/reference/random/index.html#random-quick-start) random generators. Now each `.Random()` call will generate a new seed rather than using the NumPy "global" seed used with `np.random.randint()`.
+- Add a `seed=None` keyword argument to `FieldArray.Random()` and `Poly.Random()`. A reproducible script can be constructed like this:
+
+  ```python
+  rng = np.random.default_rng(123456789)
+  x = GF.Random(10, seed=rng)
+  y = GF.Random(10, seed=rng)
+  poly = galois.Poly.Random(5, seed=rng, field=GF)
+  ```
+
+## Changes
+
+- Official support for Python 3.9.
+- Major performance improvements to "large" finite fields (those with `dtype=np.object_`).
+- Minor performance improvements to all finite fields.
+- Add the Number Theoretic Transform (NTT) in `ntt()` and `intt()`.
+- Add the trace of finite field elements in `FieldArray.field_trace()`.
+- Add the norm of finite field elements in `FieldArray.field_norm()`.
+- Support `len()` on `Poly` objects, which returns the length of the coefficient array (polynomial order + 1).
+- Support `x.dot(y)` syntax for the expression `np.dot(x, y)`.
+- Minimum NumPy version bumped to 1.18.4 for [new style](https://numpy.org/doc/stable/reference/random/index.html#random-quick-start) random usage.
+- Various bug fixes.
+
+## Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
