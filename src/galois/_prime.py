@@ -1164,7 +1164,7 @@ def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
     Returns
     -------
     :
-        A non-trivial factor of :math:`n`, if found. `None` if not found.
+        A non-trivial factor of :math:`n`.
 
     Raises
     ------
