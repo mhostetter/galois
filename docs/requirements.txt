@@ -1,5 +1,5 @@
 sphinx < 5.4
-git+https://github.com/jbms/sphinx-immaterial@f9d9f5b4cf875ae13f94b0139dbf02ad23e5f9e9
+sphinx-immaterial == 0.11.2
 myst-parser
 sphinx-design
 sphinx-last-updated-by-git
