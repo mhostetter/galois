@@ -106,59 +106,52 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
     r"""
     Computes the Lagrange interpolating polynomial :math:`L(x)` such that :math:`L(x_i) = y_i`.
 
-    :group: polys-interpolating
+    Arguments:
+        x: An array of :math:`x_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must have no
+            duplicate entries.
+        y: An array of :math:`y_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must be the same
+            size as :math:`x`.
 
-    Parameters
-    ----------
-    x
-        An array of :math:`x_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must have no
-        duplicate entries.
-    y
-        An array of :math:`y_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must be the same
-        size as :math:`x`.
-
-    Returns
-    -------
-    :
+    Returns:
         The Lagrange polynomial :math:`L(x)`.
 
-    Notes
-    -----
-    The Lagrange interpolating polynomial is defined as
+    Notes:
+        The Lagrange interpolating polynomial is defined as
 
-    .. math::
-        L(x) = \sum_{j=0}^{k-1} y_j \ell_j(x)
+        .. math::
+            L(x) = \sum_{j=0}^{k-1} y_j \ell_j(x)
 
-    .. math::
-        \ell_j(x) = \prod_{\substack{0 \le m < k \\ m \ne j}} \frac{x - x_m}{x_j - x_m} .
+        .. math::
+            \ell_j(x) = \prod_{\substack{0 \le m < k \\ m \ne j}} \frac{x - x_m}{x_j - x_m} .
 
-    It is the polynomial of minimal degree that satisfies :math:`L(x_i) = y_i`.
+        It is the polynomial of minimal degree that satisfies :math:`L(x_i) = y_i`.
 
-    References
-    ----------
-    * https://en.wikipedia.org/wiki/Lagrange_polynomial
+    References:
+        - https://en.wikipedia.org/wiki/Lagrange_polynomial
 
-    Examples
-    --------
-    Create random :math:`(x, y)` pairs in :math:`\mathrm{GF}(3^2)`.
+    Examples:
+        Create random :math:`(x, y)` pairs in :math:`\mathrm{GF}(3^2)`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        GF = galois.GF(3**2)
-        x = GF.elements; x
-        y = GF.Random(x.size); y
+            GF = galois.GF(3**2)
+            x = GF.elements; x
+            y = GF.Random(x.size); y
 
-    Find the Lagrange polynomial that interpolates the coordinates.
+        Find the Lagrange polynomial that interpolates the coordinates.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        L = galois.lagrange_poly(x, y); L
+            L = galois.lagrange_poly(x, y); L
 
-    Show that the polynomial evaluated at :math:`x` is :math:`y`.
+        Show that the polynomial evaluated at :math:`x` is :math:`y`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        np.array_equal(L(x), y)
+            np.array_equal(L(x), y)
+
+    Group:
+        polys-interpolating
     """
     verify_isinstance(x, Array)
     verify_isinstance(y, Array)

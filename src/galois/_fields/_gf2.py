@@ -120,34 +120,34 @@ class GF2(
     r"""
     A :obj:`~galois.FieldArray` subclass over :math:`\mathrm{GF}(2)`.
 
-    :group: galois-fields
-
     .. info::
 
         This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
         for convenience.
 
-    Examples
-    --------
-    This class is equivalent, and in fact identical, to the :obj:`~galois.FieldArray` subclass returned from the class factory
-    :func:`~galois.GF`.
+    Examples:
+        This class is equivalent, and in fact identical, to the :obj:`~galois.FieldArray` subclass returned from the class factory
+        :func:`~galois.GF`.
 
-    .. ipython::
+        .. ipython::
 
-        In [2]: galois.GF2 is galois.GF(2)
+            In [2]: galois.GF2 is galois.GF(2)
 
-        @verbatim
-        In [3]: issubclass(galois.GF2, galois.FieldArray)
-        Out[3]: True
+            @verbatim
+            In [3]: issubclass(galois.GF2, galois.FieldArray)
+            Out[3]: True
 
-        In [4]: print(galois.GF2.properties)
+            In [4]: print(galois.GF2.properties)
 
-    Create a :obj:`~galois.FieldArray` instance using :obj:`~galois.GF2`'s constructor.
+        Create a :obj:`~galois.FieldArray` instance using :obj:`~galois.GF2`'s constructor.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        x = galois.GF2([1, 0, 1, 1]); x
-        isinstance(x, galois.GF2)
+            x = galois.GF2([1, 0, 1, 1]); x
+            isinstance(x, galois.GF2)
+
+    Group:
+        galois-fields
     """
 
 

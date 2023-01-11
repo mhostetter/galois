@@ -63,18 +63,13 @@ class _LinearCode:
             For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`k-s` symbols into
             :func:`encode` to return the :math:`n-s`-symbol message.
 
-        Parameters
-        ----------
-        message
-            The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the number
-            of messages. For systematic codes, message lengths less than :math:`k` may be provided to produce
-            shortened codewords.
-        output
-            Specify whether to return the codeword or parity symbols only. The default is `"codeword"`.
+        Arguments:
+            message: The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the number
+                of messages. For systematic codes, message lengths less than :math:`k` may be provided to produce
+                shortened codewords.
+            output: Specify whether to return the codeword or parity symbols only. The default is `"codeword"`.
 
-        Returns
-        -------
-        :
+        Returns:
             If `output="codeword"`, the codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix.
             If `output="parity"`, the parity symbols as either a :math:`n-k`-length vector or :math:`(N, n-k)` matrix.
         """
@@ -105,16 +100,12 @@ class _LinearCode:
             For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
             :func:`detect`.
 
-        Parameters
-        ----------
-        codeword
-            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
-            number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
-            shortened codewords.
+        Arguments:
+            codeword: The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
+                number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
+                shortened codewords.
 
-        Returns
-        -------
-        :
+        Returns:
             A boolean scalar or :math:`N`-length array indicating if errors were detected in the corresponding codeword.
         """
         codeword, is_codeword_1d = self._check_and_convert_codeword(codeword)
@@ -153,26 +144,19 @@ class _LinearCode:
             For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
             :func:`decode` to return the :math:`k-s`-symbol message.
 
-        Parameters
-        ----------
-        codeword
-            The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
-            number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
-            shortened codewords.
-        output
-            Specify whether to return the error-corrected message or entire codeword. The default is `"message"`.
-        errors
-            Optionally specify whether to return the number of corrected errors. The default is `False`.
+        Arguments:
+            codeword: he codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
+                number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
+                shortened codewords.
+            output: Specify whether to return the error-corrected message or entire codeword. The default is `"message"`.
+            errors: Optionally specify whether to return the number of corrected errors. The default is `False`.
 
-        Returns
-        -------
-        :
-            If `output="message"`, the error-corrected message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
-            If `output="codeword"`, the error-corrected codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix.
-        :
-            If `errors=True`, returns the number of corrected symbol errors as either a scalar or :math:`N`-length array.
-            Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
-            -1 will be returned.
+        Returns:
+            - If `output="message"`, the error-corrected message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
+              If `output="codeword"`, the error-corrected codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix.
+            - If `errors=True`, returns the number of corrected symbol errors as either a scalar or :math:`N`-length array.
+              Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
+              -1 will be returned.
         """
         verify_literal(output, ["message", "codeword"])
 
@@ -379,31 +363,28 @@ class _LinearCode:
 
 def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
     r"""
-    Converts the generator matrix :math:`\mathbf{G}` of a linear :math:`[n, k]` code into its parity-check matrix :math:`\mathbf{H}`.
+    Converts the generator matrix :math:`\mathbf{G}` of a linear :math:`[n, k]` code into its parity-check matrix
+    :math:`\mathbf{H}`.
 
     The generator and parity-check matrices satisfy the equations :math:`\mathbf{G}\mathbf{H}^T = \mathbf{0}`.
 
-    Parameters
-    ----------
-    G
-        The :math:`(k, n)` generator matrix :math:`\mathbf{G}` in systematic form
-        :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
+    Arguments:
+        G: The :math:`(k, n)` generator matrix :math:`\mathbf{G}` in systematic form
+            :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
 
-    Returns
-    -------
-    :
+    Returns:
         The :math:`(n-k, n)` parity-check matrix :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        g = galois.primitive_poly(2, 3); g
-        G = galois.poly_to_generator_matrix(7, g); G
-        H = galois.generator_to_parity_check_matrix(G); H
-        G @ H.T
+            g = galois.primitive_poly(2, 3); g
+            G = galois.poly_to_generator_matrix(7, g); G
+            H = galois.generator_to_parity_check_matrix(G); H
+            G @ H.T
 
-    :group: fec
+    Group:
+        fec
     """
     verify_isinstance(G, FieldArray)
 
@@ -421,32 +402,29 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
 
 def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
     r"""
-    Converts the parity-check matrix :math:`\mathbf{H}` of a linear :math:`[n, k]` code into its generator matrix :math:`\mathbf{G}`.
+    Converts the parity-check matrix :math:`\mathbf{H}` of a linear :math:`[n, k]` code into its generator matrix
+    :math:`\mathbf{G}`.
 
     The generator and parity-check matrices satisfy the equations :math:`\mathbf{G}\mathbf{H}^T = \mathbf{0}`.
 
-    Parameters
-    ----------
-    H
-        The :math:`(n-k, n)` parity-check matrix :math:`\mathbf{G}` in systematic form
-        :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
+    Arguments:
+        H: The :math:`(n-k, n)` parity-check matrix :math:`\mathbf{G}` in systematic form
+            :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
 
-    Returns
-    -------
-    :
+    Returns:
         The :math:`(k, n)` generator matrix :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        g = galois.primitive_poly(2, 3); g
-        G = galois.poly_to_generator_matrix(7, g); G
-        H = galois.generator_to_parity_check_matrix(G); H
-        G2 = galois.parity_check_to_generator_matrix(H); G2
-        G2 @ H.T
+            g = galois.primitive_poly(2, 3); g
+            G = galois.poly_to_generator_matrix(7, g); G
+            H = galois.generator_to_parity_check_matrix(G); H
+            G2 = galois.parity_check_to_generator_matrix(H); G2
+            G2 @ H.T
 
-    :group: fec
+    Group:
+        fec
     """
     verify_isinstance(H, FieldArray)
 

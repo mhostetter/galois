@@ -77,34 +77,29 @@ def isqrt(n: int) -> int:
     r"""
     Computes :math:`x = \lfloor\sqrt{n}\rfloor` such that :math:`x^2 \le n < (x + 1)^2`.
 
-    :group: number-theory-integer
-
     .. info::
 
         This function is included for Python versions before 3.8. For Python 3.8 and later, this function
         calls :func:`math.isqrt` from the standard library.
 
-    Parameters
-    ----------
-    n
-        A non-negative integer.
+    Arguments:
+        n: A non-negative integer.
 
-    Returns
-    -------
-    :
+    Returns:
         The integer square root of :math:`n`.
 
-    See Also
-    --------
-    iroot, ilog
+    See Also:
+        iroot, ilog
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        n = 1000
-        x = galois.isqrt(n); x
-        print(f"{x**2} <= {n} < {(x + 1)**2}")
+            n = 1000
+            x = galois.isqrt(n); x
+            print(f"{x**2} <= {n} < {(x + 1)**2}")
+
+    Group:
+        number-theory-integer
     """
     if sys.version_info.major == 3 and sys.version_info.minor >= 8:
         return math.isqrt(n)  # pylint: disable=no-member
@@ -130,31 +125,25 @@ def iroot(n: int, k: int) -> int:
     r"""
     Computes :math:`x = \lfloor n^{\frac{1}{k}} \rfloor` such that :math:`x^k \le n < (x + 1)^k`.
 
-    :group: number-theory-integer
+    Arguments:
+        n: A non-negative integer.
+        k: The positive root :math:`k`.
 
-    Parameters
-    ----------
-    n
-        A non-negative integer.
-    k
-        The positive root :math:`k`.
-
-    Returns
-    -------
-    :
+    Returns:
         The integer :math:`k`-th root of :math:`n`.
 
-    See Also
-    --------
-    isqrt, ilog
+    See Also:
+        isqrt, ilog
 
-    Examples
-    --------
-    .. ipython :: python
+    Examples:
+        .. ipython :: python
 
-        n = 1000
-        x = galois.iroot(n, 5); x
-        print(f"{x**5} <= {n} < {(x + 1)**5}")
+            n = 1000
+            x = galois.iroot(n, 5); x
+            print(f"{x**5} <= {n} < {(x + 1)**5}")
+
+    Group:
+        number-theory-integer
     """
     verify_isinstance(n, int)
     verify_isinstance(k, int)
@@ -185,31 +174,25 @@ def ilog(n: int, b: int) -> int:
     r"""
     Computes :math:`x = \lfloor\textrm{log}_b(n)\rfloor` such that :math:`b^x \le n < b^{x + 1}`.
 
-    :group: number-theory-integer
+    Arguments:
+        n: A positive integer.
+        b: The logarithm base :math:`b`, must be at least 2.
 
-    Parameters
-    ----------
-    n
-        A positive integer.
-    b
-        The logarithm base :math:`b`, must be at least 2.
-
-    Returns
-    -------
-    :
+    Returns:
         The integer logarithm base :math:`b` of :math:`n`.
 
-    See Also
-    --------
-    iroot, isqrt
+    See Also:
+        iroot, isqrt
 
-    Examples
-    --------
-    .. ipython :: python
+    Examples:
+        .. ipython :: python
 
-        n = 1000
-        x = galois.ilog(n, 5); x
-        print(f"{5**x} <= {n} < {5**(x + 1)}")
+            n = 1000
+            x = galois.ilog(n, 5); x
+            print(f"{5**x} <= {n} < {5**(x + 1)}")
+
+    Group:
+        number-theory-integer
     """
     verify_isinstance(n, int)
     verify_isinstance(b, int)

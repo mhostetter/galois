@@ -40,39 +40,39 @@ class ReedSolomon(_CyclicCode):
 
         g(x) = (x - \alpha^c) \dots (x - \alpha^{c+d-2})
 
-    Examples
-    --------
-    Construct a :math:`\textrm{RS}(15, 9)` code.
+    Examples:
+        Construct a :math:`\textrm{RS}(15, 9)` code.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        rs = galois.ReedSolomon(15, 9); rs
-        GF = rs.field; GF
+            rs = galois.ReedSolomon(15, 9); rs
+            GF = rs.field; GF
 
-    Encode a message.
+        Encode a message.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        m = GF.Random(rs.k); m
-        c = rs.encode(m); c
+            m = GF.Random(rs.k); m
+            c = rs.encode(m); c
 
-    Corrupt the codeword and decode the message.
+        Corrupt the codeword and decode the message.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        # Corrupt the first symbol in the codeword
-        c[0] ^= 13; c
-        dec_m = rs.decode(c); dec_m
-        np.array_equal(dec_m, m)
+            # Corrupt the first symbol in the codeword
+            c[0] ^= 13; c
+            dec_m = rs.decode(c); dec_m
+            np.array_equal(dec_m, m)
 
-    Instruct the decoder to return the number of corrected symbol errors.
+        Instruct the decoder to return the number of corrected symbol errors.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        dec_m, N = rs.decode(c, errors=True); dec_m, N
-        np.array_equal(dec_m, m)
+            dec_m, N = rs.decode(c, errors=True); dec_m, N
+            np.array_equal(dec_m, m)
 
-    :group: fec
+    Group:
+        fec
     """
     # pylint: disable=no-member
 
@@ -89,57 +89,46 @@ class ReedSolomon(_CyclicCode):
         r"""
         Constructs a general :math:`\textrm{RS}(n, k)` code over :math:`\mathrm{GF}(q)`.
 
-        Important
-        ---------
-        Either `k` or `d` must be provided to define the code. Both may be provided as long as they are consistent.
+        Important:
+            Either `k` or `d` must be provided to define the code. Both may be provided as long as they are consistent.
 
-        Parameters
-        ----------
-        n
-            The codeword size :math:`n`. If :math:`n = q - 1`, the Reed-Solomon code is *primitive*.
-        k
-            The message size :math:`k`.
-        d
-            The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator polynomial
-            :math:`g(x)` over :math:`\mathrm{GF}(q)`. Reed-Solomon codes achieve the Singleton bound, so
-            :math:`d = n - k + 1`.
-        field
-            The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols. The default
-            is `None` which corresponds to :math:`\mathrm{GF}(2^m)` where :math:`2^{m - 1} \le n < 2^m`. The default
-            field will use `matlab_primitive_poly(2, m)` for the irreducible polynomial.
-        alpha
-            A primitive :math:`n`-th root of unity :math:`\alpha` in :math:`\mathrm{GF}(q)` that defines the
-            :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
-        c
-            The first consecutive power :math:`c` of :math:`\alpha` that defines the :math:`\alpha^c, \dots, \alpha^{c+d-2}`
-            roots of the generator polynomial :math:`g(x)`. The default is 1. If :math:`c = 1`, the Reed-Solomon code
-            is *narrow-sense*.
-        systematic
-            Indicates if the encoding should be systematic, meaning the codeword is the message with parity appended.
-            The default is `True`.
+        Arguments:
+            n: The codeword size :math:`n`. If :math:`n = q - 1`, the Reed-Solomon code is *primitive*.
+            k: The message size :math:`k`.
+            d: The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator polynomial
+                :math:`g(x)` over :math:`\mathrm{GF}(q)`. Reed-Solomon codes achieve the Singleton bound, so
+                :math:`d = n - k + 1`.
+            field: The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols. The default
+                is `None` which corresponds to :math:`\mathrm{GF}(2^m)` where :math:`2^{m - 1} \le n < 2^m`. The default
+                field will use `matlab_primitive_poly(2, m)` for the irreducible polynomial.
+            alpha: A primitive :math:`n`-th root of unity :math:`\alpha` in :math:`\mathrm{GF}(q)` that defines the
+                :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
+            c: The first consecutive power :math:`c` of :math:`\alpha` that defines the :math:`\alpha^c, \dots, \alpha^{c+d-2}`
+                roots of the generator polynomial :math:`g(x)`. The default is 1. If :math:`c = 1`, the Reed-Solomon code
+                is *narrow-sense*.
+            systematic: Indicates if the encoding should be systematic, meaning the codeword is the message with parity appended.
+                The default is `True`.
 
-        See Also
-        --------
-        matlab_primitive_poly, FieldArray.primitive_root_of_unity
+        See Also:
+            matlab_primitive_poly, FieldArray.primitive_root_of_unity
 
-        Examples
-        --------
-        Construct a primitive, narrow-sense :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
+        Examples:
+            Construct a primitive, narrow-sense :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.ReedSolomon(255, 223)
-            galois.ReedSolomon(255, d=33)
-            galois.ReedSolomon(255, 223, 33)
+                galois.ReedSolomon(255, 223)
+                galois.ReedSolomon(255, d=33)
+                galois.ReedSolomon(255, 223, 33)
 
-        Construct a non-primitive, narrow-sense :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
+            Construct a non-primitive, narrow-sense :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(2**8)
-            galois.ReedSolomon(85, 65, field=GF)
-            galois.ReedSolomon(85, d=21, field=GF)
-            galois.ReedSolomon(85, 65, 21, field=GF)
+                GF = galois.GF(2**8)
+                galois.ReedSolomon(85, 65, field=GF)
+                galois.ReedSolomon(85, d=21, field=GF)
+                galois.ReedSolomon(85, 65, 21, field=GF)
         """
         verify_isinstance(n, int)
         verify_isinstance(k, int, optional=True)
@@ -195,21 +184,20 @@ class ReedSolomon(_CyclicCode):
         r"""
         A terse representation of the Reed-Solomon code.
 
-        Examples
-        --------
-        Construct a primitive, narrow-sense :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
+        Examples:
+            Construct a primitive, narrow-sense :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(255, 223)
-            rs
+                rs = galois.ReedSolomon(255, 223)
+                rs
 
-        Construct a non-primitive, narrow-sense :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
+            Construct a non-primitive, narrow-sense :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8))
-            rs
+                rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8))
+                rs
         """
         return f"<Reed-Solomon Code: [{self.n}, {self.k}, {self.d}] over {self.field.name}>"
 
@@ -217,21 +205,20 @@ class ReedSolomon(_CyclicCode):
         r"""
         A formatted string with relevant properties of the Reed-Solomon code.
 
-        Examples
-        --------
-        Construct a primitive, narrow-sense :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
+        Examples:
+            Construct a primitive, narrow-sense :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(255, 223)
-            print(rs)
+                rs = galois.ReedSolomon(255, 223)
+                print(rs)
 
-        Construct a non-primitive, narrow-sense :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
+            Construct a non-primitive, narrow-sense :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8))
-            print(rs)
+                rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8))
+                print(rs)
         """
         string = "Reed-Solomon Code:"
         string += f"\n  [n, k, d]: [{self.n}, {self.k}, {self.d}]"
@@ -247,77 +234,76 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.encode,
         {},
         r"""
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            .. md-tab-set::
 
-            .. md-tab-item:: Vector
+                .. md-tab-item:: Vector
 
-                Encode a single message using the :math:`\textrm{RS}(15, 9)` code.
+                    Encode a single message using the :math:`\textrm{RS}(15, 9)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random(rs.k); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random(rs.k); m
+                        c = rs.encode(m); c
 
-                Compute the parity symbols only.
+                    Compute the parity symbols only.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    p = rs.encode(m, output="parity"); p
+                        p = rs.encode(m, output="parity"); p
 
-            .. md-tab-item:: Vector (shortened)
+                .. md-tab-item:: Vector (shortened)
 
-                Encode a single message using the shortened :math:`\textrm{RS}(11, 5)` code.
+                    Encode a single message using the shortened :math:`\textrm{RS}(11, 5)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random(rs.k - 4); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random(rs.k - 4); m
+                        c = rs.encode(m); c
 
-                Compute the parity symbols only.
+                    Compute the parity symbols only.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    p = rs.encode(m, output="parity"); p
+                        p = rs.encode(m, output="parity"); p
 
-            .. md-tab-item:: Matrix
+                .. md-tab-item:: Matrix
 
-                Encode a matrix of three messages using the :math:`\textrm{RS}(15, 9)` code.
+                    Encode a matrix of three messages using the :math:`\textrm{RS}(15, 9)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random((3, rs.k)); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random((3, rs.k)); m
+                        c = rs.encode(m); c
 
-                Compute the parity symbols only.
+                    Compute the parity symbols only.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    p = rs.encode(m, output="parity"); p
+                        p = rs.encode(m, output="parity"); p
 
-            .. md-tab-item:: Matrix (shortened)
+                .. md-tab-item:: Matrix (shortened)
 
-                Encode a matrix of three messages using the shortened :math:`\textrm{RS}(11, 5)` code.
+                    Encode a matrix of three messages using the shortened :math:`\textrm{RS}(11, 5)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random((3, rs.k - 4)); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random((3, rs.k - 4)); m
+                        c = rs.encode(m); c
 
-                Compute the parity symbols only.
+                    Compute the parity symbols only.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    p = rs.encode(m, output="parity"); p
+                        p = rs.encode(m, output="parity"); p
         """,
     )
     def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
@@ -327,117 +313,116 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.detect,
         {},
         r"""
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            .. md-tab-set::
 
-            .. md-tab-item:: Vector
+                .. md-tab-item:: Vector
 
-                Encode a single message using the :math:`\textrm{RS}(15, 9)` code.
+                    Encode a single message using the :math:`\textrm{RS}(15, 9)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random(rs.k); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random(rs.k); m
+                        c = rs.encode(m); c
 
-                Detect no errors in the valid codeword.
+                    Detect no errors in the valid codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs.detect(c)
+                        rs.detect(c)
 
-                Detect :math:`d_{min}-1` errors in the codeword.
+                    Detect :math:`d_{min}-1` errors in the codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs.d
-                    e = GF.Random(rs.d - 1, low=1); e
-                    c[0:rs.d - 1] += e; c
-                    rs.detect(c)
+                        rs.d
+                        e = GF.Random(rs.d - 1, low=1); e
+                        c[0:rs.d - 1] += e; c
+                        rs.detect(c)
 
-            .. md-tab-item:: Vector (shortened)
+                .. md-tab-item:: Vector (shortened)
 
-                Encode a single message using the shortened :math:`\textrm{RS}(11, 5)` code.
+                    Encode a single message using the shortened :math:`\textrm{RS}(11, 5)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random(rs.k - 4); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random(rs.k - 4); m
+                        c = rs.encode(m); c
 
-                Detect no errors in the valid codeword.
+                    Detect no errors in the valid codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs.detect(c)
+                        rs.detect(c)
 
-                Detect :math:`d_{min}-1` errors in the codeword.
+                    Detect :math:`d_{min}-1` errors in the codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs.d
-                    e = GF.Random(rs.d - 1, low=1); e
-                    c[0:rs.d - 1] += e; c
-                    rs.detect(c)
+                        rs.d
+                        e = GF.Random(rs.d - 1, low=1); e
+                        c[0:rs.d - 1] += e; c
+                        rs.detect(c)
 
-            .. md-tab-item:: Matrix
+                .. md-tab-item:: Matrix
 
-                Encode a matrix of three messages using the :math:`\textrm{RS}(15, 9)` code.
+                    Encode a matrix of three messages using the :math:`\textrm{RS}(15, 9)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random((3, rs.k)); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random((3, rs.k)); m
+                        c = rs.encode(m); c
 
-                Detect no errors in the valid codewords.
+                    Detect no errors in the valid codewords.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs.detect(c)
+                        rs.detect(c)
 
-                Detect one, two, and :math:`d_{min}-1` errors in the codewords.
+                    Detect one, two, and :math:`d_{min}-1` errors in the codewords.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs.d
-                    c[0, 0:1] += GF.Random(1, low=1)
-                    c[1, 0:2] += GF.Random(2, low=1)
-                    c[2, 0:rs.d - 1] += GF.Random(rs.d - 1, low=1)
-                    c
-                    rs.detect(c)
+                        rs.d
+                        c[0, 0:1] += GF.Random(1, low=1)
+                        c[1, 0:2] += GF.Random(2, low=1)
+                        c[2, 0:rs.d - 1] += GF.Random(rs.d - 1, low=1)
+                        c
+                        rs.detect(c)
 
-            .. md-tab-item:: Matrix (shortened)
+                .. md-tab-item:: Matrix (shortened)
 
-                Encode a matrix of three messages using the shortened :math:`\textrm{RS}(11, 5)` code.
+                    Encode a matrix of three messages using the shortened :math:`\textrm{RS}(11, 5)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random((3, rs.k - 4)); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random((3, rs.k - 4)); m
+                        c = rs.encode(m); c
 
-                Detect no errors in the valid codewords.
+                    Detect no errors in the valid codewords.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs.detect(c)
+                        rs.detect(c)
 
-                Detect one, two, and :math:`d_{min}-1` errors in the codewords.
+                    Detect one, two, and :math:`d_{min}-1` errors in the codewords.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs.d
-                    c[0, 0:1] += GF.Random(1, low=1)
-                    c[1, 0:2] += GF.Random(2, low=1)
-                    c[2, 0:rs.d - 1] += GF.Random(rs.d - 1, low=1)
-                    c
-                    rs.detect(c)
+                        rs.d
+                        c[0, 0:1] += GF.Random(1, low=1)
+                        c[1, 0:2] += GF.Random(2, low=1)
+                        c[2, 0:rs.d - 1] += GF.Random(rs.d - 1, low=1)
+                        c
+                        rs.detect(c)
         """,
     )
     def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
@@ -480,141 +465,140 @@ class ReedSolomon(_CyclicCode):
         is non-zero, the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding error
         locations and values.
 
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            .. md-tab-set::
 
-            .. md-tab-item:: Vector
+                .. md-tab-item:: Vector
 
-                Encode a single message using the :math:`\textrm{RS}(15, 9)` code.
+                    Encode a single message using the :math:`\textrm{RS}(15, 9)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random(rs.k); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random(rs.k); m
+                        c = rs.encode(m); c
 
-                Corrupt :math:`t` symbols of the codeword.
+                    Corrupt :math:`t` symbols of the codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    e = GF.Random(rs.t, low=1); e
-                    c[0:rs.t] += e; c
+                        e = GF.Random(rs.t, low=1); e
+                        c[0:rs.t] += e; c
 
-                Decode the codeword and recover the message.
+                    Decode the codeword and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d = rs.decode(c); d
-                    np.array_equal(d, m)
+                        d = rs.decode(c); d
+                        np.array_equal(d, m)
 
-                Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, specifying the number of corrected errors, and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d, e = rs.decode(c, errors=True); d, e
-                    np.array_equal(d, m)
+                        d, e = rs.decode(c, errors=True); d, e
+                        np.array_equal(d, m)
 
-            .. md-tab-item:: Vector (shortened)
+                .. md-tab-item:: Vector (shortened)
 
-                Encode a single message using the shortened :math:`\textrm{RS}(11, 5)` code.
+                    Encode a single message using the shortened :math:`\textrm{RS}(11, 5)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random(rs.k - 4); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random(rs.k - 4); m
+                        c = rs.encode(m); c
 
-                Corrupt :math:`t` symbols of the codeword.
+                    Corrupt :math:`t` symbols of the codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    e = GF.Random(rs.t, low=1); e
-                    c[0:rs.t] += e; c
+                        e = GF.Random(rs.t, low=1); e
+                        c[0:rs.t] += e; c
 
-                Decode the codeword and recover the message.
+                    Decode the codeword and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d = rs.decode(c); d
-                    np.array_equal(d, m)
+                        d = rs.decode(c); d
+                        np.array_equal(d, m)
 
-                Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, specifying the number of corrected errors, and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d, e = rs.decode(c, errors=True); d, e
-                    np.array_equal(d, m)
+                        d, e = rs.decode(c, errors=True); d, e
+                        np.array_equal(d, m)
 
-            .. md-tab-item:: Matrix
+                .. md-tab-item:: Matrix
 
-                Encode a matrix of three messages using the :math:`\textrm{RS}(15, 9)` code.
+                    Encode a matrix of three messages using the :math:`\textrm{RS}(15, 9)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random((3, rs.k)); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random((3, rs.k)); m
+                        c = rs.encode(m); c
 
-                Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the third.
+                    Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the third.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    c[0,0:1] += GF.Random(1, low=1)
-                    c[1,0:2] += GF.Random(2, low=1)
-                    c[2,0:3] += GF.Random(3, low=1)
-                    c
+                        c[0,0:1] += GF.Random(1, low=1)
+                        c[1,0:2] += GF.Random(2, low=1)
+                        c[2,0:3] += GF.Random(3, low=1)
+                        c
 
-                Decode the codeword and recover the message.
+                    Decode the codeword and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d = rs.decode(c); d
-                    np.array_equal(d, m)
+                        d = rs.decode(c); d
+                        np.array_equal(d, m)
 
-                Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, specifying the number of corrected errors, and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d, e = rs.decode(c, errors=True); d, e
-                    np.array_equal(d, m)
+                        d, e = rs.decode(c, errors=True); d, e
+                        np.array_equal(d, m)
 
-            .. md-tab-item:: Matrix (shortened)
+                .. md-tab-item:: Matrix (shortened)
 
-                Encode a matrix of three messages using the shortened :math:`\textrm{RS}(11, 5)` code.
+                    Encode a matrix of three messages using the shortened :math:`\textrm{RS}(11, 5)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    rs = galois.ReedSolomon(15, 9)
-                    GF = rs.field
-                    m = GF.Random((3, rs.k - 4)); m
-                    c = rs.encode(m); c
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random((3, rs.k - 4)); m
+                        c = rs.encode(m); c
 
-                Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the third.
+                    Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the third.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    c[0,0:1] += GF.Random(1, low=1)
-                    c[1,0:2] += GF.Random(2, low=1)
-                    c[2,0:3] += GF.Random(3, low=1)
-                    c
+                        c[0,0:1] += GF.Random(1, low=1)
+                        c[1,0:2] += GF.Random(2, low=1)
+                        c[2,0:3] += GF.Random(3, low=1)
+                        c
 
-                Decode the codeword and recover the message.
+                    Decode the codeword and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d = rs.decode(c); d
-                    np.array_equal(d, m)
+                        d = rs.decode(c); d
+                        np.array_equal(d, m)
 
-                Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, specifying the number of corrected errors, and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d, e = rs.decode(c, errors=True); d, e
-                    np.array_equal(d, m)
+                        d, e = rs.decode(c, errors=True); d, e
+                        np.array_equal(d, m)
         """,
     )
     def decode(self, codeword, output="message", errors=False):
@@ -630,23 +614,22 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.field,
         {},
         r"""
-        Examples
-        --------
-        Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
+        Examples:
+            Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.field
-            print(rs.field.properties)
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.field
+                print(rs.field.properties)
 
-        Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
+            Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
-            rs.field
-            print(rs.field.properties)
+                rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
+                rs.field
+                print(rs.field.properties)
         """,
     )
     def field(self) -> Type[FieldArray]:
@@ -656,21 +639,20 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.n,
         {},
         r"""
-        Examples
-        --------
-        Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
+        Examples:
+            Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.n
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.n
 
-        Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
+            Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
-            rs.n
+                rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
+                rs.n
         """,
     )
     @property
@@ -681,21 +663,20 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.k,
         {},
         r"""
-        Examples
-        --------
-        Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
+        Examples:
+            Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.k
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.k
 
-        Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
+            Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
-            rs.k
+                rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
+                rs.k
         """,
     )
     @property
@@ -706,21 +687,20 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.d,
         {},
         r"""
-        Examples
-        --------
-        Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
+        Examples:
+            Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.d
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.d
 
-        Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
+            Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
-            rs.d
+                rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
+                rs.d
         """,
     )
     @property
@@ -731,21 +711,20 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.t,
         {},
         r"""
-        Examples
-        --------
-        Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
+        Examples:
+            Construct a :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.t
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.t
 
-        Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
+            Construct a :math:`\textrm{RS}(26, 18)` code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
-            rs.t
+                rs = galois.ReedSolomon(26, 18, field=galois.GF(3**3)); rs
+                rs.t
         """,
     )
     @property
@@ -756,29 +735,28 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.generator_poly,
         {},
         r"""
-        Examples
-        --------
-        Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
-        root :math:`\alpha`.
+        Examples:
+            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
+            root :math:`\alpha`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.generator_poly
-            rs.roots
-            # Evaluate the generator polynomial at its roots in GF(q)
-            rs.generator_poly(rs.roots)
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.generator_poly
+                rs.roots
+                # Evaluate the generator polynomial at its roots in GF(q)
+                rs.generator_poly(rs.roots)
 
-        Construct a non-narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
-        root :math:`\alpha^3`.
+            Construct a non-narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
+            root :math:`\alpha^3`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9, c=3); rs
-            rs.generator_poly
-            rs.roots
-            # Evaluate the generator polynomial at its roots in GF(q)
-            rs.generator_poly(rs.roots)
+                rs = galois.ReedSolomon(15, 9, c=3); rs
+                rs.generator_poly
+                rs.roots
+                # Evaluate the generator polynomial at its roots in GF(q)
+                rs.generator_poly(rs.roots)
         """,
     )
     @property
@@ -789,23 +767,22 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.parity_check_poly,
         {},
         r"""
-        Examples
-        --------
-        Construct a primitive :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
+        Examples:
+            Construct a primitive :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.parity_check_poly
-            rs.H
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.parity_check_poly
+                rs.H
 
-        Construct a non-primitive :math:`\textrm{RS}(13, 9)` code over :math:`\mathrm{GF}(3^3)`.
+            Construct a non-primitive :math:`\textrm{RS}(13, 9)` code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
-            rs.parity_check_poly
-            rs.H
+                rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
+                rs.parity_check_poly
+                rs.H
         """,
     )
     @property
@@ -818,29 +795,28 @@ class ReedSolomon(_CyclicCode):
         r"""
         These are consecutive powers of :math:`\alpha^c`, specifically :math:`\alpha^c, \dots, \alpha^{c+d-2}`.
 
-        Examples
-        --------
-        Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
-        root :math:`\alpha`.
+        Examples:
+            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
+            root :math:`\alpha`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.roots
-            rs.generator_poly
-            # Evaluate the generator polynomial at its roots in GF(q)
-            rs.generator_poly(rs.roots)
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.roots
+                rs.generator_poly
+                # Evaluate the generator polynomial at its roots in GF(q)
+                rs.generator_poly(rs.roots)
 
-        Construct a non-narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
-        root :math:`\alpha^3`.
+            Construct a non-narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
+            root :math:`\alpha^3`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9, c=3); rs
-            rs.roots
-            rs.generator_poly
-            # Evaluate the generator polynomial at its roots in GF(q)
-            rs.generator_poly(rs.roots)
+                rs = galois.ReedSolomon(15, 9, c=3); rs
+                rs.roots
+                rs.generator_poly
+                # Evaluate the generator polynomial at its roots in GF(q)
+                rs.generator_poly(rs.roots)
         """,
     )
     @property
@@ -853,25 +829,24 @@ class ReedSolomon(_CyclicCode):
         A primitive :math:`n`-th root of unity :math:`\alpha` in :math:`\mathrm{GF}(q)` whose consecutive powers
         :math:`\alpha^c, \dots, \alpha^{c+d-2}` are roots of the generator polynomial :math:`g(x)`.
 
-        Examples
-        --------
-        Construct a primitive :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
+        Examples:
+            Construct a primitive :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(255, 223); rs
-            rs.alpha
-            rs.roots[0] == rs.alpha ** rs.c
-            rs.alpha.multiplicative_order() == rs.n
+                rs = galois.ReedSolomon(255, 223); rs
+                rs.alpha
+                rs.roots[0] == rs.alpha ** rs.c
+                rs.alpha.multiplicative_order() == rs.n
 
-        Construct a non-primitive :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
+            Construct a non-primitive :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8)); rs
-            rs.alpha
-            rs.roots[0] == rs.alpha ** rs.c
-            rs.alpha.multiplicative_order() == rs.n
+                rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8)); rs
+                rs.alpha
+                rs.roots[0] == rs.alpha ** rs.c
+                rs.alpha.multiplicative_order() == rs.n
         """
         return self._alpha
 
@@ -881,28 +856,27 @@ class ReedSolomon(_CyclicCode):
         The first consecutive power :math:`c` of :math:`\alpha` that defines the roots :math:`\alpha^c, \dots, \alpha^{c+d-2}`
         of the generator polynomial :math:`g(x)`.
 
-        Examples
-        --------
-        Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`
-        with first consecutive root :math:`\alpha`.
+        Examples:
+            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`
+            with first consecutive root :math:`\alpha`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.c
-            rs.roots[0] == rs.alpha ** rs.c
-            rs.generator_poly
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.c
+                rs.roots[0] == rs.alpha ** rs.c
+                rs.generator_poly
 
-        Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`
-        with first consecutive root :math:`\alpha^3`. Notice the design distance is the same, however
-        the generator polynomial is different.
+            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`
+            with first consecutive root :math:`\alpha^3`. Notice the design distance is the same, however
+            the generator polynomial is different.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9, c=3); rs
-            rs.c
-            rs.roots[0] == rs.alpha ** rs.c
-            rs.generator_poly
+                rs = galois.ReedSolomon(15, 9, c=3); rs
+                rs.c
+                rs.roots[0] == rs.alpha ** rs.c
+                rs.generator_poly
         """
         return self._c
 
@@ -910,27 +884,26 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.G,
         {},
         r"""
-        Examples
-        --------
-        Construct a primitive :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
+        Examples:
+            Construct a primitive :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.G
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.G
 
-        Construct a non-primitive :math:`\textrm{RS}(13, 9)` code over :math:`\mathrm{GF}(3^3)`.
+            Construct a non-primitive :math:`\textrm{RS}(13, 9)` code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
-            rs.G
+                rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
+                rs.G
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3), systematic=False); rs
-            rs.G
-            rs.generator_poly
+                rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3), systematic=False); rs
+                rs.G
+                rs.generator_poly
         """,
     )
     @property
@@ -941,23 +914,22 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.H,
         {},
         r"""
-        Examples
-        --------
-        Construct a primitive :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
+        Examples:
+            Construct a primitive :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.H
-            rs.parity_check_poly
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.H
+                rs.parity_check_poly
 
-        Construct a non-primitive :math:`\textrm{RS}(13, 9)` code over :math:`\mathrm{GF}(3^3)`.
+            Construct a non-primitive :math:`\textrm{RS}(13, 9)` code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
-            rs.H
-            rs.parity_check_poly
+                rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
+                rs.H
+                rs.parity_check_poly
         """,
     )
     @property
@@ -969,23 +941,22 @@ class ReedSolomon(_CyclicCode):
         r"""
         Indicates if the Reed-Solomon code is *primitive*, meaning :math:`n = q - 1`.
 
-        Examples
-        --------
-        Construct a primitive :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
+        Examples:
+            Construct a primitive :math:`\textrm{RS}(255, 223)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(255, 223); rs
-            rs.is_primitive
-            rs.n == rs.field.order - 1
+                rs = galois.ReedSolomon(255, 223); rs
+                rs.is_primitive
+                rs.n == rs.field.order - 1
 
-        Construct a non-primitive :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
+            Construct a non-primitive :math:`\textrm{RS}(85, 65)` code over :math:`\mathrm{GF}(2^8)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8)); rs
-            rs.is_primitive
-            rs.n == rs.field.order - 1
+                rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8)); rs
+                rs.is_primitive
+                rs.n == rs.field.order - 1
         """
         return self._is_primitive
 
@@ -995,30 +966,29 @@ class ReedSolomon(_CyclicCode):
         Indicates if the Reed-Solomon code is *narrow-sense*, meaning the roots of the generator polynomial are consecutive
         powers of :math:`\alpha` starting at 1, that is :math:`\alpha, \dots, \alpha^{d-1}`.
 
-        Examples
-        --------
-        Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`
-        with first consecutive root :math:`\alpha`.
+        Examples:
+            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`
+            with first consecutive root :math:`\alpha`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9); rs
-            rs.is_narrow_sense
-            rs.c == 1
-            rs.generator_poly
-            rs.roots
+                rs = galois.ReedSolomon(15, 9); rs
+                rs.is_narrow_sense
+                rs.c == 1
+                rs.generator_poly
+                rs.roots
 
-        Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`
-        with first consecutive root :math:`\alpha^3`. Notice the design distance is the same, however
-        the generator polynomial is different.
+            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`
+            with first consecutive root :math:`\alpha^3`. Notice the design distance is the same, however
+            the generator polynomial is different.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(15, 9, c=3); rs
-            rs.is_narrow_sense
-            rs.c == 1
-            rs.generator_poly
-            rs.roots
+                rs = galois.ReedSolomon(15, 9, c=3); rs
+                rs.is_narrow_sense
+                rs.c == 1
+                rs.generator_poly
+                rs.roots
         """
         return self._is_narrow_sense
 
@@ -1026,24 +996,23 @@ class ReedSolomon(_CyclicCode):
         _CyclicCode.is_systematic,
         {},
         r"""
-        Examples
-        --------
-        Construct a non-primitive :math:`\textrm{RS}(13, 9)` systematic code over :math:`\mathrm{GF}(3^3)`.
+        Examples:
+            Construct a non-primitive :math:`\textrm{RS}(13, 9)` systematic code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
-            rs.is_systematic
-            rs.G
+                rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
+                rs.is_systematic
+                rs.G
 
-        Construct a non-primitive :math:`\textrm{RS}(13, 9)` non-systematic code over :math:`\mathrm{GF}(3^3)`.
+            Construct a non-primitive :math:`\textrm{RS}(13, 9)` non-systematic code over :math:`\mathrm{GF}(3^3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3), systematic=False); rs
-            rs.is_systematic
-            rs.G
-            rs.generator_poly
+                rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3), systematic=False); rs
+                rs.is_systematic
+                rs.G
+                rs.generator_poly
         """,
     )
     @property

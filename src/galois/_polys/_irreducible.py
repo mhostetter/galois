@@ -20,57 +20,49 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
     r"""
     Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
-    :group: polys-irreducible
+    Arguments:
+        order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
+        degree: The degree :math:`m` of the desired irreducible polynomial.
+        method: The search method for finding the irreducible polynomial.
 
-    Parameters
-    ----------
-    order
-        The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-    degree
-        The degree :math:`m` of the desired irreducible polynomial.
-    method
-        The search method for finding the irreducible polynomial.
+            - `"min"` (default): Returns the lexicographically-minimal monic irreducible polynomial.
+            - `"max"`: Returns the lexicographically-maximal monic irreducible polynomial.
+            - `"random"`: Returns a randomly generated degree-:math:`m` monic irreducible polynomial.
 
-        - `"min"` (default): Returns the lexicographically-minimal monic irreducible polynomial.
-        - `"max"`: Returns the lexicographically-maximal monic irreducible polynomial.
-        - `"random"`: Returns a randomly generated degree-:math:`m` monic irreducible polynomial.
-
-    Returns
-    -------
-    :
+    Returns:
         The degree-:math:`m` monic irreducible polynomial over :math:`\mathrm{GF}(q)`.
 
-    See Also
-    --------
-    Poly.is_irreducible, primitive_poly, conway_poly
+    See Also:
+        Poly.is_irreducible, primitive_poly, conway_poly
 
-    Notes
-    -----
-    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
-    then :math:`a \cdot f(x)` is also irreducible.
+    Notes:
+        If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
+        then :math:`a \cdot f(x)` is also irreducible.
 
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
+        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
 
-    Examples
-    --------
-    Find the lexicographically minimal and maximal monic irreducible polynomial. Also find a random monic irreducible
-    polynomial.
+    Examples:
+        Find the lexicographically minimal and maximal monic irreducible polynomial. Also find a random monic irreducible
+        polynomial.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.irreducible_poly(7, 3)
-        galois.irreducible_poly(7, 3, method="max")
-        galois.irreducible_poly(7, 3, method="random")
+            galois.irreducible_poly(7, 3)
+            galois.irreducible_poly(7, 3, method="max")
+            galois.irreducible_poly(7, 3, method="random")
 
-    Monic irreducible polynomials scaled by non-zero field elements (now non-monic) are also irreducible.
+        Monic irreducible polynomials scaled by non-zero field elements (now non-monic) are also irreducible.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        GF = galois.GF(7)
-        f = galois.irreducible_poly(7, 5, method="random"); f
-        f.is_irreducible()
-        g = f * GF(3); g
-        g.is_irreducible()
+            GF = galois.GF(7)
+            f = galois.irreducible_poly(7, 5, method="random"); f
+            f.is_irreducible()
+            g = f * GF(3); g
+            g.is_irreducible()
+
+    Group:
+        polys-irreducible
     """
     verify_isinstance(order, int)
     verify_isinstance(degree, int)
@@ -96,60 +88,52 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
     r"""
     Iterates through all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
-    :group: polys-irreducible
+    Arguments:
+        order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
+        degree: The degree :math:`m` of the desired irreducible polynomial.
+        reverse: Indicates to return the irreducible polynomials from lexicographically maximal to minimal. The default is `False`.
 
-    Parameters
-    ----------
-    order
-        The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-    degree
-        The degree :math:`m` of the desired irreducible polynomial.
-    reverse
-        Indicates to return the irreducible polynomials from lexicographically maximal to minimal. The default is `False`.
-
-    Returns
-    -------
-    :
+    Returns:
         An iterator over all degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(q)`.
 
-    See Also
-    --------
-    Poly.is_irreducible, primitive_polys
+    See Also:
+        Poly.is_irreducible, primitive_polys
 
-    Notes
-    -----
-    If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
-    then :math:`a \cdot f(x)` is also irreducible.
+    Notes:
+        If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
+        then :math:`a \cdot f(x)` is also irreducible.
 
-    In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
+        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
 
-    Examples
-    --------
-    Find all monic irreducible polynomials over :math:`\mathrm{GF}(3)` with degree 4. You may also use `tuple()` on
-    the returned generator.
+    Examples:
+        Find all monic irreducible polynomials over :math:`\mathrm{GF}(3)` with degree 4. You may also use `tuple()` on
+        the returned generator.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        list(galois.irreducible_polys(3, 4))
+            list(galois.irreducible_polys(3, 4))
 
-    Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
-    have been found after the `break` condition is never incurred.
+        Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
+        have been found after the `break` condition is never incurred.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        for poly in galois.irreducible_polys(3, 4, reverse=True):
-            if poly.coeffs[1] < 2:  # Early exit condition
-                break
-            print(poly)
+            for poly in galois.irreducible_polys(3, 4, reverse=True):
+                if poly.coeffs[1] < 2:  # Early exit condition
+                    break
+                print(poly)
 
-    Or, manually iterate over the generator.
+        Or, manually iterate over the generator.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        generator = galois.irreducible_polys(3, 4, reverse=True); generator
-        next(generator)
-        next(generator)
-        next(generator)
+            generator = galois.irreducible_polys(3, 4, reverse=True); generator
+            next(generator)
+            next(generator)
+            next(generator)
+
+    Group:
+        polys-irreducible
     """
     verify_isinstance(order, int)
     verify_isinstance(degree, int)

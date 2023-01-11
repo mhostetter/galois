@@ -44,39 +44,39 @@ class BCH(_CyclicCode):
 
         g(x) = \textrm{LCM}(m_{\alpha^c}(x), \dots, m_{\alpha^{c+d-2}}(x))
 
-    Examples
-    --------
-    Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+    Examples:
+        Construct a binary :math:`\textrm{BCH}(15, 7)` code.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        bch = galois.BCH(15, 7); bch
-        GF = bch.field; GF
+            bch = galois.BCH(15, 7); bch
+            GF = bch.field; GF
 
-    Encode a message.
+        Encode a message.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        m = GF.Random(bch.k); m
-        c = bch.encode(m); c
+            m = GF.Random(bch.k); m
+            c = bch.encode(m); c
 
-    Corrupt the codeword and decode the message.
+        Corrupt the codeword and decode the message.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        # Corrupt the first symbol in the codeword
-        c[0] ^= 1; c
-        dec_m = bch.decode(c); dec_m
-        np.array_equal(dec_m, m)
+            # Corrupt the first symbol in the codeword
+            c[0] ^= 1; c
+            dec_m = bch.decode(c); dec_m
+            np.array_equal(dec_m, m)
 
-    Instruct the decoder to return the number of corrected symbol errors.
+        Instruct the decoder to return the number of corrected symbol errors.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        dec_m, N = bch.decode(c, errors=True); dec_m, N
-        np.array_equal(dec_m, m)
+            dec_m, N = bch.decode(c, errors=True); dec_m, N
+            np.array_equal(dec_m, m)
 
-    :group: fec
+    Group:
+        fec
     """
     # pylint: disable=no-member
 
@@ -94,77 +94,65 @@ class BCH(_CyclicCode):
         r"""
         Constructs a general :math:`\textrm{BCH}(n, k)` code over :math:`\mathrm{GF}(q)`.
 
-        Important
-        ---------
-        Either `k` or `d` must be provided to define the code. Both may be provided as long as they are consistent.
+        Important:
+            Either `k` or `d` must be provided to define the code. Both may be provided as long as they are consistent.
 
-        Parameters
-        ----------
-        n
-            The codeword size :math:`n`. If :math:`n = q^m - 1`, the BCH code is *primitive*.
-        k
-            The message size :math:`k`.
-        d
-            The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator polynomial
-            :math:`g(x)` over :math:`\mathrm{GF}(q^m)`.
-        field
-            The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols. The default
-            is `None` which corresponds to :math:`\mathrm{GF}(2)`.
-        extension_field
-            The Galois field :math:`\mathrm{GF}(q^m)` that defines the syndrome arithmetic. The default is `None` which
-            corresponds to :math:`\mathrm{GF}(q^m)` where :math:`q^{m - 1} \le n < q^m`. The default extension field
-            will use `matlab_primitive_poly(q, m)` for the irreducible polynomial.
-        alpha
-            A primitive :math:`n`-th root of unity :math:`\alpha` in :math:`\mathrm{GF}(q^m)` that defines the
-            :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
-        c
-            The first consecutive power :math:`c` of :math:`\alpha` that defines the :math:`\alpha^c, \dots, \alpha^{c+d-2}`
-            roots of the generator polynomial :math:`g(x)`. The default is 1. If :math:`c = 1`, the BCH code is *narrow-sense*.
-        systematic
-            Indicates if the encoding should be systematic, meaning the codeword is the message with parity appended.
-            The default is `True`.
+        Arguments:
+            n: The codeword size :math:`n`. If :math:`n = q^m - 1`, the BCH code is *primitive*.
+            k: The message size :math:`k`.
+            d: The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator polynomial
+                :math:`g(x)` over :math:`\mathrm{GF}(q^m)`.
+            field: The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols. The default
+                is `None` which corresponds to :math:`\mathrm{GF}(2)`.
+            extension_field: The Galois field :math:`\mathrm{GF}(q^m)` that defines the syndrome arithmetic. The default is
+                `None` which corresponds to :math:`\mathrm{GF}(q^m)` where :math:`q^{m - 1} \le n < q^m`. The default extension
+                field will use `matlab_primitive_poly(q, m)` for the irreducible polynomial.
+            alpha: A primitive :math:`n`-th root of unity :math:`\alpha` in :math:`\mathrm{GF}(q^m)` that defines the
+                :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
+            c: The first consecutive power :math:`c` of :math:`\alpha` that defines the :math:`\alpha^c, \dots, \alpha^{c+d-2}`
+                roots of the generator polynomial :math:`g(x)`. The default is 1. If :math:`c = 1`, the BCH code is *narrow-sense*.
+            systematic: Indicates if the encoding should be systematic, meaning the codeword is the message with parity appended.
+                The default is `True`.
 
-        See Also
-        --------
-        matlab_primitive_poly, FieldArray.primitive_root_of_unity
+        See Also:
+            matlab_primitive_poly, FieldArray.primitive_root_of_unity
 
-        Examples
-        --------
-        Construct a binary primitive, narrow-sense :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary primitive, narrow-sense :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.BCH(15, 7)
-            galois.BCH(15, d=5)
-            galois.BCH(15, 7, 5)
+                galois.BCH(15, 7)
+                galois.BCH(15, d=5)
+                galois.BCH(15, 7, 5)
 
-        Construct a primitive, narrow-sense :math:`\textrm{BCH}(26, 17)` code over :math:`\mathrm{GF}(3)`.
+            Construct a primitive, narrow-sense :math:`\textrm{BCH}(26, 17)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3)
-            galois.BCH(26, 17, field=GF)
-            galois.BCH(26, d=5, field=GF)
-            galois.BCH(26, 17, 5, field=GF)
+                GF = galois.GF(3)
+                galois.BCH(26, 17, field=GF)
+                galois.BCH(26, d=5, field=GF)
+                galois.BCH(26, 17, 5, field=GF)
 
-        Construct a non-primitive, narrow-sense :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive, narrow-sense :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3)
-            galois.BCH(13, 4, field=GF)
-            galois.BCH(13, d=7, field=GF)
-            galois.BCH(13, 4, 7, field=GF)
+                GF = galois.GF(3)
+                galois.BCH(13, 4, field=GF)
+                galois.BCH(13, d=7, field=GF)
+                galois.BCH(13, 4, 7, field=GF)
 
-        Discover primitive BCH codes over :math:`\mathrm{GF}(5)` by looping over the design distance.
+            Discover primitive BCH codes over :math:`\mathrm{GF}(5)` by looping over the design distance.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(5)
-            n = 5**2 - 1
-            for d in range(2, 11):
-                bch = galois.BCH(n, d=d, field=GF)
-                print(repr(bch))
+                GF = galois.GF(5)
+                n = 5**2 - 1
+                for d in range(2, 11):
+                    bch = galois.BCH(n, d=d, field=GF)
+                    print(repr(bch))
         """
         verify_isinstance(n, int)
         verify_isinstance(k, int, optional=True)
@@ -227,28 +215,27 @@ class BCH(_CyclicCode):
         r"""
         A terse representation of the BCH code.
 
-        Examples
-        --------
-        Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7)
-            bch
+                bch = galois.BCH(15, 7)
+                bch
 
-        Construct a primitive :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a primitive :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(26, 14, field=galois.GF(3))
-            bch
+                bch = galois.BCH(26, 14, field=galois.GF(3))
+                bch
 
-        Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 4, field=galois.GF(3))
-            bch
+                bch = galois.BCH(13, 4, field=galois.GF(3))
+                bch
         """
         return f"<BCH Code: [{self.n}, {self.k}, {self.d}] over {self.field.name}>"
 
@@ -256,28 +243,27 @@ class BCH(_CyclicCode):
         r"""
         A formatted string with relevant properties of the BCH code.
 
-        Examples
-        --------
-        Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7)
-            print(bch)
+                bch = galois.BCH(15, 7)
+                print(bch)
 
-        Construct a primitive :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a primitive :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(26, 14, field=galois.GF(3))
-            print(bch)
+                bch = galois.BCH(26, 14, field=galois.GF(3))
+                print(bch)
 
-        Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 4, field=galois.GF(3))
-            print(bch)
+                bch = galois.BCH(13, 4, field=galois.GF(3))
+                print(bch)
         """
         string = "BCH Code:"
         string += f"\n  [n, k, d]: [{self.n}, {self.k}, {self.d}]"
@@ -294,77 +280,76 @@ class BCH(_CyclicCode):
         _CyclicCode.encode,
         {},
         r"""
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            .. md-tab-set::
 
-            .. md-tab-item:: Vector
+                .. md-tab-item:: Vector
 
-                Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random(bch.k); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random(bch.k); m
+                        c = bch.encode(m); c
 
-                Compute the parity symbols only.
+                    Compute the parity symbols only.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    p = bch.encode(m, output="parity"); p
+                        p = bch.encode(m, output="parity"); p
 
-            .. md-tab-item:: Vector (shortened)
+                .. md-tab-item:: Vector (shortened)
 
-                Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random(bch.k - 3); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random(bch.k - 3); m
+                        c = bch.encode(m); c
 
-                Compute the parity symbols only.
+                    Compute the parity symbols only.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    p = bch.encode(m, output="parity"); p
+                        p = bch.encode(m, output="parity"); p
 
-            .. md-tab-item:: Matrix
+                .. md-tab-item:: Matrix
 
-                Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random((3, bch.k)); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random((3, bch.k)); m
+                        c = bch.encode(m); c
 
-                Compute the parity symbols only.
+                    Compute the parity symbols only.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    p = bch.encode(m, output="parity"); p
+                        p = bch.encode(m, output="parity"); p
 
-            .. md-tab-item:: Matrix (shortened)
+                .. md-tab-item:: Matrix (shortened)
 
-                Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random((3, bch.k - 3)); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random((3, bch.k - 3)); m
+                        c = bch.encode(m); c
 
-                Compute the parity symbols only.
+                    Compute the parity symbols only.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    p = bch.encode(m, output="parity"); p
+                        p = bch.encode(m, output="parity"); p
         """,
     )
     def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
@@ -374,115 +359,114 @@ class BCH(_CyclicCode):
         _CyclicCode.detect,
         {},
         r"""
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            .. md-tab-set::
 
-            .. md-tab-item:: Vector
+                .. md-tab-item:: Vector
 
-                Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random(bch.k); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random(bch.k); m
+                        c = bch.encode(m); c
 
-                Detect no errors in the valid codeword.
+                    Detect no errors in the valid codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.detect(c)
+                        bch.detect(c)
 
-                Detect :math:`d_{min}-1` errors in the codeword.
+                    Detect :math:`d_{min}-1` errors in the codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.d
-                    c[0:bch.d - 1] ^= 1; c
-                    bch.detect(c)
+                        bch.d
+                        c[0:bch.d - 1] ^= 1; c
+                        bch.detect(c)
 
-            .. md-tab-item:: Vector (shortened)
+                .. md-tab-item:: Vector (shortened)
 
-                Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random(bch.k - 3); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random(bch.k - 3); m
+                        c = bch.encode(m); c
 
-                Detect no errors in the valid codeword.
+                    Detect no errors in the valid codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.detect(c)
+                        bch.detect(c)
 
-                Detect :math:`d_{min}-1` errors in the codeword.
+                    Detect :math:`d_{min}-1` errors in the codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.d
-                    c[0:bch.d - 1] ^= 1; c
-                    bch.detect(c)
+                        bch.d
+                        c[0:bch.d - 1] ^= 1; c
+                        bch.detect(c)
 
-            .. md-tab-item:: Matrix
+                .. md-tab-item:: Matrix
 
-                Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random((3, bch.k)); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random((3, bch.k)); m
+                        c = bch.encode(m); c
 
-                Detect no errors in the valid codewords.
+                    Detect no errors in the valid codewords.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.detect(c)
+                        bch.detect(c)
 
-                Detect one, two, and :math:`d_{min}-1` errors in the codewords.
+                    Detect one, two, and :math:`d_{min}-1` errors in the codewords.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.d
-                    c[0, 0:1] ^= 1
-                    c[1, 0:2] ^= 1
-                    c[2, 0:bch.d - 1] ^= 1
-                    c
-                    bch.detect(c)
+                        bch.d
+                        c[0, 0:1] ^= 1
+                        c[1, 0:2] ^= 1
+                        c[2, 0:bch.d - 1] ^= 1
+                        c
+                        bch.detect(c)
 
-            .. md-tab-item:: Matrix (shortened)
+                .. md-tab-item:: Matrix (shortened)
 
-                Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random((3, bch.k - 3)); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random((3, bch.k - 3)); m
+                        c = bch.encode(m); c
 
-                Detect no errors in the valid codewords.
+                    Detect no errors in the valid codewords.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.detect(c)
+                        bch.detect(c)
 
-                Detect one, two, and :math:`d_{min}-1` errors in the codewords.
+                    Detect one, two, and :math:`d_{min}-1` errors in the codewords.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.d
-                    c[0, 0:1] ^= 1
-                    c[1, 0:2] ^= 1
-                    c[2, 0:bch.d - 1] ^= 1
-                    c
-                    bch.detect(c)
+                        bch.d
+                        c[0, 0:1] ^= 1
+                        c[1, 0:2] ^= 1
+                        c[2, 0:bch.d - 1] ^= 1
+                        c
+                        bch.detect(c)
         """,
     )
     def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
@@ -526,144 +510,142 @@ class BCH(_CyclicCode):
         is non-zero, the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding error
         locations and values.
 
-        Note
-        ----
-        The :math:`[n, k, d]_q` code has :math:`d_{min} \ge d` minimum distance. It can detect up
-        to :math:`d_{min}-1` errors.
+        Note:
+            The :math:`[n, k, d]_q` code has :math:`d_{min} \ge d` minimum distance. It can detect up
+            to :math:`d_{min}-1` errors.
 
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            .. md-tab-set::
 
-            .. md-tab-item:: Vector
+                .. md-tab-item:: Vector
 
-                Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random(bch.k); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random(bch.k); m
+                        c = bch.encode(m); c
 
-                Corrupt :math:`t` symbols of the codeword.
+                    Corrupt :math:`t` symbols of the codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.t
-                    c[0:bch.t] ^= 1; c
+                        bch.t
+                        c[0:bch.t] ^= 1; c
 
-                Decode the codeword and recover the message.
+                    Decode the codeword and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d = bch.decode(c); d
-                    np.array_equal(d, m)
+                        d = bch.decode(c); d
+                        np.array_equal(d, m)
 
-                Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, specifying the number of corrected errors, and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d, e = bch.decode(c, errors=True); d, e
-                    np.array_equal(d, m)
+                        d, e = bch.decode(c, errors=True); d, e
+                        np.array_equal(d, m)
 
-            .. md-tab-item:: Vector (shortened)
+                .. md-tab-item:: Vector (shortened)
 
-                Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random(bch.k - 3); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random(bch.k - 3); m
+                        c = bch.encode(m); c
 
-                Corrupt :math:`t` symbols of the codeword.
+                    Corrupt :math:`t` symbols of the codeword.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch.t
-                    c[0:bch.t] ^= 1; c
+                        bch.t
+                        c[0:bch.t] ^= 1; c
 
-                Decode the codeword and recover the message.
+                    Decode the codeword and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d = bch.decode(c); d
-                    np.array_equal(d, m)
+                        d = bch.decode(c); d
+                        np.array_equal(d, m)
 
-                Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, specifying the number of corrected errors, and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d, e = bch.decode(c, errors=True); d, e
-                    np.array_equal(d, m)
+                        d, e = bch.decode(c, errors=True); d, e
+                        np.array_equal(d, m)
 
-            .. md-tab-item:: Matrix
+                .. md-tab-item:: Matrix
 
-                Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random((3, bch.k)); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random((3, bch.k)); m
+                        c = bch.encode(m); c
 
-                Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.
+                    Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    c[1,0:1] ^= 1
-                    c[2,0:2] ^= 1
-                    c
+                        c[1,0:1] ^= 1
+                        c[2,0:2] ^= 1
+                        c
 
-                Decode the codeword and recover the message.
+                    Decode the codeword and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d = bch.decode(c); d
-                    np.array_equal(d, m)
+                        d = bch.decode(c); d
+                        np.array_equal(d, m)
 
-                Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, specifying the number of corrected errors, and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d, e = bch.decode(c, errors=True); d, e
-                    np.array_equal(d, m)
+                        d, e = bch.decode(c, errors=True); d, e
+                        np.array_equal(d, m)
 
-            .. md-tab-item:: Matrix (shortened)
+                .. md-tab-item:: Matrix (shortened)
 
-                Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    bch = galois.BCH(15, 7)
-                    GF = bch.field
-                    m = GF.Random((3, bch.k - 3)); m
-                    c = bch.encode(m); c
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random((3, bch.k - 3)); m
+                        c = bch.encode(m); c
 
-                Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.
+                    Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    c[1,0:1] ^= 1
-                    c[2,0:2] ^= 1
-                    c
+                        c[1,0:1] ^= 1
+                        c[2,0:2] ^= 1
+                        c
 
-                Decode the codeword and recover the message.
+                    Decode the codeword and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d = bch.decode(c); d
-                    np.array_equal(d, m)
+                        d = bch.decode(c); d
+                        np.array_equal(d, m)
 
-                Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, specifying the number of corrected errors, and recover the message.
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    d, e = bch.decode(c, errors=True); d, e
-                    np.array_equal(d, m)
+                        d, e = bch.decode(c, errors=True); d, e
+                        np.array_equal(d, m)
         """,
     )
     def decode(self, codeword, output="message", errors=False):
@@ -679,23 +661,22 @@ class BCH(_CyclicCode):
         _CyclicCode.field,
         {},
         r"""
-        Examples
-        --------
-        Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.field
-            print(bch.field.properties)
+                bch = galois.BCH(15, 7); bch
+                bch.field
+                print(bch.field.properties)
 
-        Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(26, 14, field=galois.GF(3)); bch
-            bch.field
-            print(bch.field.properties)
+                bch = galois.BCH(26, 14, field=galois.GF(3)); bch
+                bch.field
+                print(bch.field.properties)
         """,
     )
     def field(self) -> Type[FieldArray]:
@@ -706,23 +687,22 @@ class BCH(_CyclicCode):
         r"""
         The Galois field :math:`\mathrm{GF}(q^m)` that defines the BCH syndrome arithmetic.
 
-        Examples
-        --------
-        Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.extension_field
-            print(bch.extension_field.properties)
+                bch = galois.BCH(15, 7); bch
+                bch.extension_field
+                print(bch.extension_field.properties)
 
-        Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(26, 14, field=galois.GF(3)); bch
-            bch.extension_field
-            print(bch.extension_field.properties)
+                bch = galois.BCH(26, 14, field=galois.GF(3)); bch
+                bch.extension_field
+                print(bch.extension_field.properties)
         """
         return self._extension_field
 
@@ -730,21 +710,20 @@ class BCH(_CyclicCode):
         _CyclicCode.n,
         {},
         r"""
-        Examples
-        --------
-        Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.n
+                bch = galois.BCH(15, 7); bch
+                bch.n
 
-        Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(26, 14, field=galois.GF(3)); bch
-            bch.n
+                bch = galois.BCH(26, 14, field=galois.GF(3)); bch
+                bch.n
         """,
     )
     @property
@@ -755,21 +734,20 @@ class BCH(_CyclicCode):
         _CyclicCode.k,
         {},
         r"""
-        Examples
-        --------
-        Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.k
+                bch = galois.BCH(15, 7); bch
+                bch.k
 
-        Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(26, 14, field=galois.GF(3)); bch
-            bch.k
+                bch = galois.BCH(26, 14, field=galois.GF(3)); bch
+                bch.k
         """,
     )
     @property
@@ -782,21 +760,20 @@ class BCH(_CyclicCode):
         r"""
         The minimum distance of a BCH code may be greater than the design distance, i.e. :math:`d_{min} \ge d`.
 
-        Examples
-        --------
-        Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.d
+                bch = galois.BCH(15, 7); bch
+                bch.d
 
-        Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(26, 14, field=galois.GF(3)); bch
-            bch.d
+                bch = galois.BCH(26, 14, field=galois.GF(3)); bch
+                bch.d
         """,
     )
     @property
@@ -807,21 +784,20 @@ class BCH(_CyclicCode):
         _CyclicCode.t,
         {},
         r"""
-        Examples
-        --------
-        Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.t
+                bch = galois.BCH(15, 7); bch
+                bch.t
 
-        Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(26, 14, field=galois.GF(3)); bch
-            bch.t
+                bch = galois.BCH(26, 14, field=galois.GF(3)); bch
+                bch.t
         """,
     )
     @property
@@ -832,30 +808,29 @@ class BCH(_CyclicCode):
         _CyclicCode.generator_poly,
         {},
         r"""
-        Examples
-        --------
-        Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-        :math:`\alpha`.
+        Examples:
+            Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
+            :math:`\alpha`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.generator_poly
-            bch.roots
-            # Evaluate the generator polynomial at its roots in GF(q^m)
-            bch.generator_poly(bch.roots, field=bch.extension_field)
+                bch = galois.BCH(15, 7); bch
+                bch.generator_poly
+                bch.roots
+                # Evaluate the generator polynomial at its roots in GF(q^m)
+                bch.generator_poly(bch.roots, field=bch.extension_field)
 
-        Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-        :math:`\alpha^3`. Notice the design distance of this code is only 3 and it only has 2 roots
-        in :math:`\mathrm{GF}(2^4)`.
+            Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
+            :math:`\alpha^3`. Notice the design distance of this code is only 3 and it only has 2 roots
+            in :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7, c=3); bch
-            bch.generator_poly
-            bch.roots
-            # Evaluate the generator polynomial at its roots in GF(q^m)
-            bch.generator_poly(bch.roots, field=bch.extension_field)
+                bch = galois.BCH(15, 7, c=3); bch
+                bch.generator_poly
+                bch.roots
+                # Evaluate the generator polynomial at its roots in GF(q^m)
+                bch.generator_poly(bch.roots, field=bch.extension_field)
         """,
     )
     @property
@@ -866,23 +841,22 @@ class BCH(_CyclicCode):
         _CyclicCode.parity_check_poly,
         {},
         r"""
-        Examples
-        --------
-        Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.parity_check_poly
-            bch.H
+                bch = galois.BCH(15, 7); bch
+                bch.parity_check_poly
+                bch.H
 
-        Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 4, field=galois.GF(3)); bch
-            bch.parity_check_poly
-            bch.H
+                bch = galois.BCH(13, 4, field=galois.GF(3)); bch
+                bch.parity_check_poly
+                bch.H
         """,
     )
     @property
@@ -895,30 +869,29 @@ class BCH(_CyclicCode):
         r"""
         These are consecutive powers of :math:`\alpha^c`, specifically :math:`\alpha^c, \dots, \alpha^{c+d-2}`.
 
-        Examples
-        --------
-        Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-        :math:`\alpha`.
+        Examples:
+            Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
+            :math:`\alpha`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.roots
-            bch.generator_poly
-            # Evaluate the generator polynomial at its roots in GF(q^m)
-            bch.generator_poly(bch.roots, field=bch.extension_field)
+                bch = galois.BCH(15, 7); bch
+                bch.roots
+                bch.generator_poly
+                # Evaluate the generator polynomial at its roots in GF(q^m)
+                bch.generator_poly(bch.roots, field=bch.extension_field)
 
-        Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-        :math:`\alpha^3`. Notice the design distance of this code is only 3 and it only has 2 roots
-        in :math:`\mathrm{GF}(2^4)`.
+            Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
+            :math:`\alpha^3`. Notice the design distance of this code is only 3 and it only has 2 roots
+            in :math:`\mathrm{GF}(2^4)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7, c=3); bch
-            bch.roots
-            bch.generator_poly
-            # Evaluate the generator polynomial at its roots in GF(q^m)
-            bch.generator_poly(bch.roots, field=bch.extension_field)
+                bch = galois.BCH(15, 7, c=3); bch
+                bch.roots
+                bch.generator_poly
+                # Evaluate the generator polynomial at its roots in GF(q^m)
+                bch.generator_poly(bch.roots, field=bch.extension_field)
         """,
     )
     @property
@@ -932,25 +905,24 @@ class BCH(_CyclicCode):
         :math:`\alpha^c, \dots, \alpha^{c+d-2}` are roots of the generator polynomial :math:`g(x)`
         in :math:`\mathrm{GF}(q^m)`.
 
-        Examples
-        --------
-        Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.alpha
-            bch.roots[0] == bch.alpha ** bch.c
-            bch.alpha.multiplicative_order() == bch.n
+                bch = galois.BCH(15, 7); bch
+                bch.alpha
+                bch.roots[0] == bch.alpha ** bch.c
+                bch.alpha.multiplicative_order() == bch.n
 
-        Construct a non-primitive :math:`\textrm{BCH}(13, 7)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive :math:`\textrm{BCH}(13, 7)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 7, field=galois.GF(3)); bch
-            bch.alpha
-            bch.roots[0] == bch.alpha ** bch.c
-            bch.alpha.multiplicative_order() == bch.n
+                bch = galois.BCH(13, 7, field=galois.GF(3)); bch
+                bch.alpha
+                bch.roots[0] == bch.alpha ** bch.c
+                bch.alpha.multiplicative_order() == bch.n
         """
         return self._alpha
 
@@ -960,25 +932,24 @@ class BCH(_CyclicCode):
         The first consecutive power :math:`c` of :math:`\alpha` that defines the roots :math:`\alpha^c, \dots, \alpha^{c+d-2}`
         of the generator polynomial :math:`g(x)`.
 
-        Examples
-        --------
-        Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-        :math:`\alpha`.
+        Examples:
+            Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
+            :math:`\alpha`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.c
-            bch.roots[0] == bch.alpha ** bch.c
+                bch = galois.BCH(15, 7); bch
+                bch.c
+                bch.roots[0] == bch.alpha ** bch.c
 
-        Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-        :math:`\alpha^3`. Notice the design distance of this code is only 3.
+            Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
+            :math:`\alpha^3`. Notice the design distance of this code is only 3.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7, c=3); bch
-            bch.c
-            bch.roots[0] == bch.alpha ** bch.c
+                bch = galois.BCH(15, 7, c=3); bch
+                bch.c
+                bch.roots[0] == bch.alpha ** bch.c
         """
         return self._c
 
@@ -986,27 +957,26 @@ class BCH(_CyclicCode):
         _CyclicCode.G,
         {},
         r"""
-        Examples
-        --------
-        Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.G
+                bch = galois.BCH(15, 7); bch
+                bch.G
 
-        Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 4, field=galois.GF(3)); bch
-            bch.G
+                bch = galois.BCH(13, 4, field=galois.GF(3)); bch
+                bch.G
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 4, field=galois.GF(3), systematic=False); bch
-            bch.G
-            bch.generator_poly
+                bch = galois.BCH(13, 4, field=galois.GF(3), systematic=False); bch
+                bch.G
+                bch.generator_poly
         """,
     )
     @property
@@ -1017,23 +987,22 @@ class BCH(_CyclicCode):
         _CyclicCode.H,
         {},
         r"""
-        Examples
-        --------
-        Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.H
-            bch.parity_check_poly
+                bch = galois.BCH(15, 7); bch
+                bch.H
+                bch.parity_check_poly
 
-        Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 4, field=galois.GF(3)); bch
-            bch.H
-            bch.parity_check_poly
+                bch = galois.BCH(13, 4, field=galois.GF(3)); bch
+                bch.H
+                bch.parity_check_poly
         """,
     )
     @property
@@ -1045,23 +1014,22 @@ class BCH(_CyclicCode):
         r"""
         Indicates if the BCH code is *primitive*, meaning :math:`n = q^m - 1`.
 
-        Examples
-        --------
-        Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+        Examples:
+            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.is_primitive
-            bch.n == bch.extension_field.order - 1
+                bch = galois.BCH(15, 7); bch
+                bch.is_primitive
+                bch.n == bch.extension_field.order - 1
 
-        Construct a non-primitive :math:`\textrm{BCH}(13, 7)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive :math:`\textrm{BCH}(13, 7)` code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 7, field=galois.GF(3)); bch
-            bch.is_primitive
-            bch.n == bch.extension_field.order - 1
+                bch = galois.BCH(13, 7, field=galois.GF(3)); bch
+                bch.is_primitive
+                bch.n == bch.extension_field.order - 1
         """
         return self._is_primitive
 
@@ -1071,29 +1039,28 @@ class BCH(_CyclicCode):
         Indicates if the BCH code is *narrow-sense*, meaning the roots of the generator polynomial are consecutive
         powers of :math:`\alpha` starting at 1, that is :math:`\alpha, \dots, \alpha^{d-1}`.
 
-        Examples
-        --------
-        Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-        :math:`\alpha`.
+        Examples:
+            Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
+            :math:`\alpha`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7); bch
-            bch.is_narrow_sense
-            bch.c == 1
-            bch.generator_poly
-            bch.roots
+                bch = galois.BCH(15, 7); bch
+                bch.is_narrow_sense
+                bch.c == 1
+                bch.generator_poly
+                bch.roots
 
-        Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-        :math:`\alpha^3`. Notice the design distance of this code is only 3.
+            Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
+            :math:`\alpha^3`. Notice the design distance of this code is only 3.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(15, 7, c=3); bch
-            bch.is_narrow_sense
-            bch.c == 1
-            bch.generator_poly
-            bch.roots
+                bch = galois.BCH(15, 7, c=3); bch
+                bch.is_narrow_sense
+                bch.c == 1
+                bch.generator_poly
+                bch.roots
         """
         return self._is_narrow_sense
 
@@ -1101,24 +1068,23 @@ class BCH(_CyclicCode):
         _CyclicCode.is_systematic,
         {},
         r"""
-        Examples
-        --------
-        Construct a non-primitive :math:`\textrm{BCH}(13, 4)` systematic code over :math:`\mathrm{GF}(3)`.
+        Examples:
+            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` systematic code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 4, field=galois.GF(3)); bch
-            bch.is_systematic
-            bch.G
+                bch = galois.BCH(13, 4, field=galois.GF(3)); bch
+                bch.is_systematic
+                bch.G
 
-        Construct a non-primitive :math:`\textrm{BCH}(13, 4)` non-systematic code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` non-systematic code over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            bch = galois.BCH(13, 4, field=galois.GF(3), systematic=False); bch
-            bch.is_systematic
-            bch.G
-            bch.generator_poly
+                bch = galois.BCH(13, 4, field=galois.GF(3), systematic=False); bch
+                bch.is_systematic
+                bch.G
+                bch.generator_poly
         """,
     )
     @property
@@ -1207,9 +1173,8 @@ class decode_jit(Function):
     """
     Performs general BCH and Reed-Solomon decoding.
 
-    References
-    ----------
-    * Lin, S. and Costello, D. Error Control Coding. Section 7.4.
+    References:
+        - Lin, S. and Costello, D. Error Control Coding. Section 7.4.
     """
 
     def __init__(self, field: Type[FieldArray], extension_field: Type[FieldArray]):

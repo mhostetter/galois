@@ -55,15 +55,17 @@ class FieldArrayMeta(ArrayMeta):
         """
         A formatted string of relevant properties of the Galois field.
 
-        :group: String representation
-        :order: 21
+        Examples:
+            .. ipython:: python
 
-        Examples
-        --------
-        .. ipython:: python
+                GF = galois.GF(7**5)
+                print(GF.properties)
 
-            GF = galois.GF(7**5)
-            print(GF.properties)
+        Group:
+            String representation
+
+        Order:
+            21
         """
         with cls.prime_subfield.repr("int"):
             irreducible_poly_str = str(cls._irreducible_poly)
@@ -84,14 +86,13 @@ class FieldArrayMeta(ArrayMeta):
         """
         The finite field's name as a string `GF(p)` or `GF(p^m)`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            galois.GF(2).name
-            galois.GF(2**8).name
-            galois.GF(31).name
-            galois.GF(7**5).name
+                galois.GF(2).name
+                galois.GF(2**8).name
+                galois.GF(31).name
+                galois.GF(7**5).name
         """
         return super().name
 
@@ -101,15 +102,13 @@ class FieldArrayMeta(ArrayMeta):
         The prime characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)`. Adding
         :math:`p` copies of any element will always result in 0.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            galois.GF(2).characteristic
-            galois.GF(2**8).characteristic
-            galois.GF(31).characteristic
-            galois.GF(7**5).characteristic
-
+                galois.GF(2).characteristic
+                galois.GF(2**8).characteristic
+                galois.GF(31).characteristic
+                galois.GF(7**5).characteristic
         """
         return super().characteristic
 
@@ -118,14 +117,13 @@ class FieldArrayMeta(ArrayMeta):
         r"""
         The extension degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)`. The degree is a positive integer.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            galois.GF(2).degree
-            galois.GF(2**8).degree
-            galois.GF(31).degree
-            galois.GF(7**5).degree
+                galois.GF(2).degree
+                galois.GF(2**8).degree
+                galois.GF(31).degree
+                galois.GF(7**5).degree
         """
         return super().degree
 
@@ -134,14 +132,13 @@ class FieldArrayMeta(ArrayMeta):
         r"""
         The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`. The order of the field is equal to the field's size.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            galois.GF(2).order
-            galois.GF(2**8).order
-            galois.GF(31).order
-            galois.GF(7**5).order
+                galois.GF(2).order
+                galois.GF(2**8).order
+                galois.GF(31).order
+                galois.GF(7**5).order
         """
         return super().order
 
@@ -151,14 +148,13 @@ class FieldArrayMeta(ArrayMeta):
         The irreducible polynomial :math:`f(x)` of the Galois field :math:`\mathrm{GF}(p^m)`. The irreducible
         polynomial is of degree :math:`m` over :math:`\mathrm{GF}(p)`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            galois.GF(2).irreducible_poly
-            galois.GF(2**8).irreducible_poly
-            galois.GF(31).irreducible_poly
-            galois.GF(7**5).irreducible_poly
+                galois.GF(2).irreducible_poly
+                galois.GF(2**8).irreducible_poly
+                galois.GF(31).irreducible_poly
+                galois.GF(7**5).irreducible_poly
         """
         return super().irreducible_poly
 
@@ -168,23 +164,22 @@ class FieldArrayMeta(ArrayMeta):
         Indicates whether the :obj:`~galois.FieldArray.irreducible_poly` is a primitive polynomial. If so, :math:`x` is a
         primitive element of the finite field.
 
-        Examples
-        --------
-        The default :math:`\mathrm{GF}(2^8)` field uses a primitive polynomial.
+        Examples:
+            The default :math:`\mathrm{GF}(2^8)` field uses a primitive polynomial.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(2**8)
-            print(GF.properties)
-            GF.is_primitive_poly
+                GF = galois.GF(2**8)
+                print(GF.properties)
+                GF.is_primitive_poly
 
-        The :math:`\mathrm{GF}(2^8)` field from AES uses a non-primitive polynomial.
+            The :math:`\mathrm{GF}(2^8)` field from AES uses a non-primitive polynomial.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
-            print(GF.properties)
-            GF.is_primitive_poly
+                GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+                print(GF.properties)
+                GF.is_primitive_poly
         """
         return cls._is_primitive_poly
 
@@ -193,21 +188,20 @@ class FieldArrayMeta(ArrayMeta):
         r"""
         All of the finite field's elements :math:`\{0, \dots, p^m-1\}`.
 
-        Examples
-        --------
-        All elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
+        Examples:
+            All elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
 
-        .. ipython-with-reprs:: int,power
+            .. ipython-with-reprs:: int,power
 
-            GF = galois.GF(31)
-            GF.elements
+                GF = galois.GF(31)
+                GF.elements
 
-        All elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
+            All elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
 
-        .. ipython-with-reprs:: int,poly,power
+            .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(5**2)
-            GF.elements
+                GF = galois.GF(5**2)
+                GF.elements
         """
         return super().elements
 
@@ -216,21 +210,20 @@ class FieldArrayMeta(ArrayMeta):
         r"""
         All of the finite field's units :math:`\{1, \dots, p^m-1\}`. A unit is an element with a multiplicative inverse.
 
-        Examples
-        --------
-        All units of the prime field :math:`\mathrm{GF}(31)` in increasing order.
+        Examples:
+            All units of the prime field :math:`\mathrm{GF}(31)` in increasing order.
 
-        .. ipython-with-reprs:: int,power
+            .. ipython-with-reprs:: int,power
 
-            GF = galois.GF(31)
-            GF.units
+                GF = galois.GF(31)
+                GF.units
 
-        All units of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
+            All units of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
 
-        .. ipython-with-reprs:: int,poly,power
+            .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(5**2)
-            GF.units
+                GF = galois.GF(5**2)
+                GF.units
         """
         return super().units
 
@@ -243,21 +236,20 @@ class FieldArrayMeta(ArrayMeta):
         A primitive element is a root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
         :math:`\mathrm{GF}(p^m)`.
 
-        Examples
-        --------
-        The smallest primitive element of the prime field :math:`\mathrm{GF}(31)`.
+        Examples:
+            The smallest primitive element of the prime field :math:`\mathrm{GF}(31)`.
 
-        .. ipython-with-reprs:: int,power
+            .. ipython-with-reprs:: int,power
 
-            GF = galois.GF(31)
-            GF.elements
+                GF = galois.GF(31)
+                GF.elements
 
-        The smallest primitive element of the extension field :math:`\mathrm{GF}(5^2)`.
+            The smallest primitive element of the extension field :math:`\mathrm{GF}(5^2)`.
 
-        .. ipython-with-reprs:: int,poly,power
+            .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(5**2)
-            GF.elements
+                GF = galois.GF(5**2)
+                GF.elements
         """
         return super().primitive_element
 
@@ -267,21 +259,20 @@ class FieldArrayMeta(ArrayMeta):
         All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
         generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
 
-        Examples
-        --------
-        All primitive elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
+        Examples:
+            All primitive elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
 
-        .. ipython-with-reprs:: int,power
+            .. ipython-with-reprs:: int,power
 
-            GF = galois.GF(31)
-            GF.elements
+                GF = galois.GF(31)
+                GF.elements
 
-        All primitive elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
+            All primitive elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
 
-        .. ipython-with-reprs:: int,poly,power
+            .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(5**2)
-            GF.elements
+                GF = galois.GF(5**2)
+                GF.elements
         """
         if not hasattr(cls, "_primitive_elements"):
             n = cls.order - 1
@@ -297,34 +288,32 @@ class FieldArrayMeta(ArrayMeta):
         An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *square* if there exists a :math:`y` such that
         :math:`y^2 = x` in the field.
 
-        See Also
-        --------
-        is_square
+        See Also:
+            is_square
 
-        Examples
-        --------
-        In fields with characteristic 2, every element is a square (with two identical square roots).
+        Examples:
+            In fields with characteristic 2, every element is a square (with two identical square roots).
 
-        .. ipython-with-reprs:: int,poly,power
+            .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(2**3)
-            x = GF.squares; x
-            y1 = np.sqrt(x); y1
-            y2 = -y1; y2
-            np.array_equal(y1 ** 2, x)
-            np.array_equal(y2 ** 2, x)
+                GF = galois.GF(2**3)
+                x = GF.squares; x
+                y1 = np.sqrt(x); y1
+                y2 = -y1; y2
+                np.array_equal(y1 ** 2, x)
+                np.array_equal(y2 ** 2, x)
 
-        In fields with characteristic greater than 2, exactly half of the nonzero elements are squares
-        (with two unique square roots).
+            In fields with characteristic greater than 2, exactly half of the nonzero elements are squares
+            (with two unique square roots).
 
-        .. ipython-with-reprs:: int,power
+            .. ipython-with-reprs:: int,power
 
-            GF = galois.GF(11)
-            x = GF.squares; x
-            y1 = np.sqrt(x); y1
-            y2 = -y1; y2
-            np.array_equal(y1 ** 2, x)
-            np.array_equal(y2 ** 2, x)
+                GF = galois.GF(11)
+                x = GF.squares; x
+                y1 = np.sqrt(x); y1
+                y2 = -y1; y2
+                np.array_equal(y1 ** 2, x)
+                np.array_equal(y2 ** 2, x)
         """
         x = cls.elements
         is_square = x.is_square()
@@ -338,25 +327,23 @@ class FieldArrayMeta(ArrayMeta):
         An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *non-square* if there does not exist a :math:`y` such that
         :math:`y^2 = x` in the field.
 
-        See Also
-        --------
-        is_square
+        See Also:
+            is_square
 
-        Examples
-        --------
-        In fields with characteristic 2, no elements are non-squares.
+        Examples:
+            In fields with characteristic 2, no elements are non-squares.
 
-        .. ipython-with-reprs:: int,poly,power
+            .. ipython-with-reprs:: int,poly,power
 
-            GF = galois.GF(2**3)
-            GF.non_squares
+                GF = galois.GF(2**3)
+                GF.non_squares
 
-        In fields with characteristic greater than 2, exactly half of the nonzero elements are non-squares.
+            In fields with characteristic greater than 2, exactly half of the nonzero elements are non-squares.
 
-        .. ipython-with-reprs:: int,power
+            .. ipython-with-reprs:: int,power
 
-            GF = galois.GF(11)
-            GF.non_squares
+                GF = galois.GF(11)
+                GF.non_squares
         """
         x = cls.elements
         is_square = x.is_square()
@@ -367,14 +354,13 @@ class FieldArrayMeta(ArrayMeta):
         """
         Indicates if the finite field is a prime field, not an extension field. This is true when the field's order is prime.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            galois.GF(2).is_prime_field
-            galois.GF(2**8).is_prime_field
-            galois.GF(31).is_prime_field
-            galois.GF(7**5).is_prime_field
+                galois.GF(2).is_prime_field
+                galois.GF(2**8).is_prime_field
+                galois.GF(31).is_prime_field
+                galois.GF(7**5).is_prime_field
         """
         return cls._degree == 1
 
@@ -383,14 +369,13 @@ class FieldArrayMeta(ArrayMeta):
         """
         Indicates if the finite field is an extension field. This is true when the field's order is a prime power.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            galois.GF(2).is_extension_field
-            galois.GF(2**8).is_extension_field
-            galois.GF(31).is_extension_field
-            galois.GF(7**5).is_extension_field
+                galois.GF(2).is_extension_field
+                galois.GF(2**8).is_extension_field
+                galois.GF(31).is_extension_field
+                galois.GF(7**5).is_extension_field
         """
         return cls._degree > 1
 
@@ -399,14 +384,13 @@ class FieldArrayMeta(ArrayMeta):
         r"""
         The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            galois.GF(2).prime_subfield
-            galois.GF(2**8).prime_subfield
-            galois.GF(31).prime_subfield
-            galois.GF(7**5).prime_subfield
+                galois.GF(2).prime_subfield
+                galois.GF(2**8).prime_subfield
+                galois.GF(31).prime_subfield
+                galois.GF(7**5).prime_subfield
         """
         return cls._prime_subfield
 
@@ -418,27 +402,26 @@ class FieldArrayMeta(ArrayMeta):
 
         For finite fields whose elements cannot be represented with :obj:`numpy.int64`, the only valid data type is :obj:`numpy.object_`.
 
-        Examples
-        --------
-        For small finite fields, all integer data types are acceptable, with the exception of :obj:`numpy.uint64`. This is
-        because all arithmetic is done using :obj:`numpy.int64`.
+        Examples:
+            For small finite fields, all integer data types are acceptable, with the exception of :obj:`numpy.uint64`. This is
+            because all arithmetic is done using :obj:`numpy.int64`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(31); GF.dtypes
+                GF = galois.GF(31); GF.dtypes
 
-        Some data types are too small for certain finite fields, such as :obj:`numpy.int16` for :math:`\mathrm{GF}(7^5)`.
+            Some data types are too small for certain finite fields, such as :obj:`numpy.int16` for :math:`\mathrm{GF}(7^5)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(7**5); GF.dtypes
+                GF = galois.GF(7**5); GF.dtypes
 
-        Large fields must use :obj:`numpy.object_` which uses Python :obj:`int` for its unlimited size.
+            Large fields must use :obj:`numpy.object_` which uses Python :obj:`int` for its unlimited size.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(2**100); GF.dtypes
-            GF = galois.GF(36893488147419103183); GF.dtypes
+                GF = galois.GF(2**100); GF.dtypes
+                GF = galois.GF(36893488147419103183); GF.dtypes
         """
         return super().dtypes
 
@@ -449,25 +432,24 @@ class FieldArrayMeta(ArrayMeta):
 
         See :doc:`/basic-usage/element-representation` for a further discussion.
 
-        Examples
-        --------
-        The default element representation is the integer representation.
+        Examples:
+            The default element representation is the integer representation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**2)
-            x = GF.elements; x
-            GF.element_repr
+                GF = galois.GF(3**2)
+                x = GF.elements; x
+                GF.element_repr
 
-        Permanently modify the element representation by calling :func:`~galois.FieldArray.repr`.
+            Permanently modify the element representation by calling :func:`~galois.FieldArray.repr`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF.repr("poly");
-            x
-            GF.element_repr
-            @suppress
-            GF.repr()
+                GF.repr("poly");
+                x
+                GF.element_repr
+                @suppress
+                GF.repr()
         """
         return super().element_repr
 
@@ -477,29 +459,28 @@ class FieldArrayMeta(ArrayMeta):
         The current ufunc compilation mode for this :obj:`~galois.FieldArray` subclass. The ufuncs may be recompiled
         with :func:`~galois.FieldArray.compile`.
 
-        Examples
-        --------
-        Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
+        Examples:
+            Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.GF(65537).ufunc_mode
-            galois.GF(2**16).ufunc_mode
+                galois.GF(65537).ufunc_mode
+                galois.GF(2**16).ufunc_mode
 
-        Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
-        memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
+            Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
+            memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.GF(2147483647).ufunc_mode
-            galois.GF(2**32).ufunc_mode
+                galois.GF(2147483647).ufunc_mode
+                galois.GF(2**32).ufunc_mode
 
-        Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
+            Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.GF(36893488147419103183).ufunc_mode
-            galois.GF(2**100).ufunc_mode
+                galois.GF(36893488147419103183).ufunc_mode
+                galois.GF(2**100).ufunc_mode
         """
         return super().ufunc_mode
 
@@ -508,23 +489,22 @@ class FieldArrayMeta(ArrayMeta):
         """
         All supported ufunc compilation modes for this :obj:`~galois.FieldArray` subclass.
 
-        Examples
-        --------
-        Fields whose elements and arithmetic can fit within :obj:`numpy.int64` can be JIT compiled
-        to use either lookup tables or explicit calculation.
+        Examples:
+            Fields whose elements and arithmetic can fit within :obj:`numpy.int64` can be JIT compiled
+            to use either lookup tables or explicit calculation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.GF(65537).ufunc_modes
-            galois.GF(2**32).ufunc_modes
+                galois.GF(65537).ufunc_modes
+                galois.GF(2**32).ufunc_modes
 
-        Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` may only use pure-Python explicit
-        calculation.
+            Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` may only use pure-Python explicit
+            calculation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.GF(36893488147419103183).ufunc_modes
-            galois.GF(2**100).ufunc_modes
+                galois.GF(36893488147419103183).ufunc_modes
+                galois.GF(2**100).ufunc_modes
         """
         return super().ufunc_modes
 
@@ -534,28 +514,27 @@ class FieldArrayMeta(ArrayMeta):
         The default ufunc compilation mode for this :obj:`~galois.FieldArray` subclass. The ufuncs may be recompiled
         with :func:`~galois.FieldArray.compile`.
 
-        Examples
-        --------
-        Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
+        Examples:
+            Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.GF(65537).default_ufunc_mode
-            galois.GF(2**16).default_ufunc_mode
+                galois.GF(65537).default_ufunc_mode
+                galois.GF(2**16).default_ufunc_mode
 
-        Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
-        memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
+            Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
+            memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.GF(2147483647).default_ufunc_mode
-            galois.GF(2**32).default_ufunc_mode
+                galois.GF(2147483647).default_ufunc_mode
+                galois.GF(2**32).default_ufunc_mode
 
-        Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
+            Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.GF(36893488147419103183).default_ufunc_mode
-            galois.GF(2**100).default_ufunc_mode
+                galois.GF(36893488147419103183).default_ufunc_mode
+                galois.GF(2**100).default_ufunc_mode
         """
         return super().default_ufunc_mode

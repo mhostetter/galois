@@ -39,24 +39,24 @@ class Poly:
     r"""
     A univariate polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)`.
 
-    Examples
-    --------
-    Create a polynomial over :math:`\mathrm{GF}(2)`.
+    Examples:
+        Create a polynomial over :math:`\mathrm{GF}(2)`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.Poly([1, 0, 1, 1])
+            galois.Poly([1, 0, 1, 1])
 
-    Create a polynomial over :math:`\mathrm{GF}(3^5)`.
+        Create a polynomial over :math:`\mathrm{GF}(3^5)`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        GF = galois.GF(3**5)
-        galois.Poly([124, 0, 223, 0, 0, 15], field=GF)
+            GF = galois.GF(3**5)
+            galois.Poly([124, 0, 223, 0, 0, 15], field=GF)
 
-    See :doc:`/basic-usage/poly` and :doc:`/basic-usage/poly-arithmetic` for more examples.
+        See :doc:`/basic-usage/poly` and :doc:`/basic-usage/poly-arithmetic` for more examples.
 
-    :group: polys
+    Group:
+        polys
     """
     # pylint: disable=too-many-public-methods
 
@@ -89,25 +89,21 @@ class Poly:
         The polynomial :math:`f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` with degree :math:`d` has coefficients
         :math:`\{a_{d}, a_{d-1}, \dots, a_1, a_0\}` in :math:`\mathrm{GF}(p^m)`.
 
-        Parameters
-        ----------
-        coeffs
-            The polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
+        Arguments:
+            coeffs: The polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
+            field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the coefficients are an :obj:`~galois.Array`, they won't be modified. If the coefficients
-              are not explicitly in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using
-              `galois.GF2(coeffs)`.
-            * :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field using `field(coeffs)`.
+                - :obj:`None` (default): If the coefficients are an :obj:`~galois.Array`, they won't be modified. If the coefficients
+                  are not explicitly in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using
+                  `galois.GF2(coeffs)`.
+                - :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field using `field(coeffs)`.
 
-        order
-            The interpretation of the coefficient degrees.
+            order: The interpretation of the coefficient degrees.
 
-            - `"desc"` (default): The first element of `coeffs` is the highest degree coefficient,
-              i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
-            - `"asc"`: The first element of `coeffs` is the lowest degree coefficient,
-              i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
+                - `"desc"` (default): The first element of `coeffs` is the highest degree coefficient,
+                  i.e. :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}`.
+                - `"asc"`: The first element of `coeffs` is the lowest degree coefficient,
+                  i.e. :math:`\{a_0, a_1, \dots,  a_{d-1}, a_d\}`.
         """
         verify_isinstance(coeffs, (list, tuple, np.ndarray, Array))
         verify_issubclass(field, Array, optional=True)
@@ -163,30 +159,25 @@ class Poly:
         r"""
         Constructs the polynomial :math:`f(x) = 0` over :math:`\mathrm{GF}(p^m)`.
 
-        Parameters
-        ----------
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
+        Arguments:
+            field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
-        Returns
-        -------
-        :
+        Returns:
             The polynomial :math:`f(x) = 0`.
 
-        Examples
-        --------
-        Construct the zero polynomial over :math:`\mathrm{GF}(2)`.
+        Examples:
+            Construct the zero polynomial over :math:`\mathrm{GF}(2)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.Poly.Zero()
+                galois.Poly.Zero()
 
-        Construct the zero polynomial over :math:`\mathrm{GF}(3^5)`.
+            Construct the zero polynomial over :math:`\mathrm{GF}(3^5)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            galois.Poly.Zero(GF)
+                GF = galois.GF(3**5)
+                galois.Poly.Zero(GF)
         """
         return Poly([0], field=field)
 
@@ -195,30 +186,25 @@ class Poly:
         r"""
         Constructs the polynomial :math:`f(x) = 1` over :math:`\mathrm{GF}(p^m)`.
 
-        Parameters
-        ----------
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
+        Arguments:
+            field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
-        Returns
-        -------
-        :
+        Returns:
             The polynomial :math:`f(x) = 1`.
 
-        Examples
-        --------
-        Construct the one polynomial over :math:`\mathrm{GF}(2)`.
+        Examples:
+            Construct the one polynomial over :math:`\mathrm{GF}(2)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.Poly.One()
+                galois.Poly.One()
 
-        Construct the one polynomial over :math:`\mathrm{GF}(3^5)`.
+            Construct the one polynomial over :math:`\mathrm{GF}(3^5)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            galois.Poly.One(GF)
+                GF = galois.GF(3**5)
+                galois.Poly.One(GF)
         """
         return Poly([1], field=field)
 
@@ -227,30 +213,25 @@ class Poly:
         r"""
         Constructs the polynomial :math:`f(x) = x` over :math:`\mathrm{GF}(p^m)`.
 
-        Parameters
-        ----------
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
+        Arguments:
+            field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
-        Returns
-        -------
-        :
+        Returns:
             The polynomial :math:`f(x) = x`.
 
-        Examples
-        --------
-        Construct the identity polynomial over :math:`\mathrm{GF}(2)`.
+        Examples:
+            Construct the identity polynomial over :math:`\mathrm{GF}(2)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.Poly.Identity()
+                galois.Poly.Identity()
 
-        Construct the identity polynomial over :math:`\mathrm{GF}(3^5)`.
+            Construct the identity polynomial over :math:`\mathrm{GF}(3^5)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            galois.Poly.Identity(GF)
+                GF = galois.GF(3**5)
+                galois.Poly.Identity(GF)
         """
         return Poly([1, 0], field=field)
 
@@ -264,44 +245,37 @@ class Poly:
         r"""
         Constructs a random polynomial over :math:`\mathrm{GF}(p^m)` with degree :math:`d`.
 
-        Parameters
-        ----------
-        degree
-            The degree of the polynomial.
-        seed
-            Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
-            entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
+        Arguments:
+            degree: The degree of the polynomial.
+            seed: Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
+                entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
+            field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
-        Returns
-        -------
-        :
+        Returns:
             The polynomial :math:`f(x)`.
 
-        Examples
-        --------
-        Construct a random degree-5 polynomial over :math:`\mathrm{GF}(2)`.
+        Examples:
+            Construct a random degree-5 polynomial over :math:`\mathrm{GF}(2)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.Poly.Random(5)
+                galois.Poly.Random(5)
 
-        Construct a random degree-5 polynomial over :math:`\mathrm{GF}(3^5)` with a given seed. This produces repeatable results.
+            Construct a random degree-5 polynomial over :math:`\mathrm{GF}(3^5)` with a given seed. This produces repeatable results.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            galois.Poly.Random(5, seed=123456789, field=GF)
-            galois.Poly.Random(5, seed=123456789, field=GF)
+                GF = galois.GF(3**5)
+                galois.Poly.Random(5, seed=123456789, field=GF)
+                galois.Poly.Random(5, seed=123456789, field=GF)
 
-        Construct multiple polynomials with one global seed.
+            Construct multiple polynomials with one global seed.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            rng = np.random.default_rng(123456789)
-            galois.Poly.Random(5, seed=rng, field=GF)
-            galois.Poly.Random(5, seed=rng, field=GF)
+                rng = np.random.default_rng(123456789)
+                galois.Poly.Random(5, seed=rng, field=GF)
+                galois.Poly.Random(5, seed=rng, field=GF)
         """
         verify_isinstance(degree, int)
         verify_isinstance(seed, (int, np.integer, np.random.Generator), optional=True)
@@ -328,47 +302,40 @@ class Poly:
 
         :func:`~galois.Poly.Str` and :func:`~galois.Poly.__str__` are inverse operations.
 
-        Parameters
-        ----------
-        string
-            The string representation of the polynomial :math:`f(x)`.
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
+        Arguments:
+            string: The string representation of the polynomial :math:`f(x)`.
+            field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
-        Returns
-        -------
-        :
+        Returns:
             The polynomial :math:`f(x)`.
 
-        Notes
-        -----
-        The string parsing rules include:
+        Notes:
+            The string parsing rules include:
 
-        * Either `^` or `**` may be used for indicating the polynomial degrees. For example, `"13x^3 + 117"` or `"13x**3 + 117"`.
-        * Multiplication operators `*` may be used between coefficients and the polynomial indeterminate `x`, but are not required.
-          For example, `"13x^3 + 117"` or `"13*x^3 + 117"`.
-        * Polynomial coefficients of 1 may be specified or omitted. For example, `"x^3 + 117"` or `"1*x^3 + 117"`.
-        * The polynomial indeterminate can be any single character, but must be consistent. For example, `"13x^3 + 117"` or
-          `"13y^3 + 117"`.
-        * Spaces are not required between terms. For example, `"13x^3 + 117"` or `"13x^3+117"`.
-        * Any combination of the above rules is acceptable.
+            - Either `^` or `**` may be used for indicating the polynomial degrees. For example, `"13x^3 + 117"` or `"13x**3 + 117"`.
+            - Multiplication operators `*` may be used between coefficients and the polynomial indeterminate `x`, but are not required.
+              For example, `"13x^3 + 117"` or `"13*x^3 + 117"`.
+            - Polynomial coefficients of 1 may be specified or omitted. For example, `"x^3 + 117"` or `"1*x^3 + 117"`.
+            - The polynomial indeterminate can be any single character, but must be consistent. For example, `"13x^3 + 117"` or
+              `"13y^3 + 117"`.
+            - Spaces are not required between terms. For example, `"13x^3 + 117"` or `"13x^3+117"`.
+            - Any combination of the above rules is acceptable.
 
-        Examples
-        --------
-        Construct a polynomial over :math:`\mathrm{GF}(2)` from its string representation.
+        Examples:
+            Construct a polynomial over :math:`\mathrm{GF}(2)` from its string representation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f = galois.Poly.Str("x^2 + 1"); f
-            str(f)
+                f = galois.Poly.Str("x^2 + 1"); f
+                str(f)
 
-        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its string representation.
+            Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its string representation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            f = galois.Poly.Str("13x^3 + 117", field=GF); f
-            str(f)
+                GF = galois.GF(3**5)
+                f = galois.Poly.Str("13x^3 + 117", field=GF); f
+                str(f)
         """
         verify_isinstance(string, str)
 
@@ -383,59 +350,53 @@ class Poly:
 
         :func:`~galois.Poly.Int` and :func:`~galois.Poly.__int__` are inverse operations.
 
-        Parameters
-        ----------
-        integer
-            The integer representation of the polynomial :math:`f(x)`.
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
+        Arguments:
+            integer: The integer representation of the polynomial :math:`f(x)`.
+            field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which corresponds to :obj:`~galois.GF2`.
 
-        Returns
-        -------
-        :
+        Returns:
             The polynomial :math:`f(x)`.
 
-        Examples
-        --------
-        Construct a polynomial over :math:`\mathrm{GF}(2)` from its integer representation.
+        Examples:
+            Construct a polynomial over :math:`\mathrm{GF}(2)` from its integer representation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f = galois.Poly.Int(5); f
-            int(f)
+                f = galois.Poly.Int(5); f
+                int(f)
 
-        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its integer representation.
+            Construct a polynomial over :math:`\mathrm{GF}(3^5)` from its integer representation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            f = galois.Poly.Int(186535908, field=GF); f
-            int(f)
-            # The polynomial/integer equivalence
-            int(f) == 13*GF.order**3 + 117
+                GF = galois.GF(3**5)
+                f = galois.Poly.Int(186535908, field=GF); f
+                int(f)
+                # The polynomial/integer equivalence
+                int(f) == 13*GF.order**3 + 117
 
-        Construct a polynomial over :math:`\mathrm{GF}(2)` from its binary string.
+            Construct a polynomial over :math:`\mathrm{GF}(2)` from its binary string.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f = galois.Poly.Int(int("0b1011", 2)); f
-            bin(f)
+                f = galois.Poly.Int(int("0b1011", 2)); f
+                bin(f)
 
-        Construct a polynomial over :math:`\mathrm{GF}(2^3)` from its octal string.
+            Construct a polynomial over :math:`\mathrm{GF}(2^3)` from its octal string.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(2**3)
-            f = galois.Poly.Int(int("0o5034", 8), field=GF); f
-            oct(f)
+                GF = galois.GF(2**3)
+                f = galois.Poly.Int(int("0o5034", 8), field=GF); f
+                oct(f)
 
-        Construct a polynomial over :math:`\mathrm{GF}(2^8)` from its hexadecimal string.
+            Construct a polynomial over :math:`\mathrm{GF}(2^8)` from its hexadecimal string.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(2**8)
-            f = galois.Poly.Int(int("0xf700a275", 16), field=GF); f
-            hex(f)
+                GF = galois.GF(2**8)
+                f = galois.Poly.Int(int("0xf700a275", 16), field=GF); f
+                hex(f)
         """
         verify_isinstance(integer, int)
         verify_issubclass(field, Array, optional=True)
@@ -465,40 +426,33 @@ class Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its non-zero degrees.
 
-        Parameters
-        ----------
-        degrees
-            The polynomial degrees with non-zero coefficients.
-        coeffs
-            The corresponding non-zero polynomial coefficients. The default is `None` which corresponds to all ones.
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
+        Arguments:
+            degrees: The polynomial degrees with non-zero coefficients.
+            coeffs: The corresponding non-zero polynomial coefficients. The default is `None` which corresponds to all ones.
+            field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the coefficients are an :obj:`~galois.Array`, they won't be modified. If the coefficients are
-              not explicitly in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using
-              `galois.GF2(coeffs)`.
-            * :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field using `field(coeffs)`.
+                - :obj:`None` (default): If the coefficients are an :obj:`~galois.Array`, they won't be modified. If the coefficients are
+                  not explicitly in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using
+                  `galois.GF2(coeffs)`.
+                - :obj:`~galois.Array` subclass: The coefficients are explicitly converted to this Galois field using `field(coeffs)`.
 
-        Returns
-        -------
-        :
+        Returns:
             The polynomial :math:`f(x)`.
 
-        Examples
-        --------
-        Construct a polynomial over :math:`\mathrm{GF}(2)` by specifying the degrees with non-zero coefficients.
+        Examples:
+            Construct a polynomial over :math:`\mathrm{GF}(2)` by specifying the degrees with non-zero coefficients.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois.Poly.Degrees([3, 1, 0])
+                galois.Poly.Degrees([3, 1, 0])
 
-        Construct a polynomial over :math:`\mathrm{GF}(3^5)` by specifying the degrees with non-zero coefficients
-        and their coefficient values.
+            Construct a polynomial over :math:`\mathrm{GF}(3^5)` by specifying the degrees with non-zero coefficients
+            and their coefficient values.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            galois.Poly.Degrees([3, 1, 0], coeffs=[214, 73, 185], field=GF)
+                GF = galois.GF(3**5)
+                galois.Poly.Degrees([3, 1, 0], coeffs=[214, 73, 185], field=GF)
         """
         verify_isinstance(degrees, (list, tuple, np.ndarray))
         verify_isinstance(coeffs, (list, tuple, np.ndarray, Array), optional=True)
@@ -557,55 +511,47 @@ class Poly:
         r"""
         Constructs a monic polynomial over :math:`\mathrm{GF}(p^m)` from its roots.
 
-        Parameters
-        ----------
-        roots
-            The roots of the desired polynomial.
-        multiplicities
-            The corresponding root multiplicities. The default is `None` which corresponds to all ones.
-        field
-            The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
+        Arguments:
+            roots: The roots of the desired polynomial.
+            multiplicities: The corresponding root multiplicities. The default is `None` which corresponds to all ones.
+            field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over.
 
-            * :obj:`None` (default): If the roots are an :obj:`~galois.Array`, they won't be modified. If the roots are not explicitly
-              in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(roots)`.
-            * :obj:`~galois.Array` subclass: The roots are explicitly converted to this Galois field using `field(roots)`.
+                - :obj:`None` (default): If the roots are an :obj:`~galois.Array`, they won't be modified. If the roots are not explicitly
+                  in a Galois field, they are assumed to be from :math:`\mathrm{GF}(2)` and are converted using `galois.GF2(roots)`.
+                - :obj:`~galois.Array` subclass: The roots are explicitly converted to this Galois field using `field(roots)`.
 
-        Returns
-        -------
-        :
+        Returns:
             The polynomial :math:`f(x)`.
 
-        Notes
-        -----
-        The polynomial :math:`f(x)` with :math:`k` roots :math:`\{r_1, r_2, \dots, r_k\}` with multiplicities
-        :math:`\{m_1, m_2, \dots, m_k\}` is
+        Notes:
+            The polynomial :math:`f(x)` with :math:`k` roots :math:`\{r_1, r_2, \dots, r_k\}` with multiplicities
+            :math:`\{m_1, m_2, \dots, m_k\}` is
 
-        .. math::
-            f(x) &= (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k} \\
-                 &= a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
+            .. math::
+                f(x) &= (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k} \\
+                     &= a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
 
-        with degree :math:`d = \sum_{i=1}^{k} m_i`.
+            with degree :math:`d = \sum_{i=1}^{k} m_i`.
 
-        Examples
-        --------
-        Construct a polynomial over :math:`\mathrm{GF}(2)` from a list of its roots.
+        Examples:
+            Construct a polynomial over :math:`\mathrm{GF}(2)` from a list of its roots.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            roots = [0, 0, 1]
-            f = galois.Poly.Roots(roots); f
-            # Evaluate the polynomial at its roots
-            f(roots)
+                roots = [0, 0, 1]
+                f = galois.Poly.Roots(roots); f
+                # Evaluate the polynomial at its roots
+                f(roots)
 
-        Construct a polynomial over :math:`\mathrm{GF}(3^5)` from a list of its roots with specific multiplicities.
+            Construct a polynomial over :math:`\mathrm{GF}(3^5)` from a list of its roots with specific multiplicities.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            roots = [121, 198, 225]
-            f = galois.Poly.Roots(roots, multiplicities=[1, 2, 1], field=GF); f
-            # Evaluate the polynomial at its roots
-            f(roots)
+                GF = galois.GF(3**5)
+                roots = [121, 198, 225]
+                f = galois.Poly.Roots(roots, multiplicities=[1, 2, 1], field=GF); f
+                # Evaluate the polynomial at its roots
+                f(roots)
         """
         multiplicities = [1] * len(roots) if multiplicities is None else multiplicities
         verify_isinstance(roots, (tuple, list, np.ndarray, Array))
@@ -640,45 +586,37 @@ class Poly:
         """
         Returns the polynomial coefficients in the order and size specified.
 
-        Parameters
-        ----------
-        size
-            The fixed size of the coefficient array. Zeros will be added for higher-order terms. This value must be
-            at least `degree + 1` or a :obj:`ValueError` will be raised. The default is `None` which corresponds
-            to `degree + 1`.
+        Arguments:
+            size: The fixed size of the coefficient array. Zeros will be added for higher-order terms. This value must be
+                at least `degree + 1` or a :obj:`ValueError` will be raised. The default is `None` which corresponds
+                to `degree + 1`.
+            order: The order of the coefficient degrees, either descending (default) or ascending.
 
-        order
-            The order of the coefficient degrees, either descending (default) or ascending.
-
-        Returns
-        -------
-        :
+        Returns:
             An array of the polynomial coefficients with length `size`, either in descending order or ascending order.
 
-        Notes
-        -----
-        This accessor is similar to the :obj:`coeffs` property, but it has more settings. By default, `Poly.coeffs == Poly.coefficients()`.
+        Notes:
+            This accessor is similar to the :obj:`coeffs` property, but it has more settings. By default, `Poly.coeffs == Poly.coefficients()`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            f = galois.Poly([3, 0, 5, 2], field=GF); f
-            f.coeffs
-            f.coefficients()
+                GF = galois.GF(7)
+                f = galois.Poly([3, 0, 5, 2], field=GF); f
+                f.coeffs
+                f.coefficients()
 
-        Return the coefficients in ascending order.
+            Return the coefficients in ascending order.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f.coefficients(order="asc")
+                f.coefficients(order="asc")
 
-        Return the coefficients in ascending order with size 8.
+            Return the coefficients in ascending order with size 8.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f.coefficients(8, order="asc")
+                f.coefficients(8, order="asc")
         """
         verify_isinstance(size, int, optional=True)
         verify_isinstance(order, str)
@@ -699,26 +637,22 @@ class Poly:
         r"""
         Returns the :math:`d`-th reversal :math:`x^d f(\frac{1}{x})` of the polynomial :math:`f(x)` with degree :math:`d`.
 
-        Returns
-        -------
-        :
+        Returns:
             The :math:`n`-th reversal :math:`x^n f(\frac{1}{x})`.
 
-        Notes
-        -----
-        For a polynomial :math:`f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` with degree :math:`d`, the :math:`d`-th
-        reversal is equivalent to reversing the coefficients.
+        Notes:
+            For a polynomial :math:`f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` with degree :math:`d`, the :math:`d`-th
+            reversal is equivalent to reversing the coefficients.
 
-        .. math::
-            \textrm{rev}_d f(x) = x^d f(x^{-1}) = a_0 x^d + a_{1} x^{d-1} + \dots + a_{d-1} x + a_d
+            .. math::
+                \textrm{rev}_d f(x) = x^d f(x^{-1}) = a_0 x^d + a_{1} x^{d-1} + \dots + a_{d-1} x + a_d
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            f = galois.Poly([5, 0, 3, 4], field=GF); f
-            f.reverse()
+                GF = galois.GF(7)
+                f = galois.Poly([5, 0, 3, 4], field=GF); f
+                f.reverse()
         """
         if self._type == "sparse":
             return Poly.Degrees(self.degree - self._nonzero_degrees, self._nonzero_coeffs)
@@ -736,72 +670,65 @@ class Poly:
         r"""
         Calculates the roots :math:`r` of the polynomial :math:`f(x)`, such that :math:`f(r) = 0`.
 
-        Parameters
-        ----------
-        multiplicity
-            Optionally return the multiplicity of each root. The default is `False` which only returns the unique
-            roots.
+        Arguments:
+            multiplicity: Optionally return the multiplicity of each root. The default is `False` which only returns the unique
+                roots.
 
-        Returns
-        -------
-        :
-            An array of roots of :math:`f(x)`. The roots are ordered in increasing order.
-        :
-            The multiplicity of each root. This is only returned if `multiplicity=True`.
+        Returns:
+            - An array of roots of :math:`f(x)`. The roots are ordered in increasing order.
+            - The multiplicity of each root. This is only returned if `multiplicity=True`.
 
-        Notes
-        -----
-        This implementation uses Chien's search to find the roots :math:`\{r_1, r_2, \dots, r_k\}` of the degree-:math:`d`
-        polynomial
+        Notes:
+            This implementation uses Chien's search to find the roots :math:`\{r_1, r_2, \dots, r_k\}` of the degree-:math:`d`
+            polynomial
 
-        .. math::
-            f(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \dots + a_1x + a_0,
+            .. math::
+                f(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \dots + a_1x + a_0,
 
-        where :math:`k \le d`. Then, :math:`f(x)` can be factored as
+            where :math:`k \le d`. Then, :math:`f(x)` can be factored as
 
-        .. math::
-            f(x) = (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k},
+            .. math::
+                f(x) = (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k},
 
-        where :math:`m_i` is the multiplicity of root :math:`r_i` and :math:`d = \sum_{i=1}^{k} m_i`.
+            where :math:`m_i` is the multiplicity of root :math:`r_i` and :math:`d = \sum_{i=1}^{k} m_i`.
 
-        The Galois field elements can be represented as :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`,
-        where :math:`\alpha` is a primitive element of :math:`\mathrm{GF}(p^m)`.
+            The Galois field elements can be represented as :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`,
+            where :math:`\alpha` is a primitive element of :math:`\mathrm{GF}(p^m)`.
 
-        0 is a root of :math:`f(x)` if :math:`a_0 = 0`. 1 is a root of :math:`f(x)` if :math:`\sum_{j=0}^{d} a_j = 0`. The
-        remaining elements of :math:`\mathrm{GF}(p^m)` are powers of :math:`\alpha`. The following equations calculate :math:`f(\alpha^i)`,
-        where :math:`\alpha^i` is a root of :math:`f(x)` if :math:`f(\alpha^i) = 0`.
+            0 is a root of :math:`f(x)` if :math:`a_0 = 0`. 1 is a root of :math:`f(x)` if :math:`\sum_{j=0}^{d} a_j = 0`. The
+            remaining elements of :math:`\mathrm{GF}(p^m)` are powers of :math:`\alpha`. The following equations calculate :math:`f(\alpha^i)`,
+            where :math:`\alpha^i` is a root of :math:`f(x)` if :math:`f(\alpha^i) = 0`.
 
-        .. math::
-            f(\alpha^i) &= a_{d}(\alpha^i)^{d} + a_{d-1}(\alpha^i)^{d-1} + \dots + a_1(\alpha^i) + a_0 \\
-                        &\overset{\Delta}{=} \lambda_{i,d} + \lambda_{i,d-1} + \dots + \lambda_{i,1} + \lambda_{i,0} \\
-                        &= \sum_{j=0}^{d} \lambda_{i,j}
+            .. math::
+                f(\alpha^i) &= a_{d}(\alpha^i)^{d} + a_{d-1}(\alpha^i)^{d-1} + \dots + a_1(\alpha^i) + a_0 \\
+                            &\overset{\Delta}{=} \lambda_{i,d} + \lambda_{i,d-1} + \dots + \lambda_{i,1} + \lambda_{i,0} \\
+                            &= \sum_{j=0}^{d} \lambda_{i,j}
 
-        The next power of :math:`\alpha` can be easily calculated from the previous calculation.
+            The next power of :math:`\alpha` can be easily calculated from the previous calculation.
 
-        .. math::
-            f(\alpha^{i+1}) &= a_{d}(\alpha^{i+1})^{d} + a_{d-1}(\alpha^{i+1})^{d-1} + \dots + a_1(\alpha^{i+1}) + a_0 \\
-                            &= a_{d}(\alpha^i)^{d}\alpha^d + a_{d-1}(\alpha^i)^{d-1}\alpha^{d-1} + \dots + a_1(\alpha^i)\alpha + a_0 \\
-                            &= \lambda_{i,d}\alpha^d + \lambda_{i,d-1}\alpha^{d-1} + \dots + \lambda_{i,1}\alpha + \lambda_{i,0} \\
-                            &= \sum_{j=0}^{d} \lambda_{i,j}\alpha^j
+            .. math::
+                f(\alpha^{i+1}) &= a_{d}(\alpha^{i+1})^{d} + a_{d-1}(\alpha^{i+1})^{d-1} + \dots + a_1(\alpha^{i+1}) + a_0 \\
+                                &= a_{d}(\alpha^i)^{d}\alpha^d + a_{d-1}(\alpha^i)^{d-1}\alpha^{d-1} + \dots + a_1(\alpha^i)\alpha + a_0 \\
+                                &= \lambda_{i,d}\alpha^d + \lambda_{i,d-1}\alpha^{d-1} + \dots + \lambda_{i,1}\alpha + \lambda_{i,0} \\
+                                &= \sum_{j=0}^{d} \lambda_{i,j}\alpha^j
 
-        Examples
-        --------
-        Find the roots of a polynomial over :math:`\mathrm{GF}(2)`.
+        Examples:
+            Find the roots of a polynomial over :math:`\mathrm{GF}(2)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f = galois.Poly.Roots([1, 0], multiplicities=[7, 3]); f
-            f.roots()
-            f.roots(multiplicity=True)
+                f = galois.Poly.Roots([1, 0], multiplicities=[7, 3]); f
+                f.roots()
+                f.roots(multiplicity=True)
 
-        Find the roots of a polynomial over :math:`\mathrm{GF}(3^5)`.
+            Find the roots of a polynomial over :math:`\mathrm{GF}(3^5)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            f = galois.Poly.Roots([18, 227, 153], multiplicities=[5, 7, 3], field=GF); f
-            f.roots()
-            f.roots(multiplicity=True)
+                GF = galois.GF(3**5)
+                f = galois.Poly.Roots([18, 227, 153], multiplicities=[5, 7, 3], field=GF); f
+                f.roots()
+                f.roots(multiplicity=True)
         """
         verify_isinstance(multiplicity, bool)
 
@@ -817,54 +744,46 @@ class Poly:
         r"""
         Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
 
-        Returns
-        -------
-        :
-            The list of non-constant, square-free polynomials :math:`h_j(x)` in the factorization.
-        :
-            The list of corresponding multiplicities :math:`j`.
+        Returns:
+            - The list of non-constant, square-free polynomials :math:`h_j(x)` in the factorization.
+            - The list of corresponding multiplicities :math:`j`.
 
-        Raises
-        ------
-        ValueError
-            If :math:`f(x)` is not monic or has degree 0.
+        Raises:
+            ValueError: If :math:`f(x)` is not monic or has degree 0.
 
-        Notes
-        -----
-        The Square-Free Factorization algorithm factors :math:`f(x)` into a product of :math:`m` square-free polynomials :math:`h_j(x)`
-        with multiplicity :math:`j`.
+        Notes:
+            The Square-Free Factorization algorithm factors :math:`f(x)` into a product of :math:`m` square-free polynomials :math:`h_j(x)`
+            with multiplicity :math:`j`.
 
-        .. math::
-            f(x) = \prod_{j=1}^{m} h_j(x)^j
+            .. math::
+                f(x) = \prod_{j=1}^{m} h_j(x)^j
 
-        Some :math:`h_j(x) = 1`, but those polynomials are not returned by this function.
+            Some :math:`h_j(x) = 1`, but those polynomials are not returned by this function.
 
-        A complete polynomial factorization is implemented in :func:`~Poly.factors`.
+            A complete polynomial factorization is implemented in :func:`~Poly.factors`.
 
-        References
-        ----------
-        * Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.1.7.
-        * Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
+        References:
+            - Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.1.7.
+            - Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
-        Examples
-        --------
-        Suppose :math:`f(x) = x(x^3 + 2x + 4)(x^2 + 4x + 1)^3` over :math:`\mathrm{GF}(5)`. Each polynomial :math:`x`,
-        :math:`x^3 + 2x + 4`, and :math:`x^2 + 4x + 1` are all irreducible over :math:`\mathrm{GF}(5)`.
+        Examples:
+            Suppose :math:`f(x) = x(x^3 + 2x + 4)(x^2 + 4x + 1)^3` over :math:`\mathrm{GF}(5)`. Each polynomial :math:`x`,
+            :math:`x^3 + 2x + 4`, and :math:`x^2 + 4x + 1` are all irreducible over :math:`\mathrm{GF}(5)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(5)
-            a = galois.Poly([1,0], field=GF); a, a.is_irreducible()
-            b = galois.Poly([1,0,2,4], field=GF); b, b.is_irreducible()
-            c = galois.Poly([1,4,1], field=GF); c, c.is_irreducible()
-            f = a * b * c**3; f
+                GF = galois.GF(5)
+                a = galois.Poly([1,0], field=GF); a, a.is_irreducible()
+                b = galois.Poly([1,0,2,4], field=GF); b, b.is_irreducible()
+                c = galois.Poly([1,4,1], field=GF); c, c.is_irreducible()
+                f = a * b * c**3; f
 
-        The square-free factorization is :math:`\{x(x^3 + 2x + 4), x^2 + 4x + 1\}` with multiplicities :math:`\{1, 3\}`.
+            The square-free factorization is :math:`\{x(x^3 + 2x + 4), x^2 + 4x + 1\}` with multiplicities :math:`\{1, 3\}`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f.square_free_factors()
-            [a*b, c], [1, 3]
+                f.square_free_factors()
+                [a*b, c], [1, 3]
         """
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
@@ -915,67 +834,59 @@ class Poly:
         Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors all have
         the same degree.
 
-        Returns
-        -------
-        :
-            The list of polynomials :math:`f_i(x)` whose irreducible factors all have degree :math:`i`.
-        :
-            The list of corresponding distinct degrees :math:`i`.
+        Returns:
+            - The list of polynomials :math:`f_i(x)` whose irreducible factors all have degree :math:`i`.
+            - The list of corresponding distinct degrees :math:`i`.
 
-        Raises
-        ------
-        ValueError
-            If :math:`f(x)` is not monic, has degree 0, or is not square-free.
+        Raises:
+            ValueError: If :math:`f(x)` is not monic, has degree 0, or is not square-free.
 
-        Notes
-        -----
-        The Distinct-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`d` into a product
-        of :math:`d` polynomials :math:`f_i(x)`, where :math:`f_i(x)` is the product of all irreducible factors of :math:`f(x)` with
-        degree :math:`i`.
+        Notes:
+            The Distinct-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`d` into a product
+            of :math:`d` polynomials :math:`f_i(x)`, where :math:`f_i(x)` is the product of all irreducible factors of :math:`f(x)` with
+            degree :math:`i`.
 
-        .. math::
-            f(x) = \prod_{i=1}^{d} f_i(x)
+            .. math::
+                f(x) = \prod_{i=1}^{d} f_i(x)
 
-        For example, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`, then the
-        distinct-degree factorization is
+            For example, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`, then the
+            distinct-degree factorization is
 
-        .. math::
-            f_1(x) &= x(x + 1) = x^2 + x \\
-            f_2(x) &= x^2 + x + 1 \\
-            f_3(x) &= (x^3 + x + 1)(x^3 + x^2 + 1) = x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 \\
-            f_i(x) &= 1\ \textrm{for}\ i = 4, \dots, 10.
+            .. math::
+                f_1(x) &= x(x + 1) = x^2 + x \\
+                f_2(x) &= x^2 + x + 1 \\
+                f_3(x) &= (x^3 + x + 1)(x^3 + x^2 + 1) = x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 \\
+                f_i(x) &= 1\ \textrm{for}\ i = 4, \dots, 10.
 
-        Some :math:`f_i(x) = 1`, but those polynomials are not returned by this function. In this example, the function returns
-        :math:`\{f_1(x), f_2(x), f_3(x)\}` and :math:`\{1, 2, 3\}`.
+            Some :math:`f_i(x) = 1`, but those polynomials are not returned by this function. In this example, the function returns
+            :math:`\{f_1(x), f_2(x), f_3(x)\}` and :math:`\{1, 2, 3\}`.
 
-        The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see
-        :func:`~Poly.square_free_factors`. A complete polynomial factorization is implemented in :func:`~Poly.factors`.
+            The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm, see
+            :func:`~Poly.square_free_factors`. A complete polynomial factorization is implemented in :func:`~Poly.factors`.
 
-        References
-        ----------
-        * Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.2.2.
-        * Section 2.2 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
+        References:
+            - Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.2.2.
+            - Section 2.2 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
-        Examples
-        --------
-        From the example in the notes, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`.
+        Examples:
+            From the example in the notes, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over :math:`\mathrm{GF}(2)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            a = galois.Poly([1, 0]); a, a.is_irreducible()
-            b = galois.Poly([1, 1]); b, b.is_irreducible()
-            c = galois.Poly([1, 1, 1]); c, c.is_irreducible()
-            d = galois.Poly([1, 0, 1, 1]); d, d.is_irreducible()
-            e = galois.Poly([1, 1, 0, 1]); e, e.is_irreducible()
-            f = a * b * c * d * e; f
+                a = galois.Poly([1, 0]); a, a.is_irreducible()
+                b = galois.Poly([1, 1]); b, b.is_irreducible()
+                c = galois.Poly([1, 1, 1]); c, c.is_irreducible()
+                d = galois.Poly([1, 0, 1, 1]); d, d.is_irreducible()
+                e = galois.Poly([1, 1, 0, 1]); e, e.is_irreducible()
+                f = a * b * c * d * e; f
 
-        The distinct-degree factorization is :math:`\{x(x + 1), x^2 + x + 1, (x^3 + x + 1)(x^3 + x^2 + 1)\}` whose irreducible factors
-        have degrees :math:`\{1, 2, 3\}`.
+            The distinct-degree factorization is :math:`\{x(x + 1), x^2 + x + 1, (x^3 + x + 1)(x^3 + x^2 + 1)\}` whose irreducible factors
+            have degrees :math:`\{1, 2, 3\}`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f.distinct_degree_factors()
-            [a*b, c, d*e], [1, 2, 3]
+                f.distinct_degree_factors()
+                [a*b, c, d*e], [1, 2, 3]
         """
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
@@ -1018,55 +929,46 @@ class Poly:
         Factors the monic, square-free polynomial :math:`f(x)` of degree :math:`rd` into a product of :math:`r` irreducible factors with
         degree :math:`d`.
 
-        Parameters
-        ----------
-        degree
-            The degree :math:`d` of each irreducible factor of :math:`f(x)`.
+        Arguments:
+            degree: The degree :math:`d` of each irreducible factor of :math:`f(x)`.
 
-        Returns
-        -------
-        :
+        Returns:
             The list of :math:`r` irreducible factors :math:`\{g_1(x), \dots, g_r(x)\}` in lexicographically-increasing order.
 
-        Raises
-        ------
-        ValueError
-            If :math:`f(x)` is not monic, has degree 0, or is not square-free.
+        Raises:
+            ValueError: If :math:`f(x)` is not monic, has degree 0, or is not square-free.
 
-        Notes
-        -----
-        The Equal-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`rd` into a product of
-        :math:`r` irreducible polynomials each with degree :math:`d`. This function implements the Cantor-Zassenhaus algorithm, which
-        is probabilistic.
+        Notes:
+            The Equal-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree :math:`rd` into a product of
+            :math:`r` irreducible polynomials each with degree :math:`d`. This function implements the Cantor-Zassenhaus algorithm, which
+            is probabilistic.
 
-        The Equal-Degree Factorization algorithm is often applied after the Distinct-Degree Factorization algorithm, see
-        :func:`~Poly.distinct_degree_factors`. A complete polynomial factorization is implemented in :func:`~Poly.factors`.
+            The Equal-Degree Factorization algorithm is often applied after the Distinct-Degree Factorization algorithm, see
+            :func:`~Poly.distinct_degree_factors`. A complete polynomial factorization is implemented in :func:`~Poly.factors`.
 
-        References
-        ----------
-        * Section 2.3 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
-        * Section 1 from https://www.csa.iisc.ac.in/~chandan/courses/CNT/notes/lec8.pdf
+        References:
+            - Section 2.3 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
+            - Section 1 from https://www.csa.iisc.ac.in/~chandan/courses/CNT/notes/lec8.pdf
 
-        Examples
-        --------
-        Factor a product of degree-1 irreducible polynomials over :math:`\mathrm{GF}(2)`.
+        Examples:
+            Factor a product of degree-1 irreducible polynomials over :math:`\mathrm{GF}(2)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            a = galois.Poly([1, 0]); a, a.is_irreducible()
-            b = galois.Poly([1, 1]); b, b.is_irreducible()
-            f = a * b; f
-            f.equal_degree_factors(1)
+                a = galois.Poly([1, 0]); a, a.is_irreducible()
+                b = galois.Poly([1, 1]); b, b.is_irreducible()
+                f = a * b; f
+                f.equal_degree_factors(1)
 
-        Factor a product of degree-3 irreducible polynomials over :math:`\mathrm{GF}(5)`.
+            Factor a product of degree-3 irreducible polynomials over :math:`\mathrm{GF}(5)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(5)
-            a = galois.Poly([1, 0, 2, 1], field=GF); a, a.is_irreducible()
-            b = galois.Poly([1, 4, 4, 4], field=GF); b, b.is_irreducible()
-            f = a * b; f
-            f.equal_degree_factors(3)
+                GF = galois.GF(5)
+                a = galois.Poly([1, 0, 2, 1], field=GF); a, a.is_irreducible()
+                b = galois.Poly([1, 4, 4, 4], field=GF); b, b.is_irreducible()
+                f = a * b; f
+                f.equal_degree_factors(3)
         """
         verify_isinstance(degree, int)
         if not self.degree >= 1:
@@ -1109,61 +1011,53 @@ class Poly:
         r"""
         Computes the irreducible factors of the non-constant, monic polynomial :math:`f(x)`.
 
-        Returns
-        -------
-        :
-            Sorted list of irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of :math:`f(x)` sorted in
-            lexicographically-increasing order.
-        :
-            List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
+        Returns:
+            - Sorted list of irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of :math:`f(x)` sorted in
+              lexicographically-increasing order.
+            - List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
 
-        Raises
-        ------
-        ValueError
-            If :math:`f(x)` is not monic or has degree 0.
+        Raises:
+            ValueError: If :math:`f(x)` is not monic or has degree 0.
 
-        Notes
-        -----
-        This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that
-        :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
+        Notes:
+            This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that
+            :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
 
-        Steps:
+            Steps:
 
-        1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free polynomials.
-           See :func:`~Poly.square_free_factors`.
-        2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors
-           with the same degree. See :func:`~Poly.distinct_degree_factors`.
-        3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible
-           factors. See :func:`~Poly.equal_degree_factors`.
+            1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free polynomials.
+               See :func:`~Poly.square_free_factors`.
+            2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors
+               with the same degree. See :func:`~Poly.distinct_degree_factors`.
+            3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible
+               factors. See :func:`~Poly.equal_degree_factors`.
 
-        References
-        ----------
-        * Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.1.7.
-        * Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
+        References:
+            - Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.1.7.
+            - Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
-        Examples
-        --------
-        Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+        Examples:
+            Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3)
-            g1 = galois.irreducible_poly(3, 3); g1
-            g2 = galois.irreducible_poly(3, 4); g2
-            g3 = galois.irreducible_poly(3, 5); g3
+                GF = galois.GF(3)
+                g1 = galois.irreducible_poly(3, 3); g1
+                g2 = galois.irreducible_poly(3, 4); g2
+                g3 = galois.irreducible_poly(3, 5); g3
 
-        Construct a composite polynomial.
+            Construct a composite polynomial.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            e1, e2, e3 = 5, 4, 3
-            f = g1**e1 * g2**e2 * g3**e3; f
+                e1, e2, e3 = 5, 4, 3
+                f = g1**e1 * g2**e2 * g3**e3; f
 
-        Factor the polynomial into its irreducible factors over :math:`\mathrm{GF}(3)`.
+            Factor the polynomial into its irreducible factors over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f.factors()
+                f.factors()
         """
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
@@ -1194,70 +1088,63 @@ class Poly:
         r"""
         Computes the :math:`k`-th formal derivative :math:`\frac{d^k}{dx^k} f(x)` of the polynomial :math:`f(x)`.
 
-        Parameters
-        ----------
-        k
-            The number of derivatives to compute. 1 corresponds to :math:`p'(x)`, 2 corresponds to :math:`p''(x)`, etc.
-            The default is 1.
+        Arguments:
+            k: The number of derivatives to compute. 1 corresponds to :math:`p'(x)`, 2 corresponds to :math:`p''(x)`, etc.
+                The default is 1.
 
-        Returns
-        -------
-        :
+        Returns:
             The :math:`k`-th formal derivative of the polynomial :math:`f(x)`.
 
-        Notes
-        -----
-        For the polynomial
+        Notes:
+            For the polynomial
 
-        .. math::
-            f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
+            .. math::
+                f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
 
-        the first formal derivative is defined as
+            the first formal derivative is defined as
 
-        .. math::
-            f'(x) = (d) \cdot a_{d} x^{d-1} + (d-1) \cdot a_{d-1} x^{d-2} + \dots + (2) \cdot a_{2} x + a_1
+            .. math::
+                f'(x) = (d) \cdot a_{d} x^{d-1} + (d-1) \cdot a_{d-1} x^{d-2} + \dots + (2) \cdot a_{2} x + a_1
 
-        where :math:`\cdot` represents scalar multiplication (repeated addition), not finite field multiplication.
-        The exponent that is "brought down" and multiplied by the coefficient is an integer, not a finite field element.
-        For example, :math:`3 \cdot a = a + a + a`.
+            where :math:`\cdot` represents scalar multiplication (repeated addition), not finite field multiplication.
+            The exponent that is "brought down" and multiplied by the coefficient is an integer, not a finite field element.
+            For example, :math:`3 \cdot a = a + a + a`.
 
-        References
-        ----------
-        * https://en.wikipedia.org/wiki/Formal_derivative
+        References:
+            - https://en.wikipedia.org/wiki/Formal_derivative
 
-        Examples
-        --------
-        Compute the derivatives of a polynomial over :math:`\mathrm{GF}(2)`.
+        Examples:
+            Compute the derivatives of a polynomial over :math:`\mathrm{GF}(2)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f = galois.Poly.Random(7); f
-            f.derivative()
-            # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
-            f.derivative(GF.characteristic)
+                f = galois.Poly.Random(7); f
+                f.derivative()
+                # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
+                f.derivative(GF.characteristic)
 
-        Compute the derivatives of a polynomial over :math:`\mathrm{GF}(7)`.
+            Compute the derivatives of a polynomial over :math:`\mathrm{GF}(7)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            f = galois.Poly.Random(11, field=GF); f
-            f.derivative()
-            f.derivative(2)
-            f.derivative(3)
-            # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
-            f.derivative(GF.characteristic)
+                GF = galois.GF(7)
+                f = galois.Poly.Random(11, field=GF); f
+                f.derivative()
+                f.derivative(2)
+                f.derivative(3)
+                # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
+                f.derivative(GF.characteristic)
 
-        Compute the derivatives of a polynomial over :math:`\mathrm{GF}(3^5)`.
+            Compute the derivatives of a polynomial over :math:`\mathrm{GF}(3^5)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            f = galois.Poly.Random(7, field=GF); f
-            f.derivative()
-            f.derivative(2)
-            # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
-            f.derivative(GF.characteristic)
+                GF = galois.GF(3**5)
+                f = galois.Poly.Random(7, field=GF); f
+                f.derivative()
+                f.derivative(2)
+                # p derivatives of a polynomial, where p is the field's characteristic, will always result in 0
+                f.derivative(GF.characteristic)
         """
         verify_isinstance(k, int)
         if not k > 0:
@@ -1287,55 +1174,49 @@ class Poly:
 
             This is a method, not a property, to indicate this test is computationally expensive.
 
-        Returns
-        -------
-        :
+        Returns:
             `True` if the polynomial is irreducible.
 
-        See Also
-        --------
-        irreducible_poly, irreducible_polys
+        See Also:
+            irreducible_poly, irreducible_polys
 
-        Notes
-        -----
-        A polynomial :math:`f(x) \in \mathrm{GF}(p^m)[x]` is *reducible* over :math:`\mathrm{GF}(p^m)` if it can
-        be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p^m)[x]` of strictly
-        lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
-        closed, such irreducible polynomials exist.
+        Notes:
+            A polynomial :math:`f(x) \in \mathrm{GF}(p^m)[x]` is *reducible* over :math:`\mathrm{GF}(p^m)` if it can
+            be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p^m)[x]` of strictly
+            lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not algebraically
+            closed, such irreducible polynomials exist.
 
-        This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
-        over :math:`\mathrm{GF}(q)` for prime power :math:`q` is irreducible if and only if :math:`f(x)\ |\ (x^{q^m} - x)`
-        and :math:`\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1` for :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for
-        the :math:`k` prime divisors :math:`p_i` of :math:`m`.
+            This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
+            over :math:`\mathrm{GF}(q)` for prime power :math:`q` is irreducible if and only if :math:`f(x)\ |\ (x^{q^m} - x)`
+            and :math:`\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1` for :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for
+            the :math:`k` prime divisors :math:`p_i` of :math:`m`.
 
-        References
-        ----------
-        * Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273-280.
-          https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
-        * Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields.
-          https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
-        * Section 4.5.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
-        * https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
+        References:
+            - Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273-280.
+              https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
+            - Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields.
+              https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
+            - Section 4.5.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
+            - https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            # Conway polynomials are always irreducible (and primitive)
-            f = galois.conway_poly(2, 5); f
+                # Conway polynomials are always irreducible (and primitive)
+                f = galois.conway_poly(2, 5); f
 
-            # f(x) has no roots in GF(2), a necessary but not sufficient condition of being irreducible
-            f.roots()
+                # f(x) has no roots in GF(2), a necessary but not sufficient condition of being irreducible
+                f.roots()
 
-            f.is_irreducible()
+                f.is_irreducible()
 
-        .. ipython:: python
+            .. ipython:: python
 
-            g = galois.irreducible_poly(2**4, 2, method="random"); g
-            h = galois.irreducible_poly(2**4, 3, method="random"); h
-            f = g * h; f
+                g = galois.irreducible_poly(2**4, 2, method="random"); g
+                h = galois.irreducible_poly(2**4, 3, method="random"); h
+                f = g * h; f
 
-            f.is_irreducible()
+                f.is_irreducible()
         """
         # pylint: disable=too-many-return-statements
         if self.degree == 0:
@@ -1388,43 +1269,37 @@ class Poly:
 
             This is a method, not a property, to indicate this test is computationally expensive.
 
-        Returns
-        -------
-        :
+        Returns:
             `True` if the polynomial is primitive.
 
-        See Also
-        --------
-        primitive_poly, primitive_polys, conway_poly, matlab_primitive_poly
+        See Also:
+            primitive_poly, primitive_polys, conway_poly, matlab_primitive_poly
 
-        Notes
-        -----
-        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
-        :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than :math:`q^m - 1`.
+        Notes:
+            A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is irreducible and
+            :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than :math:`q^m - 1`.
 
-        References
-        ----------
-        * Algorithm 4.77 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
+        References:
+            - Algorithm 4.77 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
 
-        Examples
-        --------
-        All Conway polynomials are primitive.
+        Examples:
+            All Conway polynomials are primitive.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f = galois.conway_poly(2, 8); f
-            f.is_primitive()
+                f = galois.conway_poly(2, 8); f
+                f.is_primitive()
 
-            f = galois.conway_poly(3, 5); f
-            f.is_primitive()
+                f = galois.conway_poly(3, 5); f
+                f.is_primitive()
 
-        The irreducible polynomial of :math:`\mathrm{GF}(2^8)` for AES is not primitive.
+            The irreducible polynomial of :math:`\mathrm{GF}(2^8)` for AES is not primitive.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            f = galois.Poly.Degrees([8, 4, 3, 1, 0]); f
-            f.is_irreducible()
-            f.is_primitive()
+                f = galois.Poly.Degrees([8, 4, 3, 1, 0]); f
+                f.is_irreducible()
+                f.is_primitive()
         """
         if self.degree == 0:
             # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x]. Both the
@@ -1469,35 +1344,31 @@ class Poly:
 
             This is a method, not a property, to indicate this test is computationally expensive.
 
-        Returns
-        -------
-        :
+        Returns:
             `True` if the polynomial is square-free.
 
-        Notes
-        -----
-        A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one. Therefore,
-        its canonical factorization is
+        Notes:
+            A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one. Therefore,
+            its canonical factorization is
 
-        .. math::
-            f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
+            .. math::
+                f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
 
-        Examples
-        --------
-        Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+        Examples:
+            Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3)
-            f1 = galois.irreducible_poly(3, 3); f1
-            f2 = galois.irreducible_poly(3, 4); f2
+                GF = galois.GF(3)
+                f1 = galois.irreducible_poly(3, 3); f1
+                f2 = galois.irreducible_poly(3, 4); f2
 
-        Determine if composite polynomials are square-free over :math:`\mathrm{GF}(3)`.
+            Determine if composite polynomials are square-free over :math:`\mathrm{GF}(3)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            (f1 * f2).is_square_free()
-            (f1**2 * f2).is_square_free()
+                (f1 * f2).is_square_free()
+                (f1**2 * f2).is_square_free()
         """
         if not self.is_monic:
             self //= self.coeffs[0]
@@ -1518,17 +1389,15 @@ class Poly:
         """
         A representation of the polynomial and the finite field it's over.
 
-        Tip
-        ---
-        Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
+        Tip:
+            Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            f = galois.Poly([3, 0, 5, 2], field=GF); f
-            repr(f)
+                GF = galois.GF(7)
+                f = galois.Poly([3, 0, 5, 2], field=GF); f
+                repr(f)
         """
         return f"Poly({self!s}, {self.field.name})"
 
@@ -1538,18 +1407,16 @@ class Poly:
 
         :func:`~galois.Poly.Str` and :func:`~galois.Poly.__str__` are inverse operations.
 
-        Tip
-        ---
-        Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
+        Tip:
+            Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            f = galois.Poly([3, 0, 5, 2], field=GF); f
-            str(f)
-            print(f)
+                GF = galois.GF(7)
+                f = galois.Poly([3, 0, 5, 2], field=GF); f
+                str(f)
+                print(f)
         """
         if self._type == "sparse":
             return sparse_poly_to_str(self._nonzero_degrees, self._nonzero_coeffs)
@@ -1571,23 +1438,21 @@ class Poly:
 
         :func:`~galois.Poly.Int` and :func:`~galois.Poly.__int__` are inverse operations.
 
-        Notes
-        -----
-        For the polynomial :math:`f(x) =  a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` over the field :math:`\mathrm{GF}(p^m)`,
-        the integer representation is :math:`i = a_d (p^m)^{d} + a_{d-1} (p^m)^{d-1} + \dots + a_1 (p^m) + a_0` using integer arithmetic,
-        not finite field arithmetic.
+        Notes:
+            For the polynomial :math:`f(x) =  a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` over the field :math:`\mathrm{GF}(p^m)`,
+            the integer representation is :math:`i = a_d (p^m)^{d} + a_{d-1} (p^m)^{d-1} + \dots + a_1 (p^m) + a_0` using integer arithmetic,
+            not finite field arithmetic.
 
-        Said differently, the polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` are considered as the :math:`d` "digits"
-        of a radix-:math:`p^m` value. The polynomial's integer representation is that value in decimal (radix-10).
+            Said differently, the polynomial coefficients :math:`\{a_d, a_{d-1}, \dots, a_1, a_0\}` are considered as the :math:`d` "digits"
+            of a radix-:math:`p^m` value. The polynomial's integer representation is that value in decimal (radix-10).
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            f = galois.Poly([3, 0, 5, 2], field=GF); f
-            int(f)
-            int(f) == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
+                GF = galois.GF(7)
+                f = galois.Poly([3, 0, 5, 2], field=GF); f
+                int(f)
+                int(f) == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
         """
         return self.__index__()
 
@@ -1607,62 +1472,55 @@ class Poly:
         r"""
         Evaluates the polynomial :math:`f(x)` at :math:`x_0` or the polynomial composition :math:`f(g(x))`.
 
-        Parameters
-        ----------
-        at
-            A finite field scalar or array :math:`x_0` to evaluate the polynomial at or the polynomial
-            :math:`g(x)` to evaluate the polynomial composition :math:`f(g(x))`.
-        field
-            The Galois field to evaluate the polynomial over. The default is `None` which represents
-            the polynomial's current field, i.e. :obj:`field`.
-        elementwise
-            Indicates whether to evaluate :math:`x_0` element-wise. The default is `True`. If `False` (only valid
-            for square matrices), the polynomial indeterminate :math:`x` is exponentiated using matrix powers
-            (repeated matrix multiplication).
+        Arguments:
+            at: A finite field scalar or array :math:`x_0` to evaluate the polynomial at or the polynomial
+                :math:`g(x)` to evaluate the polynomial composition :math:`f(g(x))`.
+            field: The Galois field to evaluate the polynomial over. The default is `None` which represents
+                the polynomial's current field, i.e. :obj:`field`.
+            elementwise: Indicates whether to evaluate :math:`x_0` element-wise. The default is `True`. If `False` (only valid
+                for square matrices), the polynomial indeterminate :math:`x` is exponentiated using matrix powers
+                (repeated matrix multiplication).
 
-        Returns
-        -------
-        :
+        Returns:
             The result of the polynomial evaluation :math:`f(x_0)`. The resulting array has the same shape as :math:`x_0`.
             Or the polynomial composition :math:`f(g(x))`.
 
-        Examples
-        --------
-        Create a polynomial over :math:`\mathrm{GF}(3^5)`.
+        Examples:
+            Create a polynomial over :math:`\mathrm{GF}(3^5)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            f = galois.Poly([37, 123, 0, 201], field=GF); f
+                GF = galois.GF(3**5)
+                f = galois.Poly([37, 123, 0, 201], field=GF); f
 
-        Evaluate the polynomial element-wise at :math:`x_0`.
+            Evaluate the polynomial element-wise at :math:`x_0`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            x0 = GF([185, 218, 84, 163])
-            f(x0)
-            # The equivalent calculation
-            GF(37)*x0**3 + GF(123)*x0**2 + GF(201)
+                x0 = GF([185, 218, 84, 163])
+                f(x0)
+                # The equivalent calculation
+                GF(37)*x0**3 + GF(123)*x0**2 + GF(201)
 
-        Evaluate the polynomial at the square matrix :math:`X_0`.
+            Evaluate the polynomial at the square matrix :math:`X_0`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            X0 = GF([[185, 218], [84, 163]])
-            # This is performed element-wise. Notice the values are equal to the vector x0.
-            f(X0)
-            f(X0, elementwise=False)
-            # The equivalent calculation
-            GF(37)*np.linalg.matrix_power(X0, 3) + GF(123)*np.linalg.matrix_power(X0, 2) + GF(201)*GF.Identity(2)
+                X0 = GF([[185, 218], [84, 163]])
+                # This is performed element-wise. Notice the values are equal to the vector x0.
+                f(X0)
+                f(X0, elementwise=False)
+                # The equivalent calculation
+                GF(37)*np.linalg.matrix_power(X0, 3) + GF(123)*np.linalg.matrix_power(X0, 2) + GF(201)*GF.Identity(2)
 
-        Evaluate the polynomial :math:`f(x)` at the polynomial :math:`g(x)`.
+            Evaluate the polynomial :math:`f(x)` at the polynomial :math:`g(x)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            g = galois.Poly([55, 0, 1], field=GF); g
-            f(g)
-            # The equivalent calculation
-            GF(37)*g**3 + GF(123)*g**2 + GF(201)
+                g = galois.Poly([55, 0, 1], field=GF); g
+                f(g)
+                # The equivalent calculation
+                GF(37)*g**3 + GF(123)*g**2 + GF(201)
         """
         if isinstance(at, Poly):
             return _evaluate_poly(self, at)
@@ -1689,20 +1547,17 @@ class Poly:
         """
         Returns the length of the coefficient array, which is equivalent to `Poly.degree + 1`.
 
-        Returns
-        -------
-        :
+        Returns:
             The length of the coefficient array.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(3**5)
-            f = galois.Poly([37, 123, 0, 201], field=GF); f
-            f.coeffs
-            len(f)
-            f.degree + 1
+                GF = galois.GF(3**5)
+                f = galois.Poly([37, 123, 0, 201], field=GF); f
+                f.coeffs
+                len(f)
+                f.degree + 1
         """
         return self.degree + 1
 
@@ -1710,46 +1565,41 @@ class Poly:
         r"""
         Determines if two polynomials are equal.
 
-        Parameters
-        ----------
-        other
-            The polynomial to compare against.
+        Arguments:
+            other: The polynomial to compare against.
 
-        Returns
-        -------
-        :
+        Returns:
             `True` if the two polynomials have the same coefficients and are over the same finite field.
 
-        Examples
-        --------
-        Compare two polynomials over the same field.
+        Examples:
+            Compare two polynomials over the same field.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
-            b = galois.Poly([3, 0, 5], field=galois.GF(7)); b
-            a == b
-            # They are still two distinct objects, however
-            a is b
+                a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
+                b = galois.Poly([3, 0, 5], field=galois.GF(7)); b
+                a == b
+                # They are still two distinct objects, however
+                a is b
 
-        Compare two polynomials with the same coefficients but over different fields.
+            Compare two polynomials with the same coefficients but over different fields.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
-            b = galois.Poly([3, 0, 5], field=galois.GF(7**2)); b
-            a == b
+                a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
+                b = galois.Poly([3, 0, 5], field=galois.GF(7**2)); b
+                a == b
 
-        Comparison with :obj:`~galois.typing.PolyLike` objects is allowed for convenience.
+            Comparison with :obj:`~galois.typing.PolyLike` objects is allowed for convenience.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            a = galois.Poly([3, 0, 2], field=GF); a
-            a == GF([3, 0, 2])
-            a == [3, 0, 2]
-            a == "3x^2 + 2"
-            a == 3*7**2 + 2
+                GF = galois.GF(7)
+                a = galois.Poly([3, 0, 2], field=GF); a
+                a == GF([3, 0, 2])
+                a == [3, 0, 2]
+                a == "3x^2 + 2"
+                a == 3*7**2 + 2
         """
         # Coerce to a polynomial object
         if not isinstance(other, (Poly, Array)):
@@ -2060,18 +1910,17 @@ class Poly:
         """
         The :obj:`~galois.Array` subclass for the finite field the coefficients are over.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            a = galois.Poly.Random(5); a
-            a.field
+                a = galois.Poly.Random(5); a
+                a.field
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(2**8)
-            b = galois.Poly.Random(5, field=GF); b
-            b.field
+                GF = galois.GF(2**8)
+                b = galois.Poly.Random(5, field=GF); b
+                b.field
         """
         return self._field
 
@@ -2080,13 +1929,12 @@ class Poly:
         """
         The degree of the polynomial. The degree of a polynomial is the highest degree with a non-zero coefficient.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.degree
+                GF = galois.GF(7)
+                p = galois.Poly([3, 0, 5, 2], field=GF); p
+                p.degree
         """
         if not hasattr(self, "_degree"):
             if hasattr(self, "_coeffs"):
@@ -2109,13 +1957,12 @@ class Poly:
         """
         The coefficients of the polynomial in degree-descending order. The entries of :obj:`coeffs` are paired with :obj:`degrees`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.coeffs
+                GF = galois.GF(7)
+                p = galois.Poly([3, 0, 5, 2], field=GF); p
+                p.coeffs
         """
         if not hasattr(self, "_coeffs"):
             if hasattr(self, "_nonzero_coeffs"):
@@ -2132,13 +1979,12 @@ class Poly:
         """
         An array of the polynomial degrees in descending order. The entries of :obj:`coeffs` are paired with :obj:`degrees`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.degrees
+                GF = galois.GF(7)
+                p = galois.Poly([3, 0, 5, 2], field=GF); p
+                p.degrees
         """
         if not hasattr(self, "_degrees"):
             self._degrees = np.arange(self.degree, -1, -1, dtype=int)
@@ -2151,13 +1997,12 @@ class Poly:
         The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_coeffs`
         are paired with :obj:`nonzero_degrees`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.nonzero_coeffs
+                GF = galois.GF(7)
+                p = galois.Poly([3, 0, 5, 2], field=GF); p
+                p.nonzero_coeffs
         """
         if not hasattr(self, "_nonzero_coeffs"):
             coeffs = self.coeffs
@@ -2171,13 +2016,12 @@ class Poly:
         An array of the polynomial degrees that have non-zero coefficients in descending order. The entries of
         :obj:`nonzero_coeffs` are paired with :obj:`nonzero_degrees`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 5, 2], field=GF); p
-            p.nonzero_degrees
+                GF = galois.GF(7)
+                p = galois.Poly([3, 0, 5, 2], field=GF); p
+                p.nonzero_degrees
         """
         if not hasattr(self, "_nonzero_degrees"):
             degrees = self.degrees
@@ -2191,23 +2035,22 @@ class Poly:
         r"""
         Returns whether the polynomial is monic, meaning its highest-degree coefficient is one.
 
-        Examples
-        --------
-        A monic polynomial over :math:`\mathrm{GF}(7)`.
+        Examples:
+            A monic polynomial over :math:`\mathrm{GF}(7)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            p = galois.Poly([1, 0, 4, 5], field=GF); p
-            p.is_monic
+                GF = galois.GF(7)
+                p = galois.Poly([1, 0, 4, 5], field=GF); p
+                p.is_monic
 
-        A non-monic polynomial over :math:`\mathrm{GF}(7)`.
+            A non-monic polynomial over :math:`\mathrm{GF}(7)`.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(7)
-            p = galois.Poly([3, 0, 4, 5], field=GF); p
-            p.is_monic
+                GF = galois.GF(7)
+                p = galois.Poly([3, 0, 4, 5], field=GF); p
+                p.is_monic
         """
         return self.nonzero_coeffs[0] == 1
 
