@@ -54,7 +54,7 @@ dev = [
     "pytest",
     "pytest-cov[toml]",
     "pytest-xdist",
-    # "pytest-benchmark",  # Remove until py dependency is fixed (https://github.com/ionelmc/pytest-benchmark/issues/226)
+    "pytest-benchmark >= 4.0.0",
 ]
 
 [project.urls]
