@@ -59,188 +59,176 @@ def GF(
     r"""
     Creates a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
 
-    Parameters
-    ----------
-    order
-        The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
-    characteristic
-        The characteristic :math:`p` of the field :math:`\mathrm{GF}(p^m)`. The characteristic must be prime.
-    degree
-        The degree :math:`m` of the field :math:`\mathrm{GF}(p^m)`. The degree must be a positive integer.
-    irreducible_poly
-        Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that
-        defines the finite field arithmetic. The default is `None` which uses the Conway polynomial :math:`C_{p,m}`,
-        see :func:`~galois.conway_poly`.
-    primitive_element
-        Optionally specify a primitive element of the field. This value is used when building the exponential and logarithm
-        lookup tables and as the base of :obj:`numpy.log`. A primitive element is a generator of the multiplicative group of the
-        field.
+    Arguments:
+        order: The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
+        characteristic: The characteristic :math:`p` of the field :math:`\mathrm{GF}(p^m)`. The characteristic must be prime.
+        degree: The degree :math:`m` of the field :math:`\mathrm{GF}(p^m)`. The degree must be a positive integer.
+        irreducible_poly: Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)` that
+            defines the finite field arithmetic. The default is `None` which uses the Conway polynomial :math:`C_{p,m}`,
+            see :func:`~galois.conway_poly`.
+        primitive_element: Optionally specify a primitive element of the field. This value is used when building the exponential and logarithm
+            lookup tables and as the base of :obj:`numpy.log`. A primitive element is a generator of the multiplicative group of the
+            field.
 
-        For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`.
-        The default is `None` which uses :func:`~galois.primitive_root`.
+            For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root modulo :math:`p`.
+            The default is `None` which uses :func:`~galois.primitive_root`.
 
-        For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over
-        :math:`\mathrm{GF}(p)`. The default is `None` which uses :func:`~galois.primitive_element`.
-    verify
-        Indicates whether to verify that the user-provided irreducible polynomial is in fact irreducible and that the user-provided
-        primitive element is in fact a generator of the multiplicative group. The default is `True`.
+            For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than :math:`m` over
+            :math:`\mathrm{GF}(p)`. The default is `None` which uses :func:`~galois.primitive_element`.
+        verify: Indicates whether to verify that the user-provided irreducible polynomial is in fact irreducible and that the user-provided
+            primitive element is in fact a generator of the multiplicative group. The default is `True`.
 
-        For large fields and irreducible polynomials that are already known to be irreducible (which may take a while to verify),
-        this argument may be set to `False`.
+            For large fields and irreducible polynomials that are already known to be irreducible (which may take a while to verify),
+            this argument may be set to `False`.
 
-        The default irreducible polynomial and primitive element are never verified because they are already known to be irreducible
-        and a multiplicative generator, respectively.
-    compile
-        The ufunc calculation mode. This can be modified after class construction with the :func:`~galois.FieldArray.compile` method.
-        See :doc:`/basic-usage/compilation-modes` for a further discussion.
+            The default irreducible polynomial and primitive element are never verified because they are already known to be irreducible
+            and a multiplicative generator, respectively.
+        compile: The ufunc calculation mode. This can be modified after class construction with the :func:`~galois.FieldArray.compile` method.
+            See :doc:`/basic-usage/compilation-modes` for a further discussion.
 
-        - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"auto"`. If the
-          :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current compilation mode.
-        - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and
-          `"python-calculate"` for fields whose elements cannot be represented with :obj:`numpy.int64`.
-        - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
-          In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
-        - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
-          fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower than `"jit-lookup"`.
-        - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
-          represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
+            - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"auto"`. If the
+              :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current compilation mode.
+            - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields, and
+              `"python-calculate"` for fields whose elements cannot be represented with :obj:`numpy.int64`.
+            - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
+              In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
+            - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed for large
+              fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower than `"jit-lookup"`.
+            - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot be
+              represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int` (which has arbitrary precision).
 
-    repr
-        The field element representation. This can be modified after class construction with the :func:`~galois.FieldArray.repr` method.
-        See :doc:`/basic-usage/element-representation` for a further discussion.
+        repr: The field element representation. This can be modified after class construction with the :func:`~galois.FieldArray.repr` method.
+            See :doc:`/basic-usage/element-representation` for a further discussion.
 
-        - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"int"`. If the
-          :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current element representation.
-        - `"int"`: Sets the element representation to the :ref:`integer representation <int-repr>`.
-        - `"poly"`: Sets the element representation to the :ref:`polynomial representation <poly-repr>`.
-        - `"power"`: Sets the element representation to the :ref:`power representation <power-repr>`.
+            - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"int"`. If the
+              :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current element representation.
+            - `"int"`: Sets the element representation to the :ref:`integer representation <int-repr>`.
+            - `"poly"`: Sets the element representation to the :ref:`polynomial representation <poly-repr>`.
+            - `"power"`: Sets the element representation to the :ref:`power representation <power-repr>`.
 
-    Returns
-    -------
-    :
+    Returns:
         A :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
 
-    Notes
-    -----
-    :obj:`~galois.FieldArray` subclasses of the same type (order, irreducible polynomial, and primitive element) are singletons. So,
-    calling this class factory with arguments that correspond to the same subclass will return the same class object.
+    Notes:
+        :obj:`~galois.FieldArray` subclasses of the same type (order, irreducible polynomial, and primitive element) are singletons. So,
+        calling this class factory with arguments that correspond to the same subclass will return the same class object.
 
-    Examples
-    --------
-    Create a :obj:`~galois.FieldArray` subclass for each type of finite field.
+    Examples:
+        Create a :obj:`~galois.FieldArray` subclass for each type of finite field.
 
-    .. md-tab-set::
+        .. md-tab-set::
 
-        .. md-tab-item:: GF(2)
+            .. md-tab-item:: GF(2)
 
-            Construct the binary field.
+                Construct the binary field.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(2)
-                print(GF.properties)
+                    GF = galois.GF(2)
+                    print(GF.properties)
 
-        .. md-tab-item:: GF(p)
+            .. md-tab-item:: GF(p)
 
-            Construct a prime field.
+                Construct a prime field.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(31)
-                print(GF.properties)
+                    GF = galois.GF(31)
+                    print(GF.properties)
 
-        .. md-tab-item:: GF(2^m)
+            .. md-tab-item:: GF(2^m)
 
-            Construct a binary extension field. Notice the default irreducible polynomial is primitive and :math:`x`
-            is a primitive element.
+                Construct a binary extension field. Notice the default irreducible polynomial is primitive and :math:`x`
+                is a primitive element.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(2**8)
-                print(GF.properties)
+                    GF = galois.GF(2**8)
+                    print(GF.properties)
 
-        .. md-tab-item:: GF(p^m)
+            .. md-tab-item:: GF(p^m)
 
-            Construct a prime extension field. Notice the default irreducible polynomial is primitive and :math:`x`
-            is a primitive element.
+                Construct a prime extension field. Notice the default irreducible polynomial is primitive and :math:`x`
+                is a primitive element.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(3**5)
-                print(GF.properties)
+                    GF = galois.GF(3**5)
+                    print(GF.properties)
 
-    Create a :obj:`~galois.FieldArray` subclass for extension fields and specify their irreducible polynomials.
+        Create a :obj:`~galois.FieldArray` subclass for extension fields and specify their irreducible polynomials.
 
-    .. md-tab-set::
+        .. md-tab-set::
 
-        .. md-tab-item:: GF(2^m)
+            .. md-tab-item:: GF(2^m)
 
-            Construct the :math:`\mathrm{GF}(2^8)` field that is used in AES. Notice the irreducible polynomial is not primitive and
-            :math:`x` is not a primitive element.
+                Construct the :math:`\mathrm{GF}(2^8)` field that is used in AES. Notice the irreducible polynomial is not primitive and
+                :math:`x` is not a primitive element.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
-                print(GF.properties)
+                    GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+                    print(GF.properties)
 
-        .. md-tab-item:: GF(p^m)
+            .. md-tab-item:: GF(p^m)
 
-            Construct :math:`\mathrm{GF}(3^5)` with an irreducible, but not primitive, polynomial. Notice that :math:`x` is not a
-            primitive element.
+                Construct :math:`\mathrm{GF}(3^5)` with an irreducible, but not primitive, polynomial. Notice that :math:`x` is not a
+                primitive element.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 2")
-                print(GF.properties)
+                    GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 2")
+                    print(GF.properties)
 
-    Finite fields with arbitrarily-large orders are supported.
+        Finite fields with arbitrarily-large orders are supported.
 
-    .. md-tab-set::
+        .. md-tab-set::
 
-        .. md-tab-item:: GF(p)
+            .. md-tab-item:: GF(p)
 
-            Construct a large prime field.
+                Construct a large prime field.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(36893488147419103183)
-                print(GF.properties)
+                    GF = galois.GF(36893488147419103183)
+                    print(GF.properties)
 
-        .. md-tab-item:: GF(2^m)
+            .. md-tab-item:: GF(2^m)
 
-            Construct a large binary extension field.
+                Construct a large binary extension field.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(2**100)
-                print(GF.properties)
+                    GF = galois.GF(2**100)
+                    print(GF.properties)
 
-            The construction of large fields can be sped up by explicitly specifying :math:`p` and :math:`m`. This avoids the
-            need to factor the order :math:`p^m`.
+                The construction of large fields can be sped up by explicitly specifying :math:`p` and :math:`m`. This avoids the
+                need to factor the order :math:`p^m`.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(2, 100)
-                print(GF.properties)
+                    GF = galois.GF(2, 100)
+                    print(GF.properties)
 
-        .. md-tab-item:: GF(p^m)
+            .. md-tab-item:: GF(p^m)
 
-            Construct a large prime extension field.
+                Construct a large prime extension field.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(109987**4)
-                print(GF.properties)
+                    GF = galois.GF(109987**4)
+                    print(GF.properties)
 
-            The construction of large fields can be sped up by explicitly specifying :math:`p` and :math:`m`. This avoids the
-            need to factor the order :math:`p^m`.
+                The construction of large fields can be sped up by explicitly specifying :math:`p` and :math:`m`. This avoids the
+                need to factor the order :math:`p^m`.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                GF = galois.GF(109987, 4)
-                print(GF.properties)
+                    GF = galois.GF(109987, 4)
+                    print(GF.properties)
 
-    :group: galois-fields
+    Group:
+        galois-fields
     """
     if len(args) == 1:
         order = args[0]
@@ -334,7 +322,8 @@ def Field(
     """
     Alias of :func:`~galois.GF`.
 
-    :group: galois-fields
+    Group:
+        galois-fields
     """
     return GF(
         *args,

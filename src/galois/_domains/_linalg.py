@@ -69,7 +69,8 @@ class dot_jit(Function):
     """
     Computes the dot product of two arrays.
 
-    https://numpy.org/doc/stable/reference/generated/numpy.dot.html
+    References:
+        - https://numpy.org/doc/stable/reference/generated/numpy.dot.html
     """
 
     def __call__(self, a: Array, b: Array, out=None) -> Array:
@@ -101,7 +102,8 @@ class vdot_jit(Function):
     """
     Computes the vector dot product of two arrays.
 
-    https://numpy.org/doc/stable/reference/generated/numpy.vdot.html
+    References:
+        - https://numpy.org/doc/stable/reference/generated/numpy.vdot.html
     """
 
     def __call__(self, a: Array, b: Array) -> Array:
@@ -121,7 +123,8 @@ class inner_jit(Function):
     """
     Computes the inner product of two arrays.
 
-    https://numpy.org/doc/stable/reference/generated/numpy.inner.html#numpy.inner
+    References:
+        - https://numpy.org/doc/stable/reference/generated/numpy.inner.html#numpy.inner
     """
 
     def __call__(self, a: Array, b: Array) -> Array:
@@ -143,7 +146,8 @@ class outer_jit(Function):
     """
     Computes the outer product of two arrays.
 
-    https://numpy.org/doc/stable/reference/generated/numpy.outer.html#numpy.outer
+    References:
+        - https://numpy.org/doc/stable/reference/generated/numpy.outer.html#numpy.outer
     """
 
     def __call__(self, a: Array, b: Array, out=None) -> Array:
@@ -162,7 +166,8 @@ class matmul_jit(Function):
 
     np.matmul is technically a NumPy ufunc, so this JIT function will be called from matmul_ufunc.
 
-    https://numpy.org/doc/stable/reference/generated/numpy.matmul.html#numpy.matmul
+    References:
+        - https://numpy.org/doc/stable/reference/generated/numpy.matmul.html#numpy.matmul
     """
 
     def __call__(self, A: Array, B: Array, out=None, **kwargs) -> Array:  # pylint: disable=unused-argument

@@ -17,38 +17,35 @@ def set_printoptions(coeffs: Literal["desc", "asc"] = "desc"):
     """
     Modifies the print options for the package. This function is the :obj:`galois` equivalent of :func:`numpy.set_printoptions`.
 
-    Parameters
-    ----------
-    coeffs
-        The order in which to print the coefficients, either in descending degrees (default) or ascending degrees.
+    Arguments:
+        coeffs: The order in which to print the coefficients, either in descending degrees (default) or ascending degrees.
 
-    See Also
-    --------
-    get_printoptions, printoptions
+    See Also:
+        get_printoptions, printoptions
 
-    Examples
-    --------
-    By default, polynomials are displayed with descending degrees.
+    Examples:
+        By default, polynomials are displayed with descending degrees.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        GF = galois.GF(3**5, repr="poly")
-        a = GF([109, 83]); a
-        f = galois.Poly([3, 0, 5, 2], field=galois.GF(7)); f
+            GF = galois.GF(3**5, repr="poly")
+            a = GF([109, 83]); a
+            f = galois.Poly([3, 0, 5, 2], field=galois.GF(7)); f
 
-    Modify the print options to display polynomials with ascending degrees.
+        Modify the print options to display polynomials with ascending degrees.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.set_printoptions(coeffs="asc")
-        a
-        f
-        @suppress
-        GF.repr()
-        @suppress
-        galois.set_printoptions()
+            galois.set_printoptions(coeffs="asc")
+            a
+            f
+            @suppress
+            GF.repr()
+            @suppress
+            galois.set_printoptions()
 
-    :group: config
+    Group:
+        config
     """
     if not coeffs in ["desc", "asc"]:
         raise ValueError(f"Argument 'coeffs' must be in ['desc', 'asc'], not {coeffs}.")
@@ -65,29 +62,26 @@ def get_printoptions() -> Dict[str, Any]:
     """
     Returns the current print options for the package. This function is the :obj:`galois` equivalent of :func:`numpy.get_printoptions`.
 
-    Returns
-    -------
-    :
+    Returns:
         A dictionary of current print options.
 
-    See Also
-    --------
-    set_printoptions, printoptions
+    See Also:
+        set_printoptions, printoptions
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.get_printoptions()
+            galois.get_printoptions()
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.set_printoptions(coeffs="asc")
-        galois.get_printoptions()
-        @suppress
-        galois.set_printoptions()
+            galois.set_printoptions(coeffs="asc")
+            galois.get_printoptions()
+            @suppress
+            galois.set_printoptions()
 
-    :group: config
+    Group:
+        config
     """
     return PRINTOPTIONS.copy()
 
@@ -101,37 +95,34 @@ def printoptions(**kwargs) -> Generator[None, None, None]:
 
     See :func:`~galois.set_printoptions` for the full list of available options.
 
-    Returns
-    -------
-    :
+    Returns:
         A context manager for use in a `with` statement. The print options are only modified inside the `with` block.
 
-    See Also
-    --------
-    set_printoptions, get_printoptions
+    See Also:
+        set_printoptions, get_printoptions
 
-    Examples
-    --------
-    By default, polynomials are displayed with descending degrees.
+    Examples:
+        By default, polynomials are displayed with descending degrees.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        GF = galois.GF(3**5, repr="poly")
-        a = GF([109, 83])
-        f = galois.Poly([3, 0, 5, 2], field=galois.GF(7))
+            GF = galois.GF(3**5, repr="poly")
+            a = GF([109, 83])
+            f = galois.Poly([3, 0, 5, 2], field=galois.GF(7))
 
-    Modify the print options only inside the context manager.
+        Modify the print options only inside the context manager.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        print(a); print(f)
-        with galois.printoptions(coeffs="asc"):
             print(a); print(f)
-        print(a); print(f)
-        @suppress
-        GF.repr()
+            with galois.printoptions(coeffs="asc"):
+                print(a); print(f)
+            print(a); print(f)
+            @suppress
+            GF.repr()
 
-    :group: config
+    Group:
+        config
     """
     options = get_printoptions()
     set_printoptions(**kwargs)
