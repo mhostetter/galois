@@ -31,36 +31,29 @@ def primes(n: int) -> list[int]:
     r"""
     Returns all primes :math:`p` for :math:`p \le n`.
 
-    :group: primes-generation
+    Arguments:
+        n: An integer.
 
-    Parameters
-    ----------
-    n
-        An integer.
-
-    Returns
-    -------
-    :
+    Returns:
         All primes up to and including :math:`n`. If :math:`n < 2`, the function returns an empty list.
 
-    See Also
-    --------
-    kth_prime, prev_prime, next_prime
+    See Also:
+        kth_prime, prev_prime, next_prime
 
-    Notes
-    -----
-    This function implements the Sieve of Eratosthenes to efficiently find the primes.
+    Notes:
+        This function implements the Sieve of Eratosthenes to efficiently find the primes.
 
-    References
-    ----------
-    * https://oeis.org/A000040
+    References:
+        - https://oeis.org/A000040
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.primes(19)
-        galois.primes(20)
+            galois.primes(19)
+            galois.primes(20)
+
+    Group:
+        primes-generation
     """
     global PRIMES, MAX_K, MAX_N
     verify_isinstance(n, int)
@@ -115,30 +108,25 @@ def kth_prime(k: int) -> int:
     r"""
     Returns the :math:`k`-th prime, where :math:`k = \{1,2,3,4,\dots\}` for primes :math:`p = \{2,3,5,7,\dots\}`.
 
-    :group: primes-generation
+    Arguments:
+        k: The prime index (1-indexed).
 
-    Parameters
-    ----------
-    k
-        The prime index (1-indexed).
-
-    Returns
-    -------
-    :
+    Returns:
         The :math:`k`-th prime.
 
-    See Also
-    --------
-    primes, prev_prime, next_prime
+    See Also:
+        primes, prev_prime, next_prime
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.kth_prime(1)
-        galois.kth_prime(2)
-        galois.kth_prime(3)
-        galois.kth_prime(1000)
+            galois.kth_prime(1)
+            galois.kth_prime(2)
+            galois.kth_prime(3)
+            galois.kth_prime(1000)
+
+    Group:
+        primes-generation
     """
     verify_isinstance(k, int)
     if not 1 <= k <= MAX_K:
@@ -155,29 +143,24 @@ def prev_prime(n: int) -> int:
     r"""
     Returns the nearest prime :math:`p`, such that :math:`p \le n`.
 
-    :group: primes-generation
+    Arguments:
+        n: An integer :math:`n \ge 2`.
 
-    Parameters
-    ----------
-    n
-        An integer :math:`n \ge 2`.
-
-    Returns
-    -------
-    :
+    Returns:
         The nearest prime :math:`p \le n`.
 
-    See Also
-    --------
-    primes, kth_prime, next_prime
+    See Also:
+        primes, kth_prime, next_prime
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.prev_prime(13)
-        galois.prev_prime(15)
-        galois.prev_prime(6298891201241929548477199440981228280038)
+            galois.prev_prime(13)
+            galois.prev_prime(15)
+            galois.prev_prime(6298891201241929548477199440981228280038)
+
+    Group:
+        primes-generation
     """
     verify_isinstance(n, int)
     if not n >= 2:
@@ -202,29 +185,24 @@ def next_prime(n: int) -> int:
     r"""
     Returns the nearest prime :math:`p`, such that :math:`p > n`.
 
-    :group: primes-generation
+    Arguments:
+        n: An integer.
 
-    Parameters
-    ----------
-    n:
-        An integer.
-
-    Returns
-    -------
-    :
+    Returns:
         The nearest prime :math:`p > n`.
 
-    See Also
-    --------
-    primes, kth_prime, prev_prime
+    See Also:
+        primes, kth_prime, prev_prime
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.next_prime(13)
-        galois.next_prime(15)
-        galois.next_prime(6852976918500265458318414454675831645298)
+            galois.next_prime(13)
+            galois.next_prime(15)
+            galois.next_prime(6852976918500265458318414454675831645298)
+
+    Group:
+        primes-generation
     """
     verify_isinstance(n, int)
 
@@ -250,45 +228,38 @@ def random_prime(bits: int, seed: int | None = None) -> int:
     This function randomly generates integers with :math:`b` bits and uses the primality tests in
     :func:`~galois.is_prime` to determine if :math:`p` is prime.
 
-    :group: primes-generation
+    Arguments:
+        bits: The number of bits in the prime :math:`p`.
+        seed: Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
+            entropy will be pulled from the OS to be used as the seed.
 
-    Parameters
-    ----------
-    bits
-        The number of bits in the prime :math:`p`.
-    seed
-        Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
-        entropy will be pulled from the OS to be used as the seed.
-
-    Returns
-    -------
-    :
+    Returns:
         A random prime in :math:`2^b \le p < 2^{b+1}`.
 
-    See Also
-    --------
-    prev_prime, next_prime
+    See Also:
+        prev_prime, next_prime
 
-    References
-    ----------
-    * https://en.wikipedia.org/wiki/Prime_number_theorem
+    References:
+        - https://en.wikipedia.org/wiki/Prime_number_theorem
 
-    Examples
-    --------
-    Generate a random 1024-bit prime.
+    Examples:
+        Generate a random 1024-bit prime.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        p = galois.random_prime(1024, seed=1); p
-        galois.is_prime(p)
+            p = galois.random_prime(1024, seed=1); p
+            galois.is_prime(p)
 
-    Verify that :math:`p` is prime using the OpenSSL library.
+        Verify that :math:`p` is prime using the OpenSSL library.
 
-    .. code-block:: console
+        .. code-block:: console
 
-        # pylint: disable=line-too-long
-        $ openssl prime 327845897586213436751081882871255331286648902836386839087617368608439574698192016043769533823474001379935585889197488144338014865193967937011638431094821943416361149113909692569658970713864593781874423564706915495970135894084612689487074397782022398597547611189482697523681694691585678818112329605903872356773
-        1D2DE38DE88C67E1EAFDEEAE77C40B8709ED9C275522C6D5578976B1ABCBE7E0F8C6DE1271EEC6EB3827649164189788F9F3A622AEA5F4039761EC708B5841DE88566D9B5BAF49BA92DCE5A300297A9E0E890E4103ED2AD4B5E0553CE56E8C34758CD45900125DBA1553AE73AA0CBD6018A2A8713D46E475BF058D1AAA52EF1A5 (327845897586213436751081882871255331286648902836386839087617368608439574698192016043769533823474001379935585889197488144338014865193967937011638431094821943416361149113909692569658970713864593781874423564706915495970135894084612689487074397782022398597547611189482697523681694691585678818112329605903872356773) is prime
+            # pylint: disable=line-too-long
+            $ openssl prime 327845897586213436751081882871255331286648902836386839087617368608439574698192016043769533823474001379935585889197488144338014865193967937011638431094821943416361149113909692569658970713864593781874423564706915495970135894084612689487074397782022398597547611189482697523681694691585678818112329605903872356773
+            1D2DE38DE88C67E1EAFDEEAE77C40B8709ED9C275522C6D5578976B1ABCBE7E0F8C6DE1271EEC6EB3827649164189788F9F3A622AEA5F4039761EC708B5841DE88566D9B5BAF49BA92DCE5A300297A9E0E890E4103ED2AD4B5E0553CE56E8C34758CD45900125DBA1553AE73AA0CBD6018A2A8713D46E475BF058D1AAA52EF1A5 (327845897586213436751081882871255331286648902836386839087617368608439574698192016043769533823474001379935585889197488144338014865193967937011638431094821943416361149113909692569658970713864593781874423564706915495970135894084612689487074397782022398597547611189482697523681694691585678818112329605903872356773) is prime
+
+    Group:
+        primes-generation
     """
     verify_isinstance(bits, int)
     verify_isinstance(seed, int, optional=True)
@@ -367,36 +338,30 @@ def mersenne_exponents(n: int | None = None) -> list[int]:
 
     A Mersenne exponent :math:`e` is an exponent of 2 such that :math:`2^e - 1` is prime.
 
-    :group: primes-generation
+    Arguments:
+        n: The max exponent of 2. The default is `None` which returns all known Mersenne exponents.
 
-    Parameters
-    ----------
-    n
-        The max exponent of 2. The default is `None` which returns all known Mersenne exponents.
-
-    Returns
-    -------
-    :
+    Returns:
         The list of Mersenne exponents :math:`e` for :math:`e \le n`.
 
-    See Also
-    --------
-    mersenne_primes
+    See Also:
+        mersenne_primes
 
-    References
-    ----------
-    * https://oeis.org/A000043
+    References:
+        - https://oeis.org/A000043
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        # List all Mersenne exponents for Mersenne primes up to 2000 bits
-        e = galois.mersenne_exponents(2000); e
+            # List all Mersenne exponents for Mersenne primes up to 2000 bits
+            e = galois.mersenne_exponents(2000); e
 
-        # Select one Merseene exponent and compute its Mersenne prime
-        p = 2**e[-1] - 1; p
-        galois.is_prime(p)
+            # Select one Merseene exponent and compute its Mersenne prime
+            p = 2**e[-1] - 1; p
+            galois.is_prime(p)
+
+    Group:
+        primes-generation
     """
     if n is None:
         return MERSENNE_EXPONENTS
@@ -415,33 +380,27 @@ def mersenne_primes(n: int | None = None) -> list[int]:
 
     Mersenne primes are primes that are one less than a power of 2.
 
-    :group: primes-generation
+    Arguments:
+        n: The max power of 2. The default is `None` which returns all known Mersenne exponents.
 
-    Parameters
-    ----------
-    n
-        The max power of 2. The default is `None` which returns all known Mersenne exponents.
-
-    Returns
-    -------
-    :
+    Returns:
         The list of known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
 
-    See Also
-    --------
-    mersenne_exponents
+    See Also:
+        mersenne_exponents
 
-    References
-    ----------
-    * https://oeis.org/A000668
+    References:
+        - https://oeis.org/A000668
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        # List all Mersenne primes up to 2000 bits
-        p = galois.mersenne_primes(2000); p
-        galois.is_prime(p[-1])
+            # List all Mersenne primes up to 2000 bits
+            p = galois.mersenne_primes(2000); p
+            galois.is_prime(p[-1])
+
+    Group:
+        primes-generation
     """
     return [2**e - 1 for e in mersenne_exponents(n)]
 
@@ -456,80 +415,72 @@ def fermat_primality_test(n: int, a: int | None = None, rounds: int = 1) -> bool
     r"""
     Determines if :math:`n` is composite using Fermat's primality test.
 
-    :group: primes-specific-tests
+    Arguments:
+        n: An odd integer :math:`n \ge 3`.
+        a: An integer in :math:`2 \le a \le n - 2`. The default is `None` which selects a random :math:`a`.
+        rounds: The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
+            a new :math:`a`. The default is 1.
 
-    Parameters
-    ----------
-    n
-        An odd integer :math:`n \ge 3`.
-    a
-        An integer in :math:`2 \le a \le n - 2`. The default is `None` which selects a random :math:`a`.
-    rounds
-        The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
-        a new :math:`a`. The default is 1.
-
-    Returns
-    -------
-    :
+    Returns:
         `False` if :math:`n` is shown to be composite. `True` if :math:`n` is a probable prime.
 
-    See Also
-    --------
-    is_prime, miller_rabin_primality_test
+    See Also:
+        is_prime, miller_rabin_primality_test
 
-    Notes
-    -----
-    Fermat's theorem says that for prime :math:`p` and :math:`1 \le a \le p-1`, the congruence :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`
-    holds. Fermat's primality test of :math:`n` computes :math:`a^{n-1}\ \textrm{mod}\ n` for some :math:`1 \le a \le n-1`.
-    If :math:`a` is such that :math:`a^{p-1} \not\equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be a *Fermat witness* to the
-    compositeness of :math:`n`. If :math:`n` is composite and :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be
-    a *Fermat liar* to the primality of :math:`n`.
+    Notes:
+        Fermat's theorem says that for prime :math:`p` and :math:`1 \le a \le p-1`, the congruence
+        :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)` holds. Fermat's primality test of :math:`n` computes
+        :math:`a^{n-1}\ \textrm{mod}\ n` for some :math:`1 \le a \le n-1`. If :math:`a` is such that
+        :math:`a^{p-1} \not\equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be a *Fermat witness* to the compositeness
+        of :math:`n`. If :math:`n` is composite and :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be
+        a *Fermat liar* to the primality of :math:`n`.
 
-    Since :math:`a = \{1, n-1\}` are Fermat liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
-    to :math:`2 \le a \le n - 2`.
+        Since :math:`a = \{1, n-1\}` are Fermat liars for all composite :math:`n`, it is common to reduce the range of possible
+        :math:`a` to :math:`2 \le a \le n - 2`.
 
-    References
-    ----------
-    * Section 4.2.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
+    References:
+        - Section 4.2.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
 
-    Examples
-    --------
-    Fermat's primality test will never mark a true prime as composite.
+    Examples:
+        Fermat's primality test will never mark a true prime as composite.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        primes = [257, 24841, 65497]
-        [galois.is_prime(p) for p in primes]
-        [galois.fermat_primality_test(p) for p in primes]
+            primes = [257, 24841, 65497]
+            [galois.is_prime(p) for p in primes]
+            [galois.fermat_primality_test(p) for p in primes]
 
-    However, Fermat's primality test may mark a composite as probable prime. Here are pseudoprimes base 2 from
-    `A001567 <https://oeis.org/A001567>`_.
+        However, Fermat's primality test may mark a composite as probable prime. Here are pseudoprimes base 2 from
+        `A001567 <https://oeis.org/A001567>`_.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        # List of some Fermat pseudoprimes to base 2
-        pseudoprimes = [2047, 29341, 65281]
-        [galois.is_prime(p) for p in pseudoprimes]
+            # List of some Fermat pseudoprimes to base 2
+            pseudoprimes = [2047, 29341, 65281]
+            [galois.is_prime(p) for p in pseudoprimes]
 
-        # The pseudoprimes base 2 satisfy 2^(p-1) = 1 (mod p)
-        [galois.fermat_primality_test(p, a=2) for p in pseudoprimes]
+            # The pseudoprimes base 2 satisfy 2^(p-1) = 1 (mod p)
+            [galois.fermat_primality_test(p, a=2) for p in pseudoprimes]
 
-        # But they may not satisfy a^(p-1) = 1 (mod p) for other a
-        [galois.fermat_primality_test(p) for p in pseudoprimes]
+            # But they may not satisfy a^(p-1) = 1 (mod p) for other a
+            [galois.fermat_primality_test(p) for p in pseudoprimes]
 
-    And the pseudoprimes base 3 from `A005935 <https://oeis.org/A005935>`_.
+        And the pseudoprimes base 3 from `A005935 <https://oeis.org/A005935>`_.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        # List of some Fermat pseudoprimes to base 3
-        pseudoprimes = [2465, 7381, 16531]
-        [galois.is_prime(p) for p in pseudoprimes]
+            # List of some Fermat pseudoprimes to base 3
+            pseudoprimes = [2465, 7381, 16531]
+            [galois.is_prime(p) for p in pseudoprimes]
 
-        # The pseudoprimes base 3 satisfy 3^(p-1) = 1 (mod p)
-        [galois.fermat_primality_test(p, a=3) for p in pseudoprimes]
+            # The pseudoprimes base 3 satisfy 3^(p-1) = 1 (mod p)
+            [galois.fermat_primality_test(p, a=3) for p in pseudoprimes]
 
-        # But they may not satisfy a^(p-1) = 1 (mod p) for other a
-        [galois.fermat_primality_test(p) for p in pseudoprimes]
+            # But they may not satisfy a^(p-1) = 1 (mod p) for other a
+            [galois.fermat_primality_test(p) for p in pseudoprimes]
+
+    Group:
+        primes-specific-tests
     """
     verify_isinstance(n, int)
     verify_isinstance(a, int, optional=True)
@@ -556,73 +507,65 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
     r"""
     Determines if :math:`n` is composite using the Miller-Rabin primality test.
 
-    :group: primes-specific-tests
+    Arguments:
+        n: An odd integer :math:`n \ge 3`.
+        a: An integer in :math:`2 \le a \le n - 2`. The default is 2.
+        rounds: The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
+            consecutive primes for :math:`a`. The default is 1.
 
-    Parameters
-    ----------
-    n
-        An odd integer :math:`n \ge 3`.
-    a
-        An integer in :math:`2 \le a \le n - 2`. The default is 2.
-    rounds
-        The number of iterations attempting to detect :math:`n` as composite. Additional rounds will choose
-        consecutive primes for :math:`a`. The default is 1.
-
-    Returns
-    -------
-    :
+    Returns:
         `False` if :math:`n` is shown to be composite. `True` if :math:`n` is probable prime.
 
-    See Also
-    --------
-    is_prime, fermat_primality_test
+    See Also:
+        is_prime, fermat_primality_test
 
-    Notes
-    -----
-    The Miller-Rabin primality test is based on the fact that for odd :math:`n` with factorization :math:`n = 2^s r` for odd :math:`r`
-    and integer :math:`a` such that :math:`\textrm{gcd}(a, n) = 1`, then either :math:`a^r \equiv 1\ (\textrm{mod}\ n)`
-    or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for some :math:`j` in :math:`0 \le j \le s - 1`.
+    Notes:
+        The Miller-Rabin primality test is based on the fact that for odd :math:`n` with factorization
+        :math:`n = 2^s r` for odd :math:`r` and integer :math:`a` such that :math:`\textrm{gcd}(a, n) = 1`, then either
+        :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for some :math:`j` in
+        :math:`0 \le j \le s - 1`.
 
-    In the Miller-Rabin primality test, if :math:`a^r \not\equiv 1\ (\textrm{mod}\ n)` and
-    :math:`a^{2^j r} \not\equiv -1\ (\textrm{mod}\ n)` for all :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is called a
-    *strong witness* to the compositeness of :math:`n`. If not, namely :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or
-    :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for any :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is called a
-    *strong liar* to the primality of :math:`n` and :math:`n` is called a *strong pseudoprime to the base a*.
+        In the Miller-Rabin primality test, if :math:`a^r \not\equiv 1\ (\textrm{mod}\ n)` and
+        :math:`a^{2^j r} \not\equiv -1\ (\textrm{mod}\ n)` for all :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is
+        called a *strong witness* to the compositeness of :math:`n`. If not, namely :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or
+        :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for any :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is
+        called a *strong liar* to the primality of :math:`n` and :math:`n` is called a *strong pseudoprime to the base a*.
 
-    Since :math:`a = \{1, n-1\}` are strong liars for all composite :math:`n`, it is common to reduce the range of possible :math:`a`
-    to :math:`2 \le a \le n - 2`.
+        Since :math:`a = \{1, n-1\}` are strong liars for all composite :math:`n`, it is common to reduce the range of possible
+        :math:`a` to :math:`2 \le a \le n - 2`.
 
-    For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than
-    :math:`(\frac{1}{4})^t`, where :math:`t` is the number of rounds, and is often much lower.
+        For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than
+        :math:`(\frac{1}{4})^t`, where :math:`t` is the number of rounds, and is often much lower.
 
-    References
-    ----------
-    * Section 4.2.3 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
-    * https://math.dartmouth.edu/~carlp/PDF/paper25.pdf
+    References:
+        - Section 4.2.3 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
+        - https://math.dartmouth.edu/~carlp/PDF/paper25.pdf
 
-    Examples
-    --------
-    The Miller-Rabin primality test will never mark a true prime as composite.
+    Examples:
+        The Miller-Rabin primality test will never mark a true prime as composite.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        primes = [257, 24841, 65497]
-        [galois.is_prime(p) for p in primes]
-        [galois.miller_rabin_primality_test(p) for p in primes]
+            primes = [257, 24841, 65497]
+            [galois.is_prime(p) for p in primes]
+            [galois.miller_rabin_primality_test(p) for p in primes]
 
-    However, a composite :math:`n` may have strong liars. 91 has :math:`\{9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82\}`
-    as strong liars.
+        However, a composite :math:`n` may have strong liars. 91 has :math:`\{9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82\}`
+        as strong liars.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        strong_liars = [9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82]
-        witnesses = [a for a in range(2, 90) if a not in strong_liars]
+            strong_liars = [9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82]
+            witnesses = [a for a in range(2, 90) if a not in strong_liars]
 
-        # All strong liars falsely assert that 91 is prime
-        [galois.miller_rabin_primality_test(91, a=a) for a in strong_liars] == [True,]*len(strong_liars)
+            # All strong liars falsely assert that 91 is prime
+            [galois.miller_rabin_primality_test(91, a=a) for a in strong_liars] == [True,]*len(strong_liars)
 
-        # All other a are witnesses to the compositeness of 91
-        [galois.miller_rabin_primality_test(91, a=a) for a in witnesses] == [False,]*len(witnesses)
+            # All other a are witnesses to the compositeness of 91
+            [galois.miller_rabin_primality_test(91, a=a) for a in witnesses] == [False,]*len(witnesses)
+
+    Group:
+        primes-specific-tests
     """
     verify_isinstance(n, int)
     verify_isinstance(a, int)
@@ -673,54 +616,46 @@ def legendre_symbol(a: int, p: int) -> int:
     r"""
     Computes the Legendre symbol :math:`(\frac{a}{p})`.
 
-    :group: number-theory-congruences
+    Arguments:
+        a: An integer.
+        p: An odd prime :math:`p \ge 3`.
 
-    Parameters
-    ----------
-    a
-        An integer.
-    p
-        An odd prime :math:`p \ge 3`.
-
-    Returns
-    -------
-    :
+    Returns:
         The Legendre symbol :math:`(\frac{a}{p})` with value in :math:`\{0, 1, -1\}`.
 
-    See Also
-    --------
-    jacobi_symbol, kronecker_symbol
+    See Also:
+        jacobi_symbol, kronecker_symbol
 
-    Notes
-    -----
-    The Legendre symbol is useful for determining if :math:`a` is a quadratic residue modulo :math:`p`, namely
-    :math:`a \in Q_p`. A quadratic residue :math:`a` modulo :math:`p` satisfies :math:`x^2 \equiv a\ (\textrm{mod}\ p)`
-    for some :math:`x`.
+    Notes:
+        The Legendre symbol is useful for determining if :math:`a` is a quadratic residue modulo :math:`p`, namely
+        :math:`a \in Q_p`. A quadratic residue :math:`a` modulo :math:`p` satisfies :math:`x^2 \equiv a\ (\textrm{mod}\ p)`
+        for some :math:`x`.
 
-    .. math::
-        \bigg(\frac{a}{p}\bigg) =
-            \begin{cases}
-                0, & p\ |\ a
+        .. math::
+            \bigg(\frac{a}{p}\bigg) =
+                \begin{cases}
+                    0, & p\ |\ a
 
-                1, & a \in Q_p
+                    1, & a \in Q_p
 
-                -1, & a \in \overline{Q}_p
-            \end{cases}
+                    -1, & a \in \overline{Q}_p
+                \end{cases}
 
-    References
-    ----------
-    * Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+    References:
+        - Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
 
-    Examples
-    --------
-    The quadratic residues modulo 7 are :math:`Q_7 = \{1, 2, 4\}`. The quadratic non-residues
-    modulo 7 are :math:`\overline{Q}_7 = \{3, 5, 6\}`.
+    Examples:
+        The quadratic residues modulo 7 are :math:`Q_7 = \{1, 2, 4\}`. The quadratic non-residues
+        modulo 7 are :math:`\overline{Q}_7 = \{3, 5, 6\}`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        [pow(x, 2, 7) for x in range(7)]
-        for a in range(7):
-            print(f"({a} / 7) = {galois.legendre_symbol(a, 7)}")
+            [pow(x, 2, 7) for x in range(7)]
+            for a in range(7):
+                print(f"({a} / 7) = {galois.legendre_symbol(a, 7)}")
+
+    Group:
+        number-theory-congruences
     """
     verify_isinstance(a, int)
     verify_isinstance(p, int)
@@ -735,45 +670,38 @@ def jacobi_symbol(a: int, n: int) -> int:
     r"""
     Computes the Jacobi symbol :math:`(\frac{a}{n})`.
 
-    :group: number-theory-congruences
+    Arguments:
+        a: An integer.
+        n: An odd integer :math:`n \ge 3`.
 
-    Parameters
-    ----------
-    a
-        An integer.
-    n
-        An odd integer :math:`n \ge 3`.
-
-    Returns
-    -------
-    :
+    Returns:
         The Jacobi symbol :math:`(\frac{a}{n})` with value in :math:`\{0, 1, -1\}`.
 
-    See Also
-    --------
-    legendre_symbol, kronecker_symbol
+    See Also:
+        legendre_symbol, kronecker_symbol
 
-    Notes
-    -----
-    The Jacobi symbol extends the Legendre symbol for odd :math:`n \ge 3`. Unlike the Legendre symbol, :math:`(\frac{a}{n}) = 1`
-    does not imply :math:`a` is a quadratic residue modulo :math:`n`. However, all :math:`a \in Q_n` have :math:`(\frac{a}{n}) = 1`.
+    Notes:
+        The Jacobi symbol extends the Legendre symbol for odd :math:`n \ge 3`. Unlike the Legendre symbol,
+        :math:`(\frac{a}{n}) = 1` does not imply :math:`a` is a quadratic residue modulo :math:`n`. However, all
+        :math:`a \in Q_n` have :math:`(\frac{a}{n}) = 1`.
 
-    References
-    ----------
-    * Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+    References:
+        - Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
 
-    Examples
-    --------
-    The quadratic residues modulo 9 are :math:`Q_9 = \{1, 4, 7\}` and these all satisfy :math:`(\frac{a}{9}) = 1`.
-    The quadratic non-residues modulo 9 are :math:`\overline{Q}_9 = \{2, 3, 5, 6, 8\}`, but notice :math:`\{2, 5, 8\}`
-    also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime to 9 satisfies
-    :math:`(\frac{a}{9}) = 0`.
+    Examples:
+        The quadratic residues modulo 9 are :math:`Q_9 = \{1, 4, 7\}` and these all satisfy :math:`(\frac{a}{9}) = 1`.
+        The quadratic non-residues modulo 9 are :math:`\overline{Q}_9 = \{2, 3, 5, 6, 8\}`, but notice :math:`\{2, 5, 8\}`
+        also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime to 9 satisfies
+        :math:`(\frac{a}{9}) = 0`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        [pow(x, 2, 9) for x in range(9)]
-        for a in range(9):
-            print(f"({a} / 9) = {galois.jacobi_symbol(a, 9)}")
+            [pow(x, 2, 9) for x in range(9)]
+            for a in range(9):
+                print(f"({a} / 9) = {galois.jacobi_symbol(a, 9)}")
+
+    Group:
+        number-theory-congruences
     """
     verify_isinstance(a, int)
     verify_isinstance(n, int)
@@ -817,27 +745,21 @@ def kronecker_symbol(a: int, n: int) -> int:
 
     The Kronecker symbol extends the Jacobi symbol for all :math:`n`.
 
-    :group: number-theory-congruences
+    Arguments:
+        a: An integer.
+        n: An integer.
 
-    Parameters
-    ----------
-    a
-        An integer.
-    n
-        An integer.
-
-    Returns
-    -------
-    :
+    Returns:
         The Kronecker symbol :math:`(\frac{a}{n})` with value in :math:`\{0, -1, 1\}`.
 
-    See Also
-    --------
-    legendre_symbol, jacobi_symbol
+    See Also:
+        legendre_symbol, jacobi_symbol
 
-    References
-    ----------
-    * Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+    References:
+        - Algorithm 2.149 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
+
+    Group:
+        number-theory-congruences
     """
     # pylint: disable=too-many-return-statements
     verify_isinstance(a, int)
@@ -955,73 +877,67 @@ def perfect_power(n: int) -> tuple[int, int]:
 
     If :math:`n` is a *not* perfect power, then :math:`c = n` and :math:`e = 1`.
 
-    :group: factorization-specific
+    Arguments:
+        n: An integer.
 
-    Parameters
-    ----------
-    n
-        An integer.
+    Returns:
+        - The *potentially* composite base :math:`c`.
+        - The exponent :math:`e`.
 
-    Returns
-    -------
-    :
-        The *potentially* composite base :math:`c`.
-    :
-        The exponent :math:`e`.
+    See Also:
+        factors, is_perfect_power, is_prime_power
 
-    See Also
-    --------
-    factors, is_perfect_power, is_prime_power
+    Examples:
+        Primes are not perfect powers because their exponent is 1.
 
-    Examples
-    --------
-    Primes are not perfect powers because their exponent is 1.
+        .. ipython:: python
 
-    .. ipython:: python
+            n = 13
+            galois.perfect_power(n)
+            galois.is_perfect_power(n)
 
-        n = 13
-        galois.perfect_power(n)
-        galois.is_perfect_power(n)
+        Products of primes are not perfect powers.
 
-    Products of primes are not perfect powers.
+        .. ipython:: python
 
-    .. ipython:: python
+            n = 5 * 7
+            galois.perfect_power(n)
+            galois.is_perfect_power(n)
 
-        n = 5 * 7
-        galois.perfect_power(n)
-        galois.is_perfect_power(n)
+        Products of prime powers where the GCD of the exponents is 1 are not perfect powers.
 
-    Products of prime powers where the GCD of the exponents is 1 are not perfect powers.
+        .. ipython:: python
 
-    .. ipython:: python
+            n = 2 * 3 * 5**3
+            galois.perfect_power(n)
+            galois.is_perfect_power(n)
 
-        n = 2 * 3 * 5**3
-        galois.perfect_power(n)
-        galois.is_perfect_power(n)
+        Products of prime powers where the GCD of the exponents is greater than 1 are perfect powers.
 
-    Products of prime powers where the GCD of the exponents is greater than 1 are perfect powers.
+        .. ipython:: python
 
-    .. ipython:: python
+            n = 2**2 * 3**2 * 5**4
+            galois.perfect_power(n)
+            galois.is_perfect_power(n)
 
-        n = 2**2 * 3**2 * 5**4
-        galois.perfect_power(n)
-        galois.is_perfect_power(n)
+        Negative integers can be perfect powers if they can be factored with an odd exponent.
 
-    Negative integers can be perfect powers if they can be factored with an odd exponent.
+        .. ipython:: python
 
-    .. ipython:: python
+            n = -64
+            galois.perfect_power(n)
+            galois.is_perfect_power(n)
 
-        n = -64
-        galois.perfect_power(n)
-        galois.is_perfect_power(n)
+        Negative integers that are only factored with an even exponent are not perfect powers.
 
-    Negative integers that are only factored with an even exponent are not perfect powers.
+        .. ipython:: python
 
-    .. ipython:: python
+            n = -100
+            galois.perfect_power(n)
+            galois.is_perfect_power(n)
 
-        n = -100
-        galois.perfect_power(n)
-        galois.is_perfect_power(n)
+    Group:
+        factorization-specific
     """
     return _perfect_power(n)
 
@@ -1083,38 +999,30 @@ def trial_division(n: int, B: int | None = None) -> tuple[list[int], list[int], 
     The trial division factorization will find all prime factors :math:`p_i \le B` such that :math:`n` factors
     as :math:`n = p_1^{e_1} \dots p_k^{e_k} n_r` where :math:`n_r` is a residual factor (which may be composite).
 
-    :group: factorization-specific
+    Arguments:
+        n: A positive integer.
+        B: The max divisor in the trial division. The default is `None` which corresponds to :math:`B = \sqrt{n}`.
+            If :math:`B > \sqrt{n}`, the algorithm will only search up to :math:`\sqrt{n}`, since a prime factor of
+            :math:`n` cannot be larger than :math:`\sqrt{n}`.
 
-    Parameters
-    ----------
-    n
-        A positive integer.
-    B
-        The max divisor in the trial division. The default is `None` which corresponds to :math:`B = \sqrt{n}`.
-        If :math:`B > \sqrt{n}`, the algorithm will only search up to :math:`\sqrt{n}`, since a prime factor of :math:`n`
-        cannot be larger than :math:`\sqrt{n}`.
+    Returns:
+        - The discovered prime factors :math:`\{p_1, \dots, p_k\}`.
+        - The corresponding prime exponents :math:`\{e_1, \dots, e_k\}`.
+        - The residual factor :math:`n_r`.
 
-    Returns
-    -------
-    :
-        The discovered prime factors :math:`\{p_1, \dots, p_k\}`.
-    :
-        The corresponding prime exponents :math:`\{e_1, \dots, e_k\}`.
-    :
-        The residual factor :math:`n_r`.
+    See Also:
+        factors
 
-    See Also
-    --------
-    factors
+    Examples:
+        .. ipython:: python
 
-    Examples
-    --------
-    .. ipython:: python
+            n = 2**4 * 17**3 * 113 * 15013
+            galois.trial_division(n)
+            galois.trial_division(n, B=500)
+            galois.trial_division(n, B=100)
 
-        n = 2**4 * 17**3 * 113 * 15013
-        galois.trial_division(n)
-        galois.trial_division(n, B=500)
-        galois.trial_division(n, B=100)
+    Group:
+        factorization-specific
     """
     verify_isinstance(n, int)
     verify_isinstance(B, int, optional=True)
@@ -1149,84 +1057,73 @@ def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
     Attempts to find a non-trivial factor of :math:`n` if it has a prime factor :math:`p` such that
     :math:`p-1` is :math:`B`-smooth.
 
-    :group: factorization-specific
+    Arguments:
+        n: An odd composite integer :math:`n > 2` that is not a prime power.
+        B: The smoothness bound :math:`B > 2`.
+        B2: The smoothness bound :math:`B_2` for the optional second step of the algorithm. The default is `None` which
+            will not perform the second step.
 
-    Parameters
-    ----------
-    n
-        An odd composite integer :math:`n > 2` that is not a prime power.
-    B
-        The smoothness bound :math:`B > 2`.
-    B2
-        The smoothness bound :math:`B_2` for the optional second step of the algorithm. The default is `None` which
-        will not perform the second step.
-
-    Returns
-    -------
-    :
+    Returns:
         A non-trivial factor of :math:`n`.
 
-    Raises
-    ------
-    RuntimeError
-        If a non-trivial factor cannot be found.
+    Raises:
+        RuntimeError: If a non-trivial factor cannot be found.
 
-    See Also
-    --------
-    factors, pollard_rho
+    See Also:
+        factors, pollard_rho
 
-    Notes
-    -----
-    For a given odd composite :math:`n` with a prime factor :math:`p`, Pollard's :math:`p-1` algorithm can discover a non-trivial
-    factor of :math:`n` if :math:`p-1` is :math:`B`-smooth. Specifically, the prime factorization must satisfy
-    :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}` with each :math:`p_i \le B`.
+    Notes:
+        For a given odd composite :math:`n` with a prime factor :math:`p`, Pollard's :math:`p-1` algorithm can discover a
+        non-trivial factor of :math:`n` if :math:`p-1` is :math:`B`-smooth. Specifically, the prime factorization must satisfy
+        :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}` with each :math:`p_i \le B`.
 
-    A extension of Pollard's :math:`p-1` algorithm allows a prime factor :math:`p` to be :math:`B`-smooth with the exception of one
-    prime factor :math:`B < p_{k+1} \le B_2`. In this case, the prime factorization is :math:`p-1 = p_1^{e_1} \dots p_k^{e_k} p_{k+1}`.
-    Often :math:`B_2` is chosen such that :math:`B_2 \gg B`.
+        A extension of Pollard's :math:`p-1` algorithm allows a prime factor :math:`p` to be :math:`B`-smooth with the exception
+        of one prime factor :math:`B < p_{k+1} \le B_2`. In this case, the prime factorization is
+        :math:`p-1 = p_1^{e_1} \dots p_k^{e_k} p_{k+1}`. Often :math:`B_2` is chosen such that :math:`B_2 \gg B`.
 
-    References
-    ----------
-    * Section 3.2.3 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
+    References:
+        - Section 3.2.3 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
 
-    Examples
-    --------
-    Here, :math:`n = pq` where :math:`p-1` is 1039-smooth and :math:`q-1` is 17-smooth.
+    Examples:
+        Here, :math:`n = pq` where :math:`p-1` is 1039-smooth and :math:`q-1` is 17-smooth.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        p, q = 1458757, 1326001
-        galois.factors(p - 1)
-        galois.factors(q - 1)
+            p, q = 1458757, 1326001
+            galois.factors(p - 1)
+            galois.factors(q - 1)
 
-    Searching with :math:`B=15` will not recover a prime factor.
+        Searching with :math:`B=15` will not recover a prime factor.
 
-    .. ipython:: python
-        :okexcept:
+        .. ipython:: python
+            :okexcept:
 
-        galois.pollard_p1(p*q, 15)
+            galois.pollard_p1(p*q, 15)
 
-    Searching with :math:`B=17` will recover the prime factor :math:`q`.
+        Searching with :math:`B=17` will recover the prime factor :math:`q`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.pollard_p1(p*q, 17)
+            galois.pollard_p1(p*q, 17)
 
-    Searching :math:`B=15` will not recover a prime factor in the first step, but will find :math:`q` in the second
-    step because :math:`p_{k+1} = 17` satisfies :math:`15 < 17 \le 100`.
+        Searching :math:`B=15` will not recover a prime factor in the first step, but will find :math:`q` in the second
+        step because :math:`p_{k+1} = 17` satisfies :math:`15 < 17 \le 100`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.pollard_p1(p*q, 15, B2=100)
+            galois.pollard_p1(p*q, 15, B2=100)
 
-    Pollard's :math:`p-1` algorithm may return a composite factor.
+        Pollard's :math:`p-1` algorithm may return a composite factor.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        n = 2133861346249
-        galois.factors(n)
-        galois.pollard_p1(n, 10)
-        37*41
+            n = 2133861346249
+            galois.factors(n)
+            galois.pollard_p1(n, 10)
+            37*41
+
+    Group:
+        factorization-specific
     """
     verify_isinstance(n, int)
     verify_isinstance(B, int)
@@ -1287,57 +1184,47 @@ def pollard_rho(n: int, c: int = 1) -> int:
     r"""
     Attempts to find a non-trivial factor of :math:`n` using cycle detection.
 
-    :group: factorization-specific
+    Arguments:
+        n: An odd composite integer :math:`n > 2` that is not a prime power.
+        c: The constant offset in the function :math:`f(x) = x^2 + c\ \textrm{mod}\ n`. The default is 1. A requirement
+            of the algorithm is that :math:`c \not\in \{0, -2\}`.
 
-    Parameters
-    ----------
-    n
-        An odd composite integer :math:`n > 2` that is not a prime power.
-    c
-        The constant offset in the function :math:`f(x) = x^2 + c\ \textrm{mod}\ n`. The default is 1. A requirement
-        of the algorithm is that :math:`c \not\in \{0, -2\}`.
-
-    Returns
-    -------
-    :
+    Returns:
         A non-trivial factor :math:`m` of :math:`n`.
 
-    Raises
-    ------
-    RuntimeError
-        If a non-trivial factor cannot be found.
+    Raises:
+        RuntimeError: If a non-trivial factor cannot be found.
 
-    See Also
-    --------
-    factors, pollard_p1
+    See Also:
+        factors, pollard_p1
 
-    Notes
-    -----
-    Pollard's :math:`\rho` algorithm seeks to find a non-trivial factor of :math:`n` by finding a cycle in a sequence
-    of integers :math:`x_0, x_1, \dots` defined by :math:`x_i = f(x_{i-1}) = x_{i-1}^2 + 1\ \textrm{mod}\ p` where :math:`p`
-    is an unknown small prime factor of :math:`n`. This happens when :math:`x_{m} \equiv x_{2m}\ (\textrm{mod}\ p)`.
-    Because :math:`p` is unknown, this is accomplished by computing the sequence modulo :math:`n` and looking for
-    :math:`\textrm{gcd}(x_m - x_{2m}, n) > 1`.
+    Notes:
+        Pollard's :math:`\rho` algorithm seeks to find a non-trivial factor of :math:`n` by finding a cycle in a sequence
+        of integers :math:`x_0, x_1, \dots` defined by :math:`x_i = f(x_{i-1}) = x_{i-1}^2 + 1\ \textrm{mod}\ p` where :math:`p`
+        is an unknown small prime factor of :math:`n`. This happens when :math:`x_{m} \equiv x_{2m}\ (\textrm{mod}\ p)`.
+        Because :math:`p` is unknown, this is accomplished by computing the sequence modulo :math:`n` and looking for
+        :math:`\textrm{gcd}(x_m - x_{2m}, n) > 1`.
 
-    References
-    ----------
-    * Section 3.2.2 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
+    References:
+        - Section 3.2.2 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
 
-    Examples
-    --------
-    Pollard's :math:`\rho` is especially good at finding small factors.
+    Examples:
+        Pollard's :math:`\rho` is especially good at finding small factors.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        n = 503**7 * 10007 * 1000003
-        galois.pollard_rho(n)
+            n = 503**7 * 10007 * 1000003
+            galois.pollard_rho(n)
 
-    It is also efficient for finding relatively small factors.
+        It is also efficient for finding relatively small factors.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        n = 1182640843 * 1716279751
-        galois.pollard_rho(n)
+            n = 1182640843 * 1716279751
+            galois.pollard_rho(n)
+
+    Group:
+        factorization-specific
     """
     verify_isinstance(n, int)
     verify_isinstance(c, int, optional=True)
@@ -1383,36 +1270,30 @@ def divisors(n: int) -> list[int]:
     r"""
     Computes all positive integer divisors :math:`d` of the integer :math:`n` such that :math:`d\ |\ n`.
 
-    :group: factorization-composite
+    Arguments:
+        n: An integer.
 
-    Parameters
-    ----------
-    n
-        An integer.
-
-    Returns
-    -------
-    :
+    Returns:
         Sorted list of positive integer divisors :math:`d` of :math:`n`.
 
-    See Also
-    --------
-    factors, divisor_sigma
+    See Also:
+        factors, divisor_sigma
 
-    Notes
-    -----
-    The :func:`~galois.divisors` function finds *all* positive integer divisors or factors of :math:`n`, where the :func:`~galois.factors`
-    function only finds the prime factors of :math:`n`.
+    Notes:
+        The :func:`~galois.divisors` function finds *all* positive integer divisors or factors of :math:`n`, where the
+        :func:`~galois.factors` function only finds the prime factors of :math:`n`.
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.divisors(0)
-        galois.divisors(1)
-        galois.divisors(24)
-        galois.divisors(-24)
-        galois.factors(24)
+            galois.divisors(0)
+            galois.divisors(1)
+            galois.divisors(24)
+            galois.divisors(-24)
+            galois.factors(24)
+
+    Group:
+        factorization-composite
     """
     verify_isinstance(n, int)
     n = abs(n)
@@ -1451,40 +1332,33 @@ def divisor_sigma(n: int, k: int = 1) -> int:
     r"""
     Returns the sum of :math:`k`-th powers of the positive divisors of :math:`n`.
 
-    :group: factorization-composite
+    Arguments:
+        n: An integer.
+        k: The degree of the positive divisors. The default is 1 which corresponds to :math:`\sigma_1(n)` which is the
+            sum of positive divisors.
 
-    Parameters
-    ----------
-    n
-        An integer.
-    k
-        The degree of the positive divisors. The default is 1 which corresponds to :math:`\sigma_1(n)` which is the
-        sum of positive divisors.
-
-    Returns
-    -------
-    :
+    Returns:
         The sum of divisors function :math:`\sigma_k(n)`.
 
-    See Also
-    --------
-    factors, divisors
+    See Also:
+        factors, divisors
 
-    Notes
-    -----
-    This function implements the :math:`\sigma_k(n)` function. It is defined as:
+    Notes:
+        This function implements the :math:`\sigma_k(n)` function. It is defined as:
 
-    .. math::
-        \sigma_k(n) = \sum_{d\ |\ n} d^k
+        .. math::
+            \sigma_k(n) = \sum_{d\ |\ n} d^k
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.divisors(9)
-        galois.divisor_sigma(9, k=0)
-        galois.divisor_sigma(9, k=1)
-        galois.divisor_sigma(9, k=2)
+            galois.divisors(9)
+            galois.divisor_sigma(9, k=0)
+            galois.divisor_sigma(9, k=1)
+            galois.divisor_sigma(9, k=2)
+
+    Group:
+        factorization-composite
     """
     verify_isinstance(n, int)
 
@@ -1506,43 +1380,37 @@ def is_prime(n: int) -> bool:
     r"""
     Determines if :math:`n` is prime.
 
-    :group: primes-tests
+    Arguments:
+        n: An integer.
 
-    Parameters
-    ----------
-    n
-        An integer.
-
-    Returns
-    -------
-    :
+    Returns:
         `True` if the integer :math:`n` is prime.
 
-    See Also
-    --------
-    is_composite, is_prime_power, is_perfect_power
+    See Also:
+        is_composite, is_prime_power, is_perfect_power
 
-    Notes
-    -----
-    This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
-    :func:`~galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
+    Notes:
+        This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
+        :func:`~galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
 
-    If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
-    will run 10 rounds of Miller-Rabin's primality test, see :func:`~galois.miller_rabin_primality_test`. With this many rounds,
-    a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
+        If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
+        will run 10 rounds of Miller-Rabin's primality test, see :func:`~galois.miller_rabin_primality_test`. With this many rounds,
+        a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.is_prime(13)
-        galois.is_prime(15)
+            galois.is_prime(13)
+            galois.is_prime(15)
 
-    The algorithm is also efficient on very large :math:`n`.
+        The algorithm is also efficient on very large :math:`n`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.is_prime(1000000000000000035000061)
+            galois.is_prime(1000000000000000035000061)
+
+    Group:
+        primes-tests
     """
     verify_isinstance(n, int)
 
@@ -1571,28 +1439,23 @@ def is_composite(n: int) -> bool:
     r"""
     Determines if :math:`n` is composite.
 
-    :group: primes-tests
+    Arguments:
+        n: An integer.
 
-    Parameters
-    ----------
-    n
-        An integer.
-
-    Returns
-    -------
-    :
+    Returns:
         `True` if the integer :math:`n` is composite.
 
-    See Also
-    --------
-    is_prime, is_square_free, is_perfect_power
+    See Also:
+        is_prime, is_square_free, is_perfect_power
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.is_composite(13)
-        galois.is_composite(15)
+            galois.is_composite(13)
+            galois.is_composite(15)
+
+    Group:
+        primes-tests
     """
     verify_isinstance(n, int)
 
@@ -1607,34 +1470,28 @@ def is_prime_power(n: int) -> bool:
     r"""
     Determines if :math:`n` is a prime power :math:`n = p^k` for prime :math:`p` and :math:`k \ge 1`.
 
-    :group: primes-tests
+    Arguments:
+        n: An integer.
 
-    Parameters
-    ----------
-    n
-        An integer.
-
-    Returns
-    -------
-    :
+    Returns:
         `True` if the integer :math:`n` is a prime power.
 
-    See Also
-    --------
-    is_perfect_power, is_prime
+    See Also:
+        is_perfect_power, is_prime
 
-    Notes
-    -----
-    There is some controversy over whether 1 is a prime power :math:`p^0`. Since 1 is the 0-th power
-    of all primes, it is often regarded not as a prime power. This function returns `False` for 1.
+    Notes:
+        There is some controversy over whether 1 is a prime power :math:`p^0`. Since 1 is the 0-th power
+        of all primes, it is often regarded not as a prime power. This function returns `False` for 1.
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.is_prime_power(8)
-        galois.is_prime_power(6)
-        galois.is_prime_power(1)
+            galois.is_prime_power(8)
+            galois.is_prime_power(6)
+            galois.is_prime_power(1)
+
+    Group:
+        primes-tests
     """
     verify_isinstance(n, int)
 
@@ -1655,65 +1512,60 @@ def is_perfect_power(n: int) -> bool:
     r"""
     Determines if :math:`n` is a perfect power :math:`n = c^e` with :math:`e > 1`.
 
-    :group: primes-tests
+    Arguments:
+        n: An integer.
 
-    Parameters
-    ----------
-    n
-        An integer.
-
-    Returns
-    -------
-    :
+    Returns:
         `True` if the integer :math:`n` is a perfect power.
 
-    See Also
-    --------
-    is_prime_power, is_square_free
+    See Also:
+        is_prime_power, is_square_free
 
-    Examples
-    --------
-    Primes are not perfect powers because their exponent is 1.
+    Examples:
+        Primes are not perfect powers because their exponent is 1.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.perfect_power(13)
-        galois.is_perfect_power(13)
+            galois.perfect_power(13)
+            galois.is_perfect_power(13)
 
-    Products of primes are not perfect powers.
+        Products of primes are not perfect powers.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.perfect_power(5*7)
-        galois.is_perfect_power(5*7)
+            galois.perfect_power(5*7)
+            galois.is_perfect_power(5*7)
 
-    Products of prime powers where the GCD of the exponents is 1 are not perfect powers.
+        Products of prime powers where the GCD of the exponents is 1 are not perfect powers.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.perfect_power(2 * 3 * 5**3)
-        galois.is_perfect_power(2 * 3 * 5**3)
+            galois.perfect_power(2 * 3 * 5**3)
+            galois.is_perfect_power(2 * 3 * 5**3)
 
-    Products of prime powers where the GCD of the exponents is greater than 1 are perfect powers.
+        Products of prime powers where the GCD of the exponents is greater than 1 are perfect powers.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.perfect_power(2**2 * 3**2 * 5**4)
-        galois.is_perfect_power(2**2 * 3**2 * 5**4)
+            galois.perfect_power(2**2 * 3**2 * 5**4)
+            galois.is_perfect_power(2**2 * 3**2 * 5**4)
 
-    Negative integers can be perfect powers if they can be factored with an odd exponent.
+        Negative integers can be perfect powers if they can be factored with an odd exponent.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.perfect_power(-64)
-        galois.is_perfect_power(-64)
+            galois.perfect_power(-64)
+            galois.is_perfect_power(-64)
 
-    Negative integers that are only factored with an even exponent are not perfect powers.
+        Negative integers that are only factored with an even exponent are not perfect powers.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.perfect_power(-100)
-        galois.is_perfect_power(-100)
+            galois.perfect_power(-100)
+            galois.is_perfect_power(-100)
+
+    Group:
+        primes-tests
     """
     verify_isinstance(n, int)
 
@@ -1749,38 +1601,31 @@ def is_smooth(n: int, B: int) -> bool:
     r"""
     Determines if the integer :math:`n` is :math:`B`-smooth.
 
-    :group: primes-tests
+    Arguments:
+        n: An integer.
+        B: The smoothness bound :math:`B \ge 2`.
 
-    Parameters
-    ----------
-    n
-        An integer.
-    B
-        The smoothness bound :math:`B \ge 2`.
-
-    Returns
-    -------
-    :
+    Returns:
         `True` if :math:`n` is :math:`B`-smooth.
 
-    See Also
-    --------
-    factors, is_powersmooth
+    See Also:
+        factors, is_powersmooth
 
-    Notes
-    -----
-    An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-smooth
-    if :math:`p_k \le B`. The 2-smooth numbers are the powers of 2. The 5-smooth numbers
-    are known as *regular numbers*. The 7-smooth numbers are known as *humble numbers* or *highly composite numbers*.
+    Notes:
+        An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-smooth
+        if :math:`p_k \le B`. The 2-smooth numbers are the powers of 2. The 5-smooth numbers
+        are known as *regular numbers*. The 7-smooth numbers are known as *humble numbers* or *highly composite numbers*.
 
-    Examples
-    --------
-    .. ipython:: python
+    Examples:
+        .. ipython:: python
 
-        galois.is_smooth(2**10, 2)
-        galois.is_smooth(10, 5)
-        galois.is_smooth(12, 5)
-        galois.is_smooth(60**2, 5)
+            galois.is_smooth(2**10, 2)
+            galois.is_smooth(10, 5)
+            galois.is_smooth(12, 5)
+            galois.is_smooth(60**2, 5)
+
+    Group:
+        primes-tests
     """
     verify_isinstance(n, int)
     verify_isinstance(B, int)
@@ -1813,38 +1658,31 @@ def is_powersmooth(n: int, B: int) -> bool:
     r"""
     Determines if the integer :math:`n` is :math:`B`-powersmooth.
 
-    :group: primes-tests
+    Arguments:
+        n: An integer.
+        B: The smoothness bound :math:`B \ge 2`.
 
-    Parameters
-    ----------
-    n
-        An integer.
-    B
-        The smoothness bound :math:`B \ge 2`.
-
-    Returns
-    -------
-    :
+    Returns:
         `True` if :math:`n` is :math:`B`-powersmooth.
 
-    See Also
-    --------
-    factors, is_smooth
+    See Also:
+        factors, is_smooth
 
-    Notes
-    -----
-    An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-powersmooth
-    if :math:`p_i^{e_i} \le B` for :math:`1 \le i \le k`.
+    Notes:
+        An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-powersmooth
+        if :math:`p_i^{e_i} \le B` for :math:`1 \le i \le k`.
 
-    Examples
-    --------
-    Comparison of :math:`B`-smooth and :math:`B`-powersmooth. Necessarily, any :math:`n` that is
-    :math:`B`-powersmooth must be :math:`B`-smooth.
+    Examples:
+        Comparison of :math:`B`-smooth and :math:`B`-powersmooth. Necessarily, any :math:`n` that is
+        :math:`B`-powersmooth must be :math:`B`-smooth.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.is_smooth(2**4 * 3**2 * 5, 5)
-        galois.is_powersmooth(2**4 * 3**2 * 5, 5)
+            galois.is_smooth(2**4 * 3**2 * 5, 5)
+            galois.is_powersmooth(2**4 * 3**2 * 5, 5)
+
+    Group:
+        primes-tests
     """
     verify_isinstance(n, int)
     verify_isinstance(B, int)

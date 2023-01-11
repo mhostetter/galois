@@ -24,11 +24,12 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     r"""
     An abstract :obj:`~numpy.ndarray` subclass over a Galois field or Galois ring.
 
-    :group: arrays
-
     .. abstract::
 
         :obj:`~galois.Array` is an abstract base class for :obj:`~galois.FieldArray` and cannot be instantiated directly.
+
+    Group:
+        arrays
     """
 
     def __new__(
@@ -151,17 +152,12 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         Creates an array of all zeros.
 
-        Parameters
-        ----------
-        shape
-            A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+        Arguments:
+            shape: A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple.
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
+                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
 
-        Returns
-        -------
-        :
+        Returns:
             An array of zeros.
         """
         dtype = cls._get_dtype(dtype)
@@ -173,17 +169,12 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         Creates an array of all ones.
 
-        Parameters
-        ----------
-        shape
-            A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+        Arguments:
+            shape: A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple.
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
+                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
 
-        Returns
-        -------
-        :
+        Returns:
             An array of ones.
         """
         dtype = cls._get_dtype(dtype)
@@ -201,21 +192,14 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         Creates a 1-D array with a range of elements.
 
-        Parameters
-        ----------
-        start
-            The starting element (inclusive).
-        stop
-            The stopping element (exclusive).
-        step
-            The increment between elements. The default is 1.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+        Arguments:
+            start: The starting element (inclusive).
+            stop: The stopping element (exclusive).
+            step: The increment between elements. The default is 1.
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
+                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
 
-        Returns
-        -------
-        :
+        Returns:
             A 1-D array of a range of elements.
         """
         # Coerce element-like values to integers in [0, order)
@@ -246,24 +230,16 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         Creates an array with random elements.
 
-        Parameters
-        ----------
-        shape
-            A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple. The default is `()` which represents a scalar.
-        low
-            The smallest element (inclusive). The default is 0.
-        high
-            The largest element (exclusive). The default is `None` which represents :obj:`~galois.Array.order`.
-        seed
-            Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
-            entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+        Arguments:
+            shape: A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple. The default is `()` which represents a scalar.
+            low: The smallest element (inclusive). The default is 0.
+            high: The largest element (exclusive). The default is `None` which represents :obj:`~galois.Array.order`.
+            seed: Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
+                entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
+                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
 
-        Returns
-        -------
-        :
+        Returns:
             An array of random elements.
         """
         # Coerce element-like values to integers in [0, p^m)
@@ -310,17 +286,12 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         r"""
         Creates an :math:`n \times n` identity matrix.
 
-        Parameters
-        ----------
-        size
-            The size :math:`n` along one dimension of the identity matrix.
-        dtype
-            The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-            data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+        Arguments:
+            size: The size :math:`n` along one dimension of the identity matrix.
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
+                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
 
-        Returns
-        -------
-        :
+        Returns:
             A 2-D identity matrix with shape `(size, size)`.
         """
         dtype = cls._get_dtype(dtype)
@@ -338,21 +309,19 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         This function updates :obj:`ufunc_mode`.
 
-        Parameters
-        ----------
-        mode
-            The ufunc calculation mode.
+        Arguments:
+            mode: The ufunc calculation mode.
 
-            - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields,
-              and `"python-calculate"` for fields whose elements cannot be represented with :obj:`numpy.int64`.
-            - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
-              In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
-            - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed
-              for large fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower
-              than `"jit-lookup"`.
-            - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot
-              be represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int`
-              (which has arbitrary precision).
+                - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields,
+                  and `"python-calculate"` for fields whose elements cannot be represented with :obj:`numpy.int64`.
+                - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
+                  In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
+                - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed
+                  for large fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower
+                  than `"jit-lookup"`.
+                - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot
+                  be represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int`
+                  (which has arbitrary precision).
         """
         verify_isinstance(mode, str)
         if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
@@ -389,75 +358,70 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             For the power representation, :func:`numpy.log` is computed on each element. So for large fields without lookup
             tables, displaying arrays in the power representation may take longer than expected.
 
-        Parameters
-        ----------
-        element_repr
-            The field element representation.
+        Arguments:
+            element_repr: The field element representation.
 
-            - `"int"` (default): Sets the representation to the :ref:`integer representation <int-repr>`.
-            - `"poly"`: Sets the representation to the :ref:`polynomial representation <poly-repr>`.
-            - `"power"`: Sets the representation to the :ref:`power representation <power-repr>`.
+                - `"int"` (default): Sets the representation to the :ref:`integer representation <int-repr>`.
+                - `"poly"`: Sets the representation to the :ref:`polynomial representation <poly-repr>`.
+                - `"power"`: Sets the representation to the :ref:`power representation <power-repr>`.
 
-        Returns
-        -------
-        :
+        Returns:
             A context manager for use in a `with` statement. If permanently setting the element representation, disregard the
             return value.
 
-        Examples
-        --------
-        The default element representation is the integer representation.
+        Examples:
+            The default element representation is the integer representation.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            GF = galois.GF(3**2)
-            x = GF.elements; x
+                GF = galois.GF(3**2)
+                x = GF.elements; x
 
-        Permanently set the element representation by calling :func:`repr`.
+            Permanently set the element representation by calling :func:`repr`.
 
-        .. md-tab-set::
+            .. md-tab-set::
 
-            .. md-tab-item:: Polynomial
+                .. md-tab-item:: Polynomial
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    GF.repr("poly");
-                    x
+                        GF.repr("poly");
+                        x
 
-            .. md-tab-item:: Power
+                .. md-tab-item:: Power
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    GF.repr("power");
-                    x
-                    @suppress
-                    GF.repr()
+                        GF.repr("power");
+                        x
+                        @suppress
+                        GF.repr()
 
-        Temporarily modify the element representation by using :func:`repr` as a context manager.
+            Temporarily modify the element representation by using :func:`repr` as a context manager.
 
-        .. md-tab-set::
+            .. md-tab-set::
 
-            .. md-tab-item:: Polynomial
+                .. md-tab-item:: Polynomial
 
-                .. ipython:: python
+                    .. ipython:: python
 
-                    print(x)
-                    with GF.repr("poly"):
                         print(x)
-                    # Outside the context manager, the element representation reverts to its previous value
-                    print(x)
-
-            .. md-tab-item:: Power
-
-                .. ipython:: python
-
-                    print(x)
-                    with GF.repr("power"):
+                        with GF.repr("poly"):
+                            print(x)
+                        # Outside the context manager, the element representation reverts to its previous value
                         print(x)
-                    # Outside the context manager, the element representation reverts to its previous value
-                    print(x)
-                    @suppress
-                    GF.repr()
+
+                .. md-tab-item:: Power
+
+                    .. ipython:: python
+
+                        print(x)
+                        with GF.repr("power"):
+                            print(x)
+                        # Outside the context manager, the element representation reverts to its previous value
+                        print(x)
+                        @suppress
+                        GF.repr()
         """
         verify_literal(element_repr, ["int", "poly", "power"])
 

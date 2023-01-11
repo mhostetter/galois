@@ -178,125 +178,123 @@ class FLFSR(_LFSR):
     r"""
     A Fibonacci linear-feedback shift register (LFSR).
 
-    :group: linear-sequences
+    Notes:
+        A Fibonacci LFSR is defined by its feedback polynomial :math:`f(x)`.
 
-    Notes
-    -----
-    A Fibonacci LFSR is defined by its feedback polynomial :math:`f(x)`.
+        .. math::
+            f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})
 
-    .. math::
-        f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})
+        The feedback polynomial is the reciprocal of the characteristic polynomial :math:`c(x)` of the linear recurrent sequence
+        :math:`y` produced by the Fibonacci LFSR.
 
-    The feedback polynomial is the reciprocal of the characteristic polynomial :math:`c(x)` of the linear recurrent sequence
-    :math:`y` produced by the Fibonacci LFSR.
+        .. math::
+            c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
 
-    .. math::
-        c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
+        .. math::
+            y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
 
-    .. math::
-        y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
+        .. code-block:: text
+           :caption: Fibonacci LFSR Configuration
 
-    .. code-block:: text
-       :caption: Fibonacci LFSR Configuration
+            +--------------+<-------------+<-------------+<-------------+
+            |              ^              ^              ^              |
+            |              | c_n-1        | c_n-2        | c_1          | c_0
+            |              | T[0]         | T[1]         | T[n-2]       | T[n-1]
+            |  +--------+  |  +--------+  |              |  +--------+  |
+            +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
+               +--------+     +--------+                    +--------+
+                y[t+n-1]       y[t+n-2]                       y[t+1]
 
-        +--------------+<-------------+<-------------+<-------------+
-        |              ^              ^              ^              |
-        |              | c_n-1        | c_n-2        | c_1          | c_0
-        |              | T[0]         | T[1]         | T[n-2]       | T[n-1]
-        |  +--------+  |  +--------+  |              |  +--------+  |
-        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
-           +--------+     +--------+                    +--------+
-            y[t+n-1]       y[t+n-2]                       y[t+1]
+        The shift register taps :math:`T` are defined left-to-right as :math:`T = [T_0, T_1, \dots, T_{n-2}, T_{n-1}]`.
+        The state vector :math:`S` is also defined left-to-right as :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
-    The shift register taps :math:`T` are defined left-to-right as :math:`T = [T_0, T_1, \dots, T_{n-2}, T_{n-1}]`.
-    The state vector :math:`S` is also defined left-to-right as :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
+        In the Fibonacci configuration, the shift register taps are :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`. Additionally,
+        the state vector is equal to the next :math:`n` outputs in reversed order, namely
+        :math:`S = [y_{t+n-1}, y_{t+n-2}, \dots, y_{t+2}, y_{t+1}]`.
 
-    In the Fibonacci configuration, the shift register taps are :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`. Additionally, the state
-    vector is equal to the next :math:`n` outputs in reversed order, namely :math:`S = [y_{t+n-1}, y_{t+n-2}, \dots, y_{t+2}, y_{t+1}]`.
+    References:
+        - Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
 
-    References
-    ----------
-    * Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
+    See Also:
+        berlekamp_massey
 
-    See Also
-    --------
-    berlekamp_massey
+    Examples:
+        .. md-tab-set::
 
-    Examples
-    --------
-    .. md-tab-set::
+            .. md-tab-item:: GF(2)
 
-        .. md-tab-item:: GF(2)
+                Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2)`.
 
-            Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2)`.
+                .. ipython:: python
 
-            .. ipython:: python
+                    c = galois.primitive_poly(2, 4); c
+                    lfsr = galois.FLFSR(c.reverse())
+                    print(lfsr)
 
-                c = galois.primitive_poly(2, 4); c
-                lfsr = galois.FLFSR(c.reverse())
-                print(lfsr)
+                Step the Fibonacci LFSR and produce 10 output symbols.
 
-            Step the Fibonacci LFSR and produce 10 output symbols.
+                .. ipython:: python
 
-            .. ipython:: python
+                    lfsr.state
+                    lfsr.step(10)
+                    lfsr.state
 
-                lfsr.state
-                lfsr.step(10)
-                lfsr.state
+            .. md-tab-item:: GF(p)
 
-        .. md-tab-item:: GF(p)
+                Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(7)`.
 
-            Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(7)`.
+                .. ipython:: python
 
-            .. ipython:: python
+                    c = galois.primitive_poly(7, 4); c
+                    lfsr = galois.FLFSR(c.reverse())
+                    print(lfsr)
 
-                c = galois.primitive_poly(7, 4); c
-                lfsr = galois.FLFSR(c.reverse())
-                print(lfsr)
+                Step the Fibonacci LFSR and produce 10 output symbols.
 
-            Step the Fibonacci LFSR and produce 10 output symbols.
+                .. ipython:: python
 
-            .. ipython:: python
+                    lfsr.state
+                    lfsr.step(10)
+                    lfsr.state
 
-                lfsr.state
-                lfsr.step(10)
-                lfsr.state
+            .. md-tab-item:: GF(2^m)
 
-        .. md-tab-item:: GF(2^m)
+                Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2^3)`.
 
-            Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2^3)`.
+                .. ipython:: python
 
-            .. ipython:: python
+                    c = galois.primitive_poly(2**3, 4); c
+                    lfsr = galois.FLFSR(c.reverse())
+                    print(lfsr)
 
-                c = galois.primitive_poly(2**3, 4); c
-                lfsr = galois.FLFSR(c.reverse())
-                print(lfsr)
+                Step the Fibonacci LFSR and produce 10 output symbols.
 
-            Step the Fibonacci LFSR and produce 10 output symbols.
+                .. ipython:: python
 
-            .. ipython:: python
+                    lfsr.state
+                    lfsr.step(10)
+                    lfsr.state
 
-                lfsr.state
-                lfsr.step(10)
-                lfsr.state
+            .. md-tab-item:: GF(p^m)
 
-        .. md-tab-item:: GF(p^m)
+                Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(3^3)`.
 
-            Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(3^3)`.
+                .. ipython:: python
 
-            .. ipython:: python
+                    c = galois.primitive_poly(3**3, 4); c
+                    lfsr = galois.FLFSR(c.reverse())
+                    print(lfsr)
 
-                c = galois.primitive_poly(3**3, 4); c
-                lfsr = galois.FLFSR(c.reverse())
-                print(lfsr)
+                Step the Fibonacci LFSR and produce 10 output symbols.
 
-            Step the Fibonacci LFSR and produce 10 output symbols.
+                .. ipython:: python
 
-            .. ipython:: python
+                    lfsr.state
+                    lfsr.step(10)
+                    lfsr.state
 
-                lfsr.state
-                lfsr.step(10)
-                lfsr.state
+    Group:
+        linear-sequences
     """
 
     _type = "fibonacci"
@@ -309,22 +307,17 @@ class FLFSR(_LFSR):
         r"""
         Constructs a Fibonacci LFSR from its feedback polynomial :math:`f(x)`.
 
-        Parameters
-        ----------
-        feedback_poly
-            The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`.
-        state
-            The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
-            all ones.
+        Arguments:
+            feedback_poly: The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`.
+            state: The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds
+                to all ones.
 
-        See Also
-        --------
-        irreducible_poly, primitive_poly
+        See Also:
+            irreducible_poly, primitive_poly
 
-        Notes
-        -----
-        A Fibonacci LFSR may be constructed from its characteristic polynomial :math:`c(x)` by passing in its reciprocal as the feedback
-        polynomial. This is because :math:`f(x) = x^n c(x^{-1})`.
+        Notes:
+            A Fibonacci LFSR may be constructed from its characteristic polynomial :math:`c(x)` by passing in its reciprocal as the
+            feedback polynomial. This is because :math:`f(x) = x^n c(x^{-1})`.
         """
         super().__init__(feedback_poly, state=state)
 
@@ -333,27 +326,21 @@ class FLFSR(_LFSR):
         r"""
         Constructs a Fibonacci LFSR from its taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
 
-        Parameters
-        ----------
-        taps
-            The shift register taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
-        state
-            The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
-            all ones.
+        Arguments:
+            taps: The shift register taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
+            state: The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds
+                to all ones.
 
-        Returns
-        -------
-        :
+        Returns:
             A Fibonacci LFSR with taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            taps = -c.coeffs[1:]; taps
-            lfsr = galois.FLFSR.Taps(taps)
-            print(lfsr)
+                c = galois.primitive_poly(7, 4); c
+                taps = -c.coeffs[1:]; taps
+                lfsr = galois.FLFSR.Taps(taps)
+                print(lfsr)
         """
         return super().Taps(taps, state=state)
 
@@ -361,13 +348,12 @@ class FLFSR(_LFSR):
         """
         A terse representation of the Fibonacci LFSR.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.FLFSR(c.reverse())
-            lfsr
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.FLFSR(c.reverse())
+                lfsr
         """
         return f"<Fibonacci LFSR: f(x) = {self.feedback_poly} over {self.field.name}>"
 
@@ -375,13 +361,12 @@ class FLFSR(_LFSR):
         """
         A formatted string of relevant properties of the Fibonacci LFSR.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.FLFSR(c.reverse())
-            print(lfsr)
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.FLFSR(c.reverse())
+                print(lfsr)
         """
         string = "Fibonacci LFSR:"
         string += f"\n  field: {self.field.name}"
@@ -398,51 +383,42 @@ class FLFSR(_LFSR):
         r"""
         Resets the Fibonacci LFSR state to the specified state.
 
-        Parameters
-        ----------
-        state
-            The state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
-            the initial state.
+        Arguments:
+            state: The state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
+                the initial state.
 
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            Step the Fibonacci LFSR 10 steps to modify its state.
 
-            .. md-tab-item:: Initial state
+            .. ipython:: python
 
-                Step the Fibonacci LFSR 10 steps to modify its state.
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.FLFSR(c.reverse()); lfsr
+                lfsr.state
+                lfsr.step(10)
+                lfsr.state
 
-                .. ipython:: python
+            Reset the Fibonacci LFSR state.
 
-                    c = galois.primitive_poly(7, 4); c
-                    lfsr = galois.FLFSR(c.reverse()); lfsr
-                    lfsr.state
-                    lfsr.step(10)
-                    lfsr.state
+            .. ipython:: python
 
-                Reset the Fibonacci LFSR state.
+                lfsr.reset()
+                lfsr.state
 
-                .. ipython:: python
+            Create an Fibonacci LFSR and view its initial state.
 
-                    lfsr.reset()
-                    lfsr.state
+            .. ipython:: python
 
-            .. md-tab-item:: Specific state
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.FLFSR(c.reverse()); lfsr
+                lfsr.state
 
-                Create an Fibonacci LFSR and view its initial state.
+            Reset the Fibonacci LFSR state to a new state.
 
-                .. ipython:: python
+            .. ipython:: python
 
-                    c = galois.primitive_poly(7, 4); c
-                    lfsr = galois.FLFSR(c.reverse()); lfsr
-                    lfsr.state
-
-                Reset the Fibonacci LFSR state to a new state.
-
-                .. ipython:: python
-
-                    lfsr.reset([1, 2, 3, 4])
-                    lfsr.state
+                lfsr.reset([1, 2, 3, 4])
+                lfsr.state
         """
         # pylint: disable=useless-super-delegation
         return super().reset(state)
@@ -454,70 +430,47 @@ class FLFSR(_LFSR):
         Negative values may be passed which reverses the direction of the shift registers and produces outputs
         in reverse order.
 
-        Parameters
-        ----------
-        steps
-            The direction and number of output symbols to produce. The default is 1. If negative, the Fibonacci LFSR will step backward.
+        Arguments:
+            steps: The direction and number of output symbols to produce. The default is 1. If negative, the Fibonacci LFSR
+                will step backward.
 
-        Returns
-        -------
-        :
+        Returns:
             An array of output symbols of type :obj:`field` with size `abs(steps)`.
 
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            Step the Fibonacci LFSR one output at a time. Notice the first :math:`n` outputs of a Fibonacci LFSR are its
+            state reversed.
 
-            .. md-tab-item:: Scalar output
+            .. ipython:: python
 
-                Step the Fibonacci LFSR one output at a time. Notice the first :math:`n` outputs of a Fibonacci LFSR are its
-                state reversed.
+                c = galois.primitive_poly(7, 4)
+                lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
+                lfsr.state, lfsr.step()
+                lfsr.state, lfsr.step()
+                lfsr.state, lfsr.step()
+                lfsr.state, lfsr.step()
+                lfsr.state, lfsr.step()
+                # Ending state
+                lfsr.state
 
-                .. ipython:: python
+            Step the Fibonacci LFSR 5 steps in one call. This is more efficient than iterating one output at a time.
 
-                    c = galois.primitive_poly(7, 4)
-                    lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-                    lfsr.state, lfsr.step()
-                    lfsr.state, lfsr.step()
-                    lfsr.state, lfsr.step()
-                    lfsr.state, lfsr.step()
-                    lfsr.state, lfsr.step()
-                    # Ending state
-                    lfsr.state
+            .. ipython:: python
 
-            .. md-tab-item:: Vector output
+                c = galois.primitive_poly(7, 4)
+                lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
+                lfsr.state
+                lfsr.step(5)
+                # Ending state
+                lfsr.state
 
-                Step the Fibonacci LFSR 5 steps in one call. This is more efficient than iterating one output at a time. Notice
-                the output and ending state are the same from the *Scalar output* tab.
+            Step the Fibonacci LFSR 5 steps backward. Notice the output sequence is the reverse of the original sequence. Also notice
+            the ending state is the same as the initial state.
 
-                .. ipython:: python
+            .. ipython:: python
 
-                    c = galois.primitive_poly(7, 4)
-                    lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-                    lfsr.state
-                    lfsr.step(5)
-                    # Ending state
-                    lfsr.state
-
-            .. md-tab-item:: Step backwards
-
-                Step the Fibonacci LFSR 10 steps forward.
-
-                .. ipython:: python
-
-                    c = galois.primitive_poly(7, 4)
-                    lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-                    lfsr.state
-                    lfsr.step(10)
-                    lfsr.state
-
-                Step the Fibonacci LFSR 10 steps backward. Notice the output sequence is the reverse of the original sequence. Also notice
-                the ending state is the same as the initial state.
-
-                .. ipython:: python
-
-                    lfsr.step(-10)
-                    lfsr.state
+                lfsr.step(-5)
+                lfsr.state
         """
         # pylint: disable=useless-super-delegation
         return super().step(steps)
@@ -526,34 +479,31 @@ class FLFSR(_LFSR):
         """
         Converts the Fibonacci LFSR to a Galois LFSR that produces the same output.
 
-        Returns
-        -------
-        :
+        Returns:
             An equivalent Galois LFSR.
 
-        Examples
-        --------
-        Create a Fibonacci LFSR with a given initial state.
+        Examples:
+            Create a Fibonacci LFSR with a given initial state.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            fibonacci_lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4])
-            print(fibonacci_lfsr)
+                c = galois.primitive_poly(7, 4); c
+                fibonacci_lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4])
+                print(fibonacci_lfsr)
 
-        Convert the Fibonacci LFSR to an equivalent Galois LFSR. Notice the initial state is different.
+            Convert the Fibonacci LFSR to an equivalent Galois LFSR. Notice the initial state is different.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois_lfsr = fibonacci_lfsr.to_galois_lfsr()
-            print(galois_lfsr)
+                galois_lfsr = fibonacci_lfsr.to_galois_lfsr()
+                print(galois_lfsr)
 
-        Step both LFSRs and see that their output sequences are identical.
+            Step both LFSRs and see that their output sequences are identical.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            fibonacci_lfsr.step(10)
-            galois_lfsr.step(10)
+                fibonacci_lfsr.step(10)
+                galois_lfsr.step(10)
         """
         # See answer to this question https://crypto.stackexchange.com/questions/60634/lfsr-jump-ahead-algorithm
 
@@ -579,13 +529,12 @@ class FLFSR(_LFSR):
         """
         The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.FLFSR(c.reverse()); lfsr
-            lfsr.field
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.FLFSR(c.reverse()); lfsr
+                lfsr.field
         """
         return super().field
 
@@ -596,14 +545,13 @@ class FLFSR(_LFSR):
         that defines the feedback arithmetic. The feedback polynomial is the reciprocal of the characteristic
         polynomial :math:`f(x) = x^n c(x^{-1})`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.FLFSR(c.reverse()); lfsr
-            lfsr.feedback_poly
-            lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.FLFSR(c.reverse()); lfsr
+                lfsr.feedback_poly
+                lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
         """
         return super().feedback_poly
 
@@ -614,14 +562,13 @@ class FLFSR(_LFSR):
         that defines the linear recurrent sequence. The characteristic polynomial is the reciprocal of the feedback
         polynomial :math:`c(x) = x^n f(x^{-1})`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.FLFSR(c.reverse()); lfsr
-            lfsr.characteristic_poly
-            lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.FLFSR(c.reverse()); lfsr
+                lfsr.characteristic_poly
+                lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
         """
         return super().characteristic_poly
 
@@ -631,14 +578,13 @@ class FLFSR(_LFSR):
         The shift register taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`. The taps of the shift register define
         the linear recurrence relation.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            taps = -c.coeffs[1:]; taps
-            lfsr = galois.FLFSR.Taps(taps); lfsr
-            lfsr.taps
+                c = galois.primitive_poly(7, 4); c
+                taps = -c.coeffs[1:]; taps
+                lfsr = galois.FLFSR.Taps(taps); lfsr
+                lfsr.taps
         """
         return super().taps
 
@@ -655,20 +601,19 @@ class FLFSR(_LFSR):
         r"""
         The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4)
-            lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-            lfsr.initial_state
+                c = galois.primitive_poly(7, 4)
+                lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
+                lfsr.initial_state
 
-        The initial state is unaffected as the Fibonacci LFSR is stepped.
+            The initial state is unaffected as the Fibonacci LFSR is stepped.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            lfsr.step(10)
-            lfsr.initial_state
+                lfsr.step(10)
+                lfsr.initial_state
         """
         return super().initial_state
 
@@ -677,20 +622,19 @@ class FLFSR(_LFSR):
         r"""
         The current state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4)
-            lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-            lfsr.state
+                c = galois.primitive_poly(7, 4)
+                lfsr = galois.FLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
+                lfsr.state
 
-        The current state is modified as the Fibonacci LFSR is stepped.
+            The current state is modified as the Fibonacci LFSR is stepped.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            lfsr.step(10)
-            lfsr.state
+                lfsr.step(10)
+                lfsr.state
         """
         return super().state
 
@@ -711,21 +655,14 @@ class fibonacci_lfsr_step_forward_jit(Function):
            +--------+     +--------+                    +--------+
             y[t+n-1]       y[t+n-2]                       y[t+1]
 
-    Parameters
-    ----------
-    taps
-        The set of taps T = [c_n-1, c_n-2, ..., c_1, c_0].
-    state
-        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
-    steps
-        The number of output symbols to produce.
-    feedback
-        `True` indicates to output the feedback value `y_1[t]` (LRS) and `False` indicates to output the value out of the
-        shift register `y_2[t]`.
+    Arguments:
+        taps: The set of taps T = [c_n-1, c_n-2, ..., c_1, c_0].
+        state: The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
+        steps: The number of output symbols to produce.
+        feedback: `True` indicates to output the feedback value `y_1[t]` (LRS) and `False` indicates to output the value out of the
+            shift register `y_2[t]`.
 
-    Returns
-    -------
-    y
+    Returns:
         The output sequence of size `steps`.
     """
 
@@ -782,18 +719,12 @@ class fibonacci_lfsr_step_backward_jit(Function):
            +--------+     +--------+                    +--------+
             y[t+n-1]       y[t+n-2]                       y[t+1]
 
-    Parameters
-    ----------
-    taps
-        The set of taps T = [c_n-1, c_n-2, ..., c_1, c_0].
-    state
-        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
-    steps
-        The number of output symbols to produce.
+    Arguments:
+        taps: The set of taps T = [c_n-1, c_n-2, ..., c_1, c_0].
+        state: The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
+        steps: The number of output symbols to produce.
 
-    Returns
-    -------
-    y
+    Returns:
         The output sequence of size `steps`.
     """
 
@@ -848,124 +779,121 @@ class GLFSR(_LFSR):
     r"""
     A Galois linear-feedback shift register (LFSR).
 
-    Notes
-    -----
-    A Galois LFSR is defined by its feedback polynomial :math:`f(x)`.
+    Notes:
+        A Galois LFSR is defined by its feedback polynomial :math:`f(x)`.
 
-    .. math::
-        f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})
+        .. math::
+            f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})
 
-    The feedback polynomial is the reciprocal of the characteristic polynomial :math:`c(x)` of the linear recurrent sequence
-    :math:`y` produced by the Galois LFSR.
+        The feedback polynomial is the reciprocal of the characteristic polynomial :math:`c(x)` of the linear recurrent sequence
+        :math:`y` produced by the Galois LFSR.
 
-    .. math::
-        c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
+        .. math::
+            c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
 
-    .. math::
-        y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
+        .. math::
+            y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
 
-    .. code-block:: text
-       :caption: Galois LFSR Configuration
+        .. code-block:: text
+           :caption: Galois LFSR Configuration
 
-        +--------------+<-------------+<-------------+<-------------+
-        |              |              |              |              |
-        | c_0          | c_1          | c_2          | c_n-1        |
-        | T[0]         | T[1]         | T[2]         | T[n-1]       |
-        |  +--------+  v  +--------+  v              v  +--------+  |
-        +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
-           +--------+     +--------+                    +--------+
-                                                          y[t+1]
+            +--------------+<-------------+<-------------+<-------------+
+            |              |              |              |              |
+            | c_0          | c_1          | c_2          | c_n-1        |
+            | T[0]         | T[1]         | T[2]         | T[n-1]       |
+            |  +--------+  v  +--------+  v              v  +--------+  |
+            +->|  S[0]  |--+->|  S[1]  |--+---  ...   ---+->| S[n-1] |--+--> y[t]
+               +--------+     +--------+                    +--------+
+                                                              y[t+1]
 
-    The shift register taps :math:`T` are defined left-to-right as :math:`T = [T_0, T_1, \dots, T_{n-2}, T_{n-1}]`.
-    The state vector :math:`S` is also defined left-to-right as :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
+        The shift register taps :math:`T` are defined left-to-right as :math:`T = [T_0, T_1, \dots, T_{n-2}, T_{n-1}]`.
+        The state vector :math:`S` is also defined left-to-right as :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
-    In the Galois configuration, the shift register taps are :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
+        In the Galois configuration, the shift register taps are :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
 
-    References
-    ----------
-    * Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
+    References:
+        - Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare. https://hdl.handle.net/2134/21932.
 
-    See Also
-    --------
-    berlekamp_massey
+    See Also:
+        berlekamp_massey
 
-    Examples
-    --------
-    .. md-tab-set::
+    Examples:
+        .. md-tab-set::
 
-        .. md-tab-item:: GF(2)
+            .. md-tab-item:: GF(2)
 
-            Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2)`.
+                Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2)`.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                c = galois.primitive_poly(2, 4); c
-                lfsr = galois.GLFSR(c.reverse())
-                print(lfsr)
+                    c = galois.primitive_poly(2, 4); c
+                    lfsr = galois.GLFSR(c.reverse())
+                    print(lfsr)
 
-            Step the Galois LFSR and produce 10 output symbols.
+                Step the Galois LFSR and produce 10 output symbols.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                lfsr.state
-                lfsr.step(10)
-                lfsr.state
+                    lfsr.state
+                    lfsr.step(10)
+                    lfsr.state
 
-        .. md-tab-item:: GF(p)
+            .. md-tab-item:: GF(p)
 
-            Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(7)`.
+                Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(7)`.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                c = galois.primitive_poly(7, 4); c
-                lfsr = galois.GLFSR(c.reverse())
-                print(lfsr)
+                    c = galois.primitive_poly(7, 4); c
+                    lfsr = galois.GLFSR(c.reverse())
+                    print(lfsr)
 
-            Step the Galois LFSR and produce 10 output symbols.
+                Step the Galois LFSR and produce 10 output symbols.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                lfsr.state
-                lfsr.step(10)
-                lfsr.state
+                    lfsr.state
+                    lfsr.step(10)
+                    lfsr.state
 
-        .. md-tab-item:: GF(2^m)
+            .. md-tab-item:: GF(2^m)
 
-            Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2^3)`.
+                Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2^3)`.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                c = galois.primitive_poly(2**3, 4); c
-                lfsr = galois.GLFSR(c.reverse())
-                print(lfsr)
+                    c = galois.primitive_poly(2**3, 4); c
+                    lfsr = galois.GLFSR(c.reverse())
+                    print(lfsr)
 
-            Step the Galois LFSR and produce 10 output symbols.
+                Step the Galois LFSR and produce 10 output symbols.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                lfsr.state
-                lfsr.step(10)
-                lfsr.state
+                    lfsr.state
+                    lfsr.step(10)
+                    lfsr.state
 
-        .. md-tab-item:: GF(p^m)
+            .. md-tab-item:: GF(p^m)
 
-            Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(3^3)`.
+                Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(3^3)`.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                c = galois.primitive_poly(3**3, 4); c
-                lfsr = galois.GLFSR(c.reverse())
-                print(lfsr)
+                    c = galois.primitive_poly(3**3, 4); c
+                    lfsr = galois.GLFSR(c.reverse())
+                    print(lfsr)
 
-            Step the Galois LFSR and produce 10 output symbols.
+                Step the Galois LFSR and produce 10 output symbols.
 
-            .. ipython:: python
+                .. ipython:: python
 
-                lfsr.state
-                lfsr.step(10)
-                lfsr.state
+                    lfsr.state
+                    lfsr.step(10)
+                    lfsr.state
 
-    :group: linear-sequences
+    Group:
+        linear-sequences
     """
 
     _type = "galois"
@@ -978,22 +906,17 @@ class GLFSR(_LFSR):
         r"""
         Constructs a Galois LFSR from its feedback polynomial :math:`f(x)`.
 
-        Parameters
-        ----------
-        feedback_poly
-            The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`.
-        state
-            The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
-            all ones.
+        Arguments:
+            feedback_poly: The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`.
+            state: The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds
+                to all ones.
 
-        See Also
-        --------
-        irreducible_poly, primitive_poly
+        See Also:
+            irreducible_poly, primitive_poly
 
-        Notes
-        -----
-        A Galois LFSR may be constructed from its characteristic polynomial :math:`c(x)` by passing in its reciprocal as the feedback
-        polynomial. This is because :math:`f(x) = x^n c(x^{-1})`.
+        Notes:
+            A Galois LFSR may be constructed from its characteristic polynomial :math:`c(x)` by passing in its reciprocal as the feedback
+            polynomial. This is because :math:`f(x) = x^n c(x^{-1})`.
         """
         super().__init__(feedback_poly, state=state)
 
@@ -1002,27 +925,21 @@ class GLFSR(_LFSR):
         r"""
         Constructs a Galois LFSR from its taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
 
-        Parameters
-        ----------
-        taps
-            The shift register taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
-        state
-            The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
-            all ones.
+        Arguments:
+            taps: The shift register taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
+            state: The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds
+                to all ones.
 
-        Returns
-        -------
-        :
+        Returns:
             A Galois LFSR with taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            taps = -c.coeffs[1:][::-1]; taps
-            lfsr = galois.GLFSR.Taps(taps)
-            print(lfsr)
+                c = galois.primitive_poly(7, 4); c
+                taps = -c.coeffs[1:][::-1]; taps
+                lfsr = galois.GLFSR.Taps(taps)
+                print(lfsr)
         """
         return super().Taps(taps, state=state)
 
@@ -1030,13 +947,12 @@ class GLFSR(_LFSR):
         """
         A terse representation of the Galois LFSR.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.GLFSR(c.reverse())
-            lfsr
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.GLFSR(c.reverse())
+                lfsr
         """
         return f"<Galois LFSR: f(x) = {self.feedback_poly} over {self.field.name}>"
 
@@ -1044,13 +960,12 @@ class GLFSR(_LFSR):
         """
         A formatted string of relevant properties of the Galois LFSR.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.GLFSR(c.reverse())
-            print(lfsr)
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.GLFSR(c.reverse())
+                print(lfsr)
         """
         string = "Galois LFSR:"
         string += f"\n  field: {self.field.name}"
@@ -1067,51 +982,42 @@ class GLFSR(_LFSR):
         r"""
         Resets the Galois LFSR state to the specified state.
 
-        Parameters
-        ----------
-        state
-            The state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
-            the initial state.
+        Arguments:
+            state: The state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which corresponds to
+                the initial state.
 
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            Step the Galois LFSR 10 steps to modify its state.
 
-            .. md-tab-item:: Initial state
+            .. ipython:: python
 
-                Step the Galois LFSR 10 steps to modify its state.
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.GLFSR(c.reverse()); lfsr
+                lfsr.state
+                lfsr.step(10)
+                lfsr.state
 
-                .. ipython:: python
+            Reset the Galois LFSR state.
 
-                    c = galois.primitive_poly(7, 4); c
-                    lfsr = galois.GLFSR(c.reverse()); lfsr
-                    lfsr.state
-                    lfsr.step(10)
-                    lfsr.state
+            .. ipython:: python
 
-                Reset the Galois LFSR state.
+                lfsr.reset()
+                lfsr.state
 
-                .. ipython:: python
+            Create an Galois LFSR and view its initial state.
 
-                    lfsr.reset()
-                    lfsr.state
+            .. ipython:: python
 
-            .. md-tab-item:: Specific state
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.GLFSR(c.reverse()); lfsr
+                lfsr.state
 
-                Create an Galois LFSR and view its initial state.
+            Reset the Galois LFSR state to a new state.
 
-                .. ipython:: python
+            .. ipython:: python
 
-                    c = galois.primitive_poly(7, 4); c
-                    lfsr = galois.GLFSR(c.reverse()); lfsr
-                    lfsr.state
-
-                Reset the Galois LFSR state to a new state.
-
-                .. ipython:: python
-
-                    lfsr.reset([1, 2, 3, 4])
-                    lfsr.state
+                lfsr.reset([1, 2, 3, 4])
+                lfsr.state
         """
         # pylint: disable=useless-super-delegation
         return super().reset(state)
@@ -1123,69 +1029,46 @@ class GLFSR(_LFSR):
         Negative values may be passed which reverses the direction of the shift registers and produces outputs
         in reverse order.
 
-        Parameters
-        ----------
-        steps
-            The direction and number of output symbols to produce. The default is 1. If negative, the Galois LFSR will step backward.
+        Arguments:
+            steps: The direction and number of output symbols to produce. The default is 1. If negative, the Galois LFSR will
+                step backward.
 
-        Returns
-        -------
-        :
+        Returns:
             An array of output symbols of type :obj:`field` with size `abs(steps)`.
 
-        Examples
-        --------
-        .. md-tab-set::
+        Examples:
+            Step the Galois LFSR one output at a time.
 
-            .. md-tab-item:: Scalar output
+            .. ipython:: python
 
-                Step the Galois LFSR one output at a time.
+                c = galois.primitive_poly(7, 4)
+                lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
+                lfsr.state, lfsr.step()
+                lfsr.state, lfsr.step()
+                lfsr.state, lfsr.step()
+                lfsr.state, lfsr.step()
+                lfsr.state, lfsr.step()
+                # Ending state
+                lfsr.state
 
-                .. ipython:: python
+            Step the Galois LFSR 5 steps in one call. This is more efficient than iterating one output at a time.
 
-                    c = galois.primitive_poly(7, 4)
-                    lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-                    lfsr.state, lfsr.step()
-                    lfsr.state, lfsr.step()
-                    lfsr.state, lfsr.step()
-                    lfsr.state, lfsr.step()
-                    lfsr.state, lfsr.step()
-                    # Ending state
-                    lfsr.state
+            .. ipython:: python
 
-            .. md-tab-item:: Vector output
+                c = galois.primitive_poly(7, 4)
+                lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
+                lfsr.state
+                lfsr.step(5)
+                # Ending state
+                lfsr.state
 
-                Step the Galois LFSR 5 steps in one call. This is more efficient than iterating one output at a time. Notice
-                the output and ending state are the same from the *Scalar output* tab.
+            Step the Galois LFSR 5 steps backward. Notice the output sequence is the reverse of the original sequence. Also notice
+            the ending state is the same as the initial state.
 
-                .. ipython:: python
+            .. ipython:: python
 
-                    c = galois.primitive_poly(7, 4)
-                    lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-                    lfsr.state
-                    lfsr.step(5)
-                    # Ending state
-                    lfsr.state
-
-            .. md-tab-item:: Step backwards
-
-                Step the Galois LFSR 10 steps forward.
-
-                .. ipython:: python
-
-                    c = galois.primitive_poly(7, 4)
-                    lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-                    lfsr.state
-                    lfsr.step(10)
-                    lfsr.state
-
-                Step the Galois LFSR 10 steps backward. Notice the output sequence is the reverse of the original sequence. Also notice
-                the ending state is the same as the initial state.
-
-                .. ipython:: python
-
-                    lfsr.step(-10)
-                    lfsr.state
+                lfsr.step(-5)
+                lfsr.state
         """
         # pylint: disable=useless-super-delegation
         return super().step(steps)
@@ -1194,34 +1077,31 @@ class GLFSR(_LFSR):
         """
         Converts the Galois LFSR to a Fibonacci LFSR that produces the same output.
 
-        Returns
-        -------
-        :
+        Returns:
             An equivalent Fibonacci LFSR.
 
-        Examples
-        --------
-        Create a Galois LFSR with a given initial state.
+        Examples:
+            Create a Galois LFSR with a given initial state.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            galois_lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4])
-            print(galois_lfsr)
+                c = galois.primitive_poly(7, 4); c
+                galois_lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4])
+                print(galois_lfsr)
 
-        Convert the Galois LFSR to an equivalent Fibonacci LFSR. Notice the initial state is different.
+            Convert the Galois LFSR to an equivalent Fibonacci LFSR. Notice the initial state is different.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            fibonacci_lfsr = galois_lfsr.to_fibonacci_lfsr()
-            print(fibonacci_lfsr)
+                fibonacci_lfsr = galois_lfsr.to_fibonacci_lfsr()
+                print(fibonacci_lfsr)
 
-        Step both LFSRs and see that their output sequences are identical.
+            Step both LFSRs and see that their output sequences are identical.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            galois_lfsr.step(10)
-            fibonacci_lfsr.step(10)
+                galois_lfsr.step(10)
+                fibonacci_lfsr.step(10)
         """
         output = self.step(self.order)
         state = output[::-1]
@@ -1235,13 +1115,12 @@ class GLFSR(_LFSR):
         """
         The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.GLFSR(c.reverse()); lfsr
-            lfsr.field
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.GLFSR(c.reverse()); lfsr
+                lfsr.field
         """
         return super().field
 
@@ -1252,14 +1131,13 @@ class GLFSR(_LFSR):
         that defines the feedback arithmetic. The feedback polynomial is the reciprocal of the characteristic
         polynomial :math:`f(x) = x^n c(x^{-1})`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.GLFSR(c.reverse()); lfsr
-            lfsr.feedback_poly
-            lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.GLFSR(c.reverse()); lfsr
+                lfsr.feedback_poly
+                lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
         """
         return super().feedback_poly
 
@@ -1270,14 +1148,13 @@ class GLFSR(_LFSR):
         that defines the linear recurrent sequence. The characteristic polynomial is the reciprocal of the feedback
         polynomial :math:`c(x) = x^n f(x^{-1})`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            lfsr = galois.GLFSR(c.reverse()); lfsr
-            lfsr.characteristic_poly
-            lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
+                c = galois.primitive_poly(7, 4); c
+                lfsr = galois.GLFSR(c.reverse()); lfsr
+                lfsr.characteristic_poly
+                lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
         """
         return super().characteristic_poly
 
@@ -1287,14 +1164,13 @@ class GLFSR(_LFSR):
         The shift register taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`. The taps of the shift register define
         the linear recurrence relation.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4); c
-            taps = -c.coeffs[1:][::-1]; taps
-            lfsr = galois.GLFSR.Taps(taps); lfsr
-            lfsr.taps
+                c = galois.primitive_poly(7, 4); c
+                taps = -c.coeffs[1:][::-1]; taps
+                lfsr = galois.GLFSR.Taps(taps); lfsr
+                lfsr.taps
         """
         return super().taps
 
@@ -1311,20 +1187,19 @@ class GLFSR(_LFSR):
         r"""
         The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4)
-            lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-            lfsr.initial_state
+                c = galois.primitive_poly(7, 4)
+                lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
+                lfsr.initial_state
 
-        The initial state is unaffected as the Galois LFSR is stepped.
+            The initial state is unaffected as the Galois LFSR is stepped.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            lfsr.step(10)
-            lfsr.initial_state
+                lfsr.step(10)
+                lfsr.initial_state
         """
         return super().initial_state
 
@@ -1333,20 +1208,19 @@ class GLFSR(_LFSR):
         r"""
         The current state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
 
-        Examples
-        --------
-        .. ipython:: python
+        Examples:
+            .. ipython:: python
 
-            c = galois.primitive_poly(7, 4)
-            lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
-            lfsr.state
+                c = galois.primitive_poly(7, 4)
+                lfsr = galois.GLFSR(c.reverse(), state=[1, 2, 3, 4]); lfsr
+                lfsr.state
 
-        The current state is modified as the Galois LFSR is stepped.
+            The current state is modified as the Galois LFSR is stepped.
 
-        .. ipython:: python
+            .. ipython:: python
 
-            lfsr.step(10)
-            lfsr.state
+                lfsr.step(10)
+                lfsr.state
         """
         return super().state
 
@@ -1367,18 +1241,12 @@ class galois_lfsr_step_forward_jit(Function):
            +--------+     +--------+                    +--------+
                                                           y[t+1]
 
-    Parameters
-    ----------
-    taps
-        The set of taps T = [c_0, c_1, ..., c_n-2, c_n-2].
-    state
-        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
-    steps
-        The number of output symbols to produce.
+    Arguments:
+        taps: The set of taps T = [c_0, c_1, ..., c_n-2, c_n-2].
+        state: The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
+        steps: The number of output symbols to produce.
 
-    Returns
-    -------
-    y
+    Returns:
         The output sequence of size `steps`.
     """
 
@@ -1438,18 +1306,12 @@ class galois_lfsr_step_backward_jit(Function):
            +--------+     +--------+                    +--------+
                                                           y[t+1]
 
-    Parameters
-    ----------
-    taps
-        The set of taps T = [c_0, c_1, ..., c_n-2, c_n-2].
-    state
-        The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
-    steps
-        The number of output symbols to produce.
+    Arguments:
+        taps: The set of taps T = [c_0, c_1, ..., c_n-2, c_n-2].
+        state: The state vector [S_0, S_1, ..., S_n-2, S_n-1]. State will be modified in-place!
+        steps: The number of output symbols to produce.
 
-    Returns
-    -------
-    y
+    Returns:
         The output sequence of size `steps`.
     """
 
@@ -1518,77 +1380,71 @@ def berlekamp_massey(sequence, output="minimal"):
 
     This function implements the Berlekamp-Massey algorithm.
 
-    Parameters
-    ----------
-    sequence
-        A linear recurrent sequence :math:`y` in :math:`\mathrm{GF}(p^m)`.
-    output
-        The output object type.
+    Arguments:
+        sequence: A linear recurrent sequence :math:`y` in :math:`\mathrm{GF}(p^m)`.
+        output: The output object type.
 
-        - `"minimal"` (default): Returns the minimal polynomial that generates the linear recurrent sequence. The minimal polynomial
-          is a characteristic polynomial :math:`c(x)` of minimal degree.
-        - `"fibonacci"`: Returns a Fibonacci LFSR that produces :math:`y`.
-        - `"galois"`: Returns a Galois LFSR that produces :math:`y`.
+            - `"minimal"` (default): Returns the minimal polynomial that generates the linear recurrent sequence. The minimal
+              polynomial is a characteristic polynomial :math:`c(x)` of minimal degree.
+            - `"fibonacci"`: Returns a Fibonacci LFSR that produces :math:`y`.
+            - `"galois"`: Returns a Galois LFSR that produces :math:`y`.
 
-    Returns
-    -------
-    :
+    Returns:
         The minimal polynomial :math:`c(x)`, a Fibonacci LFSR, or a Galois LFSR, depending on the value of `output`.
 
-    Notes
-    -----
-    The minimal polynomial is the characteristic polynomial :math:`c(x)` of minimal degree that produces the linear recurrent
-    sequence :math:`y`.
+    Notes:
+        The minimal polynomial is the characteristic polynomial :math:`c(x)` of minimal degree that produces the linear recurrent
+        sequence :math:`y`.
 
-    .. math::
-        c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
+        .. math::
+            c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
 
-    .. math::
-        y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
+        .. math::
+            y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
 
-    For a linear sequence with order :math:`n`, at least :math:`2n` output symbols are required to determine the minimal polynomial.
+        For a linear sequence with order :math:`n`, at least :math:`2n` output symbols are required to determine the minimal
+        polynomial.
 
-    References
-    ----------
-    * Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. https://hdl.handle.net/2134/21932.
-    * Sachs, J. Linear Feedback Shift Registers for the Uninitiated, Part VI: Sing Along with the Berlekamp-Massey Algorithm.
-      https://www.embeddedrelated.com/showarticle/1099.php
-    * https://crypto.stanford.edu/~mironov/cs359/massey.pdf
+    References:
+        - Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. https://hdl.handle.net/2134/21932.
+        - Sachs, J. Linear Feedback Shift Registers for the Uninitiated, Part VI: Sing Along with the Berlekamp-Massey Algorithm.
+          https://www.embeddedrelated.com/showarticle/1099.php
+        - https://crypto.stanford.edu/~mironov/cs359/massey.pdf
 
-    Examples
-    --------
-    The sequence below is a degree-4 linear recurrent sequence over :math:`\mathrm{GF}(7)`.
+    Examples:
+        The sequence below is a degree-4 linear recurrent sequence over :math:`\mathrm{GF}(7)`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        GF = galois.GF(7)
-        y = GF([5, 5, 1, 3, 1, 4, 6, 6, 5, 5])
+            GF = galois.GF(7)
+            y = GF([5, 5, 1, 3, 1, 4, 6, 6, 5, 5])
 
-    The characteristic polynomial is :math:`c(x) = x^4 + x^2 + 3x + 5` over :math:`\mathrm{GF}(7)`.
+        The characteristic polynomial is :math:`c(x) = x^4 + x^2 + 3x + 5` over :math:`\mathrm{GF}(7)`.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        galois.berlekamp_massey(y)
+            galois.berlekamp_massey(y)
 
-    Use the Berlekamp-Massey algorithm to return equivalent Fibonacci LFSR that reproduces the sequence.
+        Use the Berlekamp-Massey algorithm to return equivalent Fibonacci LFSR that reproduces the sequence.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        lfsr = galois.berlekamp_massey(y, output="fibonacci")
-        print(lfsr)
-        z = lfsr.step(y.size); z
-        np.array_equal(y, z)
+            lfsr = galois.berlekamp_massey(y, output="fibonacci")
+            print(lfsr)
+            z = lfsr.step(y.size); z
+            np.array_equal(y, z)
 
-    Use the Berlekamp-Massey algorithm to return equivalent Galois LFSR that reproduces the sequence.
+        Use the Berlekamp-Massey algorithm to return equivalent Galois LFSR that reproduces the sequence.
 
-    .. ipython:: python
+        .. ipython:: python
 
-        lfsr = galois.berlekamp_massey(y, output="galois")
-        print(lfsr)
-        z = lfsr.step(y.size); z
-        np.array_equal(y, z)
+            lfsr = galois.berlekamp_massey(y, output="galois")
+            print(lfsr)
+            z = lfsr.step(y.size); z
+            np.array_equal(y, z)
 
-    :group: linear-sequences
+    Group:
+        linear-sequences
     """
     verify_isinstance(sequence, FieldArray)
     verify_isinstance(output, str)
