@@ -97,7 +97,8 @@ def euler_phi(n: int) -> int:
             n = 20
             phi = galois.euler_phi(n); phi
 
-        Find the totatives that are coprime with :math:`n = 20`. The number of totatives of :math:`n` is :math:`\phi(n)`.
+        Find the totatives that are coprime with :math:`n = 20`. The number of totatives of :math:`n` is
+        :math:`\phi(n)`.
 
         .. ipython:: python
 
@@ -158,8 +159,8 @@ def carmichael_lambda(n: int) -> int:
         - https://oeis.org/A002322
 
     Examples:
-        The Carmichael :math:`\lambda(n)` function and Euler :math:`\phi(n)` function are often equal. However, there are
-        notable exceptions.
+        The Carmichael :math:`\lambda(n)` function and Euler :math:`\phi(n)` function are often equal. However,
+        there are notable exceptions.
 
         .. ipython:: python
 
@@ -182,8 +183,8 @@ def carmichael_lambda(n: int) -> int:
 
             galois.is_cyclic(n)
 
-        When :math:`\phi(n) \ne \lambda(n)`, the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is not cyclic.
-        See :func:`~galois.is_cyclic`.
+        When :math:`\phi(n) \ne \lambda(n)`, the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is
+        not cyclic. See :func:`~galois.is_cyclic`.
 
         .. ipython:: python
 
@@ -237,52 +238,55 @@ def is_cyclic(n: int) -> bool:
         euler_phi, carmichael_lambda, totatives
 
     Notes:
-        The multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is the set of positive integers :math:`1 \le a < n`
-        that are coprime with :math:`n`. :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` being cyclic means that some primitive root of
-        :math:`n`, or generator, :math:`g` can generate the group :math:`\{1, g, g^2, \dots, g^{\phi(n)-1}\}`, where
-        :math:`\phi(n)` is Euler's totient function and calculates the order of the group. If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`
-        is cyclic, the number of primitive roots is found by :math:`\phi(\phi(n))`.
+        The multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is the set of positive integers
+        :math:`1 \le a < n` that are coprime with :math:`n`. :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` being cyclic
+        means that some primitive root of :math:`n`, or generator, :math:`g` can generate the group
+        :math:`\{1, g, g^2, \dots, g^{\phi(n)-1}\}`, where :math:`\phi(n)` is Euler's totient function and calculates
+        the order of the group. If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots
+        is found by :math:`\phi(\phi(n))`.
 
-        :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is *cyclic* if and only if :math:`n` is 2, 4, :math:`p^k`, or :math:`2p^k`,
-        where :math:`p` is an odd prime and :math:`k` is a positive integer.
+        :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is *cyclic* if and only if :math:`n` is 2, 4, :math:`p^k`,
+        or :math:`2p^k`, where :math:`p` is an odd prime and :math:`k` is a positive integer.
 
     Examples:
         .. md-tab-set::
 
             .. md-tab-item:: n = 14
 
-                The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives of 14.
+                The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives
+                of 14.
 
                 .. ipython:: python
 
                     n = 14
                     Znx = galois.totatives(n); Znx
 
-                The Euler totient :math:`\phi(n)` function counts the totatives of :math:`n`, which is equivalent to the order
-                of :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
+                The Euler totient :math:`\phi(n)` function counts the totatives of :math:`n`, which is equivalent to
+                the order of :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
 
                 .. ipython:: python
 
                     phi = galois.euler_phi(n); phi
                     len(Znx) == phi
 
-                Since 14 is of the form :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}` is cyclic,
-                meaning there exists at least one element that generates the group by its powers.
+                Since 14 is of the form :math:`2p^k`, the multiplicative group
+                :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}` is cyclic, meaning there exists at least one element that
+                generates the group by its powers.
 
                 .. ipython:: python
 
                     galois.is_cyclic(n)
 
-                Find the smallest primitive root modulo 14. Observe that the powers of :math:`g` uniquely represent each element
-                in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`.
+                Find the smallest primitive root modulo 14. Observe that the powers of :math:`g` uniquely represent
+                each element in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`.
 
                 .. ipython:: python
 
                     g = galois.primitive_root(n); g
                     [pow(g, i, n) for i in range(0, phi)]
 
-                Find the largest primitive root modulo 14. Observe that the powers of :math:`g` also uniquely represent each element
-                in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`, although in a different order.
+                Find the largest primitive root modulo 14. Observe that the powers of :math:`g` also uniquely represent
+                each element in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`, although in a different order.
 
                 .. ipython:: python
 
@@ -300,7 +304,8 @@ def is_cyclic(n: int) -> bool:
                     phi = galois.euler_phi(n); phi
 
                 Since 15 is not of the form 2, 4, :math:`p^k`, or :math:`2p^k`, the multiplicative group
-                :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}` is not cyclic, meaning no elements exist whose powers generate the group.
+                :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}` is not cyclic, meaning no elements exist whose powers
+                generate the group.
 
                 .. ipython:: python
 
@@ -315,8 +320,8 @@ def is_cyclic(n: int) -> bool:
                         primitive_root = span == set(Znx)
                         print("Element: {:2d}, Span: {:<13}, Primitive root: {}".format(a, str(span), primitive_root))
 
-                The Carmichael :math:`\lambda(n)` function finds the maximum multiplicative order of any element, which is
-                4 and not 8.
+                The Carmichael :math:`\lambda(n)` function finds the maximum multiplicative order of any element, which
+                is 4 and not 8.
 
                 .. ipython:: python
 
@@ -396,7 +401,8 @@ def primitive_root(
     Arguments:
         n: A positive integer.
         start: Starting value (inclusive) in the search for a primitive root.
-        stop: Stopping value (exclusive) in the search for a primitive root. The default is `None` which corresponds to :math:`n`.
+        stop: Stopping value (exclusive) in the search for a primitive root. The default is `None` which corresponds
+            to :math:`n`.
         method: The search method for finding the primitive root.
 
     Returns:
@@ -409,15 +415,17 @@ def primitive_root(
         primitive_roots, is_primitive_root, is_cyclic, totatives, euler_phi, carmichael_lambda
 
     Notes:
-        The integer :math:`g` is a primitive root modulo :math:`n` if the totatives of :math:`n` can be generated by the
-        powers of :math:`g`. The totatives of :math:`n` are the positive integers in :math:`[1, n)` that are coprime with :math:`n`.
+        The integer :math:`g` is a primitive root modulo :math:`n` if the totatives of :math:`n` can be generated by
+        the powers of :math:`g`. The totatives of :math:`n` are the positive integers in :math:`[1, n)` that are
+        coprime with :math:`n`.
 
-        Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only if :math:`g` is a generator of the multiplicative
-        group of integers modulo :math:`n` :math:`(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}`,
-        where :math:`\phi(n)` is order of the group.
+        Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only if :math:`g` is a generator of
+        the multiplicative group of integers modulo :math:`n`
+        :math:`(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}`, where :math:`\phi(n)` is
+        the order of the group.
 
-        If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
-        :math:`\phi(\phi(n))`.
+        If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is
+        given by :math:`\phi(\phi(n))`.
 
     References:
         - Shoup, V. Searching for primitive roots in finite fields.
@@ -431,38 +439,40 @@ def primitive_root(
 
             .. md-tab-item:: n = 14
 
-                The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives of 14.
+                The elements of :math:`(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}` are the totatives
+                of 14.
 
                 .. ipython:: python
 
                     n = 14
                     Znx = galois.totatives(n); Znx
 
-                The Euler totient :math:`\phi(n)` function counts the totatives of :math:`n`, which is equivalent to the order
-                of :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
+                The Euler totient :math:`\phi(n)` function counts the totatives of :math:`n`, which is equivalent to
+                the order of :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
 
                 .. ipython:: python
 
                     phi = galois.euler_phi(n); phi
                     len(Znx) == phi
 
-                Since 14 is of the form :math:`2p^k`, the multiplicative group :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}` is cyclic,
-                meaning there exists at least one element that generates the group by its powers.
+                Since 14 is of the form :math:`2p^k`, the multiplicative group
+                :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}` is cyclic, meaning there exists at least one element that
+                generates the group by its powers.
 
                 .. ipython:: python
 
                     galois.is_cyclic(n)
 
-                Find the smallest primitive root modulo 14. Observe that the powers of :math:`g` uniquely represent each element
-                in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`.
+                Find the smallest primitive root modulo 14. Observe that the powers of :math:`g` uniquely represent
+                each element in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`.
 
                 .. ipython:: python
 
                     g = galois.primitive_root(n); g
                     [pow(g, i, n) for i in range(0, phi)]
 
-                Find the largest primitive root modulo 14. Observe that the powers of :math:`g` also uniquely represent each element
-                in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`, although in a different order.
+                Find the largest primitive root modulo 14. Observe that the powers of :math:`g` also uniquely represent
+                each element in :math:`(\mathbb{Z}/14\mathbb{Z}){^\times}`, although in a different order.
 
                 .. ipython:: python
 
@@ -480,7 +490,8 @@ def primitive_root(
                     phi = galois.euler_phi(n); phi
 
                 Since 15 is not of the form 2, 4, :math:`p^k`, or :math:`2p^k`, the multiplicative group
-                :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}` is not cyclic, meaning no elements exist whose powers generate the group.
+                :math:`(\mathbb{Z}/15\mathbb{Z}){^\times}` is not cyclic, meaning no elements exist whose powers
+                generate the group.
 
                 .. ipython:: python
 
@@ -495,8 +506,8 @@ def primitive_root(
                         primitive_root = span == set(Znx)
                         print("Element: {:2d}, Span: {:<13}, Primitive root: {}".format(a, str(span), primitive_root))
 
-                The Carmichael :math:`\lambda(n)` function finds the maximum multiplicative order of any element, which is
-                4 and not 8.
+                The Carmichael :math:`\lambda(n)` function finds the maximum multiplicative order of any element,
+                which is 4 and not 8.
 
                 .. ipython:: python
 
@@ -567,7 +578,8 @@ def primitive_roots(
     Arguments:
         n: A positive integer.
         start: Starting value (inclusive) in the search for a primitive root. The default is 1.
-        stop: Stopping value (exclusive) in the search for a primitive root. The default is `None` which corresponds to :math:`n`.
+        stop: Stopping value (exclusive) in the search for a primitive root. The default is `None` which corresponds
+            to :math:`n`.
         reverse: Indicates to return the primitive roots from largest to smallest. The default is `False`.
 
     Returns:
@@ -577,15 +589,17 @@ def primitive_roots(
         primitive_root, is_primitive_root, is_cyclic, totatives, euler_phi, carmichael_lambda
 
     Notes:
-        The integer :math:`g` is a primitive root modulo :math:`n` if the totatives of :math:`n` can be generated by the
-        powers of :math:`g`. The totatives of :math:`n` are the positive integers in :math:`[1, n)` that are coprime with :math:`n`.
+        The integer :math:`g` is a primitive root modulo :math:`n` if the totatives of :math:`n` can be generated by
+        the powers of :math:`g`. The totatives of :math:`n` are the positive integers in :math:`[1, n)` that are
+        coprime with :math:`n`.
 
-        Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only if :math:`g` is a generator of the multiplicative
-        group of integers modulo :math:`n` :math:`(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}`,
-        where :math:`\phi(n)` is order of the group.
+        Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only if :math:`g` is a generator of
+        the multiplicative group of integers modulo :math:`n`
+        :math:`(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}`, where :math:`\phi(n)` is
+        the order of the group.
 
-        If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
-        :math:`\phi(\phi(n))`.
+        If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is
+        given by :math:`\phi(\phi(n))`.
 
     References:
         - Shoup, V. Searching for primitive roots in finite fields.
@@ -607,7 +621,8 @@ def primitive_roots(
 
             list(galois.primitive_roots(30))
 
-        Show the each primitive root modulo 22 generates the multiplicative group :math:`(\mathbb{Z}/22\mathbb{Z}){^\times}`.
+        Show the each primitive root modulo 22 generates the multiplicative group
+        :math:`(\mathbb{Z}/22\mathbb{Z}){^\times}`.
 
         .. ipython:: python
 
@@ -625,8 +640,8 @@ def primitive_roots(
             generator = galois.primitive_roots(31, reverse=True); generator
             [next(generator) for _ in range(3)]
 
-        Loop over all the primitive roots in reversed order, only finding them as needed. The search cost for the roots that would
-        have been found after the `break` condition is never incurred.
+        Loop over all the primitive roots in reversed order, only finding them as needed. The search cost for the
+        roots that would have been found after the `break` condition is never incurred.
 
         .. ipython:: python
 
@@ -723,16 +738,16 @@ def is_primitive_root(g: int, n: int) -> bool:
         The integer :math:`g` is a primitive root modulo :math:`n` if the totatives of :math:`n`, the positive integers
         :math:`1 \le a < n` that are coprime with :math:`n`, can be generated by powers of :math:`g`.
 
-        Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only if :math:`g` is a generator of the multiplicative
-        group of integers modulo :math:`n`,
+        Alternatively said, :math:`g` is a primitive root modulo :math:`n` if and only if :math:`g` is a generator of
+        the multiplicative group of integers modulo :math:`n`,
 
         .. math::
             (\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}
 
         where :math:`\phi(n)` is order of the group.
 
-        If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is given by
-        :math:`\phi(\phi(n))`.
+        If :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}` is cyclic, the number of primitive roots modulo :math:`n` is
+        given by :math:`\phi(\phi(n))`.
 
     Examples:
         .. ipython:: python

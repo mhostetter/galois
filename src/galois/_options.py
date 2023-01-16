@@ -15,10 +15,12 @@ PRINTOPTIONS = {}
 @export
 def set_printoptions(coeffs: Literal["desc", "asc"] = "desc"):
     """
-    Modifies the print options for the package. This function is the :obj:`galois` equivalent of :func:`numpy.set_printoptions`.
+    Modifies the print options for the package. This function is the :obj:`galois` equivalent of
+    :func:`numpy.set_printoptions`.
 
     Arguments:
-        coeffs: The order in which to print the coefficients, either in descending degrees (default) or ascending degrees.
+        coeffs: The order in which to print the coefficients, either in descending degrees (default) or ascending
+        degrees.
 
     See Also:
         get_printoptions, printoptions
@@ -60,7 +62,8 @@ set_printoptions()
 @export
 def get_printoptions() -> Dict[str, Any]:
     """
-    Returns the current print options for the package. This function is the :obj:`galois` equivalent of :func:`numpy.get_printoptions`.
+    Returns the current print options for the package. This function is the :obj:`galois` equivalent of
+    :func:`numpy.get_printoptions`.
 
     Returns:
         A dictionary of current print options.
@@ -90,8 +93,8 @@ def get_printoptions() -> Dict[str, Any]:
 @contextlib.contextmanager
 def printoptions(**kwargs) -> Generator[None, None, None]:
     """
-    A context manager to temporarily modify the print options for the package. This function is the :obj:`galois` equivalent
-    of :func:`numpy.printoptions`.
+    A context manager to temporarily modify the print options for the package. This function is the :obj:`galois`
+    equivalent of :func:`numpy.printoptions`.
 
     See :func:`~galois.set_printoptions` for the full list of available options.
 

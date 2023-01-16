@@ -22,30 +22,34 @@ def ntt(
 
     Arguments:
         x: The input sequence of integers :math:`x`.
-        size: The size :math:`N` of the NTT transform, must be at least the length of :math:`x`. The default is `None` which
-            corresponds to `len(x)`. If `size` is larger than the length of :math:`x`, :math:`x` is zero-padded.
-        modulus: The prime modulus :math:`p` that defines the field :math:`\mathrm{GF}(p)`. The prime modulus must satisfy
-            :math:`p > \textrm{max}(x)` and :math:`p = mN + 1` (i.e., the size of the transform :math:`N` must divide :math:`p - 1`).
-            The default is `None` which corresponds to the smallest :math:`p` that satisfies the criteria. However, if :math:`x` is a
-            :math:`\mathrm{GF}(p)` array, then `None` corresponds to :math:`p` from the specified field.
+        size: The size :math:`N` of the NTT transform, must be at least the length of :math:`x`. The default is `None`
+            which corresponds to `len(x)`. If `size` is larger than the length of :math:`x`, :math:`x` is zero-padded.
+        modulus: The prime modulus :math:`p` that defines the field :math:`\mathrm{GF}(p)`. The prime modulus must
+            satisfy :math:`p > \textrm{max}(x)` and :math:`p = mN + 1` (i.e., the size of the transform :math:`N` must
+            divide :math:`p - 1`). The default is `None` which corresponds to the smallest :math:`p` that satisfies
+            the criteria. However, if :math:`x` is a :math:`\mathrm{GF}(p)` array, then `None` corresponds to
+            :math:`p` from the specified field.
 
     Returns:
-        The NTT :math:`X` of the input :math:`x`, with length :math:`N`. The output is a :math:`\mathrm{GF}(p)` array. It can be
-        viewed as a normal NumPy array with `.view(np.ndarray)` or converted to a Python list with `.tolist()`.
+        The NTT :math:`X` of the input :math:`x`, with length :math:`N`. The output is a :math:`\mathrm{GF}(p)` array.
+        It can be viewed as a normal NumPy array with `.view(np.ndarray)` or converted to a Python list with
+        `.tolist()`.
 
     See Also:
         intt
 
     Notes:
         The Number-Theoretic Transform (NTT) is a specialized Discrete Fourier Transform (DFT) over a finite field
-        :math:`\mathrm{GF}(p)` instead of over :math:`\mathbb{C}`. The DFT uses the primitive :math:`N`-th root of unity
-        :math:`\omega_N = e^{-i 2 \pi /N}`, but the NTT uses a primitive :math:`N`-th root of unity in :math:`\mathrm{GF}(p)`.
-        These roots are such that :math:`\omega_N^N = 1` and :math:`\omega_N^k \neq 1` for :math:`0 < k < N`.
+        :math:`\mathrm{GF}(p)` instead of over :math:`\mathbb{C}`. The DFT uses the primitive :math:`N`-th root of
+        unity :math:`\omega_N = e^{-i 2 \pi /N}`, but the NTT uses a primitive :math:`N`-th root of unity in
+        :math:`\mathrm{GF}(p)`. These roots are such that :math:`\omega_N^N = 1` and :math:`\omega_N^k \neq 1`
+        for :math:`0 < k < N`.
 
-        In :math:`\mathrm{GF}(p)`, where :math:`p` is prime, a primitive :math:`N`-th root of unity exists if :math:`N` divides
-        :math:`p - 1`. If that is true, then :math:`p = mN + 1` for some integer :math:`m`. This function finds :math:`\omega_N`
-        by first finding a primitive :math:`p - 1`-th root of unity :math:`\omega_{p - 1}` in :math:`\mathrm{GF}(p)` using
-        :func:`~galois.primitive_root`. From there :math:`\omega_N` is found from :math:`\omega_N = \omega_{p - 1}^m`.
+        In :math:`\mathrm{GF}(p)`, where :math:`p` is prime, a primitive :math:`N`-th root of unity exists if
+        :math:`N` divides :math:`p - 1`. If that is true, then :math:`p = mN + 1` for some integer :math:`m`. This
+        function finds :math:`\omega_N` by first finding a primitive :math:`p - 1`-th root of unity
+        :math:`\omega_{p - 1}` in :math:`\mathrm{GF}(p)` using :func:`~galois.primitive_root`. From there
+        :math:`\omega_N` is found from :math:`\omega_N = \omega_{p - 1}^m`.
 
         The :math:`k`-th value of the :math:`N`-point NTT :math:`X = \mathrm{NTT}(x)` is
 
@@ -62,24 +66,24 @@ def ntt(
         - https://www.geeksforgeeks.org/python-number-theoretic-transformation/
 
     Examples:
-        The default modulus is the smallest :math:`p` such that :math:`p > \textrm{max}(x)` and :math:`p = mN + 1`. With the input
-        :math:`x = [1, 2, 3, 4]` and :math:`N = 4`, the default modulus is :math:`p = 5`.
+        The default modulus is the smallest :math:`p` such that :math:`p > \textrm{max}(x)` and :math:`p = mN + 1`.
+        With the input :math:`x = [1, 2, 3, 4]` and :math:`N = 4`, the default modulus is :math:`p = 5`.
 
         .. ipython:: python
 
             galois.ntt([1, 2, 3, 4])
 
-        However, other moduli satisfy :math:`p > \textrm{max}(x)` and :math:`p = mN + 1`. For instance, :math:`p = 13` and
-        :math:`p = 17`. Notice the NTT outputs are different with different moduli. So it is important to perform forward and
-        reverse NTTs with the same modulus.
+        However, other moduli satisfy :math:`p > \textrm{max}(x)` and :math:`p = mN + 1`. For instance, :math:`p = 13`
+        and :math:`p = 17`. Notice the NTT outputs are different with different moduli. So it is important to perform
+        forward and reverse NTTs with the same modulus.
 
         .. ipython:: python
 
             galois.ntt([1, 2, 3, 4], modulus=13)
             galois.ntt([1, 2, 3, 4], modulus=17)
 
-        Instead of explicitly specifying the prime modulus, a :math:`\mathrm{GF}(p)` array may be explicitly passed in and the
-        modulus is taken as :math:`p`.
+        Instead of explicitly specifying the prime modulus, a :math:`\mathrm{GF}(p)` array may be explicitly passed in
+        and the modulus is taken as :math:`p`.
 
         .. ipython:: python
 
@@ -126,32 +130,36 @@ def intt(
 
     Arguments:
         X: The input sequence of integers :math:`X`.
-        size: The size :math:`N` of the INTT transform, must be at least the length of :math:`X`. The default is `None` which
-            corresponds to `len(X)`. If `size` is larger than the length of :math:`X`, :math:`X` is zero-padded.
-        modulus: The prime modulus :math:`p` that defines the field :math:`\mathrm{GF}(p)`. The prime modulus must satisfy
-            :math:`p > \textrm{max}(X)` and :math:`p = mN + 1` (i.e., the size of the transform :math:`N` must divide :math:`p - 1`).
-            The default is `None` which corresponds to the smallest :math:`p` that satisfies the criteria. However, if :math:`x` is a
-            :math:`\mathrm{GF}(p)` array, then `None` corresponds to :math:`p` from the specified field.
+        size: The size :math:`N` of the INTT transform, must be at least the length of :math:`X`. The default is `None`
+            which corresponds to `len(X)`. If `size` is larger than the length of :math:`X`, :math:`X` is zero-padded.
+        modulus: The prime modulus :math:`p` that defines the field :math:`\mathrm{GF}(p)`. The prime modulus must
+            satisfy :math:`p > \textrm{max}(X)` and :math:`p = mN + 1` (i.e., the size of the transform :math:`N`
+            must divide :math:`p - 1`). The default is `None` which corresponds to the smallest :math:`p` that
+            satisfies the criteria. However, if :math:`x` is a :math:`\mathrm{GF}(p)` array, then `None` corresponds
+            to :math:`p` from the specified field.
         scaled: Indicates to scale the INTT output by :math:`N`. The default is `True`. If `True`,
             :math:`x = \mathrm{INTT}(\mathrm{NTT}(x))`. If `False`, :math:`Nx = \mathrm{INTT}(\mathrm{NTT}(x))`.
 
     Returns:
-        The INTT :math:`x` of the input :math:`X`, with length :math:`N`. The output is a :math:`\mathrm{GF}(p)` array. It can be
-        viewed as a normal NumPy array with `.view(np.ndarray)` or converted to a Python list with `.tolist()`.
+        The INTT :math:`x` of the input :math:`X`, with length :math:`N`. The output is a :math:`\mathrm{GF}(p)` array.
+        It can be viewed as a normal NumPy array with `.view(np.ndarray)` or converted to a Python list with
+        `.tolist()`.
 
     See Also:
         ntt
 
     Notes:
         The Number-Theoretic Transform (NTT) is a specialized Discrete Fourier Transform (DFT) over a finite field
-        :math:`\mathrm{GF}(p)` instead of over :math:`\mathbb{C}`. The DFT uses the primitive :math:`N`-th root of unity
-        :math:`\omega_N = e^{-i 2 \pi /N}`, but the NTT uses a primitive :math:`N`-th root of unity in :math:`\mathrm{GF}(p)`.
-        These roots are such that :math:`\omega_N^N = 1` and :math:`\omega_N^k \neq 1` for :math:`0 < k < N`.
+        :math:`\mathrm{GF}(p)` instead of over :math:`\mathbb{C}`. The DFT uses the primitive :math:`N`-th root of
+        unity :math:`\omega_N = e^{-i 2 \pi /N}`, but the NTT uses a primitive :math:`N`-th root of unity in
+        :math:`\mathrm{GF}(p)`. These roots are such that :math:`\omega_N^N = 1` and :math:`\omega_N^k \neq 1` for
+        :math:`0 < k < N`.
 
-        In :math:`\mathrm{GF}(p)`, where :math:`p` is prime, a primitive :math:`N`-th root of unity exists if :math:`N` divides
-        :math:`p - 1`. If that is true, then :math:`p = mN + 1` for some integer :math:`m`. This function finds :math:`\omega_N`
-        by first finding a primitive :math:`p - 1`-th root of unity :math:`\omega_{p - 1}` in :math:`\mathrm{GF}(p)` using
-        :func:`~galois.primitive_root`. From there :math:`\omega_N` is found from :math:`\omega_N = \omega_{p - 1}^m`.
+        In :math:`\mathrm{GF}(p)`, where :math:`p` is prime, a primitive :math:`N`-th root of unity exists if
+        :math:`N` divides :math:`p - 1`. If that is true, then :math:`p = mN + 1` for some integer :math:`m`. This
+        function finds :math:`\omega_N` by first finding a primitive :math:`p - 1`-th root of unity
+        :math:`\omega_{p - 1}` in :math:`\mathrm{GF}(p)` using :func:`~galois.primitive_root`. From there
+        :math:`\omega_N` is found from :math:`\omega_N = \omega_{p - 1}^m`.
 
         The :math:`j`-th value of the scaled :math:`N`-point INTT :math:`x = \mathrm{INTT}(X)` is
 
@@ -169,24 +177,24 @@ def intt(
         - https://www.geeksforgeeks.org/python-number-theoretic-transformation/
 
     Examples:
-        The default modulus is the smallest :math:`p` such that :math:`p > \textrm{max}(X)` and :math:`p = mN + 1`. With the input
-        :math:`X = [0, 4, 3, 2]` and :math:`N = 4`, the default modulus is :math:`p = 5`.
+        The default modulus is the smallest :math:`p` such that :math:`p > \textrm{max}(X)` and :math:`p = mN + 1`.
+        With the input :math:`X = [0, 4, 3, 2]` and :math:`N = 4`, the default modulus is :math:`p = 5`.
 
         .. ipython:: python
 
             galois.intt([0, 4, 3, 2])
 
-        However, other moduli satisfy :math:`p > \textrm{max}(X)` and :math:`p = mN + 1`. For instance, :math:`p = 13` and
-        :math:`p = 17`. Notice the INTT outputs are different with different moduli. So it is important to perform forward and
-        reverse NTTs with the same modulus.
+        However, other moduli satisfy :math:`p > \textrm{max}(X)` and :math:`p = mN + 1`. For instance, :math:`p = 13`
+        and :math:`p = 17`. Notice the INTT outputs are different with different moduli. So it is important to perform
+        forward and reverse NTTs with the same modulus.
 
         .. ipython:: python
 
             galois.intt([0, 4, 3, 2], modulus=13)
             galois.intt([0, 4, 3, 2], modulus=17)
 
-        Instead of explicitly specifying the prime modulus, a :math:`\mathrm{GF}(p)` array may be explicitly passed in and the
-        modulus is taken as :math:`p`.
+        Instead of explicitly specifying the prime modulus, a :math:`\mathrm{GF}(p)` array may be explicitly passed in
+        and the modulus is taken as :math:`p`.
 
         .. ipython:: python
 
@@ -254,7 +262,9 @@ def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
     if not (modulus - 1) % size == 0:
         raise ValueError("Argument 'modulus' must equal m * size + 1, where 'size' is the size of the NTT transform.")
     if not modulus > np.max(x):
-        raise ValueError(f"Argument 'modulus' must be at least the max value of the input which is {np.max(x)}, not {modulus}.")
+        raise ValueError(
+            f"Argument 'modulus' must be at least the max value of the input which is {np.max(x)}, not {modulus}."
+        )
 
     field = Field(modulus)  # The prime field GF(p)
 

@@ -362,8 +362,8 @@ class UFuncMixin(_ufunc.UFuncMixin):
 
         if not cls._EXP[cls.order - 1] == 1:
             raise RuntimeError(
-                f"The anti-log lookup table for {cls.name} is not cyclic with size {cls.order - 1}, "
-                f"which means the primitive element {cls._primitive_element} does not have multiplicative order {cls.order - 1} "
+                f"The anti-log lookup table for {cls.name} is not cyclic with size {cls.order - 1}, which means "
+                f"the primitive element {cls._primitive_element} does not have multiplicative order {cls.order - 1} "
                 f"and therefore isn't a multiplicative generator for {cls.name}."
             )
         if not len(set(cls._EXP[0 : cls.order - 1])) == cls.order - 1:

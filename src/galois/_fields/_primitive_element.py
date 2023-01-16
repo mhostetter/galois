@@ -21,10 +21,10 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
 
     Arguments:
-        element: An element :math:`g` of :math:`\mathrm{GF}(q^m)` is a polynomial over :math:`\mathrm{GF}(q)` with degree
-            less than :math:`m`.
-        irreducible_poly: The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that defines
-            the extension field :math:`\mathrm{GF}(q^m)`.
+        element: An element :math:`g` of :math:`\mathrm{GF}(q^m)` is a polynomial over :math:`\mathrm{GF}(q)` with
+            degree less than :math:`m`.
+        irreducible_poly: The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that
+            defines the extension field :math:`\mathrm{GF}(q^m)`.
 
     Returns:
         `True` if :math:`g` is a primitive element of :math:`\mathrm{GF}(q^m)`.
@@ -66,11 +66,13 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
         )
     if not element.degree < irreducible_poly.degree:
         raise ValueError(
-            f"Argument 'element' must have degree less than 'irreducible_poly', not {element.degree} and {irreducible_poly.degree}."
+            f"Argument 'element' must have degree less than 'irreducible_poly', "
+            f"not {element.degree} and {irreducible_poly.degree}."
         )
     if not irreducible_poly.is_irreducible():
         raise ValueError(
-            f"Argument 'irreducible_poly' must be irreducible, {irreducible_poly} is reducible over {irreducible_poly.field.name}."
+            f"Argument 'irreducible_poly' must be irreducible, "
+            f"{irreducible_poly} is reducible over {irreducible_poly.field.name}."
         )
 
     return _is_primitive_element(element, irreducible_poly)
@@ -101,17 +103,17 @@ def _is_primitive_element(element: Poly, irreducible_poly: Poly) -> bool:
 @export
 def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "random"] = "min") -> Poly:
     r"""
-    Finds a primitive element :math:`g` of the Galois field :math:`\mathrm{GF}(q^m)` with degree-:math:`m` irreducible polynomial
-    :math:`f(x)` over :math:`\mathrm{GF}(q)`.
+    Finds a primitive element :math:`g` of the Galois field :math:`\mathrm{GF}(q^m)` with degree-:math:`m`
+    irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
 
     Arguments:
-        irreducible_poly: The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that defines
-            the extension field :math:`\mathrm{GF}(q^m)`.
+        irreducible_poly: The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that
+            defines the extension field :math:`\mathrm{GF}(q^m)`.
         method: The search method for finding the primitive element.
 
     Returns:
-        A primitive element :math:`g` of :math:`\mathrm{GF}(q^m)` with irreducible polynomial :math:`f(x)`. The primitive element
-        :math:`g` is a polynomial over :math:`\mathrm{GF}(q)` with degree less than :math:`m`.
+        A primitive element :math:`g` of :math:`\mathrm{GF}(q^m)` with irreducible polynomial :math:`f(x)`.
+        The primitive element :math:`g` is a polynomial over :math:`\mathrm{GF}(q)` with degree less than :math:`m`.
 
     See Also:
         is_primitive_element, FieldArray.primitive_element
@@ -125,8 +127,8 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             GF = galois.GF(7**5, irreducible_poly=f, repr="poly")
             print(GF.properties)
 
-        Find the smallest primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible polynomial
-        :math:`f(x)`.
+        Find the smallest primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible
+        polynomial :math:`f(x)`.
 
         .. ipython:: python
 
@@ -135,8 +137,8 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             g = GF(int(g)); g
             g.multiplicative_order() == GF.order - 1
 
-        Find the largest primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible polynomial
-        :math:`f(x)`.
+        Find the largest primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible
+        polynomial :math:`f(x)`.
 
         .. ipython:: python
 
@@ -145,8 +147,8 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             g = GF(int(g)); g
             g.multiplicative_order() == GF.order - 1
 
-        Find a random primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible polynomial
-        :math:`f(x)`.
+        Find a random primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible
+        polynomial :math:`f(x)`.
 
         .. ipython:: python
 
@@ -165,7 +167,8 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
         raise ValueError(f"Argument 'irreducible_poly' must have degree greater than 1, not {irreducible_poly.degree}.")
     if not irreducible_poly.is_irreducible():
         raise ValueError(
-            f"Argument 'irreducible_poly' must be irreducible, {irreducible_poly} is reducible over {irreducible_poly.field.name}."
+            f"Argument 'irreducible_poly' must be irreducible, "
+            f"{irreducible_poly} is reducible over {irreducible_poly.field.name}."
         )
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
@@ -194,7 +197,9 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             if _is_primitive_element(element, irreducible_poly):
                 return element
 
-    raise RuntimeError(f"No primitive elements in GF({q}^{m}) were found with irreducible polynomial {irreducible_poly}.")
+    raise RuntimeError(
+        f"No primitive elements in GF({q}^{m}) were found with irreducible polynomial {irreducible_poly}."
+    )
 
 
 @export
@@ -204,12 +209,12 @@ def primitive_elements(irreducible_poly: Poly) -> list[Poly]:
     degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
 
     Arguments:
-        irreducible_poly: The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that defines
-            the extension field :math:`\mathrm{GF}(q^m)`.
+        irreducible_poly: The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that
+            defines the extension field :math:`\mathrm{GF}(q^m)`.
 
     Returns:
-        List of all primitive elements of :math:`\mathrm{GF}(q^m)` with irreducible polynomial :math:`f(x)`. Each primitive
-        element :math:`g` is a polynomial over :math:`\mathrm{GF}(q)` with degree less than :math:`m`.
+        List of all primitive elements of :math:`\mathrm{GF}(q^m)` with irreducible polynomial :math:`f(x)`.
+        Each primitive element :math:`g` is a polynomial over :math:`\mathrm{GF}(q)` with degree less than :math:`m`.
 
     See Also:
         is_primitive_element, FieldArray.primitive_elements

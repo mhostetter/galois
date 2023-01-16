@@ -22,19 +22,20 @@ class ReedSolomon(_CyclicCode):
     r"""
     A general :math:`\textrm{RS}(n, k)` code over :math:`\mathrm{GF}(q)`.
 
-    A :math:`\textrm{RS}(n, k)` code is a :math:`[n, k, n - k + 1]_q` linear block code with codeword size :math:`n`, message
-    size :math:`k`, minimum distance :math:`d = n - k + 1`, and symbols taken from an alphabet of size :math:`q`.
+    A :math:`\textrm{RS}(n, k)` code is a :math:`[n, k, n - k + 1]_q` linear block code with codeword size :math:`n`,
+    message size :math:`k`, minimum distance :math:`d = n - k + 1`, and symbols taken from an alphabet of size
+    :math:`q`.
 
     .. info::
         :title: Shortened codes
 
-        To create the shortened :math:`\textrm{RS}(n-s, k-s)` code, construct the full-sized :math:`\textrm{RS}(n, k)` code
-        and then pass :math:`k-s` symbols into :func:`encode` and :math:`n-s` symbols into :func:`decode()`. Shortened codes are only
-        applicable for systematic codes.
+        To create the shortened :math:`\textrm{RS}(n-s, k-s)` code, construct the full-sized
+        :math:`\textrm{RS}(n, k)` code and then pass :math:`k-s` symbols into :func:`encode` and :math:`n-s` symbols
+        into :func:`decode()`. Shortened codes are only applicable for systematic codes.
 
-    A Reed-Solomon code is a cyclic code over :math:`\mathrm{GF}(q)` with generator polynomial :math:`g(x)`. The generator polynomial has
-    :math:`d-1` roots :math:`\alpha^c, \dots, \alpha^{c+d-2}`. The element :math:`\alpha` is a primitive :math:`n`-th root of unity in
-    :math:`\mathrm{GF}(q)`.
+    A Reed-Solomon code is a cyclic code over :math:`\mathrm{GF}(q)` with generator polynomial :math:`g(x)`. The
+    generator polynomial has :math:`d-1` roots :math:`\alpha^c, \dots, \alpha^{c+d-2}`. The element :math:`\alpha` is
+    a primitive :math:`n`-th root of unity in :math:`\mathrm{GF}(q)`.
 
     .. math::
 
@@ -95,19 +96,20 @@ class ReedSolomon(_CyclicCode):
         Arguments:
             n: The codeword size :math:`n`. If :math:`n = q - 1`, the Reed-Solomon code is *primitive*.
             k: The message size :math:`k`.
-            d: The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator polynomial
-                :math:`g(x)` over :math:`\mathrm{GF}(q)`. Reed-Solomon codes achieve the Singleton bound, so
-                :math:`d = n - k + 1`.
-            field: The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols. The default
-                is `None` which corresponds to :math:`\mathrm{GF}(2^m)` where :math:`2^{m - 1} \le n < 2^m`. The default
-                field will use `matlab_primitive_poly(2, m)` for the irreducible polynomial.
+            d: The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator
+                polynomial :math:`g(x)` over :math:`\mathrm{GF}(q)`. Reed-Solomon codes achieve the Singleton bound,
+                so :math:`d = n - k + 1`.
+            field: The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols.
+                The default is `None` which corresponds to :math:`\mathrm{GF}(2^m)` where
+                :math:`2^{m - 1} \le n < 2^m`. The default field will use `matlab_primitive_poly(2, m)` for the
+                irreducible polynomial.
             alpha: A primitive :math:`n`-th root of unity :math:`\alpha` in :math:`\mathrm{GF}(q)` that defines the
                 :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
-            c: The first consecutive power :math:`c` of :math:`\alpha` that defines the :math:`\alpha^c, \dots, \alpha^{c+d-2}`
-                roots of the generator polynomial :math:`g(x)`. The default is 1. If :math:`c = 1`, the Reed-Solomon code
-                is *narrow-sense*.
-            systematic: Indicates if the encoding should be systematic, meaning the codeword is the message with parity appended.
-                The default is `True`.
+            c: The first consecutive power :math:`c` of :math:`\alpha` that defines the
+                :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
+                The default is 1. If :math:`c = 1`, the Reed-Solomon code is *narrow-sense*.
+            systematic: Indicates if the encoding should be systematic, meaning the codeword is the message with
+                parity appended. The default is `True`.
 
         See Also:
             matlab_primitive_poly, FieldArray.primitive_root_of_unity
@@ -158,7 +160,9 @@ class ReedSolomon(_CyclicCode):
         # Singleton bound, so the relationship between n, k, and d is precise.
         if d is not None and k is not None:
             if not d == n - k + 1:
-                raise ValueError("Arguments 'k' and 'd' were provided but are inconsistent. For Reed-Solomon codes, d = n - k + 1.")
+                raise ValueError(
+                    "Arguments 'k' and 'd' were provided but are inconsistent. For Reed-Solomon codes, d = n - k + 1."
+                )
         elif d is not None:
             k = n - (d - 1)
         elif k is not None:
@@ -452,8 +456,8 @@ class ReedSolomon(_CyclicCode):
         {},
         r"""
         In decoding, the syndrome vector :math:`\mathbf{s}` is computed by evaluating the received codeword
-        :math:`\mathbf{r}` at the roots :math:`\alpha^c, \dots, \alpha^{c+d-2}` of the generator polynomial :math:`g(x)`.
-        The equivalent polynomial operation computes the remainder of :math:`r(x)` by :math:`g(x)`.
+        :math:`\mathbf{r}` at the roots :math:`\alpha^c, \dots, \alpha^{c+d-2}` of the generator polynomial
+        :math:`g(x)`. The equivalent polynomial operation computes the remainder of :math:`r(x)` by :math:`g(x)`.
 
         .. math::
             \mathbf{s} = [r(\alpha^c),\ \dots,\ r(\alpha^{c+d-2})] \in \mathrm{GF}(q)^{d-1}
@@ -461,9 +465,9 @@ class ReedSolomon(_CyclicCode):
         .. math::
             s(x) = r(x)\ \textrm{mod}\ g(x) \in \mathrm{GF}(q)[x]
 
-        A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome
-        is non-zero, the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding error
-        locations and values.
+        A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the
+        syndrome is non-zero, the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding
+        error locations and values.
 
         Examples:
             .. md-tab-set::
@@ -543,7 +547,8 @@ class ReedSolomon(_CyclicCode):
                         m = GF.Random((3, rs.k)); m
                         c = rs.encode(m); c
 
-                    Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the third.
+                    Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the
+                    third.
 
                     .. ipython:: python
 
@@ -577,7 +582,8 @@ class ReedSolomon(_CyclicCode):
                         m = GF.Random((3, rs.k - 4)); m
                         c = rs.encode(m); c
 
-                    Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the third.
+                    Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the
+                    third.
 
                     .. ipython:: python
 
@@ -605,7 +611,8 @@ class ReedSolomon(_CyclicCode):
         return super().decode(codeword, output=output, errors=errors)
 
     def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
-        dec_codeword, N_errors = decode_jit(self.field, self.field)(codeword, self.n, int(self.alpha), self.c, self.roots)
+        func = decode_jit(self.field, self.field)
+        dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)
         return dec_codeword, N_errors
 
@@ -736,8 +743,8 @@ class ReedSolomon(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
-            root :math:`\alpha`.
+            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first
+            consecutive root :math:`\alpha`.
 
             .. ipython:: python
 
@@ -747,8 +754,8 @@ class ReedSolomon(_CyclicCode):
                 # Evaluate the generator polynomial at its roots in GF(q)
                 rs.generator_poly(rs.roots)
 
-            Construct a non-narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
-            root :math:`\alpha^3`.
+            Construct a non-narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first
+            consecutive root :math:`\alpha^3`.
 
             .. ipython:: python
 
@@ -796,8 +803,8 @@ class ReedSolomon(_CyclicCode):
         These are consecutive powers of :math:`\alpha^c`, specifically :math:`\alpha^c, \dots, \alpha^{c+d-2}`.
 
         Examples:
-            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
-            root :math:`\alpha`.
+            Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first
+            consecutive root :math:`\alpha`.
 
             .. ipython:: python
 
@@ -807,8 +814,8 @@ class ReedSolomon(_CyclicCode):
                 # Evaluate the generator polynomial at its roots in GF(q)
                 rs.generator_poly(rs.roots)
 
-            Construct a non-narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first consecutive
-            root :math:`\alpha^3`.
+            Construct a non-narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)` with first
+            consecutive root :math:`\alpha^3`.
 
             .. ipython:: python
 
@@ -853,8 +860,8 @@ class ReedSolomon(_CyclicCode):
     @property
     def c(self) -> int:
         r"""
-        The first consecutive power :math:`c` of :math:`\alpha` that defines the roots :math:`\alpha^c, \dots, \alpha^{c+d-2}`
-        of the generator polynomial :math:`g(x)`.
+        The first consecutive power :math:`c` of :math:`\alpha` that defines the roots
+        :math:`\alpha^c, \dots, \alpha^{c+d-2}` of the generator polynomial :math:`g(x)`.
 
         Examples:
             Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`
@@ -963,8 +970,8 @@ class ReedSolomon(_CyclicCode):
     @property
     def is_narrow_sense(self) -> bool:
         r"""
-        Indicates if the Reed-Solomon code is *narrow-sense*, meaning the roots of the generator polynomial are consecutive
-        powers of :math:`\alpha` starting at 1, that is :math:`\alpha, \dots, \alpha^{d-1}`.
+        Indicates if the Reed-Solomon code is *narrow-sense*, meaning the roots of the generator polynomial are
+        consecutive powers of :math:`\alpha` starting at 1, that is :math:`\alpha, \dots, \alpha^{d-1}`.
 
         Examples:
             Construct a narrow-sense :math:`\textrm{RS}(15, 9)` code over :math:`\mathrm{GF}(2^4)`

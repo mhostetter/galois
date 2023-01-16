@@ -2,9 +2,9 @@
 A module that contains a NumPy ufunc dispatcher and an Array mixin class that override NumPy ufuncs. The ufunc
 dispatcher classes have snake_case naming because they are act like functions.
 
-The ufunc dispatchers (eg `add_ufunc`) and the UFuncMixin will be subclassed in `_lookup.py` to add the lookup arithmetic
-and lookup table construction. Then in `_calculate.py` the ufunc dispatchers will be subclassed to add unique
-explicit calculation algorithms.
+The ufunc dispatchers (eg `add_ufunc`) and the UFuncMixin will be subclassed in `_lookup.py` to add the lookup
+arithmetic and lookup table construction. Then in `_calculate.py` the ufunc dispatchers will be subclassed to add
+unique explicit calculation algorithms.
 """
 from __future__ import annotations
 
@@ -23,8 +23,8 @@ if TYPE_CHECKING:
 
 class UFunc:
     """
-    A ufunc dispatcher for Array objects. The dispatcher will invoke a JIT-compiled or pure-Python ufunc depending on the size
-    of the Galois field or Galois ring.
+    A ufunc dispatcher for Array objects. The dispatcher will invoke a JIT-compiled or pure-Python ufunc depending
+    on the size of the Galois field or Galois ring.
     """
 
     type: Literal["unary", "binary"]
@@ -109,9 +109,10 @@ class UFunc:
             self.set_calculate_globals()  # Set the globals once before JIT compiling the function
 
             if self.type == "unary":
-                self._CACHE_CALCULATE[key_1][key_2] = numba.vectorize(["int64(int64)"], nopython=True)(self.calculate)
+                ufunc = numba.vectorize(["int64(int64)"], nopython=True)(self.calculate)
             else:
-                self._CACHE_CALCULATE[key_1][key_2] = numba.vectorize(["int64(int64, int64)"], nopython=True)(self.calculate)
+                ufunc = numba.vectorize(["int64(int64, int64)"], nopython=True)(self.calculate)
+            self._CACHE_CALCULATE[key_1][key_2] = ufunc
 
         return self._CACHE_CALCULATE[key_1][key_2]
 
@@ -178,7 +179,8 @@ class UFunc:
     def _verify_unary_method_not_reduction(self, ufunc, method):
         if method in ["reduce", "accumulate", "reduceat", "outer"]:
             raise ValueError(
-                f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Reduction methods are only supported on binary functions."
+                f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. "
+                "Reduction methods are only supported on binary functions."
             )
 
     def _verify_binary_method_not_reduction(self, ufunc, method):
@@ -190,7 +192,9 @@ class UFunc:
 
     def _verify_method_only_call(self, ufunc, method):
         if not method == "__call__":
-            raise ValueError(f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Only '__call__' is supported.")
+            raise ValueError(
+                f"Ufunc method {method!r} is not supported on {ufunc.__name__!r}. Only '__call__' is supported."
+            )
 
     def _verify_operands_in_same_field(self, ufunc, inputs, meta):
         if len(meta["non_field_operands"]) > 0:
@@ -207,19 +211,19 @@ class UFunc:
                 if self.field.dtypes == [np.object_]:
                     if not (inputs[i].dtype == np.object_ or np.issubdtype(inputs[i].dtype, np.integer)):
                         raise ValueError(
-                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, "
-                            f"not {inputs[i].dtype}."
+                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have "
+                            f"integer dtype, not {inputs[i].dtype}."
                         )
                 else:
                     if not np.issubdtype(inputs[i].dtype, np.integer):
                         raise ValueError(
-                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, "
-                            f"not {inputs[i].dtype}."
+                            f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have "
+                            f"integer dtype, not {inputs[i].dtype}."
                         )
             else:
                 raise TypeError(
-                    f"Operation {ufunc.__name__!r} requires operands that are not {self.field.name} arrays to be integers "
-                    f"or an integer np.ndarray, not {type(inputs[i])}."
+                    f"Operation {ufunc.__name__!r} requires operands that are not {self.field.name} arrays to be "
+                    f"integers or an integer np.ndarray, not {type(inputs[i])}."
                 )
 
     def _verify_operands_first_field_second_int(self, ufunc, inputs, meta):
@@ -241,26 +245,23 @@ class UFunc:
         if isinstance(second, (int, np.integer)):
             return
 
-        # if type(second) is np.ndarray:
-        #     if not np.issubdtype(second.dtype, np.integer):
-        #         raise ValueError(
-        #             f"Operation {ufunc.__name__!r} requires the second operand with type np.ndarray to have integer dtype, "
-        #             f"not {second.dtype}."
-        #         )
         if isinstance(second, np.ndarray):
             if self.field.dtypes == [np.object_]:
                 if not (second.dtype == np.object_ or np.issubdtype(second.dtype, np.integer)):
                     raise ValueError(
-                        f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {second.dtype}."
+                        f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, "
+                        f"not {second.dtype}."
                     )
             else:
                 if not np.issubdtype(second.dtype, np.integer):
                     raise ValueError(
-                        f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, not {second.dtype}."
+                        f"Operation {ufunc.__name__!r} requires operands with type np.ndarray to have integer dtype, "
+                        f"not {second.dtype}."
                     )
         else:
             raise TypeError(
-                f"Operation {ufunc.__name__!r} requires the second operand to be an integer or integer np.ndarray, not {type(second)}."
+                f"Operation {ufunc.__name__!r} requires the second operand to be an integer or integer np.ndarray, "
+                f"not {type(second)}."
             )
 
     ###############################################################################
@@ -391,7 +392,8 @@ class multiply_ufunc(UFunc):
             # Scalar multiplication
             self._verify_operands_in_field_or_int(ufunc, inputs, meta)
             inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
-            inputs[meta["non_field_operands"][0]] = np.mod(inputs[meta["non_field_operands"][0]], self.field.characteristic)
+            i = meta["non_field_operands"][0]  # Scalar multiplicand
+            inputs[i] = np.mod(inputs[i], self.field.characteristic)
         inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(self.ufunc, method)(*inputs, **kwargs)
         output = self._view_output_as_field(output, self.field, meta["dtype"])
@@ -687,7 +689,12 @@ class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
             )
 
         # Process with our custom ufuncs
-        if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in ["reduce", "accumulate", "at", "reduceat"]:
+        if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor] and method not in [
+            "reduce",
+            "accumulate",
+            "at",
+            "reduceat",
+        ]:
             kwargs["casting"] = "unsafe"
 
         inputs, kwargs = UFunc(field)._view_inputs_as_ndarray(inputs, kwargs)
@@ -699,7 +706,7 @@ class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
         return output
 
     def __pow__(self, other):
-        # We call power here instead of `super().__pow__(other)` because when doing so `x ** GF(2)` will invoke `np.square(x)`
-        # and not throw a TypeError. This way `np.power(x, GF(2))` is called which correctly checks whether the second argument
-        # is an integer.
+        # We call power here instead of `super().__pow__(other)` because when doing so `x ** GF(2)` will invoke
+        # `np.square(x)` and not throw a TypeError. This way `np.power(x, GF(2))` is called which correctly checks
+        # whether the second argument is an integer.
         return np.power(self, other)

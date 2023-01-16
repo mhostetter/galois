@@ -310,7 +310,11 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
     elif getattr(obj, "__qualname__", None) in ["FunctionMixin.dot", "Array.astype"]:
         # NumPy methods that were overridden, don't include docs
         return True
-    elif hasattr(obj, "__qualname__") and getattr(obj, "__qualname__").split(".")[0] == "FieldArray" and hasattr(numpy.ndarray, name):
+    elif (
+        hasattr(obj, "__qualname__")
+        and getattr(obj, "__qualname__").split(".")[0] == "FieldArray"
+        and hasattr(numpy.ndarray, name)
+    ):
         if name in ["__repr__", "__str__"]:
             # Specifically allow these methods to be documented
             return False
@@ -356,7 +360,9 @@ def classproperty(obj):
     return ret
 
 
-ArrayMeta_properties = [member for member in dir(galois.Array) if inspect.isdatadescriptor(getattr(type(galois.Array), member, None))]
+ArrayMeta_properties = [
+    member for member in dir(galois.Array) if inspect.isdatadescriptor(getattr(type(galois.Array), member, None))
+]
 for p in ArrayMeta_properties:
     # Fetch the class properties from the private metaclasses
     ArrayMeta_property = getattr(galois._domains._meta.ArrayMeta, p)
@@ -372,7 +378,9 @@ for p in ArrayMeta_properties:
 
 
 FieldArrayMeta_properties = [
-    member for member in dir(galois.FieldArray) if inspect.isdatadescriptor(getattr(type(galois.FieldArray), member, None))
+    member
+    for member in dir(galois.FieldArray)
+    if inspect.isdatadescriptor(getattr(type(galois.FieldArray), member, None))
 ]
 for p in FieldArrayMeta_properties:
     # Fetch the class properties from the private metaclasses

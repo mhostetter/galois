@@ -459,10 +459,14 @@ class roots_jit(Function):
         dtype = nonzero_coeffs.dtype
 
         if self.field.ufunc_mode != "python-calculate":
-            roots = self.jit(nonzero_degrees.astype(np.int64), nonzero_coeffs.astype(np.int64), int(self.field.primitive_element))[0, :]
+            roots = self.jit(
+                nonzero_degrees.astype(np.int64), nonzero_coeffs.astype(np.int64), int(self.field.primitive_element)
+            )[0, :]
             roots = roots.astype(dtype)
         else:
-            roots = self.python(nonzero_degrees.view(np.ndarray), nonzero_coeffs.view(np.ndarray), int(self.field.primitive_element))[0, :]
+            roots = self.python(
+                nonzero_degrees.view(np.ndarray), nonzero_coeffs.view(np.ndarray), int(self.field.primitive_element)
+            )[0, :]
         roots = self.field._view(roots)
         idxs = np.argsort(roots)
 
@@ -571,7 +575,8 @@ class lagrange_poly_jit(Function):
             for m in range(k):
                 if m == j:
                     continue
-                lj = POLY_MULTIPLY(lj, MULTIPLY(np.array([1, NEGATIVE(x[m])], dtype=dtype), RECIPROCAL(SUBTRACT(x[j], x[m]))))
+                ljm = MULTIPLY(np.array([1, NEGATIVE(x[m])], dtype=dtype), RECIPROCAL(SUBTRACT(x[j], x[m])))
+                lj = POLY_MULTIPLY(lj, ljm)
             L = POLY_ADD(L, lj)
 
         return L

@@ -363,7 +363,9 @@ def parse_factors_string(table: dict, rows: dict, row: dict, string: str, letter
             # A special composite. Verify that it divides the remaining value.
             label = prime_composite_label(table, row["n"], letter)
             key = (label, factor)
-            assert row["composite"] % table["composites"][key] == 0, f"{row['composite']} is not divisible by {table['composites'][key]}"
+            assert (
+                row["composite"] % table["composites"][key] == 0
+            ), f"{row['composite']} is not divisible by {table['composites'][key]}"
         else:
             # Must be a regular integer
             factor = int(factor)
@@ -443,7 +445,9 @@ def add_to_database(
     )
 
 
-def test_factorization(base: int, exponent: int, offset: int, value: int, factors: list[int], multiplicities: list[int], composite: int):
+def test_factorization(
+    base: int, exponent: int, offset: int, value: int, factors: list[int], multiplicities: list[int], composite: int
+):
     """
     Tests that all the factorization parameters are consistent.
     """
@@ -494,7 +498,9 @@ def create_even_negative_offset_table(conn: sqlite3.Connection, cursor: sqlite3.
 
         row = select_two_factorizations_from_database(cursor, A_value, B_value)
         if row is None:
-            assert k == k_fail, f"The {base}^(2k) - 1 table generation failed at k = {k}, but should have failed at k = {k_fail}"
+            assert (
+                k == k_fail
+            ), f"The {base}^(2k) - 1 table generation failed at k = {k}, but should have failed at k = {k_fail}"
             break
 
         exponent = 2 * k

@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 
 class Function:
     """
-    A function dispatcher for Array objects. The dispatcher will invoke a JIT-compiled or pure-Python function depending on the size
-    of the Galois field or Galois ring.
+    A function dispatcher for Array objects. The dispatcher will invoke a JIT-compiled or pure-Python function
+    depending on the size of the Galois field or Galois ring.
     """
 
     _CACHE = {}  # A cache of compiled functions
@@ -38,7 +38,8 @@ class Function:
 
     def set_globals(self):
         """
-        Sets the global variables used in `implementation()` before JIT compiling it or before invoking it in pure Python.
+        Sets the global variables used in `implementation()` before JIT compiling it or before invoking it in
+        pure Python.
         """
         return
 
@@ -80,7 +81,8 @@ class Function:
 
         if key_2 not in self._CACHE[key_1]:
             self.set_globals()  # Set the globals once before JIT compiling the function
-            self._CACHE[key_1][key_2] = numba.jit(self._SIGNATURE.signature, parallel=self._PARALLEL, nopython=True)(self.implementation)
+            func = numba.jit(self._SIGNATURE.signature, parallel=self._PARALLEL, nopython=True)(self.implementation)
+            self._CACHE[key_1][key_2] = func
 
         return self._CACHE[key_1][key_2]
 
@@ -235,7 +237,8 @@ class fft_jit(Function):
 
         return X
 
-    # Need a separate implementation for pure-Python to class the static method. Would be nice to avoid the need for this.
+    # Need a separate implementation for pure-Python to call the static method. It would be nice to avoid the
+    # need for this.
 
     @staticmethod
     def implementation_2(x, omega):
@@ -352,8 +355,8 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
                 f"The NumPy function {func.__name__!r} is not supported on FieldArray. "
                 "If you believe this function should be supported, "
                 "please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\n"
-                "If you'd like to perform this operation on the data, you should first call `array = array.view(np.ndarray)` "
-                "and then call the function."
+                "If you'd like to perform this operation on the data, you should first call "
+                "`array = array.view(np.ndarray)` and then call the function."
             )
 
         else:
@@ -370,5 +373,6 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         return output
 
     def dot(self, b, out=None):
-        # The `np.dot(a, b)` ufunc is also available as `a.dot(b)`. Need to override this method for consistent results.
+        # The `np.dot(a, b)` ufunc is also available as `a.dot(b)`. Need to override this method for
+        # consistent results.
         return np.dot(self, b, out=out)

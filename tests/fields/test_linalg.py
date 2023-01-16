@@ -272,7 +272,12 @@ def full_rank_matrix(field, n, dtype):
 
 
 def test_matrix_multiply(field_matrix_multiply):
-    GF, X, Y, Z = field_matrix_multiply["GF"], field_matrix_multiply["X"], field_matrix_multiply["Y"], field_matrix_multiply["Z"]
+    GF, X, Y, Z = (
+        field_matrix_multiply["GF"],
+        field_matrix_multiply["X"],
+        field_matrix_multiply["Y"],
+        field_matrix_multiply["Z"],
+    )
     for x, y, z_truth in zip(X, Y, Z):
         dtype = random.choice(GF.dtypes)
         x = x.astype(dtype)
@@ -307,7 +312,9 @@ def test_row_reduce_eye_right():
     H = GF([[1, 0, 1, 0, 1, 0, 1, 0], [0, 1, 1, 0, 0, 1, 1, 0], [0, 0, 0, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1, 1, 1]])
     H_rre = H.row_reduce(eye="right")
     assert type(H_rre) is GF
-    assert np.array_equal(H_rre, [[0, 1, 1, 1, 1, 0, 0, 0], [1, 0, 1, 1, 0, 1, 0, 0], [1, 1, 0, 1, 0, 0, 1, 0], [1, 1, 1, 0, 0, 0, 0, 1]])
+    assert np.array_equal(
+        H_rre, [[0, 1, 1, 1, 1, 0, 0, 0], [1, 0, 1, 1, 0, 1, 0, 0], [1, 1, 0, 1, 0, 0, 1, 0], [1, 1, 1, 0, 0, 0, 0, 1]]
+    )
 
 
 def test_lu_decompose_exceptions():

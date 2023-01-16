@@ -43,7 +43,8 @@ class _CyclicCode(_LinearCode):
         self._roots = roots
 
         # Calculate the parity-check polynomial h(x) = (x^n - 1) / g(x)
-        parity_check_poly, remainder_poly = divmod(Poly.Degrees([n, 0], [1, -1], field=generator_poly.field), generator_poly)
+        f = Poly.Degrees([n, 0], [1, -1], field=generator_poly.field)
+        parity_check_poly, remainder_poly = divmod(f, generator_poly)
         assert remainder_poly == 0
         self._parity_check_poly = parity_check_poly
 
