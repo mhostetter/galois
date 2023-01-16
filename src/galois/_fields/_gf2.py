@@ -122,12 +122,12 @@ class GF2(
 
     .. info::
 
-        This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is included in the API
-        for convenience.
+        This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is
+        included in the API for convenience.
 
     Examples:
-        This class is equivalent, and in fact identical, to the :obj:`~galois.FieldArray` subclass returned from the class factory
-        :func:`~galois.GF`.
+        This class is equivalent, and in fact identical, to the :obj:`~galois.FieldArray` subclass returned from the
+        class factory :func:`~galois.GF`.
 
         .. ipython::
 

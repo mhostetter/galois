@@ -69,6 +69,7 @@ class FieldArrayMeta(ArrayMeta):
         """
         with cls.prime_subfield.repr("int"):
             irreducible_poly_str = str(cls._irreducible_poly)
+        primitive_element_str = poly_to_str(integer_to_poly(int(cls.primitive_element), cls.characteristic))
 
         string = "Galois Field:"
         string += f"\n  name: {cls.name}"
@@ -77,7 +78,7 @@ class FieldArrayMeta(ArrayMeta):
         string += f"\n  order: {cls.order}"
         string += f"\n  irreducible_poly: {irreducible_poly_str}"
         string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
-        string += f"\n  primitive_element: {poly_to_str(integer_to_poly(int(cls.primitive_element), cls.characteristic))}"
+        string += f"\n  primitive_element: {primitive_element_str}"
 
         return string
 
@@ -130,7 +131,8 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def order(cls) -> int:
         r"""
-        The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`. The order of the field is equal to the field's size.
+        The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`. The order of the field is equal to the
+        field's size.
 
         Examples:
             .. ipython:: python
@@ -161,8 +163,8 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def is_primitive_poly(cls) -> bool:
         r"""
-        Indicates whether the :obj:`~galois.FieldArray.irreducible_poly` is a primitive polynomial. If so, :math:`x` is a
-        primitive element of the finite field.
+        Indicates whether the :obj:`~galois.FieldArray.irreducible_poly` is a primitive polynomial. If so, :math:`x`
+        is a primitive element of the finite field.
 
         Examples:
             The default :math:`\mathrm{GF}(2^8)` field uses a primitive polynomial.
@@ -208,7 +210,8 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def units(cls) -> FieldArray:
         r"""
-        All of the finite field's units :math:`\{1, \dots, p^m-1\}`. A unit is an element with a multiplicative inverse.
+        All of the finite field's units :math:`\{1, \dots, p^m-1\}`. A unit is an element with a multiplicative
+        inverse.
 
         Examples:
             All units of the prime field :math:`\mathrm{GF}(31)` in increasing order.
@@ -230,8 +233,9 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def primitive_element(cls) -> FieldArray:
         r"""
-        A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
-        generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
+        A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a
+        multiplicative generator of the field, such that
+        :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
 
         A primitive element is a root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
         :math:`\mathrm{GF}(p^m)`.
@@ -256,8 +260,9 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def primitive_elements(cls) -> FieldArray:
         r"""
-        All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a multiplicative
-        generator of the field, such that :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
+        All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a
+        multiplicative generator of the field, such that
+        :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
 
         Examples:
             All primitive elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
@@ -267,7 +272,8 @@ class FieldArrayMeta(ArrayMeta):
                 GF = galois.GF(31)
                 GF.elements
 
-            All primitive elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
+            All primitive elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing
+            order.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -324,8 +330,8 @@ class FieldArrayMeta(ArrayMeta):
         r"""
         All non-squares in the Galois field.
 
-        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *non-square* if there does not exist a :math:`y` such that
-        :math:`y^2 = x` in the field.
+        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *non-square* if there does not exist a :math:`y` such
+        that :math:`y^2 = x` in the field.
 
         See Also:
             is_square
@@ -352,7 +358,8 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def is_prime_field(cls) -> bool:
         """
-        Indicates if the finite field is a prime field, not an extension field. This is true when the field's order is prime.
+        Indicates if the finite field is a prime field, not an extension field. This is true when the field's order
+        is prime.
 
         Examples:
             .. ipython:: python
@@ -397,20 +404,22 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def dtypes(cls) -> list[np.dtype]:
         r"""
-        List of valid integer :obj:`numpy.dtype` values that are compatible with this finite field. Creating an array with an
-        unsupported dtype will raise a `TypeError` exception.
+        List of valid integer :obj:`numpy.dtype` values that are compatible with this finite field. Creating an array
+        with an unsupported dtype will raise a `TypeError` exception.
 
-        For finite fields whose elements cannot be represented with :obj:`numpy.int64`, the only valid data type is :obj:`numpy.object_`.
+        For finite fields whose elements cannot be represented with :obj:`numpy.int64`, the only valid data type is
+        :obj:`numpy.object_`.
 
         Examples:
-            For small finite fields, all integer data types are acceptable, with the exception of :obj:`numpy.uint64`. This is
-            because all arithmetic is done using :obj:`numpy.int64`.
+            For small finite fields, all integer data types are acceptable, with the exception of :obj:`numpy.uint64`.
+            This is because all arithmetic is done using :obj:`numpy.int64`.
 
             .. ipython:: python
 
                 GF = galois.GF(31); GF.dtypes
 
-            Some data types are too small for certain finite fields, such as :obj:`numpy.int16` for :math:`\mathrm{GF}(7^5)`.
+            Some data types are too small for certain finite fields, such as :obj:`numpy.int16` for
+            :math:`\mathrm{GF}(7^5)`.
 
             .. ipython:: python
 
@@ -475,7 +484,8 @@ class FieldArrayMeta(ArrayMeta):
                 galois.GF(2147483647).ufunc_mode
                 galois.GF(2**32).ufunc_mode
 
-            Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
+            Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit
+            calculation.
 
             .. ipython:: python
 
@@ -530,7 +540,8 @@ class FieldArrayMeta(ArrayMeta):
                 galois.GF(2147483647).default_ufunc_mode
                 galois.GF(2**32).default_ufunc_mode
 
-            Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit calculation.
+            Fields whose elements and arithmetic cannot fit within :obj:`numpy.int64` use pure-Python explicit
+            calculation.
 
             .. ipython:: python
 

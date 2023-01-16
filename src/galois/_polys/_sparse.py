@@ -8,7 +8,12 @@ import numpy as np
 from .._domains import Array
 
 
-def add(a_degrees: np.ndarray, a_coeffs: Array, b_degrees: np.ndarray, b_coeffs: Array) -> tuple[np.ndarray, Array]:
+def add(
+    a_degrees: np.ndarray,
+    a_coeffs: Array,
+    b_degrees: np.ndarray,
+    b_coeffs: Array,
+) -> tuple[np.ndarray, Array]:
     """
     c(x) = a(x) + b(x)
     """
@@ -21,7 +26,10 @@ def add(a_degrees: np.ndarray, a_coeffs: Array, b_degrees: np.ndarray, b_coeffs:
     return np.array(list(c.keys())), field(list(c.values()))
 
 
-def negative(a_degrees: np.ndarray, a_coeffs: Array) -> tuple[np.ndarray, Array]:
+def negative(
+    a_degrees: np.ndarray,
+    a_coeffs: Array,
+) -> tuple[np.ndarray, Array]:
     """
     c(x) = -a(x)
     a(x) + -a(x) = 0
@@ -29,7 +37,12 @@ def negative(a_degrees: np.ndarray, a_coeffs: Array) -> tuple[np.ndarray, Array]
     return a_degrees, -a_coeffs
 
 
-def subtract(a_degrees: np.ndarray, a_coeffs: Array, b_degrees: np.ndarray, b_coeffs: Array) -> tuple[np.ndarray, Array]:
+def subtract(
+    a_degrees: np.ndarray,
+    a_coeffs: Array,
+    b_degrees: np.ndarray,
+    b_coeffs: Array,
+) -> tuple[np.ndarray, Array]:
     """
     c(x) = a(x) - b(x)
     """
@@ -43,7 +56,12 @@ def subtract(a_degrees: np.ndarray, a_coeffs: Array, b_degrees: np.ndarray, b_co
     return np.array(list(c.keys())), field(list(c.values()))
 
 
-def multiply(a_degrees: np.ndarray, a_coeffs: Array, b_degrees: np.ndarray, b_coeffs: Array) -> tuple[np.ndarray, Array]:
+def multiply(
+    a_degrees: np.ndarray,
+    a_coeffs: Array,
+    b_degrees: np.ndarray,
+    b_coeffs: Array,
+) -> tuple[np.ndarray, Array]:
     """
     c(x) = a(x) * b(x)
     c(x) = a(x) * b = a(x) + ... + a(x)

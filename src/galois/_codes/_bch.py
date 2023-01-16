@@ -32,13 +32,14 @@ class BCH(_CyclicCode):
     .. info::
         :title: Shortened codes
 
-        To create the shortened :math:`\textrm{BCH}(n-s, k-s)` code, construct the full-sized :math:`\textrm{BCH}(n, k)` code
-        and then pass :math:`k-s` symbols into :func:`encode` and :math:`n-s` symbols into :func:`decode()`. Shortened codes are only
-        applicable for systematic codes.
+        To create the shortened :math:`\textrm{BCH}(n-s, k-s)` code, construct the full-sized
+        :math:`\textrm{BCH}(n, k)` code and then pass :math:`k-s` symbols into :func:`encode` and :math:`n-s` symbols
+        into :func:`decode()`. Shortened codes are only applicable for systematic codes.
 
-    A BCH code is a cyclic code over :math:`\mathrm{GF}(q)` with generator polynomial :math:`g(x)`. The generator polynomial is over
-    :math:`\mathrm{GF}(q)` and has :math:`d-1` roots :math:`\alpha^c, \dots, \alpha^{c+d-2}` when evaluated in :math:`\mathrm{GF}(q^m)`.
-    The element :math:`\alpha` is a primitive :math:`n`-th root of unity in :math:`\mathrm{GF}(q^m)`.
+    A BCH code is a cyclic code over :math:`\mathrm{GF}(q)` with generator polynomial :math:`g(x)`. The generator
+    polynomial is over :math:`\mathrm{GF}(q)` and has :math:`d-1` roots :math:`\alpha^c, \dots, \alpha^{c+d-2}` when
+    evaluated in :math:`\mathrm{GF}(q^m)`. The element :math:`\alpha` is a primitive :math:`n`-th root of unity in
+    :math:`\mathrm{GF}(q^m)`.
 
     .. math::
 
@@ -100,19 +101,21 @@ class BCH(_CyclicCode):
         Arguments:
             n: The codeword size :math:`n`. If :math:`n = q^m - 1`, the BCH code is *primitive*.
             k: The message size :math:`k`.
-            d: The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator polynomial
-                :math:`g(x)` over :math:`\mathrm{GF}(q^m)`.
-            field: The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols. The default
-                is `None` which corresponds to :math:`\mathrm{GF}(2)`.
-            extension_field: The Galois field :math:`\mathrm{GF}(q^m)` that defines the syndrome arithmetic. The default is
-                `None` which corresponds to :math:`\mathrm{GF}(q^m)` where :math:`q^{m - 1} \le n < q^m`. The default extension
-                field will use `matlab_primitive_poly(q, m)` for the irreducible polynomial.
+            d: The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator
+                polynomial :math:`g(x)` over :math:`\mathrm{GF}(q^m)`.
+            field: The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols.
+                The default is `None` which corresponds to :math:`\mathrm{GF}(2)`.
+            extension_field: The Galois field :math:`\mathrm{GF}(q^m)` that defines the syndrome arithmetic.
+                The default is `None` which corresponds to :math:`\mathrm{GF}(q^m)` where
+                :math:`q^{m - 1} \le n < q^m`. The default extension field will use `matlab_primitive_poly(q, m)`
+                for the irreducible polynomial.
             alpha: A primitive :math:`n`-th root of unity :math:`\alpha` in :math:`\mathrm{GF}(q^m)` that defines the
                 :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
-            c: The first consecutive power :math:`c` of :math:`\alpha` that defines the :math:`\alpha^c, \dots, \alpha^{c+d-2}`
-                roots of the generator polynomial :math:`g(x)`. The default is 1. If :math:`c = 1`, the BCH code is *narrow-sense*.
-            systematic: Indicates if the encoding should be systematic, meaning the codeword is the message with parity appended.
-                The default is `True`.
+            c: The first consecutive power :math:`c` of :math:`\alpha` that defines the
+                :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
+                The default is 1. If :math:`c = 1`, the BCH code is *narrow-sense*.
+            systematic: Indicates if the encoding should be systematic, meaning the codeword is the message with
+                parity appended. The default is `True`.
 
         See Also:
             matlab_primitive_poly, FieldArray.primitive_root_of_unity
@@ -170,7 +173,8 @@ class BCH(_CyclicCode):
             field = GF2
         if not field.is_prime_field:
             raise ValueError(
-                "Current BCH codes over GF(q) for prime power q are not supported. Proper Galois field towers are needed first."
+                "Current BCH codes over GF(q) for prime power q are not supported. "
+                "Proper Galois field towers are needed first."
             )
         q = field.order  # The size of the codeword alphabet
 
@@ -496,9 +500,10 @@ class BCH(_CyclicCode):
         {},
         r"""
         In decoding, the syndrome vector :math:`\mathbf{s}` is computed by evaluating the received codeword
-        :math:`\mathbf{r}` in the extension field :math:`\mathrm{GF}(q^m)` at the roots :math:`\alpha^c, \dots, \alpha^{c+d-2}`
-        of the generator polynomial :math:`g(x)`. The equivalent polynomial operation computes the remainder
-        of :math:`r(x)` by :math:`g(x)` in the extension field :math:`\mathrm{GF}(q^m)`.
+        :math:`\mathbf{r}` in the extension field :math:`\mathrm{GF}(q^m)` at the roots
+        :math:`\alpha^c, \dots, \alpha^{c+d-2}` of the generator polynomial :math:`g(x)`. The equivalent polynomial
+        operation computes the remainder of :math:`r(x)` by :math:`g(x)` in the extension field
+        :math:`\mathrm{GF}(q^m)`.
 
         .. math::
             \mathbf{s} = [r(\alpha^c),\ \dots,\ r(\alpha^{c+d-2})] \in \mathrm{GF}(q^m)^{d-1}
@@ -506,9 +511,9 @@ class BCH(_CyclicCode):
         .. math::
             s(x) = r(x)\ \textrm{mod}\ g(x) \in \mathrm{GF}(q^m)[x]
 
-        A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the syndrome
-        is non-zero, the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding error
-        locations and values.
+        A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the
+        syndrome is non-zero, the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding
+        error locations and values.
 
         Note:
             The :math:`[n, k, d]_q` code has :math:`d_{min} \ge d` minimum distance. It can detect up
@@ -592,7 +597,8 @@ class BCH(_CyclicCode):
                         m = GF.Random((3, bch.k)); m
                         c = bch.encode(m); c
 
-                    Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.
+                    Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the
+                    third.
 
                     .. ipython:: python
 
@@ -625,7 +631,8 @@ class BCH(_CyclicCode):
                         m = GF.Random((3, bch.k - 3)); m
                         c = bch.encode(m); c
 
-                    Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the third.
+                    Corrupt the codeword. Add zero errors to the first codeword, one to the second, and two to the
+                    third.
 
                     .. ipython:: python
 
@@ -652,7 +659,8 @@ class BCH(_CyclicCode):
         return super().decode(codeword, output=output, errors=errors)
 
     def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
-        dec_codeword, N_errors = decode_jit(self.field, self.extension_field)(codeword, self.n, int(self.alpha), self.c, self.roots)
+        func = decode_jit(self.field, self.extension_field)
+        dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)
         return dec_codeword, N_errors
 
@@ -929,8 +937,8 @@ class BCH(_CyclicCode):
     @property
     def c(self) -> int:
         r"""
-        The first consecutive power :math:`c` of :math:`\alpha` that defines the roots :math:`\alpha^c, \dots, \alpha^{c+d-2}`
-        of the generator polynomial :math:`g(x)`.
+        The first consecutive power :math:`c` of :math:`\alpha` that defines the roots
+        :math:`\alpha^c, \dots, \alpha^{c+d-2}` of the generator polynomial :math:`g(x)`.
 
         Examples:
             Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
@@ -1141,8 +1149,8 @@ def _generator_poly_from_k(
             # This d is too small to produce the BCH code
             possible_d = possible_d[idx + 1 :]
         elif generator_poly.degree == n - k:
-            # This d produces the correct BCH code size and g(x) is its generator. However, there may also be a larger d that
-            # generates a BCH code of the same size, so keep looking.
+            # This d produces the correct BCH code size and g(x) is its generator. However, there may also be a
+            # larger d that generates a BCH code of the same size, so keep looking.
             break
         else:
             # This d is too large to produce the BCH code
@@ -1195,7 +1203,8 @@ class decode_jit(Function):
 
     def set_globals(self):
         # pylint: disable=global-variable-undefined
-        global CHARACTERISTIC, SUBTRACT, MULTIPLY, RECIPROCAL, POWER, CONVOLVE, POLY_ROOTS, POLY_EVALUATE, BERLEKAMP_MASSEY
+        global CHARACTERISTIC, SUBTRACT, MULTIPLY, RECIPROCAL, POWER
+        global CONVOLVE, POLY_ROOTS, POLY_EVALUATE, BERLEKAMP_MASSEY
 
         SUBTRACT = self.field._subtract.ufunc_call_only
 
@@ -1231,14 +1240,15 @@ class decode_jit(Function):
                 continue
 
             # The error pattern is defined as the polynomial e(x) = e_j1*x^j1 + e_j2*x^j2 + ... for j1 to jv,
-            # implying there are v errors. And δi = e_ji is the i-th error value and βi = α^ji is the i-th error-locator
-            # value and ji is the error location.
+            # implying there are v errors. And δi = e_ji is the i-th error value and βi = α^ji is the i-th
+            # error-locator value and ji is the error location.
 
-            # The error-locator polynomial σ(x) = (1 - β1*x)(1 - β2*x)...(1 - βv*x) where βi are the inverse of the roots
-            # of σ(x).
+            # The error-locator polynomial σ(x) = (1 - β1*x)(1 - β2*x)...(1 - βv*x) where βi are the inverse of the
+            # roots of σ(x).
 
             # Compute the error-locator polynomial σ(x)
-            # TODO: Re-evaluate these equations since changing BMA to return characteristic polynomial, not feedback polynomial
+            # TODO: Re-evaluate these equations since changing BMA to return the characteristic polynomial,
+            #       not the feedback polynomial
             sigma = BERLEKAMP_MASSEY(syndrome)[::-1]
             v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
 
@@ -1254,8 +1264,8 @@ class decode_jit(Function):
             error_locations = -error_locations_inv % design_n  # The error locations as degrees of c(x)
 
             if np.any(error_locations > n - 1):
-                # Indicates there are "errors" in the zero-ed portion of a shortened code, which indicates there are actually
-                # more errors than alleged. Return failure to decode.
+                # Indicates there are "errors" in the zero-ed portion of a shortened code, which indicates there are
+                # actually more errors than alleged. Return failure to decode.
                 dec_codewords[i, -1] = -1
                 continue
 
@@ -1283,7 +1293,9 @@ class decode_jit(Function):
                 delta_i = MULTIPLY(beta_i, Z0_i)
                 delta_i = MULTIPLY(delta_i, RECIPROCAL(sigma_prime_i))
                 delta_i = SUBTRACT(0, delta_i)
-                dec_codewords[i, n - 1 - error_locations[j]] = SUBTRACT(dec_codewords[i, n - 1 - error_locations[j]], delta_i)
+                dec_codewords[i, n - 1 - error_locations[j]] = SUBTRACT(
+                    dec_codewords[i, n - 1 - error_locations[j]], delta_i
+                )
 
             dec_codewords[i, -1] = v  # The number of corrected errors
 

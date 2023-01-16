@@ -1,6 +1,6 @@
 """
-A module that contains Array mixin classes that override NumPy linear algebra functions. Additional functions not included
-in NumPy are also included.
+A module that contains Array mixin classes that override NumPy linear algebra functions. Additional functions not
+included in NumPy are also included.
 """
 from __future__ import annotations
 
@@ -137,7 +137,9 @@ class inner_jit(Function):
         if a.ndim == 0 or b.ndim == 0:
             return a * b
         if not a.shape[-1] == b.shape[-1]:
-            raise ValueError(f"Operation 'inner' requires `a` and `b` to have the same last dimension, not {a.shape} and {b.shape}.")
+            raise ValueError(
+                f"Operation 'inner' requires `a` and `b` to have the same last dimension, not {a.shape} and {b.shape}."
+            )
 
         return np.sum(a * b, axis=-1)
 
@@ -174,7 +176,9 @@ class matmul_jit(Function):
         verify_isinstance(A, self.field)
         verify_isinstance(B, self.field)
         if not (A.ndim >= 1 and B.ndim >= 1):
-            raise ValueError(f"Operation 'matmul' requires both arrays have dimension at least 1, not {A.ndim}-D and {B.ndim}-D.")
+            raise ValueError(
+                f"Operation 'matmul' requires both arrays have dimension at least 1, not {A.ndim}-D and {B.ndim}-D."
+            )
         if not (A.ndim <= 2 and B.ndim <= 2):
             raise ValueError(
                 "Operation 'matmul' currently only supports matrix multiplication up to 2-D. "
@@ -460,7 +464,8 @@ class inv_jit(Function):
         rank = np.sum(~np.all(AI_rre[:, 0:n] == 0, axis=1))
         if not rank == n:
             raise np.linalg.LinAlgError(
-                f"Argument 'A' is singular and not invertible because it does not have full rank of {n}, but rank of {rank}."
+                f"Argument 'A' is singular and not invertible because it does not have full rank of {n}, "
+                f"but rank of {rank}."
             )
 
         A_inv = AI_rre[:, -n:]
@@ -481,7 +486,9 @@ class solve_jit(Function):
         if not b.ndim in [1, 2]:
             raise np.linalg.LinAlgError(f"Argument 'b' must have dimension equal to 'A' or one less, not {b.ndim}.")
         if not A.shape[-1] == b.shape[0]:
-            raise np.linalg.LinAlgError(f"The last dimension of 'A' must equal the first dimension of 'b', not {A.shape} and {b.shape}.")
+            raise np.linalg.LinAlgError(
+                f"The last dimension of 'A' must equal the first dimension of 'b', not {A.shape} and {b.shape}."
+            )
 
         A_inv = inv_jit(self.field)(A)
         x = A_inv @ b
@@ -496,8 +503,8 @@ class solve_jit(Function):
 
 class LinalgFunctionMixin(FunctionMixin):
     """
-    A mixin base class that overrides NumPy linear algebra functions to perform self.field arithmetic (+, -, *, /), using *only* explicit
-    calculation.
+    A mixin base class that overrides NumPy linear algebra functions to perform self.field arithmetic (+, -, *, /),
+    using *only* explicit calculation.
     """
 
     _OVERRIDDEN_FUNCTIONS = {

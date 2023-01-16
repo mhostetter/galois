@@ -60,13 +60,13 @@ class _LinearCode:
         .. info::
             :title: Shortened codes
 
-            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`k-s` symbols into
-            :func:`encode` to return the :math:`n-s`-symbol message.
+            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`k-s`
+            symbols into :func:`encode` to return the :math:`n-s`-symbol message.
 
         Arguments:
-            message: The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the number
-                of messages. For systematic codes, message lengths less than :math:`k` may be provided to produce
-                shortened codewords.
+            message: The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the
+                number of messages. For systematic codes, message lengths less than :math:`k` may be provided to
+                produce shortened codewords.
             output: Specify whether to return the codeword or parity symbols only. The default is `"codeword"`.
 
         Returns:
@@ -97,8 +97,8 @@ class _LinearCode:
         .. info::
             :title: Shortened codes
 
-            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
-            :func:`detect`.
+            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s`
+            symbols into :func:`detect`.
 
         Arguments:
             codeword: The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
@@ -141,22 +141,24 @@ class _LinearCode:
         .. info::
             :title: Shortened codes
 
-            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s` symbols into
-            :func:`decode` to return the :math:`k-s`-symbol message.
+            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s`
+            symbols into :func:`decode` to return the :math:`k-s`-symbol message.
 
         Arguments:
             codeword: he codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
                 number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
                 shortened codewords.
-            output: Specify whether to return the error-corrected message or entire codeword. The default is `"message"`.
+            output: Specify whether to return the error-corrected message or entire codeword. The default is
+                `"message"`.
             errors: Optionally specify whether to return the number of corrected errors. The default is `False`.
 
         Returns:
-            - If `output="message"`, the error-corrected message as either a :math:`k`-length vector or :math:`(N, k)` matrix.
-              If `output="codeword"`, the error-corrected codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix.
-            - If `errors=True`, returns the number of corrected symbol errors as either a scalar or :math:`N`-length array.
-              Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot be corrected,
-              -1 will be returned.
+            - If `output="message"`, the error-corrected message as either a :math:`k`-length vector or
+              :math:`(N, k)` matrix. If `output="codeword"`, the error-corrected codeword as either a :math:`n`-length
+              vector or :math:`(N, n)` matrix.
+            - If `errors=True`, returns the number of corrected symbol errors as either a scalar or :math:`N`-length
+              array. Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot
+              be corrected, -1 will be returned.
         """
         verify_literal(output, ["message", "codeword"])
 
@@ -291,8 +293,8 @@ class _LinearCode:
 
     def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
         """
-        Decodes errors in the received codeword. Returns the corrected codeword (N, ns) and array of number of corrected
-        errors (N,).
+        Decodes errors in the received codeword. Returns the corrected codeword (N, ns) and array of number of
+        corrected errors (N,).
         """
         raise NotImplementedError
 
@@ -373,7 +375,8 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
             :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
 
     Returns:
-        The :math:`(n-k, n)` parity-check matrix :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
+        The :math:`(n-k, n)` parity-check matrix
+        :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
 
     Examples:
         .. ipython:: python

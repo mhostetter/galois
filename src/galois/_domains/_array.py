@@ -26,7 +26,8 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
     .. abstract::
 
-        :obj:`~galois.Array` is an abstract base class for :obj:`~galois.FieldArray` and cannot be instantiated directly.
+        :obj:`~galois.Array` is an abstract base class for :obj:`~galois.FieldArray` and cannot be
+        instantiated directly.
 
     Group:
         arrays
@@ -64,7 +65,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         # For example, np.dtype(int) == np.int64 (on some systems).
         dtype = np.dtype(dtype)
         if dtype not in cls._dtypes:
-            raise TypeError(f"{cls._name} arrays only support dtypes {[np.dtype(d).name for d in cls._dtypes]}, not {dtype.name!r}.")
+            raise TypeError(
+                f"{cls._name} arrays only support dtypes {[np.dtype(d).name for d in cls._dtypes]}, not {dtype.name!r}."
+            )
 
         return dtype
 
@@ -125,8 +128,10 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     @classmethod
     def _view(cls, array: np.ndarray) -> Self:
         """
-        View the input array to the Array subclass `A` using the `_view_without_verification()` context manager. This disables
-        bounds checking on the array elements. Instead of `x.view(A)` use `A._view(x)`. For internal library use only.
+        View the input array to the Array subclass `A` using the `_view_without_verification()` context manager.
+        This disables bounds checking on the array elements. Instead of `x.view(A)` use `A._view(x)`.
+
+        For internal library use only.
         """
         with cls._view_without_verification():
             array = array.view(cls)
@@ -136,7 +141,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     @contextlib.contextmanager
     def _view_without_verification(cls):
         """
-        A context manager to disable verifying array element values are within [0, order). For internal library use only.
+        A context manager to disable verifying array element values are within [0, order).
+
+        For internal library use only.
         """
         prev_value = cls._verify_on_view
         cls._verify_on_view = False
@@ -154,8 +161,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         Arguments:
             shape: A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple.
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.Array` subclass (the first element in
+                :obj:`~galois.Array.dtypes`).
 
         Returns:
             An array of zeros.
@@ -171,8 +179,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         Arguments:
             shape: A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple.
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.Array` subclass (the first element in
+                :obj:`~galois.Array.dtypes`).
 
         Returns:
             An array of ones.
@@ -196,8 +205,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             start: The starting element (inclusive).
             stop: The stopping element (exclusive).
             step: The increment between elements. The default is 1.
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.Array` subclass (the first element in
+                :obj:`~galois.Array.dtypes`).
 
         Returns:
             A 1-D array of a range of elements.
@@ -234,10 +244,12 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             shape: A NumPy-compliant :obj:`~numpy.ndarray.shape` tuple. The default is `()` which represents a scalar.
             low: The smallest element (inclusive). The default is 0.
             high: The largest element (exclusive). The default is `None` which represents :obj:`~galois.Array.order`.
-            seed: Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
-                entropy will be pulled from the OS to be used as the seed. A :obj:`numpy.random.Generator` can also be passed.
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+            seed: Non-negative integer used to initialize the PRNG. The default is `None` which means that
+                unpredictable entropy will be pulled from the OS to be used as the seed.
+                A :obj:`numpy.random.Generator` can also be passed.
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.Array` subclass (the first element in
+                :obj:`~galois.Array.dtypes`).
 
         Returns:
             An array of random elements.
@@ -251,7 +263,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         dtype = cls._get_dtype(dtype)
 
         if not 0 <= low < high <= cls.order:
-            raise ValueError(f"Arguments must satisfy `0 <= low < high <= order`, not `0 <= {low} < {high} <= {cls.order}`.")
+            raise ValueError(
+                f"Arguments must satisfy `0 <= low < high <= order`, not `0 <= {low} < {high} <= {cls.order}`."
+            )
 
         if seed is not None:
             if not isinstance(seed, (int, np.integer, np.random.Generator)):
@@ -288,8 +302,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         Arguments:
             size: The size :math:`n` along one dimension of the identity matrix.
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-                data type for this :obj:`~galois.Array` subclass (the first element in :obj:`~galois.Array.dtypes`).
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.Array` subclass (the first element in
+                :obj:`~galois.Array.dtypes`).
 
         Returns:
             A 2-D identity matrix with shape `(size, size)`.
@@ -312,20 +327,24 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         Arguments:
             mode: The ufunc calculation mode.
 
-                - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for larger fields,
-                  and `"python-calculate"` for fields whose elements cannot be represented with :obj:`numpy.int64`.
-                - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for efficient computation.
-                  In the few cases where explicit calculation is faster than table lookup, explicit calculation is used.
-                - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"` mode is designed
-                  for large fields that cannot or should not store lookup tables in RAM. Generally, the `"jit-calculate"` mode is slower
-                  than `"jit-lookup"`.
-                - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields whose elements cannot
-                  be represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_` with Python :obj:`int`
-                  (which has arbitrary precision).
+                - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"`
+                  for larger fields, and `"python-calculate"` for fields whose elements cannot be represented with
+                  :obj:`numpy.int64`.
+                - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for
+                  efficient computation. In the few cases where explicit calculation is faster than table lookup,
+                  explicit calculation is used.
+                - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"`
+                  mode is designed for large fields that cannot or should not store lookup tables in RAM. Generally,
+                  the `"jit-calculate"` mode is slower than `"jit-lookup"`.
+                - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields
+                  whose elements cannot be represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_`
+                  with Python :obj:`int` (which has arbitrary precision).
         """
         verify_isinstance(mode, str)
         if not mode in ["auto", "jit-lookup", "jit-calculate", "python-calculate"]:
-            raise ValueError(f"Argument 'mode' must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode!r}.")
+            raise ValueError(
+                f"Argument 'mode' must be in ['auto', 'jit-lookup', 'jit-calculate', 'python-calculate'], not {mode!r}."
+            )
         mode = cls.default_ufunc_mode if mode == "auto" else mode
         if mode not in cls.ufunc_modes:
             raise ValueError(f"Argument 'mode' must be in {cls.ufunc_modes} for {cls._name}, not {mode!r}.")
@@ -355,8 +374,8 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         .. danger::
 
-            For the power representation, :func:`numpy.log` is computed on each element. So for large fields without lookup
-            tables, displaying arrays in the power representation may take longer than expected.
+            For the power representation, :func:`numpy.log` is computed on each element. So for large fields without
+            lookup tables, displaying arrays in the power representation may take longer than expected.
 
         Arguments:
             element_repr: The field element representation.
@@ -366,8 +385,8 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                 - `"power"`: Sets the representation to the :ref:`power representation <power-repr>`.
 
         Returns:
-            A context manager for use in a `with` statement. If permanently setting the element representation, disregard the
-            return value.
+            A context manager for use in a `with` statement. If permanently setting the element representation,
+            disregard the return value.
 
         Examples:
             The default element representation is the integer representation.
@@ -454,8 +473,8 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
     def __setitem__(self, key, value):
         """
-        Before assigning new values to a Galois field array, ensure the values are valid finite field elements. That is,
-        they are within [0, p^m).
+        Before assigning new values to a Galois field array, ensure the values are valid finite field elements.
+        That is, they are within [0, p^m).
         """
         value = self._verify_array_like_types_and_values(value)
         super().__setitem__(key, value)
@@ -469,11 +488,15 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             # Only invoked on view casting
             if type(self)._verify_on_view:
                 if obj.dtype not in type(self)._dtypes:
-                    raise TypeError(f"{type(self)._name} can only have integer dtypes {type(self)._dtypes}, not {obj.dtype}.")
+                    raise TypeError(
+                        f"{type(self)._name} can only have integer dtypes {type(self)._dtypes}, not {obj.dtype}."
+                    )
                 self._verify_array_values(obj)
 
     def astype(self, dtype, order="K", casting="unsafe", subok=True, copy=True):
         # Before changing the array's data type, ensure it is a supported data type for this Array class.
         if dtype not in type(self)._dtypes:
-            raise TypeError(f"{type(self)._name} arrays can only be cast as integer dtypes in {type(self)._dtypes}, not {dtype}.")
+            raise TypeError(
+                f"{type(self)._name} arrays can only be cast as integer dtypes in {type(self)._dtypes}, not {dtype}."
+            )
         return super().astype(dtype, order=order, casting=casting, subok=subok, copy=copy)

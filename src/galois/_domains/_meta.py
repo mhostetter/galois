@@ -83,7 +83,9 @@ class ArrayMeta(abc.ABCMeta):
         Add class properties from the metaclass onto the new Array class's dir().
         """
         metaclass = type(cls)
-        class_properties = [item for item in dir(metaclass) if item[0] != "_" and inspect.isdatadescriptor(getattr(metaclass, item))]
+        class_properties = [
+            item for item in dir(metaclass) if item[0] != "_" and inspect.isdatadescriptor(getattr(metaclass, item))
+        ]
         return sorted(list(super().__dir__()) + class_properties)
 
     ###############################################################################
@@ -92,8 +94,8 @@ class ArrayMeta(abc.ABCMeta):
 
     def _determine_dtypes(cls) -> list[np.dtype]:
         """
-        Determine which NumPy integer data types are valid for this finite field. At a minimum, valid dtypes are ones that
-        can hold x for x in [0, order).
+        Determine which NumPy integer data types are valid for this finite field. At a minimum, valid dtypes are ones
+        that can hold x for x in [0, order).
         """
         dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= cls._order - 1]
         if len(dtypes) == 0:

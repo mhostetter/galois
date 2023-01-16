@@ -221,8 +221,8 @@ def lcm(*values):
                     f2 = galois.irreducible_poly(7, 2); f2
                     f3 = galois.irreducible_poly(7, 3); f3
 
-                Compute the LCM of three polynomials :math:`f_1(x)^2 f_2(x)`, :math:`f_1(x) f_3(x)`, and :math:`f_2(x) f_3(x)`,
-                which is :math:`f_1(x)^2 f_2(x) f_3(x)`.
+                Compute the LCM of three polynomials :math:`f_1(x)^2 f_2(x)`, :math:`f_1(x) f_3(x)`, and
+                :math:`f_2(x) f_3(x)`, which is :math:`f_1(x)^2 f_2(x) f_3(x)`.
 
                 .. ipython:: python
 
@@ -368,7 +368,10 @@ def are_coprime(*values):
     Group:
         number-theory-divisibility
     """
-    if not (all(isinstance(value, (int, np.integer)) for value in values) or all(isinstance(value, Poly) for value in values)):
+    if not (
+        all(isinstance(value, (int, np.integer)) for value in values)
+        or all(isinstance(value, Poly) for value in values)
+    ):
         raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
     if not len(values) > 0:
         raise ValueError("At least one argument must be provided.")
@@ -449,8 +452,11 @@ def crt(remainders, moduli):
 
                     GF = galois.GF(7)
                     x_truth = galois.Poly.Random(6, field=GF); x_truth
-                    m = [galois.Poly.Random(3, field=GF), galois.Poly.Random(4, field=GF), galois.Poly.Random(5, field=GF)]; m
-                    a = [x_truth % mi for mi in m]; a
+                    m3 = galois.Poly.Random(3, field=GF)
+                    m4 = galois.Poly.Random(4, field=GF)
+                    m5 = galois.Poly.Random(5, field=GF)
+                    m = [m3, m4, m5]; m
+                    a = [x_truth % m3, x_truth % m4, x_truth % m5]; a
 
                 Solve the system of congruences.
 
@@ -481,7 +487,8 @@ def crt(remainders, moduli):
         raise TypeError(f"Argument 'moduli' must be a tuple or list of int or Poly, not {moduli}.")
     if not len(remainders) == len(moduli) >= 2:
         raise ValueError(
-            f"Arguments 'remainders' and 'moduli' must be the same length of at least 2, not {len(remainders)} and {len(moduli)}."
+            f"Arguments 'remainders' and 'moduli' must be the same length of at least 2, "
+            f"not {len(remainders)} and {len(moduli)}."
         )
 
     # Ensure polynomial arguments have each remainder have degree less than its modulus
@@ -509,7 +516,8 @@ def crt(remainders, moduli):
             # then a unique solution still exists.
             if not (a1 % d) == (a2 % d):
                 raise ValueError(
-                    f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, "
+                    f"Moduli {[m1, m2]} are not coprime "
+                    f"and their residuals {[a1, a2]} are not equal modulo their GCD {d}, "
                     "therefore a unique solution does not exist."
                 )
             x = ((a1 * b2 * m2) + (a2 * b1 * m1)) // d  # Compute x through explicit construction
@@ -547,9 +555,9 @@ def factors(value):
         value: A positive integer :math:`n` or a non-constant, monic polynomial :math:`f(x)`.
 
     Returns:
-        - Sorted list of prime factors :math:`\{p_1, p_2, \dots, p_k\}` of :math:`n` with :math:`p_1 < p_2 < \dots < p_k`
-          or irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of :math:`f(x)` sorted in lexicographically-increasing
-          order.
+        - Sorted list of prime factors :math:`\{p_1, p_2, \dots, p_k\}` of :math:`n` with
+          :math:`p_1 < p_2 < \dots < p_k` or irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of
+          :math:`f(x)` sorted in lexicographically-increasing order.
         - List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
 
     Notes:
@@ -562,15 +570,16 @@ def factors(value):
 
                 Steps:
 
-                0. Test if :math:`n` is in the `Cunningham Book's <https://homes.cerias.purdue.edu/~ssw/cun/third/index.html>`_
-                   database of :math:`n = p^m \pm 1` factorizations. If so, return the prime factorization.
+                0. Test if :math:`n` is in the `Cunningham Book's
+                   <https://homes.cerias.purdue.edu/~ssw/cun/third/index.html>`_ database of :math:`n = p^m \pm 1`
+                   factorizations. If so, return the prime factorization.
                 1. Test if :math:`n` is prime. If so, return `[n], [1]`. See :func:`~galois.is_prime`.
-                2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and multiply the
-                   exponents by :math:`k`. See :func:`~galois.perfect_power`.
-                3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the discovered prime
-                   factors. See :func:`~galois.trial_division`.
-                4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are found.
-                   See :func:`~galois.pollard_rho`.
+                2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and
+                   multiply the exponents by :math:`k`. See :func:`~galois.perfect_power`.
+                3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the
+                   discovered prime factors. See :func:`~galois.trial_division`.
+                4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are
+                   found. See :func:`~galois.pollard_rho`.
 
             .. md-tab-item:: Polynomials
 
@@ -579,12 +588,12 @@ def factors(value):
 
                 Steps:
 
-                1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free polynomials.
-                   See :func:`Poly.square_free_factors`.
-                2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product of factors
-                   with the same degree. See :func:`Poly.distinct_degree_factors`.
-                3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into their irreducible
-                   factors. See :func:`Poly.equal_degree_factors`.
+                1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free
+                   polynomials. See :func:`Poly.square_free_factors`.
+                2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a
+                   product of factors with the same degree. See :func:`Poly.distinct_degree_factors`.
+                3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into
+                   their irreducible factors. See :func:`Poly.equal_degree_factors`.
 
                 This factorization is also available in :func:`Poly.factors`.
 
@@ -672,16 +681,16 @@ def is_square_free(value):
 
             .. md-tab-item:: Integers
 
-                A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime factorization
-                of a square-free integer :math:`n` is
+                A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime
+                factorization of a square-free integer :math:`n` is
 
                 .. math::
                     n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
 
             .. md-tab-item:: Polynomials
 
-                A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one. Therefore,
-                its canonical factorization is
+                A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one.
+                Therefore, its canonical factorization is
 
                 .. math::
                     f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .

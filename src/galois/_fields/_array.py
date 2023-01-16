@@ -26,11 +26,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     .. abstract::
 
-        :obj:`~galois.FieldArray` is an abstract base class and cannot be instantiated directly. Instead, :obj:`~galois.FieldArray`
-        subclasses are created using the class factory :func:`~galois.GF`.
+        :obj:`~galois.FieldArray` is an abstract base class and cannot be instantiated directly. Instead,
+        :obj:`~galois.FieldArray` subclasses are created using the class factory :func:`~galois.GF`.
 
     Examples:
-        Create a :obj:`~galois.FieldArray` subclass over :math:`\mathrm{GF}(3^5)` using the class factory :func:`~galois.GF`.
+        Create a :obj:`~galois.FieldArray` subclass over :math:`\mathrm{GF}(3^5)` using the class factory
+        :func:`~galois.GF`.
 
         .. ipython-with-reprs:: int,poly,power
 
@@ -79,8 +80,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Arguments:
             x: A finite field scalar or array.
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-                data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.FieldArray` subclass (the first element in
+                :obj:`~galois.FieldArray.dtypes`).
             copy: The `copy` keyword argument from :func:`numpy.array`. The default is `True`.
             order: The `order` keyword argument from :func:`numpy.array`. The default is `"K"`.
             ndmin: The `ndmin` keyword argument from :func:`numpy.array`. The default is 0.
@@ -127,8 +129,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         elif isinstance(x, cls):
             # This was a previously-created and vetted array -- there's no need to re-verify
             if x.ndim == 0:
-                # Ensure that in "large" fields with dtype=object that FieldArray objects aren't assigned to the array. The arithmetic
-                # functions are designed to operate on Python ints.
+                # Ensure that in "large" fields with dtype=object that FieldArray objects aren't assigned to the array.
+                # The arithmetic functions are designed to operate on Python ints.
                 x = int(x)
         elif isinstance(x, str):
             x = cls._convert_to_element(x)
@@ -144,7 +146,10 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 raise TypeError(f"{cls.name} arrays must have integer dtypes, not {x.dtype}.")
             cls._verify_array_values(x)
         else:
-            raise TypeError(f"{cls.name} arrays can be created with scalars of type int/str, lists/tuples, or ndarrays, not {type(x)}.")
+            raise TypeError(
+                f"{cls.name} arrays can be created with scalars of type int/str, lists/tuples, "
+                f"or ndarrays, not {type(x)}."
+            )
 
         return x
 
@@ -331,8 +336,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             element: An element :math:`a` of :math:`\mathrm{GF}(q)`.
             rows: The number of rows :math:`m` in the Vandermonde matrix.
             cols: The number of columns :math:`n` in the Vandermonde matrix.
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-                data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.FieldArray` subclass (the first element in
+                :obj:`~galois.FieldArray.dtypes`).
 
         Returns:
             A :math:`m \times n` Vandermonde matrix.
@@ -369,15 +375,18 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     @classmethod
     def Vector(cls, array: ArrayLike, dtype: DTypeLike | None = None) -> FieldArray:
         r"""
-        Creates an array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
+        Creates an array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield
+        :math:`\mathrm{GF}(p)`.
 
         This function is the inverse operation of the :func:`vector` method.
 
         Arguments:
-            array: An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`. An array with shape `(n1, n2, m)` has output
-                shape `(n1, n2)`. By convention, the vectors are ordered from degree :math:`m-1` to degree 0.
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-                data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
+            array: An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`. An array with shape
+                `(n1, n2, m)` has output shape `(n1, n2)`. By convention, the vectors are ordered from degree
+                :math:`m-1` to degree 0.
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.FieldArray` subclass (the first element in
+                :obj:`~galois.FieldArray.dtypes`).
 
         Returns:
             An array over :math:`\mathrm{GF}(p^m)`.
@@ -396,7 +405,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         x = cls.prime_subfield(array)  # Convert element-like objects into the prime subfield
         x = x.view(np.ndarray)  # Convert into an integer array
         if not x.shape[-1] == degree:
-            raise ValueError(f"The last dimension of `array` must be the field extension dimension {cls.degree}, not {x.shape[-1]}.")
+            raise ValueError(
+                f"The last dimension of `array` must be the field extension dimension {cls.degree}, not {x.shape[-1]}."
+            )
 
         degrees = np.arange(degree - 1, -1, -1, dtype=dtype)
         y = np.sum(x * order**degrees, axis=-1, dtype=dtype)
@@ -413,20 +424,26 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     ###############################################################################
 
     @classmethod
-    def repr_table(cls, element: ElementLike | None = None, sort: Literal["power", "poly", "vector", "int"] = "power") -> str:
+    def repr_table(
+        cls,
+        element: ElementLike | None = None,
+        sort: Literal["power", "poly", "vector", "int"] = "power",
+    ) -> str:
         r"""
-        Generates a finite field element representation table comparing the power, polynomial, vector, and integer representations.
+        Generates a finite field element representation table comparing the power, polynomial, vector, and
+        integer representations.
 
         Arguments:
-            element: An element to use as the exponent base in the power representation. The default is `None` which corresponds to
-                :obj:`~galois.FieldArray.primitive_element`.
-            sort: The sorting method for the table. The default is `"power"`. Sorting by `"power"` will order the rows of the table by
-                ascending powers of `element`. Sorting by any of the others will order the rows in lexicographically-increasing
-                polynomial/vector order, which is equivalent to ascending order of the integer representation.
+            element: An element to use as the exponent base in the power representation. The default is `None` which
+                corresponds to :obj:`~galois.FieldArray.primitive_element`.
+            sort: The sorting method for the table. The default is `"power"`. Sorting by `"power"` will order the rows
+                of the table by ascending powers of `element`. Sorting by any of the others will order the rows in
+                lexicographically-increasing polynomial/vector order, which is equivalent to ascending order of the
+                integer representation.
 
         Returns:
-            A string representation of the table comparing the power, polynomial, vector, and integer representations of each
-            field element.
+            A string representation of the table comparing the power, polynomial, vector, and integer representations
+            of each field element.
 
         Examples:
             Create a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(3^3)`.
@@ -436,24 +453,24 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 GF = galois.GF(3**3)
                 print(GF.properties)
 
-            Generate a representation table for :math:`\mathrm{GF}(3^3)`. Since :math:`x^3 + 2x + 1` is a primitive polynomial,
-            :math:`x` is a primitive element of the field. Notice, :math:`\textrm{ord}(x) = 26`.
+            Generate a representation table for :math:`\mathrm{GF}(3^3)`. Since :math:`x^3 + 2x + 1` is a primitive
+            polynomial, :math:`x` is a primitive element of the field. Notice, :math:`\textrm{ord}(x) = 26`.
 
             .. ipython:: python
 
                 print(GF.repr_table())
                 GF("x").multiplicative_order()
 
-            Generate a representation table for :math:`\mathrm{GF}(3^3)` using a different primitive element :math:`2x^2 + 2x + 2`.
-            Notice, :math:`\textrm{ord}(2x^2 + 2x + 2) = 26`.
+            Generate a representation table for :math:`\mathrm{GF}(3^3)` using a different primitive element
+            :math:`2x^2 + 2x + 2`. Notice, :math:`\textrm{ord}(2x^2 + 2x + 2) = 26`.
 
             .. ipython:: python
 
                 print(GF.repr_table("2x^2 + 2x + 2"))
                 GF("2x^2 + 2x + 2").multiplicative_order()
 
-            Generate a representation table for :math:`\mathrm{GF}(3^3)` using a non-primitive element :math:`x^2`. Notice,
-            :math:`\textrm{ord}(x^2) = 13 \ne 26`.
+            Generate a representation table for :math:`\mathrm{GF}(3^3)` using a non-primitive element :math:`x^2`.
+            Notice, :math:`\textrm{ord}(x^2) = 13 \ne 26`.
 
             .. ipython:: python
 
@@ -496,7 +513,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         N_vec = max([len(print_vec(e)) for e in x] + [len("Vector")]) + 2
         N_int = max([len(print_int(e)) for e in x] + [len("Integer")]) + 2
 
-        string = "Power".center(N_power) + " " + "Polynomial".center(N_poly) + " " + "Vector".center(N_vec) + " " + "Integer".center(N_int)
+        string = (
+            "Power".center(N_power)
+            + " "
+            + "Polynomial".center(N_poly)
+            + " "
+            + "Vector".center(N_vec)
+            + " "
+            + "Integer".center(N_int)
+        )
         string += "\n" + "-" * N_power + " " + "-" * N_poly + " " + "-" * N_vec + " " + "-" * N_int
 
         for i in range(x.size):
@@ -559,7 +584,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         if cls.element_repr == "power":
             # Order elements by powers of the primitive element
             dtype = cls.dtypes[-1]  # pylint: disable=unsubscriptable-object
-            x_default = np.concatenate((np.atleast_1d(cls(0)), cls.primitive_element ** np.arange(0, cls.order - 1, dtype=dtype)))
+            x_default = np.concatenate(
+                (np.atleast_1d(cls(0)), cls.primitive_element ** np.arange(0, cls.order - 1, dtype=dtype))
+            )
         else:
             x_default = cls.elements
         y_default = x_default if operation != "/" else x_default[1:]
@@ -617,12 +644,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 divisor of :math:`p^m - 1`.
 
         Notes:
-            A primitive :math:`n`-th root of unity :math:`\omega_n` is such that :math:`\omega_n^n = 1` and :math:`\omega_n^k \ne 1`
-            for all :math:`1 \le k \lt n`.
+            A primitive :math:`n`-th root of unity :math:`\omega_n` is such that :math:`\omega_n^n = 1` and
+            :math:`\omega_n^k \ne 1` for all :math:`1 \le k \lt n`.
 
-            In :math:`\mathrm{GF}(p^m)`, a primitive :math:`n`-th root of unity exists when :math:`n` divides :math:`p^m - 1`.
-            Then, the primitive root is :math:`\omega_n = \alpha^{(p^m - 1)/n}` where :math:`\alpha` is a primitive
-            element of the field.
+            In :math:`\mathrm{GF}(p^m)`, a primitive :math:`n`-th root of unity exists when :math:`n` divides
+            :math:`p^m - 1`. Then, the primitive root is :math:`\omega_n = \alpha^{(p^m - 1)/n}` where :math:`\alpha`
+            is a primitive element of the field.
 
         Examples:
             In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of 30.
@@ -641,7 +668,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 GF.primitive_root_of_unity(7)
 
-            For :math:`\omega_5`, one can see that :math:`\omega_5^5 = 1` and :math:`\omega_5^k \ne 1` for :math:`1 \le k \lt 5`.
+            For :math:`\omega_5`, one can see that :math:`\omega_5^5 = 1` and :math:`\omega_5^k \ne 1` for
+            :math:`1 \le k \lt 5`.
 
             .. ipython:: python
 
@@ -666,20 +694,20 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             n: The root of unity.
 
         Returns:
-            All primitive :math:`n`-th roots of unity, a 1-D array. The roots are sorted in lexicographically-increasing
-            order.
+            All primitive :math:`n`-th roots of unity, a 1-D array. The roots are sorted in
+            lexicographically-increasing order.
 
         Raises:
             ValueError: If no primitive :math:`n`-th roots of unity exist. This happens when :math:`n` is not a
                 divisor of :math:`p^m - 1`.
 
         Notes:
-            A primitive :math:`n`-th root of unity :math:`\omega_n` is such that :math:`\omega_n^n = 1` and :math:`\omega_n^k \ne 1`
-            for all :math:`1 \le k \lt n`.
+            A primitive :math:`n`-th root of unity :math:`\omega_n` is such that :math:`\omega_n^n = 1` and
+            :math:`\omega_n^k \ne 1` for all :math:`1 \le k \lt n`.
 
-            In :math:`\mathrm{GF}(p^m)`, a primitive :math:`n`-th root of unity exists when :math:`n` divides :math:`p^m - 1`.
-            Then, the primitive root is :math:`\omega_n = \alpha^{(p^m - 1)/n}` where :math:`\alpha` is a primitive
-            element of the field.
+            In :math:`\mathrm{GF}(p^m)`, a primitive :math:`n`-th root of unity exists when :math:`n` divides
+            :math:`p^m - 1`. Then, the primitive root is :math:`\omega_n = \alpha^{(p^m - 1)/n}` where :math:`\alpha`
+            is a primitive element of the field.
 
         Examples:
             In :math:`\mathrm{GF}(31)`, primitive roots exist for all divisors of 30.
@@ -698,7 +726,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 GF.primitive_roots_of_unity(7)
 
-            For :math:`\omega_5`, one can see that :math:`\omega_5^5 = 1` and :math:`\omega_5^k \ne 1` for :math:`1 \le k \lt 5`.
+            For :math:`\omega_5`, one can see that :math:`\omega_5^5 = 1` and :math:`\omega_5^k \ne 1` for
+            :math:`1 \le k \lt 5`.
 
             .. ipython:: python
 
@@ -725,8 +754,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Computes the additive order of each element in :math:`x`.
 
         Returns:
-            An integer array of the additive order of each element in :math:`x`. The return value is a single integer if the
-            input array :math:`x` is a scalar.
+            An integer array of the additive order of each element in :math:`x`. The return value is a single integer
+            if the input array :math:`x` is a scalar.
 
         Notes:
             The additive order :math:`a` of :math:`x` in :math:`\mathrm{GF}(p^m)` is the smallest integer :math:`a`
@@ -759,20 +788,21 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Computes the multiplicative order :math:`\textrm{ord}(x)` of each element in :math:`x`.
 
         Returns:
-            An integer array of the multiplicative order of each element in :math:`x`. The return value is a single integer if the
-            input array :math:`x` is a scalar.
+            An integer array of the multiplicative order of each element in :math:`x`. The return value is a single
+            integer if the input array :math:`x` is a scalar.
 
         Raises:
-            ArithmeticError: If zero is provided as an input. The multiplicative order of 0 is not defined. There is no power of 0
-                that ever results in 1.
+            ArithmeticError: If zero is provided as an input. The multiplicative order of 0 is not defined. There is
+                no power of 0 that ever results in 1.
 
         Notes:
-            The multiplicative order :math:`\textrm{ord}(x) = a` of :math:`x` in :math:`\mathrm{GF}(p^m)` is the smallest power :math:`a`
-            such that :math:`x^a = 1`. If :math:`a = p^m - 1`, :math:`a` is said to be a generator of the multiplicative group
-            :math:`\mathrm{GF}(p^m)^\times`.
+            The multiplicative order :math:`\textrm{ord}(x) = a` of :math:`x` in :math:`\mathrm{GF}(p^m)` is the
+            smallest power :math:`a` such that :math:`x^a = 1`. If :math:`a = p^m - 1`, :math:`a` is said to be a
+            generator of the multiplicative group :math:`\mathrm{GF}(p^m)^\times`.
 
-            Note, :func:`multiplicative_order` should not be confused with :obj:`order`. The former returns the multiplicative order of
-            :obj:`~galois.FieldArray` elements. The latter is a property of the field, namely the finite field's order or size.
+            Note, :func:`multiplicative_order` should not be confused with :obj:`order`. The former returns the
+            multiplicative order of :obj:`~galois.FieldArray` elements. The latter is a property of the field, namely
+            the finite field's order or size.
 
         Examples:
             Compute the multiplicative order of each non-zero element of :math:`\mathrm{GF}(3^2)`.
@@ -784,8 +814,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 order = x.multiplicative_order(); order
                 x ** order
 
-            The elements with :math:`\textrm{ord}(x) = 8` are multiplicative generators of :math:`\mathrm{GF}(3^2)^\times`,
-            which are also called primitive elements.
+            The elements with :math:`\textrm{ord}(x) = 8` are multiplicative generators of
+            :math:`\mathrm{GF}(3^2)^\times`, which are also called primitive elements.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -830,8 +860,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *square* if there exists a :math:`y` such that
             :math:`y^2 = x` in the field.
 
-            In fields with characteristic 2, every element is a square (with two identical square roots). In fields with
-            characteristic greater than 2, exactly half of the nonzero elements are squares (with two unique square roots).
+            In fields with characteristic 2, every element is a square (with two identical square roots). In fields
+            with characteristic greater than 2, exactly half of the nonzero elements are squares (with two unique
+            square roots).
 
         References:
             - Section 3.5.1 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
@@ -874,14 +905,16 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def vector(self, dtype: DTypeLike | None = None) -> FieldArray:
         r"""
-        Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)`.
+        Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield
+        :math:`\mathrm{GF}(p)`.
 
-        This function is the inverse operation of the :func:`Vector` constructor. For an array with shape `(n1, n2)`, the output shape
-        is `(n1, n2, m)`. By convention, the vectors are ordered from degree :math:`m-1` to degree 0.
+        This function is the inverse operation of the :func:`Vector` constructor. For an array with shape `(n1, n2)`,
+        the output shape is `(n1, n2, m)`. By convention, the vectors are ordered from degree :math:`m-1` to degree 0.
 
         Arguments:
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest unsigned
-                data type for this :obj:`~galois.FieldArray` subclass (the first element in :obj:`~galois.FieldArray.dtypes`).
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.FieldArray` subclass (the first element in
+                :obj:`~galois.FieldArray.dtypes`).
 
         Returns:
             An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`.
@@ -904,7 +937,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         y = subfield.Zeros(shape, dtype=dtype)
 
         if self.dtype == np.object_:
-            # Need a separate "if" statement because divmod() does not work with dtype=object input and integer dtype outputs
+            # Need a separate "if" statement because divmod() does not work with dtype=object input and
+            # integer dtype outputs
             for i in range(degree - 1, -1, -1):
                 q, r = x // order, x % order
                 y[..., i] = r
@@ -1007,8 +1041,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             - The upper triangular matrix.
 
         Notes:
-            The PLU decomposition of :math:`\mathbf{A}` is defined as :math:`\mathbf{A} = \mathbf{P} \mathbf{L} \mathbf{U}`.
-            This is equivalent to :math:`\mathbf{P}^T \mathbf{A} = \mathbf{L} \mathbf{U}`.
+            The PLU decomposition of :math:`\mathbf{A}` is defined as
+            :math:`\mathbf{A} = \mathbf{P} \mathbf{L} \mathbf{U}`. This is equivalent to
+            :math:`\mathbf{P}^T \mathbf{A} = \mathbf{L} \mathbf{U}`.
 
         Examples:
             .. ipython:: python
@@ -1036,15 +1071,17 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             The number of rows of the basis matrix is the dimension of the row space.
 
         Notes:
-            Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *row space* of :math:`\mathbf{A}`
-            is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^n\}` defined by all linear combinations of the rows
-            of :math:`\mathbf{A}`. The row space has at most dimension :math:`\textrm{min}(m, n)`.
+            Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *row space* of
+            :math:`\mathbf{A}` is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^n\}` defined by all linear
+            combinations of the rows of :math:`\mathbf{A}`. The row space has at most dimension
+            :math:`\textrm{min}(m, n)`.
 
             The row space has properties :math:`\mathcal{R}(\mathbf{A}) = \mathcal{C}(\mathbf{A}^T)` and
             :math:`\textrm{dim}(\mathcal{R}(\mathbf{A})) + \textrm{dim}(\mathcal{LN}(\mathbf{A})) = m`.
 
         Examples:
-            The :func:`row_space` method defines basis vectors (its rows) that span the row space of :math:`\mathbf{A}`.
+            The :func:`row_space` method defines basis vectors (its rows) that span the row space of
+            :math:`\mathbf{A}`.
 
             .. ipython:: python
 
@@ -1075,19 +1112,21 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Computes the column space of the matrix :math:`\mathbf{A}`.
 
         Returns:
-            The column space basis matrix. The rows of the basis matrix are the basis vectors that span the column space.
-            The number of rows of the basis matrix is the dimension of the column space.
+            The column space basis matrix. The rows of the basis matrix are the basis vectors that span the column
+            space. The number of rows of the basis matrix is the dimension of the column space.
 
         Notes:
-            Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *column space* of :math:`\mathbf{A}`
-            is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^m\}` defined by all linear combinations of the columns
-            of :math:`\mathbf{A}`. The column space has at most dimension :math:`\textrm{min}(m, n)`.
+            Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *column space* of
+            :math:`\mathbf{A}` is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^m\}` defined by all linear
+            combinations of the columns of :math:`\mathbf{A}`. The column space has at most dimension
+            :math:`\textrm{min}(m, n)`.
 
             The column space has properties :math:`\mathcal{C}(\mathbf{A}) = \mathcal{R}(\mathbf{A}^T)`  and
             :math:`\textrm{dim}(\mathcal{C}(\mathbf{A})) + \textrm{dim}(\mathcal{N}(\mathbf{A})) = n`.
 
         Examples:
-            The :func:`column_space` method defines basis vectors (its rows) that span the column space of :math:`\mathbf{A}`.
+            The :func:`column_space` method defines basis vectors (its rows) that span the column space of
+            :math:`\mathbf{A}`.
 
             .. ipython:: python
 
@@ -1114,19 +1153,20 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Computes the left null space of the matrix :math:`\mathbf{A}`.
 
         Returns:
-            The left null space basis matrix. The rows of the basis matrix are the basis vectors that span the left null space.
-            The number of rows of the basis matrix is the dimension of the left null space.
+            The left null space basis matrix. The rows of the basis matrix are the basis vectors that span the
+            left null space. The number of rows of the basis matrix is the dimension of the left null space.
 
         Notes:
-            Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *left null space* of :math:`\mathbf{A}`
-            is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^m\}` that annihilates the rows of :math:`\mathbf{A}`, i.e.
-            :math:`\mathbf{x}\mathbf{A} = \mathbf{0}`.
+            Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *left null space*
+            of :math:`\mathbf{A}` is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^m\}` that annihilates the
+            rows of :math:`\mathbf{A}`, i.e. :math:`\mathbf{x}\mathbf{A} = \mathbf{0}`.
 
             The left null space has properties :math:`\mathcal{LN}(\mathbf{A}) = \mathcal{N}(\mathbf{A}^T)` and
             :math:`\textrm{dim}(\mathcal{R}(\mathbf{A})) + \textrm{dim}(\mathcal{LN}(\mathbf{A})) = m`.
 
         Examples:
-            The :func:`left_null_space` method defines basis vectors (its rows) that span the left null space of :math:`\mathbf{A}`.
+            The :func:`left_null_space` method defines basis vectors (its rows) that span the left null space of
+            :math:`\mathbf{A}`.
 
             .. ipython:: python
 
@@ -1177,15 +1217,16 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             The number of rows of the basis matrix is the dimension of the null space.
 
         Notes:
-            Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *null space* of :math:`\mathbf{A}`
-            is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^n\}` that annihilates the columns of :math:`\mathbf{A}`, i.e.
-            :math:`\mathbf{A}\mathbf{x} = \mathbf{0}`.
+            Given an :math:`m \times n` matrix :math:`\mathbf{A}` over :math:`\mathrm{GF}(q)`, the *null space* of
+            :math:`\mathbf{A}` is the vector space :math:`\{\mathbf{x} \in \mathrm{GF}(q)^n\}` that annihilates the
+            columns of :math:`\mathbf{A}`, i.e. :math:`\mathbf{A}\mathbf{x} = \mathbf{0}`.
 
             The null space has properties :math:`\mathcal{N}(\mathbf{A}) = \mathcal{LN}(\mathbf{A}^T)` and
             :math:`\textrm{dim}(\mathcal{C}(\mathbf{A})) + \textrm{dim}(\mathcal{N}(\mathbf{A})) = n`.
 
         Examples:
-            The :func:`null_space` method defines basis vectors (its rows) that span the null space of :math:`\mathbf{A}`.
+            The :func:`null_space` method defines basis vectors (its rows) that span the null space of
+            :math:`\mathbf{A}`.
 
             .. ipython:: python
 
@@ -1221,11 +1262,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             The field trace of :math:`x` in the prime subfield :math:`\mathrm{GF}(p)`.
 
         Notes:
-            The `self` array :math:`x` is over the extension field :math:`L = \mathrm{GF}(p^m)`. The field trace of :math:`x` is
-            over the subfield :math:`K = \mathrm{GF}(p)`. In other words, :math:`\mathrm{Tr}_{L / K}(x) : L \rightarrow K`.
+            The `self` array :math:`x` is over the extension field :math:`L = \mathrm{GF}(p^m)`. The field trace of
+            :math:`x` is over the subfield :math:`K = \mathrm{GF}(p)`. In other words,
+            :math:`\mathrm{Tr}_{L / K}(x) : L \rightarrow K`.
 
-            For finite fields, since :math:`L` is a Galois extension of :math:`K`, the field trace of :math:`x` is defined as a sum
-            of the Galois conjugates of :math:`x`.
+            For finite fields, since :math:`L` is a Galois extension of :math:`K`, the field trace of :math:`x` is
+            defined as a sum of the Galois conjugates of :math:`x`.
 
             .. math::
                 \mathrm{Tr}_{L / K}(x) = \sum_{i=0}^{m-1} x^{p^i}
@@ -1266,11 +1308,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             The field norm of :math:`x` in the prime subfield :math:`\mathrm{GF}(p)`.
 
         Notes:
-            The `self` array :math:`x` is over the extension field :math:`L = \mathrm{GF}(p^m)`. The field norm of :math:`x` is
-            over the subfield :math:`K = \mathrm{GF}(p)`. In other words, :math:`\mathrm{N}_{L / K}(x) : L \rightarrow K`.
+            The `self` array :math:`x` is over the extension field :math:`L = \mathrm{GF}(p^m)`. The field norm of
+            :math:`x` is over the subfield :math:`K = \mathrm{GF}(p)`. In other words,
+            :math:`\mathrm{N}_{L / K}(x) : L \rightarrow K`.
 
-            For finite fields, since :math:`L` is a Galois extension of :math:`K`, the field norm of :math:`x` is defined as a product
-            of the Galois conjugates of :math:`x`.
+            For finite fields, since :math:`L` is a Galois extension of :math:`K`, the field norm of :math:`x` is
+            defined as a product of the Galois conjugates of :math:`x`.
 
             .. math::
                 \mathrm{N}_{L / K}(x) = \prod_{i=0}^{m-1} x^{p^i} = x^{(p^m - 1) / (p - 1)}
@@ -1303,27 +1346,29 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def characteristic_poly(self) -> Poly:
         r"""
-        Computes the characteristic polynomial of a finite field element :math:`a` or a square matrix :math:`\mathbf{A}`.
+        Computes the characteristic polynomial of a finite field element :math:`a` or a square matrix
+        :math:`\mathbf{A}`.
 
         Important:
-            This function may only be invoked on a single finite field element (scalar 0-D array) or a square :math:`n \times n`
-            matrix (2-D array).
+            This function may only be invoked on a single finite field element (scalar 0-D array) or a square
+            :math:`n \times n` matrix (2-D array).
 
         Returns:
-            For scalar inputs, the degree-:math:`m` characteristic polynomial :math:`c_a(x)` of :math:`a` over :math:`\mathrm{GF}(p)`.
-            For square :math:`n \times n` matrix inputs, the degree-:math:`n` characteristic polynomial :math:`c_A(x)` of
-            :math:`\mathbf{A}` over :math:`\mathrm{GF}(p^m)`.
+            For scalar inputs, the degree-:math:`m` characteristic polynomial :math:`c_a(x)` of :math:`a` over
+            :math:`\mathrm{GF}(p)`. For square :math:`n \times n` matrix inputs, the degree-:math:`n` characteristic
+            polynomial :math:`c_A(x)` of :math:`\mathbf{A}` over :math:`\mathrm{GF}(p^m)`.
 
         Notes:
-            An element :math:`a` of :math:`\mathrm{GF}(p^m)` has characteristic polynomial :math:`c_a(x)` over :math:`\mathrm{GF}(p)`.
-            The characteristic polynomial when evaluated in :math:`\mathrm{GF}(p^m)` annihilates :math:`a`, that is :math:`c_a(a) = 0`.
-            In prime fields :math:`\mathrm{GF}(p)`, the characteristic polynomial of :math:`a` is simply :math:`c_a(x) = x - a`.
+            An element :math:`a` of :math:`\mathrm{GF}(p^m)` has characteristic polynomial :math:`c_a(x)` over
+            :math:`\mathrm{GF}(p)`. The characteristic polynomial when evaluated in :math:`\mathrm{GF}(p^m)`
+            annihilates :math:`a`, that is :math:`c_a(a) = 0`. In prime fields :math:`\mathrm{GF}(p)`, the
+            characteristic polynomial of :math:`a` is simply :math:`c_a(x) = x - a`.
 
             An :math:`n \times n` matrix :math:`\mathbf{A}` has characteristic polynomial
-            :math:`c_A(x) = \textrm{det}(x\mathbf{I} - \mathbf{A})` over :math:`\mathrm{GF}(p^m)`. The constant coefficient of the
-            characteristic polynomial is :math:`\textrm{det}(-\mathbf{A})`. The :math:`x^{n-1}` coefficient of the characteristic
-            polynomial is :math:`-\textrm{Tr}(\mathbf{A})`. The characteristic polynomial annihilates :math:`\mathbf{A}`, that is
-            :math:`c_A(\mathbf{A}) = \mathbf{0}`.
+            :math:`c_A(x) = \textrm{det}(x\mathbf{I} - \mathbf{A})` over :math:`\mathrm{GF}(p^m)`. The constant
+            coefficient of the characteristic polynomial is :math:`\textrm{det}(-\mathbf{A})`. The :math:`x^{n-1}`
+            coefficient of the characteristic polynomial is :math:`-\textrm{Tr}(\mathbf{A})`. The characteristic
+            polynomial annihilates :math:`\mathbf{A}`, that is :math:`c_A(\mathbf{A}) = \mathbf{0}`.
 
         References:
             - https://en.wikipedia.org/wiki/Characteristic_polynomial
@@ -1373,10 +1418,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             For scalar inputs, the minimal polynomial :math:`m_a(x)` of :math:`a` over :math:`\mathrm{GF}(p)`.
 
         Notes:
-            An element :math:`a` of :math:`\mathrm{GF}(p^m)` has minimal polynomial :math:`m_a(x)` over :math:`\mathrm{GF}(p)`.
-            The minimal polynomial when evaluated in :math:`\mathrm{GF}(p^m)` annihilates :math:`a`, that is :math:`m_a(a) = 0`.
-            The minimal polynomial always divides the characteristic polynomial. In prime fields :math:`\mathrm{GF}(p)`, the
-            minimal polynomial of :math:`a` is simply :math:`m_a(x) = x - a`.
+            An element :math:`a` of :math:`\mathrm{GF}(p^m)` has minimal polynomial :math:`m_a(x)` over
+            :math:`\mathrm{GF}(p)`. The minimal polynomial when evaluated in :math:`\mathrm{GF}(p^m)` annihilates
+            :math:`a`, that is :math:`m_a(a) = 0`. The minimal polynomial always divides the characteristic polynomial.
+            In prime fields :math:`\mathrm{GF}(p)`, the minimal polynomial of :math:`a` is simply
+            :math:`m_a(x) = x - a`.
 
         References:
             - https://en.wikipedia.org/wiki/Minimal_polynomial_(field_theory)
@@ -1410,21 +1456,21 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         .. danger::
 
-            If the Galois field is configured to use lookup tables, `ufunc_mode == "jit-lookup"`, and this function is invoked
-            with a base different from :obj:`~FieldArray.primitive_element`, then explicit calculation will be used (which is
-            slower than lookup tables).
+            If the Galois field is configured to use lookup tables, `ufunc_mode == "jit-lookup"`, and this function
+            is invoked with a base different from :obj:`~FieldArray.primitive_element`, then explicit calculation will
+            be used (which is slower than lookup tables).
 
         Arguments:
-            base: A primitive element(s) :math:`\beta` of the finite field that is the base of the logarithm. The default is `None`
-                which uses :obj:`~FieldArray.primitive_element`.
+            base: A primitive element(s) :math:`\beta` of the finite field that is the base of the logarithm.
+                The default is `None` which uses :obj:`~FieldArray.primitive_element`.
 
         Returns:
             An integer array :math:`i` of powers of :math:`\beta` such that :math:`\beta^i = x`. The return array
             shape obeys NumPy broadcasting rules.
 
         Examples:
-            Compute the logarithm of :math:`x` with default base :math:`\alpha`, which is the specified primitive element
-            of the field.
+            Compute the logarithm of :math:`x` with default base :math:`\alpha`, which is the specified primitive
+            element of the field.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -1518,8 +1564,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return self._display("str", separator=" ")
 
     def _display(self, mode: Literal["repr", "str"], separator=", ") -> str:
-        # View the array as an ndarray so that the scalar -> 0-D array conversion in __array_finalize__() for Galois field
-        # arrays isn't continually invoked. This improves performance slightly.
+        # View the array as an ndarray so that the scalar -> 0-D array conversion in __array_finalize__() for
+        # Galois field arrays isn't continually invoked. This improves performance slightly.
         x = self.view(np.ndarray)
         field = type(self)
 
@@ -1534,8 +1580,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         string = np.array2string(x, separator=separator, prefix=prefix, suffix=suffix, formatter=formatter)
 
         if formatter != {}:
-            # We are using special print methods and must perform element alignment ourselves. We will print each element
-            # a second time use the max width of any element observed on the first array2string() call.
+            # We are using special print methods and must perform element alignment ourselves. We will print each
+            # element a second time use the max width of any element observed on the first array2string() call.
             field._element_fixed_width = field._element_fixed_width_counter
 
             string = np.array2string(x, separator=separator, prefix=prefix, suffix=suffix, formatter=formatter)
@@ -1670,7 +1716,9 @@ def _characteristic_poly_matrix(A: FieldArray) -> Poly:
     Computes the characteristic polynomial of the Galois field matrix `A`.
     """
     if not A.shape[0] == A.shape[1]:
-        raise ValueError(f"The 2-D array must be square to compute its characteristic polynomial, not have shape {A.shape}.")
+        raise ValueError(
+            f"The 2-D array must be square to compute its characteristic polynomial, not have shape {A.shape}."
+        )
     field = type(A)
 
     # Compute P = xI - A

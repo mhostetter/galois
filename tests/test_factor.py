@@ -150,7 +150,10 @@ def test_factors_large():
 
 def test_factors_extremely_large():
     assert galois.factors(1000000000000000035000061) == ([1000000000000000035000061], [1])
-    assert galois.factors(1000000000000000035000061 - 1) == ([2, 3, 5, 17, 19, 112850813, 457237177399], [2, 1, 1, 1, 1, 1, 1])
+    assert galois.factors(1000000000000000035000061 - 1) == (
+        [2, 3, 5, 17, 19, 112850813, 457237177399],
+        [2, 1, 1, 1, 1, 1, 1],
+    )
 
 
 def test_perfect_power():
