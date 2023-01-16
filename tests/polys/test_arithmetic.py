@@ -60,7 +60,12 @@ def test_right_multiply(poly_multiply):
 
 
 def test_scalar_multiply(poly_scalar_multiply):
-    GF, X, Y, Z = poly_scalar_multiply["GF"], poly_scalar_multiply["X"], poly_scalar_multiply["Y"], poly_scalar_multiply["Z"]
+    GF, X, Y, Z = (
+        poly_scalar_multiply["GF"],
+        poly_scalar_multiply["X"],
+        poly_scalar_multiply["Y"],
+        poly_scalar_multiply["Z"],
+    )
     for x, y, z_truth in zip(X, Y, Z):
         z = x * y
         assert z == z_truth
@@ -93,7 +98,8 @@ def test_right_divide(poly_divmod):
 
 
 def test_mod(poly_divmod):
-    # NOTE: Test modulo separately because there's a separate method to compute it without the quotient for space spacings
+    # NOTE: Test modulo separately because there's a separate method to compute it without the quotient for
+    #       space spacings.
     GF, X, Y, R = poly_divmod["GF"], poly_divmod["X"], poly_divmod["Y"], poly_divmod["R"]
     for x, y, r_truth in zip(X, Y, R):
         r = x % y
@@ -266,7 +272,12 @@ def test_evaluate_vector(poly_evaluate):
 
 
 def test_evaluate_matrix(poly_evaluate_matrix):
-    GF, X, Y, Z = poly_evaluate_matrix["GF"], poly_evaluate_matrix["X"], poly_evaluate_matrix["Y"], poly_evaluate_matrix["Z"]
+    GF, X, Y, Z = (
+        poly_evaluate_matrix["GF"],
+        poly_evaluate_matrix["X"],
+        poly_evaluate_matrix["Y"],
+        poly_evaluate_matrix["Z"],
+    )
     for i in range(len(X)):  # pylint: disable=consider-using-enumerate
         x = X[i]  # Polynomial
         y = Y[i]  # GF square matrix

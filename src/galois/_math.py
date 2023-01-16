@@ -1,5 +1,6 @@
 """
-A module containing math and arithmetic routines on integers. Some of these functions are polymorphic and wrapped in `_polymorphic.py`.
+A module containing math and arithmetic routines on integers. Some of these functions are polymorphic and wrapped in
+`_polymorphic.py`.
 """
 from __future__ import annotations
 

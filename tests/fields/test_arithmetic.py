@@ -62,7 +62,12 @@ def test_multiply(field_multiply):
 
 
 def test_scalar_multiply(field_scalar_multiply):
-    GF, X, Y, Z = field_scalar_multiply["GF"], field_scalar_multiply["X"], field_scalar_multiply["Y"], field_scalar_multiply["Z"]
+    GF, X, Y, Z = (
+        field_scalar_multiply["GF"],
+        field_scalar_multiply["X"],
+        field_scalar_multiply["Y"],
+        field_scalar_multiply["Z"],
+    )
     dtype = random.choice(GF.dtypes)
     x = X.astype(dtype)
     y = Y  # Don't convert this, it's not a field element

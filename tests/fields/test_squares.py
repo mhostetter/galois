@@ -164,7 +164,9 @@ def test_binary_extension_field_2():
     assert type(non_squares) is GF
 
     b = x.is_square()
-    assert np.array_equal(b, [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True])
+    assert np.array_equal(
+        b, [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
+    )
     assert isinstance(b, np.ndarray)
 
 
@@ -182,7 +184,9 @@ def test_binary_extension_field_3():
     assert type(non_squares) is GF
 
     b = x.is_square()
-    assert np.array_equal(b, [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True])
+    assert np.array_equal(
+        b, [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
+    )
     assert isinstance(b, np.ndarray)
 
 

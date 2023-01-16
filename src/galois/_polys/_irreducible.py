@@ -36,14 +36,15 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
         Poly.is_irreducible, primitive_poly, conway_poly
 
     Notes:
-        If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
-        then :math:`a \cdot f(x)` is also irreducible.
+        If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and
+        :math:`a \in \mathrm{GF}(q) \backslash \{0\}`, then :math:`a \cdot f(x)` is also irreducible.
 
-        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
+        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of
+        :math:`\mathrm{GF}(q)`.
 
     Examples:
-        Find the lexicographically minimal and maximal monic irreducible polynomial. Also find a random monic irreducible
-        polynomial.
+        Find the lexicographically minimal and maximal monic irreducible polynomial. Also find a random monic
+        irreducible polynomial.
 
         .. ipython:: python
 
@@ -69,7 +70,9 @@ def irreducible_poly(order: int, degree: int, method: Literal["min", "max", "ran
     if not is_prime_power(order):
         raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
     if not degree >= 1:
-        raise ValueError(f"Argument 'degree' must be at least 1, not {degree}. There are no irreducible polynomials with degree 0.")
+        raise ValueError(
+            f"Argument 'degree' must be at least 1, not {degree}. There are no irreducible polynomials with degree 0."
+        )
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
@@ -91,7 +94,8 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
     Arguments:
         order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
         degree: The degree :math:`m` of the desired irreducible polynomial.
-        reverse: Indicates to return the irreducible polynomials from lexicographically maximal to minimal. The default is `False`.
+        reverse: Indicates to return the irreducible polynomials from lexicographically maximal to minimal.
+            The default is `False`.
 
     Returns:
         An iterator over all degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(q)`.
@@ -100,10 +104,11 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
         Poly.is_irreducible, primitive_polys
 
     Notes:
-        If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
-        then :math:`a \cdot f(x)` is also irreducible.
+        If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and
+        :math:`a \in \mathrm{GF}(q) \backslash \{0\}`, then :math:`a \cdot f(x)` is also irreducible.
 
-        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of :math:`\mathrm{GF}(q)`.
+        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of
+        :math:`\mathrm{GF}(q)`.
 
     Examples:
         Find all monic irreducible polynomials over :math:`\mathrm{GF}(3)` with degree 4. You may also use `tuple()` on
@@ -113,8 +118,8 @@ def irreducible_polys(order: int, degree: int, reverse: bool = False) -> Iterato
 
             list(galois.irreducible_polys(3, 4))
 
-        Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
-        have been found after the `break` condition is never incurred.
+        Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the
+        polynomials that would have been found after the `break` condition is never incurred.
 
         .. ipython:: python
 

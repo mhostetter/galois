@@ -72,7 +72,9 @@ def lcm(*args: Poly) -> Poly:
     lcm_ = Poly.One(field)
     for arg in args:
         if not arg.field == field:
-            raise ValueError(f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}.")
+            raise ValueError(
+                f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}."
+            )
         lcm_ = (lcm_ * arg) // gcd(lcm_, arg)
 
     # Make the LCM monic
@@ -90,7 +92,9 @@ def prod(*args: Poly) -> Poly:
     prod_ = Poly.One(field)
     for arg in args:
         if not arg.field == field:
-            raise ValueError(f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}.")
+            raise ValueError(
+                f"All polynomial arguments must be over the same field, not {[arg.field for arg in args]}."
+            )
         prod_ *= arg
 
     return prod_

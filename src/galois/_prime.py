@@ -431,12 +431,12 @@ def fermat_primality_test(n: int, a: int | None = None, rounds: int = 1) -> bool
         Fermat's theorem says that for prime :math:`p` and :math:`1 \le a \le p-1`, the congruence
         :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)` holds. Fermat's primality test of :math:`n` computes
         :math:`a^{n-1}\ \textrm{mod}\ n` for some :math:`1 \le a \le n-1`. If :math:`a` is such that
-        :math:`a^{p-1} \not\equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be a *Fermat witness* to the compositeness
-        of :math:`n`. If :math:`n` is composite and :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be
-        a *Fermat liar* to the primality of :math:`n`.
+        :math:`a^{p-1} \not\equiv 1\ (\textrm{mod}\ p)`, then :math:`a` is said to be a *Fermat witness* to the
+        compositeness of :math:`n`. If :math:`n` is composite and :math:`a^{p-1} \equiv 1\ (\textrm{mod}\ p)`, then
+        :math:`a` is said to be a *Fermat liar* to the primality of :math:`n`.
 
-        Since :math:`a = \{1, n-1\}` are Fermat liars for all composite :math:`n`, it is common to reduce the range of possible
-        :math:`a` to :math:`2 \le a \le n - 2`.
+        Since :math:`a = \{1, n-1\}` are Fermat liars for all composite :math:`n`, it is common to reduce the range of
+        possible :math:`a` to :math:`2 \le a \le n - 2`.
 
     References:
         - Section 4.2.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
@@ -526,16 +526,17 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
         :math:`0 \le j \le s - 1`.
 
         In the Miller-Rabin primality test, if :math:`a^r \not\equiv 1\ (\textrm{mod}\ n)` and
-        :math:`a^{2^j r} \not\equiv -1\ (\textrm{mod}\ n)` for all :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is
-        called a *strong witness* to the compositeness of :math:`n`. If not, namely :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or
-        :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for any :math:`j` in :math:`0 \le j \le s - 1`, then :math:`a` is
-        called a *strong liar* to the primality of :math:`n` and :math:`n` is called a *strong pseudoprime to the base a*.
+        :math:`a^{2^j r} \not\equiv -1\ (\textrm{mod}\ n)` for all :math:`j` in :math:`0 \le j \le s - 1`, then
+        :math:`a` is called a *strong witness* to the compositeness of :math:`n`. If not, namely
+        :math:`a^r \equiv 1\ (\textrm{mod}\ n)` or :math:`a^{2^j r} \equiv -1\ (\textrm{mod}\ n)` for any :math:`j`
+        in :math:`0 \le j \le s - 1`, then :math:`a` is called a *strong liar* to the primality of :math:`n` and
+        :math:`n` is called a *strong pseudoprime to the base a*.
 
-        Since :math:`a = \{1, n-1\}` are strong liars for all composite :math:`n`, it is common to reduce the range of possible
-        :math:`a` to :math:`2 \le a \le n - 2`.
+        Since :math:`a = \{1, n-1\}` are strong liars for all composite :math:`n`, it is common to reduce the range
+        of possible :math:`a` to :math:`2 \le a \le n - 2`.
 
-        For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less than
-        :math:`(\frac{1}{4})^t`, where :math:`t` is the number of rounds, and is often much lower.
+        For composite odd :math:`n`, the probability that the Miller-Rabin test declares it a probable prime is less
+        than :math:`(\frac{1}{4})^t`, where :math:`t` is the number of rounds, and is often much lower.
 
     References:
         - Section 4.2.3 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
@@ -550,8 +551,8 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
             [galois.is_prime(p) for p in primes]
             [galois.miller_rabin_primality_test(p) for p in primes]
 
-        However, a composite :math:`n` may have strong liars. 91 has :math:`\{9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82\}`
-        as strong liars.
+        However, a composite :math:`n` may have strong liars. 91 has
+        :math:`\{9,10,12,16,17,22,29,38,53,62,69,74,75,79,81,82\}` as strong liars.
 
         .. ipython:: python
 
@@ -628,8 +629,8 @@ def legendre_symbol(a: int, p: int) -> int:
 
     Notes:
         The Legendre symbol is useful for determining if :math:`a` is a quadratic residue modulo :math:`p`, namely
-        :math:`a \in Q_p`. A quadratic residue :math:`a` modulo :math:`p` satisfies :math:`x^2 \equiv a\ (\textrm{mod}\ p)`
-        for some :math:`x`.
+        :math:`a \in Q_p`. A quadratic residue :math:`a` modulo :math:`p` satisfies
+        :math:`x^2 \equiv a\ (\textrm{mod}\ p)` for some :math:`x`.
 
         .. math::
             \bigg(\frac{a}{p}\bigg) =
@@ -690,9 +691,9 @@ def jacobi_symbol(a: int, n: int) -> int:
 
     Examples:
         The quadratic residues modulo 9 are :math:`Q_9 = \{1, 4, 7\}` and these all satisfy :math:`(\frac{a}{9}) = 1`.
-        The quadratic non-residues modulo 9 are :math:`\overline{Q}_9 = \{2, 3, 5, 6, 8\}`, but notice :math:`\{2, 5, 8\}`
-        also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime to 9 satisfies
-        :math:`(\frac{a}{9}) = 0`.
+        The quadratic non-residues modulo 9 are :math:`\overline{Q}_9 = \{2, 3, 5, 6, 8\}`, but notice
+        :math:`\{2, 5, 8\}` also satisfy :math:`(\frac{a}{9}) = 1`. The set of integers :math:`\{3, 6\}` not coprime
+        to 9 satisfies :math:`(\frac{a}{9}) = 0`.
 
         .. ipython:: python
 
@@ -1073,12 +1074,12 @@ def pollard_p1(n: int, B: int, B2: int | None = None) -> int:
         factors, pollard_rho
 
     Notes:
-        For a given odd composite :math:`n` with a prime factor :math:`p`, Pollard's :math:`p-1` algorithm can discover a
-        non-trivial factor of :math:`n` if :math:`p-1` is :math:`B`-smooth. Specifically, the prime factorization must satisfy
-        :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}` with each :math:`p_i \le B`.
+        For a given odd composite :math:`n` with a prime factor :math:`p`, Pollard's :math:`p-1` algorithm can discover
+        a non-trivial factor of :math:`n` if :math:`p-1` is :math:`B`-smooth. Specifically, the prime factorization
+        must satisfy :math:`p-1 = p_1^{e_1} \dots p_k^{e_k}` with each :math:`p_i \le B`.
 
-        A extension of Pollard's :math:`p-1` algorithm allows a prime factor :math:`p` to be :math:`B`-smooth with the exception
-        of one prime factor :math:`B < p_{k+1} \le B_2`. In this case, the prime factorization is
+        A extension of Pollard's :math:`p-1` algorithm allows a prime factor :math:`p` to be :math:`B`-smooth with the
+        exception of one prime factor :math:`B < p_{k+1} \le B_2`. In this case, the prime factorization is
         :math:`p-1 = p_1^{e_1} \dots p_k^{e_k} p_{k+1}`. Often :math:`B_2` is chosen such that :math:`B_2 \gg B`.
 
     References:
@@ -1199,10 +1200,11 @@ def pollard_rho(n: int, c: int = 1) -> int:
         factors, pollard_p1
 
     Notes:
-        Pollard's :math:`\rho` algorithm seeks to find a non-trivial factor of :math:`n` by finding a cycle in a sequence
-        of integers :math:`x_0, x_1, \dots` defined by :math:`x_i = f(x_{i-1}) = x_{i-1}^2 + 1\ \textrm{mod}\ p` where :math:`p`
-        is an unknown small prime factor of :math:`n`. This happens when :math:`x_{m} \equiv x_{2m}\ (\textrm{mod}\ p)`.
-        Because :math:`p` is unknown, this is accomplished by computing the sequence modulo :math:`n` and looking for
+        Pollard's :math:`\rho` algorithm seeks to find a non-trivial factor of :math:`n` by finding a cycle in a
+        sequence of integers :math:`x_0, x_1, \dots` defined by
+        :math:`x_i = f(x_{i-1}) = x_{i-1}^2 + 1\ \textrm{mod}\ p` where :math:`p` is an unknown small prime factor
+        of :math:`n`. This happens when :math:`x_{m} \equiv x_{2m}\ (\textrm{mod}\ p)`. Because :math:`p` is unknown,
+        this is accomplished by computing the sequence modulo :math:`n` and looking for
         :math:`\textrm{gcd}(x_m - x_{2m}, n) > 1`.
 
     References:
@@ -1245,7 +1247,9 @@ def pollard_rho(n: int, c: int = 1) -> int:
         d = math.gcd(a - b, n)
 
     if d == n:
-        raise RuntimeError(f"A non-trivial factor of {n} could not be found using the Pollard Rho algorithm with f(x) = x^2 + {c}.")
+        raise RuntimeError(
+            f"A non-trivial factor of {n} could not be found using the Pollard Rho algorithm with f(x) = x^2 + {c}."
+        )
 
     return d
 
@@ -1391,11 +1395,13 @@ def is_prime(n: int) -> bool:
 
     Notes:
         This algorithm will first run Fermat's primality test to check :math:`n` for compositeness, see
-        :func:`~galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly return.
+        :func:`~galois.fermat_primality_test`. If it determines :math:`n` is composite, the function will quickly
+        return.
 
-        If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the algorithm
-        will run 10 rounds of Miller-Rabin's primality test, see :func:`~galois.miller_rabin_primality_test`. With this many rounds,
-        a result of `True` should have high probability of :math:`n` being a true prime, not a pseudoprime.
+        If Fermat's primality test returns `True`, then :math:`n` could be prime or pseudoprime. If so, then the
+        algorithm will run 10 rounds of Miller-Rabin's primality test, see :func:`~galois.miller_rabin_primality_test`.
+        With this many rounds, a result of `True` should have high probability of :math:`n` being a true prime,
+        not a pseudoprime.
 
     Examples:
         .. ipython:: python
@@ -1614,7 +1620,8 @@ def is_smooth(n: int, B: int) -> bool:
     Notes:
         An integer :math:`n` with prime factorization :math:`n = p_1^{e_1} \dots p_k^{e_k}` is :math:`B`-smooth
         if :math:`p_k \le B`. The 2-smooth numbers are the powers of 2. The 5-smooth numbers
-        are known as *regular numbers*. The 7-smooth numbers are known as *humble numbers* or *highly composite numbers*.
+        are known as *regular numbers*. The 7-smooth numbers are known as *humble numbers* or *highly composite
+        numbers*.
 
     Examples:
         .. ipython:: python

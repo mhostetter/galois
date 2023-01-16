@@ -99,7 +99,9 @@ def test_is_primitive_element_exceptions():
     with pytest.raises(TypeError):
         galois.is_primitive_element(e, f.coeffs)
     with pytest.raises(ValueError):
-        galois.is_primitive_element(galois.Poly([1, 0, 1, 1]), galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1], field=galois.GF(3)))
+        galois.is_primitive_element(
+            galois.Poly([1, 0, 1, 1]), galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1], field=galois.GF(3))
+        )
     with pytest.raises(ValueError):
         galois.is_primitive_element(galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1]), galois.Poly([1, 0, 0, 0, 1, 1, 1, 0, 1]))
 

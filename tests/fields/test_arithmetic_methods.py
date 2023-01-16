@@ -37,7 +37,11 @@ def test_multiplicative_order(field_multiplicative_order):
 
 
 def test_characteristic_poly_element(field_characteristic_poly_element):
-    GF, X, Z = field_characteristic_poly_element["GF"], field_characteristic_poly_element["X"], field_characteristic_poly_element["Z"]
+    GF, X, Z = (
+        field_characteristic_poly_element["GF"],
+        field_characteristic_poly_element["X"],
+        field_characteristic_poly_element["Z"],
+    )
     for x, z_truth in zip(X, Z):
         dtype = random.choice(GF.dtypes)
         x = x.astype(dtype)
@@ -51,7 +55,11 @@ def test_characteristic_poly_element(field_characteristic_poly_element):
 
 
 def test_characteristic_poly_matrix(field_characteristic_poly_matrix):
-    GF, X, Z = field_characteristic_poly_matrix["GF"], field_characteristic_poly_matrix["X"], field_characteristic_poly_matrix["Z"]
+    GF, X, Z = (
+        field_characteristic_poly_matrix["GF"],
+        field_characteristic_poly_matrix["X"],
+        field_characteristic_poly_matrix["Z"],
+    )
     for x, z_truth in zip(X, Z):
         dtype = random.choice(GF.dtypes)
         x = x.astype(dtype)

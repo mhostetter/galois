@@ -475,7 +475,23 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "matrix_inverse.pkl")
 
     set_seed(seed + 206)
-    shapes = [(2, 2), (2, 2), (2, 2), (3, 3), (3, 3), (3, 3), (4, 4), (4, 4), (4, 4), (5, 5), (5, 5), (5, 5), (6, 6), (6, 6), (6, 6)]
+    shapes = [
+        (2, 2),
+        (2, 2),
+        (2, 2),
+        (3, 3),
+        (3, 3),
+        (3, 3),
+        (4, 4),
+        (4, 4),
+        (4, 4),
+        (5, 5),
+        (5, 5),
+        (5, 5),
+        (6, 6),
+        (6, 6),
+        (6, 6),
+    ]
     X = []
     Z = []
     for i in range(len(shapes)):
@@ -488,7 +504,23 @@ def make_luts(field, sub_folder, seed, sparse=False):
     save_pickle(d, folder, "matrix_determinant.pkl")
 
     set_seed(seed + 207)
-    shapes = [(2, 2), (2, 2), (2, 2), (3, 3), (3, 3), (3, 3), (4, 4), (4, 4), (4, 4), (5, 5), (5, 5), (5, 5), (6, 6), (6, 6), (6, 6)]
+    shapes = [
+        (2, 2),
+        (2, 2),
+        (2, 2),
+        (3, 3),
+        (3, 3),
+        (3, 3),
+        (4, 4),
+        (4, 4),
+        (4, 4),
+        (5, 5),
+        (5, 5),
+        (5, 5),
+        (6, 6),
+        (6, 6),
+        (6, 6),
+    ]
     X = []
     Y = []
     Z = []

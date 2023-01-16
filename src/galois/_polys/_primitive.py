@@ -37,12 +37,13 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
         Poly.is_primitive, matlab_primitive_poly, conway_poly
 
     Notes:
-        If :math:`f(x)` is a primitive polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
-        then :math:`a \cdot f(x)` is also primitive.
+        If :math:`f(x)` is a primitive polynomial over :math:`\mathrm{GF}(q)` and
+        :math:`a \in \mathrm{GF}(q) \backslash \{0\}`, then :math:`a \cdot f(x)` is also primitive.
 
         In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)`
         of :math:`\mathrm{GF}(q)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
-        of :math:`\mathrm{GF}(q^m)` such that :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
+        of :math:`\mathrm{GF}(q^m)` such that
+        :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
 
     Examples:
         Find the lexicographically minimal and maximal monic primitive polynomial. Also find a random monic primitive
@@ -89,7 +90,9 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     if not is_prime_power(order):
         raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
     if not degree >= 1:
-        raise ValueError(f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
+        raise ValueError(
+            f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0."
+        )
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
@@ -111,7 +114,8 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
     Arguments:
         order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
         degree: The degree :math:`m` of the desired primitive polynomial.
-        reverse: Indicates to return the primitive polynomials from lexicographically maximal to minimal. The default is `False`.
+        reverse: Indicates to return the primitive polynomials from lexicographically maximal to minimal.
+            The default is `False`.
 
     Returns:
         An iterator over all degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(q)`.
@@ -120,12 +124,13 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
         Poly.is_primitive, irreducible_polys
 
     Notes:
-        If :math:`f(x)` is a primitive polynomial over :math:`\mathrm{GF}(q)` and :math:`a \in \mathrm{GF}(q) \backslash \{0\}`,
-        then :math:`a \cdot f(x)` is also primitive.
+        If :math:`f(x)` is a primitive polynomial over :math:`\mathrm{GF}(q)` and
+        :math:`a \in \mathrm{GF}(q) \backslash \{0\}`, then :math:`a \cdot f(x)` is also primitive.
 
         In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)`
         of :math:`\mathrm{GF}(q)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
-        of :math:`\mathrm{GF}(q^m)` such that :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
+        of :math:`\mathrm{GF}(q^m)` such that
+        :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
 
     Examples:
         Find all monic primitive polynomials over :math:`\mathrm{GF}(3)` with degree 4. You may also use `tuple()` on
@@ -135,8 +140,8 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
 
             list(galois.primitive_polys(3, 4))
 
-        Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the polynomials that would
-        have been found after the `break` condition is never incurred.
+        Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the
+        polynomials that would have been found after the `break` condition is never incurred.
 
         .. ipython:: python
 
@@ -221,7 +226,8 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
     Arguments:
-        characteristic: The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
+        characteristic: The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial
+            is over.
         degree: The degree :math:`m` of the Conway polynomial.
 
     Returns:
@@ -234,14 +240,14 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
         LookupError: If the Conway polynomial :math:`C_{p,m}(x)` is not found in Frank Luebeck's database.
 
     Notes:
-        A Conway polynomial is an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a standard
-        representation of :math:`\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`. Conway polynomials
-        provide compatability between fields and their subfields and, hence, are the common way to represent extension
-        fields.
+        A Conway polynomial is an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a
+        standard representation of :math:`\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`.
+        Conway polynomials provide compatability between fields and their subfields and, hence, are the common way to
+        represent extension fields.
 
         The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-minimal monic primitive polynomial
-        of degree :math:`m` over :math:`\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n` dividing
-        :math:`m`.
+        of degree :math:`m` over :math:`\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n`
+        dividing :math:`m`.
 
         This function uses `Frank Luebeck's Conway polynomial database
         <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_ for fast lookup, not construction.
@@ -272,7 +278,9 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     if not is_prime(characteristic):
         raise ValueError(f"Argument 'characteristic' must be prime, not {characteristic}.")
     if not degree >= 1:
-        raise ValueError(f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
+        raise ValueError(
+            f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0."
+        )
 
     coeffs = ConwayPolyDatabase().fetch(characteristic, degree)
     field = _factory.FIELD_FACTORY(characteristic)
@@ -287,7 +295,8 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
 
     Arguments:
-        characteristic: The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial is over.
+        characteristic: The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial
+            is over.
         degree: The degree :math:`m` of the desired primitive polynomial.
 
     Returns:
@@ -297,18 +306,21 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
         Poly.is_primitive, primitive_poly, conway_poly
 
     Notes:
-        This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the primitive polynomial with minimum terms
-        (equivalent to `galois.primitive_poly(p, m, method="min-terms")`) as the default... *mostly*. There are three
-        notable exceptions:
+        This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the primitive polynomial with
+        minimum terms (equivalent to `galois.primitive_poly(p, m, method="min-terms")`) as the default... *mostly*.
+        There are three notable exceptions:
 
-        1. :math:`\mathrm{GF}(2^7)` uses :math:`x^7 + x^3 + 1`, not :math:`x^7 + x + 1`.
-        2. :math:`\mathrm{GF}(2^{14})` uses :math:`x^{14} + x^{10} + x^6 + x + 1`, not :math:`x^{14} + x^5 + x^3 + x + 1`.
-        3. :math:`\mathrm{GF}(2^{16})` uses :math:`x^{16} + x^{12} + x^3 + x + 1`, not :math:`x^{16} + x^5 + x^3 + x^2 + 1`.
+        1. :math:`\mathrm{GF}(2^7)` uses :math:`x^7 + x^3 + 1`,
+           not :math:`x^7 + x + 1`.
+        2. :math:`\mathrm{GF}(2^{14})` uses :math:`x^{14} + x^{10} + x^6 + x + 1`,
+           not :math:`x^{14} + x^5 + x^3 + x + 1`.
+        3. :math:`\mathrm{GF}(2^{16})` uses :math:`x^{16} + x^{12} + x^3 + x + 1`,
+           not :math:`x^{16} + x^5 + x^3 + x^2 + 1`.
 
     Warning:
-        This has been tested for all the :math:`\mathrm{GF}(2^m)` fields for :math:`2 \le m \le 16` (Matlab doesn't support
-        larger than 16). And it has been spot-checked for :math:`\mathrm{GF}(p^m)`. There may exist other exceptions. Please
-        submit a GitHub issue if you discover one.
+        This has been tested for all the :math:`\mathrm{GF}(2^m)` fields for :math:`2 \le m \le 16` (Matlab doesn't
+        support larger than 16). And it has been spot-checked for :math:`\mathrm{GF}(p^m)`. There may exist other
+        exceptions. Please submit a GitHub issue if you discover one.
 
     References:
         - Lin, S. and Costello, D. Error Control Coding. Table 2.7.
@@ -333,7 +345,9 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     if not is_prime(characteristic):
         raise ValueError(f"Argument 'characteristic' must be prime, not {characteristic}.")
     if not degree >= 1:
-        raise ValueError(f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0.")
+        raise ValueError(
+            f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0."
+        )
 
     # Textbooks and Matlab use the lexicographically-minimal primitive polynomial for the default. But for some
     # reason, there are three exceptions. I can't determine why.

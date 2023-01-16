@@ -31,8 +31,8 @@ Scalars are 0-D :obj:`~galois.Array` objects.
       GF(17)
 
 - :obj:`str`: A finite field element in its :ref:`polynomial representation <poly-repr>`. Many string conventions are
-  accepted, including: with/without `*`, with/without spaces, `^` or `**`, any indeterminate variable, increasing/decreasing
-  degrees, etc. Or any combination of the above.
+  accepted, including: with/without `*`, with/without spaces, `^` or `**`, any indeterminate variable,
+  increasing/decreasing degrees, etc. Or any combination of the above.
 
   .. ipython-with-reprs:: int,poly,power
 
@@ -106,7 +106,8 @@ A :obj:`~typing.Union` representing objects that can be coerced into a Galois fi
       # Mix and match integers and strings
       GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
 
-- :obj:`~numpy.ndarray`: A NumPy array of integers, representing finite field elements in their :ref:`integer representation <int-repr>`.
+- :obj:`~numpy.ndarray`: A NumPy array of integers, representing finite field elements in their :ref:`integer
+  representation <int-repr>`.
 
   .. ipython-with-reprs:: int,poly,power
 
@@ -135,8 +136,8 @@ A :obj:`~typing.Union` representing objects that can be coerced into a NumPy :ob
       x = GF.Random(4); x
       x.shape
 
-- :obj:`~typing.Sequence` [ :obj:`int` ]: An iterable of integer dimensions. Tuples or lists are allowed. An empty iterable, `()` or `[]`,
-  represents a 0-D array (scalar).
+- :obj:`~typing.Sequence` [ :obj:`int` ]: An iterable of integer dimensions. Tuples or lists are allowed. An empty
+  iterable, `()` or `[]`, represents a 0-D array (scalar).
 
   .. ipython:: python
 
@@ -199,7 +200,8 @@ A :obj:`~typing.Union` representing objects that can be coerced into a polynomia
 
 .. rubric:: Union
 
-- :obj:`int`: A polynomial in its integer representation, see :func:`~galois.Poly.Int`. The Galois field must be known from context.
+- :obj:`int`: A polynomial in its integer representation, see :func:`~galois.Poly.Int`. The Galois field must be known
+  from context.
 
   .. ipython:: python
 
@@ -207,14 +209,15 @@ A :obj:`~typing.Union` representing objects that can be coerced into a polynomia
       GF = galois.GF(3)
       galois.Poly.Int(19, field=GF)
 
-- :obj:`str`: A polynomial in its string representation, see :func:`~galois.Poly.Str`. The Galois field must be known from context.
+- :obj:`str`: A polynomial in its string representation, see :func:`~galois.Poly.Str`. The Galois field must be known
+  from context.
 
   .. ipython:: python
 
       galois.Poly.Str("2x^2 + 1", field=GF)
 
-- :obj:`~galois.typing.ArrayLike`: An array of polynomial coefficients in degree-descending order. If the coefficients are not
-  :obj:`~galois.Array`, then the Galois field must be known from context.
+- :obj:`~galois.typing.ArrayLike`: An array of polynomial coefficients in degree-descending order. If the coefficients
+  are not :obj:`~galois.Array`, then the Galois field must be known from context.
 
   .. ipython:: python
 

@@ -100,10 +100,6 @@ def crt(remainders: np.ndarray, moduli: np.ndarray) -> int:  # pragma: no cover
             # then a unique solution still exists.
             if not (a1 % d) == (a2 % d):
                 raise ArithmeticError
-                # raise ValueError(
-                #     f"Moduli {[m1, m2]} are not coprime and their residuals {[a1, a2]} are not equal modulo their GCD {d}, "
-                #     "therefore a unique solution does not exist."
-                # )
             x = ((a1 * b2 * m2) + (a2 * b1 * m1)) // d  # Compute x through explicit construction
             m1 = (m1 * m2) // d  # The new modulus
 
@@ -163,7 +159,8 @@ class add_vector(_lookup.add_ufunc):
             # Use the lookup ufunc on each array entry
             return super().__call__(ufunc, method, inputs, kwargs, meta)
 
-        # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+        # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert
+        # back to GF(p^m).
         self._verify_operands_in_same_field(ufunc, inputs, meta)
         inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
         output = getattr(ufunc, method)(*inputs, **kwargs)
@@ -214,7 +211,8 @@ class negative_vector(_lookup.negative_ufunc):
             # Use the lookup ufunc on each array entry
             return super().__call__(ufunc, method, inputs, kwargs, meta)
 
-        # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+        # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert
+        # back to GF(p^m).
         self._verify_operands_in_same_field(ufunc, inputs, meta)
         inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
         output = getattr(ufunc, method)(*inputs, **kwargs)
@@ -265,7 +263,8 @@ class subtract_vector(_lookup.subtract_ufunc):
             # Use the lookup ufunc on each array entry
             return super().__call__(ufunc, method, inputs, kwargs, meta)
 
-        # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert back to GF(p^m)
+        # Convert entire array to polynomial/vector representation, perform array operation in GF(p), and convert
+        # back to GF(p^m).
         self._verify_operands_in_same_field(ufunc, inputs, meta)
         inputs, kwargs = self._convert_inputs_to_vector(inputs, kwargs)
         output = getattr(ufunc, method)(*inputs, **kwargs)
@@ -781,7 +780,9 @@ class sqrt(_lookup.sqrt_ufunc):
         Algorithm 3.36 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf.
         """
         if not np.all(a.is_square()):
-            raise ArithmeticError(f"Input array has elements that are non-squares in {self.field.name}.\n{a[~a.is_square()]}")
+            raise ArithmeticError(
+                f"Input array has elements that are non-squares in {self.field.name}.\n{a[~a.is_square()]}"
+            )
 
         p = self.field.characteristic
 
