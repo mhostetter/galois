@@ -225,9 +225,6 @@ def random_prime(bits: int, seed: int | None = None) -> int:
     r"""
     Returns a random prime :math:`p` with :math:`b` bits, such that :math:`2^b \le p < 2^{b+1}`.
 
-    This function randomly generates integers with :math:`b` bits and uses the primality tests in
-    :func:`~galois.is_prime` to determine if :math:`p` is prime.
-
     Arguments:
         bits: The number of bits in the prime :math:`p`.
         seed: Non-negative integer used to initialize the PRNG. The default is `None` which means that unpredictable
@@ -238,6 +235,10 @@ def random_prime(bits: int, seed: int | None = None) -> int:
 
     See Also:
         prev_prime, next_prime
+
+    Notes:
+        This function randomly generates integers with :math:`b` bits and uses the primality tests in
+        :func:`~galois.is_prime` to determine if :math:`p` is prime.
 
     References:
         - https://en.wikipedia.org/wiki/Prime_number_theorem
@@ -336,8 +337,6 @@ def mersenne_exponents(n: int | None = None) -> list[int]:
     r"""
     Returns all known Mersenne exponents :math:`e` for :math:`e \le n`.
 
-    A Mersenne exponent :math:`e` is an exponent of 2 such that :math:`2^e - 1` is prime.
-
     Arguments:
         n: The max exponent of 2. The default is `None` which returns all known Mersenne exponents.
 
@@ -346,6 +345,9 @@ def mersenne_exponents(n: int | None = None) -> list[int]:
 
     See Also:
         mersenne_primes
+
+    Notes:
+        A Mersenne exponent :math:`e` is an exponent of 2 such that :math:`2^e - 1` is prime.
 
     References:
         - https://oeis.org/A000043
@@ -378,8 +380,6 @@ def mersenne_primes(n: int | None = None) -> list[int]:
     r"""
     Returns all known Mersenne primes :math:`p` for :math:`p \le 2^n - 1`.
 
-    Mersenne primes are primes that are one less than a power of 2.
-
     Arguments:
         n: The max power of 2. The default is `None` which returns all known Mersenne exponents.
 
@@ -388,6 +388,9 @@ def mersenne_primes(n: int | None = None) -> list[int]:
 
     See Also:
         mersenne_exponents
+
+    Notes:
+        Mersenne primes are primes that are one less than a power of 2.
 
     References:
         - https://oeis.org/A000668
@@ -742,9 +745,8 @@ def jacobi_symbol(a: int, n: int) -> int:
 @export
 def kronecker_symbol(a: int, n: int) -> int:
     r"""
-    Computes the Kronecker symbol :math:`(\frac{a}{n})`.
-
-    The Kronecker symbol extends the Jacobi symbol for all :math:`n`.
+    Computes the Kronecker symbol :math:`(\frac{a}{n})`. The Kronecker symbol extends the Jacobi symbol for
+    all :math:`n`.
 
     Arguments:
         a: An integer.
@@ -874,9 +876,8 @@ def factors(n: int) -> tuple[list[int], list[int]]:
 @export
 def perfect_power(n: int) -> tuple[int, int]:
     r"""
-    Returns the integer base :math:`c` and exponent :math:`e` of :math:`n = c^e`.
-
-    If :math:`n` is a *not* perfect power, then :math:`c = n` and :math:`e = 1`.
+    Returns the integer base :math:`c` and exponent :math:`e` of :math:`n = c^e`. If :math:`n` is *not* a
+    perfect power, then :math:`c = n` and :math:`e = 1`.
 
     Arguments:
         n: An integer.

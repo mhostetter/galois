@@ -100,8 +100,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def characteristic(cls) -> int:
         r"""
-        The prime characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)`. Adding
-        :math:`p` copies of any element will always result in 0.
+        The prime characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)`.
+
+        Notes:
+            Adding :math:`p` copies of any element will always result in 0.
 
         Examples:
             .. ipython:: python
@@ -116,7 +118,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def degree(cls) -> int:
         r"""
-        The extension degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)`. The degree is a positive integer.
+        The extension degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)`.
+
+        Notes:
+            The degree is a positive integer. For prime fields, the degree is 1.
 
         Examples:
             .. ipython:: python
@@ -131,8 +136,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def order(cls) -> int:
         r"""
-        The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`. The order of the field is equal to the
-        field's size.
+        The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`.
+
+        Notes:
+            The order of the field is equal to the field's size.
 
         Examples:
             .. ipython:: python
@@ -147,8 +154,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def irreducible_poly(cls) -> Poly:
         r"""
-        The irreducible polynomial :math:`f(x)` of the Galois field :math:`\mathrm{GF}(p^m)`. The irreducible
-        polynomial is of degree :math:`m` over :math:`\mathrm{GF}(p)`.
+        The irreducible polynomial :math:`f(x)` of the Galois field :math:`\mathrm{GF}(p^m)`.
+
+        Notes:
+            The irreducible polynomial is of degree :math:`m` over :math:`\mathrm{GF}(p)`.
 
         Examples:
             .. ipython:: python
@@ -163,8 +172,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def is_primitive_poly(cls) -> bool:
         r"""
-        Indicates whether the :obj:`~galois.FieldArray.irreducible_poly` is a primitive polynomial. If so, :math:`x`
-        is a primitive element of the finite field.
+        Indicates whether the :obj:`~galois.FieldArray.irreducible_poly` is a primitive polynomial.
+
+        Notes:
+            If the irreducible polynomial is primitive, then :math:`x` is a primitive element of the finite field.
 
         Examples:
             The default :math:`\mathrm{GF}(2^8)` field uses a primitive polynomial.
@@ -210,8 +221,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def units(cls) -> FieldArray:
         r"""
-        All of the finite field's units :math:`\{1, \dots, p^m-1\}`. A unit is an element with a multiplicative
-        inverse.
+        All of the finite field's units :math:`\{1, \dots, p^m-1\}`.
+
+        Notes:
+            A unit is an element with a multiplicative inverse.
 
         Examples:
             All units of the prime field :math:`\mathrm{GF}(31)` in increasing order.
@@ -233,12 +246,13 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def primitive_element(cls) -> FieldArray:
         r"""
-        A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a
-        multiplicative generator of the field, such that
-        :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
+        A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`.
 
-        A primitive element is a root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
-        :math:`\mathrm{GF}(p^m)`.
+        Notes:
+            A primitive element is a multiplicative generator of the field, such that
+            :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`. A primitive element is a
+            root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
+            :math:`\mathrm{GF}(p^m)`.
 
         Examples:
             The smallest primitive element of the prime field :math:`\mathrm{GF}(31)`.
@@ -260,9 +274,13 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def primitive_elements(cls) -> FieldArray:
         r"""
-        All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`. A primitive element is a
-        multiplicative generator of the field, such that
-        :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`.
+        All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`.
+
+        Notes:
+            A primitive element is a multiplicative generator of the field, such that
+            :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`. A primitive element is a
+            root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
+            :math:`\mathrm{GF}(p^m)`.
 
         Examples:
             All primitive elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
@@ -291,8 +309,9 @@ class FieldArrayMeta(ArrayMeta):
         r"""
         All squares in the finite field.
 
-        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *square* if there exists a :math:`y` such that
-        :math:`y^2 = x` in the field.
+        Notes:
+            An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *square* if there exists a :math:`y` such that
+            :math:`y^2 = x` in the field.
 
         See Also:
             is_square
@@ -330,8 +349,9 @@ class FieldArrayMeta(ArrayMeta):
         r"""
         All non-squares in the Galois field.
 
-        An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *non-square* if there does not exist a :math:`y` such
-        that :math:`y^2 = x` in the field.
+        Notes:
+            An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *non-square* if there does not exist a :math:`y`
+            such that :math:`y^2 = x` in the field.
 
         See Also:
             is_square
@@ -358,8 +378,7 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def is_prime_field(cls) -> bool:
         """
-        Indicates if the finite field is a prime field, not an extension field. This is true when the field's order
-        is prime.
+        Indicates if the finite field is a prime field, having prime order.
 
         Examples:
             .. ipython:: python
@@ -374,7 +393,7 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def is_extension_field(cls) -> bool:
         """
-        Indicates if the finite field is an extension field. This is true when the field's order is a prime power.
+        Indicates if the finite field is an extension field, having prime power order.
 
         Examples:
             .. ipython:: python
@@ -391,6 +410,9 @@ class FieldArrayMeta(ArrayMeta):
         r"""
         The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
 
+        Notes:
+            For the prime field :math:`\mathrm{GF}(p)`, the prime subfield is itself.
+
         Examples:
             .. ipython:: python
 
@@ -404,11 +426,13 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def dtypes(cls) -> list[np.dtype]:
         r"""
-        List of valid integer :obj:`numpy.dtype` values that are compatible with this finite field. Creating an array
-        with an unsupported dtype will raise a `TypeError` exception.
+        List of valid integer :obj:`numpy.dtype` values that are compatible with this finite field.
 
-        For finite fields whose elements cannot be represented with :obj:`numpy.int64`, the only valid data type is
-        :obj:`numpy.object_`.
+        Notes:
+            Creating an array with an unsupported dtype will raise a `TypeError` exception.
+
+            For finite fields whose elements cannot be represented with :obj:`numpy.int64`, the only valid data type
+            is :obj:`numpy.object_`.
 
         Examples:
             For small finite fields, all integer data types are acceptable, with the exception of :obj:`numpy.uint64`.
@@ -437,9 +461,11 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def element_repr(cls) -> Literal["int", "poly", "power"]:
         r"""
-        The current finite field element representation. This can be changed with :func:`~galois.FieldArray.repr`.
+        The current finite field element representation.
 
-        See :doc:`/basic-usage/element-representation` for a further discussion.
+        Notes:
+            This can be changed with :func:`~galois.FieldArray.repr`. See :doc:`/basic-usage/element-representation`
+            for a further discussion.
 
         Examples:
             The default element representation is the integer representation.
@@ -465,8 +491,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
         """
-        The current ufunc compilation mode for this :obj:`~galois.FieldArray` subclass. The ufuncs may be recompiled
-        with :func:`~galois.FieldArray.compile`.
+        The current ufunc compilation mode for this :obj:`~galois.FieldArray` subclass.
+
+        Notes:
+            The ufuncs may be recompiled with :func:`~galois.FieldArray.compile`.
 
         Examples:
             Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
@@ -499,6 +527,9 @@ class FieldArrayMeta(ArrayMeta):
         """
         All supported ufunc compilation modes for this :obj:`~galois.FieldArray` subclass.
 
+        Notes:
+            The ufuncs may be recompiled with :func:`~galois.FieldArray.compile`.
+
         Examples:
             Fields whose elements and arithmetic can fit within :obj:`numpy.int64` can be JIT compiled
             to use either lookup tables or explicit calculation.
@@ -521,8 +552,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def default_ufunc_mode(cls) -> Literal["jit-lookup", "jit-calculate", "python-calculate"]:
         """
-        The default ufunc compilation mode for this :obj:`~galois.FieldArray` subclass. The ufuncs may be recompiled
-        with :func:`~galois.FieldArray.compile`.
+        The default ufunc compilation mode for this :obj:`~galois.FieldArray` subclass.
+
+        Notes:
+            The ufuncs may be recompiled with :func:`~galois.FieldArray.compile`.
 
         Examples:
             Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.

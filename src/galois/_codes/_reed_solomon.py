@@ -90,12 +90,14 @@ class ReedSolomon(_CyclicCode):
         r"""
         Constructs a general :math:`\textrm{RS}(n, k)` code over :math:`\mathrm{GF}(q)`.
 
-        Important:
-            Either `k` or `d` must be provided to define the code. Both may be provided as long as they are consistent.
-
         Arguments:
             n: The codeword size :math:`n`. If :math:`n = q - 1`, the Reed-Solomon code is *primitive*.
             k: The message size :math:`k`.
+
+                .. important::
+                    Either `k` or `d` must be provided to define the code. Both may be provided as long as they are
+                    consistent.
+
             d: The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator
                 polynomial :math:`g(x)` over :math:`\mathrm{GF}(q)`. Reed-Solomon codes achieve the Singleton bound,
                 so :math:`d = n - k + 1`.

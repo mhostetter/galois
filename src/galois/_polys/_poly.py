@@ -312,8 +312,6 @@ class Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its string representation.
 
-        :func:`~galois.Poly.Str` and :func:`~galois.Poly.__str__` are inverse operations.
-
         Arguments:
             string: The string representation of the polynomial :math:`f(x)`.
             field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which
@@ -323,6 +321,8 @@ class Poly:
             The polynomial :math:`f(x)`.
 
         Notes:
+            :func:`~galois.Poly.Str` and :func:`~galois.Poly.__str__` are inverse operations.
+
             The string parsing rules include:
 
             - Either `^` or `**` may be used for indicating the polynomial degrees. For example, `"13x^3 + 117"` or
@@ -362,8 +362,6 @@ class Poly:
         r"""
         Constructs a polynomial over :math:`\mathrm{GF}(p^m)` from its integer representation.
 
-        :func:`~galois.Poly.Int` and :func:`~galois.Poly.__int__` are inverse operations.
-
         Arguments:
             integer: The integer representation of the polynomial :math:`f(x)`.
             field: The Galois field :math:`\mathrm{GF}(p^m)` the polynomial is over. The default is `None` which
@@ -371,6 +369,9 @@ class Poly:
 
         Returns:
             The polynomial :math:`f(x)`.
+
+        Notes:
+            :func:`~galois.Poly.Int` and :func:`~galois.Poly.__int__` are inverse operations.
 
         Examples:
             Construct a polynomial over :math:`\mathrm{GF}(2)` from its integer representation.
@@ -1443,10 +1444,11 @@ class Poly:
         """
         The string representation of the polynomial, without specifying the finite field it's over.
 
-        :func:`~galois.Poly.Str` and :func:`~galois.Poly.__str__` are inverse operations.
-
         Tip:
             Use :func:`~galois.set_printoptions` to display the polynomial coefficients in degree-ascending order.
+
+        Notes:
+            :func:`~galois.Poly.Str` and :func:`~galois.Poly.__str__` are inverse operations.
 
         Examples:
             .. ipython:: python
@@ -1476,9 +1478,9 @@ class Poly:
         r"""
         The integer representation of the polynomial.
 
-        :func:`~galois.Poly.Int` and :func:`~galois.Poly.__int__` are inverse operations.
-
         Notes:
+            :func:`~galois.Poly.Int` and :func:`~galois.Poly.__int__` are inverse operations.
+
             For the polynomial :math:`f(x) =  a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0` over the field
             :math:`\mathrm{GF}(p^m)`, the integer representation is
             :math:`i = a_d (p^m)^{d} + a_{d-1} (p^m)^{d-1} + \dots + a_1 (p^m) + a_0` using integer arithmetic,
@@ -2000,8 +2002,10 @@ class Poly:
     @property
     def coeffs(self) -> Array:
         """
-        The coefficients of the polynomial in degree-descending order. The entries of :obj:`coeffs` are paired
-        with :obj:`degrees`.
+        The coefficients of the polynomial in degree-descending order.
+
+        Notes:
+            The entries of :obj:`coeffs` are paired with :obj:`degrees`.
 
         Examples:
             .. ipython:: python
@@ -2023,8 +2027,10 @@ class Poly:
     @property
     def degrees(self) -> np.ndarray:
         """
-        An array of the polynomial degrees in descending order. The entries of :obj:`coeffs` are paired with
-        :obj:`degrees`.
+        An array of the polynomial degrees in descending order.
+
+        Notes:
+            The entries of :obj:`coeffs` are paired with :obj:`degrees`.
 
         Examples:
             .. ipython:: python
@@ -2041,8 +2047,10 @@ class Poly:
     @property
     def nonzero_coeffs(self) -> Array:
         """
-        The non-zero coefficients of the polynomial in degree-descending order. The entries of :obj:`nonzero_coeffs`
-        are paired with :obj:`nonzero_degrees`.
+        The non-zero coefficients of the polynomial in degree-descending order.
+
+        Notes:
+            The entries of :obj:`nonzero_coeffs` are paired with :obj:`nonzero_degrees`.
 
         Examples:
             .. ipython:: python
@@ -2060,8 +2068,10 @@ class Poly:
     @property
     def nonzero_degrees(self) -> np.ndarray:
         """
-        An array of the polynomial degrees that have non-zero coefficients in descending order. The entries of
-        :obj:`nonzero_coeffs` are paired with :obj:`nonzero_degrees`.
+        An array of the polynomial degrees that have non-zero coefficients in descending order.
+
+        Notes:
+            The entries of :obj:`nonzero_coeffs` are paired with :obj:`nonzero_degrees`.
 
         Examples:
             .. ipython:: python

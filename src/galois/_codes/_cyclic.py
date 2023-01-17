@@ -160,8 +160,9 @@ class _CyclicCode(_LinearCode):
         r"""
         The generator polynomial :math:`g(x)` over :math:`\mathrm{GF}(q)`.
 
-        Every codeword :math:`\mathbf{c}` can be represented as a degree-:math:`n` polynomial :math:`c(x)`.
-        Each codeword polynomial :math:`c(x)` is a multiple of :math:`g(x)`.
+        Notes:
+            Every codeword :math:`\mathbf{c}` can be represented as a degree-:math:`n` polynomial :math:`c(x)`.
+            Each codeword polynomial :math:`c(x)` is a multiple of :math:`g(x)`.
         """
         return self._generator_poly
 
@@ -170,7 +171,8 @@ class _CyclicCode(_LinearCode):
         r"""
         The parity-check polynomial :math:`h(x)`.
 
-        The parity-check polynomial is the generator polynomial of the dual code.
+        Notes:
+            The parity-check polynomial is the generator polynomial of the dual code.
         """
         return self._parity_check_poly
 

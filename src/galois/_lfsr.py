@@ -435,12 +435,9 @@ class FLFSR(_LFSR):
         """
         Produces the next `steps` output symbols.
 
-        Negative values may be passed which reverses the direction of the shift registers and produces outputs
-        in reverse order.
-
         Arguments:
             steps: The direction and number of output symbols to produce. The default is 1. If negative, the
-                Fibonacci LFSR will step backward.
+                Fibonacci LFSR will step backwards.
 
         Returns:
             An array of output symbols of type :obj:`field` with size `abs(steps)`.
@@ -551,8 +548,10 @@ class FLFSR(_LFSR):
     def feedback_poly(self) -> Poly:
         r"""
         The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`
-        that defines the feedback arithmetic. The feedback polynomial is the reciprocal of the characteristic
-        polynomial :math:`f(x) = x^n c(x^{-1})`.
+        that defines the feedback arithmetic.
+
+        Notes:
+            The feedback polynomial is the reciprocal of the characteristic polynomial :math:`f(x) = x^n c(x^{-1})`.
 
         Examples:
             .. ipython:: python
@@ -568,8 +567,10 @@ class FLFSR(_LFSR):
     def characteristic_poly(self) -> Poly:
         r"""
         The characteristic polynomial :math:`c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}`
-        that defines the linear recurrent sequence. The characteristic polynomial is the reciprocal of the feedback
-        polynomial :math:`c(x) = x^n f(x^{-1})`.
+        that defines the linear recurrent sequence.
+
+        Notes:
+            The characteristic polynomial is the reciprocal of the feedback polynomial :math:`c(x) = x^n f(x^{-1})`.
 
         Examples:
             .. ipython:: python
@@ -1040,12 +1041,9 @@ class GLFSR(_LFSR):
         """
         Produces the next `steps` output symbols.
 
-        Negative values may be passed which reverses the direction of the shift registers and produces outputs
-        in reverse order.
-
         Arguments:
             steps: The direction and number of output symbols to produce. The default is 1. If negative, the
-                Galois LFSR will step backward.
+                Galois LFSR will step backwards.
 
         Returns:
             An array of output symbols of type :obj:`field` with size `abs(steps)`.
@@ -1142,8 +1140,10 @@ class GLFSR(_LFSR):
     def feedback_poly(self) -> Poly:
         r"""
         The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`
-        that defines the feedback arithmetic. The feedback polynomial is the reciprocal of the characteristic
-        polynomial :math:`f(x) = x^n c(x^{-1})`.
+        that defines the feedback arithmetic.
+
+        Notes:
+            The feedback polynomial is the reciprocal of the characteristic polynomial :math:`f(x) = x^n c(x^{-1})`.
 
         Examples:
             .. ipython:: python
@@ -1159,8 +1159,10 @@ class GLFSR(_LFSR):
     def characteristic_poly(self) -> Poly:
         r"""
         The characteristic polynomial :math:`c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}`
-        that defines the linear recurrent sequence. The characteristic polynomial is the reciprocal of the feedback
-        polynomial :math:`c(x) = x^n f(x^{-1})`.
+        that defines the linear recurrent sequence.
+
+        Notes:
+            The characteristic polynomial is the reciprocal of the feedback polynomial :math:`c(x) = x^n f(x^{-1})`.
 
         Examples:
             .. ipython:: python

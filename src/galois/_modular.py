@@ -20,8 +20,6 @@ def totatives(n: int) -> list[int]:
     r"""
     Returns the positive integers (totatives) in :math:`[1, n)` that are coprime to :math:`n`.
 
-    The totatives of :math:`n` form the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
-
     Arguments:
         n: A positive integer.
 
@@ -30,6 +28,9 @@ def totatives(n: int) -> list[int]:
 
     See Also:
         euler_phi, carmichael_lambda, is_cyclic
+
+    Notes:
+        The totatives of :math:`n` form the multiplicative group :math:`(\mathbb{Z}/n\mathbb{Z}){^\times}`.
 
     References:
         - Section 2.4.3 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
@@ -143,8 +144,6 @@ def carmichael_lambda(n: int) -> int:
     Finds the smallest positive integer :math:`m` such that :math:`a^m \equiv 1\ (\textrm{mod}\ n)` for
     every integer :math:`a` in :math:`[1, n)` that is coprime to :math:`n`.
 
-    This function implements the Carmichael function :math:`\lambda(n)`.
-
     Arguments:
         n: A positive integer.
 
@@ -154,6 +153,9 @@ def carmichael_lambda(n: int) -> int:
 
     See Also:
         euler_phi, totatives, is_cyclic
+
+    Notes:
+        This function implements the Carmichael function :math:`\lambda(n)`.
 
     References:
         - https://oeis.org/A002322
