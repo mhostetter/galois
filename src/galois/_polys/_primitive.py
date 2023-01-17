@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import functools
 import random
-from typing import Iterator
+from typing import TYPE_CHECKING, Iterator, Type
 
 from typing_extensions import Literal
 
@@ -15,23 +15,37 @@ from .._helper import export, verify_isinstance
 from .._prime import is_prime, is_prime_power
 from ._poly import Poly
 
+if TYPE_CHECKING:
+    from .._fields import FieldArray
+
 
 @export
-def primitive_poly(order: int, degree: int, method: Literal["min", "max", "random"] = "min") -> Poly:
+def primitive_poly(
+    order: int,
+    degree: int,
+    terms: int | None = None,
+    method: Literal["min", "max", "random"] = "min",
+) -> Poly:
     r"""
     Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
     Arguments:
         order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
         degree: The degree :math:`m` of the desired primitive polynomial.
+        terms: The desired number of non-zero terms :math:`t` in the polynomial. The default is `None` which disregards
+            the number of terms while searching for the polynomial.
         method: The search method for finding the primitive polynomial.
 
-            - `"min"` (default): Returns the lexicographically-minimal monic primitive polynomial.
-            - `"max"`: Returns the lexicographically-maximal monic primitive polynomial.
-            - `"random"`: Returns a randomly generated degree-:math:`m` monic primitive polynomial.
+            - `"min"` (default): Returns the lexicographically-first polynomial.
+            - `"max"`: Returns the lexicographically-last polynomial.
+            - `"random"`: Returns a random polynomial.
 
     Returns:
         The degree-:math:`m` monic primitive polynomial over :math:`\mathrm{GF}(q)`.
+
+    Raises:
+        RuntimeError: If no monic primitive polynomial of degree :math:`m` over :math:`\mathrm{GF}(q)` with
+            :math:`t` terms exists. If `terms=None`, this should never be raised.
 
     See Also:
         Poly.is_primitive, matlab_primitive_poly, conway_poly
@@ -46,7 +60,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
         :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
 
     Examples:
-        Find the lexicographically minimal and maximal monic primitive polynomial. Also find a random monic primitive
+        Find the lexicographically first and last monic primitive polynomial. Also find a random monic primitive
         polynomial.
 
         .. ipython:: python
@@ -54,6 +68,12 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
             galois.primitive_poly(7, 3)
             galois.primitive_poly(7, 3, method="max")
             galois.primitive_poly(7, 3, method="random")
+
+        Find a primitive polynomial with four terms.
+
+        .. ipython:: python
+
+            galois.primitive_poly(7, 3, terms=4)
 
         Notice :func:`~galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
         :func:`~galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
@@ -86,6 +106,7 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
     """
     verify_isinstance(order, int)
     verify_isinstance(degree, int)
+    verify_isinstance(terms, int, optional=True)
 
     if not is_prime_power(order):
         raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
@@ -93,28 +114,42 @@ def primitive_poly(order: int, degree: int, method: Literal["min", "max", "rando
         raise ValueError(
             f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0."
         )
+    if terms is not None and not 1 <= terms <= degree + 1:
+        raise ValueError(f"Argument 'terms' must be at least 1 and at most {degree + 1}, not {terms}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
-    if method == "min":
-        poly = next(primitive_polys(order, degree))
-    elif method == "max":
-        poly = next(primitive_polys(order, degree, reverse=True))
-    else:
-        poly = _random_search(order, degree)
+    try:
+        if method == "min":
+            poly = next(primitive_polys(order, degree, terms))
+        elif method == "max":
+            poly = next(primitive_polys(order, degree, terms, reverse=True))
+        else:
+            poly = _random_search(order, degree, terms)
+    except StopIteration as e:
+        raise RuntimeError(
+            f"No monic primitive polynomial of degree {degree} over GF({order}) with {terms} terms exists."
+        ) from e
 
     return poly
 
 
 @export
-def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[Poly]:
+def primitive_polys(
+    order: int,
+    degree: int,
+    terms: int | None = None,
+    reverse: bool = False,
+) -> Iterator[Poly]:
     r"""
     Iterates through all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
 
     Arguments:
         order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
         degree: The degree :math:`m` of the desired primitive polynomial.
-        reverse: Indicates to return the primitive polynomials from lexicographically maximal to minimal.
+        terms: The desired number of non-zero terms :math:`t` in the polynomials. The default is `None` which
+            disregards the number of terms while searching for the polynomials.
+        reverse: Indicates to return the primitive polynomials from lexicographically last to first.
             The default is `False`.
 
     Returns:
@@ -140,6 +175,12 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
 
             list(galois.primitive_polys(3, 4))
 
+        Find all monic primitive polynomials with three terms.
+
+        .. ipython:: python
+
+            list(galois.primitive_polys(3, 4, terms=3))
+
         Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the
         polynomials that would have been found after the `break` condition is never incurred.
 
@@ -164,12 +205,15 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
     """
     verify_isinstance(order, int)
     verify_isinstance(degree, int)
+    verify_isinstance(terms, int, optional=True)
     verify_isinstance(reverse, bool)
 
     if not is_prime_power(order):
         raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
     if not degree >= 0:
         raise ValueError(f"Argument 'degree' must be at least 0, not {degree}.")
+    if terms is not None and not 1 <= terms <= degree + 1:
+        raise ValueError(f"Argument 'terms' must be at least 1 and at most {degree + 1}, not {terms}.")
 
     field = _factory.FIELD_FACTORY(order)
 
@@ -182,7 +226,7 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
         start, stop, step = stop - 1, start - 1, -1
 
     while True:
-        poly = _deterministic_search(field, start, stop, step)
+        poly = _deterministic_search(field, start, stop, step, terms)
         if poly is not None:
             start = int(poly) + step
             yield poly
@@ -191,19 +235,27 @@ def primitive_polys(order: int, degree: int, reverse: bool = False) -> Iterator[
 
 
 @functools.lru_cache(maxsize=4096)
-def _deterministic_search(field, start, stop, step) -> Poly | None:
+def _deterministic_search(
+    field: Type[FieldArray],
+    start: int,
+    stop: int,
+    step: int,
+    terms: int | None,
+) -> Poly | None:
     """
     Searches for a primitive polynomial in the range using the specified deterministic method.
     """
     for element in range(start, stop, step):
         poly = Poly.Int(element, field=field)
+        if terms is not None and poly.nonzero_coeffs.size != terms:
+            continue
         if poly.is_primitive():
             return poly
 
     return None
 
 
-def _random_search(order, degree) -> Poly:
+def _random_search(order: int, degree: int, terms: int | None) -> Poly:
     """
     Searches for a random primitive polynomial.
     """
@@ -216,6 +268,8 @@ def _random_search(order, degree) -> Poly:
     while True:
         integer = random.randint(start, stop - 1)
         poly = Poly.Int(integer, field=field)
+        if terms is not None and poly.nonzero_coeffs.size != terms:
+            continue
         if poly.is_primitive():
             return poly
 
