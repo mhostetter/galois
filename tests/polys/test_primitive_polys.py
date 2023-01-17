@@ -80,10 +80,15 @@ def test_primitive_poly_exceptions():
         galois.primitive_poly(2.0, 3)
     with pytest.raises(TypeError):
         galois.primitive_poly(2, 3.0)
+    with pytest.raises(TypeError):
+        galois.primitive_poly(2, 3, terms=2.0)
+
     with pytest.raises(ValueError):
         galois.primitive_poly(2**2 * 3**2, 3)
     with pytest.raises(ValueError):
         galois.primitive_poly(2, 0)
+    with pytest.raises(ValueError):
+        galois.primitive_poly(2, 3, terms=6)
     with pytest.raises(ValueError):
         galois.primitive_poly(2, 3, method="invalid-argument")
 
@@ -109,16 +114,39 @@ def test_primitive_polys_exceptions():
     with pytest.raises(TypeError):
         next(galois.primitive_polys(2, 3.0))
     with pytest.raises(TypeError):
+        next(galois.primitive_polys(2, 3, terms=2.0))
+    with pytest.raises(TypeError):
         next(galois.primitive_polys(2, 3, reverse=1))
+
     with pytest.raises(ValueError):
         next(galois.primitive_polys(2**2 * 3**2, 3))
     with pytest.raises(ValueError):
         next(galois.primitive_polys(2, -1))
+    with pytest.raises(ValueError):
+        next(galois.primitive_polys(2, 3, terms=6))
 
 
 @pytest.mark.parametrize("order,degree,polys", PARAMS)
 def test_primitive_polys(order, degree, polys):
     assert [f.coeffs.tolist() for f in galois.primitive_polys(order, degree)] == polys
+
+
+def test_specific_terms():
+    degree = 8
+    all_polys = []
+    for terms in range(1, degree + 2):
+        polys = list(galois.primitive_polys(2, degree, terms=terms))
+        assert all(p.nonzero_coeffs.size == terms for p in polys)
+        all_polys += polys
+    all_polys = [p.coeffs.tolist() for p in sorted(all_polys, key=int)]
+    assert all_polys == PRIMITIVE_POLYS_2_8
+
+
+def test_specific_terms_none_found():
+    with pytest.raises(RuntimeError):
+        galois.primitive_poly(2, 3, terms=2)
+
+    assert not list(galois.primitive_polys(2, 3, terms=2))
 
 
 def test_conway_poly_exceptions():
