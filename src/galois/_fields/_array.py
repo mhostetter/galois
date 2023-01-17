@@ -378,8 +378,6 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Creates an array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield
         :math:`\mathrm{GF}(p)`.
 
-        This function is the inverse operation of the :func:`vector` method.
-
         Arguments:
             array: An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`. An array with shape
                 `(n1, n2, m)` has output shape `(n1, n2)`. By convention, the vectors are ordered from degree
@@ -390,6 +388,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Returns:
             An array over :math:`\mathrm{GF}(p^m)`.
+
+        Notes:
+            This method is the inverse of the :func:`vector` method.
 
         Examples:
             .. ipython-with-reprs:: int,poly,power
@@ -908,9 +909,6 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield
         :math:`\mathrm{GF}(p)`.
 
-        This function is the inverse operation of the :func:`Vector` constructor. For an array with shape `(n1, n2)`,
-        the output shape is `(n1, n2, m)`. By convention, the vectors are ordered from degree :math:`m-1` to degree 0.
-
         Arguments:
             dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
                 unsigned data type for this :obj:`~galois.FieldArray` subclass (the first element in
@@ -918,6 +916,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         Returns:
             An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`.
+
+        Notes:
+            This method is the inverse of the :func:`Vector` constructor. For an array with shape `(n1, n2)`,
+            the output shape is `(n1, n2, m)`. By convention, the vectors are ordered from degree :math:`m-1`
+            to degree 0.
 
         Examples:
             .. ipython-with-reprs:: int,poly,power
@@ -1349,14 +1352,14 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Computes the characteristic polynomial of a finite field element :math:`a` or a square matrix
         :math:`\mathbf{A}`.
 
-        Important:
-            This function may only be invoked on a single finite field element (scalar 0-D array) or a square
-            :math:`n \times n` matrix (2-D array).
-
         Returns:
             For scalar inputs, the degree-:math:`m` characteristic polynomial :math:`c_a(x)` of :math:`a` over
             :math:`\mathrm{GF}(p)`. For square :math:`n \times n` matrix inputs, the degree-:math:`n` characteristic
             polynomial :math:`c_A(x)` of :math:`\mathbf{A}` over :math:`\mathrm{GF}(p^m)`.
+
+        Raises:
+            ValueError: If the array is not a single finite field element (scalar 0-D array) or a square
+                :math:`n \times n` matrix (2-D array).
 
         Notes:
             An element :math:`a` of :math:`\mathrm{GF}(p^m)` has characteristic polynomial :math:`c_a(x)` over
@@ -1411,11 +1414,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         r"""
         Computes the minimal polynomial of a finite field element :math:`a`.
 
-        Important:
-            This function may only be invoked on a single finite field element (scalar 0-D array).
-
         Returns:
             For scalar inputs, the minimal polynomial :math:`m_a(x)` of :math:`a` over :math:`\mathrm{GF}(p)`.
+
+        Raises:
+            NotImplementedError: If the array is a a square :math:`n \times n` matrix (2-D array).
+            ValueError: If the array is not a single finite field element (scalar 0-D array).
 
         Notes:
             An element :math:`a` of :math:`\mathrm{GF}(p^m)` has minimal polynomial :math:`m_a(x)` over
@@ -1443,8 +1447,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         if self.ndim == 0:
             return _minimal_poly_element(self)
-        # if self.ndim == 2:
-        #     return _minimal_poly_matrix(self)
+        if self.ndim == 2:
+            raise NotImplementedError("Computing the minimal polynomial of a matrix is not yet implemented.")
+            # return _minimal_poly_matrix(self)
         raise ValueError(
             f"The array must be either 0-D to return the minimal polynomial of a single element "
             f"or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}."
@@ -1454,15 +1459,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         r"""
         Computes the logarithm of the array :math:`x` base :math:`\beta`.
 
-        .. danger::
-
-            If the Galois field is configured to use lookup tables, `ufunc_mode == "jit-lookup"`, and this function
-            is invoked with a base different from :obj:`~FieldArray.primitive_element`, then explicit calculation will
-            be used (which is slower than lookup tables).
-
         Arguments:
-            base: A primitive element(s) :math:`\beta` of the finite field that is the base of the logarithm.
+            base: A primitive element or elements :math:`\beta` of the finite field that is the base of the logarithm.
                 The default is `None` which uses :obj:`~FieldArray.primitive_element`.
+
+                .. danger::
+
+                    If the Galois field is configured to use lookup tables (`ufunc_mode == "jit-lookup"`) and this
+                    method is invoked with a base different from :obj:`~FieldArray.primitive_element`, then explicit
+                    calculation will be used (which is slower than using lookup tables).
 
         Returns:
             An integer array :math:`i` of powers of :math:`\beta` such that :math:`\beta^i = x`. The return array
@@ -1537,7 +1542,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         Displays the array specifying the class and finite field order.
 
-        This function prepends `GF(` and appends `, order=p^m)`.
+        Notes:
+            This function prepends `GF(` and appends `, order=p^m)`.
 
         Examples:
             .. ipython-with-reprs:: int,poly,power
@@ -1552,7 +1558,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         Displays the array without specifying the class or finite field order.
 
-        This function does not prepend `GF(` and or append `, order=p^m)`. It also omits the comma separators.
+        Notes:
+            This function does not prepend `GF(` and or append `, order=p^m)`. It also omits the comma separators.
 
         Examples:
             .. ipython-with-reprs:: int,poly,power

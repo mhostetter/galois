@@ -367,16 +367,6 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         r"""
         Sets the element representation for all arrays from this :obj:`~galois.FieldArray` subclass.
 
-        The element representation can be set to either the integer, polynomial, or power representation.
-        See :doc:`/basic-usage/element-representation` for a further discussion.
-
-        This function updates :obj:`~galois.FieldArray.element_repr`.
-
-        .. danger::
-
-            For the power representation, :func:`numpy.log` is computed on each element. So for large fields without
-            lookup tables, displaying arrays in the power representation may take longer than expected.
-
         Arguments:
             element_repr: The field element representation.
 
@@ -384,9 +374,17 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                 - `"poly"`: Sets the representation to the :ref:`polynomial representation <poly-repr>`.
                 - `"power"`: Sets the representation to the :ref:`power representation <power-repr>`.
 
+                .. danger::
+
+                    For the power representation, :func:`numpy.log` is computed on each element. So for large fields
+                    without lookup tables, displaying arrays in the power representation may take longer than expected.
+
         Returns:
             A context manager for use in a `with` statement. If permanently setting the element representation,
             disregard the return value.
+
+        Notes:
+            This function updates :obj:`~galois.FieldArray.element_repr`.
 
         Examples:
             The default element representation is the integer representation.
