@@ -20,7 +20,7 @@ def set_printoptions(coeffs: Literal["desc", "asc"] = "desc"):
 
     Arguments:
         coeffs: The order in which to print the coefficients, either in descending degrees (default) or ascending
-        degrees.
+            degrees.
 
     See Also:
         get_printoptions, printoptions

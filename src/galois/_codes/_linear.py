@@ -57,16 +57,16 @@ class _LinearCode:
         r"""
         Encodes the message :math:`\mathbf{m}` into the codeword :math:`\mathbf{c}`.
 
-        .. info::
-            :title: Shortened codes
-
-            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`k-s`
-            symbols into :func:`encode` to return the :math:`n-s`-symbol message.
-
         Arguments:
             message: The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the
-                number of messages. For systematic codes, message lengths less than :math:`k` may be provided to
-                produce shortened codewords.
+                number of messages.
+
+                .. info::
+                    :title: Shortened codes
+
+                    For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes),
+                    pass :math:`k-s` symbols into :func:`encode` to return the :math:`n-s`-symbol message.
+
             output: Specify whether to return the codeword or parity symbols only. The default is `"codeword"`.
 
         Returns:
@@ -94,16 +94,15 @@ class _LinearCode:
         r"""
         Detects if errors are present in the codeword :math:`\mathbf{c}`.
 
-        .. info::
-            :title: Shortened codes
-
-            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s`
-            symbols into :func:`detect`.
-
         Arguments:
             codeword: The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
-                number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
-                shortened codewords.
+                number of codewords.
+
+                .. info::
+                    :title: Shortened codes
+
+                    For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes),
+                    pass :math:`n-s` symbols into :func:`detect`.
 
         Returns:
             A boolean scalar or :math:`N`-length array indicating if errors were detected in the corresponding codeword.
@@ -138,16 +137,16 @@ class _LinearCode:
         r"""
         Decodes the codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
 
-        .. info::
-            :title: Shortened codes
-
-            For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes), pass :math:`n-s`
-            symbols into :func:`decode` to return the :math:`k-s`-symbol message.
-
         Arguments:
-            codeword: he codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
-                number of codewords. For systematic codes, codeword lengths less than :math:`n` may be provided for
-                shortened codewords.
+            codeword: The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
+                number of codewords.
+
+                .. info::
+                    :title: Shortened codes
+
+                    For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes),
+                    pass :math:`n-s` symbols into :func:`decode` to return the :math:`k-s`-symbol message.
+
             output: Specify whether to return the error-corrected message or entire codeword. The default is
                 `"message"`.
             errors: Optionally specify whether to return the number of corrected errors. The default is `False`.
@@ -333,11 +332,13 @@ class _LinearCode:
     @property
     def t(self) -> int:
         r"""
-        The error-correcting capability :math:`t` of the code. The code can correct :math:`t` symbol errors in
-        a codeword.
+        The error-correcting capability :math:`t` of the code.
 
-        .. math::
-            t = \bigg\lfloor \frac{d - 1}{2} \bigg\rfloor
+        Notes:
+            The code can correct :math:`t` symbol errors in a codeword.
+
+            .. math::
+                t = \bigg\lfloor \frac{d - 1}{2} \bigg\rfloor
         """
         return (self.d - 1) // 2
 

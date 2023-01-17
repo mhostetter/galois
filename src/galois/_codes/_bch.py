@@ -95,12 +95,14 @@ class BCH(_CyclicCode):
         r"""
         Constructs a general :math:`\textrm{BCH}(n, k)` code over :math:`\mathrm{GF}(q)`.
 
-        Important:
-            Either `k` or `d` must be provided to define the code. Both may be provided as long as they are consistent.
-
         Arguments:
             n: The codeword size :math:`n`. If :math:`n = q^m - 1`, the BCH code is *primitive*.
             k: The message size :math:`k`.
+
+                .. important::
+                    Either `k` or `d` must be provided to define the code. Both may be provided as long as they are
+                    consistent.
+
             d: The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator
                 polynomial :math:`g(x)` over :math:`\mathrm{GF}(q^m)`.
             field: The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols.
@@ -766,7 +768,8 @@ class BCH(_CyclicCode):
         _CyclicCode.d,
         {},
         r"""
-        The minimum distance of a BCH code may be greater than the design distance, i.e. :math:`d_{min} \ge d`.
+        Notes:
+            The minimum distance of a BCH code may be greater than the design distance, i.e. :math:`d_{min} \ge d`.
 
         Examples:
             Construct a binary :math:`\textrm{BCH}(15, 7)` code.
