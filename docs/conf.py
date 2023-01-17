@@ -29,6 +29,7 @@ import builtins
 setattr(builtins, "__sphinx_build__", True)
 
 import numpy
+import sphinx
 
 import galois
 
@@ -421,7 +422,33 @@ def modify_type_hints(signature):
     return signature
 
 
+def monkey_patch_parse_see_also():
+    """
+    Use the NumPy docstring parsing of See Also sections for convenience. This automatically
+    hyperlinks plaintext functions and methods.
+    """
+    # Add the special parsing method from NumpyDocstring
+    method = sphinx.ext.napoleon.NumpyDocstring._parse_numpydoc_see_also_section
+    sphinx.ext.napoleon.GoogleDocstring._parse_numpydoc_see_also_section = method
+
+    def _parse_see_also_section(self, section: str):
+        """Copied from NumpyDocstring._parse_see_also_section()."""
+        lines = self._consume_to_next_section()
+
+        # Added: strip whitespace from lines to satisfy _parse_numpydoc_see_also_section()
+        for i in range(len(lines)):
+            lines[i] = lines[i].strip()
+
+        try:
+            return self._parse_numpydoc_see_also_section(lines)
+        except ValueError:
+            return self._format_admonition("seealso", lines)
+
+    sphinx.ext.napoleon.GoogleDocstring._parse_see_also_section = _parse_see_also_section
+
+
 def setup(app):
+    monkey_patch_parse_see_also()
     app.connect("autodoc-skip-member", autodoc_skip_member)
     app.connect("autodoc-process-bases", autodoc_process_bases)
     app.connect("autodoc-process-signature", autodoc_process_signature)
