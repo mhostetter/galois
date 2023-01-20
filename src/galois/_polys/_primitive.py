@@ -13,7 +13,7 @@ from .._databases import ConwayPolyDatabase
 from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import is_prime, is_prime_power
-from ._irreducible import _deterministic_search_fixed_terms
+from ._irreducible import _deterministic_search_fixed_terms, _minimum_terms
 from ._poly import Poly
 
 if TYPE_CHECKING:
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 def primitive_poly(
     order: int,
     degree: int,
-    terms: int | None = None,
+    terms: int | str | None = None,
     method: Literal["min", "max", "random"] = "min",
 ) -> Poly:
     r"""
@@ -33,8 +33,12 @@ def primitive_poly(
     Arguments:
         order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
         degree: The degree :math:`m` of the desired primitive polynomial.
-        terms: The desired number of non-zero terms :math:`t` in the polynomial. The default is `None` which disregards
-            the number of terms while searching for the polynomial.
+        terms: The desired number of non-zero terms :math:`t` in the polynomial.
+
+            - `None` (default): Disregards the number of terms while searching for the polynomial.
+            - `int`: The exact number of non-zero terms in the polynomial.
+            - `"min"`: The minimum possible number of non-zero terms.
+
         method: The search method for finding the primitive polynomial.
 
             - `"min"` (default): Returns the lexicographically-first polynomial.
@@ -46,7 +50,7 @@ def primitive_poly(
 
     Raises:
         RuntimeError: If no monic primitive polynomial of degree :math:`m` over :math:`\mathrm{GF}(q)` with
-            :math:`t` terms exists. If `terms=None`, this should never be raised.
+            :math:`t` terms exists. If `terms` is `None` or `"min"`, this should never be raised.
 
     See Also:
         Poly.is_primitive, matlab_primitive_poly, conway_poly
@@ -61,8 +65,7 @@ def primitive_poly(
         :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
 
     Examples:
-        Find the lexicographically first and last monic primitive polynomial. Also find a random monic primitive
-        polynomial.
+        Find the lexicographically-first, lexicographically-last, and a random monic primitive polynomial.
 
         .. ipython:: python
 
@@ -70,14 +73,20 @@ def primitive_poly(
             galois.primitive_poly(7, 3, method="max")
             galois.primitive_poly(7, 3, method="random")
 
-        Find a primitive polynomial with four terms.
+        Find the lexicographically-first monic primitive polynomial with four terms.
 
         .. ipython:: python
 
             galois.primitive_poly(7, 3, terms=4)
 
-        Notice :func:`~galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
-        :func:`~galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+        Find the lexicographically-first monic irreducible polynomial with the minimum number of non-zero terms.
+
+        .. ipython:: python
+
+            galois.primitive_poly(7, 3, terms="min")
+
+        Notice :func:`~galois.primitive_poly` returns the lexicographically-first primitive polynomial but
+        :func:`~galois.conway_poly` returns the lexicographically-first primitive polynomial that is *consistent*
         with smaller Conway polynomials. This is sometimes the same polynomial.
 
         .. ipython:: python
@@ -107,7 +116,7 @@ def primitive_poly(
     """
     verify_isinstance(order, int)
     verify_isinstance(degree, int)
-    verify_isinstance(terms, int, optional=True)
+    verify_isinstance(terms, (int, str), optional=True)
 
     if not is_prime_power(order):
         raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
@@ -115,8 +124,10 @@ def primitive_poly(
         raise ValueError(
             f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0."
         )
-    if terms is not None and not 1 <= terms <= degree + 1:
+    if isinstance(terms, int) and not 1 <= terms <= degree + 1:
         raise ValueError(f"Argument 'terms' must be at least 1 and at most {degree + 1}, not {terms}.")
+    if isinstance(terms, str) and not terms in ["min"]:
+        raise ValueError(f"Argument 'terms' must be 'min', not {terms!r}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
@@ -126,6 +137,8 @@ def primitive_poly(
         elif method == "max":
             poly = next(primitive_polys(order, degree, terms, reverse=True))
         else:
+            if terms == "min":
+                terms = _minimum_terms(order, degree, "is_primitive")
             poly = _random_search(order, degree, terms)
     except StopIteration as e:
         terms_str = "any" if terms is None else str(terms)
@@ -140,7 +153,7 @@ def primitive_poly(
 def primitive_polys(
     order: int,
     degree: int,
-    terms: int | None = None,
+    terms: int | str | None = None,
     reverse: bool = False,
 ) -> Iterator[Poly]:
     r"""
@@ -149,8 +162,12 @@ def primitive_polys(
     Arguments:
         order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
         degree: The degree :math:`m` of the desired primitive polynomial.
-        terms: The desired number of non-zero terms :math:`t` in the polynomials. The default is `None` which
-            disregards the number of terms while searching for the polynomials.
+        terms: The desired number of non-zero terms :math:`t` in the polynomial.
+
+            - `None` (default): Disregards the number of terms while searching for the polynomial.
+            - `int`: The exact number of non-zero terms in the polynomial.
+            - `"min"`: The minimum possible number of non-zero terms.
+
         reverse: Indicates to return the primitive polynomials from lexicographically last to first.
             The default is `False`.
 
@@ -177,11 +194,17 @@ def primitive_polys(
 
             list(galois.primitive_polys(3, 4))
 
-        Find all monic primitive polynomials with three terms.
+        Find all monic primitive polynomials with five terms.
 
         .. ipython:: python
 
-            list(galois.primitive_polys(3, 4, terms=3))
+            list(galois.primitive_polys(3, 4, terms=5))
+
+        Find all monic primitive polynomials with the minimum number of non-zero terms.
+
+        .. ipython:: python
+
+            list(galois.primitive_polys(3, 4, terms="min"))
 
         Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the
         polynomials that would have been found after the `break` condition is never incurred.
@@ -207,17 +230,27 @@ def primitive_polys(
     """
     verify_isinstance(order, int)
     verify_isinstance(degree, int)
-    verify_isinstance(terms, int, optional=True)
+    verify_isinstance(terms, (int, str), optional=True)
     verify_isinstance(reverse, bool)
 
     if not is_prime_power(order):
         raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
     if not degree >= 0:
         raise ValueError(f"Argument 'degree' must be at least 0, not {degree}.")
-    if terms is not None and not 1 <= terms <= degree + 1:
+    if isinstance(terms, int) and not 1 <= terms <= degree + 1:
         raise ValueError(f"Argument 'terms' must be at least 1 and at most {degree + 1}, not {terms}.")
+    if isinstance(terms, str) and not terms in ["min"]:
+        raise ValueError(f"Argument 'terms' must be 'min', not {terms!r}.")
 
-    if terms is None:
+    if terms == "min":
+        # Find the minimum number of terms required to produce an primitive polynomial of degree m over GF(q).
+        # Then yield all monic primitive polynomials of with that number of terms.
+        min_terms = _minimum_terms(order, degree, "is_primitive")
+        yield from _deterministic_search_fixed_terms(order, degree, min_terms, "is_primitive", reverse)
+    elif isinstance(terms, int):
+        # Iterate over and test monic polynomials of degree m over GF(q) with `terms` non-zero terms.
+        yield from _deterministic_search_fixed_terms(order, degree, terms, "is_primitive", reverse)
+    else:
         # Iterate over and test all monic polynomials of degree m over GF(q).
         start = order**degree
         stop = 2 * order**degree
@@ -233,9 +266,6 @@ def primitive_polys(
                 yield poly
             else:
                 break
-    else:
-        # Iterate over and test monic polynomials of degree m over GF(q) with `terms` non-zero terms.
-        yield from _deterministic_search_fixed_terms(order, degree, terms, "is_primitive", reverse)
 
 
 @functools.lru_cache(maxsize=4096)
@@ -297,10 +327,10 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
     Notes:
         A Conway polynomial is an irreducible and primitive polynomial over :math:`\mathrm{GF}(p)` that provides a
         standard representation of :math:`\mathrm{GF}(p^m)` as a splitting field of :math:`C_{p,m}(x)`.
-        Conway polynomials provide compatability between fields and their subfields and, hence, are the common way to
+        Conway polynomials provide compatibility between fields and their subfields and, hence, are the common way to
         represent extension fields.
 
-        The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-minimal monic primitive polynomial
+        The Conway polynomial :math:`C_{p,m}(x)` is defined as the lexicographically-first monic primitive polynomial
         of degree :math:`m` over :math:`\mathrm{GF}(p)` that is compatible with all :math:`C_{p,n}(x)` for :math:`n`
         dividing :math:`m`.
 
@@ -308,8 +338,8 @@ def conway_poly(characteristic: int, degree: int) -> Poly:
         <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_ for fast lookup, not construction.
 
     Examples:
-        Notice :func:`~galois.primitive_poly` returns the lexicographically-minimal primitive polynomial but
-        :func:`~galois.conway_poly` returns the lexicographically-minimal primitive polynomial that is *consistent*
+        Notice :func:`~galois.primitive_poly` returns the lexicographically-first primitive polynomial but
+        :func:`~galois.conway_poly` returns the lexicographically-first primitive polynomial that is *consistent*
         with smaller Conway polynomials. This is sometimes the same polynomial.
 
         .. ipython:: python
@@ -361,21 +391,21 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
         Poly.is_primitive, primitive_poly, conway_poly
 
     Notes:
-        This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the primitive polynomial with
-        minimum terms (equivalent to `galois.primitive_poly(p, m, method="min-terms")`) as the default... *mostly*.
-        There are three notable exceptions:
+        This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the lexicographically-first
+        primitive polynomial with minimum terms, which is equivalent to `galois.primitive_poly(p, m, terms="min")`.
+        There are three notable exceptions, however:
 
-        1. :math:`\mathrm{GF}(2^7)` uses :math:`x^7 + x^3 + 1`,
+        1. In :math:`\mathrm{GF}(2^7)`, Matlab uses :math:`x^7 + x^3 + 1`,
            not :math:`x^7 + x + 1`.
-        2. :math:`\mathrm{GF}(2^{14})` uses :math:`x^{14} + x^{10} + x^6 + x + 1`,
+        2. In :math:`\mathrm{GF}(2^{14})`, Matlab uses :math:`x^{14} + x^{10} + x^6 + x + 1`,
            not :math:`x^{14} + x^5 + x^3 + x + 1`.
-        3. :math:`\mathrm{GF}(2^{16})` uses :math:`x^{16} + x^{12} + x^3 + x + 1`,
+        3. In :math:`\mathrm{GF}(2^{16})`, Matlab uses :math:`x^{16} + x^{12} + x^3 + x + 1`,
            not :math:`x^{16} + x^5 + x^3 + x^2 + 1`.
 
     Warning:
         This has been tested for all the :math:`\mathrm{GF}(2^m)` fields for :math:`2 \le m \le 16` (Matlab doesn't
         support larger than 16). And it has been spot-checked for :math:`\mathrm{GF}(p^m)`. There may exist other
-        exceptions. Please submit a GitHub issue if you discover one.
+        exceptions. Please submit a `GitHub issue <https://github.com/mhostetter/galois/issues>`_ if you discover one.
 
     References:
         - Lin, S. and Costello, D. Error Control Coding. Table 2.7.
@@ -383,12 +413,14 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     Examples:
         .. ipython:: python
 
-            galois.primitive_poly(2, 6)
+            galois.primitive_poly(2, 6, terms="min")
             galois.matlab_primitive_poly(2, 6)
+
+        Below is one of the exceptions.
 
         .. ipython:: python
 
-            galois.primitive_poly(2, 7)
+            galois.primitive_poly(2, 7, terms="min")
             galois.matlab_primitive_poly(2, 7)
 
     Group:
@@ -404,18 +436,18 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
             f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0."
         )
 
-    # Textbooks and Matlab use the lexicographically-minimal primitive polynomial for the default. But for some
-    # reason, there are three exceptions. I can't determine why.
+    # Textbooks and Matlab use the lexicographically-first primitive polynomial with minimal terms for the default.
+    # But for some reason, there are three exceptions. I can't determine why.
     if characteristic == 2 and degree == 7:
-        # Not the lexicographically-minimal of `x^7 + x + 1`
+        # Not the lexicographically-first of x^7 + x + 1.
         return Poly.Degrees([7, 3, 0])
 
     if characteristic == 2 and degree == 14:
-        # Not the lexicographically-minimal of `x^14 + x^5 + x^3 + x + 1`
+        # Not the lexicographically-first of x^14 + x^5 + x^3 + x + 1.
         return Poly.Degrees([14, 10, 6, 1, 0])
 
     if characteristic == 2 and degree == 16:
-        # Not the lexicographically-minimal of `x^16 + x^5 + x^3 + x^2 + 1`
+        # Not the lexicographically-first of x^16 + x^5 + x^3 + x^2 + 1.
         return Poly.Degrees([16, 12, 3, 1, 0])
 
     return primitive_poly(characteristic, degree)
