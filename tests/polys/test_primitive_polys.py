@@ -131,15 +131,15 @@ def test_primitive_polys(order, degree, polys):
     assert [f.coeffs.tolist() for f in galois.primitive_polys(order, degree)] == polys
 
 
-def test_specific_terms():
-    degree = 8
+@pytest.mark.parametrize("order,degree,polys", PARAMS)
+def test_specific_terms(order, degree, polys):
     all_polys = []
     for terms in range(1, degree + 2):
-        polys = list(galois.primitive_polys(2, degree, terms=terms))
-        assert all(p.nonzero_coeffs.size == terms for p in polys)
-        all_polys += polys
+        new_polys = list(galois.primitive_polys(order, degree, terms=terms))
+        assert all(p.nonzero_coeffs.size == terms for p in new_polys)
+        all_polys += new_polys
     all_polys = [p.coeffs.tolist() for p in sorted(all_polys, key=int)]
-    assert all_polys == PRIMITIVE_POLYS_2_8
+    assert all_polys == polys
 
 
 def test_specific_terms_none_found():
