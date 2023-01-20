@@ -13,6 +13,7 @@ from .._databases import ConwayPolyDatabase
 from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import is_prime, is_prime_power
+from ._irreducible import _deterministic_search_fixed_terms
 from ._poly import Poly
 
 if TYPE_CHECKING:
@@ -127,8 +128,9 @@ def primitive_poly(
         else:
             poly = _random_search(order, degree, terms)
     except StopIteration as e:
+        terms_str = "any" if terms is None else str(terms)
         raise RuntimeError(
-            f"No monic primitive polynomial of degree {degree} over GF({order}) with {terms} terms exists."
+            f"No monic primitive polynomial of degree {degree} over GF({order}) with {terms_str} terms exists."
         ) from e
 
     return poly
@@ -215,23 +217,25 @@ def primitive_polys(
     if terms is not None and not 1 <= terms <= degree + 1:
         raise ValueError(f"Argument 'terms' must be at least 1 and at most {degree + 1}, not {terms}.")
 
-    field = _factory.FIELD_FACTORY(order)
+    if terms is None:
+        # Iterate over and test all monic polynomials of degree m over GF(q).
+        start = order**degree
+        stop = 2 * order**degree
+        step = 1
+        if reverse:
+            start, stop, step = stop - 1, start - 1, -1
+        field = _factory.FIELD_FACTORY(order)
 
-    # Only search monic polynomials of degree m over GF(q)
-    start = order**degree
-    stop = 2 * order**degree
-    step = 1
-
-    if reverse:
-        start, stop, step = stop - 1, start - 1, -1
-
-    while True:
-        poly = _deterministic_search(field, start, stop, step, terms)
-        if poly is not None:
-            start = int(poly) + step
-            yield poly
-        else:
-            break
+        while True:
+            poly = _deterministic_search(field, start, stop, step)
+            if poly is not None:
+                start = int(poly) + step
+                yield poly
+            else:
+                break
+    else:
+        # Iterate over and test monic polynomials of degree m over GF(q) with `terms` non-zero terms.
+        yield from _deterministic_search_fixed_terms(order, degree, terms, "is_primitive", reverse)
 
 
 @functools.lru_cache(maxsize=4096)
@@ -240,15 +244,12 @@ def _deterministic_search(
     start: int,
     stop: int,
     step: int,
-    terms: int | None,
 ) -> Poly | None:
     """
     Searches for a primitive polynomial in the range using the specified deterministic method.
     """
     for element in range(start, stop, step):
         poly = Poly.Int(element, field=field)
-        if terms is not None and poly.nonzero_coeffs.size != terms:
-            continue
         if poly.is_primitive():
             return poly
 
