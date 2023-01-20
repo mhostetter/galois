@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 def irreducible_poly(
     order: int,
     degree: int,
-    terms: int | None = None,
+    terms: int | str | None = None,
     method: Literal["min", "max", "random"] = "min",
 ) -> Poly:
     r"""
@@ -31,8 +31,12 @@ def irreducible_poly(
     Arguments:
         order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
         degree: The degree :math:`m` of the desired irreducible polynomial.
-        terms: The desired number of non-zero terms :math:`t` in the polynomial. The default is `None` which disregards
-            the number of terms while searching for the polynomial.
+        terms: The desired number of non-zero terms :math:`t` in the polynomial.
+
+            - `None` (default): Disregards the number of terms while searching for the polynomial.
+            - `int`: The exact number of non-zero terms in the polynomial.
+            - `"min"`: The minimum possible number of non-zero terms.
+
         method: The search method for finding the irreducible polynomial.
 
             - `"min"` (default): Returns the lexicographically-first polynomial.
@@ -44,7 +48,7 @@ def irreducible_poly(
 
     Raises:
         RuntimeError: If no monic irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(q)` with
-            :math:`t` terms exists. If `terms=None`, this should never be raised.
+            :math:`t` terms exists. If `terms` is `None` or `"min"`, this should never be raised.
 
     See Also:
         Poly.is_irreducible, primitive_poly, conway_poly
@@ -57,8 +61,7 @@ def irreducible_poly(
         :math:`\mathrm{GF}(q)`.
 
     Examples:
-        Find the lexicographically first and last monic irreducible polynomial. Also find a random monic
-        irreducible polynomial.
+        Find the lexicographically-first, lexicographically-last, and a random monic irreducible polynomial.
 
         .. ipython:: python
 
@@ -66,11 +69,17 @@ def irreducible_poly(
             galois.irreducible_poly(7, 3, method="max")
             galois.irreducible_poly(7, 3, method="random")
 
-        Find an irreducible polynomial with three terms.
+        Find the lexicographically-first monic irreducible polynomial with four terms.
 
         .. ipython:: python
 
-            galois.irreducible_poly(7, 3, terms=3)
+            galois.irreducible_poly(7, 3, terms=4)
+
+        Find the lexicographically-first monic irreducible polynomial with the minimum number of non-zero terms.
+
+        .. ipython:: python
+
+            galois.irreducible_poly(7, 3, terms="min")
 
         Monic irreducible polynomials scaled by non-zero field elements (now non-monic) are also irreducible.
 
@@ -87,7 +96,7 @@ def irreducible_poly(
     """
     verify_isinstance(order, int)
     verify_isinstance(degree, int)
-    verify_isinstance(terms, int, optional=True)
+    verify_isinstance(terms, (int, str), optional=True)
 
     if not is_prime_power(order):
         raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
@@ -95,8 +104,10 @@ def irreducible_poly(
         raise ValueError(
             f"Argument 'degree' must be at least 1, not {degree}. There are no irreducible polynomials with degree 0."
         )
-    if terms is not None and not 1 <= terms <= degree + 1:
+    if isinstance(terms, int) and not 1 <= terms <= degree + 1:
         raise ValueError(f"Argument 'terms' must be at least 1 and at most {degree + 1}, not {terms}.")
+    if isinstance(terms, str) and not terms in ["min"]:
+        raise ValueError(f"Argument 'terms' must be 'min', not {terms!r}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
@@ -106,6 +117,8 @@ def irreducible_poly(
         elif method == "max":
             poly = next(irreducible_polys(order, degree, terms, reverse=True))
         else:
+            if terms == "min":
+                terms = _minimum_terms(order, degree, "is_irreducible")
             poly = _random_search(order, degree, terms)
     except StopIteration as e:
         terms_str = "any" if terms is None else str(terms)
@@ -120,7 +133,7 @@ def irreducible_poly(
 def irreducible_polys(
     order: int,
     degree: int,
-    terms: int | None = None,
+    terms: int | str | None = None,
     reverse: bool = False,
 ) -> Iterator[Poly]:
     r"""
@@ -129,8 +142,12 @@ def irreducible_polys(
     Arguments:
         order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
         degree: The degree :math:`m` of the desired irreducible polynomial.
-        terms: The desired number of non-zero terms :math:`t` in the polynomials. The default is `None` which
-            disregards the number of terms while searching for the polynomials.
+        terms: The desired number of non-zero terms :math:`t` in the polynomial.
+
+            - `None` (default): Disregards the number of terms while searching for the polynomial.
+            - `int`: The exact number of non-zero terms in the polynomial.
+            - `"min"`: The minimum possible number of non-zero terms.
+
         reverse: Indicates to return the irreducible polynomials from lexicographically last to first.
             The default is `False`.
 
@@ -155,11 +172,17 @@ def irreducible_polys(
 
             list(galois.irreducible_polys(3, 4))
 
-        Find all monic irreducible polynomials with three terms.
+        Find all monic irreducible polynomials with four terms.
 
         .. ipython:: python
 
-            list(galois.irreducible_polys(3, 4, terms=3))
+            list(galois.irreducible_polys(3, 4, terms=4))
+
+        Find all monic irreducible polynomials with the minimum number of non-zero terms.
+
+        .. ipython:: python
+
+            list(galois.irreducible_polys(3, 4, terms="min"))
 
         Loop over all the polynomials in reversed order, only finding them as needed. The search cost for the
         polynomials that would have been found after the `break` condition is never incurred.
@@ -185,17 +208,27 @@ def irreducible_polys(
     """
     verify_isinstance(order, int)
     verify_isinstance(degree, int)
-    verify_isinstance(terms, int, optional=True)
+    verify_isinstance(terms, (int, str), optional=True)
     verify_isinstance(reverse, bool)
 
     if not is_prime_power(order):
         raise ValueError(f"Argument 'order' must be a prime power, not {order}.")
     if not degree >= 0:
         raise ValueError(f"Argument 'degree' must be at least 0, not {degree}.")
-    if terms is not None and not 1 <= terms <= degree + 1:
+    if isinstance(terms, int) and not 1 <= terms <= degree + 1:
         raise ValueError(f"Argument 'terms' must be at least 1 and at most {degree + 1}, not {terms}.")
+    if isinstance(terms, str) and not terms in ["min"]:
+        raise ValueError(f"Argument 'terms' must be 'min', not {terms!r}.")
 
-    if terms is None:
+    if terms == "min":
+        # Find the minimum number of terms required to produce an irreducible polynomial of degree m over GF(q).
+        # Then yield all monic irreducible polynomials of with that number of terms.
+        min_terms = _minimum_terms(order, degree, "is_irreducible")
+        yield from _deterministic_search_fixed_terms(order, degree, min_terms, "is_irreducible", reverse)
+    elif isinstance(terms, int):
+        # Iterate over and test monic polynomials of degree m over GF(q) with `terms` non-zero terms.
+        yield from _deterministic_search_fixed_terms(order, degree, terms, "is_irreducible", reverse)
+    else:
         # Iterate over and test all monic polynomials of degree m over GF(q).
         start = order**degree
         stop = 2 * order**degree
@@ -211,9 +244,6 @@ def irreducible_polys(
                 yield poly
             else:
                 break
-    else:
-        # Iterate over and test monic polynomials of degree m over GF(q) with `terms` non-zero terms.
-        yield from _deterministic_search_fixed_terms(order, degree, terms, "is_irreducible", reverse)
 
 
 @functools.lru_cache(maxsize=4096)
@@ -232,6 +262,35 @@ def _deterministic_search(
             return poly
 
     return None
+
+
+@functools.lru_cache(maxsize=4096)
+def _minimum_terms(order: int, degree: int, test: str) -> int:
+    """
+    Finds the minimum number of terms of an irreducible or primitive polynomial of the specified degree over the
+    specified field.
+    """
+    if order == 2 and degree > 1:
+        # In GF(2), polynomials with even terms are always reducible. The only exception is x + 1.
+        start, stop, step = 1, degree + 2, 2
+    else:
+        start, stop, step = 1, degree + 2, 1
+
+    for terms in range(start, stop, step):
+        try:
+            # If a polynomial with the specified number of terms exists, then the current number of terms is
+            # the minimum number of terms.
+            next(_deterministic_search_fixed_terms(order, degree, terms, test))
+            return terms
+        except StopIteration:
+            # Continue to the next number of terms.
+            pass
+
+    poly_type = "irreducible" if test == "is_irreducible" else "primitive"
+    raise RuntimeError(
+        f"Could not find the minimum number of terms for a degree-{degree} {poly_type} polynomial over GF({order}). "
+        "This should never happen. Please open a GitHub issue."
+    )
 
 
 def _deterministic_search_fixed_terms(

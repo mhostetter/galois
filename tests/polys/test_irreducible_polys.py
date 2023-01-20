@@ -1,6 +1,7 @@
 """
 A pytest module to test generating irreducible polynomials over finite fields.
 """
+import numpy as np
 import pytest
 
 import galois
@@ -86,6 +87,8 @@ def test_irreducible_poly_exceptions():
     with pytest.raises(ValueError):
         galois.irreducible_poly(2, 3, terms=6)
     with pytest.raises(ValueError):
+        galois.irreducible_poly(2, 3, terms="invalid-argument")
+    with pytest.raises(ValueError):
         galois.irreducible_poly(2, 3, method="invalid-argument")
 
 
@@ -120,6 +123,8 @@ def test_irreducible_polys_exceptions():
         next(galois.irreducible_polys(2, -1))
     with pytest.raises(ValueError):
         next(galois.irreducible_polys(2, 3, terms=6))
+    with pytest.raises(ValueError):
+        next(galois.irreducible_polys(2, 3, terms="invalid-argument"))
 
 
 @pytest.mark.parametrize("order,degree,polys", PARAMS)
@@ -143,6 +148,16 @@ def test_specific_terms_none_found():
         galois.irreducible_poly(2, 3, terms=2)
 
     assert not list(galois.irreducible_polys(2, 3, terms=2))
+
+
+@pytest.mark.parametrize("order,degree,polys", PARAMS)
+def test_minimum_terms(order, degree, polys):
+    min_terms = min(np.count_nonzero(f) for f in polys)
+    min_term_polys = [f for f in polys if np.count_nonzero(f) == min_terms]
+    assert [f.coeffs.tolist() for f in galois.irreducible_polys(order, degree, terms="min")] == min_term_polys
+
+    f = galois.irreducible_poly(order, degree, terms="min", method="random")
+    assert f.coeffs.tolist() in min_term_polys
 
 
 def test_large_degree():
