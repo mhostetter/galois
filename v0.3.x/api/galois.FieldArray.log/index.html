@@ -7414,10 +7414,10 @@ Power</label></div>
 <span class="gh">Out[2]: </span><span class="go">GF(3, order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[3]: </span><span class="go">GF([238,  99,  48, 187, 166, 171, 141,   4,  17, 173], order=3^5)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([176, 119, 168,  17, 126,  30, 135,  40, 191, 103], order=3^5)</span>
 
 <span class="gp">In [4]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">();</span> <span class="n">i</span>
-<span class="gh">Out[4]: </span><span class="go">array([186,  76, 139, 108,  45, 197,  37,  69, 222, 213])</span>
+<span class="gh">Out[4]: </span><span class="go">array([114, 118,  87, 222, 211,  47,   8, 115, 220, 181])</span>
 
 <span class="gp">In [5]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">alpha</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[5]: </span><span class="go">True</span>
@@ -7432,14 +7432,14 @@ Power</label></div>
 
 <span class="gp">In [8]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
 <span class="gh">Out[8]: </span>
-<span class="go">GF([                  α^2 + 2,          α^4 + 2α^3 + α^2,</span>
-<span class="go">                    2α^4 + 2α,                  2α^3 + 1,</span>
-<span class="go">           2α^3 + α^2 + α + 1, 2α^4 + α^3 + 2α^2 + α + 1,</span>
-<span class="go">          α^4 + α^3 + α^2 + 1,            2α^4 + α^2 + 1,</span>
-<span class="go">                 α^4 + 2α + 1,      2α^3 + 2α^2 + 2α + 2], order=3^5)</span>
+<span class="go">GF([ α^4 + 2α^3 + 2α^2 + 2α,                2α^2 + 2,</span>
+<span class="go">              α^3 + α^2 + 1,                2α^3 + 2,</span>
+<span class="go">       2α^3 + 2α^2 + 2α + 1, α^4 + α^3 + α^2 + α + 2,</span>
+<span class="go">         α^4 + 2α^3 + α + 1,          2α^4 + α^3 + α,</span>
+<span class="go">        2α^4 + α^2 + 2α + 2,          2α^3 + α^2 + 2], order=3^5)</span>
 
 <span class="gp">In [9]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">();</span> <span class="n">i</span>
-<span class="gh">Out[9]: </span><span class="go">array([ 74, 140,  87, 136,  39, 178,  83, 206, 130, 236])</span>
+<span class="gh">Out[9]: </span><span class="go">array([161, 167, 227,  86,  95, 117,  59, 158,  60, 233])</span>
 
 <span class="gp">In [10]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">alpha</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[10]: </span><span class="go">True</span>
@@ -7454,11 +7454,11 @@ Power</label></div>
 
 <span class="gp">In [13]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
 <span class="gh">Out[13]: </span>
-<span class="go">GF([α^162,  α^20,     α,  α^97, α^239, α^174,  α^22, α^126,  α^45, α^107],</span>
+<span class="go">GF([α^230, α^124,  α^59, α^128, α^212,  α^22,  α^10, α^201, α^207,  α^27],</span>
 <span class="go">   order=3^5)</span>
 
 <span class="gp">In [14]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">();</span> <span class="n">i</span>
-<span class="gh">Out[14]: </span><span class="go">array([162,  20,   1,  97, 239, 174,  22, 126,  45, 107])</span>
+<span class="gh">Out[14]: </span><span class="go">array([230, 124,  59, 128, 212,  22,  10, 201, 207,  27])</span>
 
 <span class="gp">In [15]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">alpha</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[15]: </span><span class="go">True</span>
@@ -7485,7 +7485,7 @@ Power</label></div>
 <span class="gh">Out[17]: </span><span class="go">GF(242, order=3^5)</span>
 
 <span class="gp">In [18]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">beta</span><span class="p">);</span> <span class="n">i</span>
-<span class="gh">Out[18]: </span><span class="go">array([150, 144, 225,  45,  51, 188, 110,  36, 203, 117])</span>
+<span class="gh">Out[18]: </span><span class="go">array([204,  70, 207,   2,  26, 110,  72, 213, 111,  25])</span>
 
 <span class="gp">In [19]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">beta</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[19]: </span><span class="go">True</span>
@@ -7497,7 +7497,7 @@ Power</label></div>
 <span class="gh">Out[20]: </span><span class="go">GF(2α^4 + 2α^3 + 2α^2 + 2α + 2, order=3^5)</span>
 
 <span class="gp">In [21]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">beta</span><span class="p">);</span> <span class="n">i</span>
-<span class="gh">Out[21]: </span><span class="go">array([150, 144, 225,  45,  51, 188, 110,  36, 203, 117])</span>
+<span class="gh">Out[21]: </span><span class="go">array([204,  70, 207,   2,  26, 110,  72, 213, 111,  25])</span>
 
 <span class="gp">In [22]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">beta</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[22]: </span><span class="go">True</span>
@@ -7509,7 +7509,7 @@ Power</label></div>
 <span class="gh">Out[23]: </span><span class="go">GF(α^185, order=3^5)</span>
 
 <span class="gp">In [24]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">beta</span><span class="p">);</span> <span class="n">i</span>
-<span class="gh">Out[24]: </span><span class="go">array([150, 144, 225,  45,  51, 188, 110,  36, 203, 117])</span>
+<span class="gh">Out[24]: </span><span class="go">array([204,  70, 207,   2,  26, 110,  72, 213, 111,  25])</span>
 
 <span class="gp">In [25]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">beta</span> <span class="o">**</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[25]: </span><span class="go">True</span>
@@ -7527,21 +7527,21 @@ Power</label></div>
 <div class="tabbed-content docutils">
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [26]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[26]: </span><span class="go">GF(165, order=3^5)</span>
+<span class="gh">Out[26]: </span><span class="go">GF(95, order=3^5)</span>
 
 <span class="gp">In [27]: </span><span class="n">bases</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
 
 <span class="gp">In [28]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">bases</span><span class="p">);</span> <span class="n">i</span>
 <span class="gh">Out[28]: </span>
-<span class="go">array([137,   9, 221, 129, 167, 195,  43, 217,  65,  59, 171, 207,   3,</span>
-<span class="go">       235,  75,  67,  47,  87, 111,   7, 199, 227,  95, 153, 183,  31,</span>
-<span class="go">        63, 155, 229, 173, 109,  39, 181,  57, 139, 107,   5, 161, 219,</span>
-<span class="go">       157,  45, 239,  13, 115,  89,  15, 241, 113,  85, 197, 117, 101,</span>
-<span class="go">       145,  17,  19, 141, 223,  49, 119, 191, 213, 163, 215, 151, 127,</span>
-<span class="go">        41,  73, 133, 125, 105,   1, 159,  69, 149,  83,  37, 205,  71,</span>
-<span class="go">        81,  53,  23, 131, 237, 123, 103,  25, 185, 147,  79,  97, 211,</span>
-<span class="go">       233, 135,  51,  61, 193, 175,  29, 177, 189,  93,  27, 179, 169,</span>
-<span class="go">       201, 225, 203,  35,  21,  91])</span>
+<span class="go">array([229,  91, 191, 175, 129, 197, 139,  43, 227,   5,  35, 157, 111,</span>
+<span class="go">       225, 113,  59,  45,  73, 235,  17, 103, 171, 127,  95, 237, 179,</span>
+<span class="go">       153, 169,   3, 109, 161, 233, 163, 173,  61,  87, 185, 149, 117,</span>
+<span class="go">         1, 213, 131, 239, 141, 147,  71, 205,  67, 241,  29, 215, 107,</span>
+<span class="go">        41, 145, 219, 135,  23, 119,  47,  49, 137, 223, 211,  21, 101,</span>
+<span class="go">        65,  39,  81,  27,  13,  37,  75, 133, 189, 167, 159,  83, 207,</span>
+<span class="go">        93,  25, 125,   7,  57, 195, 181, 199,  69, 115,  19, 201,  63,</span>
+<span class="go">       151, 155, 193,  79, 123, 183, 105,  15, 217,  53,  31,  89, 203,</span>
+<span class="go">       177,  97,   9,  85,  51, 221])</span>
 
 <span class="gp">In [29]: </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bases</span> <span class="o">**</span> <span class="n">i</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[29]: </span><span class="go">True</span>
@@ -7550,21 +7550,21 @@ Power</label></div>
 </div>
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [30]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[30]: </span><span class="go">GF(2α^2 + α, order=3^5)</span>
+<span class="gh">Out[30]: </span><span class="go">GF(2α^4 + 2α^3 + α^2 + 1, order=3^5)</span>
 
 <span class="gp">In [31]: </span><span class="n">bases</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
 
 <span class="gp">In [32]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">bases</span><span class="p">);</span> <span class="n">i</span>
 <span class="gh">Out[32]: </span>
-<span class="go">array([127,  79, 219,   3, 229, 179,   1, 157, 221,   7,  49, 123, 107,</span>
-<span class="go">        73,  13, 131,  63, 199,  87, 169, 241, 191,  81, 133, 235,  57,</span>
-<span class="go">        69,  43, 101, 201, 177, 181,  83,  97,  37,  25,  17,  15,  67,</span>
-<span class="go">       195, 153, 135, 141, 149, 109,  51,  45, 239,  47,  89,  59,  53,</span>
-<span class="go">         9, 203, 113, 189, 129, 215, 211, 117,  95, 167,   5, 223,  93,</span>
-<span class="go">        91, 103,  65, 183, 115, 197, 105,  41,  71, 137,  29, 213, 193,</span>
-<span class="go">       227,  35, 175, 155, 225,  31, 205,  85, 145, 161,  75, 233, 185,</span>
-<span class="go">       163, 217, 125, 159,  27, 111, 147,  21, 207, 171, 237, 173, 139,</span>
-<span class="go">       151,  39,  61, 119,  23,  19])</span>
+<span class="go">array([187, 143, 231,  33,  99,  33,  11,  33,  11,  77,  55, 143, 209,</span>
+<span class="go">        77, 143, 231, 209,  11, 231, 165, 231, 165, 165,  11, 165, 143,</span>
+<span class="go">        33, 231, 143,  33,  11,  55, 187,  99, 165,  33, 187, 165,  11,</span>
+<span class="go">       209, 231,  33,  99, 187, 231,  77,  11, 209,  33,  11, 165,  99,</span>
+<span class="go">        99,  55,  33, 143, 209, 187, 143,  77,  77, 143,  55,  33,  55,</span>
+<span class="go">        33, 165, 231,  77,  55, 231, 187, 209,  55,  55,  77, 165, 187,</span>
+<span class="go">        77, 143, 231,  11,  55,  99,  77, 209, 143,  77,  99, 143,  99,</span>
+<span class="go">        99, 209, 165,  55,  55,  11, 165, 231,  99, 187, 187, 209,  77,</span>
+<span class="go">       209, 187, 187,  99,  11, 209])</span>
 
 <span class="gp">In [33]: </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bases</span> <span class="o">**</span> <span class="n">i</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[33]: </span><span class="go">True</span>
@@ -7573,21 +7573,21 @@ Power</label></div>
 </div>
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [34]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[34]: </span><span class="go">GF(α^238, order=3^5)</span>
+<span class="gh">Out[34]: </span><span class="go">GF(α^30, order=3^5)</span>
 
 <span class="gp">In [35]: </span><span class="n">bases</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">primitive_elements</span>
 
 <span class="gp">In [36]: </span><span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">bases</span><span class="p">);</span> <span class="n">i</span>
 <span class="gh">Out[36]: </span>
-<span class="go">array([238,  28,  96, 240, 170,  42,  80, 218,  14,  76,  48, 160,  90,</span>
-<span class="go">        32,  72,  74, 200, 190, 184, 210, 162,  34, 188, 234, 166, 204,</span>
-<span class="go">       196,  52,  94, 108, 124, 202, 106,  16,  56,  64, 150, 232,  36,</span>
-<span class="go">       112, 140, 152, 148,  62,   8, 208, 212,   2, 130, 102, 122, 126,</span>
-<span class="go">       236,  26,  86, 116, 156,  18, 182, 164,  98,  50, 158, 174, 180,</span>
-<span class="go">        20,  12, 118, 120,   4,  30, 172, 134, 114,  70, 142, 100, 194,</span>
-<span class="go">        10, 138, 206,  58,  92,  60, 186,  24, 226,  54, 192,   6,  38,</span>
-<span class="go">       214, 178,  78, 136, 224, 168, 144, 228, 104, 128,  84,  46, 230,</span>
-<span class="go">       222, 216,  40,  82, 146,  68])</span>
+<span class="go">array([ 30,  32,   6, 136,  56,  48, 126, 180,  16, 156, 124,  10, 172,</span>
+<span class="go">         2, 186,  50, 194, 148,  72, 240, 116, 108,  42,  60,  86, 164,</span>
+<span class="go">       224,  94, 142, 158,  38,  58,  52, 122,  64,   4, 206, 196, 214,</span>
+<span class="go">       128, 160,  70, 100, 140, 182, 134, 104, 106, 114,  82, 174, 144,</span>
+<span class="go">       166, 168, 202,  98,  40, 228, 208, 222, 112, 230, 146,  26, 102,</span>
+<span class="go">        92, 152, 204,  68, 212, 138, 162,  84, 234,  80,  24, 218, 118,</span>
+<span class="go">        46,  54,  28, 170,  36,  34, 178,  62, 120, 200,  12,  76,  78,</span>
+<span class="go">       210, 238,  20, 190,  14, 192, 130, 226, 188,   8,  96,  18,  90,</span>
+<span class="go">       150,  74, 184, 232, 236, 216])</span>
 
 <span class="gp">In [37]: </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bases</span> <span class="o">**</span> <span class="n">i</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
 <span class="gh">Out[37]: </span><span class="go">True</span>

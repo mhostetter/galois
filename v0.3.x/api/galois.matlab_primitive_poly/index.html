@@ -7436,36 +7436,37 @@ is over.</p>
 <p><a class="reference internal" href="../galois.Poly.is_primitive/" title="galois.Poly.is_primitive (Python method) — Determines whether the polynomial f(x) over \mathrm{GF}(q) is primitive."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Poly.is_primitive</span></code></a>, <a class="reference internal" href="../galois.primitive_poly/" title="galois.primitive_poly (Python function) — Returns a monic primitive polynomial f(x) over \mathrm{GF}(q) with degree m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_poly</span></code></a>, <a class="reference internal" href="../galois.conway_poly/" title="galois.conway_poly (Python function) — Returns the Conway polynomial C_{p,m}(x) over \mathrm{GF}(p) with degree m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">conway_poly</span></code></a></p>
 </div>
 <p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
-<p>This function returns the same result as Matlab’s <code class="code highlight python docutils literal highlight-python"><span class="n">gfprimdf</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span></code>. Matlab uses the primitive polynomial with
-minimum terms (equivalent to <code class="code highlight python docutils literal highlight-python"><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;min-terms&quot;</span><span class="p">)</span></code>) as the default… <em>mostly</em>.
-There are three notable exceptions:</p>
+<p>This function returns the same result as Matlab’s <code class="code highlight python docutils literal highlight-python"><span class="n">gfprimdf</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span></code>. Matlab uses the lexicographically-first
+primitive polynomial with minimum terms, which is equivalent to <code class="code highlight python docutils literal highlight-python"><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">)</span></code>.
+There are three notable exceptions, however:</p>
 <ol class="arabic simple">
-<li><p><span class="math notranslate nohighlight">\(\mathrm{GF}(2^7)\)</span> uses <span class="math notranslate nohighlight">\(x^7 + x^3 + 1\)</span>,
+<li><p>In <span class="math notranslate nohighlight">\(\mathrm{GF}(2^7)\)</span>, Matlab uses <span class="math notranslate nohighlight">\(x^7 + x^3 + 1\)</span>,
 not <span class="math notranslate nohighlight">\(x^7 + x + 1\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\(\mathrm{GF}(2^{14})\)</span> uses <span class="math notranslate nohighlight">\(x^{14} + x^{10} + x^6 + x + 1\)</span>,
+<li><p>In <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{14})\)</span>, Matlab uses <span class="math notranslate nohighlight">\(x^{14} + x^{10} + x^6 + x + 1\)</span>,
 not <span class="math notranslate nohighlight">\(x^{14} + x^5 + x^3 + x + 1\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\(\mathrm{GF}(2^{16})\)</span> uses <span class="math notranslate nohighlight">\(x^{16} + x^{12} + x^3 + x + 1\)</span>,
+<li><p>In <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{16})\)</span>, Matlab uses <span class="math notranslate nohighlight">\(x^{16} + x^{12} + x^3 + x + 1\)</span>,
 not <span class="math notranslate nohighlight">\(x^{16} + x^5 + x^3 + x^2 + 1\)</span>.</p></li>
 </ol>
 <div class="warning admonition">
 <p class="admonition-title">Warning</p>
 <p>This has been tested for all the <span class="math notranslate nohighlight">\(\mathrm{GF}(2^m)\)</span> fields for <span class="math notranslate nohighlight">\(2 \le m \le 16\)</span> (Matlab doesn’t
 support larger than 16). And it has been spot-checked for <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>. There may exist other
-exceptions. Please submit a GitHub issue if you discover one.</p>
+exceptions. Please submit a <a class="reference external" href="https://github.com/mhostetter/galois/issues">GitHub issue</a> if you discover one.</p>
 </div>
 <p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
 <ul class="simple">
 <li><p>Lin, S. and Costello, D. Error Control Coding. Table 2.7.</p></li>
 </ul>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">)</span>
 <span class="gh">Out[1]: </span><span class="go">Poly(x^6 + x + 1, GF(2))</span>
 
 <span class="gp">In [2]: </span><span class="n">galois</span><span class="o">.</span><span class="n">matlab_primitive_poly</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 <span class="gh">Out[2]: </span><span class="go">Poly(x^6 + x + 1, GF(2))</span>
 </code></pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<p>Below is one of the exceptions.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">)</span>
 <span class="gh">Out[3]: </span><span class="go">Poly(x^7 + x + 1, GF(2))</span>
 
 <span class="gp">In [4]: </span><span class="n">galois</span><span class="o">.</span><span class="n">matlab_primitive_poly</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
