@@ -55,6 +55,7 @@ dev = [
     "pytest-cov[toml]",
     "pytest-xdist",
     "pytest-benchmark >= 4.0.0",
+    "pytest-timeout"
 ]
 
 [project.urls]

@@ -46,6 +46,25 @@ from .luts.primitive_polys_9 import (
 )
 from .luts.primitive_polys_25 import PRIMITIVE_POLYS_25_1, PRIMITIVE_POLYS_25_2
 
+from .luts.primitive_polys_database import (
+    PRIMITIVE_POLY_MIN_TERMS_2_723,
+    PRIMITIVE_POLY_MIN_TERMS_2_936,
+    PRIMITIVE_POLY_MIN_TERMS_2_1056,
+    PRIMITIVE_POLY_MIN_TERMS_2_1200,
+    PRIMITIVE_POLY_MIN_TERMS_3_399,
+    PRIMITIVE_POLY_MIN_TERMS_3_422,
+    PRIMITIVE_POLY_MIN_TERMS_3_549,
+    PRIMITIVE_POLY_MIN_TERMS_3_660,
+    PRIMITIVE_POLY_MIN_TERMS_5_296,
+    PRIMITIVE_POLY_MIN_TERMS_5_357,
+    PRIMITIVE_POLY_MIN_TERMS_5_404,
+    PRIMITIVE_POLY_MIN_TERMS_5_430,
+    PRIMITIVE_POLY_MIN_TERMS_7_129,
+    PRIMITIVE_POLY_MIN_TERMS_7_195,
+    PRIMITIVE_POLY_MIN_TERMS_7_284,
+    PRIMITIVE_POLY_MIN_TERMS_7_357,
+)
+
 PARAMS = [
     (2, 1, PRIMITIVE_POLYS_2_1),
     (2, 2, PRIMITIVE_POLYS_2_2),
@@ -73,6 +92,25 @@ PARAMS = [
     (5, 4, PRIMITIVE_POLYS_5_4),
     (5**2, 1, PRIMITIVE_POLYS_25_1),
     (5**2, 2, PRIMITIVE_POLYS_25_2),
+]
+
+PARAMS_DB = [
+    (2, 723, PRIMITIVE_POLY_MIN_TERMS_2_723),
+    (2, 936, PRIMITIVE_POLY_MIN_TERMS_2_936),
+    (2, 1056, PRIMITIVE_POLY_MIN_TERMS_2_1056),
+    (2, 1200, PRIMITIVE_POLY_MIN_TERMS_2_1200),
+    (3, 399, PRIMITIVE_POLY_MIN_TERMS_3_399),
+    (3, 422, PRIMITIVE_POLY_MIN_TERMS_3_422),
+    (3, 549, PRIMITIVE_POLY_MIN_TERMS_3_549),
+    (3, 660, PRIMITIVE_POLY_MIN_TERMS_3_660),
+    (5, 296, PRIMITIVE_POLY_MIN_TERMS_5_296),
+    (5, 357, PRIMITIVE_POLY_MIN_TERMS_5_357),
+    (5, 404, PRIMITIVE_POLY_MIN_TERMS_5_404),
+    (5, 430, PRIMITIVE_POLY_MIN_TERMS_5_430),
+    (7, 129, PRIMITIVE_POLY_MIN_TERMS_7_129),
+    (7, 195, PRIMITIVE_POLY_MIN_TERMS_7_195),
+    (7, 284, PRIMITIVE_POLY_MIN_TERMS_7_284),
+    (7, 357, PRIMITIVE_POLY_MIN_TERMS_7_357),
 ]
 
 
@@ -162,6 +200,16 @@ def test_minimum_terms(order, degree, polys):
 
     f = galois.primitive_poly(order, degree, terms="min", method="random")
     assert f.coeffs.tolist() in min_term_polys
+
+
+@pytest.mark.timeout(1, method="signal")
+@pytest.mark.parametrize("order,degree,polys", PARAMS_DB)
+def test_minimum_terms_from_database(order, degree, polys):
+    p = galois.primitive_poly(order, degree, terms="min")
+    db_degrees = p.nonzero_degrees.tolist()
+    db_coeffs = p.nonzero_coeffs.tolist()
+    exp_degrees, exp_coeffs = polys
+    assert db_degrees == exp_degrees and db_coeffs == exp_coeffs
 
 
 def test_conway_poly_exceptions():
