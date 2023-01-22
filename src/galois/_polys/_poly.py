@@ -4,6 +4,7 @@ A module containing a class for univariate polynomials over finite fields.
 from __future__ import annotations
 
 import functools
+import random
 from typing import Callable, Iterable, Iterator, Sequence, Type, overload
 
 import numpy as np
@@ -2318,7 +2319,7 @@ def _deterministic_search_fixed_terms(
     reverse: bool = False,
 ) -> Iterator[Poly]:
     """
-    Iterates over all polynomials of the given degree and number of non-zero terms in lexicographical
+    Iterates over all monic polynomials of the given degree and number of non-zero terms in lexicographical
     order, only yielding those that pass the specified test (either 'is_irreducible()' or 'is_primitive()').
     """
     assert test in ["is_irreducible", "is_primitive"]
@@ -2344,7 +2345,7 @@ def _deterministic_search_fixed_terms_recursive(
     direction: Callable[[Iterable[int]], Iterable[int]],
 ) -> Iterator[Poly]:
     """
-    Recursively finds all polynomials having non-zero coefficients `coeffs` with degree `degrees` with `terms`
+    Recursively finds all monic polynomials having non-zero coefficients `coeffs` with degree `degrees` with `terms`
     additional non-zero terms. The polynomials are found in lexicographical order, only yielding those that pass
     the specified test (either 'is_irreducible()' or 'is_primitive()').
     """
@@ -2371,3 +2372,53 @@ def _deterministic_search_fixed_terms_recursive(
                 yield from _deterministic_search_fixed_terms_recursive(
                     next_degrees, next_coeffs, terms - 1, test, field, direction
                 )
+
+
+def _random_search(order: int, degree: int, test: str) -> Iterator[Poly]:
+    """
+    Searches for a random monic polynomial of specified degree, only yielding those that pass the specified test
+    (either 'is_irreducible()' or 'is_primitive()').
+    """
+    assert test in ["is_irreducible", "is_primitive"]
+    field = _factory.FIELD_FACTORY(order)
+
+    # Only search monic polynomials of degree m over GF(q)
+    start = order**degree
+    stop = 2 * order**degree
+
+    while True:
+        integer = random.randint(start, stop - 1)
+        poly = Poly.Int(integer, field=field)
+        if getattr(poly, test)():
+            yield poly
+
+
+def _random_search_fixed_terms(
+    order: int,
+    degree: int,
+    terms: int,
+    test: str,
+) -> Iterator[Poly]:
+    """
+    Searches for a random monic polynomial of specified degree and number of non-zero terms, only yielding those that
+    pass the specified test (either 'is_irreducible()' or 'is_primitive()').
+    """
+    assert test in ["is_irreducible", "is_primitive"]
+    field = _factory.FIELD_FACTORY(order)
+
+    if terms == 1:
+        # The x^m term is always 1. If there's only one term, then the x^m is the polynomial.
+        poly = Poly.Degrees([degree], [1], field=field)
+        if getattr(poly, test)():
+            yield poly
+    else:
+        while True:
+            # The x^m term is always 1 and the x^0 term is always non-zero.
+            mid_degrees = random.sample(range(1, degree), terms - 2)
+            mid_coeffs = np.random.randint(1, field.order, terms - 2)
+            x0_coeff = np.random.randint(1, field.order)
+            degrees = (degree, *mid_degrees, 0)
+            coeffs = (1, *mid_coeffs, x0_coeff)
+            poly = Poly.Degrees(degrees, coeffs, field=field)
+            if getattr(poly, test)():
+                yield poly
