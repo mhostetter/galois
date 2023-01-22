@@ -7,7 +7,7 @@ from typing import Iterator
 
 from typing_extensions import Literal
 
-from .._databases import ConwayPolyDatabase
+from .._databases import ConwayPolyDatabase, PrimitivePolyDatabase
 from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import is_prime, is_prime_power
@@ -131,6 +131,16 @@ def primitive_poly(
         raise ValueError(f"Argument 'terms' must be 'min', not {terms!r}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
+
+    if terms == "min" and method == "min":
+        try:
+            db = PrimitivePolyDatabase()
+            degrees, coeffs = db.fetch(order, degree)
+            field = _factory.FIELD_FACTORY(order)
+            poly = Poly.Degrees(degrees, coeffs, field=field)
+            return poly
+        except LookupError:
+            pass
 
     try:
         if method == "min":
