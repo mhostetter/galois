@@ -13,7 +13,13 @@ from .._databases import ConwayPolyDatabase
 from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import is_prime, is_prime_power
-from ._poly import Poly, _deterministic_search_fixed_terms, _minimum_terms
+from ._poly import (
+    Poly,
+    _deterministic_search_fixed_terms,
+    _minimum_terms,
+    _random_search,
+    _random_search_fixed_terms,
+)
 
 if TYPE_CHECKING:
     from .._fields import FieldArray
@@ -132,20 +138,22 @@ def primitive_poly(
 
     try:
         if method == "min":
-            poly = next(primitive_polys(order, degree, terms))
-        elif method == "max":
-            poly = next(primitive_polys(order, degree, terms, reverse=True))
-        else:
-            if terms == "min":
-                terms = _minimum_terms(order, degree, "is_primitive")
-            poly = _random_search(order, degree, terms)
+            return next(primitive_polys(order, degree, terms))
+        if method == "max":
+            return next(primitive_polys(order, degree, terms, reverse=True))
+
+        # Random search
+        if terms is None:
+            return next(_random_search(order, degree, "is_primitive"))
+        if terms == "min":
+            terms = _minimum_terms(order, degree, "is_primitive")
+        return next(_random_search_fixed_terms(order, degree, terms, "is_primitive"))
+
     except StopIteration as e:
         terms_str = "any" if terms is None else str(terms)
         raise RuntimeError(
             f"No monic primitive polynomial of degree {degree} over GF({order}) with {terms_str} terms exists."
         ) from e
-
-    return poly
 
 
 @export
@@ -283,25 +291,6 @@ def _deterministic_search(
             return poly
 
     return None
-
-
-def _random_search(order: int, degree: int, terms: int | None) -> Poly:
-    """
-    Searches for a random primitive polynomial.
-    """
-    field = _factory.FIELD_FACTORY(order)
-
-    # Only search monic polynomials of degree m over GF(p)
-    start = order**degree
-    stop = 2 * order**degree
-
-    while True:
-        integer = random.randint(start, stop - 1)
-        poly = Poly.Int(integer, field=field)
-        if terms is not None and poly.nonzero_coeffs.size != terms:
-            continue
-        if poly.is_primitive():
-            return poly
 
 
 @export
