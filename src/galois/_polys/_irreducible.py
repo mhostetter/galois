@@ -5,14 +5,14 @@ from __future__ import annotations
 
 import functools
 import random
-from typing import TYPE_CHECKING, Callable, Iterable, Iterator, Type
+from typing import TYPE_CHECKING, Iterator, Type
 
 from typing_extensions import Literal
 
-from .._domains import Array, _factory
+from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import is_prime_power
-from ._poly import Poly
+from ._poly import Poly, _deterministic_search_fixed_terms, _minimum_terms
 
 if TYPE_CHECKING:
     from .._fields import FieldArray
@@ -262,98 +262,6 @@ def _deterministic_search(
             return poly
 
     return None
-
-
-@functools.lru_cache(maxsize=4096)
-def _minimum_terms(order: int, degree: int, test: str) -> int:
-    """
-    Finds the minimum number of terms of an irreducible or primitive polynomial of the specified degree over the
-    specified field.
-    """
-    if order == 2 and degree > 1:
-        # In GF(2), polynomials with even terms are always reducible. The only exception is x + 1.
-        start, stop, step = 1, degree + 2, 2
-    else:
-        start, stop, step = 1, degree + 2, 1
-
-    for terms in range(start, stop, step):
-        try:
-            # If a polynomial with the specified number of terms exists, then the current number of terms is
-            # the minimum number of terms.
-            next(_deterministic_search_fixed_terms(order, degree, terms, test))
-            return terms
-        except StopIteration:
-            # Continue to the next number of terms.
-            pass
-
-    poly_type = "irreducible" if test == "is_irreducible" else "primitive"
-    raise RuntimeError(
-        f"Could not find the minimum number of terms for a degree-{degree} {poly_type} polynomial over GF({order}). "
-        "This should never happen. Please open a GitHub issue."
-    )
-
-
-def _deterministic_search_fixed_terms(
-    order: int,
-    degree: int,
-    terms: int,
-    test: str,
-    reverse: bool = False,
-) -> Iterator[Poly]:
-    """
-    Iterates over all polynomials of the given degree and number of non-zero terms in lexicographical
-    order, only yielding those that pass the specified test (either 'is_irreducible()' or 'is_primitive()').
-    """
-    assert test in ["is_irreducible", "is_primitive"]
-    field = _factory.FIELD_FACTORY(order)
-
-    # A wrapper function around range to iterate forwards or backwards.
-    def direction(x):
-        if reverse:
-            return reversed(x)
-        return x
-
-    # Initialize the search by setting the first term to x^m with coefficient 1. This function will
-    # recursively add the remaining terms, with the last term being x^0.
-    yield from _deterministic_search_fixed_terms_recursive([degree], [1], terms - 1, test, field, direction)
-
-
-def _deterministic_search_fixed_terms_recursive(
-    degrees: Iterable[int],
-    coeffs: Iterable[int],
-    terms: int,
-    test: str,
-    field: Type[Array],
-    direction: Callable[[Iterable[int]], Iterable[int]],
-) -> Iterator[Poly]:
-    """
-    Recursively finds all polynomials having non-zero coefficients `coeffs` with degree `degrees` with `terms`
-    additional non-zero terms. The polynomials are found in lexicographical order, only yielding those that pass
-    the specified test (either 'is_irreducible()' or 'is_primitive()').
-    """
-    if terms == 0:
-        # There are no more terms, yield the polynomial.
-        poly = Poly.Degrees(degrees, coeffs, field=field)
-        if getattr(poly, test)():
-            yield poly
-    elif terms == 1:
-        # The last term must be the x^0 term, so we don't need to loop over possible degrees.
-        for coeff in direction(range(1, field.order)):
-            next_degrees = (*degrees, 0)
-            next_coeffs = (*coeffs, coeff)
-            yield from _deterministic_search_fixed_terms_recursive(
-                next_degrees, next_coeffs, terms - 1, test, field, direction
-            )
-    else:
-        # Find the next term's degree. It must be at least terms - 1 so that the polynomial can have the specified
-        # number of terms of lesser degree. It must also be less than the degree of the previous term.
-        for degree in direction(range(terms - 1, degrees[-1])):
-            for coeff in direction(range(1, field.order)):
-                next_degrees = (*degrees, degree)
-                next_coeffs = (*coeffs, coeff)
-                yield from _deterministic_search_fixed_terms_recursive(
-                    next_degrees, next_coeffs, terms - 1, test, field, direction
-                )
 
 
 def _random_search(order: int, degree: int, terms: int | None) -> Poly:
