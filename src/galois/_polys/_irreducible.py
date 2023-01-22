@@ -8,6 +8,7 @@ from typing import Iterator
 
 from typing_extensions import Literal
 
+from .._databases import IrreduciblePolyDatabase
 from .._domains import _factory
 from .._helper import export, method_of, verify_isinstance
 from .._prime import factors, is_prime_power
@@ -128,6 +129,7 @@ def irreducible_poly(
     degree: int,
     terms: int | str | None = None,
     method: Literal["min", "max", "random"] = "min",
+    use_database: bool = True,
 ) -> Poly:
     r"""
     Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
@@ -214,6 +216,16 @@ def irreducible_poly(
         raise ValueError(f"Argument 'terms' must be 'min', not {terms!r}.")
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
+
+    if terms == "min" and method == "min" and use_database:
+        try:
+            db = IrreduciblePolyDatabase()
+            degrees, coeffs = db.fetch(order, degree)
+            field = _factory.FIELD_FACTORY(order)
+            poly = Poly.Degrees(degrees, coeffs, field=field)
+            return poly
+        except LookupError:
+            pass
 
     try:
         if method == "min":
