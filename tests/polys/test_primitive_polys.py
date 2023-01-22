@@ -5,6 +5,7 @@ References
 ----------
 * https://baylor-ir.tdl.org/bitstream/handle/2104/8793/GF3%20Polynomials.pdf?sequence=1&isAllowed=y
 """
+import time
 import numpy as np
 import pytest
 
@@ -202,10 +203,12 @@ def test_minimum_terms(order, degree, polys):
     assert f.coeffs.tolist() in min_term_polys
 
 
-@pytest.mark.timeout(1, method="signal")
 @pytest.mark.parametrize("order,degree,polys", PARAMS_DB)
 def test_minimum_terms_from_database(order, degree, polys):
+    tick = time.time()
     p = galois.primitive_poly(order, degree, terms="min")
+    tock = time.time()
+    assert tock - tick < 1.0
     db_degrees = p.nonzero_degrees.tolist()
     db_coeffs = p.nonzero_coeffs.tolist()
     exp_degrees, exp_coeffs = polys
