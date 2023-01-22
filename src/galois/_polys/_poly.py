@@ -2280,35 +2280,24 @@ def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> tupl
     return degrees, coeffs
 
 
-@functools.lru_cache(maxsize=4096)
-def _minimum_terms(order: int, degree: int, test: str) -> int:
+@functools.lru_cache(maxsize=8192)
+def _deterministic_search(
+    field: Type[Array],
+    start: int,
+    stop: int,
+    step: int,
+    test: str,
+) -> Poly | None:
     """
-    Finds the minimum number of terms of an irreducible or primitive polynomial of specified degree over the
-    finite field of specified order.
+    Searches for a monic polynomial in the specified range, returning the first one that passes the specified test
+    (either 'is_irreducible()' or 'is_primitive()'). This function returns `None` if no such polynomial exists.
     """
-    assert test in ["is_irreducible", "is_primitive"]
+    for element in range(start, stop, step):
+        poly = Poly.Int(element, field=field)
+        if getattr(poly, test)():
+            return poly
 
-    if order == 2 and degree > 1:
-        # In GF(2), polynomials with even terms are always reducible. The only exception is x + 1.
-        start, stop, step = 1, degree + 2, 2
-    else:
-        start, stop, step = 1, degree + 2, 1
-
-    for terms in range(start, stop, step):
-        try:
-            # If a polynomial with the specified number of terms exists, then the current number of terms is
-            # the minimum number of terms.
-            next(_deterministic_search_fixed_terms(order, degree, terms, test))
-            return terms
-        except StopIteration:
-            # Continue to the next number of terms.
-            pass
-
-    poly_type = "irreducible" if test == "is_irreducible" else "primitive"
-    raise RuntimeError(
-        f"Could not find the minimum number of terms for a degree-{degree} {poly_type} polynomial over GF({order}). "
-        "This should never happen. Please open a GitHub issue."
-    )
+    return None
 
 
 def _deterministic_search_fixed_terms(
@@ -2422,3 +2411,34 @@ def _random_search_fixed_terms(
             poly = Poly.Degrees(degrees, coeffs, field=field)
             if getattr(poly, test)():
                 yield poly
+
+
+@functools.lru_cache(maxsize=8192)
+def _minimum_terms(order: int, degree: int, test: str) -> int:
+    """
+    Finds the minimum number of terms of an irreducible or primitive polynomial of specified degree over the
+    finite field of specified order.
+    """
+    assert test in ["is_irreducible", "is_primitive"]
+
+    if order == 2 and degree > 1:
+        # In GF(2), polynomials with even terms are always reducible. The only exception is x + 1.
+        start, stop, step = 1, degree + 2, 2
+    else:
+        start, stop, step = 1, degree + 2, 1
+
+    for terms in range(start, stop, step):
+        try:
+            # If a polynomial with the specified number of terms exists, then the current number of terms is
+            # the minimum number of terms.
+            next(_deterministic_search_fixed_terms(order, degree, terms, test))
+            return terms
+        except StopIteration:
+            # Continue to the next number of terms.
+            pass
+
+    poly_type = "irreducible" if test == "is_irreducible" else "primitive"
+    raise RuntimeError(
+        f"Could not find the minimum number of terms for a degree-{degree} {poly_type} polynomial over GF({order}). "
+        "This should never happen. Please open a GitHub issue."
+    )

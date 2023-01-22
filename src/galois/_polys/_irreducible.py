@@ -3,9 +3,7 @@ A module containing functions to generate and test irreducible polynomials.
 """
 from __future__ import annotations
 
-import functools
-import random
-from typing import TYPE_CHECKING, Iterator, Type
+from typing import Iterator
 
 from typing_extensions import Literal
 
@@ -14,14 +12,12 @@ from .._helper import export, verify_isinstance
 from .._prime import is_prime_power
 from ._poly import (
     Poly,
+    _deterministic_search,
     _deterministic_search_fixed_terms,
     _minimum_terms,
     _random_search,
     _random_search_fixed_terms,
 )
-
-if TYPE_CHECKING:
-    from .._fields import FieldArray
 
 
 @export
@@ -246,27 +242,9 @@ def irreducible_polys(
         field = _factory.FIELD_FACTORY(order)
 
         while True:
-            poly = _deterministic_search(field, start, stop, step)
+            poly = _deterministic_search(field, start, stop, step, "is_irreducible")
             if poly is not None:
                 start = int(poly) + step
                 yield poly
             else:
                 break
-
-
-@functools.lru_cache(maxsize=4096)
-def _deterministic_search(
-    field: Type[FieldArray],
-    start: int,
-    stop: int,
-    step: int,
-) -> Poly | None:
-    """
-    Searches for an irreducible polynomial in the range using the specified deterministic method.
-    """
-    for element in range(start, stop, step):
-        poly = Poly.Int(element, field=field)
-        if poly.is_irreducible():
-            return poly
-
-    return None
