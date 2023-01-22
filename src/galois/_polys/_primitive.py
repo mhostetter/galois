@@ -13,8 +13,7 @@ from .._databases import ConwayPolyDatabase
 from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import is_prime, is_prime_power
-from ._irreducible import _deterministic_search_fixed_terms, _minimum_terms
-from ._poly import Poly
+from ._poly import Poly, _deterministic_search_fixed_terms, _minimum_terms
 
 if TYPE_CHECKING:
     from .._fields import FieldArray
