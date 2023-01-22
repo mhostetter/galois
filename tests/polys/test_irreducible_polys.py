@@ -1,6 +1,7 @@
 """
 A pytest module to test generating irreducible polynomials over finite fields.
 """
+import time
 import numpy as np
 import pytest
 
@@ -42,6 +43,14 @@ from .luts.irreducible_polys_9 import (
 )
 from .luts.irreducible_polys_25 import IRREDUCIBLE_POLYS_25_1, IRREDUCIBLE_POLYS_25_2
 
+from .luts.irreducible_polys_database import (
+    IRREDUCIBLE_POLY_MIN_TERMS_2_2262,
+    IRREDUCIBLE_POLY_MIN_TERMS_2_5632,
+    IRREDUCIBLE_POLY_MIN_TERMS_2_5690,
+    IRREDUCIBLE_POLY_MIN_TERMS_2_7407,
+    IRREDUCIBLE_POLY_MIN_TERMS_2_8842,
+)
+
 PARAMS = [
     (2, 1, IRREDUCIBLE_POLYS_2_1),
     (2, 2, IRREDUCIBLE_POLYS_2_2),
@@ -69,6 +78,14 @@ PARAMS = [
     (5, 4, IRREDUCIBLE_POLYS_5_4),
     (5**2, 1, IRREDUCIBLE_POLYS_25_1),
     (5**2, 2, IRREDUCIBLE_POLYS_25_2),
+]
+
+PARAMS_DB = [
+    (2, 2262, IRREDUCIBLE_POLY_MIN_TERMS_2_2262),
+    (2, 5632, IRREDUCIBLE_POLY_MIN_TERMS_2_5632),
+    (2, 5690, IRREDUCIBLE_POLY_MIN_TERMS_2_5690),
+    (2, 7407, IRREDUCIBLE_POLY_MIN_TERMS_2_7407),
+    (2, 8842, IRREDUCIBLE_POLY_MIN_TERMS_2_8842),
 ]
 
 
@@ -158,6 +175,18 @@ def test_minimum_terms(order, degree, polys):
 
     f = galois.irreducible_poly(order, degree, terms="min", method="random")
     assert f.coeffs.tolist() in min_term_polys
+
+
+@pytest.mark.parametrize("order,degree,polys", PARAMS_DB)
+def test_minimum_terms_from_database(order, degree, polys):
+    tick = time.time()
+    p = galois.irreducible_poly(order, degree, terms="min")
+    tock = time.time()
+    assert tock - tick < 1.0
+    db_degrees = p.nonzero_degrees.tolist()
+    db_coeffs = p.nonzero_coeffs.tolist()
+    exp_degrees, exp_coeffs = polys
+    assert db_degrees == exp_degrees and db_coeffs == exp_coeffs
 
 
 def test_large_degree():
