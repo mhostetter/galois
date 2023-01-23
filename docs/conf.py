@@ -280,6 +280,18 @@ sphinx_immaterial_custom_admonitions = [
         "icon": "octicons/star-fill-24",
         "color": (255, 233, 3),  # Gold
     },
+    {
+        "name": "fast-performance",
+        "title": "Faster performance",
+        "icon": "material/speedometer",
+        "color": (40, 167, 69),  # Green: --sd-color-success
+    },
+    {
+        "name": "slow-performance",
+        "title": "Slower performance",
+        "icon": "material/speedometer-slow",
+        "color": (220, 53, 69),  # Red: --sd-color-danger
+    },
 ]
 
 
