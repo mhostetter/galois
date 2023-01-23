@@ -143,7 +143,10 @@ def primitive_poly(
             poly = Poly.Degrees(degrees, coeffs, field=field)
             return poly
         except LookupError:
-            terms = _minimum_terms(order, degree, "is_primitive")
+            pass
+
+    if terms == "min":
+        terms = _minimum_terms(order, degree, "is_primitive")
 
     try:
         if method == "min":
