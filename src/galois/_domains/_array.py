@@ -387,60 +387,6 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         Notes:
             This function updates :obj:`~galois.FieldArray.element_repr`.
-
-        Examples:
-            The default element representation is the integer representation.
-
-            .. ipython:: python
-
-                GF = galois.GF(3**2)
-                x = GF.elements; x
-
-            Permanently set the element representation by calling :func:`repr`.
-
-            .. md-tab-set::
-
-                .. md-tab-item:: Polynomial
-
-                    .. ipython:: python
-
-                        GF.repr("poly");
-                        x
-
-                .. md-tab-item:: Power
-
-                    .. ipython:: python
-
-                        GF.repr("power");
-                        x
-                        @suppress
-                        GF.repr()
-
-            Temporarily modify the element representation by using :func:`repr` as a context manager.
-
-            .. md-tab-set::
-
-                .. md-tab-item:: Polynomial
-
-                    .. ipython:: python
-
-                        print(x)
-                        with GF.repr("poly"):
-                            print(x)
-                        # Outside the context manager, the element representation reverts to its previous value
-                        print(x)
-
-                .. md-tab-item:: Power
-
-                    .. ipython:: python
-
-                        print(x)
-                        with GF.repr("power"):
-                            print(x)
-                        # Outside the context manager, the element representation reverts to its previous value
-                        print(x)
-                        @suppress
-                        GF.repr()
         """
         verify_literal(element_repr, ["int", "poly", "power"])
 
