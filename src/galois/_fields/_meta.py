@@ -65,7 +65,7 @@ class FieldArrayMeta(ArrayMeta):
             String representation
 
         Order:
-            21
+            30
         """
         with cls.prime_subfield.repr("int"):
             irreducible_poly_str = str(cls._irreducible_poly)
@@ -215,6 +215,12 @@ class FieldArrayMeta(ArrayMeta):
 
                 GF = galois.GF(5**2)
                 GF.elements
+
+        Group:
+            Elements
+
+        Order:
+            22
         """
         return super().elements
 
@@ -240,6 +246,12 @@ class FieldArrayMeta(ArrayMeta):
 
                 GF = galois.GF(5**2)
                 GF.units
+
+        Group:
+            Elements
+
+        Order:
+            22
         """
         return super().units
 
@@ -268,6 +280,12 @@ class FieldArrayMeta(ArrayMeta):
 
                 GF = galois.GF(5**2)
                 GF.elements
+
+        Group:
+            Elements
+
+        Order:
+            22
         """
         return super().primitive_element
 
@@ -297,6 +315,12 @@ class FieldArrayMeta(ArrayMeta):
 
                 GF = galois.GF(5**2)
                 GF.elements
+
+        Group:
+            Elements
+
+        Order:
+            22
         """
         if not hasattr(cls, "_primitive_elements"):
             n = cls.order - 1
@@ -339,6 +363,12 @@ class FieldArrayMeta(ArrayMeta):
                 y2 = -y1; y2
                 np.array_equal(y1 ** 2, x)
                 np.array_equal(y2 ** 2, x)
+
+        Group:
+            Elements
+
+        Order:
+            22
         """
         x = cls.elements
         is_square = x.is_square()
@@ -370,6 +400,12 @@ class FieldArrayMeta(ArrayMeta):
 
                 GF = galois.GF(11)
                 GF.non_squares
+
+        Group:
+            Elements
+
+        Order:
+            22
         """
         x = cls.elements
         is_square = x.is_square()
@@ -455,6 +491,12 @@ class FieldArrayMeta(ArrayMeta):
 
                 GF = galois.GF(2**100); GF.dtypes
                 GF = galois.GF(36893488147419103183); GF.dtypes
+
+        Group:
+            Arithmetic compilation
+
+        Order:
+            32
         """
         return super().dtypes
 
@@ -485,6 +527,12 @@ class FieldArrayMeta(ArrayMeta):
                 GF.element_repr
                 @suppress
                 GF.repr()
+
+        Group:
+            Element representation
+
+        Order:
+            31
         """
         return super().element_repr
 
@@ -519,6 +567,12 @@ class FieldArrayMeta(ArrayMeta):
 
                 galois.GF(36893488147419103183).ufunc_mode
                 galois.GF(2**100).ufunc_mode
+
+        Group:
+            Arithmetic compilation
+
+        Order:
+            32
         """
         return super().ufunc_mode
 
@@ -546,6 +600,12 @@ class FieldArrayMeta(ArrayMeta):
 
                 galois.GF(36893488147419103183).ufunc_modes
                 galois.GF(2**100).ufunc_modes
+
+        Group:
+            Arithmetic compilation
+
+        Order:
+            32
         """
         return super().ufunc_modes
 
@@ -580,5 +640,11 @@ class FieldArrayMeta(ArrayMeta):
 
                 galois.GF(36893488147419103183).default_ufunc_mode
                 galois.GF(2**100).default_ufunc_mode
+
+        Group:
+            Arithmetic compilation
+
+        Order:
+            32
         """
         return super().default_ufunc_mode

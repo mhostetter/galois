@@ -560,6 +560,12 @@ class FLFSR(_LFSR):
                 lfsr = galois.FLFSR(c.reverse()); lfsr
                 lfsr.feedback_poly
                 lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
+
+        Group:
+            Polynomials
+
+        Order:
+            61
         """
         return super().feedback_poly
 
@@ -579,6 +585,12 @@ class FLFSR(_LFSR):
                 lfsr = galois.FLFSR(c.reverse()); lfsr
                 lfsr.characteristic_poly
                 lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
+
+        Group:
+            Polynomials
+
+        Order:
+            61
         """
         return super().characteristic_poly
 
@@ -624,6 +636,12 @@ class FLFSR(_LFSR):
 
                 lfsr.step(10)
                 lfsr.initial_state
+
+        Group:
+            State
+
+        Order:
+            62
         """
         return super().initial_state
 
@@ -645,6 +663,12 @@ class FLFSR(_LFSR):
 
                 lfsr.step(10)
                 lfsr.state
+
+        Group:
+            State
+
+        Order:
+            62
         """
         return super().state
 
@@ -1152,6 +1176,12 @@ class GLFSR(_LFSR):
                 lfsr = galois.GLFSR(c.reverse()); lfsr
                 lfsr.feedback_poly
                 lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
+
+        Group:
+            Polynomials
+
+        Order:
+            61
         """
         return super().feedback_poly
 
@@ -1171,6 +1201,12 @@ class GLFSR(_LFSR):
                 lfsr = galois.GLFSR(c.reverse()); lfsr
                 lfsr.characteristic_poly
                 lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
+
+        Group:
+            Polynomials
+
+        Order:
+            61
         """
         return super().characteristic_poly
 
@@ -1216,6 +1252,12 @@ class GLFSR(_LFSR):
 
                 lfsr.step(10)
                 lfsr.initial_state
+
+        Group:
+            State
+
+        Order:
+            62
         """
         return super().initial_state
 
@@ -1237,6 +1279,12 @@ class GLFSR(_LFSR):
 
                 lfsr.step(10)
                 lfsr.state
+
+        Group:
+            State
+
+        Order:
+            62
         """
         return super().state
 

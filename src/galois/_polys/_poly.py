@@ -644,6 +644,12 @@ class Poly:
             .. ipython:: python
 
                 f.coefficients(8, order="asc")
+
+        Group:
+            Coefficients
+
+        Order:
+            52
         """
         verify_isinstance(size, int, optional=True)
         verify_isinstance(order, str)
@@ -815,6 +821,12 @@ class Poly:
 
                 f.square_free_factors()
                 [a*b, c], [1, 3]
+
+        Group:
+            Factorization methods
+
+        Order:
+            51
         """
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
@@ -920,6 +932,12 @@ class Poly:
 
                 f.distinct_degree_factors()
                 [a*b, c, d*e], [1, 2, 3]
+
+        Group:
+            Factorization methods
+
+        Order:
+            51
         """
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
@@ -1004,6 +1022,12 @@ class Poly:
                 b = galois.Poly([1, 4, 4, 4], field=GF); b, b.is_irreducible()
                 f = a * b; f
                 f.equal_degree_factors(3)
+
+        Group:
+            Factorization methods
+
+        Order:
+            51
         """
         verify_isinstance(degree, int)
         if not self.degree >= 1:
@@ -1096,6 +1120,12 @@ class Poly:
             .. ipython:: python
 
                 f.factors()
+
+        Group:
+            Factorization methods
+
+        Order:
+            51
         """
         if not self.degree >= 1:
             raise ValueError(f"The polynomial must be non-constant, not {self}.")
@@ -2015,6 +2045,12 @@ class Poly:
                 GF = galois.GF(7)
                 p = galois.Poly([3, 0, 5, 2], field=GF); p
                 p.coeffs
+
+        Group:
+            Coefficients
+
+        Order:
+            52
         """
         if not hasattr(self, "_coeffs"):
             if hasattr(self, "_nonzero_coeffs"):
@@ -2040,6 +2076,12 @@ class Poly:
                 GF = galois.GF(7)
                 p = galois.Poly([3, 0, 5, 2], field=GF); p
                 p.degrees
+
+        Group:
+            Coefficients
+
+        Order:
+            52
         """
         if not hasattr(self, "_degrees"):
             self._degrees = np.arange(self.degree, -1, -1, dtype=int)
@@ -2060,6 +2102,12 @@ class Poly:
                 GF = galois.GF(7)
                 p = galois.Poly([3, 0, 5, 2], field=GF); p
                 p.nonzero_coeffs
+
+        Group:
+            Coefficients
+
+        Order:
+            52
         """
         if not hasattr(self, "_nonzero_coeffs"):
             coeffs = self.coeffs
@@ -2081,6 +2129,12 @@ class Poly:
                 GF = galois.GF(7)
                 p = galois.Poly([3, 0, 5, 2], field=GF); p
                 p.nonzero_degrees
+
+        Group:
+            Coefficients
+
+        Order:
+            52
         """
         if not hasattr(self, "_nonzero_degrees"):
             degrees = self.degrees
