@@ -3,6 +3,7 @@ A module containing functions to generate and test primitive polynomials.
 """
 from __future__ import annotations
 
+import functools
 from typing import Iterator
 
 from typing_extensions import Literal
@@ -22,6 +23,7 @@ from ._search import (
 
 
 # NOTE: This is a method of the Poly class. It will be added to the Poly class in `polys/__init__.py`.
+@functools.lru_cache(maxsize=8192)
 def is_primitive(self) -> bool:
     r"""
     Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
