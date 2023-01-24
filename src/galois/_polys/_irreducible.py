@@ -9,7 +9,8 @@ from typing_extensions import Literal
 
 from .._domains import _factory
 from .._helper import export, verify_isinstance
-from .._prime import is_prime_power
+from .._prime import factors, is_prime_power
+from ._functions import gcd
 from ._poly import (
     Poly,
     _deterministic_search,
@@ -18,6 +19,104 @@ from ._poly import (
     _random_search,
     _random_search_fixed_terms,
 )
+
+
+# NOTE: This is a method of the Poly class. It will be added to the Poly class in `polys/__init__.py`.
+def is_irreducible(self) -> bool:
+    r"""
+    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
+
+    .. info::
+
+        This is a method, not a property, to indicate this test is computationally expensive.
+
+    Returns:
+        `True` if the polynomial is irreducible.
+
+    See Also:
+        irreducible_poly, irreducible_polys
+
+    Notes:
+        A polynomial :math:`f(x) \in \mathrm{GF}(p^m)[x]` is *reducible* over :math:`\mathrm{GF}(p^m)` if it can
+        be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p^m)[x]` of strictly
+        lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not
+        algebraically closed, such irreducible polynomials exist.
+
+        This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
+        over :math:`\mathrm{GF}(q)` for prime power :math:`q` is irreducible if and only if
+        :math:`f(x)\ |\ (x^{q^m} - x)` and :math:`\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1` for
+        :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for the :math:`k` prime divisors :math:`p_i` of :math:`m`.
+
+    References:
+        - Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273-280.
+          https://apps.dtic.mil/sti/pdfs/ADA078416.pdf
+        - Gao, S. and Panarino, D. Tests and constructions of irreducible polynomials over finite fields.
+          https://www.math.clemson.edu/~sgao/papers/GP97a.pdf
+        - Section 4.5.1 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
+        - https://en.wikipedia.org/wiki/Factorization_of_polynomials_over_finite_fields
+
+    Examples:
+        .. ipython:: python
+
+            # Conway polynomials are always irreducible (and primitive)
+            f = galois.conway_poly(2, 5); f
+
+            # f(x) has no roots in GF(2), a necessary but not sufficient condition of being irreducible
+            f.roots()
+
+            f.is_irreducible()
+
+        .. ipython:: python
+
+            g = galois.irreducible_poly(2**4, 2, method="random"); g
+            h = galois.irreducible_poly(2**4, 3, method="random"); h
+            f = g * h; f
+
+            f.is_irreducible()
+    """
+    # pylint: disable=too-many-return-statements
+    if self.degree == 0:
+        # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x].
+        # Both the zero element and the units are not irreducible over the polynomial ring GF(p^m)[x].
+        return False
+
+    if self.degree == 1:
+        # f(x) = x + a (even a = 0) in any Galois field is irreducible
+        return True
+
+    if self.coeffs[-1] == 0:
+        # g(x) = x can be factored, therefore it is not irreducible
+        return False
+
+    if self.field.order == 2 and self.nonzero_coeffs.size % 2 == 0:
+        # Polynomials over GF(2) with degree at least 2 and an even number of terms satisfy f(1) = 0, hence
+        # g(x) = x + 1 can be factored. Section 4.5.2 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf.
+        return False
+
+    field = self.field
+    q = field.order
+    m = self.degree
+    x = Poly.Identity(field)
+
+    primes, _ = factors(m)
+    h0 = Poly.Identity(field)
+    n0 = 0
+    for ni in sorted([m // pi for pi in primes]):
+        # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the
+        # prime factors of m.
+        hi = pow(h0, q ** (ni - n0), self)
+        g = gcd(self, hi - x)
+        if g != 1:
+            return False
+        h0, n0 = hi, ni
+
+    # f(x) must divide (x^(q^m) - x) to be irreducible
+    h = pow(h0, q ** (m - n0), self)
+    g = (h - x) % self
+    if g != 0:
+        return False
+
+    return True
 
 
 @export
