@@ -3,9 +3,7 @@ A module containing a class for univariate polynomials over finite fields.
 """
 from __future__ import annotations
 
-import functools
-import random
-from typing import Callable, Iterable, Iterator, Sequence, Type, overload
+from typing import Sequence, Type, overload
 
 import numpy as np
 from typing_extensions import Literal, Self
