@@ -3,6 +3,8 @@ A module that defines the abstract base class FieldArray.
 """
 from __future__ import annotations
 
+from typing import Generator
+
 import numpy as np
 from typing_extensions import Literal, Self
 
@@ -423,6 +425,113 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     ###############################################################################
     # Class methods
     ###############################################################################
+
+    @classmethod
+    def compile(cls, mode: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"]):
+        """
+        Recompile the just-in-time compiled ufuncs for a new calculation mode.
+
+        This function updates :obj:`ufunc_mode`.
+
+        Arguments:
+            mode: The ufunc calculation mode.
+
+                - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"`
+                  for larger fields, and `"python-calculate"` for fields whose elements cannot be represented with
+                  :obj:`numpy.int64`.
+                - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for
+                  efficient computation. In the few cases where explicit calculation is faster than table lookup,
+                  explicit calculation is used.
+                - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"`
+                  mode is designed for large fields that cannot or should not store lookup tables in RAM. Generally,
+                  the `"jit-calculate"` mode is slower than `"jit-lookup"`.
+                - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields
+                  whose elements cannot be represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_`
+                  with Python :obj:`int` (which has arbitrary precision).
+        """
+        return super().compile(mode)
+
+    @classmethod
+    def repr(cls, element_repr: Literal["int", "poly", "power"] = "int") -> Generator[None, None, None]:
+        r"""
+        Sets the element representation for all arrays from this :obj:`~galois.FieldArray` subclass.
+
+        Arguments:
+            element_repr: The field element representation.
+
+                - `"int"` (default): Sets the representation to the :ref:`integer representation <int-repr>`.
+                - `"poly"`: Sets the representation to the :ref:`polynomial representation <poly-repr>`.
+                - `"power"`: Sets the representation to the :ref:`power representation <power-repr>`.
+
+                .. slow-performance::
+
+                    To display elements in the power representation, :obj:`galois` must compute the discrete logarithm
+                    of each element displayed. For large fields or fields using
+                    :ref:`explicit calculation <explicit-calculation>`, this process can take a while. However, when
+                    using :ref:`lookup tables <lookup-tables>` this representation is just as fast as the others.
+
+        Returns:
+            A context manager for use in a `with` statement. If permanently setting the element representation,
+            disregard the return value.
+
+        Notes:
+            This function updates :obj:`~galois.FieldArray.element_repr`.
+
+        Examples:
+            The default element representation is the integer representation.
+
+            .. ipython:: python
+
+                GF = galois.GF(3**2)
+                x = GF.elements; x
+
+            Permanently set the element representation by calling :func:`repr`.
+
+            .. md-tab-set::
+
+                .. md-tab-item:: Polynomial
+
+                    .. ipython:: python
+
+                        GF.repr("poly");
+                        x
+
+                .. md-tab-item:: Power
+
+                    .. ipython:: python
+
+                        GF.repr("power");
+                        x
+                        @suppress
+                        GF.repr()
+
+            Temporarily modify the element representation by using :func:`repr` as a context manager.
+
+            .. md-tab-set::
+
+                .. md-tab-item:: Polynomial
+
+                    .. ipython:: python
+
+                        print(x)
+                        with GF.repr("poly"):
+                            print(x)
+                        # Outside the context manager, the element representation reverts to its previous value
+                        print(x)
+
+                .. md-tab-item:: Power
+
+                    .. ipython:: python
+
+                        print(x)
+                        with GF.repr("power"):
+                            print(x)
+                        # Outside the context manager, the element representation reverts to its previous value
+                        print(x)
+                        @suppress
+                        GF.repr()
+        """
+        return super().repr(element_repr)
 
     @classmethod
     def repr_table(
