@@ -7,7 +7,7 @@ from typing import Iterator
 
 from typing_extensions import Literal
 
-from .._databases import ConwayPolyDatabase
+from .._databases import ConwayPolyDatabase, PrimitivePolyDatabase
 from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import is_prime, is_prime_power
@@ -27,6 +27,7 @@ def primitive_poly(
     degree: int,
     terms: int | str | None = None,
     method: Literal["min", "max", "random"] = "min",
+    use_database: bool = True,
 ) -> Poly:
     r"""
     Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
@@ -132,6 +133,21 @@ def primitive_poly(
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
+    if terms == "min" and method == "min":
+        try:
+            if not use_database:
+                raise LookupError
+            db = PrimitivePolyDatabase()
+            degrees, coeffs = db.fetch(order, degree)
+            field = _factory.FIELD_FACTORY(order)
+            poly = Poly.Degrees(degrees, coeffs, field=field)
+            return poly
+        except LookupError:
+            pass
+
+    if terms == "min":
+        terms = _minimum_terms(order, degree, "is_primitive")
+
     try:
         if method == "min":
             return next(primitive_polys(order, degree, terms))
@@ -141,8 +157,7 @@ def primitive_poly(
         # Random search
         if terms is None:
             return next(_random_search(order, degree, "is_primitive"))
-        if terms == "min":
-            terms = _minimum_terms(order, degree, "is_primitive")
+
         return next(_random_search_fixed_terms(order, degree, terms, "is_primitive"))
 
     except StopIteration as e:
