@@ -374,10 +374,12 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                 - `"poly"`: Sets the representation to the :ref:`polynomial representation <poly-repr>`.
                 - `"power"`: Sets the representation to the :ref:`power representation <power-repr>`.
 
-                .. danger::
+                .. slow-performance::
 
-                    For the power representation, :func:`numpy.log` is computed on each element. So for large fields
-                    without lookup tables, displaying arrays in the power representation may take longer than expected.
+                    To display elements in the power representation, :obj:`galois` must compute the discrete logarithm
+                    of each element displayed. For large fields or fields using
+                    :ref:`explicit calculation <explicit-calculation>`, this process can take a while. However, when
+                    using :ref:`lookup tables <lookup-tables>` this representation is just as fast as the others.
 
         Returns:
             A context manager for use in a `with` statement. If permanently setting the element representation,
