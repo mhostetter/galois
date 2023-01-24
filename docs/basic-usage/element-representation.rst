@@ -118,11 +118,12 @@ Power representation
 
 The power representation displays all finite field elements as powers of the field's primitive element :math:`\alpha`.
 
-.. danger::
+.. slow-performance::
 
-    To display elements in the power representation, :obj:`galois` must compute the discrete logarithm of each element displayed.
-    For large fields (or fields using :ref:`explicit calculation <explicit-calculation>`), this process can take a while. However, when
-    using :ref:`lookup tables <lookup-tables>` this representation is just as fast as the others.
+    To display elements in the power representation, :obj:`galois` must compute the discrete logarithm of each element
+    displayed. For large fields or fields using :ref:`explicit calculation <explicit-calculation>`, this process can
+    take a while. However, when using :ref:`lookup tables <lookup-tables>` this representation is just as fast as
+    the others.
 
 In prime fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p-2}\}`.
 
