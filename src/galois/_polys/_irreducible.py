@@ -11,8 +11,8 @@ from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import factors, is_prime_power
 from ._functions import gcd
-from ._poly import (
-    Poly,
+from ._poly import Poly
+from ._search import (
     _deterministic_search,
     _deterministic_search_fixed_terms,
     _minimum_terms,
