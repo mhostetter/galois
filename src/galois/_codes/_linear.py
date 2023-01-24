@@ -346,6 +346,12 @@ class _LinearCode:
     def G(self) -> FieldArray:
         r"""
         The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
+
+        Group:
+            Matrices
+
+        Order:
+            71
         """
         return self._G
 
@@ -353,6 +359,12 @@ class _LinearCode:
     def H(self) -> FieldArray:
         r"""
         The parity-check matrix :math:`\mathbf{H}` with shape :math:`(n - k, n)`.
+
+        Group:
+            Matrices
+
+        Order:
+            71
         """
         return self._H
 
