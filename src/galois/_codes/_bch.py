@@ -934,6 +934,12 @@ class BCH(_CyclicCode):
                 bch.alpha
                 bch.roots[0] == bch.alpha ** bch.c
                 bch.alpha.multiplicative_order() == bch.n
+
+        Group:
+            Polynomials
+
+        Order:
+            72
         """
         return self._alpha
 
@@ -961,6 +967,12 @@ class BCH(_CyclicCode):
                 bch = galois.BCH(15, 7, c=3); bch
                 bch.c
                 bch.roots[0] == bch.alpha ** bch.c
+
+        Group:
+            Polynomials
+
+        Order:
+            72
         """
         return self._c
 

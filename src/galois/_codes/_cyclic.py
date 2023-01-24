@@ -163,6 +163,12 @@ class _CyclicCode(_LinearCode):
         Notes:
             Every codeword :math:`\mathbf{c}` can be represented as a degree-:math:`n` polynomial :math:`c(x)`.
             Each codeword polynomial :math:`c(x)` is a multiple of :math:`g(x)`.
+
+        Group:
+            Polynomials
+
+        Order:
+            72
         """
         return self._generator_poly
 
@@ -173,6 +179,12 @@ class _CyclicCode(_LinearCode):
 
         Notes:
             The parity-check polynomial is the generator polynomial of the dual code.
+
+        Group:
+            Polynomials
+
+        Order:
+            72
         """
         return self._parity_check_poly
 
@@ -180,6 +192,12 @@ class _CyclicCode(_LinearCode):
     def roots(self) -> FieldArray:
         r"""
         The :math:`d - 1` roots of the generator polynomial :math:`g(x)`.
+
+        Group:
+            Polynomials
+
+        Order:
+            72
         """
         return self._roots
 

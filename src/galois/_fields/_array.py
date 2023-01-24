@@ -374,11 +374,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return V
 
+    ###############################################################################
+    # Conversions
+    ###############################################################################
+
     @classmethod
     def Vector(cls, array: ArrayLike, dtype: DTypeLike | None = None) -> FieldArray:
         r"""
-        Creates an array over :math:`\mathrm{GF}(p^m)` from length-:math:`m` vectors over the prime subfield
-        :math:`\mathrm{GF}(p)`.
+        Converts length-:math:`m` vectors over the prime subfield :math:`\mathrm{GF}(p)` to an array
+        over :math:`\mathrm{GF}(p^m)`.
 
         Arguments:
             array: An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`. An array with shape
@@ -400,6 +404,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 GF = galois.GF(3**3)
                 a = GF.Vector([[1, 0, 2], [0, 2, 1]]); a
                 a.vector()
+
+        Group:
+            Conversions
+
+        Order:
+            21
         """
         dtype = cls._get_dtype(dtype)
         order = cls.prime_subfield.order
@@ -419,6 +429,62 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             y = cls(y, dtype=dtype)
         else:
             y = cls._view(y)
+
+        return y
+
+    def vector(self, dtype: DTypeLike | None = None) -> FieldArray:
+        r"""
+        Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield
+        :math:`\mathrm{GF}(p)`.
+
+        Arguments:
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.FieldArray` subclass (the first element in
+                :obj:`~galois.FieldArray.dtypes`).
+
+        Returns:
+            An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`.
+
+        Notes:
+            This method is the inverse of the :func:`Vector` constructor. For an array with shape `(n1, n2)`,
+            the output shape is `(n1, n2, m)`. By convention, the vectors are ordered from degree :math:`m-1`
+            to degree 0.
+
+        Examples:
+            .. ipython-with-reprs:: int,poly,power
+
+                GF = galois.GF(3**3)
+                a = GF([11, 7]); a
+                vec = a.vector(); vec
+                GF.Vector(vec)
+
+        Group:
+            Conversions
+
+        Order:
+            21
+        """
+        field = type(self)
+        subfield = field.prime_subfield
+        order = subfield.order
+        degree = field.degree
+
+        x = np.array(self)  # The original array as an integer array
+        shape = list(self.shape) + [degree]  # The new shape
+        y = subfield.Zeros(shape, dtype=dtype)
+
+        if self.dtype == np.object_:
+            # Need a separate "if" statement because divmod() does not work with dtype=object input and
+            # integer dtype outputs
+            for i in range(degree - 1, -1, -1):
+                q, r = x // order, x % order
+                y[..., i] = r
+                x = q
+        else:
+            for i in range(degree - 1, -1, -1):
+                q, r = divmod(x, order)
+                y[..., i] = r
+                x = q
 
         return y
 
@@ -448,6 +514,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields
                   whose elements cannot be represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_`
                   with Python :obj:`int` (which has arbitrary precision).
+
+        Group:
+            Arithmetic compilation
+
+        Order:
+            33
         """
         return super().compile(mode)
 
@@ -457,11 +529,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Sets the element representation for all arrays from this :obj:`~galois.FieldArray` subclass.
 
         Arguments:
-            element_repr: The field element representation.
+            element_repr: The field element representation to be set.
 
-                - `"int"` (default): Sets the representation to the :ref:`integer representation <int-repr>`.
-                - `"poly"`: Sets the representation to the :ref:`polynomial representation <poly-repr>`.
-                - `"power"`: Sets the representation to the :ref:`power representation <power-repr>`.
+                - `"int"` (default): The :ref:`integer representation <int-repr>`.
+                - `"poly"`: The :ref:`polynomial representation <poly-repr>`.
+                - `"power"`: The :ref:`power representation <power-repr>`.
 
                 .. slow-performance::
 
@@ -530,6 +602,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                         print(x)
                         @suppress
                         GF.repr()
+
+        Group:
+            Element representation
+
+        Order:
+            31
         """
         return super().repr(element_repr)
 
@@ -586,6 +664,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 print(GF.repr_table("x^2"))
                 GF("x^2").multiplicative_order()
+
+        Group:
+            String representation
+
+        Order:
+            30
         """
         verify_literal(sort, ["power", "poly", "vector", "int"])
 
@@ -687,6 +771,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 x = GF([7, 2, 8]); x
                 y = GF([1, 4, 5, 3]); y
                 print(GF.arithmetic_table("+", x=x, y=y))
+
+        Group:
+            String representation
+
+        Order:
+            30
         """
         if not operation in ["+", "-", "*", "/"]:
             raise ValueError(f"Argument 'operation' must be in ['+', '-', '*', '/'], not {operation!r}.")
@@ -786,6 +876,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 root = GF.primitive_root_of_unity(5); root
                 powers = np.arange(1, 5 + 1); powers
                 root ** powers
+
+        Group:
+            Elements
+
+        Order:
+            22
         """
         verify_isinstance(n, (int, np.ndarray))
         if not 1 <= n < cls.order:
@@ -844,6 +940,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 root = GF.primitive_roots_of_unity(5); root
                 powers = np.arange(1, 5 + 1); powers
                 np.power.outer(root, powers)
+
+        Group:
+            Elements
+
+        Order:
+            22
         """
         if not isinstance(n, (int, np.ndarray)):
             raise TypeError(f"Argument 'n' must be an int, not {type(n)!r}.")
@@ -1013,56 +1115,6 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return output
 
-    def vector(self, dtype: DTypeLike | None = None) -> FieldArray:
-        r"""
-        Converts an array over :math:`\mathrm{GF}(p^m)` to length-:math:`m` vectors over the prime subfield
-        :math:`\mathrm{GF}(p)`.
-
-        Arguments:
-            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
-                unsigned data type for this :obj:`~galois.FieldArray` subclass (the first element in
-                :obj:`~galois.FieldArray.dtypes`).
-
-        Returns:
-            An array over :math:`\mathrm{GF}(p)` with last dimension :math:`m`.
-
-        Notes:
-            This method is the inverse of the :func:`Vector` constructor. For an array with shape `(n1, n2)`,
-            the output shape is `(n1, n2, m)`. By convention, the vectors are ordered from degree :math:`m-1`
-            to degree 0.
-
-        Examples:
-            .. ipython-with-reprs:: int,poly,power
-
-                GF = galois.GF(3**3)
-                a = GF([11, 7]); a
-                vec = a.vector(); vec
-                GF.Vector(vec)
-        """
-        field = type(self)
-        subfield = field.prime_subfield
-        order = subfield.order
-        degree = field.degree
-
-        x = np.array(self)  # The original array as an integer array
-        shape = list(self.shape) + [degree]  # The new shape
-        y = subfield.Zeros(shape, dtype=dtype)
-
-        if self.dtype == np.object_:
-            # Need a separate "if" statement because divmod() does not work with dtype=object input and
-            # integer dtype outputs
-            for i in range(degree - 1, -1, -1):
-                q, r = x // order, x % order
-                y[..., i] = r
-                x = q
-        else:
-            for i in range(degree - 1, -1, -1):
-                q, r = divmod(x, order)
-                y[..., i] = r
-                x = q
-
-        return y
-
     def row_reduce(self, ncols: int | None = None, eye: Literal["left", "right"] = "left") -> Self:
         r"""
         Performs Gaussian elimination on the matrix to achieve reduced row echelon form (RREF).
@@ -1103,6 +1155,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             .. ipython:: python
 
                 A.row_reduce(ncols=2)
+
+        Group:
+            Linear algebra
+
+        Order:
+            51
         """
         verify_literal(eye, ["left", "right"])
 
@@ -1137,6 +1195,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 L
                 U
                 np.array_equal(A, L @ U)
+
+        Group:
+            Linear algebra
+
+        Order:
+            51
         """
         field = type(self)
         A = self
@@ -1168,6 +1232,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 U
                 np.array_equal(A, P @ L @ U)
                 np.array_equal(P.T @ A, L @ U)
+
+        Group:
+            Linear algebra
+
+        Order:
+            51
         """
         field = type(self)
         A = self
@@ -1208,6 +1278,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 LN = A.left_null_space(); LN
                 R.shape[0] + LN.shape[0] == m
+
+        Group:
+            Linear algebra
+
+        Order:
+            51
         """
         A = self
         if not A.ndim == 2:
@@ -1253,6 +1329,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 N = A.null_space(); N
                 C.shape[0] + N.shape[0] == n
+
+        Group:
+            Linear algebra
+
+        Order:
+            51
         """
         A = self
         if not A.ndim == 2:
@@ -1299,6 +1381,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 R = A.row_space(); R
                 R.shape[0] + LN.shape[0] == m
+
+        Group:
+            Linear algebra
+
+        Order:
+            51
         """
         field = type(self)
         A = self
@@ -1359,6 +1447,12 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 C = A.column_space(); C
                 C.shape[0] + N.shape[0] == n
+
+        Group:
+            Linear algebra
+
+        Order:
+            51
         """
         A = self
         if not A.ndim == 2:

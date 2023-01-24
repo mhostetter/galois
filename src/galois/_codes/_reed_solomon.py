@@ -856,6 +856,12 @@ class ReedSolomon(_CyclicCode):
                 rs.alpha
                 rs.roots[0] == rs.alpha ** rs.c
                 rs.alpha.multiplicative_order() == rs.n
+
+        Group:
+            Polynomials
+
+        Order:
+            72
         """
         return self._alpha
 
