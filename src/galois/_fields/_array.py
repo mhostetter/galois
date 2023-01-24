@@ -1457,17 +1457,17 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def log(self, base: ElementLike | ArrayLike | None = None) -> int | np.ndarray:
         r"""
-        Computes the logarithm of the array :math:`x` base :math:`\beta`.
+        Computes the discrete logarithm of the array :math:`x` base :math:`\beta`.
 
         Arguments:
             base: A primitive element or elements :math:`\beta` of the finite field that is the base of the logarithm.
                 The default is `None` which uses :obj:`~FieldArray.primitive_element`.
 
-                .. danger::
+                .. slow-performance::
 
-                    If the Galois field is configured to use lookup tables (`ufunc_mode == "jit-lookup"`) and this
-                    method is invoked with a base different from :obj:`~FieldArray.primitive_element`, then explicit
-                    calculation will be used (which is slower than using lookup tables).
+                    If the :obj:`FieldArray` is configured to use lookup tables (`ufunc_mode == "jit-lookup"`) and
+                    this method is invoked with a base different from :obj:`~FieldArray.primitive_element`, then
+                    explicit calculation will be used (which is slower than using lookup tables).
 
         Returns:
             An integer array :math:`i` of powers of :math:`\beta` such that :math:`\beta^i = x`. The return array
