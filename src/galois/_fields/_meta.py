@@ -209,7 +209,7 @@ class FieldArrayMeta(ArrayMeta):
                 GF = galois.GF(31)
                 GF.elements
 
-            All elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
+            All elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographical order.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -240,7 +240,7 @@ class FieldArrayMeta(ArrayMeta):
                 GF = galois.GF(31)
                 GF.units
 
-            All units of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing order.
+            All units of the extension field :math:`\mathrm{GF}(5^2)` in lexicographical order.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -308,8 +308,7 @@ class FieldArrayMeta(ArrayMeta):
                 GF = galois.GF(31)
                 GF.elements
 
-            All primitive elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographically-increasing
-            order.
+            All primitive elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographical order.
 
             .. ipython-with-reprs:: int,poly,power
 

@@ -626,8 +626,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 corresponds to :obj:`~galois.FieldArray.primitive_element`.
             sort: The sorting method for the table. The default is `"power"`. Sorting by `"power"` will order the rows
                 of the table by ascending powers of `element`. Sorting by any of the others will order the rows in
-                lexicographically-increasing polynomial/vector order, which is equivalent to ascending order of the
-                integer representation.
+                lexicographical polynomial/vector order, which is equivalent to ascending order of the integer
+                representation.
 
         Returns:
             A string representation of the table comparing the power, polynomial, vector, and integer representations
@@ -900,8 +900,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             n: The root of unity.
 
         Returns:
-            All primitive :math:`n`-th roots of unity, a 1-D array. The roots are sorted in
-            lexicographically-increasing order.
+            All primitive :math:`n`-th roots of unity, a 1-D array. The roots are sorted in lexicographical order.
 
         Raises:
             ValueError: If no primitive :math:`n`-th roots of unity exist. This happens when :math:`n` is not a
