@@ -3,13 +3,17 @@ A module containing functions to factor univariate polynomials over finite field
 """
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from .._helper import verify_isinstance
+from . import _constructors
 from ._functions import gcd
-from ._poly import Poly
+
+if TYPE_CHECKING:
+    from ._poly import Poly
 
 
-# NOTE: This is a method of the Poly class. It will be added to the Poly class in `polys/__init__.py`.
-def square_free_factors(self) -> tuple[list[Poly], list[int]]:
+def _square_free_factors(self) -> tuple[list[Poly], list[int]]:
     r"""
     Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
 
@@ -68,7 +72,7 @@ def square_free_factors(self) -> tuple[list[Poly], list[int]]:
 
     field = self.field
     p = field.characteristic
-    one = Poly.One(field=field)
+    one = _constructors.POLY([1], field=field)
 
     factors_ = []
     multiplicities = []
@@ -95,8 +99,8 @@ def square_free_factors(self) -> tuple[list[Poly], list[int]]:
         degrees = [degree // p for degree in d.nonzero_degrees]
         # The inverse Frobenius automorphism of the coefficients
         coeffs = d.nonzero_coeffs ** (field.characteristic ** (field.degree - 1))
-        delta = Poly.Degrees(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
-        f, m = square_free_factors(delta)
+        delta = _constructors.POLY_DEGREES(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
+        f, m = _square_free_factors(delta)
         factors_.extend(f)
         multiplicities.extend([mi * p for mi in m])
 
@@ -106,8 +110,7 @@ def square_free_factors(self) -> tuple[list[Poly], list[int]]:
     return list(factors_), list(multiplicities)
 
 
-# NOTE: This is a method of the Poly class. It will be added to the Poly class in `polys/__init__.py`.
-def distinct_degree_factors(self) -> tuple[list[Poly], list[int]]:
+def _distinct_degree_factors(self) -> tuple[list[Poly], list[int]]:
     r"""
     Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors
     all have the same degree.
@@ -184,8 +187,8 @@ def distinct_degree_factors(self) -> tuple[list[Poly], list[int]]:
     field = self.field
     q = field.order
     n = self.degree
-    one = Poly.One(field=field)
-    x = Poly.Identity(field=field)
+    one = _constructors.POLY([1], field=field)
+    x = _constructors.POLY([1, 0], field=field)
 
     factors_ = []
     degrees = []
@@ -211,8 +214,7 @@ def distinct_degree_factors(self) -> tuple[list[Poly], list[int]]:
     return factors_, degrees
 
 
-# NOTE: This is a method of the Poly class. It will be added to the Poly class in `polys/__init__.py`.
-def equal_degree_factors(self, degree: int) -> list[Poly]:
+def _equal_degree_factors(self, degree: int) -> list[Poly]:
     r"""
     Factors the monic, square-free polynomial :math:`f(x)` of degree :math:`rd` into a product of :math:`r`
     irreducible factors with degree :math:`d`.
@@ -282,11 +284,11 @@ def equal_degree_factors(self, degree: int) -> list[Poly]:
     field = self.field
     q = field.order
     r = self.degree // degree
-    one = Poly.One(field)
+    one = _constructors.POLY([1], field=field)
 
     factors_ = [self]
     while len(factors_) < r:
-        h = Poly.Random(degree, field=field)
+        h = _constructors.POLY_RANDOM(degree, field=field)
         g = gcd(self, h)
         if g == one:
             g = pow(h, (q**degree - 1) // 2, self) - one
@@ -307,8 +309,7 @@ def equal_degree_factors(self, degree: int) -> list[Poly]:
     return factors_
 
 
-# NOTE: This is a method of the Poly class. It will be added to the Poly class in `polys/__init__.py`.
-def factors(self) -> tuple[list[Poly], list[int]]:
+def _factors(self) -> tuple[list[Poly], list[int]]:
     r"""
     Computes the irreducible factors of the non-constant, monic polynomial :math:`f(x)`.
 
@@ -327,11 +328,11 @@ def factors(self) -> tuple[list[Poly], list[int]]:
         Steps:
 
         1. Apply the Square-Free Factorization algorithm to factor the monic polynomial into square-free
-            polynomials. See :func:`~Poly.square_free_factors`.
+           polynomials. See :func:`~Poly.square_free_factors`.
         2. Apply the Distinct-Degree Factorization algorithm to factor each square-free polynomial into a product
-            of factors with the same degree. See :func:`~Poly.distinct_degree_factors`.
+           of factors with the same degree. See :func:`~Poly.distinct_degree_factors`.
         3. Apply the Equal-Degree Factorization algorithm to factor the product of factors of equal degree into
-            their irreducible factors. See :func:`~Poly.equal_degree_factors`.
+           their irreducible factors. See :func:`~Poly.equal_degree_factors`.
 
     References:
         - Hachenberger, D. and Jungnickel, D. Topics in Galois Fields. Algorithm 6.1.7.
@@ -374,15 +375,15 @@ def factors(self) -> tuple[list[Poly], list[int]]:
     factors_, multiplicities = [], []
 
     # Step 1: Find all the square-free factors
-    sf_factors, sf_multiplicities = square_free_factors(self)
+    sf_factors, sf_multiplicities = _square_free_factors(self)
 
     # Step 2: Find all the factors with distinct degree
     for sf_factor, sf_multiplicity in zip(sf_factors, sf_multiplicities):
-        df_factors, df_degrees = distinct_degree_factors(sf_factor)
+        df_factors, df_degrees = _distinct_degree_factors(sf_factor)
 
         # Step 3: Find all the irreducible factors with degree d
         for df_factor, df_degree in zip(df_factors, df_degrees):
-            f = equal_degree_factors(df_factor, df_degree)
+            f = _equal_degree_factors(df_factor, df_degree)
             factors_.extend(f)
             multiplicities.extend([sf_multiplicity] * len(f))
 

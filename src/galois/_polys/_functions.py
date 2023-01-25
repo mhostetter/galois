@@ -3,10 +3,16 @@ A module with functions for polynomials over Galois fields.
 """
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from .._domains import Array
 from .._helper import export, verify_isinstance
+from . import _constructors
 from ._dense import lagrange_poly_jit
-from ._poly import Poly
+
+if TYPE_CHECKING:
+    from ._poly import Poly
+
 
 ###############################################################################
 # Divisibility
@@ -40,8 +46,8 @@ def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
         raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {a.field} and {b.field}.")
 
     field = a.field
-    zero = Poly.Zero(field)
-    one = Poly.One(field)
+    zero = _constructors.POLY([0], field=field)
+    one = _constructors.POLY([1], field=field)
 
     r2, r1 = a, b
     s2, s1 = one, zero
@@ -69,7 +75,7 @@ def lcm(*args: Poly) -> Poly:
     """
     field = args[0].field
 
-    lcm_ = Poly.One(field)
+    lcm_ = _constructors.POLY([1], field=field)
     for arg in args:
         if not arg.field == field:
             raise ValueError(
@@ -89,7 +95,7 @@ def prod(*args: Poly) -> Poly:
     """
     field = args[0].field
 
-    prod_ = Poly.One(field)
+    prod_ = _constructors.POLY([1], field=field)
     for arg in args:
         if not arg.field == field:
             raise ValueError(

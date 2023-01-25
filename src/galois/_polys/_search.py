@@ -8,12 +8,15 @@ from __future__ import annotations
 
 import functools
 import random
-from typing import Callable, Iterable, Iterator, Type
+from typing import TYPE_CHECKING, Callable, Iterable, Iterator, Type
 
 import numpy as np
 
 from .._domains import Array, _factory
-from ._poly import Poly
+from . import _constructors
+
+if TYPE_CHECKING:
+    from ._poly import Poly
 
 
 @functools.lru_cache(maxsize=8192)
@@ -29,7 +32,7 @@ def _deterministic_search(
     (either 'is_irreducible()' or 'is_primitive()'). This function returns `None` if no such polynomial exists.
     """
     for element in range(start, stop, step):
-        poly = Poly.Int(element, field=field)
+        poly = _constructors.POLY_INT(element, field=field)
         if getattr(poly, test)():
             return poly
 
@@ -76,7 +79,7 @@ def _deterministic_search_fixed_terms_recursive(
     """
     if terms == 0:
         # There are no more terms, yield the polynomial.
-        poly = Poly.Degrees(degrees, coeffs, field=field)
+        poly = _constructors.POLY_DEGREES(degrees, coeffs, field=field)
         if getattr(poly, test)():
             yield poly
     elif terms == 1:
@@ -113,7 +116,7 @@ def _random_search(order: int, degree: int, test: str) -> Iterator[Poly]:
 
     while True:
         integer = random.randint(start, stop - 1)
-        poly = Poly.Int(integer, field=field)
+        poly = _constructors.POLY_INT(integer, field=field)
         if getattr(poly, test)():
             yield poly
 
@@ -133,7 +136,7 @@ def _random_search_fixed_terms(
 
     if terms == 1:
         # The x^m term is always 1. If there's only one term, then the x^m is the polynomial.
-        poly = Poly.Degrees([degree], [1], field=field)
+        poly = _constructors.POLY_DEGREES([degree], [1], field=field)
         if getattr(poly, test)():
             yield poly
     else:
@@ -144,7 +147,7 @@ def _random_search_fixed_terms(
             x0_coeff = np.random.randint(1, field.order)
             degrees = (degree, *mid_degrees, 0)
             coeffs = (1, *mid_coeffs, x0_coeff)
-            poly = Poly.Degrees(degrees, coeffs, field=field)
+            poly = _constructors.POLY_DEGREES(degrees, coeffs, field=field)
             if getattr(poly, test)():
                 yield poly
 
