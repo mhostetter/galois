@@ -4,15 +4,15 @@ A module containing functions to generate and test irreducible polynomials.
 from __future__ import annotations
 
 import functools
-from typing import Iterator
+from typing import TYPE_CHECKING, Iterator
 
 from typing_extensions import Literal
 
 from .._domains import _factory
 from .._helper import export, verify_isinstance
 from .._prime import factors, is_prime_power
+from . import _constructors
 from ._functions import gcd
-from ._poly import Poly
 from ._search import (
     _deterministic_search,
     _deterministic_search_fixed_terms,
@@ -21,10 +21,12 @@ from ._search import (
     _random_search_fixed_terms,
 )
 
+if TYPE_CHECKING:
+    from ._poly import Poly
 
-# NOTE: This is a method of the Poly class. It will be added to the Poly class in `polys/__init__.py`.
+
 @functools.lru_cache(maxsize=8192)
-def is_irreducible(self) -> bool:
+def _is_irreducible(self) -> bool:
     r"""
     Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
 
@@ -98,10 +100,10 @@ def is_irreducible(self) -> bool:
     field = self.field
     q = field.order
     m = self.degree
-    x = Poly.Identity(field)
+    x = _constructors.POLY([1, 0], field=field)
 
     primes, _ = factors(m)
-    h0 = Poly.Identity(field)
+    h0 = _constructors.POLY([1, 0], field=field)
     n0 = 0
     for ni in sorted([m // pi for pi in primes]):
         # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the
