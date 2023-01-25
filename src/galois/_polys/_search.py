@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import functools
 import random
-from typing import TYPE_CHECKING, Callable, Iterable, Iterator, Type
+from typing import TYPE_CHECKING, Callable, Iterable, Iterator, Sequence, Type
 
 import numpy as np
 
@@ -65,8 +65,8 @@ def _deterministic_search_fixed_terms(
 
 
 def _deterministic_search_fixed_terms_recursive(
-    degrees: Iterable[int],
-    coeffs: Iterable[int],
+    degrees: Sequence[int],
+    coeffs: Sequence[int],
     terms: int,
     test: str,
     field: Type[Array],
