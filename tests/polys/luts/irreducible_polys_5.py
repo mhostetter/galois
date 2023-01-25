@@ -16,7 +16,7 @@ Sage:
         if f.is_monic() and f.is_irreducible():
             list_.append(f.coefficients(sparse=False)[::-1])
 
-    # Sort in lexicographically-increasing order
+    # Sort in lexicographical order
     if not is_prime(order):
         list_ = sorted(list_, key=lambda item: integer(item, order))
 

@@ -557,7 +557,7 @@ def factors(value):
     Returns:
         - Sorted list of prime factors :math:`\{p_1, p_2, \dots, p_k\}` of :math:`n` with
           :math:`p_1 < p_2 < \dots < p_k` or irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of
-          :math:`f(x)` sorted in lexicographically-increasing order.
+          :math:`f(x)` sorted in lexicographical order.
         - List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
 
     Notes:

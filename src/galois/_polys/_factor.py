@@ -223,8 +223,7 @@ def _equal_degree_factors(self, degree: int) -> list[Poly]:
         degree: The degree :math:`d` of each irreducible factor of :math:`f(x)`.
 
     Returns:
-        The list of :math:`r` irreducible factors :math:`\{g_1(x), \dots, g_r(x)\}` in
-        lexicographically-increasing order.
+        The list of :math:`r` irreducible factors :math:`\{g_1(x), \dots, g_r(x)\}` in lexicographical order.
 
     Raises:
         ValueError: If :math:`f(x)` is not monic, has degree 0, or is not square-free.
@@ -303,7 +302,7 @@ def _equal_degree_factors(self, degree: int) -> list[Poly]:
                 factors_.append(u // d)
             i += 1
 
-    # Sort the factors in lexicographically-increasing order
+    # Sort the factors in lexicographical order
     factors_ = sorted(factors_, key=int)
 
     return factors_
@@ -315,7 +314,7 @@ def _factors(self) -> tuple[list[Poly], list[int]]:
 
     Returns:
         - Sorted list of irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of :math:`f(x)` sorted in
-            lexicographically-increasing order.
+          lexicographical order.
         - List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
 
     Raises:
