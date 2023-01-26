@@ -81,6 +81,24 @@ def export(obj):
     return obj
 
 
+def method_of(class_):
+    """
+    Monkey-patches the decorated function into the class as a method. The class should already have a stub method
+    that raises `NotImplementedError`. The docstring of the stub method is replaced with the docstring of the
+    decorated function.
+
+    This is used to separate code into multiple files while still keeping the methods in the same class.
+    """
+
+    def decorator(func):
+        setattr(class_, func.__name__, func)
+        setattr(getattr(class_, func.__name__), "__doc__", func.__doc__)
+
+        return func
+
+    return decorator
+
+
 def extend_docstring(method, replace=None, docstring=""):
     """
     A decorator to extend the docstring of `method` with the provided docstring. The decorator also finds
