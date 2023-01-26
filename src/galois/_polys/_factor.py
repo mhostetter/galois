@@ -3,17 +3,62 @@ A module containing functions to factor univariate polynomials over finite field
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-from .._helper import verify_isinstance
-from . import _constructors
+from .._helper import method_of, verify_isinstance
 from ._functions import gcd
+from ._poly import Poly
 
-if TYPE_CHECKING:
-    from ._poly import Poly
+__all__ = []
 
 
-def _square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
+@method_of(Poly)
+def is_square_free(f) -> bool:
+    r"""
+    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is square-free.
+
+    .. info::
+
+        This is a method, not a property, to indicate this test is computationally expensive.
+
+    Returns:
+        `True` if the polynomial is square-free.
+
+    Notes:
+        A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one.
+        Therefore, its canonical factorization is
+
+        .. math::
+            f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
+
+    Examples:
+        Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+
+        .. ipython:: python
+
+            GF = galois.GF(3)
+            f1 = galois.irreducible_poly(3, 3); f1
+            f2 = galois.irreducible_poly(3, 4); f2
+
+        Determine if composite polynomials are square-free over :math:`\mathrm{GF}(3)`.
+
+        .. ipython:: python
+
+            (f1 * f2).is_square_free()
+            (f1**2 * f2).is_square_free()
+    """
+    if not f.is_monic:
+        f //= f.coeffs[0]
+
+    # Constant polynomials are square-free
+    if f.degree == 0:
+        return True
+
+    _, multiplicities = square_free_factors(f)
+
+    return multiplicities == [1]
+
+
+@method_of(Poly)
+def square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
     r"""
     Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
 
@@ -72,7 +117,7 @@ def _square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
 
     field = f.field
     p = field.characteristic
-    one = _constructors.POLY([1], field=field)
+    one = Poly([1], field=field)
 
     factors_ = []
     multiplicities = []
@@ -100,8 +145,8 @@ def _square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
         degrees = [degree // p for degree in d.nonzero_degrees]
         # The inverse Frobenius automorphism of the coefficients
         coeffs = d.nonzero_coeffs ** (field.characteristic ** (field.degree - 1))
-        delta = _constructors.POLY_DEGREES(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
-        g, m = _square_free_factors(delta)
+        delta = Poly.Degrees(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
+        g, m = square_free_factors(delta)
         factors_.extend(g)
         multiplicities.extend([mi * p for mi in m])
 
@@ -111,7 +156,8 @@ def _square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
     return list(factors_), list(multiplicities)
 
 
-def _distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
+@method_of(Poly)
+def distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
     r"""
     Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors
     all have the same degree.
@@ -188,8 +234,8 @@ def _distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
     field = f.field
     q = field.order
     n = f.degree
-    one = _constructors.POLY([1], field=field)
-    x = _constructors.POLY([1, 0], field=field)
+    one = Poly([1], field=field)
+    x = Poly([1, 0], field=field)
 
     factors_ = []
     degrees = []
@@ -215,7 +261,8 @@ def _distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
     return factors_, degrees
 
 
-def _equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
+@method_of(Poly)
+def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
     r"""
     Factors the monic, square-free polynomial :math:`f(x)` of degree :math:`rd` into a product of :math:`r`
     irreducible factors with degree :math:`d`.
@@ -283,11 +330,11 @@ def _equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
     field = f.field
     q = field.order
     r = f.degree // degree
-    one = _constructors.POLY([1], field=field)
+    one = Poly([1], field=field)
 
     factors_ = [f]
     while len(factors_) < r:
-        h = _constructors.POLY_RANDOM(degree, field=field)
+        h = Poly.Random(degree, field=field)
         g = gcd(f, h)
         if g == one:
             g = pow(h, (q**degree - 1) // 2, f) - one
@@ -308,7 +355,8 @@ def _equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
     return factors_
 
 
-def _factors(f) -> tuple[list[Poly], list[int]]:
+@method_of(Poly)
+def factors(f) -> tuple[list[Poly], list[int]]:
     r"""
     Computes the irreducible factors of the non-constant, monic polynomial :math:`f(x)`.
 
@@ -374,15 +422,15 @@ def _factors(f) -> tuple[list[Poly], list[int]]:
     factors_, multiplicities = [], []
 
     # Step 1: Find all the square-free factors
-    sf_factors, sf_multiplicities = _square_free_factors(f)
+    sf_factors, sf_multiplicities = square_free_factors(f)
 
     # Step 2: Find all the factors with distinct degree
     for sf_factor, sf_multiplicity in zip(sf_factors, sf_multiplicities):
-        df_factors, df_degrees = _distinct_degree_factors(sf_factor)
+        df_factors, df_degrees = distinct_degree_factors(sf_factor)
 
         # Step 3: Find all the irreducible factors with degree d
         for df_factor, df_degree in zip(df_factors, df_degrees):
-            f = _equal_degree_factors(df_factor, df_degree)
+            f = equal_degree_factors(df_factor, df_degree)
             factors_.extend(f)
             multiplicities.extend([sf_multiplicity] * len(f))
 

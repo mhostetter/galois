@@ -21,14 +21,6 @@ from ._conversions import (
     sparse_poly_to_str,
     str_to_sparse_poly,
 )
-from ._factor import (
-    _distinct_degree_factors,
-    _equal_degree_factors,
-    _factors,
-    _square_free_factors,
-)
-from ._irreducible import _is_irreducible
-from ._primitive import _is_primitive
 
 # Values were obtained by running scripts/sparse_poly_performance_test.py
 SPARSE_VS_DENSE_POLY_FACTOR = 0.00_125  # 1.25% density
@@ -779,35 +771,31 @@ class Poly:
         r"""
         Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
         """
-        return _square_free_factors(self)
-
-    square_free_factors.__doc__ = _square_free_factors.__doc__
+        # Will be monkey-patched in `_factor.py`
+        raise NotImplementedError
 
     def distinct_degree_factors(self) -> tuple[list[Poly], list[int]]:
         r"""
         Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors
         all have the same degree.
         """
-        return _distinct_degree_factors(self)
-
-    distinct_degree_factors.__doc__ = _distinct_degree_factors.__doc__
+        # Will be monkey-patched in `_factor.py`
+        raise NotImplementedError
 
     def equal_degree_factors(self, degree: int) -> list[Poly]:
         r"""
         Factors the monic, square-free polynomial :math:`f(x)` of degree :math:`rd` into a product of :math:`r`
         irreducible factors with degree :math:`d`.
         """
-        return _equal_degree_factors(self, degree)
-
-    equal_degree_factors.__doc__ = _equal_degree_factors.__doc__
+        # Will be monkey-patched in `_factor.py`
+        raise NotImplementedError
 
     def factors(self) -> tuple[list[Poly], list[int]]:
         r"""
         Computes the irreducible factors of the non-constant, monic polynomial :math:`f(x)`.
         """
-        return _factors(self)
-
-    factors.__doc__ = _factors.__doc__
+        # Will be monkey-patched in `_factor.py`
+        raise NotImplementedError
 
     def derivative(self, k: int = 1) -> Poly:
         r"""
@@ -895,62 +883,22 @@ class Poly:
         r"""
         Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
         """
-        return _is_irreducible(self)
-
-    is_irreducible.__doc__ = _is_irreducible.__doc__
+        # Will be monkey-patched in `_irreducible.py`
+        raise NotImplementedError
 
     def is_primitive(self) -> bool:
         r"""
         Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
         """
-        return _is_primitive(self)
-
-    is_primitive.__doc__ = _is_primitive.__doc__
+        # Will be monkey-patched in `_primitive.py`
+        raise NotImplementedError
 
     def is_square_free(self) -> bool:
         r"""
         Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is square-free.
-
-        .. info::
-
-            This is a method, not a property, to indicate this test is computationally expensive.
-
-        Returns:
-            `True` if the polynomial is square-free.
-
-        Notes:
-            A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one.
-            Therefore, its canonical factorization is
-
-            .. math::
-                f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
-
-        Examples:
-            Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
-
-            .. ipython:: python
-
-                GF = galois.GF(3)
-                f1 = galois.irreducible_poly(3, 3); f1
-                f2 = galois.irreducible_poly(3, 4); f2
-
-            Determine if composite polynomials are square-free over :math:`\mathrm{GF}(3)`.
-
-            .. ipython:: python
-
-                (f1 * f2).is_square_free()
-                (f1**2 * f2).is_square_free()
         """
-        if not self.is_monic:
-            self //= self.coeffs[0]
-
-        # Constant polynomials are square-free
-        if self.degree == 0:
-            return True
-
-        _, multiplicities = self.square_free_factors()
-
-        return multiplicities == [1]
+        # Will be monkey-patched in `_factor.py`
+        raise NotImplementedError
 
     ###############################################################################
     # Overridden dunder methods
