@@ -14,9 +14,22 @@ description = "A performant NumPy extension for Galois fields and their applicat
 readme = "README.md"
 license = {text = "MIT"}
 keywords = [
-    "galois field", "finite field", "numpy",
-    "fec", "error correction", "bch", "reed solomon", "hamming", "golay",
-    "encryption", "cryptography", "elliptic curves", "elliptic curve cryptography", "ecc", "aes", "rsa",
+    "aes",
+    "bch",
+    "cryptography",
+    "ecc",
+    "elliptic curve cryptography",
+    "elliptic curves",
+    "encryption",
+    "error correction",
+    "fec",
+    "finite field",
+    "galois field",
+    "golay",
+    "hamming",
+    "numpy",
+    "reed solomon",
+    "rsa",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
