@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from ._poly import Poly
 
 
-def _square_free_factors(self) -> tuple[list[Poly], list[int]]:
+def _square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
     r"""
     Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
 
@@ -65,12 +65,12 @@ def _square_free_factors(self) -> tuple[list[Poly], list[int]]:
     Order:
         51
     """
-    if not self.degree >= 1:
-        raise ValueError(f"The polynomial must be non-constant, not {self}.")
-    if not self.is_monic:
-        raise ValueError(f"The polynomial must be monic, not {self}.")
+    if not f.degree >= 1:
+        raise ValueError(f"The polynomial must be non-constant, not {f}.")
+    if not f.is_monic:
+        raise ValueError(f"The polynomial must be monic, not {f}.")
 
-    field = self.field
+    field = f.field
     p = field.characteristic
     one = _constructors.POLY([1], field=field)
 
@@ -78,8 +78,9 @@ def _square_free_factors(self) -> tuple[list[Poly], list[int]]:
     multiplicities = []
 
     # w is the product (without multiplicity) of all factors of f that have multiplicity not divisible by p
-    d = gcd(self, self.derivative())
-    w = self // d
+    f_prime = f.derivative()
+    d = gcd(f, f_prime)
+    w = f // d
 
     # Step 1: Find all factors in w
     i = 1
@@ -100,8 +101,8 @@ def _square_free_factors(self) -> tuple[list[Poly], list[int]]:
         # The inverse Frobenius automorphism of the coefficients
         coeffs = d.nonzero_coeffs ** (field.characteristic ** (field.degree - 1))
         delta = _constructors.POLY_DEGREES(degrees, coeffs=coeffs, field=field)  # The p-th root of d(x)
-        f, m = _square_free_factors(delta)
-        factors_.extend(f)
+        g, m = _square_free_factors(delta)
+        factors_.extend(g)
         multiplicities.extend([mi * p for mi in m])
 
     # Sort the factors in increasing-multiplicity order
@@ -110,7 +111,7 @@ def _square_free_factors(self) -> tuple[list[Poly], list[int]]:
     return list(factors_), list(multiplicities)
 
 
-def _distinct_degree_factors(self) -> tuple[list[Poly], list[int]]:
+def _distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
     r"""
     Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors
     all have the same degree.
@@ -177,23 +178,23 @@ def _distinct_degree_factors(self) -> tuple[list[Poly], list[int]]:
     Order:
         51
     """
-    if not self.degree >= 1:
-        raise ValueError(f"The polynomial must be non-constant, not {self}.")
-    if not self.is_monic:
-        raise ValueError(f"The polynomial must be monic, not {self}.")
-    if not self.is_square_free():
-        raise ValueError(f"The polynomial must be square-free, not {self}.")
+    if not f.degree >= 1:
+        raise ValueError(f"The polynomial must be non-constant, not {f}.")
+    if not f.is_monic:
+        raise ValueError(f"The polynomial must be monic, not {f}.")
+    if not f.is_square_free():
+        raise ValueError(f"The polynomial must be square-free, not {f}.")
 
-    field = self.field
+    field = f.field
     q = field.order
-    n = self.degree
+    n = f.degree
     one = _constructors.POLY([1], field=field)
     x = _constructors.POLY([1, 0], field=field)
 
     factors_ = []
     degrees = []
 
-    a = self
+    a = f
     h = x
 
     l = 1
@@ -214,7 +215,7 @@ def _distinct_degree_factors(self) -> tuple[list[Poly], list[int]]:
     return factors_, degrees
 
 
-def _equal_degree_factors(self, degree: int) -> list[Poly]:
+def _equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
     r"""
     Factors the monic, square-free polynomial :math:`f(x)` of degree :math:`rd` into a product of :math:`r`
     irreducible factors with degree :math:`d`.
@@ -268,29 +269,28 @@ def _equal_degree_factors(self, degree: int) -> list[Poly]:
         51
     """
     verify_isinstance(degree, int)
-    if not self.degree >= 1:
-        raise ValueError(f"The polynomial must be non-constant, not {self}.")
-    if not self.is_monic:
-        raise ValueError(f"The polynomial must be monic, not {self}.")
-    if not self.degree % degree == 0:
+    if not f.degree >= 1:
+        raise ValueError(f"The polynomial must be non-constant, not {f}.")
+    if not f.is_monic:
+        raise ValueError(f"The polynomial must be monic, not {f}.")
+    if not f.degree % degree == 0:
         raise ValueError(
-            f"Argument 'degree' must be divide the degree of the polynomial, "
-            f"{degree} does not divide {self.degree}."
+            f"Argument 'degree' must divide the degree of the polynomial, {degree} does not divide {f.degree}."
         )
-    if not self.is_square_free():
-        raise ValueError(f"The polynomial must be square-free, not {self}.")
+    if not f.is_square_free():
+        raise ValueError(f"The polynomial must be square-free, not {f}.")
 
-    field = self.field
+    field = f.field
     q = field.order
-    r = self.degree // degree
+    r = f.degree // degree
     one = _constructors.POLY([1], field=field)
 
-    factors_ = [self]
+    factors_ = [f]
     while len(factors_) < r:
         h = _constructors.POLY_RANDOM(degree, field=field)
-        g = gcd(self, h)
+        g = gcd(f, h)
         if g == one:
-            g = pow(h, (q**degree - 1) // 2, self) - one
+            g = pow(h, (q**degree - 1) // 2, f) - one
         i = 0
         for u in list(factors_):
             if u.degree <= degree:
@@ -308,7 +308,7 @@ def _equal_degree_factors(self, degree: int) -> list[Poly]:
     return factors_
 
 
-def _factors(self) -> tuple[list[Poly], list[int]]:
+def _factors(f) -> tuple[list[Poly], list[int]]:
     r"""
     Computes the irreducible factors of the non-constant, monic polynomial :math:`f(x)`.
 
@@ -366,15 +366,15 @@ def _factors(self) -> tuple[list[Poly], list[int]]:
     Order:
         51
     """
-    if not self.degree >= 1:
-        raise ValueError(f"The polynomial must be non-constant, not {self}.")
-    if not self.is_monic:
-        raise ValueError(f"The polynomial must be monic, not {self}.")
+    if not f.degree >= 1:
+        raise ValueError(f"The polynomial must be non-constant, not {f}.")
+    if not f.is_monic:
+        raise ValueError(f"The polynomial must be monic, not {f}.")
 
     factors_, multiplicities = [], []
 
     # Step 1: Find all the square-free factors
-    sf_factors, sf_multiplicities = _square_free_factors(self)
+    sf_factors, sf_multiplicities = _square_free_factors(f)
 
     # Step 2: Find all the factors with distinct degree
     for sf_factor, sf_multiplicity in zip(sf_factors, sf_multiplicities):

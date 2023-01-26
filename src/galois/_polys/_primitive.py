@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 
 @functools.lru_cache(maxsize=8192)
-def _is_primitive(self) -> bool:
+def _is_primitive(f: Poly) -> bool:
     r"""
     Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
 
@@ -67,28 +67,28 @@ def _is_primitive(self) -> bool:
             f.is_irreducible()
             f.is_primitive()
     """
-    if self.degree == 0:
+    if f.degree == 0:
         # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x].
         # Both the zero element and the units are not irreducible over the polynomial ring GF(p^m)[x], and
         # therefore cannot be primitive.
         return False
 
-    if self.field.order == 2 and self.degree == 1:
+    if f.field.order == 2 and f.degree == 1:
         # There is only one primitive polynomial in GF(2)
-        return self == _constructors.POLY([1, 1])
+        return f == _constructors.POLY([1, 1])
 
-    if self.coeffs[-1] == 0:
+    if f.coeffs[-1] == 0:
         # A primitive polynomial cannot have zero constant term
         # TODO: Why isn't f(x) = x primitive? It's irreducible and passes the primitivity tests.
         return False
 
-    if not _is_irreducible(self):
+    if not _is_irreducible(f):
         # A polynomial must be irreducible to be primitive
         return False
 
-    field = self.field
+    field = f.field
     q = field.order
-    m = self.degree
+    m = f.degree
     one = _constructors.POLY([1], field=field)
 
     primes, _ = factors(q**m - 1)
@@ -96,8 +96,8 @@ def _is_primitive(self) -> bool:
     for ki in sorted([(q**m - 1) // pi for pi in primes]):
         # f(x) must not divide (x^((q^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors
         # of q**m - 1.
-        h = pow(x, ki, self)
-        g = (h - one) % self
+        h = pow(x, ki, f)
+        g = (h - one) % f
         if g == 0:
             return False
 
