@@ -6,7 +6,7 @@ import pytest
 
 import galois
 
-# pylint: disable=unidiomatic-typecheck
+# pylint: disable=unidiomatic-typecheck,no-member
 
 
 def test_gcd_exceptions():
