@@ -4,15 +4,15 @@ A module containing functions to generate and test primitive polynomials.
 from __future__ import annotations
 
 import functools
-from typing import TYPE_CHECKING, Iterator
+from typing import Iterator
 
 from typing_extensions import Literal
 
 from .._domains import _factory
-from .._helper import export, verify_isinstance
+from .._helper import export, method_of, verify_isinstance
 from .._prime import factors, is_prime, is_prime_power
-from . import _constructors
-from ._irreducible import _is_irreducible
+from ._irreducible import is_irreducible
+from ._poly import Poly
 from ._search import (
     _deterministic_search,
     _deterministic_search_fixed_terms,
@@ -21,12 +21,10 @@ from ._search import (
     _random_search_fixed_terms,
 )
 
-if TYPE_CHECKING:
-    from ._poly import Poly
 
-
+@method_of(Poly)
 @functools.lru_cache(maxsize=8192)
-def _is_primitive(f: Poly) -> bool:
+def is_primitive(f: Poly) -> bool:
     r"""
     Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
 
@@ -75,24 +73,24 @@ def _is_primitive(f: Poly) -> bool:
 
     if f.field.order == 2 and f.degree == 1:
         # There is only one primitive polynomial in GF(2)
-        return f == _constructors.POLY([1, 1])
+        return f == Poly([1, 1])
 
     if f.coeffs[-1] == 0:
         # A primitive polynomial cannot have zero constant term
         # TODO: Why isn't f(x) = x primitive? It's irreducible and passes the primitivity tests.
         return False
 
-    if not _is_irreducible(f):
+    if not is_irreducible(f):
         # A polynomial must be irreducible to be primitive
         return False
 
     field = f.field
     q = field.order
     m = f.degree
-    one = _constructors.POLY([1], field=field)
+    one = Poly([1], field=field)
 
     primes, _ = factors(q**m - 1)
-    x = _constructors.POLY([1, 0], field=field)
+    x = Poly([1, 0], field=field)
     for ki in sorted([(q**m - 1) // pi for pi in primes]):
         # f(x) must not divide (x^((q^m - 1)/pi) - 1) for f(x) to be primitive, where pi are the prime factors
         # of q**m - 1.
@@ -420,14 +418,14 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     # But for some reason, there are three exceptions. I can't determine why.
     if characteristic == 2 and degree == 7:
         # Not the lexicographically-first of x^7 + x + 1.
-        return _constructors.POLY_DEGREES([7, 3, 0])
+        return Poly.Degrees([7, 3, 0])
 
     if characteristic == 2 and degree == 14:
         # Not the lexicographically-first of x^14 + x^5 + x^3 + x + 1.
-        return _constructors.POLY_DEGREES([14, 10, 6, 1, 0])
+        return Poly.Degrees([14, 10, 6, 1, 0])
 
     if characteristic == 2 and degree == 16:
         # Not the lexicographically-first of x^16 + x^5 + x^3 + x^2 + 1.
-        return _constructors.POLY_DEGREES([16, 12, 3, 1, 0])
+        return Poly.Degrees([16, 12, 3, 1, 0])
 
     return primitive_poly(characteristic, degree)

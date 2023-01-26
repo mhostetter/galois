@@ -3,12 +3,7 @@ A module with functions for polynomials over Galois fields.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-from . import _constructors
-
-if TYPE_CHECKING:
-    from ._poly import Poly
+from ._poly import Poly
 
 
 def gcd(a: Poly, b: Poly) -> Poly:
@@ -38,8 +33,8 @@ def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
         raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {a.field} and {b.field}.")
 
     field = a.field
-    zero = _constructors.POLY([0], field=field)
-    one = _constructors.POLY([1], field=field)
+    zero = Poly([0], field=field)
+    one = Poly([1], field=field)
 
     r2, r1 = a, b
     s2, s1 = one, zero
@@ -67,7 +62,7 @@ def lcm(*args: Poly) -> Poly:
     """
     field = args[0].field
 
-    lcm_ = _constructors.POLY([1], field=field)
+    lcm_ = Poly([1], field=field)
     for arg in args:
         if not arg.field == field:
             raise ValueError(
@@ -87,7 +82,7 @@ def prod(*args: Poly) -> Poly:
     """
     field = args[0].field
 
-    prod_ = _constructors.POLY([1], field=field)
+    prod_ = Poly([1], field=field)
     for arg in args:
         if not arg.field == field:
             raise ValueError(
