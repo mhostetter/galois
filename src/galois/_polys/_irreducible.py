@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 
 @functools.lru_cache(maxsize=8192)
-def _is_irreducible(self) -> bool:
+def _is_irreducible(f: Poly) -> bool:
     r"""
     Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
 
@@ -78,28 +78,29 @@ def _is_irreducible(self) -> bool:
 
             f.is_irreducible()
     """
+
     # pylint: disable=too-many-return-statements
-    if self.degree == 0:
+    if f.degree == 0:
         # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x].
         # Both the zero element and the units are not irreducible over the polynomial ring GF(p^m)[x].
         return False
 
-    if self.degree == 1:
+    if f.degree == 1:
         # f(x) = x + a (even a = 0) in any Galois field is irreducible
         return True
 
-    if self.coeffs[-1] == 0:
+    if f.coeffs[-1] == 0:
         # g(x) = x can be factored, therefore it is not irreducible
         return False
 
-    if self.field.order == 2 and self.nonzero_coeffs.size % 2 == 0:
+    if f.field.order == 2 and f.nonzero_coeffs.size % 2 == 0:
         # Polynomials over GF(2) with degree at least 2 and an even number of terms satisfy f(1) = 0, hence
         # g(x) = x + 1 can be factored. Section 4.5.2 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf.
         return False
 
-    field = self.field
+    field = f.field
     q = field.order
-    m = self.degree
+    m = f.degree
     x = _constructors.POLY([1, 0], field=field)
 
     primes, _ = factors(m)
@@ -108,15 +109,15 @@ def _is_irreducible(self) -> bool:
     for ni in sorted([m // pi for pi in primes]):
         # The GCD of f(x) and (x^(q^(m/pi)) - x) must be 1 for f(x) to be irreducible, where pi are the
         # prime factors of m.
-        hi = pow(h0, q ** (ni - n0), self)
-        g = gcd(self, hi - x)
+        hi = pow(h0, q ** (ni - n0), f)
+        g = gcd(f, hi - x)
         if g != 1:
             return False
         h0, n0 = hi, ni
 
     # f(x) must divide (x^(q^m) - x) to be irreducible
-    h = pow(h0, q ** (m - n0), self)
-    g = (h - x) % self
+    h = pow(h0, q ** (m - n0), f)
+    g = (h - x) % f
     if g != 0:
         return False
 
