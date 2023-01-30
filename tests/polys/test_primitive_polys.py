@@ -164,30 +164,6 @@ def test_minimum_terms(order, degree, polys):
     assert f.coeffs.tolist() in min_term_polys
 
 
-def test_conway_poly_exceptions():
-    with pytest.raises(TypeError):
-        galois.conway_poly(2.0, 3)
-    with pytest.raises(TypeError):
-        galois.conway_poly(2, 3.0)
-    with pytest.raises(ValueError):
-        galois.conway_poly(4, 3)
-    with pytest.raises(ValueError):
-        galois.conway_poly(2, 0)
-    with pytest.raises(LookupError):
-        # GF(2^409) is the largest characteristic-2 field in Frank Luebeck's database
-        galois.conway_poly(2, 410)
-
-
-def test_conway_poly():
-    assert galois.conway_poly(2, 8) == galois.Poly.Degrees([8, 4, 3, 2, 0])
-
-    GF3 = galois.GF(3)
-    assert galois.conway_poly(3, 8) == galois.Poly.Degrees([8, 5, 4, 2, 1, 0], coeffs=[1, 2, 1, 2, 2, 2], field=GF3)
-
-    GF5 = galois.GF(5)
-    assert galois.conway_poly(5, 8) == galois.Poly.Degrees([8, 4, 2, 1, 0], coeffs=[1, 1, 3, 4, 2], field=GF5)
-
-
 def test_matlab_primitive_poly_exceptions():
     with pytest.raises(TypeError):
         galois.matlab_primitive_poly(2.0, 3)
