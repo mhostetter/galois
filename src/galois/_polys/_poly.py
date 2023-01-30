@@ -893,6 +893,22 @@ class Poly:
         # Will be monkey-patched in `_primitive.py`
         raise NotImplementedError
 
+    def is_conway(self) -> bool:
+        r"""
+        Checks whether the degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is the
+        Conway polynomial :math:`C_{p,m}(x)`.
+        """
+        # Will be monkey-patched in `_conway.py`
+        raise NotImplementedError
+
+    def is_conway_consistent(self) -> bool:
+        r"""
+        Determines whether the degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is consistent
+        with smaller Conway polynomials :math:`C_{p,n}(x)` for all :math:`n\ |\ m`.
+        """
+        # Will be monkey-patched in `_conway.py`
+        raise NotImplementedError
+
     def is_square_free(self) -> bool:
         r"""
         Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is square-free.
