@@ -640,3 +640,13 @@ POLY_FACTORS_5_2 = [
         [1, 1, 1, 1],
     ),
 ]
+
+
+POLY_FACTORS = [
+    (2, 1, POLY_FACTORS_2_1),
+    (3, 1, POLY_FACTORS_3_1),
+    (5, 1, POLY_FACTORS_5_1),
+    (2, 2, POLY_FACTORS_2_2),
+    (3, 2, POLY_FACTORS_3_2),
+    (5, 2, POLY_FACTORS_5_2),
+]
