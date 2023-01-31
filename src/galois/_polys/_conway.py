@@ -27,7 +27,10 @@ def is_conway(f: Poly, search: bool = False) -> bool:
     Arguments:
         search: Manually search for Conway polynomials if they are not included in `Frank Luebeck's database
             <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_. The default is `False`.
-            The manual search may take a long time.
+
+            .. slow-performance::
+
+                Manually searching for a Conway polynomial is *very* computationally expensive.
 
     Returns:
         `True` if the polynomial :math:`f(x)` is the Conway polynomial :math:`C_{p,m}(x)`.
@@ -110,7 +113,10 @@ def is_conway_consistent(f: Poly, search: bool = False) -> bool:
     Arguments:
         search: Manually search for Conway polynomials if they are not included in `Frank Luebeck's database
             <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_. The default is `False`.
-            The manual search may take a long time.
+
+            .. slow-performance::
+
+                Manually searching for a Conway polynomial is *very* computationally expensive.
 
     Returns:
         `True` if the polynomial :math:`f(x)` is primitive and consistent with smaller Conway polynomials
@@ -203,7 +209,10 @@ def conway_poly(characteristic: int, degree: int, search: bool = False) -> Poly:
         degree: The degree :math:`m` of the Conway polynomial.
         search: Manually search for Conway polynomials if they are not included in `Frank Luebeck's database
             <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_. The default is `False`.
-            The manual search may take a long time.
+
+            .. slow-performance::
+
+                Manually searching for a Conway polynomial is *very* computationally expensive.
 
     Returns:
         The degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)`.
