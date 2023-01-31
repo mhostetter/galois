@@ -7,23 +7,7 @@ import pytest
 
 import galois
 
-from .luts.poly_factors import (
-    POLY_FACTORS_2_1,
-    POLY_FACTORS_2_2,
-    POLY_FACTORS_3_1,
-    POLY_FACTORS_3_2,
-    POLY_FACTORS_5_1,
-    POLY_FACTORS_5_2,
-)
-
-PARAMS = [
-    (2, 1, POLY_FACTORS_2_1),
-    (3, 1, POLY_FACTORS_3_1),
-    (5, 1, POLY_FACTORS_5_1),
-    (2, 2, POLY_FACTORS_2_2),
-    (3, 2, POLY_FACTORS_3_2),
-    (5, 2, POLY_FACTORS_5_2),
-]
+from .luts.poly_factors import POLY_FACTORS
 
 
 def test_factors_exceptions():
@@ -71,7 +55,7 @@ def test_factors_random():
         assert f == multiply_factors(factors, multiplicities)
 
 
-@pytest.mark.parametrize("characteristic,degree,lut", PARAMS)
+@pytest.mark.parametrize("characteristic,degree,lut", POLY_FACTORS)
 def test_factors(characteristic, degree, lut):
     GF = galois.GF(characteristic**degree)
 
