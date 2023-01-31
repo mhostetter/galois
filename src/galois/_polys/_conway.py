@@ -20,9 +20,10 @@ def is_conway(f: Poly, search: bool = False) -> bool:
     Checks whether the degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is the
     Conway polynomial :math:`C_{p,m}(x)`.
 
-    .. info::
+    .. question:: Why is this a method and not a property?
+        :collapsible:
 
-        This is a method, not a property, to indicate this test is computationally expensive.
+        This is a method to indicate it is a computationally-expensive task.
 
     Arguments:
         search: Manually search for Conway polynomials if they are not included in `Frank Luebeck's database
@@ -106,9 +107,10 @@ def is_conway_consistent(f: Poly, search: bool = False) -> bool:
     Determines whether the degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is consistent
     with smaller Conway polynomials :math:`C_{p,n}(x)` for all :math:`n\ |\ m`.
 
-    .. info::
+    .. question:: Why is this a method and not a property?
+        :collapsible:
 
-        This is a method, not a property, to indicate this test is computationally expensive.
+        This is a method to indicate it is a computationally-expensive task.
 
     Arguments:
         search: Manually search for Conway polynomials if they are not included in `Frank Luebeck's database
