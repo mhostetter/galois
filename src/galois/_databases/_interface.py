@@ -113,7 +113,7 @@ class ConwayPolyDatabase(DatabaseInterface):
     singleton = None
     file = Path(__file__).parent / "conway_polys.db"
 
-    def fetch(self, characteristic: int, degree: int) -> list[int]:
+    def fetch(self, characteristic: int, degree: int) -> tuple[list[int], list[int]]:
         """
         Fetches the Conway polynomial of degree `degree` over GF(`characteristic`).
 
@@ -122,15 +122,15 @@ class ConwayPolyDatabase(DatabaseInterface):
             degree: The degree of the polynomial.
 
         Returns:
-            The coefficients of the Conway polynomial. Coefficients are in degree-descending order.
+            A tuple containing the non-zero degrees and coefficients of the Conway polynomial.
         """
         self.cursor.execute(
             """
-            SELECT coefficients
+            SELECT nonzero_degrees, nonzero_coeffs
             FROM polys
             WHERE characteristic=? AND degree=?
             """,
-            (int(characteristic), int(degree)),
+            (characteristic, degree),
         )
         result = self.cursor.fetchone()
 
@@ -144,7 +144,7 @@ class ConwayPolyDatabase(DatabaseInterface):
                 "or primitive polynomials with `galois.primitive_poly(p, m)`."
             )
 
-        coeffs = result[0]
-        coeffs = list(map(int, coeffs[1:-1].split(",")))  # List of degree-ascending coefficients
+        nonzero_degrees = [int(_) for _ in result[0].split(",")]
+        nonzero_coeffs = [int(_) for _ in result[1].split(",")]
 
-        return coeffs[::-1]
+        return nonzero_degrees, nonzero_coeffs
