@@ -130,7 +130,6 @@ def irreducible_poly(
     degree: int,
     terms: int | str | None = None,
     method: Literal["min", "max", "random"] = "min",
-    use_database: bool = True,
 ) -> Poly:
     r"""
     Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
@@ -218,7 +217,7 @@ def irreducible_poly(
     if not method in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
-    if terms == "min" and method == "min" and use_database:
+    if terms == "min" and method == "min":
         try:
             db = IrreduciblePolyDatabase()
             degrees, coeffs = db.fetch(order, degree)
