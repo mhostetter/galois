@@ -307,9 +307,9 @@ def _conway_poly_database(characteristic: int, degree: int) -> Poly:
         LookupError: If the Conway polynomial :math:`C_{p,m}(x)` is not found in Frank Luebeck's database.
     """
     db = ConwayPolyDatabase()
-    coeffs = db.fetch(characteristic, degree)
+    degrees, coeffs = db.fetch(characteristic, degree)
     field = _factory.FIELD_FACTORY(characteristic)
-    poly = Poly(coeffs, field=field)
+    poly = Poly.Degrees(degrees, coeffs, field=field)
     return poly
 
 
