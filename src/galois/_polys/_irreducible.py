@@ -29,9 +29,10 @@ def is_irreducible(f: Poly) -> bool:
     r"""
     Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
 
-    .. info::
+    .. question:: Why is this a method and not a property?
+        :collapsible:
 
-        This is a method, not a property, to indicate this test is computationally expensive.
+        This is a method to indicate it is a computationally-expensive task.
 
     Returns:
         `True` if the polynomial is irreducible.
