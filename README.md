@@ -37,9 +37,9 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 - Supports all [Galois fields](https://mhostetter.github.io/galois/latest/api/galois.GF/) $\mathrm{GF}(p^m)$, even arbitrarily-large fields!
 - [**Faster**](https://mhostetter.github.io/galois/latest/performance/prime-fields/) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for $\mathrm{GF}(p)$.
-- Seamless integration with NumPy -- normal NumPy functions work on [`FieldArray`s](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/).
-- Linear algebra over finite fields using normal `np.linalg` functions.
-- Linear transforms over finite fields, such as the FFT with `np.fft.fft()` and the NTT with [`ntt()`](https://mhostetter.github.io/galois/latest/api/galois.ntt/).
+- Seamless integration with NumPy -- normal NumPy functions work on [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/)s.
+- Linear algebra over finite fields using normal [`np.linalg`](https://mhostetter.github.io/galois/latest/basic-usage/array-arithmetic/#linear-algebra) functions.
+- Linear transforms over finite fields, such as the FFT with [`np.fft.fft()`](https://mhostetter.github.io/galois/latest/basic-usage/array-arithmetic/#advanced-arithmetic) and the NTT with [`ntt()`](https://mhostetter.github.io/galois/latest/api/galois.ntt/).
 - Functions to generate [irreducible](https://mhostetter.github.io/galois/latest/api/#irreducible-polynomials), [primitive](https://mhostetter.github.io/galois/latest/api/#primitive-polynomials), and [Conway](https://mhostetter.github.io/galois/latest/api/galois.conway_poly/) polynomials.
 - Univariate polynomials over finite fields with [`Poly`](https://mhostetter.github.io/galois/latest/api/galois.Poly/).
 - Forward error correction codes with [`BCH`](https://mhostetter.github.io/galois/latest/api/galois.BCH/) and [`ReedSolomon`](https://mhostetter.github.io/galois/latest/api/galois.ReedSolomon/).
