@@ -149,6 +149,15 @@ def irreducible_poly(
             - `"max"`: Returns the lexicographically-last polynomial.
             - `"random"`: Returns a random polynomial.
 
+    .. fast-performance::
+
+        Depending on the type of polynomial requested, this function may use a database of precomputed polynomials.
+        Under these conditions, this function returns very quickly.
+
+        - For :math:`q = 2`, :math:`2 \le m \le 10000`, `terms="min"`, and `method="min"`, the
+          `HP Table of Low-Weight Binary Irreducible Polynomials
+          <https://www.hpl.hp.com/techreports/98/HPL-98-135.pdf>`_ is used.
+
     Returns:
         The degree-:math:`m` monic irreducible polynomial over :math:`\mathrm{GF}(q)`.
 
