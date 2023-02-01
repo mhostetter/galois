@@ -25,8 +25,8 @@ class ArrayMeta(abc.ABCMeta):
 
     # pylint: disable=no-value-for-parameter
 
-    def __new__(cls, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
-        return super().__new__(cls, name, bases, namespace)
+    def __new__(mcs, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
+        return super().__new__(mcs, name, bases, namespace)
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
