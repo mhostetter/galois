@@ -1,0 +1,66 @@
+# v0.3.3
+
+*Released February 1, 2023*
+
+## Changes
+
+- Added a `terms` keyword argument to `irreducible_poly()`, `irreducible_polys()`, `primitive_poly()`, and
+  `primitive_polys()` to find a polynomial with a desired number of non-zero terms. This may be set to an integer
+  or to `"min"`. ([#463](https://github.com/mhostetter/galois/pull/463))
+  ```python
+  >>> import galois
+  >>> galois.irreducible_poly(7, 9)
+  Poly(x^9 + 2, GF(7))
+  >>> galois.irreducible_poly(7, 9, terms=3)
+  Poly(x^9 + x + 1, GF(7))
+  >>> galois.primitive_poly(7, 9)
+  Poly(x^9 + x^2 + x + 2, GF(7))
+  >>> galois.primitive_poly(7, 9, terms="min")
+  Poly(x^9 + 3x^2 + 4, GF(7))
+  ```
+- Added a database of binary irreducible polynomials with degrees less than 10,000. These polynomials are
+  lexicographically-first and have the minimum number of non-zero terms. The database is accessed in
+  `irreducible_poly()` when `terms="min"` and `method="min"`. ([#462](https://github.com/mhostetter/galois/pull/462))
+  ```ipython
+  In [1]: import galois
+  
+  # Manual search
+  In [2]: %time galois.irreducible_poly(2, 1001)
+  CPU times: user 6.8 s, sys: 0 ns, total: 6.8 s
+  Wall time: 6.81 s
+  Out[2]: Poly(x^1001 + x^5 + x^3 + x + 1, GF(2))
+  
+  # With the database
+  In [3]: %time galois.irreducible_poly(2, 1001, terms="min")
+  CPU times: user 745 µs, sys: 0 ns, total: 745 µs
+  Wall time: 1.4 ms
+  Out[3]: Poly(x^1001 + x^17 + 1, GF(2))
+  ```
+- Memoized expensive polynomial tests `Poly.is_irreducible()` and `Poly.is_primitive()`. Now, the expense of those
+  calculations for a given polynomial is only incurred once. ([#470](https://github.com/mhostetter/galois/pull/470))
+  ```ipython
+  In [1]: import galois
+  
+  In [2]: f = galois.Poly.Str("x^1001 + x^17 + 1"); f
+  Out[2]: Poly(x^1001 + x^17 + 1, GF(2))
+  
+  In [3]: %time f.is_irreducible()
+  CPU times: user 1.05 s, sys: 3.47 ms, total: 1.05 s
+  Wall time: 1.06 s
+  Out[3]: True
+  
+  In [4]: %time f.is_irreducible()
+  CPU times: user 57 µs, sys: 30 µs, total: 87 µs
+  Wall time: 68.2 µs
+  Out[4]: True
+  ```
+- Added tests for Conway polynomials `Poly.is_conway()` and `Poly.is_conway_consistent()`.
+  ([#469](https://github.com/mhostetter/galois/pull/469))
+- Added the ability to manually search for a Conway polynomial if it is not found in Frank Luebeck's database,
+  using `conway_poly(p, m, search=True)`. ([#469](https://github.com/mhostetter/galois/pull/469))
+- Various documentation improvements.
+
+## Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))

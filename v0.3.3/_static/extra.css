@@ -1,0 +1,50 @@
+/* Set the colors for the light theme */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #344FA1;
+}
+
+/* Set the colors for the dark theme */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #4060C1;
+}
+
+/* Fix line numbers in code blocks */
+.linenos {
+  background-color: var(--md-default-bg-color--light);
+  margin-right: 0.5rem;
+}
+
+/* Override sphinx-design tab-set CSS rules, see https://github.com/jbms/sphinx-immaterial/issues/43 */
+.sd-tab-set>input+label {
+  font: var(--md-text-font-family);
+  font-size: 0.64rem;
+  font-weight: bolder;
+  border-bottom: .13rem solid transparent;
+}
+.sd-tab-set>input:checked+label {
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+}
+.sd-tab-set>input:not(checked)+label {
+  color: var(--md-default-fg-color--light);
+}
+.sd-tab-set>input:not(:checked)+label:hover {
+  border-bottom: .0rem solid transparent;
+  color: var(--md-accent-fg-color);
+}
+.sd-tab-content {
+  box-shadow: 0 -0.05rem var(--md-default-fg-color--lightest), 0 0.05rem var(--md-default-fg-color--lightest);
+}
+
+/* Modify Sphinx Immaterial python-apigen linkable parameter coloring. */
+.sig-param a.reference span .pre {
+  color: var(--md-code-hl-generic-color);
+}
+.sig-param a.reference span .pre:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* Override version outdated banner colors */
+[data-md-color-scheme="slate"] .md-banner--warning {
+  background: var(--md-footer-bg-color);
+}
