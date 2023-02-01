@@ -20,11 +20,9 @@ class DatabaseInterface:
     def __new__(cls):
         if cls.singleton is None:
             cls.singleton = super().__new__(cls)
+            cls.conn = sqlite3.connect(cls.file)
+            cls.cursor = cls.conn.cursor()
         return cls.singleton
-
-    def __init__(self):
-        self.conn = sqlite3.connect(self.file)
-        self.cursor = self.conn.cursor()
 
 
 class PrimeFactorsDatabase(DatabaseInterface):
