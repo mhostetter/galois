@@ -7651,6 +7651,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../release-notes/v0.3.3/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>3.<wbr>3</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../release-notes/v0.3.2/" class="md-nav__link">
         <span class="md-ellipsis">v0.<wbr>3.<wbr>2</span>
       </a>
@@ -8274,23 +8289,23 @@ Matrix (shortened)</label></div>
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([ 9,  0,  5,  0,  6, 12,  9,  1,  0], order=2^4)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([ 3, 13, 15, 15,  9, 13,  9, 14,  0], order=2^4)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([ 9,  0,  5,  0,  6, 12,  9,  1,  0,  9,  8,  2, 12,  9,  4], order=2^4)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([ 3, 13, 15, 15,  9, 13,  9, 14,  0, 11, 14, 10, 14,  1,  5], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Corrupt <span class="math notranslate nohighlight">\(t\)</span> symbols of the codeword.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">e</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">e</span>
-<span class="gh">Out[5]: </span><span class="go">GF([12,  8, 13], order=2^4)</span>
+<span class="gh">Out[5]: </span><span class="go">GF([15, 15,  8], order=2^4)</span>
 
 <span class="gp">In [6]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rs</span><span class="o">.</span><span class="n">t</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[6]: </span><span class="go">GF([ 5,  8,  8,  0,  6, 12,  9,  1,  0,  9,  8,  2, 12,  9,  4], order=2^4)</span>
+<span class="gh">Out[6]: </span><span class="go">GF([12,  2,  7, 15,  9, 13,  9, 14,  0, 11, 14, 10, 14,  1,  5], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
-<span class="gh">Out[7]: </span><span class="go">GF([ 9,  0,  5,  0,  6, 12,  9,  1,  0], order=2^4)</span>
+<span class="gh">Out[7]: </span><span class="go">GF([ 3, 13, 15, 15,  9, 13,  9, 14,  0], order=2^4)</span>
 
 <span class="gp">In [8]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[8]: </span><span class="go">True</span>
@@ -8298,7 +8313,7 @@ Matrix (shortened)</label></div>
 </div>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
-<span class="gh">Out[9]: </span><span class="go">(GF([ 9,  0,  5,  0,  6, 12,  9,  1,  0], order=2^4), 3)</span>
+<span class="gh">Out[9]: </span><span class="go">(GF([ 3, 13, 15, 15,  9, 13,  9, 14,  0], order=2^4), 3)</span>
 
 <span class="gp">In [10]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[10]: </span><span class="go">True</span>
@@ -8312,23 +8327,23 @@ Matrix (shortened)</label></div>
 <span class="gp">In [12]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [13]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[13]: </span><span class="go">GF([12,  0,  6,  0,  6], order=2^4)</span>
+<span class="gh">Out[13]: </span><span class="go">GF([10, 11, 14,  0, 13], order=2^4)</span>
 
 <span class="gp">In [14]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[14]: </span><span class="go">GF([12,  0,  6,  0,  6, 10, 13,  2,  1,  3, 13], order=2^4)</span>
+<span class="gh">Out[14]: </span><span class="go">GF([10, 11, 14,  0, 13,  6,  6,  1,  7, 15,  6], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Corrupt <span class="math notranslate nohighlight">\(t\)</span> symbols of the codeword.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [15]: </span><span class="n">e</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span> <span class="n">e</span>
-<span class="gh">Out[15]: </span><span class="go">GF([11,  3,  4], order=2^4)</span>
+<span class="gh">Out[15]: </span><span class="go">GF([13,  3, 12], order=2^4)</span>
 
 <span class="gp">In [16]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rs</span><span class="o">.</span><span class="n">t</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[16]: </span><span class="go">GF([ 7,  3,  2,  0,  6, 10, 13,  2,  1,  3, 13], order=2^4)</span>
+<span class="gh">Out[16]: </span><span class="go">GF([ 7,  8,  2,  0, 13,  6,  6,  1,  7, 15,  6], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [17]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
-<span class="gh">Out[17]: </span><span class="go">GF([12,  0,  6,  0,  6], order=2^4)</span>
+<span class="gh">Out[17]: </span><span class="go">GF([10, 11, 14,  0, 13], order=2^4)</span>
 
 <span class="gp">In [18]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[18]: </span><span class="go">True</span>
@@ -8336,7 +8351,7 @@ Matrix (shortened)</label></div>
 </div>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
-<span class="gh">Out[19]: </span><span class="go">(GF([12,  0,  6,  0,  6], order=2^4), 3)</span>
+<span class="gh">Out[19]: </span><span class="go">(GF([10, 11, 14,  0, 13], order=2^4), 3)</span>
 
 <span class="gp">In [20]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[20]: </span><span class="go">True</span>
@@ -8351,15 +8366,15 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [23]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[23]: </span>
-<span class="go">GF([[ 8,  9, 12,  1, 15, 13,  8, 10,  3],</span>
-<span class="go">    [ 9, 10,  7, 15, 11, 12, 11,  2, 12],</span>
-<span class="go">    [ 5,  8,  0, 12,  7, 14,  4,  5, 12]], order=2^4)</span>
+<span class="go">GF([[14,  5,  0,  1,  7,  6,  9, 11,  8],</span>
+<span class="go">    [ 2,  8, 11,  5,  1, 15,  5, 14,  8],</span>
+<span class="go">    [ 9,  0,  8,  8, 12,  7, 15,  7,  9]], order=2^4)</span>
 
 <span class="gp">In [24]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[24]: </span>
-<span class="go">GF([[ 8,  9, 12,  1, 15, 13,  8, 10,  3,  7, 13, 14, 10,  3,  2],</span>
-<span class="go">    [ 9, 10,  7, 15, 11, 12, 11,  2, 12,  2, 10,  6, 10,  8, 15],</span>
-<span class="go">    [ 5,  8,  0, 12,  7, 14,  4,  5, 12,  4,  0,  1,  7, 10, 15]],</span>
+<span class="go">GF([[14,  5,  0,  1,  7,  6,  9, 11,  8,  8, 14,  6,  1, 12, 12],</span>
+<span class="go">    [ 2,  8, 11,  5,  1, 15,  5, 14,  8,  7,  6,  8, 15,  5, 12],</span>
+<span class="go">    [ 9,  0,  8,  8, 12,  7, 15,  7,  9, 10, 13,  8, 14,  8, 15]],</span>
 <span class="go">   order=2^4)</span>
 </code></pre></div>
 </div>
@@ -8373,18 +8388,18 @@ third.</p>
 
 <span class="gp">In [28]: </span><span class="n">c</span>
 <span class="gh">Out[28]: </span>
-<span class="go">GF([[13,  9, 12,  1, 15, 13,  8, 10,  3,  7, 13, 14, 10,  3,  2],</span>
-<span class="go">    [13,  4,  7, 15, 11, 12, 11,  2, 12,  2, 10,  6, 10,  8, 15],</span>
-<span class="go">    [ 1,  4,  3, 12,  7, 14,  4,  5, 12,  4,  0,  1,  7, 10, 15]],</span>
+<span class="go">GF([[ 6,  5,  0,  1,  7,  6,  9, 11,  8,  8, 14,  6,  1, 12, 12],</span>
+<span class="go">    [ 5, 14, 11,  5,  1, 15,  5, 14,  8,  7,  6,  8, 15,  5, 12],</span>
+<span class="go">    [ 4,  8, 10,  8, 12,  7, 15,  7,  9, 10, 13,  8, 14,  8, 15]],</span>
 <span class="go">   order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [29]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
 <span class="gh">Out[29]: </span>
-<span class="go">GF([[ 8,  9, 12,  1, 15, 13,  8, 10,  3],</span>
-<span class="go">    [ 9, 10,  7, 15, 11, 12, 11,  2, 12],</span>
-<span class="go">    [ 5,  8,  0, 12,  7, 14,  4,  5, 12]], order=2^4)</span>
+<span class="go">GF([[14,  5,  0,  1,  7,  6,  9, 11,  8],</span>
+<span class="go">    [ 2,  8, 11,  5,  1, 15,  5, 14,  8],</span>
+<span class="go">    [ 9,  0,  8,  8, 12,  7, 15,  7,  9]], order=2^4)</span>
 
 <span class="gp">In [30]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[30]: </span><span class="go">True</span>
@@ -8393,9 +8408,9 @@ third.</p>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [31]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
 <span class="gh">Out[31]: </span>
-<span class="go">(GF([[ 8,  9, 12,  1, 15, 13,  8, 10,  3],</span>
-<span class="go">     [ 9, 10,  7, 15, 11, 12, 11,  2, 12],</span>
-<span class="go">     [ 5,  8,  0, 12,  7, 14,  4,  5, 12]], order=2^4),</span>
+<span class="go">(GF([[14,  5,  0,  1,  7,  6,  9, 11,  8],</span>
+<span class="go">     [ 2,  8, 11,  5,  1, 15,  5, 14,  8],</span>
+<span class="go">     [ 9,  0,  8,  8, 12,  7, 15,  7,  9]], order=2^4),</span>
 <span class="go"> array([1, 2, 3]))</span>
 
 <span class="gp">In [32]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
@@ -8411,15 +8426,15 @@ third.</p>
 
 <span class="gp">In [35]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[35]: </span>
-<span class="go">GF([[14, 15,  4, 12, 14],</span>
-<span class="go">    [ 6,  3,  1, 14, 14],</span>
-<span class="go">    [13,  5,  8,  9, 12]], order=2^4)</span>
+<span class="go">GF([[14, 14, 11,  6, 11],</span>
+<span class="go">    [ 5,  8, 10, 14, 12],</span>
+<span class="go">    [ 5,  3,  1,  3, 15]], order=2^4)</span>
 
 <span class="gp">In [36]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[36]: </span>
-<span class="go">GF([[14, 15,  4, 12, 14, 11, 14, 15,  5, 12, 13],</span>
-<span class="go">    [ 6,  3,  1, 14, 14, 14, 12,  2,  2, 11, 14],</span>
-<span class="go">    [13,  5,  8,  9, 12,  9,  6, 13, 12,  7, 12]], order=2^4)</span>
+<span class="go">GF([[14, 14, 11,  6, 11,  7,  8,  9, 13, 14,  9],</span>
+<span class="go">    [ 5,  8, 10, 14, 12,  1,  0,  0,  6,  5,  3],</span>
+<span class="go">    [ 5,  3,  1,  3, 15, 11,  7,  0,  6,  4,  3]], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Corrupt the codeword. Add one error to the first codeword, two to the second, and three to the
@@ -8432,17 +8447,17 @@ third.</p>
 
 <span class="gp">In [40]: </span><span class="n">c</span>
 <span class="gh">Out[40]: </span>
-<span class="go">GF([[13, 15,  4, 12, 14, 11, 14, 15,  5, 12, 13],</span>
-<span class="go">    [ 8,  6,  1, 14, 14, 14, 12,  2,  2, 11, 14],</span>
-<span class="go">    [14, 10,  4,  9, 12,  9,  6, 13, 12,  7, 12]], order=2^4)</span>
+<span class="go">GF([[ 6, 14, 11,  6, 11,  7,  8,  9, 13, 14,  9],</span>
+<span class="go">    [ 0,  5, 10, 14, 12,  1,  0,  0,  6,  5,  3],</span>
+<span class="go">    [ 9,  8,  3,  3, 15, 11,  7,  0,  6,  4,  3]], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Decode the codeword and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [41]: </span><span class="n">d</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">d</span>
 <span class="gh">Out[41]: </span>
-<span class="go">GF([[14, 15,  4, 12, 14],</span>
-<span class="go">    [ 6,  3,  1, 14, 14],</span>
-<span class="go">    [13,  5,  8,  9, 12]], order=2^4)</span>
+<span class="go">GF([[14, 14, 11,  6, 11],</span>
+<span class="go">    [ 5,  8, 10, 14, 12],</span>
+<span class="go">    [ 5,  3,  1,  3, 15]], order=2^4)</span>
 
 <span class="gp">In [42]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[42]: </span><span class="go">True</span>
@@ -8451,9 +8466,9 @@ third.</p>
 <p>Decode the codeword, specifying the number of corrected errors, and recover the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [43]: </span><span class="n">d</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span>
 <span class="gh">Out[43]: </span>
-<span class="go">(GF([[14, 15,  4, 12, 14],</span>
-<span class="go">     [ 6,  3,  1, 14, 14],</span>
-<span class="go">     [13,  5,  8,  9, 12]], order=2^4),</span>
+<span class="go">(GF([[14, 14, 11,  6, 11],</span>
+<span class="go">     [ 5,  8, 10, 14, 12],</span>
+<span class="go">     [ 5,  3,  1,  3, 15]], order=2^4),</span>
 <span class="go"> array([1, 2, 3]))</span>
 
 <span class="gp">In [44]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>

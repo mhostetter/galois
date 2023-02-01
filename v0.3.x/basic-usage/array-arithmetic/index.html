@@ -558,13 +558,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#additional-linear-algebra" class="md-nav__link">
-    <span class="md-ellipsis">Additional linear algebra</span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -7623,6 +7616,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../release-notes/v0.3.3/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>3.<wbr>3</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../release-notes/v0.3.2/" class="md-nav__link">
         <span class="md-ellipsis">v0.<wbr>3.<wbr>2</span>
       </a>
@@ -8128,13 +8136,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#additional-linear-algebra" class="md-nav__link">
-    <span class="md-ellipsis">Additional linear algebra</span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -8163,9 +8164,10 @@ performed using normal NumPy ufuncs or Python operators.</p>
 </code></pre></div>
 </div>
 <h2 id="standard-arithmetic">Standard arithmetic<a class="headerlink" href="#standard-arithmetic" title="Permalink to this heading">¶</a></h2>
-<p><a class="reference external" href="https://numpy.org/devdocs/reference/ufuncs.html">NumPy ufuncs</a> are universal functions that operate on scalars. Unary ufuncs operate on
-a single scalar and binary ufuncs operate on two scalars. NumPy extends the scalar operation of ufuncs to operate on arrays in various ways.
-This extensibility enables <a class="reference external" href="https://numpy.org/doc/stable/user/basics.broadcasting.html">NumPy broadcasting</a>.</p>
+<p><a class="reference external" href="https://numpy.org/devdocs/reference/ufuncs.html">NumPy ufuncs</a> are universal functions that operate on scalars.
+Unary ufuncs operate on a single scalar and binary ufuncs operate on two scalars. NumPy extends the scalar operation
+of ufuncs to operate on arrays in various ways. This extensibility enables
+<a class="reference external" href="https://numpy.org/doc/stable/user/basics.broadcasting.html">NumPy broadcasting</a>.</p>
 <p>Expand any section for more details.</p>
 <details class="example admonition">
 <summary class="admonition-title">Addition: <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code></summary><div class="tabbed-set tabbed-alternate" data-tabs="1:3">
@@ -8997,7 +8999,8 @@ Power</label></div>
 </div>
 </div>
 </div>
-</div><p>See also <a class="reference internal" href="../../api/galois.FieldArray.is_square/" title="galois.FieldArray.is_square (Python method) — Determines if the elements of x are squares in the finite field."><code class="xref py py-func docutils literal notranslate"><span class="pre">is_square()</span></code></a>, <a class="reference internal" href="../../api/galois.FieldArray.squares/" title="galois.FieldArray.squares (Python property) — All squares in the finite field."><code class="xref py py-func docutils literal notranslate"><span class="pre">squares()</span></code></a>, and <a class="reference internal" href="../../api/galois.FieldArray.non_squares/" title="galois.FieldArray.non_squares (Python property) — All non-squares in the Galois field."><code class="xref py py-func docutils literal notranslate"><span class="pre">non_squares()</span></code></a>.</p>
+</div><p>See also <a class="reference internal" href="../../api/galois.FieldArray.is_square/" title="galois.FieldArray.is_square (Python method) — Determines if the elements of x are squares in the finite field."><code class="xref py py-func docutils literal notranslate"><span class="pre">is_square()</span></code></a>, <a class="reference internal" href="../../api/galois.FieldArray.squares/" title="galois.FieldArray.squares (Python property) — All squares in the finite field."><code class="xref py py-func docutils literal notranslate"><span class="pre">squares()</span></code></a>, and
+<a class="reference internal" href="../../api/galois.FieldArray.non_squares/" title="galois.FieldArray.non_squares (Python property) — All non-squares in the Galois field."><code class="xref py py-func docutils literal notranslate"><span class="pre">non_squares()</span></code></a>.</p>
 </details>
 <details class="example admonition">
 <summary class="admonition-title">Logarithm: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="n">x</span><span class="o">.</span><span class="n">log</span><span class="p">()</span></code></summary><p>Compute the logarithm base <span class="math notranslate nohighlight">\(\alpha\)</span>, the primitive element of the field.</p>
@@ -9056,8 +9059,8 @@ Power</label></div>
 </div>
 </div>
 </div>
-</div><p>Compute the logarithm base <span class="math notranslate nohighlight">\(\beta\)</span>, a different primitive element of the field. See <code class="xref py py-func docutils literal notranslate"><span class="pre">FieldArray.log()</span></code> for more
-details.</p>
+</div><p>Compute the logarithm base <span class="math notranslate nohighlight">\(\beta\)</span>, a different primitive element of the field. See <code class="xref py py-func docutils literal notranslate"><span class="pre">FieldArray.log()</span></code>
+for more details.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="17:3">
 <input checked type="radio" id="__tabbed_17_1" name="__tabbed_17"><input type="radio" id="__tabbed_17_2" name="__tabbed_17"><input type="radio" id="__tabbed_17_3" name="__tabbed_17"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_17_1">
@@ -9115,11 +9118,12 @@ Power</label></div>
 </div>
 </div></details>
 <h2 id="ufunc-methods">Ufunc methods<a class="headerlink" href="#ufunc-methods" title="Permalink to this heading">¶</a></h2>
-<p><a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances support <a class="reference external" href="https://numpy.org/devdocs/reference/ufuncs.html#methods">NumPy ufunc methods</a>. Ufunc methods allow
-a user to apply a NumPy ufunc in a unique way across the target array. All arithmetic ufuncs are supported.</p>
+<p><a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> instances support <a class="reference external" href="https://numpy.org/devdocs/reference/ufuncs.html#methods">NumPy ufunc methods</a>. Ufunc methods allow a user to apply a NumPy ufunc in a
+unique way across the target array. All arithmetic ufuncs are supported.</p>
 <p>Expand any section for more details.</p>
 <details class="example admonition">
-<summary class="admonition-title"><code class="code highlight python docutils literal highlight-python"><span class="n">reduce</span><span class="p">()</span></code></summary><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduce.html#numpy.ufunc.reduce" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code></a> methods reduce the input array’s dimension by one, applying the ufunc across one axis.</p>
+<summary class="admonition-title"><code class="code highlight python docutils literal highlight-python"><span class="n">reduce</span><span class="p">()</span></code></summary><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduce.html#numpy.ufunc.reduce" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code></a> methods reduce the input array’s dimension by one, applying the ufunc across one
+axis.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="18:3">
 <input checked type="radio" id="__tabbed_18_1" name="__tabbed_18"><input type="radio" id="__tabbed_18_2" name="__tabbed_18"><input type="radio" id="__tabbed_18_3" name="__tabbed_18"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_18_1">
@@ -9295,8 +9299,8 @@ Power</label></div>
 </div>
 </div></details>
 <details class="example admonition">
-<summary class="admonition-title"><code class="code highlight python docutils literal highlight-python"><span class="n">reduceat</span><span class="p">()</span></code></summary><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduceat.html#numpy.ufunc.reduceat" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduceat</span></code></a> methods reduces the input array’s dimension by one, applying the ufunc across one axis
-in-between certain indices.</p>
+<summary class="admonition-title"><code class="code highlight python docutils literal highlight-python"><span class="n">reduceat</span><span class="p">()</span></code></summary><p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.reduceat.html#numpy.ufunc.reduceat" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduceat</span></code></a> methods reduces the input array’s dimension by one, applying the ufunc across one
+axis in-between certain indices.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="22:3">
 <input checked type="radio" id="__tabbed_22_1" name="__tabbed_22"><input type="radio" id="__tabbed_22_2" name="__tabbed_22"><input type="radio" id="__tabbed_22_3" name="__tabbed_22"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_22_1">
@@ -9605,8 +9609,8 @@ Power</label></div>
 </div>
 </div></details>
 <details class="example admonition">
-<summary class="admonition-title">FFT: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></summary><p>The Discrete Fourier Transform (DFT) of size <span class="math notranslate nohighlight">\(n\)</span> over the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> exists when there
-exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th root of unity. This occurs when <span class="math notranslate nohighlight">\(n\ |\ p^m - 1\)</span>.</p>
+<summary class="admonition-title">FFT: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></summary><p>The Discrete Fourier Transform (DFT) of size <span class="math notranslate nohighlight">\(n\)</span> over the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> exists when
+there exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th root of unity. This occurs when <span class="math notranslate nohighlight">\(n\ |\ p^m - 1\)</span>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="28:3">
 <input checked type="radio" id="__tabbed_28_1" name="__tabbed_28"><input type="radio" id="__tabbed_28_2" name="__tabbed_28"><input type="radio" id="__tabbed_28_3" name="__tabbed_28"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_28_1">
@@ -9687,8 +9691,8 @@ Power</label></div>
 </div><p>See also <a class="reference internal" href="../../api/galois.ntt/" title="galois.ntt (Python function) — Computes the Number-Theoretic Transform (NTT) of x."><code class="xref py py-func docutils literal notranslate"><span class="pre">ntt()</span></code></a> and <a class="reference internal" href="../../api/galois.FieldArray.primitive_root_of_unity/" title="galois.FieldArray.primitive_root_of_unity (Python method) — Finds a primitive n-th root of unity in the finite field."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_root_of_unity</span></code></a>.</p>
 </details>
 <details class="example admonition">
-<summary class="admonition-title">Inverse FFT: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code></summary><p>The inverse Discrete Fourier Transform (DFT) of size <span class="math notranslate nohighlight">\(n\)</span> over the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> exists when there
-exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th root of unity. This occurs when <span class="math notranslate nohighlight">\(n\ |\ p^m - 1\)</span>.</p>
+<summary class="admonition-title">Inverse FFT: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code></summary><p>The inverse Discrete Fourier Transform (DFT) of size <span class="math notranslate nohighlight">\(n\)</span> over the finite field <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>
+exists when there exists a primitive <span class="math notranslate nohighlight">\(n\)</span>-th root of unity. This occurs when <span class="math notranslate nohighlight">\(n\ |\ p^m - 1\)</span>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="29:3">
 <input checked type="radio" id="__tabbed_29_1" name="__tabbed_29"><input type="radio" id="__tabbed_29_2" name="__tabbed_29"><input type="radio" id="__tabbed_29_3" name="__tabbed_29"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_29_1">
@@ -9769,8 +9773,8 @@ Power</label></div>
 </div><p>See also <a class="reference internal" href="../../api/galois.ntt/" title="galois.ntt (Python function) — Computes the Number-Theoretic Transform (NTT) of x."><code class="xref py py-func docutils literal notranslate"><span class="pre">ntt()</span></code></a> and <a class="reference internal" href="../../api/galois.FieldArray.primitive_root_of_unity/" title="galois.FieldArray.primitive_root_of_unity (Python method) — Finds a primitive n-th root of unity in the finite field."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_root_of_unity</span></code></a>.</p>
 </details>
 <h2 id="linear-algebra">Linear algebra<a class="headerlink" href="#linear-algebra" title="Permalink to this heading">¶</a></h2>
-<p>Linear algebra on <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> arrays/matrices is supported through both native NumPy linear algebra functions
-in <a class="reference external" href="https://numpy.org/doc/stable/reference/routines.linalg.html#module-numpy.linalg" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.linalg</span></code></a> and additional linear algebra routines not included in NumPy.</p>
+<p>Linear algebra on <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> arrays/matrices is supported through both native NumPy linear algebra
+functions in <a class="reference external" href="https://numpy.org/doc/stable/reference/routines.linalg.html#module-numpy.linalg" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.linalg</span></code></a> and additional <a class="reference external" href="https://mhostetter.github.io/galois/latest/api/galois.FieldArray/#linear-algebra">linear algebra methods</a> not included in NumPy.</p>
 <p>Expand any section for more details.</p>
 <details class="example admonition">
 <summary class="admonition-title">Dot product: <code class="code highlight python docutils literal highlight-python"><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [298]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
@@ -9986,163 +9990,6 @@ in <a class="reference external" href="https://numpy.org/doc/stable/reference/ro
 </code></pre></div>
 </div>
 </details>
-<h2 id="additional-linear-algebra">Additional linear algebra<a class="headerlink" href="#additional-linear-algebra" title="Permalink to this heading">¶</a></h2>
-<p>Below are additional linear algebra routines provided for <a class="reference internal" href="../../api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> arrays/matrices that are
-not included in NumPy.</p>
-<details class="example admonition">
-<summary class="admonition-title">Row space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [343]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
-
-<span class="gp">In [344]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
-<span class="gh">Out[344]: </span>
-<span class="go">GF([[23, 11,  3,  3],</span>
-<span class="go">    [13,  6, 16,  4],</span>
-<span class="go">    [12, 10,  5,  3],</span>
-<span class="go">    [17, 23, 15, 28]], order=31)</span>
-
-<span class="gp">In [345]: </span><span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">()</span>
-<span class="gh">Out[345]: </span>
-<span class="go">GF([[ 1,  0,  0, 11],</span>
-<span class="go">    [ 0,  1,  0, 25],</span>
-<span class="go">    [ 0,  0,  1, 11]], order=31)</span>
-</code></pre></div>
-</div>
-<p>See <a class="reference internal" href="../../api/galois.FieldArray.row_space/" title="galois.FieldArray.row_space (Python method) — Computes the row space of the matrix \mathbf{A}."><code class="xref py py-func docutils literal notranslate"><span class="pre">row_space()</span></code></a> for more details.</p>
-</details>
-<details class="example admonition">
-<summary class="admonition-title">Column space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">column_space</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [346]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
-
-<span class="gp">In [347]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
-<span class="gh">Out[347]: </span>
-<span class="go">GF([[23, 11,  3,  3],</span>
-<span class="go">    [13,  6, 16,  4],</span>
-<span class="go">    [12, 10,  5,  3],</span>
-<span class="go">    [17, 23, 15, 28]], order=31)</span>
-
-<span class="gp">In [348]: </span><span class="n">A</span><span class="o">.</span><span class="n">column_space</span><span class="p">()</span>
-<span class="gh">Out[348]: </span>
-<span class="go">GF([[ 1,  0,  0,  0],</span>
-<span class="go">    [ 0,  1,  0, 11],</span>
-<span class="go">    [ 0,  0,  1,  5]], order=31)</span>
-</code></pre></div>
-</div>
-<p>See <a class="reference internal" href="../../api/galois.FieldArray.column_space/" title="galois.FieldArray.column_space (Python method) — Computes the column space of the matrix \mathbf{A}."><code class="xref py py-func docutils literal notranslate"><span class="pre">column_space()</span></code></a> for more details.</p>
-</details>
-<details class="example admonition">
-<summary class="admonition-title">Left null space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [349]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
-
-<span class="gp">In [350]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
-<span class="gh">Out[350]: </span>
-<span class="go">GF([[23, 11,  3,  3],</span>
-<span class="go">    [13,  6, 16,  4],</span>
-<span class="go">    [12, 10,  5,  3],</span>
-<span class="go">    [17, 23, 15, 28]], order=31)</span>
-
-<span class="gp">In [351]: </span><span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">()</span>
-<span class="gh">Out[351]: </span><span class="go">GF([[ 0,  1, 23, 14]], order=31)</span>
-</code></pre></div>
-</div>
-<p>See <a class="reference internal" href="../../api/galois.FieldArray.left_null_space/" title="galois.FieldArray.left_null_space (Python method) — Computes the left null space of the matrix \mathbf{A}."><code class="xref py py-func docutils literal notranslate"><span class="pre">left_null_space()</span></code></a> for more details.</p>
-</details>
-<details class="example admonition">
-<summary class="admonition-title">Null space: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [352]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
-
-<span class="gp">In [353]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
-<span class="gh">Out[353]: </span>
-<span class="go">GF([[23, 11,  3,  3],</span>
-<span class="go">    [13,  6, 16,  4],</span>
-<span class="go">    [12, 10,  5,  3],</span>
-<span class="go">    [17, 23, 15, 28]], order=31)</span>
-
-<span class="gp">In [354]: </span><span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">()</span>
-<span class="gh">Out[354]: </span><span class="go">GF([[ 1, 22,  1, 14]], order=31)</span>
-</code></pre></div>
-</div>
-<p>See <a class="reference internal" href="../../api/galois.FieldArray.null_space/" title="galois.FieldArray.null_space (Python method) — Computes the null space of the matrix \mathbf{A}."><code class="xref py py-func docutils literal notranslate"><span class="pre">null_space()</span></code></a> for more details.</p>
-</details>
-<details class="example admonition">
-<summary class="admonition-title">Gaussian elimination: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">row_reduce</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [355]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
-
-<span class="gp">In [356]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">28</span><span class="p">]]);</span> <span class="n">A</span>
-<span class="gh">Out[356]: </span>
-<span class="go">GF([[23, 11,  3,  3],</span>
-<span class="go">    [13,  6, 16,  4],</span>
-<span class="go">    [12, 10,  5,  3],</span>
-<span class="go">    [17, 23, 15, 28]], order=31)</span>
-
-<span class="gp">In [357]: </span><span class="n">A</span><span class="o">.</span><span class="n">row_reduce</span><span class="p">()</span>
-<span class="gh">Out[357]: </span>
-<span class="go">GF([[ 1,  0,  0, 11],</span>
-<span class="go">    [ 0,  1,  0, 25],</span>
-<span class="go">    [ 0,  0,  1, 11],</span>
-<span class="go">    [ 0,  0,  0,  0]], order=31)</span>
-</code></pre></div>
-</div>
-<p>See <a class="reference internal" href="../../api/galois.FieldArray.row_reduce/" title="galois.FieldArray.row_reduce (Python method) — Performs Gaussian elimination on the matrix to achieve reduced row echelon form (RREF)."><code class="xref py py-func docutils literal notranslate"><span class="pre">row_reduce()</span></code></a> for more details.</p>
-</details>
-<details class="example admonition">
-<summary class="admonition-title">LU decomposition: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">lu_decompose</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [358]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
-
-<span class="gp">In [359]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]);</span> <span class="n">A</span>
-<span class="gh">Out[359]: </span>
-<span class="go">GF([[ 4,  1, 24],</span>
-<span class="go">    [ 7,  6,  1],</span>
-<span class="go">    [11, 20,  2]], order=31)</span>
-
-<span class="gp">In [360]: </span><span class="n">L</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">lu_decompose</span><span class="p">()</span>
-
-<span class="gp">In [361]: </span><span class="n">L</span>
-<span class="gh">Out[361]: </span>
-<span class="go">GF([[ 1,  0,  0],</span>
-<span class="go">    [25,  1,  0],</span>
-<span class="go">    [26, 15,  1]], order=31)</span>
-
-<span class="gp">In [362]: </span><span class="n">U</span>
-<span class="gh">Out[362]: </span>
-<span class="go">GF([[ 4,  1, 24],</span>
-<span class="go">    [ 0, 12, 21],</span>
-<span class="go">    [ 0,  0, 24]], order=31)</span>
-
-<span class="gp">In [363]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">L</span> <span class="o">@</span> <span class="n">U</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
-<span class="gh">Out[363]: </span><span class="go">True</span>
-</code></pre></div>
-</div>
-<p>See <a class="reference internal" href="../../api/galois.FieldArray.lu_decompose/" title="galois.FieldArray.lu_decompose (Python method) — Decomposes the input array into the product of lower and upper triangular matrices."><code class="xref py py-func docutils literal notranslate"><span class="pre">lu_decompose()</span></code></a> for more details.</p>
-</details>
-<details class="example admonition">
-<summary class="admonition-title">PLU decomposition: <code class="code highlight python docutils literal highlight-python"><span class="n">A</span><span class="o">.</span><span class="n">plu_decompose</span><span class="p">()</span></code></summary><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [364]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
-
-<span class="gp">In [365]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]);</span> <span class="n">A</span>
-<span class="gh">Out[365]: </span>
-<span class="go">GF([[15,  4, 11],</span>
-<span class="go">    [ 7,  6,  1],</span>
-<span class="go">    [11, 20,  2]], order=31)</span>
-
-<span class="gp">In [366]: </span><span class="n">P</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">plu_decompose</span><span class="p">()</span>
-
-<span class="gp">In [367]: </span><span class="n">P</span>
-<span class="gh">Out[367]: </span>
-<span class="go">GF([[1, 0, 0],</span>
-<span class="go">    [0, 0, 1],</span>
-<span class="go">    [0, 1, 0]], order=31)</span>
-
-<span class="gp">In [368]: </span><span class="n">L</span>
-<span class="gh">Out[368]: </span>
-<span class="go">GF([[ 1,  0,  0],</span>
-<span class="go">    [ 9,  1,  0],</span>
-<span class="go">    [17,  0,  1]], order=31)</span>
-
-<span class="gp">In [369]: </span><span class="n">U</span>
-<span class="gh">Out[369]: </span>
-<span class="go">GF([[15,  4, 11],</span>
-<span class="go">    [ 0, 15, 27],</span>
-<span class="go">    [ 0,  0,  0]], order=31)</span>
-
-<span class="gp">In [370]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">P</span> <span class="o">@</span> <span class="n">L</span> <span class="o">@</span> <span class="n">U</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
-<span class="gh">Out[370]: </span><span class="go">True</span>
-</code></pre></div>
-</div>
-<p>See <a class="reference internal" href="../../api/galois.FieldArray.plu_decompose/" title="galois.FieldArray.plu_decompose (Python method) — Decomposes the input array into the product of lower and upper triangular matrices using partial pivoting."><code class="xref py py-func docutils literal notranslate"><span class="pre">plu_decompose()</span></code></a> for more details.</p>
-</details>
 
 
   <hr>
@@ -10150,7 +9997,7 @@ not included in NumPy.</p>
   <small>
     
       Last update:
-      Nov 16, 2022
+      Feb 01, 2023
     
   </small>
 </div>

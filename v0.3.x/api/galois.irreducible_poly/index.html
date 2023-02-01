@@ -7663,6 +7663,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../release-notes/v0.3.3/" class="md-nav__link">
+        <span class="md-ellipsis">v0.<wbr>3.<wbr>3</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../release-notes/v0.3.2/" class="md-nav__link">
         <span class="md-ellipsis">v0.<wbr>3.<wbr>2</span>
       </a>
@@ -8252,11 +8267,22 @@
 </dd>
 </dl>
 </dd>
-<dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
-<dd class="field-even"><p>The degree-<span class="math notranslate nohighlight">\(m\)</span> monic irreducible polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
+</dl>
+<div class="fast-performance admonition">
+<p class="admonition-title">Faster performance</p>
+<p>Depending on the type of polynomial requested, this function may use a database of precomputed polynomials.
+Under these conditions, this function returns very quickly.</p>
+<ul class="simple">
+<li><p>For <span class="math notranslate nohighlight">\(q = 2\)</span>, <span class="math notranslate nohighlight">\(2 \le m \le 10000\)</span>, <code class="code highlight python docutils literal highlight-python"><span class="n">terms</span><span class="o">=</span><span class="s2">&quot;min&quot;</span></code>, and <code class="code highlight python docutils literal highlight-python"><span class="n">method</span><span class="o">=</span><span class="s2">&quot;min&quot;</span></code>, the
+<a class="reference external" href="https://www.hpl.hp.com/techreports/98/HPL-98-135.pdf">HP Table of Low-Weight Binary Irreducible Polynomials</a> is used.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><p>The degree-<span class="math notranslate nohighlight">\(m\)</span> monic irreducible polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
 </dd>
-<dt class="field-odd" id="raises">Raises<span class="colon">:</span><a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If no monic irreducible polynomial of degree <span class="math notranslate nohighlight">\(m\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> with
+<dt class="field-even" id="raises">Raises<span class="colon">:</span><a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If no monic irreducible polynomial of degree <span class="math notranslate nohighlight">\(m\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> with
 <span class="math notranslate nohighlight">\(t\)</span> terms exists. If <code class="code highlight python docutils literal highlight-python"><span class="n">terms</span></code> is <code class="code highlight python docutils literal highlight-python"><span class="kc">None</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;min&quot;</span></code>, this should never be raised.</p>
 </dd>
 </dl>
@@ -8278,7 +8304,7 @@
 <span class="gh">Out[2]: </span><span class="go">Poly(x^3 + 6x^2 + 6x + 4, GF(7))</span>
 
 <span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + 4x^2 + 3x + 3, GF(7))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + x^2 + 5x + 1, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Find the lexicographically-first monic irreducible polynomial with four terms.</p>
@@ -8295,13 +8321,13 @@
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [7]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(x^5 + 2x^4 + 6x^3 + 5x^2 + 5x + 1, GF(7))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(x^5 + 4x^4 + x^3 + 5x + 1, GF(7))</span>
 
 <span class="gp">In [8]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_irreducible</span><span class="p">()</span>
 <span class="gh">Out[8]: </span><span class="go">True</span>
 
 <span class="gp">In [9]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[9]: </span><span class="go">Poly(3x^5 + 6x^4 + 4x^3 + x^2 + x + 3, GF(7))</span>
+<span class="gh">Out[9]: </span><span class="go">Poly(3x^5 + 5x^4 + 3x^3 + x + 3, GF(7))</span>
 
 <span class="gp">In [10]: </span><span class="n">g</span><span class="o">.</span><span class="n">is_irreducible</span><span class="p">()</span>
 <span class="gh">Out[10]: </span><span class="go">True</span>

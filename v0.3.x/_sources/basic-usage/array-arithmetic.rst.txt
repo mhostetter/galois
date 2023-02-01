@@ -15,9 +15,10 @@ In the sections below, the finite field :math:`\mathrm{GF}(3^5)` and arrays :mat
 Standard arithmetic
 -------------------
 
-`NumPy ufuncs <https://numpy.org/devdocs/reference/ufuncs.html>`_ are universal functions that operate on scalars. Unary ufuncs operate on
-a single scalar and binary ufuncs operate on two scalars. NumPy extends the scalar operation of ufuncs to operate on arrays in various ways.
-This extensibility enables `NumPy broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_.
+`NumPy ufuncs <https://numpy.org/devdocs/reference/ufuncs.html>`_ are universal functions that operate on scalars.
+Unary ufuncs operate on a single scalar and binary ufuncs operate on two scalars. NumPy extends the scalar operation
+of ufuncs to operate on arrays in various ways. This extensibility enables
+`NumPy broadcasting <https://numpy.org/doc/stable/user/basics.broadcasting.html>`_.
 
 Expand any section for more details.
 
@@ -161,7 +162,8 @@ Expand any section for more details.
         z = np.sqrt(x); z
         z ** 2 == x
 
-    See also :func:`~galois.FieldArray.is_square`, :func:`~galois.FieldArray.squares`, and :func:`~galois.FieldArray.non_squares`.
+    See also :func:`~galois.FieldArray.is_square`, :func:`~galois.FieldArray.squares`, and
+    :func:`~galois.FieldArray.non_squares`.
 
 .. example:: Logarithm: `np.log(x)` or `x.log()`
     :collapsible:
@@ -175,8 +177,8 @@ Expand any section for more details.
         alpha = GF.primitive_element; alpha
         alpha ** z == y
 
-    Compute the logarithm base :math:`\beta`, a different primitive element of the field. See :func:`FieldArray.log` for more
-    details.
+    Compute the logarithm base :math:`\beta`, a different primitive element of the field. See :func:`FieldArray.log`
+    for more details.
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -188,15 +190,17 @@ Expand any section for more details.
 Ufunc methods
 -------------
 
-:obj:`~galois.FieldArray` instances support `NumPy ufunc methods <https://numpy.org/devdocs/reference/ufuncs.html#methods>`_. Ufunc methods allow
-a user to apply a NumPy ufunc in a unique way across the target array. All arithmetic ufuncs are supported.
+:obj:`~galois.FieldArray` instances support `NumPy ufunc methods
+<https://numpy.org/devdocs/reference/ufuncs.html#methods>`_. Ufunc methods allow a user to apply a NumPy ufunc in a
+unique way across the target array. All arithmetic ufuncs are supported.
 
 Expand any section for more details.
 
 .. example:: `reduce()`
     :collapsible:
 
-    The :obj:`~numpy.ufunc.reduce` methods reduce the input array's dimension by one, applying the ufunc across one axis.
+    The :obj:`~numpy.ufunc.reduce` methods reduce the input array's dimension by one, applying the ufunc across one
+    axis.
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -228,8 +232,8 @@ Expand any section for more details.
 .. example:: `reduceat()`
     :collapsible:
 
-    The :obj:`~numpy.ufunc.reduceat` methods reduces the input array's dimension by one, applying the ufunc across one axis
-    in-between certain indices.
+    The :obj:`~numpy.ufunc.reduceat` methods reduces the input array's dimension by one, applying the ufunc across one
+    axis in-between certain indices.
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -287,8 +291,8 @@ Advanced arithmetic
 .. example:: FFT: `np.fft.fft(x)`
     :collapsible:
 
-    The Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)` exists when there
-    exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
+    The Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)` exists when
+    there exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -305,8 +309,8 @@ Advanced arithmetic
 .. example:: Inverse FFT: `np.fft.ifft(X)`
     :collapsible:
 
-    The inverse Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)` exists when there
-    exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
+    The inverse Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)`
+    exists when there exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -323,8 +327,9 @@ Advanced arithmetic
 Linear algebra
 --------------
 
-Linear algebra on :obj:`~galois.FieldArray` arrays/matrices is supported through both native NumPy linear algebra functions
-in :obj:`numpy.linalg` and additional linear algebra routines not included in NumPy.
+Linear algebra on :obj:`~galois.FieldArray` arrays/matrices is supported through both native NumPy linear algebra
+functions in :obj:`numpy.linalg` and additional `linear algebra methods
+<https://mhostetter.github.io/galois/latest/api/galois.FieldArray/#linear-algebra>`_ not included in NumPy.
 
 Expand any section for more details.
 
@@ -438,93 +443,3 @@ Expand any section for more details.
         A = GF([[14, 21, 14, 28], [24, 22, 23, 23], [16, 30, 26, 18], [4, 23, 18, 3]]); A
         A_inv = np.linalg.inv(A); A_inv
         A @ A_inv
-
-Additional linear algebra
--------------------------
-
-Below are additional linear algebra routines provided for :obj:`~galois.FieldArray` arrays/matrices that are
-not included in NumPy.
-
-.. example:: Row space: `A.row_space()`
-    :collapsible:
-
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
-        A.row_space()
-
-    See :func:`~galois.FieldArray.row_space` for more details.
-
-.. example:: Column space: `A.column_space()`
-    :collapsible:
-
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
-        A.column_space()
-
-    See :func:`~galois.FieldArray.column_space` for more details.
-
-.. example:: Left null space: `A.left_null_space()`
-    :collapsible:
-
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
-        A.left_null_space()
-
-    See :func:`~galois.FieldArray.left_null_space` for more details.
-
-.. example:: Null space: `A.null_space()`
-    :collapsible:
-
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
-        A.null_space()
-
-    See :func:`~galois.FieldArray.null_space` for more details.
-
-.. example:: Gaussian elimination: `A.row_reduce()`
-    :collapsible:
-
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF([[23, 11, 3, 3], [13, 6, 16, 4], [12, 10, 5, 3], [17, 23, 15, 28]]); A
-        A.row_reduce()
-
-    See :func:`~galois.FieldArray.row_reduce` for more details.
-
-.. example:: LU decomposition: `A.lu_decompose()`
-    :collapsible:
-
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF([[4, 1, 24], [7, 6, 1], [11, 20, 2]]); A
-        L, U = A.lu_decompose()
-        L
-        U
-        np.array_equal(L @ U, A)
-
-    See :func:`~galois.FieldArray.lu_decompose` for more details.
-
-.. example:: PLU decomposition: `A.plu_decompose()`
-    :collapsible:
-
-    .. ipython:: python
-
-        GF = galois.GF(31)
-        A = GF([[15, 4, 11], [7, 6, 1], [11, 20, 2]]); A
-        P, L, U = A.plu_decompose()
-        P
-        L
-        U
-        np.array_equal(P @ L @ U, A)
-
-    See :func:`~galois.FieldArray.plu_decompose` for more details.
