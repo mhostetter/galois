@@ -3585,6 +3585,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../galois.Poly.is_conway/" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway (Python method) — Checks whether the degree-m polynomial f(x) over \mathrm{GF}(p) is the Conway polynomial C_{p,m}(x)." class="md-ellipsis">is_<wbr>conway</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.Poly.is_conway_consistent/" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway_consistent (Python method) — Determines whether the degree-m polynomial f(x) over \mathrm{GF}(p) is consistent with smaller Conway polynomials C_{p,n}(x) for all n\ |\ m." class="md-ellipsis">is_<wbr>conway_<wbr>consistent</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../galois.Poly.is_irreducible/" class="md-nav__link">
         <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_irreducible (Python method) — Determines whether the polynomial f(x) over \mathrm{GF}(p^m) is irreducible." class="md-ellipsis">is_<wbr>irreducible</span>
       </a>
@@ -3828,6 +3858,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#p-search" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.conway_poly.search (Python parameter) — Manually search for Conway polynomials if they are not included in Frank Luebeck&#39;s database. The default is False." class="md-ellipsis">search</span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3850,6 +3887,13 @@
         <li class="md-nav__item">
   <a href="#notes" class="md-nav__link">
     <span class="md-ellipsis">Notes</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">References</span>
   </a>
   
 </li>
@@ -8118,6 +8162,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#p-search" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="galois.conway_poly.search (Python parameter) — Manually search for Conway polynomials if they are not included in Frank Luebeck&#39;s database. The default is False." class="md-ellipsis">search</span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -8145,6 +8196,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">References</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">Examples</span>
   </a>
@@ -8166,8 +8224,8 @@
 
 
 <dl class="py function objdesc">
-<dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">conway_poly</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-characteristic" title="galois.conway_poly.characteristic (Python parameter) — The prime characteristic p of the field \mathrm{GF}(p) that the polynomial is over."><span class="n"><span class="pre">characteristic</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-degree" title="galois.conway_poly.degree (Python parameter) — The degree m of the Conway polynomial."><span class="n"><span class="pre">degree</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a></span></span></span></dt>
+<dt class="sig sig-object highlight sig-wrap py">
+<span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">conway_poly</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-characteristic" title="galois.conway_poly.characteristic (Python parameter) — The prime characteristic p of the field \mathrm{GF}(p) that the polynomial is over."><span class="n"><span class="pre">characteristic</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-degree" title="galois.conway_poly.degree (Python parameter) — The degree m of the Conway polynomial."><span class="n"><span class="pre">degree</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-search" title="galois.conway_poly.search (Python parameter) — Manually search for Conway polynomials if they are not included in Frank Luebeck's database. The default is False."><span class="n"><span class="pre">search</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a></span></span></span></dt>
 <dd><p>Returns the Conway polynomial <span class="math notranslate nohighlight">\(C_{p,m}(x)\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> with degree <span class="math notranslate nohighlight">\(m\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
@@ -8177,6 +8235,13 @@ is over.</p>
 </dd>
 <dt id="p-degree"><span class="n sig-name">degree</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><a class="headerlink" href="#p-degree" title="Permalink to this definition">¶</a></dt><dd><p>The degree <span class="math notranslate nohighlight">\(m\)</span> of the Conway polynomial.</p>
 </dd>
+<dt id="p-search"><span class="n sig-name">search</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code><a class="headerlink" href="#p-search" title="Permalink to this definition">¶</a></dt><dd><p><p>Manually search for Conway polynomials if they are not included in <a class="reference external" href="http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html">Frank Luebeck’s database</a>. The default is <code class="code highlight python docutils literal highlight-python"><span class="kc">False</span></code>.</p>
+<div class="slow-performance admonition">
+<p class="admonition-title">Slower performance</p>
+<p>Manually searching for a Conway polynomial is <em>very</em> computationally expensive.</p>
+</div>
+</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
@@ -8185,39 +8250,69 @@ is over.</p>
 </dl>
 <div class="seealso collapsible admonition">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="../galois.Poly.is_primitive/" title="galois.Poly.is_primitive (Python method) — Determines whether the polynomial f(x) over \mathrm{GF}(q) is primitive."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Poly.is_primitive</span></code></a>, <a class="reference internal" href="../galois.primitive_poly/" title="galois.primitive_poly (Python function) — Returns a monic primitive polynomial f(x) over \mathrm{GF}(q) with degree m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_poly</span></code></a>, <a class="reference internal" href="../galois.matlab_primitive_poly/" title="galois.matlab_primitive_poly (Python function) — Returns Matlab's default primitive polynomial f(x) over \mathrm{GF}(p) with degree m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">matlab_primitive_poly</span></code></a></p>
+<p><a class="reference internal" href="../galois.Poly.is_conway/" title="galois.Poly.is_conway (Python method) — Checks whether the degree-m polynomial f(x) over \mathrm{GF}(p) is the Conway polynomial C_{p,m}(x)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Poly.is_conway</span></code></a>, <a class="reference internal" href="../galois.Poly.is_conway_consistent/" title="galois.Poly.is_conway_consistent (Python method) — Determines whether the degree-m polynomial f(x) over \mathrm{GF}(p) is consistent with smaller Conway polynomials C_{p,n}(x) for all n\ |\ m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Poly.is_conway_consistent</span></code></a>, <a class="reference internal" href="../galois.Poly.is_primitive/" title="galois.Poly.is_primitive (Python method) — Determines whether the polynomial f(x) over \mathrm{GF}(q) is primitive."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Poly.is_primitive</span></code></a>, <a class="reference internal" href="../galois.primitive_poly/" title="galois.primitive_poly (Python function) — Returns a monic primitive polynomial f(x) over \mathrm{GF}(q) with degree m."><code class="xref py py-obj docutils literal notranslate"><span class="pre">primitive_poly</span></code></a></p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd" id="raises">Raises<span class="colon">:</span><a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#LookupError" title="(in Python v3.11)"><strong>LookupError</strong></a> – If the Conway polynomial <span class="math notranslate nohighlight">\(C_{p,m}(x)\)</span> is not found in Frank Luebeck’s database.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#LookupError" title="(in Python v3.11)"><strong>LookupError</strong></a> – If <code class="code highlight python docutils literal highlight-python"><span class="n">search</span><span class="o">=</span><span class="kc">False</span></code> and the Conway polynomial <span class="math notranslate nohighlight">\(C_{p,m}\)</span> is not found in Frank Luebeck’s
+database.</p>
 </dd>
 </dl>
 <p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
-<p>A Conway polynomial is an irreducible and primitive polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> that provides a
-standard representation of <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> as a splitting field of <span class="math notranslate nohighlight">\(C_{p,m}(x)\)</span>.
-Conway polynomials provide compatibility between fields and their subfields and, hence, are the common way to
-represent extension fields.</p>
-<p>The Conway polynomial <span class="math notranslate nohighlight">\(C_{p,m}(x)\)</span> is defined as the lexicographically-first monic primitive polynomial
-of degree <span class="math notranslate nohighlight">\(m\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> that is compatible with all <span class="math notranslate nohighlight">\(C_{p,n}(x)\)</span> for <span class="math notranslate nohighlight">\(n\)</span>
-dividing <span class="math notranslate nohighlight">\(m\)</span>.</p>
-<p>This function uses <a class="reference external" href="http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html">Frank Luebeck’s Conway polynomial database</a> for fast lookup, not construction.</p>
+<p>A degree-<span class="math notranslate nohighlight">\(m\)</span> polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> is the <em>Conway polynomial</em>
+<span class="math notranslate nohighlight">\(C_{p,m}(x)\)</span> if it is monic, primitive, compatible with Conway polynomials <span class="math notranslate nohighlight">\(C_{p,n}(x)\)</span> for all
+<span class="math notranslate nohighlight">\(n\ |\ m\)</span>, and is lexicographically first according to a special ordering.</p>
+<p>A Conway polynomial <span class="math notranslate nohighlight">\(C_{p,m}(x)\)</span> is <em>compatible</em> with Conway polynomials <span class="math notranslate nohighlight">\(C_{p,n}(x)\)</span> for
+<span class="math notranslate nohighlight">\(n\ |\ m\)</span> if <span class="math notranslate nohighlight">\(C_{p,n}(x^r)\)</span> divides <span class="math notranslate nohighlight">\(C_{p,m}(x)\)</span>, where <span class="math notranslate nohighlight">\(r = \frac{p^m - 1}{p^n - 1}\)</span>.</p>
+<p>The Conway lexicographic ordering is defined as follows. Given two degree-<span class="math notranslate nohighlight">\(m\)</span> polynomials
+<span class="math notranslate nohighlight">\(g(x) = \sum_{i=0}^m g_i x^i\)</span> and <span class="math notranslate nohighlight">\(h(x) = \sum_{i=0}^m h_i x^i\)</span>, then <span class="math notranslate nohighlight">\(g &lt; h\)</span> if and only if
+there exists <span class="math notranslate nohighlight">\(i\)</span> such that <span class="math notranslate nohighlight">\(g_j = h_j\)</span> for all <span class="math notranslate nohighlight">\(j &gt; i\)</span> and
+<span class="math notranslate nohighlight">\((-1)^{m-i} g_i &lt; (-1)^{m-i} h_i\)</span>.</p>
+<p>The Conway polynomial <span class="math notranslate nohighlight">\(C_{p,m}(x)\)</span> provides a standard representation of <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span> as a
+splitting field of <span class="math notranslate nohighlight">\(C_{p,m}(x)\)</span>. Conway polynomials provide compatibility between fields and their
+subfields and, hence, are the common way to represent extension fields.</p>
+<p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/CP7.html">http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/CP7.html</a></p></li>
+<li><p>Lenwood S. Heath, Nicholas A. Loehr, New algorithms for generating Conway polynomials over finite fields,
+Journal of Symbolic Computation, Volume 38, Issue 2, 2004, Pages 1003-1024,
+<a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0747717104000331">https://www.sciencedirect.com/science/article/pii/S0747717104000331</a>.</p></li>
+</ul>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
-<p>Notice <a class="reference internal" href="../galois.primitive_poly/" title="galois.primitive_poly (Python function) — Returns a monic primitive polynomial f(x) over \mathrm{GF}(q) with degree m."><code class="xref py py-func docutils literal notranslate"><span class="pre">primitive_poly()</span></code></a> returns the lexicographically-first primitive polynomial but
-<a class="reference internal" href="#" title="galois.conway_poly (Python function) — Returns the Conway polynomial C_{p,m}(x) over \mathrm{GF}(p) with degree m."><code class="xref py py-func docutils literal notranslate"><span class="pre">conway_poly()</span></code></a> returns the lexicographically-first primitive polynomial that is <em>consistent</em>
-with smaller Conway polynomials. This is sometimes the same polynomial.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[1]: </span><span class="go">Poly(x^4 + x + 1, GF(2))</span>
+<p>All Conway polynomials are primitive.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
-<span class="gp">In [2]: </span><span class="n">galois</span><span class="o">.</span><span class="n">conway_poly</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="gh">Out[2]: </span><span class="go">Poly(x^4 + x + 1, GF(2))</span>
+<span class="gp">In [2]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f</span>
+<span class="gh">Out[2]: </span><span class="go">Poly(x^3 + x^2 + 2x + 4, GF(7))</span>
+
+<span class="gp">In [3]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">g</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + 6x^2 + 4, GF(7))</span>
+
+<span class="gp">In [4]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_primitive</span><span class="p">()</span>
+<span class="gh">Out[4]: </span><span class="go">True</span>
+
+<span class="gp">In [5]: </span><span class="n">g</span><span class="o">.</span><span class="n">is_primitive</span><span class="p">()</span>
+<span class="gh">Out[5]: </span><span class="go">True</span>
 </code></pre></div>
 </div>
-<p>However, it is not always.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^10 + 5x^2 + x + 5, GF(7))</span>
+<p>They are also consistent with all smaller Conway polynomials.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_conway_consistent</span><span class="p">()</span>
+<span class="gh">Out[6]: </span><span class="go">True</span>
 
-<span class="gp">In [4]: </span><span class="n">galois</span><span class="o">.</span><span class="n">conway_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(x^10 + x^6 + x^5 + 4x^4 + x^3 + 2x^2 + 3x + 3, GF(7))</span>
+<span class="gp">In [7]: </span><span class="n">g</span><span class="o">.</span><span class="n">is_conway_consistent</span><span class="p">()</span>
+<span class="gh">Out[7]: </span><span class="go">True</span>
+</code></pre></div>
+</div>
+<p>Among the multiple candidate Conway polynomials, the lexicographically-first (accordingly to a special
+lexicographical order) is the Conway polynomial.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_conway</span><span class="p">()</span>
+<span class="gh">Out[8]: </span><span class="go">False</span>
+
+<span class="gp">In [9]: </span><span class="n">g</span><span class="o">.</span><span class="n">is_conway</span><span class="p">()</span>
+<span class="gh">Out[9]: </span><span class="go">True</span>
+
+<span class="gp">In [10]: </span><span class="n">galois</span><span class="o">.</span><span class="n">conway_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gh">Out[10]: </span><span class="go">Poly(x^3 + 6x^2 + 4, GF(7))</span>
 </code></pre></div>
 </div>
 </dd></dl>

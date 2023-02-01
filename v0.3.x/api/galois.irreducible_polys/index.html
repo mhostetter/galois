@@ -3585,6 +3585,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../galois.Poly.is_conway/" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway (Python method) — Checks whether the degree-m polynomial f(x) over \mathrm{GF}(p) is the Conway polynomial C_{p,m}(x)." class="md-ellipsis">is_<wbr>conway</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.Poly.is_conway_consistent/" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway_consistent (Python method) — Determines whether the degree-m polynomial f(x) over \mathrm{GF}(p) is consistent with smaller Conway polynomials C_{p,n}(x) for all n\ |\ m." class="md-ellipsis">is_<wbr>conway_<wbr>consistent</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../galois.Poly.is_irreducible/" class="md-nav__link">
         <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_irreducible (Python method) — Determines whether the polynomial f(x) over \mathrm{GF}(p^m) is irreducible." class="md-ellipsis">is_<wbr>irreducible</span>
       </a>
@@ -8280,7 +8310,7 @@ polynomials that would have been found after the <code class="code highlight pyt
 </div>
 <p>Or, manually iterate over the generator.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">generator</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_polys</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">generator</span>
-<span class="gh">Out[5]: </span><span class="go">&lt;generator object irreducible_polys at 0x7f3ca0885f20&gt;</span>
+<span class="gh">Out[5]: </span><span class="go">&lt;generator object irreducible_polys at 0x7f90eba0eac0&gt;</span>
 
 <span class="gp">In [6]: </span><span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
 <span class="gh">Out[6]: </span><span class="go">Poly(x^4 + 2x^3 + 2x^2 + x + 2, GF(3))</span>

@@ -3630,6 +3630,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../galois.Poly.is_conway/" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway (Python method) — Checks whether the degree-m polynomial f(x) over \mathrm{GF}(p) is the Conway polynomial C_{p,m}(x)." class="md-ellipsis">is_<wbr>conway</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.Poly.is_conway_consistent/" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway_consistent (Python method) — Determines whether the degree-m polynomial f(x) over \mathrm{GF}(p) is consistent with smaller Conway polynomials C_{p,n}(x) for all n\ |\ m." class="md-ellipsis">is_<wbr>conway_<wbr>consistent</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../galois.Poly.is_irreducible/" class="md-nav__link">
         <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_irreducible (Python method) — Determines whether the polynomial f(x) over \mathrm{GF}(p^m) is irreducible." class="md-ellipsis">is_<wbr>irreducible</span>
       </a>
@@ -8091,7 +8121,7 @@
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[2]: </span><span class="go">GF([ 23, 167,  61,  22], order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF([ 99, 127, 165,  21], order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[3]: </span><span class="go">(4,)</span>
@@ -8102,27 +8132,27 @@
 iterable, <code class="code highlight python docutils literal highlight-python"><span class="p">()</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="p">[]</span></code>, represents a 0-D array (scalar).</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[4]: </span>
-<span class="go">GF([[194, 149,  98],</span>
-<span class="go">    [139,  55, 221]], order=3^5)</span>
+<span class="go">GF([[ 91,   3, 164],</span>
+<span class="go">    [162, 115,  26]], order=3^5)</span>
 
 <span class="gp">In [5]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[5]: </span><span class="go">(2, 3)</span>
 
 <span class="gp">In [6]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]);</span> <span class="n">x</span>
 <span class="gh">Out[6]: </span>
-<span class="go">GF([[[ 80,  35, 125,  47],</span>
-<span class="go">     [109,  56, 150, 190],</span>
-<span class="go">     [ 71, 176,  48, 235]],</span>
+<span class="go">GF([[[143, 109,  77, 223],</span>
+<span class="go">     [142, 100, 234, 130],</span>
+<span class="go">     [133,  26, 118,  46]],</span>
 
-<span class="go">    [[224,  63, 109,  32],</span>
-<span class="go">     [140,  13, 141, 224],</span>
-<span class="go">     [164, 164, 108, 205]]], order=3^5)</span>
+<span class="go">    [[ 65, 211, 185,  48],</span>
+<span class="go">     [214, 129, 138, 226],</span>
+<span class="go">     [233, 115, 106, 156]]], order=3^5)</span>
 
 <span class="gp">In [7]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[7]: </span><span class="go">(2, 3, 4)</span>
 
 <span class="gp">In [8]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(());</span> <span class="n">x</span>
-<span class="gh">Out[8]: </span><span class="go">GF(202, order=3^5)</span>
+<span class="gh">Out[8]: </span><span class="go">GF(99, order=3^5)</span>
 
 <span class="gp">In [9]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[9]: </span><span class="go">()</span>

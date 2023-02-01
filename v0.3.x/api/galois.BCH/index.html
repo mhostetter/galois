@@ -3583,6 +3583,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../galois.Poly.is_conway/" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway (Python method) — Checks whether the degree-m polynomial f(x) over \mathrm{GF}(p) is the Conway polynomial C_{p,m}(x)." class="md-ellipsis">is_<wbr>conway</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../galois.Poly.is_conway_consistent/" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway_consistent (Python method) — Determines whether the degree-m polynomial f(x) over \mathrm{GF}(p) is consistent with smaller Conway polynomials C_{p,n}(x) for all n\ |\ m." class="md-ellipsis">is_<wbr>conway_<wbr>consistent</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../galois.Poly.is_irreducible/" class="md-nav__link">
         <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_irreducible (Python method) — Determines whether the polynomial f(x) over \mathrm{GF}(p^m) is irreducible." class="md-ellipsis">is_<wbr>irreducible</span>
       </a>
@@ -8397,19 +8427,19 @@ evaluated in <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</sp
 </div>
 <p>Encode a message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">bch</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([1, 1, 1, 0, 0, 0, 0], order=2)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([0, 0, 0, 1, 0, 0, 1], order=2)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0], order=2)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0], order=2)</span>
 </code></pre></div>
 </div>
 <p>Corrupt the codeword and decode the message.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="go"># Corrupt the first symbol in the codeword</span>
 <span class="gp">In [5]: </span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">c</span>
-<span class="gh">Out[5]: </span><span class="go">GF([0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0], order=2)</span>
+<span class="gh">Out[5]: </span><span class="go">GF([1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0], order=2)</span>
 
 <span class="gp">In [6]: </span><span class="n">dec_m</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="n">dec_m</span>
-<span class="gh">Out[6]: </span><span class="go">GF([1, 1, 1, 0, 0, 0, 0], order=2)</span>
+<span class="gh">Out[6]: </span><span class="go">GF([0, 0, 0, 1, 0, 0, 1], order=2)</span>
 
 <span class="gp">In [7]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">dec_m</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[7]: </span><span class="go">True</span>
@@ -8417,7 +8447,7 @@ evaluated in <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</sp
 </div>
 <p>Instruct the decoder to return the number of corrected symbol errors.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="n">dec_m</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">bch</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">dec_m</span><span class="p">,</span> <span class="n">N</span>
-<span class="gh">Out[8]: </span><span class="go">(GF([1, 1, 1, 0, 0, 0, 0], order=2), 1)</span>
+<span class="gh">Out[8]: </span><span class="go">(GF([0, 0, 0, 1, 0, 0, 1], order=2), 1)</span>
 
 <span class="gp">In [9]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">dec_m</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 <span class="gh">Out[9]: </span><span class="go">True</span>
