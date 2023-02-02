@@ -8169,14 +8169,14 @@ columns of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>, i.e
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span>
-<span class="go">GF([[16, 21, 22,  0, 24],</span>
-<span class="go">    [12, 25, 22, 27, 20],</span>
-<span class="go">    [ 2, 10, 16, 26, 15]], order=31)</span>
+<span class="go">GF([[27,  2, 24, 15,  8],</span>
+<span class="go">    [19, 26, 27,  3, 16],</span>
+<span class="go">    [ 0, 30, 28,  9, 28]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">();</span> <span class="n">N</span>
 <span class="gh">Out[4]: </span>
-<span class="go">GF([[ 1,  0, 15, 16, 14],</span>
-<span class="go">    [ 0,  1, 19, 18, 14]], order=31)</span>
+<span class="go">GF([[ 1,  0,  1, 14, 10],</span>
+<span class="go">    [ 0,  1, 25, 25, 29]], order=31)</span>
 </code></pre></div>
 </div>
 <p>The null space is the set of vectors that sum the columns to 0.</p>
