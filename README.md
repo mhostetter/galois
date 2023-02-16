@@ -6,7 +6,7 @@
   <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/wheel/galois"></a>
   <a href="https://pypistats.org/packages/galois"><img src="https://img.shields.io/pypi/dm/galois"></a>
   <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/l/galois"></a>
-  <a href="https://twitter.com/galois_py"><img src="https://img.shields.io/twitter/follow/galois_py?label=galois_py&style=flat&logo=twitter"></a>
+  <a href="https://twitter.com/galois_py"><img src="https://img.shields.io/static/v1?label=follow&message=@galois_py&color=lightgrey&logo=twitter"></a>
 </div>
 
 <div align=center>
