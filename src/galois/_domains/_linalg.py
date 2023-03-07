@@ -343,13 +343,13 @@ class plu_decompose_jit(Function):
         if not A.ndim == 2:
             raise ValueError(f"Argument 'A' must be a 2-D matrix, not have shape {A.shape}.")
 
-        n = A.shape[0]
+        m, n = A.shape
         Ai = A.copy()
-        L = self.field.Zeros((n, n))
-        P = self.field.Identity(n)  # Row permutation matrix
+        L = self.field.Zeros((m, m))
+        P = self.field.Identity(m)  # Row permutation matrix
         N_permutations = 0  # Number of permutations
 
-        for i in range(0, n - 1):
+        for i in range(0, min(m, n)):
             if Ai[i, i] == 0:
                 idxs = np.nonzero(Ai[i:, i])[0]  # The first non-zero entry in column `i` below row `i`
                 if idxs.size == 0:
