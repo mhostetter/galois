@@ -34,7 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.7107a1f30ca6a0320.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.b7e76179e1998eddf.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -91,10 +91,10 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're not viewing the latest version.
-  <a href="../../..">
-    <strong>Click here to go to latest.</strong>
-  </a>
+You're not viewing the latest version.
+<a href="../../..">
+  <strong>Click here to go to latest.</strong>
+</a>
 
             </div>
             <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
@@ -8229,18 +8229,18 @@ size as <span class="math notranslate nohighlight">\(x\)</span>.</p>
 <dd class="field-even"><p>The Lagrange polynomial <span class="math notranslate nohighlight">\(L(x)\)</span>.</p>
 </dd>
 </dl>
-<p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
+<p class="rubric" id="notes">Notes</p>
 <p>The Lagrange interpolating polynomial is defined as</p>
 <div class="math notranslate nohighlight">
 \[L(x) = \sum_{j=0}^{k-1} y_j \ell_j(x)\]</div>
 <div class="math notranslate nohighlight">
 \[\begin{split}\ell_j(x) = \prod_{\substack{0 \le m &lt; k \\ m \ne j}} \frac{x - x_m}{x_j - x_m} .\end{split}\]</div>
 <p>It is the polynomial of minimal degree that satisfies <span class="math notranslate nohighlight">\(L(x_i) = y_i\)</span>.</p>
-<p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
+<p class="rubric" id="references">References</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Lagrange_polynomial">https://en.wikipedia.org/wiki/Lagrange_polynomial</a></p></li>
 </ul>
-<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
+<p class="example rubric" id="examples">Examples</p>
 <p>Create random <span class="math notranslate nohighlight">\((x, y)\)</span> pairs in <span class="math notranslate nohighlight">\(\mathrm{GF}(3^2)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
@@ -8248,12 +8248,12 @@ size as <span class="math notranslate nohighlight">\(x\)</span>.</p>
 <span class="gh">Out[2]: </span><span class="go">GF([0, 1, 2, 3, 4, 5, 6, 7, 8], order=3^2)</span>
 
 <span class="gp">In [3]: </span><span class="n">y</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">);</span> <span class="n">y</span>
-<span class="gh">Out[3]: </span><span class="go">GF([0, 6, 2, 6, 6, 6, 8, 4, 4], order=3^2)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([3, 4, 2, 0, 5, 6, 8, 3, 4], order=3^2)</span>
 </code></pre></div>
 </div>
 <p>Find the Lagrange polynomial that interpolates the coordinates.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">L</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">lagrange_poly</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span> <span class="n">L</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(3x^6 + 2x^5 + 6x^4 + x^3 + 4x^2 + 5x, GF(3^2))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(x^8 + 7x^7 + 5x^6 + 6x^5 + 8x^4 + 2x^3 + 4x^2 + 4x + 3, GF(3^2))</span>
 </code></pre></div>
 </div>
 <p>Show that the polynomial evaluated at <span class="math notranslate nohighlight">\(x\)</span> is <span class="math notranslate nohighlight">\(y\)</span>.</p>

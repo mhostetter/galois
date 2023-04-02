@@ -34,7 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.7107a1f30ca6a0320.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.b7e76179e1998eddf.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -91,10 +91,10 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're not viewing the latest version.
-  <a href="../../..">
-    <strong>Click here to go to latest.</strong>
-  </a>
+You're not viewing the latest version.
+<a href="../../..">
+  <strong>Click here to go to latest.</strong>
+</a>
 
             </div>
             <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
@@ -8269,7 +8269,7 @@ It can be viewed as a normal NumPy array with <code class="code highlight python
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.ntt/" title="galois.ntt (Python function) — Computes the Number-Theoretic Transform (NTT) of x."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ntt</span></code></a></p>
 </div>
-<p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
+<p class="rubric" id="notes">Notes</p>
 <p>The Number-Theoretic Transform (NTT) is a specialized Discrete Fourier Transform (DFT) over a finite field
 <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span> instead of over <span class="math notranslate nohighlight">\(\mathbb{C}\)</span>. The DFT uses the primitive <span class="math notranslate nohighlight">\(N\)</span>-th root of
 unity <span class="math notranslate nohighlight">\(\omega_N = e^{-i 2 \pi /N}\)</span>, but the NTT uses a primitive <span class="math notranslate nohighlight">\(N\)</span>-th root of unity in
@@ -8286,13 +8286,13 @@ function finds <span class="math notranslate nohighlight">\(\omega_N\)</span> by
 <p>with all arithmetic performed in <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>. The scaled INTT has the property that
 <span class="math notranslate nohighlight">\(x = \mathrm{INTT}(\mathrm{NTT}(x))\)</span>.</p>
 <p>A radix-2 Cooley-Tukey FFT algorithm is implemented, which achieves <span class="math notranslate nohighlight">\(O(N \mathrm{log}(N))\)</span>.</p>
-<p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
+<p class="rubric" id="references">References</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://cgyurgyik.github.io/posts/2021/04/brief-introduction-to-ntt/">https://cgyurgyik.github.io/posts/2021/04/brief-introduction-to-ntt/</a></p></li>
 <li><p><a class="reference external" href="https://www.nayuki.io/page/number-theoretic-transform-integer-dft">https://www.nayuki.io/page/number-theoretic-transform-integer-dft</a></p></li>
 <li><p><a class="reference external" href="https://www.geeksforgeeks.org/python-number-theoretic-transformation/">https://www.geeksforgeeks.org/python-number-theoretic-transformation/</a></p></li>
 </ul>
-<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
+<p class="example rubric" id="examples">Examples</p>
 <p>The default modulus is the smallest <span class="math notranslate nohighlight">\(p\)</span> such that <span class="math notranslate nohighlight">\(p &gt; \textrm{max}(X)\)</span> and <span class="math notranslate nohighlight">\(p = mN + 1\)</span>.
 With the input <span class="math notranslate nohighlight">\(X = [0, 4, 3, 2]\)</span> and <span class="math notranslate nohighlight">\(N = 4\)</span>, the default modulus is <span class="math notranslate nohighlight">\(p = 5\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">intt</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>

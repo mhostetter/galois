@@ -34,7 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.7107a1f30ca6a0320.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.b7e76179e1998eddf.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -91,10 +91,10 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're not viewing the latest version.
-  <a href="../../..">
-    <strong>Click here to go to latest.</strong>
-  </a>
+You're not viewing the latest version.
+<a href="../../..">
+  <strong>Click here to go to latest.</strong>
+</a>
 
             </div>
             <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
@@ -8248,7 +8248,7 @@ a new <span class="math notranslate nohighlight">\(a\)</span>. The default is 1.
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.is_prime/" title="galois.is_prime (Python function) — Determines if n is prime."><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_prime</span></code></a>, <a class="reference internal" href="../galois.miller_rabin_primality_test/" title="galois.miller_rabin_primality_test (Python function) — Determines if n is composite using the Miller-Rabin primality test."><code class="xref py py-obj docutils literal notranslate"><span class="pre">miller_rabin_primality_test</span></code></a></p>
 </div>
-<p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
+<p class="rubric" id="notes">Notes</p>
 <p>Fermat’s theorem says that for prime <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(1 \le a \le p-1\)</span>, the congruence
 <span class="math notranslate nohighlight">\(a^{p-1} \equiv 1\ (\textrm{mod}\ p)\)</span> holds. Fermat’s primality test of <span class="math notranslate nohighlight">\(n\)</span> computes
 <span class="math notranslate nohighlight">\(a^{n-1}\ \textrm{mod}\ n\)</span> for some <span class="math notranslate nohighlight">\(1 \le a \le n-1\)</span>. If <span class="math notranslate nohighlight">\(a\)</span> is such that
@@ -8257,11 +8257,11 @@ compositeness of <span class="math notranslate nohighlight">\(n\)</span>. If <sp
 <span class="math notranslate nohighlight">\(a\)</span> is said to be a <em>Fermat liar</em> to the primality of <span class="math notranslate nohighlight">\(n\)</span>.</p>
 <p>Since <span class="math notranslate nohighlight">\(a = \{1, n-1\}\)</span> are Fermat liars for all composite <span class="math notranslate nohighlight">\(n\)</span>, it is common to reduce the range of
 possible <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(2 \le a \le n - 2\)</span>.</p>
-<p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
+<p class="rubric" id="references">References</p>
 <ul class="simple">
 <li><p>Section 4.2.1 from <a class="reference external" href="https://cacr.uwaterloo.ca/hac/about/chap4.pdf">https://cacr.uwaterloo.ca/hac/about/chap4.pdf</a></p></li>
 </ul>
-<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
+<p class="example rubric" id="examples">Examples</p>
 <p>Fermat’s primality test will never mark a true prime as composite.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">primes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">257</span><span class="p">,</span> <span class="mi">24841</span><span class="p">,</span> <span class="mi">65497</span><span class="p">]</span>
 

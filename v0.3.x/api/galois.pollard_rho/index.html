@@ -34,7 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.7107a1f30ca6a0320.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.b7e76179e1998eddf.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -91,10 +91,10 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're not viewing the latest version.
-  <a href="../../..">
-    <strong>Click here to go to latest.</strong>
-  </a>
+You're not viewing the latest version.
+<a href="../../..">
+  <strong>Click here to go to latest.</strong>
+</a>
 
             </div>
             <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
@@ -8249,18 +8249,18 @@ of the algorithm is that <span class="math notranslate nohighlight">\(c \not\in 
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.factors/" title="galois.factors (Python function) — Computes the prime factors of a positive integer or the irreducible factors of a non-constant, monic polynomial."><code class="xref py py-obj docutils literal notranslate"><span class="pre">factors</span></code></a>, <a class="reference internal" href="../galois.pollard_p1/" title="galois.pollard_p1 (Python function) — Attempts to find a non-trivial factor of n if it has a prime factor p such that p-1 is B-smooth."><code class="xref py py-obj docutils literal notranslate"><span class="pre">pollard_p1</span></code></a></p>
 </div>
-<p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
+<p class="rubric" id="notes">Notes</p>
 <p>Pollard’s <span class="math notranslate nohighlight">\(\rho\)</span> algorithm seeks to find a non-trivial factor of <span class="math notranslate nohighlight">\(n\)</span> by finding a cycle in a
 sequence of integers <span class="math notranslate nohighlight">\(x_0, x_1, \dots\)</span> defined by
 <span class="math notranslate nohighlight">\(x_i = f(x_{i-1}) = x_{i-1}^2 + 1\ \textrm{mod}\ p\)</span> where <span class="math notranslate nohighlight">\(p\)</span> is an unknown small prime factor
 of <span class="math notranslate nohighlight">\(n\)</span>. This happens when <span class="math notranslate nohighlight">\(x_{m} \equiv x_{2m}\ (\textrm{mod}\ p)\)</span>. Because <span class="math notranslate nohighlight">\(p\)</span> is unknown,
 this is accomplished by computing the sequence modulo <span class="math notranslate nohighlight">\(n\)</span> and looking for
 <span class="math notranslate nohighlight">\(\textrm{gcd}(x_m - x_{2m}, n) &gt; 1\)</span>.</p>
-<p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
+<p class="rubric" id="references">References</p>
 <ul class="simple">
 <li><p>Section 3.2.2 from <a class="reference external" href="https://cacr.uwaterloo.ca/hac/about/chap3.pdf">https://cacr.uwaterloo.ca/hac/about/chap3.pdf</a></p></li>
 </ul>
-<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
+<p class="example rubric" id="examples">Examples</p>
 <p>Pollard’s <span class="math notranslate nohighlight">\(\rho\)</span> is especially good at finding small factors.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">n</span> <span class="o">=</span> <span class="mi">503</span><span class="o">**</span><span class="mi">7</span> <span class="o">*</span> <span class="mi">10007</span> <span class="o">*</span> <span class="mi">1000003</span>
 
