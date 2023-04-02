@@ -322,7 +322,7 @@ class lu_decompose_jit(Function):
                     L[i, i] = 1
                     continue
                 else:
-                    raise ValueError("The LU decomposition of 'A' does not exist. Use the LUP decomposition instead.")
+                    raise ValueError("The LU decomposition of 'A' does not exist. Use the PLU decomposition instead.")
 
             l = Ai[i + 1 :, i] / Ai[i, i]
             Ai[i + 1 :, :] -= np.multiply.outer(l, Ai[i, :])
