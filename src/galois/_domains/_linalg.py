@@ -311,11 +311,11 @@ class lu_decompose_jit(Function):
         if not A.ndim == 2:
             raise ValueError(f"Argument 'A' must be a 2-D matrix, not have shape {A.shape}.")
 
-        n = A.shape[0]
+        m = A.shape[0]
         Ai = A.copy()
-        L = self.field.Identity(n)
+        L = self.field.Identity(m)
 
-        for i in range(0, n - 1):
+        for i in range(0, m - 1):
             if Ai[i, i] == 0:
                 idxs = np.nonzero(Ai[i:, i])[0]  # The first non-zero entry in column `i` below row `i`
                 if idxs.size == 0:  # pylint: disable=no-else-continue
