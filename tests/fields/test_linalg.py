@@ -369,6 +369,28 @@ def test_plu_decompose(field_plu_decompose):
         assert type(u) is GF
 
 
+def test_bug_476():
+    """
+    See https://github.com/mhostetter/galois/issues/476.
+    """
+    GF = galois.GF(2)
+    A = GF(
+        [
+            [1, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0],
+            [0, 0, 0, 0, 1, 0],
+            [0, 0, 0, 0, 0, 1],
+        ]
+    )
+    P, L, U = A.plu_decompose()
+    PLU = P @ L @ U
+    assert np.array_equal(A, PLU)
+
+
 def test_matrix_inverse_exceptions():
     GF = galois.GF(2**8)
     with pytest.raises(np.linalg.LinAlgError):
