@@ -8301,7 +8301,7 @@ possible <span class="math notranslate nohighlight">\(a\)</span> to <span class=
 
 <span class="go"># But they may not satisfy a^(p-1) = 1 (mod p) for other a</span>
 <span class="gp">In [7]: </span><span class="p">[</span><span class="n">galois</span><span class="o">.</span><span class="n">fermat_primality_test</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pseudoprimes</span><span class="p">]</span>
-<span class="gh">Out[7]: </span><span class="go">[False, False, False]</span>
+<span class="gh">Out[7]: </span><span class="go">[False, True, True]</span>
 </code></pre></div>
 </div>
 <p>And the pseudoprimes base 3 from <a class="reference external" href="https://oeis.org/A005935">A005935</a>.</p>
@@ -8317,7 +8317,7 @@ possible <span class="math notranslate nohighlight">\(a\)</span> to <span class=
 
 <span class="go"># But they may not satisfy a^(p-1) = 1 (mod p) for other a</span>
 <span class="gp">In [11]: </span><span class="p">[</span><span class="n">galois</span><span class="o">.</span><span class="n">fermat_primality_test</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pseudoprimes</span><span class="p">]</span>
-<span class="gh">Out[11]: </span><span class="go">[True, False, False]</span>
+<span class="gh">Out[11]: </span><span class="go">[True, False, True]</span>
 </code></pre></div>
 </div>
 </dd></dl>
