@@ -1,0 +1,27 @@
+# v0.0.19
+
+*Released August 9, 2021*
+
+## Breaking changes
+
+- Remove unnecessary `is_field()` function. Use `isinstance(x, galois.FieldClass)` or `isinstance(x, galois.FieldArray)` instead.
+- Remove `log_naive()` function. Might be re-added later through `np.log()` on a multiplicative group array.
+- Rename `mode` kwarg in `galois.GF()` to `compile`.
+- Revert `np.copy()` override that always returns a subclass. Now, by default it does not return a subclass. To return a Galois field array, use `x.copy()` or `np.copy(x, subok=True)` instead.
+
+## Changes
+
+- Improve documentation.
+- Improve unit test coverage.
+- Add benchmarking tests.
+- Add initial LFSR implementation.
+- Add `display` kwarg to `galois.GF()` class factory to set the display mode at class-creation time.
+- Add `Poly.reverse()` method.
+- Allow polynomial strings as input to `galois.GF()`. For example, `galois.GF(2**4, irreducible_poly="x^4 + x + 1")`.
+- Enable `np.divmod()` and `np.remainder()` on Galois field arrays. The remainder is always zero, though.
+- Fix bug in `bch_valid_codes()` where repetition codes weren't included.
+- Various minor bug fixes.
+
+## Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
