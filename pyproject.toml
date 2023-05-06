@@ -89,6 +89,7 @@ write_to = "src/galois/_version.py"
 where = ["src"]
 
 [tool.setuptools.package-data]
+"galois" = ["py.typed"]
 "galois._databases" = ["*.db"]
 
 [tool.distutils.bdist_wheel]
