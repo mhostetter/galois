@@ -146,38 +146,13 @@ If this library was useful to you in your research, please cite us. Following th
 
 .. toctree::
    :caption: Release Notes
-   :hidden:
+   :maxdepth: 2
 
    release-notes/versioning.rst
-   release-notes/v0.3.4.md
-   release-notes/v0.3.3.md
-   release-notes/v0.3.2.md
-   release-notes/v0.3.1.md
-   release-notes/v0.3.0.md
-   release-notes/v0.2.0.md
-   release-notes/v0.1.2.md
-   release-notes/v0.1.1.md
-   release-notes/v0.1.0.md
-   release-notes/v0.0.33.md
-   release-notes/v0.0.32.md
-   release-notes/v0.0.31.md
-   release-notes/v0.0.30.md
-   release-notes/v0.0.29.md
-   release-notes/v0.0.28.md
-   release-notes/v0.0.27.md
-   release-notes/v0.0.26.md
-   release-notes/v0.0.25.md
-   release-notes/v0.0.24.md
-   release-notes/v0.0.23.md
-   release-notes/v0.0.22.md
-   release-notes/v0.0.21.md
-   release-notes/v0.0.20.md
-   release-notes/v0.0.19.md
-   release-notes/v0.0.18.md
-   release-notes/v0.0.17.md
-   release-notes/v0.0.16.md
-   release-notes/v0.0.15.md
-   release-notes/v0.0.14.md
+   release-notes/v0.3.md
+   release-notes/v0.2.md
+   release-notes/v0.1.md
+   release-notes/v0.0.md
 
 .. toctree::
    :caption: Index
