@@ -23,7 +23,6 @@ def read_pickle(field_folder, filename):
     # Convert from folder in fields/data/ to polys/data/
     folder = os.path.join(folder, "..", "..", "..", "polys", "data", os.path.basename(folder))
     with open(os.path.join(folder, filename), "rb") as f:
-        print(f"Loading {f}...")
         d = pickle.load(f)
     return GF, d
 

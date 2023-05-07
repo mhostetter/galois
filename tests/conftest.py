@@ -4,19 +4,27 @@ A pytest conftest module that provides pytest fixtures for number theoretic func
 import os
 import pickle
 
+import numba
+import numpy
 import pytest
 
-FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+import galois
 
+print("\nTested versions:")
+print(f"  galois: {galois.__version__}")
+print(f"  numpy: {numpy.__version__}")
+print(f"  numba: {numba.__version__}")
+print()
 
 ###############################################################################
 # Helper functions
 ###############################################################################
 
+FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+
 
 def read_pickle(filename):
     with open(os.path.join(FOLDER, filename), "rb") as f:
-        print(f"Loading {f}...")
         d = pickle.load(f)
     return d
 

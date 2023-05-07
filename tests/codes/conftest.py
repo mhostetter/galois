@@ -35,8 +35,6 @@ REED_SOLOMON_FILENAMES = get_filenames(REED_SOLOMON_PATH)
 
 def read_pickle(file):
     with open(file, "rb") as f:
-        # logging.info("Unpickling file %s", file)
-        print(f"Unpickling file {file}")
         dict_ = pickle.load(f)
     return dict_
 

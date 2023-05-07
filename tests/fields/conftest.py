@@ -128,7 +128,6 @@ def read_json(field_folder, filename):
 def read_pickle(field_folder, filename):
     GF, folder = field_folder
     with open(os.path.join(folder, filename), "rb") as f:
-        print(f"Loading {f}...")
         d = pickle.load(f)
     return GF, d
 
