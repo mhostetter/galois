@@ -146,7 +146,7 @@ If this library was useful to you in your research, please cite us. Following th
 
 .. toctree::
    :caption: Release Notes
-   :maxdepth: 2
+   :hidden:
 
    release-notes/versioning.rst
    release-notes/v0.3.md
