@@ -133,7 +133,7 @@ profile = "black"
 
 [tool.pytest.ini_options]
 minversion = "6.2"
-addopts = "-vv --showlocals"
+addopts = "-s --showlocals"
 testpaths = [
     "tests"
 ]
