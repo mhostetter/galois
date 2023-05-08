@@ -661,7 +661,7 @@ class BCH(_CyclicCode):
         return super().decode(codeword, output=output, errors=errors)
 
     def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
-        func = decode_jit(self.field, self.extension_field)
+        func = bch_decode_jit(self.field, self.extension_field)
         dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)
         return dec_codeword, N_errors
@@ -1192,7 +1192,7 @@ def _generator_poly_from_k(
     return best_generator_poly, best_roots
 
 
-class decode_jit(Function):
+class bch_decode_jit(Function):
     """
     Performs general BCH and Reed-Solomon decoding.
 
