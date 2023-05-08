@@ -1204,6 +1204,18 @@ class decode_jit(Function):
         super().__init__(field)
         self.extension_field = extension_field
 
+    @property
+    def key_1(self):
+        # Make the key in the cache lookup table specific to both the base field and extension field
+        return (
+            self.field.characteristic,
+            self.field.degree,
+            int(self.field.irreducible_poly),
+            self.extension_field.characteristic,
+            self.extension_field.degree,
+            int(self.extension_field.irreducible_poly),
+        )
+
     def __call__(self, codeword, design_n, alpha, c, roots):
         if self.extension_field.ufunc_mode != "python-calculate":
             output = self.jit(codeword.astype(np.int64), design_n, alpha, c, roots.astype(np.int64))

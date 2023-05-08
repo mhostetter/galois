@@ -57,6 +57,18 @@ class Function:
     ###############################################################################
 
     @property
+    def key_1(self):
+        return (self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
+
+    @property
+    def key_2(self):
+        if self.field.ufunc_mode == "jit-lookup":
+            key = (str(self.__class__), self.field.ufunc_mode, int(self.field.primitive_element))
+        else:
+            key = (str(self.__class__), self.field.ufunc_mode)
+        return key
+
+    @property
     def function(self):
         """
         Returns a JIT-compiled or pure-Python function based on field size.
@@ -72,19 +84,13 @@ class Function:
         """
         assert self.field.ufunc_mode in ["jit-lookup", "jit-calculate"]
 
-        key_1 = (self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
-        if self.field.ufunc_mode == "jit-lookup":
-            key_2 = (str(self.__class__), self.field.ufunc_mode, int(self.field.primitive_element))
-        else:
-            key_2 = (str(self.__class__), self.field.ufunc_mode)
-        self._CACHE.setdefault(key_1, {})
-
-        if key_2 not in self._CACHE[key_1]:
+        self._CACHE.setdefault(self.key_1, {})
+        if self.key_2 not in self._CACHE[self.key_1]:
             self.set_globals()  # Set the globals once before JIT compiling the function
             func = numba.jit(self._SIGNATURE.signature, parallel=self._PARALLEL, nopython=True)(self.implementation)
-            self._CACHE[key_1][key_2] = func
+            self._CACHE[self.key_1][self.key_2] = func
 
-        return self._CACHE[key_1][key_2]
+        return self._CACHE[self.key_1][self.key_2]
 
     @property
     def python(self) -> Callable:
