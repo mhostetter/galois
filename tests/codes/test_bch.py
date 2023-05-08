@@ -378,3 +378,17 @@ def test_bch_valid_codes_511():
     code = random.choice(codes)
     bch = galois.BCH(code[0], code[1])
     assert (bch.n, bch.k, bch.t) == code
+
+
+def test_bug_483():
+    """
+    See https://github.com/mhostetter/galois/issues/483.
+    """
+    bch_1 = galois.BCH(15, 11)
+    verify_decode(bch_1, 1)
+
+    bch_2 = galois.BCH(7, 4)
+    verify_decode(bch_2, 1)
+
+    bch_3 = galois.BCH(31, 26)
+    verify_decode(bch_3, 1)
