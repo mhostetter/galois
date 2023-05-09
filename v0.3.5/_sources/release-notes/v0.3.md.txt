@@ -239,8 +239,8 @@ tocdepth: 2
 
 ### Changes
 
-- Package `galois` with `py.typed` file to indicate to `mypy` and other type checkers that the package supports typing. ([#481](https://github.com/mhostetter/galois/pull/481))
-- Fix bug with multiple, concurrent BCH and/or Reed Solomon decoders. ([#484](https://github.com/mhostetter/galois/pull/484))
+- Added `py.typed` file to indicate to `mypy` and other type checkers that `galois` supports typing. ([#481](https://github.com/mhostetter/galois/pull/481))
+- Fixed bug with multiple, concurrent BCH and/or Reed Solomon decoders. ([#484](https://github.com/mhostetter/galois/pull/484))
 
 ### Contributors
 
