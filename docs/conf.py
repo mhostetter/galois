@@ -152,6 +152,7 @@ html_theme_options = {
         "toc.follow",
         "toc.sticky",
         "content.tabs.link",
+        "announce.dismiss",
     ],
     "palette": [
         {
@@ -275,7 +276,7 @@ sphinx_immaterial_custom_admonitions = [
     },
     {
         "name": "star",
-        "icon": "octicons/star-fill-24",
+        "icon": "octicons/star-16",
         "color": (255, 233, 3),  # Gold
     },
     {
