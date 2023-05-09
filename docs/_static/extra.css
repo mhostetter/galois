@@ -44,6 +44,13 @@
   color: var(--md-accent-fg-color);
 }
 
+/* Override announcement banner colors */
+.md-banner {
+  background: #FFE903;
+  color: rgba(0,0,0,.87);
+  --md-default-fg-color: rgba(0,0,0,.87);
+}
+
 /* Override version outdated banner colors */
 [data-md-color-scheme="slate"] .md-banner--warning {
   background: var(--md-footer-bg-color);
