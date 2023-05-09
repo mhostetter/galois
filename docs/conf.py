@@ -158,7 +158,6 @@ html_theme_options = {
         {
             "media": "(prefers-color-scheme: light)",
             "scheme": "default",
-            "accent": "deep-orange",
             "toggle": {
                 "icon": "material/weather-night",
                 "name": "Switch to dark mode",
@@ -167,7 +166,6 @@ html_theme_options = {
         {
             "media": "(prefers-color-scheme: dark)",
             "scheme": "slate",
-            "accent": "deep-orange",
             "toggle": {
                 "icon": "material/weather-sunny",
                 "name": "Switch to light mode",

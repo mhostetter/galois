@@ -1,11 +1,19 @@
 /* Set the colors for the light theme */
 [data-md-color-scheme="default"] {
   --md-primary-fg-color: #344FA1;
+  --md-accent-fg-color: #4564C3;
 }
 
 /* Set the colors for the dark theme */
 [data-md-color-scheme="slate"] {
-  --md-primary-fg-color: #4060C1;
+  --md-primary-fg-color: #EAA915;
+  --md-accent-fg-color: #EEBA44;
+}
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #344FA1;
+}
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #344FA1;
 }
 
 /* Fix line numbers in code blocks */
@@ -14,26 +22,9 @@
   margin-right: 0.5rem;
 }
 
-/* Override sphinx-design tab-set CSS rules, see https://github.com/jbms/sphinx-immaterial/issues/43 */
-.sd-tab-set>input+label {
-  font: var(--md-text-font-family);
-  font-size: 0.64rem;
-  font-weight: bolder;
-  border-bottom: .13rem solid transparent;
-}
-.sd-tab-set>input:checked+label {
-  border-color: var(--md-accent-fg-color);
-  color: var(--md-accent-fg-color);
-}
-.sd-tab-set>input:not(checked)+label {
-  color: var(--md-default-fg-color--light);
-}
-.sd-tab-set>input:not(:checked)+label:hover {
-  border-bottom: .0rem solid transparent;
-  color: var(--md-accent-fg-color);
-}
-.sd-tab-content {
-  box-shadow: 0 -0.05rem var(--md-default-fg-color--lightest), 0 0.05rem var(--md-default-fg-color--lightest);
+/* Override md-tab-set colors. */
+.md-typeset .tabbed-labels {
+  --md-accent-fg-color: var(--md-primary-fg-color);
 }
 
 /* Modify Sphinx Immaterial python-apigen linkable parameter coloring. */
@@ -46,12 +37,6 @@
 
 /* Override announcement banner colors */
 .md-banner {
-  background: #FFE903;
-  color: rgba(0,0,0,.87);
-  --md-default-fg-color: rgba(0,0,0,.87);
-}
-
-/* Override version outdated banner colors */
-[data-md-color-scheme="slate"] .md-banner--warning {
-  background: var(--md-footer-bg-color);
+  background-color: var(--md-typeset-mark-color);
+  color: var(--md-default-fg-color);
 }
