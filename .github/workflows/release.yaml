@@ -37,8 +37,8 @@ jobs:
 
       - name: Construct release notes
         run: |
-          cp docs/release-notes/${{ steps.current.outputs.version }}.md release_notes.md
-          echo -e "\n## Commits\n" >> release_notes.md
+          # cp docs/release-notes/${{ steps.current.outputs.version }}.md release_notes.md
+          echo -e "\n## Commits\n" > release_notes.md
           git log --oneline ${{ steps.previous.outputs.version }}..${{ steps.current.outputs.version }} >> release_notes.md
 
       - name: Create GitHub release
