@@ -16,6 +16,14 @@
   background-color: #344FA1;
 }
 
+/* @media screen and (max-width: 76.1875em) */
+.md-nav--primary .md-nav__title[for=__drawer] {
+    background-color: #344FA1;
+}
+.md-source {
+  background-color: #344FA1;
+}
+
 /* Fix line numbers in code blocks */
 .linenos {
   background-color: var(--md-default-bg-color--light);
