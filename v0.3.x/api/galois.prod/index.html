@@ -34,7 +34,7 @@
     
         <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.8fc297795b72f8232.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.11d1c5eed47b9e38d.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7869,21 +7869,21 @@ Polynomials</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [3]: </span><span class="n">f1</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f1</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(4x^2 + 5x + 5, GF(7))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(2x^2 + 2x + 1, GF(7))</span>
 
 <span class="gp">In [4]: </span><span class="n">f2</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f2</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(5x^3 + 2x^2 + 6, GF(7))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(x^3 + x^2 + 6x + 2, GF(7))</span>
 
 <span class="gp">In [5]: </span><span class="n">f3</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f3</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(6x^4 + x^3 + 3x^2 + 3x + 6, GF(7))</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(2x^4 + x^3 + x^2 + 4, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Compute the product of three polynomials.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">galois</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">)</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(x^9 + x^8 + 2x^7 + 6x^6 + 6x^5 + 6x^4 + 5x^3 + 6x^2 + 4x + 5, GF(7))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(4x^9 + 3x^8 + x^7 + 4x^6 + 4x^5 + 5x^4 + 2x^3 + 5x + 1, GF(7))</span>
 
 <span class="gp">In [7]: </span><span class="n">f1</span> <span class="o">*</span> <span class="n">f2</span> <span class="o">*</span> <span class="n">f3</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(x^9 + x^8 + 2x^7 + 6x^6 + 6x^5 + 6x^4 + 5x^3 + 6x^2 + 4x + 5, GF(7))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(4x^9 + 3x^8 + x^7 + 4x^6 + 4x^5 + 5x^4 + 2x^3 + 5x + 1, GF(7))</span>
 </code></pre></div>
 </div>
 </div>
