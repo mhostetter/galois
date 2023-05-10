@@ -281,13 +281,13 @@ sphinx_immaterial_custom_admonitions = [
         "name": "fast-performance",
         "title": "Faster performance",
         "icon": "material/speedometer",
-        "color": (40, 167, 69),  # Green: --sd-color-success
+        "color": (47, 177, 112),  # Green: --md-code-hl-string-color
     },
     {
         "name": "slow-performance",
         "title": "Slower performance",
         "icon": "material/speedometer-slow",
-        "color": (220, 53, 69),  # Red: --sd-color-danger
+        "color": (230, 105, 91),  # Red: --md-code-hl-number-color
     },
 ]
 
