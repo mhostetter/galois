@@ -232,3 +232,16 @@ tocdepth: 2
 ### Contributors
 
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.5
+
+*Released May 9, 2023*
+
+### Changes
+
+- Added `py.typed` file to indicate to `mypy` and other type checkers that `galois` supports typing. ([#481](https://github.com/mhostetter/galois/pull/481))
+- Fixed bug with multiple, concurrent BCH and/or Reed Solomon decoders. ([#484](https://github.com/mhostetter/galois/pull/484))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
