@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import sys
 import types
-from typing import Type, overload
+from typing import Any, Type, overload
 
 from typing_extensions import Literal
 
@@ -48,13 +48,13 @@ def GF(
 
 @export
 def GF(
-    *args,
-    irreducible_poly=None,
-    primitive_element=None,
-    verify=True,
-    compile=None,
-    repr=None,
-):
+    *args: Any,
+    irreducible_poly: Any = None,
+    primitive_element: Any = None,
+    verify: Any = True,
+    compile: Any = None,
+    repr: Any = None,
+) -> Any:
     r"""
     Creates a :obj:`~galois.FieldArray` subclass for $\mathrm{GF}(p^m)$.
 
@@ -325,13 +325,13 @@ def Field(
 
 @export
 def Field(
-    *args,
-    irreducible_poly=None,
-    primitive_element=None,
-    verify=True,
-    compile=None,
-    repr=None,
-):
+    *args: Any,
+    irreducible_poly: Any = None,
+    primitive_element: Any = None,
+    verify: Any = True,
+    compile: Any = None,
+    repr: Any = None,
+) -> Any:
     """
     Alias of :func:`~galois.GF`.
 

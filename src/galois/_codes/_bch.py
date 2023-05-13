@@ -4,7 +4,7 @@ A module containing general Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(q).
 
 from __future__ import annotations
 
-from typing import Type, overload
+from typing import Any, Type, overload
 
 import numba
 import numpy as np
@@ -650,7 +650,7 @@ class BCH(_CyclicCode):
                         np.array_equal(d, m)
         """,
     )
-    def decode(self, codeword, output="message", errors=False):
+    def decode(self, codeword: Any, output: Any = "message", errors: Any = False) -> Any:
         return super().decode(codeword, output=output, errors=errors)
 
     def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:

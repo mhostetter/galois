@@ -5,7 +5,7 @@ sequences.
 
 from __future__ import annotations
 
-from typing import Type, overload
+from typing import Any, Type, overload
 
 import numba
 import numpy as np
@@ -1422,7 +1422,7 @@ def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR: 
 
 
 @export
-def berlekamp_massey(sequence, output="minimal"):
+def berlekamp_massey(sequence: Any, output: Any = "minimal") -> Any:
     r"""
     Finds the minimal polynomial $c(x)$ that produces the linear recurrent sequence $y$.
 

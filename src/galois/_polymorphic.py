@@ -4,7 +4,7 @@ A module that contains polymorphic math functions that work on integers and poly
 
 from __future__ import annotations
 
-from typing import Sequence, overload
+from typing import Any, Sequence, overload
 
 import numpy as np
 
@@ -35,7 +35,7 @@ def gcd(a: Poly, b: Poly) -> Poly: ...
 
 
 @export
-def gcd(a, b):
+def gcd(a: Any, b: Any) -> Any:
     r"""
     Finds the greatest common divisor of $a$ and $b$.
 
@@ -103,7 +103,7 @@ def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]: ...
 
 
 @export
-def egcd(a, b):
+def egcd(a: Any, b: Any) -> Any:
     r"""
     Finds the multiplicands of $a$ and $b$ such that $a s + b t = \mathrm{gcd}(a, b)$.
 
@@ -181,7 +181,7 @@ def lcm(*values: Poly) -> Poly: ...
 
 
 @export
-def lcm(*values):
+def lcm(*values: Any) -> Any:
     r"""
     Computes the least common multiple of the arguments.
 
@@ -246,7 +246,7 @@ def prod(*values: Poly) -> Poly: ...
 
 
 @export
-def prod(*values):
+def prod(*values: Any) -> Any:
     r"""
     Computes the product of the arguments.
 
@@ -310,7 +310,7 @@ def are_coprime(*values: Poly) -> bool: ...
 
 
 @export
-def are_coprime(*values):
+def are_coprime(*values: Any) -> Any:
     r"""
     Determines if the arguments are pairwise coprime.
 
@@ -384,7 +384,7 @@ def crt(remainders: Sequence[Poly], moduli: Sequence[Poly]) -> Poly: ...
 
 
 @export
-def crt(remainders, moduli):
+def crt(remainders: Any, moduli: Any) -> Any:
     r"""
     Solves the simultaneous system of congruences for $x$.
 
@@ -535,7 +535,7 @@ def factors(value: Poly) -> tuple[list[Poly], list[int]]: ...
 
 
 @export
-def factors(value):
+def factors(value: Any) -> Any:
     r"""
     Computes the prime factors of a positive integer or the irreducible factors of a non-constant, monic polynomial.
 
@@ -649,7 +649,7 @@ def is_square_free(value: Poly) -> bool: ...
 
 
 @export
-def is_square_free(value):
+def is_square_free(value: Any) -> Any:
     r"""
     Determines if an integer or polynomial is square-free.
 

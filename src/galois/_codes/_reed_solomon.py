@@ -4,7 +4,7 @@ A module containing general Reed-Solomon (RS) codes.
 
 from __future__ import annotations
 
-from typing import Type, overload
+from typing import Any, Type, overload
 
 import numpy as np
 from typing_extensions import Literal
@@ -602,7 +602,7 @@ class ReedSolomon(_CyclicCode):
                         np.array_equal(d, m)
         """,
     )
-    def decode(self, codeword, output="message", errors=False):
+    def decode(self, codeword: Any, output: Any = "message", errors: Any = False) -> Any:
         return super().decode(codeword, output=output, errors=errors)
 
     def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:

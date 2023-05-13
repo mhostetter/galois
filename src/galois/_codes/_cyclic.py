@@ -4,7 +4,7 @@ A module containing common functions for cyclic codes.
 
 from __future__ import annotations
 
-from typing import overload
+from typing import Any, overload
 
 import numpy as np
 from typing_extensions import Literal
@@ -120,7 +120,7 @@ class _CyclicCode(_LinearCode):
             $$c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0 \in \mathrm{GF}(q)[x]$$
         """,
     )
-    def decode(self, codeword, output="message", errors=False):
+    def decode(self, codeword: Any, output: Any = "message", errors: Any = False) -> Any:
         return super().decode(codeword, output=output, errors=errors)
 
     def _convert_codeword_to_message(self, codeword: FieldArray) -> FieldArray:
