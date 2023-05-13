@@ -272,7 +272,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         if seed is not None:
             if not isinstance(seed, (int, np.integer, np.random.Generator)):
                 raise ValueError("Seed must be an integer, a numpy.random.Generator or None.")
-            if isinstance(seed, (int, np.integer)) and seed < 0:
+            if isinstance(seed, int) and seed < 0:
                 raise ValueError("Seed must be non-negative.")
 
         if dtype != np.object_:
