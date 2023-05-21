@@ -175,6 +175,8 @@ def test_modular_power_large_exponent_jit():
         g_coeffs = [193, 88, 107, 214, 72, 3]
         f = R([F.fetch_int(fi) for fi in f_coeffs[::-1]])
         g = R([F.fetch_int(gi) for gi in g_coeffs[::-1]])
+        print(pow(f, 2**64 + 0, g))
+        print(pow(f, 2**64 + 1234, g))
         print(pow(f, 2**70 + 0, g))
         print(pow(f, 2**70 + 1234, g))
         print(pow(f, 2**70 + 7654, g))
@@ -183,6 +185,9 @@ def test_modular_power_large_exponent_jit():
     GF = galois.GF(2**8)
     f = galois.Poly([255, 228, 34, 121, 243, 189, 6, 131, 102, 168, 82], field=GF)
     g = galois.Poly([193, 88, 107, 214, 72, 3], field=GF)
+
+    assert pow(f, 2**64 + 0, g) == galois.Poly.Str("221*x^4 + 112*x^3 + 124*x^2 + 87*x + 4", field=GF)
+    assert pow(f, 2**64 + 1234, g) == galois.Poly.Str("80*x^4 + 101*x^3 + 17*x^2 + 243*x + 74", field=GF)
 
     assert pow(f, 2**70 + 0, g) == galois.Poly.Str("178*x^4 + 228*x^3 + 198*x^2 + 191*x + 211", field=GF)
     assert pow(f, 2**70 + 1234, g) == galois.Poly.Str("100*x^4 + 242*x^3 + 235*x^2 + 171*x + 43", field=GF)
@@ -199,6 +204,8 @@ def test_modular_power_large_exponent_python():
         g_coeffs = [193, 88, 107, 214, 72, 3]
         f = R([F.fetch_int(fi) for fi in f_coeffs[::-1]])
         g = R([F.fetch_int(gi) for gi in g_coeffs[::-1]])
+        print([fi.integer_representation() for fi in pow(f, 2**64 + 0, g).list()[::-1]])
+        print([fi.integer_representation() for fi in pow(f, 2**64 + 1234, g).list()[::-1]])
         print([fi.integer_representation() for fi in pow(f, 2**70 + 0, g).list()[::-1]])
         print([fi.integer_representation() for fi in pow(f, 2**70 + 1234, g).list()[::-1]])
         print([fi.integer_representation() for fi in pow(f, 2**70 + 7654, g).list()[::-1]])
@@ -207,6 +214,27 @@ def test_modular_power_large_exponent_python():
     GF = galois.GF(2**100)
     f = galois.Poly([255, 228, 34, 121, 243, 189, 6, 131, 102, 168, 82], field=GF)
     g = galois.Poly([193, 88, 107, 214, 72, 3], field=GF)
+
+    assert pow(f, 2**64 + 0, g) == galois.Poly(
+        [
+            441863720507004970561004876820,
+            13672604657018030323534797793,
+            667292756625776662634439753318,
+            1088336758052065395414982737453,
+            594859692808903855438703377448,
+        ],
+        field=GF,
+    )
+    assert pow(f, 2**64 + 1234, g) == galois.Poly(
+        [
+            199499378257056846135676738371,
+            461241799178212820931813246616,
+            997379144596106156826875511246,
+            1102132140575827285204706059544,
+            949801160766724443620356316946,
+        ],
+        field=GF,
+    )
 
     assert pow(f, 2**70 + 0, g) == galois.Poly(
         [
