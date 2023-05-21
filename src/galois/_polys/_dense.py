@@ -344,7 +344,7 @@ class pow_jit(Function):
         # Convert the integer b into a vector of uint64 [MSWord, ..., LSWord] so arbitrarily-large exponents may be
         # passed into the JIT-compiled version
         b_vec = []  # Pop on LSWord -> MSWord
-        while b > 2**64:
+        while b >= 2**64:
             q, r = divmod(b, 2**64)
             b_vec.append(r)
             b = q
