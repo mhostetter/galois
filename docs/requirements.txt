@@ -1,5 +1,5 @@
 sphinx < 5.4
-sphinx-immaterial == 0.11.2
+sphinx-immaterial == 0.11.5
 myst-parser
 sphinx-design
 sphinx-last-updated-by-git
