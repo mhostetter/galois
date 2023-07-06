@@ -32,9 +32,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.181ccbe7533768129.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.11d1c5eed47b9e38d.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7790,14 +7789,14 @@ You're not viewing the latest version.
 <dl class="py data objdesc">
 <dt class="sig sig-object highlight py">
 <span class="sig-prename descclassname"><span class="pre">galois.typing.</span></span><span class="sig-name descname"><span class="pre">ShapeLike</span></span></dt>
-<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a> representing objects that can be coerced into a NumPy <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a> tuple.</p>
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a> representing objects that can be coerced into a NumPy <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.25)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a> tuple.</p>
 <p class="rubric" id="union">Union</p>
 <ul>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>: The size of a 1-D array.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[2]: </span><span class="go">GF([113,   9,  43, 167], order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF([ 82,  14, 154, 149], order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[3]: </span><span class="go">(4,)</span>
@@ -7808,27 +7807,27 @@ You're not viewing the latest version.
 iterable, <code class="code highlight python docutils literal highlight-python"><span class="p">()</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="p">[]</span></code>, represents a 0-D array (scalar).</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[4]: </span>
-<span class="go">GF([[ 74, 213, 117],</span>
-<span class="go">    [ 85, 207,  82]], order=3^5)</span>
+<span class="go">GF([[118, 213,   2],</span>
+<span class="go">    [196, 195, 198]], order=3^5)</span>
 
 <span class="gp">In [5]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[5]: </span><span class="go">(2, 3)</span>
 
 <span class="gp">In [6]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]);</span> <span class="n">x</span>
 <span class="gh">Out[6]: </span>
-<span class="go">GF([[[ 80, 139,  50, 206],</span>
-<span class="go">     [161, 241,  68, 202],</span>
-<span class="go">     [ 62, 107, 143, 128]],</span>
+<span class="go">GF([[[126, 201, 146,   9],</span>
+<span class="go">     [159,   8, 101,  14],</span>
+<span class="go">     [150, 165, 233, 221]],</span>
 
-<span class="go">    [[ 13, 100,  82, 193],</span>
-<span class="go">     [241,  19, 145, 186],</span>
-<span class="go">     [ 71, 180, 162,  75]]], order=3^5)</span>
+<span class="go">    [[ 39, 120, 160, 188],</span>
+<span class="go">     [202, 235, 166, 129],</span>
+<span class="go">     [143,  69,  46, 166]]], order=3^5)</span>
 
 <span class="gp">In [7]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[7]: </span><span class="go">(2, 3, 4)</span>
 
 <span class="gp">In [8]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(());</span> <span class="n">x</span>
-<span class="gh">Out[8]: </span><span class="go">GF(213, order=3^5)</span>
+<span class="gh">Out[8]: </span><span class="go">GF(164, order=3^5)</span>
 
 <span class="gp">In [9]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[9]: </span><span class="go">()</span>
@@ -7965,9 +7964,8 @@ iterable, <code class="code highlight python docutils literal highlight-python">
     
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky", "content.tabs.link", "announce.dismiss"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
-    
-      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      
+        <script src="../../_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js"></script>
         <script src="../../_static/design-tabs.js"></script>
     
   </body>

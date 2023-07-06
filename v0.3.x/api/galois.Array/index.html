@@ -32,9 +32,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.181ccbe7533768129.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.11d1c5eed47b9e38d.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7968,8 +7967,8 @@ You're not viewing the latest version.
 
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">Array</span></span><span class="p"><span class="pre">(</span></span><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a></span><span class="p"><span class="pre">)</span></span></dt>
-<dd><p>An abstract <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a> subclass over a Galois field or Galois ring.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">Array</span></span><span class="p"><span class="pre">(</span></span><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">numpy.ndarray</span></a></span><span class="p"><span class="pre">)</span></span></dt>
+<dd><p>An abstract <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a> subclass over a Galois field or Galois ring.</p>
 <div class="abstract admonition">
 <p class="admonition-title">Abstract</p>
 <p><a class="reference internal" href="#" title="galois.Array (Python class) — An abstract ndarray subclass over a Galois field or Galois ring."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Array</span></code></a> is an abstract base class for <a class="reference internal" href="../galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> and cannot be
@@ -8033,7 +8032,7 @@ instantiated directly.</p>
 
 <dl class="py property summary objdesc">
 <dt class="sig sig-object highlight sig-wrap py">
-<em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="../galois.Array.default_ufunc_mode/" title="galois.Array.default_ufunc_mode (Python property) — The default compilation mode of the Galois field or Galois ring."><span class="sig-name descname pseudo-toc-entry"><span class="pre">default_ufunc_mode</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="s"><span class="pre">'jit-lookup'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'jit-calculate'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'python-calculate'</span></span></span></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="../galois.Array.default_ufunc_mode/" title="galois.Array.default_ufunc_mode (Python property) — The default compilation mode of the Galois field or Galois ring."><span class="sig-name descname pseudo-toc-entry"><span class="pre">default_ufunc_mode</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">Literal[jit</span> <span class="pre">-</span> <span class="pre">lookup]</span> <span class="pre">|</span> <span class="pre">typing.Literal[jit</span> <span class="pre">-</span> <span class="pre">calculate]</span> <span class="pre">|</span> <span class="pre">typing.Literal[python</span> <span class="pre">-</span> <span class="pre">calculate]</span></span></dt>
 <dd><p>The default compilation mode of the Galois field or Galois ring.</p>
 </dd></dl>
 
@@ -8046,12 +8045,12 @@ instantiated directly.</p>
 <dl class="py property summary objdesc">
 <dt class="sig sig-object highlight py">
 <em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="../galois.Array.dtypes/" title="galois.Array.dtypes (Python property) — List of valid integer numpy.dtype values that are compatible with this Galois field or Galois ring."><span class="sig-name descname pseudo-toc-entry"><span class="pre">dtypes</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">np.dtype</span><span class="p"><span class="pre">]</span></span></span></dt>
-<dd><p>List of valid integer <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> values that are compatible with this Galois field or Galois ring.</p>
+<dd><p>List of valid integer <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a> values that are compatible with this Galois field or Galois ring.</p>
 </dd></dl>
 
 <dl class="py property summary objdesc">
-<dt class="sig sig-object highlight py">
-<em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="../galois.Array.element_repr/" title="galois.Array.element_repr (Python property) — The current element representation of the Galois field or Galois ring."><span class="sig-name descname pseudo-toc-entry"><span class="pre">element_repr</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="s"><span class="pre">'int'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'poly'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'power'</span></span></span></dt>
+<dt class="sig sig-object highlight sig-wrap py">
+<em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="../galois.Array.element_repr/" title="galois.Array.element_repr (Python property) — The current element representation of the Galois field or Galois ring."><span class="sig-name descname pseudo-toc-entry"><span class="pre">element_repr</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">poly</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">power</span><span class="p"><span class="pre">]</span></span></span></dt>
 <dd><p>The current element representation of the Galois field or Galois ring.</p>
 </dd></dl>
 
@@ -8088,7 +8087,7 @@ instantiated directly.</p>
 
 <dl class="py property summary objdesc">
 <dt class="sig sig-object highlight sig-wrap py">
-<em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="../galois.Array.ufunc_mode/" title="galois.Array.ufunc_mode (Python property) — The current compilation mode of the Galois field or Galois ring."><span class="sig-name descname pseudo-toc-entry"><span class="pre">ufunc_mode</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="s"><span class="pre">'jit-lookup'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'jit-calculate'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'python-calculate'</span></span></span></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="../galois.Array.ufunc_mode/" title="galois.Array.ufunc_mode (Python property) — The current compilation mode of the Galois field or Galois ring."><span class="sig-name descname pseudo-toc-entry"><span class="pre">ufunc_mode</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">Literal[jit</span> <span class="pre">-</span> <span class="pre">lookup]</span> <span class="pre">|</span> <span class="pre">typing.Literal[jit</span> <span class="pre">-</span> <span class="pre">calculate]</span> <span class="pre">|</span> <span class="pre">typing.Literal[python</span> <span class="pre">-</span> <span class="pre">calculate]</span></span></dt>
 <dd><p>The current compilation mode of the Galois field or Galois ring.</p>
 </dd></dl>
 
@@ -8233,12 +8232,11 @@ instantiated directly.</p>
     
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky", "content.tabs.link", "announce.dismiss"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
-    
-      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      
+        <script src="../../_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script id="MathJax-script" src="../../_static/mathjax/tex-mml-chtml.js"></script>
     
   </body>
 </html>

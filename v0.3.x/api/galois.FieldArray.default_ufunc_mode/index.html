@@ -32,9 +32,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.181ccbe7533768129.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.11d1c5eed47b9e38d.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7793,7 +7792,7 @@ You're not viewing the latest version.
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight sig-wrap py">
-<em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">FieldArray.</span></span><span class="sig-name descname"><span class="pre">default_ufunc_mode</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="s"><span class="pre">'jit-lookup'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'jit-calculate'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'python-calculate'</span></span></span></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">FieldArray.</span></span><span class="sig-name descname"><span class="pre">default_ufunc_mode</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">Literal[jit</span> <span class="pre">-</span> <span class="pre">lookup]</span> <span class="pre">|</span> <span class="pre">typing.Literal[jit</span> <span class="pre">-</span> <span class="pre">calculate]</span> <span class="pre">|</span> <span class="pre">typing.Literal[python</span> <span class="pre">-</span> <span class="pre">calculate]</span></span></dt>
 <dd><p>The default ufunc compilation mode for this <a class="reference internal" href="../galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over \mathrm{GF}(p^m)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass.</p>
 <p class="rubric" id="notes">Notes</p>
 <p>The ufuncs may be recompiled with <a class="reference internal" href="../galois.FieldArray.compile/" title="galois.FieldArray.compile (Python method) — Recompile the just-in-time compiled ufuncs for a new calculation mode."><code class="xref py py-func docutils literal notranslate"><span class="pre">compile()</span></code></a>.</p>
@@ -7807,7 +7806,7 @@ You're not viewing the latest version.
 </code></pre></div>
 </div>
 <p>Fields with order greater than <span class="math notranslate nohighlight">\(2^{20}\)</span> are compiled, by default, using explicit calculation for
-memory savings. The field elements and arithmetic must still fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p>
+memory savings. The field elements and arithmetic must still fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.25)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2147483647</span><span class="p">)</span><span class="o">.</span><span class="n">default_ufunc_mode</span>
 <span class="gh">Out[3]: </span><span class="go">&#39;jit-calculate&#39;</span>
 
@@ -7815,7 +7814,7 @@ memory savings. The field elements and arithmetic must still fit within <a class
 <span class="gh">Out[4]: </span><span class="go">&#39;jit-calculate&#39;</span>
 </code></pre></div>
 </div>
-<p>Fields whose elements and arithmetic cannot fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> use pure-Python explicit
+<p>Fields whose elements and arithmetic cannot fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.25)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> use pure-Python explicit
 calculation.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">36893488147419103183</span><span class="p">)</span><span class="o">.</span><span class="n">default_ufunc_mode</span>
 <span class="gh">Out[5]: </span><span class="go">&#39;python-calculate&#39;</span>
@@ -7951,12 +7950,11 @@ calculation.</p>
     
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky", "content.tabs.link", "announce.dismiss"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
-    
-      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      
+        <script src="../../_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script id="MathJax-script" src="../../_static/mathjax/tex-mml-chtml.js"></script>
     
   </body>
 </html>

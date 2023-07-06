@@ -32,9 +32,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/google_fonts.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.181ccbe7533768129.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-        <link rel="stylesheet" type="text/css" href="../../_static/stylesheets/sphinx_immaterial_theme.11d1c5eed47b9e38d.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -7805,17 +7804,17 @@ You're not viewing the latest version.
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight sig-wrap py">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">Array.</span></span><span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-mode" title="galois.Array.compile.mode (Python parameter) — The ufunc calculation mode."><span class="n"><span class="pre">mode</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="s"><span class="pre">'auto'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'jit-lookup'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'jit-calculate'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="s"><span class="pre">'python-calculate'</span></span></span></span></em></span><span class="sig-paren">)</span></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">Array.</span></span><span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-mode" title="galois.Array.compile.mode (Python parameter) — The ufunc calculation mode."><span class="n"><span class="pre">mode</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">Literal[auto]</span> <span class="pre">|</span> <span class="pre">typing.Literal[jit</span> <span class="pre">-</span> <span class="pre">lookup]</span> <span class="pre">|</span> <span class="pre">typing.Literal[jit</span> <span class="pre">-</span> <span class="pre">calculate]</span> <span class="pre">|</span> <span class="pre">typing.Literal[python</span> <span class="pre">-</span> <span class="pre">calculate]</span></span></span></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Recompile the just-in-time compiled ufuncs for a new calculation mode.</p>
 <p>This function updates <a class="reference internal" href="../galois.Array.ufunc_mode/" title="galois.Array.ufunc_mode (Python property) — The current compilation mode of the Galois field or Galois ring."><code class="xref py py-obj docutils literal notranslate"><span class="pre">ufunc_mode</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="p-mode"><span class="n sig-name">mode</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="s">'auto'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'jit-lookup'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'jit-calculate'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'python-calculate'</span></span></span><a class="headerlink" href="#p-mode" title="Permalink to this definition">¶</a></dt><dd><p><p>The ufunc calculation mode.</p>
+<dt id="p-mode"><span class="n sig-name">mode</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">Literal[auto] | typing.Literal[jit - lookup] | typing.Literal[jit - calculate] | typing.Literal[python - calculate]</span></span><a class="headerlink" href="#p-mode" title="Permalink to this definition">¶</a></dt><dd><p><p>The ufunc calculation mode.</p>
 <ul class="simple">
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;auto&quot;</span></code>: Selects <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-lookup&quot;</span></code> for fields with order less than <span class="math notranslate nohighlight">\(2^{20}\)</span>, <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-calculate&quot;</span></code>
 for larger fields, and <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code> for fields whose elements cannot be represented with
-<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p></li>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.25)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p></li>
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-lookup&quot;</span></code>: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for
 efficient computation. In the few cases where explicit calculation is faster than table lookup,
 explicit calculation is used.</p></li>
@@ -7823,7 +7822,7 @@ explicit calculation is used.</p></li>
 mode is designed for large fields that cannot or should not store lookup tables in RAM. Generally,
 the <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-calculate&quot;</span></code> mode is slower than <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-lookup&quot;</span></code>.</p></li>
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code>: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields
-whose elements cannot be represented with <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> and instead use <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a>
+whose elements cannot be represented with <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.25)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> and instead use <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v1.25)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a>
 with Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a> (which has arbitrary precision).</p></li>
 </ul>
 </p>
@@ -7958,12 +7957,11 @@ with Python <a class="reference external" href="https://docs.python.org/3/librar
     
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", "toc.sticky", "content.tabs.link", "announce.dismiss"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "../versions.json"}}</script>
     
-    
-      <script src="../../_static/javascripts/bundle.444abb77.min.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      
+        <script src="../../_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js"></script>
         <script src="../../_static/design-tabs.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script id="MathJax-script" src="../../_static/mathjax/tex-mml-chtml.js"></script>
     
   </body>
 </html>
