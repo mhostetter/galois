@@ -484,6 +484,8 @@ def randint(low, high, shape, dtype):
         iterator = np.nditer(array, flags=["multi_index", "refs_ok"])
         for _ in iterator:
             array[iterator.multi_index] = random.randint(low, high - 1)
+    if isinstance(shape, int) and shape == 1:
+        return array.item()
     return array
 
 
