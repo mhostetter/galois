@@ -3,6 +3,7 @@ A module that handles interfacing with the SQLite databases.
 """
 from __future__ import annotations
 
+import sys
 import sqlite3
 from pathlib import Path
 
@@ -43,6 +44,14 @@ class PrimeFactorsDatabase(DatabaseInterface):
         Returns:
             A tuple containing the prime factors and multiplicities.
         """
+        # Integer string conversion length limitation since Python 3.11
+        # https://github.com/mhostetter/galois/issues/494
+        if hasattr(sys, "set_int_max_str_digits"):
+            default_limit = sys.get_int_max_str_digits()
+            sys.set_int_max_str_digits(0)
+            n = str(n)
+            sys.set_int_max_str_digits(default_limit)
+
         self.cursor.execute(
             """
             SELECT factors, multiplicities, composite
